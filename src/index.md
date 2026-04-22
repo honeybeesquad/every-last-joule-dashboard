@@ -3,12 +3,13 @@
 ```js
 const cbeci = await FileAttachment("data/cbeci.json").json();
 const ercot = await FileAttachment("data/ercot.json").json();
+const caiso = await FileAttachment("data/caiso.json").json();
 ```
 
 ```js
 import { aggregateAtHour } from "../lib/calc.js";
 
-const regionData = { ercot };
+const regionData = { ercot, caiso };
 const utcHour = new Date().getUTCHours();
 const result = aggregateAtHour(regionData, cbeci, utcHour);
 ```
