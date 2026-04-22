@@ -1,11 +1,13 @@
-# Stacked design system check
+# Every Last Joule
 
-<div class="eyebrow">Eyebrow</div>
+```js
+const cbeci = await FileAttachment("data/cbeci.json").json();
+```
 
-# Display heading
+<div class="eyebrow">Sustainable hashrate · unlocked (v0 preview)</div>
 
-<div class="display-xl num-tabular">73.2%</div>
+<div class="display-xl num-tabular">${cbeci.hashrateEHps.toFixed(1)} EH/s</div>
 
-<p class="lead">Lead paragraph in Gotham Book.</p>
+<p class="lead">Current Bitcoin network hashrate. Annualised consumption at 16 J/TH: ${cbeci.annualisedConsumptionTWh.toFixed(1)} TWh. Region loaders land in Week 1 Tasks 9-15.</p>
 
-<p>Body paragraph. Tabular: <span class="num-tabular">1,234.5 GW</span>.</p>
+<p class="caption">Source: mempool.space. Refreshed: ${cbeci.lastUpdated}.</p>
