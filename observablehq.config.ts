@@ -1,5 +1,6 @@
 export default {
   title: "Every Last Joule",
+  root: "src",
   pages: [
     { name: "Dashboard", path: "/" },
     { name: "Methodology", path: "/methodology" },
