@@ -230,7 +230,12 @@ code, .mono {
 .on-dark        { color: var(--fg-on-dark); }
 .on-dark.muted  { color: var(--fg-on-dark-muted); }
 
-/* Dashboard body - always dark */
+/* Dashboard body - always dark.
+   Target html as well as body so mobile overscroll shows dark chrome, not the
+   white fallback that the Stacked base sheet applies to html.
+   Gradient stops are intentionally darker than --slate-800 (#161718) for depth;
+   the start (#0f1517) is teal-shifted for cool chrome feel. */
+html,
 body {
   background: radial-gradient(ellipse at 30% 40%, #0f1517 0%, #0a0b0c 60%, #050607 100%);
   color: var(--white);
