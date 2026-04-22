@@ -1,6 +1,10 @@
 # Every Last Joule
 
 ```js
+import { createElement } from "npm:react";
+import { createRoot } from "npm:react-dom/client";
+import Globe from "./components/Globe.jsx";
+
 const cbeci = await FileAttachment("data/cbeci.json").json();
 const ercot = await FileAttachment("data/ercot.json").json();
 const caiso = await FileAttachment("data/caiso.json").json();
@@ -13,6 +17,7 @@ const brazilNE = await FileAttachment("data/brazil-ne.json").json();
 
 ```js
 import { aggregateAtHour } from "../lib/calc.js";
+import { REGIONS } from "../lib/regions.js";
 
 const regionData = {
   ercot,
@@ -48,5 +53,24 @@ const result = aggregateAtHour(regionData, cbeci, utcHour);
     <div class="num-tabular" style="font-size: 24px; font-weight: 700;">${result.hashrateEHps.toFixed(1)} EH/s</div>
   </div>
 </div>
+
+<div id="globe-mount" style="width: 100%; max-width: 560px; aspect-ratio: 1; margin: 2rem auto;"></div>
+
+```js
+const mount = document.getElementById("globe-mount");
+if (mount) {
+  const now = new Date();
+  const globeUtcHour = now.getUTCHours() + now.getUTCMinutes() / 60;
+  createRoot(mount).render(
+    createElement(Globe, {
+      regions: REGIONS,
+      regionData,
+      utcHour: globeUtcHour,
+      width: mount.clientWidth || 560,
+      height: mount.clientWidth || 560
+    })
+  );
+}
+```
 
 <p class="caption" style="margin-top: 1.5rem;">Hashrate source: mempool.space. Proxy methodology: EIA wind/solar and ENTSO-E generation × calibrated regional curtailment rates. Snapshot: ${cbeci.lastUpdated}. Full methodology in Week 6.</p>
