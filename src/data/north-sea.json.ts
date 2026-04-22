@@ -1,5 +1,6 @@
 import { fetchJSON } from "../../lib/fetch.js";
 import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../../lib/profile.js";
+import { withFallback } from "../../lib/resilient.js";
 import type { RegionData, CurtailmentPoint } from "../../lib/types.js";
 import { pathToFileURL } from "url";
 
@@ -41,7 +42,7 @@ export function parseNorthSea(pages: AGWSResponse[]): CurtailmentPoint[] {
     }));
 }
 
-async function run(): Promise<RegionData> {
+const run = async (): Promise<RegionData> => {
   const now = new Date();
   const pages: AGWSResponse[] = [];
 
@@ -68,10 +69,13 @@ async function run(): Promise<RegionData> {
     sourceNote:
       "Elexon BMRS AGWS (wind + solar) × 6.9% calibrated curtailment rate (UK 2024 actuals: 6.6 TWh / 95 TWh)",
   };
-}
+};
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  run()
+  withFallback<RegionData>("north-sea", run, {
+    tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
+    tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+  })
     .then((d) => process.stdout.write(JSON.stringify(d)))
     .catch((err) => {
       console.error("north-sea loader failed", err);

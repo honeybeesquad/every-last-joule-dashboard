@@ -1,4 +1,5 @@
 import { fetchJSON } from "../../lib/fetch.js";
+import { withFallback } from "../../lib/resilient.js";
 import type { CBECIData } from "../../lib/types.js";
 
 /**
@@ -43,12 +44,15 @@ export function parseHashrate(raw: MempoolHashrateResponse): CBECIData {
   return { hashrateEHps, annualisedConsumptionTWh, lastUpdated };
 }
 
-async function run(): Promise<CBECIData> {
+const run = async (): Promise<CBECIData> => {
   const raw = await fetchJSON<MempoolHashrateResponse>(ENDPOINT);
   return parseHashrate(raw);
-}
+};
 
-run()
+withFallback<CBECIData>("cbeci", run, {
+  tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
+  tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+})
   .then((data) => {
     process.stdout.write(JSON.stringify(data));
   })

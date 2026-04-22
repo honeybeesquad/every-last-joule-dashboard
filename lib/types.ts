@@ -31,6 +31,13 @@ export interface RegionData {
   peakGW: number;          // max of profile
   lastUpdated: string;     // ISO 8601 UTC of most recent source data
   sourceNote?: string;     // optional provenance addendum
+  /**
+   * Indicates whether the current payload came from a live fetch or
+   * a fallback snapshot. Absent or "live" = fresh data. "cached" = the
+   * live fetch failed on this build and we served the previous snapshot.
+   * Surfaced in the methodology page so readers can see freshness.
+   */
+  sourceStatus?: "live" | "cached";
 }
 
 /** Network consumption and hashrate reference from Cambridge CBECI. */
@@ -38,6 +45,7 @@ export interface CBECIData {
   hashrateEHps: number;           // current network hashrate
   annualisedConsumptionTWh: number; // current network consumption
   lastUpdated: string;             // ISO 8601
+  sourceStatus?: "live" | "cached";
 }
 
 /** Global anchor figure from Ember / IEA. */

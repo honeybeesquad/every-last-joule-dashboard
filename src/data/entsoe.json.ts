@@ -1,6 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import { fetchText } from "../../lib/fetch.js";
 import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../../lib/profile.js";
+import { withFallback } from "../../lib/resilient.js";
 import type { RegionData, CurtailmentPoint } from "../../lib/types.js";
 
 const ZONES = [
@@ -105,14 +106,25 @@ async function fetchZone(zone: typeof ZONES[number]): Promise<RegionData> {
   return buildZoneData(zone.id, rawPoints, zone.rate, zone.sourceNote);
 }
 
-async function run(): Promise<Record<string, RegionData>> {
+const run = async (): Promise<Record<string, RegionData>> => {
   const results = await Promise.all(ZONES.map(fetchZone));
   const out: Record<string, RegionData> = {};
   for (let i = 0; i < ZONES.length; i++) out[ZONES[i].id] = results[i];
   return out;
-}
+};
 
-run()
+withFallback<Record<string, RegionData>>("entsoe", run, {
+  tagLive: (r) => {
+    const tagged: Record<string, RegionData> = {};
+    for (const [k, v] of Object.entries(r)) tagged[k] = { ...v, sourceStatus: "live" };
+    return tagged;
+  },
+  tagCached: (c) => {
+    const tagged: Record<string, RegionData> = {};
+    for (const [k, v] of Object.entries(c)) tagged[k] = { ...v, sourceStatus: "cached" };
+    return tagged;
+  },
+})
   .then((data) => process.stdout.write(JSON.stringify(data)))
   .catch((err) => {
     console.error("entsoe loader failed", err);

@@ -1,5 +1,6 @@
 import { fetchText } from "../../lib/fetch.js";
 import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../../lib/profile.js";
+import { withFallback } from "../../lib/resilient.js";
 import type { RegionData, CurtailmentPoint } from "../../lib/types.js";
 import { pathToFileURL } from "url";
 
@@ -65,7 +66,7 @@ export function parseOnsCurtailmentCsv(csv: string): CurtailmentPoint[] {
 }
 
 /** Fetch the last two months of CSV to give 30+ days' coverage. */
-async function run(): Promise<RegionData> {
+const run = async (): Promise<RegionData> => {
   const now = new Date();
   const current = `${now.getUTCFullYear()}_${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
   const prevDate = new Date(now.getTime());
@@ -97,10 +98,13 @@ async function run(): Promise<RegionData> {
     lastUpdated: recent.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote: "ONS Brazil direct constrained-off wind curtailment (not a proxy)",
   };
-}
+};
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  run()
+  withFallback<RegionData>("brazil-ne", run, {
+    tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
+    tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+  })
     .then((d) => process.stdout.write(JSON.stringify(d)))
     .catch((err) => {
       console.error("brazil-ne loader failed", err);

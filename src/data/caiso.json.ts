@@ -1,5 +1,6 @@
 import { fetchJSON } from "../../lib/fetch.js";
 import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../../lib/profile.js";
+import { withFallback } from "../../lib/resilient.js";
 import type { RegionData, CurtailmentPoint } from "../../lib/types.js";
 import { pathToFileURL } from "url";
 
@@ -56,7 +57,7 @@ export function parseCaiso(raw: EIAResponse): RegionData {
   };
 }
 
-async function run(): Promise<RegionData> {
+const run = async (): Promise<RegionData> => {
   const apiKey = process.env.EIA_API_KEY;
   if (!apiKey) throw new Error("EIA_API_KEY not set");
 
@@ -81,12 +82,15 @@ async function run(): Promise<RegionData> {
   const url = `${API_BASE}?${params.toString()}`;
   const raw = await fetchJSON<EIAResponse>(url);
   return parseCaiso(raw);
-}
+};
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  run()
+  withFallback<RegionData>("caiso", run, {
+    tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
+    tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+  })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("caiso loader failed", err);
