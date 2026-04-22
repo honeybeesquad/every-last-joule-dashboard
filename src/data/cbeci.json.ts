@@ -1,6 +1,6 @@
-import { fetchJSON } from "../../lib/fetch.js";
-import { withFallback } from "../../lib/resilient.js";
-import type { CBECIData } from "../../lib/types.js";
+import { fetchJSON } from "../lib/fetch.js";
+import { withFallback } from "../lib/resilient.js";
+import type { CBECIData } from "../lib/types.js";
 
 /**
  * Network-reference loader.

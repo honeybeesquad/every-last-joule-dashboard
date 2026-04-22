@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { REGIONS } from "../lib/regions";
+import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
   it("has 17 canonical regions", () => {

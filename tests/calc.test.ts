@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { ehsFromGW, aggregateAtHour, perHourAggregate } from "../lib/calc";
-import type { RegionData, CBECIData } from "../lib/types";
+import { ehsFromGW, aggregateAtHour, perHourAggregate } from "../src/lib/calc";
+import type { RegionData, CBECIData } from "../src/lib/types";
 
 const cbeci: CBECIData = {
   hashrateEHps: 1000,

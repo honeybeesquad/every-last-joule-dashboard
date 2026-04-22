@@ -1,7 +1,7 @@
-import { fetchText } from "../../lib/fetch.js";
-import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../../lib/profile.js";
-import { withFallback } from "../../lib/resilient.js";
-import type { RegionData, CurtailmentPoint } from "../../lib/types.js";
+import { fetchText } from "../lib/fetch.js";
+import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile.js";
+import { withFallback } from "../lib/resilient.js";
+import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
 const CSV_URL =

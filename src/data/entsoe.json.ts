@@ -1,8 +1,8 @@
 import { XMLParser } from "fast-xml-parser";
-import { fetchText } from "../../lib/fetch.js";
-import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../../lib/profile.js";
-import { withFallback } from "../../lib/resilient.js";
-import type { RegionData, CurtailmentPoint } from "../../lib/types.js";
+import { fetchText } from "../lib/fetch.js";
+import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile.js";
+import { withFallback } from "../lib/resilient.js";
+import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 
 const ZONES = [
   { id: "germany", domain: "10Y1001A1001A82H", psrType: "B19", rate: 0.02,

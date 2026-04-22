@@ -1,4 +1,4 @@
-import type { RegionData } from "../../lib/types.js";
+import type { RegionData } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
 interface StaticSpec {

@@ -291,3 +291,250 @@ main table {
   overflow-x: auto;
   max-width: 100%;
 }
+
+/* ============ APP SHELL LAYOUT ============ */
+.app-shell {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px 32px;
+  gap: 16px;
+  color: var(--white);
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.app-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.app-mark {
+  color: var(--teal-500);
+  font-size: 20px;
+}
+
+.app-wordmark {
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+
+.app-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  padding-left: 14px;
+  border-left: 1px solid rgba(255,255,255,0.15);
+  margin-left: 2px;
+}
+
+.app-methodology {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  padding: 8px 14px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 999px;
+}
+
+.app-methodology:hover {
+  background: rgba(20,175,172,0.08);
+  color: var(--white);
+  border-color: var(--teal-500);
+}
+
+.app-body {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(400px, 2fr) minmax(280px, 1fr);
+  gap: 32px;
+  align-items: stretch;
+  padding: 24px 0;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-left {
+  justify-content: center;
+}
+
+.panel-center {
+  align-items: center;
+  justify-content: center;
+  min-height: 520px;
+}
+
+.panel-right {
+  justify-content: center;
+}
+
+#globe-canvas {
+  display: block;
+  width: 100%;
+  max-width: 580px;
+  aspect-ratio: 1;
+  cursor: grab;
+}
+
+#pct-readout .pct-sign,
+#pct-readout {
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--white);
+}
+
+#pct-readout {
+  display: inline-block;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 18px;
+  margin-top: 8px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.stat-unit {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  font-weight: 400;
+}
+
+.hotspot-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.hotspot-item {
+  display: grid;
+  grid-template-columns: 10px 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.82);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.hotspot-country {
+  color: rgba(255,255,255,0.45);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hotspot-gw {
+  color: var(--white);
+  font-weight: 500;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.dot-teal {
+  background: var(--teal-500);
+  box-shadow: 0 0 10px rgba(20,175,172,0.5);
+}
+
+.dot-orange {
+  background: var(--btc-orange);
+  box-shadow: 0 0 10px rgba(247,147,26,0.5);
+}
+
+.legend {
+  display: flex;
+  gap: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app-footer {
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.app-footer .caption {
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .app-body {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-center {
+    min-height: 400px;
+    order: -1;
+  }
+
+  #globe-canvas {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 540px) {
+  .app-shell {
+    padding: 16px 4vw;
+  }
+
+  .app-tag {
+    display: none;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+main > h1:first-child {
+  display: none;
+}

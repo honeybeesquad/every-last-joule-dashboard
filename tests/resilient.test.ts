@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { withFallback } from "../lib/resilient";
+import { withFallback } from "../src/lib/resilient";
 
 const CACHE_DIR = join(process.cwd(), "data", "snapshots", "last-good");
 

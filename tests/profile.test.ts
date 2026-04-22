@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile";
-import type { CurtailmentPoint } from "../lib/types";
+import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../src/lib/profile";
+import type { CurtailmentPoint } from "../src/lib/types";
 
 function pointsAt(hour: number, mw: number, days = 30): CurtailmentPoint[] {
   // Emits one point at HH:00 UTC on each of the last `days` days.

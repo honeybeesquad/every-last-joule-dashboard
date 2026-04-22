@@ -1,4 +1,4 @@
-import type { GlobalAnchor } from "../../lib/types.js";
+import type { GlobalAnchor } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
 // From research/energy_arithmetic.md (bottom-up 125 TWh mid-case, IEA-rate 160 TWh).
