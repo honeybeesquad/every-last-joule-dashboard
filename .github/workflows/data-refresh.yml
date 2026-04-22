@@ -1,0 +1,37 @@
+name: Daily data refresh
+
+# Triggers a Vercel rebuild on a daily cron.  Vercel's build environment
+# already has EIA_API_KEY configured as a Project Environment Variable, so
+# each rebuild re-runs every data loader and captures the freshest numbers
+# before redeploying.
+#
+# The Deploy Hook URL is stored as repo secret VERCEL_DEPLOY_HOOK.  It is a
+# POST-only URL; anyone with it can trigger a rebuild.  Rotate via the
+# Vercel dashboard if it leaks.
+
+on:
+  schedule:
+    # 02:00 UTC daily.  CBECI, ERCOT-via-EIA, and most other sources settle
+    # overnight; 02:00 UTC captures yesterday's full 24 hours.
+    - cron: "0 2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  trigger-rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: POST Vercel deploy hook
+        run: |
+          set -euo pipefail
+          response=$(curl -sS -X POST "$VERCEL_DEPLOY_HOOK" \
+            -w "\nHTTP_STATUS=%{http_code}\n" \
+            --max-time 30)
+          echo "$response"
+          status=$(printf '%s\n' "$response" | awk -F= '/^HTTP_STATUS=/{print $2}')
+          if [ "$status" != "201" ] && [ "$status" != "200" ]; then
+            echo "Deploy hook returned non-success status: $status" >&2
+            exit 1
+          fi
+          echo "Vercel rebuild triggered."
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
