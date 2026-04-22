@@ -4,12 +4,19 @@
 const cbeci = await FileAttachment("data/cbeci.json").json();
 const ercot = await FileAttachment("data/ercot.json").json();
 const caiso = await FileAttachment("data/caiso.json").json();
+const entsoe = await FileAttachment("data/entsoe.json").json();
 ```
 
 ```js
 import { aggregateAtHour } from "../lib/calc.js";
 
-const regionData = { ercot, caiso };
+const regionData = { 
+  ercot, 
+  caiso, 
+  germany: entsoe.germany, 
+  iberia: entsoe.iberia, 
+  finland: entsoe.finland 
+};
 const utcHour = new Date().getUTCHours();
 const result = aggregateAtHour(regionData, cbeci, utcHour);
 ```
@@ -35,4 +42,4 @@ const result = aggregateAtHour(regionData, cbeci, utcHour);
   </div>
 </div>
 
-<p class="caption" style="margin-top: 1.5rem;">Hashrate source: mempool.space. Texas curtailment: EIA hourly wind × 6.15% calibrated rate. Snapshot: ${cbeci.lastUpdated}. Full methodology in Week 6.</p>
+<p class="caption" style="margin-top: 1.5rem;">Hashrate source: mempool.space. Proxy methodology: EIA wind/solar and ENTSO-E generation × calibrated regional curtailment rates. Snapshot: ${cbeci.lastUpdated}. Full methodology in Week 6.</p>
