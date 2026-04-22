@@ -1,11 +1,12 @@
 ---
 title: Every Last Joule Dashboard - v0 Design
 date: 2026-04-22
-status: draft-for-review-v2
+status: draft-for-review-v3
 author: Simon Collins (with Claude)
 revision_history:
   - 2026-04-22 v1: initial spec, four-week plan, daily-aggregate data, seven live grids, no globe or timeline.
   - 2026-04-22 v2: Direction B confirmed. Port the Stacked design artefact as v0. Six-week plan. Sub-hourly per-region profiles. Flared-gas layer included. Interactive 24h globe and timeline. Branding TBD.
+  - 2026-04-22 v3: Globe rendering locked - dotted sphere on real Natural Earth 110m land mask with country borders overlaid (Option C from mockup), combined with cored-circle-and-glow hotspot style (Option A from mockup). Replaces the design artefact's crude ellipsoidal continent blobs.
 ---
 
 # Every Last Joule Dashboard - v0 Design
@@ -222,12 +223,35 @@ The Stacked design system ports directly:
 | Component | Role |
 |---|---|
 | `WastedEnergyApp` | top-level composition |
-| `Globe` | 3D dotted canvas globe with day/night terminator and regional hotspots |
+| `Globe` | 2D canvas globe: dotted sphere on real Natural Earth 110m land mask, thin country borders overlaid, day/night terminator, cored-glow hotspots |
 | `TimelineStrip` | 24h sparkline of global total wasted GW + scrub + current-hour marker |
 | `RegionList` | active-hotspots leaderboard, sorted by current GW |
 | `HeadlineReadout` | big `X.X%` + hashrate + wasted-now readouts |
 | `Methodology` | modal overlay with sources, caveats, region table |
 | `Controls` | play / pause / speed / UTC label |
+
+### Globe rendering approach
+
+Locked after a three-option mockup comparison (see `mockups/globe-comparison.html`). **Approach: dotted sphere with real country detail (Option C), combined with cored-glow hotspot style (Option A).**
+
+The design artefact's original `Globe.jsx` uses crude ellipsoidal continent blobs as its land mask - adequate for a conference visual, but a journalist or editor cannot recognise specific countries. v0 replaces the ellipses with real Natural Earth 110m country polygons while preserving the Stacked dotted-matrix aesthetic.
+
+**Sphere rendering:**
+- Single 2D canvas, devicePixelRatio-scaled.
+- Dots on a lat/lon grid (~1.8° spacing), rendered only where a country polygon contains the grid point.
+- Thin country border lines overlaid via D3-geo paths on the same canvas (teal at ~22% opacity).
+- Day/night terminator as a subtle radial gradient (soft, not a hard shadow).
+- Slow auto-rotation (one full turn per ~60 seconds); drag-to-spin.
+
+**Hotspot rendering (Option A style):**
+- Blurred underlay glow (radius `4 + √weight × 5`, ~45% opacity, ~4px blur).
+- Core circle (radius `1.5 + √weight`) filled with teal (renewable) or orange (flare).
+- Thin white stroke on the core (`rgba(255,255,255,0.85)`, ~0.5px).
+- Hidden when region is on the far side of the globe (`d3.geoDistance > π/2`), faded as it approaches the limb.
+
+**Dependencies:** D3 (loaded by default in Observable Framework), `topojson-client`, Natural Earth 110m countries topology (~200KB). No Three.js, no WebGL.
+
+**Performance:** the land-mask test (~15k grid points × ~170 country features) is computed once at module init (1-2 seconds cold boot), cached, then reused every frame. Every subsequent frame is cheap canvas drawing.
 
 ### Branding
 
@@ -363,11 +387,12 @@ Week-by-week shape. Day-by-day implementation plan produced separately via the w
 
 ### Week 4 - Globe rendering
 
-- Port `Globe.jsx` from the design artefact.
-- Canvas rendering: sphere of dots, land mask, day/night terminator based on UTC hour, slow rotation, drag-to-spin.
-- Regional hotspot projection: lat/lon → screen coordinates; dot sized by current GW; color by renewable (teal) vs flare (orange).
+- Build `Globe.jsx` per the locked approach (Option C sphere + Option A hotspots, see Visual design section).
+- Canvas rendering: dotted sphere on Natural Earth 110m land mask, thin country borders overlaid via D3-geo, day/night terminator gradient, slow auto-rotation, drag-to-spin.
+- Precomputed land-mask cache (runs once at module init, reused every frame).
+- Regional hotspot projection: lat/lon → screen coordinates; cored circle with white stroke and blurred glow underlay; size by current GW; colour by renewable (teal) vs flare (orange); hidden when region is on the far side.
 - Wire `utcHour` state in from `WastedEnergyApp`.
-- **Checkpoint:** globe renders with all regions as live hotspots; dragging spins the globe; hotspots update as `utcHour` changes.
+- **Checkpoint:** globe renders with all regions as live hotspots; countries individually recognisable; dragging spins the globe; hotspots update as `utcHour` changes.
 
 ### Week 5 - Timeline, leaderboard, controls
 

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Globe approach mockups · Every Last Joule</title>
+  <style>
+    :root {
+      --teal-500: #14afac;
+      --teal-400: #3fc1be;
+      --teal-300: #6fd2d0;
+      --slate-900: #0b0c0d;
+      --slate-800: #161718;
+      --slate-700: #23252a;
+      --slate-600: #343740;
+      --slate-500: #4a4e59;
+      --slate-400: #6b7180;
+      --slate-300: #9aa0ad;
+      --btc-orange: #f7931a;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: radial-gradient(ellipse at 30% 20%, #0f1517 0%, #0a0b0c 60%, #050607 100%);
+      color: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 32px;
+    }
+    h1 {
+      font-weight: 800;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--slate-300);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    .option {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .option .eyebrow {
+      color: var(--teal-500);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .option h2 {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+    .globe-container {
+      width: 100%;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #050607;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .globe-container svg,
+    .globe-container canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .globe-container .scene {
+      width: 100%;
+      height: 100%;
+    }
+    .desc {
+      color: var(--slate-300);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .desc strong { color: var(--white); }
+    .legend {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 11px;
+      color: var(--slate-400);
+    }
+    .legend .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .note {
+      color: var(--slate-400);
+      font-size: 12px;
+      margin-top: 24px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Globe approach mockups</h1>
+  <p class="subtitle">Three rendering approaches for the Every Last Joule dashboard globe, with representative regional hotspots. Slow auto-rotation on all three.</p>
+
+  <div class="grid">
+    <div class="option">
+      <div class="eyebrow">Option A</div>
+      <h2>D3-geo orthographic</h2>
+      <div class="globe-container">
+        <div id="globe-a" class="scene"></div>
+      </div>
+      <p class="desc"><strong>Country polygons filled and outlined.</strong> D3's native orthographic projection with Natural Earth 110m country data. Day/night terminator as a radial gradient. Lightweight (D3 is already loaded). Data-journalism idiom used by NYT, Guardian, FT.</p>
+      <div class="legend">
+        <span><span class="dot" style="background:#14afac"></span>Renewable curtailment</span>
+        <span><span class="dot" style="background:#f7931a"></span>Flared gas</span>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="eyebrow">Option B</div>
+      <h2>Three.js / Globe.gl 3D</h2>
+      <div class="globe-container">
+        <div id="globe-b" class="scene"></div>
+      </div>
+      <p class="desc"><strong>True 3D globe</strong> via Globe.gl (wraps Three.js). Country polygons extruded in 3D. Supports zoom, tilt, free rotation. Cinematic. Heavier bundle (~600KB for Three.js).</p>
+      <div class="legend">
+        <span><span class="dot" style="background:#14afac"></span>Renewable curtailment</span>
+        <span><span class="dot" style="background:#f7931a"></span>Flared gas</span>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="eyebrow">Option C</div>
+      <h2>Dotted + country borders</h2>
+      <div class="globe-container">
+        <div id="globe-c" class="scene"></div>
+      </div>
+      <p class="desc"><strong>Design's dotted aesthetic preserved.</strong> Sphere of dots on land only (using real land mask, not ellipses). Thin country border lines overlaid. Hotspots as glowing blobs. Keeps the Stacked visual identity; adds recognisability.</p>
+      <div class="legend">
+        <span><span class="dot" style="background:#14afac"></span>Renewable curtailment</span>
+        <span><span class="dot" style="background:#f7931a"></span>Flared gas</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">All three use the same 17 regions from the design's data.jsx. File: ~/code/every-last-joule-dashboard/mockups/globe-comparison.html</p>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+  <script src="https://unpkg.com/globe.gl"></script>
+  <script>
+  const REGIONS = [
+    // Renewable (teal)
+    { id: 'caiso',    name: 'California',        lat:  36.5, lon: -119.5, kind: 'renewable', weight: 3.2 },
+    { id: 'texas',    name: 'Texas (ERCOT)',     lat:  31.8, lon:  -99.9, kind: 'renewable', weight: 4.1 },
+    { id: 'chile',    name: 'Atacama',           lat: -24.5, lon:  -69.2, kind: 'renewable', weight: 1.8 },
+    { id: 'spain',    name: 'Iberia',            lat:  39.5, lon:   -3.5, kind: 'renewable', weight: 2.4 },
+    { id: 'aus',      name: 'S. Australia',      lat: -34.9, lon:  138.6, kind: 'renewable', weight: 1.1 },
+    { id: 'uk',       name: 'North Sea',         lat:  56.5, lon:   -2.0, kind: 'renewable', weight: 3.3 },
+    { id: 'germany',  name: 'Germany',           lat:  52.5, lon:   10.5, kind: 'renewable', weight: 2.4 },
+    { id: 'finland',  name: 'Finland',           lat:  62.0, lon:   25.0, kind: 'renewable', weight: 1.4 },
+    { id: 'sichuan',  name: 'Sichuan',           lat:  30.6, lon:  102.8, kind: 'renewable', weight: 4.8 },
+    { id: 'xinjiang', name: 'Xinjiang',          lat:  41.5, lon:   85.0, kind: 'renewable', weight: 3.1 },
+    { id: 'iceland',  name: 'Iceland',           lat:  64.9, lon:  -19.0, kind: 'renewable', weight: 0.6 },
+    { id: 'norway',   name: 'N. Norway',         lat:  68.5, lon:   17.5, kind: 'renewable', weight: 1.1 },
+    { id: 'brazil',   name: 'Brazil NE',         lat:  -9.0, lon:  -37.0, kind: 'renewable', weight: 2.0 },
+    // Flare (orange)
+    { id: 'permian',  name: 'Permian',           lat:  31.9, lon: -102.5, kind: 'flare',     weight: 2.0 },
+    { id: 'ksa',      name: 'E. Saudi Arabia',   lat:  26.5, lon:   49.5, kind: 'flare',     weight: 1.6 },
+    { id: 'iraq',     name: 'S. Iraq',           lat:  30.5, lon:   47.5, kind: 'flare',     weight: 2.1 },
+    { id: 'siberia',  name: 'W. Siberia',        lat:  61.0, lon:   73.0, kind: 'flare',     weight: 2.4 },
+  ];
+
+  const TEAL = '#14afac';
+  const TEAL_GLOW = 'rgba(20, 175, 172, 0.85)';
+  const ORANGE = '#f7931a';
+  const ORANGE_GLOW = 'rgba(247, 147, 26, 0.85)';
+
+  // Load country topology.
+  const WORLD_URL = 'https://unpkg.com/world-atlas@2/countries-110m.json';
+
+  async function main() {
+    const topology = await fetch(WORLD_URL).then(r => r.json());
+    const countries = topojson.feature(topology, topology.objects.countries);
+
+    renderOptionA(countries);
+    renderOptionB(countries);
+    renderOptionC(countries);
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // Option A — D3-geo orthographic (SVG)
+  // ─────────────────────────────────────────────────────────
+  function renderOptionA(countries) {
+    const container = document.getElementById('globe-a');
+    const size = Math.min(container.clientWidth, container.clientHeight) || 400;
+    const w = size, h = size;
+
+    const svg = d3.select(container).append('svg')
+      .attr('width', w).attr('height', h)
+      .attr('viewBox', `0 0 ${w} ${h}`);
+
+    // Defs: radial gradient for day/night shading
+    const defs = svg.append('defs');
+    const grad = defs.append('radialGradient').attr('id', 'dayGradA')
+      .attr('cx', '35%').attr('cy', '35%').attr('r', '70%');
+    grad.append('stop').attr('offset', '0%').attr('stop-color', '#1a2226').attr('stop-opacity', 1);
+    grad.append('stop').attr('offset', '70%').attr('stop-color', '#0b1114').attr('stop-opacity', 1);
+    grad.append('stop').attr('offset', '100%').attr('stop-color', '#050809').attr('stop-opacity', 1);
+
+    const projection = d3.geoOrthographic()
+      .scale(size * 0.46)
+      .translate([w / 2, h / 2])
+      .clipAngle(90)
+      .rotate([-10, -15, 0]);
+    const path = d3.geoPath(projection);
+
+    // Sphere
+    svg.append('path').datum({ type: 'Sphere' })
+      .attr('d', path)
+      .attr('fill', 'url(#dayGradA)')
+      .attr('stroke', 'rgba(20,175,172,0.15)')
+      .attr('stroke-width', 1);
+
+    // Graticule (subtle)
+    const graticule = d3.geoGraticule().step([30, 30]);
+    svg.append('path').datum(graticule)
+      .attr('d', path)
+      .attr('fill', 'none')
+      .attr('stroke', 'rgba(255,255,255,0.04)')
+      .attr('stroke-width', 0.5)
+      .attr('class', 'graticule');
+
+    // Countries
+    const countryPaths = svg.append('g').selectAll('path.country')
+      .data(countries.features).enter().append('path')
+      .attr('class', 'country')
+      .attr('d', path)
+      .attr('fill', '#20262b')
+      .attr('stroke', 'rgba(20,175,172,0.35)')
+      .attr('stroke-width', 0.4);
+
+    // Hotspot glows (underlay)
+    const glows = svg.append('g').selectAll('circle.glow')
+      .data(REGIONS).enter().append('circle')
+      .attr('class', 'glow')
+      .attr('r', d => 4 + Math.sqrt(d.weight) * 5)
+      .attr('fill', d => d.kind === 'flare' ? ORANGE : TEAL)
+      .attr('opacity', 0.25)
+      .style('filter', 'blur(6px)');
+
+    // Hotspot cores
+    const hotspots = svg.append('g').selectAll('circle.hotspot')
+      .data(REGIONS).enter().append('circle')
+      .attr('class', 'hotspot')
+      .attr('r', d => 1.5 + Math.sqrt(d.weight))
+      .attr('fill', d => d.kind === 'flare' ? ORANGE : TEAL)
+      .attr('stroke', 'rgba(255,255,255,0.8)')
+      .attr('stroke-width', 0.4);
+
+    function update() {
+      countryPaths.attr('d', path);
+      svg.select('path.graticule').attr('d', path);
+
+      const center = [-projection.rotate()[0], -projection.rotate()[1]];
+      [glows, hotspots].forEach(sel => {
+        sel.attr('cx', d => projection([d.lon, d.lat])?.[0] ?? -9999)
+           .attr('cy', d => projection([d.lon, d.lat])?.[1] ?? -9999)
+           .attr('opacity', function(d) {
+             const dist = d3.geoDistance([d.lon, d.lat], center);
+             const isGlow = d3.select(this).classed('glow');
+             if (dist > Math.PI / 2 + 0.12) return 0;
+             return isGlow ? 0.3 : 1;
+           });
+      });
+    }
+    update();
+
+    d3.timer(elapsed => {
+      projection.rotate([elapsed / 150 - 10, -15, 0]);
+      update();
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // Option B — Three.js / Globe.gl
+  // ─────────────────────────────────────────────────────────
+  function renderOptionB(countries) {
+    const container = document.getElementById('globe-b');
+    const size = Math.min(container.clientWidth, container.clientHeight) || 400;
+
+    const world = Globe()
+      .width(size)
+      .height(size)
+      .backgroundColor('rgba(0,0,0,0)')
+      .showGlobe(true)
+      .showAtmosphere(true)
+      .atmosphereColor(TEAL)
+      .atmosphereAltitude(0.15)
+      .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+      .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+      .polygonsData(countries.features)
+      .polygonCapColor(() => 'rgba(20,175,172,0.08)')
+      .polygonSideColor(() => 'rgba(20,175,172,0.04)')
+      .polygonStrokeColor(() => 'rgba(20,175,172,0.5)')
+      .polygonAltitude(0.006)
+      .pointsData(REGIONS)
+      .pointLat('lat').pointLng('lon')
+      .pointColor(d => d.kind === 'flare' ? ORANGE : TEAL)
+      .pointAltitude(d => 0.02 + d.weight * 0.03)
+      .pointRadius(d => 0.3 + Math.sqrt(d.weight) * 0.25)
+      .pointLabel(d => d.name)
+      (container);
+
+    // Slow auto-rotate
+    const controls = world.controls();
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.6;
+    controls.enableZoom = false;
+    world.pointOfView({ lat: 15, lng: -10, altitude: 2.3 }, 0);
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // Option C — Dotted sphere + country borders (canvas)
+  // ─────────────────────────────────────────────────────────
+  function renderOptionC(countries) {
+    const container = document.getElementById('globe-c');
+    const size = Math.min(container.clientWidth, container.clientHeight) || 400;
+    const w = size, h = size;
+
+    const canvas = d3.select(container).append('canvas')
+      .attr('width', w * 2)
+      .attr('height', h * 2)
+      .style('width', w + 'px')
+      .style('height', h + 'px')
+      .node();
+    const ctx = canvas.getContext('2d');
+    ctx.scale(2, 2);
+
+    const projection = d3.geoOrthographic()
+      .scale(size * 0.46)
+      .translate([w / 2, h / 2])
+      .clipAngle(90)
+      .rotate([-10, -15, 0]);
+    const path = d3.geoPath(projection, ctx);
+
+    // Pre-compute dot positions on a lat/lon grid (1.8° spacing)
+    // At render time, we project and keep only dots that land on a country.
+    const dots = [];
+    for (let lat = -80; lat <= 80; lat += 1.8) {
+      const cos = Math.cos(lat * Math.PI / 180);
+      const lonStep = 1.8 / Math.max(cos, 0.2);
+      for (let lon = -180; lon <= 180; lon += lonStep) {
+        dots.push([lon, lat]);
+      }
+    }
+
+    // Prebuild a fast land lookup using a rasterized 1° grid.
+    const LAT_STEPS = 180, LON_STEPS = 360;
+    const landMask = new Uint8Array(LAT_STEPS * LON_STEPS);
+    for (const feat of countries.features) {
+      // Walk all rings approximately by checking each dot against each feature.
+      // This is O(dots * features); fine for a mockup (~15k dots * 170 features).
+    }
+    // Instead, use d3.geoContains at dot test time (slower but correct).
+
+    // Precompute which dots are on land (one-time cost).
+    const landDots = dots.filter(([lon, lat]) => {
+      for (const feat of countries.features) {
+        if (d3.geoContains(feat, [lon, lat])) return true;
+      }
+      return false;
+    });
+
+    function render() {
+      ctx.clearRect(0, 0, w, h);
+
+      // Sphere background
+      ctx.beginPath();
+      path({ type: 'Sphere' });
+      ctx.fillStyle = '#0a1114';
+      ctx.fill();
+
+      // Day/night: gradient overlay circle
+      const g = ctx.createRadialGradient(w * 0.35, h * 0.35, size * 0.1, w / 2, h / 2, size * 0.5);
+      g.addColorStop(0, 'rgba(30, 55, 60, 0.25)');
+      g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      path({ type: 'Sphere' });
+      ctx.fill();
+
+      // Dots on land
+      const center = [-projection.rotate()[0], -projection.rotate()[1]];
+      ctx.fillStyle = 'rgba(20, 175, 172, 0.55)';
+      for (const [lon, lat] of landDots) {
+        const dist = d3.geoDistance([lon, lat], center);
+        if (dist > Math.PI / 2 - 0.02) continue;
+        const p = projection([lon, lat]);
+        if (!p) continue;
+        // Dim dots further from center
+        const fade = 1 - (dist / (Math.PI / 2));
+        ctx.globalAlpha = 0.25 + fade * 0.6;
+        ctx.fillRect(p[0] - 0.6, p[1] - 0.6, 1.4, 1.4);
+      }
+      ctx.globalAlpha = 1;
+
+      // Country borders
+      ctx.beginPath();
+      path({ type: 'GeometryCollection', geometries: countries.features.map(f => f.geometry) });
+      ctx.strokeStyle = 'rgba(20, 175, 172, 0.22)';
+      ctx.lineWidth = 0.4;
+      ctx.stroke();
+
+      // Sphere outline
+      ctx.beginPath();
+      path({ type: 'Sphere' });
+      ctx.strokeStyle = 'rgba(20, 175, 172, 0.25)';
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+
+      // Hotspots — Option A style: blurred glow underlay + cored circle with white stroke
+      for (const r of REGIONS) {
+        const dist = d3.geoDistance([r.lon, r.lat], center);
+        if (dist > Math.PI / 2) continue;
+        const p = projection([r.lon, r.lat]);
+        if (!p) continue;
+        const visible = 1 - dist / (Math.PI / 2);
+        const color = r.kind === 'flare' ? ORANGE : TEAL;
+        const glowR = 4 + Math.sqrt(r.weight) * 5;
+        const coreR = 1.5 + Math.sqrt(r.weight);
+        // Blurred glow underlay
+        ctx.save();
+        ctx.filter = 'blur(4px)';
+        ctx.globalAlpha = 0.45 * visible;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], glowR, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        // Core with white stroke
+        ctx.globalAlpha = visible;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], coreR, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+    render();
+
+    d3.timer(elapsed => {
+      projection.rotate([elapsed / 150 - 10, -15, 0]);
+      render();
+    });
+  }
+
+  main().catch(err => {
+    console.error(err);
+    document.body.innerHTML += `<pre style="color:red">${err.stack || err}</pre>`;
+  });
+  </script>
+</body>
+</html>
