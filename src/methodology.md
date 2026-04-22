@@ -38,7 +38,7 @@ The primary dashboard readout uses 16 J/TH because that is the efficiency implie
 
 ## The 30-day time-of-day averaging
 
-For regions with live feeds, the dashboard shows a 30-day trailing average by time of day rather than simply replaying yesterday. That choice smooths noise, reduces the risk of over-reading one windy night or one transmission outage, and produces a profile that is more representative of how each market actually wastes energy over a typical cycle. It also means the chart can understate short, violent anomalies that matter to operators in the moment. That is a real limitation, not a footnote. v0 is trying to show the structural pattern cleanly; a latest-24-hour mode belongs in a later version.
+For regions with live feeds, the dashboard shows a 30-day trailing average by time of day rather than simply replaying yesterday. That choice smooths noise, reduces the risk of over-reading one windy night or one transmission outage, and produces a profile that is more representative of how each market actually wastes energy over a typical cycle. It also means the chart can understate short, sharp anomalies that matter to operators in the moment. That is a real limitation, not a footnote. v0 is trying to show the structural pattern cleanly; a latest-24-hour mode belongs in a later version.
 
 ## What the calibrated proxies do
 
