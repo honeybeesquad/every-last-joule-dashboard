@@ -5,8 +5,9 @@ export default {
     ".ts": ["tsx"]
   },
   pages: [
-    { name: "Dashboard", path: "/" }
-    // Methodology and About pages added once src/methodology.md and src/about.md exist (Tasks 47-48).
+    { name: "Dashboard", path: "/" },
+    { name: "Methodology", path: "/methodology" },
+    { name: "About", path: "/about" }
   ],
   head: '<link rel="stylesheet" href="./style.css">',
   theme: "dark",
