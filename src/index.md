@@ -7,6 +7,8 @@ const caiso = await FileAttachment("data/caiso.json").json();
 const entsoe = await FileAttachment("data/entsoe.json").json();
 const statics = await FileAttachment("data/statics.json").json();
 const anchor = await FileAttachment("data/anchor.json").json();
+const northSea = await FileAttachment("data/north-sea.json").json();
+const brazilNE = await FileAttachment("data/brazil-ne.json").json();
 ```
 
 ```js
@@ -18,6 +20,8 @@ const regionData = {
   germany: entsoe.germany,
   iberia: entsoe.iberia,
   finland: entsoe.finland,
+  "north-sea": northSea,
+  "brazil-ne": brazilNE,
   ...statics
 };
 const utcHour = new Date().getUTCHours();
