@@ -5,17 +5,20 @@ const cbeci = await FileAttachment("data/cbeci.json").json();
 const ercot = await FileAttachment("data/ercot.json").json();
 const caiso = await FileAttachment("data/caiso.json").json();
 const entsoe = await FileAttachment("data/entsoe.json").json();
+const statics = await FileAttachment("data/statics.json").json();
+const anchor = await FileAttachment("data/anchor.json").json();
 ```
 
 ```js
 import { aggregateAtHour } from "../lib/calc.js";
 
-const regionData = { 
-  ercot, 
-  caiso, 
-  germany: entsoe.germany, 
-  iberia: entsoe.iberia, 
-  finland: entsoe.finland 
+const regionData = {
+  ercot,
+  caiso,
+  germany: entsoe.germany,
+  iberia: entsoe.iberia,
+  finland: entsoe.finland,
+  ...statics
 };
 const utcHour = new Date().getUTCHours();
 const result = aggregateAtHour(regionData, cbeci, utcHour);

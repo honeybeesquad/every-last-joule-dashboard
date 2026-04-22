@@ -1,6 +1,7 @@
 import { fetchJSON } from "../../lib/fetch.js";
 import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../../lib/profile.js";
 import type { RegionData, CurtailmentPoint } from "../../lib/types.js";
+import { pathToFileURL } from "url";
 
 /**
  * CAISO (California) solar curtailment loader - v0 proxy.
@@ -82,9 +83,13 @@ async function run(): Promise<RegionData> {
   return parseCaiso(raw);
 }
 
-run()
-  .then((data) => process.stdout.write(JSON.stringify(data)))
-  .catch((err) => {
-    console.error("caiso loader failed", err);
-    process.exit(1);
-  });
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isMain) {
+  run()
+    .then((data) => process.stdout.write(JSON.stringify(data)))
+    .catch((err) => {
+      console.error("caiso loader failed", err);
+      process.exit(1);
+    });
+}
