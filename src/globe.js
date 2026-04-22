@@ -69,6 +69,11 @@ export async function mountGlobe(canvas, initial) {
       .rotate(state.rotation);
     const path = d3.geoPath(projection, ctx);
     const center = [-state.rotation[0], -state.rotation[1]];
+    const hour = ((state.utcHour % 24) + 24) % 24;
+    const sunLng = wrapLongitude((12 - hour) * 15);
+    const sunLat = 0;
+    const antiSolarLng = wrapLongitude(sunLng + 180);
+    const sunScreen = projection([sunLng, sunLat]);
 
     ctx.save();
     ctx.scale(dpr, dpr);
@@ -79,32 +84,41 @@ export async function mountGlobe(canvas, initial) {
     ctx.fillStyle = "#0a1114";
     ctx.fill();
 
-    const gradient = ctx.createRadialGradient(
-      width * 0.35,
-      height * 0.35,
-      size * 0.08,
-      width / 2,
-      height / 2,
-      size * 0.5
-    );
-    gradient.addColorStop(0, "rgba(30, 55, 60, 0.25)");
-    gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = gradient;
+    if (sunScreen) {
+      const gradient = ctx.createRadialGradient(
+        sunScreen[0],
+        sunScreen[1],
+        size * 0.04,
+        sunScreen[0],
+        sunScreen[1],
+        size * 0.55
+      );
+      gradient.addColorStop(0, "rgba(90, 150, 160, 0.75)");
+      gradient.addColorStop(0.45, "rgba(40, 80, 90, 0.35)");
+      gradient.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      path({ type: "Sphere" });
+      ctx.fill();
+    }
+
     ctx.beginPath();
-    path({ type: "Sphere" });
+    path(d3.geoCircle().center([antiSolarLng, 0]).radius(90)());
+    ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
     ctx.fill();
 
-    ctx.fillStyle = "rgba(20, 175, 172, 0.55)";
     for (const [lon, lat] of dots) {
       const dist = d3.geoDistance([lon, lat], center);
       if (dist > Math.PI / 2 - 0.02) continue;
       const point = projection([lon, lat]);
       if (!point) continue;
       const fade = 1 - dist / (Math.PI / 2);
-      ctx.globalAlpha = 0.25 + fade * 0.6;
+      const solarAngle = d3.geoDistance([lon, lat], [sunLng, sunLat]);
+      const sunlit = Math.max(0, Math.cos(solarAngle));
+      const brightness = 0.05 + fade * 0.12 + Math.pow(sunlit, 0.7) * 0.85;
+      ctx.fillStyle = `rgba(20, 175, 172, ${brightness})`;
       ctx.fillRect(point[0] - 0.6, point[1] - 0.6, 1.4, 1.4);
     }
-    ctx.globalAlpha = 1;
 
     ctx.beginPath();
     path({
@@ -121,9 +135,8 @@ export async function mountGlobe(canvas, initial) {
     ctx.lineWidth = 0.8;
     ctx.stroke();
 
-    const hour = Math.floor(state.utcHour % 24);
     for (const region of state.regions) {
-      const gw = state.regionData[region.id]?.profile?.[hour] ?? 0;
+      const gw = state.regionData[region.id]?.profile?.[Math.floor(hour)] ?? 0;
       if (gw <= 0.01) continue;
       const dist = d3.geoDistance([region.lon, region.lat], center);
       if (dist > Math.PI / 2) continue;
@@ -134,7 +147,9 @@ export async function mountGlobe(canvas, initial) {
       const color = region.kind === "flare" ? "#f7931a" : "#14afac";
       const weight = Math.sqrt(gw);
       const glowR = 4 + weight * 5;
-      const coreR = 1.5 + weight;
+      const coreR = 1.5 + weight * 0.8;
+      const centreX = width / 2;
+      const centreY = height / 2;
 
       ctx.save();
       ctx.filter = "blur(4px)";
@@ -145,13 +160,45 @@ export async function mountGlobe(canvas, initial) {
       ctx.fill();
       ctx.restore();
 
+      let dx = point[0] - centreX;
+      let dy = point[1] - centreY;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      if (len > 0.1) {
+        dx /= len;
+        dy /= len;
+        const pillarH = 3 + weight * 48;
+        const pillarW = 3;
+        const tipX = point[0] + dx * pillarH;
+        const tipY = point[1] + dy * pillarH;
+        const pillarGradient = ctx.createLinearGradient(point[0], point[1], tipX, tipY);
+        pillarGradient.addColorStop(0, `${color}66`);
+        pillarGradient.addColorStop(1, color);
+        ctx.strokeStyle = pillarGradient;
+        ctx.lineWidth = pillarW;
+        ctx.lineCap = "round";
+        ctx.globalAlpha = 0.95 * visible;
+        ctx.beginPath();
+        ctx.moveTo(point[0], point[1]);
+        ctx.lineTo(tipX, tipY);
+        ctx.stroke();
+
+        ctx.save();
+        ctx.filter = "blur(3px)";
+        ctx.globalAlpha = 0.5 * visible;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(tipX, tipY, pillarW * 1.6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
       ctx.globalAlpha = visible;
       ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(point[0], point[1], coreR, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
-      ctx.lineWidth = 0.5;
+      ctx.lineWidth = 0.6;
       ctx.stroke();
     }
 
@@ -213,4 +260,8 @@ export async function mountGlobe(canvas, initial) {
       resizeObserver.disconnect();
     }
   };
+}
+
+function wrapLongitude(value) {
+  return ((value + 180) % 360 + 360) % 360 - 180;
 }
