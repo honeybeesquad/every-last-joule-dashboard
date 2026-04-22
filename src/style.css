@@ -241,3 +241,53 @@ body {
   color: var(--white);
   min-height: 100vh;
 }
+
+/* =========================================================================
+   RESPONSIVENESS & ACCESSIBILITY
+   ========================================================================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  font-size: clamp(15px, 0.95rem + 0.15vw, var(--fs-body));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--teal-500);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+@media (max-width: 640px) {
+  main > div[style*="display: flex"][style*="gap: 2rem"] {
+    flex-wrap: wrap;
+    gap: 1rem !important;
+  }
+
+  body {
+    padding-inline: 4vw;
+  }
+
+  .display-xl {
+    line-height: 1;
+  }
+}
+
+main table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}

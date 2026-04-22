@@ -44,6 +44,20 @@ export default function Globe({
   width = 560,
   height = 560
 }) {
+  const hourIndex = ((Math.floor(utcHour % 24)) + 24) % 24;
+  const activeHotspots = regions.filter(
+    (region) => (regionData[region.id]?.profile?.[hourIndex] ?? 0) > 0.05
+  );
+  const totalGW = activeHotspots.reduce(
+    (sum, region) => sum + (regionData[region.id]?.profile?.[hourIndex] ?? 0),
+    0
+  );
+  const hour = String(hourIndex).padStart(2, "0");
+  const aria = `Rotating orthographic globe showing ${activeHotspots.length} active waste-energy hotspot${activeHotspots.length === 1 ? "" : "s"}, totalling ${totalGW.toFixed(1)} gigawatts of curtailed or flared energy as of ${hour}:00 UTC.`;
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+
   const canvasRef = useRef(null);
   const frameRef = useRef(0);
   const countriesRef = useRef(null);
@@ -243,10 +257,16 @@ export default function Globe({
         context.fill();
       }
 
-      frameRef.current = requestAnimationFrame(renderFrame);
+      if (!prefersReducedMotion) {
+        frameRef.current = requestAnimationFrame(renderFrame);
+      }
     }
 
-    frameRef.current = requestAnimationFrame(renderFrame);
+    if (prefersReducedMotion) {
+      renderFrame(globalThis.performance?.now?.() ?? 0);
+    } else {
+      frameRef.current = requestAnimationFrame(renderFrame);
+    }
 
     function onPointerDown(event) {
       const drag = dragRef.current;
@@ -300,7 +320,8 @@ export default function Globe({
   return (
     <canvas
       ref={canvasRef}
-      aria-label="Interactive globe showing regional wasted-energy hotspots"
+      aria-label={aria}
+      role="img"
       style={{
         display: "block",
         width: "100%",
