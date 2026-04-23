@@ -6,12 +6,14 @@ describe("regions", () => {
     expect(REGIONS.length).toBe(110);
   });
 
-  it("has 48 live regions", () => {
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(48);
+  it("has 47 live regions", () => {
+    // Ukraine moved from live → static (ENTSO-E Ukrenergo returns empty post-war)
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(47);
   });
 
-  it("has 58 static regions", () => {
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(58);
+  it("has 59 static regions", () => {
+    // Ukraine added to static (was live)
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(59);
   });
 
   it("has 4 flare regions", () => {
@@ -55,7 +57,7 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "turkey")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "greece")).toBeDefined();
     expect(REGIONS.find(r => r.id === "romania")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "italy-north")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "italy-national")).toBeDefined();
     expect(REGIONS.find(r => r.id === "belgium")).toBeDefined();
     expect(REGIONS.find(r => r.id === "denmark")).toBeDefined();
     expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();

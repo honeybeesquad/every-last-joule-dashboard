@@ -209,10 +209,10 @@ const regionData = {
   poland: entsoe.poland,
   greece: entsoe.greece,
   romania: entsoe.romania,
-  "italy-north": entsoe["italy-north"],
+  "italy-national": entsoe["italy-national"],
   "sweden-north": entsoe["sweden-north"],
   "sweden-south": entsoe["sweden-south"],
-  ukraine: entsoe.ukraine,
+  // ukraine moved to statics (ENTSO-E Ukrenergo returns empty post-war)
   hungary: entsoe.hungary,
   "czech-republic": entsoe["czech-republic"],
   bulgaria: entsoe.bulgaria,

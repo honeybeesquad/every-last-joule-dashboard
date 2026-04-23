@@ -79,13 +79,18 @@ export const ZONES = [
     sourceNote: "Romania Transelectrica 2024 calibration; solar fixed in v1.f plus wind added.",
   },
   {
-    id: "italy-north",
+    // Domain 10YIT-GRTN-----B is the Italian national bidding zone (not just
+    // the north). Renamed italy-north → italy-national in v1s to avoid
+    // implying northern-only coverage. The 0.31 TWh anchor is the Terna
+    // national total; most Italian curtailment is in the South and Islands
+    // (not modelled separately yet — v2 candidate).
+    id: "italy-national",
     domain: "10YIT-GRTN-----B",
     technologies: [
       { psrType: "B16", fuel: "solar", rate: 0.007 },
       { psrType: "B19", fuel: "wind", rate: 0.0035 },
     ],
-    sourceNote: "Italy North calibrated to Terna Rapporto Mensile 2024: total national wind+solar only 0.31 TWh/yr (most curtailment is South/Islands, not Italy North).",
+    sourceNote: "Italy national (Terna 2024): 0.31 TWh/yr total wind+solar curtailment; most curtailment is South/Islands — modelling national zone here pending sub-zone split.",
   },
   {
     id: "sweden-north",
@@ -102,15 +107,9 @@ export const ZONES = [
     ],
     sourceNote: "ENTSO-E SE4 mixed calibration with PV and some wind.",
   },
-  {
-    id: "ukraine",
-    domain: "10Y1001C--00003F",
-    technologies: [
-      { psrType: "B19", fuel: "wind", rate: 0.03 },
-      { psrType: "B16", fuel: "solar", rate: 0.02 },
-    ],
-    sourceNote: "Ukrenergo post-synchronisation mixed wind+solar calibration.",
-  },
+  // Ukraine removed from live ENTSO-E fetch: Ukrenergo (10Y1001C--00003F)
+  // returns empty A75 generation data post-2022 synchronisation. Moved to
+  // statics.json.ts as solar-dominant typical-shape fallback at 1.2 TWh/yr.
   {
     id: "hungary",
     domain: "10YHU-MAVIR----U",

@@ -41,6 +41,12 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   sichuan: { annualTWh: 30, kind: "hydro-seasonal", seasonalSharesKey: "sichuan", source: "Ember China Electricity Review 2025 (Yangtze basin monsoon hydro spill, peaks Jul-Aug, ~zero Nov-Apr)", reportDate: "2025-Q1" },
   xinjiang: { annualTWh: 15, kind: "solar", localSolarPeakUTC: 6.33, source: "S&P 'Rising Curtailment in China' 2024 (typical-shape solar bump centred on local noon UTC 06:20)", reportDate: "2024" },
   iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
+  // Ukraine: ENTSO-E Ukrenergo returns empty A75 data post-2022 synchronisation.
+  // Solar-dominant fallback at 1.2 TWh/yr; Ukrainian renewables are ~60% solar
+  // (southern steppes: Nikopol, Zaporizhzhia, Kherson), ~40% wind (southern coast).
+  // Anchor sourced from Ember Ukraine 2024 report (pre-war capacity adjusted for
+  // infrastructure damage, 1.1-1.4 TWh/yr curtailment plausible).
+  ukraine: { annualTWh: 1.2, kind: "solar", localSolarPeakUTC: 9, source: "Ember Ukraine 2024 (ENTSO-E Ukrenergo data absent post-war; solar-dominant typical shape at 60/40 solar/wind, peaking ~UTC 09)", reportDate: "2024" },
   permian: { annualTWh: 44, kind: "flat", source: "World Bank GGFR 2024 (~12 bcm/yr × 3.7 TWh-e/bcm, flat 24/7 by nature)", reportDate: "2024" },
   "w-siberia": { annualTWh: 92, kind: "flat", source: "World Bank GGFR 2024 (~25 bcm/yr × 3.7 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
   "s-iraq": { annualTWh: 63, kind: "flat", source: "World Bank GGFR 2024 (~17 bcm/yr × 3.7 TWh-e/bcm, flat 24/7)", reportDate: "2024" },

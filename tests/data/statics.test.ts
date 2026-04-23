@@ -2,14 +2,14 @@ import { describe, it, expect } from "vitest";
 import { buildStaticRegion, buildAllStatics } from "../../src/data/statics.json";
 
 describe("static regions", () => {
-  it("produces 10 regions", () => {
+  it("produces 8 regions (7 original + ukraine moved from ENTSO-E)", () => {
     const data = buildAllStatics();
-    expect(Object.keys(data).length).toBe(7);
+    expect(Object.keys(data).length).toBe(8);
   });
 
   it("includes all expected ids", () => {
     const data = buildAllStatics();
-    const expected = ["sichuan", "xinjiang", "iceland", "permian", "w-siberia", "s-iraq", "e-saudi"];
+    const expected = ["sichuan", "xinjiang", "iceland", "permian", "w-siberia", "s-iraq", "e-saudi", "ukraine"];
     for (const id of expected) expect(data[id]).toBeDefined();
   });
 

@@ -93,7 +93,7 @@ describe("buildZoneData", () => {
       "poland",
       "greece",
       "romania",
-      "italy-north"
+      "italy-national"   // renamed from italy-north: domain covers all Italy
     ]));
   });
 
