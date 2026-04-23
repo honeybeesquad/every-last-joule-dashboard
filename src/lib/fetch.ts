@@ -3,6 +3,8 @@ export interface FetchJSONOptions {
   timeoutMs?: number;      // default 30000
   retries?: number;        // default 3
   backoffBaseMs?: number;  // default 1000 (linear backoff)
+  method?: string;
+  body?: BodyInit | null;
 }
 
 /** Fetch JSON with 3 retries and linear backoff. Throws if all retries fail. */
@@ -14,7 +16,9 @@ export async function fetchJSON<T = unknown>(
     headers = {},
     timeoutMs = 30000,
     retries = 3,
-    backoffBaseMs = 1000
+    backoffBaseMs = 1000,
+    method = "GET",
+    body
   } = opts;
 
   let lastErr: unknown;
@@ -22,7 +26,7 @@ export async function fetchJSON<T = unknown>(
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
-      const res = await fetch(url, { headers, signal: controller.signal });
+      const res = await fetch(url, { method, headers, body, signal: controller.signal });
       clearTimeout(timer);
       if (!res.ok) {
         throw new Error(`HTTP ${res.status} ${res.statusText} for ${url}`);
@@ -48,7 +52,9 @@ export async function fetchText(
     headers = {},
     timeoutMs = 30000,
     retries = 3,
-    backoffBaseMs = 1000
+    backoffBaseMs = 1000,
+    method = "GET",
+    body
   } = opts;
 
   let lastErr: unknown;
@@ -56,7 +62,7 @@ export async function fetchText(
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
-      const res = await fetch(url, { headers, signal: controller.signal });
+      const res = await fetch(url, { method, headers, body, signal: controller.signal });
       clearTimeout(timer);
       if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
       return await res.text();

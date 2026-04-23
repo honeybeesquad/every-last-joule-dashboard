@@ -150,3 +150,66 @@ The existing ENTSO-E loader now covers six bidding zones instead of three:
 - Denmark West: wind onshore, 4%
 
 All six use the same ENTSO-E Transparency API `A75` actual-generation pattern and are wrapped under the same resilient multi-region loader.
+
+---
+
+## Ontario IESO generator output (used)
+
+**Feed used:** `https://reports-public.ieso.ca/public/GenOutputCapability/PUB_GenOutputCapability*.xml`
+
+- Cadence: daily XML, hourly per-unit output and capability
+- Window: current rolling XML plus 29 dated daily files
+- Method: sum `FuelType=WIND` hourly output across all units, then apply a 4% calibrated curtailment proxy
+- Calibration rationale: Ontario wind curtailment is modest relative to total wind generation; v0.5 uses ~1.5 TWh / 35 TWh as the proxy baseline
+- Quirk: the XML is local-market hourly output rather than direct curtailment, so this remains a proxy feed
+
+---
+
+## Alberta AESO current supply-demand snapshot (temporary v0.5 path)
+
+**Feed used:** `http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet`
+
+- Cadence: live HTML snapshot with 60-second refresh
+- Window: no public historical series wired here yet, so v0.5 repeats the current wind snapshot across a synthetic 30-day window
+- Method: parse the current `WIND` TNG row and apply a 5% calibrated curtailment proxy
+- Calibration rationale: Alberta 2024 wind curtailment is roughly 0.5-1 TWh on ~12 TWh wind generation
+- Quirk: this is intentionally labelled as a snapshot-derived fallback until a public historical AESO path is confirmed
+
+---
+
+## Ireland EirGrid renewables page (temporary v0.5 path)
+
+**Feed used:** `https://www.eirgridgroup.com/how-the-grid-works/renewables/`
+
+- Cadence: page availability check only
+- Intended source: SmartGrid Dashboard API
+- Status: `https://www.smartgriddashboard.com/DashboardService.svc/data` remained HTTP 503 from this environment during B3
+- Method: if the EirGrid page is reachable, emit a calibrated 30-day wind-shaped fallback profile at 6%
+- Calibration rationale: Ireland SNSP-related dispatch-down is commonly reported in the ~5-7% range of wind output
+- Quirk: this is not a direct measured time series yet; the note is surfaced in `sourceNote`
+
+---
+
+## Peru COES generation dashboard (used)
+
+**Feed used:** `https://www.coes.org.pe/Portal/portalinformacion/Generacion`
+
+- Auth: none; public POST endpoint used by the dashboard JS
+- Cadence: half-hourly SCADA series
+- Window: requested as a trailing 30-day POST range
+- Method: sum `SOLAR` + `EÓLICA/EOLICA`, aggregate half-hours to hourly values, then apply a 2% calibrated curtailment proxy
+- Calibration rationale: Peru renewable curtailment is still modest at a system scale, but southern transmission constraints justify a small non-zero proxy
+- Quirk: timestamps are local Peru time and converted to UTC in-loader
+
+---
+
+## South Africa Eskom Data Portal (temporary v0.5 path)
+
+**Feed used:** `https://www.eskom.co.za/dataportal/`
+
+- Cadence: page availability check only
+- Intended source: public chart/CSV endpoints behind the renewables dashboard
+- Status: the public HTML exposes the portal shell and menu structure, but not a stable unauthenticated renewable time-series endpoint
+- Method: if the portal is reachable, emit a calibrated 30-day mixed renewable fallback profile at 2%
+- Calibration rationale: South African wind/solar curtailment exists but remains modest relative to broader grid constraints
+- Quirk: this is a temporary fallback profile, documented explicitly until a public CSV or chart endpoint is confirmed

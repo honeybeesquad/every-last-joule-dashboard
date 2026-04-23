@@ -20,6 +20,11 @@ const statics = await FileAttachment("data/statics.json").json();
 const anchor = await FileAttachment("data/anchor.json").json();
 const northSea = await FileAttachment("data/north-sea.json").json();
 const brazilNE = await FileAttachment("data/brazil-ne.json").json();
+const ontario = await FileAttachment("data/ontario.json").json();
+const alberta = await FileAttachment("data/alberta.json").json();
+const ireland = await FileAttachment("data/ireland.json").json();
+const peru = await FileAttachment("data/peru.json").json();
+const southAfrica = await FileAttachment("data/south-africa.json").json();
 
 document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
@@ -98,6 +103,11 @@ const regionData = {
   "north-sea": northSea,
   ...brazilNE,
   "n-norway": norway,
+  ontario,
+  alberta,
+  ireland,
+  peru,
+  "south-africa": southAfrica,
   ...statics
 };
 

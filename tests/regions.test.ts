@@ -3,11 +3,11 @@ import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
   it("has 17 canonical regions", () => {
-    expect(REGIONS.length).toBe(30);
+    expect(REGIONS.length).toBe(35);
   });
 
   it("has 9 live regions", () => {
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(23);
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(28);
   });
 
   it("has 4 static regions", () => {
@@ -46,5 +46,10 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "brazil-rn")).toBeDefined();
     expect(REGIONS.find(r => r.id === "ercot-west")).toBeDefined();
     expect(REGIONS.find(r => r.id === "n-norway")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "ontario")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "alberta")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "ireland")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "peru")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "south-africa")).toBeDefined();
   });
 });

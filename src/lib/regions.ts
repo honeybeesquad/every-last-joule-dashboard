@@ -25,6 +25,11 @@ export const REGIONS: Region[] = [
   { id: "brazil-pernambuco", name: "Pernambuco",     country: "BRA", lat: -8.0, lon: -37.5, tier: "live", kind: "wind", source: "ONS", sourceUrl: "https://www.ons.org.br/" },
   { id: "brazil-other",     name: "Brazil NE Other", country: "BRA", lat: -8.0, lon: -38.0, tier: "live", kind: "wind", source: "ONS", sourceUrl: "https://www.ons.org.br/" },
   { id: "n-norway",         name: "N. Norway",       country: "NOR", lat: 68.5, lon:   17.5, tier: "live", kind: "hydro", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "ontario",          name: "Ontario",         country: "CAN", lat: 44.0, lon:  -81.0, tier: "live", kind: "wind",  source: "IESO", sourceUrl: "https://reports-public.ieso.ca/public/GenOutputCapability/" },
+  { id: "alberta",          name: "Alberta",         country: "CAN", lat: 51.5, lon: -114.0, tier: "live", kind: "wind",  source: "AESO", sourceUrl: "http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet" },
+  { id: "ireland",          name: "Ireland",         country: "IRL", lat: 53.5, lon:   -7.5, tier: "live", kind: "wind",  source: "EirGrid", sourceUrl: "https://www.eirgridgroup.com/how-the-grid-works/renewables/" },
+  { id: "peru",             name: "Peru",            country: "PER", lat: -14.0, lon: -74.0, tier: "live", kind: "mixed", source: "COES-SINAC", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },
+  { id: "south-africa",     name: "South Africa",    country: "ZAF", lat: -32.0, lon:  26.0, tier: "live", kind: "mixed", source: "Eskom Data Portal", sourceUrl: "https://www.eskom.co.za/dataportal/" },
   // Tier 2 - static (3 regions)
   { id: "sichuan",          name: "Sichuan",         country: "CHN", lat: 30.6, lon:  102.8, tier: "static", kind: "hydro", source: "Ember China", sourceUrl: "https://ember-energy.org/" },
   { id: "xinjiang",         name: "Xinjiang",        country: "CHN", lat: 41.5, lon:   85.0, tier: "static", kind: "solar", source: "Ember China", sourceUrl: "https://ember-energy.org/" },
