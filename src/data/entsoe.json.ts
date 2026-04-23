@@ -12,19 +12,19 @@ export const ZONES = [
     id: "germany",
     domain: "10Y1001A1001A82H",
     technologies: [
-      { psrType: "B19", fuel: "wind", rate: 0.02 },
-      { psrType: "B16", fuel: "solar", rate: 0.01 },
+      { psrType: "B19", fuel: "wind", rate: 0.08 },
+      { psrType: "B16", fuel: "solar", rate: 0.023 },
     ],
-    sourceNote: "Germany 2024 redispatch calibration: ~8 TWh wind + ~0.7 TWh solar.",
+    sourceNote: "Germany 2024 calibrated to BNetzA Monitoringbericht 2025 preliminary: 7.95 TWh wind + 1.39 TWh solar = 9.34 TWh/yr total.",
   },
   {
     id: "iberia",
     domain: "10YES-REE------0",
     technologies: [
-      { psrType: "B16", fuel: "solar", rate: 0.02 },
-      { psrType: "B19", fuel: "wind", rate: 0.015 },
+      { psrType: "B16", fuel: "solar", rate: 0.055 },
+      { psrType: "B19", fuel: "wind", rate: 0.11 },
     ],
-    sourceNote: "Spain 2024 calibration including ~1 TWh/yr wind curtailment previously missed.",
+    sourceNote: "Spain 2024 calibrated to REE Informe del Sistema Eléctrico 2024: 6.8 TWh wind + 2.4 TWh PV + 1.4 TWh CSP = ~10.6 TWh/yr total.",
   },
   {
     id: "portugal",
@@ -45,11 +45,11 @@ export const ZONES = [
     id: "netherlands",
     domain: "10YNL----------L",
     technologies: [
-      { psrType: "B18", fuel: "wind", rate: 0.04 },
-      { psrType: "B19", fuel: "wind", rate: 0.02 },
-      { psrType: "B16", fuel: "solar", rate: 0.02 },
+      { psrType: "B18", fuel: "wind", rate: 0.09 },
+      { psrType: "B19", fuel: "wind", rate: 0.045 },
+      { psrType: "B16", fuel: "solar", rate: 0.045 },
     ],
-    sourceNote: "Netherlands offshore + onshore wind plus rising solar curtailment proxy.",
+    sourceNote: "Netherlands calibrated to TenneT / CBS 2024: curtailment tripled to >3 TWh (offshore B18 dominant, onshore B19 + rising solar B16).",
   },
   {
     id: "poland",
@@ -82,10 +82,10 @@ export const ZONES = [
     id: "italy-north",
     domain: "10YIT-GRTN-----B",
     technologies: [
-      { psrType: "B16", fuel: "solar", rate: 0.02 },
-      { psrType: "B19", fuel: "wind", rate: 0.01 },
+      { psrType: "B16", fuel: "solar", rate: 0.007 },
+      { psrType: "B19", fuel: "wind", rate: 0.0035 },
     ],
-    sourceNote: "Italy Terna national 2024 calibration: solar primary, wind secondary.",
+    sourceNote: "Italy North calibrated to Terna Rapporto Mensile 2024: total national wind+solar only 0.31 TWh/yr (most curtailment is South/Islands, not Italy North).",
   },
   {
     id: "sweden-north",

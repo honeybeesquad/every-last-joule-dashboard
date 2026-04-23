@@ -5,7 +5,10 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
 const EIRGRID_URL = "https://www.eirgridgroup.com/how-the-grid-works/renewables/";
-const CURTAILMENT_RATE = 0.06;
+// EirGrid Annual Report 2024 reports 1.266 TWh wind dispatch-down (Republic
+// only; all-island number is ~2.2 TWh including Northern Ireland). Previous
+// 6% rate produced ~0.72 TWh/yr — 1.76x under-calibrated. Raised to 10.5%.
+const CURTAILMENT_RATE = 0.105;
 const ESTIMATED_WIND_AVG_MW = 1400;
 const WIND_SHAPE = [
   1.30, 1.28, 1.24, 1.18, 1.12, 1.05, 0.98, 0.92,

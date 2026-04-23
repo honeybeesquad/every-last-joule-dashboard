@@ -18,8 +18,8 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     return buildTypicalSolarRegion(
       REGION_ID,
       6.5,
-      1.5,
-      `Typical-shape fallback: NRLDC/CEA/MERIT live feed unavailable (${(err as Error).message}); Rajasthan/Northern Region solar curtailment scaled to ~1.5 TWh/yr.`,
+      3.5,
+      `Typical-shape fallback: NRLDC/CEA/MERIT live feed unavailable (${(err as Error).message}); calibrated to Ember India 2025 report (2.3 TWh solar curtailed May-Dec 2025 → annualised ~3.5 TWh/yr, Rajasthan transmission bottlenecks).`,
       "2024",
     );
   }

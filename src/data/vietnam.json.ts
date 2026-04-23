@@ -18,8 +18,8 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     return buildTypicalSolarRegion(
       REGION_ID,
       5,
-      2,
-      `Typical-shape fallback: EVN live feed unavailable (${(err as Error).message}); Ninh Thuan/Binh Thuan solar curtailment scaled to ~2 TWh/yr.`,
+      4,
+      `Typical-shape fallback: EVN live feed unavailable (${(err as Error).message}); calibrated to EVN/NLDC 2024 (10-15% curtailment in RE-rich provinces, 220 plants throttled) → ~4 TWh/yr Ninh Thuan/Binh Thuan solar.`,
       "2024",
     );
   }
