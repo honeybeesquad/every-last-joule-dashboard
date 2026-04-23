@@ -30,7 +30,7 @@ jobs:
         id: manifest
         run: |
           set -euo pipefail
-          html=$(curl -sS "https://every-last-joule-dashboard.vercel.app/?cb=$(date +%s)" --max-time 30)
+          html=$(curl -sS "https://everylastjoule.com/?cb=$(date +%s)" --max-time 30)
           # Extract all hashed data JSON URLs referenced by the current build.
           echo "$html" | grep -oE 'data/[a-z0-9-]+\.[a-f0-9]+\.json' | sort -u > /tmp/manifest.txt
           wc -l /tmp/manifest.txt
@@ -50,7 +50,7 @@ jobs:
           while read -r path; do
             [ -z "$path" ] && continue
             total=$((total + 1))
-            url="https://every-last-joule-dashboard.vercel.app/_file/$path"
+            url="https://everylastjoule.com/_file/$path"
             json=$(curl -sS --max-time 20 "$url" || echo "{}")
             # Skip aggregate files (cbeci, anchor) — they aren't regional payloads
             if [[ "$path" == *"cbeci"* ]] || [[ "$path" == *"anchor"* ]]; then continue; fi
