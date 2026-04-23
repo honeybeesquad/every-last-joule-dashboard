@@ -78,7 +78,7 @@ document.getElementById("app-root").innerHTML = `
 
       <section class="panel panel-right" aria-label="Active hotspots">
         <div class="eyebrow" id="hotspots-title">Active hotspots · UTC —</div>
-        <div class="hotspot-columns hotspot-columns-four">
+        <div class="hotspot-columns hotspot-columns-three">
           ${FUEL_ORDER.map((fuel) => `
             <div class="hotspot-column">
               <div class="hotspot-column-title">
@@ -183,7 +183,7 @@ function renderAt(hour) {
   const renewableEntries = REGIONS
     .filter(isRenewable)
     .map((region) => ({ region, gw: result.perRegionGW[region.id] ?? 0 }))
-    .filter((entry) => entry.gw > 0.05);
+    .filter((entry) => entry.gw > 0.01);
 
   const itemHtml = (fuel) => ({ region, gw }) => `
     <li class="hotspot-item">
@@ -197,7 +197,7 @@ function renderAt(hour) {
     const rows = renewableEntries
       .filter(({ region }) => dominantFuel(region) === fuel)
       .sort((a, b) => b.gw - a.gw)
-      .slice(0, 6);
+      .slice(0, 10);
     document.getElementById(`hotspot-list-${fuel}`).innerHTML = rows.map(itemHtml(fuel)).join("");
   }
 }

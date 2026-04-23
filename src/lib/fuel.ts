@@ -5,15 +5,14 @@ import type { Region } from "./types";
  * deliberately excluded — it belongs to a separate always-on story and
  * would otherwise dominate the aggregate thanks to 24/7 base-load.
  */
-export type Fuel = "solar" | "wind" | "hydro" | "other";
+export type Fuel = "solar" | "wind" | "hydro";
 
-export const FUEL_ORDER: Fuel[] = ["solar", "wind", "hydro", "other"];
+export const FUEL_ORDER: Fuel[] = ["solar", "wind", "hydro"];
 
 export const FUEL_LABEL: Record<Fuel, string> = {
   solar: "Solar",
   wind: "Wind",
   hydro: "Hydro",
-  other: "Other / mixed",
 };
 
 /**
@@ -25,7 +24,6 @@ export const FUEL_COLOR: Record<Fuel, string> = {
   solar: "#f5c542",   // warm amber - mid-day sun
   wind:  "#14afac",   // brand teal
   hydro: "#3b82c4",   // water blue
-  other: "#8b5fbf",   // muted violet
 };
 
 /**
@@ -40,7 +38,9 @@ export const FUEL_COLOR: Record<Fuel, string> = {
  */
 const MIXED_SPLITS: Record<string, Partial<Record<Fuel, number>>> = {
   peru:           { hydro: 0.70, solar: 0.20, wind: 0.10 },
-  "south-africa": { wind:  0.55, solar: 0.35, other: 0.10 },
+  // South Africa: the residual 10% (CSP + biomass) is folded into solar
+  // now that 'other' no longer has a column of its own.
+  "south-africa": { wind:  0.55, solar: 0.45 },
 };
 
 /** True for any region that should contribute to the renewable headline. */
@@ -70,11 +70,10 @@ export function fuelShare(region: Region, fuel: Fuel): number {
  * correct hotspot column. Mixed regions sort into their largest split.
  */
 export function dominantFuel(region: Region): Fuel {
-  if (region.kind === "flare") return "other"; // should not be surfaced
   if (region.kind === "mixed") {
     const split = MIXED_SPLITS[region.id] ?? {};
-    let best: Fuel = "other";
-    let bestShare = 0;
+    let best: Fuel = "solar";
+    let bestShare = -1;
     for (const f of FUEL_ORDER) {
       const s = split[f] ?? 0;
       if (s > bestShare) {
@@ -84,8 +83,7 @@ export function dominantFuel(region: Region): Fuel {
     }
     return best;
   }
-  if (region.kind === "solar") return "solar";
   if (region.kind === "wind")  return "wind";
   if (region.kind === "hydro") return "hydro";
-  return "other";
+  return "solar"; // solar + any unclassified renewable default
 }

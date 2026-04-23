@@ -487,9 +487,21 @@ main table {
   margin-top: 10px;
 }
 
-.hotspot-columns-four {
-  grid-template-columns: 1fr 1fr;
+.hotspot-columns-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: min-content;
+  gap: 10px;
+}
+
+@media (max-width: 1100px) {
+  .hotspot-columns-three {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 700px) {
+  .hotspot-columns-three {
+    grid-template-columns: 1fr;
+  }
 }
 
 .hotspot-column {
