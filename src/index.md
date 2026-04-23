@@ -325,11 +325,16 @@ function renderAt(hour) {
     .filter(isRenewable)
     .map((region) => ({ region, gw: result.perRegionGW[region.id] ?? 0 }));
 
+  // Display format: 2 decimals for sub-GW values so small-grid regions
+  // don't collapse to "0.0 GW" (e.g. Peru 0.02, Baltics 0.02, NYISO 0.03).
+  // 1 decimal for values ≥ 1 GW where that granularity matters less.
+  const fmtGW = (gw) => (gw >= 1 ? gw.toFixed(1) : gw.toFixed(2));
+
   const itemHtml = (fuel) => ({ region, gw }) => `
     <li class="hotspot-item">
       <span class="dot" style="background:${FUEL_COLOR[fuel]};box-shadow:0 0 8px ${FUEL_COLOR[fuel]}66;"></span>
       <span class="hotspot-name">${region.name}</span>
-      <span class="hotspot-gw num-tabular">${gw.toFixed(1)} GW</span>
+      <span class="hotspot-gw num-tabular">${fmtGW(gw)} GW</span>
     </li>
   `;
 

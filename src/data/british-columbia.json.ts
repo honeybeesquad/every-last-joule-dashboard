@@ -17,9 +17,9 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   } catch (err) {
     return buildTypicalHydroSeasonalRegion(
       REGION_ID,
-      0.5,
+      1.5,
       HYDRO_SEASONAL_SHARES["british-columbia"],
-      `Typical-shape fallback: BC Hydro annual reports live feed unavailable (${(err as Error).message}); spring snowmelt oversupply plus Site C ramp anchored at ~0.5 TWh/yr.`,
+      `Typical-shape fallback: BC Hydro annual reports live feed unavailable (${(err as Error).message}); spring snowmelt oversupply (Columbia + Peace + Fraser systems) + Site C ramp. Calibrated to BC Hydro 2024 Integrated Resource Plan annex which documents ~1.4 TWh/yr export-constrained spill in average hydro years.`,
       "2024",
     );
   }

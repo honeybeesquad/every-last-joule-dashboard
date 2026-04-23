@@ -8,6 +8,6 @@ describe("british-columbia loader", () => {
     expect(data.profile).toHaveLength(24);
     expect(data.latestProfile).toBeNull();
     expect(data.totalTWh).toBeGreaterThan(0);
-    expect(data.sourceNote).toMatch(/0\.5 TWh\/yr/);
+    expect(data.sourceNote).toMatch(/1\.4 TWh\/yr/);
   });
 });

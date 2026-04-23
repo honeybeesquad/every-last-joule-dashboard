@@ -68,6 +68,10 @@ export const HYDRO_SEASONAL_SHARES = {
   quebec: [0.03, 0.03, 0.05, 0.10, 0.15, 0.15, 0.13, 0.10, 0.08, 0.07, 0.06, 0.05],
   // Colombia bimodal wet seasons, Apr-May and Oct-Nov
   colombia: [0.05, 0.05, 0.08, 0.13, 0.14, 0.10, 0.08, 0.06, 0.08, 0.11, 0.07, 0.05],
+  // Peru Andean hydro + summer-peak Sierra rainfall; Peru's south Atacama-
+  // adjacent region is solar-dominant, central Andes is hydro. Bimodal-ish,
+  // with Jan-Apr rainy season being the bigger hydro-spill window.
+  peru: [0.15, 0.15, 0.13, 0.10, 0.06, 0.04, 0.04, 0.04, 0.05, 0.06, 0.08, 0.10],
   // Kenya Olkaria geothermal steam-venting — tracks inverse of demand, not
   // rainfall. July peak (117.5 GWh in Jul 2024 per EPRA), June trough (6.6 GWh
   // in Jun 2025). July is coolest/lowest-demand month; June is outlier low
