@@ -397,6 +397,13 @@ main table {
   max-width: 580px;
   aspect-ratio: 1;
   cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#globe-canvas.is-dragging {
+  cursor: grabbing;
 }
 
 #globe-canvas[hidden] {

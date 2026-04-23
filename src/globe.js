@@ -214,16 +214,33 @@ export async function mountGlobe(canvas, initial) {
   }
 
   let activePointerId = null;
+  let lastX = 0;
+  let lastY = 0;
+  let lastMoveAt = 0;
+  let autoResumeAt = 0;
+  const DRAG_SENSITIVITY = 0.55;
+  const AUTO_RESUME_DELAY_MS = 2500;
+
   canvas.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
     state.dragging = true;
     activePointerId = event.pointerId;
-    canvas.setPointerCapture(event.pointerId);
+    lastX = event.clientX;
+    lastY = event.clientY;
+    lastMoveAt = event.timeStamp;
+    canvas.classList.add("is-dragging");
+    try { canvas.setPointerCapture(event.pointerId); } catch {}
   });
 
   canvas.addEventListener("pointermove", (event) => {
-    if (!state.dragging) return;
-    state.rotation[0] += event.movementX * 0.3;
-    state.rotation[1] = Math.max(-90, Math.min(90, state.rotation[1] - event.movementY * 0.3));
+    if (!state.dragging || event.pointerId !== activePointerId) return;
+    const dx = event.clientX - lastX;
+    const dy = event.clientY - lastY;
+    lastX = event.clientX;
+    lastY = event.clientY;
+    lastMoveAt = event.timeStamp;
+    state.rotation[0] = wrapLongitude(state.rotation[0] + dx * DRAG_SENSITIVITY);
+    state.rotation[1] = Math.max(-90, Math.min(90, state.rotation[1] - dy * DRAG_SENSITIVITY));
     render();
   });
 
@@ -231,7 +248,9 @@ export async function mountGlobe(canvas, initial) {
     if (activePointerId !== event.pointerId) return;
     state.dragging = false;
     activePointerId = null;
-    if (canvas.hasPointerCapture(event.pointerId)) {
+    autoResumeAt = performance.now() + AUTO_RESUME_DELAY_MS;
+    canvas.classList.remove("is-dragging");
+    if (canvas.hasPointerCapture?.(event.pointerId)) {
       canvas.releasePointerCapture(event.pointerId);
     }
   }
@@ -249,7 +268,10 @@ export async function mountGlobe(canvas, initial) {
   const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
   if (!prefersReducedMotion) {
     const tick = () => {
-      if (!state.dragging) state.rotation[0] += 0.03;
+      const now = performance.now();
+      if (!state.dragging && now >= autoResumeAt) {
+        state.rotation[0] = wrapLongitude(state.rotation[0] + 0.03);
+      }
       render();
       requestAnimationFrame(tick);
     };
