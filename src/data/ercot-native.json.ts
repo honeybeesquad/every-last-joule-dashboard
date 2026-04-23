@@ -30,7 +30,7 @@ interface DiagnosticPayload {
 const TOKEN_URL =
   "https://ercotb2c.b2clogin.com/ercotb2c.onmicrosoft.com/B2C_1_PUBAPI-ROPC-FLOW/oauth2/v2.0/token";
 const API_BASE = "https://api.ercot.com/api/public-reports";
-const PRODUCT_ID = "np6-915-cd";
+const DEFAULT_PRODUCT_ID = "np6-915-cd";
 
 function writeDiagnostic(payload: DiagnosticPayload) {
   const dir = join(process.cwd(), "data", "snapshots", "diagnostics");
@@ -99,7 +99,8 @@ function findArtifactEndpoint(product: unknown): string | null {
 }
 
 async function resolveProductEndpoint(token: string, subscriptionKey: string): Promise<string> {
-  const productUrl = `${API_BASE}/${PRODUCT_ID}`;
+  const productId = process.env.ERCOT_PRODUCT_ID || DEFAULT_PRODUCT_ID;
+  const productUrl = `${API_BASE}/${productId}`;
   const { res, text } = await fetchTextWithAuth(productUrl, token, subscriptionKey);
   if (!res.ok) {
     writeDiagnostic({
@@ -126,7 +127,7 @@ async function resolveProductEndpoint(token: string, subscriptionKey: string): P
       responseSnippet: text.slice(0, 1000),
       details: { parse: "no-artifact-endpoint" },
     });
-    throw new Error(`product ${PRODUCT_ID} did not expose an artifact endpoint`);
+    throw new Error(`product ${productId} did not expose an artifact endpoint`);
   }
   return endpoint;
 }
@@ -199,7 +200,7 @@ function parseErcotNative(points: CurtailmentPoint[]): Record<NativeRegionId, Re
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote: "ERCOT native SCED availability attempt via NP6-915-CD HDL minus generation, split 66/34 west-east until zone-native disclosure is confirmed.",
+    sourceNote: "ERCOT native SCED availability attempt via ERCOT_PRODUCT_ID/NP6-915-CD HDL minus generation, split 66/34 west-east until zone-native disclosure is confirmed.",
   };
 
   return {
@@ -207,13 +208,13 @@ function parseErcotNative(points: CurtailmentPoint[]): Record<NativeRegionId, Re
       base,
       "ercot-native-west",
       0.66,
-      "ERCOT native SCED availability attempt via NP6-915-CD HDL minus generation, split 66% west/panhandle.",
+      "ERCOT native SCED availability attempt via ERCOT_PRODUCT_ID/NP6-915-CD HDL minus generation, split 66% west/panhandle.",
     ),
     "ercot-native-east": splitRegion(
       base,
       "ercot-native-east",
       0.34,
-      "ERCOT native SCED availability attempt via NP6-915-CD HDL minus generation, split 34% east/central.",
+      "ERCOT native SCED availability attempt via ERCOT_PRODUCT_ID/NP6-915-CD HDL minus generation, split 34% east/central.",
     ),
   };
 }

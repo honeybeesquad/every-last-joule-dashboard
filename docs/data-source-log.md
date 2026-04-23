@@ -95,6 +95,12 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 - Vercel outcome: the first production build showed the three ERCOT env vars were absent from Vercel despite the prerequisite; they were added to Production from `.env.local`. The redeployed Vercel US build then acquired a token and bypassed Incapsula, but the SCED artifact data call returned HTTP 404 Resource Not Found.
 - Product outcome: `ERCOT_NATIVE_ENABLED` remains `false`; the dashboard stays on the EIA proxy (`ercot-west` and `ercot-east`). The native loader remains in the repo for a future endpoint-discovery pass now that the Vercel-US auth path is known to reach ERCOT.
 
+**v1 focused CSV spike:** added `.github/workflows/chile-ercot-csv-spike.yml` and `scripts/probe-chile-ercot.ts` so ERCOT endpoint reachability is recorded from a GitHub-hosted US runner instead of the NZ local network. The probe writes `docs/spikes/chile-ercot-csv-probe.md`.
+
+- Candidate `https://www.ercot.com/mp/data-products/data-product-details?id=NP6-970-CD` is reachable in public crawls, but the page identifies NP6-970-CD as `RTD Indicative LMPs by Resource Nodes, Load Zones and Hubs`, not wind curtailment.
+- Candidate `https://www.ercot.com/content/cdr/html/CURRENT_DAYWGRPP.html` is the actual current-day forecast/actual wind production table, but it is generation/forecast rather than direct dispatch-down curtailment and only current-day.
+- Decision: keep `ERCOT_NATIVE_ENABLED = false` until the US-runner probe identifies a direct report with timestamped curtailment or enough SCED fields to defensibly derive it. Existing EIA proxy remains primary.
+
 ---
 
 ## AEMO NEMWeb per-state direct dispatch-down (used)
@@ -284,18 +290,16 @@ France and Denmark-West were removed in v1b after direct RTE and Energinet loade
 
 ---
 
-## Chile Atacama / Coordinador Electrico Nacional (B2 attempt, fallback used)
+## Chile Atacama / Coordinador Electrico Nacional (v1 XLSX path used)
 
 **Intended:** native Chile renewable-reduction or vertimiento data from Coordinador Electrico Nacional.
 
 **v0.5 B2 hard-unlock attempt:** Playwright headless Chromium can load the public `reportes-y-estadisticas` landing page from this environment after waiting for the Cloudflare check. That page exposes relevant leads including `Reducciones de Generación Renovable`, `Generación de Energía`, `Histórico Generación Horaria por Central`, and `Vertimientos`.
 
-**Blocker:** the specific `Reducciones de Generación Renovable` document path still returns Cloudflare "Just a moment" / bot-verification content in headless Chromium, even after first visiting the unlocked landing page in the same browser context. No stable CSV/XLSX download path was exposed within the B2 time box.
+**v1 unlock:** the Cloudflare-gated listing pages remain hostile to plain fetch, but direct WordPress XLSX upload URLs are reachable. The loader now tries predictable monthly upload paths such as `https://www.coordinador.cl/wp-content/uploads/2026/03/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Febrero-26-PE-PFV_Publicar.xlsx`.
 
-**Fallback used:** `src/data/atacama-chile.json.ts` now emits a typical solar shape via `solarProfile(16.5, 5.9)`, using local solar noon around UTC 16:30 and the book's 5.9 TWh/year Atacama annual baseline.
-
-- Region id: `atacama`
-- Tier: `static`
-- 30-day total: `5.9 * 30 / 365 = 0.485 TWh`
-- Peak: synthetic daylight peak around UTC hour 16
-- Source note: explicitly labelled as a typical-shape fallback, not a native measured feed
+- Direct XLSX probe: February 2026 workbook returned HTTP 200 with `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`.
+- Parser: unzip XLSX with the system `unzip`, parse `xl/workbook.xml`, shared strings, and `Resumen-DiarioHorario-Solar`; sum PFV plant rows across hourly MWh columns.
+- Local result on 2026-04-23: 350 hourly points, `0.42905233735574794` TWh in the workbook month, peak hourly average `1.6409249376527262` GW, latest point `2026-02-28T22:00:00.000Z`.
+- Other Chile paths checked: `energiaabierta.cl` did not connect locally; `infotecnica.coordinador.cl` returned HTTP 200; `api.coordinador.cl` and `sic.coordinadorelectrico.cl` did not resolve; `datos.gob.cl` returned HTTP 200; `generadoras.cl` redirected to `generadoras.cl`.
+- Fallback retained: if direct XLSX naming changes or downloads fail, `src/data/atacama-chile.json.ts` falls back to the previous `solarProfile(16.5, 5.9)` typical solar profile.

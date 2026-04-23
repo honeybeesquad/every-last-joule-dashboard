@@ -22,9 +22,9 @@ VIIRS-derived and GGFR-derived flare estimates do not line up perfectly, and bas
 
 A specific day’s curtailment can deviate sharply from the profile shown on the dashboard, particularly during weather events, outages, or acute transmission constraints. That smoothing is intentional in v0 because the aim is to show the recurring daily pattern rather than overfit to yesterday’s noise; a latest-24-hour mode belongs in a later release.
 
-### 6. Brazil NE is direct-measured; other regions are calibrated proxies
+### 6. Direct-measured coverage remains partial
 
-Brazil NE is the only live renewable-curtailment region in v0 that reports native constrained-off data through its public feed. The other live renewable regions estimate curtailment by applying calibrated 2024 rates to observed generation, which preserves shape usefully but remains one step removed from a native curtailment series.
+Brazil NE and Atacama now report native curtailment/reduction data through public files. Several other live renewable regions still estimate curtailment by applying calibrated 2024 rates to observed generation, which preserves shape usefully but remains one step removed from a native curtailment series.
 
 ### 7. Network consumption anchor
 
@@ -34,9 +34,9 @@ CBECI remains the canonical academic benchmark for Bitcoin electricity consumpti
 
 ERCOT’s native developer API remains blocked behind the Incapsula WAF from this local environment, even with valid credentials. The B2 native probe acquired a token locally, then received HTTP 403 from `api.ercot.com`. Vercel’s US build path acquired a token and bypassed Incapsula after the missing ERCOT env vars were added, but the SCED HDL/LDL artifact data call returned HTTP 404. v0.5 therefore keeps `ERCOT_NATIVE_ENABLED = false` and continues to use EIA hourly wind with a 6.15% calibrated rate, split into ERCOT West and East. The inactive native loader remains in the repo for a future endpoint-discovery pass.
 
-### 9. Atacama (Chile) uses a typical solar shape after the B2 Playwright attempt
+### 9. Atacama (Chile) direct XLSX is monthly and pattern-based
 
-Coordinador Eléctrico Nacional’s public landing page can be reached by headless Chromium, but the specific renewable-reduction document path still returns Cloudflare bot-verification content. v0.5 therefore represents Atacama as a static-source, typical-shape solar profile using `solarProfile(16.5, 5.9)`: a daylight bump around UTC 16:30 scaled to the book’s 5.9 TWh/year baseline. It is not a native measured Chilean curtailment feed.
+Coordinador Eléctrico Nacional’s listing pages still return Cloudflare bot-verification content from this environment, but the direct WordPress XLSX uploads are reachable. v1 therefore parses the latest predictable `Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_*_PE-PFV_Publicar.xlsx` workbook and aggregates the `Resumen-DiarioHorario-Solar` sheet to hourly solar curtailment. This is direct measured Chilean curtailment, but monthly rather than near-real-time; if the upload naming pattern changes, the loader falls back to the prior `solarProfile(16.5, 5.9)` typical-shape profile.
 
 ### 10. Xinjiang uses a typical solar shape; Sichuan and Iceland stay flat
 

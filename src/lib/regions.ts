@@ -36,8 +36,8 @@ export const REGIONS: Region[] = [
   { id: "peru",             name: "Peru",            country: "PER", lat: -14.0, lon: -74.0, tier: "live", kind: "mixed", source: "COES-SINAC", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },
   { id: "south-africa",     name: "South Africa",    country: "ZAF", lat: -32.0, lon:  26.0, tier: "live", kind: "mixed", source: "Eskom Data Portal", sourceUrl: "https://www.eskom.co.za/dataportal/" },
   { id: "new-zealand",      name: "New Zealand",     country: "NZL", lat: -40.9, lon: 172.0, tier: "live", kind: "wind", source: "Electricity Authority EMI", sourceUrl: "https://www.emi.ea.govt.nz/Wholesale/Datasets/Generation/Generation_MD" },
-  // Tier 2 - static (4 regions)
-  { id: "atacama",          name: "Atacama",         country: "CHL", lat: -24.5, lon: -69.2, tier: "static", kind: "solar", source: "CEN Chile", sourceUrl: "https://www.coordinador.cl/" },
+  { id: "atacama",          name: "Atacama",         country: "CHL", lat: -24.5, lon: -69.2, tier: "live", kind: "solar", source: "CEN Chile XLSX", sourceUrl: "https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/" },
+  // Tier 2 - static (3 regions)
   { id: "sichuan",          name: "Sichuan",         country: "CHN", lat: 30.6, lon:  102.8, tier: "static", kind: "hydro", source: "Ember China", sourceUrl: "https://ember-energy.org/" },
   { id: "xinjiang",         name: "Xinjiang",        country: "CHN", lat: 41.5, lon:   85.0, tier: "static", kind: "solar", source: "Ember China", sourceUrl: "https://ember-energy.org/" },
   { id: "iceland",          name: "Iceland",         country: "ISL", lat: 64.9, lon:  -19.0, tier: "static", kind: "hydro", source: "Published", sourceUrl: "https://orkustofnun.is/" },
