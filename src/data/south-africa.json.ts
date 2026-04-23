@@ -5,8 +5,13 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
 const ESKOM_URL = "https://www.eskom.co.za/dataportal/";
-const CURTAILMENT_RATE = 0.02;
-const ESTIMATED_RENEWABLE_AVG_MW = 3600;
+// SAREM 2025 / Eskom MTSAO Oct 2025 document 4,363 GWh renewable curtailment
+// in 2024 — roughly 12% of renewable output. Most of it is Northern/Western
+// Cape wind + solar constrained by coal-fleet inflexibility and transmission
+// bottlenecks to Gauteng/Mpumalanga load centres. Previous v1 calibration was
+// 2% × 3,600 MW avg ≈ 0.6 TWh/yr — nearly 7× too low. Corrected here.
+const CURTAILMENT_RATE = 0.12;
+const ESTIMATED_RENEWABLE_AVG_MW = 4150; // scales to ~4.4 TWh/yr at 12% rate
 const MIXED_SHAPE = [
   0.78, 0.76, 0.74, 0.72, 0.70, 0.72, 0.78, 0.90,
   1.02, 1.12, 1.18, 1.22, 1.20, 1.14, 1.08, 1.02,
@@ -56,7 +61,7 @@ const run = async (): Promise<RegionData> => {
     peakGW: peakGW(points),
     lastUpdated: now.toISOString(),
     sourceNote:
-      `Eskom Data Portal reachable (${meta.title}); CSV/chart endpoint was not exposed from the public HTML, so this loader emits a calibrated South Africa wind+solar fallback profile at 2% of estimated recent renewable output`,
+      `Eskom Data Portal reachable (${meta.title}); CSV/chart endpoint not exposed publicly, so this loader emits a calibrated wind+solar fallback profile scaled to 4.4 TWh/yr (SAREM 2025 / Eskom MTSAO Oct 2025 report 4,363 GWh curtailment in 2024 — 12% of renewable output, concentrated Northern+Western Cape)`,
   };
 };
 

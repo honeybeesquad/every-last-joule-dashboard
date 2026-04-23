@@ -49,6 +49,10 @@ const ethiopia = await FileAttachment("data/ethiopia.json").json();
 const kazakhstan = await FileAttachment("data/kazakhstan.json").json();
 const honduras = await FileAttachment("data/honduras.json").json();
 const jeju = await FileAttachment("data/jeju.json").json();
+const kenya = await FileAttachment("data/kenya.json").json();
+const egypt = await FileAttachment("data/egypt.json").json();
+const morocco = await FileAttachment("data/morocco.json").json();
+const namibia = await FileAttachment("data/namibia.json").json();
 const waSwis = await FileAttachment("data/wa-swis.json").json();
 const ntPilbara = await FileAttachment("data/nt-pilbara.json").json();
 const indonesia = await FileAttachment("data/indonesia.json").json();
@@ -187,6 +191,10 @@ const regionData = {
   kazakhstan,
   honduras,
   jeju,
+  kenya,
+  egypt,
+  morocco,
+  namibia,
   "wa-swis": waSwis,
   "nt-pilbara": ntPilbara,
   indonesia,

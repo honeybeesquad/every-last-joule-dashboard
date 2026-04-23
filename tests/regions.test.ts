@@ -2,16 +2,16 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 74 canonical regions", () => {
-    expect(REGIONS.length).toBe(74);
+  it("has 78 canonical regions", () => {
+    expect(REGIONS.length).toBe(78);
   });
 
   it("has 42 live regions", () => {
     expect(REGIONS.filter(r => r.tier === "live").length).toBe(42);
   });
 
-  it("has 28 static regions", () => {
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(28);
+  it("has 32 static regions", () => {
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(32);
   });
 
   it("has 4 flare regions", () => {
@@ -115,5 +115,13 @@ describe("regions", () => {
       expect(REGIONS.find(r => r.id === id)).toBeDefined();
     }
     expect(REGIONS.find(r => r.id === "e-saudi")?.tier).toBe("flare");
+  });
+
+  it("includes the v1m Africa curtailment research expansion", () => {
+    for (const id of ["kenya", "egypt", "morocco", "namibia"]) {
+      expect(REGIONS.find(r => r.id === id)).toBeDefined();
+    }
+    // Kenya is geothermal-as-hydro with overnight-vented curtailment.
+    expect(REGIONS.find(r => r.id === "kenya")?.kind).toBe("hydro");
   });
 });

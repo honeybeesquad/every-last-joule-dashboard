@@ -58,6 +58,11 @@ export const HYDRO_SEASONAL_SHARES = {
   ethiopia: [0.02, 0.02, 0.03, 0.04, 0.06, 0.12, 0.20, 0.22, 0.15, 0.09, 0.03, 0.02],
   // Volga / western Russia snowmelt and wet-season hydro spill, NH summer peak
   "russia-mainland": [0.03, 0.03, 0.05, 0.10, 0.16, 0.18, 0.16, 0.12, 0.07, 0.04, 0.03, 0.03],
+  // Kenya Olkaria geothermal steam-venting — tracks inverse of demand, not
+  // rainfall. July peak (117.5 GWh in Jul 2024 per EPRA), June trough (6.6 GWh
+  // in Jun 2025). July is coolest/lowest-demand month; June is outlier low
+  // per EPRA 2025 report.
+  kenya:    [0.07, 0.05, 0.05, 0.05, 0.07, 0.01, 0.18, 0.15, 0.12, 0.10, 0.09, 0.06],
 } as const satisfies Record<string, MonthlyShares>;
 
 /**
@@ -166,5 +171,59 @@ export function buildTypicalHydroRegion(
     peakGW: Math.max(...profile),
     lastUpdated,
     sourceNote,
+  };
+}
+
+/**
+ * Overnight (anti-diurnal) curtailment profile. Used for geothermal
+ * steam-venting where baseload generation exceeds overnight demand. Kenya
+ * Olkaria is the archetype: curtailment concentrated in ~5 overnight hours,
+ * zero during the day. `peakUtcHour` is the middle of the venting window in
+ * UTC; `halfWidthHours` controls how sharp the bump is (raised-cosine shape,
+ * hard zero outside the window).
+ */
+export function overnightProfile(
+  peakUtcHour: number,
+  halfWidthHours: number,
+  annualTWh: number,
+): number[] {
+  const shape = Array.from({ length: 24 }, (_, hour) => {
+    const center = hour + 0.5;
+    // Circular distance to peakUtcHour, wrapping at 24.
+    let dist = Math.abs(center - peakUtcHour);
+    if (dist > 12) dist = 24 - dist;
+    if (dist > halfWidthHours) return 0;
+    // Raised-cosine ramp: cos(π × dist / (2 × halfWidth)).
+    return Math.cos((dist / halfWidthHours) * (Math.PI / 2));
+  });
+  return scaleProfileToAnnualTWh(shape, annualTWh);
+}
+
+/**
+ * Build a RegionData for geothermal overnight-vented curtailment with
+ * monthly seasonal scaling. Annual TWh is the base rate; monthly shares
+ * determine the seasonal scale factor applied to today's 30-day window.
+ */
+export function buildGeothermalOvernightRegion(
+  regionId: string,
+  annualTWh: number,
+  peakUtcHour: number,
+  halfWidthHours: number,
+  monthlyShares: readonly number[],
+  sourceNote: string,
+  lastUpdated = "2024",
+  now: Date = new Date(),
+): RegionData {
+  const factor = seasonalScaleFactor(monthlyShares, now);
+  const rawProfile = overnightProfile(peakUtcHour, halfWidthHours, annualTWh);
+  const profile = rawProfile.map((gw) => gw * factor);
+  return {
+    regionId,
+    profile,
+    latestProfile: null,
+    totalTWh: ((annualTWh * 30) / 365) * factor,
+    peakGW: Math.max(...profile),
+    lastUpdated,
+    sourceNote: `${sourceNote} — overnight venting (UTC ${peakUtcHour - halfWidthHours}-${peakUtcHour + halfWidthHours}), seasonal factor ${factor.toFixed(2)}×`,
   };
 }

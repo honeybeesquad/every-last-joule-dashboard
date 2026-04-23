@@ -50,6 +50,27 @@ describe("typical profiles", () => {
     expect(hydro.profile.every((v) => v === hydro.profile[0])).toBe(true);
   });
 
+  describe("overnight (geothermal) profile", () => {
+    it("is zero outside the window and non-zero inside", async () => {
+      const { overnightProfile } = await import("../src/lib/typical-profiles");
+      const p = overnightProfile(23.5, 2.5, 0.669);
+      // Hours outside [21, 02] should all be zero.
+      for (const hr of [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]) {
+        expect(p[hr]).toBe(0);
+      }
+      // Hours inside the window should have positive values.
+      expect(p[23]).toBeGreaterThan(0);
+      expect(p[0]).toBeGreaterThan(0);
+    });
+
+    it("scales the full 24-hour profile to the requested annual TWh", async () => {
+      const { overnightProfile } = await import("../src/lib/typical-profiles");
+      const p = overnightProfile(23.5, 2.5, 0.669);
+      const annual = (p.reduce((s, v) => s + v, 0) * 365) / 1000;
+      expect(annual).toBeCloseTo(0.669, 3);
+    });
+  });
+
   describe("seasonal hydro", () => {
     it("HYDRO_SEASONAL_SHARES all sum to approximately 1.0", () => {
       for (const [key, shares] of Object.entries(HYDRO_SEASONAL_SHARES)) {
