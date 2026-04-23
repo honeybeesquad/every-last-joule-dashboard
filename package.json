@@ -14,7 +14,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "data:refresh": "observable build",
-    "snapshot": "tsx scripts/write-snapshot.ts"
+    "snapshot": "tsx scripts/write-snapshot.ts",
+    "postinstall": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {
     "@observablehq/framework": "^1.13.0",
