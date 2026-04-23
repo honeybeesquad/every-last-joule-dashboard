@@ -2,16 +2,16 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 54 canonical regions", () => {
-    expect(REGIONS.length).toBe(54);
+  it("has 62 canonical regions", () => {
+    expect(REGIONS.length).toBe(62);
   });
 
-  it("has 37 live regions", () => {
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(37);
+  it("has 42 live regions", () => {
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(42);
   });
 
-  it("has 13 static regions", () => {
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(13);
+  it("has 16 static regions", () => {
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(16);
   });
 
   it("has 4 flare regions", () => {
@@ -77,6 +77,21 @@ describe("regions", () => {
       "india-north",
       "cyprus",
       "ethiopia",
+    ]) {
+      expect(REGIONS.find(r => r.id === id)).toBeDefined();
+    }
+  });
+
+  it("includes the v1h Gemini-probe expansion", () => {
+    for (const id of [
+      "ukraine",
+      "hungary",
+      "czech-republic",
+      "bulgaria",
+      "baltics",
+      "kazakhstan",
+      "honduras",
+      "jeju",
     ]) {
       expect(REGIONS.find(r => r.id === id)).toBeDefined();
     }

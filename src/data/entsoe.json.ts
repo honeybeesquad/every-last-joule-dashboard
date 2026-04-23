@@ -30,6 +30,16 @@ export const ZONES = [
     sourceNote: "ENTSO-E SE2 wind onshore × 1% calibrated curtailment rate (~0.3 TWh/yr Sweden north)" },
   { id: "sweden-south", domain: "10Y1001A1001A47J", psrType: "B16", rate: 0.07,
     sourceNote: "ENTSO-E SE4 solar × 7% calibrated curtailment rate (~0.3 TWh/yr Sweden south)" },
+  { id: "ukraine", domain: "10Y1001C--00003F", psrType: "B19", rate: 0.03,
+    sourceNote: "ENTSO-E Ukrenergo wind × 3% calibrated curtailment rate (~1.2 TWh/yr post-synchronisation redispatch)" },
+  { id: "hungary", domain: "10YHU-MAVIR----U", psrType: "B16", rate: 0.03,
+    sourceNote: "ENTSO-E MAVIR solar × 3% calibrated curtailment rate (~0.25 TWh/yr; 33% solar peak penetration)" },
+  { id: "czech-republic", domain: "10YCZ-CEPS-----N", psrType: "B16", rate: 0.02,
+    sourceNote: "ENTSO-E CEPS solar × 2% calibrated curtailment rate (~0.15 TWh/yr summer peaks)" },
+  { id: "bulgaria", domain: "10YCA-BULGARIA-R", psrType: "B16", rate: 0.02,
+    sourceNote: "ENTSO-E ESO solar × 2% calibrated curtailment rate (~0.1 TWh/yr emerging Bulgarian curtailment)" },
+  { id: "baltics", domain: "10YLT-1001A0008Q", psrType: "B19", rate: 0.025,
+    sourceNote: "ENTSO-E Litgrid wind × 2.5% as Baltic regional proxy (~0.05 TWh/yr combined EE+LV+LT)" },
 ] as const;
 
 export const parseEntsoeXml = parseEntsoeXmlImpl;

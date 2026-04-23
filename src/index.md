@@ -45,6 +45,9 @@ const thailand = await FileAttachment("data/thailand.json").json();
 const indiaNorth = await FileAttachment("data/india-north.json").json();
 const cyprus = await FileAttachment("data/cyprus.json").json();
 const ethiopia = await FileAttachment("data/ethiopia.json").json();
+const kazakhstan = await FileAttachment("data/kazakhstan.json").json();
+const honduras = await FileAttachment("data/honduras.json").json();
+const jeju = await FileAttachment("data/jeju.json").json();
 
 document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
@@ -143,6 +146,11 @@ const regionData = {
   "italy-north": entsoe["italy-north"],
   "sweden-north": entsoe["sweden-north"],
   "sweden-south": entsoe["sweden-south"],
+  ukraine: entsoe.ukraine,
+  hungary: entsoe.hungary,
+  "czech-republic": entsoe["czech-republic"],
+  bulgaria: entsoe.bulgaria,
+  baltics: entsoe.baltics,
   "north-sea": northSea,
   ...brazilNE,
   "n-norway": norway,
@@ -163,6 +171,9 @@ const regionData = {
   "india-north": indiaNorth,
   cyprus,
   ethiopia,
+  kazakhstan,
+  honduras,
+  jeju,
   ...statics
 };
 
