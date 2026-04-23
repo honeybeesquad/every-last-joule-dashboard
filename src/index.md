@@ -34,6 +34,7 @@ const denmark = await FileAttachment("data/denmark.json").json();
 const newZealand = await FileAttachment("data/new-zealand.json").json();
 const norway = await FileAttachment("data/norway.json").json();
 const atacama = await FileAttachment("data/atacama-chile.json").json();
+const chileWind = await FileAttachment("data/chile-wind.json").json();
 const statics = await FileAttachment("data/statics.json").json();
 const anchor = await FileAttachment("data/anchor.json").json();
 const northSea = await FileAttachment("data/north-sea.json").json();
@@ -209,7 +210,10 @@ const regionData = {
   poland: entsoe.poland,
   greece: entsoe.greece,
   romania: entsoe.romania,
-  "italy-national": entsoe["italy-national"],
+  // Italy split into three ENTSO-E bidding zones (v1t)
+  "italy-north-zone": entsoe["italy-north-zone"],
+  "italy-south": entsoe["italy-south"],
+  "italy-sardinia": entsoe["italy-sardinia"],
   "sweden-north": entsoe["sweden-north"],
   "sweden-south": entsoe["sweden-south"],
   // ukraine moved to statics (ENTSO-E Ukrenergo returns empty post-war)
@@ -227,6 +231,7 @@ const regionData = {
   "south-africa": southAfrica,
   "new-zealand": newZealand,
   atacama,
+  "chile-wind": chileWind,
   argentina,
   uruguay,
   paraguay,

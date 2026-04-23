@@ -78,19 +78,38 @@ export const ZONES = [
     ],
     sourceNote: "Romania Transelectrica 2024 calibration; solar fixed in v1.f plus wind added.",
   },
+  // Italy split into three ENTSO-E bidding zones (v1t). Previous italy-national
+  // used the aggregate national domain (10YIT-GRTN-----B) which is correct at
+  // the national total level but hides geographic variation. Terna 2024 national
+  // total 0.31 TWh/yr split approximately 35% north / 45% south / 20% islands.
+  // North Italy is better-connected (Alps hydro + pumped storage absorbs solar);
+  // South Italy and Sardinia are transmission-constrained → higher curtailment rates.
   {
-    // Domain 10YIT-GRTN-----B is the Italian national bidding zone (not just
-    // the north). Renamed italy-north → italy-national in v1s to avoid
-    // implying northern-only coverage. The 0.31 TWh anchor is the Terna
-    // national total; most Italian curtailment is in the South and Islands
-    // (not modelled separately yet — v2 candidate).
-    id: "italy-national",
-    domain: "10YIT-GRTN-----B",
+    id: "italy-north-zone",
+    domain: "10Y1001A1001A73I",
     technologies: [
-      { psrType: "B16", fuel: "solar", rate: 0.007 },
-      { psrType: "B19", fuel: "wind", rate: 0.0035 },
+      { psrType: "B16", fuel: "solar", rate: 0.006 },
+      { psrType: "B19", fuel: "wind", rate: 0.003 },
     ],
-    sourceNote: "Italy national (Terna 2024): 0.31 TWh/yr total wind+solar curtailment; most curtailment is South/Islands — modelling national zone here pending sub-zone split.",
+    sourceNote: "ENTSO-E North Italy bidding zone; ~35% of Terna 2024 0.31 TWh national curtailment anchor (well-connected via Alps links, lower rates).",
+  },
+  {
+    id: "italy-south",
+    domain: "10Y1001A1001A86H",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.019 },
+      { psrType: "B19", fuel: "wind", rate: 0.010 },
+    ],
+    sourceNote: "ENTSO-E South Italy bidding zone (Apulia / Basilicata / Calabria); ~45% of Terna 2024 national anchor — transmission-constrained North-South corridor, high solar+wind curtailment.",
+  },
+  {
+    id: "italy-sardinia",
+    domain: "10Y1001A1001A74G",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.047 },
+      { psrType: "B19", fuel: "wind", rate: 0.020 },
+    ],
+    sourceNote: "ENTSO-E Sardinia bidding zone; ~20% of Terna 2024 national anchor — island isolation (HVDC Sapei link capacity-limited), high per-GWh curtailment rate.",
   },
   {
     id: "sweden-north",

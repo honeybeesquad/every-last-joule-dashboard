@@ -1,0 +1,76 @@
+name: Historical snapshot append
+
+# Appends the current committed snapshots to a rolling Parquet file so that
+# researchers can download a full time-series archive with stable schema.
+#
+# Runs daily at 02:00 UTC (after the 01:15 refresh build has settled) and
+# after every successful data-refresh workflow.  Each run reads every
+# data/snapshots/last-good/*.json file, builds a flat row per region, and
+# appends it to data/historical/curtailment_history.parquet.
+#
+# Schema (one row per region per build):
+#   build_timestamp  — ISO-8601 UTC (string, sortable)
+#   region_id        — string
+#   peak_gw          — float32
+#   total_twh_30d    — float32
+#   source_status    — "live" | "cached" | null
+#   last_updated     — string (YYYY or YYYY-Q# or ISO timestamp)
+#   profile_h00 … profile_h23  — float32, one column per UTC hour
+#
+# The Parquet file uses Snappy compression and is committed back to the repo
+# on the v0-build branch.  At ~75 regions × ~100 bytes per row × 365 days
+# ≈ 2.7 MB/yr — tiny.  DuckDB or pandas can read it directly.
+#
+# Example usage:
+#   import pandas as pd
+#   df = pd.read_parquet("https://raw.githubusercontent.com/honeybeesquad/
+#       every-last-joule-dashboard/v0-build/data/historical/
+#       curtailment_history.parquet")
+#   df.query("region_id == 'caiso'").plot(x="build_timestamp", y="peak_gw")
+
+on:
+  workflow_run:
+    workflows: ["Scheduled data refresh"]
+    types: [completed]
+  schedule:
+    # Daily safety net at 02:00 UTC — catches any missed workflow_run events.
+    - cron: "0 2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  append:
+    runs-on: ubuntu-latest
+    # Only run after a successful refresh (or on manual / cron trigger).
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
+      github.event.workflow_run.conclusion == 'success'
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: v0-build
+          # Full history not needed — just the current files.
+          fetch-depth: 1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install pyarrow
+        run: pip install "pyarrow==15.0.2"
+
+      - name: Append snapshot row to Parquet
+        run: python scripts/append_history.py
+
+      - name: Commit history update
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(history): append snapshot $(date -u +%Y-%m-%dT%H:%M)Z"
+          file_pattern: data/historical/curtailment_history.parquet
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"

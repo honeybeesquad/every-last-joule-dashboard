@@ -2,18 +2,20 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 110 canonical regions", () => {
-    expect(REGIONS.length).toBe(110);
+  it("has 113 canonical regions", () => {
+    // 110 original + italy-south + italy-sardinia (italy-national → 3 sub-zones, net +2)
+    // + chile-wind (+1 static).
+    expect(REGIONS.length).toBe(113);
   });
 
-  it("has 47 live regions", () => {
-    // Ukraine moved from live → static (ENTSO-E Ukrenergo returns empty post-war)
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(47);
+  it("has 49 live regions", () => {
+    // Italy split: italy-national removed (-1), 3 sub-zones added (+3) → net +2 live.
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(49);
   });
 
-  it("has 59 static regions", () => {
-    // Ukraine added to static (was live)
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(59);
+  it("has 60 static regions", () => {
+    // chile-wind added as static (+1).
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(60);
   });
 
   it("has 4 flare regions", () => {
@@ -57,7 +59,9 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "turkey")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "greece")).toBeDefined();
     expect(REGIONS.find(r => r.id === "romania")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "italy-national")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "italy-north-zone")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "italy-south")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "italy-sardinia")).toBeDefined();
     expect(REGIONS.find(r => r.id === "belgium")).toBeDefined();
     expect(REGIONS.find(r => r.id === "denmark")).toBeDefined();
     expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();
