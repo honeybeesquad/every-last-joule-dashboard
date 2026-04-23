@@ -3,8 +3,6 @@ import * as topojson from "npm:topojson-client";
 import { regionGWAtHour } from "./lib/calc.js";
 import { FUEL_COLOR, dominantFuel } from "./lib/fuel.js";
 
-const FLARE_COLOR = "#f7931a";
-
 const WORLD_TOPOLOGY_URL = "https://unpkg.com/world-atlas@2/countries-110m.json";
 let countriesPromise;
 let landDots;
@@ -74,6 +72,7 @@ export async function mountGlobe(canvas, initial) {
     let best = null;
     let bestDist2 = threshold * threshold;
     for (const region of state.regions) {
+      if (region.kind === "flare") continue; // flare regions no longer rendered on globe
       const dist = d3.geoDistance([region.lon, region.lat], centerLngLat);
       if (dist > Math.PI / 2) continue; // far side of globe
       const point = projection([region.lon, region.lat]);
@@ -183,6 +182,10 @@ export async function mountGlobe(canvas, initial) {
     ctx.stroke();
 
     for (const region of state.regions) {
+      // Flare regions are renewable-dashboard-excluded: not scored in the
+      // headline, not bucketed in hotspot columns, and now not rendered on
+      // the globe either. The flare story lives only in the stats footnote.
+      if (region.kind === "flare") continue;
       const data = state.regionData[region.id];
       const gw = data ? regionGWAtHour(data, hour, state.mode) : 0;
       if (gw <= 0.01) continue;
@@ -192,7 +195,7 @@ export async function mountGlobe(canvas, initial) {
       if (!point) continue;
 
       const visible = 1 - dist / (Math.PI / 2);
-      const color = region.kind === "flare" ? FLARE_COLOR : FUEL_COLOR[dominantFuel(region, data)];
+      const color = FUEL_COLOR[dominantFuel(region, data)];
       const weight = Math.sqrt(gw);
       const glowR = 4 + weight * 5;
       const coreR = 1.5 + weight * 0.8;
