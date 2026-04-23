@@ -248,6 +248,25 @@ These regions intentionally use typical-shape fallback profiles after one-day li
 
 ---
 
+## v1k fallback expansion regions (used)
+
+These 12 regions close Australia non-NEM, South/Southeast Asia, East Asia, Russia non-flare, and Middle East coverage gaps. All loaders wrap in `withFallback`; live probes are attempted by the executable loaders, while unit tests use deterministic typical-profile exports. No stable unauthenticated machine-readable hourly curtailment feed was integrated in the v1k time-box.
+
+- Western Australia (SWIS): probed `https://data.wa.aemo.com.au/public/market-data/wem/` (404 from this environment), `https://aemo.com.au/energy-systems/electricity/wholesale-electricity-market-wem/data-wem/data-dashboard-wem` (Cloudflare 403), and `https://data.wa.aemo.com.au/` (market-data shell only). Fallback: solar-shaped SWIS profile peaking UTC 04:00, 0.4 TWh/yr, fuelShare solar 70% / wind 30%.
+- NT & Pilbara: probed Horizon Power public site; Pilbara captive mining networks expose no public hourly curtailment. Fallback: solar profile peaking UTC 04:00, 0.2 TWh/yr.
+- Indonesia: probed PLN public site; daily/generation materials are not an unauthenticated hourly curtailment feed. Fallback: Java-Bali solar profile peaking UTC 05:00, 0.3 TWh/yr.
+- Malaysia: probed TNB/SEDA public sources; no hourly curtailment endpoint integrated. Fallback: Peninsular solar profile peaking UTC 04:00, 0.15 TWh/yr.
+- South Korea (mainland): probed KPX English/EPSIS path; no mainland hourly curtailment feed integrated, with Jeju kept separate. Fallback: mainland solar profile peaking UTC 03:00, 0.5 TWh/yr.
+- Russia (European grid): probed SO UES; sanctions/language/access constraints and no unauthenticated hourly hydro-spill feed. Fallback: seasonal hydro profile using Volga/western Russia NH spring-summer shares, 1 TWh/yr.
+- Taiwan: probed Taipower generation-status page, data.gov.tw search, and T-REC. Taipower exposes live generation HTML, data.gov.tw exposes a portal shell, and T-REC is certificate metadata, not curtailment. Fallback: mixed offshore-wind + solar profile, 0.6 TWh/yr, fuelShare wind 67% / solar 33%.
+- Jordan: probed NEPCO public site; annual/report-level curtailment references only. Fallback: mixed wind + solar profile, 0.35 TWh/yr, fuelShare wind 70% / solar 30%, calibrated to the 17% wind-curtailment headline.
+- Saudi Arabia (solar): probed SEC/ECRA public path; no hourly solar curtailment endpoint integrated. This is separate from the `e-saudi` flare region. Fallback: solar profile peaking UTC 09:00, 0.3 TWh/yr.
+- UAE: probed DEWA/EWEC public path; no hourly solar curtailment endpoint integrated. Fallback: solar profile peaking UTC 08:00, 0.2 TWh/yr.
+- Oman: probed OPWP/Nama public path; annual-report level data only. Fallback: solar profile peaking UTC 08:00, 0.1 TWh/yr.
+- Israel: probed Noga/IEC public path; no hourly solar curtailment endpoint integrated. Fallback: Negev solar profile peaking UTC 10:00, 0.15 TWh/yr.
+
+---
+
 ## Ontario IESO generator output (used)
 
 **Feed used:** `https://reports-public.ieso.ca/public/GenOutputCapability/PUB_GenOutputCapability*.xml`

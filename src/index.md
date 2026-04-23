@@ -49,6 +49,18 @@ const ethiopia = await FileAttachment("data/ethiopia.json").json();
 const kazakhstan = await FileAttachment("data/kazakhstan.json").json();
 const honduras = await FileAttachment("data/honduras.json").json();
 const jeju = await FileAttachment("data/jeju.json").json();
+const waSwis = await FileAttachment("data/wa-swis.json").json();
+const ntPilbara = await FileAttachment("data/nt-pilbara.json").json();
+const indonesia = await FileAttachment("data/indonesia.json").json();
+const malaysia = await FileAttachment("data/malaysia.json").json();
+const southKorea = await FileAttachment("data/south-korea.json").json();
+const russiaMainland = await FileAttachment("data/russia-mainland.json").json();
+const taiwan = await FileAttachment("data/taiwan.json").json();
+const jordan = await FileAttachment("data/jordan.json").json();
+const saudiSolar = await FileAttachment("data/saudi-solar.json").json();
+const uae = await FileAttachment("data/uae.json").json();
+const oman = await FileAttachment("data/oman.json").json();
+const israel = await FileAttachment("data/israel.json").json();
 
 document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
@@ -175,6 +187,18 @@ const regionData = {
   kazakhstan,
   honduras,
   jeju,
+  "wa-swis": waSwis,
+  "nt-pilbara": ntPilbara,
+  indonesia,
+  malaysia,
+  "south-korea": southKorea,
+  "russia-mainland": russiaMainland,
+  taiwan,
+  jordan,
+  "saudi-solar": saudiSolar,
+  uae,
+  oman,
+  israel,
   ...statics
 };
 

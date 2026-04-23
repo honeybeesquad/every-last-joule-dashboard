@@ -46,7 +46,7 @@ export const REGIONS: Region[] = [
   { id: "south-africa",     name: "South Africa",    country: "ZAF", lat: -32.0, lon:  26.0, tier: "live", kind: "mixed", source: "Eskom Data Portal", sourceUrl: "https://www.eskom.co.za/dataportal/" },
   { id: "new-zealand",      name: "New Zealand",     country: "NZL", lat: -40.9, lon: 172.0, tier: "live", kind: "mixed", source: "EMI wind+solar+geo", sourceUrl: "https://www.emi.ea.govt.nz/Wholesale/Datasets/Generation/Generation_MD" },
   { id: "atacama",          name: "Atacama",         country: "CHL", lat: -24.5, lon: -69.2, tier: "live", kind: "solar", source: "CEN Chile XLSX", sourceUrl: "https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/" },
-  // Tier 2 - static (13 regions)
+  // Tier 2 - static fallback regions
   { id: "sichuan",          name: "Sichuan",         country: "CHN", lat: 30.6, lon:  102.8, tier: "static", kind: "hydro", source: "Ember China", sourceUrl: "https://ember-energy.org/" },
   { id: "xinjiang",         name: "Xinjiang",        country: "CHN", lat: 41.5, lon:   85.0, tier: "static", kind: "solar", source: "Ember China", sourceUrl: "https://ember-energy.org/" },
   { id: "iceland",          name: "Iceland",         country: "ISL", lat: 64.9, lon:  -19.0, tier: "static", kind: "hydro", source: "Published", sourceUrl: "https://orkustofnun.is/" },
@@ -63,6 +63,18 @@ export const REGIONS: Region[] = [
   { id: "kazakhstan",       name: "Kazakhstan",      country: "KAZ", lat: 48.0, lon:   66.9, tier: "static", kind: "wind",  source: "KEGOC fallback", sourceUrl: "https://www.kegoc.kz/" },
   { id: "honduras",         name: "Honduras",        country: "HND", lat: 15.2, lon:  -86.2, tier: "static", kind: "solar", source: "ODS Honduras fallback", sourceUrl: "https://ods.org.hn/" },
   { id: "jeju",             name: "Jeju (S. Korea)", country: "KOR", lat: 33.49, lon: 126.50, tier: "static", kind: "wind",  source: "KPX Jeju fallback", sourceUrl: "https://www.kpx.or.kr/" },
+  { id: "wa-swis",          name: "Western Australia (SWIS)", country: "AUS", lat: -32.0, lon: 116.0, tier: "static", kind: "mixed", source: "AEMO WEM fallback", sourceUrl: "https://data.wa.aemo.com.au/" },
+  { id: "nt-pilbara",       name: "NT & Pilbara",    country: "AUS", lat: -22.0, lon: 118.0, tier: "static", kind: "solar", source: "Horizon/Pilbara fallback", sourceUrl: "https://www.horizonpower.com.au/" },
+  { id: "indonesia",        name: "Indonesia",       country: "IDN", lat:  -7.0, lon: 110.0, tier: "static", kind: "solar", source: "PLN fallback", sourceUrl: "https://web.pln.co.id/" },
+  { id: "malaysia",         name: "Malaysia",        country: "MYS", lat:   3.5, lon: 102.0, tier: "static", kind: "solar", source: "TNB/SEDA fallback", sourceUrl: "https://www.tnb.com.my/" },
+  { id: "south-korea",      name: "South Korea (mainland)", country: "KOR", lat: 35.5, lon: 127.0, tier: "static", kind: "solar", source: "KPX fallback", sourceUrl: "https://www.kpx.or.kr/eng/" },
+  { id: "russia-mainland",  name: "Russia (European grid)", country: "RUS", lat: 55.8, lon:  38.0, tier: "static", kind: "hydro", source: "SO UES fallback", sourceUrl: "https://www.so-ups.ru/" },
+  { id: "taiwan",           name: "Taiwan",          country: "TWN", lat:  23.9, lon: 120.4, tier: "static", kind: "mixed", source: "Taipower fallback", sourceUrl: "https://www.taipower.com.tw/" },
+  { id: "jordan",           name: "Jordan",          country: "JOR", lat:  30.8, lon:  35.8, tier: "static", kind: "mixed", source: "NEPCO fallback", sourceUrl: "https://www.nepco.com.jo/" },
+  { id: "saudi-solar",      name: "Saudi Arabia (solar)", country: "SAU", lat: 25.5, lon: 46.5, tier: "static", kind: "solar", source: "SEC/ECRA fallback", sourceUrl: "https://www.se.com.sa/" },
+  { id: "uae",              name: "UAE",             country: "ARE", lat:  24.5, lon:  54.4, tier: "static", kind: "solar", source: "DEWA/EWEC fallback", sourceUrl: "https://www.dewa.gov.ae/" },
+  { id: "oman",             name: "Oman",            country: "OMN", lat:  23.5, lon:  57.5, tier: "static", kind: "solar", source: "OPWP fallback", sourceUrl: "https://www.omanpwp.om/" },
+  { id: "israel",           name: "Israel",          country: "ISR", lat:  30.8, lon:  34.8, tier: "static", kind: "solar", source: "Noga fallback", sourceUrl: "https://www.noga-iso.co.il/" },
   // Tier 3 - flare (4 regions)
   { id: "permian",   name: "Permian Basin",   country: "USA",    lat:  31.9, lon: -102.5, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
   { id: "w-siberia", name: "W. Siberia",      country: "RUS",    lat:  61.0, lon:   73.0, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },

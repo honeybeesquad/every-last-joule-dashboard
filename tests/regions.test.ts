@@ -2,16 +2,16 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 62 canonical regions", () => {
-    expect(REGIONS.length).toBe(62);
+  it("has 74 canonical regions", () => {
+    expect(REGIONS.length).toBe(74);
   });
 
   it("has 42 live regions", () => {
     expect(REGIONS.filter(r => r.tier === "live").length).toBe(42);
   });
 
-  it("has 16 static regions", () => {
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(16);
+  it("has 28 static regions", () => {
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(28);
   });
 
   it("has 4 flare regions", () => {
@@ -95,5 +95,25 @@ describe("regions", () => {
     ]) {
       expect(REGIONS.find(r => r.id === id)).toBeDefined();
     }
+  });
+
+  it("includes the v1k global fallback expansion", () => {
+    for (const id of [
+      "wa-swis",
+      "nt-pilbara",
+      "indonesia",
+      "malaysia",
+      "south-korea",
+      "russia-mainland",
+      "taiwan",
+      "jordan",
+      "saudi-solar",
+      "uae",
+      "oman",
+      "israel",
+    ]) {
+      expect(REGIONS.find(r => r.id === id)).toBeDefined();
+    }
+    expect(REGIONS.find(r => r.id === "e-saudi")?.tier).toBe("flare");
   });
 });

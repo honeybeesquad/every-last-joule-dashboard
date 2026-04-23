@@ -58,4 +58,14 @@ Argentina, Uruguay, Paraguay, Mexico, Japan, Vietnam, Thailand, North India, Cyp
 
 Turkey was removed in v1f. ENTSO-E returned no usable A75 renewable generation signal for all probed PSR types, and no stable unauthenticated TEIAS/EPIAS endpoint was integrated in the time-box. Showing a permanent zero-rate region was less honest than dropping it.
 
+### 13. v1k global expansion is coverage-first and fallback-labelled
+
+Western Australia (SWIS), NT & Pilbara, Indonesia, Malaysia, South Korea mainland, Russia (European grid), Taiwan, Jordan, Saudi Arabia solar, UAE, Oman, and Israel are included through typical profiles after live probes failed to find stable unauthenticated hourly curtailment feeds. These are coverage-gap estimates, not measured curtailment series, and every loader labels the fallback in `sourceNote`.
+
+- **Australia non-NEM:** WA-SWIS uses 0.4 TWh/yr mixed solar/wind; NT & Pilbara uses 0.2 TWh/yr captive solar.
+- **South/Southeast Asia:** Indonesia uses 0.3 TWh/yr Java-Bali solar; Malaysia uses 0.15 TWh/yr Peninsular solar.
+- **East Asia:** South Korea mainland uses 0.5 TWh/yr solar, excluding Jeju; Taiwan uses 0.6 TWh/yr mixed offshore wind and solar.
+- **Russia non-flare:** Russia (European grid) uses 1 TWh/yr seasonal hydro spill. W. Siberia remains the separate flare region and is not reclassified.
+- **Middle East:** Jordan uses 0.35 TWh/yr mixed wind/solar calibrated to the 17% wind-curtailment headline; Saudi Arabia solar uses 0.3 TWh/yr and remains separate from `e-saudi` flare; UAE uses 0.2 TWh/yr; Oman uses 0.1 TWh/yr; Israel uses 0.15 TWh/yr.
+
 Corrections welcome: simon@collins.nu.
