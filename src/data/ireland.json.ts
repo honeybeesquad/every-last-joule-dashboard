@@ -5,10 +5,14 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
 const EIRGRID_URL = "https://www.eirgridgroup.com/how-the-grid-works/renewables/";
-// EirGrid Annual Report 2024 reports 1.266 TWh wind dispatch-down (Republic
-// only; all-island number is ~2.2 TWh including Northern Ireland). Previous
-// 6% rate produced ~0.72 TWh/yr — 1.76x under-calibrated. Raised to 10.5%.
-const CURTAILMENT_RATE = 0.105;
+// SONI/EirGrid "Annual Renewable Constraint and Curtailment Report 2024"
+// reports 2024 wind dispatch-down of 1.266 TWh in the Republic of Ireland
+// and 0.915 TWh in Northern Ireland — all-island total 2.181 TWh. This
+// loader emits the all-island aggregate; src/index.md splits it into
+// `ireland-republic` and `northern-ireland` at 58/42 (the 2024 ratio) at
+// consumption time. 17.8% rate on ~1400 MW avg all-island wind output
+// reproduces the 2.18 TWh/yr anchor.
+const CURTAILMENT_RATE = 0.178;
 const ESTIMATED_WIND_AVG_MW = 1400;
 const WIND_SHAPE = [
   1.30, 1.28, 1.24, 1.18, 1.12, 1.05, 0.98, 0.92,
@@ -59,7 +63,7 @@ const run = async (): Promise<RegionData> => {
     peakGW: peakGW(points),
     lastUpdated: now.toISOString(),
     sourceNote:
-      `EirGrid renewables page reachable (${meta.title}); SmartGrid Dashboard API remained unavailable, so this loader emits a calibrated Irish wind fallback profile at 6% of estimated recent output`,
+      `EirGrid renewables page reachable (${meta.title}); SmartGrid Dashboard API remained unavailable, so this loader emits a calibrated all-island wind profile at 17.8% of ~1400 MW avg fleet — tuned to reproduce SONI/EirGrid 2024 annual DD total (ROI 1.266 TWh + NI 0.915 TWh = 2.181 TWh). Split into ROI/NI at consumption.`,
   };
 };
 

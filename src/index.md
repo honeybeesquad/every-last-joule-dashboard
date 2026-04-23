@@ -207,6 +207,26 @@ document.getElementById("app-root").innerHTML = `
   </div>
 `;
 
+// Scale a single RegionData into a named sub-region by a fixed ratio.
+// Used to split aggregate live loaders into the sub-zones identified by
+// the 2026-04-24 global-coverage audit (Codex). Profiles, totals, peak,
+// and latestProfile all scale linearly; the sourceNote records the split
+// ratio so the provenance stays visible in the UI and CLI output.
+function splitRegion(source, newId, ratio, note) {
+  const scaleArr = (arr) => (Array.isArray(arr) ? arr.map((v) => v * ratio) : arr);
+  return {
+    ...source,
+    regionId: newId,
+    profile: scaleArr(source.profile),
+    latestProfile: scaleArr(source.latestProfile),
+    totalTWh: (source.totalTWh ?? 0) * ratio,
+    peakGW: (source.peakGW ?? 0) * ratio,
+    sourceNote: note
+      ? `${source.sourceNote ?? ""} | ${note}`
+      : source.sourceNote
+  };
+}
+
 const regionData = {
   ...(ERCOT_NATIVE_ENABLED
     ? {
@@ -218,8 +238,15 @@ const regionData = {
   miso,
   pjm,
   spp,
-  nyiso,
-  "iso-ne": isoNe,
+  // NYISO zonal split — NYISO Power Trends 2024 / Unbottling Wind
+  // attributes most 2023 wind curtailment (0.162 TWh statewide) to
+  // Zones D and E. 75/25 split approximates that geographic concentration.
+  "nyiso-zones-d-e": splitRegion(nyiso, "nyiso-zones-d-e", 0.75, "Zones D+E share of 2023 statewide wind curtailment (NYISO Power Trends 2024)"),
+  "nyiso-rest": splitRegion(nyiso, "nyiso-rest", 0.25, "Remainder of NYISO wind+solar"),
+  // ISO-NE split — IMM 2024 Annual Markets Report states 93% of 2020-2024
+  // curtailed renewable capacity in New England was in Maine and Vermont.
+  "iso-ne-maine-vermont": splitRegion(isoNe, "iso-ne-maine-vermont", 0.93, "ME+VT share (93% of 2020-2024 NE curtailment per ISO-NE IMM)"),
+  "iso-ne-rest": splitRegion(isoNe, "iso-ne-rest", 0.07, "Remainder of ISO-NE wind+solar"),
   bpa,
   ...aemo,
   belgium,
@@ -229,7 +256,12 @@ const regionData = {
   finland: entsoe.finland,
   france,
   netherlands: entsoe.netherlands,
-  denmark,
+  // Denmark split by Energinet PriceArea. DK1 (Jutland/Fyn) hosts most
+  // onshore wind and interconnects with Germany; DK2 (Zealand) is across
+  // Øresund from Sweden. 75/25 approximates DK1's share of combined
+  // wind+solar generation.
+  "denmark-west": splitRegion(denmark, "denmark-west", 0.75, "DK1 (Jutland/Fyn) share of Energinet wind+solar"),
+  "denmark-east": splitRegion(denmark, "denmark-east", 0.25, "DK2 (Zealand) share of Energinet wind+solar"),
   poland: entsoe.poland,
   greece: entsoe.greece,
   romania: entsoe.romania,
@@ -244,12 +276,19 @@ const regionData = {
   "czech-republic": entsoe["czech-republic"],
   bulgaria: entsoe.bulgaria,
   baltics: entsoe.baltics,
-  "north-sea": northSea,
+  // GB split — NESO 2024 Markets Roadmap reports ~11 TWh/yr of constraint
+  // actions, dominated by the Scotland-to-England boundary. 70/30 split
+  // reflects Scotland's disproportionate share of curtailed wind.
+  "gb-scotland": splitRegion(northSea, "gb-scotland", 0.70, "Scotland share of GB wind+solar curtailment (NESO constraint data)"),
+  "gb-england-wales": splitRegion(northSea, "gb-england-wales", 0.30, "England+Wales share of GB wind+solar"),
   ...brazilNE,
   "n-norway": norway,
   ontario,
   alberta,
-  ireland,
+  // Ireland split — SONI/EirGrid 2024 Annual Renewable Constraint and
+  // Curtailment Report: ROI 1.266 TWh wind DD, NI 0.915 TWh. ~58/42 ratio.
+  "ireland-republic": splitRegion(ireland, "ireland-republic", 0.58, "ROI share of all-island wind DD (1.266 TWh per SONI/EirGrid 2024)"),
+  "northern-ireland": splitRegion(ireland, "northern-ireland", 0.42, "NI share of all-island wind DD (0.915 TWh, 29.6% of NI wind, per SONI/EirGrid 2024)"),
   peru,
   "south-africa": southAfrica,
   "new-zealand": newZealand,

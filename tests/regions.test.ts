@@ -2,20 +2,23 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 113 canonical regions", () => {
-    // 110 original + italy-south + italy-sardinia (italy-national → 3 sub-zones, net +2)
-    // + chile-wind (+1 static).
-    expect(REGIONS.length).toBe(113);
+  it("has 123 canonical regions", () => {
+    // v0.6 global-coverage-audit (Codex 2026-04-24):
+    //   - 5 live regions split into 10 sub-zones (net +5 live):
+    //       ireland, iso-ne, nyiso, north-sea, denmark
+    //   - 5 new statics added: hawaii-oahu/maui/island, austria, russia-murmansk-wind
+    //   Prior total 113 + 10 new splits + 5 new statics = 123.
+    expect(REGIONS.length).toBe(123);
   });
 
-  it("has 49 live regions", () => {
-    // Italy split: italy-national removed (-1), 3 sub-zones added (+3) → net +2 live.
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(49);
+  it("has 54 live regions", () => {
+    // v0.6: -5 aggregates + 10 splits = +5 live → 49 + 5 = 54.
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(54);
   });
 
-  it("has 60 static regions", () => {
-    // chile-wind added as static (+1).
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(60);
+  it("has 65 static regions", () => {
+    // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(65);
   });
 
   it("has 4 flare regions", () => {
@@ -52,7 +55,8 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "n-norway")).toBeDefined();
     expect(REGIONS.find(r => r.id === "ontario")).toBeDefined();
     expect(REGIONS.find(r => r.id === "alberta")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "ireland")).toBeDefined();
+    // Ireland split in v0.6; see coverage-audit test block below.
+    expect(REGIONS.find(r => r.id === "ireland")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "peru")).toBeDefined();
     expect(REGIONS.find(r => r.id === "south-africa")).toBeDefined();
     expect(REGIONS.find(r => r.id === "poland")).toBeDefined();
@@ -63,9 +67,10 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "italy-south")).toBeDefined();
     expect(REGIONS.find(r => r.id === "italy-sardinia")).toBeDefined();
     expect(REGIONS.find(r => r.id === "belgium")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "denmark")).toBeDefined();
+    // Denmark split in v0.6; see coverage-audit test block below.
+    expect(REGIONS.find(r => r.id === "denmark")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "denmark-west")).toBeUndefined();
+    // denmark-west/denmark-east now exist as v0.6 split regions.
   });
 
   it("includes the v1f regional expansion", () => {
@@ -132,12 +137,16 @@ describe("regions", () => {
   });
 
   it("includes the v1o US ISO expansion", () => {
-    for (const id of ["miso", "pjm", "spp", "nyiso", "iso-ne", "bpa"]) {
+    // NYISO and ISO-NE split in v0.6 (see coverage-audit test block below);
+    // other ISOs remain as single regions.
+    for (const id of ["miso", "pjm", "spp", "bpa"]) {
       const region = REGIONS.find(r => r.id === id);
       expect(region).toBeDefined();
       expect(region?.tier).toBe("live");
       expect(region?.kind).toBe("mixed");
     }
+    expect(REGIONS.find(r => r.id === "nyiso")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "iso-ne")).toBeUndefined();
   });
 
   it("includes the v1p porcupine fill", () => {
@@ -173,5 +182,40 @@ describe("regions", () => {
       expect(region).toBeDefined();
       expect(region?.tier).toBe("static");
     }
+  });
+
+  it("includes the v0.6 Codex global-coverage-audit splits and additions", () => {
+    // 5 live aggregates split into 10 sub-zones.
+    const splitPairs: Array<[string, string]> = [
+      ["ireland-republic", "northern-ireland"],
+      ["iso-ne-maine-vermont", "iso-ne-rest"],
+      ["nyiso-zones-d-e", "nyiso-rest"],
+      ["gb-scotland", "gb-england-wales"],
+      ["denmark-west", "denmark-east"],
+    ];
+    for (const [a, b] of splitPairs) {
+      for (const id of [a, b]) {
+        const region = REGIONS.find(r => r.id === id);
+        expect(region, `missing split region ${id}`).toBeDefined();
+        expect(region?.tier).toBe("live");
+      }
+    }
+
+    // 5 new statics — Hawaii 3-island system, Austria, Russia Murmansk wind.
+    for (const id of ["hawaii-oahu", "hawaii-maui", "hawaii-island", "austria", "russia-murmansk-wind"]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region, `missing static region ${id}`).toBeDefined();
+      expect(region?.tier).toBe("static");
+    }
+
+    // Former aggregate ids must now be absent.
+    for (const id of ["ireland", "iso-ne", "nyiso", "north-sea", "denmark"]) {
+      expect(REGIONS.find(r => r.id === id), `old aggregate ${id} should be removed`).toBeUndefined();
+    }
+
+    // Russia Murmansk is a wind region (SO UPS monthly DPM VIE data).
+    expect(REGIONS.find(r => r.id === "russia-murmansk-wind")?.kind).toBe("wind");
+    // Hawaii Big Island is 58.7% renewable mix (geothermal + solar + wind).
+    expect(REGIONS.find(r => r.id === "hawaii-island")?.kind).toBe("mixed");
   });
 });

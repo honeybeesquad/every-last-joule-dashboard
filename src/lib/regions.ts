@@ -8,8 +8,17 @@ export const REGIONS: Region[] = [
   { id: "miso",             name: "MISO (Midwest)",  country: "USA", lat: 41.5, lon:  -93.0, tier: "live", kind: "mixed", source: "EIA MISO wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
   { id: "pjm",              name: "PJM",             country: "USA", lat: 40.0, lon:  -77.0, tier: "live", kind: "mixed", source: "EIA PJM wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
   { id: "spp",              name: "SPP",             country: "USA", lat: 38.0, lon:  -98.0, tier: "live", kind: "mixed", source: "EIA SPP wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "nyiso",            name: "NYISO",           country: "USA", lat: 42.6, lon:  -77.0, tier: "live", kind: "mixed", source: "EIA NYISO wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "iso-ne",           name: "ISO-NE",          country: "USA", lat: 43.0, lon:  -71.5, tier: "live", kind: "mixed", source: "EIA ISO-NE wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
+  // NYISO split into zones D+E (North Country / Mohawk Valley — bulk of wind
+  // curtailment per NYISO Power Trends 2024 / Unbottling Wind) vs the rest.
+  // 2023 statewide wind curtailment was 0.162 TWh, concentrated in D/E.
+  { id: "nyiso-zones-d-e",  name: "NYISO Zones D+E", country: "USA", lat: 43.7, lon:  -75.3, tier: "live", kind: "wind",  source: "EIA NYISO wind (Zones D+E share, ~75% of statewide curtailment)", sourceUrl: "https://www.nyiso.com/documents/20142/2223020/2024-Power-Trends.pdf" },
+  { id: "nyiso-rest",       name: "NYISO (rest)",    country: "USA", lat: 42.8, lon:  -74.8, tier: "live", kind: "mixed", source: "EIA NYISO wind+solar (ex-Zones D/E)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
+  // ISO-NE split — ISO-NE IMM's 2024 annual markets report says 93% of
+  // 2020-2024 curtailed renewable capacity in New England was in Maine and
+  // Vermont (northern congestion pocket). 2024 ISO-NE renewable curtailment
+  // total = 0.034 TWh, split 93/7.
+  { id: "iso-ne-maine-vermont", name: "ISO-NE Maine/Vermont", country: "USA", lat: 44.7, lon: -70.6, tier: "live", kind: "wind",  source: "EIA ISO-NE wind (ME+VT share, 93% of NE curtailment per IMM)", sourceUrl: "https://www.iso-ne.com/static-assets/documents/100023/2024-annual-markets-report.pdf" },
+  { id: "iso-ne-rest",          name: "ISO-NE (rest)",        country: "USA", lat: 42.2, lon: -71.8, tier: "live", kind: "mixed", source: "EIA ISO-NE wind+solar (ex-ME/VT)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
   { id: "bpa",              name: "BPA",             country: "USA", lat: 45.7, lon: -121.5, tier: "live", kind: "mixed", source: "EIA BPA wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
   { id: "aemo-nsw",         name: "New South Wales", country: "AUS", lat: -32.5, lon: 146.5, tier: "live", kind: "mixed", source: "AEMO NEMWeb wind+solar", sourceUrl: "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/" },
   { id: "aemo-vic",         name: "Victoria",        country: "AUS", lat: -37.0, lon: 144.8, tier: "live", kind: "mixed", source: "AEMO NEMWeb wind+solar", sourceUrl: "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/" },
@@ -23,7 +32,12 @@ export const REGIONS: Region[] = [
   { id: "finland",          name: "Finland",         country: "FIN", lat: 62.0, lon:   25.0, tier: "live", kind: "wind",  source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "france",           name: "France",          country: "FRA", lat: 46.5, lon:    2.5, tier: "live", kind: "mixed", source: "RTE eco2mix wind+solar", sourceUrl: "https://odre.opendatasoft.com/" },
   { id: "netherlands",      name: "Netherlands",     country: "NLD", lat: 52.2, lon:    5.3, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "denmark",          name: "Denmark",         country: "DNK", lat: 56.0, lon:   10.0, tier: "live", kind: "mixed", source: "Energinet wind+solar", sourceUrl: "https://api.energidataservice.dk/" },
+  // Denmark split by Energinet PriceArea. DK1 (Jutland/Fyn) hosts most
+  // onshore wind and is interconnected to Germany; DK2 (Zealand) sits
+  // across the Øresund from Sweden. Energi Data Service is natively zonal;
+  // split 75/25 reflects DK1's share of combined wind+solar generation.
+  { id: "denmark-west",      name: "Denmark DK1",     country: "DNK", lat: 56.2, lon:    9.1, tier: "live", kind: "mixed", source: "Energinet wind+solar (DK1)", sourceUrl: "https://api.energidataservice.dk/" },
+  { id: "denmark-east",      name: "Denmark DK2",     country: "DNK", lat: 55.4, lon:   12.3, tier: "live", kind: "mixed", source: "Energinet wind+solar (DK2)", sourceUrl: "https://api.energidataservice.dk/" },
   { id: "poland",           name: "Poland",          country: "POL", lat: 52.0, lon:   19.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "greece",           name: "Greece",          country: "GRC", lat: 39.0, lon:   22.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "romania",          name: "Romania",         country: "ROU", lat: 45.9, lon:   25.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
@@ -37,7 +51,11 @@ export const REGIONS: Region[] = [
   { id: "czech-republic",   name: "Czech Republic",  country: "CZE", lat: 49.82, lon: 15.47, tier: "live", kind: "mixed", source: "ENTSO-E CEPS", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "bulgaria",         name: "Bulgaria",        country: "BGR", lat: 42.73, lon: 25.49, tier: "live", kind: "mixed", source: "ENTSO-E ESO", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "baltics",          name: "Baltic states",   country: "EST", lat: 57.0,  lon: 24.0,  tier: "live", kind: "wind",  source: "ENTSO-E Litgrid", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "north-sea",        name: "North Sea",       country: "GBR", lat: 56.5, lon:   -2.0, tier: "live", kind: "mixed", source: "Elexon BMRS wind+solar", sourceUrl: "https://www.elexon.co.uk/data/" },
+  // GB split — NESO Markets Roadmap 2024 reports ~11 TWh/yr of constraint
+  // actions, dominated by the Scotland-to-England export boundary. Split
+  // 70/30 at consumption: Scotland carries the bulk of curtailed wind.
+  { id: "gb-scotland",      name: "GB Scotland",     country: "GBR", lat: 56.8, lon:   -4.2, tier: "live", kind: "wind",  source: "Elexon BMRS wind+solar (Scotland share, ~70% via NESO constraint boundary)", sourceUrl: "https://www.neso.energy/data-portal/monthly-operational-metered-wind-output" },
+  { id: "gb-england-wales", name: "GB England+Wales", country: "GBR", lat: 52.9, lon:  -1.8, tier: "live", kind: "mixed", source: "Elexon BMRS wind+solar (England+Wales share)", sourceUrl: "https://www.elexon.co.uk/data/" },
   // Brazil NE: each state runs both wind and solar constrained-off via ONS;
   // kind="mixed" because the loader emits a data-driven wind/solar split.
   { id: "brazil-rn",        name: "Rio Grande do Norte", country: "BRA", lat: -5.8, lon: -36.3, tier: "live", kind: "mixed", source: "ONS wind+solar", sourceUrl: "https://www.ons.org.br/" },
@@ -49,7 +67,12 @@ export const REGIONS: Region[] = [
   { id: "n-norway",         name: "N. Norway",       country: "NOR", lat: 68.5, lon:   17.5, tier: "live", kind: "mixed", source: "ENTSO-E hydro+wind", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "ontario",          name: "Ontario",         country: "CAN", lat: 44.0, lon:  -81.0, tier: "live", kind: "mixed", source: "IESO wind+solar", sourceUrl: "https://reports-public.ieso.ca/public/GenOutputCapability/" },
   { id: "alberta",          name: "Alberta",         country: "CAN", lat: 51.5, lon: -114.0, tier: "live", kind: "mixed", source: "AESO wind+solar", sourceUrl: "http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet" },
-  { id: "ireland",          name: "Ireland",         country: "IRL", lat: 53.5, lon:   -7.5, tier: "live", kind: "wind",  source: "EirGrid", sourceUrl: "https://www.eirgridgroup.com/how-the-grid-works/renewables/" },
+  // Ireland split by SONI/EirGrid's 2024 Annual Renewable Constraint and
+  // Curtailment Report: ROI wind DD = 1.266 TWh (8.8% of RES), NI wind DD
+  // = 0.915 TWh (29.6% of wind, 25.5% of RES). NI is a much smaller grid
+  // but has dramatically higher dispatch-down intensity.
+  { id: "ireland-republic", name: "Ireland (Republic)",  country: "IRL", lat: 53.3, lon:   -7.8, tier: "live", kind: "wind",  source: "SONI/EirGrid 2024 dispatch-down (ROI: 1.266 TWh)", sourceUrl: "https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf" },
+  { id: "northern-ireland", name: "Northern Ireland",    country: "GBR", lat: 54.65, lon:  -6.65, tier: "live", kind: "wind",  source: "SONI/EirGrid 2024 dispatch-down (NI: 0.915 TWh, 29.6% of wind)", sourceUrl: "https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf" },
   { id: "peru",             name: "Peru",            country: "PER", lat: -14.0, lon: -74.0, tier: "live", kind: "mixed", source: "COES-SINAC", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },
   { id: "south-africa",     name: "South Africa",    country: "ZAF", lat: -32.0, lon:  26.0, tier: "live", kind: "mixed", source: "Eskom Data Portal", sourceUrl: "https://www.eskom.co.za/dataportal/" },
   { id: "new-zealand",      name: "New Zealand",     country: "NZL", lat: -40.9, lon: 172.0, tier: "live", kind: "mixed", source: "EMI wind+solar+geo", sourceUrl: "https://www.emi.ea.govt.nz/Wholesale/Datasets/Generation/Generation_MD" },
@@ -114,6 +137,22 @@ export const REGIONS: Region[] = [
   { id: "quebec",           name: "Quebec",          country: "CAN", lat:  52.0, lon: -72.0, tier: "static", kind: "hydro", source: "Hydro-Quebec fallback", sourceUrl: "https://www.hydroquebec.com/" },
   { id: "manitoba",         name: "Manitoba",        country: "CAN", lat:  54.0, lon: -98.0, tier: "static", kind: "mixed", source: "Manitoba Hydro fallback", sourceUrl: "https://www.hydro.mb.ca/" },
   { id: "saskatchewan",     name: "Saskatchewan",    country: "CAN", lat:  52.0, lon: -106.0, tier: "static", kind: "wind",  source: "SaskPower fallback", sourceUrl: "https://www.saskpower.com/" },
+  // v0.6 — Codex global-coverage-audit 2026-04-24 additions.
+  // Hawaiian Electric publishes a per-island curtailment metric (RSWG
+  // monthly + annual historical workbook). TWh anchors are provisional
+  // pending workbook extraction; see docs/research/2026-04-24-global-coverage-audit.md.
+  { id: "hawaii-oahu",      name: "Hawaii (Oahu)",       country: "USA", lat:  21.46, lon: -158.00, tier: "static", kind: "solar", source: "Hawaiian Electric RSWG monthly reports (Oahu: ~30% renewable share 2024, provisional)", sourceUrl: "https://www.hawaiianelectric.com/about-us/performance-scorecards-and-metrics/renewable-energy" },
+  { id: "hawaii-maui",      name: "Hawaii (Maui)",       country: "USA", lat:  20.80, lon: -156.33, tier: "static", kind: "solar", source: "Hawaiian Electric RSWG monthly reports (Maui island system)", sourceUrl: "https://www.hawaiianelectric.com/about-us/performance-scorecards-and-metrics/renewable-energy" },
+  { id: "hawaii-island",    name: "Hawaii (Big Island)", country: "USA", lat:  19.60, lon: -155.50, tier: "static", kind: "mixed", source: "Hawaiian Electric RSWG (Hawaii Island: 58.7% renewable share 2024)", sourceUrl: "https://www.hawaiianelectric.com/about-us/performance-scorecards-and-metrics/renewable-energy" },
+  // Austria — APG confirms 2024 redispatch events involving renewable
+  // curtailment; no public annual TWh anchor. Held as a provisional
+  // static until an ENTSO-E A75 extraction pass is wired.
+  { id: "austria",          name: "Austria",             country: "AUT", lat:  47.60, lon:   14.30, tier: "static", kind: "mixed", source: "APG Strombilanz 2024 + ENTSO-E redispatch A75 (provisional anchor)", sourceUrl: "https://www.apg.at/en/news-press/apg-strombilanz-2024-oesterreich-erstmals-wieder-exportland/" },
+  // Russia / Kola Peninsula — SO UPS 2024 monthly DPM VIE reports cite
+  // explicit wind output limits (84 MW Sep 2024, 77 MW Nov 2024). Treated
+  // as a narrow source upgrade to russia-mainland for the one Russian
+  // sub-region with public dispatch-curtailment evidence.
+  { id: "russia-murmansk-wind", name: "Russia (Murmansk)", country: "RUS", lat: 68.90, lon:  33.10, tier: "static", kind: "wind",  source: "SO UPS 2024 monthly DPM VIE reports (Kola Peninsula wind dispatch limits)", sourceUrl: "https://www.so-ups.ru/functioning/markets/surveys/renewable/2024/" },
   // Tier 3 - flare (4 regions)
   { id: "permian",   name: "Permian Basin",   country: "USA",    lat:  31.9, lon: -102.5, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
   { id: "w-siberia", name: "W. Siberia",      country: "RUS",    lat:  61.0, lon:   73.0, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
