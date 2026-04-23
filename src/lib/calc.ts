@@ -18,11 +18,19 @@ export function ehsFromGW(gw: number, effJperTH: number = ASIC_JPER_TH): number 
 }
 
 export function regionGWAtHour(data: RegionData, utcHour: number, mode: DashboardMode = "avg30d"): number {
-  const hour = ((Math.floor(utcHour) % 24) + 24) % 24;
   const profile = mode === "last24h" && Array.isArray(data.latestProfile)
     ? data.latestProfile
     : data.profile;
-  return Math.max(0, profile?.[hour] ?? 0);
+  if (!profile || profile.length === 0) return 0;
+  // Linearly interpolate between floor and ceil hour so pillar heights
+  // tween smoothly across the day instead of popping on the hour.
+  const wrapped = ((utcHour % 24) + 24) % 24;
+  const lo = Math.floor(wrapped) % 24;
+  const hi = (lo + 1) % 24;
+  const t = wrapped - Math.floor(wrapped);
+  const a = profile[lo] ?? 0;
+  const b = profile[hi] ?? 0;
+  return Math.max(0, a * (1 - t) + b * t);
 }
 
 /** Aggregate across all regions at a specific UTC hour. */

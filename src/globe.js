@@ -143,7 +143,7 @@ export async function mountGlobe(canvas, initial) {
 
     for (const region of state.regions) {
       const data = state.regionData[region.id];
-      const gw = data ? regionGWAtHour(data, Math.floor(hour), state.mode) : 0;
+      const gw = data ? regionGWAtHour(data, hour, state.mode) : 0;
       if (gw <= 0.01) continue;
       const dist = d3.geoDistance([region.lon, region.lat], center);
       if (dist > Math.PI / 2) continue;

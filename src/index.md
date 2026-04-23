@@ -76,10 +76,19 @@ document.getElementById("app-root").innerHTML = `
 
       <section class="panel panel-right" aria-label="Active hotspots">
         <div class="eyebrow" id="hotspots-title">Active hotspots · UTC —</div>
-        <ol class="hotspot-list" id="hotspot-list"></ol>
-        <div class="legend">
-          <span class="legend-item"><span class="dot dot-teal"></span>Renewable curtailment</span>
-          <span class="legend-item"><span class="dot dot-orange"></span>Flared gas</span>
+        <div class="hotspot-columns">
+          <div class="hotspot-column">
+            <div class="hotspot-column-title">
+              <span class="dot dot-teal"></span><span>Renewable curtailment</span>
+            </div>
+            <ol class="hotspot-list" id="hotspot-list-renewable"></ol>
+          </div>
+          <div class="hotspot-column">
+            <div class="hotspot-column-title">
+              <span class="dot dot-orange"></span><span>Flared gas</span>
+            </div>
+            <ol class="hotspot-list" id="hotspot-list-flare"></ol>
+          </div>
         </div>
       </section>
     </div>
@@ -145,11 +154,13 @@ const clock = createClock(initialHour);
 const mode = typeof Mutable === "function" ? Mutable("avg30d") : { value: "avg30d" };
 
 function renderAt(hour) {
-  const utcHour = Math.floor(hour % 24);
+  const wrappedHour = ((hour % 24) + 24) % 24;
   const activeMode = mode.value ?? "avg30d";
-  const result = aggregateAtHour(regionData, cbeci, utcHour, activeMode);
-  const hh = String(utcHour).padStart(2, "0");
-  const mm = String(Math.floor((hour % 1) * 60)).padStart(2, "0");
+  // Pass the fractional hour so the aggregate tweens between integer hours;
+  // the headline readouts (pct, GW) smooth in lock-step with the pillars.
+  const result = aggregateAtHour(regionData, cbeci, wrappedHour, activeMode);
+  const hh = String(Math.floor(wrappedHour)).padStart(2, "0");
+  const mm = String(Math.floor((wrappedHour % 1) * 60)).padStart(2, "0");
 
   document.getElementById("pct-readout").textContent = `${result.pctOfNetwork.toFixed(2)}%`;
   document.getElementById("hashrate-readout").innerHTML = `${cbeci.hashrateEHps.toFixed(1)} <span class="stat-unit">EH/s</span>`;
@@ -159,25 +170,35 @@ function renderAt(hour) {
 
   const ranked = REGIONS
     .map((region) => ({ region, gw: result.perRegionGW[region.id] ?? 0 }))
-    .filter((entry) => entry.gw > 0.05)
-    .sort((a, b) => b.gw - a.gw)
-    .slice(0, 10);
+    .filter((entry) => entry.gw > 0.05);
 
-  document.getElementById("hotspot-list").innerHTML = ranked.map(({ region, gw }) => `
+  const itemHtml = ({ region, gw }) => `
     <li class="hotspot-item">
       <span class="dot ${region.kind === "flare" ? "dot-orange" : "dot-teal"}"></span>
       <span class="hotspot-name">${region.name}</span>
       <span class="hotspot-country">${region.country}</span>
       <span class="hotspot-gw num-tabular">${gw.toFixed(1)} GW</span>
     </li>
-  `).join("");
+  `;
+
+  const renewable = ranked
+    .filter(({ region }) => region.kind !== "flare")
+    .sort((a, b) => b.gw - a.gw)
+    .slice(0, 8);
+  const flare = ranked
+    .filter(({ region }) => region.kind === "flare")
+    .sort((a, b) => b.gw - a.gw)
+    .slice(0, 8);
+
+  document.getElementById("hotspot-list-renewable").innerHTML = renewable.map(itemHtml).join("");
+  document.getElementById("hotspot-list-flare").innerHTML = flare.map(itemHtml).join("");
 }
 
 const canvas = document.getElementById("globe-canvas");
 canvas.hidden = true;
 let globe;
 
-const timeline = mountTimeline(document.getElementById("timeline-canvas"), { regionData, cbeci, clock });
+const timeline = mountTimeline(document.getElementById("timeline-canvas"), { regions: REGIONS, regionData, cbeci, clock });
 mountControls(document.getElementById("timeline-controls"), clock);
 mountModeToggle(document.getElementById("mode-toggle"), {
   initial: mode.value,
