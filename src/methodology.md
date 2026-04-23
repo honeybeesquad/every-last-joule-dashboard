@@ -1,3 +1,5 @@
+<nav class="page-back-nav"><a href="./">← Dashboard</a></nav>
+
 <div class="methodology-doc">
 
 <header class="methodology-header">

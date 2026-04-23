@@ -20,5 +20,6 @@ export default {
   head: '<link rel="stylesheet" href="./style.css">',
   theme: "dark",
   footer: "",
-  toc: false
+  toc: false,
+  sidebar: false
 };

@@ -1016,6 +1016,25 @@ main > h1:first-child {
    METHODOLOGY PAGE — academic typography pass
    ========================================================================= */
 
+/* Back-nav that appears at the top of Methodology and About pages when the
+   Framework sidebar is disabled (sidebar: false in observablehq.config.ts). */
+.page-back-nav {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 20px 32px 0;
+}
+.page-back-nav a {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(20,175,172,0.85);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.page-back-nav a:hover {
+  color: rgba(20,175,172,1);
+}
+
 .methodology-doc {
   max-width: 780px;
   margin: 0 auto;
