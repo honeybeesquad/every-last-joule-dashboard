@@ -1,6 +1,9 @@
 import * as d3 from "npm:d3";
 import * as topojson from "npm:topojson-client";
 import { regionGWAtHour } from "./lib/calc.js";
+import { FUEL_COLOR, dominantFuel } from "./lib/fuel.js";
+
+const FLARE_COLOR = "#f7931a";
 
 const WORLD_TOPOLOGY_URL = "https://unpkg.com/world-atlas@2/countries-110m.json";
 let countriesPromise;
@@ -151,7 +154,7 @@ export async function mountGlobe(canvas, initial) {
       if (!point) continue;
 
       const visible = 1 - dist / (Math.PI / 2);
-      const color = region.kind === "flare" ? "#f7931a" : "#14afac";
+      const color = region.kind === "flare" ? FLARE_COLOR : FUEL_COLOR[dominantFuel(region)];
       const weight = Math.sqrt(gw);
       const glowR = 4 + weight * 5;
       const coreR = 1.5 + weight * 0.8;
