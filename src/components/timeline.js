@@ -1,50 +1,59 @@
 import { regionGWAtHour } from "../lib/calc.js";
+import { FUEL_ORDER, FUEL_COLOR, fuelShare } from "../lib/fuel.js";
 
 const PAD = 14;
 const SAMPLES_PER_HOUR = 4; // 96 samples across 24h for smooth area curves
 
 /**
- * Mount a stacked-area timeline canvas showing flare (orange, baseline) +
- * renewable curtailment (teal, stacked on top) over a 24-hour cycle.
- * Draws a movable marker at the clock's current hour; scrubs the clock on
- * pointer interaction; loops cleanly at UTC 24.
+ * Mount a stacked-area timeline canvas showing curtailed renewable energy
+ * split into four fuel buckets (solar / wind / hydro / other) across a
+ * 24-hour cycle. Flared gas is deliberately excluded — it is continuous
+ * base-load and would flatten the diurnal peakiness. Draws a movable
+ * marker at the clock's current hour; scrubs on pointer interaction;
+ * loops cleanly at UTC 24.
  */
 export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const ctx = canvas.getContext("2d");
   let mode = "avg30d";
 
-  // Partition region IDs into flare vs renewable so we can sum each series.
-  const flareIds = regions.filter((r) => r.kind === "flare").map((r) => r.id);
-  const renewableIds = regions.filter((r) => r.kind !== "flare").map((r) => r.id);
+  // Precompute per-region per-fuel share so the hot path does one lookup.
+  const shareTable = regions.map((r) => ({
+    id: r.id,
+    shares: FUEL_ORDER.map((f) => fuelShare(r, f)),
+  }));
 
   function seriesAt(hour) {
-    let flare = 0;
-    let renewable = 0;
-    for (const id of flareIds) {
+    // Array of 4 GW values: [solar, wind, hydro, other].
+    const bucket = [0, 0, 0, 0];
+    for (const { id, shares } of shareTable) {
       const d = regionData[id];
-      if (d) flare += regionGWAtHour(d, hour, mode);
+      if (!d) continue;
+      const gw = regionGWAtHour(d, hour, mode);
+      if (gw <= 0) continue;
+      for (let i = 0; i < 4; i += 1) {
+        if (shares[i] > 0) bucket[i] += gw * shares[i];
+      }
     }
-    for (const id of renewableIds) {
-      const d = regionData[id];
-      if (d) renewable += regionGWAtHour(d, hour, mode);
-    }
-    return { flare, renewable, total: flare + renewable };
+    return bucket;
   }
 
   function buildSamples() {
     const n = 24 * SAMPLES_PER_HOUR;
-    const flareArr = new Array(n);
-    const renewableArr = new Array(n);
+    // 4 series × n samples.
+    const series = [new Array(n), new Array(n), new Array(n), new Array(n)];
     let maxTotal = 1;
     for (let i = 0; i < n; i += 1) {
-      const hour = (i / SAMPLES_PER_HOUR);
-      const { flare, renewable, total } = seriesAt(hour);
-      flareArr[i] = flare;
-      renewableArr[i] = renewable;
+      const hour = i / SAMPLES_PER_HOUR;
+      const bucket = seriesAt(hour);
+      let total = 0;
+      for (let f = 0; f < 4; f += 1) {
+        series[f][i] = bucket[f];
+        total += bucket[f];
+      }
       if (total > maxTotal) maxTotal = total;
     }
-    return { flareArr, renewableArr, maxTotal };
+    return { series, maxTotal };
   }
 
   function xAt(hour, plotW) {
@@ -52,7 +61,7 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
   }
 
   function render() {
-    const { flareArr, renewableArr, maxTotal } = buildSamples();
+    const { series, maxTotal } = buildSamples();
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
     if (!w || !h) return;
@@ -63,58 +72,50 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
 
     const plotW = w - PAD * 2;
     const plotH = h - PAD * 2;
-    const yForGW = (gw) => PAD + plotH - (gw / maxTotal) * plotH;
-
-    const n = flareArr.length;
     const baseY = h - PAD;
+    const yForGW = (gw) => PAD + plotH - (gw / maxTotal) * plotH;
+    const n = series[0].length;
 
-    // --- Flare baseline area (orange) ---
-    const flareGrad = ctx.createLinearGradient(0, PAD, 0, baseY);
-    flareGrad.addColorStop(0, "rgba(247, 147, 26, 0.55)");
-    flareGrad.addColorStop(1, "rgba(247, 147, 26, 0.10)");
-    ctx.fillStyle = flareGrad;
-    ctx.beginPath();
-    ctx.moveTo(PAD, baseY);
-    for (let i = 0; i < n; i += 1) {
-      const hour = i / SAMPLES_PER_HOUR;
-      ctx.lineTo(xAt(hour, plotW), yForGW(flareArr[i]));
+    // Running stack: cumulative[i] is the bottom edge (in GW) of the NEXT layer.
+    const cumulative = new Array(n).fill(0);
+
+    for (let f = 0; f < 4; f += 1) {
+      const fuel = FUEL_ORDER[f];
+      const colorHex = FUEL_COLOR[fuel];
+      const grad = ctx.createLinearGradient(0, PAD, 0, baseY);
+      grad.addColorStop(0, colorHex + "aa"); // ~67% alpha at top
+      grad.addColorStop(1, colorHex + "22"); // ~13% at bottom
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      // Top edge: cumulative + layer (walking forward)
+      for (let i = 0; i < n; i += 1) {
+        const hour = i / SAMPLES_PER_HOUR;
+        const top = cumulative[i] + series[f][i];
+        const x = xAt(hour, plotW);
+        const y = yForGW(top);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      // Bottom edge: cumulative only (walking back)
+      for (let i = n - 1; i >= 0; i -= 1) {
+        const hour = i / SAMPLES_PER_HOUR;
+        ctx.lineTo(xAt(hour, plotW), yForGW(cumulative[i]));
+      }
+      ctx.closePath();
+      ctx.fill();
+
+      // Advance running stack.
+      for (let i = 0; i < n; i += 1) cumulative[i] += series[f][i];
     }
-    ctx.lineTo(PAD + plotW, baseY);
-    ctx.closePath();
-    ctx.fill();
 
-    // --- Renewable stacked area (teal, on top of flare) ---
-    const renewGrad = ctx.createLinearGradient(0, PAD, 0, baseY);
-    renewGrad.addColorStop(0, "rgba(20, 175, 172, 0.60)");
-    renewGrad.addColorStop(1, "rgba(20, 175, 172, 0.12)");
-    ctx.fillStyle = renewGrad;
+    // Crisp stroke on the total top line for definition.
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    // top edge: total
     for (let i = 0; i < n; i += 1) {
       const hour = i / SAMPLES_PER_HOUR;
-      const total = flareArr[i] + renewableArr[i];
       const x = xAt(hour, plotW);
-      const y = yForGW(total);
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    // bottom edge: flare (in reverse)
-    for (let i = n - 1; i >= 0; i -= 1) {
-      const hour = i / SAMPLES_PER_HOUR;
-      ctx.lineTo(xAt(hour, plotW), yForGW(flareArr[i]));
-    }
-    ctx.closePath();
-    ctx.fill();
-
-    // Thin stroke on the total line for definition.
-    ctx.strokeStyle = "rgba(63, 193, 190, 0.85)";
-    ctx.lineWidth = 1.3;
-    ctx.beginPath();
-    for (let i = 0; i < n; i += 1) {
-      const hour = i / SAMPLES_PER_HOUR;
-      const total = flareArr[i] + renewableArr[i];
-      const x = xAt(hour, plotW);
-      const y = yForGW(total);
+      const y = yForGW(cumulative[i]);
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
@@ -130,10 +131,10 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
       ctx.fillText(`${String(hr).padStart(2, "0")}`, x, h - PAD + 14);
     }
 
-    // --- Current-hour marker (uses fractional hour + interpolated total) ---
+    // --- Current-hour marker (uses interpolated total at the fractional hour) ---
     const hourNow = ((clock.hour % 24) + 24) % 24;
-    const { flare, renewable } = seriesAt(hourNow);
-    const totalNow = flare + renewable;
+    const bucketNow = seriesAt(hourNow);
+    const totalNow = bucketNow[0] + bucketNow[1] + bucketNow[2] + bucketNow[3];
     const cx = xAt(hourNow, plotW);
     const cy = yForGW(totalNow);
     ctx.strokeStyle = "#f7931a";

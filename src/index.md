@@ -7,8 +7,9 @@ import { createClock } from "./components/clock.js";
 import { mountControls } from "./components/controls.js";
 import { mountModeToggle } from "./components/mode-toggle.js";
 import { mountTimeline } from "./components/timeline.js";
-import { aggregateAtHour } from "./lib/calc.js";
+import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
+import { FUEL_ORDER, FUEL_LABEL, FUEL_COLOR, dominantFuel, isRenewable } from "./lib/fuel.js";
 import { mountGlobe } from "./globe.js";
 
 const ERCOT_NATIVE_ENABLED = false;
@@ -50,14 +51,14 @@ document.getElementById("app-root").innerHTML = `
       <section class="panel panel-left" aria-label="Headline">
         <div class="eyebrow">Sustainable hashrate · unlocked</div>
         <div class="display-xl num-tabular" id="pct-readout">—%</div>
-        <p class="lead" id="lead-copy">of today's Bitcoin network, powered entirely by energy observed curtailed, spilled, or flared in the last 30 days. A floor, not a ceiling.</p>
+        <p class="lead" id="lead-copy">of today's Bitcoin network, powered entirely by renewable energy observed curtailed or spilled in the last 30 days. A floor, not a ceiling.</p>
         <div class="stats-row">
           <div class="stat">
             <div class="eyebrow micro">Network hashrate</div>
             <div class="num-tabular stat-value" id="hashrate-readout">—</div>
           </div>
           <div class="stat">
-            <div class="eyebrow micro">Wasted now (UTC)</div>
+            <div class="eyebrow micro">Curtailed now (UTC)</div>
             <div class="num-tabular stat-value" id="gw-readout">—</div>
           </div>
           <div class="stat">
@@ -65,6 +66,7 @@ document.getElementById("app-root").innerHTML = `
             <div class="num-tabular stat-value" id="supportable-readout">—</div>
           </div>
         </div>
+        <p class="flare-footnote" id="flare-footnote">Plus <span id="flare-readout">—</span> of continuous flared gas waste — 24/7 base load, not shown on the clock. Separate story.</p>
       </section>
 
       <section class="panel panel-center" aria-label="Globe">
@@ -76,19 +78,16 @@ document.getElementById("app-root").innerHTML = `
 
       <section class="panel panel-right" aria-label="Active hotspots">
         <div class="eyebrow" id="hotspots-title">Active hotspots · UTC —</div>
-        <div class="hotspot-columns">
-          <div class="hotspot-column">
-            <div class="hotspot-column-title">
-              <span class="dot dot-teal"></span><span>Renewable curtailment</span>
+        <div class="hotspot-columns hotspot-columns-four">
+          ${FUEL_ORDER.map((fuel) => `
+            <div class="hotspot-column">
+              <div class="hotspot-column-title">
+                <span class="dot" style="background:${FUEL_COLOR[fuel]};box-shadow:0 0 10px ${FUEL_COLOR[fuel]}66;"></span>
+                <span>${FUEL_LABEL[fuel]}</span>
+              </div>
+              <ol class="hotspot-list" id="hotspot-list-${fuel}"></ol>
             </div>
-            <ol class="hotspot-list" id="hotspot-list-renewable"></ol>
-          </div>
-          <div class="hotspot-column">
-            <div class="hotspot-column-title">
-              <span class="dot dot-orange"></span><span>Flared gas</span>
-            </div>
-            <ol class="hotspot-list" id="hotspot-list-flare"></ol>
-          </div>
+          `).join("")}
         </div>
       </section>
     </div>
@@ -162,36 +161,45 @@ function renderAt(hour) {
   const hh = String(Math.floor(wrappedHour)).padStart(2, "0");
   const mm = String(Math.floor((wrappedHour % 1) * 60)).padStart(2, "0");
 
-  document.getElementById("pct-readout").textContent = `${result.pctOfNetwork.toFixed(2)}%`;
-  document.getElementById("hashrate-readout").innerHTML = `${cbeci.hashrateEHps.toFixed(1)} <span class="stat-unit">EH/s</span>`;
-  document.getElementById("gw-readout").innerHTML = `${result.totalGW.toFixed(2)} <span class="stat-unit">GW</span>`;
-  document.getElementById("supportable-readout").innerHTML = `${result.hashrateEHps.toFixed(1)} <span class="stat-unit">EH/s</span>`;
-  document.getElementById("hotspots-title").textContent = `Active hotspots · UTC ${hh}:${mm}`;
+  // Renewable-only aggregate — flare excluded from the headline because
+  // it is continuous 24/7 base load, not a diurnal curtailment story.
+  let renewableGW = 0;
+  let flareGW = 0;
+  for (const region of REGIONS) {
+    const gw = result.perRegionGW[region.id] ?? 0;
+    if (region.kind === "flare") flareGW += gw;
+    else renewableGW += gw;
+  }
+  const renewableEHs = ehsFromGW(renewableGW);
+  const renewablePct = cbeci.hashrateEHps > 0 ? (renewableEHs / cbeci.hashrateEHps) * 100 : 0;
 
-  const ranked = REGIONS
+  document.getElementById("pct-readout").textContent = `${renewablePct.toFixed(2)}%`;
+  document.getElementById("hashrate-readout").innerHTML = `${cbeci.hashrateEHps.toFixed(1)} <span class="stat-unit">EH/s</span>`;
+  document.getElementById("gw-readout").innerHTML = `${renewableGW.toFixed(2)} <span class="stat-unit">GW</span>`;
+  document.getElementById("supportable-readout").innerHTML = `${renewableEHs.toFixed(1)} <span class="stat-unit">EH/s</span>`;
+  document.getElementById("hotspots-title").textContent = `Active hotspots · UTC ${hh}:${mm}`;
+  document.getElementById("flare-readout").textContent = `${flareGW.toFixed(0)} GW`;
+
+  const renewableEntries = REGIONS
+    .filter(isRenewable)
     .map((region) => ({ region, gw: result.perRegionGW[region.id] ?? 0 }))
     .filter((entry) => entry.gw > 0.05);
 
-  const itemHtml = ({ region, gw }) => `
+  const itemHtml = (fuel) => ({ region, gw }) => `
     <li class="hotspot-item">
-      <span class="dot ${region.kind === "flare" ? "dot-orange" : "dot-teal"}"></span>
+      <span class="dot" style="background:${FUEL_COLOR[fuel]};box-shadow:0 0 8px ${FUEL_COLOR[fuel]}66;"></span>
       <span class="hotspot-name">${region.name}</span>
-      <span class="hotspot-country">${region.country}</span>
       <span class="hotspot-gw num-tabular">${gw.toFixed(1)} GW</span>
     </li>
   `;
 
-  const renewable = ranked
-    .filter(({ region }) => region.kind !== "flare")
-    .sort((a, b) => b.gw - a.gw)
-    .slice(0, 8);
-  const flare = ranked
-    .filter(({ region }) => region.kind === "flare")
-    .sort((a, b) => b.gw - a.gw)
-    .slice(0, 8);
-
-  document.getElementById("hotspot-list-renewable").innerHTML = renewable.map(itemHtml).join("");
-  document.getElementById("hotspot-list-flare").innerHTML = flare.map(itemHtml).join("");
+  for (const fuel of FUEL_ORDER) {
+    const rows = renewableEntries
+      .filter(({ region }) => dominantFuel(region) === fuel)
+      .sort((a, b) => b.gw - a.gw)
+      .slice(0, 6);
+    document.getElementById(`hotspot-list-${fuel}`).innerHTML = rows.map(itemHtml(fuel)).join("");
+  }
 }
 
 const canvas = document.getElementById("globe-canvas");

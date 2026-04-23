@@ -448,6 +448,20 @@ main table {
   margin-top: 8px;
 }
 
+.flare-footnote {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.55);
+}
+
+.flare-footnote #flare-readout {
+  color: var(--btc-orange);
+  font-weight: 600;
+}
+
 .stat {
   display: flex;
   flex-direction: column;
@@ -469,8 +483,13 @@ main table {
 .hotspot-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px 16px;
   margin-top: 10px;
+}
+
+.hotspot-columns-four {
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: min-content;
 }
 
 .hotspot-column {
@@ -498,10 +517,10 @@ main table {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  max-height: 420px;
+  gap: 3px;
+  max-height: 240px;
   overflow-y: auto;
-  min-height: 44px;
+  min-height: 36px;
 }
 
 .hotspot-list:empty::after {
@@ -514,11 +533,11 @@ main table {
 .hotspot-item {
   display: grid;
   grid-template-columns: 8px minmax(0, 1fr) auto;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  font-size: 12px;
+  font-size: 11.5px;
   color: rgba(255,255,255,0.82);
-  padding: 5px 0;
+  padding: 4px 0;
   border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
