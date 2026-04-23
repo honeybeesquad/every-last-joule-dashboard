@@ -72,6 +72,26 @@ const saudiSolar = await FileAttachment("data/saudi-solar.json").json();
 const uae = await FileAttachment("data/uae.json").json();
 const oman = await FileAttachment("data/oman.json").json();
 const israel = await FileAttachment("data/israel.json").json();
+const innerMongolia = await FileAttachment("data/inner-mongolia.json").json();
+const gansu = await FileAttachment("data/gansu.json").json();
+const qinghai = await FileAttachment("data/qinghai.json").json();
+const ningxia = await FileAttachment("data/ningxia.json").json();
+const yunnan = await FileAttachment("data/yunnan.json").json();
+const tibet = await FileAttachment("data/tibet.json").json();
+const indiaSouth = await FileAttachment("data/india-south.json").json();
+const indiaWest = await FileAttachment("data/india-west.json").json();
+const indiaEast = await FileAttachment("data/india-east.json").json();
+const pakistan = await FileAttachment("data/pakistan.json").json();
+const iran = await FileAttachment("data/iran.json").json();
+const iraqMainland = await FileAttachment("data/iraq-mainland.json").json();
+const kurdistan = await FileAttachment("data/kurdistan.json").json();
+const bangladesh = await FileAttachment("data/bangladesh.json").json();
+const mongolia = await FileAttachment("data/mongolia.json").json();
+const britishColumbia = await FileAttachment("data/british-columbia.json").json();
+const quebec = await FileAttachment("data/quebec.json").json();
+const manitoba = await FileAttachment("data/manitoba.json").json();
+const saskatchewan = await FileAttachment("data/saskatchewan.json").json();
+const colombia = await FileAttachment("data/colombia.json").json();
 
 document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
@@ -220,6 +240,26 @@ const regionData = {
   uae,
   oman,
   israel,
+  "inner-mongolia": innerMongolia,
+  gansu,
+  qinghai,
+  ningxia,
+  yunnan,
+  tibet,
+  "india-south": indiaSouth,
+  "india-west": indiaWest,
+  "india-east": indiaEast,
+  pakistan,
+  iran,
+  "iraq-mainland": iraqMainland,
+  kurdistan,
+  bangladesh,
+  mongolia,
+  "british-columbia": britishColumbia,
+  quebec,
+  manitoba,
+  saskatchewan,
+  colombia,
   ...statics
 };
 

@@ -2,16 +2,16 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 84 canonical regions", () => {
-    expect(REGIONS.length).toBe(84);
+  it("has 110 canonical regions", () => {
+    expect(REGIONS.length).toBe(110);
   });
 
   it("has 48 live regions", () => {
     expect(REGIONS.filter(r => r.tier === "live").length).toBe(48);
   });
 
-  it("has 32 static regions", () => {
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(32);
+  it("has 58 static regions", () => {
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(58);
   });
 
   it("has 4 flare regions", () => {
@@ -131,6 +131,41 @@ describe("regions", () => {
       expect(region).toBeDefined();
       expect(region?.tier).toBe("live");
       expect(region?.kind).toBe("mixed");
+    }
+  });
+
+  it("includes the v1p porcupine fill", () => {
+    for (const id of [
+      "brazil-mg",
+      "brazil-sp",
+      "brazil-mt",
+      "brazil-go",
+      "brazil-pr",
+      "brazil-rs",
+      "inner-mongolia",
+      "gansu",
+      "qinghai",
+      "ningxia",
+      "yunnan",
+      "tibet",
+      "india-south",
+      "india-west",
+      "india-east",
+      "pakistan",
+      "iran",
+      "iraq-mainland",
+      "kurdistan",
+      "bangladesh",
+      "mongolia",
+      "british-columbia",
+      "quebec",
+      "manitoba",
+      "saskatchewan",
+      "colombia",
+    ]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region).toBeDefined();
+      expect(region?.tier).toBe("static");
     }
   });
 });

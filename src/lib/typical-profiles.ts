@@ -58,6 +58,16 @@ export const HYDRO_SEASONAL_SHARES = {
   ethiopia: [0.02, 0.02, 0.03, 0.04, 0.06, 0.12, 0.20, 0.22, 0.15, 0.09, 0.03, 0.02],
   // Volga / western Russia snowmelt and wet-season hydro spill, NH summer peak
   "russia-mainland": [0.03, 0.03, 0.05, 0.10, 0.16, 0.18, 0.16, 0.12, 0.07, 0.04, 0.03, 0.03],
+  // Lancang River / southwest China monsoon hydro spill, NH summer peak Jul-Sep
+  yunnan: [0.01, 0.02, 0.03, 0.05, 0.10, 0.17, 0.20, 0.18, 0.14, 0.07, 0.02, 0.01],
+  // Yarlung-Tsangpo high-altitude melt/monsoon spill, narrow Jun-Aug peak
+  tibet:  [0.01, 0.01, 0.02, 0.03, 0.08, 0.18, 0.25, 0.22, 0.12, 0.05, 0.02, 0.01],
+  // BC Hydro spring snowmelt oversupply, peak May-Jul
+  "british-columbia": [0.02, 0.02, 0.03, 0.08, 0.18, 0.22, 0.18, 0.12, 0.07, 0.04, 0.02, 0.02],
+  // Hydro-Quebec spring/summer surplus, export-absorbed and milder than BC
+  quebec: [0.03, 0.03, 0.05, 0.10, 0.15, 0.15, 0.13, 0.10, 0.08, 0.07, 0.06, 0.05],
+  // Colombia bimodal wet seasons, Apr-May and Oct-Nov
+  colombia: [0.05, 0.05, 0.08, 0.13, 0.14, 0.10, 0.08, 0.06, 0.08, 0.11, 0.07, 0.05],
   // Kenya Olkaria geothermal steam-venting — tracks inverse of demand, not
   // rainfall. July peak (117.5 GWh in Jul 2024 per EPRA), June trough (6.6 GWh
   // in Jun 2025). July is coolest/lowest-demand month; June is outlier low
@@ -171,6 +181,31 @@ export function buildTypicalHydroRegion(
     peakGW: Math.max(...profile),
     lastUpdated,
     sourceNote,
+  };
+}
+
+export function buildTypicalMixedRegion(
+  regionId: string,
+  annualTWh: number,
+  fuelShare: { solar?: number; wind?: number; hydro?: number },
+  sourceNote: string,
+  lastUpdated = "2024",
+  solarPeakHourUtc = 7,
+  windPeakHourUtc = 15,
+): RegionData {
+  const solar = solarProfile(solarPeakHourUtc, annualTWh * (fuelShare.solar ?? 0));
+  const wind = windProfile(windPeakHourUtc, annualTWh * (fuelShare.wind ?? 0));
+  const hydro = hydroProfile(annualTWh * (fuelShare.hydro ?? 0));
+  const profile = solar.map((value, hour) => value + wind[hour] + hydro[hour]);
+  return {
+    regionId,
+    profile,
+    latestProfile: null,
+    totalTWh: (annualTWh * 30) / 365,
+    peakGW: Math.max(...profile),
+    lastUpdated,
+    sourceNote,
+    fuelShare,
   };
 }
 

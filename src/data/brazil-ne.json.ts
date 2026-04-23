@@ -15,6 +15,12 @@ type BrazilRegionId =
   | "brazil-bahia"
   | "brazil-piaui"
   | "brazil-pernambuco"
+  | "brazil-mg"
+  | "brazil-sp"
+  | "brazil-mt"
+  | "brazil-go"
+  | "brazil-pr"
+  | "brazil-rs"
   | "brazil-other";
 
 const STATE_TO_REGION: Record<string, BrazilRegionId> = {
@@ -23,6 +29,12 @@ const STATE_TO_REGION: Record<string, BrazilRegionId> = {
   BA: "brazil-bahia",
   PI: "brazil-piaui",
   PE: "brazil-pernambuco",
+  MG: "brazil-mg",
+  SP: "brazil-sp",
+  MT: "brazil-mt",
+  GO: "brazil-go",
+  PR: "brazil-pr",
+  RS: "brazil-rs",
 };
 
 /** Pure parser: CSV text → timestamped points grouped by state cluster. Exported for tests. */
@@ -34,6 +46,12 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilRegionId, Curt
     "brazil-bahia": [],
     "brazil-piaui": [],
     "brazil-pernambuco": [],
+    "brazil-mg": [],
+    "brazil-sp": [],
+    "brazil-mt": [],
+    "brazil-go": [],
+    "brazil-pr": [],
+    "brazil-rs": [],
     "brazil-other": [],
   };
   if (!normalized) return empty;
@@ -103,6 +121,12 @@ function makeEmptyBuckets(): Record<BrazilRegionId, CurtailmentPoint[]> {
     "brazil-bahia": [],
     "brazil-piaui": [],
     "brazil-pernambuco": [],
+    "brazil-mg": [],
+    "brazil-sp": [],
+    "brazil-mt": [],
+    "brazil-go": [],
+    "brazil-pr": [],
+    "brazil-rs": [],
     "brazil-other": [],
   };
 }
