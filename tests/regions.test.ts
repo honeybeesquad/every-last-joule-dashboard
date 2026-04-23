@@ -2,12 +2,12 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 78 canonical regions", () => {
-    expect(REGIONS.length).toBe(78);
+  it("has 84 canonical regions", () => {
+    expect(REGIONS.length).toBe(84);
   });
 
-  it("has 42 live regions", () => {
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(42);
+  it("has 48 live regions", () => {
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(48);
   });
 
   it("has 32 static regions", () => {
@@ -123,5 +123,14 @@ describe("regions", () => {
     }
     // Kenya is geothermal-as-hydro with overnight-vented curtailment.
     expect(REGIONS.find(r => r.id === "kenya")?.kind).toBe("hydro");
+  });
+
+  it("includes the v1o US ISO expansion", () => {
+    for (const id of ["miso", "pjm", "spp", "nyiso", "iso-ne", "bpa"]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region).toBeDefined();
+      expect(region?.tier).toBe("live");
+      expect(region?.kind).toBe("mixed");
+    }
   });
 });

@@ -27,11 +27,12 @@ export async function fetchJSON<T = unknown>(
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const res = await fetch(url, { method, headers, body, signal: controller.signal });
-      clearTimeout(timer);
       if (!res.ok) {
         throw new Error(`HTTP ${res.status} ${res.statusText} for ${url}`);
       }
-      return (await res.json()) as T;
+      const data = (await res.json()) as T;
+      clearTimeout(timer);
+      return data;
     } catch (err) {
       clearTimeout(timer);
       lastErr = err;
@@ -63,9 +64,10 @@ export async function fetchText(
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const res = await fetch(url, { method, headers, body, signal: controller.signal });
-      clearTimeout(timer);
       if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-      return await res.text();
+      const text = await res.text();
+      clearTimeout(timer);
+      return text;
     } catch (err) {
       clearTimeout(timer);
       lastErr = err;

@@ -130,6 +130,29 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 
 ---
 
+## US ISO EIA Hourly Electric Grid Monitor expansion (used)
+
+**Feed used:** EIA Hourly Electric Grid Monitor fuel-type data, same endpoint and API key path as the ERCOT/CAISO EIA proxy.
+
+- Endpoint: `https://api.eia.gov/v2/electricity/rto/fuel-type-data/data/`
+- Query used: `frequency=hourly`, `data[0]=value`, `facets[respondent][]=<ISO>`, `facets[fueltype][]=WND|SUN`
+- Window: trailing 30 days, WND and SUN fetched in parallel.
+- Method: calibrated curtailment proxy, merged wind+solar hourly generation with fuel-specific rates; `fuelShare` is computed dynamically from observed 30-day MW volumes.
+- Shared implementation: `src/lib/eia-iso.ts`, used by the six simple single-region ISO loaders.
+
+**v1o regions and calibration citations:**
+
+- MISO (`MISO`): Minnesota, Iowa, Illinois, Michigan, Indiana, Wisconsin, Missouri, Arkansas, Mississippi, Louisiana. Rates: wind 8%, solar 4%, based on ~5 TWh 2024 wind curtailment plus ~0.5 TWh solar against ~65 TWh wind and ~12 TWh solar. Source: MISO 2024 State of the Market, Potomac Economics.
+- PJM (`PJM`): Mid-Atlantic and Ohio Valley footprint. Rates: wind 2%, solar 2.5%, reflecting small but growing 2024 solar curtailment concentrated in NJ/MD/VA and smaller PA/WV/OH wind curtailment. Sources: PJM Renewable Integration Study 2024 and PJM Markets Monitor 2024 State of the Market.
+- SPP (`SWPP`): Great Plains/Southwest Power Pool footprint. Rates: wind 4%, solar 3%, based on ~3 TWh 2024 wind curtailment on ~75 TWh wind and emerging Oklahoma solar. Sources: SPP 2024 State of the Market, Monitoring Analytics, and SPP 2024 Reliability Report.
+- NYISO (`NYIS`): New York state including Long Island. Rates: wind 3%, solar 2%, with low current curtailment and expected offshore wind growth from Sunrise Wind and Empire Wind. Sources: NYISO 2024 Power Trends Report and Gold Book 2024.
+- ISO-NE (`ISNE`): Massachusetts, Connecticut, Rhode Island, New Hampshire, Vermont, Maine. Rates: wind 3%, solar 2%, reflecting small total regional curtailment. Source: ISO-NE 2024 Regional Electricity Outlook.
+- BPA (`BPAT`): Oregon, Washington, Idaho, western Montana. Rates: wind 6%, solar 2%, reflecting spring oversupply wind throttling during high-runoff, low-demand periods. Sources: BPA 2024 Oversupply Management Protocol implementation report and BPA Technical Operations.
+
+**BPA seasonality note:** no separate seasonal correction is applied. The EIA hourly generation feed provides the 30-day observed shape, so spring-concentrated oversupply appears naturally when the trailing window covers April-June.
+
+---
+
 ## Belgium Elia wind+solar CSV (used)
 
 **Feed used:** Elia Open Data Opendatasoft CSV exports.

@@ -14,11 +14,18 @@ import { FUEL_ORDER, FUEL_LABEL, FUEL_COLOR, fuelShare, isRenewable } from "./li
 import { mountGlobe } from "./globe.js";
 
 const ERCOT_NATIVE_ENABLED = false;
+const HOTSPOT_LIST_LIMIT = 50;
 
 const cbeci = await FileAttachment("data/cbeci.json").json();
 const ercot = await FileAttachment("data/ercot.json").json();
 const ercotNative = await FileAttachment("data/ercot-native.json").json();
 const caiso = await FileAttachment("data/caiso.json").json();
+const miso = await FileAttachment("data/miso.json").json();
+const pjm = await FileAttachment("data/pjm.json").json();
+const spp = await FileAttachment("data/spp.json").json();
+const nyiso = await FileAttachment("data/nyiso.json").json();
+const isoNe = await FileAttachment("data/iso-ne.json").json();
+const bpa = await FileAttachment("data/bpa.json").json();
 const entsoe = await FileAttachment("data/entsoe.json").json();
 const aemo = await FileAttachment("data/aemo.json").json();
 const belgium = await FileAttachment("data/belgium.json").json();
@@ -148,6 +155,12 @@ const regionData = {
       }
     : ercot),
   caiso,
+  miso,
+  pjm,
+  spp,
+  nyiso,
+  "iso-ne": isoNe,
+  bpa,
   ...aemo,
   belgium,
   germany: entsoe.germany,
@@ -266,7 +279,7 @@ function renderAt(hour) {
       }))
       .filter(({ gw }) => gw > 0)
       .sort((a, b) => b.gw - a.gw)
-      .slice(0, 30);
+      .slice(0, HOTSPOT_LIST_LIMIT);
     document.getElementById(`hotspot-list-${fuel}`).innerHTML = rows.map(itemHtml(fuel)).join("");
   }
 }
