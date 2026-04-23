@@ -6,6 +6,10 @@ import {
   buildTypicalSolarRegion,
   buildTypicalWindRegion,
   buildTypicalHydroRegion,
+  buildTypicalHydroSeasonalRegion,
+  seasonalScaleFactor,
+  hydroSeasonalProfile,
+  HYDRO_SEASONAL_SHARES,
 } from "../src/lib/typical-profiles";
 
 describe("typical profiles", () => {
@@ -44,5 +48,50 @@ describe("typical profiles", () => {
     expect(wind.latestProfile).toBeNull();
     expect(hydro.latestProfile).toBeNull();
     expect(hydro.profile.every((v) => v === hydro.profile[0])).toBe(true);
+  });
+
+  describe("seasonal hydro", () => {
+    it("HYDRO_SEASONAL_SHARES all sum to approximately 1.0", () => {
+      for (const [key, shares] of Object.entries(HYDRO_SEASONAL_SHARES)) {
+        const sum = shares.reduce((a, b) => a + b, 0);
+        expect(sum, `${key} shares sum`).toBeCloseTo(1.0, 2);
+      }
+    });
+
+    it("Sichuan factor is < 1 in January (dry season) and > 1 in July (peak monsoon)", () => {
+      const jan = seasonalScaleFactor(HYDRO_SEASONAL_SHARES.sichuan, new Date(Date.UTC(2026, 0, 15)));
+      const jul = seasonalScaleFactor(HYDRO_SEASONAL_SHARES.sichuan, new Date(Date.UTC(2026, 6, 15)));
+      expect(jan).toBeLessThan(1);
+      expect(jul).toBeGreaterThan(1);
+      expect(jul).toBeGreaterThan(jan);
+    });
+
+    it("Paraguay (SH) factor is > 1 in January and < 1 in July (inverted vs NH)", () => {
+      const jan = seasonalScaleFactor(HYDRO_SEASONAL_SHARES.paraguay, new Date(Date.UTC(2026, 0, 15)));
+      const jul = seasonalScaleFactor(HYDRO_SEASONAL_SHARES.paraguay, new Date(Date.UTC(2026, 6, 15)));
+      expect(jan).toBeGreaterThan(1);
+      expect(jul).toBeLessThan(1);
+    });
+
+    it("hydroSeasonalProfile produces a flat 24h shape scaled by seasonal factor", () => {
+      const now = new Date(Date.UTC(2026, 6, 15));
+      const profile = hydroSeasonalProfile(30, HYDRO_SEASONAL_SHARES.sichuan, now);
+      expect(profile).toHaveLength(24);
+      expect(profile.every((v) => v === profile[0])).toBe(true);
+      // July = monsoon peak, should exceed flat annual of 30000/8760 ≈ 3.42 GW.
+      expect(profile[0]).toBeGreaterThan(5);
+    });
+
+    it("buildTypicalHydroSeasonalRegion annotates the sourceNote with the seasonal factor", () => {
+      const region = buildTypicalHydroSeasonalRegion(
+        "sichuan",
+        30,
+        HYDRO_SEASONAL_SHARES.sichuan,
+        "base note",
+        "2025",
+        new Date(Date.UTC(2026, 6, 15)),
+      );
+      expect(region.sourceNote).toMatch(/seasonal factor [0-9.]+×/);
+    });
   });
 });

@@ -34,6 +34,83 @@ export function hydroProfile(annualTWh: number): number[] {
   return scaleProfileToAnnualTWh(Array(24).fill(1), annualTWh);
 }
 
+/**
+ * Monthly-share arrays describing what fraction of annual hydro curtailment
+ * happens each calendar month. Must sum to 1.0. Used to correct the bogus
+ * "flat 24/7 year-round" approximation for seasonal hydro spill.
+ *
+ * Sourced from hydrological reports / IHA country profiles, hand-curated to
+ * reflect real monsoon / snowmelt / wet-season concentration.
+ */
+export type MonthlyShares = readonly [
+  number, number, number, number, number, number,
+  number, number, number, number, number, number
+];
+
+export const HYDRO_SEASONAL_SHARES = {
+  // Yangtze basin monsoon, NH summer peak Jun-Sep (Sichuan)
+  sichuan:  [0.01, 0.01, 0.02, 0.04, 0.08, 0.15, 0.22, 0.22, 0.15, 0.07, 0.02, 0.01],
+  // Glacial melt + snowmelt NH summer peak May-Aug (Iceland, narrower window)
+  iceland:  [0.02, 0.02, 0.03, 0.05, 0.15, 0.20, 0.20, 0.15, 0.10, 0.05, 0.02, 0.01],
+  // Paraná basin SH summer peak Dec-Feb (Paraguay / Itaipu flood stage)
+  paraguay: [0.20, 0.18, 0.13, 0.08, 0.04, 0.02, 0.02, 0.02, 0.03, 0.05, 0.10, 0.13],
+  // Blue Nile / Kiremt monsoon NH summer peak Jul-Aug (Ethiopia / GERD)
+  ethiopia: [0.02, 0.02, 0.03, 0.04, 0.06, 0.12, 0.20, 0.22, 0.15, 0.09, 0.03, 0.02],
+} as const satisfies Record<string, MonthlyShares>;
+
+/**
+ * Factor relative to annual average for a 30-day trailing window ending at
+ * `now`. Shares sum to 1 across 12 months; multiplying by 12 normalises so
+ * that "full average year" = 1.0. Blends adjacent months when the window
+ * spans a boundary, weighted by day count in each month.
+ */
+export function seasonalScaleFactor(
+  monthlyShares: readonly number[],
+  now: Date = new Date(),
+): number {
+  const msPerDay = 24 * 60 * 60 * 1000;
+  let totalShare = 0;
+  for (let daysBack = 0; daysBack < 30; daysBack++) {
+    const d = new Date(now.getTime() - daysBack * msPerDay);
+    totalShare += monthlyShares[d.getUTCMonth()] ?? 0;
+  }
+  // Average daily share × 12 months = scale factor relative to flat-annual.
+  return (totalShare / 30) * 12;
+}
+
+export function hydroSeasonalProfile(
+  annualTWh: number,
+  monthlyShares: readonly number[],
+  now: Date = new Date(),
+): number[] {
+  const factor = seasonalScaleFactor(monthlyShares, now);
+  const flatGW = (annualTWh * 1000) / 8760;
+  return Array(24).fill(flatGW * factor);
+}
+
+export function buildTypicalHydroSeasonalRegion(
+  regionId: string,
+  annualTWh: number,
+  monthlyShares: readonly number[],
+  sourceNote: string,
+  lastUpdated = "2024",
+  now: Date = new Date(),
+): RegionData {
+  const factor = seasonalScaleFactor(monthlyShares, now);
+  const profile = hydroSeasonalProfile(annualTWh, monthlyShares, now);
+  return {
+    regionId,
+    profile,
+    latestProfile: null,
+    // 30-day TWh scales with seasonal factor too — dry-season regions
+    // correctly show tiny TWh totals instead of annual-average smearing.
+    totalTWh: ((annualTWh * 30) / 365) * factor,
+    peakGW: Math.max(...profile),
+    lastUpdated,
+    sourceNote: `${sourceNote} — current 30-day seasonal factor ${factor.toFixed(2)}×`,
+  };
+}
+
 export function buildTypicalSolarRegion(
   regionId: string,
   peakHourUtc: number,

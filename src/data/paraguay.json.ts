@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalHydroRegion } from "../lib/typical-profiles.js";
+import { buildTypicalHydroSeasonalRegion, HYDRO_SEASONAL_SHARES } from "../lib/typical-profiles.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "paraguay";
@@ -15,10 +15,11 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    return buildTypicalHydroRegion(
+    return buildTypicalHydroSeasonalRegion(
       REGION_ID,
       10,
-      `Typical-shape fallback: Itaipu spill/dispatch feed unavailable (${(err as Error).message}); hydro spill scaled to ~10 TWh/yr.`,
+      HYDRO_SEASONAL_SHARES.paraguay,
+      `Typical-shape fallback: Itaipu spill/dispatch feed unavailable (${(err as Error).message}); hydro spill ~10 TWh/yr calibrated to Paraná basin flood stage (SH summer peak Dec-Feb).`,
       "2024",
     );
   }

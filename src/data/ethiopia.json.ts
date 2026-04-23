@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalHydroRegion } from "../lib/typical-profiles.js";
+import { buildTypicalHydroSeasonalRegion, HYDRO_SEASONAL_SHARES } from "../lib/typical-profiles.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "ethiopia";
@@ -15,10 +15,11 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    return buildTypicalHydroRegion(
+    return buildTypicalHydroSeasonalRegion(
       REGION_ID,
       5,
-      `Typical-shape fallback: EEP live feed unavailable (${(err as Error).message}); GERD/cascade hydro spill estimated from reservoir capacity and seasonal inflow at ~5 TWh/yr.`,
+      HYDRO_SEASONAL_SHARES.ethiopia,
+      `Typical-shape fallback: EEP live feed unavailable (${(err as Error).message}); GERD/cascade hydro spill ~5 TWh/yr calibrated to Blue Nile Kiremt monsoon (NH summer peak Jul-Aug).`,
       "2024",
     );
   }

@@ -1,20 +1,26 @@
 import type { RegionData } from "../lib/types.js";
-import { solarProfile } from "../lib/typical-profiles.js";
+import {
+  solarProfile,
+  hydroSeasonalProfile,
+  seasonalScaleFactor,
+  HYDRO_SEASONAL_SHARES,
+} from "../lib/typical-profiles.js";
 import { pathToFileURL } from "url";
 
-type ProfileKind = "flat" | "solar";
+type ProfileKind = "flat" | "solar" | "hydro-seasonal";
 
 interface StaticSpec {
   annualTWh: number;
   source: string;
   reportDate: string;
-  /** Profile shape. "flat" for hydro/geothermal/flare (monthly-seasonal or 24/7 by
-   *  nature); "solar" for regions whose curtailment correlates with local solar
-   *  noon but who have no public hourly feed (Xinjiang). */
+  /** Profile shape. "flat" for flare (24/7 by nature); "solar" for regions whose
+   *  curtailment correlates with local solar noon (Xinjiang); "hydro-seasonal"
+   *  for hydro regions with monsoon / snowmelt peaks (Sichuan, Iceland). */
   kind?: ProfileKind;
-  /** UTC hour of local solar noon, for "solar" kind. Xinjiang sits at ~85°E so
-   *  local solar noon is UTC 12 - 85/15 ≈ UTC 06:20. */
+  /** UTC hour of local solar noon, for "solar" kind. */
   localSolarPeakUTC?: number;
+  /** Key into HYDRO_SEASONAL_SHARES for "hydro-seasonal" kind. */
+  seasonalSharesKey?: keyof typeof HYDRO_SEASONAL_SHARES;
 }
 
 // Values sourced from research/energy_arithmetic.md in the book project.
@@ -32,9 +38,9 @@ interface StaticSpec {
 // - Flare regions stay flat because flare IS genuinely 24/7 base load.
 //   The flat profile is methodologically correct, not a data gap.
 const STATIC_REGIONS: Record<string, StaticSpec> = {
-  sichuan: { annualTWh: 30, kind: "flat", source: "Ember China Electricity Review 2025 (monsoon hydro spill, near-flat baseline)", reportDate: "2025-Q1" },
+  sichuan: { annualTWh: 30, kind: "hydro-seasonal", seasonalSharesKey: "sichuan", source: "Ember China Electricity Review 2025 (Yangtze basin monsoon hydro spill, peaks Jul-Aug, ~zero Nov-Apr)", reportDate: "2025-Q1" },
   xinjiang: { annualTWh: 15, kind: "solar", localSolarPeakUTC: 6.33, source: "S&P 'Rising Curtailment in China' 2024 (typical-shape solar bump centred on local noon UTC 06:20)", reportDate: "2024" },
-  iceland: { annualTWh: 5.3, kind: "flat", source: "Orkustofnun - Icelandic National Energy Authority (hydro/geothermal, near-flat)", reportDate: "2024" },
+  iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
   permian: { annualTWh: 44, kind: "flat", source: "World Bank GGFR 2024 (~12 bcm/yr × 3.7 TWh-e/bcm, flat 24/7 by nature)", reportDate: "2024" },
   "w-siberia": { annualTWh: 92, kind: "flat", source: "World Bank GGFR 2024 (~25 bcm/yr × 3.7 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
   "s-iraq": { annualTWh: 63, kind: "flat", source: "World Bank GGFR 2024 (~17 bcm/yr × 3.7 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
@@ -42,10 +48,19 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
 };
 
 /** Pure builder: spec in, RegionData out. Exported for tests. */
-export function buildStaticRegion(id: string, spec: StaticSpec): RegionData {
+export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new Date()): RegionData {
   let profile: number[];
+  let scaledTotalTWh = spec.annualTWh * (30 / 365);
+  let sourceNote = spec.source;
+
   if (spec.kind === "solar" && spec.localSolarPeakUTC != null) {
     profile = solarProfile(spec.localSolarPeakUTC, spec.annualTWh);
+  } else if (spec.kind === "hydro-seasonal" && spec.seasonalSharesKey) {
+    const shares = HYDRO_SEASONAL_SHARES[spec.seasonalSharesKey];
+    profile = hydroSeasonalProfile(spec.annualTWh, shares, now);
+    const factor = seasonalScaleFactor(shares, now);
+    scaledTotalTWh = spec.annualTWh * (30 / 365) * factor;
+    sourceNote = `${spec.source} — current 30-day seasonal factor ${factor.toFixed(2)}×`;
   } else {
     const flatGW = (spec.annualTWh * 1000) / 8760;
     profile = Array(24).fill(flatGW);
@@ -54,10 +69,10 @@ export function buildStaticRegion(id: string, spec: StaticSpec): RegionData {
     regionId: id,
     profile,
     latestProfile: null,
-    totalTWh: spec.annualTWh * (30 / 365),
+    totalTWh: scaledTotalTWh,
     peakGW: Math.max(...profile),
     lastUpdated: spec.reportDate,
-    sourceNote: spec.source,
+    sourceNote,
   };
 }
 
