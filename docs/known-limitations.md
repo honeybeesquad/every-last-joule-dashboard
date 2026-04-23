@@ -32,7 +32,7 @@ CBECI remains the canonical academic benchmark for Bitcoin electricity consumpti
 
 ### 8. ERCOT remains on the EIA proxy after the B2 native attempt
 
-ERCOT’s native developer API remains blocked behind the Incapsula WAF from this environment, even with valid credentials. The B2 native probe acquired a token successfully, then received HTTP 403 from `api.ercot.com` on the SCED HDL/LDL candidate endpoint. v0.5 therefore keeps `ERCOT_NATIVE_ENABLED = false` and continues to use EIA hourly wind with a 6.15% calibrated rate, split into ERCOT West and East. The inactive native loader remains in the repo for a future US-runner or VPN-backed pickup.
+ERCOT’s native developer API remains blocked behind the Incapsula WAF from this local environment, even with valid credentials. The B2 native probe acquired a token locally, then received HTTP 403 from `api.ercot.com`. Vercel’s US build path acquired a token and bypassed Incapsula after the missing ERCOT env vars were added, but the SCED HDL/LDL artifact data call returned HTTP 404. v0.5 therefore keeps `ERCOT_NATIVE_ENABLED = false` and continues to use EIA hourly wind with a 6.15% calibrated rate, split into ERCOT West and East. The inactive native loader remains in the repo for a future endpoint-discovery pass.
 
 ### 9. Atacama (Chile) uses a typical solar shape after the B2 Playwright attempt
 

@@ -90,9 +90,10 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 **v0.5 B2 hard-unlock attempt:** committed `src/data/ercot-native.json.ts` as an inactive probe behind `ERCOT_NATIVE_ENABLED = false` in `src/index.md`.
 
 - Token path: ROPC token acquisition succeeds with the existing `ERCOT_USERNAME`, `ERCOT_PASSWORD`, and `ERCOT_API_KEY` setup.
-- Native endpoint attempted: `api/public-reports/np6-915-cd/summary_of_hdl_ldl`, ERCOT's public "Summary Report of HDL and LDL" SCED product. It is the closest public SCED aggregate candidate found in the one-day spike because it reports high/low dispatch limits after each SCED run.
+- Native endpoint attempted: ERCOT's public `np6-915-cd` "Summary Report of HDL and LDL" SCED product. It is the closest public SCED aggregate candidate found in the one-day spike because it reports high/low dispatch limits after each SCED run. The loader resolves the product artifact endpoint dynamically from `api/public-reports/np6-915-cd`.
 - Local outcome: token acquired, then HTTP 403 Incapsula challenge from `api.ercot.com` with an Error 16 incident page. The loader writes `data/snapshots/diagnostics/ercot-native.json` and falls through to `data/snapshots/last-good/ercot-native.json`.
-- Product outcome: `ERCOT_NATIVE_ENABLED` remains `false`; the dashboard stays on the EIA proxy (`ercot-west` and `ercot-east`). The native loader remains in the repo for a future US-runner/VPN pickup.
+- Vercel outcome: the first production build showed the three ERCOT env vars were absent from Vercel despite the prerequisite; they were added to Production from `.env.local`. The redeployed Vercel US build then acquired a token and bypassed Incapsula, but the SCED artifact data call returned HTTP 404 Resource Not Found.
+- Product outcome: `ERCOT_NATIVE_ENABLED` remains `false`; the dashboard stays on the EIA proxy (`ercot-west` and `ercot-east`). The native loader remains in the repo for a future endpoint-discovery pass now that the Vercel-US auth path is known to reach ERCOT.
 
 ---
 
