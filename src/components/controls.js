@@ -8,7 +8,7 @@ export function mountControls(container, clock) {
       <span class="ctl-play-icon"></span>
     </button>
     <div class="ctl-speed" role="group" aria-label="Playback speed">
-      ${[1, 2, 4, 8].map((s) => `
+      ${[0.5, 1, 2, 4, 8].map((s) => `
         <button class="ctl-speed-chip${s === 2 ? " is-active" : ""}" data-speed="${s}">${s}×</button>
       `).join("")}
     </div>
