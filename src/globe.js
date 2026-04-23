@@ -42,6 +42,7 @@ export async function mountGlobe(canvas, initial) {
   const countries = await loadCountries();
   const dots = precomputeLandDots(countries);
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const onRegionClick = typeof initial.onRegionClick === "function" ? initial.onRegionClick : null;
   const state = {
     regions: initial.regions,
     regionData: initial.regionData,
@@ -50,6 +51,43 @@ export async function mountGlobe(canvas, initial) {
     rotation: [-10, -15, 0],
     dragging: false
   };
+
+  /**
+   * Hit-test: given client coords, return the closest rendered hotspot region
+   * within `threshold` pixels that sits on the near hemisphere, or null.
+   */
+  function hitTestRegion(clientX, clientY, threshold = 20) {
+    const rect = canvas.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const size = Math.min(width, height);
+    if (!width || !height) return null;
+    const projection = d3.geoOrthographic()
+      .scale(size * 0.46)
+      .translate([width / 2, height / 2])
+      .clipAngle(90)
+      .rotate(state.rotation);
+    const centerLngLat = [-state.rotation[0], -state.rotation[1]];
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
+
+    let best = null;
+    let bestDist2 = threshold * threshold;
+    for (const region of state.regions) {
+      const dist = d3.geoDistance([region.lon, region.lat], centerLngLat);
+      if (dist > Math.PI / 2) continue; // far side of globe
+      const point = projection([region.lon, region.lat]);
+      if (!point) continue;
+      const dx = point[0] - px;
+      const dy = point[1] - py;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < bestDist2) {
+        bestDist2 = d2;
+        best = region;
+      }
+    }
+    return best;
+  }
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
@@ -222,10 +260,13 @@ export async function mountGlobe(canvas, initial) {
   let activePointerId = null;
   let lastX = 0;
   let lastY = 0;
+  let downX = 0;
+  let downY = 0;
   let lastMoveAt = 0;
   let autoResumeAt = 0;
   const DRAG_SENSITIVITY = 0.55;
   const AUTO_RESUME_DELAY_MS = 2500;
+  const CLICK_MAX_TRAVEL_PX = 5; // pointer travel threshold below which we treat as click, not drag
 
   canvas.addEventListener("pointerdown", (event) => {
     event.preventDefault();
@@ -233,6 +274,8 @@ export async function mountGlobe(canvas, initial) {
     activePointerId = event.pointerId;
     lastX = event.clientX;
     lastY = event.clientY;
+    downX = event.clientX;
+    downY = event.clientY;
     lastMoveAt = event.timeStamp;
     canvas.classList.add("is-dragging");
     try { canvas.setPointerCapture(event.pointerId); } catch {}
@@ -252,12 +295,20 @@ export async function mountGlobe(canvas, initial) {
 
   function releasePointer(event) {
     if (activePointerId !== event.pointerId) return;
+    const travelX = event.clientX - downX;
+    const travelY = event.clientY - downY;
+    const traveled = Math.hypot(travelX, travelY);
     state.dragging = false;
     activePointerId = null;
     autoResumeAt = performance.now() + AUTO_RESUME_DELAY_MS;
     canvas.classList.remove("is-dragging");
     if (canvas.hasPointerCapture?.(event.pointerId)) {
       canvas.releasePointerCapture(event.pointerId);
+    }
+    // Treat a small-travel pointerup as a click and run hit-testing.
+    if (onRegionClick && traveled < CLICK_MAX_TRAVEL_PX && event.type === "pointerup") {
+      const hit = hitTestRegion(event.clientX, event.clientY);
+      onRegionClick(hit, { clientX: event.clientX, clientY: event.clientY });
     }
   }
 

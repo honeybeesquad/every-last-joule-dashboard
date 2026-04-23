@@ -7,6 +7,7 @@ import { createClock } from "./components/clock.js";
 import { mountControls } from "./components/controls.js";
 import { mountModeToggle } from "./components/mode-toggle.js";
 import { mountTimeline } from "./components/timeline.js";
+import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
 import { FUEL_ORDER, FUEL_LABEL, FUEL_COLOR, dominantFuel, isRenewable } from "./lib/fuel.js";
@@ -250,7 +251,23 @@ mountModeToggle(document.getElementById("mode-toggle"), {
   },
 });
 
-globe = await mountGlobe(canvas, { regions: REGIONS, regionData, utcHour: initialHour, mode: mode.value });
+const regionTooltip = mountRegionTooltip({
+  clock,
+  regionData,
+  getMode: () => mode.value,
+  regions: REGIONS,
+});
+
+globe = await mountGlobe(canvas, {
+  regions: REGIONS,
+  regionData,
+  utcHour: initialHour,
+  mode: mode.value,
+  onRegionClick(region, anchor) {
+    if (region) regionTooltip.show(region, anchor);
+    else regionTooltip.hide();
+  },
+});
 canvas.hidden = false;
 document.getElementById("globe-placeholder")?.remove();
 
