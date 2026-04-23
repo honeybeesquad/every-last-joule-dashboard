@@ -1343,7 +1343,7 @@
     "request": {
       "command": "/v2/electricity/rto/fuel-type-data/data/",
       "params": {
-        "api_key": "DH9JVaE0bgVOzpxjk50dYoEt21ZUOVcH34l1ftRB",
+        "api_key": "REDACTED_FOR_FIXTURES",
         "frequency": "hourly",
         "data": [
           "value"
@@ -2714,7 +2714,7 @@
     "request": {
       "command": "/v2/electricity/rto/fuel-type-data/data/",
       "params": {
-        "api_key": "DH9JVaE0bgVOzpxjk50dYoEt21ZUOVcH34l1ftRB",
+        "api_key": "REDACTED_FOR_FIXTURES",
         "frequency": "hourly",
         "data": [
           "value"
