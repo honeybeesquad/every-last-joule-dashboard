@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { parseCaiso } from "../../src/data/caiso.json";
+import { parseCaiso, parseCaisoOasisCurtailmentCsv } from "../../src/data/caiso.json";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixture = JSON.parse(
@@ -53,5 +53,16 @@ describe("caiso parser (EIA proxy)", () => {
     // and is zero overnight. Profile[20] should be well above profile[8].
     const result = parseCaiso(fixture);
     expect(result.profile[20]).toBeGreaterThan(result.profile[8]);
+  });
+});
+
+describe("caiso parser (OASIS direct)", () => {
+  const oasisCsv = readFileSync(join(__dirname, "../fixtures/caiso-oasis-curtailment.csv"), "utf8");
+
+  it("parses direct wind+solar curtailment rows", () => {
+    const result = parseCaisoOasisCurtailmentCsv(oasisCsv);
+    expect(result.regionId).toBe("caiso");
+    expect(result.sourceNote).toContain("direct");
+    expect(result.totalTWh).toBeCloseTo(145 / 1_000_000, 6);
   });
 });

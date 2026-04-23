@@ -2,12 +2,12 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 40 canonical regions", () => {
-    expect(REGIONS.length).toBe(40);
+  it("has 42 canonical regions", () => {
+    expect(REGIONS.length).toBe(42);
   });
 
-  it("has 32 live regions", () => {
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(32);
+  it("has 34 live regions", () => {
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(34);
   });
 
   it("has 4 static regions", () => {
@@ -56,5 +56,9 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "greece")).toBeDefined();
     expect(REGIONS.find(r => r.id === "romania")).toBeDefined();
     expect(REGIONS.find(r => r.id === "italy-north")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "belgium")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "denmark")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "denmark-west")).toBeUndefined();
   });
 });

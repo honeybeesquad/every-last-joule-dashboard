@@ -97,20 +97,77 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 
 ---
 
-## AEMO NEMWeb per-state intermittent output (used)
+## AEMO NEMWeb per-state direct dispatch-down (used)
 
-**Feed used:** `https://nemweb.com.au/Reports/Current/Next_Day_Intermittent_Gen_Scada/`
+**Feed used:** `https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/`
 
-**Why this path:** the AEMO app JSON endpoints and the registration spreadsheet were both Cloudflare-blocked from this NZ environment during implementation. The full `Daily_Reports` archive was reachable but materially heavier. The intermittent SCADA daily feed is smaller, public, and still sourced from AEMO NEMWeb.
+**v1b change:** upgraded from intermittent-generation proxy to direct semi-scheduled dispatch-down measurement.
 
 - Cadence: one ZIP per market day, published shortly after 04:00 AEST.
-- Payload used: `LOCL` rows per DUID as a live proxy for wind/solar output.
+- Payload used: `DISPATCH_UNIT_SOLUTION` rows per DUID.
 - Window: latest 30 daily ZIPs from the directory listing.
 - Split logic: DUIDs mapped to NSW/VIC/QLD/SA/TAS via a checked-in unit map derived primarily from OpenNEM's published station metadata, with a small supplement for newer units cross-checked against public AESOP listings.
 
-**Curtailment method:** direct curtailment was not cleanly exposed in a stable public API from this environment, so v0.5 B1 uses the approved fallback: per-state wind+solar output proxy × 3%.
+**Curtailment method:** direct measurement. When `SEMIDISPATCHCAP=1`, the semi-scheduled unit is actively capped; the loader estimates curtailed MW as `max(0, UIGF - TOTALCLEARED)` and aggregates by NEM state.
 
-**Methodology note:** this is a calibrated live-generation proxy, not a direct AEMO dispatch-down measure. South Australia and Tasmania remain wind-heavy; NSW/VIC/QLD are solar-heavy.
+**Methodology note:** "NEMWEB DISPATCHIS/Next Day Dispatch SEMIDISPATCHCAP direct curtailment per state".
+
+---
+
+## CAISO OASIS direct curtailment / EIA fallback (used)
+
+**Direct feed attempted:** `https://oasis.caiso.com/oasisapi/SingleZip?queryname=SLD_REN_CURTAIL&version=1&...&resultformat=6`
+
+**v1b outcome:** the loader now attempts `SLD_REN_CURTAIL` first and parses wind+solar curtailment CSVs when OASIS returns them. From this NZ environment, the endpoint still returns `INVALID_REQUEST.xml.zip` for the surveyed query name/date format, so the production path falls back inside the loader to the prior EIA CISO solar proxy when `EIA_API_KEY` is present, or to the resilient last-good snapshot when not.
+
+**Fallback method:** EIA hourly CISO solar × 4.25% calibrated curtailment rate. This remains a calibrated proxy until the correct OASIS query contract is confirmed.
+
+---
+
+## Belgium Elia wind+solar CSV (used)
+
+**Feed used:** Elia Open Data Opendatasoft CSV exports.
+
+- Wind actual/forecast: `https://opendata.elia.be/api/explore/v2.1/catalog/datasets/ods086/exports/csv`
+- Solar actual/forecast: `https://opendata.elia.be/api/explore/v2.1/catalog/datasets/ods087/exports/csv`
+- Cadence: 15-minute rows.
+- Format: UTF-8 BOM, semicolon-delimited.
+
+**Endpoint surprise:** the research note had wind/solar ids reversed. Live probes show `ods086` is wind (has `offshoreonshore`) and `ods087` is solar.
+
+**Curtailment method:** calibrated proxy, realtime MW when present else most-recent forecast, × 2% Belgium 2024 wind+solar curtailment ratio.
+
+---
+
+## France RTE eco2mix national CSV (used)
+
+**Feed used:** `https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-national-tr/exports/csv?refine=date_heure:YYYY-MM`
+
+**v1b change:** France moved out of the ENTSO-E multi-zone loader into direct RTE eco2mix national coverage.
+
+**Curtailment method:** calibrated proxy, `eolien_terrestre + eolien_offshore + solaire` × 3%.
+
+---
+
+## Denmark Energinet ProductionConsumptionSettlement (used)
+
+**Feed used:** `https://api.energidataservice.dk/dataset/ProductionConsumptionSettlement`
+
+**Endpoint surprise:** `?format=csv` currently returns a JSON envelope with `records` from this environment, so the loader parses the returned records rather than assuming a raw CSV body.
+
+**v1b change:** Denmark moved out of ENTSO-E `denmark-west`; the dashboard now emits one national `denmark` region by summing DK1 and DK2.
+
+**Curtailment method:** calibrated proxy, hourly wind+solar MWh columns × 4%.
+
+---
+
+## New Zealand EMI Generation_MD CSV (used)
+
+**Feed used:** `https://www.emi.ea.govt.nz/Wholesale/Datasets/Generation/Generation_MD/YYYYMM_Generation_MD.csv`
+
+**Endpoint surprise:** on 23 April 2026 the latest published file is `202603_Generation_MD.csv`; `202604_Generation_MD.csv` returns 404. The loader tries current and previous month and skips missing current-month files.
+
+**Curtailment method:** calibrated proxy, Wind/Solar/Geo trading-period generation × 1.3%. EMI units are kWh by half-hour trading period, converted to hourly average MW before profiling.
 
 ---
 
@@ -148,16 +205,19 @@ This remains a direct curtailment feed, not a calibrated proxy.
 
 ## ENTSO-E regional expansion (used)
 
-The existing ENTSO-E loader now covers six bidding zones instead of three:
+The ENTSO-E loader remains for zones where direct TSO CSV access is not yet viable:
 
 - Germany: wind onshore, 2%
 - Iberia: solar, 2%
 - Finland: wind onshore, 5%
-- France: wind onshore, 3%
 - Netherlands: solar, 4%
-- Denmark West: wind onshore, 4%
+- Poland: wind onshore, 2%
+- Turkey: wind onshore, 2%
+- Greece: solar, 2.5%
+- Romania: wind onshore, 1.5%
+- Italy North: solar, 2%
 
-All six use the same ENTSO-E Transparency API `A75` actual-generation pattern and are wrapped under the same resilient multi-region loader.
+France and Denmark-West were removed in v1b after direct RTE and Energinet loaders were added.
 
 ---
 

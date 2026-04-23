@@ -81,9 +81,10 @@ describe("buildZoneData", () => {
     expect(finland.totalTWh / iberia.totalTWh).toBeCloseTo(2.5, 1);
   });
 
-  it("includes the expanded France, Netherlands, and Denmark West zones", () => {
+  it("keeps ENTSO-E only for zones without direct TSO CSV replacements", () => {
     const ids = ZONES.map((z: any) => z.id);
-    expect(ids).toEqual(expect.arrayContaining(["france", "netherlands", "denmark-west"]));
+    expect(ids).toEqual(expect.arrayContaining(["netherlands"]));
+    expect(ids).not.toEqual(expect.arrayContaining(["france", "denmark-west"]));
   });
 
   it("includes the v1a ENTSO-E expansion zones", () => {

@@ -11,7 +11,9 @@ describe("norway loader helpers", () => {
   it("parses the Norway ENTSO-E fixture into ordered points", () => {
     const points = parseEntsoeXml(xml);
     expect(points.length).toBeGreaterThan(3);
-    expect(points[0].utcTimestamp < points.at(-1).utcTimestamp).toBe(true);
+    const last = points.at(-1);
+    expect(last).toBeDefined();
+    expect(points[0]!.utcTimestamp < last!.utcTimestamp).toBe(true);
   });
 
   it("builds n-norway RegionData with the 6% calibration", () => {

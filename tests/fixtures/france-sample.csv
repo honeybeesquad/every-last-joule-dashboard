@@ -1,0 +1,4 @@
+perimetre;nature;date;heure;date_heure;eolien_terrestre;eolien_offshore;solaire
+France;Données temps réel;2026-04-01;02:00;2026-04-01T00:00:00+00:00;1000;200;300
+France;Données temps réel;2026-04-01;02:15;2026-04-01T00:15:00+00:00;1100;200;400
+France;Données temps réel;2026-04-01;03:00;2026-04-01T01:00:00+00:00;900;100;500

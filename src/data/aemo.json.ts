@@ -4,13 +4,13 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { pathToFileURL } from "node:url";
 import { fetchText } from "../lib/fetch.js";
+import { hourlyAverage } from "../lib/csv.js";
 import { peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { AEMO_UNIT_MAP } from "./aemo-unit-map.js";
 
-const DIRECTORY_URL = "https://nemweb.com.au/Reports/Current/Next_Day_Intermittent_Gen_Scada/";
-const CALIBRATION_RATE = 0.03;
+const DIRECTORY_URL = "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/";
 
 type AemoRegionId = "aemo-nsw" | "aemo-vic" | "aemo-qld" | "aemo-sa" | "aemo-tas";
 
@@ -37,30 +37,45 @@ function parseAemoDate(localAest: string): string | null {
   return new Date(utcMs).toISOString();
 }
 
-export function parseAemoIntermittentCsv(
+export function parseAemoDispatchCsv(
   csv: string,
 ): Record<AemoRegionId, CurtailmentPoint[]> {
   const totals = new Map<AemoRegionId, Map<string, number>>();
+  let headers: string[] = [];
   const lines = csv.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
 
   for (const line of lines) {
-    if (!line.startsWith("D,DEMAND,INTERMITTENT_GEN_SCADA,")) continue;
-    const cells = line.split(",");
-    const localTimestamp = cells[4]?.replace(/^"|"$/g, "");
-    const duid = cells[5]?.replace(/^"|"$/g, "");
-    const scadaType = cells[6]?.replace(/^"|"$/g, "");
-    const value = Number(cells[7]);
+    if (line.startsWith("I,DISPATCH,UNIT_SOLUTION,")) {
+      headers = line.split(",").slice(4);
+      continue;
+    }
+    if (!line.startsWith("D,DISPATCH,UNIT_SOLUTION,")) continue;
+    if (!headers.length) continue;
 
-    if (!duid || scadaType !== "LOCL" || !Number.isFinite(value)) continue;
+    const cells = line.split(",");
+    const values = cells.slice(4);
+    const get = (name: string) => values[headers.indexOf(name)]?.replace(/^"|"$/g, "");
+    const localTimestamp = get("SETTLEMENTDATE");
+    const duid = get("DUID");
+    const totalCleared = Number(get("TOTALCLEARED") || 0);
+    const availability = Number(get("AVAILABILITY") || 0);
+    const semidispatchCap = Number(get("SEMIDISPATCHCAP") || 0);
+    const uigf = Number(get("UIGF") || 0);
+
+    if (!duid || semidispatchCap !== 1) continue;
     const unit = AEMO_UNIT_MAP[duid as keyof typeof AEMO_UNIT_MAP];
     if (!unit) continue;
     const regionId = REGION_CODE_TO_ID[unit.region];
     const utcTimestamp = localTimestamp ? parseAemoDate(localTimestamp) : null;
     if (!regionId || !utcTimestamp) continue;
 
+    const unconstrained = Number.isFinite(uigf) && uigf > 0 ? uigf : availability;
+    const curtailedMw = Math.max(0, unconstrained - (Number.isFinite(totalCleared) ? totalCleared : 0));
+    if (curtailedMw <= 0) continue;
+
     let bucket = totals.get(regionId);
     if (!bucket) totals.set(regionId, (bucket = new Map<string, number>()));
-    bucket.set(utcTimestamp, (bucket.get(utcTimestamp) ?? 0) + Math.max(0, value * CALIBRATION_RATE));
+    bucket.set(utcTimestamp, (bucket.get(utcTimestamp) ?? 0) + curtailedMw);
   }
 
   return Object.fromEntries(
@@ -72,6 +87,8 @@ export function parseAemoIntermittentCsv(
     ]),
   ) as Record<AemoRegionId, CurtailmentPoint[]>;
 }
+
+export const parseAemoIntermittentCsv = parseAemoDispatchCsv;
 
 function unzipCsv(zipBytes: Uint8Array): string {
   const dir = mkdtempSync(join(tmpdir(), "aemo-"));
@@ -86,7 +103,7 @@ function unzipCsv(zipBytes: Uint8Array): string {
 
 function listRecentZips(html: string, limit = 30): string[] {
   const matches = Array.from(
-    html.matchAll(/HREF="([^"]*PUBLIC_NEXT_DAY_INTERMITTENT_GEN_SCADA_[^"]+\.zip)"/gi),
+    html.matchAll(/HREF="([^"]*PUBLIC_NEXT_DAY_DISPATCH_[^"]+\.zip)"/gi),
   ).map((m) => m[1]);
   return matches.slice(-limit).map((href) => new URL(href, DIRECTORY_URL).toString());
 }
@@ -94,7 +111,7 @@ function listRecentZips(html: string, limit = 30): string[] {
 const run = async (): Promise<Record<AemoRegionId, RegionData>> => {
   const listing = await fetchText(DIRECTORY_URL);
   const urls = listRecentZips(listing, 30);
-  if (!urls.length) throw new Error("AEMO directory listing returned no daily intermittent SCADA zips");
+  if (!urls.length) throw new Error("AEMO directory listing returned no daily dispatch zips");
 
   const allPoints: Record<AemoRegionId, CurtailmentPoint[]> = {
     "aemo-nsw": [],
@@ -108,7 +125,7 @@ const run = async (): Promise<Record<AemoRegionId, RegionData>> => {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
     const csv = unzipCsv(new Uint8Array(await res.arrayBuffer()));
-    const parsed = parseAemoIntermittentCsv(csv);
+    const parsed = parseAemoDispatchCsv(csv);
     for (const regionId of Object.keys(allPoints) as AemoRegionId[]) {
       allPoints[regionId].push(...parsed[regionId]);
     }
@@ -116,14 +133,14 @@ const run = async (): Promise<Record<AemoRegionId, RegionData>> => {
 
   const out = {} as Record<AemoRegionId, RegionData>;
   for (const regionId of Object.keys(allPoints) as AemoRegionId[]) {
-    const points = allPoints[regionId];
+    const points = hourlyAverage(allPoints[regionId]);
     out[regionId] = {
       regionId,
       profile: timeOfDayAverageGW(points),
       totalTWh: totalTWh30d(points),
       peakGW: peakGW(points),
       lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-      sourceNote: "AEMO intermittent SCADA LOCL output × 3% calibrated curtailment proxy, split by NEM region",
+      sourceNote: "NEMWEB DISPATCHIS/Next Day Dispatch SEMIDISPATCHCAP direct curtailment per state",
     };
   }
 

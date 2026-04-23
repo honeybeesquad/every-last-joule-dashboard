@@ -18,6 +18,10 @@ const ercotNative = await FileAttachment("data/ercot-native.json").json();
 const caiso = await FileAttachment("data/caiso.json").json();
 const entsoe = await FileAttachment("data/entsoe.json").json();
 const aemo = await FileAttachment("data/aemo.json").json();
+const belgium = await FileAttachment("data/belgium.json").json();
+const france = await FileAttachment("data/france.json").json();
+const denmark = await FileAttachment("data/denmark.json").json();
+const newZealand = await FileAttachment("data/new-zealand.json").json();
 const norway = await FileAttachment("data/norway.json").json();
 const atacama = await FileAttachment("data/atacama-chile.json").json();
 const statics = await FileAttachment("data/statics.json").json();
@@ -89,7 +93,7 @@ document.getElementById("app-root").innerHTML = `
     </div>
 
     <footer class="app-footer">
-      <p class="caption" id="caption-copy">Hashrate: mempool.space. Live grid data: EIA, ENTSO-E, Elexon BMRS, ONS. Static: Ember, GGFR. Refreshed: <span id="refreshed-at">—</span>.</p>
+      <p class="caption" id="caption-copy">Hashrate: mempool.space. Live grid data: EIA, ENTSO-E, Elia, RTE, Energinet, AEMO, Elexon BMRS, ONS, EMI. Static: Ember, GGFR. Refreshed: <span id="refreshed-at">—</span>.</p>
     </footer>
   </div>
 `;
@@ -103,12 +107,13 @@ const regionData = {
     : ercot),
   caiso,
   ...aemo,
+  belgium,
   germany: entsoe.germany,
   iberia: entsoe.iberia,
   finland: entsoe.finland,
-  france: entsoe.france,
+  france,
   netherlands: entsoe.netherlands,
-  "denmark-west": entsoe["denmark-west"],
+  denmark,
   poland: entsoe.poland,
   turkey: entsoe.turkey,
   greece: entsoe.greece,
@@ -122,6 +127,7 @@ const regionData = {
   ireland,
   peru,
   "south-africa": southAfrica,
+  "new-zealand": newZealand,
   atacama,
   ...statics
 };

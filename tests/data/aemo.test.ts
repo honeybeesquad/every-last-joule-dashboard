@@ -6,16 +6,16 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const csv = readFileSync(join(__dirname, "../fixtures/aemo-daily-sample.csv"), "utf8");
 
-let parseAemoIntermittentCsv: any;
+let parseAemoDispatchCsv: any;
 
 describe("aemo parser", () => {
   beforeAll(async () => {
     const module = await import("../../src/data/aemo.json.js");
-    parseAemoIntermittentCsv = module.parseAemoIntermittentCsv;
+    parseAemoDispatchCsv = module.parseAemoDispatchCsv;
   });
 
-  it("clusters DUID output into the five AEMO regions", () => {
-    const result = parseAemoIntermittentCsv(csv);
+  it("clusters directly constrained DUID output into the five AEMO regions", () => {
+    const result = parseAemoDispatchCsv(csv);
     expect(result["aemo-nsw"].length).toBeGreaterThan(0);
     expect(result["aemo-vic"].length).toBeGreaterThan(0);
     expect(result["aemo-qld"].length).toBeGreaterThan(0);
@@ -24,13 +24,13 @@ describe("aemo parser", () => {
   });
 
   it("converts AEMO market timestamps to UTC ISO strings", () => {
-    const result = parseAemoIntermittentCsv(csv);
+    const result = parseAemoDispatchCsv(csv);
     expect(result["aemo-sa"][0].utcTimestamp).toBe("2026-04-21T18:05:00.000Z");
   });
 
-  it("applies the 3% calibration to LOCL output", () => {
-    const result = parseAemoIntermittentCsv(csv);
-    expect(result["aemo-nsw"][0].mw).toBeCloseTo((154.99985 + 0) * 0.03, 5);
-    expect(result["aemo-qld"][0].mw).toBeCloseTo(359.62836 * 0.03, 5);
+  it("uses UIGF minus dispatch target only when SEMIDISPATCHCAP is set", () => {
+    const result = parseAemoDispatchCsv(csv);
+    expect(result["aemo-nsw"][0].mw).toBeCloseTo(54.99985, 5);
+    expect(result["aemo-qld"][0].mw).toBeCloseTo(359.62836, 5);
   });
 });
