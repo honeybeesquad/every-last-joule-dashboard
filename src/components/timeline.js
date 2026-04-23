@@ -8,11 +8,16 @@ import { perHourAggregate } from "../lib/calc.js";
 export function mountTimeline(canvas, { regionData, cbeci, clock }) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const ctx = canvas.getContext("2d");
-  const series = perHourAggregate(regionData, cbeci);
-  const gw = series.map((row) => row.totalGW);
-  const maxGW = Math.max(1, ...gw);
+  let mode = "avg30d";
+
+  function currentGW() {
+    const series = perHourAggregate(regionData, cbeci, mode);
+    const gw = series.map((row) => row.totalGW);
+    return { gw, maxGW: Math.max(1, ...gw) };
+  }
 
   function render() {
+    const { gw, maxGW } = currentGW();
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
     if (!w || !h) return;
@@ -108,4 +113,11 @@ export function mountTimeline(canvas, { regionData, cbeci, clock }) {
 
   clock.subscribe(() => render());
   render();
+
+  return {
+    update(next = {}) {
+      if (next.mode) mode = next.mode;
+      render();
+    },
+  };
 }

@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile.js";
+import { timeOfDayAverageGW, totalTWh30d, peakGW, latestCompleteUtcDayProfileGW } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { pathToFileURL } from "url";
@@ -187,6 +187,7 @@ function splitRegion(base: RegionData, regionId: NativeRegionId, share: number, 
     ...base,
     regionId,
     profile: base.profile.map((gw) => gw * share),
+    latestProfile: base.latestProfile?.map((gw) => gw * share) ?? null,
     totalTWh: base.totalTWh * share,
     peakGW: base.peakGW * share,
     sourceNote,
@@ -197,6 +198,7 @@ function parseErcotNative(points: CurtailmentPoint[]): Record<NativeRegionId, Re
   const base: RegionData = {
     regionId: "ercot-native",
     profile: timeOfDayAverageGW(points),
+    latestProfile: latestCompleteUtcDayProfileGW(points),
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),

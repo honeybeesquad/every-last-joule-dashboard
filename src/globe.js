@@ -1,5 +1,6 @@
 import * as d3 from "npm:d3";
 import * as topojson from "npm:topojson-client";
+import { regionGWAtHour } from "./lib/calc.js";
 
 const WORLD_TOPOLOGY_URL = "https://unpkg.com/world-atlas@2/countries-110m.json";
 let countriesPromise;
@@ -42,6 +43,7 @@ export async function mountGlobe(canvas, initial) {
     regions: initial.regions,
     regionData: initial.regionData,
     utcHour: initial.utcHour,
+    mode: initial.mode ?? "avg30d",
     rotation: [-10, -15, 0],
     dragging: false
   };
@@ -140,7 +142,8 @@ export async function mountGlobe(canvas, initial) {
     ctx.stroke();
 
     for (const region of state.regions) {
-      const gw = state.regionData[region.id]?.profile?.[Math.floor(hour)] ?? 0;
+      const data = state.regionData[region.id];
+      const gw = data ? regionGWAtHour(data, Math.floor(hour), state.mode) : 0;
       if (gw <= 0.01) continue;
       const dist = d3.geoDistance([region.lon, region.lat], center);
       if (dist > Math.PI / 2) continue;

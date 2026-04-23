@@ -51,6 +51,7 @@ const run = async (): Promise<RegionData> => {
   return {
     regionId: "south-africa",
     profile: timeOfDayAverageGW(points),
+    latestProfile: null,
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: now.toISOString(),

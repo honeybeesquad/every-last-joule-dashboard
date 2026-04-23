@@ -5,6 +5,7 @@
 ```js
 import { createClock } from "./components/clock.js";
 import { mountControls } from "./components/controls.js";
+import { mountModeToggle } from "./components/mode-toggle.js";
 import { mountTimeline } from "./components/timeline.js";
 import { aggregateAtHour } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
@@ -89,7 +90,10 @@ document.getElementById("app-root").innerHTML = `
         <span class="caption">click or drag to scrub</span>
       </div>
       <canvas id="timeline-canvas"></canvas>
-      <div class="timeline-controls" id="timeline-controls"></div>
+      <div class="timeline-controls">
+        <div id="timeline-controls"></div>
+        <div id="mode-toggle"></div>
+      </div>
     </div>
 
     <footer class="app-footer">
@@ -138,10 +142,12 @@ document.getElementById("refreshed-at").textContent = cbeci.lastUpdated;
 const now = new Date();
 const initialHour = now.getUTCHours() + now.getUTCMinutes() / 60;
 const clock = createClock(initialHour);
+const mode = typeof Mutable === "function" ? Mutable("avg30d") : { value: "avg30d" };
 
 function renderAt(hour) {
   const utcHour = Math.floor(hour % 24);
-  const result = aggregateAtHour(regionData, cbeci, utcHour);
+  const activeMode = mode.value ?? "avg30d";
+  const result = aggregateAtHour(regionData, cbeci, utcHour, activeMode);
   const hh = String(utcHour).padStart(2, "0");
   const mm = String(Math.floor((hour % 1) * 60)).padStart(2, "0");
 
@@ -152,7 +158,7 @@ function renderAt(hour) {
   document.getElementById("hotspots-title").textContent = `Active hotspots · UTC ${hh}:${mm}`;
 
   const ranked = REGIONS
-    .map((region) => ({ region, gw: regionData[region.id]?.profile?.[utcHour] ?? 0 }))
+    .map((region) => ({ region, gw: result.perRegionGW[region.id] ?? 0 }))
     .filter((entry) => entry.gw > 0.05)
     .sort((a, b) => b.gw - a.gw)
     .slice(0, 10);
@@ -169,14 +175,24 @@ function renderAt(hour) {
 
 const canvas = document.getElementById("globe-canvas");
 canvas.hidden = true;
+let globe;
 
-mountTimeline(document.getElementById("timeline-canvas"), { regionData, cbeci, clock });
+const timeline = mountTimeline(document.getElementById("timeline-canvas"), { regionData, cbeci, clock });
 mountControls(document.getElementById("timeline-controls"), clock);
+mountModeToggle(document.getElementById("mode-toggle"), {
+  initial: mode.value,
+  onChange(nextMode) {
+    mode.value = nextMode;
+    renderAt(clock.hour);
+    timeline.update({ mode: nextMode });
+    globe?.update({ utcHour: clock.hour, mode: nextMode });
+  },
+});
 
-const globe = await mountGlobe(canvas, { regions: REGIONS, regionData, utcHour: initialHour });
+globe = await mountGlobe(canvas, { regions: REGIONS, regionData, utcHour: initialHour, mode: mode.value });
 canvas.hidden = false;
 document.getElementById("globe-placeholder")?.remove();
 
-clock.subscribe((hour) => globe.update({ utcHour: hour }));
+clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value }));
 clock.subscribe(renderAt);
 ```

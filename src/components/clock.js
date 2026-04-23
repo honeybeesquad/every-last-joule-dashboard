@@ -27,7 +27,8 @@ export function createClock(initialHourUtc) {
     }
     const dt = state.lastTs == null ? 0 : (now - state.lastTs) / 1000;
     state.lastTs = now;
-    state.hour = (state.hour + 0.4 * state.speed * dt) % 24;
+    state.hour += 0.4 * state.speed * dt;
+    while (state.hour >= 24) state.hour -= 24;
     emit();
     raf = requestAnimationFrame(tick);
   }

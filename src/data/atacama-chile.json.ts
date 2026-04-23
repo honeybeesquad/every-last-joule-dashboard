@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { fetchText } from "../lib/fetch.js";
 import { hourlyAverage } from "../lib/csv.js";
-import { peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
+import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
@@ -197,6 +197,7 @@ const run = async (): Promise<RegionData> => {
     return {
       regionId: "atacama",
       profile: timeOfDayAverageGW(points),
+      latestProfile: latestCompleteUtcDayProfileGW(points),
       totalTWh: totalTWh30d(points),
       peakGW: peakGW(points),
       lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),

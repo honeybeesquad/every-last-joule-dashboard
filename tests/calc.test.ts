@@ -12,6 +12,7 @@ function makeRegionData(id: string, profile: number[]): RegionData {
   return {
     regionId: id,
     profile,
+    latestProfile: null,
     totalTWh: 0,
     peakGW: Math.max(...profile, 0),
     lastUpdated: "2026-04-22T00:00:00Z"
@@ -70,6 +71,25 @@ describe("aggregateAtHour", () => {
     const result = aggregateAtHour(data, cbeci, 10);
     expect(result.perRegionGW.a).toBe(5);
     expect(result.perRegionGW.b).toBe(1);
+  });
+
+  it("uses latestProfile in last24h mode when available", () => {
+    const avg = Array(24).fill(2);
+    const latest = Array(24).fill(0);
+    latest[12] = 7;
+    const data: Record<string, RegionData> = {
+      a: { ...makeRegionData("a", avg), latestProfile: latest },
+    };
+    expect(aggregateAtHour(data, cbeci, 12, "avg30d").totalGW).toBe(2);
+    expect(aggregateAtHour(data, cbeci, 12, "last24h").totalGW).toBe(7);
+  });
+
+  it("falls back to profile in last24h mode when latestProfile is null or missing", () => {
+    const data: Record<string, RegionData> = {
+      a: makeRegionData("a", Array(24).fill(3)),
+      b: { ...makeRegionData("b", Array(24).fill(4)), latestProfile: undefined as unknown as null },
+    };
+    expect(aggregateAtHour(data, cbeci, 0, "last24h").totalGW).toBe(7);
   });
 });
 

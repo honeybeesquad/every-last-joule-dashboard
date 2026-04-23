@@ -1,6 +1,6 @@
 import { pathToFileURL } from "node:url";
 import { fetchText } from "../lib/fetch.js";
-import { peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
+import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
@@ -43,6 +43,7 @@ export function buildDenmarkData(points: CurtailmentPoint[]): RegionData {
   return {
     regionId: "denmark",
     profile: timeOfDayAverageGW(points),
+    latestProfile: latestCompleteUtcDayProfileGW(points),
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),

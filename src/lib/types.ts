@@ -27,6 +27,7 @@ export interface CurtailmentPoint {
 export interface RegionData {
   regionId: string;
   profile: number[];       // 24 GW values, index = UTC hour 0..23
+  latestProfile: number[] | null; // latest complete UTC day, raw hourly GW; null when unavailable
   totalTWh: number;        // trailing-30-day total (scaled to annual)
   peakGW: number;          // max of profile
   lastUpdated: string;     // ISO 8601 UTC of most recent source data

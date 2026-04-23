@@ -53,6 +53,7 @@ export function buildStaticRegion(id: string, spec: StaticSpec): RegionData {
   return {
     regionId: id,
     profile,
+    latestProfile: null,
     totalTWh: spec.annualTWh * (30 / 365),
     peakGW: Math.max(...profile),
     lastUpdated: spec.reportDate,

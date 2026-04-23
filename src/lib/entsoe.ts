@@ -1,6 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { fetchText } from "./fetch.js";
-import { timeOfDayAverageGW, totalTWh30d, peakGW } from "./profile.js";
+import { timeOfDayAverageGW, totalTWh30d, peakGW, latestCompleteUtcDayProfileGW } from "./profile.js";
 import type { RegionData, CurtailmentPoint } from "./types.js";
 
 const API = "https://web-api.tp.entsoe.eu/api";
@@ -61,6 +61,7 @@ export function buildZoneData(
   return {
     regionId: id,
     profile: timeOfDayAverageGW(points),
+    latestProfile: latestCompleteUtcDayProfileGW(points),
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: rawPoints.at(-1)?.utcTimestamp ?? new Date().toISOString(),

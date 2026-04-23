@@ -1,5 +1,5 @@
 import { fetchText } from "../lib/fetch.js";
-import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile.js";
+import { timeOfDayAverageGW, totalTWh30d, peakGW, latestCompleteUtcDayProfileGW } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 import { pathToFileURL } from "url";
@@ -133,6 +133,7 @@ const run = async (): Promise<Record<BrazilRegionId, RegionData>> => {
     out[regionId] = {
       regionId,
       profile: timeOfDayAverageGW(recent),
+      latestProfile: latestCompleteUtcDayProfileGW(recent),
       totalTWh: totalTWh30d(recent),
       peakGW: peakGW(recent),
       lastUpdated: recent.at(-1)?.utcTimestamp ?? new Date().toISOString(),

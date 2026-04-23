@@ -1,5 +1,5 @@
 import { fetchJSON } from "../lib/fetch.js";
-import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile.js";
+import { timeOfDayAverageGW, totalTWh30d, peakGW, latestCompleteUtcDayProfileGW } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 import { pathToFileURL } from "url";
@@ -46,6 +46,7 @@ function scaleRegion(base: RegionData, regionId: string, share: number, sourceNo
     ...base,
     regionId,
     profile: base.profile.map((gw) => gw * share),
+    latestProfile: base.latestProfile?.map((gw) => gw * share) ?? null,
     totalTWh: base.totalTWh * share,
     peakGW: base.peakGW * share,
     sourceNote,
@@ -66,6 +67,7 @@ export function parseErcot(raw: EIAResponse): Record<"ercot-west" | "ercot-east"
   const base: RegionData = {
     regionId: "ercot",
     profile: timeOfDayAverageGW(points),
+    latestProfile: latestCompleteUtcDayProfileGW(points),
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: records.at(-1)?.period ?? new Date().toISOString(),

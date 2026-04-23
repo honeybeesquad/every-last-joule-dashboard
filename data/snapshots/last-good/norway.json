@@ -1,1 +1,1 @@
-{"regionId":"n-norway","profile":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"totalTWh":0,"peakGW":0,"lastUpdated":"2026-04-23T01:25:50.719Z","sourceNote":"ENTSO-E NO-4 hydro+wind × 6% calibrated waste rate (export-constrained north Norway proxy)","sourceStatus":"live"}
+{"regionId":"n-norway","profile":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"latestProfile":null,"totalTWh":0,"peakGW":0,"lastUpdated":"2026-04-23T02:24:26.830Z","sourceNote":"ENTSO-E NO-4 hydro+wind × 6% calibrated waste rate (export-constrained north Norway proxy)","sourceStatus":"live"}

@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { fetchJSON } from "../lib/fetch.js";
 import { parseDelimitedRows } from "../lib/csv.js";
-import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile.js";
+import { timeOfDayAverageGW, totalTWh30d, peakGW, latestCompleteUtcDayProfileGW } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 import { pathToFileURL } from "url";
@@ -55,6 +55,7 @@ export function parseCaiso(raw: EIAResponse): RegionData {
   return {
     regionId: "caiso",
     profile: timeOfDayAverageGW(points),
+    latestProfile: latestCompleteUtcDayProfileGW(points),
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: records.at(-1)?.period ?? new Date().toISOString(),
@@ -113,6 +114,7 @@ export function parseCaisoOasisCurtailmentCsv(csv: string): RegionData {
   return {
     regionId: "caiso",
     profile: timeOfDayAverageGW(points),
+    latestProfile: latestCompleteUtcDayProfileGW(points),
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),

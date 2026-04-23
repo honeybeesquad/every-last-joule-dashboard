@@ -2,6 +2,7 @@ import type { RegionData, CBECIData, AggregateResult } from "./types";
 
 /** ASIC efficiency assumption for the primary headline readout. */
 export const ASIC_JPER_TH = 16;
+export type DashboardMode = "avg30d" | "last24h";
 
 /**
  * Convert continuous power P (GW) to supportable hashrate (EH/s) at the
@@ -16,16 +17,25 @@ export function ehsFromGW(gw: number, effJperTH: number = ASIC_JPER_TH): number 
   return gw * (1000 / effJperTH);
 }
 
+export function regionGWAtHour(data: RegionData, utcHour: number, mode: DashboardMode = "avg30d"): number {
+  const hour = ((Math.floor(utcHour) % 24) + 24) % 24;
+  const profile = mode === "last24h" && Array.isArray(data.latestProfile)
+    ? data.latestProfile
+    : data.profile;
+  return Math.max(0, profile?.[hour] ?? 0);
+}
+
 /** Aggregate across all regions at a specific UTC hour. */
 export function aggregateAtHour(
   regionData: Record<string, RegionData>,
   cbeci: CBECIData,
-  utcHour: number
+  utcHour: number,
+  mode: DashboardMode = "avg30d",
 ): AggregateResult {
   const perRegionGW: Record<string, number> = {};
   let totalGW = 0;
   for (const [id, data] of Object.entries(regionData)) {
-    const gw = Math.max(0, data.profile[utcHour] ?? 0);
+    const gw = regionGWAtHour(data, utcHour, mode);
     perRegionGW[id] = gw;
     totalGW += gw;
   }
@@ -39,7 +49,8 @@ export function aggregateAtHour(
 /** Aggregate across all regions for every UTC hour 0..23. */
 export function perHourAggregate(
   regionData: Record<string, RegionData>,
-  cbeci: CBECIData
+  cbeci: CBECIData,
+  mode: DashboardMode = "avg30d",
 ): AggregateResult[] {
-  return Array.from({ length: 24 }, (_, h) => aggregateAtHour(regionData, cbeci, h));
+  return Array.from({ length: 24 }, (_, h) => aggregateAtHour(regionData, cbeci, h, mode));
 }

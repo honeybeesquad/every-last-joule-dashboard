@@ -49,6 +49,7 @@ const run = async (): Promise<RegionData> => {
   return {
     regionId: "alberta",
     profile: timeOfDayAverageGW(points),
+    latestProfile: null,
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: new Date().toISOString(),

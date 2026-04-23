@@ -36,9 +36,11 @@ Some regions are direct observations, some are calibrated proxies, and some are 
 
 The primary dashboard readout uses 16 J/TH because that is the efficiency implied by Cambridge’s 2025 network-energy estimate - roughly 138 TWh per year against a representative network around 1,000 EH/s. The methodology keeps the range visible: at 15 J/TH, a reasonable 2028 projection from the current machine roadmap, the same waste stream powers more hashrate; at 28.5 J/TH, CoinMetrics’ field-weighted alternative, it powers less. The primary readout stays with 16 J/TH because it is the closest fit to the canonical academic benchmark being cross-checked.
 
-## The 30-day time-of-day averaging
+## Dashboard modes
 
-For regions with live feeds, the dashboard shows a 30-day trailing average by time of day rather than simply replaying yesterday. That choice smooths noise, reduces the risk of over-reading one windy night or one transmission outage, and produces a profile that is more representative of how each market actually wastes energy over a typical cycle. It also means the chart can understate short, sharp anomalies that matter to operators in the moment. That is a real limitation, not a footnote. v0 is trying to show the structural pattern cleanly; a latest-24-hour mode belongs in a later version.
+The default mode is “30-day average”: a trailing time-of-day average over the last 30 days. That means noon in Chile is typical noon in Chile, not just whatever happened during one noisy dispatch interval yesterday. The profile is meant to show the structural daily shape cleanly.
+
+The “Last 24h” mode switches the dashboard to the most recent complete UTC day of actual hourly curtailment where the upstream feed supports it. It is closer to a news ticker: sharper, noisier, and more sensitive to one windy night, one solar-heavy afternoon, or one transmission event. Regions without recoverable hourly upstreams, including China, Iceland, flare regions, and typical-shape fallbacks, silently remain on their smoothed profile in Last 24h mode so the global view stays complete.
 
 ## What the calibrated proxies do
 

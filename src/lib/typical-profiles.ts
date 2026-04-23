@@ -31,6 +31,7 @@ export function buildTypicalSolarRegion(
   return {
     regionId,
     profile,
+    latestProfile: null,
     totalTWh: (annualTWh * 30) / 365,
     peakGW: Math.max(...profile),
     lastUpdated,
