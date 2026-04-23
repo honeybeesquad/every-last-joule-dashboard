@@ -357,6 +357,29 @@ main table {
   border-color: var(--teal-500);
 }
 
+/* Primary nav (right-aligned in header) */
+.app-nav {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.app-nav a {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.72);
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 999px;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+  border: 1px solid transparent;
+}
+.app-nav a:hover,
+.app-nav a[aria-current="page"] {
+  background: rgba(20,175,172,0.08);
+  color: var(--white);
+  border-color: rgba(20,175,172,0.4);
+}
+
 .app-body {
   display: grid;
   grid-template-columns: minmax(300px, 1fr) minmax(400px, 2fr) minmax(280px, 1fr);
@@ -677,6 +700,15 @@ main table {
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
+.hotspot-column-subtitle {
+  font-size: 9.5px;
+  line-height: 1.25;
+  color: rgba(255,255,255,0.38);
+  margin: 3px 0 4px;
+  letter-spacing: 0.02em;
+  font-style: italic;
+}
+
 .hotspot-list {
   list-style: none;
   padding: 0;
@@ -795,8 +827,28 @@ main table {
 }
 
 .app-footer .caption {
-  color: rgba(255,255,255,0.5);
-  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  font-size: 11.5px;
+  line-height: 1.6;
+  max-width: 1100px;
+}
+
+.app-footer .caption strong {
+  color: rgba(255,255,255,0.75);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.app-footer .caption a {
+  color: var(--teal-400, #3fc1be);
+  text-decoration: none;
+}
+.app-footer .caption a:hover { text-decoration: underline; }
+
+.footer-refresh {
+  display: inline-block;
+  margin-left: 6px;
+  opacity: 0.7;
 }
 
 @media (max-width: 900px) {
@@ -878,16 +930,30 @@ main > h1:first-child {
   color: var(--slate-800);
   cursor: pointer;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  line-height: 1;
+  transition: background 140ms ease, transform 140ms ease;
 }
+.ctl-play:hover { transform: scale(1.04); }
 .ctl-play[aria-pressed="true"] {
   background: rgba(255,255,255,0.08);
   color: var(--white);
 }
-.ctl-play-icon { display: inline-block; line-height: 1; }
+.ctl-play-icon {
+  display: inline-block;
+  line-height: 1;
+  /* ⏵ triangle's visual centre-of-mass sits ~1px left of its geometric
+     centre; this nudge makes play/pause feel truly centred in the circle. */
+  transform: translate(0.5px, 0);
+}
+.ctl-play[aria-pressed="true"] .ctl-play-icon {
+  /* Pause glyph is symmetric — undo the play-triangle nudge when paused. */
+  transform: none;
+}
 .ctl-speed {
   display: inline-flex;
   gap: 4px;
@@ -944,4 +1010,238 @@ main > h1:first-child {
 @media (max-width: 640px) {
   #timeline-canvas { height: 72px; }
   .ctl-play { width: 32px; height: 32px; }
+}
+
+/* =========================================================================
+   METHODOLOGY PAGE — academic typography pass
+   ========================================================================= */
+
+.methodology-doc {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px 32px 96px;
+  color: rgba(255,255,255,0.85);
+  font-size: 15px;
+  line-height: 1.68;
+}
+
+.methodology-doc .methodology-header {
+  padding-bottom: 28px;
+  margin-bottom: 44px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.methodology-doc .methodology-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--teal-400, #3fc1be);
+  margin-bottom: 14px;
+}
+
+.methodology-doc h1 {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  margin: 0 0 18px;
+  color: var(--white);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.methodology-doc .methodology-deck {
+  font-size: 18px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.75);
+  max-width: 680px;
+  margin: 0 0 20px;
+}
+
+.methodology-doc .methodology-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin-top: 14px;
+}
+.methodology-doc .methodology-toc a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.58);
+  text-decoration: none;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: background 140ms, color 140ms, border-color 140ms;
+}
+.methodology-doc .methodology-toc a:hover {
+  background: rgba(20,175,172,0.08);
+  color: var(--white);
+  border-color: rgba(20,175,172,0.35);
+}
+
+.methodology-doc h2 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  margin: 56px 0 16px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: var(--white);
+}
+
+.methodology-doc h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 32px 0 8px;
+  color: rgba(255,255,255,0.9);
+}
+
+.methodology-doc p {
+  margin: 0 0 16px;
+  color: rgba(255,255,255,0.82);
+}
+
+.methodology-doc strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.methodology-doc a {
+  color: var(--teal-400, #3fc1be);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(63,193,190,0.35);
+  transition: border-color 140ms, color 140ms;
+}
+.methodology-doc a:hover {
+  color: var(--white);
+  border-bottom-color: var(--teal-400, #3fc1be);
+}
+
+.methodology-doc ul,
+.methodology-doc ol {
+  padding-left: 24px;
+  margin: 0 0 18px;
+}
+.methodology-doc li {
+  margin-bottom: 8px;
+  color: rgba(255,255,255,0.82);
+}
+.methodology-doc li::marker {
+  color: rgba(255,255,255,0.4);
+}
+
+.methodology-doc code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.9);
+}
+
+.methodology-doc pre {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 6px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 16px 0 24px;
+}
+.methodology-doc pre code {
+  background: none;
+  padding: 0;
+}
+
+/* Tables */
+.methodology-doc table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0 28px;
+  font-size: 13px;
+}
+.methodology-doc th,
+.methodology-doc td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  vertical-align: top;
+}
+.methodology-doc th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.55);
+  border-bottom: 1px solid rgba(255,255,255,0.18);
+}
+.methodology-doc td {
+  color: rgba(255,255,255,0.78);
+}
+.methodology-doc tr:hover td {
+  background: rgba(255,255,255,0.02);
+}
+
+/* Callout boxes */
+.methodology-doc .methodology-callout {
+  padding: 20px 24px;
+  margin: 20px 0 28px;
+  border-left: 3px solid var(--teal-500);
+  background: rgba(20,175,172,0.04);
+  border-radius: 0 6px 6px 0;
+}
+.methodology-doc .methodology-callout p:last-child {
+  margin-bottom: 0;
+}
+.methodology-doc .methodology-callout-abstract {
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.methodology-doc .methodology-callout-abstract p {
+  color: rgba(255,255,255,0.88);
+}
+
+/* Horizontal rules */
+.methodology-doc hr {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 40px 0;
+}
+
+/* References (§7) — compact list style */
+.methodology-doc h2[id="references"] + ul {
+  font-size: 13px;
+  line-height: 1.55;
+  padding-left: 0;
+  list-style: none;
+}
+.methodology-doc h2[id="references"] + ul li {
+  padding: 7px 0;
+  border-bottom: 1px dotted rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.72);
+}
+.methodology-doc h2[id="references"] + ul li strong {
+  color: rgba(255,255,255,0.92);
+  font-weight: 500;
+}
+
+/* Trailing italic author note */
+.methodology-doc p em:only-child {
+  display: inline-block;
+  font-size: 13px;
+  color: rgba(255,255,255,0.52);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .methodology-doc {
+    padding: 16px 18px 64px;
+    font-size: 14.5px;
+  }
+  .methodology-doc h1 { font-size: 32px; }
+  .methodology-doc .methodology-deck { font-size: 16px; }
+  .methodology-doc h2 { font-size: 20px; margin-top: 40px; }
 }

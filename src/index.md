@@ -101,29 +101,32 @@ document.getElementById("app-root").innerHTML = `
         <span class="app-wordmark">Every Last Joule</span>
         <span class="app-tag">Unlocked Potential · v0</span>
       </div>
-      <a class="app-methodology" href="./methodology">Methodology →</a>
+      <nav class="app-nav" aria-label="Primary">
+        <a href="./methodology">Methodology</a>
+        <a href="./about">About</a>
+      </nav>
     </header>
 
     <div class="app-body">
       <section class="panel panel-left" aria-label="Headline">
-        <div class="eyebrow">Sustainable hashrate · unlocked</div>
+        <div class="eyebrow">Sustainable hashrate · unlocked right now</div>
         <div class="display-xl num-tabular" id="pct-readout">—%</div>
-        <p class="lead" id="lead-copy">of today's Bitcoin network, powered entirely by renewable energy observed curtailed or spilled in the last 30 days. A floor, not a ceiling.</p>
+        <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was observed curtailed, spilled, or constrained-off in the last thirty days — across <span id="region-count">—</span> tracked regions. A measured floor, not a speculative ceiling.</p>
         <div class="stats-row">
           <div class="stat">
-            <div class="eyebrow micro">Network hashrate</div>
+            <div class="eyebrow micro">Bitcoin network hashrate</div>
             <div class="num-tabular stat-value" id="hashrate-readout">—</div>
           </div>
           <div class="stat">
-            <div class="eyebrow micro">Curtailed now (UTC)</div>
+            <div class="eyebrow micro">Curtailed this hour</div>
             <div class="num-tabular stat-value" id="gw-readout">—</div>
           </div>
           <div class="stat">
-            <div class="eyebrow micro">At 16 J/TH supports</div>
+            <div class="eyebrow micro">Hashrate this could support</div>
             <div class="num-tabular stat-value" id="supportable-readout">—</div>
           </div>
         </div>
-        <p class="flare-footnote" id="flare-footnote">Plus <span id="flare-readout">—</span> of continuous flared gas waste — 24/7 base load, not shown on the clock. Separate story.</p>
+        <p class="flare-footnote" id="flare-footnote">Plus <span id="flare-readout">—</span> of continuous flared-gas waste in four oil basins — a 24/7 base load, physically separate from the dispatch-down story above and excluded from the headline ratio.</p>
       </section>
 
       <section class="panel panel-center" aria-label="Globe">
@@ -133,26 +136,34 @@ document.getElementById("app-root").innerHTML = `
         <canvas id="globe-canvas" role="img" aria-label="Rotating globe showing active waste-energy hotspots"></canvas>
       </section>
 
-      <section class="panel panel-right" aria-label="Active hotspots">
-        <div class="eyebrow" id="hotspots-title">Active hotspots · UTC —</div>
+      <section class="panel panel-right" aria-label="Biggest curtailments right now">
+        <div class="eyebrow" id="hotspots-title">Biggest curtailments right now · UTC —</div>
         <div class="hotspot-columns hotspot-columns-three">
-          ${FUEL_ORDER.map((fuel) => `
-            <div class="hotspot-column">
-              <div class="hotspot-column-title">
-                <span class="dot" style="background:${FUEL_COLOR[fuel]};box-shadow:0 0 10px ${FUEL_COLOR[fuel]}66;"></span>
-                <span>${FUEL_LABEL[fuel]}</span>
+          ${FUEL_ORDER.map((fuel) => {
+            const subtitle = fuel === "solar"
+              ? "Peaks at local noon"
+              : fuel === "wind"
+                ? "Often peaks overnight"
+                : "Seasonal — flat within a day";
+            return `
+              <div class="hotspot-column">
+                <div class="hotspot-column-title">
+                  <span class="dot" style="background:${FUEL_COLOR[fuel]};box-shadow:0 0 10px ${FUEL_COLOR[fuel]}66;"></span>
+                  <span>${FUEL_LABEL[fuel]}</span>
+                </div>
+                <div class="hotspot-column-subtitle">${subtitle}</div>
+                <ol class="hotspot-list" id="hotspot-list-${fuel}"></ol>
               </div>
-              <ol class="hotspot-list" id="hotspot-list-${fuel}"></ol>
-            </div>
-          `).join("")}
+            `;
+          }).join("")}
         </div>
       </section>
     </div>
 
     <div class="app-timeline">
       <div class="timeline-header">
-        <span class="eyebrow">24-hour wasted-energy cycle · global (GW)</span>
-        <span class="caption">click or drag to scrub</span>
+        <span class="eyebrow">Global curtailment across a 24-hour cycle (GW, stacked by fuel)</span>
+        <span class="caption">drag to scrub through the day · press play to watch it loop · toggle Last 24h for raw yesterday</span>
       </div>
       <canvas id="timeline-canvas"></canvas>
       <div class="timeline-controls">
@@ -162,7 +173,12 @@ document.getElementById("app-root").innerHTML = `
     </div>
 
     <footer class="app-footer">
-      <p class="caption" id="caption-copy">Hashrate: mempool.space. Live grid data: EIA, ENTSO-E, Elia, RTE, Energinet, AEMO, Elexon BMRS, ONS, EMI. Static: Ember, GGFR. Refreshed: <span id="refreshed-at">—</span>.</p>
+      <p class="caption" id="caption-copy">
+        <strong>Network hashrate</strong> from mempool.space (24-hour rolling).
+        <strong>Grid curtailment</strong> from EIA (US), ENTSO-E (Europe), Elia (BE), RTE (FR), Energinet (DK), AEMO NEMWeb (AU), Elexon BMRS (UK), ONS (BR), EPRA (KE), Coordinador Nacional (CL), Electricity Authority EMI (NZ), IESO (ON), AESO (AB), and more.
+        <strong>Annual baselines</strong> from Ember, IEA, GGFR, and regional regulator reports (see <a href="./methodology">Methodology</a>).
+        <span class="footer-refresh">Last refreshed <span id="refreshed-at">—</span>.</span>
+      </p>
     </footer>
   </div>
 `;
@@ -263,7 +279,13 @@ const regionData = {
   ...statics
 };
 
-document.getElementById("lead-copy").textContent = `of today's Bitcoin network, powered entirely by energy observed curtailed, spilled, or flared in the last 30 days. Visible tracked floor: ${anchor.globalCurtailmentTWh.toFixed(0)} TWh annually.`;
+// Populate the region-count span inside the lead copy without clobbering
+// the surrounding HTML (the ${FUEL_ORDER.map} earlier baked it in at render).
+{
+  const liveRegionCount = REGIONS.filter((r) => r.kind !== "flare").length;
+  const countEl = document.getElementById("region-count");
+  if (countEl) countEl.textContent = String(liveRegionCount);
+}
 document.getElementById("refreshed-at").textContent = cbeci.lastUpdated;
 
 const now = new Date();

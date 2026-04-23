@@ -21,7 +21,10 @@ export function mountControls(container, clock) {
   const utcEl = container.querySelector(".ctl-utc");
 
   function refreshPlayIcon() {
-    playIcon.textContent = clock.playing ? "▐▐" : "▶";
+    // ⏸ (U+23F8) and ⏵ (U+23F5) are proper media-control glyphs that sit
+    // optically centred in modern system fonts, unlike the earlier ▐▐ / ▶
+    // which carried asymmetric bearings.
+    playIcon.textContent = clock.playing ? "⏸" : "⏵";
     playBtn.setAttribute("aria-pressed", String(clock.playing));
   }
 

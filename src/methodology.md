@@ -1,8 +1,22 @@
-# Methodology
+<div class="methodology-doc">
+
+<header class="methodology-header">
+
+<div class="methodology-eyebrow">Every Last Joule · Methodology</div>
+
+# How the dashboard's numbers are built
+
+<p class="methodology-deck">A public working model. This page documents the data sources, tiers, calibration, and limitations behind every figure shown on the dashboard — so any claim can be traced to a specific public publication from a grid operator or regulator.</p>
+
+</header>
 
 ## Abstract
 
-This dashboard estimates the fraction of current Bitcoin network electricity consumption that is already matched by renewable-energy curtailment and associated forms of electrical waste — measured or estimated across 78 regions. The estimate is a lower bound on visible waste, not an upper bound on available waste. All figures are calibrated against publicly reported 2024 curtailment from the relevant grid operator or regulator. Data, sources, assumptions, and known limitations are documented below.
+<div class="methodology-callout methodology-callout-abstract">
+
+This dashboard estimates the fraction of current Bitcoin network electricity consumption that is already matched by renewable-energy curtailment and associated forms of electrical waste — measured or estimated across 110 regions. The estimate is a **lower bound on visible waste**, not an upper bound on available waste. All figures are calibrated against publicly reported 2024 curtailment from the relevant grid operator or regulator. Data, sources, assumptions, and known limitations are documented below.
+
+</div>
 
 ## 1. Scope and definitions
 
@@ -81,7 +95,7 @@ The following limitations are inherent to the available upstream data and should
 
 1. **Self-curtailment is invisible.** Asset owners throttling their own output during negative-price hours do not appear in dispatch-down statistics. True curtailment is therefore systematically higher than the sum of system-operator figures.
 
-2. **Geographic completeness.** Coverage is 78 regions across every inhabited continent. Low-dispatch-data regions (much of Central Africa, portions of Central Asia, Russia beyond W. Siberia flaring) remain estimated or absent. This understates the true global total.
+2. **Geographic completeness.** Coverage is 110 regions across every inhabited continent. Low-dispatch-data regions (parts of Central Africa, Central Asia beyond Kazakhstan, Russia beyond the tracked Volga basin and W. Siberia flare) remain estimated rather than observed. This understates the true global total.
 
 3. **Rate-proxy uncertainty.** Tier-B calibrated rates are anchored to a single year's published total. Where 2024 was anomalous (drought-driven hydro scarcity, unusual wind patterns), 2025's observed volumes may diverge from the implied rate. The rate is reviewed annually.
 
@@ -136,3 +150,5 @@ The dashboard source code and this methodology are versioned at https://github.c
 ---
 
 *This methodology accompanies the author's forthcoming book* Every Last Joule: How Bitcoin Meets Energy Where It Is *(Collins, forthcoming). Technical corrections and source suggestions are welcome via GitHub issues.*
+
+</div>
