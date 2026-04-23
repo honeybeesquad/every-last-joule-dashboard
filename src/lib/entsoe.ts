@@ -5,12 +5,36 @@ import type { RegionData, CurtailmentPoint } from "./types.js";
 
 const API = "https://web-api.tp.entsoe.eu/api";
 
-export interface EntsoeZoneSpec {
+type EntsoeFuel = "solar" | "wind" | "hydro";
+
+export interface EntsoeTechnologySpec {
+  psrType: string;
+  fuel: EntsoeFuel;
+  rate: number;
+}
+
+export interface EntsoeSingleZoneSpec {
   id: string;
   domain: string;
   psrType: string;
   rate: number;
   sourceNote: string;
+}
+
+export interface EntsoeMultiZoneSpec {
+  id: string;
+  domain: string;
+  technologies: readonly EntsoeTechnologySpec[];
+  sourceNote: string;
+}
+
+export type EntsoeZoneSpec = EntsoeSingleZoneSpec | EntsoeMultiZoneSpec;
+
+export function inferFromPsrType(psrType: string): EntsoeFuel {
+  if (psrType === "B16") return "solar";
+  if (psrType === "B18" || psrType === "B19") return "wind";
+  if (psrType === "B11" || psrType === "B12" || psrType === "B14") return "hydro";
+  return "solar";
 }
 
 function resolutionMs(resolution: string | undefined): number {
@@ -62,13 +86,14 @@ export function buildZoneData(
   rawPoints: CurtailmentPoint[],
   rate: number,
   sourceNote: string,
+  fuelShare?: RegionData["fuelShare"],
 ): RegionData {
   const points = rawPoints.map((p) => ({
     utcTimestamp: p.utcTimestamp,
     mw: Math.max(0, p.mw * rate),
   }));
 
-  return {
+  const data: RegionData = {
     regionId: id,
     profile: timeOfDayAverageGW(points),
     latestProfile: latestCompleteUtcDayProfileGW(points),
@@ -77,6 +102,27 @@ export function buildZoneData(
     lastUpdated: rawPoints.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote,
   };
+
+  if (fuelShare && Object.keys(fuelShare).length > 0) data.fuelShare = fuelShare;
+  return data;
+}
+
+function normalizeTechnologies(zone: EntsoeZoneSpec): readonly EntsoeTechnologySpec[] {
+  if ("technologies" in zone) return zone.technologies;
+  return [{ psrType: zone.psrType, fuel: inferFromPsrType(zone.psrType), rate: zone.rate }];
+}
+
+function fuelSplitNote(fuelShare: RegionData["fuelShare"]): string {
+  const parts = (["wind", "solar", "hydro"] as const)
+    .filter((fuel) => (fuelShare?.[fuel] ?? 0) > 0)
+    .map((fuel) => `${fuel} ${((fuelShare?.[fuel] ?? 0) * 100).toFixed(0)}%`);
+  return parts.join(" / ");
+}
+
+function technologyNote(technologies: readonly EntsoeTechnologySpec[]): string {
+  return technologies
+    .map((tech) => `${tech.fuel} ${tech.psrType} × ${(tech.rate * 100).toFixed(tech.rate < 0.01 ? 2 : 1).replace(/\.0$/, "")}%`)
+    .join(" + ");
 }
 
 export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData> {
@@ -86,18 +132,70 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
   const now = new Date();
   const start = new Date(now.getTime() - 30 * 24 * 3600 * 1000);
   const fmt = (d: Date) => d.toISOString().replace(/[-:T]/g, "").slice(0, 12);
+  const technologies = normalizeTechnologies(zone);
 
-  const params = new URLSearchParams({
-    securityToken: token,
-    documentType: "A75",
-    processType: "A16",
-    in_Domain: zone.domain,
-    psrType: zone.psrType,
-    periodStart: fmt(start),
-    periodEnd: fmt(now),
-  });
+  const series = await Promise.all(technologies.map(async (technology) => {
+    const params = new URLSearchParams({
+      securityToken: token,
+      documentType: "A75",
+      processType: "A16",
+      in_Domain: zone.domain,
+      psrType: technology.psrType,
+      periodStart: fmt(start),
+      periodEnd: fmt(now),
+    });
 
-  const xml = await fetchText(`${API}?${params.toString()}`);
-  const rawPoints = parseEntsoeXml(xml);
-  return buildZoneData(zone.id, rawPoints, zone.rate, zone.sourceNote);
+    try {
+      const xml = await fetchText(`${API}?${params.toString()}`);
+      const points = parseEntsoeXml(xml);
+      if (points.length === 0) {
+        console.warn(`ENTSO-E ${zone.id} ${technology.psrType} returned zero data; continuing`);
+      }
+      return { technology, points };
+    } catch (err) {
+      console.warn(`ENTSO-E ${zone.id} ${technology.psrType} fetch failed; continuing`, err);
+      return { technology, points: [] };
+    }
+  }));
+
+  const summed = new Map<string, number>();
+  const fuelTotals: Partial<Record<EntsoeFuel, number>> = {};
+  let lastUpdated: string | undefined;
+
+  for (const { technology, points } of series) {
+    for (const point of points) {
+      const mw = Math.max(0, point.mw * technology.rate);
+      summed.set(point.utcTimestamp, (summed.get(point.utcTimestamp) ?? 0) + mw);
+      fuelTotals[technology.fuel] = (fuelTotals[technology.fuel] ?? 0) + mw;
+      if (!lastUpdated || point.utcTimestamp > lastUpdated) lastUpdated = point.utcTimestamp;
+    }
+  }
+
+  const points = Array.from(summed.entries())
+    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }))
+    .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+
+  const denom = Object.values(fuelTotals).reduce((sum, value) => sum + (value ?? 0), 0);
+  const fuelShare = denom > 0
+    ? Object.fromEntries(
+        Object.entries(fuelTotals)
+          .filter(([, value]) => (value ?? 0) > 0)
+          .map(([fuel, value]) => [fuel, (value ?? 0) / denom]),
+      ) as RegionData["fuelShare"]
+    : undefined;
+  const split = fuelSplitNote(fuelShare);
+  const sourceNote = split
+    ? `ENTSO-E ${technologyNote(technologies)} calibrated (observed 30d split: ${split}). ${zone.sourceNote}`
+    : zone.sourceNote;
+
+  return {
+    regionId: zone.id,
+    profile: timeOfDayAverageGW(points),
+    latestProfile: latestCompleteUtcDayProfileGW(points),
+    totalTWh: totalTWh30d(points),
+    peakGW: peakGW(points),
+    lastUpdated: lastUpdated ?? new Date().toISOString(),
+    sourceNote,
+    ...(fuelShare ? { fuelShare } : {}),
+  };
 }

@@ -8,38 +8,142 @@ import {
 import { pathToFileURL } from "url";
 
 export const ZONES = [
-  { id: "germany", domain: "10Y1001A1001A82H", psrType: "B19", rate: 0.02,
-    sourceNote: "ENTSO-E wind onshore × 2% calibrated curtailment rate (Germany 2024 redispatch book figures)" },
-  { id: "iberia",  domain: "10YES-REE------0", psrType: "B16", rate: 0.02,
-    sourceNote: "ENTSO-E solar × 2% calibrated curtailment rate (Iberia 2024)" },
-  { id: "portugal", domain: "10YPT-REN------W", psrType: "B16", rate: 0.10,
-    sourceNote: "ENTSO-E Portugal solar × 10% calibrated curtailment rate (~0.4 TWh/yr Portugal 2024)" },
-  { id: "finland", domain: "10YFI-1--------U", psrType: "B19", rate: 0.05,
-    sourceNote: "ENTSO-E wind onshore × 5% calibrated curtailment rate (Finland 2024 Nord Pool neg-price)" },
-  { id: "netherlands", domain: "10YNL----------L", psrType: "B18", rate: 0.04,
-    sourceNote: "ENTSO-E offshore wind × 4% calibrated curtailment rate (NL 2024 offshore wind constraint proxy)" },
-  { id: "poland", domain: "10YPL-AREA-----S", psrType: "B19", rate: 0.02,
-    sourceNote: "ENTSO-E wind onshore × 2% calibrated curtailment rate (Poland PSE 2024)" },
-  { id: "greece", domain: "10YGR-HTSO-----Y", psrType: "B16", rate: 0.025,
-    sourceNote: "ENTSO-E solar × 2.5% calibrated curtailment rate (Greece HEDNO 2024)" },
-  { id: "romania", domain: "10YRO-TEL------P", psrType: "B16", rate: 0.04,
-    sourceNote: "ENTSO-E solar × 4% calibrated curtailment rate (Romania Transelectrica 2024; wind PSR was below visibility threshold)" },
-  { id: "italy-north", domain: "10YIT-GRTN-----B", psrType: "B16", rate: 0.02,
-    sourceNote: "ENTSO-E solar × 2% calibrated curtailment rate (Italy Terna national aggregate 2024)" },
-  { id: "sweden-north", domain: "10Y1001A1001A46L", psrType: "B19", rate: 0.01,
-    sourceNote: "ENTSO-E SE2 wind onshore × 1% calibrated curtailment rate (~0.3 TWh/yr Sweden north)" },
-  { id: "sweden-south", domain: "10Y1001A1001A47J", psrType: "B16", rate: 0.07,
-    sourceNote: "ENTSO-E SE4 solar × 7% calibrated curtailment rate (~0.3 TWh/yr Sweden south)" },
-  { id: "ukraine", domain: "10Y1001C--00003F", psrType: "B19", rate: 0.03,
-    sourceNote: "ENTSO-E Ukrenergo wind × 3% calibrated curtailment rate (~1.2 TWh/yr post-synchronisation redispatch)" },
-  { id: "hungary", domain: "10YHU-MAVIR----U", psrType: "B16", rate: 0.03,
-    sourceNote: "ENTSO-E MAVIR solar × 3% calibrated curtailment rate (~0.25 TWh/yr; 33% solar peak penetration)" },
-  { id: "czech-republic", domain: "10YCZ-CEPS-----N", psrType: "B16", rate: 0.02,
-    sourceNote: "ENTSO-E CEPS solar × 2% calibrated curtailment rate (~0.15 TWh/yr summer peaks)" },
-  { id: "bulgaria", domain: "10YCA-BULGARIA-R", psrType: "B16", rate: 0.02,
-    sourceNote: "ENTSO-E ESO solar × 2% calibrated curtailment rate (~0.1 TWh/yr emerging Bulgarian curtailment)" },
-  { id: "baltics", domain: "10YLT-1001A0008Q", psrType: "B19", rate: 0.025,
-    sourceNote: "ENTSO-E Litgrid wind × 2.5% as Baltic regional proxy (~0.05 TWh/yr combined EE+LV+LT)" },
+  {
+    id: "germany",
+    domain: "10Y1001A1001A82H",
+    technologies: [
+      { psrType: "B19", fuel: "wind", rate: 0.02 },
+      { psrType: "B16", fuel: "solar", rate: 0.01 },
+    ],
+    sourceNote: "Germany 2024 redispatch calibration: ~8 TWh wind + ~0.7 TWh solar.",
+  },
+  {
+    id: "iberia",
+    domain: "10YES-REE------0",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 },
+      { psrType: "B19", fuel: "wind", rate: 0.015 },
+    ],
+    sourceNote: "Spain 2024 calibration including ~1 TWh/yr wind curtailment previously missed.",
+  },
+  {
+    id: "portugal",
+    domain: "10YPT-REN------W",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.10 },
+      { psrType: "B19", fuel: "wind", rate: 0.03 },
+    ],
+    sourceNote: "Portugal 2024 calibration: solar primary plus ~0.1 TWh/yr wind.",
+  },
+  {
+    id: "finland",
+    domain: "10YFI-1--------U",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.05 }],
+    sourceNote: "Finland wind-only calibration; solar negligible at Finnish latitude.",
+  },
+  {
+    id: "netherlands",
+    domain: "10YNL----------L",
+    technologies: [
+      { psrType: "B18", fuel: "wind", rate: 0.04 },
+      { psrType: "B19", fuel: "wind", rate: 0.02 },
+      { psrType: "B16", fuel: "solar", rate: 0.02 },
+    ],
+    sourceNote: "Netherlands offshore + onshore wind plus rising solar curtailment proxy.",
+  },
+  {
+    id: "poland",
+    domain: "10YPL-AREA-----S",
+    technologies: [
+      { psrType: "B19", fuel: "wind", rate: 0.02 },
+      { psrType: "B16", fuel: "solar", rate: 0.015 },
+    ],
+    sourceNote: "Poland PSE 2024 calibration with growing solar contribution.",
+  },
+  {
+    id: "greece",
+    domain: "10YGR-HTSO-----Y",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.025 },
+      { psrType: "B19", fuel: "wind", rate: 0.015 },
+    ],
+    sourceNote: "Greece HEDNO 2024 mixed wind+solar calibration.",
+  },
+  {
+    id: "romania",
+    domain: "10YRO-TEL------P",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.04 },
+      { psrType: "B19", fuel: "wind", rate: 0.025 },
+    ],
+    sourceNote: "Romania Transelectrica 2024 calibration; solar fixed in v1.f plus wind added.",
+  },
+  {
+    id: "italy-north",
+    domain: "10YIT-GRTN-----B",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 },
+      { psrType: "B19", fuel: "wind", rate: 0.01 },
+    ],
+    sourceNote: "Italy Terna national 2024 calibration: solar primary, wind secondary.",
+  },
+  {
+    id: "sweden-north",
+    domain: "10Y1001A1001A46L",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.01 }],
+    sourceNote: "ENTSO-E SE2 wind-only calibration; solar negligible in SE2.",
+  },
+  {
+    id: "sweden-south",
+    domain: "10Y1001A1001A47J",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.07 },
+      { psrType: "B19", fuel: "wind", rate: 0.02 },
+    ],
+    sourceNote: "ENTSO-E SE4 mixed calibration with PV and some wind.",
+  },
+  {
+    id: "ukraine",
+    domain: "10Y1001C--00003F",
+    technologies: [
+      { psrType: "B19", fuel: "wind", rate: 0.03 },
+      { psrType: "B16", fuel: "solar", rate: 0.02 },
+    ],
+    sourceNote: "Ukrenergo post-synchronisation mixed wind+solar calibration.",
+  },
+  {
+    id: "hungary",
+    domain: "10YHU-MAVIR----U",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.03 },
+      { psrType: "B19", fuel: "wind", rate: 0.01 },
+    ],
+    sourceNote: "MAVIR 2024 calibration: solar dominant, small wind.",
+  },
+  {
+    id: "czech-republic",
+    domain: "10YCZ-CEPS-----N",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 },
+      { psrType: "B19", fuel: "wind", rate: 0.01 },
+    ],
+    sourceNote: "CEPS 2024 calibration: solar dominant, wind secondary.",
+  },
+  {
+    id: "bulgaria",
+    domain: "10YCA-BULGARIA-R",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 },
+      { psrType: "B19", fuel: "wind", rate: 0.015 },
+    ],
+    sourceNote: "ESO Bulgaria 2024 mixed wind+solar calibration.",
+  },
+  {
+    id: "baltics",
+    domain: "10YLT-1001A0008Q",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.025 }],
+    sourceNote: "ENTSO-E Litgrid wind-only Baltic regional proxy; solar negligible for this feed.",
+  },
 ] as const;
 
 export const parseEntsoeXml = parseEntsoeXmlImpl;

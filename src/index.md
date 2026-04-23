@@ -10,7 +10,7 @@ import { mountTimeline } from "./components/timeline.js";
 import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
-import { FUEL_ORDER, FUEL_LABEL, FUEL_COLOR, dominantFuel, isRenewable } from "./lib/fuel.js";
+import { FUEL_ORDER, FUEL_LABEL, FUEL_COLOR, fuelShare, isRenewable } from "./lib/fuel.js";
 import { mountGlobe } from "./globe.js";
 
 const ERCOT_NATIVE_ENABLED = false;
@@ -260,7 +260,11 @@ function renderAt(hour) {
 
   for (const fuel of FUEL_ORDER) {
     const rows = renewableEntries
-      .filter(({ region }) => dominantFuel(region, regionData[region.id]) === fuel)
+      .map(({ region, gw }) => ({
+        region,
+        gw: gw * fuelShare(region, fuel, regionData[region.id]),
+      }))
+      .filter(({ gw }) => gw > 0)
       .sort((a, b) => b.gw - a.gw)
       .slice(0, 30);
     document.getElementById(`hotspot-list-${fuel}`).innerHTML = rows.map(itemHtml(fuel)).join("");
