@@ -38,4 +38,18 @@ ERCOT’s native developer API remains blocked behind the Incapsula WAF from thi
 
 Coordinador Eléctrico Nacional’s public landing page can be reached by headless Chromium, but the specific renewable-reduction document path still returns Cloudflare bot-verification content. v0.5 therefore represents Atacama as a static-source, typical-shape solar profile using `solarProfile(16.5, 5.9)`: a daylight bump around UTC 16:30 scaled to the book’s 5.9 TWh/year baseline. It is not a native measured Chilean curtailment feed.
 
+### 10. Xinjiang uses a typical solar shape; Sichuan and Iceland stay flat
+
+Three regions have no publicly accessible hourly feed reachable from this build environment. v0.5 treats each according to the physics of what it actually wastes:
+
+- **Xinjiang (solar)** uses `solarProfile(6.33, 15)` - a daylight bump centred on local solar noon at 85°E (UTC 06:20), scaled to the 15 TWh/year S&P figure. This is illustrative, not measured, but it lets Xinjiang participate in the sun-following visual story instead of registering as a steady flat bar that the terminator passes over without effect.
+- **Sichuan (hydro)** stays flat. Sichuan's "waste" is monsoon-season reservoir spill; the pattern is monthly-seasonal, not hourly. A flat annualised baseline is the honest shape for the daily view.
+- **Iceland (hydro + geothermal)** stays flat for the same reason. Iceland's stranded generation is continuous, not diurnal.
+
+The methodology page and this list label these three regions explicitly so readers can see where we're estimating a shape vs measuring one. v1 will upgrade Xinjiang, Sichuan, and Iceland to measured hourly data where a public source opens up.
+
+### 11. Flare regions are flat because flare is flat (not a data gap)
+
+Permian, W. Siberia, S. Iraq, and E. Saudi render as flat pillars. This is methodologically correct: flare is 24/7 base-load heat because upstream oil production doesn't stop overnight. Their flat shape is the truth, not an absence of hourly data. They are distinguishable from estimated regions (above) in the dashboard's colour coding - flare is orange, renewables are teal.
+
 Corrections welcome: simon@collins.nu.

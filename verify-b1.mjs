@@ -1,0 +1,13 @@
+import { chromium } from "playwright";
+const browser = await chromium.launch();
+const page = await (await browser.newContext({ viewport: { width: 1600, height: 1000 } })).newPage();
+const errors = [];
+page.on("pageerror", e => errors.push(String(e)));
+page.on("console", m => { if (m.type() === "error") errors.push(m.text()); });
+await page.goto("https://every-last-joule-dashboard.vercel.app/", { waitUntil: "networkidle", timeout: 60000 });
+await page.waitForTimeout(5000);
+const items = await page.locator(".hotspot-item").count();
+const pct = await page.locator("#pct-readout").innerText();
+await page.screenshot({ path: "/tmp/phase-b1.png", fullPage: false });
+await browser.close();
+console.log(JSON.stringify({ errors, pct, hotspotItems: items }, null, 2));
