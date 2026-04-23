@@ -1,9 +1,10 @@
-name: Daily data refresh
+name: Scheduled data refresh
 
-# Triggers a Vercel rebuild on a daily cron.  Vercel's build environment
-# already has EIA_API_KEY configured as a Project Environment Variable, so
-# each rebuild re-runs every data loader and captures the freshest numbers
-# before redeploying.
+# Triggers a Vercel rebuild on a fixed schedule.  Vercel's build environment
+# already has EIA_API_KEY and ENTSOE_API_TOKEN configured as Project
+# Environment Variables, so each rebuild re-runs every data loader and
+# captures the freshest numbers before redeploying.  Each build takes ~3
+# minutes and our Hobby-tier budget easily supports the cadence below.
 #
 # The Deploy Hook URL is stored as repo secret VERCEL_DEPLOY_HOOK.  It is a
 # POST-only URL; anyone with it can trigger a rebuild.  Rotate via the
@@ -11,9 +12,11 @@ name: Daily data refresh
 
 on:
   schedule:
-    # 02:00 UTC daily.  CBECI, ERCOT-via-EIA, and most other sources settle
-    # overnight; 02:00 UTC captures yesterday's full 24 hours.
-    - cron: "0 2 * * *"
+    # Every 3 hours at :15 past the hour — spaced off the common :00 cron
+    # spike and timed so daily-publisher regions (ONS Brazil, NREA Egypt,
+    # etc.) have their latest files available.  At ~3 build-minutes per
+    # deploy × 8 deploys/day = ~24 min/day, well under Hobby's 100 hr/mo.
+    - cron: "15 */3 * * *"
   workflow_dispatch: {}
 
 jobs:

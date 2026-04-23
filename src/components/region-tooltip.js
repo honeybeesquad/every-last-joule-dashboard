@@ -132,6 +132,28 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     el.style.top = `${y}px`;
   }
 
+  function formatAge(iso) {
+    if (!iso) return "unknown";
+    const then = new Date(iso).getTime();
+    if (!Number.isFinite(then)) return iso.slice(0, 10);
+    const ageSec = Math.max(0, (Date.now() - then) / 1000);
+    if (ageSec < 60) return `${Math.floor(ageSec)}s ago`;
+    if (ageSec < 3600) return `${Math.floor(ageSec / 60)}m ago`;
+    if (ageSec < 86400) return `${Math.floor(ageSec / 3600)}h ago`;
+    if (ageSec < 86400 * 7) return `${Math.floor(ageSec / 86400)}d ago`;
+    return `${Math.floor(ageSec / 86400)}d ago`;
+  }
+
+  function freshnessBadge(data) {
+    if (!data) return "";
+    const status = data.sourceStatus === "cached" ? "cached" : "live";
+    const age = formatAge(data.lastUpdated);
+    const klass = status === "cached" ? "region-tooltip-freshness-cached" : "region-tooltip-freshness-live";
+    const icon = status === "cached" ? "⚠" : "●";
+    const label = status === "cached" ? `fallback · ${age}` : `live · ${age}`;
+    return `<span class="${klass}" title="sourceStatus=${status}; lastUpdated=${data.lastUpdated ?? "?"}">${icon} ${label}</span>`;
+  }
+
   function show(region, anchor) {
     currentRegion = region;
     const data = regionData[region.id];
@@ -159,7 +181,10 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
         <div class="region-tooltip-stat"><span>30d total</span><span class="num-tabular">${totalTWh.toFixed(2)} TWh</span></div>
       </div>
       <canvas class="region-tooltip-sparkline" width="240" height="48" aria-label="24-hour curtailment profile"></canvas>
-      ${region.sourceUrl ? `<div class="region-tooltip-source"><a href="${region.sourceUrl}" target="_blank" rel="noopener noreferrer">${region.source}</a></div>` : ""}
+      <div class="region-tooltip-footer">
+        ${region.sourceUrl ? `<a href="${region.sourceUrl}" target="_blank" rel="noopener noreferrer">${region.source}</a>` : `<span>${region.source ?? ""}</span>`}
+        ${freshnessBadge(data)}
+      </div>
       ${sourceNote ? `<div class="region-tooltip-note" title="${sourceNote.replace(/"/g, "&quot;")}">${sourceNote.length > 110 ? sourceNote.slice(0, 108) + "…" : sourceNote}</div>` : ""}
     `;
     el.dataset.fuel = fuel;
