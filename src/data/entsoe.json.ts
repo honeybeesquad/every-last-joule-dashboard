@@ -20,6 +20,16 @@ export const ZONES = [
     sourceNote: "ENTSO-E solar × 4% calibrated curtailment rate (NL 2024 solar surge)" },
   { id: "denmark-west", domain: "10Y1001A1001A65H", psrType: "B19", rate: 0.04,
     sourceNote: "ENTSO-E wind onshore × 4% calibrated curtailment rate (DK-1 wind oversupply)" },
+  { id: "poland", domain: "10YPL-AREA-----S", psrType: "B19", rate: 0.02,
+    sourceNote: "ENTSO-E wind onshore × 2% calibrated curtailment rate (Poland PSE 2024)" },
+  { id: "turkey", domain: "10YTR-TEIAS----W", psrType: "B19", rate: 0.02,
+    sourceNote: "ENTSO-E wind onshore × 2% calibrated curtailment rate (Turkey TEİAŞ 2024)" },
+  { id: "greece", domain: "10YGR-HTSO-----Y", psrType: "B16", rate: 0.025,
+    sourceNote: "ENTSO-E solar × 2.5% calibrated curtailment rate (Greece HEDNO 2024)" },
+  { id: "romania", domain: "10YRO-TEL------P", psrType: "B19", rate: 0.015,
+    sourceNote: "ENTSO-E wind onshore × 1.5% calibrated curtailment rate (Romania Transelectrica 2024)" },
+  { id: "italy-north", domain: "10YIT-GRTN-----B", psrType: "B16", rate: 0.02,
+    sourceNote: "ENTSO-E solar × 2% calibrated curtailment rate (Italy Terna national aggregate 2024)" },
 ] as const;
 
 export const parseEntsoeXml = parseEntsoeXmlImpl;

@@ -71,7 +71,11 @@ export async function mountGlobe(canvas, initial) {
     const center = [-state.rotation[0], -state.rotation[1]];
     const hour = ((state.utcHour % 24) + 24) % 24;
     const sunLng = wrapLongitude((12 - hour) * 15);
-    const sunLat = 0;
+    const now = new Date();
+    const start = Date.UTC(now.getUTCFullYear(), 0, 0);
+    const diff = now.getTime() - start;
+    const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const sunLat = 23.45 * Math.sin((2 * Math.PI * (dayOfYear - 81)) / 365);
     const antiSolarLng = wrapLongitude(sunLng + 180);
     const sunScreen = projection([sunLng, sunLat]);
 
@@ -103,7 +107,7 @@ export async function mountGlobe(canvas, initial) {
     }
 
     ctx.beginPath();
-    path(d3.geoCircle().center([antiSolarLng, 0]).radius(90)());
+    path(d3.geoCircle().center([antiSolarLng, -sunLat]).radius(90)());
     ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
     ctx.fill();
 
@@ -150,6 +154,9 @@ export async function mountGlobe(canvas, initial) {
       const coreR = 1.5 + weight * 0.8;
       const centreX = width / 2;
       const centreY = height / 2;
+      const solarAngle = d3.geoDistance([region.lon, region.lat], [sunLng, sunLat]);
+      const sunlit = Math.max(0, Math.cos(solarAngle));
+      const sunDim = 0.6 + 0.4 * Math.max(0, sunlit);
 
       ctx.save();
       ctx.filter = "blur(4px)";
@@ -176,7 +183,7 @@ export async function mountGlobe(canvas, initial) {
         ctx.strokeStyle = pillarGradient;
         ctx.lineWidth = pillarW;
         ctx.lineCap = "round";
-        ctx.globalAlpha = 0.95 * visible;
+        ctx.globalAlpha = 0.95 * visible * sunDim;
         ctx.beginPath();
         ctx.moveTo(point[0], point[1]);
         ctx.lineTo(tipX, tipY);
@@ -184,7 +191,7 @@ export async function mountGlobe(canvas, initial) {
 
         ctx.save();
         ctx.filter = "blur(3px)";
-        ctx.globalAlpha = 0.5 * visible;
+        ctx.globalAlpha = 0.5 * visible * sunDim;
         ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(tipX, tipY, pillarW * 1.6, 0, Math.PI * 2);

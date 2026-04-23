@@ -85,4 +85,15 @@ describe("buildZoneData", () => {
     const ids = ZONES.map((z: any) => z.id);
     expect(ids).toEqual(expect.arrayContaining(["france", "netherlands", "denmark-west"]));
   });
+
+  it("includes the v1a ENTSO-E expansion zones", () => {
+    const ids = ZONES.map((z: any) => z.id);
+    expect(ids).toEqual(expect.arrayContaining([
+      "poland",
+      "turkey",
+      "greece",
+      "romania",
+      "italy-north"
+    ]));
+  });
 });
