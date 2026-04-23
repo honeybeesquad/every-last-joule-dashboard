@@ -21,83 +21,101 @@ import { mountGlobe } from "./globe.js";
 const ERCOT_NATIVE_ENABLED = false;
 const HOTSPOT_LIST_LIMIT = 50;
 
-const cbeci = await FileAttachment("data/cbeci.json").json();
-const ercot = await FileAttachment("data/ercot.json").json();
-const ercotNative = await FileAttachment("data/ercot-native.json").json();
-const caiso = await FileAttachment("data/caiso.json").json();
-const miso = await FileAttachment("data/miso.json").json();
-const pjm = await FileAttachment("data/pjm.json").json();
-const spp = await FileAttachment("data/spp.json").json();
-const nyiso = await FileAttachment("data/nyiso.json").json();
-const isoNe = await FileAttachment("data/iso-ne.json").json();
-const bpa = await FileAttachment("data/bpa.json").json();
-const entsoe = await FileAttachment("data/entsoe.json").json();
-const aemo = await FileAttachment("data/aemo.json").json();
-const belgium = await FileAttachment("data/belgium.json").json();
-const france = await FileAttachment("data/france.json").json();
-const denmark = await FileAttachment("data/denmark.json").json();
-const newZealand = await FileAttachment("data/new-zealand.json").json();
-const norway = await FileAttachment("data/norway.json").json();
-const atacama = await FileAttachment("data/atacama-chile.json").json();
-const chileWind = await FileAttachment("data/chile-wind.json").json();
-const statics = await FileAttachment("data/statics.json").json();
-const anchor = await FileAttachment("data/anchor.json").json();
-const northSea = await FileAttachment("data/north-sea.json").json();
-const brazilNE = await FileAttachment("data/brazil-ne.json").json();
-const ontario = await FileAttachment("data/ontario.json").json();
-const alberta = await FileAttachment("data/alberta.json").json();
-const ireland = await FileAttachment("data/ireland.json").json();
-const peru = await FileAttachment("data/peru.json").json();
-const southAfrica = await FileAttachment("data/south-africa.json").json();
-const argentina = await FileAttachment("data/argentina.json").json();
-const uruguay = await FileAttachment("data/uruguay.json").json();
-const paraguay = await FileAttachment("data/paraguay.json").json();
-const mexico = await FileAttachment("data/mexico.json").json();
-const japan = await FileAttachment("data/japan.json").json();
-const vietnam = await FileAttachment("data/vietnam.json").json();
-const thailand = await FileAttachment("data/thailand.json").json();
-const indiaNorth = await FileAttachment("data/india-north.json").json();
-const cyprus = await FileAttachment("data/cyprus.json").json();
-const ethiopia = await FileAttachment("data/ethiopia.json").json();
-const kazakhstan = await FileAttachment("data/kazakhstan.json").json();
-const honduras = await FileAttachment("data/honduras.json").json();
-const jeju = await FileAttachment("data/jeju.json").json();
-const kenya = await FileAttachment("data/kenya.json").json();
-const egypt = await FileAttachment("data/egypt.json").json();
-const morocco = await FileAttachment("data/morocco.json").json();
-const namibia = await FileAttachment("data/namibia.json").json();
-const waSwis = await FileAttachment("data/wa-swis.json").json();
-const ntPilbara = await FileAttachment("data/nt-pilbara.json").json();
-const indonesia = await FileAttachment("data/indonesia.json").json();
-const malaysia = await FileAttachment("data/malaysia.json").json();
-const southKorea = await FileAttachment("data/south-korea.json").json();
-const russiaMainland = await FileAttachment("data/russia-mainland.json").json();
-const taiwan = await FileAttachment("data/taiwan.json").json();
-const jordan = await FileAttachment("data/jordan.json").json();
-const saudiSolar = await FileAttachment("data/saudi-solar.json").json();
-const uae = await FileAttachment("data/uae.json").json();
-const oman = await FileAttachment("data/oman.json").json();
-const israel = await FileAttachment("data/israel.json").json();
-const innerMongolia = await FileAttachment("data/inner-mongolia.json").json();
-const gansu = await FileAttachment("data/gansu.json").json();
-const qinghai = await FileAttachment("data/qinghai.json").json();
-const ningxia = await FileAttachment("data/ningxia.json").json();
-const yunnan = await FileAttachment("data/yunnan.json").json();
-const tibet = await FileAttachment("data/tibet.json").json();
-const indiaSouth = await FileAttachment("data/india-south.json").json();
-const indiaWest = await FileAttachment("data/india-west.json").json();
-const indiaEast = await FileAttachment("data/india-east.json").json();
-const pakistan = await FileAttachment("data/pakistan.json").json();
-const iran = await FileAttachment("data/iran.json").json();
-const iraqMainland = await FileAttachment("data/iraq-mainland.json").json();
-const kurdistan = await FileAttachment("data/kurdistan.json").json();
-const bangladesh = await FileAttachment("data/bangladesh.json").json();
-const mongolia = await FileAttachment("data/mongolia.json").json();
-const britishColumbia = await FileAttachment("data/british-columbia.json").json();
-const quebec = await FileAttachment("data/quebec.json").json();
-const manitoba = await FileAttachment("data/manitoba.json").json();
-const saskatchewan = await FileAttachment("data/saskatchewan.json").json();
-const colombia = await FileAttachment("data/colombia.json").json();
+// Fetch all region data in parallel. Prior to this, every FileAttachment
+// was awaited sequentially — 76 round-trips serialised = ~3–5s of pure
+// network latency before first paint. HTTP/2 multiplexes these easily;
+// on a typical connection this drops to ~300–600ms for the lot.
+const [
+  cbeci, ercot, ercotNative, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
+  entsoe, aemo, belgium, france, denmark, newZealand, norway, atacama,
+  chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
+  ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
+  japan, vietnam, thailand, indiaNorth, cyprus, ethiopia, kazakhstan,
+  honduras, jeju, kenya, egypt, morocco, namibia, waSwis, ntPilbara,
+  indonesia, malaysia, southKorea, russiaMainland, taiwan, jordan,
+  saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
+  yunnan, tibet, indiaSouth, indiaWest, indiaEast, pakistan, iran,
+  iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
+  quebec, manitoba, saskatchewan, colombia
+] = await Promise.all([
+  FileAttachment("data/cbeci.json").json(),
+  FileAttachment("data/ercot.json").json(),
+  FileAttachment("data/ercot-native.json").json(),
+  FileAttachment("data/caiso.json").json(),
+  FileAttachment("data/miso.json").json(),
+  FileAttachment("data/pjm.json").json(),
+  FileAttachment("data/spp.json").json(),
+  FileAttachment("data/nyiso.json").json(),
+  FileAttachment("data/iso-ne.json").json(),
+  FileAttachment("data/bpa.json").json(),
+  FileAttachment("data/entsoe.json").json(),
+  FileAttachment("data/aemo.json").json(),
+  FileAttachment("data/belgium.json").json(),
+  FileAttachment("data/france.json").json(),
+  FileAttachment("data/denmark.json").json(),
+  FileAttachment("data/new-zealand.json").json(),
+  FileAttachment("data/norway.json").json(),
+  FileAttachment("data/atacama-chile.json").json(),
+  FileAttachment("data/chile-wind.json").json(),
+  FileAttachment("data/statics.json").json(),
+  FileAttachment("data/anchor.json").json(),
+  FileAttachment("data/north-sea.json").json(),
+  FileAttachment("data/brazil-ne.json").json(),
+  FileAttachment("data/ontario.json").json(),
+  FileAttachment("data/alberta.json").json(),
+  FileAttachment("data/ireland.json").json(),
+  FileAttachment("data/peru.json").json(),
+  FileAttachment("data/south-africa.json").json(),
+  FileAttachment("data/argentina.json").json(),
+  FileAttachment("data/uruguay.json").json(),
+  FileAttachment("data/paraguay.json").json(),
+  FileAttachment("data/mexico.json").json(),
+  FileAttachment("data/japan.json").json(),
+  FileAttachment("data/vietnam.json").json(),
+  FileAttachment("data/thailand.json").json(),
+  FileAttachment("data/india-north.json").json(),
+  FileAttachment("data/cyprus.json").json(),
+  FileAttachment("data/ethiopia.json").json(),
+  FileAttachment("data/kazakhstan.json").json(),
+  FileAttachment("data/honduras.json").json(),
+  FileAttachment("data/jeju.json").json(),
+  FileAttachment("data/kenya.json").json(),
+  FileAttachment("data/egypt.json").json(),
+  FileAttachment("data/morocco.json").json(),
+  FileAttachment("data/namibia.json").json(),
+  FileAttachment("data/wa-swis.json").json(),
+  FileAttachment("data/nt-pilbara.json").json(),
+  FileAttachment("data/indonesia.json").json(),
+  FileAttachment("data/malaysia.json").json(),
+  FileAttachment("data/south-korea.json").json(),
+  FileAttachment("data/russia-mainland.json").json(),
+  FileAttachment("data/taiwan.json").json(),
+  FileAttachment("data/jordan.json").json(),
+  FileAttachment("data/saudi-solar.json").json(),
+  FileAttachment("data/uae.json").json(),
+  FileAttachment("data/oman.json").json(),
+  FileAttachment("data/israel.json").json(),
+  FileAttachment("data/inner-mongolia.json").json(),
+  FileAttachment("data/gansu.json").json(),
+  FileAttachment("data/qinghai.json").json(),
+  FileAttachment("data/ningxia.json").json(),
+  FileAttachment("data/yunnan.json").json(),
+  FileAttachment("data/tibet.json").json(),
+  FileAttachment("data/india-south.json").json(),
+  FileAttachment("data/india-west.json").json(),
+  FileAttachment("data/india-east.json").json(),
+  FileAttachment("data/pakistan.json").json(),
+  FileAttachment("data/iran.json").json(),
+  FileAttachment("data/iraq-mainland.json").json(),
+  FileAttachment("data/kurdistan.json").json(),
+  FileAttachment("data/bangladesh.json").json(),
+  FileAttachment("data/mongolia.json").json(),
+  FileAttachment("data/british-columbia.json").json(),
+  FileAttachment("data/quebec.json").json(),
+  FileAttachment("data/manitoba.json").json(),
+  FileAttachment("data/saskatchewan.json").json(),
+  FileAttachment("data/colombia.json").json()
+]);
 
 document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
