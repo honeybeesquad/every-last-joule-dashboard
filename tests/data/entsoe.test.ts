@@ -13,6 +13,7 @@ const xml = readFileSync(
 // at the top level, which fails if ENTSOE_API_TOKEN is missing.
 let parseEntsoeXml: any;
 let buildZoneData: any;
+let ZONES: any;
 
 describe("entsoe parser", () => {
   beforeAll(async () => {
@@ -20,6 +21,7 @@ describe("entsoe parser", () => {
     const module = await import("../../src/data/entsoe.json.js");
     parseEntsoeXml = module.parseEntsoeXml;
     buildZoneData = module.buildZoneData;
+    ZONES = module.ZONES;
   });
 
   it("parses >600 points from a 7-day Germany wind fixture (15-min resolution)", () => {
@@ -59,6 +61,7 @@ describe("buildZoneData", () => {
     const module = await import("../../src/data/entsoe.json.js");
     parseEntsoeXml = module.parseEntsoeXml;
     buildZoneData = module.buildZoneData;
+    ZONES = module.ZONES;
   });
 
   it("germany profile has 24 entries and matches sourceNote", () => {
@@ -76,5 +79,10 @@ describe("buildZoneData", () => {
     const finland = buildZoneData("finland", points, 0.05, "y");
     // totalTWh scales linearly with rate
     expect(finland.totalTWh / iberia.totalTWh).toBeCloseTo(2.5, 1);
+  });
+
+  it("includes the expanded France, Netherlands, and Denmark West zones", () => {
+    const ids = ZONES.map((z: any) => z.id);
+    expect(ids).toEqual(expect.arrayContaining(["france", "netherlands", "denmark-west"]));
   });
 });

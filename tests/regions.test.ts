@@ -3,15 +3,15 @@ import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
   it("has 17 canonical regions", () => {
-    expect(REGIONS.length).toBe(17);
+    expect(REGIONS.length).toBe(30);
   });
 
   it("has 9 live regions", () => {
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(9);
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(23);
   });
 
   it("has 4 static regions", () => {
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(4);
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(3);
   });
 
   it("has 4 flare regions", () => {
@@ -41,7 +41,10 @@ describe("regions", () => {
     }
   });
 
-  it("includes Brazil NE (ONS)", () => {
-    expect(REGIONS.find(r => r.id === "brazil-ne")).toBeDefined();
+  it("includes the new live regional expansions", () => {
+    expect(REGIONS.find(r => r.id === "aemo-nsw")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "brazil-rn")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "ercot-west")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "n-norway")).toBeDefined();
   });
 });

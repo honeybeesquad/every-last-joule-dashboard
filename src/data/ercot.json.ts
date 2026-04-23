@@ -2,6 +2,7 @@ import { fetchJSON } from "../lib/fetch.js";
 import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { RegionData, CurtailmentPoint } from "../lib/types.js";
+import { pathToFileURL } from "url";
 
 /**
  * ERCOT (Texas) wind curtailment loader - v0 proxy.
@@ -40,8 +41,19 @@ interface EIAResponse {
   warnings?: unknown;
 }
 
-/** Pure parser: EIA JSON in, RegionData out. Exported for unit tests. */
-export function parseErcot(raw: EIAResponse): RegionData {
+function scaleRegion(base: RegionData, regionId: string, share: number, sourceNote: string): RegionData {
+  return {
+    ...base,
+    regionId,
+    profile: base.profile.map((gw) => gw * share),
+    totalTWh: base.totalTWh * share,
+    peakGW: base.peakGW * share,
+    sourceNote,
+  };
+}
+
+/** Pure parser: EIA JSON in, split RegionData out. Exported for unit tests. */
+export function parseErcot(raw: EIAResponse): Record<"ercot-west" | "ercot-east", RegionData> {
   const records = raw.response.data;
   const points: CurtailmentPoint[] = records.map((r) => {
     // Period like "2026-04-21T04" is UTC-hour. Append ":00:00Z" for ISO.
@@ -51,18 +63,32 @@ export function parseErcot(raw: EIAResponse): RegionData {
     return { utcTimestamp, mw: curtailmentMW };
   });
 
-  const profile = timeOfDayAverageGW(points);
-  return {
+  const base: RegionData = {
     regionId: "ercot",
-    profile,
+    profile: timeOfDayAverageGW(points),
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: records.at(-1)?.period ?? new Date().toISOString(),
     sourceNote: "EIA hourly wind × 6.15% calibrated curtailment rate (ERCOT 2024 actuals)",
   };
+
+  return {
+    "ercot-west": scaleRegion(
+      base,
+      "ercot-west",
+      0.66,
+      "EIA hourly wind × 6.15% calibrated curtailment rate, split 66% West/Panhandle (ERCOT 2024 actuals)",
+    ),
+    "ercot-east": scaleRegion(
+      base,
+      "ercot-east",
+      0.34,
+      "EIA hourly wind × 6.15% calibrated curtailment rate, split 34% East/Central (ERCOT 2024 actuals)",
+    ),
+  };
 }
 
-const run = async (): Promise<RegionData> => {
+const run = async (): Promise<Record<"ercot-west" | "ercot-east", RegionData>> => {
   const apiKey = process.env.EIA_API_KEY;
   if (!apiKey) throw new Error("EIA_API_KEY not set");
 
@@ -89,14 +115,24 @@ const run = async (): Promise<RegionData> => {
   return parseErcot(raw);
 };
 
-withFallback<RegionData>("ercot", run, {
-  tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
-  tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
-})
-  .then((data) => {
-    process.stdout.write(JSON.stringify(data));
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isMain) {
+  withFallback<Record<"ercot-west" | "ercot-east", RegionData>>("ercot", run, {
+    tagLive: (r) => ({
+      "ercot-west": { ...r["ercot-west"], sourceStatus: "live" as const },
+      "ercot-east": { ...r["ercot-east"], sourceStatus: "live" as const },
+    }),
+    tagCached: (c) => ({
+      "ercot-west": { ...c["ercot-west"], sourceStatus: "cached" as const },
+      "ercot-east": { ...c["ercot-east"], sourceStatus: "cached" as const },
+    }),
   })
-  .catch((err) => {
-    console.error("ercot loader failed", err);
-    process.exit(1);
-  });
+    .then((data) => {
+      process.stdout.write(JSON.stringify(data));
+    })
+    .catch((err) => {
+      console.error("ercot loader failed", err);
+      process.exit(1);
+    });
+}

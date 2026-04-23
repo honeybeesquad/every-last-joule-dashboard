@@ -14,6 +14,8 @@ const cbeci = await FileAttachment("data/cbeci.json").json();
 const ercot = await FileAttachment("data/ercot.json").json();
 const caiso = await FileAttachment("data/caiso.json").json();
 const entsoe = await FileAttachment("data/entsoe.json").json();
+const aemo = await FileAttachment("data/aemo.json").json();
+const norway = await FileAttachment("data/norway.json").json();
 const statics = await FileAttachment("data/statics.json").json();
 const anchor = await FileAttachment("data/anchor.json").json();
 const northSea = await FileAttachment("data/north-sea.json").json();
@@ -84,13 +86,18 @@ document.getElementById("app-root").innerHTML = `
 `;
 
 const regionData = {
-  ercot,
+  ...ercot,
   caiso,
+  ...aemo,
   germany: entsoe.germany,
   iberia: entsoe.iberia,
   finland: entsoe.finland,
+  france: entsoe.france,
+  netherlands: entsoe.netherlands,
+  "denmark-west": entsoe["denmark-west"],
   "north-sea": northSea,
-  "brazil-ne": brazilNE,
+  ...brazilNE,
+  "n-norway": norway,
   ...statics
 };
 

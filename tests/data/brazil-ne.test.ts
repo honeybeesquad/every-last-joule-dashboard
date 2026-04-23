@@ -17,27 +17,31 @@ describe("brazil-ne parser", () => {
     parseOnsCurtailmentCsv = module.parseOnsCurtailmentCsv;
   });
 
-  it("parses the March 2026 CSV into timestamped points", () => {
+  it("parses the March 2026 CSV into clustered regional point series", () => {
     const points = parseOnsCurtailmentCsv(csv);
-    expect(points.length).toBeGreaterThan(100);
+    expect(points["brazil-rn"].length).toBeGreaterThan(100);
   });
 
-  it("sums val_geracaolimitada across plants per timestamp (unique timestamps)", () => {
+  it("keeps unique timestamps within each regional cluster", () => {
     const points = parseOnsCurtailmentCsv(csv);
-    const ts = new Set(points.map((p: any) => p.utcTimestamp));
-    expect(ts.size).toBe(points.length);
+    for (const regionPoints of Object.values(points) as Array<Array<any>>) {
+      const ts = new Set(regionPoints.map((p: any) => p.utcTimestamp));
+      expect(ts.size).toBe(regionPoints.length);
+    }
   });
 
   it("emits UTC ISO timestamps ending in Z", () => {
     const points = parseOnsCurtailmentCsv(csv);
-    for (const p of points.slice(0, 10)) {
+    for (const p of points["brazil-rn"].slice(0, 10)) {
       expect(p.utcTimestamp).toMatch(/Z$/);
     }
   });
 
   it("all MW values non-negative", () => {
     const points = parseOnsCurtailmentCsv(csv);
-    for (const p of points) expect(p.mw).toBeGreaterThanOrEqual(0);
+    for (const regionPoints of Object.values(points) as Array<Array<any>>) {
+      for (const p of regionPoints) expect(p.mw).toBeGreaterThanOrEqual(0);
+    }
   });
 
   it("treats blank curtailed values as zero and converts Brazil local time to UTC", () => {
@@ -47,17 +51,17 @@ describe("brazil-ne parser", () => {
       "N;NORTE;MA;MARANHAO;PLANT B;B;-;2026-03-01 00:00:00;7.593;1.5;386.265;20.27;;;;",
     ].join("\n");
     const points = parseOnsCurtailmentCsv(sample);
-    expect(points).toEqual([
-      { utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5 },
-    ]);
+    expect(points["brazil-other"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5 }]);
   });
 
-  it("timestamps are chronological", () => {
+  it("timestamps are chronological within each cluster", () => {
     const points = parseOnsCurtailmentCsv(csv);
-    for (let i = 1; i < points.length; i++) {
-      expect(new Date(points[i].utcTimestamp).getTime()).toBeGreaterThanOrEqual(
-        new Date(points[i - 1].utcTimestamp).getTime()
-      );
+    for (const regionPoints of Object.values(points) as Array<Array<any>>) {
+      for (let i = 1; i < regionPoints.length; i++) {
+        expect(new Date(regionPoints[i].utcTimestamp).getTime()).toBeGreaterThanOrEqual(
+          new Date(regionPoints[i - 1].utcTimestamp).getTime()
+        );
+      }
     }
   });
 });
