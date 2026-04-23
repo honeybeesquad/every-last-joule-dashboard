@@ -64,10 +64,9 @@ function summarize(label: string, text: string): string | undefined {
   if (!text) return undefined;
   const lower = text.toLowerCase();
   if (
-    lower.includes("just a moment") ||
+    lower.includes("<title>just a moment") ||
     lower.includes("_incapsula_resource") ||
-    lower.includes("request unsuccessful") ||
-    lower.includes("enable javascript and cookies to continue")
+    lower.includes("incap_ses")
   ) return "challenge/WAF page";
   if (label.includes("NP6-970 product") && lower.includes("rtd indicative lmps")) {
     return "reachable, but product is RTD indicative LMPs, not curtailment";
