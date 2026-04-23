@@ -807,37 +807,14 @@ main table {
   padding: 4px 0;
 }
 
-/* On desktop, let the hotspot columns grow to fill the available panel height
-   so taller monitors show more items without wasted white space below.
-   The panel-right has align-self: stretch from the app-body grid, so its
-   height tracks the globe column. Columns are side-by-side so each list
-   gets the full panel height minus titles/subtitle/gaps. */
+/* On desktop, scale each hotspot list to the viewport height so taller monitors
+   show more items without wasted white space, but cap it so short screens still
+   scroll rather than overflow. The list itself has overflow-y: auto, so anything
+   beyond this cap becomes scrollable. */
 @media (min-width: 1100px) {
-  .panel-right {
-    /* Stretch to full grid row height */
-    align-self: stretch;
-    height: 100%;
-  }
-
-  .hotspot-columns-three {
-    /* Grow to fill whatever height the panel has */
-    flex: 1;
-    min-height: 0;
-    align-content: flex-start;
-  }
-
-  .hotspot-column {
-    /* Each column is already display:flex flex-direction:column — let it stretch */
-    min-height: 0;
-    height: 100%;
-  }
-
   .hotspot-list {
-    /* Remove the fixed 240px cap; grow to fill column height instead */
-    flex: 1;
-    max-height: none;
-    /* Safety floor so the column never collapses entirely */
-    min-height: 80px;
+    max-height: min(calc(100vh - 420px), 720px);
+    min-height: 180px;
   }
 }
 
