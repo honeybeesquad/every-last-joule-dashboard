@@ -1,5 +1,10 @@
 # Every Last Joule
 
+<div id="page-loader" role="status" aria-label="Loading dashboard data">
+  <div class="loader-topbar"><div class="loader-topbar-fill"></div></div>
+  <div class="loader-center-mark">●</div>
+  <div class="loader-center-text">Loading data…</div>
+</div>
 <div id="app-root"></div>
 
 ```js
@@ -391,6 +396,13 @@ globe = await mountGlobe(canvas, {
 });
 canvas.hidden = false;
 document.getElementById("globe-placeholder")?.remove();
+
+// Dismiss the loading screen now that the globe and all data are ready.
+const pageLoader = document.getElementById("page-loader");
+if (pageLoader) {
+  pageLoader.classList.add("is-fading");
+  setTimeout(() => pageLoader.remove(), 380);
+}
 
 clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value }));
 clock.subscribe(renderAt);
