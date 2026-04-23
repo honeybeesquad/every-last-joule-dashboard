@@ -30,7 +30,7 @@ interface DiagnosticPayload {
 const TOKEN_URL =
   "https://ercotb2c.b2clogin.com/ercotb2c.onmicrosoft.com/B2C_1_PUBAPI-ROPC-FLOW/oauth2/v2.0/token";
 const API_BASE = "https://api.ercot.com/api/public-reports";
-const PRODUCT_PATH = "np6-915-cd/summary_of_hdl_ldl";
+const PRODUCT_ID = "np6-915-cd";
 
 function writeDiagnostic(payload: DiagnosticPayload) {
   const dir = join(process.cwd(), "data", "snapshots", "diagnostics");
@@ -73,6 +73,62 @@ async function fetchToken(): Promise<string> {
     throw new Error("token response missing access_token/id_token");
   }
   return token;
+}
+
+async function fetchTextWithAuth(url: string, token: string, subscriptionKey: string): Promise<{ res: Response; text: string }> {
+  const res = await fetch(url, {
+    headers: {
+      authorization: `Bearer ${token}`,
+      "Ocp-Apim-Subscription-Key": subscriptionKey,
+      accept: "application/json",
+    },
+  });
+  return { res, text: await res.text() };
+}
+
+function findArtifactEndpoint(product: unknown): string | null {
+  const artifacts = (product as { artifacts?: unknown[] })?.artifacts;
+  if (!Array.isArray(artifacts)) return null;
+
+  for (const artifact of artifacts) {
+    if (!artifact || typeof artifact !== "object") continue;
+    const href = (artifact as { _links?: { endpoint?: { href?: unknown } } })._links?.endpoint?.href;
+    if (typeof href === "string" && href.startsWith("https://api.ercot.com/")) return href;
+  }
+  return null;
+}
+
+async function resolveProductEndpoint(token: string, subscriptionKey: string): Promise<string> {
+  const productUrl = `${API_BASE}/${PRODUCT_ID}`;
+  const { res, text } = await fetchTextWithAuth(productUrl, token, subscriptionKey);
+  if (!res.ok) {
+    writeDiagnostic({
+      generatedAt: new Date().toISOString(),
+      status: "error",
+      tokenAcquired: true,
+      endpoint: productUrl,
+      httpStatus: res.status,
+      httpStatusText: res.statusText,
+      responseSnippet: text.slice(0, 1000),
+    });
+    throw new Error(`product lookup HTTP ${res.status} ${res.statusText}`);
+  }
+
+  const endpoint = findArtifactEndpoint(JSON.parse(text));
+  if (!endpoint) {
+    writeDiagnostic({
+      generatedAt: new Date().toISOString(),
+      status: "error",
+      tokenAcquired: true,
+      endpoint: productUrl,
+      httpStatus: res.status,
+      httpStatusText: res.statusText,
+      responseSnippet: text.slice(0, 1000),
+      details: { parse: "no-artifact-endpoint" },
+    });
+    throw new Error(`product ${PRODUCT_ID} did not expose an artifact endpoint`);
+  }
+  return endpoint;
 }
 
 function coerceNumber(record: Record<string, unknown>, keys: string[]): number | null {
@@ -173,16 +229,9 @@ const run = async (): Promise<Record<NativeRegionId, RegionData>> => {
     const now = new Date();
     const start = new Date(now.getTime() - 30 * 24 * 3600 * 1000).toISOString();
     const end = now.toISOString();
-    const url = `${API_BASE}/${PRODUCT_PATH}?postDatetimeFrom=${encodeURIComponent(start)}&postDatetimeTo=${encodeURIComponent(end)}&size=5000`;
-
-    const res = await fetch(url, {
-      headers: {
-        authorization: `Bearer ${token}`,
-        "Ocp-Apim-Subscription-Key": subscriptionKey,
-        accept: "application/json",
-      },
-    });
-    const text = await res.text();
+    const endpoint = await resolveProductEndpoint(token, subscriptionKey);
+    const url = `${endpoint}?postDatetimeFrom=${encodeURIComponent(start)}&postDatetimeTo=${encodeURIComponent(end)}&size=5000`;
+    const { res, text } = await fetchTextWithAuth(url, token, subscriptionKey);
 
     if (!res.ok) {
       writeDiagnostic({
