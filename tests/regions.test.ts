@@ -2,16 +2,16 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 42 canonical regions", () => {
-    expect(REGIONS.length).toBe(42);
+  it("has 54 canonical regions", () => {
+    expect(REGIONS.length).toBe(54);
   });
 
-  it("has 35 live regions", () => {
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(35);
+  it("has 37 live regions", () => {
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(37);
   });
 
-  it("has 3 static regions", () => {
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(3);
+  it("has 13 static regions", () => {
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(13);
   });
 
   it("has 4 flare regions", () => {
@@ -52,7 +52,7 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "peru")).toBeDefined();
     expect(REGIONS.find(r => r.id === "south-africa")).toBeDefined();
     expect(REGIONS.find(r => r.id === "poland")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "turkey")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "turkey")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "greece")).toBeDefined();
     expect(REGIONS.find(r => r.id === "romania")).toBeDefined();
     expect(REGIONS.find(r => r.id === "italy-north")).toBeDefined();
@@ -60,5 +60,25 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "denmark")).toBeDefined();
     expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();
     expect(REGIONS.find(r => r.id === "denmark-west")).toBeUndefined();
+  });
+
+  it("includes the v1f regional expansion", () => {
+    for (const id of [
+      "sweden-north",
+      "sweden-south",
+      "portugal",
+      "argentina",
+      "uruguay",
+      "paraguay",
+      "mexico",
+      "japan",
+      "vietnam",
+      "thailand",
+      "india-north",
+      "cyprus",
+      "ethiopia",
+    ]) {
+      expect(REGIONS.find(r => r.id === id)).toBeDefined();
+    }
   });
 });

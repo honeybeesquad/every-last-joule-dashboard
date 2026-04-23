@@ -35,6 +35,16 @@ const alberta = await FileAttachment("data/alberta.json").json();
 const ireland = await FileAttachment("data/ireland.json").json();
 const peru = await FileAttachment("data/peru.json").json();
 const southAfrica = await FileAttachment("data/south-africa.json").json();
+const argentina = await FileAttachment("data/argentina.json").json();
+const uruguay = await FileAttachment("data/uruguay.json").json();
+const paraguay = await FileAttachment("data/paraguay.json").json();
+const mexico = await FileAttachment("data/mexico.json").json();
+const japan = await FileAttachment("data/japan.json").json();
+const vietnam = await FileAttachment("data/vietnam.json").json();
+const thailand = await FileAttachment("data/thailand.json").json();
+const indiaNorth = await FileAttachment("data/india-north.json").json();
+const cyprus = await FileAttachment("data/cyprus.json").json();
+const ethiopia = await FileAttachment("data/ethiopia.json").json();
 
 document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
@@ -122,15 +132,17 @@ const regionData = {
   belgium,
   germany: entsoe.germany,
   iberia: entsoe.iberia,
+  portugal: entsoe.portugal,
   finland: entsoe.finland,
   france,
   netherlands: entsoe.netherlands,
   denmark,
   poland: entsoe.poland,
-  turkey: entsoe.turkey,
   greece: entsoe.greece,
   romania: entsoe.romania,
   "italy-north": entsoe["italy-north"],
+  "sweden-north": entsoe["sweden-north"],
+  "sweden-south": entsoe["sweden-south"],
   "north-sea": northSea,
   ...brazilNE,
   "n-norway": norway,
@@ -141,6 +153,16 @@ const regionData = {
   "south-africa": southAfrica,
   "new-zealand": newZealand,
   atacama,
+  argentina,
+  uruguay,
+  paraguay,
+  mexico,
+  japan,
+  vietnam,
+  thailand,
+  "india-north": indiaNorth,
+  cyprus,
+  ethiopia,
   ...statics
 };
 
@@ -182,8 +204,7 @@ function renderAt(hour) {
 
   const renewableEntries = REGIONS
     .filter(isRenewable)
-    .map((region) => ({ region, gw: result.perRegionGW[region.id] ?? 0 }))
-    .filter((entry) => entry.gw > 0.01);
+    .map((region) => ({ region, gw: result.perRegionGW[region.id] ?? 0 }));
 
   const itemHtml = (fuel) => ({ region, gw }) => `
     <li class="hotspot-item">
@@ -197,7 +218,7 @@ function renderAt(hour) {
     const rows = renewableEntries
       .filter(({ region }) => dominantFuel(region) === fuel)
       .sort((a, b) => b.gw - a.gw)
-      .slice(0, 10);
+      .slice(0, 30);
     document.getElementById(`hotspot-list-${fuel}`).innerHTML = rows.map(itemHtml(fuel)).join("");
   }
 }

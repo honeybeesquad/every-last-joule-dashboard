@@ -20,6 +20,20 @@ export function solarProfile(peakHourUtc: number, annualTWh: number): number[] {
   return scaleProfileToAnnualTWh(shape, annualTWh);
 }
 
+export function windProfile(peakHourUtc: number, annualTWh: number): number[] {
+  const shape = Array.from({ length: 24 }, (_, hour) => {
+    const center = hour + 0.5;
+    const phase = Math.cos(((center - peakHourUtc) / 12) * Math.PI);
+    return 0.65 + 0.35 * ((phase + 1) / 2);
+  });
+
+  return scaleProfileToAnnualTWh(shape, annualTWh);
+}
+
+export function hydroProfile(annualTWh: number): number[] {
+  return scaleProfileToAnnualTWh(Array(24).fill(1), annualTWh);
+}
+
 export function buildTypicalSolarRegion(
   regionId: string,
   peakHourUtc: number,
@@ -28,6 +42,43 @@ export function buildTypicalSolarRegion(
   lastUpdated = "2024",
 ): RegionData {
   const profile = solarProfile(peakHourUtc, annualTWh);
+  return {
+    regionId,
+    profile,
+    latestProfile: null,
+    totalTWh: (annualTWh * 30) / 365,
+    peakGW: Math.max(...profile),
+    lastUpdated,
+    sourceNote,
+  };
+}
+
+export function buildTypicalWindRegion(
+  regionId: string,
+  peakHourUtc: number,
+  annualTWh: number,
+  sourceNote: string,
+  lastUpdated = "2024",
+): RegionData {
+  const profile = windProfile(peakHourUtc, annualTWh);
+  return {
+    regionId,
+    profile,
+    latestProfile: null,
+    totalTWh: (annualTWh * 30) / 365,
+    peakGW: Math.max(...profile),
+    lastUpdated,
+    sourceNote,
+  };
+}
+
+export function buildTypicalHydroRegion(
+  regionId: string,
+  annualTWh: number,
+  sourceNote: string,
+  lastUpdated = "2024",
+): RegionData {
+  const profile = hydroProfile(annualTWh);
   return {
     regionId,
     profile,

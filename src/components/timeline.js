@@ -79,7 +79,7 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     // Running stack: cumulative[i] is the bottom edge (in GW) of the NEXT layer.
     const cumulative = new Array(n).fill(0);
 
-    for (let f = 0; f < 4; f += 1) {
+    for (let f = 0; f < FUEL_ORDER.length; f += 1) {
       const fuel = FUEL_ORDER[f];
       const colorHex = FUEL_COLOR[fuel];
       const grad = ctx.createLinearGradient(0, PAD, 0, baseY);

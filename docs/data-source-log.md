@@ -215,15 +215,36 @@ The ENTSO-E loader remains for zones where direct TSO CSV access is not yet viab
 
 - Germany: wind onshore, 2%
 - Iberia: solar, 2%
+- Portugal: solar, 10% calibrated to ~0.4 TWh/yr
 - Finland: wind onshore, 5%
-- Netherlands: solar, 4%
+- Netherlands: offshore wind, 4% (v1f fix: B16 solar was below visibility; B18 gives a non-zero ENTSO-E signal)
 - Poland: wind onshore, 2%
-- Turkey: wind onshore, 2%
 - Greece: solar, 2.5%
-- Romania: wind onshore, 1.5%
+- Romania: solar, 4% (v1f fix: B19 wind was below visibility; B16 solar gives a non-zero ENTSO-E signal)
 - Italy North: solar, 2%
+- Sweden North (SE2): wind onshore, 1%
+- Sweden South (SE4): solar, 7% calibrated to ~0.3 TWh/yr
 
 France and Denmark-West were removed in v1b after direct RTE and Energinet loaders were added.
+
+**v1f zero-data audit:** the ENTSO-E parser now handles multiple `Period` blocks and `PT60M`/`PT30M`/`PT15M` resolutions. This fixed the previously invisible Netherlands, Romania, Italy North, and NO-4/N. Norway profiles. Turkey (`10YTR-TEIAS----W`) was probed against `B16`, `B18`, `B19`, `B11`, `B12`, and `B14`; ENTSO-E returned no usable A75 renewable generation data from this environment, and no stable unauthenticated TEIAS/EPIAS curtailment endpoint was integrated in the time-box. Turkey is therefore removed rather than shown as a zero-rate invisible region.
+
+---
+
+## v1f fallback expansion regions (used)
+
+These regions intentionally use typical-shape fallback profiles after one-day live-access probes found no stable unauthenticated hourly curtailment endpoint. Each loader still wraps in `withFallback` and writes a last-good snapshot.
+
+- Argentina: CAMMESA public site probed; Patagonia wind fallback, 0.5 TWh/yr, wind profile.
+- Uruguay: ADME/UTE probed; national wind fallback, 0.4 TWh/yr, wind profile.
+- Paraguay: Itaipu/ANDE probed; Itaipu hydro spill fallback, 10 TWh/yr, near-flat hydro profile.
+- Mexico: CENACE public reports and SENER mirror path probed; northern solar fallback, 1.2 TWh/yr, solar profile peaking UTC 19:00.
+- Japan: OCCTO/JEPX/METI probed; Kyushu solar fallback, 1.7 TWh/yr, solar profile peaking UTC 03:00.
+- Vietnam: EVN probed; Ninh Thuan/Binh Thuan solar fallback, 2 TWh/yr, solar profile peaking UTC 05:00.
+- Thailand: EGAT/ERC probed; central solar fallback, 0.3 TWh/yr, solar profile peaking UTC 05:30.
+- North India: NRLDC/CEA/MERIT probed; Rajasthan/Northern Region solar fallback, 1.5 TWh/yr, solar profile peaking UTC 06:30.
+- Cyprus: TSOC/EAC probed; isolated-grid solar fallback, 0.1 TWh/yr, solar profile peaking UTC 10:00.
+- Ethiopia: EEP probed; GERD/cascade hydro-spill fallback, 5 TWh/yr, near-flat hydro profile. This estimate is speculative and derived from reservoir capacity and seasonal inflow assumptions.
 
 ---
 

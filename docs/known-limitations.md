@@ -8,7 +8,7 @@ Market-data curtailment captures system-operator dispatch-down instructions, but
 
 ### 2. Geographic gaps
 
-Japan, India, much of Africa, and most of the Middle East are not yet represented, aside from the four flare basins included here. The missing share is unlikely to overturn the headline direction of travel, but it does mean v0 is not yet a global total in the strict sense.
+v1f closes several visible gaps by adding Japan, North India, Ethiopia, Southeast Asia, Latin America, Cyprus, Portugal, and Sweden. Coverage is still not a strict global total: much of Africa, the Middle East, Central Asia, and smaller island grids remain absent unless a renewable curtailment/spill proxy is documented.
 
 ### 3. ASIC efficiency divergence
 
@@ -51,5 +51,11 @@ The methodology page and this list label these three regions explicitly so reade
 ### 11. Flare regions are flat because flare is flat (not a data gap)
 
 Permian, W. Siberia, S. Iraq, and E. Saudi render as flat pillars. This is methodologically correct: flare is 24/7 base-load heat because upstream oil production doesn't stop overnight. Their flat shape is the truth, not an absence of hourly data. They are distinguishable from estimated regions (above) in the dashboard's colour coding - flare is orange, renewables are teal.
+
+### 12. v1f regional expansion uses documented fallback shapes where live feeds were hostile
+
+Argentina, Uruguay, Paraguay, Mexico, Japan, Vietnam, Thailand, North India, Cyprus, and Ethiopia are included through typical solar/wind/hydro profiles scaled to documented annual curtailment or spill estimates after public live-data probes found no stable unauthenticated hourly feed. They keep geographic coverage visible, but `latestProfile` is intentionally `null` and the `sourceNote` labels each as a fallback.
+
+Turkey was removed in v1f. ENTSO-E returned no usable A75 renewable generation signal for all probed PSR types, and no stable unauthenticated TEIAS/EPIAS endpoint was integrated in the time-box. Showing a permanent zero-rate region was less honest than dropping it.
 
 Corrections welcome: simon@collins.nu.

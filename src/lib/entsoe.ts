@@ -13,6 +13,13 @@ export interface EntsoeZoneSpec {
   sourceNote: string;
 }
 
+function resolutionMs(resolution: string | undefined): number {
+  if (resolution === "PT15M") return 15 * 60 * 1000;
+  if (resolution === "PT30M") return 30 * 60 * 1000;
+  if (resolution === "PT60M" || resolution === "PT1H") return 60 * 60 * 1000;
+  return 15 * 60 * 1000;
+}
+
 export function parseEntsoeXml(xml: string): CurtailmentPoint[] {
   const parser = new XMLParser({ ignoreAttributes: false, parseTagValue: true });
   const doc = parser.parse(xml);
@@ -26,19 +33,22 @@ export function parseEntsoeXml(xml: string): CurtailmentPoint[] {
   const pointsMap = new Map<string, number>();
 
   for (const ts of timeSeriesList) {
-    const period = ts.Period;
-    if (!period?.timeInterval?.start) continue;
+    const periods = Array.isArray(ts.Period) ? ts.Period : [ts.Period].filter(Boolean);
+    for (const period of periods) {
+      if (!period?.timeInterval?.start) continue;
 
-    const startTime = new Date(period.timeInterval.start).getTime();
-    const points = Array.isArray(period.Point) ? period.Point : [period.Point].filter(Boolean);
+      const startTime = new Date(period.timeInterval.start).getTime();
+      const stepMs = resolutionMs(period.resolution);
+      const points = Array.isArray(period.Point) ? period.Point : [period.Point].filter(Boolean);
 
-    for (const p of points) {
-      const position = parseInt(p.position, 10);
-      const quantity = parseFloat(p.quantity);
-      if (!Number.isFinite(position) || !Number.isFinite(quantity)) continue;
+      for (const p of points) {
+        const position = parseInt(p.position, 10);
+        const quantity = parseFloat(p.quantity);
+        if (!Number.isFinite(position) || !Number.isFinite(quantity)) continue;
 
-      const timestamp = new Date(startTime + (position - 1) * 15 * 60 * 1000).toISOString();
-      pointsMap.set(timestamp, (pointsMap.get(timestamp) ?? 0) + quantity);
+        const timestamp = new Date(startTime + (position - 1) * stepMs).toISOString();
+        pointsMap.set(timestamp, (pointsMap.get(timestamp) ?? 0) + quantity);
+      }
     }
   }
 

@@ -91,10 +91,19 @@ describe("buildZoneData", () => {
     const ids = ZONES.map((z: any) => z.id);
     expect(ids).toEqual(expect.arrayContaining([
       "poland",
-      "turkey",
       "greece",
       "romania",
       "italy-north"
     ]));
+  });
+
+  it("includes the v1f ENTSO-E expansion zones and drops Turkey after zero-data audit", () => {
+    const ids = ZONES.map((z: any) => z.id);
+    expect(ids).toEqual(expect.arrayContaining([
+      "portugal",
+      "sweden-north",
+      "sweden-south"
+    ]));
+    expect(ids).not.toEqual(expect.arrayContaining(["turkey"]));
   });
 });
