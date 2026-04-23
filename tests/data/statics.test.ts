@@ -4,12 +4,12 @@ import { buildStaticRegion, buildAllStatics } from "../../src/data/statics.json"
 describe("static regions", () => {
   it("produces 10 regions", () => {
     const data = buildAllStatics();
-    expect(Object.keys(data).length).toBe(8);
+    expect(Object.keys(data).length).toBe(7);
   });
 
   it("includes all expected ids", () => {
     const data = buildAllStatics();
-    const expected = ["sichuan", "xinjiang", "iceland", "atacama", "permian", "w-siberia", "s-iraq", "e-saudi"];
+    const expected = ["sichuan", "xinjiang", "iceland", "permian", "w-siberia", "s-iraq", "e-saudi"];
     for (const id of expected) expect(data[id]).toBeDefined();
   });
 
@@ -34,7 +34,7 @@ describe("static regions", () => {
 
   it("totalTWh is 30-day pro-rata of annual", () => {
     const data = buildAllStatics();
-    expect(data.atacama.totalTWh).toBeCloseTo((5.9 * 30) / 365, 3);
+    expect(data.iceland.totalTWh).toBeCloseTo((5.3 * 30) / 365, 3);
   });
 
   it("each region has a non-empty sourceNote", () => {

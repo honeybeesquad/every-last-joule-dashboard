@@ -30,12 +30,12 @@ Brazil NE is the only live renewable-curtailment region in v0 that reports nativ
 
 CBECI remains the canonical academic benchmark for Bitcoin electricity consumption, but its API is recaptcha-gated and not usable from the server-side loader. v0 therefore uses mempool.space’s 24-hour-average hashrate and derives annualised consumption at 16 J/TH, with quarterly cross-checks against Cambridge’s published dashboard value.
 
-### 8. ERCOT proxy (v0) - native upgrade planned (v0.5)
+### 8. ERCOT remains on the EIA proxy after the B2 native attempt
 
-ERCOT’s native developer API is blocked behind a WAF from this environment, even with valid credentials, so v0 pivots to EIA hourly wind and a 6.15% calibrated rate anchored to ERCOT’s 2024 actuals. The native 5-minute dispatch-down upgrade is planned for v0.5 once a stable US-runner or VPN-backed path is in place.
+ERCOT’s native developer API remains blocked behind the Incapsula WAF from this environment, even with valid credentials. The B2 native probe acquired a token successfully, then received HTTP 403 from `api.ercot.com` on the SCED HDL/LDL candidate endpoint. v0.5 therefore keeps `ERCOT_NATIVE_ENABLED = false` and continues to use EIA hourly wind with a 6.15% calibrated rate, split into ERCOT West and East. The inactive native loader remains in the repo for a future US-runner or VPN-backed pickup.
 
-### 9. Atacama (Chile) is static (v0) - native upgrade planned (v0.5)
+### 9. Atacama (Chile) uses a typical solar shape after the B2 Playwright attempt
 
-Coordinador Eléctrico Nacional’s public portal is not yet a dependable machine-readable feed from this environment. v0 therefore carries Atacama as a static 2024 total of 5.9 TWh, and will move to a native hourly treatment when a workable feed is identified and tested.
+Coordinador Eléctrico Nacional’s public landing page can be reached by headless Chromium, but the specific renewable-reduction document path still returns Cloudflare bot-verification content. v0.5 therefore represents Atacama as a static-source, typical-shape solar profile using `solarProfile(16.5, 5.9)`: a daylight bump around UTC 16:30 scaled to the book’s 5.9 TWh/year baseline. It is not a native measured Chilean curtailment feed.
 
 Corrections welcome: simon@collins.nu.

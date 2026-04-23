@@ -17,7 +17,6 @@ export const REGIONS: Region[] = [
   { id: "netherlands",      name: "Netherlands",     country: "NLD", lat: 52.2, lon:    5.3, tier: "live", kind: "solar", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "denmark-west",     name: "Denmark West",    country: "DNK", lat: 56.0, lon:    9.0, tier: "live", kind: "wind",  source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "north-sea",        name: "North Sea",       country: "GBR", lat: 56.5, lon:   -2.0, tier: "live", kind: "wind",  source: "NG ESO", sourceUrl: "https://www.elexon.co.uk/data/" },
-  { id: "atacama",          name: "Atacama",         country: "CHL", lat: -24.5, lon: -69.2, tier: "live", kind: "solar", source: "CEN Chile", sourceUrl: "https://www.coordinador.cl/" },
   { id: "brazil-rn",        name: "Rio Grande do Norte", country: "BRA", lat: -5.8, lon: -36.3, tier: "live", kind: "wind", source: "ONS", sourceUrl: "https://www.ons.org.br/" },
   { id: "brazil-ce",        name: "Ceara",           country: "BRA", lat: -5.0, lon: -39.0, tier: "live", kind: "wind", source: "ONS", sourceUrl: "https://www.ons.org.br/" },
   { id: "brazil-bahia",     name: "Bahia",           country: "BRA", lat: -11.0, lon: -41.0, tier: "live", kind: "wind", source: "ONS", sourceUrl: "https://www.ons.org.br/" },
@@ -30,7 +29,8 @@ export const REGIONS: Region[] = [
   { id: "ireland",          name: "Ireland",         country: "IRL", lat: 53.5, lon:   -7.5, tier: "live", kind: "wind",  source: "EirGrid", sourceUrl: "https://www.eirgridgroup.com/how-the-grid-works/renewables/" },
   { id: "peru",             name: "Peru",            country: "PER", lat: -14.0, lon: -74.0, tier: "live", kind: "mixed", source: "COES-SINAC", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },
   { id: "south-africa",     name: "South Africa",    country: "ZAF", lat: -32.0, lon:  26.0, tier: "live", kind: "mixed", source: "Eskom Data Portal", sourceUrl: "https://www.eskom.co.za/dataportal/" },
-  // Tier 2 - static (3 regions)
+  // Tier 2 - static (4 regions)
+  { id: "atacama",          name: "Atacama",         country: "CHL", lat: -24.5, lon: -69.2, tier: "static", kind: "solar", source: "CEN Chile", sourceUrl: "https://www.coordinador.cl/" },
   { id: "sichuan",          name: "Sichuan",         country: "CHN", lat: 30.6, lon:  102.8, tier: "static", kind: "hydro", source: "Ember China", sourceUrl: "https://ember-energy.org/" },
   { id: "xinjiang",         name: "Xinjiang",        country: "CHN", lat: 41.5, lon:   85.0, tier: "static", kind: "solar", source: "Ember China", sourceUrl: "https://ember-energy.org/" },
   { id: "iceland",          name: "Iceland",         country: "ISL", lat: 64.9, lon:  -19.0, tier: "static", kind: "hydro", source: "Published", sourceUrl: "https://orkustofnun.is/" },

@@ -7,11 +7,11 @@ describe("regions", () => {
   });
 
   it("has 9 live regions", () => {
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(28);
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(27);
   });
 
   it("has 4 static regions", () => {
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(3);
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(4);
   });
 
   it("has 4 flare regions", () => {

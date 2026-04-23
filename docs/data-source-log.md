@@ -87,6 +87,13 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 2. Run native-ERCOT loader via VPN-enabled GitHub Actions (or GitHub-hosted US runner, which should bypass the WAF).
 3. Swap `ercot.json.ts` loader to use the native 5-minute dispatch-down series when its daily runs are proven stable for two weeks.
 
+**v0.5 B2 hard-unlock attempt:** committed `src/data/ercot-native.json.ts` as an inactive probe behind `ERCOT_NATIVE_ENABLED = false` in `src/index.md`.
+
+- Token path: ROPC token acquisition succeeds with the existing `ERCOT_USERNAME`, `ERCOT_PASSWORD`, and `ERCOT_API_KEY` setup.
+- Native endpoint attempted: `api/public-reports/np6-915-cd/summary_of_hdl_ldl`, ERCOT's public "Summary Report of HDL and LDL" SCED product. It is the closest public SCED aggregate candidate found in the one-day spike because it reports high/low dispatch limits after each SCED run.
+- Local outcome: token acquired, then HTTP 403 Incapsula challenge from `api.ercot.com` with an Error 16 incident page. The loader writes `data/snapshots/diagnostics/ercot-native.json` and falls through to `data/snapshots/last-good/ercot-native.json`.
+- Product outcome: `ERCOT_NATIVE_ENABLED` remains `false`; the dashboard stays on the EIA proxy (`ercot-west` and `ercot-east`). The native loader remains in the repo for a future US-runner/VPN pickup.
+
 ---
 
 ## AEMO NEMWeb per-state intermittent output (used)
@@ -213,3 +220,21 @@ All six use the same ENTSO-E Transparency API `A75` actual-generation pattern an
 - Method: if the portal is reachable, emit a calibrated 30-day mixed renewable fallback profile at 2%
 - Calibration rationale: South African wind/solar curtailment exists but remains modest relative to broader grid constraints
 - Quirk: this is a temporary fallback profile, documented explicitly until a public CSV or chart endpoint is confirmed
+
+---
+
+## Chile Atacama / Coordinador Electrico Nacional (B2 attempt, fallback used)
+
+**Intended:** native Chile renewable-reduction or vertimiento data from Coordinador Electrico Nacional.
+
+**v0.5 B2 hard-unlock attempt:** Playwright headless Chromium can load the public `reportes-y-estadisticas` landing page from this environment after waiting for the Cloudflare check. That page exposes relevant leads including `Reducciones de Generación Renovable`, `Generación de Energía`, `Histórico Generación Horaria por Central`, and `Vertimientos`.
+
+**Blocker:** the specific `Reducciones de Generación Renovable` document path still returns Cloudflare "Just a moment" / bot-verification content in headless Chromium, even after first visiting the unlocked landing page in the same browser context. No stable CSV/XLSX download path was exposed within the B2 time box.
+
+**Fallback used:** `src/data/atacama-chile.json.ts` now emits a typical solar shape via `solarProfile(16.5, 5.9)`, using local solar noon around UTC 16:30 and the book's 5.9 TWh/year Atacama annual baseline.
+
+- Region id: `atacama`
+- Tier: `static`
+- 30-day total: `5.9 * 30 / 365 = 0.485 TWh`
+- Peak: synthetic daylight peak around UTC hour 16
+- Source note: explicitly labelled as a typical-shape fallback, not a native measured feed
