@@ -78,5 +78,23 @@ export function createClock(initialHourUtc) {
     start();
   }
 
+  // Pause the animation loop when the tab is backgrounded so we're not
+  // churning through 60 emits per second into an invisible DOM. On resume
+  // we snap lastTs so the first frame's dt doesn't include the pause gap
+  // (otherwise the hour would jump forward proportional to how long the
+  // user was away).
+  if (typeof document !== "undefined") {
+    const onVisibility = () => {
+      if (document.hidden) {
+        if (raf != null) cancelAnimationFrame(raf);
+        raf = null;
+      } else if (state.playing) {
+        state.lastTs = null;
+        start(true);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+  }
+
   return api;
 }

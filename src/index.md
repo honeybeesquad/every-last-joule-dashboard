@@ -407,6 +407,7 @@ globe = await mountGlobe(canvas, {
   regionData,
   utcHour: initialHour,
   mode: mode.value,
+  topologyUrl: await FileAttachment("data/countries-110m.json").url(),
   onRegionClick(region, anchor) {
     if (region) regionTooltip.show(region, anchor);
     else regionTooltip.hide();

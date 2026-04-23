@@ -836,6 +836,16 @@ main table {
   }
 }
 
+/* On mobile (stacked single-column), keep each list to ~6 items so you can
+   actually see all three fuel buckets without one swallowing the viewport.
+   Still scrollable via base rule's overflow-y: auto, but with a tighter cap
+   so the touch-gesture ambiguity of nested scrolls is less severe. */
+@media (max-width: 700px) {
+  .hotspot-list {
+    max-height: 260px;
+  }
+}
+
 .hotspot-item {
   display: grid;
   grid-template-columns: 8px minmax(0, 1fr);
@@ -972,11 +982,25 @@ main table {
   #globe-canvas {
     max-width: 400px;
   }
+
+  /* Tighter padding on tablets and phones — desktop wastes less
+     horizontal space than these screens can afford to lose. */
+  .app-shell {
+    padding: 18px 18px;
+    gap: 12px;
+  }
+
+  /* Responsive lead copy — 17px desktop body text dominates small
+     viewports and pushes the globe below the fold. */
+  .app-shell p.lead {
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
 }
 
 @media (max-width: 540px) {
   .app-shell {
-    padding: 16px 4vw;
+    padding: 14px 14px;
   }
 
   .app-tag {
@@ -985,6 +1009,40 @@ main table {
 
   .stats-row {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .app-shell p.lead {
+    font-size: 14px;
+  }
+}
+
+/* Touch-target minimums — iOS guideline is 44×44, Material is 48×48.
+   On non-hover pointers (touch), bump the play button and speed/mode
+   chips so they're reliably tappable. */
+@media (hover: none) {
+  .ctl-play {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+  .ctl-speed-chip,
+  .mode-btn {
+    min-height: 34px;
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+  .region-tooltip-close {
+    font-size: 24px;
+    padding: 6px 10px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+}
+
+/* Tooltip width shouldn't overflow narrow viewports. */
+@media (max-width: 400px) {
+  .region-tooltip {
+    width: min(260px, calc(100vw - 20px));
   }
 }
 

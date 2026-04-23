@@ -17,7 +17,10 @@ export default {
     { name: "Methodology", path: "/methodology" },
     { name: "About", path: "/about" }
   ],
-  head: '<link rel="stylesheet" href="./style.css">',
+  // The framework's default viewport meta uses `maximum-scale=1` which
+  // disables pinch-zoom — bad for accessibility and mobile readability.
+  // We emit our own viewport tag later in the head to override it.
+  head: '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="stylesheet" href="./style.css">',
   theme: "dark",
   footer: "",
   toc: false,

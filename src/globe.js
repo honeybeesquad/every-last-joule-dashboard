@@ -3,13 +3,15 @@ import * as topojson from "npm:topojson-client";
 import { regionGWAtHour } from "./lib/calc.js";
 import { FUEL_COLOR, dominantFuel } from "./lib/fuel.js";
 
-const WORLD_TOPOLOGY_URL = "https://unpkg.com/world-atlas@2/countries-110m.json";
+// Locally-vendored world atlas: previously fetched from unpkg.com, which
+// added a third-party DNS + TLS handshake (~200–400ms on cellular) to
+// every cold page load. Served from our own origin now via FileAttachment.
 let countriesPromise;
 let landDots;
 
-async function loadCountries() {
+async function loadCountries(topologyUrl) {
   if (!countriesPromise) {
-    countriesPromise = fetch(WORLD_TOPOLOGY_URL)
+    countriesPromise = fetch(topologyUrl)
       .then((response) => response.json())
       .then((topology) => topojson.feature(topology, topology.objects.countries));
   }
@@ -37,9 +39,14 @@ function precomputeLandDots(countries) {
 
 export async function mountGlobe(canvas, initial) {
   const ctx = canvas.getContext("2d");
-  const countries = await loadCountries();
+  const countries = await loadCountries(initial.topologyUrl);
   const dots = precomputeLandDots(countries);
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  // Cap DPR lower on narrow viewports — a 1.5x render on a 360px-wide
+  // phone is visually indistinguishable from 2x but costs 45% fewer
+  // pixels per frame to composite.
+  const isMobileViewport = window.matchMedia?.("(max-width: 900px)")?.matches;
+  const dprCap = isMobileViewport ? 1.5 : 2;
+  const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
   const onRegionClick = typeof initial.onRegionClick === "function" ? initial.onRegionClick : null;
   const state = {
     regions: initial.regions,
@@ -325,20 +332,57 @@ export async function mountGlobe(canvas, initial) {
 
   resize();
 
+  // Mobile/battery optimisations:
+  // - Skip rendering when the tab is backgrounded (visibilitychange).
+  // - Throttle auto-rotation to ~30 FPS on narrow viewports. Rotating 0.06°
+  //   per 33ms looks identical to 0.03° per 16ms but halves CPU/GPU work.
+  //   On touch devices where every joule of battery counts this matters.
   const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-  if (!prefersReducedMotion) {
-    const tick = () => {
-      const now = performance.now();
+  const mobileMQ = window.matchMedia?.("(max-width: 900px), (hover: none)");
+  let targetFrameMs = mobileMQ?.matches ? 33 : 16;
+  mobileMQ?.addEventListener?.("change", (e) => {
+    targetFrameMs = e.matches ? 33 : 16;
+  });
+
+  let rafId = null;
+  let lastFrameTs = 0;
+
+  const tick = (now) => {
+    rafId = null;
+    if (document.hidden) return; // visibilitychange will resume us
+    if (now - lastFrameTs >= targetFrameMs) {
       if (!state.dragging && now >= autoResumeAt) {
-        state.rotation[0] = wrapLongitude(state.rotation[0] + 0.03);
+        // Scale rotation step so visual speed is frame-rate-independent.
+        const step = 0.03 * ((now - lastFrameTs) / 16);
+        state.rotation[0] = wrapLongitude(state.rotation[0] + step);
       }
       render();
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  } else {
-    render();
+      lastFrameTs = now;
+    }
+    rafId = requestAnimationFrame(tick);
+  };
+
+  function startLoop() {
+    if (rafId != null || prefersReducedMotion) return;
+    lastFrameTs = 0;
+    rafId = requestAnimationFrame(tick);
   }
+  function stopLoop() {
+    if (rafId != null) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
+  if (prefersReducedMotion) {
+    render();
+  } else {
+    startLoop();
+  }
+
+  const onVisibility = () => {
+    if (document.hidden) stopLoop();
+    else startLoop();
+  };
+  document.addEventListener("visibilitychange", onVisibility);
 
   return {
     update(next) {
@@ -346,6 +390,8 @@ export async function mountGlobe(canvas, initial) {
       render();
     },
     destroy() {
+      stopLoop();
+      document.removeEventListener("visibilitychange", onVisibility);
       resizeObserver.disconnect();
     }
   };
