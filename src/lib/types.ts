@@ -39,6 +39,17 @@ export interface RegionData {
    * Surfaced in the methodology page so readers can see freshness.
    */
   sourceStatus?: "live" | "cached";
+  /**
+   * Data-driven fuel-mix override. If present, this takes precedence over the
+   * region's canonical `kind` for bucketing in hotspot columns and timeline
+   * stacking. Values are fractions in 0..1 and should sum to ≤ 1.
+   *
+   * Loaders that pull technology-separated curtailment feeds (e.g. ONS Brazil
+   * which publishes wind and solar constrained-off in parallel) compute this
+   * ratio from observed volumes so Bahia or Piauí can appear correctly in
+   * BOTH the wind and solar hotspot columns proportional to real curtailment.
+   */
+  fuelShare?: Partial<Record<"solar" | "wind" | "hydro", number>>;
 }
 
 /** Network consumption and hashrate reference from Cambridge CBECI. */

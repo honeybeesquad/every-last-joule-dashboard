@@ -1,4 +1,4 @@
-import type { Region } from "./types";
+import type { Region, RegionData } from "./types";
 
 /**
  * Four-way fuel bucketing for the renewable-only dashboard view. Flare is
@@ -51,9 +51,17 @@ export function isRenewable(region: Region): boolean {
 /**
  * Fraction of the given region's curtailment GW that belongs to `fuel`.
  * Returns 0..1. Flare regions return 0 for every bucket.
+ *
+ * A loader-emitted `regionData.fuelShare` takes precedence over the canonical
+ * `region.kind` — this lets loaders that pull technology-separated feeds
+ * (e.g. ONS Brazil: parallel wind+solar constrained-off) communicate the
+ * real observed mix instead of being pigeonholed into a single kind.
  */
-export function fuelShare(region: Region, fuel: Fuel): number {
+export function fuelShare(region: Region, fuel: Fuel, regionData?: RegionData): number {
   if (region.kind === "flare") return 0;
+  if (regionData?.fuelShare && Object.keys(regionData.fuelShare).length > 0) {
+    return regionData.fuelShare[fuel] ?? 0;
+  }
   if (region.kind === "mixed") {
     const split = MIXED_SPLITS[region.id];
     return split?.[fuel] ?? 0;
@@ -68,8 +76,19 @@ export function fuelShare(region: Region, fuel: Fuel): number {
 /**
  * Dominant fuel bucket for the given region — used to place it in the
  * correct hotspot column. Mixed regions sort into their largest split.
+ * A loader-emitted `regionData.fuelShare` takes precedence.
  */
-export function dominantFuel(region: Region): Fuel {
+export function dominantFuel(region: Region, regionData?: RegionData): Fuel {
+  const hasDynamic = regionData?.fuelShare && Object.keys(regionData.fuelShare).length > 0;
+  if (hasDynamic) {
+    let best: Fuel = "solar";
+    let bestShare = -1;
+    for (const f of FUEL_ORDER) {
+      const s = regionData!.fuelShare![f] ?? 0;
+      if (s > bestShare) { best = f; bestShare = s; }
+    }
+    return best;
+  }
   if (region.kind === "mixed") {
     const split = MIXED_SPLITS[region.id] ?? {};
     let best: Fuel = "solar";

@@ -228,7 +228,7 @@ function renderAt(hour) {
 
   for (const fuel of FUEL_ORDER) {
     const rows = renewableEntries
-      .filter(({ region }) => dominantFuel(region) === fuel)
+      .filter(({ region }) => dominantFuel(region, regionData[region.id]) === fuel)
       .sort((a, b) => b.gw - a.gw)
       .slice(0, 30);
     document.getElementById(`hotspot-list-${fuel}`).innerHTML = rows.map(itemHtml(fuel)).join("");

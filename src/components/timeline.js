@@ -18,9 +18,11 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
   let mode = "avg30d";
 
   // Precompute per-region per-fuel share so the hot path does one lookup.
+  // Loaders can emit a data-driven fuelShare (e.g. Brazil wind+solar split)
+  // which takes precedence over the region's canonical kind.
   const shareTable = regions.map((r) => ({
     id: r.id,
-    shares: FUEL_ORDER.map((f) => fuelShare(r, f)),
+    shares: FUEL_ORDER.map((f) => fuelShare(r, f, regionData[r.id])),
   }));
 
   function seriesAt(hour) {

@@ -4,8 +4,10 @@ import { withFallback } from "../lib/resilient.js";
 import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
-const CSV_URL =
+const WIND_CSV_URL =
   "https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/restricao_coff_eolica_tm/RESTRICAO_COFF_EOLICA_";
+const SOLAR_CSV_URL =
+  "https://ons-aws-prod-opendata.s3.amazonaws.com/dataset/restricao_coff_fotovoltaica_tm/RESTRICAO_COFF_FOTOVOLTAICA_";
 
 type BrazilRegionId =
   | "brazil-rn"
@@ -94,16 +96,8 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilRegionId, Curt
   return empty;
 }
 
-/** Fetch the last two months of CSV to give 30+ days' coverage. */
-const run = async (): Promise<Record<BrazilRegionId, RegionData>> => {
-  const now = new Date();
-  const current = `${now.getUTCFullYear()}_${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
-  const prevDate = new Date(now.getTime());
-  prevDate.setUTCMonth(prevDate.getUTCMonth() - 1);
-  const prev = `${prevDate.getUTCFullYear()}_${String(prevDate.getUTCMonth() + 1).padStart(2, "0")}`;
-
-  const urls = [`${CSV_URL}${prev}.csv`, `${CSV_URL}${current}.csv`];
-  const combined: Record<BrazilRegionId, CurtailmentPoint[]> = {
+function makeEmptyBuckets(): Record<BrazilRegionId, CurtailmentPoint[]> {
+  return {
     "brazil-rn": [],
     "brazil-ce": [],
     "brazil-bahia": [],
@@ -111,33 +105,85 @@ const run = async (): Promise<Record<BrazilRegionId, RegionData>> => {
     "brazil-pernambuco": [],
     "brazil-other": [],
   };
+}
 
-  for (const url of urls) {
-    try {
-      const csv = await fetchText(url);
-      const parsed = parseOnsCurtailmentCsv(csv);
-      for (const regionId of Object.keys(combined) as BrazilRegionId[]) {
-        combined[regionId].push(...parsed[regionId]);
+/**
+ * Merge two per-timestamp point arrays by summing MW at matching UTC
+ * timestamps. Preserves sort order.
+ */
+function mergeSum(a: CurtailmentPoint[], b: CurtailmentPoint[]): CurtailmentPoint[] {
+  const map = new Map<string, number>();
+  for (const p of a) map.set(p.utcTimestamp, (map.get(p.utcTimestamp) ?? 0) + p.mw);
+  for (const p of b) map.set(p.utcTimestamp, (map.get(p.utcTimestamp) ?? 0) + p.mw);
+  return Array.from(map.entries())
+    .sort(([x], [y]) => x.localeCompare(y))
+    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
+}
+
+/** Fetch the last two months of CSV — both wind AND solar — to give 30+ days' coverage. */
+const run = async (): Promise<Record<BrazilRegionId, RegionData>> => {
+  const now = new Date();
+  const current = `${now.getUTCFullYear()}_${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+  const prevDate = new Date(now.getTime());
+  prevDate.setUTCMonth(prevDate.getUTCMonth() - 1);
+  const prev = `${prevDate.getUTCFullYear()}_${String(prevDate.getUTCMonth() + 1).padStart(2, "0")}`;
+
+  const windUrls = [`${WIND_CSV_URL}${prev}.csv`, `${WIND_CSV_URL}${current}.csv`];
+  const solarUrls = [`${SOLAR_CSV_URL}${prev}.csv`, `${SOLAR_CSV_URL}${current}.csv`];
+  const windPoints = makeEmptyBuckets();
+  const solarPoints = makeEmptyBuckets();
+
+  async function fillFrom(urls: string[], sink: Record<BrazilRegionId, CurtailmentPoint[]>) {
+    for (const url of urls) {
+      try {
+        const csv = await fetchText(url);
+        const parsed = parseOnsCurtailmentCsv(csv);
+        for (const regionId of Object.keys(sink) as BrazilRegionId[]) {
+          sink[regionId].push(...parsed[regionId]);
+        }
+      } catch (err) {
+        console.warn(`ons fetch skipped: ${url}: ${(err as Error).message}`);
       }
-    } catch (err) {
-      console.warn(`ons fetch skipped: ${url}: ${(err as Error).message}`);
     }
   }
 
+  await fillFrom(windUrls, windPoints);
+  await fillFrom(solarUrls, solarPoints);
+
   const cutoff = now.getTime() - 30 * 24 * 3600 * 1000;
   const out = {} as Record<BrazilRegionId, RegionData>;
-  for (const regionId of Object.keys(combined) as BrazilRegionId[]) {
-    const recent = combined[regionId].filter(
+  for (const regionId of Object.keys(windPoints) as BrazilRegionId[]) {
+    const windRecent = windPoints[regionId].filter(
       (p) => new Date(p.utcTimestamp).getTime() >= cutoff,
     );
+    const solarRecent = solarPoints[regionId].filter(
+      (p) => new Date(p.utcTimestamp).getTime() >= cutoff,
+    );
+    const combined = mergeSum(windRecent, solarRecent);
+
+    // Observed volumes over the 30-day window — used to compute the real
+    // wind/solar split this region actually shows right now. Brazil's NE
+    // states vary wildly: Bahia + Piauí are increasingly solar-dominant,
+    // RN + CE stay wind-heavy.
+    const windTotalMw = windRecent.reduce((sum, p) => sum + p.mw, 0);
+    const solarTotalMw = solarRecent.reduce((sum, p) => sum + p.mw, 0);
+    const denom = windTotalMw + solarTotalMw;
+    const fuelShare: { wind: number; solar: number } | undefined =
+      denom > 0
+        ? { wind: windTotalMw / denom, solar: solarTotalMw / denom }
+        : undefined;
+
     out[regionId] = {
       regionId,
-      profile: timeOfDayAverageGW(recent),
-      latestProfile: latestCompleteUtcDayProfileGW(recent),
-      totalTWh: totalTWh30d(recent),
-      peakGW: peakGW(recent),
-      lastUpdated: recent.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-      sourceNote: "ONS Brazil direct constrained-off wind curtailment clustered by state",
+      profile: timeOfDayAverageGW(combined),
+      latestProfile: latestCompleteUtcDayProfileGW(combined),
+      totalTWh: totalTWh30d(combined),
+      peakGW: peakGW(combined),
+      lastUpdated: combined.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+      sourceNote: fuelShare
+        ? `ONS Brazil direct constrained-off wind+solar curtailment (observed split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
+        : "ONS Brazil direct constrained-off wind+solar curtailment",
+      ...(fuelShare ? { fuelShare } : {}),
     };
   }
 

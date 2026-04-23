@@ -27,17 +27,17 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
 
   function fuelOf(region) {
     if (region.kind === "flare") return "flare";
-    return dominantFuel(region);
+    return dominantFuel(region, regionData[region.id]);
   }
 
   function colorFor(region) {
     if (region.kind === "flare") return FLARE_COLOR;
-    return FUEL_COLOR[dominantFuel(region)];
+    return FUEL_COLOR[dominantFuel(region, regionData[region.id])];
   }
 
   function fuelLabel(region) {
     if (region.kind === "flare") return "Flared gas";
-    return FUEL_LABEL[dominantFuel(region)];
+    return FUEL_LABEL[dominantFuel(region, regionData[region.id])];
   }
 
   function drawSparkline(canvas, data) {
