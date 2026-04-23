@@ -381,9 +381,12 @@ function renderAt(hour) {
   const renewableEHs = ehsFromGW(renewableGW);
   const renewablePct = cbeci.hashrateEHps > 0 ? (renewableEHs / cbeci.hashrateEHps) * 100 : 0;
 
-  document.getElementById("pct-readout").textContent = `${renewablePct.toFixed(2)}%`;
+  // Headline readouts: integer pct and 1-decimal GW. At 2× playback the
+  // trailing hundredth-digits churn faster than the eye can read them and
+  // carry no information (our calibration noise is ≫ 0.01 pp / 10 MW).
+  document.getElementById("pct-readout").textContent = `${renewablePct.toFixed(0)}%`;
   document.getElementById("hashrate-readout").innerHTML = `${cbeci.hashrateEHps.toFixed(1)} <span class="stat-unit">EH/s</span>`;
-  document.getElementById("gw-readout").innerHTML = `${renewableGW.toFixed(2)} <span class="stat-unit">GW</span>`;
+  document.getElementById("gw-readout").innerHTML = `${renewableGW.toFixed(1)} <span class="stat-unit">GW</span>`;
   document.getElementById("supportable-readout").innerHTML = `${renewableEHs.toFixed(1)} <span class="stat-unit">EH/s</span>`;
   document.getElementById("hotspots-title").textContent = `Active hotspots · UTC ${hh}:${mm}`;
   document.getElementById("flare-readout").textContent = `${flareGW.toFixed(0)} GW`;
