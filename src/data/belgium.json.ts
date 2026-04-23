@@ -24,7 +24,10 @@ export function parseEliaCsv(csv: string): CurtailmentPoint[] {
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw: mw * CURTAILMENT_RATE }));
 }
 
-export function buildBelgiumData(points: CurtailmentPoint[]): RegionData {
+export function buildBelgiumData(
+  points: CurtailmentPoint[],
+  fuelShare?: { wind: number; solar: number },
+): RegionData {
   const hourly = hourlyAverage(points);
   return {
     regionId: "belgium",
@@ -33,19 +36,35 @@ export function buildBelgiumData(points: CurtailmentPoint[]): RegionData {
     totalTWh: totalTWh30d(hourly),
     peakGW: peakGW(hourly),
     lastUpdated: hourly.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote: "Elia wind+solar realtime CSV × 2% calibrated curtailment rate (Belgium 2024)",
+    sourceNote: fuelShare
+      ? `Elia wind+solar realtime CSV × 2% calibrated curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
+      : "Elia wind+solar realtime CSV × 2% calibrated curtailment rate (Belgium 2024)",
+    ...(fuelShare ? { fuelShare } : {}),
   };
 }
 
 const run = async (): Promise<RegionData> => {
   const now = new Date();
   const cutoff = now.getTime() - 30 * 24 * 3600 * 1000;
-  const points: CurtailmentPoint[] = [];
-  for (const url of [WIND_URL, SOLAR_URL]) {
+  const windPoints: CurtailmentPoint[] = [];
+  const solarPoints: CurtailmentPoint[] = [];
+  for (const [url, bucket] of [
+    [WIND_URL, windPoints] as const,
+    [SOLAR_URL, solarPoints] as const,
+  ]) {
     const csv = await fetchText(url);
-    points.push(...parseEliaCsv(csv));
+    bucket.push(...parseEliaCsv(csv));
   }
-  return buildBelgiumData(points.filter((p) => new Date(p.utcTimestamp).getTime() >= cutoff));
+  const windRecent = windPoints.filter((p) => new Date(p.utcTimestamp).getTime() >= cutoff);
+  const solarRecent = solarPoints.filter((p) => new Date(p.utcTimestamp).getTime() >= cutoff);
+  const combined = [...windRecent, ...solarRecent];
+  const windMw = windRecent.reduce((s, p) => s + p.mw, 0);
+  const solarMw = solarRecent.reduce((s, p) => s + p.mw, 0);
+  const denom = windMw + solarMw;
+  const fuelShare = denom > 0
+    ? { wind: windMw / denom, solar: solarMw / denom }
+    : undefined;
+  return buildBelgiumData(combined, fuelShare);
 };
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

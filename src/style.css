@@ -668,22 +668,41 @@ main table {
 
 .hotspot-item {
   display: grid;
-  grid-template-columns: 8px minmax(0, 1fr) auto;
-  gap: 6px;
-  align-items: center;
+  grid-template-columns: 8px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 6px;
+  row-gap: 1px;
+  align-items: start;
   font-size: 11.5px;
   color: rgba(255,255,255,0.82);
-  padding: 4px 0;
+  padding: 5px 0;
   border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
-.hotspot-item .dot { width: 8px; height: 8px; }
+.hotspot-item .dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 4px;
+  grid-row: 1 / span 2;
+}
 
 .hotspot-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
+  grid-column: 2;
+  grid-row: 1;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+  color: var(--white);
+  font-weight: 500;
+}
+
+.hotspot-gw {
+  grid-column: 2;
+  grid-row: 2;
+  color: rgba(255,255,255,0.62);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
 }
 
 .hotspot-country { display: none; }

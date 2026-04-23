@@ -8,21 +8,23 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixture = readFileSync(join(__dirname, "../fixtures/ontario-sample.xml"), "utf8");
 
 describe("ontario parser (IESO proxy)", () => {
-  it("returns hourly wind points", () => {
+  it("returns hourly points plus per-fuel MW totals", () => {
     const result = parseOntarioXml(fixture);
-    expect(result.length).toBeGreaterThan(0);
-    expect(result.length).toBeLessThanOrEqual(24);
+    expect(result.points.length).toBeGreaterThan(0);
+    expect(result.points.length).toBeLessThanOrEqual(24);
+    expect(result.windMwTotal).toBeGreaterThanOrEqual(0);
+    expect(result.solarMwTotal).toBeGreaterThanOrEqual(0);
   });
 
   it("produces non-negative curtailed MW values", () => {
     const result = parseOntarioXml(fixture);
-    for (const point of result) {
+    for (const point of result.points) {
       expect(point.mw).toBeGreaterThanOrEqual(0);
     }
   });
 
-  it("captures a real wind profile rather than all zeros", () => {
+  it("captures a real profile rather than all zeros", () => {
     const result = parseOntarioXml(fixture);
-    expect(result.some((point) => point.mw > 0)).toBe(true);
+    expect(result.points.some((point) => point.mw > 0)).toBe(true);
   });
 });

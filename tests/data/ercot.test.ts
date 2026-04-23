@@ -44,11 +44,11 @@ describe("ercot parser (EIA proxy)", () => {
     expect(result["ercot-east"].peakGW).toBeCloseTo(Math.max(...result["ercot-east"].profile), 3);
   });
 
-  it("source notes mention the regional split and calibration", () => {
+  it("source notes mention the regional split and data-driven fuel mix", () => {
     const result = parseErcot(fixture);
     expect(result["ercot-west"].sourceNote).toContain("66%");
     expect(result["ercot-east"].sourceNote).toContain("34%");
-    expect(result["ercot-west"].sourceNote).toContain("6.15");
+    expect(result["ercot-west"].sourceNote).toContain("wind+solar");
   });
 
   it("preserves the original total after 66/34 splitting", () => {

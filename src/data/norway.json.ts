@@ -39,12 +39,22 @@ export async function buildNorwayData(): Promise<RegionData> {
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }))
     .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
 
-  return buildZoneData(
+  const hydroTotalMw = hydro.reduce((s, p) => s + p.mw, 0);
+  const windTotalMw = wind.reduce((s, p) => s + p.mw, 0);
+  const denom = hydroTotalMw + windTotalMw;
+  const fuelShare = denom > 0
+    ? { hydro: hydroTotalMw / denom, wind: windTotalMw / denom }
+    : undefined;
+
+  const base = buildZoneData(
     "n-norway",
     rawPoints,
     0.06,
-    "ENTSO-E NO-4 hydro+wind × 6% calibrated waste rate (export-constrained north Norway proxy)",
+    fuelShare
+      ? `ENTSO-E NO-4 hydro+wind × 6% calibrated waste rate (observed 30d split: hydro ${(fuelShare.hydro * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}%; export-constrained north Norway proxy)`
+      : "ENTSO-E NO-4 hydro+wind × 6% calibrated waste rate (export-constrained north Norway proxy)",
   );
+  return fuelShare ? { ...base, fuelShare } : base;
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;

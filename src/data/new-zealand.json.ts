@@ -19,34 +19,77 @@ function nzTradingPeriodUtc(tradingDate: string, tp: number): string | null {
   return new Date(Date.UTC(y, m - 1, d, 0, minutes - 12 * 60, 0)).toISOString();
 }
 
-export function parseEmiGenerationCsv(csv: string): CurtailmentPoint[] {
+export interface NzParsed {
+  points: CurtailmentPoint[];
+  /** Per-fuel aggregated curtailment MW over the 30-day window. */
+  windMwTotal: number;
+  solarMwTotal: number;
+  geoMwTotal: number;
+}
+
+function normaliseFuel(code: string | undefined): "wind" | "solar" | "geo" | null {
+  if (!code) return null;
+  const c = code.toLowerCase();
+  if (c.startsWith("wind")) return "wind";
+  if (c.startsWith("solar")) return "solar";
+  if (c.startsWith("geo")) return "geo";
+  return null;
+}
+
+export function parseEmiGenerationCsv(csv: string): NzParsed {
   const rows = parseDelimitedRows(csv, ",");
-  const halfHours = new Map<string, number>();
+  // Accumulate halfhour-level, keyed by (timestamp, fuel).
+  const halfHours = new Map<string, { mw: number; fuel: "wind" | "solar" | "geo" }>();
   for (const row of rows) {
     if (!FUEL_CODES.has(row.Fuel_Code)) continue;
+    const fuel = normaliseFuel(row.Fuel_Code);
+    if (!fuel) continue;
     const tradingDate = row.Trading_Date;
     for (let tp = 1; tp <= 50; tp++) {
       const kwh = Number(row[`TP${tp}`] || 0);
       if (!Number.isFinite(kwh) || kwh <= 0) continue;
       const utcTimestamp = nzTradingPeriodUtc(tradingDate, tp);
       if (!utcTimestamp) continue;
-      halfHours.set(utcTimestamp, (halfHours.get(utcTimestamp) ?? 0) + kwh);
+      const key = `${utcTimestamp}|${fuel}`;
+      const existing = halfHours.get(key);
+      halfHours.set(key, { mw: (existing?.mw ?? 0) + kwh, fuel });
     }
   }
 
   const hours = new Map<string, number>();
-  for (const [ts, kwh] of halfHours) {
+  let windMwTotal = 0;
+  let solarMwTotal = 0;
+  let geoMwTotal = 0;
+  for (const [key, entry] of halfHours) {
+    const [ts] = key.split("|");
     const d = new Date(ts);
     d.setUTCMinutes(0, 0, 0);
     const hour = d.toISOString();
-    hours.set(hour, (hours.get(hour) ?? 0) + kwh / 1000 * CURTAILMENT_RATE);
+    const curtailMw = (entry.mw / 1000) * CURTAILMENT_RATE;
+    hours.set(hour, (hours.get(hour) ?? 0) + curtailMw);
+    if (entry.fuel === "wind") windMwTotal += curtailMw;
+    else if (entry.fuel === "solar") solarMwTotal += curtailMw;
+    else if (entry.fuel === "geo") geoMwTotal += curtailMw;
   }
-  return Array.from(hours.entries())
+  const points = Array.from(hours.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
+  return { points, windMwTotal, solarMwTotal, geoMwTotal };
 }
 
-export function buildNewZealandData(points: CurtailmentPoint[]): RegionData {
+export function buildNewZealandData(parsed: NzParsed): RegionData {
+  const { points, windMwTotal, solarMwTotal, geoMwTotal } = parsed;
+  // Geothermal counts as a 24/7-firm renewable for this dashboard;
+  // fold geo into the hydro bucket since both are flat base-load renewables.
+  const hydroBucketMw = geoMwTotal; // NZ EMI doesn't cover hydro spill separately
+  const denom = windMwTotal + solarMwTotal + hydroBucketMw;
+  const fuelShare = denom > 0
+    ? {
+        wind: windMwTotal / denom,
+        solar: solarMwTotal / denom,
+        hydro: hydroBucketMw / denom,
+      }
+    : undefined;
   return {
     regionId: "new-zealand",
     profile: timeOfDayAverageGW(points),
@@ -54,7 +97,10 @@ export function buildNewZealandData(points: CurtailmentPoint[]): RegionData {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote: "NZ EMI Generation_MD wind+solar+geothermal CSV × 1.3% calibrated curtailment proxy",
+    sourceNote: fuelShare
+      ? `NZ EMI Generation_MD wind+solar+geothermal × 1.3% curtailment proxy (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}% / geothermal-as-hydro ${(fuelShare.hydro * 100).toFixed(0)}%)`
+      : "NZ EMI Generation_MD wind+solar+geothermal CSV × 1.3% calibrated curtailment proxy",
+    ...(fuelShare ? { fuelShare } : {}),
   };
 }
 
@@ -65,17 +111,24 @@ function monthKey(date: Date): string {
 const run = async (): Promise<RegionData> => {
   const now = new Date();
   const months = [new Date(now), new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1))];
-  const points: CurtailmentPoint[] = [];
+  const allPoints: CurtailmentPoint[] = [];
+  let windMwTotal = 0;
+  let solarMwTotal = 0;
+  let geoMwTotal = 0;
   for (const date of months) {
     const key = monthKey(date);
     try {
-      points.push(...parseEmiGenerationCsv(await fetchText(`${BASE_URL}/${key}_Generation_MD.csv`, { timeoutMs: 60000, retries: 1 })));
+      const parsed = parseEmiGenerationCsv(await fetchText(`${BASE_URL}/${key}_Generation_MD.csv`, { timeoutMs: 60000, retries: 1 }));
+      allPoints.push(...parsed.points);
+      windMwTotal += parsed.windMwTotal;
+      solarMwTotal += parsed.solarMwTotal;
+      geoMwTotal += parsed.geoMwTotal;
     } catch (err) {
       console.warn(`nz emi month skipped ${key}: ${(err as Error).message}`);
     }
   }
-  if (!points.length) throw new Error("NZ EMI returned no usable Generation_MD rows");
-  return buildNewZealandData(points);
+  if (!allPoints.length) throw new Error("NZ EMI returned no usable Generation_MD rows");
+  return buildNewZealandData({ points: allPoints, windMwTotal, solarMwTotal, geoMwTotal });
 };
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

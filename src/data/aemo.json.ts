@@ -37,10 +37,29 @@ function parseAemoDate(localAest: string): string | null {
   return new Date(utcMs).toISOString();
 }
 
-export function parseAemoDispatchCsv(
-  csv: string,
-): Record<AemoRegionId, CurtailmentPoint[]> {
+export interface AemoParsed {
+  /** Total (wind+solar) curtailment points per state. */
+  points: Record<AemoRegionId, CurtailmentPoint[]>;
+  /** Per-state 30-day-window wind MWh total, for fuelShare derivation. */
+  windMwhTotal: Record<AemoRegionId, number>;
+  /** Per-state 30-day-window solar MWh total. */
+  solarMwhTotal: Record<AemoRegionId, number>;
+}
+
+function emptyAemoMap<T>(factory: () => T): Record<AemoRegionId, T> {
+  return {
+    "aemo-nsw": factory(),
+    "aemo-vic": factory(),
+    "aemo-qld": factory(),
+    "aemo-sa": factory(),
+    "aemo-tas": factory(),
+  };
+}
+
+export function parseAemoDispatchCsv(csv: string): AemoParsed {
   const totals = new Map<AemoRegionId, Map<string, number>>();
+  const windMwh = emptyAemoMap<number>(() => 0);
+  const solarMwh = emptyAemoMap<number>(() => 0);
   let headers: string[] = [];
   const lines = csv.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
 
@@ -76,9 +95,14 @@ export function parseAemoDispatchCsv(
     let bucket = totals.get(regionId);
     if (!bucket) totals.set(regionId, (bucket = new Map<string, number>()));
     bucket.set(utcTimestamp, (bucket.get(utcTimestamp) ?? 0) + curtailedMw);
+
+    // Accumulate per-fuel totals for observed wind/solar split.
+    const tech = (unit as { fueltech?: string }).fueltech;
+    if (tech === "wind") windMwh[regionId] += curtailedMw;
+    else if (tech === "solar") solarMwh[regionId] += curtailedMw;
   }
 
-  return Object.fromEntries(
+  const points = Object.fromEntries(
     Object.values(REGION_CODE_TO_ID).map((regionId) => [
       regionId,
       Array.from(totals.get(regionId)?.entries() ?? [])
@@ -86,9 +110,16 @@ export function parseAemoDispatchCsv(
         .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw })),
     ]),
   ) as Record<AemoRegionId, CurtailmentPoint[]>;
+
+  return { points, windMwhTotal: windMwh, solarMwhTotal: solarMwh };
 }
 
 export const parseAemoIntermittentCsv = parseAemoDispatchCsv;
+
+/** Backwards-compat helper for tests: returns just the per-state points. */
+export function parseAemoDispatchCsvPoints(csv: string): Record<AemoRegionId, CurtailmentPoint[]> {
+  return parseAemoDispatchCsv(csv).points;
+}
 
 function unzipCsv(zipBytes: Uint8Array): string {
   const dir = mkdtempSync(join(tmpdir(), "aemo-"));
@@ -113,13 +144,9 @@ const run = async (): Promise<Record<AemoRegionId, RegionData>> => {
   const urls = listRecentZips(listing, 30);
   if (!urls.length) throw new Error("AEMO directory listing returned no daily dispatch zips");
 
-  const allPoints: Record<AemoRegionId, CurtailmentPoint[]> = {
-    "aemo-nsw": [],
-    "aemo-vic": [],
-    "aemo-qld": [],
-    "aemo-sa": [],
-    "aemo-tas": [],
-  };
+  const allPoints: Record<AemoRegionId, CurtailmentPoint[]> = emptyAemoMap(() => []);
+  const windTotals: Record<AemoRegionId, number> = emptyAemoMap(() => 0);
+  const solarTotals: Record<AemoRegionId, number> = emptyAemoMap(() => 0);
 
   for (const url of urls) {
     const res = await fetch(url);
@@ -127,13 +154,21 @@ const run = async (): Promise<Record<AemoRegionId, RegionData>> => {
     const csv = unzipCsv(new Uint8Array(await res.arrayBuffer()));
     const parsed = parseAemoDispatchCsv(csv);
     for (const regionId of Object.keys(allPoints) as AemoRegionId[]) {
-      allPoints[regionId].push(...parsed[regionId]);
+      allPoints[regionId].push(...parsed.points[regionId]);
+      windTotals[regionId] += parsed.windMwhTotal[regionId];
+      solarTotals[regionId] += parsed.solarMwhTotal[regionId];
     }
   }
 
   const out = {} as Record<AemoRegionId, RegionData>;
   for (const regionId of Object.keys(allPoints) as AemoRegionId[]) {
     const points = hourlyAverage(allPoints[regionId]);
+    const windTot = windTotals[regionId];
+    const solarTot = solarTotals[regionId];
+    const denom = windTot + solarTot;
+    const fuelShare = denom > 0
+      ? { wind: windTot / denom, solar: solarTot / denom }
+      : undefined;
     out[regionId] = {
       regionId,
       profile: timeOfDayAverageGW(points),
@@ -141,7 +176,10 @@ const run = async (): Promise<Record<AemoRegionId, RegionData>> => {
       totalTWh: totalTWh30d(points),
       peakGW: peakGW(points),
       lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-      sourceNote: "NEMWEB DISPATCHIS/Next Day Dispatch SEMIDISPATCHCAP direct curtailment per state",
+      sourceNote: fuelShare
+        ? `NEMWEB SEMIDISPATCHCAP direct curtailment (observed ${regionId.replace("aemo-", "").toUpperCase()} split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
+        : "NEMWEB DISPATCHIS/Next Day Dispatch SEMIDISPATCHCAP direct curtailment per state",
+      ...(fuelShare ? { fuelShare } : {}),
     };
   }
 

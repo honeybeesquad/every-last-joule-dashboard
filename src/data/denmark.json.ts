@@ -6,40 +6,64 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
 const API = "https://api.energidataservice.dk/dataset/ProductionConsumptionSettlement";
 const CURTAILMENT_RATE = 0.04;
-const WIND_SOLAR_COLUMNS = [
+const WIND_COLUMNS = [
   "OffshoreWindLt100MW_MWh",
   "OffshoreWindGe100MW_MWh",
   "OnshoreWindLt50kW_MWh",
   "OnshoreWindGe50kW_MWh",
+];
+const SOLAR_COLUMNS = [
   "SolarPowerLt10kW_MWh",
   "SolarPowerGe10Lt40kW_MWh",
   "SolarPowerGe40kW_MWh",
   "SolarPowerSelfConMWh",
 ];
+const WIND_SOLAR_COLUMNS = [...WIND_COLUMNS, ...SOLAR_COLUMNS];
 
 interface EnerginetResponse {
   records: Array<Record<string, string | number | null>>;
 }
 
-export function parseEnerginetPayload(payload: string): CurtailmentPoint[] {
+export interface EnerginetParsed {
+  points: CurtailmentPoint[];
+  windMwhTotal: number;
+  solarMwhTotal: number;
+}
+
+export function parseEnerginetPayload(payload: string): EnerginetParsed {
   const parsed = JSON.parse(payload) as EnerginetResponse;
   const totals = new Map<string, number>();
+  let windMwhTotal = 0;
+  let solarMwhTotal = 0;
   for (const row of parsed.records ?? []) {
     const ts = String(row.HourUTC ?? "");
     if (!ts) continue;
-    const mwh = WIND_SOLAR_COLUMNS.reduce((sum, col) => {
-      const value = Number(row[col] ?? 0);
-      return sum + (Number.isFinite(value) ? value : 0);
+    const windMwh = WIND_COLUMNS.reduce((sum, col) => {
+      const v = Number(row[col] ?? 0);
+      return sum + (Number.isFinite(v) ? v : 0);
     }, 0);
+    const solarMwh = SOLAR_COLUMNS.reduce((sum, col) => {
+      const v = Number(row[col] ?? 0);
+      return sum + (Number.isFinite(v) ? v : 0);
+    }, 0);
+    windMwhTotal += Math.max(0, windMwh);
+    solarMwhTotal += Math.max(0, solarMwh);
+    const mwh = Math.max(0, windMwh + solarMwh);
     const utcTimestamp = new Date(`${ts}Z`).toISOString();
-    totals.set(utcTimestamp, (totals.get(utcTimestamp) ?? 0) + Math.max(0, mwh) * CURTAILMENT_RATE);
+    totals.set(utcTimestamp, (totals.get(utcTimestamp) ?? 0) + mwh * CURTAILMENT_RATE);
   }
-  return Array.from(totals.entries())
+  const points = Array.from(totals.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
+  return { points, windMwhTotal, solarMwhTotal };
 }
 
-export function buildDenmarkData(points: CurtailmentPoint[]): RegionData {
+export function buildDenmarkData(parsed: EnerginetParsed): RegionData {
+  const { points, windMwhTotal, solarMwhTotal } = parsed;
+  const denom = windMwhTotal + solarMwhTotal;
+  const fuelShare = denom > 0
+    ? { wind: windMwhTotal / denom, solar: solarMwhTotal / denom }
+    : undefined;
   return {
     regionId: "denmark",
     profile: timeOfDayAverageGW(points),
@@ -47,7 +71,10 @@ export function buildDenmarkData(points: CurtailmentPoint[]): RegionData {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote: "Energinet ProductionConsumptionSettlement wind+solar × 4% calibrated curtailment rate",
+    sourceNote: fuelShare
+      ? `Energinet wind+solar × 4% curtailment proxy (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
+      : "Energinet ProductionConsumptionSettlement wind+solar × 4% calibrated curtailment rate",
+    ...(fuelShare ? { fuelShare } : {}),
   };
 }
 

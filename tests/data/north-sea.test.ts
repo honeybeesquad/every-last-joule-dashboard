@@ -17,18 +17,18 @@ describe("north-sea parser", () => {
   });
 
   it("produces non-zero points from a 7-day fixture", () => {
-    const points = parseNorthSea([fixture]);
+    const { points } = parseNorthSea([fixture]);
     expect(points.length).toBeGreaterThan(100);
   });
 
   it("combines wind-onshore + wind-offshore + solar per timestamp", () => {
-    const points = parseNorthSea([fixture]);
+    const { points } = parseNorthSea([fixture]);
     const ts = new Set(points.map((p: any) => p.utcTimestamp));
     expect(ts.size).toBe(points.length);
   });
 
   it("applies 6.9% calibration (total_curtailment / total_raw_gen ~= 0.069)", () => {
-    const points = parseNorthSea([fixture]);
+    const { points } = parseNorthSea([fixture]);
     const rawTotal = fixture.data.reduce(
       (s: number, r: any) => s + Math.max(0, r.quantity),
       0
@@ -38,11 +38,17 @@ describe("north-sea parser", () => {
   });
 
   it("timestamps are chronologically ordered", () => {
-    const points = parseNorthSea([fixture]);
+    const { points } = parseNorthSea([fixture]);
     for (let i = 1; i < points.length; i++) {
       expect(new Date(points[i].utcTimestamp).getTime()).toBeGreaterThanOrEqual(
         new Date(points[i - 1].utcTimestamp).getTime()
       );
     }
+  });
+
+  it("emits wind and solar MW totals", () => {
+    const { windMwTotal, solarMwTotal } = parseNorthSea([fixture]);
+    expect(windMwTotal).toBeGreaterThan(0);
+    expect(solarMwTotal).toBeGreaterThanOrEqual(0);
   });
 });

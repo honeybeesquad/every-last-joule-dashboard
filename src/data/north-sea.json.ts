@@ -17,29 +17,38 @@ interface AGWSResponse {
   data: AGWSRecord[];
 }
 
-/** Pure parser: combines multiple 7-day response pages and returns calibrated CurtailmentPoints. Exported for tests. */
-export function parseNorthSea(pages: AGWSResponse[]): CurtailmentPoint[] {
+export interface NorthSeaParsed {
+  points: CurtailmentPoint[];
+  windMwTotal: number;
+  solarMwTotal: number;
+}
+
+/** Pure parser: combines multiple 7-day response pages into calibrated CurtailmentPoints with per-fuel totals. */
+export function parseNorthSea(pages: AGWSResponse[]): NorthSeaParsed {
   const totals = new Map<string, number>();
-  const allowedTypes = new Set(["Wind Onshore", "Wind Offshore", "Solar"]);
+  let windMwTotal = 0;
+  let solarMwTotal = 0;
+  const windTypes = new Set(["Wind Onshore", "Wind Offshore"]);
 
   for (const page of pages) {
     for (const record of page.data ?? []) {
-      if (!allowedTypes.has(record.psrType)) continue;
       const quantity = Number(record.quantity);
-      if (!Number.isFinite(quantity)) continue;
-
+      if (!Number.isFinite(quantity) || quantity <= 0) continue;
+      const isWind = windTypes.has(record.psrType);
+      const isSolar = record.psrType === "Solar";
+      if (!isWind && !isSolar) continue;
+      const curtailedMw = quantity * CURTAILMENT_RATE;
       const timestamp = new Date(record.startTime).toISOString();
-      const current = totals.get(timestamp) ?? 0;
-      totals.set(timestamp, current + Math.max(0, quantity));
+      totals.set(timestamp, (totals.get(timestamp) ?? 0) + curtailedMw);
+      if (isWind) windMwTotal += curtailedMw;
+      else solarMwTotal += curtailedMw;
     }
   }
 
-  return Array.from(totals.entries())
+  const points = Array.from(totals.entries())
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([utcTimestamp, rawMw]) => ({
-      utcTimestamp,
-      mw: Math.max(0, rawMw) * CURTAILMENT_RATE,
-    }));
+    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
+  return { points, windMwTotal, solarMwTotal };
 }
 
 const run = async (): Promise<RegionData> => {
@@ -59,7 +68,11 @@ const run = async (): Promise<RegionData> => {
     pages.push(page);
   }
 
-  const points = parseNorthSea(pages);
+  const { points, windMwTotal, solarMwTotal } = parseNorthSea(pages);
+  const denom = windMwTotal + solarMwTotal;
+  const fuelShare = denom > 0
+    ? { wind: windMwTotal / denom, solar: solarMwTotal / denom }
+    : undefined;
   return {
     regionId: "north-sea",
     profile: timeOfDayAverageGW(points),
@@ -67,8 +80,10 @@ const run = async (): Promise<RegionData> => {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote:
-      "Elexon BMRS AGWS (wind + solar) × 6.9% calibrated curtailment rate (UK 2024 actuals: 6.6 TWh / 95 TWh)",
+    sourceNote: fuelShare
+      ? `Elexon BMRS AGWS wind+solar × 6.9% curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
+      : "Elexon BMRS AGWS (wind + solar) × 6.9% calibrated curtailment rate (UK 2024 actuals: 6.6 TWh / 95 TWh)",
+    ...(fuelShare ? { fuelShare } : {}),
   };
 };
 

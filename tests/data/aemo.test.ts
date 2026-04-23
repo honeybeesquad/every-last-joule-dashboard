@@ -15,22 +15,30 @@ describe("aemo parser", () => {
   });
 
   it("clusters directly constrained DUID output into the five AEMO regions", () => {
-    const result = parseAemoDispatchCsv(csv);
-    expect(result["aemo-nsw"].length).toBeGreaterThan(0);
-    expect(result["aemo-vic"].length).toBeGreaterThan(0);
-    expect(result["aemo-qld"].length).toBeGreaterThan(0);
-    expect(result["aemo-sa"].length).toBeGreaterThan(0);
-    expect(result["aemo-tas"].length).toBeGreaterThan(0);
+    const { points } = parseAemoDispatchCsv(csv);
+    expect(points["aemo-nsw"].length).toBeGreaterThan(0);
+    expect(points["aemo-vic"].length).toBeGreaterThan(0);
+    expect(points["aemo-qld"].length).toBeGreaterThan(0);
+    expect(points["aemo-sa"].length).toBeGreaterThan(0);
+    expect(points["aemo-tas"].length).toBeGreaterThan(0);
   });
 
   it("converts AEMO market timestamps to UTC ISO strings", () => {
-    const result = parseAemoDispatchCsv(csv);
-    expect(result["aemo-sa"][0].utcTimestamp).toBe("2026-04-21T18:05:00.000Z");
+    const { points } = parseAemoDispatchCsv(csv);
+    expect(points["aemo-sa"][0].utcTimestamp).toBe("2026-04-21T18:05:00.000Z");
   });
 
   it("uses UIGF minus dispatch target only when SEMIDISPATCHCAP is set", () => {
-    const result = parseAemoDispatchCsv(csv);
-    expect(result["aemo-nsw"][0].mw).toBeCloseTo(54.99985, 5);
-    expect(result["aemo-qld"][0].mw).toBeCloseTo(359.62836, 5);
+    const { points } = parseAemoDispatchCsv(csv);
+    expect(points["aemo-nsw"][0].mw).toBeCloseTo(54.99985, 5);
+    expect(points["aemo-qld"][0].mw).toBeCloseTo(359.62836, 5);
+  });
+
+  it("accumulates per-state wind/solar MW totals from the fueltech map", () => {
+    const { windMwhTotal, solarMwhTotal } = parseAemoDispatchCsv(csv);
+    // At least one state should have non-zero wind OR solar in the sample.
+    const anyWind = Object.values(windMwhTotal as Record<string, number>).some((v) => v > 0);
+    const anySolar = Object.values(solarMwhTotal as Record<string, number>).some((v) => v > 0);
+    expect(anyWind || anySolar).toBe(true);
   });
 });

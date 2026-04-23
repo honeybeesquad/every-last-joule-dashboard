@@ -44,7 +44,13 @@ function buildFlatHistory(lastUpdatedIso: string, curtailedMw: number): Curtailm
 const run = async (): Promise<RegionData> => {
   const html = await fetchText(AESO_URL, { timeoutMs: 45000, retries: 1 });
   const snapshot = parseAesoCurrentReport(html);
-  const points = buildFlatHistory(new Date().toISOString(), snapshot.windMw * CURTAILMENT_RATE);
+  const windCurt = snapshot.windMw * CURTAILMENT_RATE;
+  const solarCurt = snapshot.solarMw * CURTAILMENT_RATE;
+  const points = buildFlatHistory(new Date().toISOString(), windCurt + solarCurt);
+  const denom = windCurt + solarCurt;
+  const fuelShare = denom > 0
+    ? { wind: windCurt / denom, solar: solarCurt / denom }
+    : undefined;
 
   return {
     regionId: "alberta",
@@ -53,8 +59,10 @@ const run = async (): Promise<RegionData> => {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: new Date().toISOString(),
-    sourceNote:
-      `AESO Current Supply Demand wind snapshot × 5% calibrated curtailment proxy; historical public archive not wired yet (snapshot ${snapshot.lastUpdated})`,
+    sourceNote: fuelShare
+      ? `AESO wind+solar snapshot × 5% curtailment proxy (observed split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%; snapshot ${snapshot.lastUpdated})`
+      : `AESO Current Supply Demand wind snapshot × 5% calibrated curtailment proxy (snapshot ${snapshot.lastUpdated})`,
+    ...(fuelShare ? { fuelShare } : {}),
   };
 };
 
