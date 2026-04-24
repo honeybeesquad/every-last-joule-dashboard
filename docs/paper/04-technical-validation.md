@@ -1,0 +1,246 @@
+# Technical Validation
+
+_Scientific Data Data Descriptor · Section 4 · Target length 1000–2000
+words._
+
+Synthesis Data Descriptors live or die in this section. This section
+documents how the dataset's reconstruction is triangulated against
+independent public anchors, quantifies the gaps, and states where
+the gaps come from and how they will be closed in future releases.
+
+## 4.1 Validation strategy
+
+Three layers of validation are performed:
+
+1. **Backfill-vs-anchor scatter (Figure 2).** For every region-year
+   where a TSO, ISO, Independent Market Monitor, or State-of-the-
+   Market report publishes an annual curtailment total, we compare
+   our historical-backfill reconstruction at the same scale. 23
+   region-year pairs tested.
+2. **Per-region discrepancy prose.** Every material discrepancy
+   (|Δ%| > 50%) is diagnosed in `docs/validation/<region>.md`
+   against the five-category taxonomy: definitional, rate
+   under-calibration, rate over-calibration, reporting lag, regime
+   change, scope mismatch. 14 such regions carry commit-grade
+   analysis.
+3. **Dataset-level survey.**
+   `docs/methodology/validation-discrepancies.md` is the single
+   document a reviewer can read to see every material gap in the
+   dataset grouped by cause.
+
+## 4.2 Headline validation results
+
+From `docs/methodology/validation-discrepancies.md`:
+
+| Count | Classification | Region-year pairs |
+|---:|---|---|
+| 4 | Within ±15% T1 envelope | ercot-east, ercot-west, nyiso, poland |
+| 5 | Moderate (|Δ%| ≤ 50%) | caiso, czech-republic, italy-north-zone, miso, switzerland |
+| 14 | Material (|Δ%| > 50%) | norway-no3/no4, iberia, iso-ne, greece, portugal, italy-sardinia, czech-republic, italy-north-zone, netherlands, baltics, germany, miso, spp |
+
+Median |Δ%| across all 23 pairs: 53.4%. Figure 2 shows every pair
+with its ±tier-fraction error bar.
+
+## 4.3 Interpreting 19/23 points outside ±15%
+
+The ±15% envelope is a **target** for the subset of regions where
+the rate-model converges on the anchor — not a claim that every
+region lies within it. The 14 material discrepancies fall into
+four identifiable cause classes, all documented with a diagnostic
+category per pair:
+
+### Scope mismatch (5 regions, 6 region-years)
+
+**Cause:** Our rate-model scope differs from the anchor's accounting
+concept.
+
+- **`norway-no3` +622% / `norway-no4` +299%.** Rate applied to
+  (hydro + wind); published anchor is wind-only. Norwegian
+  hydro spill is an independent phenomenon that Statnett does not
+  publish under the same heading as wind curtailment. v1
+  recalibration moves rate application to wind-only to match
+  anchor scope.
+- **`iberia` +333%.** Feed covers ES+PT aggregated curtailment
+  calibrated to REE's 10.6 TWh total; Figure 2 anchor row was an
+  earlier 2.1 TWh "grid-side redispatch" subset. Anchor updated to
+  10.6 TWh in v1.
+- **`italy-north-zone` −45%.** Anchor is 35% × Terna national 0.31
+  TWh (estimated North share); Terna separately publishes ~1.1 TWh
+  zonal-overflow redispatch not included. Narrower anchor chosen
+  to preserve single-concept comparison.
+- **`italy-sardinia` +88%.** Anchor is 20% × Terna national
+  (estimated Sardinia share); Terna does not separately publish
+  zonal breakdown.
+
+### Definitional mismatch (1 region)
+
+- **`iso-ne` +284%.** Anchor = IMM "dispatch-down" (a narrow
+  economic-curtailment concept); 93% is concentrated in the
+  Maine/Vermont congestion pocket. Our rate captures broader
+  renewable shed across the ISO footprint. Different definitions
+  of the same phenomenon.
+
+### Regime change (1 region)
+
+- **`germany` −59%.** BNetzA 2024 anchor = 23.2 TWh inclusive of
+  Redispatch 2.0 volumes introduced October 2021; our rate
+  captures the older "EEG Einspeisemanagement" concept that is
+  roughly 60% of the new regime. The divergence is the accounting
+  change, not an arithmetic miscalibration. Documented in
+  `docs/methodology/historical-backfill.md §"Regime change"`.
+
+### Rate over/under calibration candidates (7 regions)
+
+Regions where an Ember-based denominator or a placeholder rate
+produces drift beyond what scope/definition can explain:
+
+- `greece` +129% (Ember-2024 VRE denominator may underrepresent
+  2024 growth — v1 refresh candidate)
+- `portugal` +128% (placeholder rate, no citable REN 2024 anchor)
+- `miso` +53% (SoM covers market-settled only; our rate captures
+  broader operator-curtailed wind)
+- `netherlands` −73% (IEEFA 4.9% applied to A75 B16+B18+B19, but
+  IEEFA figure is VRE-scope aggregate including economic
+  redispatch A75 doesn't return)
+- `baltics` −59% (placeholder rate, Litgrid publishes combined
+  Baltic wind without LT/LV/EE split)
+- `czech-republic` +70% (anchor "<0.1 TWh" treated as 0.05
+  midpoint)
+
+All seven are explicit v1 recalibration candidates deferred from
+this submission; each is named in the diagnostic table of
+`docs/methodology/validation-discrepancies.md`.
+
+## 4.4 Why v0.5 does not re-calibrate
+
+Three reasons, each grounded in the integrity of what is published:
+
+1. **Archive byte-stability.** The 2.59 M-row
+   `curtailment_backfill.parquet` is the single reproducibility
+   artefact Figures 2, 3, and 5 all depend on. A rate change
+   triggers a 7-year × 29-region re-fan-out, invalidates every
+   committed per-region TWh total in `per_region_annual.parquet`,
+   and forces every `docs/validation/*.md` table to be regenerated.
+   For a submission-phase Data Descriptor we value the byte-stable
+   artefact over a better-fitting rate.
+2. **Anchor-quality ceiling.** The largest gaps (Norway zones,
+   iso-ne, Germany, Iberia) reflect **scope or definitional
+   mismatches** between our hourly rate-model and the anchor's
+   accounting concept, not arithmetic miscalibration. Changing the
+   rate would hide a real methodological divergence we want
+   reviewers to see.
+3. **Envelope transparency.** The ±15% T1 envelope is a *target*
+   for where the rate-model converges, not a claim that every
+   region lies within it. The 4 rule-green points (ercot-east,
+   ercot-west, nyiso, poland) are identified and counted; the 14
+   material points each carry a per-region diagnosis.
+
+The v1 recalibration roadmap is five concrete items listed in
+`docs/methodology/validation-discrepancies.md §"v1 candidates"`.
+
+## 4.5 Tier coverage visualisation (Figure 4)
+
+Figure 4 answers the single-glance question "where is the dataset
+strong and where is it weak?" at geographic scale. Each of the 128
+regions renders as a tier-coloured dot:
+
+- **T1-live-TSO (60 regions, teal).** Dense over North America,
+  Europe, and Norway; patchy elsewhere.
+- **T2-annual-calibrated (53 regions, amber).** Broad coverage of
+  Latin America, the Middle East flare-adjacent belt, Australasia,
+  smaller European zones, and emerging-market calibrations.
+- **T2 flare (4 regions, brown square).** Permian, West Siberia,
+  South Iraq, East Saudi — correctly flat 24/7 baseload.
+- **T3-modelled (7 regions, terracotta).** Sichuan, Xinjiang,
+  Iceland, Ukraine, three Hawaii islands — where no public hourly
+  source exists.
+
+Tier assignment is deterministic from the loader id (code-level
+truth: `scripts/build_annual_rollup.py::derive_tier` and
+`scripts/validation/figure4_coverage_map.py::derive_tier` are the
+same function by construction).
+
+## 4.6 Seven-year temporal trace (Figure 3)
+
+Figure 3 collapses the 2.59M-row backfill into a daily global
+sum (GWh/day) stacked by source platform (ENTSO-E vs. EIA) over
+2020-01-01 → 2026-03-31. Archive total: **320.7 TWh** across 2,306
+days.
+
+The trace corroborates three methodology points:
+
+1. **Scale realism.** The 2024 integrated total (≈ 61 TWh across
+   backfilled regions) is within an order of magnitude of published
+   global-curtailment estimates (IRENA 2025, Ember State-of-the-
+   Grid 2024 place the global total at ~80–120 TWh, inclusive of
+   un-tracked regions). Our backfill does not attempt to
+   extrapolate to un-tracked regions.
+2. **Regime-change visibility.** The October 2021 Germany
+   Redispatch 2.0 accounting switch produces a step change
+   visible on the trace, supporting the documented regime-change
+   diagnosis for the `germany` −59% anchor gap.
+3. **Post-2022 super-linear growth.** The 30-day rolling mean
+   grows faster than solar capacity additions alone would predict,
+   supporting the paper's headline empirical claim that curtailment
+   scales super-linearly with solar deployment in
+   transmission-constrained systems.
+
+## 4.7 Top-20 timeseries (Figure 5)
+
+Figure 5 ranks the 29 backfilled regions by mean annual TWh
+across 2020–2026 and plots the top 20 as a 4×5 facet grid. The
+narrative payoff — the paper's "curtailment is concentrated"
+thesis — is visible in the data: the top 3 regions (Germany,
+Iberia, MISO) account for ~40% of the combined top-20 total.
+Every panel is T1-live-TSO in v0.5 (teal); tier-colour
+infrastructure is in place for v1 rate-recalibrations that may
+promote T2 regions into the top tier.
+
+## 4.8 Current-snapshot validation (Figure 1)
+
+Figure 1 is the geographic opening shot. 98 of 128 regions have
+a current peak-GW reading; the other 30 are static regions
+without a live fetch yet. Dot area scales with √peakGW so a 10 GW
+hotspot is roughly 3× the visible area of a 1 GW region. The
+top-8 regions by peak GW are labelled: Germany (4.6 GW),
+Minas Gerais (4.4 GW), Piauí (3.3 GW), and the MISO footprint
+(1.8 GW) dominate the current picture.
+
+The 30-region gap between `src/lib/regions.ts` (128) and the
+snapshot-count (98) is reported honestly on the figure: those
+regions appear at minimum-size so the map shows full geographic
+coverage without overclaiming live data.
+
+## 4.9 What the validation does not cover
+
+Explicitly out of scope for v0.5 technical validation:
+
+- **Hour-level reconstruction accuracy.** Annual totals are
+  validated; hour-level accuracy is assumed constant within a
+  year (piecewise-constant rate). Where sub-annual reality
+  diverges materially (e.g., Q3-concentrated CAISO solar
+  curtailment), it is a known approximation, not a published
+  bound.
+- **Pre-2020 reconstruction.** The backfill window starts
+  2020-01-01; pre-2020 reconstructions would require a
+  different rate regime (pre-IRA, pre-RePowerEU) and are
+  deferred to a v1 "historical-deep" sprint.
+- **Self-curtailment.** Asset owners throttling output in
+  response to negative prices do not appear in dispatch-down
+  statistics. Book research places the true total at 50–70% of
+  the invisible figure, but this is a blind-spot disclosure
+  (§5 Usage Notes), not a correction applied to the published
+  data.
+
+All three are named disclosures, not silent assumptions.
+
+## Cross-references
+
+- `data/historical/figure2_validation_scatter.csv` — machine-
+  readable scatter data.
+- `docs/methodology/validation-discrepancies.md` — the single
+  reviewer-facing survey of every material discrepancy.
+- `docs/validation/<region>.md` — per-region diagnostic prose.
+- `scripts/validation/external-anchors.json` — anchor citation
+  table.
+- Figures 2, 3, 4, 5: `docs/figures/figure{2..5}_*.{pdf,png}`.
