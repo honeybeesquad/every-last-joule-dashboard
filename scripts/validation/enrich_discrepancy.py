@@ -78,6 +78,13 @@ TARGETS = [
     "norway-no2",
     "norway-no3",
     "norway-no4",
+    # Regions with live feeds but no single authoritative published
+    # annual anchor. Gemini still generates useful methodology-focused
+    # discrepancy prose under rule 4 ("say 'no anchor extracted' rather
+    # than making one up").
+    "bpa",
+    "romania",
+    "sweden-north",
 ]
 
 # ENTSO-E regions — get the entsoe-rates audit in context; others get just
@@ -86,8 +93,9 @@ ENTSOE_REGIONS = {
     "germany", "greece", "iberia", "poland", "portugal", "netherlands",
     "baltics", "bulgaria", "czech-republic", "hungary",
     "italy-north-zone", "italy-sardinia",
-    "sweden-south", "switzerland",
+    "sweden-south", "sweden-north", "switzerland",
     "norway-no1", "norway-no2", "norway-no3", "norway-no4",
+    "romania",
 }
 
 # The two sections we replace. Matches everything between the section

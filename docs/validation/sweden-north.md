@@ -39,11 +39,13 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+A direct quantitative discrepancy analysis against published TSO annual curtailment totals is not possible for `sweden-north`, as no such figures are available in the provided sources. The backfill annual totals are derived using an ungrounded, acknowledged placeholder wind curtailment rate of 1.0%, as detailed in the ENTSO-E Rate Audit (2026-04-24). This placeholder rate is used in the absence of a citable 2023/2024 annual curtailed-energy total for the region. Therefore, a year-over-year reconciliation against external references cannot be performed for this region.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The curtailment rate (1.0% for wind) applied for `sweden-north` is an acknowledged placeholder. The ENTSO-E Rate Audit (2026-04-24) identified no citable 2023/2024 annual curtailed-energy total from official sources, and thus this rate should be considered an illustrative floor value.
+*   The absence of public TSO annual curtailment figures prevents external validation of the backfill annual totals for this region.
+*   See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes applicable to all regions.
 
 ## Links
 

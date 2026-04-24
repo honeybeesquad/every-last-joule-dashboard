@@ -39,11 +39,19 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The Bonneville Power Administration (BPA) does not publish a single authoritative annual curtailment figure that can be directly reconciled with our reconstructed hourly data. We therefore rely on the EIA BPAT wind+solar generation curtailment as the best available proxy, as documented in the 'Published anchors' section above.
+
+Our backfill annual totals reflect wind and solar curtailment, which aligns with the stated characteristic of "minimal wind/solar curtailment" alongside "BPA hydro spill." A direct quantitative comparison of our wind+solar curtailment against a comprehensive TSO figure for total curtailment (including hydro spill) is therefore not feasible, representing a definitional difference in scope rather than a discrepancy in reporting.
+
+The backfill data for BPA commences in 2020. This is due to an EIA definitional shift prior to 2020, where reporting changed from BA-level to sub-BA detail. Consequently, pre-2020 data is not utilized to avoid mixing reporting regimes, limiting the historical depth of our backfill for this region.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+Beyond the cross-cutting limitations documented in `docs/methodology/historical-backfill.md`, the following region-specific limitations apply to BPA:
+
+*   **Absence of authoritative TSO annual total:** No single, authoritative TSO-published annual curtailment total is available for direct reconciliation. Our analysis relies on EIA BPAT wind+solar data as a proxy.
+*   **Definitional scope of proxy:** The EIA proxy specifically captures wind and solar curtailment, while general BPA curtailment may also include hydro spill. This constitutes a definitional scope mismatch with potentially broader TSO reporting.
+*   **Historical depth restricted by EIA regime change:** The backfill for BPA begins in 2020 due to a definitional shift in EIA reporting from BA-level to sub-BA detail prior to this year. This restricts the available historical depth for multi-year variance analysis.
 
 ## Links
 
