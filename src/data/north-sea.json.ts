@@ -89,6 +89,7 @@ const run = async (): Promise<RegionData> => {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   withFallback<RegionData>("north-sea", run, {
+    regionTier: "live" as const,
     tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
     tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
   })

@@ -295,6 +295,7 @@ const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv
 
 if (isMain) {
   withFallback<Record<NativeRegionId, RegionData>>("ercot-native", run, {
+    regionTier: "live" as const,
     tagLive: (result) => ({
       "ercot-native-west": { ...result["ercot-native-west"], sourceStatus: "live" as const },
       "ercot-native-east": { ...result["ercot-native-east"], sourceStatus: "live" as const },
