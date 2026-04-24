@@ -48,7 +48,7 @@ Last generated: 2026-04-24
 | Yunnan | static | hydro | 0 | [yunnan](./yunnan.md) |
 | Cyprus | static | solar | 0 | [cyprus](./cyprus.md) |
 | Czech Republic | live | mixed | 0 | [czech-republic](./czech-republic.md) |
-| Germany | live | mixed | 7 | [germany](./germany.md) |
+| Germany | live | mixed | 6 | [germany](./germany.md) |
 | Denmark DK2 | live | mixed | 0 | [denmark-east](./denmark-east.md) |
 | Denmark DK1 | live | mixed | 0 | [denmark-west](./denmark-west.md) |
 | Egypt | static | solar | 0 | [egypt](./egypt.md) |
@@ -89,7 +89,7 @@ Last generated: 2026-04-24
 | Mongolia | static | wind | 0 | [mongolia](./mongolia.md) |
 | Malaysia | static | solar | 0 | [malaysia](./malaysia.md) |
 | Namibia | static | solar | 0 | [namibia](./namibia.md) |
-| Netherlands | live | mixed | 4 | [netherlands](./netherlands.md) |
+| Netherlands | live | mixed | 0 | [netherlands](./netherlands.md) |
 | Norway NO1 (Oslo) | live | mixed | 0 | [norway-no1](./norway-no1.md) |
 | Norway NO2 (Kristiansand) | live | mixed | 0 | [norway-no2](./norway-no2.md) |
 | Norway NO3 (Trondheim) | live | mixed | 0 | [norway-no3](./norway-no3.md) |
@@ -117,8 +117,8 @@ Last generated: 2026-04-24
 | Uruguay | static | wind | 0 | [uruguay](./uruguay.md) |
 | BPA | live | mixed | 0 | [bpa](./bpa.md) |
 | California | live | mixed | 7 | [caiso](./caiso.md) |
-| ERCOT East | live | mixed | 0 | [ercot-east](./ercot-east.md) |
-| ERCOT West | live | mixed | 0 | [ercot-west](./ercot-west.md) |
+| ERCOT East | live | mixed | 7 | [ercot-east](./ercot-east.md) |
+| ERCOT West | live | mixed | 7 | [ercot-west](./ercot-west.md) |
 | Hawaii (Big Island) | static | mixed | 0 | [hawaii-island](./hawaii-island.md) |
 | Hawaii (Maui) | static | solar | 0 | [hawaii-maui](./hawaii-maui.md) |
 | Hawaii (Oahu) | static | solar | 0 | [hawaii-oahu](./hawaii-oahu.md) |
@@ -128,7 +128,7 @@ Last generated: 2026-04-24
 | NYISO (rest) | live | mixed | 0 | [nyiso-rest](./nyiso-rest.md) |
 | NYISO Zones D+E | live | wind | 0 | [nyiso-zones-d-e](./nyiso-zones-d-e.md) |
 | Permian Basin | flare | flare | 0 | [permian](./permian.md) |
-| PJM | live | mixed | 0 | [pjm](./pjm.md) |
+| PJM | live | mixed | 6 | [pjm](./pjm.md) |
 | SPP | live | mixed | 0 | [spp](./spp.md) |
 | Vietnam | static | solar | 0 | [vietnam](./vietnam.md) |
 | South Africa | live | mixed | 0 | [south-africa](./south-africa.md) |
