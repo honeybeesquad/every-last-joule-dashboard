@@ -74,4 +74,10 @@ Western Australia (SWIS), NT & Pilbara, Indonesia, Malaysia, South Korea mainlan
 - **Russia non-flare:** Russia (European grid) uses 1 TWh/yr seasonal hydro spill. W. Siberia remains the separate flare region and is not reclassified.
 - **Middle East:** Jordan uses 0.35 TWh/yr mixed wind/solar calibrated to the 17% wind-curtailment headline; Saudi Arabia solar uses 0.3 TWh/yr and remains separate from `e-saudi` flare; UAE uses 0.2 TWh/yr; Oman uses 0.1 TWh/yr; Israel uses 0.15 TWh/yr.
 
+### 15. Several ENTSO-E rates remain placeholders after the 2026-04-24 audit
+
+The ENTSO-E loader now has cited 2024 anchors for Germany, the Netherlands, Poland, and Greece, documented in `docs/methodology/entsoe-rates.md`. The same audit did not find public 2023/2024 curtailed-energy totals for Portugal, Finland, Romania, Italy's north/south/Sardinia bidding-zone split, Sweden, Hungary, Bulgaria, or Lithuania/Baltics. Spain has public REE and IEA integration evidence but no exact annual curtailed-energy value extracted from an open source in this pass. Those constants remain illustrative rate proxies, not measured curtailment series.
+
+ENTSO-E's A77 "Curtailed Renewable Energy" API product is the preferred upgrade path. Until each zone is tested for complete A77 coverage and reconciled to operator annual reports, these remaining ENTSO-E estimates should be read as floor/ceiling placeholders rather than publication-grade national statistics.
+
 Corrections welcome: simon@collins.nu.
