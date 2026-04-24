@@ -13,16 +13,21 @@ describe("regions", () => {
     expect(REGIONS.length).toBe(128);
   });
 
-  it("has 60 live regions", () => {
+  it("has 66 live regions", () => {
     // v0.6: -5 aggregates + 10 splits = +5 live -> 49 + 5 = 54; Turkey live re-add -> 55.
     // europe-expansion: -1 n-norway + 5 Norway zones + 1 Switzerland = +5 → 60.
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(60);
+    // tier-routing fix (2026-04-25): brazil-mg/sp/mt/go/pr/rs reclassified
+    // static → live. The brazil-ne loader emits hourly data for all 13
+    // Brazilian states (NE + non-NE) from the same ONS feed; the 6 non-NE
+    // states had been incorrectly held as static fallbacks. 60 + 6 = 66.
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(66);
   });
 
-  it("has 64 static regions", () => {
+  it("has 58 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(64);
+    // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(58);
   });
 
   it("has 4 flare regions", () => {
@@ -158,13 +163,11 @@ describe("regions", () => {
   });
 
   it("includes the v1p porcupine fill", () => {
+    // brazil-mg/sp/mt/go/pr/rs were originally added here as static
+    // fallbacks; on 2026-04-25 they were reclassified live because the
+    // brazil-ne loader actually emits them. They're now exercised by the
+    // separate "Brazilian non-NE states are live" test below.
     for (const id of [
-      "brazil-mg",
-      "brazil-sp",
-      "brazil-mt",
-      "brazil-go",
-      "brazil-pr",
-      "brazil-rs",
       "inner-mongolia",
       "gansu",
       "qinghai",
@@ -188,6 +191,24 @@ describe("regions", () => {
       const region = REGIONS.find(r => r.id === id);
       expect(region).toBeDefined();
       expect(region?.tier).toBe("static");
+    }
+  });
+
+  it("Brazilian non-NE states are live (sourced from the same ONS feed as brazil-ne)", () => {
+    // The brazil-ne loader's STATE_TO_REGION map emits all 13 Brazilian
+    // states from the ONS hourly CSV. The 6 non-NE states were
+    // incorrectly held as static fallbacks until the 2026-04-25 fix.
+    for (const id of [
+      "brazil-mg",
+      "brazil-sp",
+      "brazil-mt",
+      "brazil-go",
+      "brazil-pr",
+      "brazil-rs",
+    ]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region).toBeDefined();
+      expect(region?.tier).toBe("live");
     }
   });
 
