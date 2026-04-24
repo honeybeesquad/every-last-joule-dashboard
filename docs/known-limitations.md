@@ -56,7 +56,7 @@ Permian, W. Siberia, S. Iraq, and E. Saudi render as flat pillars. This is metho
 
 Argentina, Uruguay, Paraguay, Mexico, Japan, Vietnam, Thailand, North India, Cyprus, and Ethiopia are included through typical solar/wind/hydro profiles scaled to documented annual curtailment or spill estimates after public live-data probes found no stable unauthenticated hourly feed. They keep geographic coverage visible, but `latestProfile` is intentionally `null` and the `sourceNote` labels each as a fallback.
 
-Turkey was removed in v1f. ENTSO-E returned no usable A75 renewable generation signal for all probed PSR types, and no stable unauthenticated TEIAS/EPIAS endpoint was integrated in the time-box. Showing a permanent zero-rate region was less honest than dropping it.
+Turkey was removed in v1f after ENTSO-E returned no usable A75 renewable generation signal and no stable unauthenticated TEIAS/EPIAS endpoint was integrated in the time-box. In the 2026-04-24 re-probe, the newer EPIAS electricity-service dashboard endpoint did return unauthenticated current-day wind and solar generation by hour, so Turkey is promoted back to live as a conservative calibrated proxy. The endpoint is current-day dashboard data rather than a 30-day history API; `latestProfile` remains `null` until a complete Turkey day is available from the live response, and the source note labels this limitation.
 
 ### 13. Alaska is below the inclusion threshold, not omitted for lack of curtailment
 

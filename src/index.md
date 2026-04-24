@@ -36,7 +36,7 @@ const [
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
   yunnan, tibet, indiaSouth, indiaWest, indiaEast, pakistan, iran,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
-  quebec, manitoba, saskatchewan, colombia
+  quebec, manitoba, saskatchewan, colombia, turkey
 ] = await Promise.all([
   FileAttachment("data/cbeci.json").json(),
   FileAttachment("data/ercot.json").json(),
@@ -114,7 +114,8 @@ const [
   FileAttachment("data/quebec.json").json(),
   FileAttachment("data/manitoba.json").json(),
   FileAttachment("data/saskatchewan.json").json(),
-  FileAttachment("data/colombia.json").json()
+  FileAttachment("data/colombia.json").json(),
+  FileAttachment("data/turkey.json").json()
 ]);
 
 document.getElementById("app-root").innerHTML = `
@@ -265,6 +266,7 @@ const regionData = {
   poland: entsoe.poland,
   greece: entsoe.greece,
   romania: entsoe.romania,
+  turkey,
   // Italy split into three ENTSO-E bidding zones (v1t)
   "italy-north-zone": entsoe["italy-north-zone"],
   "italy-south": entsoe["italy-south"],
