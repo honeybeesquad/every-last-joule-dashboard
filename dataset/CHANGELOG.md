@@ -91,5 +91,5 @@ Initial archival release. Matches the state of the dashboard immediately before 
 
 ### Known at release
 - Historical Parquet archive begins at first build post-v1.0.0 (time-series depth grows from there).
-- 3 regions (Sichuan, Xinjiang, Iceland) use estimated daily shapes scaled to published annuals; surfaced in methodology and paper Technical Validation.
+- 56 regions are T3-modelled — they pair a published annual anchor (Ember, IRENA, regulator report) with a typical diurnal/seasonal shape (solar cosine, wind broad-overnight, hydro monthly-seasonal, mixed fuel-share, or overnight geothermal venting). Coverage spans Chinese provinces, most of South Asia, Africa, the Middle East outside flare, Latin America outside Brazil/Argentina, and Hawaii. Each is clearly labelled in `confidenceTier`; envelope is ±40% peakGW. See `docs/methodology/uncertainty.md` and the paper Technical Validation §4.5.
 - Validation (per-region triangulation vs IRENA / Ember / TSO annuals) scheduled for S1 — see `docs/academic-model/2026-04-24-submission-plan.md`.
