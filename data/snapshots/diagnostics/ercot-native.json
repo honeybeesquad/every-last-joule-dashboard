@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-23T11:24:47.415Z",
+  "generatedAt": "2026-04-24T03:29:36.835Z",
   "status": "error",
-  "error": "product lookup HTTP 403 Forbidden"
+  "error": "ERCOT_API_KEY not set"
 }

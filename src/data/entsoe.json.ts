@@ -162,6 +162,20 @@ export const ZONES = [
     technologies: [{ psrType: "B19", fuel: "wind", rate: 0.025 }],
     sourceNote: "ENTSO-E Litgrid wind-only Baltic regional proxy; solar negligible for this feed.",
   },
+  // Switzerland — Swissgrid publishes via ENTSO-E. Swiss wind is
+  // negligible (<0.1 GW installed) and hydro spill does not appear in
+  // A75 actual-generation data, so only the PV component is modelled
+  // here. That understates total Swiss curtailment (hydro spill during
+  // spring snowmelt is a real phenomenon) but what we DO model is the
+  // summer-midday PV oversupply curtailment on Swissgrid's south-to-north
+  // transit corridor — the fastest-growing component. Conservative rate
+  // anchored to Czech/Hungarian neighbours; Tier 1.2 audit to refine.
+  {
+    id: "switzerland",
+    domain: "10YCH-SWISSGRIDZ",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.015 }],
+    sourceNote: "Swissgrid PV-only ENTSO-E feed; wind negligible and hydro spill not in A75. Models summer-midday PV oversupply only; understates total Swiss curtailment.",
+  },
 ] as const;
 
 export const parseEntsoeXml = parseEntsoeXmlImpl;

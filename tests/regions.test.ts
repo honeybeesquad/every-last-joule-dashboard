@@ -2,18 +2,21 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 123 canonical regions", () => {
+  it("has 128 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
     //   - 5 new statics added: hawaii-oahu/maui/island, austria, russia-murmansk-wind
     //   Prior 113 + 10 new splits + 5 new statics + Turkey live re-add - Colombia = 123.
-    expect(REGIONS.length).toBe(123);
+    // europe-expansion (2026-04-24): Norway split n-norway → NO1-NO5 (net +4 live)
+    // and Switzerland added via ENTSO-E (+1 live). 123 + 5 = 128.
+    expect(REGIONS.length).toBe(128);
   });
 
-  it("has 55 live regions", () => {
+  it("has 60 live regions", () => {
     // v0.6: -5 aggregates + 10 splits = +5 live -> 49 + 5 = 54; Turkey live re-add -> 55.
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(55);
+    // europe-expansion: -1 n-norway + 5 Norway zones + 1 Switzerland = +5 → 60.
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(60);
   });
 
   it("has 64 static regions", () => {
@@ -36,7 +39,9 @@ describe("regions", () => {
     const ids = REGIONS.map(r => r.id);
     expect(new Set(ids).size).toBe(ids.length);
     for (const id of ids) {
-      expect(id).toMatch(/^[a-z]+(-[a-z]+)*$/);
+      // Kebab-case; digits permitted in non-leading segments
+      // (e.g. norway-no1..no5 for ENTSO-E bidding-zone codes).
+      expect(id).toMatch(/^[a-z]+(-[a-z0-9]+)*$/);
     }
   });
 
@@ -53,7 +58,9 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "aemo-nsw")).toBeDefined();
     expect(REGIONS.find(r => r.id === "brazil-rn")).toBeDefined();
     expect(REGIONS.find(r => r.id === "ercot-west")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "n-norway")).toBeDefined();
+    // n-norway replaced by Norway NO1-NO5 split in europe-expansion;
+    // see the dedicated test block below.
+    expect(REGIONS.find(r => r.id === "n-norway")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "ontario")).toBeDefined();
     expect(REGIONS.find(r => r.id === "alberta")).toBeDefined();
     // Ireland split in v0.6; see coverage-audit test block below.
@@ -221,5 +228,25 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "russia-murmansk-wind")?.kind).toBe("wind");
     // Hawaii Big Island is 58.7% renewable mix (geothermal + solar + wind).
     expect(REGIONS.find(r => r.id === "hawaii-island")?.kind).toBe("mixed");
+  });
+
+  it("includes the 2026-04-24 Norway 5-zone split and Switzerland", () => {
+    // Norway split into all 5 ENTSO-E bidding zones (NO1 Oslo, NO2
+    // Kristiansand, NO3 Trondheim, NO4 Tromsø, NO5 Bergen). Prior
+    // n-norway was NO4-only and is now absent.
+    for (const id of ["norway-no1", "norway-no2", "norway-no3", "norway-no4", "norway-no5"]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region, `missing Norway zone ${id}`).toBeDefined();
+      expect(region?.tier).toBe("live");
+      expect(region?.country).toBe("NOR");
+    }
+    expect(REGIONS.find(r => r.id === "n-norway")).toBeUndefined();
+
+    // Switzerland added as live ENTSO-E region (PV-only via Swissgrid).
+    const switzerland = REGIONS.find(r => r.id === "switzerland");
+    expect(switzerland).toBeDefined();
+    expect(switzerland?.tier).toBe("live");
+    expect(switzerland?.kind).toBe("solar");
+    expect(switzerland?.country).toBe("CHE");
   });
 });

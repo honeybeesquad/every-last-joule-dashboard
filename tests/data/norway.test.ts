@@ -16,16 +16,25 @@ describe("norway loader helpers", () => {
     expect(points[0]!.utcTimestamp < last!.utcTimestamp).toBe(true);
   });
 
-  it("builds n-norway RegionData with the 6% calibration", () => {
+  it("builds RegionData for each of the 5 Norwegian bidding zones", () => {
     const points = parseEntsoeXml(xml);
-    const region = buildZoneData(
-      "n-norway",
-      points,
-      0.06,
-      "ENTSO-E NO-4 hydro+wind × 6% calibrated waste rate (export-constrained north Norway proxy)",
-    );
-    expect(region.regionId).toBe("n-norway");
-    expect(region.profile.length).toBe(24);
-    expect(region.sourceNote).toContain("6%");
+    const zones = [
+      { id: "norway-no1", rate: 0.015 },
+      { id: "norway-no2", rate: 0.08 },
+      { id: "norway-no3", rate: 0.04 },
+      { id: "norway-no4", rate: 0.06 },
+      { id: "norway-no5", rate: 0.025 },
+    ];
+    for (const { id, rate } of zones) {
+      const region = buildZoneData(
+        id,
+        points,
+        rate,
+        `${id} hydro+wind × ${(rate * 100).toFixed(1)}% calibrated waste rate`,
+      );
+      expect(region.regionId).toBe(id);
+      expect(region.profile.length).toBe(24);
+      expect(region.sourceNote).toContain(`${(rate * 100).toFixed(1)}%`);
+    }
   });
 });

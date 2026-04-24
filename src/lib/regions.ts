@@ -65,7 +65,22 @@ export const REGIONS: Region[] = [
   { id: "brazil-piaui",     name: "Piaui",           country: "BRA", lat: -8.0, lon: -43.0, tier: "live", kind: "mixed", source: "ONS wind+solar", sourceUrl: "https://www.ons.org.br/" },
   { id: "brazil-pernambuco", name: "Pernambuco",     country: "BRA", lat: -8.0, lon: -37.5, tier: "live", kind: "mixed", source: "ONS wind+solar", sourceUrl: "https://www.ons.org.br/" },
   { id: "brazil-other",     name: "Brazil NE Other", country: "BRA", lat: -8.0, lon: -38.0, tier: "live", kind: "mixed", source: "ONS wind+solar", sourceUrl: "https://www.ons.org.br/" },
-  { id: "n-norway",         name: "N. Norway",       country: "NOR", lat: 68.5, lon:   17.5, tier: "live", kind: "mixed", source: "ENTSO-E hydro+wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Norway split into 5 ENTSO-E bidding zones (2026-04-24). Prior
+  // `n-norway` aggregated only NO4 — the northern export-constrained
+  // zone — and left ~80% of Norwegian renewable generation unmodelled,
+  // including NO2 which hosts the Sørlige Nordsjø II offshore wind
+  // programme and the landing points for NorNed, NordLink, and the
+  // North Sea Link interconnectors. Lat/lon are zone centroids.
+  { id: "norway-no1",       name: "Norway NO1 (Oslo)",         country: "NOR", lat: 59.9, lon:   10.7, tier: "live", kind: "mixed", source: "ENTSO-E NO1 hydro+wind (load-centre, low curtailment)", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "norway-no2",       name: "Norway NO2 (Kristiansand)", country: "NOR", lat: 58.2, lon:    7.6, tier: "live", kind: "mixed", source: "ENTSO-E NO2 hydro+offshore wind (NorNed/NordLink/NSL cable zone)", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "norway-no3",       name: "Norway NO3 (Trondheim)",    country: "NOR", lat: 63.4, lon:   10.4, tier: "live", kind: "mixed", source: "ENTSO-E NO3 hydro+onshore wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "norway-no4",       name: "Norway NO4 (Tromsø)",       country: "NOR", lat: 68.5, lon:   17.5, tier: "live", kind: "mixed", source: "ENTSO-E NO4 hydro+wind (export-constrained north; former n-norway)", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "norway-no5",       name: "Norway NO5 (Bergen)",       country: "NOR", lat: 60.4, lon:    5.3, tier: "live", kind: "hydro", source: "ENTSO-E NO5 reservoir hydro (spring-spill only)", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Switzerland — PV-only ENTSO-E feed via Swissgrid. Hydro spill is
+  // not captured in A75 data, so this understates total Swiss
+  // curtailment but captures the fastest-growing summer-midday PV
+  // oversupply component.
+  { id: "switzerland",      name: "Switzerland",     country: "CHE", lat: 46.8, lon:    8.2, tier: "live", kind: "solar", source: "ENTSO-E Swissgrid PV-only (hydro spill not in A75)", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "ontario",          name: "Ontario",         country: "CAN", lat: 44.0, lon:  -81.0, tier: "live", kind: "mixed", source: "IESO wind+solar", sourceUrl: "https://reports-public.ieso.ca/public/GenOutputCapability/" },
   { id: "alberta",          name: "Alberta",         country: "CAN", lat: 51.5, lon: -114.0, tier: "live", kind: "mixed", source: "AESO wind+solar", sourceUrl: "http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet" },
   // Ireland split by SONI/EirGrid's 2024 Annual Renewable Constraint and

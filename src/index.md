@@ -277,13 +277,18 @@ const regionData = {
   "czech-republic": entsoe["czech-republic"],
   bulgaria: entsoe.bulgaria,
   baltics: entsoe.baltics,
+  // Switzerland — PV-only ENTSO-E feed; understates hydro spill but
+  // captures summer-midday PV oversupply on Swissgrid's corridor.
+  switzerland: entsoe.switzerland,
   // GB split — NESO 2024 Markets Roadmap reports ~11 TWh/yr of constraint
   // actions, dominated by the Scotland-to-England boundary. 70/30 split
   // reflects Scotland's disproportionate share of curtailed wind.
   "gb-scotland": splitRegion(northSea, "gb-scotland", 0.70, "Scotland share of GB wind+solar curtailment (NESO constraint data)"),
   "gb-england-wales": splitRegion(northSea, "gb-england-wales", 0.30, "England+Wales share of GB wind+solar"),
   ...brazilNE,
-  "n-norway": norway,
+  // Norway split (2026-04-24): 5 ENTSO-E bidding zones NO1-NO5. The
+  // norway loader emits a Record keyed by norway-no1..norway-no5.
+  ...norway,
   ontario,
   alberta,
   // Ireland split — SONI/EirGrid 2024 Annual Renewable Constraint and
