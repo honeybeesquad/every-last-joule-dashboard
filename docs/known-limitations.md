@@ -58,7 +58,11 @@ Argentina, Uruguay, Paraguay, Mexico, Japan, Vietnam, Thailand, North India, Cyp
 
 Turkey was removed in v1f. ENTSO-E returned no usable A75 renewable generation signal for all probed PSR types, and no stable unauthenticated TEIAS/EPIAS endpoint was integrated in the time-box. Showing a permanent zero-rate region was less honest than dropping it.
 
-### 13. v1k global expansion is coverage-first and fallback-labelled
+### 13. Alaska is below the inclusion threshold, not omitted for lack of curtailment
+
+Alaska's Railbelt grid (Chugach, Matanuska, GVEA) does see documented renewable curtailment — intermittent wind-spill at Fire Island and Eva Creek during low-load shoulder hours, plus asset-owner throttling at rural AVEC village microgrids when diesel-hybrid dispatch can't absorb peak solar. NREL's 2023 Railbelt integration study and subsequent KEA/AVEC rate-case testimony place the aggregate at well under 0.01 TWh/year, roughly three orders of magnitude below the smallest region currently tracked. There is also no public hourly feed: Railbelt operators publish monthly fuel-use summaries, not a SCADA-level dispatch stream. v0 therefore documents Alaska's absence rather than including it as a near-zero row. If a public Railbelt hourly feed becomes available, or if Fire Island/Eva Creek curtailment scales past the 0.05 TWh/year threshold used elsewhere, it will be added with the same fallback-profile treatment applied to other small grids.
+
+### 14. v1k global expansion is coverage-first and fallback-labelled
 
 Western Australia (SWIS), NT & Pilbara, Indonesia, Malaysia, South Korea mainland, Russia (European grid), Taiwan, Jordan, Saudi Arabia solar, UAE, Oman, and Israel are included through typical profiles after live probes failed to find stable unauthenticated hourly curtailment feeds. These are coverage-gap estimates, not measured curtailment series, and every loader labels the fallback in `sourceNote`.
 
