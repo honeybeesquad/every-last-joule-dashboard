@@ -21,8 +21,8 @@ with the backfill rates unchanged.
 | Count | Classification | Region-year pairs |
 |---:|---|---|
 |   4 | within ±15% T1 envelope | `ercot-east`, `ercot-west`, `nyiso`, `poland` |
-|   5 | moderate (|Δ%| ≤ 50%) | `caiso`, `czech-republic`, `italy-north-zone`, `miso`, `switzerland` |
-|  14 | material (|Δ%| > 50%) | see diagnostic table below |
+|   7 | moderate (15% < |Δ%| ≤ 50%) | `bulgaria`, `caiso`, `hungary`, `italy-north-zone`, `spp`, `sweden-south`, `switzerland` |
+|  12 | material (|Δ%| > 50%) | see diagnostic table below |
 
 Median |Δ%| across all 23 pairs: 53.4%. The dataset's headline tier
 claim is ±15% only for the four regions inside the envelope; every
@@ -44,22 +44,22 @@ Ordered by |Δ%| descending. Category names match the taxonomy in
 | `portugal` | 2024 | 0.913 | 0.40 | +128% | rate placeholder | Rate 10% (solar) / 3% (wind) are flagged placeholder in `entsoe-rates.md`; no citable 2024 curtailed-energy total published by REN. | Rate marked placeholder; Figure 2 row kept to document the gap. |
 | `italy-sardinia` | 2024 | 0.116 | 0.062 | +88% | anchor approximation | Anchor is 20% × Terna national 0.31 TWh (estimated Sardinia share); the actual Terna zonal breakdown is not separately published. | Documented; rate unchanged. |
 | `czech-republic` | 2024 | 0.085 | 0.05 | +70% | anchor precision | ČEPS 2024 RES curtailment quoted as "<0.1 TWh"; treated as 0.05 midpoint for Δ%. | Midpoint methodology surfaced in validation/czech-republic.md. |
-| `italy-north-zone` | 2024 | 0.059 | 0.108 | -45% | scope mismatch | Anchor is 35% × Terna national 0.31 TWh (North share); Terna separately publishes ~1.1 TWh zonal-overflow redispatch not included here. | Documented; choice of narrower anchor preserves single-concept comparison. |
 | `netherlands` | 2024 | 0.809 | 3.00 | -73% | rate grounded-but-drifting | Rate calibrated against IEEFA 4.9%; applied to A75 generation for B16+B18+B19. IEEFA figure is a VRE-scope aggregate that includes economic redispatch A75 doesn't return. | Rate unchanged; discrepancy accepts the IEEFA-scope mismatch. |
 | `baltics` | 2024 | 0.082 | 0.20 | -59% | rate placeholder | Rate placeholder; Litgrid publishes combined Baltic wind curtailment but no disaggregation across LT/LV/EE. | Documented; v1 candidate after Litgrid 2025 annual. |
 | `germany` | 2024 | 9.417 | 23.20 | -59% | regime change | BNetzA's 23.2 TWh includes Redispatch 2.0 volumes since Oct 2021; our rate captures the older "EEG Einspeisemanagement" concept that was ~60% of the new regime. | Documented in methodology/historical-backfill.md §"Regime change". |
 | `miso` | 2024 | 8.437 | 5.50 | +53% | rate over-calibration candidate | EIA wind+solar × flat rate outpaces MISO SoM reporting; SoM covers only market-settled curtailment. Our rate captures operator-curtailed wind more completely. | Documented; v1 candidate for tighter scope. |
-| `spp` | 2024 | 4.417 | 3.00 | +47% | within moderate band | ~75 TWh wind × ~4% curtailment vs SoM ~3 TWh; acceptable fit. | No action. |
 
-## Moderate discrepancies (within ±50%)
+## Moderate discrepancies (15% < |Δ%| ≤ 50%)
 
 | Region | Year | HB TWh | Anchor TWh | Δ % | Note |
 |---|---:|---:|---:|---:|---|
+| `spp` | 2024 | 4.417 | 3.00 | +47% | ~75 TWh wind × ~4% curtailment vs SoM ~3 TWh; acceptable fit. No action. |
+| `italy-north-zone` | 2024 | 0.059 | 0.108 | -45% | Anchor is 35% × Terna national 0.31 TWh (North share); Terna separately publishes ~1.1 TWh zonal-overflow redispatch treated as a different metric. Narrower anchor preserves single-concept comparison. |
+| `switzerland` | 2024 | 0.065 | 0.10 | -35% | Swissgrid PV curtailment; hydro spill deliberately excluded (`docs/validation/switzerland.md`). |
 | `caiso` | 2024 | 2.757 | 3.90 | -29% | CAISO Ascend/daily-report composite; flat rate slightly under-captures Q3 spike. |
 | `bulgaria` | 2024 | 0.119 | 0.10 | +19% | ESO anchor is a rounded "~0.1 TWh"; within tolerance. |
 | `hungary` | 2024 | 0.177 | 0.15 | +18% | MAVIR 2024 anchor; solar dominant. |
 | `sweden-south` | 2024 | 0.168 | 0.20 | -16% | Svk SE3+SE4 wind curtailment; within T1 envelope at ±20% tier fraction. |
-| `switzerland` | 2024 | 0.065 | 0.10 | -35% | Swissgrid PV curtailment; hydro spill deliberately excluded (`docs/validation/switzerland.md`). |
 
 ## Why v0.5 does not re-calibrate rates
 

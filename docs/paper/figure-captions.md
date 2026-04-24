@@ -42,8 +42,8 @@ the smallest (iso-ne, 0.034 TWh) and largest (Germany, 23 TWh)
 anchors. Error bars show each point's ±tier-fraction uncertainty
 envelope (±15% for T1-live-TSO). The shaded band is the
 ±15% T1 target envelope; the soft amber band is ±50% for reference.
-Point colour encodes |Δ%|: green ≤ 15% (4/23), amber ≤ 50% (5/23),
-terracotta > 50% (14/23). Median |Δ%| across all pairs is 53.4%.
+Point colour encodes |Δ%|: green ≤ 15% (4/23), amber ≤ 50% (7/23),
+terracotta > 50% (12/23). Median |Δ%| across all pairs is 53.4%.
 Every material discrepancy (|Δ%| > 50%) is diagnosed in the
 per-region validation documents under
 `docs/validation/<region>.md` and surveyed at the dataset level in

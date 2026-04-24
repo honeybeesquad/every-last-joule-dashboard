@@ -163,7 +163,12 @@ Per-region MD template: `docs/validation/_template.md`, produced in HB.0.
    - `scripts/figures/fig1_global_map.py` using cartopy + matplotlib.
 
 2. **Validation scatter** (descriptor paper Figure 2)
-   - x = our published annual, y = IRENA/Ember/TSO published annual, 122 points.
+   - x = published TSO/ISO/IMM/SoM anchor (TWh), y = our HB backfill
+     reconstruction (TWh). One point per region-year pair where a
+     citable public anchor is extractable. Original S3 estimate was
+     one point per region; actual executed count is 23 region-year
+     pairs (see `scripts/validation/external-anchors.json` and the
+     23-row `data/historical/figure2_validation_scatter.csv`).
    - `scripts/figures/fig2_validation_scatter.py`.
 
 3. **Temporal trace — backfill era** (descriptor paper Figure 3)

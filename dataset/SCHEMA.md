@@ -85,9 +85,11 @@ recent = df[df.build_timestamp >= (pd.Timestamp.utcnow() - pd.Timedelta(days=90)
 recent.groupby("region_id")["peak_gw"].mean().sort_values(ascending=False).head(20)
 ```
 
-## Historical backfill (planned)
+## Historical backfill
 
-A separate Parquet file `data/historical/curtailment_backfill.parquet` will be produced during the Historical Backfill sprint (see `docs/academic-model/2026-04-25-gap-closure-plan.md`), containing hourly curtailment values reconstructed from upstream archives for every region whose source supports multi-year history (ENTSO-E, EIA, AEMO NEMWeb, Elexon, ONS Brazil, Nord Pool). Schema will mirror the rolling history but with `build_timestamp` replaced by `observation_timestamp` (hourly UTC) and `peak_gw` / `total_twh_30d` fields replaced by `curtailment_gw` (the actual measured hourly value).
+A separate Parquet file `data/historical/curtailment_backfill.parquet` was produced by the Historical Backfill sprint (`docs/methodology/historical-backfill.md`). It contains hourly curtailment values reconstructed from upstream archives for 29 regions whose upstream source supports multi-year history (ENTSO-E 26 zones, EIA 9 ISOs, Nord Pool Norway NO1–NO5). Schema mirrors the rolling history but with `build_timestamp` replaced by `observation_timestamp` (hourly UTC) and `peak_gw` / `total_twh_30d` fields replaced by `curtailment_gw` (the actual measured hourly value). The confidence-tier columns (`confidence_tier`, `uncertainty_low_gw`, `uncertainty_high_gw`) are present in both files.
+
+Current size: **2,590,195 rows × 7 columns (≈ 20 MB Snappy-compressed)**, covering 2020-01-01 → 2026-03-31. Per-year partitioned copies live under `data/historical/backfill/year=YYYY/` for per-year consumption without a full-file read. An annual rollup derived from this archive lives at `data/historical/per_region_annual.parquet` (203 rows = 29 regions × 7 years).
 
 ## Schema versioning
 
