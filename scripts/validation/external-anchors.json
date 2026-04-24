@@ -39,7 +39,8 @@
     "tso_annual_latest": "PSM 2024 Pilbara grid curtailment ~0.1 TWh (mining-dominated demand)"
   },
   "baltics": {
-    "tso_annual_latest": "Litgrid 2024 Baltic states combined wind curtailment ~0.2 TWh"
+    "tso_annual_latest": "Litgrid 2024 Baltic states combined wind curtailment ~0.2 TWh",
+    "tso_annual_twh": {"2024": 0.20}
   },
   "bangladesh": {
     "tso_annual_latest": "BPDB 2024 RES curtailment minimal (coal-dominant grid)"
@@ -74,7 +75,8 @@
     "tso_annual_latest": "BC Hydro 2024 curtailment minimal (hydro baseload)"
   },
   "bulgaria": {
-    "tso_annual_latest": "ESO 2024 RES curtailment ~0.1 TWh"
+    "tso_annual_latest": "ESO 2024 RES curtailment ~0.1 TWh",
+    "tso_annual_twh": {"2024": 0.10}
   },
   "caiso": {
     "tso_annual_latest": "CAISO ~3.4 TWh solar + ~0.5 TWh wind (2024, Ascend Analytics / CAISO daily reports)",
@@ -91,7 +93,8 @@
     "tso_annual_latest": "TSOC 2024 PV curtailment ~0.15 TWh"
   },
   "czech-republic": {
-    "tso_annual_latest": "ČEPS 2024 RES curtailment <0.1 TWh"
+    "tso_annual_latest": "ČEPS 2024 RES curtailment <0.1 TWh (treated as 0.05 TWh midpoint for Δ% calc)",
+    "tso_annual_twh": {"2024": 0.05}
   },
   "denmark-east": {
     "tso_annual_latest": "Energinet 2024 DK2 ~0.2 TWh",
@@ -184,7 +187,8 @@
     "tso_annual_latest": "ENEE 2024 RES curtailment low"
   },
   "hungary": {
-    "tso_annual_latest": "MAVIR 2024 RES curtailment ~0.15 TWh"
+    "tso_annual_latest": "MAVIR 2024 RES curtailment ~0.15 TWh (solar dominant)",
+    "tso_annual_twh": {"2024": 0.15}
   },
   "iberia": {
     "tso_annual_latest": "REE 2024 renewable curtailment ~2.1 TWh (Spain)",
@@ -251,10 +255,12 @@
     "tso_annual_latest": "NOGA 2024 PV curtailment ~0.2 TWh"
   },
   "italy-north-zone": {
-    "tso_annual_latest": "Terna 2024 Italy North zonal overflow redispatch ~1.1 TWh"
+    "tso_annual_latest": "Terna 2024 North zone ~0.108 TWh (35% of Terna national 0.31 TWh RES curtailment anchor, used for rate calibration). Broader Terna 'zonal overflow redispatch' ~1.1 TWh is a different metric.",
+    "tso_annual_twh": {"2024": 0.108}
   },
   "italy-sardinia": {
-    "tso_annual_latest": "Terna 2024 Sardinia ~0.3 TWh"
+    "tso_annual_latest": "Terna 2024 Sardinia ~0.062 TWh (20% of Terna national 0.31 TWh RES curtailment anchor, used for rate calibration).",
+    "tso_annual_twh": {"2024": 0.062}
   },
   "italy-south": {
     "tso_annual_latest": "Terna 2024 Italy South zonal ~2.3 TWh (PV-heavy congestion)"
@@ -303,8 +309,9 @@
     "tso_annual_latest": "NamPower 2024 RES curtailment minimal"
   },
   "netherlands": {
-    "tso_annual_latest": "TenneT 2024 redispatch+curtailment ~2.5 TWh (all technologies)",
-    "other_anchor": "TenneT Kwaliteits- en Capaciteitsdocument 2024"
+    "tso_annual_latest": "IEEFA 2025 summary of TenneT 2024 curtailment: 3.0 TWh wind+solar (4.9% VRE curtailment rate) — the number the wind+solar rates in src/data/entsoe.json.ts were calibrated to.",
+    "tso_annual_twh": {"2024": 3.0},
+    "other_anchor": "TenneT Kwaliteits- en Capaciteitsdocument 2024 cites broader ~2.5 TWh 'redispatch+curtailment all technologies' — different scope"
   },
   "new-zealand": {
     "tso_annual_latest": "Transpower 2024 RES curtailment low"
@@ -323,10 +330,12 @@
     "tso_annual_latest": "Statnett NO2 small curtailment; cable corridor mostly exports out"
   },
   "norway-no3": {
-    "tso_annual_latest": "Statnett NO3 ~0.1 TWh wind curtailment"
+    "tso_annual_latest": "Statnett NO3 ~0.1 TWh wind curtailment",
+    "tso_annual_twh": {"2024": 0.10}
   },
   "norway-no4": {
-    "tso_annual_latest": "Statnett NO4 ~0.3 TWh wind curtailment (export-constrained north)"
+    "tso_annual_latest": "Statnett NO4 ~0.3 TWh wind curtailment (export-constrained north)",
+    "tso_annual_twh": {"2024": 0.30}
   },
   "norway-no5": {
     "tso_annual_latest": "Statnett NO5 hydro spring spill only (not in A75)"
@@ -375,7 +384,8 @@
     "other_anchor": "PJM Renewable Integration Study 2024; PJM Markets Monitor 2024"
   },
   "poland": {
-    "tso_annual_latest": "PSE 2024 redispatch ~1.5 TWh (estimate, no single published figure)"
+    "tso_annual_latest": "URE 2024 redispatch report: 621 GWh PV + 128 GWh wind non-market RES reductions = 0.749 TWh. The number the rates in src/data/entsoe.json.ts were calibrated to. Broader PSE 'redispatch' ~1.5 TWh is a different scope.",
+    "tso_annual_twh": {"2024": 0.749}
   },
   "portugal": {
     "tso_annual_latest": "REN 2024 renewable curtailment ~0.4 TWh",
@@ -434,10 +444,12 @@
     "tso_annual_latest": "Svk 2024 SE1+SE2 minimal curtailment — hydro baseload dominates"
   },
   "sweden-south": {
-    "tso_annual_latest": "Svk 2024 SE3+SE4 ~0.2 TWh wind curtailment"
+    "tso_annual_latest": "Svk 2024 SE3+SE4 ~0.2 TWh wind curtailment",
+    "tso_annual_twh": {"2024": 0.20}
   },
   "switzerland": {
-    "tso_annual_latest": "Swissgrid 2024 PV curtailment ~0.1 TWh; hydro spill not in A75 (excluded from our figure)"
+    "tso_annual_latest": "Swissgrid 2024 PV curtailment ~0.1 TWh; hydro spill not in A75 (excluded from our figure)",
+    "tso_annual_twh": {"2024": 0.10}
   },
   "taiwan": {
     "tso_annual_latest": "Taipower 2024 RES curtailment ~0.3 TWh"
