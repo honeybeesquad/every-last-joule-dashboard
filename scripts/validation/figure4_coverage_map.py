@@ -44,10 +44,12 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 REGIONS_TS = REPO_ROOT / "src" / "lib" / "regions.ts"
 DEFAULT_OUT_DIR = REPO_ROOT / "docs" / "figures"
 
-# Must stay in sync with scripts/build_annual_rollup.py
-STATIC_T3_REGIONS = {
-    "sichuan", "xinjiang", "iceland", "ukraine",
-    "hawaii-oahu", "hawaii-maui", "hawaii-island",
+# Static-region profile kinds. Mirrors `src/lib/uncertainty.ts::deriveTier`
+# routing: only flat-shape statics route to T2-annual-calibrated; every other
+# diurnal/seasonal/mixed/overnight profileKind routes to T3-modelled. Must
+# stay in sync with `scripts/tally-tiers.ts::STATIC_PROFILE_KIND`.
+STATIC_FLAT_REGIONS = {
+    "austria", "russia-murmansk-wind",
 }
 
 # Region row regex — captures id, tier, lat, lon plus peakGW if present.
@@ -83,10 +85,15 @@ def derive_tier(region_id: str, region_tier: str) -> str:
     if region_tier == "flare":
         return "flare"
     if region_tier == "static":
-        if region_id in STATIC_T3_REGIONS:
-            return "T3-modelled"
-        return "T2-annual-calibrated"
-    return "T2-annual-calibrated"
+        # Only flat-shape statics (Austria APG, Russia Murmansk wind) carry a
+        # published annual anchor without diurnal modelling — those route to
+        # T2-annual-calibrated. Every other static region uses a typical
+        # diurnal/seasonal/mixed/overnight shape scaled to an annual anchor,
+        # which is T3-modelled per `src/lib/uncertainty.ts::deriveTier`.
+        if region_id in STATIC_FLAT_REGIONS:
+            return "T2-annual-calibrated"
+        return "T3-modelled"
+    return "T3-modelled"
 
 
 def load_regions() -> list[dict]:

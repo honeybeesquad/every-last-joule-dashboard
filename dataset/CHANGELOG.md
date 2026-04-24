@@ -27,7 +27,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 - `docs/figures/figure1_global_map.{pdf,png}` — global curtailment snapshot (128 dots tier-coloured, √peakGW-scaled; top-8 labelled). Source: `src/lib/regions.ts` + `data/snapshots/last-good/*.json`.
 - `docs/figures/figure2_validation_scatter.{pdf,png}` — backfill vs. TSO annual (23 region-years, tier bands, discrepancy classification). Source: `data/historical/figure2_validation_scatter.csv`.
 - `docs/figures/figure3_temporal_trace.{pdf,png}` — daily global curtailment 2020–2026, EIA + ENTSO-E stacked (320.7 TWh archive). Source: `data/historical/figure3_daily_global.csv`.
-- `docs/figures/figure4_coverage_map.{pdf,png}` — per-region confidence-tier coverage map (T1 60, T2 57, T2-flare 4, T3 7). Source: `src/lib/regions.ts`.
+- `docs/figures/figure4_coverage_map.{pdf,png}` — per-region confidence-tier coverage map (T1 66, T2 2, T2-flare 4, T3 56). Source: `src/lib/regions.ts` + `src/lib/uncertainty.ts::deriveTier`; counts emitted by `scripts/tally-tiers.ts`.
 - `docs/figures/figure5_top20_timeseries.{pdf,png}` — top-20 regions by mean annual TWh, 4×5 facet grid 2020–2026. Source: `data/historical/per_region_annual.parquet`.
 - `docs/figures/README.md` — regeneration commands + Python dependency note (isolated `.venv` with `matplotlib + pyarrow`).
 - `docs/paper/figure-captions.md` — journal-ready Scientific Data house-style captions for all 5 figures, each ≤90 words with source-data statement.

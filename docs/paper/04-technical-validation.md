@@ -146,21 +146,26 @@ Figure 4 answers the single-glance question "where is the dataset
 strong and where is it weak?" at geographic scale. Each of the 128
 regions renders as a tier-coloured dot:
 
-- **T1-live-TSO (60 regions, teal).** Dense over North America,
-  Europe, and Norway; patchy elsewhere.
-- **T2-annual-calibrated (57 regions, amber).** Broad coverage of
-  Latin America, the Middle East flare-adjacent belt, Australasia,
-  smaller European zones, and emerging-market calibrations.
+- **T1-live-TSO (66 regions, teal).** Dense over North America,
+  Europe, the Nordics, Australia (AEMO five states), Brazil (eleven
+  ONS states), Norway (NO1–NO5), and the UK; the EIA + ENTSO-E +
+  AEMO + ONS quartet is the dataset's strongest spine.
+- **T2-annual-calibrated (2 regions, amber).** Austria APG and
+  Russia Murmansk wind — both flat-base proxies built on a
+  published annual without diurnal modelling.
 - **T2 flare (4 regions, brown square).** Permian, West Siberia,
   South Iraq, East Saudi — correctly flat 24/7 baseload.
-- **T3-modelled (7 regions, terracotta).** Sichuan, Xinjiang,
-  Iceland, Ukraine, three Hawaii islands — where no public hourly
-  source exists.
+- **T3-modelled (56 regions, terracotta).** Static annual anchors
+  (Ember, IRENA, regulator reports) combined with a typical diurnal
+  or monthly-seasonal shape. Covers most of South Asia, Africa, the
+  Middle East outside flare, Latin America outside Brazil/Argentina,
+  smaller Chinese provinces, and the Hawaii islands.
 
-Tier assignment is deterministic from the loader id (code-level
-truth: `scripts/build_annual_rollup.py::derive_tier` and
-`scripts/validation/figure4_coverage_map.py::derive_tier` are the
-same function by construction).
+Tier assignment is deterministic from `Region.tier` plus the loader
+profileKind (code-level truth: `src/lib/uncertainty.ts::deriveTier`).
+Live counts are emitted by `scripts/tally-tiers.ts`, which any
+reviewer can run to confirm the figure values from the source of
+truth in `src/lib/regions.ts`.
 
 ## 4.6 Seven-year temporal trace (Figure 3)
 

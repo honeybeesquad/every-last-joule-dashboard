@@ -76,19 +76,23 @@ by `scripts/validation/figure3_temporal_trace.py`.
 
 **Per-region confidence tier assignment.** The same geographic base
 as Figure 1 with dot size held constant and tier colour carrying the
-full visual signal. Green dots (n=60) are T1-live-TSO regions backed
+full visual signal. Green dots (n=66) are T1-live-TSO regions backed
 by hourly feeds and the 2020–2026 HB backfill (±15% envelope). Amber
-dots (n=57) are T2 annual-calibrated regions with a published annual
-anchor but no hourly feed (±20%). Brown squares (n=4) are T2 flare
-regions whose correct shape is 24/7 baseload. Terracotta dots (n=7)
-are T3 typical-profile modelled regions where no public hourly source
-exists (Sichuan, Xinjiang, Iceland, Ukraine, and the three Hawaii
-islands). Total n=128 regions. The figure is the single-glance answer
-to "where is the dataset strong and where is it weak?" — T1 coverage
-is dense over North America, Europe, and the Nordics, while large
-parts of South America, Africa, and South Asia sit at T2 or below.
-Source data: `src/lib/regions.ts`. Tier mapping is identical to
-`scripts/build_annual_rollup.py::derive_tier` by construction.
+dots (n=2) are T2 annual-calibrated regions with a published annual
+anchor and a flat-shape proxy (Austria APG, Russia Murmansk wind;
+±20%). Brown squares (n=4) are T2 flare regions whose correct shape
+is 24/7 baseload (Permian, West Siberia, South Iraq, East Saudi).
+Terracotta dots (n=56) are T3 typical-profile modelled regions —
+static annual anchors combined with a typical diurnal/seasonal shape
+(solar cosine, wind broad-overnight, hydro monthly-seasonal, mixed
+fuel-share, geothermal-overnight). Total n=128 regions. The figure
+is the single-glance answer to "where is the dataset strong and
+where is it weak?" — T1 coverage is dense over North America, Europe,
+the Nordics, Australia, and Brazil, while large parts of South Asia,
+Africa, the Middle East, and Latin America sit at T3 (modelled
+shape on a published annual). Source data: `src/lib/regions.ts`.
+Tier mapping is identical to `src/lib/uncertainty.ts::deriveTier` by
+construction; counts emitted live by `scripts/tally-tiers.ts`.
 
 ## Figure 5
 
