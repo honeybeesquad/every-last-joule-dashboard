@@ -22,13 +22,12 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| 2020 | 26,334 | 8.944 | — | — | entsoe |
-| 2021 | 26,276 | 8.039 | — | — | entsoe |
-| 2022 | 26,277 | 8.731 | — | — | entsoe |
-| 2023 | 26,280 | 9.054 | — | — | entsoe |
-| 2024 | 26,348 | 9.417 | 23.200 | -59.4% | entsoe |
-| 2025 | 26,280 | 9.586 | — | — | entsoe |
-| 2026 | 8,169 | 3.610 | — | — | entsoe |
+| 2020 | 17,555 | 8.944 | — | — | entsoe |
+| 2021 | 17,519 | 8.039 | — | — | entsoe |
+| 2022 | 17,520 | 8.731 | — | — | entsoe |
+| 2023 | 17,520 | 9.054 | — | — | entsoe |
+| 2024 | 17,568 | 9.417 | 23.200 | -59.4% | entsoe |
+| 2025 | 17,520 | 9.586 | — | — | entsoe |
 
 ## Published anchors
 
@@ -48,7 +47,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_germany_*.parquet` (7 years)
+- Backfill archive: `data/historical/backfill/*_germany_*.parquet` (6 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
