@@ -44,8 +44,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 VALIDATION_DIR = REPO_ROOT / "docs" / "validation"
 METHODOLOGY_DIR = REPO_ROOT / "docs" / "methodology"
 
-# Regions currently with populated backfill annual rows. Re-derive this
-# list whenever more backfills land.
+# Regions currently with populated backfill annual rows and at least one
+# year with a TSO anchor Δ%. Re-derive this list whenever more backfills
+# land and new anchors are added.
 TARGETS = [
     "caiso",
     "ercot-east",
@@ -53,6 +54,8 @@ TARGETS = [
     "germany",
     "greece",
     "iberia",
+    "iso-ne",
+    "nyiso",
     "pjm",
     "poland",
     "portugal",

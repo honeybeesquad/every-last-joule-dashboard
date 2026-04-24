@@ -75,7 +75,7 @@ Last generated: 2026-04-24
 | S. Iraq | flare | flare | 0 | [s-iraq](./s-iraq.md) |
 | Iceland | static | hydro | 0 | [iceland](./iceland.md) |
 | Israel | static | solar | 0 | [israel](./israel.md) |
-| Italy North | live | mixed | 2 | [italy-north-zone](./italy-north-zone.md) |
+| Italy North | live | mixed | 7 | [italy-north-zone](./italy-north-zone.md) |
 | Sardinia | live | mixed | 0 | [italy-sardinia](./italy-sardinia.md) |
 | Italy South | live | mixed | 0 | [italy-south](./italy-south.md) |
 | Jordan | static | mixed | 0 | [jordan](./jordan.md) |
@@ -102,13 +102,13 @@ Last generated: 2026-04-24
 | Poland | live | mixed | 7 | [poland](./poland.md) |
 | Portugal | live | mixed | 7 | [portugal](./portugal.md) |
 | Paraguay | static | hydro | 0 | [paraguay](./paraguay.md) |
-| Romania | live | mixed | 2 | [romania](./romania.md) |
+| Romania | live | mixed | 7 | [romania](./romania.md) |
 | Russia (European grid) | static | hydro | 0 | [russia-mainland](./russia-mainland.md) |
 | Russia (Murmansk) | static | wind | 0 | [russia-murmansk-wind](./russia-murmansk-wind.md) |
 | W. Siberia | flare | flare | 0 | [w-siberia](./w-siberia.md) |
 | E. Saudi Arabia | flare | flare | 0 | [e-saudi](./e-saudi.md) |
 | Saudi Arabia (solar) | static | solar | 0 | [saudi-solar](./saudi-solar.md) |
-| Sweden North | live | wind | 0 | [sweden-north](./sweden-north.md) |
+| Sweden North | live | wind | 1 | [sweden-north](./sweden-north.md) |
 | Sweden South | live | mixed | 0 | [sweden-south](./sweden-south.md) |
 | Thailand | static | solar | 0 | [thailand](./thailand.md) |
 | Turkey | live | mixed | 0 | [turkey](./turkey.md) |
@@ -122,9 +122,11 @@ Last generated: 2026-04-24
 | Hawaii (Big Island) | static | mixed | 0 | [hawaii-island](./hawaii-island.md) |
 | Hawaii (Maui) | static | solar | 0 | [hawaii-maui](./hawaii-maui.md) |
 | Hawaii (Oahu) | static | solar | 0 | [hawaii-oahu](./hawaii-oahu.md) |
+| ISO-NE (whole ISO) | live | mixed | 7 | [iso-ne](./iso-ne.md) |
 | ISO-NE Maine/Vermont | live | wind | 0 | [iso-ne-maine-vermont](./iso-ne-maine-vermont.md) |
 | ISO-NE (rest) | live | mixed | 0 | [iso-ne-rest](./iso-ne-rest.md) |
 | MISO (Midwest) | live | mixed | 7 | [miso](./miso.md) |
+| NYISO (whole ISO) | live | mixed | 7 | [nyiso](./nyiso.md) |
 | NYISO (rest) | live | mixed | 0 | [nyiso-rest](./nyiso-rest.md) |
 | NYISO Zones D+E | live | wind | 0 | [nyiso-zones-d-e](./nyiso-zones-d-e.md) |
 | Permian Basin | flare | flare | 0 | [permian](./permian.md) |

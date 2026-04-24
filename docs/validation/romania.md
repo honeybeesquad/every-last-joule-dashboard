@@ -24,6 +24,11 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 |---|---|---|---|---|---|
 | 2020 | 13,587 | 0.225 | — | — | entsoe |
 | 2021 | 13,720 | 0.214 | — | — | entsoe |
+| 2022 | 13,647 | 0.228 | — | — | entsoe |
+| 2023 | 13,615 | 0.245 | — | — | entsoe |
+| 2024 | 13,716 | 0.242 | — | — | entsoe |
+| 2025 | 13,505 | 0.256 | — | — | entsoe |
+| 2026 | 4,077 | 0.089 | — | — | entsoe |
 
 ## Published anchors
 
@@ -43,7 +48,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_romania_*.parquet` (2 years)
+- Backfill archive: `data/historical/backfill/*_romania_*.parquet` (7 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

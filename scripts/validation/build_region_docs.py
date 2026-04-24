@@ -59,6 +59,37 @@ def parse_regions_ts() -> list[dict]:
     return out
 
 
+# Whole-ISO aggregate region ids that exist in the backfill archive but
+# NOT in regions.ts (the dashboard ships split sub-regions instead). We
+# still want validation MDs for these aggregates because the paper's
+# published TSO anchors are at whole-ISO level. Kept in sync with the
+# BACKFILL_AGGREGATE_TIERS map in scripts/build_annual_rollup.py.
+BACKFILL_AGGREGATE_REGIONS: list[dict] = [
+    {
+        "id": "nyiso",
+        "name": "NYISO (whole ISO)",
+        "country": "USA",
+        "lat": 42.8,
+        "lon": -74.8,
+        "tier": "live",
+        "kind": "mixed",
+        "source": "EIA NYIS wind+solar (whole-ISO aggregate; dashboard splits into Zones D/E + rest)",
+        "source_url": "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data",
+    },
+    {
+        "id": "iso-ne",
+        "name": "ISO-NE (whole ISO)",
+        "country": "USA",
+        "lat": 42.2,
+        "lon": -71.8,
+        "tier": "live",
+        "kind": "mixed",
+        "source": "EIA ISNE wind+solar (whole-ISO aggregate; dashboard splits into ME/VT + rest)",
+        "source_url": "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data",
+    },
+]
+
+
 def load_anchors() -> dict[str, dict]:
     if ANCHORS_FILE.exists():
         return json.loads(ANCHORS_FILE.read_text())
@@ -333,6 +364,17 @@ def main() -> int:
     anchors = load_anchors()
     print(f"loaded {len(regions)} regions from regions.ts", file=sys.stderr)
     print(f"loaded anchors for {len(anchors)} regions", file=sys.stderr)
+
+    # Append whole-ISO aggregate regions (backfill-only; not in regions.ts).
+    region_ids = {r["id"] for r in regions}
+    for agg in BACKFILL_AGGREGATE_REGIONS:
+        if agg["id"] not in region_ids:
+            regions.append(agg)
+    print(
+        f"appended {len(BACKFILL_AGGREGATE_REGIONS)} whole-ISO aggregate regions "
+        "(nyiso, iso-ne)",
+        file=sys.stderr,
+    )
 
     written = 0
     for r in regions:
