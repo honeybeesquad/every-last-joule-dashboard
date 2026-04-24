@@ -6,12 +6,16 @@ import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "south-korea";
 const SOURCE_URL = "https://www.kpx.or.kr/eng/";
+const DATA_PORTAL_URL = "https://www.data.go.kr/data/15103243/openapi.do";
+const BLOCKER_NOTE =
+  "KPX/EPSIS pages are reachable, but the Data Portal KPX hourly solar/generation APIs require an approved serviceKey and no unauthenticated mainland curtailment feed was found";
 
 async function run({ probe = true } = {}): Promise<RegionData> {
   try {
     if (probe) {
       await fetchText(SOURCE_URL, { timeoutMs: 15000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } });
-      throw new Error("KPX/EPSIS public pages do not expose mainland hourly curtailment");
+      await fetchText(DATA_PORTAL_URL, { timeoutMs: 15000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } });
+      throw new Error(BLOCKER_NOTE);
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
@@ -19,7 +23,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       REGION_ID,
       3,
       0.5,
-      `Typical-shape fallback: KPX mainland live feed unavailable (${(err as Error).message}); calibration anchor ~0.5 TWh/yr mainland solar curtailment, excluding Jeju.`,
+      `Typical-shape fallback: KPX mainland live feed unavailable (${(err as Error).message}); calibration anchor remains ~0.5 TWh/yr mainland solar curtailment, excluding Jeju.`,
       "2024",
     );
   }

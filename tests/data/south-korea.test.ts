@@ -9,5 +9,7 @@ describe("south-korea loader", () => {
     expect(data.latestProfile).toBeNull();
     expect(data.totalTWh).toBeGreaterThan(0);
     expect(data.peakGW).toBeGreaterThan(0);
+    expect(data.sourceNote).toContain("Typical-shape fallback");
+    expect(data.sourceNote).toContain("mainland");
   });
 });
