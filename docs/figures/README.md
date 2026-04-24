@@ -59,6 +59,10 @@ See the companion narrative in:
 - `docs/validation/<region>.md` — per-region Discrepancy analysis for
   every point on the scatter; material (>50% |Δ%|) offsets are named
   and diagnosed individually.
+- `docs/methodology/validation-discrepancies.md` — dataset-level
+  survey of all 23 Figure 2 pairs, grouped by gap magnitude with the
+  diagnostic category for each material discrepancy and the v1
+  recalibration candidates that are deferred from this submission.
 
 ## Figure 3 methodology
 
