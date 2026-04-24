@@ -8,3 +8,5 @@ dist/
 .vercel
 gemini-cli/
 verify-b1.mjs
+__pycache__/
+*.pyc
