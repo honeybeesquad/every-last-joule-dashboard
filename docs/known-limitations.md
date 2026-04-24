@@ -40,15 +40,13 @@ Coordinador Eléctrico Nacional publishes a documented developer portal with SIP
 
 CEN also publishes daily `Resumen Ejecutivo de Operación` PDFs through the Informe de Novedades CDC directory. These PDFs include national daily solar and wind reduction totals from real-time operation, so the Atacama/Chile solar loader now uses the daily solar-reduction totals as the primary freshness source. The PDFs are daily but aggregate, not hourly; to avoid replacing measured data with a generic shape, the loader still parses the latest monthly `Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_*_PE-PFV_Publicar.xlsx` workbook and uses its `Resumen-DiarioHorario-Solar` sheet as the measured hourly apportionment shape. If the daily PDF path or PDF text extraction fails, the loader uses the monthly XLSX directly. If both live paths fail, `withFallback` serves the last-good snapshot rather than a typical solar profile.
 
-### 10. Xinjiang uses a typical solar shape; Sichuan and Iceland stay flat
+### 10. China provincial regions are calibrated annual estimates, not hourly observations
 
-Three regions have no publicly accessible hourly feed reachable from this build environment. v0.5 treats each according to the physics of what it actually wastes:
+The eight Chinese provincial regions are the dashboard's largest block of Tier-C estimates. They are now calibrated against NEA 2024 wind/PV utilisation rates, NEA river-basin hydro utilisation, and public provincial generation data; see `docs/methodology/china-provinces.md`.
 
-- **Xinjiang (solar)** uses `solarProfile(6.33, 15)` - a daylight bump centred on local solar noon at 85°E (UTC 06:20), scaled to the 15 TWh/year S&P figure. This is illustrative, not measured, but it lets Xinjiang participate in the sun-following visual story instead of registering as a steady flat bar that the terminator passes over without effect.
-- **Sichuan (hydro)** stays flat. Sichuan's "waste" is monsoon-season reservoir spill; the pattern is monthly-seasonal, not hourly. A flat annualised baseline is the honest shape for the daily view.
-- **Iceland (hydro + geothermal)** stays flat for the same reason. Iceland's stranded generation is continuous, not diurnal.
+The China block totals 65.4 TWh/year against an NEA-implied 2024 national renewable curtailment/spill total of about 84.7 TWh/year. The province-level uncertainty range is roughly 48-80 TWh/year, dominated by hydro-spill uncertainty in Sichuan, Yunnan, and Tibet/Xizang.
 
-The methodology page and this list label these three regions explicitly so readers can see where we're estimating a shape vs measuring one. v1 will upgrade Xinjiang, Sichuan, and Iceland to measured hourly data where a public source opens up.
+Hourly shape remains synthetic. Xinjiang uses a typical solar shape even though the annual source chain includes both wind and solar. Sichuan, Yunnan, and Tibet/Xizang use hydro-seasonal profiles because the public data identifies annual or seasonal spill risk, not measured hourly curtailed output. These regions should be read as annual magnitude estimates with defensible source chains, not as measured dispatch traces.
 
 ### 11. Flare regions are flat because flare is flat (not a data gap)
 

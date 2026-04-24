@@ -39,7 +39,10 @@ interface StaticSpec {
 //   The flat profile is methodologically correct, not a data gap.
 const STATIC_REGIONS: Record<string, StaticSpec> = {
   sichuan: { annualTWh: 30, kind: "hydro-seasonal", seasonalSharesKey: "sichuan", source: "Ember China Electricity Review 2025 (Yangtze basin monsoon hydro spill, peaks Jul-Aug, ~zero Nov-Apr)", reportDate: "2025-Q1" },
-  xinjiang: { annualTWh: 15, kind: "solar", localSolarPeakUTC: 6.33, source: "S&P 'Rising Curtailment in China' 2024 (typical-shape solar bump centred on local noon UTC 06:20)", reportDate: "2024" },
+  // NEA 2024 renewable monitoring evaluation: Xinjiang wind utilisation 93.4%,
+  // PV utilisation 92.2%; Huaon/NBS 2024 generation by fuel gives wind
+  // 70.79 TWh and PV 38.037 TWh, implying ~8.2 TWh curtailed.
+  xinjiang: { annualTWh: 8.2, kind: "solar", localSolarPeakUTC: 6.33, source: "NEA 2024 renewable monitoring evaluation + Huaon/NBS generation by fuel (Xinjiang wind/PV curtailment ~8.2 TWh; solar-shaped fallback centred on local noon UTC 06:20)", reportDate: "2024" },
   iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
   // Ukraine: ENTSO-E Ukrenergo returns empty A75 data post-2022 synchronisation.
   // Solar-dominant fallback at 1.2 TWh/yr; Ukrainian renewables are ~60% solar
