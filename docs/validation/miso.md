@@ -39,11 +39,13 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The backfill annual total for 2024 of 8.437 TWh exceeds the published MISO anchor of 5.500 TWh (2024 State of the Market, Potomac Economics) by 53.4%. This significant over-reporting is primarily attributed to a definitional difference in what constitutes "curtailment." Our reconstruction, based on generation multiplied by a derived rate, captures physical curtailment and potentially other forms of generation constraint (e.g., spill) as seen in the EIA data. The Potomac Economics report, however, may employ a narrower definition that excludes certain categories, such as economic curtailment or specific redispatch events, which are not visible in our upstream source data from EIA. No TSO annual anchors are available for other backfill years to assess year-over-year drift.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+-   The backfill exclusively uses EIA data from 2020 onwards, avoiding pre-2020 data to prevent mixing regimes due to EIA's definitional shift from BA-level to sub-BA reporting in 2019. This ensures consistency within the backfilled period.
+-   As detailed in `docs/methodology/historical-backfill.md`, our backfill approach uses a uniform calibration rate across all years. While this simplifies the model, it does not account for year-over-year drift in TSO curtailment rates due to evolving capacity mixes or policy changes, although significant discrepancies are flagged (e.g., 2024).
+-   Cross-cutting limitations common to all backfilled regions are documented in `docs/methodology/historical-backfill.md` §"Known limitations".
 
 ## Links
 

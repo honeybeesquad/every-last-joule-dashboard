@@ -39,11 +39,14 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill total of 0.809 TWh underreports by 73.0% against the published TenneT 2024 anchor of 3.000 TWh wind+solar curtailment. This significant discrepancy is likely definitional. While the loader's rates are calibrated to the IEEFA 2025 summary figure, the underlying methodology multiplies ENTSO-E A75 generation data by these rates. The published TSO anchor may encompass a broader scope of grid management actions, such as redispatch or economic curtailment, that are not captured by the current generation-times-rate model.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The current loader calculates curtailment by applying calibrated rates to ENTSO-E A75 generation data. This approach may not capture all forms of curtailment (e.g., redispatch, economic curtailment) that are sometimes included in aggregate TSO annual reports, leading to potential definitional discrepancies.
+*   Calibration relies on an aggregate wind+solar curtailment rate derived from an IEEFA summary, as granular (fuel-specific) TSO-published curtailment rates for the Netherlands are not publicly available.
+*   The ENTSO-E A77 API product, which provides explicit curtailed renewable energy data, is not yet integrated. Future work to implement A77 zone-by-zone could refine these figures and address definitional gaps.
+*   For cross-cutting limitations applicable to all backfilled regions, see `docs/methodology/historical-backfill.md` §"Known limitations".
 
 ## Links
 

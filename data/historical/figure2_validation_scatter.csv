@@ -14,6 +14,8 @@ italy-north-zone,Italy North,2024,T1-live-TSO,0.15,0.0594,0.0505,0.0683,0.108,-4
 italy-sardinia,Sardinia,2024,T1-live-TSO,0.15,0.1163,0.0988,0.1337,0.062,87.56,"Terna 2024 Sardinia ~0.062 TWh (20% of Terna national 0.31 TWh RES curtailment anchor, used for rate calibration)."
 miso,MISO (Midwest),2024,T1-live-TSO,0.15,8.4372,7.1716,9.7028,5.5,53.4,"MISO ~5 TWh wind + ~0.5 TWh solar (2024 State of the Market, Potomac Economics)"
 netherlands,Netherlands,2024,T1-live-TSO,0.15,0.8086,0.6873,0.9299,3.0,-73.05,IEEFA 2025 summary of TenneT 2024 curtailment: 3.0 TWh wind+solar (4.9% VRE curtailment rate) — the number the wind+solar rates in src/data/entsoe.json.ts were calibrated to.
+norway-no3,Norway NO3 (Trondheim),2024,T1-live-TSO,0.15,0.7223,0.614,0.8307,0.1,622.33,Statnett NO3 ~0.1 TWh wind curtailment
+norway-no4,Norway NO4 (Tromsø),2024,T1-live-TSO,0.15,1.196,1.0166,1.3754,0.3,298.68,Statnett NO4 ~0.3 TWh wind curtailment (export-constrained north)
 nyiso,NYISO (whole ISO),2023,T1-live-TSO,0.15,0.1381,0.1174,0.1588,0.162,-14.73,NYISO 2023 statewide wind curtailment ~0.162 TWh (NYISO Power Trends 2024). Solar curtailment not separately reported.
 poland,Poland,2024,T1-live-TSO,0.15,0.7263,0.6174,0.8353,0.749,-3.03,URE 2024 redispatch report: 621 GWh PV + 128 GWh wind non-market RES reductions = 0.749 TWh. The number the rates in src/data/entsoe.json.ts were calibrated to. Broader PSE 'redispatch' ~1.5 TWh is a 
 portugal,Portugal,2024,T1-live-TSO,0.15,0.9125,0.7756,1.0494,0.4,128.13,REN 2024 renewable curtailment ~0.4 TWh

@@ -25,6 +25,10 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2020 | 17,456 | 0.200 | — | — | entsoe |
 | 2021 | 17,379 | 0.187 | — | — | entsoe |
 | 2022 | 17,468 | 0.076 | — | — | entsoe |
+| 2023 | 17,485 | 0.113 | — | — | entsoe |
+| 2024 | 17,528 | 0.107 | — | — | entsoe |
+| 2025 | 17,467 | 0.099 | — | — | entsoe |
+| 2026 | 5,356 | 0.035 | — | — | entsoe |
 
 ## Published anchors
 
@@ -44,7 +48,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 ## Links
 
 - Loader source: [`norway.json.ts`](../../src/data/norway.json.ts)
-- Backfill archive: `data/historical/backfill/*_norway-no1_*.parquet` (3 years)
+- Backfill archive: `data/historical/backfill/*_norway-no1_*.parquet` (7 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

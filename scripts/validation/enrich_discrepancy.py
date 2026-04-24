@@ -59,11 +59,29 @@ TARGETS = [
     "pjm",
     "poland",
     "portugal",
+    # Added in S1/S2 checkpoint 6 after 2024 TSO anchors were extracted and
+    # backfill rows landed for these regions:
+    "baltics",
+    "bulgaria",
+    "czech-republic",
+    "hungary",
+    "italy-north-zone",
+    "italy-sardinia",
+    "miso",
+    "netherlands",
+    "spp",
+    "sweden-south",
+    "switzerland",
 ]
 
 # ENTSO-E regions — get the entsoe-rates audit in context; others get just
 # the general backfill methodology.
-ENTSOE_REGIONS = {"germany", "greece", "iberia", "poland", "portugal", "netherlands"}
+ENTSOE_REGIONS = {
+    "germany", "greece", "iberia", "poland", "portugal", "netherlands",
+    "baltics", "bulgaria", "czech-republic", "hungary",
+    "italy-north-zone", "italy-sardinia",
+    "sweden-south", "switzerland",
+}
 
 # The two sections we replace. Matches everything between the section
 # header and the next `## ` header (or EOF).
@@ -263,15 +281,36 @@ def process_region(region_id: str, dry_run: bool = False) -> bool:
     return True
 
 
+def is_placeholder(region_id: str) -> bool:
+    """True if the region's MD still contains the auto-generated placeholder
+    and therefore should be (re-)enriched."""
+    md = VALIDATION_DIR / f"{region_id}.md"
+    if not md.exists():
+        return False
+    return "_Auto-generated placeholder" in md.read_text()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", type=str, default=None,
                     help="Process just one region (for debugging).")
     ap.add_argument("--dry-run", action="store_true",
                     help="Print prompts without calling gemini.")
+    ap.add_argument("--skip-enriched", action="store_true",
+                    help="Skip regions whose MD has already been enriched "
+                         "(i.e. no longer contains the placeholder marker).")
+    ap.add_argument("--force-all", action="store_true",
+                    help="Override --skip-enriched and process every TARGETS "
+                         "entry even if already enriched. Useful after rate "
+                         "re-calibration or anchor set change.")
     args = ap.parse_args()
 
     targets = [args.only] if args.only else TARGETS
+    if args.skip_enriched and not args.force_all:
+        before = len(targets)
+        targets = [t for t in targets if is_placeholder(t)]
+        print(f"--skip-enriched: {before - len(targets)} already-enriched "
+              f"regions skipped, {len(targets)} remaining.")
     ok = 0
     fail = 0
     for r in targets:

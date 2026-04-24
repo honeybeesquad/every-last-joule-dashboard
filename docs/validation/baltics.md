@@ -28,6 +28,7 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2023 | 8,742 | 0.060 | — | — | entsoe |
 | 2024 | 8,767 | 0.082 | 0.200 | -58.9% | entsoe |
 | 2025 | 8,756 | 0.096 | — | — | entsoe |
+| 2026 | 2,723 | 0.044 | — | — | entsoe |
 
 ## Published anchors
 
@@ -38,16 +39,20 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill annual total of 0.082 TWh for the Baltic states significantly underreports the Litgrid 2024 published combined wind curtailment of ~0.200 TWh, showing a discrepancy of -58.9%. This material divergence exceeds the 25% flagging threshold specified in the historical backfill methodology.
+
+This discrepancy is primarily attributed to rate under-calibration. As documented in the ENTSO-E Curtailment-Rate Audit, no citable 2023 or 2024 annual curtailed-energy total was found for Lithuania/Baltics, meaning the applied 2.5% wind curtailment rate is an acknowledged placeholder rather than a measured annual calibration.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+- The curtailment rate for `baltics` is an acknowledged placeholder. No citable 2023 or 2024 annual curtailed-energy total has been identified for Lithuania/Baltics against which to ground the rate.
+- Consequently, the rates used in the backfill should be treated as illustrative floor/ceiling values rather than direct annual calibration figures, as detailed in the ENTSO-E Curtailment-Rate Audit.
+- See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes applicable to all backfilled regions.
 
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_baltics_*.parquet` (6 years)
+- Backfill archive: `data/historical/backfill/*_baltics_*.parquet` (7 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

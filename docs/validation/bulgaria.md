@@ -39,11 +39,12 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The backfill's 2024 annual total of 0.119 TWh for Bulgaria exceeds the published ESO TSO annual curtailment of ~0.1 TWh by 18.6%. This delta, while below the threshold for automatic flagging, is most plausibly attributed to rate under/over-calibration. The ENTSO-E Curtailment-Rate Audit confirmed that the rates applied for Bulgaria are acknowledged placeholders, lacking a citable 2023/2024 annual curtailed-energy total from the TSO. Consequently, the uniform application of these illustrative rates across all backfilled years, as detailed in the Historical Backfill methodology, can result in year-over-year drift against official TSO publications.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   **Rate under-grounding**: The curtailment rates applied for Bulgaria's solar (`B16`) and wind (`B19`) generation are acknowledged placeholders. The ENTSO-E Curtailment-Rate Audit confirmed that no citable 2023/2024 annual curtailed-energy total was found from the TSO (ESO), meaning the rates of 2.0% (solar) and 1.5% (wind) are illustrative and not directly derived from published annual figures.
+*   The backfill methodology applies a single, static curtailment rate uniformly across all backfilled years. This approach can introduce minor year-over-year deviations when compared to published TSO annual totals, which reflect dynamic changes in capacity mix and operational practices.
 
 ## Links
 
