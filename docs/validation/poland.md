@@ -39,11 +39,15 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill annual total of 0.726 TWh is 3.1% lower than the 0.749 TWh reported in URE's 2024 redispatch report (597.26 GWh PV + 24.12 GWh PV DSO + 125.1 GWh Wind + 2.8 GWh Wind DSO). This minor discrepancy is likely definitional, stemming from subtle differences in the scope of "redispatch" as defined by the source versus the aggregated curtailment calculated from our generation-times-rate methodology.
+
+For all other backfill years (2020-2023, 2025-2026), no equivalent TSO annual curtailment figures are publicly available to conduct a direct comparison. Consequently, the year-over-year drift in backfill totals for these periods cannot be directly cross-referenced against published anchors.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The current loader for Poland calculates curtailment by applying static rates to observed generation data. The existence of a more direct ENTSO-E API product (`documentType=A77`) for "Curtailed Renewable Energy" implies that actual hourly curtailment values could be directly captured, but this is not yet implemented.
+*   Static curtailment rates, although grounded in the URE 2024 redispatch report for the current year, are applied uniformly across all backfill years (2020-2026). This approach does not account for year-over-year changes in capacity mix, grid topology, or operational policies that might cause actual curtailment rates to drift in non-2024 periods.
+*   With the exception of 2024, no TSO-published annual curtailment totals are available to validate the backfill figures for other years (2020-2023, 2025-2026), limiting direct year-over-year verification.
 
 ## Links
 

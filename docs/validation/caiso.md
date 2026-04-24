@@ -39,11 +39,12 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+For 2024, the backfill annual total of 2.757 TWh underreports the published CAISO anchor of 3.9 TWh (derived from Ascend Analytics / CAISO daily reports) by 29.3%. This discrepancy is primarily attributable to definitional differences in curtailment reporting. Our loader, which uses EIA data, focuses on physical curtailment derived from generation multiplied by a fixed rate. CAISO's broader public figures are understood to include additional categories such as economic curtailment or redispatch wind-down, which are not captured in the EIA feed.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The backfill data for CAISO, derived from EIA reporting, only commences from 2020. This is a consequence of a definitional shift in EIA's methodology from BA-level to sub-BA detail in 2019, preventing a consistent backfill for earlier years.
+*   As a T1-live-TSO region, CAISO's uncertainty envelope currently defaults to ±15% of the current-snapshot `peakGW`. This temporary fallback is in place until the multi-year backfill archive is fully populated and stable, enabling a more robust 2σ calculation based on observed year-over-year variance.
 
 ## Links
 

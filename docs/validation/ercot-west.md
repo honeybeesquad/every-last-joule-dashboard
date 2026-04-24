@@ -39,11 +39,16 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill total for ERCOT West (5.797 TWh) underreports against the ERCOT-wide TSO published figure of 8.8 TWh (Potomac Economics, 2024) by approximately 34.1%. This discrepancy is primarily attributed to a scope mismatch: the TSO figure applies to the entire ERCOT balancing authority, while our backfill models the ERCOT West zone using an illustrative 66/34 split. The underlying curtailment rate is an ERCOT-wide average, further contributing to this divergence when applied to a sub-regional estimation.
+
+Year-over-year reconciliation against published TSO data is currently limited to 2024, as no earlier ERCOT-wide annual curtailment figures from a TSO source have been extracted.
 
 ## Known limitations
 
-West/East split (66/34) is illustrative only — no public ERCOT zonal dispatch-down series was found as of 2026-04. Rate calibration is ERCOT-wide.
+*   The 66/34 West/East zonal split is illustrative; no public ERCOT zonal dispatch-down series was found as of April 2026. The rate calibration used is ERCOT-wide.
+*   Pre-2020 EIA data is excluded from the backfill to avoid mixing reporting regimes, as EIA shifted from BA-level to sub-BA detail in 2019.
+*   Our curtailment series reflects generation multiplied by a derived rate. Published TSO figures may include other components, such as economic curtailment or redispatch wind-down, creating potential definitional differences.
+*   The applied curtailment rate is an ERCOT-wide average, uniformly applied across all backfill years. This simplification may not fully capture year-on-year variations in zonal capacity mix or specific rate adjustments.
 
 ## Links
 

@@ -39,11 +39,13 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The backfill's 2024 annual total of 0.913 TWh for Portugal substantially overreports the REN 2024 renewable curtailment of ~0.4 TWh by +128.1%. This material discrepancy is primarily due to **rate over-calibration**. The ENTSO-E rate audit (2026-04-24) identified that no citable 2023/2024 curtailment total was available from REN for either solar (B16) or wind (B19) generation. Consequently, the rates applied in the backfill are acknowledged placeholders rather than values derived from measured annual curtailment, leading to an upward bias in the reconstructed curtailment volume.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The curtailment rates for solar (B16) and wind (B19) in Portugal are currently ungrounded placeholders. No citable 2023/2024 TSO annual curtailment total has been extracted from REN data for calibration.
+*   As a result, the backfill annual totals are derived from illustrative floor/ceiling values rather than measured annual calibration.
+*   See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes on the backfill approach.
 
 ## Links
 

@@ -146,6 +146,66 @@ def build_annual_table(
     return "\n".join(lines) + "\n"
 
 
+_PLACEHOLDER_MARKERS = (
+    "_Auto-generated placeholder",
+    "_Pending: no backfill parquet yet",
+    "_Backfill present but no TSO annual anchor",
+    "_No backfill and no TSO anchor.",
+    "No region-specific limitations recorded",
+    "Region is a **structural gap**",
+)
+
+
+def _is_placeholder(section_body: str) -> bool:
+    """True if this section is one of the known auto-generated placeholders.
+
+    We use this to distinguish placeholder text (safe to overwrite on
+    regeneration) from gemini-enriched prose (must preserve across rebuilds).
+    """
+    body = section_body.strip()
+    if not body:
+        return True
+    # Gemini prose is usually multi-paragraph and > 200 chars; placeholders are
+    # short italicised single-sentence notes. Length gate is a backstop.
+    if len(body) < 150 and any(m in body for m in _PLACEHOLDER_MARKERS):
+        return True
+    if any(body.startswith(m) for m in _PLACEHOLDER_MARKERS):
+        return True
+    return False
+
+
+def _extract_enriched_sections(md_path: Path) -> tuple[str | None, str | None]:
+    """Read an existing validation MD and return (discrepancy, limitations)
+    section bodies IF they are non-placeholder enriched prose; otherwise None.
+
+    Returns None for either section that's missing or placeholder so the
+    caller knows to re-emit the auto-generated text. This is what preserves
+    the gemini fan-out output across `build_region_docs.py` reruns.
+    """
+    if not md_path.exists():
+        return (None, None)
+    try:
+        text = md_path.read_text(encoding="utf-8")
+    except Exception:
+        return (None, None)
+
+    def _section(title: str) -> str | None:
+        # Match "## <title>\n...body...(?=\n## |\Z)"
+        m = re.search(
+            rf"## {re.escape(title)}\n(.*?)(?=\n## |\Z)",
+            text,
+            re.DOTALL,
+        )
+        if not m:
+            return None
+        body = m.group(1).strip()
+        if _is_placeholder(body):
+            return None
+        return body
+
+    return (_section("Discrepancy analysis"), _section("Known limitations"))
+
+
 def build_region_doc(region: dict, anchors: dict[str, dict]) -> str:
     rid = region["id"]
     anchor = anchors.get(rid, {})
@@ -180,7 +240,16 @@ def build_region_doc(region: dict, anchors: dict[str, dict]) -> str:
             "No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §\"Known limitations\" for cross-cutting notes."
         )
 
+    # Preserve enriched prose from a previous gemini pass, if present.
+    enriched_disc, enriched_lim = _extract_enriched_sections(
+        VALIDATION_DIR / f"{rid}.md"
+    )
+    if enriched_lim:
+        limitations = enriched_lim
+
     discrepancy = anchor.get("discrepancy_discussion", "")
+    if enriched_disc:
+        discrepancy = enriched_disc
     if not discrepancy:
         if not has_backfill and not (tso_annual and tso_annual != "—"):
             discrepancy = (

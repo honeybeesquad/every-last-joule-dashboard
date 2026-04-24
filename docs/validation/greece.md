@@ -39,11 +39,14 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill annual total for Greece is 0.802 TWh, which overreports by 129.1% against the published HAEE/IPTO TSO annual curtailment of 0.350 TWh. This substantial discrepancy indicates a definitional difference between our calculated curtailment and the TSO's published anchor. The applied aggregate rate of 3.6% for Greece, while derived from an official HAEE/IPTO 2024 RES curtailment figure (860 GWh, as detailed in the ENTSO-E rate audit), likely captures a broader scope of curtailment events than the 0.350 TWh value reported as the TSO annual. This suggests that the published TSO annual figure may exclude certain categories of curtailment that our generation-times-rate model includes, leading to an overestimation in our backfill. For other years in the backfill, the absence of published TSO annuals prevents a direct year-over-year comparison of annual totals.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   **Definitional Mismatch for 2024**: The backfill significantly overreports for 2024 compared to the TSO published annual total, likely due to a definitional difference in what constitutes "curtailment" between our model and the official TSO figure.
+*   **Aggregate Rate Application**: Due to the absence of a public wind/solar split from HAEE/IPTO, a single aggregate curtailment rate of 3.6% is applied uniformly across both wind and solar generation. This may obscure technology-specific curtailment dynamics.
+*   **Uniform Rate Across Years**: The 3.6% aggregate rate is applied uniformly across all backfilled years (2020–2026). While this is consistent with the backfill methodology for regions without documented per-year rate variants, it can lead to year-over-year drift compared to actual TSO figures as capacity mixes and operational conditions change.
+*   **Potential Reporting Latency**: As an ENTSO-E region, Greece may be subject to reporting-latency holes (1–3 month lag), which the backfill tolerates up to 10% per year.
 
 ## Links
 
