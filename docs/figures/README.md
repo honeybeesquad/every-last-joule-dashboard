@@ -8,9 +8,11 @@ or network access.
 
 | Figure | File(s) | Built from | Build command |
 |---|---|---|---|
+| Figure 1 — Global curtailment snapshot (dots sized by peak GW) | `figure1_global_map.pdf` / `.png` | `src/lib/regions.ts` + `data/snapshots/last-good/*.json` | `.venv/bin/python scripts/validation/figure1_global_map.py` |
 | Figure 2 — Backfill vs. published TSO validation scatter | `figure2_validation_scatter.pdf` / `.png` | `data/historical/figure2_validation_scatter.csv` | `.venv/bin/python scripts/validation/figure2_plot.py` |
 | Figure 3 — Daily global curtailment temporal trace (2020–2026) | `figure3_temporal_trace.pdf` / `.png` | `data/historical/curtailment_backfill.parquet` → `data/historical/figure3_daily_global.csv` | `.venv/bin/python scripts/validation/figure3_temporal_trace.py` |
 | Figure 4 — Per-region confidence tier coverage map | `figure4_coverage_map.pdf` / `.png` | `src/lib/regions.ts` | `.venv/bin/python scripts/validation/figure4_coverage_map.py` |
+| Figure 5 — Top-20 region annual curtailment timeseries (2020–2026) | `figure5_top20_timeseries.pdf` / `.png` | `data/historical/per_region_annual.parquet` | `.venv/bin/python scripts/validation/figure5_top20_timeseries.py` |
 
 ## Regeneration pipeline
 
@@ -108,3 +110,55 @@ the figure on a clean Python install with only `matplotlib` and
 `numpy` in scope. Plot order is T3 → T2 → flare → T1 so the T1 dots
 (the paper's headline live-feed claim) render on top and are never
 occluded by ambers beneath them.
+
+## Figure 1 methodology
+
+Figure 1 is the paper's geographic opening shot — what does current
+global curtailment look like _right now_, and where are the biggest
+hotspots? Every region in `src/lib/regions.ts` appears as a dot on
+an equirectangular world map (same basemap code as Figure 4) with:
+
+- **Colour** from the confidence tier (`derive_tier()` matches
+  Figure 4 and `scripts/build_annual_rollup.py` exactly).
+- **Size** from the latest `peakGW` in
+  `data/snapshots/last-good/<region>.json`. For single-region
+  snapshots the file is a flat object with `regionId` + `peakGW`;
+  for multi-region loaders (AEMO, Norway zones, Brazil clusters,
+  ERCOT split, etc.) the file is a dict keyed by region id and every
+  entry contributes a dot. Marker area scales with √peakGW so a 10
+  GW pillar doesn't visually annihilate a 0.1 GW one; a three-dot
+  reference legend inside the figure shows the size-to-GW mapping.
+
+Regions in the manifest that have no snapshot (a handful of
+high-coverage regions where the loader hasn't successfully landed a
+live fetch yet) plot at the minimum size so the map still shows full
+geographic coverage without pretending to have data we don't.
+
+The top 8 regions by current peak GW are labelled on the figure;
+everything below that is dot-only to keep the map readable.
+
+## Figure 5 methodology
+
+Figure 5 is a 4×5 facet grid of the top 20 regions by mean annual
+curtailment across the backfill window (2020–2026). The ranking is
+computed from `data/historical/per_region_annual.parquet` — the same
+artefact that feeds Figure 2 and the per-region validation MDs. Each
+panel is a single region's annual TWh trace with the 2024 headline
+number annotated inline; panels share the X axis (year) but each
+autoscales its Y axis so small regions (nyiso, iso-ne, norway-no1)
+are readable alongside continental-scale ones (germany, iberia,
+miso).
+
+The figure's narrative payoff is the paper's "curtailment is
+concentrated" thesis: the top-3 regions (Germany, Iberia, MISO)
+alone account for ~40% of the combined top-20 annual total across
+the 2020–2026 window. The 2026 dip visible in every panel is the
+partial-year artefact — the backfill window ends at the date the
+archive was merged, so 2026 carries only partial-year totals.
+
+Tier colouring is applied per panel; in v0.5 all 20 top regions are
+T1-live-TSO, so all lines render in teal. The dispatch infrastructure
+for T2/T3 colouring is in place so any v1 rate-recalibration that
+promotes new regions into the top 20 (see
+`docs/methodology/validation-discrepancies.md`) renders correctly
+without script changes.
