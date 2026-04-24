@@ -49,6 +49,8 @@ The ENTSO-E rate constants are tracked separately in [the ENTSO-E curtailment-ra
 
 **Tier C — Modelled fallback.** No hourly dispatch data is public. A typical-shape profile is computed for the region's dominant renewable technology and scaled to the region's published 2024 annual curtailment total. Solar regions use a cosine-like midday bump centred on local solar noon; wind regions use a 65%–100% broad overnight-weighted shape; hydro regions use a flat 24-hour shape with a monthly seasonal multiplier (see §2.3). Tier C is used where the underlying annual figure is confidently reported but no hourly upstream exists — for example, Egypt (NREA 2024), Morocco (ANRE 2024), Kazakhstan (KEGOC / Qazaq Green 2024), Honduras (ODS 2023), Jordan (NEPCO), and the Middle East solar regions (ECRA, DEWA, OPWP, Noga). Kenya's geothermal venting uses a specialised overnight-concentrated profile (§2.3).
 
+China is the largest Tier-C block in the dataset. The eight Chinese provincial regions are now calibrated against NEA 2024 provincial utilisation rates and public provincial generation data, covering 65.4 TWh/year, or about 77% of NEA-implied national 2024 renewable curtailment/spill. The detailed audit is documented in [China provincial static-region methodology](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/china-provinces.md).
+
 The tier for each region is labelled in the region metadata (`tier: "live"` for Tier A and B; `tier: "static"` for Tier C).
 
 ### 2.2 Fuel-mix attribution (fuelShare)

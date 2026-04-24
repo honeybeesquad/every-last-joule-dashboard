@@ -4,6 +4,30 @@ Per-source notes on status, API quirks, and access. One section per feed.
 
 ---
 
+## China NEA provincial static calibration (used)
+
+**Feed status:** public annual/quarterly source chain, not a live hourly feed.
+
+**Primary source:** China National Energy Administration, `国家能源局关于印发2024年度全国可再生能源电力发展监测评价结果的通知` / "National Energy Administration notice issuing the 2024 national renewable electricity development monitoring and evaluation results".
+
+- Official notice: `https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html`
+- Attachment mirror used for table extraction: `https://www.nmgxny.com/static/upload/file/20251114/1763104803440235.pdf`
+- Relevant fields: 2024 national wind/PV/hydro utilisation, provincial wind utilisation, provincial PV utilisation, major river-basin effective hydro utilisation.
+
+**Generation denominators:** public 2024 provincial generation-by-fuel pages from Huaon/NBS summaries, Gansu MIIT, Ningxia DRC/statistics, and Yunnan statistics.
+
+**Method:** for wind and PV, `curtailed TWh = generation TWh * (1 / utilisation_rate - 1)`. Hydro is mapped from NEA major-river utilisation to the closest provincial hydro-spill mechanism and given wider uncertainty.
+
+**Regions calibrated:** Inner Mongolia 12.6 TWh, Gansu 6.1 TWh, Qinghai 4.1 TWh, Ningxia 2.0 TWh, Xinjiang 8.2 TWh, Yunnan 1.8 TWh, Tibet/Xizang 0.6 TWh. Sichuan remains 30.0 TWh because public 2024 evidence supports a wide 20-36 TWh monsoon-spill range rather than a tighter replacement.
+
+**Implementation note:** the per-province fallback loaders for Inner Mongolia, Gansu, Qinghai, Ningxia, Yunnan, and Tibet are intentionally untouched; the task forbids editing those loader files. Their annual anchors are overridden in `src/lib/typical-profiles.ts` via `CHINA_PROVINCE_CALIBRATIONS`, with source notes appended at build time. Xinjiang lives in `src/data/statics.json.ts` and is updated there directly.
+
+**Limitations:** no public hourly curtailment feed was found for these provincial grids. NEA utilisation rates count system-caused limits under NEA's monitoring rules, not asset-owner self-curtailment or market self-scheduling.
+
+Detailed methodology: `docs/methodology/china-provinces.md`.
+
+---
+
 ## Colombia XM SINERGOX API (absent)
 
 **Intended feed:** XM's documented public SINERGOX API, exposed by the official `pydataxm` client.
