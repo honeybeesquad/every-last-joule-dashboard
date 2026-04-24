@@ -23,6 +23,10 @@ type BrazilRegionId =
   | "brazil-rs"
   | "brazil-other";
 
+// ONS constrained-off rows carry an explicit `id_estado` two-letter state
+// code. Use that field directly rather than deriving state from `id_ons`
+// prefixes; ONS documents `id_ons` as a plant/conjunto identifier, not as a
+// stable state namespace.
 const STATE_TO_REGION: Record<string, BrazilRegionId> = {
   RN: "brazil-rn",
   CE: "brazil-ce",

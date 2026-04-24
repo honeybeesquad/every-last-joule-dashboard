@@ -50,10 +50,28 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // Anchor sourced from Ember Ukraine 2024 report (pre-war capacity adjusted for
   // infrastructure damage, 1.1-1.4 TWh/yr curtailment plausible).
   ukraine: { annualTWh: 1.2, kind: "solar", localSolarPeakUTC: 9, source: "Ember Ukraine 2024 (ENTSO-E Ukrenergo data absent post-war; solar-dominant typical shape at 60/40 solar/wind, peaking ~UTC 09)", reportDate: "2024" },
-  permian: { annualTWh: 44, kind: "flat", source: "World Bank GGFR 2024 (~12 bcm/yr × 3.7 TWh-e/bcm, flat 24/7 by nature)", reportDate: "2024" },
-  "w-siberia": { annualTWh: 92, kind: "flat", source: "World Bank GGFR 2024 (~25 bcm/yr × 3.7 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
-  "s-iraq": { annualTWh: 63, kind: "flat", source: "World Bank GGFR 2024 (~17 bcm/yr × 3.7 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
-  "e-saudi": { annualTWh: 37, kind: "flat", source: "World Bank GGFR 2024 (~10 bcm/yr × 3.7 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
+  // World Bank/GFMR 2025 individual flare-location dataset, 2024 rows,
+  // Permian bbox 28.5-34.5N, 106.5-100.0W: 5.575 bcm × 3.6925 TWh_e/bcm.
+  // Retrieved 2026-04-24:
+  // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
+  permian: { annualTWh: 20.6, kind: "flat", source: "World Bank GGFR 2025 individual flare sites, 2024 Permian bbox 5.575 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  // World Bank/GFMR 2025 individual flare-location dataset, 2024 rows,
+  // West Siberia bbox 55.0-67.5N, 60.0-85.0E: 11.479 bcm × 3.6925 TWh_e/bcm.
+  // Retrieved 2026-04-24:
+  // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
+  "w-siberia": { annualTWh: 42.4, kind: "flat", source: "World Bank GGFR 2025 individual flare sites, 2024 West Siberia bbox 11.479 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  // World Bank/GFMR 2025 individual flare-location dataset, 2024 rows,
+  // South Iraq bbox 29.0-33.5N, 43.0-49.5E: 14.233 bcm × 3.6925
+  // TWh_e/bcm = 52.6 TWh_e; retain prior 63 TWh_e because it is within
+  // the documented +/-20% audit band against the earlier ~17 bcm basis.
+  // Retrieved 2026-04-24:
+  // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
+  "s-iraq": { annualTWh: 63, kind: "flat", source: "World Bank GGFR 2025 individual flare sites, 2024 South Iraq bbox 14.233 bcm cross-check; retained prior 63 TWh-e within +/-20% audit band (flat 24/7)", reportDate: "2025-07" },
+  // World Bank/GFMR 2025 individual flare-location dataset, 2024 rows,
+  // East Saudi bbox 24.0-29.0N, 47.0-51.5E: 2.203 bcm × 3.6925 TWh_e/bcm.
+  // Retrieved 2026-04-24:
+  // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
+  "e-saudi": { annualTWh: 8.1, kind: "flat", source: "World Bank GGFR 2025 individual flare sites, 2024 East Saudi bbox 2.203 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
   // v0.6 — Codex global-coverage-audit 2026-04-24. Hawaiian Electric's
   // RSWG metric separates curtailment by island; totals not yet extracted
   // from the public workbook, so TWh anchors here are conservative

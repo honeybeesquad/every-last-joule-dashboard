@@ -109,6 +109,36 @@ At ~1000 EH/s this yields ~140 TWh/yr, within ~2% of CBECI's ~138 TWh/yr reporte
 
 ---
 
+## Flare regions (World Bank GGFR / VIIRS Nightfire)
+
+**Feed used:** World Bank/GFMR Global Flaring Data, specifically the 2025 Global Gas Flaring Tracker and the 2012-2024 individual flare-location workbook.
+
+**Attribution chain:** NOAA VIIRS observations -> Payne Institute / Colorado School of Mines VIIRS Nightfire processing -> World Bank/GFMR annual flare-location and economy datasets.
+
+**2026-04-24 audit outcome:** three static annual anchors changed because the latest 2024 individual-site sums differed from the previous dashboard values by more than 20%.
+
+- `permian`: 5.575 bcm in the Permian bbox -> 20.6 TWh_e/yr, replacing 44.0.
+- `w-siberia`: 11.479 bcm in the West Siberia bbox -> 42.4 TWh_e/yr, replacing 92.0.
+- `s-iraq`: 14.233 bcm in the South Iraq bbox -> cross-check 52.6 TWh_e/yr, but the code remains 63.0 because this is within the +/-20% update threshold against the prior ~17 bcm basis.
+- `e-saudi`: 2.203 bcm in the East Saudi bbox -> 8.1 TWh_e/yr, replacing 37.0. The old 10 bcm basis exceeded Saudi Arabia's entire 2024 country total of 2.459 bcm.
+
+**Conversion:** `1 bcm * 10.55 TWh_th/bcm * 35% = 3.6925 TWh_e/bcm`. The 10.55 TWh_th/bcm heat-content assumption is roughly 38 MJ/m3 HHV.
+
+**Uncertainty:** interpret each basin estimate with a +/-20% band. SkyTruth and Payne Institute provide spatial/measurement-chain cross-checks; SkyTruth does not redistribute its underlying map data, so it is not used as a numeric source. IEA Global Methane Tracker 2025 is used only as a qualitative cross-check for MENA/Russia methane and flaring context, not as a basin volume source.
+
+**Methodology note:** see `docs/methodology/flare-ercot-brazil.md#flare`.
+
+Sources:
+
+- `https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data`
+- `https://thedocs.worldbank.org/en/doc/bd2432bbb0e514986f382f61b14b2608-0400072025/original/Global-Gas-Flaring-Tracker-Report-July-2025.pdf`
+- `https://thedocs.worldbank.org/en/doc/bd2432bbb0e514986f382f61b14b2608-0400072025/related/2012-2024-Flare-Volume-Estimates-by-individual-Flare-Location.xlsx`
+- `https://eogdata.mines.edu/products/index.html/global_gas_flare.html`
+- `https://skytruth.org/flaring/`
+- `https://www.iea.org/reports/global-methane-tracker-2025/regional-insights`
+
+---
+
 ## ERCOT (intended native API) / EIA (used as proxy for v0)
 
 **Intended:** ERCOT Public API via developer portal (`apiexplorer.ercot.com`), which publishes 5-minute wind output and separately reports dispatch-down curtailment.
@@ -155,6 +185,8 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 - "Live observation" qualifier: **No** - this is a derived proxy, not a directly reported curtailment figure. Native ERCOT upgrade planned for v0.5.
 
 **v0.5 B1 split:** the single ERCOT series is emitted as two regions using a 66/34 West/East proportional split, matching the book's 2024 West+Panhandle share of ERCOT curtailment (5.3 TWh of ~8 TWh).
+
+**2026-04-24 defensibility audit:** no authoritative public ERCOT zonal curtailment allocation was found. Potomac Economics' 2024 State of the Market Report publishes ERCOT-wide wind and solar production/estimated curtailment, and ERCOT public pages publish current wind/solar generation, HSL/forecast/resource-potential concepts, aggregate HDL/LDL, and renewable capacity by zone. Those sources do not publish a citable 2024 West/East dispatched-down-energy split. The 66/34 split therefore remains in code only as an illustrative, book-derived allocation; it is now labelled as such in `src/data/ercot.json.ts` and `docs/methodology/flare-ercot-brazil.md#ercot`.
 
 **v0.5 upgrade path:**
 
@@ -292,7 +324,7 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 
 ## Brazil Northeast curtailment clusters (used)
 
-**Feed used:** ONS constrained-off wind CSVs at `restricao_coff_eolica_tm`.
+**Feed used:** ONS constrained-off wind CSVs at `restricao_coff_eolica_tm` and constrained-off solar CSVs at `restricao_coff_fotovoltaica_tm`.
 
 **Change in v0.5 B1:** the loader now clusters plant-level rows by `id_estado` before profiling.
 
@@ -303,7 +335,19 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 - `PE -> brazil-pernambuco`
 - everything else -> `brazil-other`
 
-This remains a direct curtailment feed, not a calibrated proxy.
+**2026-04-24 provenance audit:** this is a state-code mapping, not a plant-ID prefix mapping. ONS data dictionaries document `id_estado` as the required two-character state code and `id_ons` as the plant or plant-set identifier. The loader uses `id_estado` directly, which avoids missing plants when ONS plant-set identifiers change or when `ceg` is `-` for plant sets.
+
+March 2026 ONS constrained-off rows observed the following member counts in the five NE dashboard clusters:
+
+- `RN -> brazil-rn`: 54 wind members, 7 solar members.
+- `CE -> brazil-ce`: 21 wind members, 13 solar members.
+- `BA -> brazil-bahia`: 46 wind members, 15 solar members.
+- `PI -> brazil-piaui`: 10 wind members, 8 solar members.
+- `PE -> brazil-pernambuco`: 4 wind members, 7 solar members.
+
+ONS `capacidade-geracao` was used as the installed-capacity cross-check by state because the direct ANEEL SIGA open-data CSV endpoint timed out from this NZ worktree. The ANEEL SIGA page remains the authoritative public reference for capacity by "Resumo Estadual" and "Usinas e Agentes de Geracao"; the ONS capacity table carries the ANEEL `ceg` field and is sufficient to validate state correspondence for this loader.
+
+This remains a direct curtailment feed, not a calibrated proxy. See `docs/methodology/flare-ercot-brazil.md#brazil-ne` for the citation chain and unresolved direct-SIGA download limitation.
 
 ---
 

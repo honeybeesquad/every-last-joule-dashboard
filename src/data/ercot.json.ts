@@ -16,7 +16,11 @@ import { pathToFileURL } from "url";
  *   wind  → 6.15 %  (ERCOT 2024: ~8 TWh wind curtailed / ~130 TWh wind gen)
  *   solar → 4.0 %   (ERCOT 2024: ~0.8 TWh solar curtailed / ~20 TWh solar gen;
  *                    rising fast with Lamesa / Roadrunner / Phoebe clusters)
- * Rates per Modo Energy + ERCOT 2024 reliability reports.
+ * Rates per Potomac Economics 2024 ERCOT State of the Market figures
+ * and public ERCOT/EIA generation data. The West/East allocation below is
+ * illustrative because no public ERCOT zonal dispatch-down series was found;
+ * it preserves the book-derived 66/34 West+Panhandle split pending a native
+ * ERCOT zonal curtailment feed.
  *
  * The resulting per-hour series is wind-heavy overnight (Generic Transmission
  * Constraints bind on West Texas wind) and solar-peaky mid-day in West Texas
@@ -28,6 +32,11 @@ import { pathToFileURL } from "url";
 
 const WIND_RATE = 0.0615;
 const SOLAR_RATE = 0.04;
+// Illustrative, derived from Gates 2024 book research: West+Panhandle
+// 5.3 TWh of about 8 TWh 2024 ERCOT curtailment. Not an ERCOT-published
+// zonal curtailment statistic; see docs/methodology/flare-ercot-brazil.md.
+const ERCOT_WEST_SHARE = 0.66;
+const ERCOT_EAST_SHARE = 0.34;
 
 const API_BASE = "https://api.eia.gov/v2/electricity/rto/fuel-type-data/data/";
 
@@ -113,15 +122,15 @@ export function parseErcot(
     "ercot-west": scaleRegion(
       base,
       "ercot-west",
-      0.66,
-      `EIA ERCO wind+solar × calibrated rates, 66% West/Panhandle geographic split (${shareNote})`,
+      ERCOT_WEST_SHARE,
+      `EIA ERCO wind+solar × calibrated rates, illustrative 66% West/Panhandle book-derived split (${shareNote})`,
       fuelShare,
     ),
     "ercot-east": scaleRegion(
       base,
       "ercot-east",
-      0.34,
-      `EIA ERCO wind+solar × calibrated rates, 34% East/Central geographic split (${shareNote})`,
+      ERCOT_EAST_SHARE,
+      `EIA ERCO wind+solar × calibrated rates, illustrative 34% East/Central book-derived split (${shareNote})`,
       fuelShare,
     ),
   };
