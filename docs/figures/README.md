@@ -151,7 +151,7 @@ miso).
 
 The figure's narrative payoff is the paper's "curtailment is
 concentrated" thesis: the top-3 regions (Germany, Iberia, MISO)
-alone account for ~40% of the combined top-20 annual total across
+alone account for ~51% of the combined top-20 annual total across
 the 2020–2026 window. The 2026 dip visible in every panel is the
 partial-year artefact — the backfill window ends at the date the
 archive was merged, so 2026 carries only partial-year totals.

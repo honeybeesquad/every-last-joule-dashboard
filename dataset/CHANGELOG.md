@@ -36,7 +36,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 - `docs/paper/01-background-and-summary.md` (700 words) — skeleton with argument thread; Simon keeps final voice.
 - `docs/paper/02-methods.md` (1,371 words) — scope, sources, calibration, backfill, tier model, agentic workflow disclosure.
 - `docs/paper/03-data-records.md` (1,033 words) — JSON snapshots, Parquet history, 7-yr backfill, annual rollup, scatter CSV, anchor table, validation MDs.
-- `docs/paper/04-technical-validation.md` (1,490 words) — 23 anchor pairs classified, 14 material discrepancies diagnosed.
+- `docs/paper/04-technical-validation.md` (1,490 words) — 23 anchor pairs classified, 12 material discrepancies diagnosed.
 - `docs/paper/05-usage-notes.md` (909 words) — load examples, tier interpretation, structural gaps, citation, re-use suggestions.
 - `docs/paper/06-code-availability.md` (191 words) — repo pointer, dependencies, regeneration docs.
 - `docs/paper/README.md` — section index with word counts and cross-reference map.
