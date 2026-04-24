@@ -190,6 +190,7 @@ const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv
 
 if (isMain) {
   withFallback<Record<AemoRegionId, RegionData>>("aemo", run, {
+    regionTier: "live" as const,
     tagLive: (r) => Object.fromEntries(
       Object.entries(r).map(([k, v]) => [k, { ...v, sourceStatus: "live" as const }]),
     ) as Record<AemoRegionId, RegionData>,

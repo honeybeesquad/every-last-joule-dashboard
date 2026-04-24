@@ -363,6 +363,7 @@ const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv
 
 if (isMain) {
   withFallback<RegionData>("atacama-chile", run, {
+    regionTier: "live" as const,
     tagLive: (result) => ({ ...result, sourceStatus: "live" as const }),
     tagCached: (cached) => ({ ...cached, sourceStatus: "cached" as const }),
   })

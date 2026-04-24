@@ -114,6 +114,7 @@ export function buildEiaIsoRegion(config: EiaIsoConfig) {
 
   const runCli = async (): Promise<void> => {
     const data = await withFallback<RegionData>(config.regionId, run, {
+      regionTier: "live" as const,
       tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
       tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
     });

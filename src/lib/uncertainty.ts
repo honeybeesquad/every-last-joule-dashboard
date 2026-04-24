@@ -48,10 +48,33 @@ export interface TierInputs {
   /** Canonical tier from `Region.tier`: "live" | "static" | "flare". */
   regionTier: "live" | "static" | "flare";
   /**
-   * Profile-shape kind emitted by statics builder: "flat" | "solar" |
-   * "hydro-seasonal". For live regions leave undefined.
+   * Profile-shape kind emitted by the typical-profile builders and the
+   * hand-curated statics loader.
+   *
+   *   "flat"            no diurnal or seasonal shape modelled — regions
+   *                     using `buildTypicalHydroRegion` (flat annual
+   *                     average) or flare base load. Routes to T2.
+   *   "solar"           diurnal cos-shape centred on local solar noon —
+   *                     `buildTypicalSolarRegion`. Routes to T3.
+   *   "wind"            weak diurnal shape — `buildTypicalWindRegion`.
+   *                     Routes to T3 because the shape is modelled not
+   *                     measured.
+   *   "mixed"           sum of solar+wind+hydro shapes per fuelShare —
+   *                     `buildTypicalMixedRegion`. Routes to T3.
+   *   "hydro-seasonal"  monthly share array × flat diurnal —
+   *                     `buildTypicalHydroSeasonalRegion`. Routes to T3.
+   *   "overnight"       geothermal steam-venting window —
+   *                     `buildGeothermalOvernightRegion`. Routes to T3.
+   *
+   * For live regions leave undefined.
    */
-  profileKind?: "flat" | "solar" | "hydro-seasonal";
+  profileKind?:
+    | "flat"
+    | "solar"
+    | "wind"
+    | "mixed"
+    | "hydro-seasonal"
+    | "overnight";
   /**
    * Whether the current build served live data or a cached snapshot.
    * Currently advisory — does not change tier, because a one-build cache
@@ -63,10 +86,17 @@ export interface TierInputs {
 /**
  * Deterministic tier derivation.
  *
- *   live → T1-live-TSO
- *   flare → T2-annual-calibrated  (GGFR annual is direct observation)
- *   static + flat → T2-annual-calibrated  (Ember/IRENA annual, flat base load)
- *   static + solar/hydro-seasonal → T3-modelled  (typical shape scaled to annual)
+ *   live                                        → T1-live-TSO
+ *   flare                                       → T2-annual-calibrated
+ *                                                 (GGFR annual is direct observation)
+ *   static + flat (or undefined profileKind)    → T2-annual-calibrated
+ *                                                 (Ember/IRENA annual, flat base load)
+ *   static + solar | wind | mixed               → T3-modelled
+ *                                                 (diurnal shape modelled, scaled to annual)
+ *   static + hydro-seasonal                     → T3-modelled
+ *                                                 (monthly shape modelled, scaled to annual)
+ *   static + overnight                          → T3-modelled
+ *                                                 (venting-window shape modelled)
  *
  * The function throws on unknown combinations rather than silently assigning
  * a tier; this is defensive — the set of tiers is small and every region
@@ -78,7 +108,15 @@ export function deriveTier(inputs: TierInputs): ConfidenceTier {
   if (regionTier === "flare") return "T2-annual-calibrated";
   if (regionTier === "static") {
     if (profileKind === "flat" || profileKind == null) return "T2-annual-calibrated";
-    if (profileKind === "solar" || profileKind === "hydro-seasonal") return "T3-modelled";
+    if (
+      profileKind === "solar" ||
+      profileKind === "wind" ||
+      profileKind === "mixed" ||
+      profileKind === "hydro-seasonal" ||
+      profileKind === "overnight"
+    ) {
+      return "T3-modelled";
+    }
   }
   throw new Error(
     `deriveTier: cannot resolve tier for regionTier=${regionTier} profileKind=${profileKind}`,

@@ -140,6 +140,7 @@ const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv
 
 if (isMain) {
   withFallback<Record<string, RegionData> | RegionData>("norway", buildNorwayData, {
+    regionTier: "live" as const,
     tagLive: (r) => tagMulti(r as Record<string, RegionData>, "live"),
     tagCached: (c) => tagMulti(migrateCached(c), "cached"),
   })

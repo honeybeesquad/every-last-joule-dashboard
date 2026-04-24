@@ -16,7 +16,7 @@ import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
 import { FUEL_ORDER, FUEL_LABEL, FUEL_COLOR, fuelShare, isRenewable } from "./lib/fuel.js";
-import { applyUncertainty } from "./lib/uncertainty.js";
+import { applyUncertainty, computeBounds } from "./lib/uncertainty.js";
 import { mountGlobe } from "./globe.js";
 
 const ERCOT_NATIVE_ENABLED = false;
@@ -213,15 +213,28 @@ document.getElementById("app-root").innerHTML = `
 // the 2026-04-24 global-coverage audit (Codex). Profiles, totals, peak,
 // and latestProfile all scale linearly; the sourceNote records the split
 // ratio so the provenance stays visible in the UI and CLI output.
+//
+// Uncertainty propagation: confidenceTier is inherited from source (the
+// split is presentational, the underlying calibration tier is unchanged).
+// uncertaintyLow/HighGW are RECOMPUTED against the new (scaled) peakGW
+// so the envelope remains internally consistent — without this, the bounds
+// would still reference the unsplit peak.
 function splitRegion(source, newId, ratio, note) {
   const scaleArr = (arr) => (Array.isArray(arr) ? arr.map((v) => v * ratio) : arr);
+  const newPeakGW = (source.peakGW ?? 0) * ratio;
+  const tier = source.confidenceTier;
+  const bounds = tier
+    ? computeBounds(newPeakGW, tier)
+    : { uncertaintyLowGW: undefined, uncertaintyHighGW: undefined };
   return {
     ...source,
     regionId: newId,
     profile: scaleArr(source.profile),
     latestProfile: scaleArr(source.latestProfile),
     totalTWh: (source.totalTWh ?? 0) * ratio,
-    peakGW: (source.peakGW ?? 0) * ratio,
+    peakGW: newPeakGW,
+    uncertaintyLowGW: bounds.uncertaintyLowGW,
+    uncertaintyHighGW: bounds.uncertaintyHighGW,
     sourceNote: note
       ? `${source.sourceNote ?? ""} | ${note}`
       : source.sourceNote
@@ -352,23 +365,35 @@ const regionData = {
   ...statics
 };
 
-// S2 uncertainty: enrich every *live* region with confidenceTier +
-// uncertaintyLowGW + uncertaintyHighGW. Statics already carry these fields
-// from `src/data/statics.json.ts` (which knows the profileKind); the guard
-// `if (d.confidenceTier) continue;` prevents us from clobbering the
-// T3-modelled label on Sichuan/Xinjiang/Iceland with the wrong tier.
+// S2 uncertainty: defensive fallback. Every loader is now responsible for
+// setting confidenceTier + uncertaintyLow/HighGW upstream — typical-shape
+// builders in `src/lib/typical-profiles.ts`, the statics builder in
+// `src/data/statics.json.ts`, and the cache-boundary `enrichWithTier` in
+// `src/lib/resilient.ts` between them cover live, static-modelled, and
+// flare regions. This loop is a defensive shim for any region that slips
+// through (e.g. a future region added to regions.ts without a loader call
+// to applyUncertainty).
 //
-// Live regions get T1-live-TSO with a ±15% fallback envelope today; the 2σ
-// empirical envelope lights up once the HB backfill merge lands per-region
-// std deviations (see scripts/backfill/append_history.py).
-//
-// Flare regions are all routed through `statics.json.ts` already (permian,
-// w-siberia, s-iraq, e-saudi), so we only see `live` here.
+// We derive profileKind from regions.ts kind so the fallback assigns the
+// correct tier rather than silently routing every static through T2:
+//   wind/solar/mixed → T3-modelled
+//   hydro            → T3-modelled (hydro-seasonal fallback)
+//   flare            → T2-annual-calibrated (flat 24/7)
+//   live regions     → T1-live-TSO (no profileKind)
+const KIND_TO_PROFILE = {
+  wind: "wind",
+  solar: "solar",
+  mixed: "mixed",
+  hydro: "hydro-seasonal",
+  flare: "flat"
+};
 for (const region of REGIONS) {
   const d = regionData[region.id];
   if (!d) continue;
   if (d.confidenceTier) continue; // preserve tier already set by loader
-  regionData[region.id] = applyUncertainty(d, { regionTier: region.tier });
+  const profileKind = region.tier === "static" ? KIND_TO_PROFILE[region.kind] : undefined;
+  console.warn(`[uncertainty] late-binding tier for ${region.id} (kind=${region.kind}); loader should set this upstream`);
+  regionData[region.id] = applyUncertainty(d, { regionTier: region.tier, profileKind });
 }
 
 // Populate the region-count span inside the lead copy without clobbering

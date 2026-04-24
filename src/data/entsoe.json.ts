@@ -193,6 +193,7 @@ const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv
 
 if (isMain) {
   withFallback<Record<string, RegionData>>("entsoe", run, {
+    regionTier: "live" as const,
     tagLive: (r) => {
       const tagged: Record<string, RegionData> = {};
       for (const [k, v] of Object.entries(r)) tagged[k] = { ...v, sourceStatus: "live" };

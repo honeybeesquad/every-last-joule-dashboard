@@ -1,4 +1,5 @@
 import type { RegionData } from "./types.js";
+import { applyUncertainty } from "./uncertainty.js";
 
 function scaleProfileToAnnualTWh(profile: number[], annualTWh: number): number[] {
   const dailyGWh = (annualTWh * 1000) / 365;
@@ -167,7 +168,7 @@ export function buildTypicalHydroSeasonalRegion(
   ({ annualTWh, sourceNote } = calibrateAnnualTWh(regionId, annualTWh, sourceNote));
   const factor = seasonalScaleFactor(monthlyShares, now);
   const profile = hydroSeasonalProfile(annualTWh, monthlyShares, now);
-  return {
+  const base: RegionData = {
     regionId,
     profile,
     latestProfile: null,
@@ -178,6 +179,7 @@ export function buildTypicalHydroSeasonalRegion(
     lastUpdated,
     sourceNote: `${sourceNote} — current 30-day seasonal factor ${factor.toFixed(2)}×`,
   };
+  return applyUncertainty(base, { regionTier: "static", profileKind: "hydro-seasonal" });
 }
 
 export function buildTypicalSolarRegion(
@@ -189,7 +191,7 @@ export function buildTypicalSolarRegion(
 ): RegionData {
   ({ annualTWh, sourceNote } = calibrateAnnualTWh(regionId, annualTWh, sourceNote));
   const profile = solarProfile(peakHourUtc, annualTWh);
-  return {
+  const base: RegionData = {
     regionId,
     profile,
     latestProfile: null,
@@ -198,6 +200,7 @@ export function buildTypicalSolarRegion(
     lastUpdated,
     sourceNote,
   };
+  return applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
 }
 
 export function buildTypicalWindRegion(
@@ -209,7 +212,7 @@ export function buildTypicalWindRegion(
 ): RegionData {
   ({ annualTWh, sourceNote } = calibrateAnnualTWh(regionId, annualTWh, sourceNote));
   const profile = windProfile(peakHourUtc, annualTWh);
-  return {
+  const base: RegionData = {
     regionId,
     profile,
     latestProfile: null,
@@ -218,6 +221,7 @@ export function buildTypicalWindRegion(
     lastUpdated,
     sourceNote,
   };
+  return applyUncertainty(base, { regionTier: "static", profileKind: "wind" });
 }
 
 export function buildTypicalHydroRegion(
@@ -228,7 +232,7 @@ export function buildTypicalHydroRegion(
 ): RegionData {
   ({ annualTWh, sourceNote } = calibrateAnnualTWh(regionId, annualTWh, sourceNote));
   const profile = hydroProfile(annualTWh);
-  return {
+  const base: RegionData = {
     regionId,
     profile,
     latestProfile: null,
@@ -237,6 +241,8 @@ export function buildTypicalHydroRegion(
     lastUpdated,
     sourceNote,
   };
+  // Flat hydro: no shape modelled, routes to T2-annual-calibrated.
+  return applyUncertainty(base, { regionTier: "static", profileKind: "flat" });
 }
 
 export function buildTypicalMixedRegion(
@@ -253,7 +259,7 @@ export function buildTypicalMixedRegion(
   const wind = windProfile(windPeakHourUtc, annualTWh * (fuelShare.wind ?? 0));
   const hydro = hydroProfile(annualTWh * (fuelShare.hydro ?? 0));
   const profile = solar.map((value, hour) => value + wind[hour] + hydro[hour]);
-  return {
+  const base: RegionData = {
     regionId,
     profile,
     latestProfile: null,
@@ -263,6 +269,7 @@ export function buildTypicalMixedRegion(
     sourceNote,
     fuelShare,
   };
+  return applyUncertainty(base, { regionTier: "static", profileKind: "mixed" });
 }
 
 /**
@@ -308,7 +315,7 @@ export function buildGeothermalOvernightRegion(
   const factor = seasonalScaleFactor(monthlyShares, now);
   const rawProfile = overnightProfile(peakUtcHour, halfWidthHours, annualTWh);
   const profile = rawProfile.map((gw) => gw * factor);
-  return {
+  const base: RegionData = {
     regionId,
     profile,
     latestProfile: null,
@@ -317,4 +324,5 @@ export function buildGeothermalOvernightRegion(
     lastUpdated,
     sourceNote: `${sourceNote} — overnight venting (UTC ${peakUtcHour - halfWidthHours}-${peakUtcHour + halfWidthHours}), seasonal factor ${factor.toFixed(2)}×`,
   };
+  return applyUncertainty(base, { regionTier: "static", profileKind: "overnight" });
 }

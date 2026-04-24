@@ -220,6 +220,7 @@ const run = async (): Promise<Record<BrazilRegionId, RegionData>> => {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   withFallback<Record<BrazilRegionId, RegionData>>("brazil-ne", run, {
+    regionTier: "live" as const,
     tagLive: (r) => Object.fromEntries(
       Object.entries(r).map(([k, v]) => [k, { ...v, sourceStatus: "live" as const }]),
     ) as Record<BrazilRegionId, RegionData>,
