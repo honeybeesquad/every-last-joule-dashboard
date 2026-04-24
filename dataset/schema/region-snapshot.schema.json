@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://everylastjoule.com/schema/region-snapshot.schema.json",
+  "title": "Every Last Joule — per-region snapshot",
+  "description": "Schema for data/snapshots/last-good/<regionId>.json. One snapshot per region per build. See dataset/SCHEMA.md for the human-readable description.",
+  "type": "object",
+  "required": [
+    "regionId",
+    "profile",
+    "latestProfile",
+    "totalTWh",
+    "peakGW",
+    "lastUpdated",
+    "sourceNote",
+    "fuelShare"
+  ],
+  "properties": {
+    "regionId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Stable ID matching src/lib/regions.ts. Kebab-case."
+    },
+    "profile": {
+      "type": "array",
+      "description": "30-day trailing average curtailment in GW, one value per UTC hour (index 0 = 00:00\u201301:00 UTC).",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {"type": "number", "minimum": 0}
+    },
+    "latestProfile": {
+      "type": "array",
+      "description": "Single-day latest snapshot in GW per UTC hour.",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {"type": "number", "minimum": 0}
+    },
+    "totalTWh": {
+      "type": "number",
+      "minimum": 0,
+      "description": "30-day trailing total curtailment in TWh."
+    },
+    "peakGW": {
+      "type": "number",
+      "minimum": 0,
+      "description": "30-day trailing peak hourly GW."
+    },
+    "lastUpdated": {
+      "type": "string",
+      "description": "Calibration-anchor date: YYYY, YYYY-Q#, or ISO-8601."
+    },
+    "sourceNote": {
+      "type": "string",
+      "description": "Human-readable provenance string surfaced in the dashboard tooltip and paper Usage Notes."
+    },
+    "sourceStatus": {
+      "type": ["string", "null"],
+      "enum": ["live", "cached", null],
+      "description": "Whether the last fetch was fresh (live) or served from withFallback (cached)."
+    },
+    "fuelShare": {
+      "type": "object",
+      "description": "Fuel-type split of the curtailed energy, fractions 0\u20131.",
+      "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1},
+      "propertyNames": {"enum": ["solar", "wind", "hydro", "geothermal", "flare"]}
+    },
+    "uncertaintyLowGW": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Lower bound of the 95% interval on peakGW. Added in S2."
+    },
+    "uncertaintyHighGW": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Upper bound of the 95% interval on peakGW. Added in S2."
+    },
+    "confidenceTier": {
+      "type": "string",
+      "enum": ["T1-live-TSO", "T2-annual-calibrated", "T3-modelled", "T4-structural-gap"],
+      "description": "Deterministic classification of source quality. Added in S2."
+    }
+  },
+  "additionalProperties": false
+}
