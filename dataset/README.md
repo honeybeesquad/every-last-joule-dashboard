@@ -8,8 +8,14 @@ A versioned, reproducible synthesis dataset of hourly renewable-electricity curt
 
 - **`data/snapshots/last-good/*.json`** — the current committed snapshot for each region. One JSON per region. Schema in [`SCHEMA.md`](SCHEMA.md).
 - **`data/historical/curtailment_history.parquet`** — a rolling Parquet time-series appended after each successful scheduled data refresh (~every 6 hours). One row per region per build. Use DuckDB or pandas. Schema in [`SCHEMA.md`](SCHEMA.md).
+- **`data/historical/curtailment_backfill.parquet`** — seven-year hourly reconstruction (2020-01-01 → 2026-03-31) for 29 regions whose upstream archive supports multi-year history. 2,590,195 rows × 7 columns, Snappy-compressed (~20 MB). Built by `scripts/backfill/`; methodology in `docs/methodology/historical-backfill.md`.
+- **`data/historical/per_region_annual.parquet`** — annual rollup derived from the backfill (203 rows = 29 regions × 7 years); feeds Figures 2 and 5.
+- **`data/historical/figure2_validation_scatter.csv`** — 23 region-year anchor pairs with published TSO / ISO / IMM / SoM / GGFR / IRENA / Ember annual curtailment totals vs. our backfill reconstruction. Machine-readable evidence table for Figure 2.
+- **`data/historical/figure3_daily_global.csv`** — daily global sum 2020-01-01 → 2026-03-31 (2,306 days), stacked by source platform. Feeds Figure 3.
 - **`docs/methodology/*.md`** — per-source audit trails. Every calibration rate has a provenance document.
-- **`docs/validation/<region>.md`** — per-region triangulation against IRENA / Ember / TSO annual reports. _(Populated in S1 — see `docs/academic-model/2026-04-24-submission-plan.md`.)_
+- **`docs/validation/<region>.md`** — 132 per-region triangulation documents against published TSO / ISO / IMM / SoM / GGFR / IRENA / Ember annual reports, with commit-grade diagnostic prose per region.
+- **`docs/figures/figure{1..5}_*.{pdf,png}`** — the five publication-grade figures committed in the repository alongside the regeneration scripts in `scripts/validation/`.
+- **`docs/paper/*.md`** — draft Scientific Data Data Descriptor body sections and journal-ready figure captions.
 - **`docs/known-limitations.md`** — running ledger of every caveat we surface in the paper.
 - **`src/methodology.md`** — public-facing methodology page (same source of truth as the paper Methods section).
 

@@ -35,21 +35,22 @@ From `docs/methodology/validation-discrepancies.md`:
 | Count | Classification | Region-year pairs |
 |---:|---|---|
 | 4 | Within ±15% T1 envelope | ercot-east, ercot-west, nyiso, poland |
-| 5 | Moderate (|Δ%| ≤ 50%) | caiso, czech-republic, italy-north-zone, miso, switzerland |
-| 14 | Material (|Δ%| > 50%) | norway-no3/no4, iberia, iso-ne, greece, portugal, italy-sardinia, czech-republic, italy-north-zone, netherlands, baltics, germany, miso, spp |
+| 7 | Moderate (15% < |Δ%| ≤ 50%) | bulgaria, caiso, hungary, italy-north-zone, spp, sweden-south, switzerland |
+| 12 | Material (|Δ%| > 50%) | norway-no3, norway-no4, iberia, iso-ne, greece, portugal, italy-sardinia, czech-republic, netherlands, baltics, germany, miso |
 
 Median |Δ%| across all 23 pairs: 53.4%. Figure 2 shows every pair
-with its ±tier-fraction error bar.
+with its ±tier-fraction error bar. Bucket boundaries match the
+colour classification used by `scripts/validation/figure2_plot.py`.
 
 ## 4.3 Interpreting 19/23 points outside ±15%
 
 The ±15% envelope is a **target** for the subset of regions where
 the rate-model converges on the anchor — not a claim that every
-region lies within it. The 14 material discrepancies fall into
+region lies within it. The 12 material discrepancies fall into
 four identifiable cause classes, all documented with a diagnostic
 category per pair:
 
-### Scope mismatch (5 regions, 6 region-years)
+### Scope mismatch (4 regions)
 
 **Cause:** Our rate-model scope differs from the anchor's accounting
 concept.
@@ -64,13 +65,12 @@ concept.
   calibrated to REE's 10.6 TWh total; Figure 2 anchor row was an
   earlier 2.1 TWh "grid-side redispatch" subset. Anchor updated to
   10.6 TWh in v1.
-- **`italy-north-zone` −45%.** Anchor is 35% × Terna national 0.31
-  TWh (estimated North share); Terna separately publishes ~1.1 TWh
-  zonal-overflow redispatch not included. Narrower anchor chosen
-  to preserve single-concept comparison.
 - **`italy-sardinia` +88%.** Anchor is 20% × Terna national
   (estimated Sardinia share); Terna does not separately publish
   zonal breakdown.
+
+(`italy-north-zone` also exhibits a scope mismatch but its |Δ%|
+sits at 45%, inside the moderate band; see §4.2 table.)
 
 ### Definitional mismatch (1 region)
 
@@ -89,7 +89,7 @@ concept.
   change, not an arithmetic miscalibration. Documented in
   `docs/methodology/historical-backfill.md §"Regime change"`.
 
-### Rate over/under calibration candidates (7 regions)
+### Rate over/under calibration candidates (6 regions)
 
 Regions where an Ember-based denominator or a placeholder rate
 produces drift beyond what scope/definition can explain:
@@ -107,9 +107,11 @@ produces drift beyond what scope/definition can explain:
 - `czech-republic` +70% (anchor "<0.1 TWh" treated as 0.05
   midpoint)
 
-All seven are explicit v1 recalibration candidates deferred from
+All six are explicit v1 recalibration candidates deferred from
 this submission; each is named in the diagnostic table of
-`docs/methodology/validation-discrepancies.md`.
+`docs/methodology/validation-discrepancies.md`. Total material
+regions: 4 scope + 1 definitional + 1 regime + 6 rate-calibration
+= 12.
 
 ## 4.4 Why v0.5 does not re-calibrate
 
