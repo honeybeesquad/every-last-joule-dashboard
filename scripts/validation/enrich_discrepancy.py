@@ -72,6 +72,12 @@ TARGETS = [
     "spp",
     "sweden-south",
     "switzerland",
+    # Norway split zones landed via HB.wave-7/8 fanout (Statnett
+    # NO1..NO5 via ENTSO-E bidding-zone domains).
+    "norway-no1",
+    "norway-no2",
+    "norway-no3",
+    "norway-no4",
 ]
 
 # ENTSO-E regions — get the entsoe-rates audit in context; others get just
@@ -81,6 +87,7 @@ ENTSOE_REGIONS = {
     "baltics", "bulgaria", "czech-republic", "hungary",
     "italy-north-zone", "italy-sardinia",
     "sweden-south", "switzerland",
+    "norway-no1", "norway-no2", "norway-no3", "norway-no4",
 }
 
 # The two sections we replace. Matches everything between the section
