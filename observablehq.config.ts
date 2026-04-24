@@ -5,13 +5,42 @@ const fontFiles = readdirSync(join("src", "fonts"))
   .filter((file) => file.endsWith(".ttf"))
   .map((file) => `/fonts/${file}`);
 
+// Social-share card. The description is the one-line story the card tells
+// when the link is pasted into iMessage / Slack / Twitter / LinkedIn etc.
+// og:image MUST be an absolute URL per the OG spec for link unfurlers to
+// fetch it — relative paths are silently dropped by most platforms.
+const SITE_URL = "https://everylastjoule.com";
+const OG_IMAGE = `${SITE_URL}/og-image.png`;
+const OG_TITLE = "Every Last Joule";
+const OG_DESCRIPTION =
+  "How much of Bitcoin's hashrate could be powered entirely by renewable energy that was curtailed, spilled, or constrained-off in the last 30 days — across 123 tracked regions worldwide.";
+
+const socialMeta = [
+  `<meta name="description" content="${OG_DESCRIPTION}">`,
+  `<meta property="og:type" content="website">`,
+  `<meta property="og:url" content="${SITE_URL}/">`,
+  `<meta property="og:title" content="${OG_TITLE}">`,
+  `<meta property="og:description" content="${OG_DESCRIPTION}">`,
+  `<meta property="og:image" content="${OG_IMAGE}">`,
+  `<meta property="og:image:width" content="1200">`,
+  `<meta property="og:image:height" content="630">`,
+  `<meta property="og:image:alt" content="Globe showing renewable-energy curtailment pillars across 123 regions; headline reads 241% of Bitcoin hashrate supportable on curtailed renewables.">`,
+  `<meta name="twitter:card" content="summary_large_image">`,
+  `<meta name="twitter:title" content="${OG_TITLE}">`,
+  `<meta name="twitter:description" content="${OG_DESCRIPTION}">`,
+  `<meta name="twitter:image" content="${OG_IMAGE}">`,
+].join("");
+
 export default {
   title: "Every Last Joule",
   root: "src",
   interpreters: {
     ".ts": ["tsx"]
   },
-  dynamicPaths: fontFiles,
+  // og-image.png is referenced only via <meta> tags (not by any page's
+  // HTML), so Observable Framework doesn't auto-copy it unless we list
+  // it explicitly here.
+  dynamicPaths: [...fontFiles, "/og-image.png"],
   pages: [
     { name: "Dashboard", path: "/" },
     { name: "Methodology", path: "/methodology" },
@@ -20,7 +49,7 @@ export default {
   // The framework's default viewport meta uses `maximum-scale=1` which
   // disables pinch-zoom — bad for accessibility and mobile readability.
   // We emit our own viewport tag later in the head to override it.
-  head: '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="stylesheet" href="./style.css">',
+  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<link rel="stylesheet" href="./style.css">`,
   theme: "dark",
   footer: "",
   toc: false,
