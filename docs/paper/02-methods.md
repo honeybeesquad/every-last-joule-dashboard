@@ -134,10 +134,17 @@ Every region is deterministically assigned to one of four tiers
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
 | T4-structural-gap | No hourly claim made | n/a — not published |
 
-The tier distribution in v0.5: 60 T1, 57 T2-annual-calibrated, 4
-T2 flare, 7 T3 (total 128). The 7 T3 regions are Sichuan, Xinjiang,
-Iceland, Ukraine, and the three Hawaii islands. Full methodology
-in `docs/methodology/uncertainty.md`.
+The tier distribution in v0.5: 66 T1, 2 T2-annual-calibrated, 4
+T2 flare, 56 T3 (total 128). The two T2 regions are Austria (APG
+provisional anchor, flat-base proxy) and Russia Murmansk wind
+(SO UPS dispatch-limit estimate, flat). The 4 T2-flare regions are
+the Permian, West Siberia, South Iraq, and East Saudi flare basins.
+The 56 T3 regions are static annual anchors (Ember, IRENA, regulator
+reports) combined with a typical diurnal or monthly-seasonal shape
+(solar cosine, wind broad-overnight, hydro monthly, mixed fuel-share,
+geothermal-overnight). Full methodology and per-region rationale in
+`docs/methodology/uncertainty.md`; live counts emitted by
+`scripts/tally-tiers.ts` so any classification drift is auditable.
 
 ## 2.6 Handling of regime changes and discrepancies
 

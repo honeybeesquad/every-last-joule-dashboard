@@ -75,19 +75,21 @@ no public hourly upstream source. Explicit gaps:
   Absent from the dataset, not modelled.
 - **Most of the Middle East outside flare basins** (UAE,
   non-flare Saudi, Egypt, Oman). No public hourly feed; small
-  fallback estimates appear with explicit T2-fallback labels
-  in `docs/known-limitations.md`.
+  fallback estimates appear as T3-modelled (typical solar shape
+  scaled to a published annual) — see `docs/known-limitations.md`.
 - **Sub-Saharan Africa outside ESKOM**. Eskom (South Africa)
   is T1 via the data portal; other sub-Saharan grids have
   patchy published generation and no curtailment accounting.
 - **Central Asia and Russia outside W. Siberia flare.** Russian
-  European grid carries a 1 TWh/yr fallback; Central Asia
-  absent beyond Kazakhstan.
-- **Chinese provincial-level hourly.** The 8 Chinese provinces
-  are T3 (Sichuan, Xinjiang) or T2 (Gansu, Inner Mongolia,
-  Qinghai, Ningxia, Tibet, Yunnan) with annual anchors from
-  NEA and Ember. No public hourly API exists for any Chinese
-  province.
+  European grid carries a 1 TWh/yr T3-modelled hydro-seasonal
+  fallback; Murmansk wind is a T2-annual-calibrated flat estimate;
+  Central Asia is absent beyond Kazakhstan (T3 wind).
+- **Chinese provincial-level hourly.** All eight Chinese provinces
+  surface as T3-modelled — typical diurnal/seasonal shapes (solar
+  cosine for Xinjiang, monthly-seasonal hydro for Sichuan, Tibet,
+  Yunnan; wind broad-overnight for Inner Mongolia; mixed
+  fuel-share for Gansu, Ningxia) scaled to NEA / Ember published
+  annuals. No public hourly API exists for any Chinese province.
 
 Full structural-gap ledger: `docs/known-limitations.md`.
 
