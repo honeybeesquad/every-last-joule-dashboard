@@ -9,6 +9,7 @@ or network access.
 | Figure | File(s) | Built from | Build command |
 |---|---|---|---|
 | Figure 2 — Backfill vs. published TSO validation scatter | `figure2_validation_scatter.pdf` / `.png` | `data/historical/figure2_validation_scatter.csv` | `.venv/bin/python scripts/validation/figure2_plot.py` |
+| Figure 3 — Daily global curtailment temporal trace (2020–2026) | `figure3_temporal_trace.pdf` / `.png` | `data/historical/curtailment_backfill.parquet` → `data/historical/figure3_daily_global.csv` | `.venv/bin/python scripts/validation/figure3_temporal_trace.py` |
 
 ## Regeneration pipeline
 
@@ -57,3 +58,22 @@ See the companion narrative in:
 - `docs/validation/<region>.md` — per-region Discrepancy analysis for
   every point on the scatter; material (>50% |Δ%|) offsets are named
   and diagnosed individually.
+
+## Figure 3 methodology
+
+The daily trace collapses the 2.59 M-row hourly archive
+(`curtailment_backfill.parquet`) to a ~2,306-row daily series keyed by
+`(date, source)`. Each row in the archive represents a single
+(region, fuel, hour) curtailment observation; one hour of a value in
+GW equals one GWh of energy, so the daily total is a direct sum of
+`curtailment_gw` values under each date bucket. The intermediate CSV
+`data/historical/figure3_daily_global.csv` is committed alongside the
+figure so a reviewer can reproduce the plot without re-merging the
+full archive.
+
+The annotations on the trace (COVID demand drop, Germany Redispatch
+2.0 regime change in October 2021, the 2023 solar-acceleration band)
+are chosen because each corresponds to a methodological or policy
+event that the paper's narrative references explicitly. The 30-day
+rolling mean overlay smooths out weekly / weather-driven noise so the
+underlying growth trend is visible under the chatter.
