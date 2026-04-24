@@ -10,6 +10,7 @@ or network access.
 |---|---|---|---|
 | Figure 2 — Backfill vs. published TSO validation scatter | `figure2_validation_scatter.pdf` / `.png` | `data/historical/figure2_validation_scatter.csv` | `.venv/bin/python scripts/validation/figure2_plot.py` |
 | Figure 3 — Daily global curtailment temporal trace (2020–2026) | `figure3_temporal_trace.pdf` / `.png` | `data/historical/curtailment_backfill.parquet` → `data/historical/figure3_daily_global.csv` | `.venv/bin/python scripts/validation/figure3_temporal_trace.py` |
+| Figure 4 — Per-region confidence tier coverage map | `figure4_coverage_map.pdf` / `.png` | `src/lib/regions.ts` | `.venv/bin/python scripts/validation/figure4_coverage_map.py` |
 
 ## Regeneration pipeline
 
@@ -77,3 +78,29 @@ are chosen because each corresponds to a methodological or policy
 event that the paper's narrative references explicitly. The 30-day
 rolling mean overlay smooths out weekly / weather-driven noise so the
 underlying growth trend is visible under the chatter.
+
+## Figure 4 methodology
+
+Figure 4 visualises the tier assignment for every region in the manifest
+(`src/lib/regions.ts`). A regex parser extracts `(id, name, country,
+lat, lon, tier)` rows and `derive_tier()` — whose logic mirrors
+`scripts/build_annual_rollup.py::derive_tier` exactly — maps each region
+to one of four confidence tiers:
+
+- **T1-live-TSO (±15%, teal)** — regions with live ENTSO-E / EIA / TSO
+  hourly feeds plus the 2020–2026 historical backfill reconstruction.
+- **T2-annual-calibrated (±20%, amber)** — static regions with a
+  published annual anchor but no hourly feed.
+- **T2 flare (±20%, brown square marker)** — oil/gas associated-gas
+  flaring regions whose correct hourly shape is 24/7 baseload.
+- **T3-modelled (±40%, terracotta)** — the handful of regions that
+  rely on a typical-daily-profile model because no public hourly
+  source exists (`sichuan`, `xinjiang`, `iceland`, `ukraine`, and the
+  three Hawaii islands).
+
+The basemap is hand-rolled (graticule + ocean tint + earth frame) to
+avoid a cartopy / natural-earth dependency; a reviewer can regenerate
+the figure on a clean Python install with only `matplotlib` and
+`numpy` in scope. Plot order is T3 → T2 → flare → T1 so the T1 dots
+(the paper's headline live-feed claim) render on top and are never
+occluded by ambers beneath them.
