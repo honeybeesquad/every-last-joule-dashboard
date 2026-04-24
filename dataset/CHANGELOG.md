@@ -15,7 +15,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 Initial archival release. Matches the state of the dashboard immediately before the Scientific Data submission sprint begins.
 
 ### Regions
-- 122 regions registered in `src/lib/regions.ts`
+- 128 regions registered in `src/lib/regions.ts`
 - 77 active data loaders in `src/data/*.json.ts`
 - 76 committed snapshots in `data/snapshots/last-good/`
 

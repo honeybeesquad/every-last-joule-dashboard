@@ -13,9 +13,9 @@ Zenodo automatically archives a release whenever a tagged version is pushed to a
 
 Before the first tag is pushed, edit the Zenodo metadata that gets applied to every archive. From https://zenodo.org/account/settings/github/ click the repo, then fill:
 
-- **Title**: `Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 122 regions`
+- **Title**: `Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 128 regions`
 - **Description** (paste from `dataset/README.md` "What's in it" section, or shorten):
-  > A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 122 regions across six continents. Combines live transmission-system-operator feeds (ENTSO-E, EIA, AEMO, Elexon, ONS) with published annual calibration (IRENA, Ember, GGFR). Published to support the Every Last Joule thesis on Bitcoin-curtailment matching, made fully open for any renewable-integration research.
+  > A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 128 regions across six continents. Combines live transmission-system-operator feeds (ENTSO-E, EIA, AEMO, Elexon, ONS) with published annual calibration (IRENA, Ember, GGFR). Published to support the Every Last Joule thesis on Bitcoin-curtailment matching, made fully open for any renewable-integration research.
 - **Authors**: `Collins, Simon` (affiliation blank unless you want DARI)
 - **ORCID**: your ORCID iD (create at https://orcid.org if you don't have one — takes 2 min). Then update `dataset/CITATION.cff` `orcid:` field to match.
 - **Keywords**: `curtailment, renewable energy, flaring, grid integration, solar, wind, hydro, Bitcoin, demand response, open data`
