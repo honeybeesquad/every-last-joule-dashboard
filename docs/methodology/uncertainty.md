@@ -19,6 +19,8 @@ The goal is to give a reader enough information to either accept the published f
 
 T4 is reserved — structural-gap regions are documented in `docs/known-limitations.md` and do not appear as rows in `RegionData`. Tier derivation is implemented in `uncertainty.ts::deriveTier` and is deterministic — given a loader id and its profile kind, the tier is fixed.
 
+**Note on "T2 flare" labelling.** The paper's Figure 4 coverage map and `docs/paper/04-technical-validation.md §4.5` present flare regions (Permian, West Siberia, South Iraq, East Saudi) as a separately-coloured "T2 flare" bucket so readers can visually distinguish the flat 24/7 base-load shape from dispatch-down curtailment. The envelope model is the same ±20 % as T2-annual-calibrated — the split is presentational, not an additional uncertainty tier. `deriveTier` returns the single label `T2-annual-calibrated` for both groups.
+
 ## Envelope calculation
 
 The implementation emits three fields on every `RegionData`:
