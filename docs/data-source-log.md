@@ -4,6 +4,57 @@ Per-source notes on status, API quirks, and access. One section per feed.
 
 ---
 
+## Colombia XM SINERGOX API (absent)
+
+**Intended feed:** XM's documented public SINERGOX API, exposed by the official `pydataxm` client.
+
+- Base URL: `https://servapibi.xm.com.co`
+- Documented endpoints: `POST /hourly`, `POST /daily`, `POST /monthly`, `POST /lists`
+- Auth: none. The official README states that API XM does not require a user or key.
+- Official client: `https://github.com/EquipoAnaliticaXM/API_XM`
+- Client implementation: `pydataxm.ReadDB` posts JSON to `https://servapibi.xm.com.co/{period_base}` and loads metric inventory from `POST https://servapibi.xm.com.co/Lists` with `{"MetricId":"ListadoMetricas"}`.
+
+**Metric IDs confirmed from the official repo:**
+
+- `Gene`: `Generacion Real`, entity `Sistema` and `Recurso`, `Horaria`
+- `GeneProgDesp`: `Generacion Programada Despacho`, entity `Recurso`, `Horaria`
+- `GeneProgRedesp`: `Generacion Programada Redespacho`, entity `Recurso`, `Horaria`
+- `DesvEner`: `Desviaciones Energia`, entity `Recurso`, `Horaria`
+- `CapEfecNeta`: `Listado Recursos Generacion`, entity `Recurso`, `Diaria`
+- `ListadoRecursos`: `Listado Recursos`, entity `Sistema` and `Agente`, `Lista`
+- The requested shorthand `Desp` and `DesvGene` were not present in `pydataxm/metricasAPI.json`; XM's published spellings are `GeneProgDesp` and `DesvEner`.
+
+**Documented request shapes attempted:**
+
+```json
+POST https://servapibi.xm.com.co/Lists
+{"MetricId":"ListadoMetricas"}
+```
+
+```json
+POST https://servapibi.xm.com.co/hourly
+{"MetricId":"Gene","StartDate":"2024-01-01","EndDate":"2024-01-02","Entity":"Sistema"}
+```
+
+```json
+POST https://servapibi.xm.com.co/hourly
+{"MetricId":"GeneProgDesp","StartDate":"2024-01-01","EndDate":"2024-01-02","Entity":"Recurso"}
+```
+
+**Local outcome on 2026-04-24:** not reachable from this build environment.
+
+- Plain `curl` to `https://servapibi.xm.com.co/Lists` failed with `curl: (6) Could not resolve host: servapibi.xm.com.co`.
+- `dig +short servapibi.xm.com.co` returned no usable answer.
+- `nslookup servapibi.xm.com.co` first returned `SERVFAIL` from the local resolver, then showed `191.97.49.119` and `179.1.12.119`.
+- Explicit `curl --resolve servapibi.xm.com.co:443:191.97.49.119 ...` timed out after 10 seconds; both `191.97.49.119` and `179.1.12.119` timed out after 75 seconds.
+- General internet access from the same environment was working; `https://github.com/EquipoAnaliticaXM/API_XM` returned HTTP 200.
+
+**Corroborating public issue:** EquipoAnaliticaXM/API_XM issue #37 documents the same DNS/proxy class of failure for `servapibi.xm.com.co` from outside Colombia and notes that routing through a Colombian proxy can resolve it.
+
+**Decision:** Colombia remains absent. It must not be represented by a modelled fallback; add it only when XM's documented public API is reachable in the production build path and response samples can be checked in as fixtures.
+
+---
+
 ## Cambridge CBECI (intended) / mempool.space (used)
 
 **Intended:** Cambridge Centre for Alternative Finance Bitcoin Electricity Consumption Index (`https://ccaf.io/cbnsi/cbeci`). CBECI is the canonical academic source for Bitcoin network energy estimates.

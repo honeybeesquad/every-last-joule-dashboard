@@ -16,7 +16,7 @@
 
 <div class="methodology-callout methodology-callout-abstract">
 
-This dashboard is a **wasted-energy database**: it estimates the fraction of current Bitcoin network electricity consumption that is already matched by renewable-energy curtailment, with associated-gas flaring tracked separately as a continuous base-load — measured or estimated across 123 regions. The renewable-curtailment figure is a **lower bound on visible waste**, not an upper bound on available waste. All figures are calibrated against publicly reported 2024 curtailment from the relevant grid operator or regulator. Data, sources, assumptions, and known limitations are documented below.
+This dashboard is a **wasted-energy database**: it estimates the fraction of current Bitcoin network electricity consumption that is already matched by renewable-energy curtailment, with associated-gas flaring tracked separately as a continuous base-load — measured or estimated across 122 regions. The renewable-curtailment figure is a **lower bound on visible waste**, not an upper bound on available waste. All figures are calibrated against publicly reported 2024 curtailment from the relevant grid operator or regulator. Data, sources, assumptions, and known limitations are documented below.
 
 </div>
 
@@ -97,7 +97,7 @@ The following limitations are inherent to the available upstream data and should
 
 1. **Self-curtailment is invisible.** Asset owners throttling their own output during negative-price hours do not appear in dispatch-down statistics. True curtailment is therefore systematically higher than the sum of system-operator figures.
 
-2. **Geographic completeness.** Coverage is 110 regions across every inhabited continent. Low-dispatch-data regions (parts of Central Africa, Central Asia beyond Kazakhstan, Russia beyond the tracked Volga basin and W. Siberia flare) remain estimated rather than observed. This understates the true global total.
+2. **Geographic completeness.** Coverage is 122 regions across every inhabited continent. Low-dispatch-data regions (parts of Central Africa, Central Asia beyond Kazakhstan, Russia beyond the tracked Volga basin and W. Siberia flare) remain estimated rather than observed. Colombia is excluded until XM's documented public API is reachable from the build environment; it is not represented by a modelled fallback. This understates the true global total.
 
 3. **Rate-proxy uncertainty.** Tier-B calibrated rates are anchored to a single year's published total. Where 2024 was anomalous (drought-driven hydro scarcity, unusual wind patterns), 2025's observed volumes may diverge from the implied rate. The rate is reviewed annually.
 

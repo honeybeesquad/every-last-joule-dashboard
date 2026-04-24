@@ -2,13 +2,14 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 123 canonical regions", () => {
+  it("has 122 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
     //   - 5 new statics added: hawaii-oahu/maui/island, austria, russia-murmansk-wind
     //   Prior total 113 + 10 new splits + 5 new statics = 123.
-    expect(REGIONS.length).toBe(123);
+    //   Colombia removed pending live XM API access; no modelled fallback.
+    expect(REGIONS.length).toBe(122);
   });
 
   it("has 54 live regions", () => {
@@ -16,9 +17,10 @@ describe("regions", () => {
     expect(REGIONS.filter(r => r.tier === "live").length).toBe(54);
   });
 
-  it("has 65 static regions", () => {
+  it("has 64 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(65);
+    // Colombia removed pending live XM API access; no modelled fallback.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(64);
   });
 
   it("has 4 flare regions", () => {
@@ -176,12 +178,15 @@ describe("regions", () => {
       "quebec",
       "manitoba",
       "saskatchewan",
-      "colombia",
     ]) {
       const region = REGIONS.find(r => r.id === id);
       expect(region).toBeDefined();
       expect(region?.tier).toBe("static");
     }
+  });
+
+  it("does not include Colombia without reachable live XM API data", () => {
+    expect(REGIONS.find(r => r.id === "colombia")).toBeUndefined();
   });
 
   it("includes the v0.6 Codex global-coverage-audit splits and additions", () => {
