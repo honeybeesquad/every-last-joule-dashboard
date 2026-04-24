@@ -13,7 +13,7 @@ const SITE_URL = "https://everylastjoule.com";
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
 const OG_TITLE = "Every Last Joule";
 const OG_DESCRIPTION =
-  "The wasted-energy database: curtailed renewables and flared gas across 123 regions worldwide, live from grid operators. How much of Bitcoin's hashrate could run on the joules we already pay for but throw away?";
+  "The wasted-energy database: curtailed renewables and flared gas across 128 regions worldwide, live from grid operators. How much of Bitcoin's hashrate could run on the joules we already pay for but throw away?";
 
 const socialMeta = [
   `<meta name="description" content="${OG_DESCRIPTION}">`,
@@ -24,7 +24,7 @@ const socialMeta = [
   `<meta property="og:image" content="${OG_IMAGE}">`,
   `<meta property="og:image:width" content="1200">`,
   `<meta property="og:image:height" content="630">`,
-  `<meta property="og:image:alt" content="Globe showing wasted-energy pillars — curtailed renewables and flared gas — across 123 regions; headline reads 241% of Bitcoin hashrate supportable on the joules we already throw away.">`,
+  `<meta property="og:image:alt" content="Globe showing wasted-energy pillars — curtailed renewables and flared gas — across 128 regions; headline reads 241% of Bitcoin hashrate supportable on the joules we already throw away.">`,
   `<meta name="twitter:card" content="summary_large_image">`,
   `<meta name="twitter:title" content="${OG_TITLE}">`,
   `<meta name="twitter:description" content="${OG_DESCRIPTION}">`,
