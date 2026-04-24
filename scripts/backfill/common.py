@@ -111,10 +111,24 @@ def get_zone(region_id: str) -> Zone:
 # Parquet output
 # ---------------------------------------------------------------------------
 
-def write_partition(source: str, region_id: str, year: int, rows: Iterable[dict]) -> Path:
+def write_partition(
+    source: str,
+    region_id: str,
+    year: int,
+    rows: Iterable[dict],
+    *,
+    append: bool = False,
+) -> Path:
     """
-    Write year-partitioned Parquet. Appends rows to an existing year-file if it exists
-    (useful when one agent handles multiple fuels/technologies in separate passes).
+    Write year-partitioned Parquet.
+
+    Default is OVERWRITE (`append=False`): one call per (source, region, year)
+    replaces the file entirely. Pass `append=True` only when a single run is
+    intentionally making multiple passes (e.g., one technology per pass) and
+    you are sure the prior passes happened within the same invocation.
+
+    Overwrite-by-default protects against duplicates when a zone is re-run
+    (smoke test + fan-out, retry after crash, etc.).
 
     Returns the path written.
     """
@@ -128,7 +142,7 @@ def write_partition(source: str, region_id: str, year: int, rows: Iterable[dict]
 
     table = pa.Table.from_pylist(batch, schema=SCHEMA)
 
-    if out.exists():
+    if append and out.exists():
         existing = pq.read_table(out, schema=SCHEMA)
         table = pa.concat_tables([existing, table])
 

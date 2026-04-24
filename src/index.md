@@ -16,6 +16,7 @@ import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
 import { FUEL_ORDER, FUEL_LABEL, FUEL_COLOR, fuelShare, isRenewable } from "./lib/fuel.js";
+import { applyUncertainty } from "./lib/uncertainty.js";
 import { mountGlobe } from "./globe.js";
 
 const ERCOT_NATIVE_ENABLED = false;
@@ -350,6 +351,25 @@ const regionData = {
   saskatchewan,
   ...statics
 };
+
+// S2 uncertainty: enrich every *live* region with confidenceTier +
+// uncertaintyLowGW + uncertaintyHighGW. Statics already carry these fields
+// from `src/data/statics.json.ts` (which knows the profileKind); the guard
+// `if (d.confidenceTier) continue;` prevents us from clobbering the
+// T3-modelled label on Sichuan/Xinjiang/Iceland with the wrong tier.
+//
+// Live regions get T1-live-TSO with a ±15% fallback envelope today; the 2σ
+// empirical envelope lights up once the HB backfill merge lands per-region
+// std deviations (see scripts/backfill/append_history.py).
+//
+// Flare regions are all routed through `statics.json.ts` already (permian,
+// w-siberia, s-iraq, e-saudi), so we only see `live` here.
+for (const region of REGIONS) {
+  const d = regionData[region.id];
+  if (!d) continue;
+  if (d.confidenceTier) continue; // preserve tier already set by loader
+  regionData[region.id] = applyUncertainty(d, { regionTier: region.tier });
+}
 
 // Populate the region-count span inside the lead copy without clobbering
 // the surrounding HTML (the ${FUEL_ORDER.map} earlier baked it in at render).

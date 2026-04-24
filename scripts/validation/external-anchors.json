@@ -1,0 +1,285 @@
+{
+  "_schema_version": 1,
+  "_description": "Curated external anchors per region for S1 Technical Validation. Seeded from code comments in src/data/*.json.ts and docs/data-source-log.md on 2026-04-24; enrich iteratively as paper-grade sources are confirmed.",
+  "_fields": {
+    "tso_annual_latest": "Human-readable most-recent TSO-published annual curtailment, e.g. 'ERCOT ~8 TWh (2024, Potomac Economics SoM)'",
+    "tso_annual_twh": "Dict of year→TWh numeric where known: {'2024': 8.0}",
+    "ember_annual_twh": "Most-recent Ember annual estimate",
+    "irena_annual_twh": "Most-recent IRENA annual estimate",
+    "other_anchor": "Any other high-quality public source (GGFR for flare, etc.)",
+    "limitations": "Region-specific limitations to surface in the validation doc",
+    "discrepancy_discussion": "Optional override for the discrepancy narrative"
+  },
+
+  "caiso": {
+    "tso_annual_latest": "CAISO ~3.4 TWh solar + ~0.5 TWh wind (2024, Ascend Analytics / CAISO daily reports)",
+    "tso_annual_twh": {"2024": 3.9},
+    "ember_annual_twh": "3.4 (solar only, 2024)",
+    "other_anchor": "Ascend Analytics, CAISO daily curtailment reports"
+  },
+  "ercot-west": {
+    "tso_annual_latest": "ERCOT ~8 TWh wind + ~0.8 TWh solar (2024, Potomac Economics State of the Market)",
+    "tso_annual_twh": {"2024": 5.8},
+    "limitations": "West/East split (66/34) is illustrative only — no public ERCOT zonal dispatch-down series was found as of 2026-04. Rate calibration is ERCOT-wide."
+  },
+  "ercot-east": {
+    "tso_annual_latest": "ERCOT ~8 TWh wind + ~0.8 TWh solar (2024, Potomac Economics SoM) × 34% East/Central share",
+    "tso_annual_twh": {"2024": 3.0},
+    "limitations": "See ercot-west."
+  },
+  "pjm": {
+    "tso_annual_latest": "PJM small but growing curtailment, concentrated in NJ/MD/VA solar (2024 PJM State of the Market)",
+    "other_anchor": "PJM Renewable Integration Study 2024; PJM Markets Monitor 2024"
+  },
+  "miso": {
+    "tso_annual_latest": "MISO ~5 TWh wind + ~0.5 TWh solar (2024 State of the Market, Potomac Economics)",
+    "tso_annual_twh": {"2024": 5.5}
+  },
+  "spp": {
+    "tso_annual_latest": "SPP ~3 TWh wind on ~75 TWh generation (2024 SoM)",
+    "tso_annual_twh": {"2024": 3.0}
+  },
+  "nyiso-zones-d-e": {
+    "tso_annual_latest": "NYISO statewide ~0.162 TWh wind (2023); Zones D+E ~75% share",
+    "tso_annual_twh": {"2023": 0.122}
+  },
+  "nyiso-rest": {
+    "tso_annual_latest": "NYISO statewide ~0.162 TWh wind (2023); ex-Zones-D/E ~25% share",
+    "tso_annual_twh": {"2023": 0.041}
+  },
+  "iso-ne-maine-vermont": {
+    "tso_annual_latest": "ISO-NE ~0.034 TWh renewable curtailment (2024 IMM) × 93% ME/VT share",
+    "tso_annual_twh": {"2024": 0.032}
+  },
+  "iso-ne-rest": {
+    "tso_annual_latest": "ISO-NE ~0.034 TWh renewable curtailment (2024 IMM) × 7% ex-ME/VT share",
+    "tso_annual_twh": {"2024": 0.002}
+  },
+  "bpa": {
+    "tso_annual_latest": "BPA hydro spill + minimal wind/solar curtailment; no single authoritative TWh figure — BPAT EIA proxy serves as best available"
+  },
+
+  "germany": {
+    "tso_annual_latest": "BNetzA 2024: ~19.5 TWh onshore wind, ~3.1 TWh offshore wind, ~0.6 TWh solar curtailment",
+    "tso_annual_twh": {"2024": 23.2},
+    "other_anchor": "BNetzA Monitoringbericht 2024; Bundesnetzagentur Redispatch report"
+  },
+  "iberia": {
+    "tso_annual_latest": "REE 2024 renewable curtailment ~2.1 TWh (Spain)",
+    "tso_annual_twh": {"2024": 2.1},
+    "other_anchor": "REE Informe del Sistema Eléctrico 2024"
+  },
+  "portugal": {
+    "tso_annual_latest": "REN 2024 renewable curtailment ~0.4 TWh",
+    "tso_annual_twh": {"2024": 0.4},
+    "other_anchor": "REN Dados Técnicos 2024"
+  },
+  "finland": {
+    "tso_annual_latest": "Fingrid wind curtailment low single-digit TWh/yr",
+    "other_anchor": "Fingrid Annual Report 2024"
+  },
+  "france": {
+    "tso_annual_latest": "RTE Bilan prévisionnel 2024: wind+solar écrêtement ~1.2 TWh",
+    "tso_annual_twh": {"2024": 1.2},
+    "other_anchor": "RTE Bilan électrique 2024"
+  },
+  "netherlands": {
+    "tso_annual_latest": "TenneT 2024 redispatch+curtailment ~2.5 TWh (all technologies)",
+    "other_anchor": "TenneT Kwaliteits- en Capaciteitsdocument 2024"
+  },
+  "denmark-west": {
+    "tso_annual_latest": "Energinet 2024 DK1 wind+solar afkobling ~0.8 TWh",
+    "tso_annual_twh": {"2024": 0.8}
+  },
+  "denmark-east": {
+    "tso_annual_latest": "Energinet 2024 DK2 ~0.2 TWh",
+    "tso_annual_twh": {"2024": 0.2}
+  },
+  "poland": {
+    "tso_annual_latest": "PSE 2024 redispatch ~1.5 TWh (estimate, no single published figure)"
+  },
+  "greece": {
+    "tso_annual_latest": "HAEE/IPTO 2024 RES curtailment officially published (see docs/data-source-log.md)",
+    "tso_annual_twh": {"2024": 0.35},
+    "other_anchor": "Ember 2024 Greece report"
+  },
+  "romania": {
+    "tso_annual_latest": "Transelectrica 2024 renewable curtailment low (grid-capacity-driven)"
+  },
+  "italy-north-zone": {
+    "tso_annual_latest": "Terna 2024 Italy North zonal overflow redispatch ~1.1 TWh"
+  },
+  "italy-south": {
+    "tso_annual_latest": "Terna 2024 Italy South zonal ~2.3 TWh (PV-heavy congestion)"
+  },
+  "italy-sardinia": {
+    "tso_annual_latest": "Terna 2024 Sardinia ~0.3 TWh"
+  },
+  "sweden-north": {
+    "tso_annual_latest": "Svk 2024 SE1+SE2 minimal curtailment — hydro baseload dominates"
+  },
+  "sweden-south": {
+    "tso_annual_latest": "Svk 2024 SE3+SE4 ~0.2 TWh wind curtailment"
+  },
+  "hungary": {
+    "tso_annual_latest": "MAVIR 2024 RES curtailment ~0.15 TWh"
+  },
+  "czech-republic": {
+    "tso_annual_latest": "ČEPS 2024 RES curtailment <0.1 TWh"
+  },
+  "bulgaria": {
+    "tso_annual_latest": "ESO 2024 RES curtailment ~0.1 TWh"
+  },
+  "baltics": {
+    "tso_annual_latest": "Litgrid 2024 Baltic states combined wind curtailment ~0.2 TWh"
+  },
+  "switzerland": {
+    "tso_annual_latest": "Swissgrid 2024 PV curtailment ~0.1 TWh; hydro spill not in A75 (excluded from our figure)"
+  },
+  "belgium": {
+    "tso_annual_latest": "Elia 2024 RES curtailment ~0.3 TWh",
+    "other_anchor": "Elia Open Data"
+  },
+  "turkey": {
+    "tso_annual_latest": "TEİAŞ/EPİAŞ 2024 RES curtailment ~0.5 TWh (estimate)",
+    "other_anchor": "EPIAS Transparency Dashboard"
+  },
+
+  "norway-no1": {"tso_annual_latest": "Statnett NO1 minimal curtailment (load centre, Oslo)"},
+  "norway-no2": {"tso_annual_latest": "Statnett NO2 small curtailment; cable corridor mostly exports out"},
+  "norway-no3": {"tso_annual_latest": "Statnett NO3 ~0.1 TWh wind curtailment"},
+  "norway-no4": {"tso_annual_latest": "Statnett NO4 ~0.3 TWh wind curtailment (export-constrained north)"},
+  "norway-no5": {"tso_annual_latest": "Statnett NO5 hydro spring spill only (not in A75)"},
+
+  "gb-scotland": {
+    "tso_annual_latest": "NESO 2024 constraint actions ~11 TWh total, ~70% Scottish wind",
+    "tso_annual_twh": {"2024": 7.7},
+    "other_anchor": "NESO Markets Roadmap 2024"
+  },
+  "gb-england-wales": {
+    "tso_annual_latest": "NESO 2024 constraint actions ~11 TWh total, ~30% E+W share",
+    "tso_annual_twh": {"2024": 3.3}
+  },
+
+  "aemo-nsw": {"tso_annual_latest": "AEMO 2024 NSW wind+solar curtailment ~0.5 TWh"},
+  "aemo-vic": {"tso_annual_latest": "AEMO 2024 VIC wind+solar curtailment ~0.3 TWh"},
+  "aemo-qld": {"tso_annual_latest": "AEMO 2024 QLD wind+solar curtailment ~0.8 TWh (PV congestion on North QLD)"},
+  "aemo-sa": {"tso_annual_latest": "AEMO 2024 SA wind+solar curtailment ~0.4 TWh (system-strength limited)"},
+  "aemo-tas": {"tso_annual_latest": "AEMO 2024 TAS wind curtailment <0.1 TWh"},
+
+  "brazil-rn": {"tso_annual_latest": "ONS 2024 RN wind+solar restriçao ~1.5 TWh", "other_anchor": "ONS restricao_coff dataset"},
+  "brazil-ce": {"tso_annual_latest": "ONS 2024 CE ~0.9 TWh"},
+  "brazil-bahia": {"tso_annual_latest": "ONS 2024 BA ~1.1 TWh"},
+  "brazil-piaui": {"tso_annual_latest": "ONS 2024 PI ~0.7 TWh"},
+  "brazil-pernambuco": {"tso_annual_latest": "ONS 2024 PE ~0.3 TWh"},
+  "brazil-other": {"tso_annual_latest": "ONS 2024 other-NE ~0.2 TWh"},
+
+  "permian": {
+    "tso_annual_latest": "GGFR 2024 Permian flaring ~280 Bcf ≈ 82 TWh equivalent (base load, 24/7)",
+    "limitations": "Flare regions are intrinsically base-load by nature. Hourly shape is flat by definition. 'Curtailment' here is the economic choice to flare rather than utilise — not grid-driven curtailment."
+  },
+  "w-siberia": {
+    "tso_annual_latest": "GGFR 2024 West Siberia flaring ~15 Bcm ≈ 44 TWh equivalent",
+    "limitations": "Base-load flare region — see permian for flat-shape rationale."
+  },
+  "s-iraq": {
+    "tso_annual_latest": "GGFR 2024 South Iraq flaring ~20 Bcm ≈ 58 TWh equivalent",
+    "limitations": "Base-load flare region — see permian for flat-shape rationale."
+  },
+  "e-saudi": {
+    "tso_annual_latest": "GGFR 2024 East Saudi flaring ~5 Bcm ≈ 15 TWh equivalent",
+    "limitations": "Base-load flare region — see permian for flat-shape rationale."
+  },
+
+  "gansu":          {"tso_annual_latest": "Ember China 2024 Gansu wind+solar curtailment ~12 TWh",          "limitations": "Structural gap: no public hourly archive for Chinese provinces. Uses typical daily shape scaled to Ember annual."},
+  "xinjiang":       {"tso_annual_latest": "Ember China 2024 Xinjiang ~20 TWh",                                 "limitations": "Structural gap — see gansu."},
+  "inner-mongolia": {"tso_annual_latest": "Ember China 2024 Inner Mongolia ~18 TWh",                           "limitations": "Structural gap — see gansu."},
+  "qinghai":        {"tso_annual_latest": "Ember China 2024 Qinghai ~4 TWh",                                   "limitations": "Structural gap — see gansu."},
+  "ningxia":        {"tso_annual_latest": "Ember China 2024 Ningxia ~2.5 TWh",                                 "limitations": "Structural gap — see gansu."},
+  "tibet":          {"tso_annual_latest": "Ember China 2024 Tibet ~1 TWh",                                     "limitations": "Structural gap — see gansu."},
+  "sichuan":        {"tso_annual_latest": "Ember China 2024 Sichuan ~8 TWh hydro spill",                       "limitations": "Structural gap — see gansu. Hydro spill is seasonal (spring melt), not diurnal; hourly shape is near-flat by design."},
+  "yunnan":         {"tso_annual_latest": "Ember China 2024 Yunnan ~5 TWh hydro spill",                        "limitations": "Structural gap — see sichuan."},
+
+  "iceland": {
+    "tso_annual_latest": "Orkustofnun 2024 annual curtailment ~0 TWh (load-following hydro+geothermal, reservoir-buffered)",
+    "limitations": "Structural gap: no public hourly archive. Typical-profile shape (near-flat) applied to annual anchor."
+  },
+  "atacama": {
+    "tso_annual_latest": "CEN 2024 Atacama solar curtailment ~2 TWh (MRE / central system dispatch restrictions)",
+    "limitations": "Cloudflare-gated; live feed via Playwright-Chrome bypass (see src/data/atacama-chile.json.ts). Backfill not yet attempted — would require Playwright-driven archive scrape."
+  },
+
+  "ireland-republic": {
+    "tso_annual_latest": "EirGrid 2024 wind constraint+curtailment ~1.5 TWh",
+    "other_anchor": "EirGrid Annual Renewable Energy Report 2024"
+  },
+  "northern-ireland": {
+    "tso_annual_latest": "SONI 2024 wind curtailment ~0.3 TWh"
+  },
+
+  "ontario": {"tso_annual_latest": "IESO 2024 wind curtailment ~1.5 TWh", "other_anchor": "IESO annual planning outlook"},
+  "alberta": {"tso_annual_latest": "AESO 2024 wind curtailment ~0.4 TWh"},
+  "quebec": {"tso_annual_latest": "Hydro-Québec 2024 wind curtailment low (hydro-reservoir buffered)"},
+  "british-columbia": {"tso_annual_latest": "BC Hydro 2024 curtailment minimal (hydro baseload)"},
+  "saskatchewan": {"tso_annual_latest": "SaskPower 2024 wind curtailment ~0.2 TWh"},
+  "manitoba": {"tso_annual_latest": "Manitoba Hydro 2024 curtailment minimal (hydro baseload)"},
+
+  "peru": {"tso_annual_latest": "COES-SINAC 2024 solar curtailment ~0.2 TWh"},
+  "argentina": {"tso_annual_latest": "CAMMESA 2024 wind+solar curtailment ~0.3 TWh"},
+  "uruguay": {"tso_annual_latest": "ADME 2024 wind curtailment ~0.1 TWh"},
+  "paraguay": {"tso_annual_latest": "ANDE 2024 hydro spill (Itaipu) seasonal only"},
+  "honduras": {"tso_annual_latest": "ENEE 2024 RES curtailment low"},
+  "mexico": {"tso_annual_latest": "CENACE data portal offline; defer to Ember / IRENA anchor"},
+  "chile-wind": {"tso_annual_latest": "CEN 2024 wind curtailment ~0.4 TWh (northern regions)"},
+
+  "south-africa": {
+    "tso_annual_latest": "ESKOM 2024 RES curtailment modest; overshadowed by load-shedding mechanics",
+    "other_anchor": "ESKOM Data Portal"
+  },
+  "kenya": {"tso_annual_latest": "KenGen 2024 wind/geothermal curtailment low"},
+  "ethiopia": {"tso_annual_latest": "EEP 2024 hydro-dominant, minimal curtailment"},
+  "morocco": {"tso_annual_latest": "ONEE 2024 RES curtailment ~0.2 TWh"},
+  "namibia": {"tso_annual_latest": "NamPower 2024 RES curtailment minimal"},
+
+  "australia-nt-pilbara": {"tso_annual_latest": "PSM 2024 Pilbara grid curtailment ~0.1 TWh (mining-dominated demand)"},
+  "wa-swis": {"tso_annual_latest": "AEMO WA SWIS 2024 RES curtailment ~0.4 TWh"},
+
+  "hawaii-island":  {"tso_annual_latest": "Hawaiian Electric 2024 Big Island curtailment ~0.1 TWh"},
+  "hawaii-maui":    {"tso_annual_latest": "Hawaiian Electric 2024 Maui curtailment ~0.05 TWh"},
+  "hawaii-oahu":    {"tso_annual_latest": "Hawaiian Electric 2024 Oahu curtailment ~0.2 TWh"},
+
+  "japan":       {"tso_annual_latest": "METI/OCCTO 2024 wind+solar curtailment ~2.5 TWh (Kyushu dominant)"},
+  "south-korea": {"tso_annual_latest": "KPX 2024 RES curtailment ~0.8 TWh"},
+  "jeju":        {"tso_annual_latest": "KPX 2024 Jeju wind+solar curtailment ~0.15 TWh"},
+  "taiwan":      {"tso_annual_latest": "Taipower 2024 RES curtailment ~0.3 TWh"},
+
+  "india-east":   {"tso_annual_latest": "POSOCO 2024 East region RES curtailment low"},
+  "india-north":  {"tso_annual_latest": "POSOCO 2024 North region RES curtailment ~0.4 TWh"},
+  "india-south":  {"tso_annual_latest": "POSOCO 2024 South region wind+solar curtailment ~1.0 TWh (Tamil Nadu wind)"},
+  "india-west":   {"tso_annual_latest": "POSOCO 2024 West region RES curtailment ~1.5 TWh (Gujarat/Rajasthan)"},
+
+  "indonesia":    {"tso_annual_latest": "PLN 2024 RES curtailment low"},
+  "vietnam":      {"tso_annual_latest": "EVN 2024 solar curtailment ~3 TWh (2022 peak, tapering)"},
+  "thailand":     {"tso_annual_latest": "EGAT 2024 RES curtailment low"},
+  "malaysia":     {"tso_annual_latest": "TNB 2024 RES curtailment low"},
+  "bangladesh":   {"tso_annual_latest": "BPDB 2024 RES curtailment minimal (coal-dominant grid)"},
+  "pakistan":     {"tso_annual_latest": "NTDC 2024 wind curtailment ~0.3 TWh (Jhimpir cluster)"},
+
+  "ukraine":      {"tso_annual_latest": "Ember 2024 Ukraine (ENTSO-E absent post-war); ~0.4 TWh solar curtailment"},
+  "cyprus":       {"tso_annual_latest": "TSOC 2024 PV curtailment ~0.15 TWh"},
+  "israel":       {"tso_annual_latest": "NOGA 2024 PV curtailment ~0.2 TWh"},
+  "jordan":       {"tso_annual_latest": "NEPCO 2024 RES curtailment ~0.1 TWh"},
+  "kurdistan":    {"tso_annual_latest": "KRG no public data; structural gap", "limitations": "Structural gap: no public hourly archive."},
+  "iraq-mainland":{"tso_annual_latest": "MoE Iraq no public data; structural gap", "limitations": "Structural gap: no public hourly archive."},
+  "iran":         {"tso_annual_latest": "TAVANIR no public hourly data; structural gap", "limitations": "Structural gap: no public hourly archive."},
+  "saudi-solar":  {"tso_annual_latest": "SEC 2024 PV curtailment ~0.1 TWh (early-stage)", "limitations": "Structural gap for hourly; static snapshot from annual estimate."},
+  "uae":          {"tso_annual_latest": "DEWA/EWEC 2024 PV curtailment low", "limitations": "Structural gap for hourly."},
+  "oman":         {"tso_annual_latest": "OETC 2024 RES curtailment minimal"},
+  "egypt":        {"tso_annual_latest": "EETC 2024 RES curtailment ~0.2 TWh"},
+  "kazakhstan":   {"tso_annual_latest": "KEGOC 2024 RES curtailment ~0.15 TWh"},
+  "mongolia":     {"tso_annual_latest": "NDC 2024 wind curtailment low"},
+  "russia-mainland": {"tso_annual_latest": "SO UPS no public data; structural gap", "limitations": "Structural gap: no public hourly archive accessible post-2022."},
+  "russia-murmansk-wind": {"tso_annual_latest": "Structural gap", "limitations": "Structural gap: no public hourly archive."},
+
+  "new-zealand": {"tso_annual_latest": "Transpower 2024 RES curtailment low"}
+}
