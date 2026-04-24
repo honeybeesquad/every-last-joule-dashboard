@@ -4,7 +4,7 @@ Last updated: 2026-04-25 (scaffold) · Sprint: HB · Paper section: Methods §3.
 
 ## Scope
 
-The historical-backfill archive (`data/historical/curtailment_backfill.parquet`, published as a Zenodo asset) contains hourly reconstructed curtailment observations for the period **2020-01-01 to 2026-04-01** for every dataset region whose upstream source exposes a multi-year archive. It is distinct from the rolling `curtailment_history.parquet` which samples the *live dashboard's current state* on each build.
+The historical-backfill archive (`data/historical/curtailment_backfill.parquet`, published as a Zenodo asset) contains hourly reconstructed curtailment observations for the period **2020-01-01 to 2026-03-31** (2,590,195 rows × 7 columns, ≈ 20 MB Snappy-compressed) for the 29 dataset regions whose upstream source exposes a multi-year archive. It is distinct from the rolling `curtailment_history.parquet` which samples the *live dashboard's current state* on each build.
 
 ## Why a backfill archive rather than dashboard history
 
@@ -50,7 +50,7 @@ The backfill therefore is NOT a claim that the calibration rate was identical in
 
 ## Output schema
 
-Same as `dataset/SCHEMA.md` § "Historical backfill (planned)". Fields:
+Same as `dataset/SCHEMA.md` § "Historical backfill". Fields:
 
 - `observation_timestamp` (str, ISO-8601 UTC)
 - `region_id` (str)
