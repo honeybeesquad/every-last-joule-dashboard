@@ -39,11 +39,15 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The backfill for 2024 reports 0.085 TWh of curtailment, which is +70.2% higher than the published ČEPS anchor of "<0.1 TWh" (treated as 0.05 TWh midpoint). This significant positive discrepancy primarily stems from the current rate under-calibration. The curtailment rates (solar 2.0%, wind 1.0%) applied in our model are estimated, as no publicly extracted annual curtailment figures from ČEPS or the ENTSO-E A77 API for Czechia were available at the time of this audit. Consequently, the modeled generation times rate may overestimate actual curtailment compared to the TSO's reported value, which may reflect a different scope of curtailment (e.g., only economic) or a more conservative reporting threshold.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The curtailment rates for solar (2.0%) and wind (1.0%) are estimated due to the absence of publicly extracted annual curtailment data from ČEPS or ENTSO-E's A77 API for Czechia.
+*   The primary published anchor for 2024, "<0.1 TWh" from ČEPS, is broad and treated as a 0.05 TWh midpoint for calculation, limiting precise validation.
+*   The lack of a granular TSO anchor (e.g., split by fuel type) means our rates are applied uniformly, potentially obscuring different curtailment patterns between solar and wind.
+*   This region is flagged as a "Measured-substitution candidate" in the ENTSO-E audit, indicating that more direct curtailment data might be available but has not yet been integrated.
+*   See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

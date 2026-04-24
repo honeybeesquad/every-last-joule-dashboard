@@ -23,6 +23,12 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
 | 2020 | 12,886 | 0.449 | — | — | eia |
+| 2021 | 13,076 | 0.450 | — | — | eia |
+| 2022 | 13,318 | 0.369 | — | — | eia |
+| 2023 | 13,961 | 0.371 | — | — | eia |
+| 2024 | 13,752 | 0.416 | — | — | eia |
+| 2025 | 13,179 | 0.403 | — | — | eia |
+| 2026 | 3,813 | 0.126 | — | — | eia |
 
 ## Published anchors
 
@@ -42,7 +48,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 ## Links
 
 - Loader source: [`bpa.json.ts`](../../src/data/bpa.json.ts)
-- Backfill archive: `data/historical/backfill/*_bpa_*.parquet` (1 year)
+- Backfill archive: `data/historical/backfill/*_bpa_*.parquet` (7 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

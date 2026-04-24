@@ -39,11 +39,17 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill annual curtailment of 0.059 TWh for Italy North significantly underreports the Terna 2024 North zone anchor of ~0.108 TWh by 45.0%. This material discrepancy is primarily due to rate under-calibration and definitional differences in the available public data.
+
+The ENTSO-E audit found no citable, published bidding-zone curtailment split from Terna for 2024, leading to the use of acknowledged placeholder rates for solar and wind generation. Our current calculation relies on these placeholder rates multiplied by generation, which does not fully capture the TSO's reported curtailment. The TSO anchor itself is derived from a national total (35% of Terna national 0.31 TWh RES curtailment anchor), suggesting a scope mismatch where our zonal generation-times-rate model may not align with the components included in the Terna national figure and its subsequent allocation to zones.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+- The rates applied for solar and wind curtailment in the `italy-north-zone` are acknowledged placeholders, as Terna does not publish a specific bidding-zone curtailment split. These should be considered illustrative floor/ceiling values rather than measured annual calibrations.
+- The TSO annual curtailment anchor for 2024 is an allocation (35% of Terna national RES curtailment) rather than a direct zonal publication, contributing to the noted discrepancy and introducing definitional ambiguity.
+- The loader relies on editorial national-to-zone allocation notes due to the absence of direct zonal curtailment data from Terna.
+- Our generation-times-rate model for this region does not account for the broader Terna 'zonal overflow redispatch' metric (~1.1 TWh), which represents a different but potentially related category of grid management.
+- The discrepancy for 2024 (45.0%) exceeds the 25% flagging threshold for backfill annual totals, indicating a significant divergence between our modelled output and the published anchor.
 
 ## Links
 

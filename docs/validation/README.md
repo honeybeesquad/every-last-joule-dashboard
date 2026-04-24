@@ -53,7 +53,7 @@ Last generated: 2026-04-24
 | Denmark DK1 | live | mixed | 0 | [denmark-west](./denmark-west.md) |
 | Egypt | static | solar | 0 | [egypt](./egypt.md) |
 | Iberia | live | mixed | 7 | [iberia](./iberia.md) |
-| Baltic states | live | wind | 6 | [baltics](./baltics.md) |
+| Baltic states | live | wind | 7 | [baltics](./baltics.md) |
 | Ethiopia | static | hydro | 0 | [ethiopia](./ethiopia.md) |
 | Finland | live | wind | 0 | [finland](./finland.md) |
 | France | live | mixed | 0 | [france](./france.md) |
@@ -90,10 +90,10 @@ Last generated: 2026-04-24
 | Malaysia | static | solar | 0 | [malaysia](./malaysia.md) |
 | Namibia | static | solar | 0 | [namibia](./namibia.md) |
 | Netherlands | live | mixed | 7 | [netherlands](./netherlands.md) |
-| Norway NO1 (Oslo) | live | mixed | 3 | [norway-no1](./norway-no1.md) |
-| Norway NO2 (Kristiansand) | live | mixed | 0 | [norway-no2](./norway-no2.md) |
-| Norway NO3 (Trondheim) | live | mixed | 0 | [norway-no3](./norway-no3.md) |
-| Norway NO4 (Tromsø) | live | mixed | 0 | [norway-no4](./norway-no4.md) |
+| Norway NO1 (Oslo) | live | mixed | 7 | [norway-no1](./norway-no1.md) |
+| Norway NO2 (Kristiansand) | live | mixed | 6 | [norway-no2](./norway-no2.md) |
+| Norway NO3 (Trondheim) | live | mixed | 6 | [norway-no3](./norway-no3.md) |
+| Norway NO4 (Tromsø) | live | mixed | 6 | [norway-no4](./norway-no4.md) |
 | Norway NO5 (Bergen) | live | hydro | 0 | [norway-no5](./norway-no5.md) |
 | New Zealand | live | mixed | 0 | [new-zealand](./new-zealand.md) |
 | Oman | static | solar | 0 | [oman](./oman.md) |
@@ -115,7 +115,7 @@ Last generated: 2026-04-24
 | Taiwan | static | mixed | 0 | [taiwan](./taiwan.md) |
 | Ukraine | static | solar | 0 | [ukraine](./ukraine.md) |
 | Uruguay | static | wind | 0 | [uruguay](./uruguay.md) |
-| BPA | live | mixed | 1 | [bpa](./bpa.md) |
+| BPA | live | mixed | 7 | [bpa](./bpa.md) |
 | California | live | mixed | 7 | [caiso](./caiso.md) |
 | ERCOT East | live | mixed | 7 | [ercot-east](./ercot-east.md) |
 | ERCOT West | live | mixed | 7 | [ercot-west](./ercot-west.md) |

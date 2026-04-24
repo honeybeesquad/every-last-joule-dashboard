@@ -39,11 +39,13 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill annual total for Switzerland of 0.065 TWh significantly underreports against the published Swissgrid 2024 PV curtailment anchor of ~0.1 TWh, showing a discrepancy of -35.5%. As both our figure and the TSO's published figure are noted to exclude hydro spill, this discrepancy is not definitional concerning that aspect. Instead, it suggests an under-calibration of the applied curtailment rate for PV in Switzerland. The ENTSO-E rate audit did not identify a citable 2023/2024 curtailed-energy total for this region, implying the current rate is an illustrative value that requires further grounding.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The curtailment rate applied for Switzerland PV is an illustrative estimate, as no citable 2023/2024 annual curtailed-energy total was identified and audited for this region.
+*   The current loader derives curtailment from ENTSO-E A75 generation data multiplied by a rate. A future implementation should investigate the availability of ENTSO-E A77 "Curtailed Renewable Energy" data for Switzerland to potentially replace this rate-based estimation with directly measured curtailment.
+*   ENTSO-E sources, including Swissgrid, may exhibit reporting-latency holes, where data publication can lag by 1–3 months, potentially leading to incomplete hourly profiles for certain periods. The backfill process tolerates gaps up to 10% per year for ENTSO-E regions.
 
 ## Links
 

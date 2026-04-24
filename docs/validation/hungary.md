@@ -39,11 +39,12 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill total of 0.177 TWh shows an +18.0% over-reporting against the MAVIR 2024 RES curtailment anchor of 0.150 TWh. This discrepancy is attributed to rate over-calibration, as the applied solar (3.0%) and wind (1.0%) curtailment rates for Hungary are acknowledged placeholders. The ENTSO-E rate audit found no citable 2023/2024 annual curtailed energy total for Hungary, indicating that the rates are not grounded in specific TSO publications for this period.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The applied curtailment rates for Hungary (solar 3.0%, wind 1.0%) are placeholders, as no citable 2023/2024 annual curtailed-energy total was found for MAVIR. These rates should be treated as illustrative floor/ceiling values rather than measured annual calibration.
+*   Although the region is classified as `Tier: live`, the absence of a documented calibration source for the applied rates means the uncertainty envelope relies on the general T1 fallback of ±15% of current-snapshot peakGW, rather than empirically observed year-over-year variance.
 
 ## Links
 

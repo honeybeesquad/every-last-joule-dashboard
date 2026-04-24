@@ -39,11 +39,16 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The backfill for 2024 (0.116 TWh) significantly overreports curtailment by +87.6% against the TSO annual anchor (0.062 TWh). This discrepancy is primarily attributed to **Rate under/over-calibration**. The 2024 TSO annual curtailment figure for Sardinia is derived as an allocation (20% of Terna's national 0.31 TWh RES curtailment anchor), rather than a direct zonal measurement. Our applied rates for solar (4.7%) and wind (2.0%) are acknowledged placeholders due to the absence of a citable zonal denominator from Terna, leading to an overestimation when applied to hourly generation data.
+
+For other backfill years (2020-2023, 2025-2026), no public TSO annual anchors are available for direct comparison.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   **Lack of Zonal Calibration Data:** The current curtailment rates for Sardinia are acknowledged placeholders, as Terna does not publish a 2023/2024 curtailed-energy table split by ENTSO-E bidding zone. The 2024 TSO annual anchor is an allocated figure based on national totals.
+*   **Rate Under/Over-Calibration:** Without direct zonal curtailment data, the uniform application of placeholder rates across all backfilled years may lead to year-on-year discrepancies against any allocated TSO anchors, particularly as generation mix and curtailment drivers evolve.
+*   **Potential for A77 Substitution:** As noted in the ENTSO-E rate audit, the `documentType=A77` API product for "Curtailed Renewable Energy" could potentially offer direct hourly curtailment data for Italian bidding zones. A future loader could test A77 coverage for Sardinia and replace the current rate-based proxy.
+*   **ENTSO-E Reporting Latency:** While not specifically documented for Sardinia, ENTSO-E reporting-latency holes can occasionally lead to data gaps within the backfill archive, which are tolerated up to 10% per year.
 
 ## Links
 

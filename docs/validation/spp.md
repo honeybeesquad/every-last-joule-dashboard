@@ -39,11 +39,15 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The backfill for 2024 (4.417 TWh) significantly overreports against the latest published TSO anchor for SPP wind (3.000 TWh), resulting in a Δ% of +47.2%. This discrepancy is primarily definitional: the EIA source for SPP aggregates both wind and solar curtailment, while the published TSO anchor specifically refers to wind curtailment. Additionally, our backfill methodology includes energy 'spill' which may not be fully accounted for in the TSO's published figures.
+
+For years 2020-2023 and 2025-2026, no comparable TSO annual curtailment figures are available, precluding a year-over-year reconciliation beyond 2024.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+- **Limited TSO Annual Data:** Published TSO annual curtailment figures are available only for 2024, limiting the multi-year reconciliation of backfill totals against external anchors.
+- **Definitional Mismatch for TSO Anchor:** The available TSO anchor for 2024 specifically covers wind curtailment, whereas our EIA source combines both wind and solar, leading to an inherent definitional discrepancy in comparisons.
+- **Backfill Start Year:** Due to EIA definitional shifts in reporting from BA-level to sub-BA detail prior to 2020, the backfill for SPP commences in 2020, excluding historical curtailment data for earlier periods even when available via the API.
 
 ## Links
 

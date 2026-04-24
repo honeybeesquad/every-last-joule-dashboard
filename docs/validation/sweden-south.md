@@ -39,11 +39,13 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill total of 0.168 TWh for `sweden-south` underreports the published Svk 2024 SE3+SE4 wind curtailment anchor of 0.200 TWh by 16.2%. This discrepancy is within the 25% threshold for flagging material disagreements against published annual figures.
+
+The ENTSO-E rate audit for `sweden-south` indicates that the applied solar (B16) and wind (B19) curtailment rates are currently acknowledged placeholders, as no citable 2023/2024 annual curtailed-energy total for Sweden was found. This lack of a grounded rate suggests the observed difference is primarily due to rate under-calibration.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The curtailment rates applied for `sweden-south` (solar and wind) are acknowledged placeholders, as no citable 2023/2024 annual curtailed-energy total for Sweden has been extracted. These rates should be considered illustrative floor/ceiling values rather than measured annual calibration.
 
 ## Links
 
