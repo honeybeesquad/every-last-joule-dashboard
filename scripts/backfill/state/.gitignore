@@ -1,0 +1,3 @@
+# Resumable agent state — ephemeral, not committed
+*.json
+!*.example.json

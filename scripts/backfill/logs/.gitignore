@@ -1,0 +1,3 @@
+# Agent run logs — ephemeral, not committed
+*.log
+*.jsonl
