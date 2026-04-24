@@ -524,3 +524,19 @@ The existing South Korea mainland loader remains a conservative typical solar pr
 - CEN Informe de Novedades CDC: daily `Resumen Ejecutivo de Operación DD-MM-YYYY V1` PDFs are public and direct WordPress PDF URLs are reachable. On 2026-04-24, direct probes found `Resumen-Ejecutivo-de-Operacion-22-04-2026-V1.pdf` HTTP 200 while 23/24 April were not yet published. These PDFs include daily real/programmed generation plus "Reducción Energía Eólica y Solar durante la Operación en Tiempo Real (OTR)" with daily solar MWh and accumulated annual GWh.
 - Implementation decision: use daily Resumen Ejecutivo solar-reduction MWh as the primary recent-volume source, apportioned across the 24 UTC hours using the measured hourly shape from the monthly XLSX. This reduces freshness from monthly to daily without replacing CEN-measured curtailment with a typical shape. If the daily PDF path or `pdftotext` extraction fails, the loader returns the monthly XLSX result. If both live paths fail, `withFallback` serves the last-good snapshot.
 - Ember / OWID / IEA cross-checks: Ember and OWID publish annual or monthly Chile electricity-generation datasets rather than public daily/hourly Chile curtailment. IEA's VRE curtailment chart cites CEN's `Reducciones de energía eólica y solar en el SEN` workbooks and includes 2025 partial-year points, useful as annual cross-check only. These are not better primary feeds for the dashboard.
+
+---
+
+## ENTSO-E calibrated-rate audit (2026-04-24)
+
+**Feed used:** ENTSO-E Transparency API actual generation per type (`documentType=A75`, `processType=A16`) in `src/data/entsoe.json.ts`.
+
+**Audit outcome:** rate constants are now documented in `docs/methodology/entsoe-rates.md`.
+
+- Germany was split into onshore wind (`B19`) and offshore wind (`B18`) using BNetzA 2024 curtailment figures and BNetzA/SMARD 2024 generation denominators. The old single wind rate was a blended proxy and is no longer used.
+- Netherlands offshore wind was reduced to the 4.9% aggregate 2024 wind+solar curtailment rate reported by IEEFA; onshore wind and solar were already within the 1 percentage-point no-churn band.
+- Poland wind and solar rates were recalculated from URE's 2024 redispatch report and Ember's 2024 generation denominators.
+- Greece wind and solar rates were recalculated from HAEE/IPTO's official 2024 RES curtailment total and Ember's 2024 wind+solar generation denominator.
+- No public 2023/2024 curtailed-energy totals were found for Portugal, Finland, Romania, Italy's ENTSO-E bidding-zone split, Sweden, Hungary, Bulgaria, or Lithuania/Baltics. Spain has IEA/REE evidence but no exact open annual value extracted in this pass.
+
+**Upgrade path:** ENTSO-E documents the A77 `Curtailed Renewable Energy` API product with `businessType=A53`. A future loader should test A77 for every domain currently in the A75 rate proxy, reconcile annual sums to operator/regulator reports, and replace generation-times-rate modelling wherever A77 coverage is complete.

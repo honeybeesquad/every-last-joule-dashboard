@@ -12,10 +12,11 @@ export const ZONES = [
     id: "germany",
     domain: "10Y1001A1001A82H",
     technologies: [
-      { psrType: "B19", fuel: "wind", rate: 0.08 },
+      { psrType: "B18", fuel: "wind", rate: 0.178 }, // BNetzA 2024: 4,562 GWh offshore wind curtailed / 25.7 TWh offshore wind generation.
+      { psrType: "B19", fuel: "wind", rate: 0.030 }, // BNetzA 2024: 3,384 GWh onshore wind curtailed / 111.9 TWh onshore wind generation.
       { psrType: "B16", fuel: "solar", rate: 0.023 },
     ],
-    sourceNote: "Germany 2024 calibrated to BNetzA Monitoringbericht 2025 preliminary: 7.95 TWh wind + 1.39 TWh solar = 9.34 TWh/yr total.",
+    sourceNote: "Germany 2024 calibrated to BNetzA/SMARD: 4.56 TWh offshore wind, 3.38 TWh onshore wind, and 1.39 TWh solar curtailed.",
   },
   {
     id: "iberia",
@@ -45,29 +46,29 @@ export const ZONES = [
     id: "netherlands",
     domain: "10YNL----------L",
     technologies: [
-      { psrType: "B18", fuel: "wind", rate: 0.09 },
+      { psrType: "B18", fuel: "wind", rate: 0.049 }, // IEEFA 2025: Netherlands 2024 wind+solar curtailment 3.0 TWh, 4.9% VRE rate.
       { psrType: "B19", fuel: "wind", rate: 0.045 },
       { psrType: "B16", fuel: "solar", rate: 0.045 },
     ],
-    sourceNote: "Netherlands calibrated to TenneT / CBS 2024: curtailment tripled to >3 TWh (offshore B18 dominant, onshore B19 + rising solar B16).",
+    sourceNote: "Netherlands calibrated to IEEFA 2025 summary of 2024 curtailment: 3.0 TWh wind+solar, 4.9% VRE curtailment rate.",
   },
   {
     id: "poland",
     domain: "10YPL-AREA-----S",
     technologies: [
-      { psrType: "B19", fuel: "wind", rate: 0.02 },
-      { psrType: "B16", fuel: "solar", rate: 0.015 },
+      { psrType: "B19", fuel: "wind", rate: 0.005 }, // URE 2025: 127.9 GWh wind redispatch / Ember 2024 Poland wind 25.89 TWh.
+      { psrType: "B16", fuel: "solar", rate: 0.035 }, // URE 2025: 621.38 GWh PV redispatch / Ember 2024 Poland solar 17.66 TWh.
     ],
-    sourceNote: "Poland PSE 2024 calibration with growing solar contribution.",
+    sourceNote: "Poland calibrated to URE 2024 redispatch report: 621 GWh PV and 128 GWh wind non-market RES reductions.",
   },
   {
     id: "greece",
     domain: "10YGR-HTSO-----Y",
     technologies: [
-      { psrType: "B16", fuel: "solar", rate: 0.025 },
-      { psrType: "B19", fuel: "wind", rate: 0.015 },
+      { psrType: "B16", fuel: "solar", rate: 0.036 }, // HAEE/IPTO 2025: 860 GWh 2024 RES curtailed / Ember wind+solar 23.81 TWh.
+      { psrType: "B19", fuel: "wind", rate: 0.036 }, // HAEE/IPTO 2025: 860 GWh 2024 RES curtailed / Ember wind+solar 23.81 TWh.
     ],
-    sourceNote: "Greece HEDNO 2024 mixed wind+solar calibration.",
+    sourceNote: "Greece calibrated to HAEE/IPTO official 2024 RES curtailment of 860 GWh, applied as one wind+solar aggregate rate.",
   },
   {
     id: "romania",
