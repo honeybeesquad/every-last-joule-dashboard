@@ -71,9 +71,9 @@ describe("static regions", () => {
     expect(data.sichuan.profile[0]).toBeLessThanOrEqual(flatGW * 3);
   });
 
-  it("permian at 44 TWh/yr yields ~5.02 GW flat (flare electrical-equivalent)", () => {
+  it("permian at 20.6 TWh/yr yields ~2.35 GW flat (flare electrical-equivalent)", () => {
     const data = buildAllStatics();
-    expect(data.permian.profile[0]).toBeCloseTo((44 * 1000) / 8760, 2);
+    expect(data.permian.profile[0]).toBeCloseTo((20.6 * 1000) / 8760, 2);
   });
 
   it("totalTWh for hydro-seasonal regions is pro-rata × seasonal factor", () => {

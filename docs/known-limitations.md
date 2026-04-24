@@ -16,7 +16,7 @@ Cambridge’s 2025 CBECI estimate implies a fleet average around 16 J/TH, while 
 
 ### 4. Flare estimation uncertainty
 
-VIIRS-derived and GGFR-derived flare estimates do not line up perfectly, and basin-level divergence can be significant. v0 uses GGFR annual totals as the base, converts them to electrical-equivalent output at 35% generator efficiency, and labels the flare contribution as an annualised estimate rather than a live observation.
+VIIRS-derived and GGFR-derived flare estimates do not line up perfectly, and basin-level divergence can be significant. v0 uses GGFR annual individual flare-location totals as the base, converts them to electrical-equivalent output at 35% generator efficiency, and labels the flare contribution as an annualised estimate rather than a live observation. A 2026-04-24 audit applies a +/-20% interpretation band and updates only regions outside that band; see `docs/methodology/flare-ercot-brazil.md#flare`.
 
 ### 5. 30-day time-of-day averaging smooths anomalies
 
@@ -32,7 +32,7 @@ CBECI remains the canonical academic benchmark for Bitcoin electricity consumpti
 
 ### 8. ERCOT remains on the EIA proxy after the B2 native attempt
 
-ERCOT’s native developer API remains blocked behind the Incapsula WAF from this local environment, even with valid credentials. The B2 native probe acquired a token locally, then received HTTP 403 from `api.ercot.com`. Vercel’s US build path acquired a token and bypassed Incapsula after the missing ERCOT env vars were added, but the SCED HDL/LDL artifact data call returned HTTP 404. v0.5 therefore keeps `ERCOT_NATIVE_ENABLED = false` and continues to use EIA hourly wind with a 6.15% calibrated rate, split into ERCOT West and East. The inactive native loader remains in the repo for a future endpoint-discovery pass.
+ERCOT’s native developer API remains blocked behind the Incapsula WAF from this local environment, even with valid credentials. The B2 native probe acquired a token locally, then received HTTP 403 from `api.ercot.com`. Vercel’s US build path acquired a token and bypassed Incapsula after the missing ERCOT env vars were added, but the SCED HDL/LDL artifact data call returned HTTP 404. v0.5 therefore keeps `ERCOT_NATIVE_ENABLED = false` and continues to use EIA hourly wind with calibrated wind/solar rates, split into ERCOT West and East. The 66/34 West/East split is illustrative and book-derived, not an ERCOT-published zonal curtailment statistic; see `docs/methodology/flare-ercot-brazil.md#ercot`. The inactive native loader remains in the repo for a future endpoint-discovery pass.
 
 ### 9. Atacama (Chile) daily reductions use monthly hourly shape
 
@@ -51,6 +51,10 @@ Hourly shape remains synthetic. Xinjiang uses a typical solar shape even though 
 ### 11. Flare regions are flat because flare is flat (not a data gap)
 
 Permian, W. Siberia, S. Iraq, and E. Saudi render as flat pillars. This is methodologically correct: flare is 24/7 base-load heat because upstream oil production doesn't stop overnight. Their flat shape is the truth, not an absence of hourly data. They are distinguishable from estimated regions (above) in the dashboard's colour coding - flare is orange, renewables are teal.
+
+### 11a. Brazil NE clustering uses ONS state codes, not plant-ID prefixes
+
+Brazil NE wind and solar constrained-off rows are grouped by the ONS `id_estado` state field. This is intentionally not a manually curated `id_ons` prefix rule. ONS documents `id_estado`, `id_ons`, and ANEEL `ceg` fields in the constrained-off dictionaries; plant sets may carry `ceg = "-"`, so ANEEL SIGA remains a periodic cross-check rather than a row-by-row join for every constrained-off entry. See `docs/methodology/flare-ercot-brazil.md#brazil-ne`.
 
 ### 12. v1f regional expansion uses documented fallback shapes where live feeds were hostile
 
