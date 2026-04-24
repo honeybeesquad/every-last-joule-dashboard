@@ -321,6 +321,43 @@ Turkey loader: `src/data/turkey.json.ts` applies a conservative 0.8% rate to obs
 
 ---
 
+## Vietnam 2026 probe (fallback retained)
+
+**Decision:** no live loader. The 2026-04-24 probe did not find an accessible unauthenticated hourly Vietnam curtailment feed. The existing `vietnam.json.ts` typical solar fallback remains in place; no live data was fabricated.
+
+**What would be required for promotion:** a public endpoint or file series with timestamped curtailed/dispatch-down MW or MWh, preferably plant-level or at least national hourly data. Annual reports, news articles, operating-plan decisions, and market-design slides are useful context but are not sufficient for `latestProfile` or 30-day live profiles.
+
+Probe environment: local worktree `codex/vietnam-live`, Pacific/Auckland, 2026-04-24. Requests used `HEAD` and `GET` with a browser-like user agent, redirects enabled, and 20-30s timeouts.
+
+| Source candidate | URL | HEAD result | GET result | Notes |
+| --- | --- | --- | --- | --- |
+| EVN public site | `https://www.evn.com.vn` | 200 `text/html; charset=utf-8`, `content-length=134586` | 200 `text/html; charset=utf-8`, 134586 bytes | Public article/report portal. Navigation exposes annual reports, national-operation summary pages, hydro-reservoir pages, and renewable-energy news, but no machine-readable hourly curtailment endpoint was found. |
+| EVN English site | `https://en.evn.com.vn` | 200 `text/html; charset=utf-8`, `content-length=94213` | 200 `text/html; charset=utf-8`, 94213 bytes | English news/report portal. No API/CSV/JSON link for hourly curtailment found. |
+| EVN 2025 annual report PDF | `https://en.evn.com.vn/userfile/files/2026/4/AnnualRepot2025_V23-20260408155435105.pdf` | 200 `application/pdf`, `content-length=4940283` | 200 `application/pdf`, 4940283 bytes | Useful annual context for 2024 system capacity and generation, but not hourly curtailment data and not a live feed. |
+| EVNEPS | `https://www.evneps.com.vn` | DNS failure (`Could not resolve host`) | DNS failure (`Could not resolve host`) | Candidate host not reachable from this environment. HTTP variant also failed DNS. |
+| NSMO / former NLDC | `https://www.nldc.evn.vn` | Connection timeout after 20s | Connection timeout after 20s | Candidate national system-operator host did not return a public page. HTTP variant failed to connect on port 80. |
+| NSMO alternate | `https://www.nsmo.vn` | Connection timeout after 20s | Connection timeout after 20s | Search results confirm NSMO exists institutionally, but this host did not expose a reachable public data service. HTTP variant failed to connect on port 80. |
+| NSMO alternate apex | `https://nsmo.vn` | Connection timeout after 20s | Connection timeout after 20s | Same outcome as `www.nsmo.vn`; HTTP variant failed to connect on port 80. |
+| ERAV legacy host | `https://www.erav.vn` | DNS failure (`Could not resolve host`) | DNS failure (`Could not resolve host`) | MOIT still lists `erav.vn` in an ERAV profile page, but the probed host did not resolve. |
+| Electricity Authority of Viet Nam (current ERAV/EAV site) | `https://www.eav.gov.vn/en-US` | 200 `text/html; charset=utf-8` | 200 `text/html; charset=utf-8`, 70381 bytes | Public regulator/news portal. The page includes an "Electricity market" button with `href="#"`; no downloadable hourly curtailment feed found. |
+| Electricity Authority of Viet Nam (Vietnamese homepage) | `https://www.eav.gov.vn` | 200 `text/html; charset=utf-8` | 200 `text/html; charset=utf-8`, 257566 bytes | Public article/legal-document portal. HTML contains CMS listing calls for articles/legal documents, not an hourly electricity dataset. |
+| MOIT homepage | `https://moit.gov.vn` | 200 `text/html; charset=UTF-8` | 200 `text/html; charset=UTF-8`, 188084 bytes | Ministry portal and news/legal-document source, not an hourly curtailment feed. |
+| MOIT ERAV profile | `https://moit.gov.vn/en/administrative-departments/directorate-agency/electricity-regulatory-authority-of-vietnam` | 200 `text/html; charset=UTF-8` | 200 `text/html; charset=UTF-8`, 48847 bytes | Confirms ERAV/EAV mandate and legacy website reference; no data endpoint. |
+| IEA Vietnam country page | `https://www.iea.org/countries/viet-nam` | 403 `text/html; charset=UTF-8` | 403 `text/html; charset=UTF-8`, 5605 bytes, challenge page | Not accessible to server-side fetch from this environment. Even if accessible, the IEA country page is annual/monthly country statistics rather than an hourly curtailment feed. |
+| Vietnam wholesale electricity market portal | `https://www.thitruongdien.evn.vn` | DNS failure (`Could not resolve host`) | DNS failure (`Could not resolve host`) | Historical NLDC market slides reference this host, but it did not resolve. |
+| Vietnam wholesale electricity market portal apex | `https://thitruongdien.evn.vn` | DNS failure (`Could not resolve host`) | DNS failure (`Could not resolve host`) | Same outcome without `www`. HTTP variants also failed DNS. |
+| NLDC/VWEM 2019 market-design slide deck | `https://vepg.vn/wp-content/uploads/2019/09/3.-DPPA_VNWholesaleElecMarket_EVNNLDC_20190612_En.pdf` | 200 `application/pdf` | 200 `application/pdf`, 1225497 bytes | Confirms Vietnam Wholesale Electricity Market portal/database concepts and references `https://www.thitruongdien.evn.vn`, but it is a historical PDF, not a current data endpoint. |
+
+Context found during the probe:
+
+- EVN pages and older EVN material document the 2021 renewable-curtailment problem, including an EVN/Institute of Energy estimate that 2021 unutilized renewable output could reach about 1.68 billion kWh, split roughly 1.25 billion kWh solar and 0.43 billion kWh wind. This supports keeping Vietnam visible as a documented fallback region, but it is not a live feed.
+- World Bank REACH materials describe curtailment-reduction grid investments and NLDC visibility issues for the large solar fleet. These are project documents, not an operational time series.
+- Current public EVN/MOIT/EAV material found in this pass is report/news/legal-document oriented. No CAISO/ONS/AEMO-style CSV, XML, JSON, XLSX, or API endpoint with timestamped curtailed MW/MWh was exposed.
+
+**Implementation outcome:** `src/data/vietnam.json.ts` remains a `withFallback`-wrapped typical solar profile with `latestProfile: null`. `src/data/statics.json.ts` has no Vietnam entry in this branch, so there is no static-output removal to perform.
+
+---
+
 ## v1f fallback expansion regions (used)
 
 These regions intentionally use typical-shape fallback profiles after one-day live-access probes found no stable unauthenticated hourly curtailment endpoint. Each loader still wraps in `withFallback` and writes a last-good snapshot.
@@ -330,7 +367,7 @@ These regions intentionally use typical-shape fallback profiles after one-day li
 - Paraguay: Itaipu/ANDE probed; Itaipu hydro spill fallback, 10 TWh/yr, near-flat hydro profile.
 - Mexico: CENACE public reports and SENER mirror path probed; northern solar fallback, 1.2 TWh/yr, solar profile peaking UTC 19:00.
 - Japan: OCCTO/JEPX/METI probed; Kyushu solar fallback, 1.7 TWh/yr, solar profile peaking UTC 03:00.
-- Vietnam: EVN probed; Ninh Thuan/Binh Thuan solar fallback, 2 TWh/yr, solar profile peaking UTC 05:00.
+- Vietnam: EVN/EVNEPS/NSMO/EAV/MOIT/IEA/VWEM re-probed in the 2026 section above; no accessible hourly feed found, so the existing `vietnam.json.ts` typical solar fallback remains.
 - Thailand: EGAT/ERC probed; central solar fallback, 0.3 TWh/yr, solar profile peaking UTC 05:30.
 - North India: NRLDC/CEA/MERIT probed; Rajasthan/Northern Region solar fallback, 1.5 TWh/yr, solar profile peaking UTC 06:30.
 - Cyprus: TSOC/EAC probed; isolated-grid solar fallback, 0.1 TWh/yr, solar profile peaking UTC 10:00.
