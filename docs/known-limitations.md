@@ -64,7 +64,7 @@ Western Australia (SWIS), NT & Pilbara, Indonesia, Malaysia, South Korea mainlan
 
 - **Australia non-NEM:** WA-SWIS uses 0.4 TWh/yr mixed solar/wind; NT & Pilbara uses 0.2 TWh/yr captive solar.
 - **South/Southeast Asia:** Indonesia uses 0.3 TWh/yr Java-Bali solar; Malaysia uses 0.15 TWh/yr Peninsular solar.
-- **East Asia:** South Korea mainland uses 0.5 TWh/yr solar, excluding Jeju; Taiwan uses 0.6 TWh/yr mixed offshore wind and solar.
+- **East Asia:** South Korea mainland remains a 0.5 TWh/yr solar-shaped fallback, excluding Jeju. A 2026-04-24 refresh found reachable KPX/EPSIS/KEEI portal pages and KPX generation APIs on Korea Open Data Portal, but the useful hourly solar/generation APIs require an approved `serviceKey` and no unauthenticated mainland curtailment feed was found. Taiwan uses 0.6 TWh/yr mixed offshore wind and solar.
 - **Russia non-flare:** Russia (European grid) uses 1 TWh/yr seasonal hydro spill. W. Siberia remains the separate flare region and is not reclassified.
 - **Middle East:** Jordan uses 0.35 TWh/yr mixed wind/solar calibrated to the 17% wind-curtailment headline; Saudi Arabia solar uses 0.3 TWh/yr and remains separate from `e-saudi` flare; UAE uses 0.2 TWh/yr; Oman uses 0.1 TWh/yr; Israel uses 0.15 TWh/yr.
 

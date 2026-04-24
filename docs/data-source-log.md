@@ -279,7 +279,7 @@ These 12 regions close Australia non-NEM, South/Southeast Asia, East Asia, Russi
 - NT & Pilbara: probed Horizon Power public site; Pilbara captive mining networks expose no public hourly curtailment. Fallback: solar profile peaking UTC 04:00, 0.2 TWh/yr.
 - Indonesia: probed PLN public site; daily/generation materials are not an unauthenticated hourly curtailment feed. Fallback: Java-Bali solar profile peaking UTC 05:00, 0.3 TWh/yr.
 - Malaysia: probed TNB/SEDA public sources; no hourly curtailment endpoint integrated. Fallback: Peninsular solar profile peaking UTC 04:00, 0.15 TWh/yr.
-- South Korea (mainland): probed KPX English/EPSIS path; no mainland hourly curtailment feed integrated, with Jeju kept separate. Fallback: mainland solar profile peaking UTC 03:00, 0.5 TWh/yr.
+- South Korea (mainland): probed KPX English/EPSIS path; no mainland hourly curtailment feed integrated, with Jeju kept separate. 2026-04-24 refresh found KPX/Data Portal generation APIs but they require an approved Korea Open Data Portal `serviceKey`; direct `openapi.kpx.or.kr` calls timed out from this IP. Fallback: mainland solar profile peaking UTC 03:00, 0.5 TWh/yr.
 - Russia (European grid): probed SO UES; sanctions/language/access constraints and no unauthenticated hourly hydro-spill feed. Fallback: seasonal hydro profile using Volga/western Russia NH spring-summer shares, 1 TWh/yr.
 - Taiwan: probed Taipower generation-status page, data.gov.tw search, and T-REC. Taipower exposes live generation HTML, data.gov.tw exposes a portal shell, and T-REC is certificate metadata, not curtailment. Fallback: mixed offshore-wind + solar profile, 0.6 TWh/yr, fuelShare wind 67% / solar 33%.
 - Jordan: probed NEPCO public site; annual/report-level curtailment references only. Fallback: mixed wind + solar profile, 0.35 TWh/yr, fuelShare wind 70% / solar 30%, calibrated to the 17% wind-curtailment headline.
@@ -287,6 +287,51 @@ These 12 regions close Australia non-NEM, South/Southeast Asia, East Asia, Russi
 - UAE: probed DEWA/EWEC public path; no hourly solar curtailment endpoint integrated. Fallback: solar profile peaking UTC 08:00, 0.2 TWh/yr.
 - Oman: probed OPWP/Nama public path; annual-report level data only. Fallback: solar profile peaking UTC 08:00, 0.1 TWh/yr.
 - Israel: probed Noga/IEC public path; no hourly solar curtailment endpoint integrated. Fallback: Negev solar profile peaking UTC 10:00, 0.15 TWh/yr.
+
+---
+
+## South Korea mainland live-probe refresh (2026-04-24)
+
+Decision: keep fallback. KPX and EPSIS are reachable, and Korea Open Data Portal advertises KPX hourly solar/generation APIs, but the useful feeds require a free approved API key (`serviceKey`). The task explicitly forbids fabricating API keys, so no production live loader was added. Jeju remains a separate island-grid fallback.
+
+Korea Open Data Portal API pages found:
+
+- `https://www.data.go.kr/data/15103243/openapi.do` - KPX regional hourly solar generation. Swagger host `apis.data.go.kr/B552115/PvAmountByLocHr`, operation `getPvAmountByLocHr`; required params include `serviceKey`, `pageNo`, `numOfRows`, `dataType`, optional `tradeYmd`. This is generation, not curtailment, and needs key approval.
+- `https://www.data.go.kr/data/15113384/openapi.do` - KPX fuel-by-fuel generation, system basis. Swagger host `apis.data.go.kr/B552115/PwrAmountByGen`, operation `getPwrAmountByGen`; required params include `serviceKey`, `pageNo`, `numOfRows`, `dataType`, optional `baseDate`. The portal note says this is mainland plus Jeju, so it is not directly a mainland-only curtailment feed.
+- `https://www.data.go.kr/data/15142651/openapi.do` - KPX current fuel-by-fuel generation status. Service URL `https://openapi.kpx.or.kr/openapi/sumperfuel5m/getSumperfuel5m`; required `serviceKey`. This is current generation status, not curtailment.
+
+Local endpoint probes:
+
+| URL | HTTP | Content type | Size | Notes |
+| --- | ---: | --- | ---: | --- |
+| `https://www.kpx.or.kr/` | 200 | `text/html;charset=UTF-8` | 93,372 | KPX Korean homepage reachable; HTML portal only. |
+| `https://www.kpx.or.kr/eng/` | 200 | `text/html;charset=UTF-8` | 26,949 | KPX English homepage reachable; links to EPSIS but no machine-readable mainland curtailment feed. |
+| `http://epsis.kpx.or.kr/` | 000 | none | 0 | Port 80 connection failed from this IP. |
+| `https://epsis.kpx.or.kr/` | 200 | `text/html` | 208 | Redirect shell to `/epsisnew/`. |
+| `https://epsis.kpx.or.kr/epsisnew/` | 200 | `text/html;charset=UTF-8` | 44,459 | EPSIS portal shell reachable; menus expose statistics pages, not unauthenticated hourly curtailment JSON/CSV. |
+| `https://epsis.kpx.or.kr/epsisnew/selectMain.do` | 200 | `text/html;charset=UTF-8` | 44,459 | Same EPSIS portal payload. |
+| `https://www.keei.re.kr/` | 200 | `text/html;charset=UTF-8` | 79,675 | KEEI homepage reachable; links onward to KESIS. |
+| `https://kesis.keei.re.kr/` | 200 | `text/html;charset=UTF-8` | 35,205 | KESIS statistics portal reachable; no live curtailment API found in this pass. |
+| `https://kesis.keei.re.kr/portal/main/main.do` | 404 | `application/json;charset=UTF-8` | 131 | Guessed KESIS path not present. |
+| `https://www.data.go.kr/` | 200 | `text/html;charset=UTF-8` | 135,498 | Korea Open Data Portal reachable. |
+| `https://www.data.go.kr/data/15103243/openapi.do` | 200 | `text/html;charset=UTF-8` | 177,565 | KPX regional hourly solar generation API detail page; application flow and required `serviceKey`. |
+| `https://www.data.go.kr/data/15113384/openapi.do` | 200 | `text/html;charset=UTF-8` | 179,502 | KPX fuel generation API detail page; application flow and required `serviceKey`. |
+| `https://www.data.go.kr/data/15142651/openapi.do` | 200 | `text/html;charset=UTF-8` | 181,331 | KPX current fuel generation API detail page; application flow and required `serviceKey`. |
+| `https://apis.data.go.kr/B552115/PvAmountByLocHr/getPvAmountByLocHr?pageNo=1&numOfRows=24&dataType=json&tradeYmd=20240401` | 401 | `text/plain; charset=utf-8` | 13 | Gateway returns `Unauthorized` without `serviceKey`. |
+| `https://apis.data.go.kr/B552115/PwrAmountByGen/getPwrAmountByGen?pageNo=1&numOfRows=30&dataType=json&baseDate=20240401` | 401 | `text/plain; charset=utf-8` | 13 | Gateway returns `Unauthorized` without `serviceKey`. |
+| `https://openapi.kpx.or.kr/openapiv2/PvAmountByLocHr?serviceKey=&pageNo=1&numOfRows=24&dataType=json&tradeYmd=20240401` | 000 | none | 0 | Timed out after 25 s from this IP. |
+| `https://openapi.kpx.or.kr/openapiv2/PwrAmountByGen?serviceKey=&pageNo=1&numOfRows=30&dataType=json&baseDate=20240401` | 000 | none | 0 | Timed out after 25 s from this IP. |
+| `https://openapi.kpx.or.kr/openapi/sumperfuel5m/getSumperfuel5m` | 000 | none | 0 | Timed out after 25 s from this IP. |
+| `https://openapi.kpx.or.kr/openapi/sukub5mMaxDatetime/getSukub5mMaxDatetime` | 000 | none | 0 | Timed out after 25 s from this IP. |
+| `https://openapi.kpx.or.kr/sukub.do` | 000 | none | 0 | Timed out after 25 s from this IP. |
+| `https://www.komipo.co.kr/` | 200 | `text/html; charset=UTF-8` | 199 | KOMIPO redirect shell; no curtailment endpoint identified. |
+| `https://www.khnp.co.kr/` | 200 | `text/html; charset=utf-8` | 321 | KHNP redirect shell; no curtailment endpoint identified. |
+| `https://www.kosep.co.kr/` | 000 | none | 0 | DNS resolution failed. |
+| `https://kosep.co.kr/` | 000 | none | 0 | TLS certificate name mismatch. |
+| `https://www.koenergy.kr/` | 200 | `text/html;charset=UTF-8` | 247 | Korea South-East Power redirect shell; no curtailment endpoint identified. |
+| `https://www.iea.org/countries/korea` | 403 | `text/html; charset=UTF-8` | 5,404 | Cloudflare challenge from this IP; country data is not a live curtailment feed. |
+
+The existing South Korea mainland loader remains a conservative typical solar profile at 0.5 TWh/yr, peaking UTC 03:00 and excluding Jeju.
 
 ---
 
