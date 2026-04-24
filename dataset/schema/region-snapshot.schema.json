@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://everylastjoule.com/schema/region-snapshot.schema.json",
   "title": "Every Last Joule — per-region snapshot",
-  "description": "Schema for data/snapshots/last-good/<regionId>.json. One snapshot per region per build. See dataset/SCHEMA.md for the human-readable description.",
+  "description": "Schema for data/snapshots/last-good/<regionId>.json. One snapshot per region per build. Single-region loaders emit the object below; multi-region loaders (aemo, brazil-ne, entsoe, ercot, ercot-native, norway) emit a Record<regionId, this>. The runtime source of truth is the RegionData interface in src/lib/types.ts. See dataset/SCHEMA.md for the human-readable description.",
   "type": "object",
   "required": [
     "regionId",
@@ -10,9 +10,7 @@
     "latestProfile",
     "totalTWh",
     "peakGW",
-    "lastUpdated",
-    "sourceNote",
-    "fuelShare"
+    "lastUpdated"
   ],
   "properties": {
     "regionId": {
@@ -28,11 +26,16 @@
       "items": {"type": "number", "minimum": 0}
     },
     "latestProfile": {
-      "type": "array",
-      "description": "Single-day latest snapshot in GW per UTC hour.",
-      "minItems": 24,
-      "maxItems": 24,
-      "items": {"type": "number", "minimum": 0}
+      "description": "Single-day latest snapshot in GW per UTC hour. Null when the loader cannot pin a single most-recent UTC day (e.g. when the upstream feed is built from a multi-day rolling window without a daily anchor). Loaders that publish a same-day raw curve emit a 24-element array; loaders that don't emit null.",
+      "oneOf": [
+        {
+          "type": "array",
+          "minItems": 24,
+          "maxItems": 24,
+          "items": {"type": "number", "minimum": 0}
+        },
+        {"type": "null"}
+      ]
     },
     "totalTWh": {
       "type": "number",
@@ -50,7 +53,7 @@
     },
     "sourceNote": {
       "type": "string",
-      "description": "Human-readable provenance string surfaced in the dashboard tooltip and paper Usage Notes."
+      "description": "Optional human-readable provenance string surfaced in the dashboard tooltip and paper Usage Notes. Absent on legacy snapshots that pre-date the provenance-string convention."
     },
     "sourceStatus": {
       "type": ["string", "null"],
@@ -59,24 +62,24 @@
     },
     "fuelShare": {
       "type": "object",
-      "description": "Fuel-type split of the curtailed energy, fractions 0\u20131.",
+      "description": "Optional fuel-type split of the curtailed energy, fractions 0\u20131. Loaders that pull technology-separated feeds (e.g. ONS Brazil) populate this; loaders that don't omit the field. The runtime keys in src/lib/types.ts are {solar, wind, hydro}; the historical snapshot corpus also contains {geothermal, flare} from earlier loader generations. Keys outside this enum should be treated as data-quality issues.",
       "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1},
       "propertyNames": {"enum": ["solar", "wind", "hydro", "geothermal", "flare"]}
     },
     "uncertaintyLowGW": {
       "type": "number",
       "minimum": 0,
-      "description": "Lower bound of the 95% interval on peakGW. Added in S2."
+      "description": "Lower bound of the per-tier envelope on peakGW (max(0, peakGW \u2212 \u03b4)). Half-width \u03b4 is per-tier: 2\u03c3 from the 5-year backfill where available, else \u00b115% (T1) / \u00b120% (T2) / \u00b140% (T3). Derived deterministically by src/lib/uncertainty.ts::deriveTier; see docs/methodology/uncertainty.md for the methodology."
     },
     "uncertaintyHighGW": {
       "type": "number",
       "minimum": 0,
-      "description": "Upper bound of the 95% interval on peakGW. Added in S2."
+      "description": "Upper bound of the per-tier envelope on peakGW (peakGW + \u03b4). Same per-tier \u03b4 as uncertaintyLowGW."
     },
     "confidenceTier": {
       "type": "string",
       "enum": ["T1-live-TSO", "T2-annual-calibrated", "T3-modelled", "T4-structural-gap"],
-      "description": "Deterministic classification of source quality. Added in S2."
+      "description": "Deterministic source-quality classification. T1 = live TSO/ISO feed. T2 = static anchored to a published annual (Ember, IRENA, GGFR, TSO annual). T3 = static annual + typical-shape profile (solar/wind/hydro-seasonal/mixed/overnight). T4 is reserved in the enum for symmetry but is never emitted \u2014 structural-gap regions do not appear in the dataset at all. Derived deterministically by src/lib/uncertainty.ts::deriveTier; see docs/methodology/uncertainty.md."
     }
   },
   "additionalProperties": false
