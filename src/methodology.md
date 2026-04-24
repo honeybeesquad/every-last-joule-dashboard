@@ -16,7 +16,7 @@
 
 <div class="methodology-callout methodology-callout-abstract">
 
-This dashboard estimates the fraction of current Bitcoin network electricity consumption that is already matched by renewable-energy curtailment and associated forms of electrical waste — measured or estimated across 110 regions. The estimate is a **lower bound on visible waste**, not an upper bound on available waste. All figures are calibrated against publicly reported 2024 curtailment from the relevant grid operator or regulator. Data, sources, assumptions, and known limitations are documented below.
+This dashboard is a **wasted-energy database**: it estimates the fraction of current Bitcoin network electricity consumption that is already matched by renewable-energy curtailment, with associated-gas flaring tracked separately as a continuous base-load — measured or estimated across 123 regions. The renewable-curtailment figure is a **lower bound on visible waste**, not an upper bound on available waste. All figures are calibrated against publicly reported 2024 curtailment from the relevant grid operator or regulator. Data, sources, assumptions, and known limitations are documented below.
 
 </div>
 

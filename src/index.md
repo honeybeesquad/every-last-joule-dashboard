@@ -123,7 +123,7 @@ document.getElementById("app-root").innerHTML = `
       <div class="app-title">
         <span class="app-mark">●</span>
         <span class="app-wordmark">Every Last Joule</span>
-        <span class="app-tag">Unlocked Potential · v0</span>
+        <span class="app-tag">Wasted Energy Database · v0</span>
       </div>
       <nav class="app-nav" aria-label="Primary">
         <a href="./methodology">Methodology</a>
@@ -135,7 +135,7 @@ document.getElementById("app-root").innerHTML = `
       <section class="panel panel-left" aria-label="Headline">
         <div class="eyebrow">Sustainable hashrate · unlocked right now</div>
         <div class="display-xl num-tabular" id="pct-readout">—%</div>
-        <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was observed curtailed, spilled, or constrained-off in the last thirty days — across <span id="region-count">—</span> tracked regions. A measured floor, not a speculative ceiling.</p>
+        <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was wasted in the last thirty days — observed curtailed, spilled, or constrained-off across <span id="region-count">—</span> tracked regions. A measured floor, not a speculative ceiling.</p>
         <div class="stats-row">
           <div class="stat">
             <div class="eyebrow micro">Bitcoin network hashrate</div>

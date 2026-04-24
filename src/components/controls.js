@@ -9,7 +9,7 @@ export function mountControls(container, clock) {
     </button>
     <div class="ctl-speed" role="group" aria-label="Playback speed">
       ${[0.5, 1, 2, 4, 8].map((s) => `
-        <button class="ctl-speed-chip${s === 2 ? " is-active" : ""}" data-speed="${s}">${s}×</button>
+        <button class="ctl-speed-chip${s === 0.5 ? " is-active" : ""}" data-speed="${s}">${s}×</button>
       `).join("")}
     </div>
     <span class="ctl-utc num-tabular" aria-live="polite"></span>

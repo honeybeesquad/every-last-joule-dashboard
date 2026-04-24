@@ -7,7 +7,10 @@
 export function createClock(initialHourUtc) {
   const state = {
     hour: ((initialHourUtc % 24) + 24) % 24,
-    speed: 2,
+    // 0.5× = 0.2 h/s = 2 min per 24h loop. Slow enough to read the pillars
+    // rising over each timezone; users can bump to 2×/4×/8× if they want
+    // to glance at the whole cycle at a go.
+    speed: 0.5,
     playing: true,
     lastTs: null
   };
