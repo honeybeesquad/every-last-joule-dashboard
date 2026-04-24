@@ -90,19 +90,23 @@ underlying growth trend is visible under the chatter.
 Figure 4 visualises the tier assignment for every region in the manifest
 (`src/lib/regions.ts`). A regex parser extracts `(id, name, country,
 lat, lon, tier)` rows and `derive_tier()` — whose logic mirrors
-`scripts/build_annual_rollup.py::derive_tier` exactly — maps each region
-to one of four confidence tiers:
+`src/lib/uncertainty.ts::deriveTier` and `scripts/tally-tiers.ts`
+exactly — maps each region to one of four confidence tiers:
 
-- **T1-live-TSO (±15%, teal)** — regions with live ENTSO-E / EIA / TSO
-  hourly feeds plus the 2020–2026 historical backfill reconstruction.
-- **T2-annual-calibrated (±20%, amber)** — static regions with a
-  published annual anchor but no hourly feed.
-- **T2 flare (±20%, brown square marker)** — oil/gas associated-gas
-  flaring regions whose correct hourly shape is 24/7 baseload.
-- **T3-modelled (±40%, terracotta)** — the handful of regions that
-  rely on a typical-daily-profile model because no public hourly
-  source exists (`sichuan`, `xinjiang`, `iceland`, `ukraine`, and the
-  three Hawaii islands).
+- **T1-live-TSO (±15%, teal)** — 66 regions with live ENTSO-E / EIA /
+  TSO hourly feeds plus, where available, the 2020–2026 historical
+  backfill reconstruction.
+- **T2-annual-calibrated (±20%, amber)** — 2 flat-base statics with a
+  published annual anchor and no diurnal modelling (`austria`,
+  `russia-murmansk-wind`).
+- **T2 flare (±20%, brown square marker)** — 4 oil/gas associated-gas
+  flaring regions whose correct hourly shape is 24/7 baseload (Permian,
+  West Siberia, South Iraq, East Saudi).
+- **T3-modelled (±40%, terracotta)** — 56 static regions that rely on a
+  typical-shape diurnal/seasonal/mixed/overnight profile scaled to a
+  published annual anchor, covering most of the Chinese provinces,
+  South Asia, Africa, the Middle East outside flare, Latin America
+  outside Brazil/Argentina, and Hawaii.
 
 The basemap is hand-rolled (graticule + ocean tint + earth frame) to
 avoid a cartopy / natural-earth dependency; a reviewer can regenerate

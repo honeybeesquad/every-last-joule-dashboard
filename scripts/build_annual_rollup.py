@@ -79,19 +79,16 @@ TIER_DEFAULT_FRACTION: dict[str, float] = {
     "T4-structural-gap":    0.00,
 }
 
-# Subset of statics whose profileKind is solar or hydro-seasonal. These map
-# to T3-modelled rather than the T2 default for flat-flare statics. Kept in
-# sync by hand with `src/data/statics.json.ts`. When that file adds a new
-# static, this set must be updated — build_region_docs.py asserts the
-# regions.ts count matches, which is the structural canary.
-STATIC_T3_REGIONS: set[str] = {
-    "sichuan",
-    "xinjiang",
-    "iceland",
-    "ukraine",
-    "hawaii-oahu",
-    "hawaii-maui",
-    "hawaii-island",
+# Static regions whose profile is genuinely flat (annual anchor without
+# diurnal modelling) — these map to T2-annual-calibrated. Every other
+# static region routes to T3-modelled because its hourly shape is modelled
+# (solar cosine / wind broad-overnight / hydro monthly-seasonal / mixed
+# fuel-share / overnight venting) rather than measured. Mirrors
+# `src/lib/uncertainty.ts::deriveTier` and `scripts/tally-tiers.ts::
+# STATIC_PROFILE_KIND` exactly.
+STATIC_FLAT_REGIONS: set[str] = {
+    "austria",
+    "russia-murmansk-wind",
 }
 
 # Whole-ISO aggregate region ids that exist in the backfill archive but
@@ -126,9 +123,9 @@ def derive_tier(region_id: str, region_tier: str | None) -> str | None:
     if region_tier == "flare":
         return "T2-annual-calibrated"
     if region_tier == "static":
-        if region_id in STATIC_T3_REGIONS:
-            return "T3-modelled"
-        return "T2-annual-calibrated"
+        if region_id in STATIC_FLAT_REGIONS:
+            return "T2-annual-calibrated"
+        return "T3-modelled"
     # Not in regions.ts — check the whole-ISO aggregate override.
     if region_id in BACKFILL_AGGREGATE_TIERS:
         return BACKFILL_AGGREGATE_TIERS[region_id]
