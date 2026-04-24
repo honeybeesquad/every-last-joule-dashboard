@@ -1,0 +1,31 @@
+Creative Commons Attribution 4.0 International (CC-BY-4.0)
+
+Copyright (c) 2026 Simon Collins.
+
+This licence applies to the DATA in this directory and its children, including
+the JSON snapshots in ../data/snapshots/last-good/, the Parquet archive in
+../data/historical/, and the methodology documents in ../docs/ that constitute
+the dataset's documentation. The CODE that produces the data remains under the
+MIT licence at the repository root.
+
+You are free to:
+  * Share — copy and redistribute the material in any medium or format
+  * Adapt — remix, transform, and build upon the material for any purpose,
+    including commercially
+
+Under the following terms:
+  * Attribution — You must give appropriate credit, provide a link to the
+    licence, and indicate if changes were made. You may do so in any reasonable
+    manner, but not in any way that suggests the licensor endorses you or
+    your use.
+
+Suggested attribution:
+  Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-
+  electricity curtailment and associated-gas flaring across 122 regions.
+  Scientific Data (in review). Dataset DOI: <see CITATION.cff>.
+
+No additional restrictions — you may not apply legal terms or technological
+measures that legally restrict others from doing anything the licence permits.
+
+Full legal code: https://creativecommons.org/licenses/by/4.0/legalcode
+Human-readable summary: https://creativecommons.org/licenses/by/4.0/
