@@ -92,7 +92,6 @@ export const REGIONS: Region[] = [
   { id: "argentina",        name: "Argentina",       country: "ARG", lat: -43.0, lon: -65.0, tier: "static", kind: "wind",  source: "CAMMESA / IRENA fallback", sourceUrl: "https://cammesaweb.cammesa.com/" },
   { id: "uruguay",          name: "Uruguay",         country: "URY", lat: -33.5, lon: -56.0, tier: "static", kind: "wind",  source: "ADME fallback", sourceUrl: "https://adme.com.uy/" },
   { id: "paraguay",         name: "Paraguay",        country: "PRY", lat: -25.4, lon: -54.6, tier: "static", kind: "hydro", source: "Itaipu fallback", sourceUrl: "https://www.itaipu.gov.py/" },
-  { id: "colombia",         name: "Colombia",        country: "COL", lat:   4.5, lon: -74.0, tier: "static", kind: "hydro", source: "XM / UPME fallback", sourceUrl: "https://www.xm.com.co/" },
   { id: "mexico",           name: "Mexico",          country: "MEX", lat: 25.0, lon: -103.0, tier: "static", kind: "solar", source: "CENACE fallback", sourceUrl: "https://www.cenace.gob.mx/SIM/Reportes/" },
   { id: "japan",            name: "Japan",           country: "JPN", lat: 33.0, lon:  131.0, tier: "static", kind: "solar", source: "OCCTO/JEPX fallback", sourceUrl: "https://www.occto.or.jp/" },
   { id: "vietnam",          name: "Vietnam",         country: "VNM", lat: 11.5, lon:  108.8, tier: "static", kind: "solar", source: "EVN fallback", sourceUrl: "https://www.evn.com.vn/" },

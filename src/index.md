@@ -36,7 +36,7 @@ const [
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
   yunnan, tibet, indiaSouth, indiaWest, indiaEast, pakistan, iran,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
-  quebec, manitoba, saskatchewan, colombia, turkey
+  quebec, manitoba, saskatchewan, turkey
 ] = await Promise.all([
   FileAttachment("data/cbeci.json").json(),
   FileAttachment("data/ercot.json").json(),
@@ -114,7 +114,6 @@ const [
   FileAttachment("data/quebec.json").json(),
   FileAttachment("data/manitoba.json").json(),
   FileAttachment("data/saskatchewan.json").json(),
-  FileAttachment("data/colombia.json").json(),
   FileAttachment("data/turkey.json").json()
 ]);
 
@@ -344,7 +343,6 @@ const regionData = {
   quebec,
   manitoba,
   saskatchewan,
-  colombia,
   ...statics
 };
 

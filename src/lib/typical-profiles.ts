@@ -66,8 +66,6 @@ export const HYDRO_SEASONAL_SHARES = {
   "british-columbia": [0.02, 0.02, 0.03, 0.08, 0.18, 0.22, 0.18, 0.12, 0.07, 0.04, 0.02, 0.02],
   // Hydro-Quebec spring/summer surplus, export-absorbed and milder than BC
   quebec: [0.03, 0.03, 0.05, 0.10, 0.15, 0.15, 0.13, 0.10, 0.08, 0.07, 0.06, 0.05],
-  // Colombia bimodal wet seasons, Apr-May and Oct-Nov
-  colombia: [0.05, 0.05, 0.08, 0.13, 0.14, 0.10, 0.08, 0.06, 0.08, 0.11, 0.07, 0.05],
   // Peru Andean hydro + summer-peak Sierra rainfall; Peru's south Atacama-
   // adjacent region is solar-dominant, central Andes is hydro. Bimodal-ish,
   // with Jan-Apr rainy season being the bigger hydro-spill window.
