@@ -28,6 +28,7 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2023 | 16,867 | 0.814 | — | — | eia |
 | 2024 | 17,347 | 1.016 | — | — | eia |
 | 2025 | 17,193 | 1.259 | — | — | eia |
+| 2026 | 5,308 | 0.471 | — | — | eia |
 
 ## Published anchors
 
@@ -38,16 +39,17 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+Specific published annual TSO curtailment figures for PJM are not available within the provided context for direct reconciliation against the backfill annual totals. The backfill data, however, indicates a consistent increase in curtailment, growing from 0.523 TWh in 2020 to 1.259 TWh in 2025. This observed trajectory aligns with general statements regarding "small but growing curtailment" in the PJM region, as noted in the 2024 PJM State of the Market.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+- **EIA definitional shift**: The backfill period for PJM begins in 2020. This start year is necessitated by a definitional shift in EIA reporting from BA-level to sub-BA detail in 2019. Pre-2020 data from EIA is not backfilled to avoid mixing disparate reporting regimes.
+- **Uniform rate application**: The backfill methodology applies a single calibration rate uniformly across all backfilled years. While this approach is cross-checked against published annual curtailment totals where available, it does not dynamically account for year-over-year drift in curtailment rates that may arise from changes in capacity mix or operational policies.
 
 ## Links
 
 - Loader source: [`pjm.json.ts`](../../src/data/pjm.json.ts)
-- Backfill archive: `data/historical/backfill/*_pjm_*.parquet` (6 years)
+- Backfill archive: `data/historical/backfill/*_pjm_*.parquet` (7 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

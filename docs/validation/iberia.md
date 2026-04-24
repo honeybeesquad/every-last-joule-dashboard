@@ -39,11 +39,18 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill total of 9.084 TWh exhibits a significant +332.6% discrepancy when compared to the 2.100 TWh TSO annual curtailment published by REE for Spain. This difference is primarily driven by a **scope mismatch** combined with **rate over-calibration**.
+
+The REE 2024 anchor specifically reports on Spain, whereas the `iberia` backfill region likely encompasses both Spain and Portugal. The ENTSO-E rate audit confirmed that the current 5.5% solar and 11.0% wind constants for Iberia are placeholder values due to the absence of a publicly extractable 2024 GWh or percentage from IEA/REE sources.
+
+Consequently, the model's aggregate for the broader `iberia` region, using these ungrounded rates, substantially overestimates when measured against a Spain-only reference.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The applied curtailment rates for solar (5.5%) and wind (11.0%) for `iberia` are acknowledged placeholders, lacking specific 2024 GWh or percentage values from public IEA/REE sources.
+*   The ENTSO-E rate audit found no citable 2023/2024 annual curtailed-energy total for Portugal, contributing to the placeholder status of the region's rates.
+*   A **scope mismatch** exists when comparing the `iberia` backfill (potentially Spain and Portugal) against the REE 2024 TSO annual anchor, which pertains solely to Spain.
+*   Spain is identified as a "measured-substitution candidate," implying that a future loader utilizing ENTSO-E A77 data could provide more direct and accurate hourly curtailment measurements.
 
 ## Links
 

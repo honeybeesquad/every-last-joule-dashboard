@@ -28,6 +28,7 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2023 | 17,520 | 9.054 | — | — | entsoe |
 | 2024 | 17,568 | 9.417 | 23.200 | -59.4% | entsoe |
 | 2025 | 17,520 | 9.586 | — | — | entsoe |
+| 2026 | 5,448 | 3.612 | — | — | entsoe |
 
 ## Published anchors
 
@@ -38,16 +39,20 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The substantial discrepancy of -59.4% for 2024 (9.417 TWh backfill vs. 23.200 TWh published) is primarily a definitional mismatch. The backfill totals shown above reflect the historical loader logic, which prior to the `2026-04-24 ENTSO-E Curtailment-Rate Audit`, did not fetch offshore wind (`B18`) and used a materially different rate for onshore wind (`B19`).
+
+BNetzA's 2024 published curtailment figures include approximately 19.5 TWh of onshore wind and 3.1 TWh of offshore wind. The backfill's volume more closely aligns with the onshore wind component, indicating a scope mismatch where a significant portion of the TSO's reported curtailment (offshore wind) was not included in the backfill's calculations at the time these figures were generated.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The backfill annual totals presented in this document are derived from the loader logic *before* the `2026-04-24 ENTSO-E Curtailment-Rate Audit`. They do not yet incorporate the audited rates for onshore wind (3.0% vs. 8.0% previously) and, crucially, do not include offshore wind curtailment (17.8% rate applied to `B18`).
+*   As an ENTSO-E based source, Germany is subject to reporting-latency holes where upstream data may be published with a 1–3 month lag during system outages. The backfill is designed to tolerate gaps up to 10% per year.
+*   The current backfill relies on a generation-times-rate model for curtailment. While the rates for Germany are now grounded, a future enhancement could involve substituting this model with direct data from the ENTSO-E A77 "Curtailed Renewable Energy" API product, which may offer more direct measurement.
 
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_germany_*.parquet` (6 years)
+- Backfill archive: `data/historical/backfill/*_germany_*.parquet` (7 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
