@@ -5,6 +5,7 @@ import {
   seasonalScaleFactor,
   HYDRO_SEASONAL_SHARES,
 } from "../lib/typical-profiles.js";
+import { applyUncertainty } from "../lib/uncertainty.js";
 import { pathToFileURL } from "url";
 
 type ProfileKind = "flat" | "solar" | "hydro-seasonal";
@@ -109,7 +110,7 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
     const flatGW = (spec.annualTWh * 1000) / 8760;
     profile = Array(24).fill(flatGW);
   }
-  return {
+  const base: RegionData = {
     regionId: id,
     profile,
     latestProfile: null,
@@ -118,6 +119,15 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
     lastUpdated: spec.reportDate,
     sourceNote,
   };
+  // S2 uncertainty: tier derived from static-region kind.
+  //   "flat"           → T2-annual-calibrated (flare or flat-base static, ±20%)
+  //   "solar"/"hydro-seasonal" → T3-modelled  (typical shape scaled to annual, ±40%)
+  // No backfill variance is available for statics, so the tier-default fraction applies.
+  const profileKind = spec.kind ?? "flat";
+  return applyUncertainty(
+    base,
+    { regionTier: "static", profileKind },
+  );
 }
 
 /** Build the entire static-region map. */

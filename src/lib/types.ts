@@ -50,6 +50,26 @@ export interface RegionData {
    * BOTH the wind and solar hotspot columns proportional to real curtailment.
    */
   fuelShare?: Partial<Record<"solar" | "wind" | "hydro", number>>;
+  /**
+   * Confidence tier for the emitted peakGW value. Derived deterministically
+   * from the loader's Region.tier and (for statics) the profile kind.
+   * See `src/lib/uncertainty.ts` for derivation and
+   * `docs/methodology/uncertainty.md` for the methodology writeup.
+   *
+   *   T1-live-TSO         live feed, ±2σ from 5yr backfill
+   *   T2-annual-calibrated static anchored to published annual (±20%)
+   *   T3-modelled         static with typical-shape profile (±40%)
+   *   T4-structural-gap   reserved; not emitted in RegionData
+   */
+  confidenceTier?:
+    | "T1-live-TSO"
+    | "T2-annual-calibrated"
+    | "T3-modelled"
+    | "T4-structural-gap";
+  /** Lower bound on peakGW (GW). peakGW - uncertaintyLowGW is the half-width when symmetric. */
+  uncertaintyLowGW?: number;
+  /** Upper bound on peakGW (GW). peakGW + uncertaintyHighGW is the upper half-width when symmetric. */
+  uncertaintyHighGW?: number;
 }
 
 /** Network consumption and hashrate reference from Cambridge CBECI. */
