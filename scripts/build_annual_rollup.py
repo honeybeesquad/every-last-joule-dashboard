@@ -94,6 +94,19 @@ STATIC_T3_REGIONS: set[str] = {
     "hawaii-island",
 }
 
+# Whole-ISO aggregate region ids that exist in the backfill archive but
+# not in `src/lib/regions.ts`. The dashboard ships split sub-regions
+# (e.g. `nyiso-zones-d-e` + `nyiso-rest`) because that is the right
+# granularity for the globe; the backfill stays at the EIA feed's
+# natural whole-ISO unit because that matches the published TSO annual
+# anchors used for paper validation. Treat these as T1-live-TSO — the
+# backfill rows come from the same live EIA hourly feed as the split
+# dashboard regions.
+BACKFILL_AGGREGATE_TIERS: dict[str, str] = {
+    "nyiso":  "T1-live-TSO",
+    "iso-ne": "T1-live-TSO",
+}
+
 
 def load_regions_manifest() -> dict[str, str]:
     """Parse regions.ts -> {region_id: 'live'|'static'|'flare'}."""
@@ -105,7 +118,9 @@ def load_regions_manifest() -> dict[str, str]:
 
 
 def derive_tier(region_id: str, region_tier: str | None) -> str | None:
-    """Same rules as src/lib/uncertainty.ts::deriveTier."""
+    """Same rules as src/lib/uncertainty.ts::deriveTier, plus a hard-coded
+    override for whole-ISO backfill aggregates that the dashboard ships
+    as split sub-regions (see BACKFILL_AGGREGATE_TIERS)."""
     if region_tier == "live":
         return "T1-live-TSO"
     if region_tier == "flare":
@@ -114,6 +129,9 @@ def derive_tier(region_id: str, region_tier: str | None) -> str | None:
         if region_id in STATIC_T3_REGIONS:
             return "T3-modelled"
         return "T2-annual-calibrated"
+    # Not in regions.ts — check the whole-ISO aggregate override.
+    if region_id in BACKFILL_AGGREGATE_TIERS:
+        return BACKFILL_AGGREGATE_TIERS[region_id]
     return None
 
 
