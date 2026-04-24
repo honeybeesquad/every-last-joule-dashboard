@@ -16,7 +16,7 @@ Last generated: 2026-04-24
 | Austria | static | mixed | 0 | [austria](./austria.md) |
 | Belgium | live | mixed | 0 | [belgium](./belgium.md) |
 | Bangladesh | static | solar | 0 | [bangladesh](./bangladesh.md) |
-| Bulgaria | live | mixed | 0 | [bulgaria](./bulgaria.md) |
+| Bulgaria | live | mixed | 7 | [bulgaria](./bulgaria.md) |
 | Bahia | live | mixed | 0 | [brazil-bahia](./brazil-bahia.md) |
 | Ceara | live | mixed | 0 | [brazil-ce](./brazil-ce.md) |
 | Goias | static | mixed | 0 | [brazil-go](./brazil-go.md) |
@@ -35,7 +35,7 @@ Last generated: 2026-04-24
 | Ontario | live | mixed | 0 | [ontario](./ontario.md) |
 | Quebec | static | hydro | 0 | [quebec](./quebec.md) |
 | Saskatchewan | static | wind | 0 | [saskatchewan](./saskatchewan.md) |
-| Switzerland | live | solar | 0 | [switzerland](./switzerland.md) |
+| Switzerland | live | solar | 7 | [switzerland](./switzerland.md) |
 | Atacama | live | solar | 0 | [atacama](./atacama.md) |
 | Chile Wind | static | wind | 0 | [chile-wind](./chile-wind.md) |
 | Gansu | static | mixed | 0 | [gansu](./gansu.md) |
@@ -47,13 +47,13 @@ Last generated: 2026-04-24
 | Xinjiang | static | solar | 0 | [xinjiang](./xinjiang.md) |
 | Yunnan | static | hydro | 0 | [yunnan](./yunnan.md) |
 | Cyprus | static | solar | 0 | [cyprus](./cyprus.md) |
-| Czech Republic | live | mixed | 0 | [czech-republic](./czech-republic.md) |
+| Czech Republic | live | mixed | 7 | [czech-republic](./czech-republic.md) |
 | Germany | live | mixed | 7 | [germany](./germany.md) |
 | Denmark DK2 | live | mixed | 0 | [denmark-east](./denmark-east.md) |
 | Denmark DK1 | live | mixed | 0 | [denmark-west](./denmark-west.md) |
 | Egypt | static | solar | 0 | [egypt](./egypt.md) |
 | Iberia | live | mixed | 7 | [iberia](./iberia.md) |
-| Baltic states | live | wind | 0 | [baltics](./baltics.md) |
+| Baltic states | live | wind | 6 | [baltics](./baltics.md) |
 | Ethiopia | static | hydro | 0 | [ethiopia](./ethiopia.md) |
 | Finland | live | wind | 0 | [finland](./finland.md) |
 | France | live | mixed | 0 | [france](./france.md) |
@@ -62,7 +62,7 @@ Last generated: 2026-04-24
 | Northern Ireland | live | wind | 0 | [northern-ireland](./northern-ireland.md) |
 | Greece | live | mixed | 7 | [greece](./greece.md) |
 | Honduras | static | solar | 0 | [honduras](./honduras.md) |
-| Hungary | live | mixed | 0 | [hungary](./hungary.md) |
+| Hungary | live | mixed | 7 | [hungary](./hungary.md) |
 | Indonesia | static | solar | 0 | [indonesia](./indonesia.md) |
 | India East | static | solar | 0 | [india-east](./india-east.md) |
 | North India | static | solar | 0 | [india-north](./india-north.md) |
@@ -76,7 +76,7 @@ Last generated: 2026-04-24
 | Iceland | static | hydro | 0 | [iceland](./iceland.md) |
 | Israel | static | solar | 0 | [israel](./israel.md) |
 | Italy North | live | mixed | 7 | [italy-north-zone](./italy-north-zone.md) |
-| Sardinia | live | mixed | 0 | [italy-sardinia](./italy-sardinia.md) |
+| Sardinia | live | mixed | 7 | [italy-sardinia](./italy-sardinia.md) |
 | Italy South | live | mixed | 0 | [italy-south](./italy-south.md) |
 | Jordan | static | mixed | 0 | [jordan](./jordan.md) |
 | Japan | static | solar | 0 | [japan](./japan.md) |
@@ -90,7 +90,7 @@ Last generated: 2026-04-24
 | Malaysia | static | solar | 0 | [malaysia](./malaysia.md) |
 | Namibia | static | solar | 0 | [namibia](./namibia.md) |
 | Netherlands | live | mixed | 7 | [netherlands](./netherlands.md) |
-| Norway NO1 (Oslo) | live | mixed | 0 | [norway-no1](./norway-no1.md) |
+| Norway NO1 (Oslo) | live | mixed | 3 | [norway-no1](./norway-no1.md) |
 | Norway NO2 (Kristiansand) | live | mixed | 0 | [norway-no2](./norway-no2.md) |
 | Norway NO3 (Trondheim) | live | mixed | 0 | [norway-no3](./norway-no3.md) |
 | Norway NO4 (Tromsø) | live | mixed | 0 | [norway-no4](./norway-no4.md) |
@@ -108,14 +108,14 @@ Last generated: 2026-04-24
 | W. Siberia | flare | flare | 0 | [w-siberia](./w-siberia.md) |
 | E. Saudi Arabia | flare | flare | 0 | [e-saudi](./e-saudi.md) |
 | Saudi Arabia (solar) | static | solar | 0 | [saudi-solar](./saudi-solar.md) |
-| Sweden North | live | wind | 1 | [sweden-north](./sweden-north.md) |
-| Sweden South | live | mixed | 0 | [sweden-south](./sweden-south.md) |
+| Sweden North | live | wind | 7 | [sweden-north](./sweden-north.md) |
+| Sweden South | live | mixed | 7 | [sweden-south](./sweden-south.md) |
 | Thailand | static | solar | 0 | [thailand](./thailand.md) |
 | Turkey | live | mixed | 0 | [turkey](./turkey.md) |
 | Taiwan | static | mixed | 0 | [taiwan](./taiwan.md) |
 | Ukraine | static | solar | 0 | [ukraine](./ukraine.md) |
 | Uruguay | static | wind | 0 | [uruguay](./uruguay.md) |
-| BPA | live | mixed | 0 | [bpa](./bpa.md) |
+| BPA | live | mixed | 1 | [bpa](./bpa.md) |
 | California | live | mixed | 7 | [caiso](./caiso.md) |
 | ERCOT East | live | mixed | 7 | [ercot-east](./ercot-east.md) |
 | ERCOT West | live | mixed | 7 | [ercot-west](./ercot-west.md) |
@@ -131,6 +131,6 @@ Last generated: 2026-04-24
 | NYISO Zones D+E | live | wind | 0 | [nyiso-zones-d-e](./nyiso-zones-d-e.md) |
 | Permian Basin | flare | flare | 0 | [permian](./permian.md) |
 | PJM | live | mixed | 7 | [pjm](./pjm.md) |
-| SPP | live | mixed | 0 | [spp](./spp.md) |
+| SPP | live | mixed | 7 | [spp](./spp.md) |
 | Vietnam | static | solar | 0 | [vietnam](./vietnam.md) |
 | South Africa | live | mixed | 0 | [south-africa](./south-africa.md) |

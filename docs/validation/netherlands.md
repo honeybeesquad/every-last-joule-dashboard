@@ -26,16 +26,16 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2021 | 17,518 | 0.495 | — | — | entsoe |
 | 2022 | 17,519 | 0.442 | — | — | entsoe |
 | 2023 | 17,519 | 0.568 | — | — | entsoe |
-| 2024 | 17,568 | 0.809 | — | — | entsoe |
+| 2024 | 17,568 | 0.809 | 3.000 | -73.0% | entsoe |
 | 2025 | 17,520 | 0.901 | — | — | entsoe |
 | 2026 | 5,219 | 0.313 | — | — | entsoe |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** TenneT 2024 redispatch+curtailment ~2.5 TWh (all technologies)
+- **TSO annual curtailment (latest published):** IEEFA 2025 summary of TenneT 2024 curtailment: 3.0 TWh wind+solar (4.9% VRE curtailment rate) — the number the wind+solar rates in src/data/entsoe.json.ts were calibrated to.
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** TenneT Kwaliteits- en Capaciteitsdocument 2024
+- **Other:** TenneT Kwaliteits- en Capaciteitsdocument 2024 cites broader ~2.5 TWh 'redispatch+curtailment all technologies' — different scope
 
 ## Discrepancy analysis
 

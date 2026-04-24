@@ -26,13 +26,13 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2021 | 11,392 | 0.043 | — | — | entsoe |
 | 2022 | 11,848 | 0.047 | — | — | entsoe |
 | 2023 | 12,674 | 0.051 | — | — | entsoe |
-| 2024 | 13,239 | 0.059 | — | — | entsoe |
+| 2024 | 13,239 | 0.059 | 0.108 | -45.0% | entsoe |
 | 2025 | 13,778 | 0.077 | — | — | entsoe |
 | 2026 | 4,013 | 0.020 | — | — | entsoe |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** Terna 2024 Italy North zonal overflow redispatch ~1.1 TWh
+- **TSO annual curtailment (latest published):** Terna 2024 North zone ~0.108 TWh (35% of Terna national 0.31 TWh RES curtailment anchor, used for rate calibration). Broader Terna 'zonal overflow redispatch' ~1.1 TWh is a different metric.
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
