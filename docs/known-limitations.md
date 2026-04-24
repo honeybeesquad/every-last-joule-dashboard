@@ -34,9 +34,11 @@ CBECI remains the canonical academic benchmark for Bitcoin electricity consumpti
 
 ERCOT’s native developer API remains blocked behind the Incapsula WAF from this local environment, even with valid credentials. The B2 native probe acquired a token locally, then received HTTP 403 from `api.ercot.com`. Vercel’s US build path acquired a token and bypassed Incapsula after the missing ERCOT env vars were added, but the SCED HDL/LDL artifact data call returned HTTP 404. v0.5 therefore keeps `ERCOT_NATIVE_ENABLED = false` and continues to use EIA hourly wind with a 6.15% calibrated rate, split into ERCOT West and East. The inactive native loader remains in the repo for a future endpoint-discovery pass.
 
-### 9. Atacama (Chile) direct XLSX is monthly and pattern-based
+### 9. Atacama (Chile) daily reductions use monthly hourly shape
 
-Coordinador Eléctrico Nacional’s listing pages still return Cloudflare bot-verification content from this environment, but the direct WordPress XLSX uploads are reachable. v1 therefore parses the latest predictable `Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_*_PE-PFV_Publicar.xlsx` workbook and aggregates the `Resumen-DiarioHorario-Solar` sheet to hourly solar curtailment. This is direct measured Chilean curtailment, but monthly rather than near-real-time; if the upload naming pattern changes, the loader falls back to the prior `solarProfile(16.5, 5.9)` typical-shape profile.
+Coordinador Eléctrico Nacional publishes a documented developer portal with SIP and Operación API specs, including `/reduccion/v1/generacion`, but the public API requires a registered `user_key`; unauthenticated calls return `403 Authentication parameters missing`. The loader therefore does not use the API autonomously.
+
+CEN also publishes daily `Resumen Ejecutivo de Operación` PDFs through the Informe de Novedades CDC directory. These PDFs include national daily solar and wind reduction totals from real-time operation, so the Atacama/Chile solar loader now uses the daily solar-reduction totals as the primary freshness source. The PDFs are daily but aggregate, not hourly; to avoid replacing measured data with a generic shape, the loader still parses the latest monthly `Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_*_PE-PFV_Publicar.xlsx` workbook and uses its `Resumen-DiarioHorario-Solar` sheet as the measured hourly apportionment shape. If the daily PDF path or PDF text extraction fails, the loader uses the monthly XLSX directly. If both live paths fail, `withFallback` serves the last-good snapshot rather than a typical solar profile.
 
 ### 10. Xinjiang uses a typical solar shape; Sichuan and Iceland stay flat
 

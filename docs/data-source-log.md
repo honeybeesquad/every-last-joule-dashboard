@@ -369,7 +369,7 @@ These 12 regions close Australia non-NEM, South/Southeast Asia, East Asia, Russi
 
 ---
 
-## Chile Atacama / Coordinador Electrico Nacional (v1 XLSX path used)
+## Chile Atacama / Coordinador Electrico Nacional (v1 daily PDF + XLSX path used)
 
 **Intended:** native Chile renewable-reduction or vertimiento data from Coordinador Electrico Nacional.
 
@@ -381,4 +381,13 @@ These 12 regions close Australia non-NEM, South/Southeast Asia, East Asia, Russi
 - Parser: unzip XLSX with the system `unzip`, parse `xl/workbook.xml`, shared strings, and `Resumen-DiarioHorario-Solar`; sum PFV plant rows across hourly MWh columns.
 - Local result on 2026-04-23: 350 hourly points, `0.42905233735574794` TWh in the workbook month, peak hourly average `1.6409249376527262` GW, latest point `2026-02-28T22:00:00.000Z`.
 - Other Chile paths checked: `energiaabierta.cl` did not connect locally; `infotecnica.coordinador.cl` returned HTTP 200; `api.coordinador.cl` and `sic.coordinadorelectrico.cl` did not resolve; `datos.gob.cl` returned HTTP 200; `generadoras.cl` redirected to `generadoras.cl`.
-- Fallback retained: if direct XLSX naming changes or downloads fail, `src/data/atacama-chile.json.ts` falls back to the previous `solarProfile(16.5, 5.9)` typical solar profile.
+
+**2026-04-24 source refresh:**
+
+- CEN `reportes-y-estadisticas`: documents the public report/product map. Relevant operational products include Generación de Energía (hourly, by technology and by plant), Histórico Generación Horaria por Central, Histórico Embalses/Vertimientos, Informe Diario de Novedades del CDC, and Reportes Mensuales.
+- CEN `Reducciones de Generación Renovable`: still describes the reduction workbook series as a **registro mensual** of ERV reductions during real-time operation. Probing likely March 2026 direct XLSX names in the April 2026 upload directory returned 404 on 2026-04-24, while the February 2026 workbook remained reachable, so the XLSX cadence has not improved to daily/weekly.
+- CEN developer portal: `https://portal.api.coordinador.cl/documentacion?service=sipubv2` exposes the SIP Swagger spec (`/swagger/spec/sip.json`, service endpoint `https://sipub.api.coordinador.cl`). It documents hourly real generation endpoints such as `/generacion-real/v3/findByDate`, but the security scheme requires `user_key` and says to request it through mesa de ayuda. Unauthenticated calls return `403 Authentication parameters missing`.
+- CEN developer portal: `https://portal.api.coordinador.cl/documentacion?service=operaciones` exposes the Operación Swagger spec (`/swagger/spec/operaciones.json`, service endpoint `https://operacion.api.coordinador.cl`). It documents `/reduccion/v1/generacion` ("Obtener reducción generacion del sistema Neomante"), but the same `user_key` security applies; unauthenticated calls return `403 Authentication parameters missing`. This is the best candidate for a future direct API upgrade once a key is explicitly provisioned.
+- CEN Informe de Novedades CDC: daily `Resumen Ejecutivo de Operación DD-MM-YYYY V1` PDFs are public and direct WordPress PDF URLs are reachable. On 2026-04-24, direct probes found `Resumen-Ejecutivo-de-Operacion-22-04-2026-V1.pdf` HTTP 200 while 23/24 April were not yet published. These PDFs include daily real/programmed generation plus "Reducción Energía Eólica y Solar durante la Operación en Tiempo Real (OTR)" with daily solar MWh and accumulated annual GWh.
+- Implementation decision: use daily Resumen Ejecutivo solar-reduction MWh as the primary recent-volume source, apportioned across the 24 UTC hours using the measured hourly shape from the monthly XLSX. This reduces freshness from monthly to daily without replacing CEN-measured curtailment with a typical shape. If the daily PDF path or `pdftotext` extraction fails, the loader returns the monthly XLSX result. If both live paths fail, `withFallback` serves the last-good snapshot.
+- Ember / OWID / IEA cross-checks: Ember and OWID publish annual or monthly Chile electricity-generation datasets rather than public daily/hourly Chile curtailment. IEA's VRE curtailment chart cites CEN's `Reducciones de energía eólica y solar en el SEN` workbooks and includes 2025 partial-year points, useful as annual cross-check only. These are not better primary feeds for the dashboard.
