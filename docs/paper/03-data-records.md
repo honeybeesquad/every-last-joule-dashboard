@@ -87,7 +87,7 @@ Full field descriptions and update semantics: `dataset/SCHEMA.md`.
 
 **Location:** `data/historical/curtailment_backfill.parquet`
 **Format:** Apache Parquet 2.6, Snappy.
-**Size:** 2,593,152 rows (≈ 78 MB compressed).
+**Size:** 2,590,195 rows (≈ 20 MB compressed).
 **Coverage window:** 2020-01-01 → 2026-03-31 (partial-year final
 year).
 **Regions covered:** 29 (all T1-live-TSO; regions without

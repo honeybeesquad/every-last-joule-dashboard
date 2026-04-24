@@ -103,7 +103,7 @@ anchor is available, the rate is held constant backward in time
 
 `data/historical/curtailment_backfill.parquet` is a seven-year
 hourly reconstruction (2020-01-01 → 2026-03-31) across 29 regions
-whose upstream archives support multi-year history. Total: 2,593,152
+whose upstream archives support multi-year history. Total: 2,590,195
 hourly observations.
 
 The backfill loader chain mirrors the live-feed chain but calls the
@@ -134,10 +134,10 @@ Every region is deterministically assigned to one of four tiers
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
 | T4-structural-gap | No hourly claim made | n/a — not published |
 
-The tier distribution in v0.5: 60 T1, 53 T2 + 4 flare, 7 T3. The 7
-T3 regions are Sichuan, Xinjiang, Iceland, Ukraine, and the three
-Hawaii islands. Full methodology in
-`docs/methodology/uncertainty.md`.
+The tier distribution in v0.5: 60 T1, 57 T2-annual-calibrated, 4
+T2 flare, 7 T3 (total 128). The 7 T3 regions are Sichuan, Xinjiang,
+Iceland, Ukraine, and the three Hawaii islands. Full methodology
+in `docs/methodology/uncertainty.md`.
 
 ## 2.6 Handling of regime changes and discrepancies
 

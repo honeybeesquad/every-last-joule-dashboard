@@ -22,12 +22,14 @@ square: T2 flare regions with 24/7 baseload shape; terracotta: T3
 typical-profile modelled with ±40% uncertainty). Dot area is scaled
 to √(peak GW) from the most recent snapshot, so a 10 GW hotspot is
 roughly 3× the visible area of a 1 GW region. The top-8 regions by
-peak GW are labelled inline; Germany (4.6 GW), the Brazilian
-northeast clusters Minas Gerais (4.4 GW) and Piauí (3.3 GW), and the
-US MISO footprint (1.8 GW) dominate the current picture. Reference
-legend inside the figure shows the size-to-GW scale. Source data:
-`src/lib/regions.ts` (n=128 regions) joined to
+peak GW are labelled inline; Brazil's northeast cluster dominates the
+current picture (Minas Gerais 4.4 GW, Bahia 4.4 GW, Rio Grande do
+Norte 2.8 GW, Piauí 2.7 GW), followed by the US MISO footprint (1.8
+GW), Vietnam (1.7 GW), Germany (1.6 GW), and north India (1.5 GW).
+Reference legend inside the figure shows the size-to-GW scale. Source
+data: `src/lib/regions.ts` (n=128 regions) joined to
 `data/snapshots/last-good/*.json` (98 regions with live peak GW).
+Snapshot-dependent: the top-8 labels refresh each dashboard build.
 
 ## Figure 2
 
@@ -99,8 +101,9 @@ inline; Y-axis autoscales per panel so continental-scale regions
 Rank order is from the `data/historical/per_region_annual.parquet`
 rollup: Germany, Iberia, MISO, ERCOT-West, SPP, Norway NO2,
 ERCOT-East, CAISO lead. The figure supports the concentration thesis
-in the descriptor: the top 3 regions alone account for ~40% of the
-combined top-20 total across the backfill window. The partial-year
+in the descriptor: the top 3 regions (Germany, Iberia, MISO) alone
+account for ~51% of the combined top-20 total across the backfill
+window. The partial-year
 downturn visible at 2026 in every panel is an artefact of the
 archive end-date, not a real curtailment decline. All 20 panels are
 T1-live-TSO in v0.5 (teal); tier-colour infrastructure is in place
