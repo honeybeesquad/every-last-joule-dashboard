@@ -39,11 +39,14 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The multi-year backfill totals for Romania, derived from ENTSO-E actual generation and applied curtailment rates, currently lack a directly comparable official TSO annual curtailment anchor. As noted in the ENTSO-E rate audit (`docs/methodology/entsoe-rates.md`), no citable 2023 or 2024 curtailed-energy total for Romania was identified from Transelectrica/ANRE public materials. Consequently, the `Δ %` column in the "Multi-year backfill annual totals" table is unpopulated, preventing a direct quantitative discrepancy analysis against published figures. The solar (B16) and wind (B19) curtailment rates applied are acknowledged placeholders, further limiting the ability to characterize year-over-year drift or reconcile with external benchmarks.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+*   The curtailment rates applied for Romania's solar (B16) and wind (B19) generation are based on acknowledged placeholder values. The ENTSO-E rate audit (`docs/methodology/entsoe-rates.md`) indicates that no citable 2023 or 2024 annual curtailed-energy total was found from Transelectrica/ANRE public materials.
+*   While Romania is classified as `T1-live-TSO` due to its live ENTSO-E loader, the absence of a directly citable annual curtailment anchor means the absolute magnitude of reported curtailment relies on these placeholder rates.
+*   A future audit could investigate the feasibility of using ENTSO-E's A77 "Curtailed Renewable Energy" API product for Romania, which may provide measured hourly data and allow for a more grounded substitution of the current rate-based modelling.
+*   See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes on the historical backfill methodology.
 
 ## Links
 
