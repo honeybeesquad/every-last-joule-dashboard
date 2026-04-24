@@ -22,7 +22,7 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
+| 2024 | — | — | 0.100 | — | — |
 
 ## Published anchors
 

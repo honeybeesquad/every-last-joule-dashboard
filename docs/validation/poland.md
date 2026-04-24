@@ -26,13 +26,13 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2021 | 14,753 | 0.238 | — | — | entsoe |
 | 2022 | 14,293 | 0.419 | — | — | entsoe |
 | 2023 | 14,205 | 0.573 | — | — | entsoe |
-| 2024 | 14,082 | 0.726 | — | — | entsoe |
+| 2024 | 14,082 | 0.726 | 0.749 | -3.0% | entsoe |
 | 2025 | 13,848 | 0.783 | — | — | entsoe |
 | 2026 | 4,162 | 0.226 | — | — | entsoe |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** PSE 2024 redispatch ~1.5 TWh (estimate, no single published figure)
+- **TSO annual curtailment (latest published):** URE 2024 redispatch report: 621 GWh PV + 128 GWh wind non-market RES reductions = 0.749 TWh. The number the rates in src/data/entsoe.json.ts were calibrated to. Broader PSE 'redispatch' ~1.5 TWh is a different scope.
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —

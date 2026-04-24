@@ -16,13 +16,19 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 ## Calibration
 
 - **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a — no backfill
+- **Uniform across backfill years:** yes (per HB methodology §"Rate application over time")
 
 ## Multi-year backfill annual totals
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| 2024 | — | — | 3.000 | — | — |
+| 2020 | 13,289 | 3.311 | — | — | eia |
+| 2021 | 13,412 | 3.729 | — | — | eia |
+| 2022 | 13,288 | 4.316 | — | — | eia |
+| 2023 | 13,368 | 4.283 | — | — | eia |
+| 2024 | 13,945 | 4.417 | 3.000 | +47.2% | eia |
+| 2025 | 14,421 | 4.511 | — | — | eia |
+| 2026 | 3,961 | 1.627 | — | — | eia |
 
 ## Published anchors
 
@@ -33,7 +39,7 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
 
 ## Known limitations
 
@@ -42,7 +48,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 ## Links
 
 - Loader source: [`spp.json.ts`](../../src/data/spp.json.ts)
-- Backfill archive: `data/historical/backfill/*_spp_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_spp_*.parquet` (7 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
