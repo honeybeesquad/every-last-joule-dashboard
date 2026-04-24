@@ -41,6 +41,7 @@ export const REGIONS: Region[] = [
   { id: "poland",           name: "Poland",          country: "POL", lat: 52.0, lon:   19.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "greece",           name: "Greece",          country: "GRC", lat: 39.0, lon:   22.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "romania",          name: "Romania",         country: "ROU", lat: 45.9, lon:   25.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "turkey",           name: "Turkey",          country: "TUR", lat: 39.0, lon:   35.0, tier: "live", kind: "mixed", source: "EPIAS Transparency dashboard wind+solar", sourceUrl: "https://seffaflik.epias.com.tr/electricity-service/v1/dashboard/realtime-generation" },
   { id: "italy-north-zone", name: "Italy North",     country: "ITA", lat: 45.0, lon:   10.0, tier: "live", kind: "mixed", source: "ENTSO-E Terna (North zone)", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "italy-south",     name: "Italy South",     country: "ITA", lat: 40.5, lon:   16.0, tier: "live", kind: "mixed", source: "ENTSO-E Terna (South zone)", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "italy-sardinia",  name: "Sardinia",        country: "ITA", lat: 40.1, lon:    9.1, tier: "live", kind: "mixed", source: "ENTSO-E Terna (Sardinia)", sourceUrl: "https://transparency.entsoe.eu/" },

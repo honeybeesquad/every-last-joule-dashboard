@@ -252,6 +252,22 @@ France and Denmark-West were removed in v1b after direct RTE and Energinet loade
 
 **v1f zero-data audit:** the ENTSO-E parser now handles multiple `Period` blocks and `PT60M`/`PT30M`/`PT15M` resolutions. This fixed the previously invisible Netherlands, Romania, Italy North, and NO-4/N. Norway profiles. Turkey (`10YTR-TEIAS----W`) was probed against `B16`, `B18`, `B19`, `B11`, `B12`, and `B14`; ENTSO-E returned no usable A75 renewable generation data from this environment, and no stable unauthenticated TEIAS/EPIAS curtailment endpoint was integrated in the time-box. Turkey is therefore removed rather than shown as a zero-rate invisible region.
 
+**2026-04-24 Turkey re-probe:** Turkey is promoted back to live through EPIAS' newer electricity-service dashboard endpoint. Probe details from this worktree:
+
+- `https://seffaflik.epias.com.tr/electricity-service/technical/en/index.html`: HTTP 200, 3,379,338 bytes. API docs confirm `GET /v1/dashboard/realtime-generation` and the `RealTimeGenerationDto` fields `wind` and `sun`; docs still mark TGT auth as required for most range/history endpoints.
+- `https://seffaflik.epias.com.tr/transparency/rehber`: timed out after 30 seconds with 0 bytes from this environment.
+- `https://seffaflik.epias.com.tr/electricity-service/v1/dashboard/realtime-generation`: HTTP 200, 1,801 bytes, unauthenticated with `Accept: application/json` + User-Agent. Response shape: `{ items: [{ date, hour, wind, sun, ... }], latestUpdateTime }`. It returned current-day Turkey hourly generation through `2026-04-24T04:00:00+03:00` during the probe.
+- `POST /electricity-service/v1/generation/data/realtime-generation`: HTTP 406, 209 bytes without TGT (`TGT` required message). Not integrated.
+- `POST /electricity-service/v1/renewables/data/generation-forecast`: HTTP 401, 397 bytes without TGT. Not integrated.
+- `POST /electricity-service/v1/renewables/data/licensed-realtime-generation`: HTTP 401, 397 bytes without TGT. Not integrated.
+- Legacy `https://seffaflik.epias.com.tr/transparency/service/production/{real-time-generation,generation-forecast,renewable-sm-production,renewable-sm-forecast}` probes timed out or returned an empty reply from this environment. Not integrated.
+- `https://www.teias.gov.tr/en-US`: HTTP 200, 177,226 bytes. TEIAS homepage exposes gross temporary live headline widgets, but the probed HTML showed zeroed source totals and no stable JSON history/curtailment endpoint.
+- ENTSO-E A75 for `10YTR-TEIAS----W` with `B16`, `B19`, and `B18`: HTTP 401 without `ENTSOE_API_TOKEN` in this worktree. No ENTSO-E Turkey loader was added.
+- EXIST/EPIAS corporate/publication pages: HTTP 200, but no unauthenticated curtailment or hourly historical wind+solar feed was found beyond the EPIAS dashboard service.
+- IEA Türkiye renewables page: HTTP 403 from this environment, so it was not used as a machine-readable source.
+
+Turkey loader: `src/data/turkey.json.ts` applies a conservative 0.8% rate to observed EPIAS dashboard wind+solar generation. The rate is anchored to roughly 0.5 TWh/yr in 2024 (`~0.8% × wind+solar generation`), using Ember's 2024 Turkey wind+solar generation share as the generation denominator and SHURA's low-curtailment integration work as a conservative benchmark. Because the unauthenticated EPIAS endpoint is dashboard/current-day only, `latestProfile` is intentionally `null` until a complete 24-hour day is returned.
+
 ---
 
 ## v1f fallback expansion regions (used)

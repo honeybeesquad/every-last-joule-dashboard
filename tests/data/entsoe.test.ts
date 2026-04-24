@@ -99,7 +99,7 @@ describe("buildZoneData", () => {
     ]));
   });
 
-  it("includes the v1f ENTSO-E expansion zones and drops Turkey after zero-data audit", () => {
+  it("includes the v1f ENTSO-E expansion zones and keeps Turkey out of ENTSO-E", () => {
     const ids = ZONES.map((z: any) => z.id);
     expect(ids).toEqual(expect.arrayContaining([
       "portugal",

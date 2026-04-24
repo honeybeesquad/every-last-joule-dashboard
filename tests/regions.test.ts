@@ -2,18 +2,18 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 123 canonical regions", () => {
+  it("has 124 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
     //   - 5 new statics added: hawaii-oahu/maui/island, austria, russia-murmansk-wind
-    //   Prior total 113 + 10 new splits + 5 new statics = 123.
-    expect(REGIONS.length).toBe(123);
+    //   Prior total 113 + 10 new splits + 5 new statics + Turkey live re-add = 124.
+    expect(REGIONS.length).toBe(124);
   });
 
-  it("has 54 live regions", () => {
-    // v0.6: -5 aggregates + 10 splits = +5 live → 49 + 5 = 54.
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(54);
+  it("has 55 live regions", () => {
+    // v0.6: -5 aggregates + 10 splits = +5 live -> 49 + 5 = 54; Turkey live re-add -> 55.
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(55);
   });
 
   it("has 65 static regions", () => {
@@ -60,7 +60,7 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "peru")).toBeDefined();
     expect(REGIONS.find(r => r.id === "south-africa")).toBeDefined();
     expect(REGIONS.find(r => r.id === "poland")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "turkey")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "turkey")).toBeDefined();
     expect(REGIONS.find(r => r.id === "greece")).toBeDefined();
     expect(REGIONS.find(r => r.id === "romania")).toBeDefined();
     expect(REGIONS.find(r => r.id === "italy-north-zone")).toBeDefined();
