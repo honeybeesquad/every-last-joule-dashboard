@@ -146,7 +146,7 @@ regions renders as a tier-coloured dot:
 
 - **T1-live-TSO (60 regions, teal).** Dense over North America,
   Europe, and Norway; patchy elsewhere.
-- **T2-annual-calibrated (53 regions, amber).** Broad coverage of
+- **T2-annual-calibrated (57 regions, amber).** Broad coverage of
   Latin America, the Middle East flare-adjacent belt, Australasia,
   smaller European zones, and emerging-market calibrations.
 - **T2 flare (4 regions, brown square).** Permian, West Siberia,
@@ -191,7 +191,7 @@ Figure 5 ranks the 29 backfilled regions by mean annual TWh
 across 2020–2026 and plots the top 20 as a 4×5 facet grid. The
 narrative payoff — the paper's "curtailment is concentrated"
 thesis — is visible in the data: the top 3 regions (Germany,
-Iberia, MISO) account for ~40% of the combined top-20 total.
+Iberia, MISO) account for ~51% of the combined top-20 total.
 Every panel is T1-live-TSO in v0.5 (teal); tier-colour
 infrastructure is in place for v1 rate-recalibrations that may
 promote T2 regions into the top tier.
@@ -202,9 +202,11 @@ Figure 1 is the geographic opening shot. 98 of 128 regions have
 a current peak-GW reading; the other 30 are static regions
 without a live fetch yet. Dot area scales with √peakGW so a 10 GW
 hotspot is roughly 3× the visible area of a 1 GW region. The
-top-8 regions by peak GW are labelled: Germany (4.6 GW),
-Minas Gerais (4.4 GW), Piauí (3.3 GW), and the MISO footprint
-(1.8 GW) dominate the current picture.
+top-8 regions by peak GW at render time are labelled; the
+Brazilian northeast cluster (Minas Gerais, Bahia, Rio Grande do
+Norte, Piauí) dominates the current picture, followed by the US
+MISO footprint, Vietnam, Germany, and north India. The specific
+GW values are snapshot-dependent and refresh each dashboard build.
 
 The 30-region gap between `src/lib/regions.ts` (128) and the
 snapshot-count (98) is reported honestly on the figure: those
