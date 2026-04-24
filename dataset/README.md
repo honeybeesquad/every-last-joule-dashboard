@@ -2,7 +2,7 @@
 
 **Version:** v1.0.0 (tag pending) · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI:** _TBA (minted on v1.0.0 tag via Zenodo)_
 
-A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 122 regions across 6 continents. Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
+A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 128 regions across 6 continents. Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
 
 ## What's in it
 
@@ -50,7 +50,7 @@ print(snap["peakGW"], snap["sourceStatus"], snap["lastUpdated"])
 
 If you use this dataset in academic work, please cite:
 
-> Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 122 regions. _Scientific Data_ (in review). Dataset DOI: _TBA_.
+> Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 128 regions. _Scientific Data_ (in review). Dataset DOI: _TBA_.
 
 Machine-readable citation metadata in [`CITATION.cff`](CITATION.cff).
 
