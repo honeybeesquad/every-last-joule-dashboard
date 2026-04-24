@@ -33,11 +33,14 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+The HB.wave-8 fan-out attempted 7 years (2020-2026) of A75 dispatch-downs for NO5 via domain `10YNO-5--------8` and the backfill logger returned **zero rows for every year** (see `scripts/backfill/logs/norway-no5.log`). This is not a pipeline failure — NO5 is West-coast reservoir hydro and the only published curtailment concept is spring-spill, which Statnett does not expose through ENTSO-E A75. The published anchor text explicitly flags that NO5 curtailment is hydro-spill-only and not in A75, so there is nothing to triangulate against within the backfill framework.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+* **ENTSO-E scope gap, not a reporting lag.** A75 only carries dispatchable balancing-service reductions; spring-spill hydro losses are a physical (reservoir full, turbine still running or bypassed) phenomenon that Norwegian TSOs account for in separate hydrological balance reports rather than A75 congestion-management messages. Our framework cannot represent NO5 curtailment accurately without ingesting those external balance reports.
+* **No annual TSO anchor citable in year-keyed form.** The anchor text is qualitative ("NO5 hydro spring spill only") rather than an annual TWh number, so NO5 intentionally does not appear in Figure 2 and is not scored against the tier envelope.
+* The live snapshot continues to serve a placeholder near-zero contribution for NO5 so the region appears on the globe, consistent with the treatment of other non-A75-visible zones.
+* For cross-cutting limitations applicable to all backfilled regions, see `docs/methodology/historical-backfill.md` §"Known limitations".
 
 ## Links
 

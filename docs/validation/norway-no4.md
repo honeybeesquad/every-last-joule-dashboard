@@ -28,6 +28,7 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2023 | 17,510 | 1.473 | — | — | entsoe |
 | 2024 | 17,565 | 1.196 | 0.300 | +298.7% | entsoe |
 | 2025 | 17,520 | 1.419 | — | — | entsoe |
+| 2026 | 5,448 | 0.464 | — | — | entsoe |
 
 ## Published anchors
 
@@ -38,16 +39,21 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_Auto-generated placeholder. Backfill annual totals are populated above; compare against the TSO annual in the row for the matching year. Pending narrative pass to characterise any year-over-year drift and whether the discrepancy is definitional (e.g., we include spill, TSO doesn't) or methodological._
+The 2024 backfill total for `norway-no4` of 1.196 TWh exhibits a significant positive discrepancy of +298.7% when compared against the Statnett NO4 published wind curtailment of ~0.3 TWh. This difference is primarily definitional: the backfill model, derived from ENTSO-E NO4, captures both hydro and wind curtailment, while the published TSO anchor explicitly refers only to wind curtailment. This suggests the TSO figure excludes components such as hydro spill or other forms of generation curtailment that are included in our model.
+
+For other years where a TSO anchor is not yet available, a direct comparison is not feasible. The observed annual totals vary across the backfill years, which may indicate year-over-year shifts in generation mix or curtailment events not captured by a single, uniform calibration rate.
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+- The backfill for `norway-no4` applies a uniform curtailment rate across all backfilled years. This is a deliberate simplification, as actual TSO curtailment rates are subject to year-to-year drift due to evolving capacity mixes and policy changes.
+- ENTSO-E data feeds, which supply the upstream data for `norway-no4`, are prone to reporting latency holes. These can manifest as 1-3 month lags during reporting system outages, though the backfill process is designed to tolerate gaps up to 10% per year.
+- As discussed in the discrepancy analysis, definitional differences exist between the model's calculated curtailment series (which includes both hydro and wind) and external published TSO figures (which may be specific to wind only).
+- The curtailment rates applied to `norway-no4` are considered illustrative floor/ceiling values rather than measured annual calibration, as a citable 2023/2024 curtailed-energy total for this region was not identified during the ENTSO-E rate audit.
 
 ## Links
 
 - Loader source: [`norway.json.ts`](../../src/data/norway.json.ts)
-- Backfill archive: `data/historical/backfill/*_norway-no4_*.parquet` (6 years)
+- Backfill archive: `data/historical/backfill/*_norway-no4_*.parquet` (7 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

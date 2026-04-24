@@ -91,9 +91,9 @@ Last generated: 2026-04-24
 | Namibia | static | solar | 0 | [namibia](./namibia.md) |
 | Netherlands | live | mixed | 7 | [netherlands](./netherlands.md) |
 | Norway NO1 (Oslo) | live | mixed | 7 | [norway-no1](./norway-no1.md) |
-| Norway NO2 (Kristiansand) | live | mixed | 6 | [norway-no2](./norway-no2.md) |
-| Norway NO3 (Trondheim) | live | mixed | 6 | [norway-no3](./norway-no3.md) |
-| Norway NO4 (Tromsø) | live | mixed | 6 | [norway-no4](./norway-no4.md) |
+| Norway NO2 (Kristiansand) | live | mixed | 7 | [norway-no2](./norway-no2.md) |
+| Norway NO3 (Trondheim) | live | mixed | 7 | [norway-no3](./norway-no3.md) |
+| Norway NO4 (Tromsø) | live | mixed | 7 | [norway-no4](./norway-no4.md) |
 | Norway NO5 (Bergen) | live | hydro | 0 | [norway-no5](./norway-no5.md) |
 | New Zealand | live | mixed | 0 | [new-zealand](./new-zealand.md) |
 | Oman | static | solar | 0 | [oman](./oman.md) |
