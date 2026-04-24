@@ -89,6 +89,17 @@ jobs:
 
           echo "::notice::checked $total regions: live=$live cached=$cached zero-peak=$zero"
 
+      - name: Ensure auto-health label exists
+        if: steps.inspect.outputs.cached >= '10' || steps.inspect.outputs.zero >= '5'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Idempotent: succeed whether the label already exists or not.
+          gh label create auto-health \
+            --color "fbca04" \
+            --description "Auto-generated health-check degradation issues" \
+            2>/dev/null || true
+
       - name: Open GitHub Issue if degradation exceeds threshold
         if: steps.inspect.outputs.cached >= '10' || steps.inspect.outputs.zero >= '5'
         env:

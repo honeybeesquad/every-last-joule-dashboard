@@ -1,0 +1,3 @@
+# Python deps for CI workflows (currently just history-append.yml).
+# Pinned so the pyarrow Parquet writer stays on a known-good version.
+pyarrow==15.0.2
