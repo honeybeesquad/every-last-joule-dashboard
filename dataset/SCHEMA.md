@@ -21,6 +21,9 @@ One file per region. Overwritten on each scheduled build. Historical values acce
 | `sourceNote` | `string` | Human-readable provenance. E.g. `"ENTSO-E Transparency B19 dispatch-down 2026-01 → 2026-04 · rate 0.04"`. | No |
 | `sourceStatus` | `"live" \| "cached" \| null` | `live` = fresh fetch succeeded; `cached` = `withFallback` served last-good. Null only for purely static regions. | Yes |
 | `fuelShare` | `Record<string, number>` | Fuel-type split of the curtailed energy, fractions 0–1, keys in `{solar, wind, hydro, geothermal, flare}`. May be empty for flare-only regions. | No (may be `{}`) |
+| `confidenceTier` | `string` | One of `"T1-live-TSO"`, `"T2-annual-calibrated"`, `"T3-modelled"`. Derived deterministically by `src/lib/uncertainty.ts::deriveTier`. See `docs/methodology/uncertainty.md`. | Yes (legacy snapshots may pre-date S2 enrichment) |
+| `uncertaintyLowGW` | `number` | Lower bound of the per-tier envelope on `peakGW`. `max(0, peakGW − δ)`. | Yes |
+| `uncertaintyHighGW` | `number` | Upper bound of the per-tier envelope on `peakGW`. `peakGW + δ`. | Yes |
 
 ### Example
 
@@ -34,13 +37,20 @@ One file per region. Overwritten on each scheduled build. Historical values acce
   "lastUpdated": "2026-04-23T14:15:00Z",
   "sourceNote": "EIA CISO solar curtailment 2026-03-25 → 2026-04-23",
   "sourceStatus": "live",
-  "fuelShare": {"solar": 0.88, "wind": 0.12}
+  "fuelShare": {"solar": 0.88, "wind": 0.12},
+  "confidenceTier": "T1-live-TSO",
+  "uncertaintyLowGW": 0.620,
+  "uncertaintyHighGW": 0.838
 }
 ```
 
+### Multi-region snapshots
+
+Six loaders (`aemo`, `brazil-ne`, `entsoe`, `ercot`, `ercot-native`, `norway`) emit a single JSON file containing a `Record<regionId, RegionData>` rather than a single record. The keys are stable region IDs from `src/lib/regions.ts`; each value matches the per-region schema above.
+
 ### JSON Schema
 
-Machine-readable version: [`schema/region-snapshot.schema.json`](schema/region-snapshot.schema.json) (emitted by S0 scaffolding, to be expanded during S2 when uncertainty fields land).
+Machine-readable version: [`schema/region-snapshot.schema.json`](schema/region-snapshot.schema.json), covering the per-region shape including the S2 uncertainty fields (`confidenceTier`, `uncertaintyLowGW`, `uncertaintyHighGW`).
 
 ## Parquet historical archive
 
@@ -62,17 +72,15 @@ Compression: Snappy. Format: Parquet 2.6. Typical size: ~100 bytes per row × 12
 | `last_updated` | `string` | Calibration-anchor date. |
 | `profile_h00` … `profile_h23` | `float32` × 24 | Average curtailment in GW per UTC hour, matching JSON `profile`. |
 
-### Uncertainty columns (added S2)
-
-To be added during S2 (Wks 7–10 of the submission plan). Placeholder column names below; finalised when methodology per tier lands.
+### Uncertainty columns (added in S2)
 
 | Column | Type | Description |
 |---|---|---|
-| `uncertainty_low_gw` | `float32` | Lower bound of the 95% interval on `peak_gw`. |
-| `uncertainty_high_gw` | `float32` | Upper bound of the 95% interval on `peak_gw`. |
-| `confidence_tier` | `string` | `"T1-live-TSO"`, `"T2-annual-calibrated"`, `"T3-modelled"`, `"T4-structural-gap"`. |
+| `uncertainty_low_gw` | `float32` | Lower bound of the per-tier envelope on `peak_gw` (`max(0, peak_gw − δ)`). |
+| `uncertainty_high_gw` | `float32` | Upper bound of the per-tier envelope on `peak_gw` (`peak_gw + δ`). |
+| `confidence_tier` | `string` | `"T1-live-TSO"`, `"T2-annual-calibrated"`, or `"T3-modelled"`. (`"T4-structural-gap"` is reserved in the enum but never emitted — structural-gap regions do not appear in the dataset at all.) |
 
-The confidence tier is derived deterministically from the loader type; the uncertainty band is derived from a per-tier uncertainty model documented in `docs/methodology/uncertainty.md` (to be written in S2).
+The confidence tier is derived deterministically from `Region.tier` plus the loader's profile kind by `src/lib/uncertainty.ts::deriveTier`. The envelope half-width δ is per-tier (2σ from backfill where available, otherwise ±15% / ±20% / ±40% of `peak_gw`). Full methodology in `docs/methodology/uncertainty.md`.
 
 ### Example query
 
