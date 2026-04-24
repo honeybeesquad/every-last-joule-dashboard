@@ -80,9 +80,9 @@ See [`CHANGELOG.md`](CHANGELOG.md) for release history.
 
 The short version:
 - This is a **synthesis** dataset. Most regions mix live upstream feeds (ENTSO-E, EIA, AEMO NEMWeb, Elexon BMRS, ONS Brazil, and others) with published annual calibration (IRENA, Ember, GGFR, TSO annual reports).
-- 3 regions use estimated daily shapes scaled to published annual totals: Sichuan, Xinjiang, Iceland. These are clearly labelled; see [`../docs/known-limitations.md`](../docs/known-limitations.md).
-- Flare regions (Permian, West Siberia, South Iraq, East Saudi Arabia, others) are correctly modelled as flat 24/7 base-load — flare _is_ continuous, not diurnal.
-- Some jurisdictions (Mexico CENACE, most of the Middle East outside flare, much of sub-Saharan Africa) have no public hourly source and are documented as **structural gaps** rather than filled with fiction.
+- The 128 regions break down by confidence tier as **66 T1-live-TSO** (live hourly feed), **2 T2-annual-calibrated** (flat-base statics on a published annual), **4 T2 flare** (24/7 baseload, methodologically correct for flare), and **56 T3-modelled** (typical diurnal/seasonal/mixed/overnight shape scaled to a published annual anchor — Chinese provinces, most of South Asia, Africa, Middle East outside flare, Latin America outside Brazil/Argentina, Hawaii). Every region carries `confidenceTier` so consumers can filter by precision; see [`../docs/methodology/uncertainty.md`](../docs/methodology/uncertainty.md) and [`../docs/known-limitations.md`](../docs/known-limitations.md).
+- Flare regions (Permian, West Siberia, South Iraq, East Saudi Arabia) are correctly modelled as flat 24/7 base-load — flare _is_ continuous, not diurnal.
+- Some jurisdictions (Mexico CENACE, much of sub-Saharan Africa) have no public hourly source and are documented as **structural gaps** rather than filled with fiction.
 
 Full caveat list: [`../docs/known-limitations.md`](../docs/known-limitations.md).
 
