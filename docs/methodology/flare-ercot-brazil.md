@@ -81,7 +81,7 @@ Because no public ERCOT, IMM, or EIA document found in this pass publishes a cit
 
 ### Limitations
 
-The ERCOT loader remains a Tier-B proxy: EIA hourly ERCO wind and solar generation multiplied by calibrated rates, then split 66/34. The split should not be cited as an ERCOT statistic. Future upgrade path: subscribe to or otherwise obtain a public ERCOT report with zonal/resource-node dispatched-down energy, or derive curtailment from SCED resource potential, base points, HDL/LDL, and constraint data once the endpoint contract is public and locally testable.
+The ERCOT-west and ERCOT-east loaders sit in `T1-live-TSO` because the upstream feed (EIA hourly ERCO) is live-grid hourly data, but the curtailment value itself is a calibrated proxy: EIA hourly wind and solar generation multiplied by calibrated rates, then split 66/34. The 66/34 West/East split should not be cited as an ERCOT-published zonal statistic. Future upgrade path: subscribe to or otherwise obtain a public ERCOT report with zonal/resource-node dispatched-down energy, or derive curtailment from SCED resource potential, base points, HDL/LDL, and constraint data once the endpoint contract is public and locally testable. (Historical doc note: an earlier draft of this file used "Tier-B proxy" for this loader, which pre-dated the T1/T2/T3 confidence-tier model in `docs/methodology/uncertainty.md`.)
 
 ### URLs
 

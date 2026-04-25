@@ -42,7 +42,7 @@ CEN also publishes daily `Resumen Ejecutivo de Operación` PDFs through the Info
 
 ### 10. China provincial regions are calibrated annual estimates, not hourly observations
 
-The eight Chinese provincial regions are the dashboard's largest block of Tier-C estimates. They are now calibrated against NEA 2024 wind/PV utilisation rates, NEA river-basin hydro utilisation, and public provincial generation data; see `docs/methodology/china-provinces.md`.
+The eight Chinese provincial regions are part of the dataset's `T3-modelled` tier (see `docs/methodology/uncertainty.md`): a published annual anchor combined with a typical diurnal/seasonal shape, envelope ±40% of `peakGW`. They are now calibrated against NEA 2024 wind/PV utilisation rates, NEA river-basin hydro utilisation, and public provincial generation data; see `docs/methodology/china-provinces.md`.
 
 The China block totals 65.4 TWh/year against an NEA-implied 2024 national renewable curtailment/spill total of about 84.7 TWh/year. The province-level uncertainty range is roughly 48-80 TWh/year, dominated by hydro-spill uncertainty in Sichuan, Yunnan, and Tibet/Xizang.
 
@@ -50,7 +50,9 @@ Hourly shape remains synthetic. Xinjiang uses a typical solar shape even though 
 
 ### 11. Flare regions are flat because flare is flat (not a data gap)
 
-Permian, W. Siberia, S. Iraq, and E. Saudi render as flat pillars. This is methodologically correct: flare is 24/7 base-load heat because upstream oil production doesn't stop overnight. Their flat shape is the truth, not an absence of hourly data. They are distinguishable from estimated regions (above) in the dashboard's colour coding - flare is orange, renewables are teal.
+Permian, W. Siberia, S. Iraq, and E. Saudi sit in the dataset's flare bucket — a presentational subdivision of `T2-annual-calibrated` shown separately on Figure 4 (the coverage map) so readers can visually distinguish flat 24/7 base-load heat from dispatch-down curtailment. The envelope model is the same ±20% of `peakGW`; `confidenceTier` returns the single label `T2-annual-calibrated` for both the flare bucket and the small handful of static-flat regions, with the split being purely a label for the figure. See `docs/methodology/uncertainty.md`.
+
+Flare's flatness is methodologically correct: upstream oil production doesn't stop overnight, so the heat output is 24/7 base load. Their flat shape is the truth, not an absence of hourly data. On the dashboard surface, flare regions are excluded from the hotspot pillar globe (they are not dispatch-down events) and instead surface in the "flared-gas waste" footnote in bitcoin orange (`#f7931a`); renewable curtailment renders in teal.
 
 ### 11a. Brazil NE clustering uses ONS state codes, not plant-ID prefixes
 
@@ -58,9 +60,9 @@ Brazil NE wind and solar constrained-off rows are grouped by the ONS `id_estado`
 
 ### 12. v1f regional expansion uses documented fallback shapes where live feeds were hostile
 
-Argentina, Uruguay, Paraguay, Mexico, Japan, Vietnam, Thailand, North India, Cyprus, and Ethiopia are included through typical solar/wind/hydro profiles scaled to documented annual curtailment or spill estimates after public live-data probes found no stable unauthenticated hourly feed. They keep geographic coverage visible, but `latestProfile` is intentionally `null` and the `sourceNote` labels each as a fallback.
+Argentina, Uruguay, Paraguay, Mexico, Japan, Vietnam, Thailand, North India, Cyprus, and Ethiopia all sit in `T3-modelled`: typical solar/wind/hydro profiles scaled to documented annual curtailment or spill estimates after public live-data probes found no stable unauthenticated hourly feed. Envelope ±40% of `peakGW`. They keep geographic coverage visible, but `latestProfile` is intentionally `null` and the `sourceNote` labels each as a fallback.
 
-Turkey was removed in v1f after ENTSO-E returned no usable A75 renewable generation signal and no stable unauthenticated TEIAS/EPIAS endpoint was integrated in the time-box. In the 2026-04-24 re-probe, the newer EPIAS electricity-service dashboard endpoint did return unauthenticated current-day wind and solar generation by hour, so Turkey is promoted back to live as a conservative calibrated proxy. The endpoint is current-day dashboard data rather than a 30-day history API; `latestProfile` remains `null` until a complete Turkey day is available from the live response, and the source note labels this limitation.
+Turkey was removed in v1f after ENTSO-E returned no usable A75 renewable generation signal and no stable unauthenticated TEIAS/EPIAS endpoint was integrated in the time-box. In the 2026-04-24 re-probe, the newer EPIAS electricity-service dashboard endpoint did return unauthenticated current-day wind and solar generation by hour, so Turkey is promoted back to `T1-live-TSO` as a conservative calibrated proxy. The endpoint is current-day dashboard data rather than a 30-day history API; `latestProfile` remains `null` until a complete Turkey day is available from the live response, and the source note labels this limitation.
 
 ### 13. Alaska is below the inclusion threshold, not omitted for lack of curtailment
 
@@ -68,7 +70,7 @@ Alaska's Railbelt grid (Chugach, Matanuska, GVEA) does see documented renewable 
 
 ### 14. v1k global expansion is coverage-first and fallback-labelled
 
-Western Australia (SWIS), NT & Pilbara, Indonesia, Malaysia, South Korea mainland, Russia (European grid), Taiwan, Jordan, Saudi Arabia solar, UAE, Oman, and Israel are included through typical profiles after live probes failed to find stable unauthenticated hourly curtailment feeds. These are coverage-gap estimates, not measured curtailment series, and every loader labels the fallback in `sourceNote`.
+Western Australia (SWIS), NT & Pilbara, Indonesia, Malaysia, South Korea mainland, Russia (European grid), Taiwan, Jordan, Saudi Arabia solar, UAE, Oman, and Israel all sit in `T3-modelled`: typical profiles after live probes failed to find stable unauthenticated hourly curtailment feeds. Envelope ±40% of `peakGW`. These are coverage-gap estimates, not measured curtailment series, and every loader labels the fallback in `sourceNote`.
 
 - **Australia non-NEM:** WA-SWIS uses 0.4 TWh/yr mixed solar/wind; NT & Pilbara uses 0.2 TWh/yr captive solar.
 - **South/Southeast Asia:** Indonesia uses 0.3 TWh/yr Java-Bali solar; Malaysia uses 0.15 TWh/yr Peninsular solar.
