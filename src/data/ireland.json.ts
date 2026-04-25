@@ -72,6 +72,7 @@ const run = async (): Promise<RegionData> => {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: now.toISOString(),
+    lastSuccessAt: now.toISOString(),
     sourceNote:
       `EirGrid renewables page reachable (${meta.title}); SmartGrid Dashboard API remained unavailable, so this loader emits a calibrated all-island wind profile at 17.8% of ~1400 MW avg fleet — tuned to reproduce SONI/EirGrid 2024 annual DD total (ROI 1.266 TWh + NI 0.915 TWh = 2.181 TWh). Split into ROI/NI at consumption.`,
   };

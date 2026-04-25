@@ -1,7 +1,9 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import type { RegionData } from "./types.js";
+import type { RegionData, SourceStatus } from "./types.js";
 import { applyUncertainty } from "./uncertainty.js";
+
+export const DEFAULT_STALENESS_THRESHOLD_HOURS = 24;
 
 /**
  * Resilience wrapper. Runs fetchFn, writes its output to a snapshot, and
@@ -32,6 +34,13 @@ export interface WithFallbackOptions<T> {
    * Idempotent — already-tiered sub-regions are left untouched.
    */
   regionTier?: "live" | "static" | "flare";
+  /**
+   * Maximum age of a last-good snapshot before a cache fallback is labelled
+   * degraded instead of cached. Defaults to 24h.
+   */
+  stalenessThresholdHours?: number;
+  /** Test seam for deterministic cache-age classification. */
+  now?: () => Date;
 }
 
 /**
@@ -75,6 +84,78 @@ function enrichWithTier<T>(value: T, regionTier: "live" | "static" | "flare"): T
   return (touched ? (out as unknown as T) : value);
 }
 
+function isObjectRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isTimestampCarrier(value: unknown): value is Record<string, unknown> {
+  return isObjectRecord(value) && (
+    "sourceStatus" in value ||
+    "lastSuccessAt" in value ||
+    "lastUpdated" in value
+  );
+}
+
+function normalizeIso(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const time = new Date(value).getTime();
+  return Number.isFinite(time) ? new Date(time).toISOString() : undefined;
+}
+
+function cacheTimestamp(value: Record<string, unknown>, fallbackIso: string): string {
+  return normalizeIso(value.lastSuccessAt) ?? normalizeIso(value.lastUpdated) ?? fallbackIso;
+}
+
+function cachedStatus(lastSuccessAt: string, now: Date, thresholdHours: number): SourceStatus {
+  const last = new Date(lastSuccessAt).getTime();
+  const ageMs = now.getTime() - last;
+  if (Number.isFinite(ageMs) && ageMs > thresholdHours * 60 * 60 * 1000) return "degraded";
+  return "cached";
+}
+
+function mapSnapshotLike<T>(
+  value: T,
+  mapper: (record: Record<string, unknown>) => Record<string, unknown>,
+): T {
+  if (!isObjectRecord(value)) return value;
+
+  if (isRegionData(value) || isTimestampCarrier(value)) {
+    return mapper(value as Record<string, unknown>) as T;
+  }
+
+  const out: Record<string, unknown> = {};
+  let touched = false;
+  for (const [k, v] of Object.entries(value)) {
+    if (isRegionData(v) || isTimestampCarrier(v)) {
+      out[k] = mapper(v as Record<string, unknown>);
+      touched = true;
+    } else {
+      out[k] = v;
+    }
+  }
+  return (touched ? out : value) as T;
+}
+
+function stampLive<T>(value: T, nowIso: string): T {
+  return mapSnapshotLike(value, (record) => ({
+    ...record,
+    sourceStatus: "live",
+    lastSuccessAt: nowIso,
+  }));
+}
+
+function stampCached<T>(value: T, now: Date, thresholdHours: number): T {
+  const fallbackIso = now.toISOString();
+  return mapSnapshotLike(value, (record) => {
+    const lastSuccessAt = cacheTimestamp(record, fallbackIso);
+    return {
+      ...record,
+      sourceStatus: cachedStatus(lastSuccessAt, now, thresholdHours),
+      lastSuccessAt,
+    };
+  });
+}
+
 export async function withFallback<T>(
   cacheName: string,
   fetchFn: () => Promise<T>,
@@ -86,11 +167,14 @@ export async function withFallback<T>(
 
   const cacheDir = join(process.cwd(), "data", "snapshots", "last-good");
   const cachePath = join(cacheDir, `${cacheName}.json`);
+  const now = opts.now?.() ?? new Date();
+  const stalenessThresholdHours = opts.stalenessThresholdHours ?? DEFAULT_STALENESS_THRESHOLD_HOURS;
 
   try {
     const fresh = await fetchFn();
     let tagged = opts.tagLive ? opts.tagLive(fresh) : fresh;
     if (opts.regionTier) tagged = enrichWithTier(tagged, opts.regionTier);
+    tagged = stampLive(tagged, now.toISOString());
 
     try {
       mkdirSync(cacheDir, { recursive: true });
@@ -115,6 +199,7 @@ export async function withFallback<T>(
     const cached = JSON.parse(readFileSync(cachePath, "utf8")) as T;
     let tagged = opts.tagCached ? opts.tagCached(cached) : cached;
     if (opts.regionTier) tagged = enrichWithTier(tagged, opts.regionTier);
+    tagged = stampCached(tagged, now, stalenessThresholdHours);
     return tagged;
   }
 }

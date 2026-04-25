@@ -85,7 +85,7 @@ attribution example. This upgrades F1 to **Pass**.
 
 Rich metadata is present at three layers: dataset (CITATION.cff, README),
 schema (SCHEMA.md, region-snapshot.schema.json), and record
-(per-snapshot `sourceNote`, `lastUpdated`, `fuelShare`, `sourceStatus`,
+(per-snapshot `sourceNote`, `lastUpdated`, `lastSuccessAt`, `fuelShare`, `sourceStatus`,
 `confidenceTier`).
 
 ### F3 — Metadata clearly and explicitly include the identifier of the data they describe
@@ -273,12 +273,12 @@ No proprietary binary blobs, no closed schemas.
 **Evidence:**
 
 - Per-snapshot attributes: `regionId`, `profile[24]`, `latestProfile[24]`,
-  `totalTWh`, `peakGW`, `lastUpdated`, `sourceNote`, `sourceStatus`,
+  `totalTWh`, `peakGW`, `lastUpdated`, `lastSuccessAt`, `sourceNote`, `sourceStatus`,
   `fuelShare`, `uncertaintyLowGW`, `uncertaintyHighGW`,
   `confidenceTier` — 12 fields covering data, provenance, quality, and
   uncertainty.
 - Per-row Parquet attributes: `build_timestamp`, `region_id`, `peak_gw`,
-  `total_twh_30d`, `source_status`, `last_updated`, 24 × `profile_hXX`,
+  `total_twh_30d`, `source_status`, `last_updated`, `last_success_at`, 24 × `profile_hXX`,
   plus the three uncertainty columns.
 - Tier-based uncertainty model (`docs/methodology/uncertainty.md`)
   assigns each region a transparent confidence envelope (±15% T1,

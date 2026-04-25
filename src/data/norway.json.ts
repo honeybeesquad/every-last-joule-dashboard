@@ -114,6 +114,7 @@ function placeholderZone(id: string, lastUpdated: string): RegionData {
     totalTWh: 0,
     peakGW: 0,
     lastUpdated,
+    lastSuccessAt: lastUpdated,
     sourceNote: `${id} placeholder — awaiting first live ENTSO-E fetch after 2026-04-24 Norway zone split`,
   };
 }

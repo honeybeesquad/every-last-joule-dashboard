@@ -4,6 +4,9 @@ export type RegionTier = "live" | "static" | "flare";
 /** The waste modality drives colouring (teal vs orange) and narrative. */
 export type RegionKind = "solar" | "wind" | "hydro" | "mixed" | "flare";
 
+/** Freshness state of an upstream source or fallback snapshot. */
+export type SourceStatus = "live" | "cached" | "degraded";
+
 /** Canonical region definition. Immutable; does not change per build. */
 export interface Region {
   id: string;              // kebab-case stable id
@@ -31,14 +34,14 @@ export interface RegionData {
   totalTWh: number;        // trailing-30-day total (scaled to annual)
   peakGW: number;          // max of profile
   lastUpdated: string;     // ISO 8601 UTC of most recent source data
+  lastSuccessAt: string;   // ISO 8601 UTC when this snapshot was last refreshed successfully
   sourceNote?: string;     // optional provenance addendum
   /**
-   * Indicates whether the current payload came from a live fetch or
-   * a fallback snapshot. Absent or "live" = fresh data. "cached" = the
-   * live fetch failed on this build and we served the previous snapshot.
+   * Indicates whether the current payload came from a live fetch,
+   * a recent fallback snapshot, or a stale fallback snapshot.
    * Surfaced in the methodology page so readers can see freshness.
    */
-  sourceStatus?: "live" | "cached";
+  sourceStatus?: SourceStatus;
   /**
    * Data-driven fuel-mix override. If present, this takes precedence over the
    * region's canonical `kind` for bucketing in hotspot columns and timeline
@@ -77,7 +80,8 @@ export interface CBECIData {
   hashrateEHps: number;           // current network hashrate
   annualisedConsumptionTWh: number; // current network consumption
   lastUpdated: string;             // ISO 8601
-  sourceStatus?: "live" | "cached";
+  lastSuccessAt?: string;           // ISO 8601 UTC when this snapshot was last refreshed successfully
+  sourceStatus?: SourceStatus;
 }
 
 /** Global anchor figure from Ember / IEA. */

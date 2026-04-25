@@ -27,7 +27,7 @@
  * the provenance of this approach.
  */
 
-import type { RegionData } from "./types.js";
+import type { RegionData, SourceStatus } from "./types.js";
 
 export type ConfidenceTier =
   | "T1-live-TSO"
@@ -80,7 +80,7 @@ export interface TierInputs {
    * Currently advisory — does not change tier, because a one-build cache
    * miss does not change the underlying calibration.
    */
-  sourceStatus?: "live" | "cached";
+  sourceStatus?: SourceStatus;
 }
 
 /**

@@ -208,6 +208,7 @@ const run = async (): Promise<Record<BrazilRegionId, RegionData>> => {
       totalTWh: totalTWh30d(combined),
       peakGW: peakGW(combined),
       lastUpdated: combined.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+      lastSuccessAt: combined.at(-1)?.utcTimestamp ?? new Date().toISOString(),
       sourceNote: fuelShare
         ? `ONS Brazil direct constrained-off wind+solar curtailment (observed split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
         : "ONS Brazil direct constrained-off wind+solar curtailment",

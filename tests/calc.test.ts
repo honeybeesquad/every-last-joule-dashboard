@@ -5,7 +5,8 @@ import type { RegionData, CBECIData } from "../src/lib/types";
 const cbeci: CBECIData = {
   hashrateEHps: 1000,
   annualisedConsumptionTWh: 138,
-  lastUpdated: "2026-04-22T00:00:00Z"
+  lastUpdated: "2026-04-22T00:00:00Z",
+  lastSuccessAt: "2026-04-22T00:00:00Z"
 };
 
 function makeRegionData(id: string, profile: number[]): RegionData {
@@ -15,7 +16,8 @@ function makeRegionData(id: string, profile: number[]): RegionData {
     latestProfile: null,
     totalTWh: 0,
     peakGW: Math.max(...profile, 0),
-    lastUpdated: "2026-04-22T00:00:00Z"
+    lastUpdated: "2026-04-22T00:00:00Z",
+    lastSuccessAt: "2026-04-22T00:00:00Z"
   };
 }
 

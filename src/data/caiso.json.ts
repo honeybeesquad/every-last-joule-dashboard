@@ -87,6 +87,7 @@ export function parseCaiso(solarRaw: EIAResponse, windRaw?: EIAResponse): Region
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: lastPeriod,
+    lastSuccessAt: lastPeriod,
     sourceNote: `EIA hourly solar+wind × 4.25% calibrated curtailment (observed 30d split: solar ${(fuelShare.solar * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
     fuelShare,
   };
@@ -155,6 +156,7 @@ export function parseCaisoOasisCurtailmentCsv(csv: string): RegionData {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+    lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote: fuelShare
       ? `CAISO OASIS SLD_REN_CURTAIL direct (observed 30d split: solar ${(fuelShare.solar * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}%)`
       : "CAISO OASIS SLD_REN_CURTAIL direct wind+solar curtailment",

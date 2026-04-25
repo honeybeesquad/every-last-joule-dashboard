@@ -176,6 +176,7 @@ const run = async (): Promise<Record<AemoRegionId, RegionData>> => {
       totalTWh: totalTWh30d(points),
       peakGW: peakGW(points),
       lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+      lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
       sourceNote: fuelShare
         ? `NEMWEB SEMIDISPATCHCAP direct curtailment (observed ${regionId.replace("aemo-", "").toUpperCase()} split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
         : "NEMWEB DISPATCHIS/Next Day Dispatch SEMIDISPATCHCAP direct curtailment per state",

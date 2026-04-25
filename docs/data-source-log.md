@@ -424,6 +424,8 @@ Context found during the probe:
 
 **Implementation outcome:** `src/data/vietnam.json.ts` remains a `withFallback`-wrapped typical solar profile with `latestProfile: null`. `src/data/statics.json.ts` has no Vietnam entry in this branch, so there is no static-output removal to perform.
 
+**Fallback freshness disclosure:** `withFallback` stamps every successful snapshot with `lastSuccessAt`. If a later build serves that cache and the successful refresh is more than 24 hours old, the payload is labelled `sourceStatus: "degraded"` rather than `cached`. The 24-hour default is intentionally permissive: it avoids marking ordinary one-build upstream hiccups as stale while still surfacing multi-day outages to reviewers and dashboard readers. Individual loaders can override the threshold where a source has a slower expected cadence.
+
 ---
 
 ## v1f fallback expansion regions (used)

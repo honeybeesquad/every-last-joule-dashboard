@@ -67,6 +67,7 @@ const run = async (): Promise<RegionData> => {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: now.toISOString(),
+    lastSuccessAt: now.toISOString(),
     sourceNote:
       `Eskom Data Portal reachable (${meta.title}); CSV/chart endpoint not exposed publicly, so this loader emits a calibrated wind+solar fallback profile scaled to 4.4 TWh/yr (SAREM 2025 / Eskom MTSAO Oct 2025 report 4,363 GWh curtailment in 2024 — 12% of renewable output, concentrated Northern+Western Cape)`,
   };

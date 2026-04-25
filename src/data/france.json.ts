@@ -52,6 +52,7 @@ export function buildFranceData(parsed: FranceParsed): RegionData {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+    lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote: fuelShare
       ? `RTE eco2mix wind+solar × 3% curtailment (observed split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
       : "RTE eco2mix national wind+solar CSV × 3% calibrated curtailment rate (France 2024)",

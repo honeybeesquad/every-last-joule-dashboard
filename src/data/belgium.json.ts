@@ -36,6 +36,7 @@ export function buildBelgiumData(
     totalTWh: totalTWh30d(hourly),
     peakGW: peakGW(hourly),
     lastUpdated: hourly.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+    lastSuccessAt: hourly.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote: fuelShare
       ? `Elia wind+solar realtime CSV × 2% calibrated curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
       : "Elia wind+solar realtime CSV × 2% calibrated curtailment rate (Belgium 2024)",

@@ -1,5 +1,6 @@
 import type { RegionData } from "./types.js";
 import { applyUncertainty } from "./uncertainty.js";
+import { coerceLastSuccessAt } from "./freshness.js";
 
 function scaleProfileToAnnualTWh(profile: number[], annualTWh: number): number[] {
   const dailyGWh = (annualTWh * 1000) / 365;
@@ -177,6 +178,7 @@ export function buildTypicalHydroSeasonalRegion(
     totalTWh: ((annualTWh * 30) / 365) * factor,
     peakGW: Math.max(...profile),
     lastUpdated,
+    lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote: `${sourceNote} — current 30-day seasonal factor ${factor.toFixed(2)}×`,
   };
   return applyUncertainty(base, { regionTier: "static", profileKind: "hydro-seasonal" });
@@ -198,6 +200,7 @@ export function buildTypicalSolarRegion(
     totalTWh: (annualTWh * 30) / 365,
     peakGW: Math.max(...profile),
     lastUpdated,
+    lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote,
   };
   return applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
@@ -219,6 +222,7 @@ export function buildTypicalWindRegion(
     totalTWh: (annualTWh * 30) / 365,
     peakGW: Math.max(...profile),
     lastUpdated,
+    lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote,
   };
   return applyUncertainty(base, { regionTier: "static", profileKind: "wind" });
@@ -239,6 +243,7 @@ export function buildTypicalHydroRegion(
     totalTWh: (annualTWh * 30) / 365,
     peakGW: Math.max(...profile),
     lastUpdated,
+    lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote,
   };
   // Flat hydro: no shape modelled, routes to T2-annual-calibrated.
@@ -266,6 +271,7 @@ export function buildTypicalMixedRegion(
     totalTWh: (annualTWh * 30) / 365,
     peakGW: Math.max(...profile),
     lastUpdated,
+    lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote,
     fuelShare,
   };
@@ -322,6 +328,7 @@ export function buildGeothermalOvernightRegion(
     totalTWh: ((annualTWh * 30) / 365) * factor,
     peakGW: Math.max(...profile),
     lastUpdated,
+    lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote: `${sourceNote} — overnight venting (UTC ${peakUtcHour - halfWidthHours}-${peakUtcHour + halfWidthHours}), seasonal factor ${factor.toFixed(2)}×`,
   };
   return applyUncertainty(base, { regionTier: "static", profileKind: "overnight" });

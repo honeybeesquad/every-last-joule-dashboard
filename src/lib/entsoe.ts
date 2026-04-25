@@ -100,6 +100,7 @@ export function buildZoneData(
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: rawPoints.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+    lastSuccessAt: rawPoints.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote,
   };
 
@@ -195,6 +196,7 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: lastUpdated ?? new Date().toISOString(),
+    lastSuccessAt: lastUpdated ?? new Date().toISOString(),
     sourceNote,
     ...(fuelShare ? { fuelShare } : {}),
   };
