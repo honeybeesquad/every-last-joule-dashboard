@@ -155,6 +155,18 @@ The following limitations are inherent to the available upstream data and should
 
 The dashboard source code and this methodology are versioned at https://github.com/honeybeesquad/every-last-joule-dashboard. Every loader is pure with respect to its upstream data inputs, and cached "last-known-good" snapshots are committed for each region so that any reader can reproduce the current displayed figure from a clean build with `npm install && npm run build`. Per-region annual TWh anchors, calibrated rates, fuel-mix overrides, and seasonal multipliers are all source-visible in `src/data/` and `src/lib/`.
 
+## 9. Recent corrections
+
+A peer review on 2026-04-25 surfaced a small set of corrections, landed 2026-04-26:
+
+- **PT15M aggregation overcount (B1).** ENTSO-E publishes most zones at 15-minute resolution. The `totalTWh30d` aggregator was multiplying every interval by one hour, overstating ENTSO-E zone totals by a factor of four. After the fix, Germany's 30-day total moves from ~3.7 TWh to ~0.92 TWh (annualized ~11 TWh/yr, matching BNetzA's 9.34 TWh published 2024 curtailment within ±15%). All ENTSO-E-derived figures on this dashboard reflect the corrected aggregation.
+- **splitRegion uncertainty propagation (S5).** Zones derived by proportional split of a parent (e.g., Italy sub-zones, Switzerland-via-Czech) now scale `observedStdGW` proportionally to the child's share rather than inheriting the parent's absolute value. Tightens uncertainty envelopes on small derived zones.
+- **Probe-only `sourceNote` honesty (N3).** Iran, UAE, and Saudi-solar previously reported "live feed unavailable (timeout)" — misleading, since none of these regions publish a live feed. Now reported as "no public hourly curtailment feed" with the anchored typical-shape model disclosed inline.
+- **`sourceStatus` enum (S2).** Added a third value, `degraded`, distinguishing fresh-cache (under 24h) from stale-cache (over 24h since last successful upstream fetch). Each region also now carries a `lastSuccessAt` timestamp for transparency.
+- **T2 constant-rate disclosure (S6).** The methodology page now explicitly states that T2 zones use a constant `MW_curtailed / MW_generated` rate per region (vs the time-of-day rate available in T1). This is a documented limitation, not a hidden one.
+
+A separate Phase-3 update (post-merge) will subdivide T1 into T1a, T1b, and T1c per the empirical anchor-coverage analysis at `scripts/calibration/empirical_tier_bands.py --by-derivation`. T1b zones use a domestic stat-agency anchor with modelled split (±20–25%); T1c zones use a neighbour-extrapolated rate (±30–40%). Sub-tier badges will appear on affected zones once that work lands.
+
 ---
 
 *This methodology accompanies the author's forthcoming book* Every Last Joule: How Bitcoin Meets Energy Where It Is *(Collins, forthcoming). Technical corrections and source suggestions are welcome via GitHub issues.*
