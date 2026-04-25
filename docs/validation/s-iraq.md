@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Base-load flare region — see permian for flat-shape rationale.
+Base-load associated-gas flare region covering Basra, Rumaila, West Qurna, Majnoon, and the wider southern Iraq oilfield cluster. GGFR 2024 anchor ~20 Bcm (≈58 TWh equivalent), the largest single tracked flare basin in the dataset and roughly 14% of global flaring by volume. Iraq is a 2030-zero-routine-flaring signatory but project economics and limited gas-capture infrastructure have kept actual reduction slow; flare volumes have remained broadly flat 2019–2024 with mild downward trend since the Basra Gas Company expansion. Hourly shape is flat by construction — flaring is a 24/7 disposal mode tied to crude production, not grid-driven curtailment — so Item 11 in `docs/known-limitations.md` (flare regions modelled as flat 24/7) applies. ±20% envelope reflecting GGFR's documented VIIRS-attribution uncertainty. Distinct from `iraq-mainland` (PV) and `kurdistan` (PV) which sit in the renewable-curtailment pillar of the dataset. See `permian.md` for the canonical flat-shape justification.
 
 ## Links
 

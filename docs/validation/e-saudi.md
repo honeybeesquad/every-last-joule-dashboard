@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Base-load flare region — see permian for flat-shape rationale.
+Base-load associated-gas flare region covering Ghawar and the broader Eastern Province oil corridor. GGFR 2024 anchor ~5 Bcm (≈15 TWh equivalent), the smallest of the four tracked flare basins; Saudi Aramco's Master Gas System has progressively absorbed associated gas into the domestic pipeline grid since 2014, which is why the e-saudi anchor is markedly below s-iraq and w-siberia despite Saudi's larger total oil output. Hourly shape is flat by construction — flaring is a 24/7 disposal mode tied to oilfield production, not a dispatchable response to grid signals — so Item 11 in `docs/known-limitations.md` (flare regions modelled as flat 24/7) applies. ±20% envelope reflecting GGFR's documented VIIRS-attribution uncertainty rather than the wider ±40% used for non-flare T3 regions. See `permian.md` for the canonical flat-shape justification.
 
 ## Links
 

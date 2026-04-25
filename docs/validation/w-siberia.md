@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Base-load flare region — see permian for flat-shape rationale.
+Base-load associated-gas flare region covering Khanty-Mansiysk, Yamalo-Nenets, and the wider West Siberian oil province. GGFR 2024 anchor ~15 Bcm (≈44 TWh equivalent), second-largest in the tracked set after s-iraq. Russia's flaring increased post-2022 as Western gas-capture investment was withdrawn under sanctions and several gas-utilisation projects were paused or cancelled; the 2024 figure is roughly +25% vs the 2020 GGFR baseline despite the country's nominal flare-reduction policy. Hourly shape is flat by construction — flaring is a 24/7 disposal mode tied to crude production, not grid-driven curtailment — so Item 11 in `docs/known-limitations.md` (flare regions modelled as flat 24/7) applies. ±20% envelope reflecting GGFR's documented VIIRS-attribution uncertainty (slightly wider than usual given partial Russian satellite-overpass coverage gaps). Distinct from `russia-mainland` (hydro spill) and `russia-murmansk-wind` (transmission-export-limited wind) which both sit in the renewable-curtailment pillar. See `permian.md` for the canonical flat-shape justification.
 
 ## Links
 
