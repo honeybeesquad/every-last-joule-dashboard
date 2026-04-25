@@ -1,6 +1,7 @@
 import { fetchText } from "../lib/fetch.js";
 import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
+import { applyUncertainty } from "../lib/uncertainty.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
@@ -55,7 +56,16 @@ const run = async (): Promise<RegionData> => {
   const now = new Date();
   const points = buildProfileHistory(now, ESTIMATED_WIND_AVG_MW * CURTAILMENT_RATE);
 
-  return {
+  // Probe-only loader: the EirGrid public site exposes the renewables page
+  // but the SmartGrid Dashboard API that would carry hourly dispatch-down
+  // is not publicly reachable. The profile emitted here is a calibrated
+  // wind typical-shape (WIND_SHAPE × scale) scaled to the 2024 SONI/EirGrid
+  // annual anchor, not an actual measured dispatch-down series. Tier is
+  // T3-modelled per `src/lib/uncertainty.ts::deriveTier` rules for
+  // static + wind-profile regions. The all-island aggregate here is split
+  // into `ireland-republic` and `northern-ireland` at consumption time
+  // (src/index.md::splitRegion); both children inherit this T3 tier.
+  const base: RegionData = {
     regionId: "ireland",
     profile: timeOfDayAverageGW(points),
     latestProfile: null,
@@ -65,13 +75,13 @@ const run = async (): Promise<RegionData> => {
     sourceNote:
       `EirGrid renewables page reachable (${meta.title}); SmartGrid Dashboard API remained unavailable, so this loader emits a calibrated all-island wind profile at 17.8% of ~1400 MW avg fleet — tuned to reproduce SONI/EirGrid 2024 annual DD total (ROI 1.266 TWh + NI 0.915 TWh = 2.181 TWh). Split into ROI/NI at consumption.`,
   };
+  return applyUncertainty(base, { regionTier: "static", profileKind: "wind" });
 };
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
   withFallback<RegionData>("ireland", run, {
-    regionTier: "live" as const,
     tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
     tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
   })

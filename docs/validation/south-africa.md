@@ -6,9 +6,9 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `south-africa`
 - **Country:** ZAF
-- **Tier:** live
+- **Tier:** static (T3-modelled, ±40% — demoted from live on 2026-04-25; see "Known limitations" below)
 - **Kind:** mixed
-- **Source:** Eskom Data Portal
+- **Source:** Eskom Data Portal probe + wind+solar mixed typical-shape (~4.4 TWh/yr SAREM 2025 anchor)
 - **Source URL:** [https://www.eskom.co.za/dataportal/](https://www.eskom.co.za/dataportal/)
 - **Loader:** [`south-africa.json.ts`](../../src/data/south-africa.json.ts)
 - **Structural gap:** no
@@ -37,7 +37,9 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+**Tier-overstatement fix (2026-04-25):** demoted from `T1-live-TSO` to `T3-modelled`. The Eskom `south-africa.json.ts` loader is probe-only — it hits the Eskom Data Portal for reachability/freshness, then emits a calibrated wind+solar mixed typical-shape (`MIXED_SHAPE × 12% × 4150 MW` average renewable fleet) scaled to ~4.4 TWh/yr per SAREM 2025 / Eskom MTSAO Oct 2025 (4,363 GWh curtailed in 2024, 12% of renewable output, concentrated Northern+Western Cape transmission constraints). The Eskom Data Portal does not expose an hourly CSV / chart endpoint; the page-level reachability check is all the live source provides. `sourceStatus="live"` reflects probe reachability, not a measured-dispatch claim. See `docs/known-limitations.md` item 6.
+
+See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

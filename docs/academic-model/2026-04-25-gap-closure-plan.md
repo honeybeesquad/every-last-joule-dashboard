@@ -139,7 +139,7 @@ Per-region MD template: `docs/validation/_template.md`, produced in HB.0.
 |---|---|---|---|
 | T1-live-TSO | Live feed from TSO with documented calibration, ≥ 1yr history | `2 × σ_backfill_5yr` (actual observed variance from backfill) | Typically ±5–10% |
 | T2-annual-calibrated | Static with annual anchor (Ember/IRENA/GGFR) | `0.2 × peakGW` (published-source implied uncertainty) | ±20% |
-| T3-modelled | Typical profile scaled to annual — solar / wind / mixed / hydro-seasonal / overnight shape families across 58 v0.5 regions including Peru, South Africa, the Chinese provinces, most of South Asia, Africa, the Middle East outside flare, Latin America outside Brazil/Atacama, and Hawaii | `0.4 × peakGW` (profile-shape assumption) | ±40% |
+| T3-modelled | Typical profile scaled to annual — solar / wind / mixed / hydro-seasonal / overnight shape families across 60 v0.5 regions including Ireland (Republic + Northern), Peru, South Africa, the Chinese provinces, most of South Asia, Africa, the Middle East outside flare, Latin America outside Brazil/Atacama, and Hawaii | `0.4 × peakGW` (profile-shape assumption) | ±40% |
 | T4-structural-gap | No claim made — region not in dataset | n/a | n/a |
 
 **Work items:**
