@@ -13,6 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
+    "validate": "tsx scripts/validate-snapshots.ts",
+    "tally:tiers": "tsx scripts/tally-tiers.ts",
     "data:refresh": "observable build",
     "snapshot": "tsx scripts/write-snapshot.ts",
     "postinstall": "git config core.hooksPath .githooks 2>/dev/null || true"
