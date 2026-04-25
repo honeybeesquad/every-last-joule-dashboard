@@ -10,7 +10,8 @@
     "latestProfile",
     "totalTWh",
     "peakGW",
-    "lastUpdated"
+    "lastUpdated",
+    "lastSuccessAt"
   ],
   "properties": {
     "regionId": {
@@ -51,14 +52,19 @@
       "type": "string",
       "description": "Calibration-anchor date: YYYY, YYYY-Q#, or ISO-8601."
     },
+    "lastSuccessAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC timestamp when this snapshot was last successfully refreshed. Cache fallbacks use this to distinguish recent cached data from degraded stale data."
+    },
     "sourceNote": {
       "type": "string",
       "description": "Optional human-readable provenance string surfaced in the dashboard tooltip and paper Usage Notes. Absent on legacy snapshots that pre-date the provenance-string convention."
     },
     "sourceStatus": {
       "type": ["string", "null"],
-      "enum": ["live", "cached", null],
-      "description": "Whether the last fetch was fresh (live) or served from withFallback (cached)."
+      "enum": ["live", "cached", "degraded", null],
+      "description": "Whether the last fetch was fresh (live), a recent withFallback snapshot (cached), or a stale withFallback snapshot beyond the configured staleness threshold (degraded)."
     },
     "fuelShare": {
       "type": "object",

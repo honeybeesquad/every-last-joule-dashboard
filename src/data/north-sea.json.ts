@@ -80,6 +80,7 @@ const run = async (): Promise<RegionData> => {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+    lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote: fuelShare
       ? `Elexon BMRS AGWS wind+solar × 6.9% curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
       : "Elexon BMRS AGWS (wind + solar) × 6.9% calibrated curtailment rate (UK 2024 actuals: 6.6 TWh / 95 TWh)",

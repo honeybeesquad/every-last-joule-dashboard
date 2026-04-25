@@ -18,8 +18,9 @@ One file per region. Overwritten on each scheduled build. Historical values acce
 | `totalTWh` | `number` | 30-day trailing total curtailment in TWh (sum of `profile` × 24 × 30). | No |
 | `peakGW` | `number` | 30-day trailing peak hourly GW. | No |
 | `lastUpdated` | `string` | Calibration-anchor date. Format varies by source: `YYYY` (annual anchor), `YYYY-Q#` (quarterly), or ISO-8601 (live). | No |
+| `lastSuccessAt` | `string` | ISO-8601 UTC timestamp when the snapshot was last successfully refreshed. | No |
 | `sourceNote` | `string` | Human-readable provenance. E.g. `"ENTSO-E Transparency B19 dispatch-down 2026-01 → 2026-04 · rate 0.04"`. | No |
-| `sourceStatus` | `"live" \| "cached" \| null` | `live` = fresh fetch succeeded; `cached` = `withFallback` served last-good. Null only for purely static regions. | Yes |
+| `sourceStatus` | `"live" \| "cached" \| "degraded" \| null` | `live` = fresh fetch succeeded; `cached` = recent `withFallback` last-good; `degraded` = stale last-good beyond the configured threshold. Null only for purely static regions. | Yes |
 | `fuelShare` | `Record<string, number>` | Fuel-type split of the curtailed energy, fractions 0–1, keys in `{solar, wind, hydro, geothermal, flare}`. May be empty for flare-only regions. | No (may be `{}`) |
 | `confidenceTier` | `string` | One of `"T1-live-TSO"`, `"T2-annual-calibrated"`, `"T3-modelled"`. Derived deterministically by `src/lib/uncertainty.ts::deriveTier`. See `docs/methodology/uncertainty.md`. | Yes (legacy snapshots may pre-date S2 enrichment) |
 | `uncertaintyLowGW` | `number` | Lower bound of the per-tier envelope on `peakGW`. `max(0, peakGW − δ)`. | Yes |
@@ -68,8 +69,9 @@ Compression: Snappy. Format: Parquet 2.6. Typical size: ~100 bytes per row × 12
 | `region_id` | `string` | Matches `regionId` in the JSON snapshot. |
 | `peak_gw` | `float32` | 30-day trailing peak hourly GW at build time. |
 | `total_twh_30d` | `float32` | 30-day trailing total curtailment in TWh at build time. |
-| `source_status` | `string` | `"live"`, `"cached"`, or null. |
+| `source_status` | `string` | `"live"`, `"cached"`, `"degraded"`, or null. |
 | `last_updated` | `string` | Calibration-anchor date. |
+| `last_success_at` | `string` | ISO-8601 UTC timestamp when the snapshot was last successfully refreshed. |
 | `confidence_tier` | `string` | `"T1-live-TSO"`, `"T2-annual-calibrated"`, or `"T3-modelled"`. (`"T4-structural-gap"` is reserved in the enum but never emitted — structural-gap regions do not appear in the dataset at all.) |
 | `uncertainty_low_gw` | `float32` | Lower bound of the per-tier envelope on `peak_gw` (`max(0, peak_gw − δ)`). |
 | `uncertainty_high_gw` | `float32` | Upper bound of the per-tier envelope on `peak_gw` (`peak_gw + δ`). |

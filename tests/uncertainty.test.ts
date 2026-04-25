@@ -98,6 +98,7 @@ describe("uncertainty.applyUncertainty", () => {
     totalTWh: 4.5,
     peakGW: 2,
     lastUpdated: "2024-12",
+    lastSuccessAt: "2024-12-01T00:00:00.000Z",
   };
 
   it("enriches a RegionData with tier + bounds", () => {

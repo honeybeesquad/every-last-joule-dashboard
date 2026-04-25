@@ -30,8 +30,9 @@ per GitHub Actions cron).
 | `totalTWh` | `number` | 30-day trailing total curtailment in TWh. |
 | `peakGW` | `number` | 30-day trailing peak hourly GW. |
 | `lastUpdated` | `string` | Calibration-anchor date — `YYYY`, `YYYY-Q#`, or ISO-8601 timestamp. |
+| `lastSuccessAt` | `string` | ISO-8601 UTC timestamp when the snapshot was last successfully refreshed. |
 | `sourceNote` | `string` | Human-readable provenance (source, window, calibration rate). |
-| `sourceStatus` | `"live" \| "cached" \| null` | Fresh fetch (`live`) or last-good served by `withFallback` (`cached`). |
+| `sourceStatus` | `"live" \| "cached" \| "degraded" \| null` | Fresh fetch (`live`), recent last-good (`cached`), or stale last-good beyond threshold (`degraded`). |
 | `fuelShare` | `Record<string, number>` | Fuel split of curtailed energy, fractions 0–1, keys ⊂ `{solar, wind, hydro, geothermal, flare}`. |
 | `uncertaintyLowGW` | `number` | Lower bound of the confidence envelope on `peakGW`. |
 | `uncertaintyHighGW` | `number` | Upper bound of the confidence envelope on `peakGW`. |
@@ -47,6 +48,7 @@ per GitHub Actions cron).
   "totalTWh": 0.2699,
   "peakGW": 0.729,
   "lastUpdated": "2026-04-23T14:15:00Z",
+  "lastSuccessAt": "2026-04-23T14:18:21Z",
   "sourceNote": "EIA CISO solar curtailment 2026-03-25 → 2026-04-23",
   "sourceStatus": "live",
   "fuelShare": {"solar": 0.88, "wind": 0.12},
@@ -76,8 +78,9 @@ Full field descriptions and update semantics: `dataset/SCHEMA.md`.
 | `region_id` | `string` | Matches `regionId` in the JSON snapshot. |
 | `peak_gw` | `float32` | 30-day trailing peak hourly GW at build time. |
 | `total_twh_30d` | `float32` | 30-day trailing total curtailment in TWh. |
-| `source_status` | `string` | `"live"`, `"cached"`, or null. |
+| `source_status` | `string` | `"live"`, `"cached"`, `"degraded"`, or null. |
 | `last_updated` | `string` | Calibration-anchor date. |
+| `last_success_at` | `string` | ISO-8601 UTC timestamp when the snapshot was last successfully refreshed. |
 | `profile_h00` … `profile_h23` | `float32` × 24 | Hourly profile. |
 | `uncertainty_low_gw` | `float32` | Lower bound on `peak_gw`. |
 | `uncertainty_high_gw` | `float32` | Upper bound on `peak_gw`. |

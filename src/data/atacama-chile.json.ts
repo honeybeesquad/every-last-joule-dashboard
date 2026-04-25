@@ -329,6 +329,7 @@ function buildRegionData(points: CurtailmentPoint[], sourceNote: string): Region
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+    lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote,
   };
 }

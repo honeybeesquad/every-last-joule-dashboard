@@ -85,6 +85,9 @@ export function buildTurkeyData(
   const partialDayNote = latestProfile
     ? ""
     : " Current EPIAS dashboard endpoint exposes the current Turkey day only; latestProfile remains null until a complete 24-hour day is available.";
+  const lastUpdated = response.latestUpdateTime
+    ? new Date(response.latestUpdateTime).toISOString()
+    : points.at(-1)?.utcTimestamp ?? new Date().toISOString();
 
   return {
     regionId: REGION_ID,
@@ -92,9 +95,8 @@ export function buildTurkeyData(
     latestProfile,
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
-    lastUpdated: response.latestUpdateTime
-      ? new Date(response.latestUpdateTime).toISOString()
-      : points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+    lastUpdated,
+    lastSuccessAt: lastUpdated,
     sourceNote: `${sourceNote} × ${(TURKEY_CURTAILMENT_RATE * 100).toFixed(1)}% conservative calibrated proxy (~0.5 TWh/yr 2024 anchor).${partialDayNote}`,
     ...(fuelShare ? { fuelShare } : {}),
   };

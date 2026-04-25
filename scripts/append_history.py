@@ -12,8 +12,9 @@ build_timestamp     str     ISO-8601 UTC of this run (sortable)
 region_id           str     matches RegionData.regionId
 peak_gw             float32 current 30-day peak GW
 total_twh_30d       float32 current 30-day curtailment TWh
-source_status       str     "live" | "cached" | null
+source_status       str     "live" | "cached" | "degraded" | null
 last_updated        str     calibration date (YYYY, YYYY-Q#, or ISO)
+last_success_at     str     ISO-8601 UTC of last successful snapshot refresh
 confidence_tier     str     "T1-live-TSO" | "T2-annual-calibrated" |
                             "T3-modelled" | "T4-structural-gap" | null
                             (see src/lib/uncertainty.ts + docs/methodology/uncertainty.md)
@@ -147,6 +148,7 @@ SCHEMA = pa.schema([
     pa.field("total_twh_30d",        pa.float32()),
     pa.field("source_status",        pa.string()),
     pa.field("last_updated",         pa.string()),
+    pa.field("last_success_at",      pa.string()),
     pa.field("confidence_tier",      pa.string()),
     pa.field("uncertainty_low_gw",   pa.float32()),
     pa.field("uncertainty_high_gw",  pa.float32()),
@@ -214,6 +216,7 @@ def _make_row(ts: str, region_id: str, data: dict) -> dict:
         "total_twh_30d":        float(data.get("totalTWh") or 0),
         "source_status":        str(data.get("sourceStatus") or ""),
         "last_updated":         str(data.get("lastUpdated") or ""),
+        "last_success_at":      str(data.get("lastSuccessAt") or ""),
         "confidence_tier":      str(tier) if tier is not None else None,
         "uncertainty_low_gw":   float(unc_low) if unc_low is not None else None,
         "uncertainty_high_gw":  float(unc_high) if unc_high is not None else None,

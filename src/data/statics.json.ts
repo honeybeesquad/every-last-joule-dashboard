@@ -6,6 +6,7 @@ import {
   HYDRO_SEASONAL_SHARES,
 } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
+import { coerceLastSuccessAt } from "../lib/freshness.js";
 import { pathToFileURL } from "url";
 
 type ProfileKind = "flat" | "solar" | "hydro-seasonal";
@@ -117,6 +118,7 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
     totalTWh: scaledTotalTWh,
     peakGW: Math.max(...profile),
     lastUpdated: spec.reportDate,
+    lastSuccessAt: coerceLastSuccessAt(spec.reportDate),
     sourceNote,
   };
   // S2 uncertainty: tier derived from static-region kind.

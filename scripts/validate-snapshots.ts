@@ -28,6 +28,7 @@ interface PerRegion {
   totalTWh: unknown;
   peakGW: unknown;
   lastUpdated: unknown;
+  lastSuccessAt: unknown;
   sourceNote: unknown;
   sourceStatus?: unknown;
   fuelShare: unknown;
@@ -47,7 +48,8 @@ const REQUIRED = [
   "latestProfile",
   "totalTWh",
   "peakGW",
-  "lastUpdated"
+  "lastUpdated",
+  "lastSuccessAt"
 ] as const;
 
 const FUEL_KEYS = new Set(["solar", "wind", "hydro", "geothermal", "flare"]);
@@ -57,7 +59,7 @@ const TIER_ENUM = new Set([
   "T3-modelled",
   "T4-structural-gap"
 ]);
-const STATUS_ENUM: ReadonlySet<unknown> = new Set(["live", "cached", null]);
+const STATUS_ENUM: ReadonlySet<unknown> = new Set(["live", "cached", "degraded", null]);
 
 function isNonNegNumber(x: unknown): x is number {
   return typeof x === "number" && Number.isFinite(x) && x >= 0;
@@ -105,12 +107,15 @@ function validate(obj: unknown, ctx: string): string[] {
   if (!isNonNegNumber(r.totalTWh)) errs.push(`totalTWh = ${JSON.stringify(r.totalTWh)} not non-neg number`);
   if (!isNonNegNumber(r.peakGW)) errs.push(`peakGW = ${JSON.stringify(r.peakGW)} not non-neg number`);
   if (typeof r.lastUpdated !== "string") errs.push(`lastUpdated not string`);
+  if (typeof r.lastSuccessAt !== "string" || !Number.isFinite(new Date(r.lastSuccessAt).getTime())) {
+    errs.push(`lastSuccessAt not ISO-8601 string`);
+  }
   if ("sourceNote" in r && r.sourceNote !== undefined && typeof r.sourceNote !== "string") {
     errs.push(`sourceNote present but not a string`);
   }
 
   if ("sourceStatus" in r && !STATUS_ENUM.has(r.sourceStatus as unknown)) {
-    errs.push(`sourceStatus = ${JSON.stringify(r.sourceStatus)} not in {live, cached, null}`);
+    errs.push(`sourceStatus = ${JSON.stringify(r.sourceStatus)} not in {live, cached, degraded, null}`);
   }
 
   // fuelShare is optional. When present, validate keys + value range.

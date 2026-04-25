@@ -146,12 +146,16 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
 
   function freshnessBadge(data) {
     if (!data) return "";
-    const status = data.sourceStatus === "cached" ? "cached" : "live";
-    const age = formatAge(data.lastUpdated);
-    const klass = status === "cached" ? "region-tooltip-freshness-cached" : "region-tooltip-freshness-live";
-    const icon = status === "cached" ? "⚠" : "●";
-    const label = status === "cached" ? `fallback · ${age}` : `live · ${age}`;
-    return `<span class="${klass}" title="sourceStatus=${status}; lastUpdated=${data.lastUpdated ?? "?"}">${icon} ${label}</span>`;
+    const status = data.sourceStatus === "degraded"
+      ? "degraded"
+      : data.sourceStatus === "cached"
+        ? "cached"
+        : "live";
+    const age = formatAge(data.lastSuccessAt ?? data.lastUpdated);
+    const klass = `region-tooltip-freshness-${status}`;
+    const icon = status === "live" ? "●" : "⚠";
+    const label = status === "live" ? `live · ${age}` : `${status} · ${age}`;
+    return `<span class="${klass}" title="sourceStatus=${status}; lastSuccessAt=${data.lastSuccessAt ?? "?"}; lastUpdated=${data.lastUpdated ?? "?"}">${icon} ${label}</span>`;
   }
 
   function show(region, anchor) {

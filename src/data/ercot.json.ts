@@ -113,6 +113,7 @@ export function parseErcot(
     totalTWh: totalTWh30d(combined),
     peakGW: peakGW(combined),
     lastUpdated: lastPeriod,
+    lastSuccessAt: lastPeriod,
     sourceNote: `EIA hourly wind × ${(WIND_RATE * 100).toFixed(2)}% + solar × ${(SOLAR_RATE * 100).toFixed(1)}% calibrated curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
   };
 

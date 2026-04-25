@@ -202,6 +202,7 @@ function parseErcotNative(points: CurtailmentPoint[]): Record<NativeRegionId, Re
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+    lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote: "ERCOT native SCED availability attempt via ERCOT_PRODUCT_ID/NP6-915-CD HDL minus generation, split 66/34 west-east until zone-native disclosure is confirmed.",
   };
 

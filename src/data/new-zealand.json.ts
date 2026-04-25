@@ -97,6 +97,7 @@ export function buildNewZealandData(parsed: NzParsed): RegionData {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+    lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote: fuelShare
       ? `NZ EMI Generation_MD wind+solar+geothermal × 1.3% curtailment proxy (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}% / geothermal-as-hydro ${(fuelShare.hydro * 100).toFixed(0)}%)`
       : "NZ EMI Generation_MD wind+solar+geothermal CSV × 1.3% calibrated curtailment proxy",

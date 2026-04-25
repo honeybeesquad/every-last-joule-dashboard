@@ -136,6 +136,7 @@ const run = async (): Promise<RegionData> => {
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? now.toISOString(),
+    lastSuccessAt: points.at(-1)?.utcTimestamp ?? now.toISOString(),
     sourceNote: `IESO hourly wind × 4% + solar × 2% calibrated curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
     fuelShare,
   };

@@ -52,13 +52,15 @@ const run = async (): Promise<RegionData> => {
     ? { wind: windCurt / denom, solar: solarCurt / denom }
     : undefined;
 
+  const lastUpdated = new Date().toISOString();
   return {
     regionId: "alberta",
     profile: timeOfDayAverageGW(points),
     latestProfile: null,
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
-    lastUpdated: new Date().toISOString(),
+    lastUpdated,
+    lastSuccessAt: lastUpdated,
     sourceNote: fuelShare
       ? `AESO wind+solar snapshot × 5% curtailment proxy (observed split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%; snapshot ${snapshot.lastUpdated})`
       : `AESO Current Supply Demand wind snapshot × 5% calibrated curtailment proxy (snapshot ${snapshot.lastUpdated})`,

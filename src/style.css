@@ -710,6 +710,11 @@ main table {
   font-size: 10.5px;
   white-space: nowrap;
 }
+.region-tooltip-freshness-degraded {
+  color: #ff7a59;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
 
 .region-tooltip-note {
   margin-top: 4px;
