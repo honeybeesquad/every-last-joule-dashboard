@@ -10,10 +10,17 @@ where both backfill and a TSO anchor exist, and runs a coverage-frequency
 analysis — at what envelope width do P50, P67, P90, P95 of region-years
 fall inside?
 
+Under B4 Option B (`docs/proposals/b4-option-b-decision.md`), the
+script also classifies each pair by rate-derivation method and proposes
+a T1a/T1b/T1c sub-tier for each. The classification table (RATE_DERIVATION)
+is hand-curated from `src/data/*.ts` loader source comments; expand it as
+new loaders are added.
+
 Usage:
     python3 scripts/calibration/empirical_tier_bands.py
     python3 scripts/calibration/empirical_tier_bands.py --json > out.json
     python3 scripts/calibration/empirical_tier_bands.py --by-tier
+    python3 scripts/calibration/empirical_tier_bands.py --by-derivation
 """
 
 from __future__ import annotations
@@ -33,6 +40,81 @@ except ImportError:
 REPO = Path(__file__).resolve().parent.parent.parent
 PARQUET = REPO / "data" / "historical" / "per_region_annual.parquet"
 ANCHORS = REPO / "scripts" / "validation" / "external-anchors.json"
+
+
+# Rate-derivation classification table.
+#
+# This drives the T1a/T1b/T1c assignment under B4 Option B
+# (`docs/proposals/b4-option-b-decision.md`). T1c is a *method*
+# classification (rate is extrapolated from a neighbour or regional
+# proxy), not a residual classification. The combination of |Δ%| > 15%
+# AND classification ∈ {neighbour-extrapolated, regional-proxy} is what
+# defines a T1c zone.
+#
+# Categories:
+#   own-tso             : rate is published by the region's own TSO or
+#                         national statistical agency (T1a default)
+#   domestic-anchor-modelled : own-jurisdiction anchor distributed across
+#                         sub-zones via modelled percentage shares
+#                         (T1b candidate — the *distribution* introduces
+#                         uncertainty even if the *rate source* is local)
+#   regional-proxy      : rate is a single-zone proxy representing
+#                         multiple jurisdictions in a regional aggregate
+#                         (T1b/T1c candidate)
+#   neighbour-extrapolated : rate is borrowed from a neighbouring zone
+#                         because the home jurisdiction publishes none
+#                         (T1c definitionally)
+#   own-loader-fallback : T2/T3 region using a typical-shape model
+#                         scaled to its own annual anchor (not T1)
+#
+# Zones not listed default to "unclassified" with a warning. Expand as
+# new loaders are audited; cite the source code line for each entry.
+RATE_DERIVATION: dict[str, str] = {
+    # ENTSO-E zones — verified against `src/data/entsoe.json.ts`
+    # 2026-04-25 by reading the ZONES array sourceNote/comment fields.
+    "germany":          "own-tso",                  # BNetzA 2024
+    "iberia":           "own-tso",                  # REE Informe 2024 (Spanish TSO)
+    "france":           "own-tso",                  # RTE Bilan Électrique
+    "netherlands":      "domestic-anchor-modelled", # IEEFA 2025 synthesis of 2024 Dutch data
+    "poland":           "own-tso",                  # URE 2024 redispatch report
+    "greece":           "own-tso",                  # HAEE/IPTO 2025 (Greek TSO/regulator)
+    "romania":          "own-tso",                  # Transelectrica (default)
+    "turkey":           "own-tso",                  # EPIAS Transparency
+    "italy-north-zone": "domestic-anchor-modelled", # Terna 2024 0.31 TWh distributed ~35%
+    "italy-south":      "domestic-anchor-modelled", # Terna 2024 0.31 TWh distributed ~45%
+    "italy-sardinia":   "domestic-anchor-modelled", # Terna 2024 0.31 TWh distributed ~20%
+    "sweden-north":     "own-tso",                  # Svenska Kraftnät SE2 (default)
+    "sweden-south":     "own-tso",                  # Svenska Kraftnät SE4 (default)
+    "hungary":          "own-tso",                  # MAVIR 2024
+    "czech-republic":   "own-tso",                  # CEPS 2024
+    "bulgaria":         "own-tso",                  # ESO Bulgaria 2024
+    "baltics":          "regional-proxy",           # Litgrid wind-only representing EE+LV+LT
+    "switzerland":      "neighbour-extrapolated",   # entsoe.json.ts:172-173 — Czech/Hungarian neighbours
+    "finland":          "own-tso",                  # Fingrid (default)
+    "norway-no1":       "own-tso",                  # Statnett NO1
+    "norway-no2":       "own-tso",                  # Statnett NO2
+    "norway-no3":       "own-tso",                  # Statnett NO3
+    "norway-no4":       "own-tso",                  # Statnett NO4
+    "norway-no5":       "own-tso",                  # Statnett NO5
+    "denmark-east":     "own-tso",                  # Energinet DK2
+    "denmark-west":     "own-tso",                  # Energinet DK1
+    # EIA / AEMO / native-TSO loaders — all jurisdictional own-source.
+    "ercot-east":       "own-tso",
+    "ercot-west":       "own-tso",
+    "caiso":            "own-tso",
+    "uk-na":            "own-tso",                  # Elexon BMRS
+    "iso-ne":           "own-tso",                  # EIA ISO-NE
+    "miso":             "own-tso",                  # EIA MISO
+    "nyiso":            "own-tso",                  # EIA NYISO
+    "spp":              "own-tso",                  # EIA SPP
+    "portugal":         "own-tso",                  # REN / ENTSO-E PT zone
+    # Add new entries here as loaders are audited.
+}
+
+
+def classify_rate_derivation(region_id: str) -> str:
+    """Return rate-derivation category for a region, or 'unclassified'."""
+    return RATE_DERIVATION.get(region_id, "unclassified")
 
 
 def load_backfill() -> list[dict]:
@@ -86,6 +168,7 @@ def collect_pairs(backfill: list[dict], anchors: dict[str, dict]) -> list[dict]:
                 "abs_delta_pct": abs(delta_pct),
                 "tier": row["confidence_tier"],
                 "source": row["source"],
+                "rate_derivation": classify_rate_derivation(rid),
             }
         )
     return pairs
@@ -150,7 +233,46 @@ def summarise(pairs: list[dict]) -> dict:
     }
 
 
-def render_text(pairs: list[dict], by_tier: bool) -> str:
+def is_t1_tier(tier: str) -> bool:
+    """Return True if this confidence-tier label is a T1 variant.
+
+    Snapshot/parquet tier labels seen in practice:
+      * "T1-live-TSO"        — current T1 label
+      * "live"               — older raw region.tier
+      * "T1"                 — bare label
+    """
+    if not tier:
+        return False
+    t = tier.lower()
+    return t == "live" or t == "t1" or t.startswith("t1-") or t.startswith("live-")
+
+
+def proposed_subtier(pair: dict) -> str:
+    """B4 Option B sub-tier proposal for a single pair.
+
+    Logic (per `docs/proposals/b4-option-b-decision.md`):
+      * |Δ%| ≤ 15% AND own-tso              → T1a (well-calibrated)
+      * own-tso AND |Δ%| > 15%              → T1a-with-bias (anchor-refresh candidate)
+      * domestic-anchor-modelled            → T1b (modelled distribution introduces uncertainty)
+      * regional-proxy                      → T1b
+      * neighbour-extrapolated              → T1c
+      * non-T1 tiers                        → unchanged
+      * unclassified                        → flagged for review
+    """
+    tier = pair.get("tier", "")
+    if not is_t1_tier(tier):
+        return tier  # T2/T3/flare unchanged
+    rd = pair.get("rate_derivation", "unclassified")
+    if rd == "neighbour-extrapolated":
+        return "T1c"
+    if rd in ("domestic-anchor-modelled", "regional-proxy"):
+        return "T1b"
+    if rd == "own-tso":
+        return "T1a-with-bias" if pair["abs_delta_pct"] > 15.0 else "T1a"
+    return "T1?-unclassified"
+
+
+def render_text(pairs: list[dict], by_tier: bool, by_derivation: bool) -> str:
     out: list[str] = []
     out.append("=" * 72)
     out.append("Empirical T1 tier-band recalibration")
@@ -193,22 +315,51 @@ def render_text(pairs: list[dict], by_tier: bool) -> str:
                        f"P95 envelope: ±{ts['envelope_for_p95_coverage']:.1f}%")
             out.append("")
 
-    out.append("--- Worst offenders (top 10 by |Δ%|) ---")
+    if by_derivation:
+        out.append("--- Rate-derivation breakdown (B4 Option B classification) ---")
+        derivations = sorted({p["rate_derivation"] for p in pairs})
+        for d in derivations:
+            d_pairs = [p for p in pairs if p["rate_derivation"] == d]
+            ds = summarise(d_pairs)
+            out.append(f"  {d:30} (n={ds['n']:>2})  "
+                       f"median |Δ%|={ds['median_abs_delta_pct']:>5.1f}%  "
+                       f"P67=±{ds['envelope_for_p67_coverage']:>5.1f}%  "
+                       f"P95=±{ds['envelope_for_p95_coverage']:>5.1f}%")
+        out.append("")
+
+    out.append("--- Worst offenders (top 10 by |Δ%|, with sub-tier proposal) ---")
     worst = sorted(pairs, key=lambda p: -p["abs_delta_pct"])[:10]
     for p in worst:
-        out.append(f"  {p['region_id']:25} {p['year']}  "
-                   f"backfill={p['backfill_twh']:>7.3f} TWh  "
-                   f"anchor={p['anchor_twh']:>7.3f} TWh  "
-                   f"Δ={p['delta_pct']:+7.1f}%  ({p['tier']})")
+        out.append(f"  {p['region_id']:22} {p['year']}  "
+                   f"Δ={p['delta_pct']:+7.1f}%  "
+                   f"{p['rate_derivation']:24}  "
+                   f"→ {proposed_subtier(p)}")
     out.append("")
 
     out.append("--- Best agreement (bottom 10 by |Δ%|) ---")
     best = sorted(pairs, key=lambda p: p["abs_delta_pct"])[:10]
     for p in best:
-        out.append(f"  {p['region_id']:25} {p['year']}  "
-                   f"backfill={p['backfill_twh']:>7.3f} TWh  "
-                   f"anchor={p['anchor_twh']:>7.3f} TWh  "
-                   f"Δ={p['delta_pct']:+7.1f}%  ({p['tier']})")
+        out.append(f"  {p['region_id']:22} {p['year']}  "
+                   f"Δ={p['delta_pct']:+7.1f}%  "
+                   f"{p['rate_derivation']:24}  "
+                   f"→ {proposed_subtier(p)}")
+    out.append("")
+
+    # Proposed T1c population — useful for CODEX-7 dispatch.
+    t1c_pairs = [p for p in pairs if proposed_subtier(p) == "T1c"]
+    t1b_pairs = [p for p in pairs if proposed_subtier(p) == "T1b"]
+    out.append("--- Proposed Option B sub-tier populations ---")
+    out.append(f"  T1c (neighbour-extrapolated, n={len(t1c_pairs)}):")
+    for p in sorted(t1c_pairs, key=lambda x: -x["abs_delta_pct"]):
+        out.append(f"    {p['region_id']:22} {p['year']}  Δ={p['delta_pct']:+7.1f}%")
+    out.append(f"  T1b (domestic-anchor-modelled or regional-proxy, n={len(t1b_pairs)}):")
+    for p in sorted(t1b_pairs, key=lambda x: -x["abs_delta_pct"]):
+        out.append(f"    {p['region_id']:22} {p['year']}  Δ={p['delta_pct']:+7.1f}%")
+    unclassified = [p for p in pairs if p["rate_derivation"] == "unclassified"]
+    if unclassified:
+        out.append(f"  UNCLASSIFIED (need RATE_DERIVATION entry, n={len(unclassified)}):")
+        for p in unclassified:
+            out.append(f"    {p['region_id']:22} {p['year']}  Δ={p['delta_pct']:+7.1f}%  ({p['source']})")
     out.append("")
     return "\n".join(out)
 
@@ -217,6 +368,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", action="store_true", help="emit machine-readable JSON instead of text report")
     ap.add_argument("--by-tier", action="store_true", help="also break down statistics by confidence_tier")
+    ap.add_argument("--by-derivation", action="store_true",
+                    help="also break down by rate-derivation classification (B4 Option B sub-tier proposal)")
     args = ap.parse_args()
 
     backfill = load_backfill()
@@ -230,11 +383,18 @@ def main() -> int:
                 tier: summarise([p for p in pairs if p["tier"] == tier])
                 for tier in sorted({p["tier"] for p in pairs})
             } if args.by_tier else None,
+            "by_derivation": {
+                d: summarise([p for p in pairs if p["rate_derivation"] == d])
+                for d in sorted({p["rate_derivation"] for p in pairs})
+            } if args.by_derivation else None,
+            "proposed_t1c_zones": sorted({p["region_id"] for p in pairs if proposed_subtier(p) == "T1c"}),
+            "proposed_t1b_zones": sorted({p["region_id"] for p in pairs if proposed_subtier(p) == "T1b"}),
+            "unclassified_zones": sorted({p["region_id"] for p in pairs if p["rate_derivation"] == "unclassified"}),
             "pairs": pairs,
         }
         print(json.dumps(out, indent=2))
     else:
-        print(render_text(pairs, args.by_tier))
+        print(render_text(pairs, args.by_tier, args.by_derivation))
     return 0
 
 
