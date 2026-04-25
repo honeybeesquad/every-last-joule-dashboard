@@ -19,7 +19,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       REGION_ID,
       9,
       0.3,
-      `Typical-shape fallback: Saudi non-flare solar live feed unavailable (${(err as Error).message}); calibration anchor ~0.3 TWh/yr Sudair/Sakaka solar curtailment.`,
+      "No public hourly curtailment feed; SEC/ECRA public pages do not expose hourly solar curtailment, so the ~0.3 TWh/yr Sudair/Sakaka solar calibration anchor is applied to a typical solar profile shape (T3-modelled, ±40% envelope).",
       "2024",
     );
   }
