@@ -67,8 +67,10 @@ Three reasons to document rather than revise:
 
 1. **Backfill reproducibility.** The 2.59M-row
    `curtailment_backfill.parquet` archive committed in HB sprint is the
-   single reproducibility artefact Figures 2, 3, 4 all depend on. A
-   rate change triggers a 7-year × 29-region re-fan-out, invalidates
+   single reproducibility artefact Figures 2, 3, and 5 all depend on
+   (Figure 4 is tier-coverage only, independent of the backfill;
+   Figure 1 uses the latest snapshot, not the backfill). A rate
+   change triggers a 7-year × 29-region re-fan-out, invalidates
    every committed per-region TWh total in `per_region_annual.parquet`,
    and forces every `docs/validation/*.md` table to be regenerated.
    For a submission-phase data descriptor we value the byte-stable
@@ -109,7 +111,8 @@ tighten the Figure 2 fit without changing methodology scope:
 
 All five candidates are deferred to a v1 "curtailment-dataset 2.0"
 sprint that will re-fan-out the backfill on a corrected rate sheet
-and re-render Figures 2-4 against the new archive.
+and re-render Figures 2, 3, and 5 against the new archive (Figure
+4 is tier-coverage only; Figure 1 reads live snapshots).
 
 ## Cross-references
 
@@ -119,7 +122,7 @@ and re-render Figures 2-4 against the new archive.
   ±20% / T3 ±40%) that defines the envelope bands on Figure 2.
 - `docs/methodology/historical-backfill.md` — the backfill
   construction method; Figure 2 Y-axis values are products of this.
-- `docs/validation/<region>.md` — per-region discrepancy prose (14
+- `docs/validation/<region>.md` — per-region discrepancy prose (12
   material regions all carry a commit-grade analysis).
 - `scripts/validation/figure2_data.py`,
   `scripts/validation/figure2_plot.py` — the
