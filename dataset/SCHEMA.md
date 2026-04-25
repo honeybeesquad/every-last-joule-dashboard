@@ -94,7 +94,7 @@ recent.groupby("region_id")["peak_gw"].mean().sort_values(ascending=False).head(
 
 Location: `data/historical/curtailment_backfill.parquet`
 
-A seven-year hourly reconstruction (2020-01-01 → 2026-04-24) for the 29 regions whose upstream source supports multi-year history: 16 ENTSO-E bidding zones, EIA balancing authorities (CAISO, ERCOT, MISO, NYISO, ISO-NE, PJM, SPP, BPA, ERCOT sub-zones), and Nord Pool Norway zones NO1–NO4 (NO5 is in the live feed but not the backfill — the upstream archive at the bidding-zone level lacks the multi-year depth required for reconstruction). Produced by `scripts/backfill/<source>/backfill_<zone>.py` (per-zone) and consolidated by `scripts/backfill/merge_to_parquet.py`. Methodology in `docs/methodology/historical-backfill.md`.
+A seven-year hourly reconstruction (2020-01-01 → 2026-04-24) for the 29 regions whose upstream source supports multi-year history: 20 ENTSO-E bidding zones (16 main zones plus the four Norway NO domains NO1–NO4 fetched as ENTSO-E NO zones; NO5 is in the live feed but not the backfill — the upstream archive at the bidding-zone level lacks the multi-year depth required for reconstruction) and 9 EIA balancing-authority series (CAISO, MISO, NYISO, ISO-NE, PJM, SPP, BPA, plus the two ERCOT sub-zones `ercot-east` and `ercot-west` reconstructed from the BA-level feed). Produced by `scripts/backfill/<source>/backfill_<zone>.py` (per-zone) and consolidated by `scripts/backfill/merge_to_parquet.py`. Methodology in `docs/methodology/historical-backfill.md`.
 
 Current size: **2,590,195 rows × 7 columns (≈ 20 MB Snappy-compressed)**. Per-year partitioned copies live under `data/historical/backfill/<source>_<zone>_<year>.parquet` for per-year consumption without a full-file read.
 
@@ -106,7 +106,7 @@ Current size: **2,590,195 rows × 7 columns (≈ 20 MB Snappy-compressed)**. Per
 | `region_id` | `string` | Matches `regionId` in the JSON snapshot and in the rolling history. |
 | `curtailment_gw` | `float32` | Curtailed energy averaged over the hour, in GW. |
 | `fuel` | `string` | `"wind"`, `"solar"`, `"hydro"`, `"geothermal"`, or `"flare"` — the technology the curtailed energy came from. |
-| `source` | `string` | Provenance slug: `"entsoe"`, `"eia"`, `"nord-pool"`, etc. Mirrors the loader name in `src/data/`. |
+| `source` | `string` | Provenance slug. The current backfill carries `"entsoe"` (20 ENTSO-E zones, including the four Norway NO domains) and `"eia"` (9 U.S. balancing-authority series). Mirrors the loader name in `src/data/`. |
 | `rate_applied` | `float32` | Calibration rate used to convert raw generation into curtailment. `0.0` when the source publishes curtailment directly (so no rate-multiplication is needed). |
 | `rate_source` | `string` | Human-readable provenance of the rate (e.g. `"ENTSO-E B19 dispatch-down 2026"`). |
 

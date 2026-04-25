@@ -11,7 +11,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ### Added — HB Historical Backfill sprint (2020–2026 hourly reconstruction)
 - `data/historical/curtailment_backfill.parquet` (2,590,195 hourly rows × 29 regions × 7 years) — seven-year hourly curtailment reconstruction via generation × calibrated-rate for every T1-live-TSO region whose upstream archive supports multi-year history.
-- `data/historical/backfill/year=YYYY/` partitioned source — per-year consumption without full-file read.
+- `data/historical/backfill/<source>_<zone>_<year>.parquet` per-zone-per-year companion files — flat naming, drop-in for per-year-of-one-zone consumption without reading the consolidated archive.
 - `data/historical/per_region_annual.parquet` (203 rows × 12 cols — `region_id`, `year`, `source`, `n_hourly_rows`, `annual_twh`, `peak_gw`, `confidence_tier`, `tier_fraction`, plus four `uncertainty_*` bounds) — annual rollup from backfill, built by `scripts/build_annual_rollup.py`. Feeds Figures 2 and 5.
 - `scripts/backfill/` — per-source backfill loaders (23 ENTSO-E zones registered in `scripts/backfill/zones.json` of which 20 successfully reconstruct 2020–2026 — the remaining three, Finland / Italy-South / Norway NO5, lack the upstream-archive depth required and stay live-only — plus EIA 9 ISOs) matching the live-loader rate-application semantics byte-for-byte.
 - `scripts/backfill/merge_to_parquet.py` — consolidation from per-source per-year partitions into the final archive.
