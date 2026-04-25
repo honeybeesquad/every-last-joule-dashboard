@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap — see sichuan.
+No public hourly archive for Chinese provincial dispatch-down. The older 10 TWh hydro-heavy anchor is not supported by the 2024 NEA river-basin utilisation table — Lancang River utilisation was 99.85%, and Yunnan's 2024 wind/PV curtailment calculation is only about 1.3 TWh. The loader emits a hydro-seasonal shape scaled to a recalibrated 1.8 TWh/yr central estimate (~1.3 TWh wind+PV curtailment + small hydro-spill proxy for monsoon storage constraints). Confidence remains low because province-level hydro spill is not published; uncertainty range 1.0–2.8 TWh. T3-modelled, ±40% envelope; see `docs/known-limitations.md` item 10 and `docs/methodology/china-provinces.md`.
 
 ## Links
 

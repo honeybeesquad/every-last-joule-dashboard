@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap — see gansu.
+No public hourly archive for Chinese provincial dispatch-down. The mechanism is solar-dominated midday and shoulder-hour curtailment in the Haixi/Qinghai clean-energy export corridor with a smaller wind component; the loader emits a typical solar shape (peak UTC 5) scaled to a 4.1 TWh/yr central estimate from NEA 2024 wind/PV utilisation × Huaon/NBS Qinghai generation by fuel. Uncertainty range 3.3–5.2 TWh, medium confidence. T3-modelled, ±40% envelope; see `docs/known-limitations.md` item 10 and `docs/methodology/china-provinces.md`.
 
 ## Links
 

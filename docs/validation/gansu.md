@@ -37,7 +37,9 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap: no public hourly archive for Chinese provinces. Uses typical daily shape scaled to Ember annual.
+No public hourly archive for Chinese provincial dispatch-down. The mechanism is mixed Jiuquan/Wuwei wind and solar export congestion; the loader emits a typical wind+solar mixed shape (60% wind / 40% solar, peaks at UTC 5 / 15) scaled to a 6.1 TWh/yr 2024 central estimate from NEA wind/PV utilisation rates (94.0% wind, 91.3% PV) applied to Gansu's own 2024 power-production release (45.789 TWh wind generation, 33.704 TWh PV generation). T3-modelled, ±40% envelope; see `docs/known-limitations.md` item 10 and `docs/methodology/china-provinces.md` for the full source chain.
+
+The published TSO annual line above (~12 TWh) is the older Ember-era rough cut superseded by the NEA 2024 calibration, kept only as a historical anchor.
 
 ## Links
 

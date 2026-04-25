@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap — see gansu.
+No public hourly archive for Chinese provincial dispatch-down. The mechanism is mostly PV curtailment on a small high-altitude grid with some wind and hydro-spill risk; the loader emits a hydro-seasonal shape scaled to a 0.6 TWh/yr central estimate. NEA's 2024 PV utilisation for Tibet was only 68.6% (low among provinces), but absolute 2024 PV generation was just 1.11 TWh, so the central estimate is 0.6 TWh rather than the previous 3.0 TWh anchor. There is no direct Yarlung-Tsangpo curtailment volume published, so only a small hydro-spill proxy is included. Uncertainty range 0.4–0.9 TWh, low confidence. T3-modelled, ±40% envelope; see `docs/known-limitations.md` item 10 and `docs/methodology/china-provinces.md`.
 
 ## Links
 
