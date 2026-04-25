@@ -14,7 +14,7 @@ This repository contains both the published dataset (the academic artefact) and 
 
 ## What this dataset is
 
-A versioned, reproducible synthesis of hourly curtailment series, with **per-region provenance, calibration rate, and confidence tier** on every emitted row. The 128 regions break down as **66 T1-live-TSO** (live hourly feed), **2 T2-annual-calibrated** (flat-base statics anchored to a published annual), **4 T2 flare** (24/7 base-load, methodologically correct for flare), and **56 T3-modelled** (typical diurnal/seasonal/mixed/overnight shape scaled to a published annual anchor). Authoritative tally: `npm run tally:tiers`.
+A versioned, reproducible synthesis of hourly curtailment series, with **per-region provenance, calibration rate, and confidence tier** on every emitted row. The 128 regions break down as **64 T1-live-TSO** (live hourly feed), **2 T2-annual-calibrated** (flat-base statics anchored to a published annual), **4 T2 flare** (24/7 base-load, methodologically correct for flare), and **58 T3-modelled** (typical diurnal/seasonal/mixed/overnight shape scaled to a published annual anchor). Authoritative tally: `npm run tally:tiers`.
 
 A seven-year hourly reconstruction (2020-01-01 → 2026-04-24, **2,590,195 rows × 29 regions**) is published alongside the live snapshots in [`data/historical/curtailment_backfill.parquet`](data/historical/). Methodology in [`docs/methodology/historical-backfill.md`](docs/methodology/historical-backfill.md).
 

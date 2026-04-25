@@ -72,6 +72,10 @@ const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   paraguay: "hydro-seasonal",
   peru: "hydro-seasonal",
   qinghai: "solar",
+  // south-africa: 2026-04-25 demoted live → static. The Eskom Data Portal
+  // loader is probe-only; the emitted profile is calibrated wind+solar
+  // mixed-shape scaled to ~4.4 TWh/yr (SAREM 2025).
+  "south-africa": "mixed",
   quebec: "hydro-seasonal",
   "russia-mainland": "hydro-seasonal",
   saskatchewan: "wind",

@@ -77,13 +77,13 @@ by `scripts/validation/figure3_temporal_trace.py`.
 
 **Per-region confidence tier assignment.** The same geographic base
 as Figure 1 with dot size held constant and tier colour carrying the
-full visual signal. Green dots (n=66) are T1-live-TSO regions backed
+full visual signal. Green dots (n=64) are T1-live-TSO regions backed
 by hourly feeds and the 2020–2026 HB backfill (±15% envelope). Amber
 dots (n=2) are T2 annual-calibrated regions with a published annual
 anchor and a flat-shape proxy (Austria APG, Russia Murmansk wind;
 ±20%). Brown squares (n=4) are T2 flare regions whose correct shape
 is 24/7 baseload (Permian, West Siberia, South Iraq, East Saudi).
-Terracotta dots (n=56) are T3 typical-profile modelled regions —
+Terracotta dots (n=58) are T3 typical-profile modelled regions —
 static annual anchors combined with a typical diurnal/seasonal shape
 (solar cosine, wind broad-overnight, hydro monthly-seasonal, mixed
 fuel-share, geothermal-overnight). Total n=128 regions. The figure

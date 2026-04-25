@@ -146,7 +146,7 @@ Figure 4 answers the single-glance question "where is the dataset
 strong and where is it weak?" at geographic scale. Each of the 128
 regions renders as a tier-coloured dot:
 
-- **T1-live-TSO (66 regions, teal).** Dense over North America,
+- **T1-live-TSO (64 regions, teal).** Dense over North America,
   Europe, the Nordics, Australia (AEMO five states), Brazil (eleven
   ONS states), Norway (NO1–NO5), and the UK; the EIA + ENTSO-E +
   AEMO + ONS quartet is the dataset's strongest spine.
@@ -155,11 +155,13 @@ regions renders as a tier-coloured dot:
   published annual without diurnal modelling.
 - **T2 flare (4 regions, brown square).** Permian, West Siberia,
   South Iraq, East Saudi — correctly flat 24/7 baseload.
-- **T3-modelled (56 regions, terracotta).** Static annual anchors
+- **T3-modelled (58 regions, terracotta).** Static annual anchors
   (Ember, IRENA, regulator reports) combined with a typical diurnal
-  or monthly-seasonal shape. Covers most of South Asia, Africa, the
-  Middle East outside flare, Latin America outside Brazil/Argentina,
-  smaller Chinese provinces, and the Hawaii islands.
+  or monthly-seasonal shape. Covers Peru and South Africa (Eskom /
+  COES reachability probes scaled to published annuals), most of
+  South Asia, Africa, the Middle East outside flare, Latin America
+  outside Brazil/Atacama, smaller Chinese provinces, and the
+  Hawaii islands.
 
 Tier assignment is deterministic from `Region.tier` plus the loader
 profileKind (code-level truth: `src/lib/uncertainty.ts::deriveTier`).
