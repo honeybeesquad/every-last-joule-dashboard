@@ -94,7 +94,7 @@ recent.groupby("region_id")["peak_gw"].mean().sort_values(ascending=False).head(
 
 Location: `data/historical/curtailment_backfill.parquet`
 
-A seven-year hourly reconstruction (2020-01-01 → 2026-04-24) for the 29 regions whose upstream source supports multi-year history: ENTSO-E bidding zones, EIA balancing authorities (CAISO, ERCOT, MISO, NYISO, ISO-NE, PJM, SPP, BPA, ERCOT sub-zones), and Nord Pool Norway NO1–NO5. Produced by `scripts/backfill/<source>/backfill_<zone>.py` (per-zone) and consolidated by `scripts/backfill/merge_to_parquet.py`. Methodology in `docs/methodology/historical-backfill.md`.
+A seven-year hourly reconstruction (2020-01-01 → 2026-04-24) for the 29 regions whose upstream source supports multi-year history: 16 ENTSO-E bidding zones, EIA balancing authorities (CAISO, ERCOT, MISO, NYISO, ISO-NE, PJM, SPP, BPA, ERCOT sub-zones), and Nord Pool Norway zones NO1–NO4 (NO5 is in the live feed but not the backfill — the upstream archive at the bidding-zone level lacks the multi-year depth required for reconstruction). Produced by `scripts/backfill/<source>/backfill_<zone>.py` (per-zone) and consolidated by `scripts/backfill/merge_to_parquet.py`. Methodology in `docs/methodology/historical-backfill.md`.
 
 Current size: **2,590,195 rows × 7 columns (≈ 20 MB Snappy-compressed)**. Per-year partitioned copies live under `data/historical/backfill/<source>_<zone>_<year>.parquet` for per-year consumption without a full-file read.
 
