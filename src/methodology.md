@@ -31,7 +31,7 @@ This dashboard is a **wasted-energy database**: it estimates the fraction of cur
 
 Flared natural gas is tracked separately and excluded from the headline ratio. See §6 for the flare treatment.
 
-Defensibility notes for the three recently audited assumptions are maintained separately: [flare regions](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/codex/flare-ercot-brazil/docs/methodology/flare-ercot-brazil.md#flare), [ERCOT West/East split](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/codex/flare-ercot-brazil/docs/methodology/flare-ercot-brazil.md#ercot), and [Brazil NE clustering](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/codex/flare-ercot-brazil/docs/methodology/flare-ercot-brazil.md#brazil-ne).
+Defensibility notes for the three recently audited assumptions are maintained separately: [flare regions](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#flare), [ERCOT West/East split](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#ercot), and [Brazil NE clustering](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#brazil-ne).
 
 **Regional units** are chosen to match the smallest unit at which the responsible grid operator publishes dispatch data. For large interconnections, that is the ISO (CAISO, ERCOT-West/East, MISO, etc.). For ENTSO-E members, it is the bidding zone. For Brazil it is the sub-state constraint region. For countries without public hourly dispatch data, it is the national grid.
 
@@ -91,7 +91,7 @@ Two display modes are provided:
 
 ## 5. Flared gas: treatment and exclusion from headline
 
-The dashboard also tracks four major gas-flaring basins — Permian (USA), W. Siberia (Russia), S. Iraq, E. Saudi Arabia — using World Bank Global Gas Flaring Reduction Partnership VIIRS-derived flare-location volumes (World Bank GGFR, 2025). Flared gas volumes are converted to electrical-equivalent energy using the assumption that 1 bcm of natural gas contains 10.55 TWh_th of thermal energy and a reciprocating-engine generator operates at 35% net electrical efficiency, yielding approximately 3.7 TWh_e per bcm flared. This conversion is consistent with the modular-generator fleet operated in the field by companies such as Crusoe Energy. See the [flare audit note](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/codex/flare-ercot-brazil/docs/methodology/flare-ercot-brazil.md#flare) for per-basin volumes and uncertainty bounds.
+The dashboard also tracks four major gas-flaring basins — Permian (USA), W. Siberia (Russia), S. Iraq, E. Saudi Arabia — using World Bank Global Gas Flaring Reduction Partnership VIIRS-derived flare-location volumes (World Bank GGFR, 2025). Flared gas volumes are converted to electrical-equivalent energy using the assumption that 1 bcm of natural gas contains 10.55 TWh_th of thermal energy and a reciprocating-engine generator operates at 35% net electrical efficiency, yielding approximately 3.7 TWh_e per bcm flared. This conversion is consistent with the modular-generator fleet operated in the field by companies such as Crusoe Energy. See the [flare audit note](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#flare) for per-basin volumes and uncertainty bounds.
 
 **Flare is excluded from the headline ratio.** The dashboard's primary story concerns *renewable* curtailment — a diurnal and seasonal phenomenon whose structure matters to any off-take solution. Flared gas is a continuous 24/7 base-load waste, operationally and physically distinct from dispatch-down. Including it would flatten the diurnal signal and conflate two different mitigation pathways. The flare total is reported as a single continuous-GW baseline in a footnote below the primary statistics, so it remains visible as context.
 
@@ -109,7 +109,7 @@ The following limitations are inherent to the available upstream data and should
 
 5. **ASIC efficiency sensitivity.** The headline ratio at 16 J/TH is higher than at 28.5 J/TH by approximately 78%, because the Bitcoin network denominator scales linearly with the efficiency assumption. Both readings are exposed in the UI.
 
-6. **Flare estimation uncertainty.** GGFR's VIIRS-derived volumes and national self-reporting diverge by 10–25% in some basins. The 35% generator efficiency is representative of modular reciprocating-engine deployments; larger combined-cycle plants would reach 55–60%. The flare footnote is a conservative estimate in electrical-equivalent terms. The current per-basin citation chain is documented in the [flare audit note](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/codex/flare-ercot-brazil/docs/methodology/flare-ercot-brazil.md#flare).
+6. **Flare estimation uncertainty.** GGFR's VIIRS-derived volumes and national self-reporting diverge by 10–25% in some basins. The 35% generator efficiency is representative of modular reciprocating-engine deployments; larger combined-cycle plants would reach 55–60%. The flare footnote is a conservative estimate in electrical-equivalent terms. The current per-basin citation chain is documented in the [flare audit note](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#flare).
 
 7. **Bitcoin-network denominator methodology.** mempool.space is used because CBECI's API is not server-side accessible in the current build environment; the two sources agree within 3% as of this writing. The 16 J/TH efficiency reflects 2024–2025 fleet averages; the 2026 and 2027 roadmap implies lower values, which would raise the displayed ratio proportionally.
 
@@ -141,9 +141,9 @@ The following limitations are inherent to the available upstream data and should
 - **NREA Egypt** (2025). *FY2024/25 Annual Renewable Energy Report*. New and Renewable Energy Authority.
 - **NYISO** (2024). *Power Trends 2024; Gold Book 2024*.
 - **ONS Brazil** (2025). *Constrained-off wind and solar open-data series*. https://www.ons.org.br/
-- **ONS / ANEEL Brazil NE audit** (2026). *Brazil NE state-code clustering citation chain*. https://github.com/honeybeesquad/every-last-joule-dashboard/blob/codex/flare-ercot-brazil/docs/methodology/flare-ercot-brazil.md#brazil-ne
+- **ONS / ANEEL Brazil NE audit** (2026). *Brazil NE state-code clustering citation chain*. https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#brazil-ne
 - **PJM** (2024). *2024 Renewable Integration Study*; Monitoring Analytics *State of the Market Report*.
-- **Potomac Economics / ERCOT audit** (2026). *ERCOT West/East split limitation note*. https://github.com/honeybeesquad/every-last-joule-dashboard/blob/codex/flare-ercot-brazil/docs/methodology/flare-ercot-brazil.md#ercot
+- **Potomac Economics / ERCOT audit** (2026). *ERCOT West/East split limitation note*. https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#ercot
 - **REE** (2024). *Informe del Sistema Eléctrico 2024*. Red Eléctrica de España.
 - **RTE** (2024). *Bilan Électrique 2024*. Réseau de Transport d'Électricité.
 - **SAREM** (2025). *South African Renewable Energy Masterplan 2025*.
