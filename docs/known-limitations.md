@@ -26,6 +26,8 @@ A specific day’s curtailment can deviate sharply from the profile shown on the
 
 Brazil NE and Atacama now report native curtailment/reduction data through public files. Several other live renewable regions still estimate curtailment by applying calibrated 2024 rates to observed generation, which preserves shape usefully but remains one step removed from a native curtailment series.
 
+A narrower subset — CAMMESA Argentina, COES SINAC Peru, and ESKOM South Africa — does not even derive curtailment from observed hourly generation: the loader only probes the public endpoint for reachability and freshness, then emits a calibrated typical-shape profile scaled to a published annual anchor (Patagonia wind ~0.5 TWh/yr; Peru bimodal hydro-seasonal ~0.8 TWh/yr; South Africa wind+solar ~4.4 TWh/yr per SAREM 2025 / Eskom MTSAO Oct 2025). Argentina is classified `T3-modelled` correctly (`tier: "static"` in `regions.ts`); Peru and South Africa carry `tier: "live"` and therefore route through `deriveTier` to `T1-live-TSO`, which overstates confidence relative to the typical-shape reality. The v1 calibration sweep will downgrade those two to `T3` (or to `T2` if a flat-shape proxy is more appropriate) once the operator-anchor metadata stabilises.
+
 ### 7. Network consumption anchor
 
 CBECI remains the canonical academic benchmark for Bitcoin electricity consumption, but its API is recaptcha-gated and not usable from the server-side loader. v0 therefore uses mempool.space’s 24-hour-average hashrate and derives annualised consumption at 16 J/TH, with quarterly cross-checks against Cambridge’s published dashboard value.
