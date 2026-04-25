@@ -152,13 +152,14 @@ uncertainty envelope; the hourly backfill (§3.3) does not.
 **Size:** 23 rows (region-year anchor pairs).
 **Built by:** `scripts/validation/figure2_data.py` from
 `per_region_annual.parquet` + `scripts/validation/external-anchors.json`.
-**Columns:** `region_id`, `year`, `hb_twh`, `anchor_twh`,
-`delta_pct`, `tier`, `classification`.
+**Columns:** `region_id`, `region_name`, `year`, `confidence_tier`,
+`tier_fraction`, `backfill_twh`, `backfill_low_twh`,
+`backfill_high_twh`, `tso_anchor_twh`, `delta_pct`, `anchor_source`.
 
-Published anchors are cited per row in
-`scripts/validation/external-anchors.json`, which is the
-machine-readable counterpart to the TSO/IMM/SoM citation trail
-documented in `docs/validation/<region>.md`.
+Published anchors are cited per row in the `anchor_source` column
+and traced in detail in `scripts/validation/external-anchors.json`,
+which is the machine-readable counterpart to the TSO/IMM/SoM
+citation trail documented in `docs/validation/<region>.md`.
 
 ## 3.6 Daily global CSV (Figure 3 input)
 
@@ -173,12 +174,14 @@ archive.
 ## 3.7 Source anchor table
 
 **Location:** `scripts/validation/external-anchors.json`
-**Records:** 23 region-year pairs with published TSO / ISO / IMM /
-State-of-the-Market annual curtailment totals.
-**Per-entry fields:** `region_id`, `year`, `tso_annual_twh`,
-`source_url`, `quoted_phrase`. This is the machine-readable
-evidence trail for Figure 2 and for the discrepancy analysis in
-§4.
+**Records:** 123 per-region anchor entries keyed by `regions.ts`
+ID. Each entry carries a `tso_annual_latest` summary plus, where
+the source publishes them, year-specific fields
+(`tso_annual_2023`, `tso_annual_2024`, …) with quoted phrases and
+URLs. The strict subset of 23 region-year pairs where a backfilled
+year aligns to an exact-year TSO total populates the Figure 2
+scatter (§3.5); the broader pool backs the per-region validation
+MDs (§3.8) and the discrepancy analysis in §4.
 
 ## 3.8 Per-region validation MDs
 

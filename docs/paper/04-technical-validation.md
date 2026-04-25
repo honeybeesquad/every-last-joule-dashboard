@@ -21,7 +21,7 @@ Three layers of validation are performed:
    (|Δ%| > 50%) is diagnosed in `docs/validation/<region>.md`
    against the five-category taxonomy: definitional, rate
    under-calibration, rate over-calibration, reporting lag, regime
-   change, scope mismatch. 14 such regions carry commit-grade
+   change, scope mismatch. 12 such regions carry commit-grade
    analysis.
 3. **Dataset-level survey.**
    `docs/methodology/validation-discrepancies.md` is the single
@@ -134,7 +134,7 @@ Three reasons, each grounded in the integrity of what is published:
 3. **Envelope transparency.** The ±15% T1 envelope is a *target*
    for where the rate-model converges, not a claim that every
    region lies within it. The 4 rule-green points (ercot-east,
-   ercot-west, nyiso, poland) are identified and counted; the 14
+   ercot-west, nyiso, poland) are identified and counted; the 12
    material points each carry a per-region diagnosis.
 
 The v1 recalibration roadmap is five concrete items listed in
