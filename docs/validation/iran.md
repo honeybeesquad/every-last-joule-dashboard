@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap: no public hourly archive.
+No public hourly archive. The TAVANIR (`tavanir.org.ir`) public site is reachable but opaque — it does not expose hourly solar curtailment, and sanctions-era data restrictions further limit upstream access. The loader emits a typical solar shape (peak UTC 7) scaled to a ~0.3 TWh/yr anchor for Yazd / Kerman large-PV curtailment in southern Iran. T3-modelled, ±40% envelope. There is no specific Iran item in `docs/known-limitations.md` — Item 14 enumerates the other Middle East coverage-first fallbacks (Jordan, Saudi solar, UAE, Oman, Israel) but Iran sits outside that group as a sanctions-data-opacity case rather than a private-grid case. Anchor revision welcome if a public TSO source emerges.
 
 ## Links
 
