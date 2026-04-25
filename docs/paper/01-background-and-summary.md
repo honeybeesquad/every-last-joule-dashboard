@@ -53,10 +53,11 @@ regions where gas flaring is the dominant "wasted-energy" source.
   §2.2 disclosure); 2 in `T2-annual-calibrated` (Austria APG, Russia
   Murmansk); 4 flare regions in the `T2`-flare bucket (Permian, West
   Siberia, South Iraq, East Saudi); 56 in `T3-modelled` (static annual
-  anchor + typical diurnal/seasonal shape — covers most of South Asia,
-  sub-Saharan Africa outside South Africa, the Middle East outside
-  flare, Latin America outside Brazil/Peru, the Chinese provinces,
-  Hawaii, and CAMMESA Argentina).
+  anchor + typical diurnal/seasonal shape — covers Argentina, Uruguay,
+  Paraguay, Mexico, the rest of Latin America outside Brazil + Peru +
+  Atacama Chile, most of South Asia, sub-Saharan Africa outside South
+  Africa, the Middle East outside flare, the eight Chinese provinces,
+  and Hawaii).
 - **Hourly resolution** for every live-feed region; hourly
   reconstruction backfilled to 2020-01-01 where upstream archives
   support it (2.59 M rows in `curtailment_backfill.parquet`).
