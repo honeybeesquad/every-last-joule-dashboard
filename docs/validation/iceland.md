@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap: no public hourly archive. Typical-profile shape (near-flat) applied to annual anchor.
+No public hourly archive. Orkustofnun (Icelandic National Energy Authority, `orkustofnun.is`) publishes annual generation summaries but no hourly dispatch-down series — Landsvirkjun likewise does not surface real-time spill data. The loader emits a hydro-seasonal shape (`HYDRO_SEASONAL_SHARES.iceland`, weighted toward May–August for glacial-melt + snowmelt) scaled to a 5.3 TWh/yr anchor for combined hydro and geothermal load-following slack. T3-modelled, ±40% envelope. Iceland is hydro+geothermal dominant and grid-isolated (no interconnector); the "spill" semantic here is reservoir-bound seasonal storage limit at peak melt rather than wind-or-solar dispatch-down — distinct from every other T3 region in the dataset, and a useful methodological reminder that "curtailment" generalises beyond the wind-PV case in the Scientific Data submission framing.
 
 ## Links
 

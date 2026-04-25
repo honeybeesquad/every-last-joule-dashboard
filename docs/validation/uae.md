@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap for hourly.
+No public hourly archive. DEWA (`dewa.gov.ae`) and EWEC (Emirates Water and Electricity Company) publish annual capacity and generation figures but no hourly PV curtailment — UAE's vertically integrated single-buyer model does not produce a public dispatch-down series comparable to ENTSO-E or AEMO. The loader emits a typical solar shape (peak UTC 8, reflecting the late-morning Gulf Standard Time peak) scaled to a 0.2 TWh/yr anchor reflecting Mohammed bin Rashid Solar Park and Al Dhafra clipping during midday over-supply windows. T3-modelled, ±40% envelope; cross-listed in `docs/known-limitations.md` Item 14 as part of the Middle-East coverage-first fallback group (Jordan, Saudi solar, UAE, Oman, Israel) where private-grid data restrictions preclude live integration. Anchor revision welcome if EWEC publishes 2025 PV dispatch series.
 
 ## Links
 

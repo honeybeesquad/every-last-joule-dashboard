@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap: no public hourly archive.
+No public hourly archive. Iraq's Ministry of Electricity (`moelc.gov.iq`) public pages do not expose hourly PV curtailment. The loader emits a typical solar shape (peak UTC 7) scaled to a ~0.1 TWh/yr anchor for emerging Karbala and Dhi Qar PV plant curtailment, deliberately kept separate from the `s-iraq` flare region (Item 11 in `docs/known-limitations.md` covers flare; this region is mainland renewable, not flare). T3-modelled, ±40% envelope. The 0.1 TWh anchor is conservative and reflects nascent grid-scale solar deployment; a higher anchor would be defensible if Iraq publishes 2025 PV capacity adds in line with current PPA pipeline.
 
 ## Links
 
