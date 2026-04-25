@@ -51,27 +51,72 @@ docs. In `regions.ts` they map to `tier` enum values:
 Today the codebase has only `tier: "live"` — both new values are
 additive, no existing entry breaks during migration.
 
-## Predicted T1c population (pre-B1)
+## T1c population — code-grounded findings
 
-From the B4 worst-offender table in
-`docs/methodology/uncertainty-recalibration.md`, the candidates are:
+A 2026-04-25 verification scan of `src/data/entsoe.json.ts` against
+`src/lib/regions.ts` revealed that the earlier-draft "predicted T1c
+population" table (Switzerland + Italy zones + Greece + possibly Norway
+splits) was based on the B4 worst-offender residuals, not on actual
+rate-derivation method. This matters because T1c is a *method*
+classification (rate is extrapolated from a neighbour), not a *residual*
+classification. Restating with code evidence:
 
-| Zone | Pre-B1 Δ% | Post-B1 prediction | T1c candidate? |
-|---|---|---|---|
-| switzerland | (anchored to Czech rate) | residual likely > ±15% | YES (definitional — uses neighbour rate) |
-| italy-centre-north | (anchored to peninsular rate) | residual likely > ±15% | YES |
-| italy-sicily | (anchored to peninsular rate) | residual likely > ±15% | YES |
-| italy-sardinia | (anchored to peninsular rate) | residual likely > ±15% | YES |
-| greece | pre-B1 −43% | residual likely > ±15% | LIKELY (verify rate source post-B1) |
-| norway-no3 / no4 | pre-B1 +299/+622% | predicted to collapse near 0% post-B1 | UNLIKELY — uses own hydro-rate, the residual was the PT15M bug |
+### Confirmed T1c (rate is explicitly neighbour-extrapolated)
 
-**Final T1c set is whatever post-B1 B4-rerun identifies as
-`|Δ%| > 15% AND uses_neighbour_extrapolated_rate = true`.** The
-predicted set is for sequencing only — the actual list is locked when
-CODEX-1 lands and Claude reruns `empirical_tier_bands.py`.
+| Zone | Code evidence |
+|---|---|
+| `switzerland` | Comment in `entsoe.json.ts:172-173`: "Conservative rate anchored to Czech/Hungarian neighbours; Tier 1.2 audit to refine." Single solar tech at rate 0.015. **Definitively T1c.** |
 
-T1b population is similarly determined post-rerun: any T1 zone whose
-residual is in the ±15–25% band AND uses a domestic anchor.
+### Possibly T1c (regional-proxy or aggregate-derived rate; needs review)
+
+| Zone | Code evidence | Disposition |
+|---|---|---|
+| `baltics` | sourceNote: "Litgrid wind-only Baltic regional proxy". Single domain (Lithuania) used to represent Estonia + Latvia + Lithuania. | **T1c candidate** — the rate is a regional proxy, not a per-jurisdiction calibration. Confirm post-B1. |
+
+### Confirmed T1a or T1b (own-jurisdiction or own-TSO rate)
+
+The following zones I'd previously flagged as potential T1c are actually
+own-jurisdiction-anchored:
+
+| Zone | Actual rate provenance | Likely tier |
+|---|---|---|
+| `greece` | HAEE/IPTO 2024 official 860 GWh figure | T1a (own-TSO/regulator) |
+| `italy-north-zone`, `italy-south`, `italy-sardinia` | Terna 2024 0.31 TWh national anchor distributed by modelled percentage shares (~35% / ~45% / ~20%) | T1b candidate — own anchor with modelled distribution; the *distribution* introduces uncertainty even though the *rate source* is own-jurisdiction |
+| `norway-no3`, `norway-no4` | ENTSO-E own-hydro+wind data; large pre-B1 residuals were the PT15M overcount bug | T1a post-B1 (predicted to collapse near 0%) |
+
+### Predicted-but-not-actually-existing zones
+
+The earlier draft referenced `italy-centre-north` and `italy-sicily`.
+These zone IDs do not exist in `regions.ts` — Italy is split into
+`italy-north-zone`, `italy-south`, `italy-sardinia` only. Earlier text
+corrected.
+
+### Implications for the CODEX-7 dispatch
+
+1. **T1c may have only ONE confirmed member** (Switzerland), with one
+   candidate (Baltics) pending review. This is much narrower than the
+   earlier "~6 zones" estimate.
+2. **T1b is the more interesting category post-B1**: zones whose own-rate
+   calibration produces residuals in the ±15–25% band due to scope
+   mismatch, modelled distribution, or rate-coverage gaps. Italy splits
+   are the leading T1b candidates per code evidence.
+3. **The post-B1 B4 rerun's job** is now narrower: confirm
+   Switzerland's residual, classify Baltics, and identify any T1b zones
+   from the residual-vs-rate-source cross-tabulation.
+4. **Final T1c set is locked** when Claude reruns
+   `empirical_tier_bands.py` AND cross-references each high-residual
+   zone's rate provenance against the loader source code (the join is
+   manual; not a one-line script).
+
+### Should we still subdivide if T1c is just one zone?
+
+Yes. The methodological case for the subdivision is structural — that
+the rate-derivation method *category* matters even if only one current
+zone falls into the neighbour-extrapolated bucket. Future zones added
+to the dataset (Switzerland's pattern is likely to recur for small
+ENTSO-E zones without their own published curtailment statistics) will
+land in T1c without re-engineering the tier system. Option B's value is
+the framework, not the population count.
 
 ## Implementation spec — for the eventual CODEX-7 dispatch (post-B1+rerun)
 
