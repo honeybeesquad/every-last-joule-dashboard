@@ -53,6 +53,14 @@ additive, no existing entry breaks during migration.
 
 ## T1c population — code-grounded findings
 
+> **Single source of truth (post-2026-04-25):**
+> `python3 scripts/calibration/empirical_tier_bands.py --by-derivation`
+> outputs the proposed T1a / T1b / T1c populations directly. The
+> classification table `RATE_DERIVATION` lives at the top of that
+> script and is hand-curated against `src/data/*.ts` loader comments.
+> The narrative below remains for explanatory context, but
+> the machine-readable populations come from the script.
+
 A 2026-04-25 verification scan of `src/data/entsoe.json.ts` against
 `src/lib/regions.ts` revealed that the earlier-draft "predicted T1c
 population" table (Switzerland + Italy zones + Greece + possibly Norway
