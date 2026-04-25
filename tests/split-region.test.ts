@@ -11,6 +11,7 @@ describe("splitRegion", () => {
       totalTWh: 30,
       peakGW: 10,
       lastUpdated: "2026-04-25T00:00:00.000Z",
+      lastSuccessAt: "2026-04-25T00:00:00.000Z",
       confidenceTier: "T1-live-TSO",
       observedStdGW: 1.5,
       uncertaintyLowGW: 7,
