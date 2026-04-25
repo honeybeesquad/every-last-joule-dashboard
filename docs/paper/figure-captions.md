@@ -22,9 +22,10 @@ square: T2 flare regions with 24/7 baseload shape; terracotta: T3
 typical-profile modelled with ±40% uncertainty). Dot area is scaled
 to √(peak GW) from the most recent snapshot, so a 10 GW hotspot is
 roughly 3× the visible area of a 1 GW region. The top-8 regions by
-peak GW are labelled inline; Brazil's northeast cluster dominates the
-current picture (Minas Gerais 4.4 GW, Bahia 4.4 GW, Rio Grande do
-Norte 2.8 GW, Piauí 2.7 GW), followed by the US MISO footprint (1.8
+peak GW are labelled inline; Brazil's wind-and-solar cluster
+dominates the current picture (Minas Gerais 4.4 GW [Southeast], Bahia
+4.4 GW, Rio Grande do Norte 2.8 GW, Piauí 2.7 GW [all Northeast]),
+followed by the US MISO footprint (1.8
 GW), Vietnam (1.7 GW), Germany (1.6 GW), and north India (1.5 GW).
 Reference legend inside the figure shows the size-to-GW scale. Source
 data: `src/lib/regions.ts` (n=128 regions) joined to
