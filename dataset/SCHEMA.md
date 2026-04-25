@@ -52,7 +52,7 @@ Six loaders (`aemo`, `brazil-ne`, `entsoe`, `ercot`, `ercot-native`, `norway`) e
 
 Machine-readable version: [`schema/region-snapshot.schema.json`](schema/region-snapshot.schema.json), covering the per-region shape including the S2 uncertainty fields (`confidenceTier`, `uncertaintyLowGW`, `uncertaintyHighGW`).
 
-## Parquet historical archive
+## Parquet rolling history
 
 Location: `data/historical/curtailment_history.parquet`
 
@@ -70,15 +70,12 @@ Compression: Snappy. Format: Parquet 2.6. Typical size: ~100 bytes per row × 12
 | `total_twh_30d` | `float32` | 30-day trailing total curtailment in TWh at build time. |
 | `source_status` | `string` | `"live"`, `"cached"`, or null. |
 | `last_updated` | `string` | Calibration-anchor date. |
-| `profile_h00` … `profile_h23` | `float32` × 24 | Average curtailment in GW per UTC hour, matching JSON `profile`. |
-
-### Uncertainty columns (added in S2)
-
-| Column | Type | Description |
-|---|---|---|
+| `confidence_tier` | `string` | `"T1-live-TSO"`, `"T2-annual-calibrated"`, or `"T3-modelled"`. (`"T4-structural-gap"` is reserved in the enum but never emitted — structural-gap regions do not appear in the dataset at all.) |
 | `uncertainty_low_gw` | `float32` | Lower bound of the per-tier envelope on `peak_gw` (`max(0, peak_gw − δ)`). |
 | `uncertainty_high_gw` | `float32` | Upper bound of the per-tier envelope on `peak_gw` (`peak_gw + δ`). |
-| `confidence_tier` | `string` | `"T1-live-TSO"`, `"T2-annual-calibrated"`, or `"T3-modelled"`. (`"T4-structural-gap"` is reserved in the enum but never emitted — structural-gap regions do not appear in the dataset at all.) |
+| `profile_h00` … `profile_h23` | `float32` × 24 | Average curtailment in GW per UTC hour, matching JSON `profile`. |
+
+The three confidence-tier columns were added by the S2 uncertainty sprint (2026-04-24). Rows written before that date carry null values in those columns; `pyarrow.concat_tables(promote_options="default")` fills them on the next append, so the committed Parquet may contain a mix of pre-S2 and post-S2 rows depending on when it was last refreshed.
 
 The confidence tier is derived deterministically from `Region.tier` plus the loader's profile kind by `src/lib/uncertainty.ts::deriveTier`. The envelope half-width δ is per-tier (2σ from backfill where available, otherwise ±15% / ±20% / ±40% of `peak_gw`). Full methodology in `docs/methodology/uncertainty.md`.
 
@@ -93,11 +90,54 @@ recent = df[df.build_timestamp >= (pd.Timestamp.utcnow() - pd.Timedelta(days=90)
 recent.groupby("region_id")["peak_gw"].mean().sort_values(ascending=False).head(20)
 ```
 
-## Historical backfill
+## Parquet hourly backfill
 
-A separate Parquet file `data/historical/curtailment_backfill.parquet` was produced by the Historical Backfill sprint (`docs/methodology/historical-backfill.md`). It contains hourly curtailment values reconstructed from upstream archives for 29 regions whose upstream source supports multi-year history (ENTSO-E 26 zones, EIA 9 ISOs, Nord Pool Norway NO1–NO5). Schema mirrors the rolling history but with `build_timestamp` replaced by `observation_timestamp` (hourly UTC) and `peak_gw` / `total_twh_30d` fields replaced by `curtailment_gw` (the actual measured hourly value). The confidence-tier columns (`confidence_tier`, `uncertainty_low_gw`, `uncertainty_high_gw`) are present in both files.
+Location: `data/historical/curtailment_backfill.parquet`
 
-Current size: **2,590,195 rows × 7 columns (≈ 20 MB Snappy-compressed)**, covering 2020-01-01 → 2026-03-31. Per-year partitioned copies live under `data/historical/backfill/year=YYYY/` for per-year consumption without a full-file read. An annual rollup derived from this archive lives at `data/historical/per_region_annual.parquet` (203 rows = 29 regions × 7 years).
+A seven-year hourly reconstruction (2020-01-01 → 2026-03-31) for the 29 regions whose upstream source supports multi-year history: ENTSO-E bidding zones, EIA balancing authorities (CAISO, ERCOT, MISO, NYISO, ISO-NE, PJM, SPP, BPA, ERCOT sub-zones), and Nord Pool Norway NO1–NO5. Produced by `scripts/backfill/<source>/backfill_<zone>.py` (per-zone) and consolidated by `scripts/backfill/merge_to_parquet.py`. Methodology in `docs/methodology/historical-backfill.md`.
+
+Current size: **2,590,195 rows × 7 columns (≈ 20 MB Snappy-compressed)**. Per-year partitioned copies live under `data/historical/backfill/<source>_<zone>_<year>.parquet` for per-year consumption without a full-file read.
+
+### Columns
+
+| Column | Type | Description |
+|---|---|---|
+| `observation_timestamp` | `string` (ISO-8601 UTC, sortable) | Start of the hour the value covers. |
+| `region_id` | `string` | Matches `regionId` in the JSON snapshot and in the rolling history. |
+| `curtailment_gw` | `float32` | Curtailed energy averaged over the hour, in GW. |
+| `fuel` | `string` | `"wind"`, `"solar"`, `"hydro"`, `"geothermal"`, or `"flare"` — the technology the curtailed energy came from. |
+| `source` | `string` | Provenance slug: `"entsoe"`, `"eia"`, `"nord-pool"`, etc. Mirrors the loader name in `src/data/`. |
+| `rate_applied` | `float32` | Calibration rate used to convert raw generation into curtailment. `0.0` when the source publishes curtailment directly (so no rate-multiplication is needed). |
+| `rate_source` | `string` | Human-readable provenance of the rate (e.g. `"ENTSO-E B19 dispatch-down 2026"`). |
+
+Confidence-tier and uncertainty columns are not on the hourly file — the per-tier envelope is calibrated against annual aggregates, so it lives on the annual rollup below. To attach uncertainty to an hourly slice, join `region_id` against `per_region_annual.parquet`.
+
+## Parquet annual rollup
+
+Location: `data/historical/per_region_annual.parquet`
+
+The analysis-ready view of the hourly backfill: one row per (`region_id`, `year`), with annual TWh, peak GW, and the calibrated uncertainty envelope. Produced by `scripts/build_annual_rollup.py`. This is the primary input for Figure 2 (validation scatter) and Figure 4 (tier coverage) of the Scientific Data descriptor.
+
+Current size: **203 rows × 12 columns** (29 regions × 7 years).
+
+### Columns
+
+| Column | Type | Description |
+|---|---|---|
+| `region_id` | `string` | Matches `regionId` in the JSON snapshot and the hourly archive. |
+| `year` | `int16` | Calendar year of the aggregated rows. |
+| `source` | `string` | First non-null `source` value within the (region, year) partition (e.g. `"entsoe"`). |
+| `n_hourly_rows` | `int32` | Non-null hours observed for this region in this year. A full year is 8,760 (8,784 in a leap year). |
+| `annual_twh` | `float32` | Σ `curtailment_gw` × 1h ÷ 1000 across the year. |
+| `peak_gw` | `float32` | Max hourly `curtailment_gw` across the year. |
+| `confidence_tier` | `string` | `"T1-live-TSO"`, `"T2-annual-calibrated"`, or `"T3-modelled"` per `src/lib/uncertainty.ts::deriveTier`. |
+| `tier_fraction` | `float32` | Per-tier envelope half-width (`0.15` / `0.20` / `0.40`). |
+| `uncertainty_low_gw` | `float32` | `peak_gw × (1 − tier_fraction)`, clamped to ≥ 0. |
+| `uncertainty_high_gw` | `float32` | `peak_gw × (1 + tier_fraction)`. |
+| `uncertainty_low_twh` | `float32` | `annual_twh × (1 − tier_fraction)`, clamped to ≥ 0. |
+| `uncertainty_high_twh` | `float32` | `annual_twh × (1 + tier_fraction)`. |
+
+Once the historical backfill stabilises across ≥3 years, the T1 envelope should be replaced by 2σ of observed annual peakGW; until then it is the ±15% default. Full methodology in `docs/methodology/uncertainty.md`.
 
 ## Schema versioning
 
