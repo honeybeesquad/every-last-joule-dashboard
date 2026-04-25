@@ -87,8 +87,15 @@ export const REGIONS: Region[] = [
   // Curtailment Report: ROI wind DD = 1.266 TWh (8.8% of RES), NI wind DD
   // = 0.915 TWh (29.6% of wind, 25.5% of RES). NI is a much smaller grid
   // but has dramatically higher dispatch-down intensity.
-  { id: "ireland-republic", name: "Ireland (Republic)",  country: "IRL", lat: 53.3, lon:   -7.8, tier: "live", kind: "wind",  source: "SONI/EirGrid 2024 dispatch-down (ROI: 1.266 TWh)", sourceUrl: "https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf" },
-  { id: "northern-ireland", name: "Northern Ireland",    country: "GBR", lat: 54.65, lon:  -6.65, tier: "live", kind: "wind",  source: "SONI/EirGrid 2024 dispatch-down (NI: 0.915 TWh, 29.6% of wind)", sourceUrl: "https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf" },
+  // 2026-04-25 demoted live → static. The EirGrid loader is probe-only —
+  // it fetches the renewables page for reachability/freshness but the
+  // SmartGrid Dashboard hourly API is not publicly exposed; the emitted
+  // profile is a calibrated wind typical-shape scaled to the SONI/EirGrid
+  // 2024 anchor (2.181 TWh all-island), then split 58/42 ROI/NI at
+  // consumption time. T3-modelled is the honest tier; the prior "live"
+  // tag was a tier-overstatement. See `docs/known-limitations.md` item 6.
+  { id: "ireland-republic", name: "Ireland (Republic)",  country: "IRL", lat: 53.3, lon:   -7.8, tier: "static", kind: "wind",  source: "EirGrid probe + wind typical-shape (ROI 58% of 2.18 TWh/yr SONI/EirGrid 2024 anchor)", sourceUrl: "https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf" },
+  { id: "northern-ireland", name: "Northern Ireland",    country: "GBR", lat: 54.65, lon:  -6.65, tier: "static", kind: "wind",  source: "EirGrid probe + wind typical-shape (NI 42% of 2.18 TWh/yr SONI/EirGrid 2024 anchor)", sourceUrl: "https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf" },
   // Peru and South Africa: 2026-04-25 demoted live → static. Their loaders
   // are probe-only — they hit the COES / Eskom dashboards for reachability
   // and freshness but the underlying hourly profile is a calibrated

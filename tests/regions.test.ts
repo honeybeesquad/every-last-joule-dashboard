@@ -13,28 +13,37 @@ describe("regions", () => {
     expect(REGIONS.length).toBe(128);
   });
 
-  it("has 64 live regions", () => {
+  it("has 62 live regions", () => {
     // v0.6: -5 aggregates + 10 splits = +5 live -> 49 + 5 = 54; Turkey live re-add -> 55.
     // europe-expansion: -1 n-norway + 5 Norway zones + 1 Switzerland = +5 → 60.
     // tier-routing fix (2026-04-25): brazil-mg/sp/mt/go/pr/rs reclassified
     // static → live. The brazil-ne loader emits hourly data for all 13
     // Brazilian states (NE + non-NE) from the same ONS feed; the 6 non-NE
     // states had been incorrectly held as static fallbacks. 60 + 6 = 66.
-    // tier-overstatement fix (2026-04-25): peru and south-africa demoted
-    // live → static. Their loaders are probe-only — they hit the COES /
-    // Eskom dashboards for reachability and freshness but emit calibrated
-    // typical-shape profiles, not measured hourly curtailment. 66 - 2 = 64.
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(64);
+    // tier-overstatement fix (2026-04-25, batch 1): peru and south-africa
+    // demoted live → static. Their loaders are probe-only — they hit the
+    // COES / Eskom dashboards for reachability and freshness but emit
+    // calibrated typical-shape profiles, not measured hourly curtailment.
+    // 66 - 2 = 64.
+    // tier-overstatement fix (2026-04-25, batch 2): ireland-republic and
+    // northern-ireland demoted live → static. The EirGrid loader is the
+    // same probe-only pattern — fetches the renewables page for freshness,
+    // emits a calibrated wind typical-shape scaled to the SONI/EirGrid
+    // 2024 anchor, then splits 58/42 at consumption time. 64 - 2 = 62.
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(62);
   });
 
-  it("has 60 static regions", () => {
+  it("has 62 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
-    // tier-overstatement fix (2026-04-25): +2 (peru, south-africa demoted
-    // live → static; both are probe-only loaders emitting typical-shape
-    // profiles). 58 + 2 = 60.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(60);
+    // tier-overstatement fix (2026-04-25, batch 1): +2 (peru, south-africa
+    // demoted live → static; both are probe-only loaders emitting
+    // typical-shape profiles). 58 + 2 = 60.
+    // tier-overstatement fix (2026-04-25, batch 2): +2 (ireland-republic,
+    // northern-ireland demoted live → static; same probe-only pattern as
+    // peru/south-africa). 60 + 2 = 62.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(62);
   });
 
   it("has 4 flare regions", () => {
@@ -224,20 +233,28 @@ describe("regions", () => {
   });
 
   it("includes the v0.6 Codex global-coverage-audit splits and additions", () => {
-    // 5 live aggregates split into 10 sub-zones.
-    const splitPairs: Array<[string, string]> = [
-      ["ireland-republic", "northern-ireland"],
+    // 5 aggregates split into 10 sub-zones. All pairs except the Ireland
+    // split remain tier:"live" — the Ireland pair was demoted to
+    // tier:"static" by the 2026-04-25 batch-2 tier-overstatement fix
+    // (the EirGrid loader is probe-only, emitting a calibrated wind
+    // typical-shape rather than measured hourly DD).
+    const livePairs: Array<[string, string]> = [
       ["iso-ne-maine-vermont", "iso-ne-rest"],
       ["nyiso-zones-d-e", "nyiso-rest"],
       ["gb-scotland", "gb-england-wales"],
       ["denmark-west", "denmark-east"],
     ];
-    for (const [a, b] of splitPairs) {
+    for (const [a, b] of livePairs) {
       for (const id of [a, b]) {
         const region = REGIONS.find(r => r.id === id);
         expect(region, `missing split region ${id}`).toBeDefined();
         expect(region?.tier).toBe("live");
       }
+    }
+    for (const id of ["ireland-republic", "northern-ireland"]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region, `missing split region ${id}`).toBeDefined();
+      expect(region?.tier).toBe("static");
     }
 
     // 5 new statics — Hawaii 3-island system, Austria, Russia Murmansk wind.

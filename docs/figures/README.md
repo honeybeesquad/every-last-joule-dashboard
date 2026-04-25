@@ -93,7 +93,7 @@ lat, lon, tier)` rows and `derive_tier()` — whose logic mirrors
 `src/lib/uncertainty.ts::deriveTier` and `scripts/tally-tiers.ts`
 exactly — maps each region to one of four confidence tiers:
 
-- **T1-live-TSO (±15%, teal)** — 64 regions with live ENTSO-E / EIA /
+- **T1-live-TSO (±15%, teal)** — 62 regions with live ENTSO-E / EIA /
   TSO hourly feeds plus, where available, the 2020–2026 historical
   backfill reconstruction.
 - **T2-annual-calibrated (±20%, amber)** — 2 flat-base statics with a
@@ -102,12 +102,12 @@ exactly — maps each region to one of four confidence tiers:
 - **T2 flare (±20%, brown square marker)** — 4 oil/gas associated-gas
   flaring regions whose correct hourly shape is 24/7 baseload (Permian,
   West Siberia, South Iraq, East Saudi).
-- **T3-modelled (±40%, terracotta)** — 58 static regions that rely on a
+- **T3-modelled (±40%, terracotta)** — 60 static regions that rely on a
   typical-shape diurnal/seasonal/mixed/overnight profile scaled to a
-  published annual anchor, covering Peru, South Africa (both
-  reachability probes), most of the Chinese provinces, South Asia,
-  Africa, the Middle East outside flare, Latin America outside
-  Brazil/Atacama, and Hawaii.
+  published annual anchor, covering Ireland (Republic + Northern), Peru,
+  South Africa (all reachability probes), most of the Chinese provinces,
+  South Asia, Africa, the Middle East outside flare, Latin America
+  outside Brazil/Atacama, and Hawaii.
 
 The basemap is hand-rolled (graticule + ocean tint + earth frame) to
 avoid a cartopy / natural-earth dependency; a reviewer can regenerate

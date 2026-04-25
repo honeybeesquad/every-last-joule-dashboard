@@ -52,6 +52,12 @@ const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "inner-mongolia": "wind",
   iran: "solar",
   "iraq-mainland": "solar",
+  // ireland-republic / northern-ireland: 2026-04-25 demoted live → static.
+  // The EirGrid loader is probe-only; the emitted profile is a calibrated
+  // wind typical-shape scaled to SONI/EirGrid 2024 anchor (2.18 TWh
+  // all-island), split 58/42 at consumption time.
+  "ireland-republic": "wind",
+  "northern-ireland": "wind",
   israel: "solar",
   japan: "solar",
   jeju: "wind",

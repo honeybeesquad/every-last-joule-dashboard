@@ -78,25 +78,26 @@ snapshot from `data/snapshots/last-good/` if the live call fails or
 returns malformed data. This guarantees no region silently drops out
 of the dataset on an upstream outage.
 
-**Reachability probe vs measured curtailment.** Three of the live-fetch
+**Reachability probe vs measured curtailment.** Four of the live-fetch
 entries above (CAMMESA Argentina, COES SINAC Peru, ESKOM data portal
-South Africa) are reachability probes rather than dispatch-level
-curtailment feeds: the loader fetches the public endpoint, confirms
-the source is alive, and stamps the freshness, but emits a calibrated
-typical-shape profile (wind / hydro-seasonal / mixed solar+wind)
-scaled to a published annual anchor — because none of the three
-operators expose a stable unauthenticated machine-readable hourly
-curtailment series. The `sourceNote` on each emitted record states
-the calibration explicitly. All three (CAMMESA Argentina, COES SINAC
-Peru, ESKOM South Africa) are classified `T3-modelled` via
-`tier: "static"` in `src/lib/regions.ts`, with the ±40% T3 envelope.
-The reachability-probe nature of the upstream is preserved in the
-`sourceNote` and `sourceStatus` ("live" = the probe succeeded, not
-"this is a measured dispatch series"); reviewers can audit the
-distinction in `docs/known-limitations.md` item 6. EirGrid Ireland,
-IESO Ontario, AESO Alberta, EMI New Zealand, EPİAŞ Turkey, and CEN
-Chile do produce dispatch-derived hourly values from their respective
-live sources.
+South Africa, EirGrid renewables page Ireland) are reachability probes
+rather than dispatch-level curtailment feeds: the loader fetches the
+public endpoint, confirms the source is alive, and stamps the
+freshness, but emits a calibrated typical-shape profile (wind /
+hydro-seasonal / mixed solar+wind) scaled to a published annual
+anchor — because none of the four operators expose a stable
+unauthenticated machine-readable hourly curtailment series. The
+`sourceNote` on each emitted record states the calibration
+explicitly. All four (CAMMESA Argentina, COES SINAC Peru, ESKOM South
+Africa, EirGrid Ireland — split 58/42 into `ireland-republic` and
+`northern-ireland` at consumption time) are classified `T3-modelled`
+via `tier: "static"` in `src/lib/regions.ts`, with the ±40% T3
+envelope. The reachability-probe nature of the upstream is preserved
+in the `sourceNote` and `sourceStatus` ("live" = the probe succeeded,
+not "this is a measured dispatch series"); reviewers can audit the
+distinction in `docs/known-limitations.md` item 6. IESO Ontario, AESO
+Alberta, EMI New Zealand, EPİAŞ Turkey, and CEN Chile do produce
+dispatch-derived hourly values from their respective live sources.
 
 ERCOT-West and ERCOT-East are reconstructed from EIA's BA-level feed
 in the v0.5 build (66/34 proportional split keyed to ERCOT IMM
@@ -182,12 +183,12 @@ Every region is deterministically assigned to one of four tiers
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
 | T4-structural-gap | No hourly claim made | n/a — not published |
 
-The tier distribution in v0.5: 64 T1, 2 T2-annual-calibrated, 4
-T2 flare, 58 T3 (total 128). The two T2 regions are Austria (APG
+The tier distribution in v0.5: 62 T1, 2 T2-annual-calibrated, 4
+T2 flare, 60 T3 (total 128). The two T2 regions are Austria (APG
 provisional anchor, flat-base proxy) and Russia Murmansk wind
 (SO UPS dispatch-limit estimate, flat). The 4 T2-flare regions are
 the Permian, West Siberia, South Iraq, and East Saudi flare basins.
-The 58 T3 regions are static annual anchors (Ember, IRENA, regulator
+The 60 T3 regions are static annual anchors (Ember, IRENA, regulator
 reports) combined with a typical diurnal or monthly-seasonal shape
 (solar cosine, wind broad-overnight, hydro monthly, mixed fuel-share,
 geothermal-overnight). Full methodology and per-region rationale in
