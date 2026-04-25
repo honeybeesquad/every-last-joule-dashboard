@@ -19,7 +19,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       REGION_ID,
       8,
       0.2,
-      `Typical-shape fallback: UAE live feed unavailable (${(err as Error).message}); calibration anchor ~0.2 TWh/yr solar curtailment.`,
+      "No public hourly curtailment feed; DEWA/EWEC public pages do not expose hourly solar curtailment, so the ~0.2 TWh/yr calibration anchor is applied to a typical solar profile shape (T3-modelled, ±40% envelope).",
       "2024",
     );
   }

@@ -9,5 +9,8 @@ describe("iran loader", () => {
     expect(data.latestProfile).toBeNull();
     expect(data.totalTWh).toBeGreaterThan(0);
     expect(data.sourceNote).toMatch(/0\.3 TWh\/yr/);
+    expect(data.sourceNote).toContain("No public hourly curtailment feed");
+    expect(data.sourceNote).toContain("T3-modelled, ±40% envelope");
+    expect(data.sourceNote).not.toMatch(/live feed unavailable/i);
   });
 });

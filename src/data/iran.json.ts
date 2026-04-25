@@ -19,7 +19,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       REGION_ID,
       7,
       0.3,
-      `Typical-shape fallback: TAVANIR 2024 live feed unavailable (${(err as Error).message}); Yazd/Kerman solar curtailment anchored at ~0.3 TWh/yr with sanctions-related data opacity.`,
+      "No public hourly curtailment feed; TAVANIR 2024 opaque public data, Yazd/Kerman solar curtailment anchored at ~0.3 TWh/yr × typical solar profile shape (T3-modelled, ±40% envelope).",
       "2024",
     );
   }
