@@ -88,10 +88,13 @@ curtailment_GW[hour] = generation_GW[hour] × calibration_rate
 The calibration rate is chosen so that summing the reconstructed
 hourly curtailment across a full year reproduces a published annual
 curtailment total from the operator or regulator
-(`scripts/validation/external-anchors.json` is the canonical table
-of 23 such anchors). Rate origin, citation, and placeholder status
-are documented per zone in `docs/methodology/entsoe-rates.md` (ENTSO-E)
-and the per-region validation MDs (`docs/validation/<region>.md`).
+(`scripts/validation/external-anchors.json` carries 123 per-region
+anchor records; the strict subset of 23 region-year pairs that have
+both a multi-year backfill and an exact-year TSO total feeds Figure
+2's validation scatter). Rate origin, citation, and placeholder
+status are documented per zone in `docs/methodology/entsoe-rates.md`
+(ENTSO-E) and the per-region validation MDs
+(`docs/validation/<region>.md`).
 
 Rate application is **piecewise-constant across years** (one rate
 per region-year) to permit post-2020 rate evolution to be captured
