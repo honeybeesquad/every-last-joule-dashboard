@@ -1,6 +1,6 @@
 # Validation index
 
-Last generated: 2026-04-24
+Last generated: 2026-04-25 (manual tier-line patches for Peru, South Africa, Ireland (Republic + Northern) post tier-overstatement remediation; full regen via `scripts/validation/build_region_docs.py` deferred until backfill state advances)
 
 | Region | Tier | Kind | Backfill years | Validation doc |
 |---|---|---|---|---|
@@ -59,7 +59,7 @@ Last generated: 2026-04-24
 | France | live | mixed | 0 | [france](./france.md) |
 | GB England+Wales | live | mixed | 0 | [gb-england-wales](./gb-england-wales.md) |
 | GB Scotland | live | wind | 0 | [gb-scotland](./gb-scotland.md) |
-| Northern Ireland | live | wind | 0 | [northern-ireland](./northern-ireland.md) |
+| Northern Ireland | static | wind | 0 | [northern-ireland](./northern-ireland.md) |
 | Greece | live | mixed | 7 | [greece](./greece.md) |
 | Honduras | static | solar | 0 | [honduras](./honduras.md) |
 | Hungary | live | mixed | 7 | [hungary](./hungary.md) |
@@ -68,7 +68,7 @@ Last generated: 2026-04-24
 | North India | static | solar | 0 | [india-north](./india-north.md) |
 | India South | static | mixed | 0 | [india-south](./india-south.md) |
 | India West | static | mixed | 0 | [india-west](./india-west.md) |
-| Ireland (Republic) | live | wind | 0 | [ireland-republic](./ireland-republic.md) |
+| Ireland (Republic) | static | wind | 0 | [ireland-republic](./ireland-republic.md) |
 | Iran | static | solar | 0 | [iran](./iran.md) |
 | Iraq (non-flare) | static | solar | 0 | [iraq-mainland](./iraq-mainland.md) |
 | Kurdistan (KRG) | static | solar | 0 | [kurdistan](./kurdistan.md) |
@@ -98,7 +98,7 @@ Last generated: 2026-04-24
 | New Zealand | live | mixed | 0 | [new-zealand](./new-zealand.md) |
 | Oman | static | solar | 0 | [oman](./oman.md) |
 | Pakistan | static | mixed | 0 | [pakistan](./pakistan.md) |
-| Peru | live | mixed | 0 | [peru](./peru.md) |
+| Peru | static | mixed | 0 | [peru](./peru.md) |
 | Poland | live | mixed | 7 | [poland](./poland.md) |
 | Portugal | live | mixed | 7 | [portugal](./portugal.md) |
 | Paraguay | static | hydro | 0 | [paraguay](./paraguay.md) |
@@ -133,4 +133,4 @@ Last generated: 2026-04-24
 | PJM | live | mixed | 7 | [pjm](./pjm.md) |
 | SPP | live | mixed | 7 | [spp](./spp.md) |
 | Vietnam | static | solar | 0 | [vietnam](./vietnam.md) |
-| South Africa | live | mixed | 0 | [south-africa](./south-africa.md) |
+| South Africa | static | mixed | 0 | [south-africa](./south-africa.md) |
