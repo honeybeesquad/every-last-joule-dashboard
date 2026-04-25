@@ -27,16 +27,21 @@ diurnal). It is excluded from the headline curtailment total.
 **Regions.** Each region is the smallest unit at which the responsible
 grid operator publishes dispatch data: ISO (CAISO, ERCOT-West,
 ERCOT-East, MISO, SPP, NYISO, ISO-NE, PJM, BPA) for large U.S.
-interconnections; bidding zone for ENTSO-E (Germany, Iberia, France,
-Netherlands, Denmark-West, Poland, Norway NO1–NO5, Sweden-N,
-Sweden-S, Romania, Czech Republic, Italy zones, Greece, Baltics,
-Hungary, Bulgaria, Portugal); sub-state constraint region for
-Brazil (five Northeast states — Ceará, Rio Grande do Norte,
-Bahia, Piauí, Pernambuco — plus six South/Centre-South states —
-Minas Gerais, São Paulo, Mato Grosso, Goiás, Paraná, Rio Grande
-do Sul — and a catch-all NE-other bucket); and national grid for
-countries without public sub-national data. Total: 128 regions. Stable kebab-case IDs
-defined in `src/lib/regions.ts`.
+interconnections; bidding zone for ENTSO-E Transparency (Germany,
+Iberia, Portugal, Finland, Netherlands, Poland, Greece, Romania,
+Italy-North, Italy-South, Italy-Sardinia, Sweden-N, Sweden-S, Hungary,
+Czech Republic, Bulgaria, Baltics, Switzerland — plus the five Norway
+zones NO1–NO5 fetched against the ENTSO-E NO domains); national TSO
+feed where the operator publishes its own series outside ENTSO-E
+(France via RTE eco2mix, Denmark via Energinet, Belgium via Elia,
+UK North Sea via Elexon BMRS, Ireland via EirGrid, Norway zone
+totals via Nord Pool); sub-state constraint region for Brazil (five
+Northeast states — Ceará, Rio Grande do Norte, Bahia, Piauí,
+Pernambuco — plus six South/Centre-South states — Minas Gerais, São
+Paulo, Mato Grosso, Goiás, Paraná, Rio Grande do Sul — and a catch-all
+NE-other bucket); and national grid for countries without public
+sub-national data. Total: 128 regions. Stable kebab-case IDs defined
+in `src/lib/regions.ts`.
 
 **Time resolution.** Hourly UTC. Finer-cadence upstream feeds
 (ENTSO-E 15 min, Elexon BMRS 30 min) are averaged to hourly.
@@ -47,18 +52,21 @@ defined in `src/lib/regions.ts`.
 
 | Source | Regions | Fetch protocol |
 |---|---|---|
-| ENTSO-E Transparency | 26 bidding zones | REST API, XML response, `security-token` param |
+| ENTSO-E Transparency | 18 bidding zones | REST API, XML response, `security-token` param |
+| ENTSO-E NO domains (Norway) | 5 NO zones | REST API, XML response (Nord Pool zone-level) |
 | EIA Hourly Electric Grid Monitor | 9 U.S. ISOs | REST API, JSON, `api_key` param |
 | AEMO NEMWeb | 5 Australian states | HTTPS ZIP download of Dispatch_SCADA CSV |
 | Elexon BMRS (UK) | 1 region | REST API, JSON/XML |
+| RTE eco2mix (France) | 1 region | OpenDataSoft CSV export |
+| Energinet (Denmark) | 1 region | Energi Data Service REST API, JSON |
+| Elia (Belgium) | 1 region | OpenDataSoft CSV export (wind + solar datasets) |
 | ONS Brazil | 11 state clusters + NE-other catch-all | CSV over HTTPS, ANEEL `id_estado`-grouped |
 | CAMMESA Argentina | 1 | HTML dashboard scrape |
 | COES SINAC Peru | 1 | HTML dashboard scrape |
 | EirGrid Ireland | 1 | HTML dashboard scrape |
 | IESO Ontario | 1 | XML report portal |
 | AESO Alberta | 1 | HTML CSD servlet |
-| ESKOM data portal | 1 | HTML scrape |
-| Nord Pool Norway | 5 NO zones | ENTSO-E NO domains |
+| ESKOM data portal (South Africa) | 1 | HTML scrape |
 
 Every loader is implemented in `src/data/<source>.json.ts` as an
 Observable Framework data loader. Every loader wraps its fetch in
@@ -112,10 +120,15 @@ whose upstream archives support multi-year history. Total: 2,590,195
 hourly observations.
 
 The backfill loader chain mirrors the live-feed chain but calls the
-archival variant of each upstream API (ENTSO-E 10-year history,
-EIA Hourly Electric Grid Monitor history, AEMO NEMWeb year archives,
-Elexon BMRS historical, ONS Brazil CSV archives, Nord Pool
-historical zones). Rate application is identical to the live loader:
+archival variant of each upstream API. v0.5 backfills two of the
+live-loader families: ENTSO-E 10-year history (16 bidding zones plus
+4 Norway zones via the Nord Pool / ENTSO-E NO domains) and the EIA
+Hourly Electric Grid Monitor history (9 U.S. ISOs including the
+ERCOT-W/E split). The remaining live-loader families (AEMO NEMWeb,
+Elexon BMRS, ONS Brazil, Argentina/Ontario/Alberta/Ireland/South
+Africa/Peru) carry only the rolling live-snapshot history at v0.5;
+multi-year archival reconstruction for those is on the v1 roadmap.
+Rate application is identical to the live loader:
 `curtailment_GW = generation_GW × rate`, with the per-year calibration
 rate documented in `docs/methodology/historical-backfill.md`.
 
