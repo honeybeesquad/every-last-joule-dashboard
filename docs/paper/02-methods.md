@@ -87,15 +87,16 @@ typical-shape profile (wind / hydro-seasonal / mixed solar+wind)
 scaled to a published annual anchor — because none of the three
 operators expose a stable unauthenticated machine-readable hourly
 curtailment series. The `sourceNote` on each emitted record states
-the calibration explicitly. CAMMESA Argentina is correctly classified
-as `T3-modelled`; COES SINAC Peru and ESKOM South Africa currently
-carry a `tier: "live"` flag in `src/lib/regions.ts` that routes them
-to `T1-live-TSO` via `deriveTier` even though their hourly profiles
-are calibrated typical shapes rather than measured dispatch — a known
-overstatement listed in `docs/known-limitations.md` (item 6) and
-queued for downgrade in the v1 calibration sweep. EirGrid Ireland, IESO Ontario, AESO
-Alberta, EMI New Zealand, EPİAŞ Turkey, and CEN Chile do produce
-dispatch-derived hourly values from their respective live sources.
+the calibration explicitly. All three (CAMMESA Argentina, COES SINAC
+Peru, ESKOM South Africa) are classified `T3-modelled` via
+`tier: "static"` in `src/lib/regions.ts`, with the ±40% T3 envelope.
+The reachability-probe nature of the upstream is preserved in the
+`sourceNote` and `sourceStatus` ("live" = the probe succeeded, not
+"this is a measured dispatch series"); reviewers can audit the
+distinction in `docs/known-limitations.md` item 6. EirGrid Ireland,
+IESO Ontario, AESO Alberta, EMI New Zealand, EPİAŞ Turkey, and CEN
+Chile do produce dispatch-derived hourly values from their respective
+live sources.
 
 ERCOT-West and ERCOT-East are reconstructed from EIA's BA-level feed
 in the v0.5 build (66/34 proportional split keyed to ERCOT IMM
@@ -181,12 +182,12 @@ Every region is deterministically assigned to one of four tiers
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
 | T4-structural-gap | No hourly claim made | n/a — not published |
 
-The tier distribution in v0.5: 66 T1, 2 T2-annual-calibrated, 4
-T2 flare, 56 T3 (total 128). The two T2 regions are Austria (APG
+The tier distribution in v0.5: 64 T1, 2 T2-annual-calibrated, 4
+T2 flare, 58 T3 (total 128). The two T2 regions are Austria (APG
 provisional anchor, flat-base proxy) and Russia Murmansk wind
 (SO UPS dispatch-limit estimate, flat). The 4 T2-flare regions are
 the Permian, West Siberia, South Iraq, and East Saudi flare basins.
-The 56 T3 regions are static annual anchors (Ember, IRENA, regulator
+The 58 T3 regions are static annual anchors (Ember, IRENA, regulator
 reports) combined with a typical diurnal or monthly-seasonal shape
 (solar cosine, wind broad-overnight, hydro monthly, mixed fuel-share,
 geothermal-overnight). Full methodology and per-region rationale in

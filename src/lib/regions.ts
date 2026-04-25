@@ -89,8 +89,15 @@ export const REGIONS: Region[] = [
   // but has dramatically higher dispatch-down intensity.
   { id: "ireland-republic", name: "Ireland (Republic)",  country: "IRL", lat: 53.3, lon:   -7.8, tier: "live", kind: "wind",  source: "SONI/EirGrid 2024 dispatch-down (ROI: 1.266 TWh)", sourceUrl: "https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf" },
   { id: "northern-ireland", name: "Northern Ireland",    country: "GBR", lat: 54.65, lon:  -6.65, tier: "live", kind: "wind",  source: "SONI/EirGrid 2024 dispatch-down (NI: 0.915 TWh, 29.6% of wind)", sourceUrl: "https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf" },
-  { id: "peru",             name: "Peru",            country: "PER", lat: -14.0, lon: -74.0, tier: "live", kind: "mixed", source: "COES-SINAC", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },
-  { id: "south-africa",     name: "South Africa",    country: "ZAF", lat: -32.0, lon:  26.0, tier: "live", kind: "mixed", source: "Eskom Data Portal", sourceUrl: "https://www.eskom.co.za/dataportal/" },
+  // Peru and South Africa: 2026-04-25 demoted live → static. Their loaders
+  // are probe-only — they hit the COES / Eskom dashboards for reachability
+  // and freshness but the underlying hourly profile is a calibrated
+  // typical-shape (Peru bimodal hydro-seasonal, SA wind+solar mixed) scaled
+  // to a published 2024 anchor. T3-modelled is the honest tier; the prior
+  // "live" tag was a tier-overstatement. See `docs/known-limitations.md`
+  // item 6.
+  { id: "peru",             name: "Peru",            country: "PER", lat: -14.0, lon: -74.0, tier: "static", kind: "mixed", source: "COES-SINAC probe + bimodal hydro-seasonal typical-shape (~0.8 TWh/yr)", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },
+  { id: "south-africa",     name: "South Africa",    country: "ZAF", lat: -32.0, lon:  26.0, tier: "static", kind: "mixed", source: "Eskom Data Portal probe + wind+solar mixed typical-shape (~4.4 TWh/yr, SAREM 2025 / Eskom MTSAO Oct 2025)", sourceUrl: "https://www.eskom.co.za/dataportal/" },
   { id: "new-zealand",      name: "New Zealand",     country: "NZL", lat: -40.9, lon: 172.0, tier: "live", kind: "mixed", source: "EMI wind+solar+geo", sourceUrl: "https://www.emi.ea.govt.nz/Wholesale/Datasets/Generation/Generation_MD" },
   { id: "atacama",          name: "Atacama",         country: "CHL", lat: -24.5, lon: -69.2, tier: "live",   kind: "solar", source: "CEN Chile XLSX", sourceUrl: "https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/" },
   { id: "chile-wind",       name: "Chile Wind",      country: "CHL", lat: -38.5, lon: -72.5, tier: "static", kind: "wind",  source: "CEN Chile 2024 ERV wind estimate", sourceUrl: "https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/" },

@@ -1,6 +1,7 @@
 import { fetchText } from "../lib/fetch.js";
 import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
+import { applyUncertainty } from "../lib/uncertainty.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
@@ -53,7 +54,13 @@ const run = async (): Promise<RegionData> => {
   const now = new Date();
   const points = buildProfileHistory(now, ESTIMATED_RENEWABLE_AVG_MW * CURTAILMENT_RATE);
 
-  return {
+  // Probe-only loader: the Eskom Data Portal exposes the page but no
+  // hourly CSV / chart endpoint, so the profile emitted here is the
+  // calibrated wind+solar typical-shape (MIXED_SHAPE × scale) scaled to
+  // the 2024 anchor, not an actual dispatch-down series. Tier is
+  // T3-modelled per `src/lib/uncertainty.ts::deriveTier` rules for
+  // static + mixed-profile regions.
+  const base: RegionData = {
     regionId: "south-africa",
     profile: timeOfDayAverageGW(points),
     latestProfile: null,
@@ -63,13 +70,13 @@ const run = async (): Promise<RegionData> => {
     sourceNote:
       `Eskom Data Portal reachable (${meta.title}); CSV/chart endpoint not exposed publicly, so this loader emits a calibrated wind+solar fallback profile scaled to 4.4 TWh/yr (SAREM 2025 / Eskom MTSAO Oct 2025 report 4,363 GWh curtailment in 2024 — 12% of renewable output, concentrated Northern+Western Cape)`,
   };
+  return applyUncertainty(base, { regionTier: "static", profileKind: "mixed" });
 };
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
   withFallback<RegionData>("south-africa", run, {
-    regionTier: "live" as const,
     tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
     tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
   })

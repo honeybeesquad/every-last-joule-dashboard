@@ -13,21 +13,28 @@ describe("regions", () => {
     expect(REGIONS.length).toBe(128);
   });
 
-  it("has 66 live regions", () => {
+  it("has 64 live regions", () => {
     // v0.6: -5 aggregates + 10 splits = +5 live -> 49 + 5 = 54; Turkey live re-add -> 55.
     // europe-expansion: -1 n-norway + 5 Norway zones + 1 Switzerland = +5 → 60.
     // tier-routing fix (2026-04-25): brazil-mg/sp/mt/go/pr/rs reclassified
     // static → live. The brazil-ne loader emits hourly data for all 13
     // Brazilian states (NE + non-NE) from the same ONS feed; the 6 non-NE
     // states had been incorrectly held as static fallbacks. 60 + 6 = 66.
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(66);
+    // tier-overstatement fix (2026-04-25): peru and south-africa demoted
+    // live → static. Their loaders are probe-only — they hit the COES /
+    // Eskom dashboards for reachability and freshness but emit calibrated
+    // typical-shape profiles, not measured hourly curtailment. 66 - 2 = 64.
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(64);
   });
 
-  it("has 58 static regions", () => {
+  it("has 60 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(58);
+    // tier-overstatement fix (2026-04-25): +2 (peru, south-africa demoted
+    // live → static; both are probe-only loaders emitting typical-shape
+    // profiles). 58 + 2 = 60.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(60);
   });
 
   it("has 4 flare regions", () => {
