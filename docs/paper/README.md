@@ -61,7 +61,7 @@ cross-references:
 - `dataset/CITATION.cff` — machine-readable citation (§5, §6).
 - `docs/known-limitations.md` — structural-gap + blind-spot
   ledger (§5 primary source).
-- `docs/validation/<region>.md` — 132 per-region triangulation
+- `docs/validation/<region>.md` — 130 per-region triangulation
   documents (§4).
 
 ## Editorial status and next steps

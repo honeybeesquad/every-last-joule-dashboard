@@ -13,7 +13,7 @@ A versioned, reproducible synthesis dataset of hourly renewable-electricity curt
 - **`data/historical/figure2_validation_scatter.csv`** — 23 region-year anchor pairs with published TSO / ISO / IMM / SoM / GGFR / IRENA / Ember annual curtailment totals vs. our backfill reconstruction. Machine-readable evidence table for Figure 2.
 - **`data/historical/figure3_daily_global.csv`** — daily global sum 2020-01-01 → 2026-03-31 (2,306 days), stacked by source platform. Feeds Figure 3.
 - **`docs/methodology/*.md`** — per-source audit trails. Every calibration rate has a provenance document.
-- **`docs/validation/<region>.md`** — 132 per-region triangulation documents against published TSO / ISO / IMM / SoM / GGFR / IRENA / Ember annual reports, with commit-grade diagnostic prose per region.
+- **`docs/validation/<region>.md`** — 130 per-region triangulation documents (plus a directory README and a `_template.md` scaffold) against published TSO / ISO / IMM / SoM / GGFR / IRENA / Ember annual reports, with commit-grade diagnostic prose per region.
 - **`docs/figures/figure{1..5}_*.{pdf,png}`** — the five publication-grade figures committed in the repository alongside the regeneration scripts in `scripts/validation/`.
 - **`docs/paper/*.md`** — draft Scientific Data Data Descriptor body sections and journal-ready figure captions.
 - **`docs/known-limitations.md`** — running ledger of every caveat we surface in the paper.
