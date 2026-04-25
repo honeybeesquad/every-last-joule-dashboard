@@ -12,7 +12,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 ### Added — HB Historical Backfill sprint (2020–2026 hourly reconstruction)
 - `data/historical/curtailment_backfill.parquet` (2,590,195 hourly rows × 29 regions × 7 years) — seven-year hourly curtailment reconstruction via generation × calibrated-rate for every T1-live-TSO region whose upstream archive supports multi-year history.
 - `data/historical/backfill/year=YYYY/` partitioned source — per-year consumption without full-file read.
-- `data/historical/per_region_annual.parquet` (203 rows × 4 cols) — annual rollup from backfill, built by `scripts/build_annual_rollup.py`. Feeds Figures 2 and 5.
+- `data/historical/per_region_annual.parquet` (203 rows × 12 cols — `region_id`, `year`, `source`, `n_hourly_rows`, `annual_twh`, `peak_gw`, `confidence_tier`, `tier_fraction`, plus four `uncertainty_*` bounds) — annual rollup from backfill, built by `scripts/build_annual_rollup.py`. Feeds Figures 2 and 5.
 - `scripts/backfill/` — per-source backfill loaders (ENTSO-E 26 zones, EIA 9 ISOs, Nord Pool Norway) matching the live-loader rate-application semantics byte-for-byte.
 - `scripts/backfill/merge_to_parquet.py` — consolidation from per-source per-year partitions into the final archive.
 - `docs/methodology/historical-backfill.md` — reconstruction methodology, per-year rate application, regime-change handling (Germany Oct 2021).
@@ -21,7 +21,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 - Tier assignment fields on every `RegionData`: `confidenceTier` (`T1-live-TSO | T2-annual-calibrated | T3-modelled`), `uncertaintyLowGW`, `uncertaintyHighGW`.
 - `src/lib/uncertainty.ts` — deterministic tier derivation + envelope calculation.
 - `docs/methodology/uncertainty.md` — tier model, envelope rationale (2σ / ±15% / ±20% / ±40%), what the envelope does and does not cover.
-- Parquet schema extended with `confidence_tier`, `uncertainty_low_gw`, `uncertainty_high_gw` columns (history + backfill artefacts).
+- Rolling-history Parquet (`curtailment_history.parquet`) extended with `confidence_tier`, `uncertainty_low_gw`, `uncertainty_high_gw` columns; annual rollup (`per_region_annual.parquet`) carries the same three plus the matching `uncertainty_*_twh` envelope. The hourly backfill (`curtailment_backfill.parquet`) does *not* carry tier/envelope columns by design — the per-tier envelope is calibrated against annual aggregates and lives on the rollup; consumers attach uncertainty to an hourly slice via `region_id` join.
 
 ### Added — S3 Figures sprint (5 publication-grade figures)
 - `docs/figures/figure1_global_map.{pdf,png}` — global curtailment snapshot (128 dots tier-coloured, √peakGW-scaled; top-8 labelled). Source: `src/lib/regions.ts` + `data/snapshots/last-good/*.json`.
