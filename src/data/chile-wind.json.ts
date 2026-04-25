@@ -22,7 +22,8 @@ import type { RegionData } from "../lib/types.js";
  * (Cloudflare-blocked from most IPs outside Chile). The atacama-chile loader
  * already attempts the solar sheet from that same XLSX; a future upgrade
  * could extend it to parse the wind sheet ("Resumen-DiarioHorario-Eolico")
- * from the same workbook. For now this is a Tier-C wind-shape fallback.
+ * from the same workbook. For now this is a T3-modelled wind-shape fallback
+ * (annual anchor + typical wind diurnal). See docs/methodology/uncertainty.md.
  *
  * Source: CEN Reporte Art.72-15 2024 (https://www.coordinador.cl/wp-content/
  * uploads/2025/04/CEN-Reporte-Art-72-15-ano-2024.pdf) — total ERV 5,908 GWh;
