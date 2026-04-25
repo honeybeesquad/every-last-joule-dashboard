@@ -108,7 +108,7 @@ Each is a live-loader addition plus backfill. ~5 additional regions.
 - Publish to Zenodo as a dataset asset with its own sub-DOI under the main dataset DOI.
 - Update `dataset/SCHEMA.md`, `dataset/README.md`, and `dataset/CHANGELOG.md`.
 
-**Success criterion:** `data/historical/curtailment_backfill.parquet` exists with ≥ 2.5M rows spanning ≥ 2020-01-01 to 2026-09-30 for ≥ 35 regions; loadable in 1 line of pandas; every row traceable via `source` column back to a specific upstream archive fetch. (Actual execution: 2,590,195 rows, 2020-01-01 → 2026-03-31, 29 regions — row-count criterion met; date-range clipped at archive-merge cutoff; region count below target because a subset of upstream archives lacked the multi-year depth required for reconstruction. Gap surfaced in `dataset/README.md` "What's in it" rather than silently filled.)
+**Success criterion:** `data/historical/curtailment_backfill.parquet` exists with ≥ 2.5M rows spanning ≥ 2020-01-01 to 2026-09-30 for ≥ 35 regions; loadable in 1 line of pandas; every row traceable via `source` column back to a specific upstream archive fetch. (Actual execution: 2,590,195 rows, 2020-01-01 → 2026-04-24, 29 regions — row-count criterion met; date-range clipped at archive-merge cutoff; region count below target because a subset of upstream archives lacked the multi-year depth required for reconstruction. Gap surfaced in `dataset/README.md` "What's in it" rather than silently filled.)
 
 ### S1 Technical Validation — CLOSES GAP 3 (Wks 3–6, now with HB integration)
 

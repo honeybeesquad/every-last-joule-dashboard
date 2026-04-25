@@ -171,7 +171,7 @@ truth in `src/lib/regions.ts`.
 
 Figure 3 collapses the 2.59M-row backfill into a daily global
 sum (GWh/day) stacked by source platform (ENTSO-E vs. EIA) over
-2020-01-01 → 2026-03-31. Archive total: **320.7 TWh** across 2,306
+2020-01-01 → 2026-04-24. Archive total: **320.7 TWh** across 2,306
 days.
 
 The trace corroborates three methodology points:
