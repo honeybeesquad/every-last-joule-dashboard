@@ -44,20 +44,18 @@ regions where gas flaring is the dominant "wasted-energy" source.
 
 ## What the dataset contains (150 words)
 
-- **128 regions.** 66 in `T1-live-TSO` (ENTSO-E, EIA — including
-  ERCOT and CAISO sub-zones, AEMO, Elexon, ONS Brazil, RTE eco2mix,
-  Energinet, Elia, IESO, AESO, EirGrid, EMI New Zealand, EPİAŞ Turkey,
-  CEN Chile, Nord Pool — plus COES Peru and ESKOM South Africa, both
-  of which are reachability probes that emit calibrated typical-shape
-  profiles; the v1 sweep will downgrade those two to `T3` per
-  §2.2 disclosure); 2 in `T2-annual-calibrated` (Austria APG, Russia
-  Murmansk); 4 flare regions in the `T2`-flare bucket (Permian, West
-  Siberia, South Iraq, East Saudi); 56 in `T3-modelled` (static annual
-  anchor + typical diurnal/seasonal shape — covers Argentina, Uruguay,
-  Paraguay, Mexico, the rest of Latin America outside Brazil + Peru +
-  Atacama Chile, most of South Asia, sub-Saharan Africa outside South
-  Africa, the Middle East outside flare, the eight Chinese provinces,
-  and Hawaii).
+- **128 regions.** 66 in `T1-live-TSO` (ENTSO-E and EIA with
+  ERCOT and CAISO sub-zones; AEMO, Elexon, ONS Brazil, RTE,
+  Energinet, Elia, IESO, AESO, EirGrid, EMI New Zealand,
+  EPİAŞ Turkey, CEN Chile, Nord Pool; plus COES Peru and ESKOM
+  South Africa, reachability probes emitting typical-shape
+  profiles — `T3`-bound in v1 per §2.2); 2 in `T2-annual-calibrated`
+  (Austria APG, Russia Murmansk); 4 flare regions (Permian, West
+  Siberia, South Iraq, East Saudi); 56 in `T3-modelled` (annual
+  anchor + typical shape — Argentina, Uruguay, Paraguay, Mexico
+  and the rest of Latin America outside Brazil/Peru/Atacama,
+  South Asia, sub-Saharan Africa outside South Africa, the
+  non-flare Middle East, the eight Chinese provinces, and Hawaii).
 - **Hourly resolution** for every live-feed region; hourly
   reconstruction backfilled to 2020-01-01 where upstream archives
   support it (2.59 M rows in `curtailment_backfill.parquet`).
