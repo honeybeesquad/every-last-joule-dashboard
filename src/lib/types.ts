@@ -71,6 +71,8 @@ export interface RegionData {
   uncertaintyLowGW?: number;
   /** Upper bound on peakGW (GW). peakGW + uncertaintyHighGW is the upper half-width when symmetric. */
   uncertaintyHighGW?: number;
+  /** Empirical standard deviation of historical annual peakGW, used for T1 2σ bounds. */
+  observedStdGW?: number;
 }
 
 /** Network consumption and hashrate reference from Cambridge CBECI. */
