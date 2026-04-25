@@ -44,6 +44,10 @@ function resolutionMs(resolution: string | undefined): number {
   return 15 * 60 * 1000;
 }
 
+function resolutionHours(resolution: string | undefined): number {
+  return resolutionMs(resolution) / (60 * 60 * 1000);
+}
+
 export function parseEntsoeXml(xml: string): CurtailmentPoint[] {
   const parser = new XMLParser({ ignoreAttributes: false, parseTagValue: true });
   const doc = parser.parse(xml);
@@ -54,7 +58,7 @@ export function parseEntsoeXml(xml: string): CurtailmentPoint[] {
     ? marketDocument.TimeSeries
     : [marketDocument.TimeSeries].filter(Boolean);
 
-  const pointsMap = new Map<string, number>();
+  const pointsMap = new Map<string, { mw: number; intervalHours: number }>();
 
   for (const ts of timeSeriesList) {
     const periods = Array.isArray(ts.Period) ? ts.Period : [ts.Period].filter(Boolean);
@@ -63,6 +67,7 @@ export function parseEntsoeXml(xml: string): CurtailmentPoint[] {
 
       const startTime = new Date(period.timeInterval.start).getTime();
       const stepMs = resolutionMs(period.resolution);
+      const intervalHours = resolutionHours(period.resolution);
       const points = Array.isArray(period.Point) ? period.Point : [period.Point].filter(Boolean);
 
       for (const p of points) {
@@ -71,13 +76,21 @@ export function parseEntsoeXml(xml: string): CurtailmentPoint[] {
         if (!Number.isFinite(position) || !Number.isFinite(quantity)) continue;
 
         const timestamp = new Date(startTime + (position - 1) * stepMs).toISOString();
-        pointsMap.set(timestamp, (pointsMap.get(timestamp) ?? 0) + quantity);
+        const existing = pointsMap.get(timestamp);
+        pointsMap.set(timestamp, {
+          mw: (existing?.mw ?? 0) + quantity,
+          intervalHours: existing?.intervalHours ?? intervalHours,
+        });
       }
     }
   }
 
   return Array.from(pointsMap.entries())
-    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }))
+    .map(([utcTimestamp, point]) => ({
+      utcTimestamp,
+      mw: point.mw,
+      intervalHours: point.intervalHours,
+    }))
     .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
 }
 
@@ -91,6 +104,7 @@ export function buildZoneData(
   const points = rawPoints.map((p) => ({
     utcTimestamp: p.utcTimestamp,
     mw: Math.max(0, p.mw * rate),
+    intervalHours: p.intervalHours,
   }));
 
   const data: RegionData = {
@@ -158,21 +172,29 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
     }
   }));
 
-  const summed = new Map<string, number>();
+  const summed = new Map<string, { mw: number; intervalHours: number | undefined }>();
   const fuelTotals: Partial<Record<EntsoeFuel, number>> = {};
   let lastUpdated: string | undefined;
 
   for (const { technology, points } of series) {
     for (const point of points) {
       const mw = Math.max(0, point.mw * technology.rate);
-      summed.set(point.utcTimestamp, (summed.get(point.utcTimestamp) ?? 0) + mw);
-      fuelTotals[technology.fuel] = (fuelTotals[technology.fuel] ?? 0) + mw;
+      const existing = summed.get(point.utcTimestamp);
+      summed.set(point.utcTimestamp, {
+        mw: (existing?.mw ?? 0) + mw,
+        intervalHours: existing?.intervalHours ?? point.intervalHours,
+      });
+      fuelTotals[technology.fuel] = (fuelTotals[technology.fuel] ?? 0) + mw * (point.intervalHours ?? 1);
       if (!lastUpdated || point.utcTimestamp > lastUpdated) lastUpdated = point.utcTimestamp;
     }
   }
 
   const points = Array.from(summed.entries())
-    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }))
+    .map(([utcTimestamp, point]) => ({
+      utcTimestamp,
+      mw: point.mw,
+      intervalHours: point.intervalHours,
+    }))
     .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
 
   const denom = Object.values(fuelTotals).reduce((sum, value) => sum + (value ?? 0), 0);

@@ -57,16 +57,12 @@ export function latestCompleteUtcDayProfileGW(points: CurtailmentPoint[]): numbe
 }
 
 /**
- * Total TWh observed across the supplied points, assuming each point
- * represents one hour's worth of MW.  Caller is responsible for providing
- * points at the correct cadence (5-min points should be pre-aggregated
- * to hourly or have their MW scaled accordingly).
- *
- * Simpler model used by v0 loaders: each loader outputs hourly averages
- * from sub-hourly source data before calling here.
+ * Total TWh observed across the supplied points. Each point contributes MW
+ * times its represented duration in hours; hourly loaders can omit the
+ * interval and retain the historical 1h default.
  */
-export function totalTWh30d(points: CurtailmentPoint[]): number {
-  const mwh = points.reduce((sum, p) => sum + p.mw, 0);
+export function totalTWh30d(points: CurtailmentPoint[], defaultIntervalHours = 1): number {
+  const mwh = points.reduce((sum, p) => sum + p.mw * (p.intervalHours ?? defaultIntervalHours), 0);
   return mwh / 1_000_000; // MWh -> TWh
 }
 

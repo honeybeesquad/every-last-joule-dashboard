@@ -21,6 +21,7 @@ export interface Region {
 export interface CurtailmentPoint {
   utcTimestamp: string;    // ISO 8601 UTC
   mw: number;              // non-negative megawatts curtailed
+  intervalHours?: number;  // duration represented by this observation; defaults to 1h
 }
 
 /** Data produced by a loader for one region. */

@@ -57,6 +57,36 @@ describe("totalTWh30d", () => {
   it("empty input yields 0", () => {
     expect(totalTWh30d([])).toBe(0);
   });
+
+  it("integrates four PT15M observations to the same TWh as one PT1H observation at the same MW", () => {
+    const pt15m: CurtailmentPoint[] = [0, 15, 30, 45].map((minute) => ({
+      utcTimestamp: `2026-04-22T12:${String(minute).padStart(2, "0")}:00.000Z`,
+      mw: 1000,
+      intervalHours: 0.25,
+    }));
+    const hourly: CurtailmentPoint[] = [{
+      utcTimestamp: "2026-04-22T12:00:00.000Z",
+      mw: 1000,
+      intervalHours: 1,
+    }];
+
+    expect(totalTWh30d(pt15m)).toBeCloseTo(totalTWh30d(hourly), 12);
+  });
+
+  it("does not over-count a constant 30-day PT15M series by treating points as hourly", () => {
+    const points: CurtailmentPoint[] = [];
+    const start = new Date("2026-03-24T00:00:00.000Z");
+    for (let i = 0; i < 30 * 24 * 4; i++) {
+      const dt = new Date(start.getTime() + i * 15 * 60 * 1000);
+      points.push({
+        utcTimestamp: dt.toISOString(),
+        mw: 1000,
+        intervalHours: 0.25,
+      });
+    }
+
+    expect(totalTWh30d(points)).toBeCloseTo(0.72, 12);
+  });
 });
 
 describe("peakGW", () => {
