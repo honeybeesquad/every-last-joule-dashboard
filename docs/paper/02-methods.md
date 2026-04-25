@@ -107,7 +107,7 @@ anchor is available, the rate is held constant backward in time
 ## 2.4 Historical backfill
 
 `data/historical/curtailment_backfill.parquet` is a seven-year
-hourly reconstruction (2020-01-01 → 2026-03-31) across 29 regions
+hourly reconstruction (2020-01-01 → 2026-04-24) across 29 regions
 whose upstream archives support multi-year history. Total: 2,590,195
 hourly observations.
 

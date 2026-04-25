@@ -88,7 +88,7 @@ Full field descriptions and update semantics: `dataset/SCHEMA.md`.
 **Location:** `data/historical/curtailment_backfill.parquet`
 **Format:** Apache Parquet 2.6, Snappy.
 **Size:** 2,590,195 rows (≈ 20 MB compressed).
-**Coverage window:** 2020-01-01 → 2026-03-31 (partial-year final
+**Coverage window:** 2020-01-01 → 2026-04-24 (partial-year final
 year).
 **Regions covered:** 29 (all T1-live-TSO; regions without
 multi-year upstream archives are not backfilled).
@@ -164,8 +164,8 @@ citation trail documented in `docs/validation/<region>.md`.
 ## 3.6 Daily global CSV (Figure 3 input)
 
 **Location:** `data/historical/figure3_daily_global.csv`
-**Size:** 2,306 rows × 3 columns (date, eia_total_gwh,
-entsoe_total_gwh).
+**Size:** 2,306 rows × 4 columns (`date`, `eia_gwh`,
+`entsoe_gwh`, `total_gwh`).
 **Built by:** `scripts/validation/figure3_temporal_trace.py`.
 **Purpose:** committed alongside `curtailment_backfill.parquet` so
 reviewers can reproduce Figure 3 without re-merging the 2.59M-row
