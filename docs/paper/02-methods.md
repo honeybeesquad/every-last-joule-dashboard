@@ -78,6 +78,25 @@ snapshot from `data/snapshots/last-good/` if the live call fails or
 returns malformed data. This guarantees no region silently drops out
 of the dataset on an upstream outage.
 
+**Reachability probe vs measured curtailment.** Three of the live-fetch
+entries above (CAMMESA Argentina, COES SINAC Peru, ESKOM data portal
+South Africa) are reachability probes rather than dispatch-level
+curtailment feeds: the loader fetches the public endpoint, confirms
+the source is alive, and stamps the freshness, but emits a calibrated
+typical-shape profile (wind / hydro-seasonal / mixed solar+wind)
+scaled to a published annual anchor — because none of the three
+operators expose a stable unauthenticated machine-readable hourly
+curtailment series. The `sourceNote` on each emitted record states
+the calibration explicitly. CAMMESA Argentina is correctly classified
+as `T3-modelled`; COES SINAC Peru and ESKOM South Africa currently
+carry a `tier: "live"` flag in `src/lib/regions.ts` that routes them
+to `T1-live-TSO` via `deriveTier` even though their hourly profiles
+are calibrated typical shapes rather than measured dispatch — a known
+overstatement listed in `docs/known-limitations.md` (item 6) and
+queued for downgrade in the v1 calibration sweep. EirGrid Ireland, IESO Ontario, AESO
+Alberta, EMI New Zealand, EPİAŞ Turkey, and CEN Chile do produce
+dispatch-derived hourly values from their respective live sources.
+
 ERCOT-West and ERCOT-East are reconstructed from EIA's BA-level feed
 in the v0.5 build (66/34 proportional split keyed to ERCOT IMM
 2024 wind-zone curtailment shares). A direct ERCOT B2C OAuth2 path
