@@ -42,7 +42,7 @@ A reviewer might reasonably ask whether these fractions are hand-picked. The sho
 
 - **2σ for T1.** A 95 % interval under a normal approximation is 1.96σ; rounding to 2 is standard in observational data publication (e.g. the FAIR-NUM-2019 conventions cited in `dataset/FAIR.md`). Curtailment distributions are not normal — they are right-skewed, and 2σ over-covers the left tail while under-covering extreme right-tail events. For the peak-GW point estimate this is a conservative choice (we accept slight over-coverage of the lower bound and slight under-coverage of the upper bound). We flag this explicitly rather than adopt a bootstrap interval that would be harder to reproduce from the archive.
 - **±20 % for T2.** Matches the stated precision bands of the three anchor publishers we rely on. Ember's methodological notes for the Electricity Review call ±20 % a "useful planning accuracy". GGFR satellite flare volume is typically within ±15–25 %. IRENA's renewable statistics work at annual granularity and do not publish sub-annual variance at all.
-- **±40 % for T3.** A doubling of the T2 envelope. The additional uncertainty source is the typical-shape profile. Five shape families are in use across the 56 T3 regions: `solar` (Gaussian peak at local solar noon — Xinjiang, the Middle East fallbacks); `wind` (broad-overnight — Inner Mongolia, Kazakhstan); `hydro-seasonal` (monthly weights, near-flat diurnal — Iceland, Sichuan, Tibet, Yunnan, Russia European grid); `mixed` (capacity-weighted blend — Gansu, Ningxia); `overnight` (geothermal venting window — Kenya, Hawaii). All are industry-typical approximations but none is measured at hourly granularity — this is the "modelled" in T3-modelled.
+- **±40 % for T3.** A doubling of the T2 envelope. The additional uncertainty source is the typical-shape profile. Five shape families are in use across the 56 T3 regions: `solar` (Gaussian peak at local solar noon — Xinjiang, Qinghai, the Middle East fallbacks); `wind` (broad-overnight — Inner Mongolia, Kazakhstan); `hydro-seasonal` (monthly weights, near-flat diurnal — Iceland, Sichuan, Tibet, Yunnan, Russia European grid); `mixed` (capacity-weighted blend — Gansu, Ningxia); `overnight` (geothermal venting window — Kenya, Hawaii). All are industry-typical approximations but none is measured at hourly granularity — this is the "modelled" in T3-modelled.
 
 If later work replaces any T3 region with measured hourly data, its tier transitions to T1 and the envelope narrows accordingly. The dataset schema explicitly records the tier per region so any consumer can filter to just T1 regions if they need tighter calibration.
 
@@ -62,7 +62,7 @@ Does not cover:
 
 Every emitted `RegionData` row includes the three uncertainty fields when the region is in T1, T2, or T3. The parquet snapshot archive (`data/historical/curtailment_history.parquet`) is extended with matching `confidence_tier`, `uncertainty_low_gw`, `uncertainty_high_gw` columns (see `scripts/append_history.py`).
 
-Dashboard tooltips surface the tier label (e.g. "±20 % — published annual anchor"). Figures colour-code points by tier so a reader can see at a glance how much of the global total is T1 vs. T2 vs. T3 (see `scripts/figures/fig4_tier_coverage.py` in the S3 deliverable).
+Dashboard tooltips surface the tier label (e.g. "±20 % — published annual anchor"). Figures colour-code points by tier so a reader can see at a glance how much of the global total is T1 vs. T2 vs. T3 (see `scripts/validation/figure4_coverage_map.py`).
 
 ## Version history
 
