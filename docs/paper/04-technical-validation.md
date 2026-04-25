@@ -210,9 +210,10 @@ a current peak-GW reading; the other 30 are static regions
 without a live fetch yet. Dot area scales with √peakGW so a 10 GW
 hotspot is roughly 3× the visible area of a 1 GW region. The
 top-8 regions by peak GW at render time are labelled; the
-Brazilian northeast cluster (Minas Gerais, Bahia, Rio Grande do
-Norte, Piauí) dominates the current picture, followed by the US
-MISO footprint, Vietnam, Germany, and north India. The specific
+Brazilian wind-and-solar cluster (Minas Gerais in the Southeast
+plus the Northeastern states Bahia, Rio Grande do Norte, and
+Piauí) dominates the current picture, followed by the US MISO
+footprint, Vietnam, Germany, and north India. The specific
 GW values are snapshot-dependent and refresh each dashboard build.
 
 The 30-region gap between `src/lib/regions.ts` (128) and the

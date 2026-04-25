@@ -31,9 +31,11 @@ interconnections; bidding zone for ENTSO-E (Germany, Iberia, France,
 Netherlands, Denmark-West, Poland, Norway NO1–NO5, Sweden-N,
 Sweden-S, Romania, Czech Republic, Italy zones, Greece, Baltics,
 Hungary, Bulgaria, Portugal); sub-state constraint region for
-Brazil (Ceará, Rio Grande do Norte, Bahia, Piauí, Pernambuco plus
-a catch-all NE-other); and national grid for countries without
-public sub-national data. Total: 128 regions. Stable kebab-case IDs
+Brazil (five Northeast states — Ceará, Rio Grande do Norte,
+Bahia, Piauí, Pernambuco — plus six South/Centre-South states —
+Minas Gerais, São Paulo, Mato Grosso, Goiás, Paraná, Rio Grande
+do Sul — and a catch-all NE-other bucket); and national grid for
+countries without public sub-national data. Total: 128 regions. Stable kebab-case IDs
 defined in `src/lib/regions.ts`.
 
 **Time resolution.** Hourly UTC. Finer-cadence upstream feeds
@@ -49,7 +51,7 @@ defined in `src/lib/regions.ts`.
 | EIA Hourly Electric Grid Monitor | 9 U.S. ISOs | REST API, JSON, `api_key` param |
 | AEMO NEMWeb | 5 Australian states | HTTPS ZIP download of Dispatch_SCADA CSV |
 | Elexon BMRS (UK) | 1 region | REST API, JSON/XML |
-| ONS Brazil | 6 NE clusters + South | CSV over HTTPS, ANEEL `id_estado`-grouped |
+| ONS Brazil | 11 state clusters + NE-other catch-all | CSV over HTTPS, ANEEL `id_estado`-grouped |
 | CAMMESA Argentina | 1 | HTML dashboard scrape |
 | COES SINAC Peru | 1 | HTML dashboard scrape |
 | EirGrid Ireland | 1 | HTML dashboard scrape |
