@@ -44,12 +44,15 @@ regions where gas flaring is the dominant "wasted-energy" source.
 
 ## What the dataset contains (150 words)
 
-- **128 regions.** 60 with live TSO feeds (ENTSO-E, EIA, AEMO,
-  Elexon, ONS Brazil, CAMMESA, IESO, AESO, EirGrid, ESKOM, COES,
-  Nord Pool), 57 calibrated to published annual anchors
-  (IRENA, Ember, GGFR, TSO annual reports), 4 flat-baseline flare
-  regions, 7 modelled (static annual + typical diurnal/seasonal
-  shape).
+- **128 regions.** 66 in `T1-live-TSO` (ENTSO-E, EIA — including
+  ERCOT and CAISO sub-zones, AEMO, Elexon, ONS Brazil, CAMMESA, IESO,
+  AESO, EirGrid, ESKOM, COES, Nord Pool); 2 in `T2-annual-calibrated`
+  (Austria APG, Russia Murmansk); 4 flare regions in the `T2`-flare
+  bucket (Permian, West Siberia, South Iraq, East Saudi); 56 in
+  `T3-modelled` (static annual anchor + typical diurnal/seasonal
+  shape — covers most of South Asia, sub-Saharan Africa outside
+  South Africa, the Middle East outside flare, Latin America outside
+  Brazil/Argentina, the Chinese provinces, and Hawaii).
 - **Hourly resolution** for every live-feed region; hourly
   reconstruction backfilled to 2020-01-01 where upstream archives
   support it (2.59 M rows in `curtailment_backfill.parquet`).
