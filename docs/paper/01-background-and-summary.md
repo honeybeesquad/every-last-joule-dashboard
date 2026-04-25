@@ -45,14 +45,18 @@ regions where gas flaring is the dominant "wasted-energy" source.
 ## What the dataset contains (150 words)
 
 - **128 regions.** 66 in `T1-live-TSO` (ENTSO-E, EIA — including
-  ERCOT and CAISO sub-zones, AEMO, Elexon, ONS Brazil, CAMMESA, IESO,
-  AESO, EirGrid, ESKOM, COES, Nord Pool); 2 in `T2-annual-calibrated`
-  (Austria APG, Russia Murmansk); 4 flare regions in the `T2`-flare
-  bucket (Permian, West Siberia, South Iraq, East Saudi); 56 in
-  `T3-modelled` (static annual anchor + typical diurnal/seasonal
-  shape — covers most of South Asia, sub-Saharan Africa outside
-  South Africa, the Middle East outside flare, Latin America outside
-  Brazil/Argentina, the Chinese provinces, and Hawaii).
+  ERCOT and CAISO sub-zones, AEMO, Elexon, ONS Brazil, RTE eco2mix,
+  Energinet, Elia, IESO, AESO, EirGrid, EMI New Zealand, EPİAŞ Turkey,
+  CEN Chile, Nord Pool — plus COES Peru and ESKOM South Africa, both
+  of which are reachability probes that emit calibrated typical-shape
+  profiles; the v1 sweep will downgrade those two to `T3` per
+  §2.2 disclosure); 2 in `T2-annual-calibrated` (Austria APG, Russia
+  Murmansk); 4 flare regions in the `T2`-flare bucket (Permian, West
+  Siberia, South Iraq, East Saudi); 56 in `T3-modelled` (static annual
+  anchor + typical diurnal/seasonal shape — covers most of South Asia,
+  sub-Saharan Africa outside South Africa, the Middle East outside
+  flare, Latin America outside Brazil/Peru, the Chinese provinces,
+  Hawaii, and CAMMESA Argentina).
 - **Hourly resolution** for every live-feed region; hourly
   reconstruction backfilled to 2020-01-01 where upstream archives
   support it (2.59 M rows in `curtailment_backfill.parquet`).
