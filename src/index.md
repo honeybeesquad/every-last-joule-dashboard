@@ -16,7 +16,8 @@ import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
 import { FUEL_ORDER, FUEL_LABEL, FUEL_COLOR, fuelShare, isRenewable } from "./lib/fuel.js";
-import { applyUncertainty, computeBounds } from "./lib/uncertainty.js";
+import { applyUncertainty } from "./lib/uncertainty.js";
+import { splitRegion } from "./lib/split-region.js";
 import { mountGlobe } from "./globe.js";
 
 const ERCOT_NATIVE_ENABLED = false;
@@ -207,39 +208,6 @@ document.getElementById("app-root").innerHTML = `
     </footer>
   </div>
 `;
-
-// Scale a single RegionData into a named sub-region by a fixed ratio.
-// Used to split aggregate live loaders into the sub-zones identified by
-// the 2026-04-24 global-coverage audit (Codex). Profiles, totals, peak,
-// and latestProfile all scale linearly; the sourceNote records the split
-// ratio so the provenance stays visible in the UI and CLI output.
-//
-// Uncertainty propagation: confidenceTier is inherited from source (the
-// split is presentational, the underlying calibration tier is unchanged).
-// uncertaintyLow/HighGW are RECOMPUTED against the new (scaled) peakGW
-// so the envelope remains internally consistent — without this, the bounds
-// would still reference the unsplit peak.
-function splitRegion(source, newId, ratio, note) {
-  const scaleArr = (arr) => (Array.isArray(arr) ? arr.map((v) => v * ratio) : arr);
-  const newPeakGW = (source.peakGW ?? 0) * ratio;
-  const tier = source.confidenceTier;
-  const bounds = tier
-    ? computeBounds(newPeakGW, tier)
-    : { uncertaintyLowGW: undefined, uncertaintyHighGW: undefined };
-  return {
-    ...source,
-    regionId: newId,
-    profile: scaleArr(source.profile),
-    latestProfile: scaleArr(source.latestProfile),
-    totalTWh: (source.totalTWh ?? 0) * ratio,
-    peakGW: newPeakGW,
-    uncertaintyLowGW: bounds.uncertaintyLowGW,
-    uncertaintyHighGW: bounds.uncertaintyHighGW,
-    sourceNote: note
-      ? `${source.sourceNote ?? ""} | ${note}`
-      : source.sourceNote
-  };
-}
 
 const regionData = {
   ...(ERCOT_NATIVE_ENABLED

@@ -33,6 +33,7 @@ interface PerRegion {
   fuelShare: unknown;
   uncertaintyLowGW?: unknown;
   uncertaintyHighGW?: unknown;
+  observedStdGW?: unknown;
   confidenceTier?: unknown;
 }
 
@@ -136,6 +137,9 @@ function validate(obj: unknown, ctx: string): string[] {
   }
   if ("uncertaintyHighGW" in r && r.uncertaintyHighGW !== undefined) {
     if (!isNonNegNumber(r.uncertaintyHighGW)) errs.push(`uncertaintyHighGW not non-neg number`);
+  }
+  if ("observedStdGW" in r && r.observedStdGW !== undefined) {
+    if (!isNonNegNumber(r.observedStdGW)) errs.push(`observedStdGW not non-neg number`);
   }
 
   // Cross-field invariant — the envelope must straddle peakGW. This

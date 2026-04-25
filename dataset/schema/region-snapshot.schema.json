@@ -76,6 +76,11 @@
       "minimum": 0,
       "description": "Upper bound of the per-tier envelope on peakGW (peakGW + \u03b4). Same per-tier \u03b4 as uncertaintyLowGW."
     },
+    "observedStdGW": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Empirical standard deviation of historical annual peakGW, used for T1 2\u03c3 uncertainty bounds when available."
+    },
     "confidenceTier": {
       "type": "string",
       "enum": ["T1-live-TSO", "T2-annual-calibrated", "T3-modelled", "T4-structural-gap"],
