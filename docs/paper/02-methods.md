@@ -67,6 +67,9 @@ in `src/lib/regions.ts`.
 | IESO Ontario | 1 | XML report portal |
 | AESO Alberta | 1 | HTML CSD servlet |
 | ESKOM data portal (South Africa) | 1 | HTML scrape |
+| EMI New Zealand (Electricity Authority) | 1 | CSV download (Generation_MD dataset) |
+| EPİAŞ Turkey (Şeffaflık) | 1 | REST API, JSON real-time generation |
+| CEN Chile (Coordinador Eléctrico Nacional) | 2 (Atacama + southern wind) | Headless-Chrome XLSX parse (Cloudflare-gated) |
 
 Every loader is implemented in `src/data/<source>.json.ts` as an
 Observable Framework data loader. Every loader wraps its fetch in
@@ -74,6 +77,13 @@ Observable Framework data loader. Every loader wraps its fetch in
 snapshot from `data/snapshots/last-good/` if the live call fails or
 returns malformed data. This guarantees no region silently drops out
 of the dataset on an upstream outage.
+
+ERCOT-West and ERCOT-East are reconstructed from EIA's BA-level feed
+in the v0.5 build (66/34 proportional split keyed to ERCOT IMM
+2024 wind-zone curtailment shares). A direct ERCOT B2C OAuth2 path
+(`src/data/ercot-native.json.ts`) is wired in as a fallback for
+deployments where the EIA proxy is unavailable; both routes resolve
+to the same two region IDs.
 
 Upstream authentication requirements are documented in the
 repository root `README.md` (`ENTSOE_TOKEN`, `EIA_API_KEY`,
