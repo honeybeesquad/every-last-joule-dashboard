@@ -105,6 +105,8 @@ The ERCOT-west and ERCOT-east loaders sit in `T1-live-TSO` because the upstream 
 
 The loader does not use plant-ID prefixes. It reads the explicit ONS `id_estado` column and maps state codes to dashboard clusters. This is more stable than prefix inference because ONS documents `id_estado` as a required two-character state field, while `id_ons` is the plant or plant-set identifier.
 
+In addition to the five named NE clusters above, `src/data/brazil-ne.json.ts` also emits six South/Centre-South Brazilian state clusters (`brazil-mg`, `brazil-sp`, `brazil-mt`, `brazil-go`, `brazil-pr`, `brazil-rs`) and a catch-all `brazil-other` cluster that captures NE constrained-off rows whose `id_estado` is not one of the five named NE states (typically Maranhão MA or unmapped/pre-2024 entries). The catch-all preserves total-volume reconciliation against the ONS national curtailment archive even when individual rows fall outside the named-cluster set.
+
 ### Citation Chain
 
 ONS constrained-off dictionaries define the relevant fields:
