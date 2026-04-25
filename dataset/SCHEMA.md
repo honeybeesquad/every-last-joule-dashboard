@@ -116,7 +116,7 @@ Confidence-tier and uncertainty columns are not on the hourly file — the per-t
 
 Location: `data/historical/per_region_annual.parquet`
 
-The analysis-ready view of the hourly backfill: one row per (`region_id`, `year`), with annual TWh, peak GW, and the calibrated uncertainty envelope. Produced by `scripts/build_annual_rollup.py`. This is the primary input for Figure 2 (validation scatter) and Figure 4 (tier coverage) of the Scientific Data descriptor.
+The analysis-ready view of the hourly backfill: one row per (`region_id`, `year`), with annual TWh, peak GW, and the calibrated uncertainty envelope. Produced by `scripts/build_annual_rollup.py`. This is the primary input for Figure 2 (validation scatter) and Figure 5 (top-20 multi-year timeseries) of the Scientific Data descriptor. Figure 4 (tier coverage) reads region tiers directly from `src/lib/regions.ts` and does not depend on this rollup; Figure 1 reads the latest live snapshots.
 
 Current size: **203 rows × 12 columns** (29 regions × 7 years).
 
