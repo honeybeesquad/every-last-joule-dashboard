@@ -86,10 +86,11 @@ no public hourly upstream source. Explicit gaps:
   Central Asia is absent beyond Kazakhstan (T3 wind).
 - **Chinese provincial-level hourly.** All eight Chinese provinces
   surface as T3-modelled — typical diurnal/seasonal shapes (solar
-  cosine for Xinjiang, monthly-seasonal hydro for Sichuan, Tibet,
-  Yunnan; wind broad-overnight for Inner Mongolia; mixed
-  fuel-share for Gansu, Ningxia) scaled to NEA / Ember published
-  annuals. No public hourly API exists for any Chinese province.
+  cosine for Xinjiang and Qinghai; monthly-seasonal hydro for
+  Sichuan, Tibet, Yunnan; wind broad-overnight for Inner Mongolia;
+  mixed fuel-share for Gansu, Ningxia) scaled to NEA / Ember
+  published annuals. No public hourly API exists for any Chinese
+  province.
 
 Full structural-gap ledger: `docs/known-limitations.md`.
 
