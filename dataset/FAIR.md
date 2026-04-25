@@ -76,9 +76,10 @@ attribution example. This upgrades F1 to **Pass**.
 - `docs/methodology/*.md` — per-source audit trails
   (`entsoe-rates.md`, `china-provinces.md`, `flare-ercot-brazil.md`,
   `historical-backfill.md`, `uncertainty.md`, `validation-discrepancies.md`).
-- `docs/validation/<region>.md` — 132 per-region validation documents each
-  covering provenance, calibration anchor, discrepancy vs published
-  annual, and v0.5 decision.
+- `docs/validation/<region>.md` — 130 per-region validation documents
+  (plus a directory README and `_template.md`) each covering
+  provenance, calibration anchor, discrepancy vs published annual,
+  and v0.5 decision.
 - `src/methodology.md` — the public-facing methodology page, same source
   of truth as the paper Methods section.
 
@@ -320,7 +321,8 @@ Scientific Data-accepted, and SPDX-registered.
   surveys every material gap between reconstruction and published
   TSO/IMM/SoM anchor, with diagnostic category and v1 recalibration
   candidate where applicable.
-- `docs/validation/<region>.md` (132 files) carry per-region provenance
+- `docs/validation/<region>.md` (130 region files plus README +
+  `_template.md`) carry per-region provenance
   prose — what the anchor is, where it came from, what discrepancy
   category applies, and what v0.5 does about it.
 - The build pipeline is deterministic: same upstream response + same

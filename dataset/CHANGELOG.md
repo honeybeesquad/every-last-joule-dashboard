@@ -4,8 +4,8 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
-### Added — S1 Validation sprint (132 per-region triangulation MDs)
-- `docs/validation/<region>.md` for every tier-live region plus every static/flare region with a public anchor (132 files total). Each file carries a commit-grade discrepancy analysis vs. published TSO / ISO / IMM / SoM / IRENA / Ember / GGFR annuals.
+### Added — S1 Validation sprint (130 per-region triangulation MDs)
+- `docs/validation/<region>.md` for every tier-live region plus every static/flare region with a public anchor (130 region files plus a directory README and `_template.md` scaffold = 132 *.md total in the directory). Each region file carries a commit-grade discrepancy analysis vs. published TSO / ISO / IMM / SoM / IRENA / Ember / GGFR annuals.
 - `scripts/validation/enrich_discrepancy.py` — gemini-2.5-flash-backed enrichment script with rule 4 enforced ("say 'no anchor extracted' rather than making one up"). Idempotent via `--skip-enriched`.
 - `scripts/validation/external-anchors.json` — 123 per-region anchor records keyed by `regions.ts` ID, with `tso_annual_latest` plus, where available, year-specific `tso_annual_YYYY` totals, source URLs, and quoted phrases. The strict subset of 23 region-year pairs that have *both* a multi-year backfill *and* an exact-year TSO total feeds Figure 2; the broader anchor pool backs the per-region validation MDs and Figure 4 tier coverage.
 
