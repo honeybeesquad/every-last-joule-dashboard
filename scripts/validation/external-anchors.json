@@ -1,5 +1,5 @@
 {
-  "_description": "Curated external anchors per region for S1 Technical Validation. Seeded from code comments in src/data/*.json.ts and docs/data-source-log.md on 2026-04-24; enrich iteratively as paper-grade sources are confirmed.",
+  "_description": "Curated external anchors per region for S1 Technical Validation. Seeded from code comments in src/data/*.json.ts and docs/data-source-log.md on 2026-04-24; enrich iteratively as paper-grade sources are confirmed. Region keys match `src/lib/regions.ts` IDs except for two legacy aggregates: `iso-ne` and `nyiso` are kept (alongside their post-split sub-zones `iso-ne-rest`, `iso-ne-maine-vermont`, `nyiso-rest`, `nyiso-zones-d-e`) because the seven-year backfill rollup (`data/historical/per_region_annual.parquet`) was built before the sub-zone split and figure 2 joins on the parent aggregate. The sub-zone rows are documentary, used by the per-region validation MDs.",
   "_fields": {
     "tso_annual_latest": "Human-readable most-recent TSO-published annual curtailment, e.g. 'ERCOT ~8 TWh (2024, Potomac Economics SoM)'",
     "tso_annual_twh": "Dict of year→TWh numeric where known: {'2024': 8.0}",
@@ -35,7 +35,7 @@
     "tso_annual_latest": "CEN 2024 Atacama solar curtailment ~2 TWh (MRE / central system dispatch restrictions)",
     "limitations": "Cloudflare-gated; live feed via Playwright-Chrome bypass (see src/data/atacama-chile.json.ts). Backfill not yet attempted — would require Playwright-driven archive scrape."
   },
-  "australia-nt-pilbara": {
+  "nt-pilbara": {
     "tso_annual_latest": "PSM 2024 Pilbara grid curtailment ~0.1 TWh (mining-dominated demand)"
   },
   "baltics": {
