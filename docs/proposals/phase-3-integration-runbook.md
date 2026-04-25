@@ -17,7 +17,7 @@ Option-B path.
 - [ ] `CODEX-2` (S5 splitRegion observedStdGW) merged.
 - [ ] `CODEX-3` (N3 misleading sourceNote) merged.
 - [ ] `CODEX-4` (S2 sourceStatus degraded enum) merged.
-- [ ] `GEMINI-1` (B2+B3+N1 region/zone count + drop ±20% T4 band) merged.
+- [x] `GEMINI-1` (B2+B3+N1 region/zone count + drop ±20% T4 band) — **already satisfied by prior commits** (audit 2026-04-26): `git grep -E "140 (sub-)?regions|approximately 140|12 ENTSO-E|T4.*±20"` returns empty across `README.md`, `docs/paper/`, `docs/methodology/`, `docs/background/`, `dataset/`. Paper says "128 regions" everywhere; T4 row in `uncertainty.md` already shows `n/a` envelope, not ±20%. Empty Gemini branch deleted; no production diff was needed.
 - [ ] `GEMINI-2` (S6 T2 constant-rate doc in uncertainty.md) merged.
 - [ ] `GEMINI-3` (S1 implementation: anchor schema v2 migration) merged.
 - [ ] `CODEX-5` (S3 end-to-end reproducer) merged.
