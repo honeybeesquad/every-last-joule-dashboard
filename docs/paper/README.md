@@ -11,15 +11,19 @@ section per the journal's submission template.
 |---:|---|---:|---:|---|
 | 1 | [`01-background-and-summary.md`](01-background-and-summary.md) | 500–700 | 700 | Skeleton draft (Simon keeps final voice) |
 | 2 | [`02-methods.md`](02-methods.md) | 1500–3000 | 1371 | First draft from methodology docs |
-| 3 | [`03-data-records.md`](03-data-records.md) | 500–1000 | 1033 | First draft from `dataset/SCHEMA.md` |
+| 3 | [`03-data-records.md`](03-data-records.md) | 500–1000 | 1258 | First draft from `dataset/SCHEMA.md`; reference-table dense, slightly over upper bound |
 | 4 | [`04-technical-validation.md`](04-technical-validation.md) | 1000–2000 | 1490 | First draft from validation-discrepancies.md |
 | 5 | [`05-usage-notes.md`](05-usage-notes.md) | 500–1000 | 909 | First draft from dataset/README.md + known-limitations.md |
 | 6 | [`06-code-availability.md`](06-code-availability.md) | 100–200 | 191 | First draft |
 | — | [`figure-captions.md`](figure-captions.md) | n/a | 912 | Committed in S2 |
 
-**Body total (ex. figure captions):** ≈ 5,700 words — within
-Scientific Data's typical 2,500–4,000-word body + 5 figures + 3
-tables envelope (Nature Portfolio submission template).
+**Body total (ex. figure captions):** ≈ 5,900 words — Scientific
+Data's typical envelope is 2,500–4,000 words of body + 5 figures + 3
+tables (Nature Portfolio submission template). Section 3 sits
+slightly above its individual target because it documents the full
+column schema for three Parquet files plus four supporting CSVs/JSON
+for the figures; trimming the schema tables would push content into
+`dataset/SCHEMA.md` which the section already cross-references.
 
 ## Section responsibilities
 

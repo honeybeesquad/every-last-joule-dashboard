@@ -92,20 +92,29 @@ Full field descriptions and update semantics: `dataset/SCHEMA.md`.
 year).
 **Regions covered:** 29 (all T1-live-TSO; regions without
 multi-year upstream archives are not backfilled).
-**Partitioning on disk:** `data/historical/backfill/year=YYYY/` for
-per-year consumption without full-file read.
+**Partitioning on disk:** flat per-year files at
+`data/historical/backfill/<source>_<zone>_<year>.parquet`
+(e.g. `eia_caiso_2024.parquet`, `entsoe_germany_2023.parquet`)
+for per-year consumption without a full-file read.
 
 ### Schema
 
 | Column | Type | Description |
 |---|---|---|
-| `observation_timestamp` | `string` (ISO-8601 UTC) | Hour of observation. |
-| `region_id` | `string` | Stable region ID. |
+| `observation_timestamp` | `string` (ISO-8601 UTC) | Start of the hour the value covers. |
+| `region_id` | `string` | Stable region ID, matches the JSON snapshot. |
 | `curtailment_gw` | `float32` | Reconstructed hourly curtailment in GW. |
-| `generation_gw` | `float32` | Observed hourly generation in GW (basis for reconstruction). |
-| `applied_rate` | `float32` | Calibration rate applied (per region-year). |
-| `source` | `string` | `"entsoe"` or `"eia"`. |
-| `confidence_tier` | `string` | Always `"T1-live-TSO"` in v0.5. |
+| `fuel` | `string` | `"wind"`, `"solar"`, `"hydro"`, `"geothermal"`, or `"flare"` — the technology the curtailed energy came from. |
+| `source` | `string` | Provenance slug: `"entsoe"`, `"eia"`, `"nord-pool"`, …. |
+| `rate_applied` | `float32` | Calibration rate used to convert raw generation into curtailment (`0.0` when the source publishes curtailment directly). |
+| `rate_source` | `string` | Human-readable provenance of the rate. |
+
+Confidence-tier and uncertainty columns are deliberately *not* on
+this file — the per-tier envelope is calibrated against annual
+aggregates and lives on the annual rollup (§3.4). Consumers who
+need to attach uncertainty to an hourly slice join the rollup on
+`region_id`. Full schema, including the rationale for that split,
+is in `dataset/SCHEMA.md` § "Parquet hourly backfill".
 
 The backfill is the source of truth for Figures 2, 3, and 5. Figure
 4 is independent (tier-assignment only, no hourly data). Figure 1
@@ -114,20 +123,28 @@ uses the latest snapshot, not the backfill.
 ## 3.4 Per-region annual rollup
 
 **Location:** `data/historical/per_region_annual.parquet`
-**Size:** 203 rows (29 regions × 7 years, minus incomplete
-partial-year pairs).
+**Size:** 203 rows (29 regions × 7 years).
 **Built by:** `scripts/build_annual_rollup.py` from the backfill.
 **Purpose:** feeds Figure 5 (top-20 timeseries) and the validation
-scatter (Figure 2).
+scatter (Figure 2). This is the file that carries the calibrated
+uncertainty envelope; the hourly backfill (§3.3) does not.
 
 ### Schema
 
 | Column | Type | Description |
 |---|---|---|
 | `region_id` | `string` | Stable region ID. |
-| `year` | `int` | Calendar year. |
-| `annual_twh` | `float32` | Reconstructed annual total (TWh). |
-| `confidence_tier` | `string` | Tier at time of rollup. |
+| `year` | `int16` | Calendar year. |
+| `source` | `string` | First non-null `source` value within the (region, year) partition. |
+| `n_hourly_rows` | `int32` | Non-null hours observed for this region in this year (full year = 8,760, leap year = 8,784). |
+| `annual_twh` | `float32` | Σ `curtailment_gw` × 1h ÷ 1000 across the year. |
+| `peak_gw` | `float32` | Max hourly `curtailment_gw` across the year. |
+| `confidence_tier` | `string` | `T1-live-TSO`, `T2-annual-calibrated`, or `T3-modelled`. |
+| `tier_fraction` | `float32` | Per-tier envelope half-width (0.15 / 0.20 / 0.40). |
+| `uncertainty_low_gw` | `float32` | `peak_gw × (1 − tier_fraction)`, clamped to ≥ 0. |
+| `uncertainty_high_gw` | `float32` | `peak_gw × (1 + tier_fraction)`. |
+| `uncertainty_low_twh` | `float32` | `annual_twh × (1 − tier_fraction)`, clamped to ≥ 0. |
+| `uncertainty_high_twh` | `float32` | `annual_twh × (1 + tier_fraction)`. |
 
 ## 3.5 Validation scatter CSV
 

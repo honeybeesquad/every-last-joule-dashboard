@@ -50,7 +50,7 @@ The backfill therefore is NOT a claim that the calibration rate was identical in
 
 ## Output schema
 
-Same as `dataset/SCHEMA.md` § "Historical backfill". Fields:
+Same as `dataset/SCHEMA.md` § "Parquet hourly backfill". Fields:
 
 - `observation_timestamp` (str, ISO-8601 UTC)
 - `region_id` (str)
