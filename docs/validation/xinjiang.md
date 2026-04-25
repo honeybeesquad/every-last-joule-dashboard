@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap — see gansu.
+No public hourly archive for Chinese provincial dispatch-down. Curtailment here is mainly wind and solar export congestion in large desert bases; the loader emits a typical solar shape because the visible diurnal signal is currently represented by a PV day, even though the actual mix is roughly 5.0 TWh wind + 3.2 TWh solar = 8.2 TWh/yr central estimate from NEA 2024 wind/PV utilisation rates × Huaon/NBS Xinjiang generation by fuel. Uncertainty range 6.8–10.0 TWh, medium confidence. The wind-shape mismatch is documented and intentional pending a per-province wind/solar split shape upgrade in v1. T3-modelled, ±40% envelope; see `docs/known-limitations.md` item 10 and `docs/methodology/china-provinces.md`.
 
 ## Links
 

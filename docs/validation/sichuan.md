@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap — see gansu. Hydro spill is seasonal (spring melt), not diurnal; hourly shape is near-flat by design.
+No public hourly archive for Chinese provincial dispatch-down. The mechanism is wet-season hydro spill (Dadu, Yalong, Jinsha river basins) plus occasional local transmission/export limits; the loader emits a hydro-seasonal shape (no diurnal peak — spill is monthly, not hour-of-day) scaled to a 30 TWh/yr central estimate from NEA 2024 river-basin utilisation, Huaon/NBS Sichuan generation, and a public July 2024 report citing 3.37 TWh of dispatch-controlled hydro spill in that single month. Annualising one monsoon month is inherently uncertain — uncertainty range 20–36 TWh, low confidence. T3-modelled, ±40% envelope; see `docs/known-limitations.md` item 10 and `docs/methodology/china-provinces.md` for the basin-to-province mapping and full source chain.
 
 ## Links
 

@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap — see gansu.
+No public hourly archive for Chinese provincial dispatch-down. The mechanism is balanced wind+PV curtailment on a smaller provincial grid with high renewable penetration and finite export/industrial absorption; the loader emits a 50/50 wind+solar mixed shape (solar peak UTC 4.5, wind peak UTC 15) scaled to a 2.0 TWh/yr central estimate from NEA 2024 wind/PV utilisation × Huaon/NBS Ningxia generation by fuel. Uncertainty range 1.5–2.6 TWh, medium confidence. T3-modelled, ±40% envelope; see `docs/known-limitations.md` item 10 and `docs/methodology/china-provinces.md`.
 
 ## Links
 

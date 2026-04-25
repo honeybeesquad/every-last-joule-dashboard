@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Structural gap — see gansu.
+No public hourly archive for Chinese provincial dispatch-down. The mechanism is wind-dominant transmission bottlenecking in the Monxi/Mongdong grids with smaller PV shoulder-hour curtailment; the loader emits a typical wind shape (peak UTC 15) scaled to a 12.6 TWh/yr central estimate from NEA Monxi/Mongdong wind/PV utilisation × Huaon/NBS Inner Mongolia generation by fuel. NEA reports Monxi and Mongdong separately; the central value uses the simple wind-rate average because the public generation series is province-level. Uncertainty range 10.5–15.0 TWh, medium confidence. T3-modelled, ±40% envelope; see `docs/known-limitations.md` item 10 and `docs/methodology/china-provinces.md`.
 
 ## Links
 
