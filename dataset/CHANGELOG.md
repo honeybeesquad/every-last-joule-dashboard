@@ -7,7 +7,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 ### Added — S1 Validation sprint (130 per-region triangulation MDs)
 - `docs/validation/<region>.md` for every tier-live region plus every static/flare region with a public anchor (130 region files plus a directory README and `_template.md` scaffold = 132 *.md total in the directory). Each region file carries a commit-grade discrepancy analysis vs. published TSO / ISO / IMM / SoM / IRENA / Ember / GGFR annuals.
 - `scripts/validation/enrich_discrepancy.py` — gemini-2.5-flash-backed enrichment script with rule 4 enforced ("say 'no anchor extracted' rather than making one up"). Idempotent via `--skip-enriched`.
-- `scripts/validation/external-anchors.json` — 123 per-region anchor records keyed by `regions.ts` ID, with `tso_annual_latest` plus, where available, year-specific `tso_annual_YYYY` totals, source URLs, and quoted phrases. The strict subset of 23 region-year pairs that have *both* a multi-year backfill *and* an exact-year TSO total feeds Figure 2; the broader anchor pool backs the per-region validation MDs and Figure 4 tier coverage.
+- `scripts/validation/external-anchors.json` — 123 per-region anchor records keyed by `regions.ts` ID, with `tso_annual_latest` plus, where available, year-specific `tso_annual_YYYY` totals, source URLs, and quoted phrases. The strict subset of 23 region-year pairs that have *both* a multi-year backfill *and* an exact-year TSO total feeds Figure 2; the broader anchor pool backs the per-region validation MDs. Figure 4 is independent of the anchor pool — it reads region tiers directly from `src/lib/regions.ts`.
 
 ### Added — HB Historical Backfill sprint (2020–2026 hourly reconstruction)
 - `data/historical/curtailment_backfill.parquet` (2,590,195 hourly rows × 29 regions × 7 years) — seven-year hourly curtailment reconstruction via generation × calibrated-rate for every T1-live-TSO region whose upstream archive supports multi-year history.
@@ -33,12 +33,12 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 - `docs/paper/figure-captions.md` — journal-ready Scientific Data house-style captions for all 5 figures, each ≤90 words with source-data statement.
 
 ### Added — S3 Data Descriptor manuscript drafts
-- `docs/paper/01-background-and-summary.md` (700 words) — skeleton with argument thread; Simon keeps final voice.
-- `docs/paper/02-methods.md` (1,371 words) — scope, sources, calibration, backfill, tier model, agentic workflow disclosure.
-- `docs/paper/03-data-records.md` (1,033 words) — JSON snapshots, Parquet history, 7-yr backfill, annual rollup, scatter CSV, anchor table, validation MDs.
-- `docs/paper/04-technical-validation.md` (1,490 words) — 23 anchor pairs classified, 12 material discrepancies diagnosed.
-- `docs/paper/05-usage-notes.md` (909 words) — load examples, tier interpretation, structural gaps, citation, re-use suggestions.
-- `docs/paper/06-code-availability.md` (191 words) — repo pointer, dependencies, regeneration docs.
+- `docs/paper/01-background-and-summary.md` (~740 words) — skeleton with argument thread; Simon keeps final voice.
+- `docs/paper/02-methods.md` (~1,460 words) — scope, sources, calibration, backfill, tier model, agentic workflow disclosure.
+- `docs/paper/03-data-records.md` (~1,320 words) — JSON snapshots, Parquet history, 7-yr backfill, annual rollup, scatter CSV, anchor table, validation MDs.
+- `docs/paper/04-technical-validation.md` (~1,590 words) — 23 anchor pairs classified, 12 material discrepancies diagnosed.
+- `docs/paper/05-usage-notes.md` (~940 words) — load examples, tier interpretation, structural gaps, citation, re-use suggestions.
+- `docs/paper/06-code-availability.md` (~190 words) — repo pointer, dependencies, regeneration docs.
 - `docs/paper/README.md` — section index with word counts and cross-reference map.
 
 ### Added — S3 dataset-level validation survey

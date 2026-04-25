@@ -9,15 +9,15 @@ section per the journal's submission template.
 
 | # | File | Target words | Draft words | Status |
 |---:|---|---:|---:|---|
-| 1 | [`01-background-and-summary.md`](01-background-and-summary.md) | 500–700 | 700 | Skeleton draft (Simon keeps final voice) |
-| 2 | [`02-methods.md`](02-methods.md) | 1500–3000 | 1371 | First draft from methodology docs |
-| 3 | [`03-data-records.md`](03-data-records.md) | 500–1000 | 1258 | First draft from `dataset/SCHEMA.md`; reference-table dense, slightly over upper bound |
-| 4 | [`04-technical-validation.md`](04-technical-validation.md) | 1000–2000 | 1490 | First draft from validation-discrepancies.md |
-| 5 | [`05-usage-notes.md`](05-usage-notes.md) | 500–1000 | 909 | First draft from dataset/README.md + known-limitations.md |
-| 6 | [`06-code-availability.md`](06-code-availability.md) | 100–200 | 191 | First draft |
-| — | [`figure-captions.md`](figure-captions.md) | n/a | 912 | Committed in S2 |
+| 1 | [`01-background-and-summary.md`](01-background-and-summary.md) | 500–700 | ~740 | Skeleton draft (Simon keeps final voice) |
+| 2 | [`02-methods.md`](02-methods.md) | 1500–3000 | ~1460 | First draft from methodology docs |
+| 3 | [`03-data-records.md`](03-data-records.md) | 500–1000 | ~1320 | First draft from `dataset/SCHEMA.md`; reference-table dense, slightly over upper bound |
+| 4 | [`04-technical-validation.md`](04-technical-validation.md) | 1000–2000 | ~1590 | First draft from validation-discrepancies.md |
+| 5 | [`05-usage-notes.md`](05-usage-notes.md) | 500–1000 | ~940 | First draft from dataset/README.md + known-limitations.md |
+| 6 | [`06-code-availability.md`](06-code-availability.md) | 100–200 | ~190 | First draft |
+| — | [`figure-captions.md`](figure-captions.md) | n/a | ~970 | Committed in S2 |
 
-**Body total (ex. figure captions):** ≈ 5,900 words — Scientific
+**Body total (ex. figure captions):** ≈ 6,240 words — Scientific
 Data's typical envelope is 2,500–4,000 words of body + 5 figures + 3
 tables (Nature Portfolio submission template). Section 3 sits
 slightly above its individual target because it documents the full
