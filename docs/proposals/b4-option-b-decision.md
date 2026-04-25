@@ -250,6 +250,73 @@ Pre-listed so the dispatch is one fill-in-the-blanks step:
   appear in `src/lib/regions.ts` AND in `src/lib/uncertainty.ts`'s
   `ConfidenceTier` union (CODEX-6's tier-coherence check enforces).
 
+## Post-B1 rerun (2026-04-26) — concrete zone list locked
+
+After B1 (PT15M) merged, regenerated `data/historical/per_region_annual.parquet`
+and reran `python3 scripts/calibration/empirical_tier_bands.py --by-derivation`.
+
+### Finding 1: PT15M fix did NOT change parquet values
+
+The Python rollup (`scripts/build_annual_rollup.py` + the upstream
+`scripts/backfill/entsoe/backfill_zone.py`) averages PT15M points to PT1H
+*before* writing the hourly archive (lines 198-210 of the backfiller),
+so its annual TWh values were always interval-correct. The PT15M overcount
+was a JS-only bug in `src/lib/profile.ts::totalTWh30d`, affecting the live
+dashboard's per-region 30-day display only — not the validation parquet,
+not the empirical-tier analysis, and not the T1b/T1c classification.
+
+The runbook's pre-B1 prediction ("Iberia +333% → +8% post-fix") was
+therefore wrong about the mechanism. Iberia's residual is unchanged
+post-B1 because it never depended on the PT15M fix.
+
+### Finding 2: T1b/T1c population locked from rate-derivation classifier
+
+Per the script's machine-readable output:
+
+| Sub-tier | Zones (n) | Members |
+|---|---|---|
+| **T1c** (neighbour-extrapolated) | 1 | `switzerland` (Czech rate, residual −35.5% — within predicted ±30–40% band) |
+| **T1b** (domestic-anchor-modelled or regional-proxy) | 4 | `italy-sardinia` (+87.6%), `netherlands` (−73.0%), `baltics` (−58.9%), `italy-north-zone` (−45.0%) |
+| **T1a** (own-tso direct) | 18 | All other T1 zones |
+
+Total: 23 T1 zones → 18 T1a + 4 T1b + 1 T1c.
+
+This is the locked input set for CODEX-7. The structural change in
+`regions.ts`, `uncertainty.ts`, tests, and golden file follows the
+implementation spec above unchanged.
+
+### Finding 3: T1b residuals exceed the predicted ±20–25% envelope
+
+The four T1b zones cluster around |Δ%| 45–88%, well outside the predicted
+±20–25%. Two interpretations:
+
+a. **The T1b envelope is empirically ±50% (or ±90% at P67 in the
+   classifier output), not ±20–25%.** Adopt the empirical number;
+   document the wider band in §2.5 / §5.2 paper tier table.
+b. **The residuals reveal anchor-scope mismatches in
+   `external-anchors.json`, not loader-rate inaccuracy.** Recover the
+   correct anchor scope per zone before re-running B4. Examples:
+   - `iberia` anchor is REE narrow 2.1 TWh; loader was rate-calibrated
+     against REE broad 10.6 TWh (Informe del Sistema Eléctrico). Loader
+     output 9.08 TWh ≈ broad-scope anchor; calibration is internally
+     consistent at the broad scope.
+   - `germany` anchor is BNetzA 23.2 TWh (redispatch+EEG+offshore);
+     loader covers EEG only. Loader output 9.42 TWh ≈ EEG share.
+   - `norway-no3` / `norway-no4` show +622% / +298% against StatNett
+     0.1 / 0.3 TWh anchors; need StatNett scope verification.
+   - `iso-ne` 0.13 TWh vs ISO-NE 0.034 TWh: scope check needed.
+
+**Recommendation:** Treat anchor-scope reconciliation as a **separate
+workstream** (Phase 2.5, before CODEX-7). The T1b envelope number for
+the paper should be set ONLY after anchor scope is reconciled. CODEX-7
+implementation can proceed on the locked 5-zone list with a placeholder
+envelope number (e.g., ±50% at the script's empirical P67) that gets
+replaced when anchor scope is settled.
+
+This finding is independent of Option B's structural correctness —
+the framework is right; the envelope numbers need an anchor-cleanup
+pass.
+
 ## Status
 
 | Step | Owner | Status |
@@ -257,6 +324,9 @@ Pre-listed so the dispatch is one fill-in-the-blanks step:
 | Decision recorded | Simon + Claude | ✅ this doc |
 | Integration runbook updated to single-path | Claude | bundled with this commit |
 | Rewrite checklist specialised to Option B | Claude | bundled with this commit |
-| CODEX-7 dispatch brief | Claude | post-B1+rerun |
-| Implementation | Codex (CODEX-7) | post-B1+rerun |
+| Post-B1 parquet rerun | Claude | ✅ 2026-04-26 |
+| Concrete T1a/T1b/T1c populations locked | Claude | ✅ 2026-04-26 (above) |
+| Anchor-scope reconciliation pass | Claude (proposed) | **pending — Phase 2.5** |
+| CODEX-7 dispatch brief | Claude | ready (zone list locked) |
+| Implementation | Codex (CODEX-7) | blocked on Codex usage |
 | Paper sweep | Gemini or Claude | post-CODEX-7 |
