@@ -6,7 +6,7 @@ This checklist is the mechanical hand-off so the post-merge paper rewrite is a s
 
 - **Edit-now (no dependency)** — fixes that don't depend on Codex/Gemini PRs landing first.
 - **Edit-after-B1** — needs CODEX-1 (PT15M overcount fix) to land + B4 re-run before numbers are correct.
-- **Edit-after-decision** — needs Simon's choice on B4 Option A/B/C before envelope phrasing is final.
+- **Edit-after-CODEX-7** — needs the Option B implementation (T1 → T1a/T1b/T1c subdivision) to land before the new tier names exist in the codebase. **B4 Option B is locked** (`docs/proposals/b4-option-b-decision.md`); this section was previously "Edit-after-decision" and is now specialised to that single path.
 
 ## Stale rhetoric inventory
 
@@ -112,31 +112,36 @@ Re-run `scripts/tally-tiers.ts` (post-B2/B3) — that's the source of truth. **N
 
 **Sequence:** B1 must land first. Then I run B4 re-analysis to identify the residual outlier set. Then B5 implementation.
 
-### Edit-after-decision: T1 envelope phrasing
+### Edit-after-CODEX-7: T1 → T1a/T1b/T1c subdivision
 
-**Driver:** B4 Option A/B/C (Simon decides post-B1+re-run).
+**Driver:** B4 Option B is the locked decision (`docs/proposals/b4-option-b-decision.md`).
 
-**Three branches:**
+**What changes:** the single "T1 ±15%" envelope splits into three
+sub-tiers reflecting calibration-rate provenance. Every "T1" reference
+in the paper is annotated to specify which sub-tier; no unqualified "T1"
+remains.
 
-**Option A (keep ±15%, document residual bias):**
-- Every "T1 ±15%" reference in the paper stays.
-- ADD: a §4.2.1 paragraph documenting "T1 carries a documented systematic bias of +X% post-PT15M-fix."
-- Files touched: §4.2 (one paragraph addition).
+**Files touched:**
 
-**Option B (subdivide T1a/T1b/T1c — Claude recommends):**
-- "T1 ±15%" becomes "T1a ±15%, T1b ±20–25%, T1c ±30–40%."
-- §2.5 table grows from 4 rows to 6 rows (T1a, T1b, T1c, T2, T2-flare, T3).
-- Per-region validation MDs need a tier-update sweep (Codex follow-up).
-- Files touched: §1 (tier counts), §2 (tier table), §4 (multiple), §5 (tier table), figure-captions (every "T1" mention), README, `tally-tiers.ts`.
-- Most invasive option but methodologically cleanest.
+| File | Edit |
+|---|---|
+| `docs/paper/02-methods.md` §2.5 tier table | 4 rows → 6 rows (T1a, T1b, T1c, T2, T2-flare, T3). Structural form fixed in `b4-option-b-decision.md`; counts come from `npm run tally:tiers`; T1c envelope number from post-B1 B4 rerun. |
+| `docs/paper/05-usage-notes.md` §5.2 tier table | Same 6-row structure. |
+| `docs/paper/01-background-and-summary.md` | Tier-count breakdown updates to enumerate T1a/T1b/T1c separately. |
+| `docs/paper/04-technical-validation.md` §4.2 worst-offender table | Each zone annotated with its sub-tier classification post-rerun. |
+| `docs/paper/figure-captions.md` | Every "T1" mention specifies sub-tier. Figure 4 legend breaks T1 into three bands. |
+| `README.md` | Tier breakdown updates to 6-row form. |
+| `tests/__golden__/tally-tiers.txt` | Regenerated post-CODEX-7. |
 
-**Option C (collapse to ±25% post-P67):**
-- "T1 ±15%" → "T1 ±25%" everywhere.
-- §2.5 table: one row updated.
-- Loses information (penalises ercot-east/west/poland which genuinely earn ±15%).
-- Files touched: §2 (one row), §5 (one row), figure-captions (every "T1" mention).
+**Predicted T1c population** (per `b4-option-b-decision.md`): Switzerland
+(Czech rate), Italy splits — Centre-North, Sicily, Sardinia (peninsular
+rate), possibly Greece. ~6 zones. Final list locked when Claude reruns
+`empirical_tier_bands.py` post-B1.
 
-**Recommendation:** wait for Simon's call after B1 lands and the empirical re-run is complete. Each option has a different rewrite scope; doing the rewrite before the choice is wasted work.
+**Sequence:** CODEX-1 lands → Claude reruns B4 → CODEX-7 dispatch goes
+out with concrete zone lists + envelope number → CODEX-7 merges → this
+sweep block executes. Doing the prose sweep before CODEX-7 lands is
+wasted work because the new tier names don't exist in tally output yet.
 
 ## Sweep order (when ready)
 
@@ -149,11 +154,15 @@ CODEX-1 lands (B1)
   ↓
 Regenerate parquet + figures + validation MDs (~10 min CI time)
   ↓
-Claude runs `empirical_tier_bands.py` against fresh data → posts B4-rerun report
+Claude runs `empirical_tier_bands.py` against fresh data → identifies
+  T1b and T1c zone sets, derives empirical T1c envelope
   ↓
-Simon picks Option A/B/C
+Claude dispatches CODEX-7 (Option B impl: regions.ts + uncertainty.ts +
+  tests + tally golden + validation MDs)
   ↓
-Edit-after-decision block: 30 min – 4 hours depending on option
+CODEX-7 lands
+  ↓
+Edit-after-CODEX-7 block: ~4 hours mechanical paper sweep
   ↓
 Final paper sweep, re-typecheck citations, ship
 ```
@@ -178,7 +187,7 @@ The paper rewrite is considered done (Phase-3 ready to ship) when:
 
 1. No occurrence of "T4" remains in `docs/paper/*.md` or the README. (`grep -r "T4" docs/paper/ README.md` returns empty.)
 2. No occurrence of "three pillars" remains. (Already clean per 2026-04-25 audit.)
-3. Every "T1 ±15%" mention is consistent with Simon's chosen Option A/B/C.
+3. Every "T1 ±15%" mention is annotated with its specific sub-tier (T1a, T1b, or T1c) per the locked Option B decision. No unqualified "T1" remains.
 4. Every TWh value in §4 and figure captions matches the post-B1 regenerated figures.
 5. Region count in README + §1 + figure captions matches `npm run tally:tiers` output.
 6. Two-axis taxonomy table appears once in §1.

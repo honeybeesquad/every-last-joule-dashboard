@@ -4,7 +4,12 @@ Date: 2026-04-25 · Owner: Claude · Triggered by: all dispatched Codex/Gemini P
 
 ## What this is
 
-The deterministic checklist Claude follows once Phase-1 and Phase-2 work has all landed. The work is mostly verification, regeneration, and final-pass editing — no new design decisions beyond Simon's pick of B4 Option A/B/C.
+The deterministic checklist Claude follows once Phase-1 and Phase-2 work has all landed. The work is mostly verification, regeneration, and final-pass editing.
+
+**B4 decision: Option B is locked** (`docs/proposals/b4-option-b-decision.md`).
+T1 subdivides into T1a/T1b/T1c. Options A and C are not maintained as
+fallbacks. The Step 4 paper-rewrite block below describes the single
+Option-B path.
 
 ## Pre-flight checklist (verify before starting)
 
@@ -17,7 +22,8 @@ The deterministic checklist Claude follows once Phase-1 and Phase-2 work has all
 - [ ] `GEMINI-3` (S1 implementation: anchor schema v2 migration) merged.
 - [ ] `CODEX-5` (S3 end-to-end reproducer) merged.
 - [ ] `CODEX-6` (S4 implementation: tier-coherence + tally-golden + docs-drift CI) merged.
-- [ ] Simon has decided B4 Option A / B / C.
+- [x] B4 Option B locked (decision record: `docs/proposals/b4-option-b-decision.md`).
+- [ ] `CODEX-7` (Option B implementation: T1 subdivision into T1a/T1b/T1c) dispatched and merged. **NOTE: CODEX-7 dispatch itself is blocked on CODEX-1 + B4 rerun completing — see Step 2 below.**
 
 If any are not yet landed, integration is partial — execute only the steps unblocked by what landed, defer the rest.
 
@@ -71,46 +77,57 @@ With the corrected parquet:
    - **Anchor scope mismatch:** update anchor in `external-anchors.json`. v2 schema requires updating `_provenance.notes` to document scope.
    - **Genuine residual envelope > ±15%:** these are the candidates for B5 demotion.
 
-## Step 3 — B5 demote neighbour-anchored ENTSO-E zones (1–2 h)
+## Step 3 — B5 implementation: T1 subdivision into T1a/T1b/T1c (1–2 h)
 
-Only if Simon picks Option B (subdivide T1).
+Per the locked Option B decision (`docs/proposals/b4-option-b-decision.md`).
+This is the CODEX-7 dispatch — Claude prepares the brief, Codex executes.
 
-For each zone identified in Step 2 as "genuine residual envelope > ±15% AND uses neighbour-extrapolated rate":
+For each zone Step 2 has classified:
 
-1. Switch tier in `src/lib/regions.ts` from `tier: "live"` to `tier: "live-neighbour-anchored"` (new enum value).
-2. Extend `src/lib/uncertainty.ts::deriveTier` to map this to a new `T1c` confidence tier with empirically-derived envelope.
-3. Update `tests/regions.test.ts` count expectations.
-4. Update `tests/uncertainty.test.ts` to test the new tier.
-5. Run full test suite.
+1. **T1c set** (residual > ±15% AND uses neighbour-extrapolated rate):
+   - `src/lib/regions.ts`: switch `tier: "live"` → `tier: "live-neighbour-anchored"`.
+2. **T1b set** (residual ±15–25% AND uses domestic stat-agency anchor):
+   - `src/lib/regions.ts`: switch `tier: "live"` → `tier: "live-domestic-anchored"`.
+3. Both new tiers added to `Tier` type alias and to `ConfidenceTier`
+   union in `src/lib/uncertainty.ts`.
+4. `deriveTier` extended to map both new region tiers to their
+   confidence-tier counterparts.
+5. `applyUncertainty` updated with empirical envelope numbers from
+   Step 2 (T1b ±20–25%, T1c ±30–40% — sized to observed residual).
+6. `tests/regions.test.ts` and `tests/uncertainty.test.ts` updated.
+7. Full test suite + CI passes (assumes CODEX-6 has landed and the
+   tier-coherence CI is in place).
 
-Affected zones (predicted): Switzerland (anchored to Czech rate), Italy zone splits (Centre-North, Sicily, Sardinia), possibly Greece. Estimate: ~6 zones.
+Predicted T1c zones (per `b4-option-b-decision.md`): Switzerland (Czech
+rate), Italy splits — Centre-North, Sicily, Sardinia (peninsular rate),
+possibly Greece. Estimate: ~6 zones. Actual list comes from Step 2.
 
-## Step 4 — Paper rewrite sweep (2–6 h depending on Option)
+## Step 4 — Paper rewrite sweep (Option B, ~4 h)
 
-Using `docs/paper/post-council-rewrite-checklist.md`:
+Per the locked Option B decision and the
+"edit-after-decision" block in `docs/paper/post-council-rewrite-checklist.md`.
 
-### Option A (keep ±15% with bias note) — ~1 h
-- Add §4.2.1 "Documented systematic bias" paragraph with the +X% figure from Step 2.
-- No tier-table changes.
+### Tier-table changes
+- §2.5 tier table grows from 4 rows to 6 rows: T1a, T1b, T1c, T2, T2-flare, T3.
+  Structural form is fixed in `b4-option-b-decision.md`; counts and the
+  T1c envelope number are filled at sweep time from `npm run tally:tiers`
+  output and the Step 2 rerun.
+- §5.2 tier table — same structure, repeat.
 
-### Option B (subdivide T1a/T1b/T1c — recommended) — ~4 h
-- Update §2.5 tier table (4 rows → 6 rows).
-- Update §5.2 tier table.
-- Update every "T1 ±15%" citation in §1, §4, figure-captions to specify T1a vs T1c.
-- Update README tier breakdown.
-- Run `npm run tally:tiers > tests/__golden__/tally-tiers.txt`.
+### Prose changes
+- Every "T1 ±15%" citation in §1, §4, figure-captions is annotated with
+  the specific sub-tier (T1a / T1b / T1c). No unqualified "T1" remains.
+- Per-region §4.2 worst-offender table annotates which sub-tier each
+  zone now sits in.
+- README tier breakdown updates to 6-row form.
+- `tests/__golden__/tally-tiers.txt` regenerated.
 
-### Option C (collapse to ±25%) — ~2 h
-- Update §2.5 tier table (one row).
-- Update §5.2 tier table.
-- Update every "T1 ±15%" → "T1 ±25%" globally.
-- Update figure captions.
-
-### All options
-- Drop "T4-structural-gap" tier row from §2.5 per N2 (already in checklist).
+### N1 / N2 hygiene (independent of Option B but part of the sweep)
+- Drop "T4-structural-gap" tier row from §2.5 per N2 (already in
+  rewrite checklist).
 - Replace "structural gap" vocabulary with "documented-gap" per N2.
 - Confirm region count matches `npm run tally:tiers`.
-- Verify two-axis taxonomy table appears once in §1.
+- Verify the two-axis taxonomy table appears once in §1.
 
 ## Step 5 — Final verification (30 min)
 
@@ -157,13 +174,19 @@ Update `docs/paper/README.md` with the tag reference. Update `docs/paper/06-code
 
 ## Estimated total integration time
 
-- Best case (Option A, no scope-mismatch surprises): **2–3 hours**
-- Realistic case (Option B, 1–2 outlier escalations): **6–8 hours**
-- Worst case (Option B with multiple failed CI checks): **1–2 days** spread across sessions
+Option B is locked, so the estimate is single-path:
+
+- Clean run (no T1c outlier escalations beyond the predicted ~6 zones,
+  CI passes first try): **6–7 hours**.
+- Realistic (1–2 anchor-scope mismatches escalate to anchor refresh in
+  `external-anchors.json`): **8–10 hours**.
+- Worst case (CI checks fail repeatedly, requires multi-session debug):
+  **1–2 days** spread across sessions.
 
 ## What does NOT happen in Phase 3
 
-- New design decisions beyond Option A/B/C.
+- New design decisions. Option B is locked; the §2.5 / §5.2 tier table
+  structure is fixed in `b4-option-b-decision.md`.
 - New loader development. (v1 work is paused for submission.)
 - Any change to the dispatched Codex/Gemini PRs after they're merged.
 - Live deployment to everylastjoule.com (separate decision).
@@ -175,5 +198,6 @@ Update `docs/paper/README.md` with the tag reference. Update `docs/paper/06-code
 | Phase-1 Claude items committed | ✅ B4, S1-design, S4-design, N2, anchors.md, post-council-rewrite-checklist.md |
 | Codex dispatched | CODEX-1 through CODEX-4, CODEX-5, CODEX-6 |
 | Gemini dispatched | GEMINI-1, GEMINI-2, GEMINI-3 |
-| User decision (B4 Option) | Pending — needed after B1 lands |
-| Phase-3 trigger | All dispatched items merged |
+| User decision (B4 Option) | ✅ Option B locked 2026-04-25 (`b4-option-b-decision.md`) |
+| CODEX-7 (Option B implementation) | Pending — Claude dispatches post-B1+rerun |
+| Phase-3 trigger | All dispatched items + CODEX-7 merged |
