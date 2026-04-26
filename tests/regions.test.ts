@@ -28,16 +28,18 @@ describe("regions", () => {
     // now subdivided into three live sub-tiers for paper presentation.
     // Bounds (T1a ±15%, T1b ±50%, T1c ±35.5%) and labels are the only
     // thing that change — for rendering, all three behave identically.
+    // Phase-2.6 (2026-04-26): wa-swis promoted static → live via AEMO
+    // WEM Facility SCADA daily JSON × 8% calibrated curtailment. 66 + 1 = 67.
     //   T1c live-neighbour-anchored: 1 (switzerland; Czech rate)
     //   T1b live-domestic-anchored:  4 (italy-sardinia, italy-north-zone,
     //                                   netherlands, baltics)
-    //   T1a live-tso (own-jurisdiction rate): 61 (the rest)
-    // Total live = 61 + 4 + 1 = 66.
+    //   T1a live-tso (own-jurisdiction rate): 62 (the rest)
+    // Total live = 62 + 4 + 1 = 67.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(66);
+    expect(liveTotal).toBe(67);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(61);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(62);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -53,7 +55,7 @@ describe("regions", () => {
     }
   });
 
-  it("has 58 static regions", () => {
+  it("has 57 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
@@ -62,7 +64,10 @@ describe("regions", () => {
     // their loaders were rewired to fetch real measured dispatch-down /
     // generation series (EirGrid DD-HH workbook, COES generation API,
     // Eskom Total_Hourly_Generation CSV). 62 - 4 = 58.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(58);
+    // Phase-2.6 WA brief (2026-04-26): wa-swis promoted static → live via
+    // AEMO WEM Facility SCADA daily JSON × 8% calibrated curtailment.
+    // 58 - 1 = 57.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(57);
   });
 
   it("has 4 flare regions", () => {

@@ -68,6 +68,7 @@ const LOADER_CLASS: Record<string, LoaderClass> = {
   "south-africa": { tier: "live" },
   spp:            { tier: "live" },
   turkey:         { tier: "live" },
+  "wa-swis":      { tier: "live" },
 
   // Static loaders → buildTypicalXxx → profileKind
   argentina:        { tier: "static", profileKind: "wind" },
@@ -118,7 +119,7 @@ const LOADER_CLASS: Record<string, LoaderClass> = {
   uae:              { tier: "static", profileKind: "solar" },
   uruguay:          { tier: "static", profileKind: "wind" },
   vietnam:          { tier: "static", profileKind: "solar" },
-  "wa-swis":        { tier: "static", profileKind: "solar" },
+  // wa-swis: promoted live in Phase-2.6 (2026-04-26); see live block above.
   yunnan:           { tier: "static", profileKind: "hydro-seasonal" },
 
   // Orphan snapshot — `ukraine.json` predates the move into statics.json.ts.
