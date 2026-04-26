@@ -273,10 +273,7 @@ const regionData = {
   ...norway,
   ontario,
   alberta,
-  // Ireland split — SONI/EirGrid 2024 Annual Renewable Constraint and
-  // Curtailment Report: ROI 1.266 TWh wind DD, NI 0.915 TWh. ~58/42 ratio.
-  "ireland-republic": splitRegion(ireland, "ireland-republic", 0.58, "ROI share of all-island wind DD (1.266 TWh per SONI/EirGrid 2024)"),
-  "northern-ireland": splitRegion(ireland, "northern-ireland", 0.42, "NI share of all-island wind DD (0.915 TWh, 29.6% of NI wind, per SONI/EirGrid 2024)"),
+  ...ireland,
   peru,
   "south-africa": southAfrica,
   "new-zealand": newZealand,

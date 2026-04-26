@@ -83,28 +83,13 @@ export const REGIONS: Region[] = [
   { id: "switzerland",      name: "Switzerland",     country: "CHE", lat: 46.8, lon:    8.2, tier: "live", kind: "solar", source: "ENTSO-E Swissgrid PV-only (hydro spill not in A75)", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "ontario",          name: "Ontario",         country: "CAN", lat: 44.0, lon:  -81.0, tier: "live", kind: "mixed", source: "IESO wind+solar", sourceUrl: "https://reports-public.ieso.ca/public/GenOutputCapability/" },
   { id: "alberta",          name: "Alberta",         country: "CAN", lat: 51.5, lon: -114.0, tier: "live", kind: "mixed", source: "AESO wind+solar", sourceUrl: "http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet" },
-  // Ireland split by SONI/EirGrid's 2024 Annual Renewable Constraint and
-  // Curtailment Report: ROI wind DD = 1.266 TWh (8.8% of RES), NI wind DD
-  // = 0.915 TWh (29.6% of wind, 25.5% of RES). NI is a much smaller grid
-  // but has dramatically higher dispatch-down intensity.
-  // 2026-04-25 demoted live → static. The EirGrid loader is probe-only —
-  // it fetches the renewables page for reachability/freshness but the
-  // SmartGrid Dashboard hourly API is not publicly exposed; the emitted
-  // profile is a calibrated wind typical-shape scaled to the SONI/EirGrid
-  // 2024 anchor (2.181 TWh all-island), then split 58/42 ROI/NI at
-  // consumption time. T3-modelled is the honest tier; the prior "live"
-  // tag was a tier-overstatement. See `docs/known-limitations.md` item 6.
-  { id: "ireland-republic", name: "Ireland (Republic)",  country: "IRL", lat: 53.3, lon:   -7.8, tier: "static", kind: "wind",  source: "EirGrid probe + wind typical-shape (ROI 58% of 2.18 TWh/yr SONI/EirGrid 2024 anchor)", sourceUrl: "https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf" },
-  { id: "northern-ireland", name: "Northern Ireland",    country: "GBR", lat: 54.65, lon:  -6.65, tier: "static", kind: "wind",  source: "EirGrid probe + wind typical-shape (NI 42% of 2.18 TWh/yr SONI/EirGrid 2024 anchor)", sourceUrl: "https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf" },
-  // Peru and South Africa: 2026-04-25 demoted live → static. Their loaders
-  // are probe-only — they hit the COES / Eskom dashboards for reachability
-  // and freshness but the underlying hourly profile is a calibrated
-  // typical-shape (Peru bimodal hydro-seasonal, SA wind+solar mixed) scaled
-  // to a published 2024 anchor. T3-modelled is the honest tier; the prior
-  // "live" tag was a tier-overstatement. See `docs/known-limitations.md`
-  // item 6.
-  { id: "peru",             name: "Peru",            country: "PER", lat: -14.0, lon: -74.0, tier: "static", kind: "mixed", source: "COES-SINAC probe + bimodal hydro-seasonal typical-shape (~0.8 TWh/yr)", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },
-  { id: "south-africa",     name: "South Africa",    country: "ZAF", lat: -32.0, lon:  26.0, tier: "static", kind: "mixed", source: "Eskom Data Portal probe + wind+solar mixed typical-shape (~4.4 TWh/yr, SAREM 2025 / Eskom MTSAO Oct 2025)", sourceUrl: "https://www.eskom.co.za/dataportal/" },
+  // Ireland loader emits both children from one EirGrid/SONI DD half-hourly
+  // workbook fetch. The all-island half-hourly DD feed is split 58/42 using
+  // the 2024 annual ROI/NI anchor.
+  { id: "ireland-republic", name: "Ireland (Republic)",  country: "IRL", lat: 53.3, lon:   -7.8, tier: "live", kind: "wind",  source: "EirGrid/SONI DD half-hourly workbook (ROI 58% of all-island DD)", sourceUrl: "https://www.eirgrid.ie/grid/system-and-renewable-data-reports" },
+  { id: "northern-ireland", name: "Northern Ireland",    country: "GBR", lat: 54.65, lon:  -6.65, tier: "live", kind: "wind",  source: "EirGrid/SONI DD half-hourly workbook (NI 42% of all-island DD)", sourceUrl: "https://www.eirgrid.ie/grid/system-and-renewable-data-reports" },
+  { id: "peru",             name: "Peru",            country: "PER", lat: -14.0, lon: -74.0, tier: "live", kind: "mixed", source: "COES-SINAC live hydro+solar+wind generation shaped to vertimiento anchor", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },
+  { id: "south-africa",     name: "South Africa",    country: "ZAF", lat: -32.0, lon:  26.0, tier: "live", kind: "mixed", source: "Eskom Data Portal total hourly renewable generation × MTSAO curtailment rate", sourceUrl: "https://www.eskom.co.za/dataportal/renewables-performance/total-hourly-renewable-generation/" },
   { id: "new-zealand",      name: "New Zealand",     country: "NZL", lat: -40.9, lon: 172.0, tier: "live", kind: "mixed", source: "EMI wind+solar+geo", sourceUrl: "https://www.emi.ea.govt.nz/Wholesale/Datasets/Generation/Generation_MD" },
   { id: "atacama",          name: "Atacama",         country: "CHL", lat: -24.5, lon: -69.2, tier: "live",   kind: "solar", source: "CEN Chile XLSX", sourceUrl: "https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/" },
   { id: "chile-wind",       name: "Chile Wind",      country: "CHL", lat: -38.5, lon: -72.5, tier: "static", kind: "wind",  source: "CEN Chile 2024 ERV wind estimate", sourceUrl: "https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/" },

@@ -1,77 +1,103 @@
 import { fetchText } from "../lib/fetch.js";
-import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../lib/profile.js";
+import { parseDelimitedRows } from "../lib/csv.js";
+import {
+  latestCompleteUtcDayProfileGW,
+  peakGW,
+  timeOfDayAverageGW,
+  totalTWh30d,
+} from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
-const ESKOM_URL = "https://www.eskom.co.za/dataportal/";
+const ESKOM_PAGE_URL = "https://www.eskom.co.za/dataportal/renewables-performance/total-hourly-renewable-generation/";
+const FALLBACK_CSV_URL = "https://www.eskom.co.za/dataportal/wp-content/uploads/2026/04/Total_Hourly_Generation.csv";
 // SAREM 2025 / Eskom MTSAO Oct 2025 document 4,363 GWh renewable curtailment
-// in 2024 — roughly 12% of renewable output. Most of it is Northern/Western
-// Cape wind + solar constrained by coal-fleet inflexibility and transmission
-// bottlenecks to Gauteng/Mpumalanga load centres. Previous v1 calibration was
-// 2% × 3,600 MW avg ≈ 0.6 TWh/yr — nearly 7× too low. Corrected here.
+// in 2024, roughly 12% of renewable output. The live CSV supplies the hourly
+// renewable-generation shape; this rate calibrates it to the curtailment anchor.
 const CURTAILMENT_RATE = 0.12;
-const ESTIMATED_RENEWABLE_AVG_MW = 4150; // scales to ~4.4 TWh/yr at 12% rate
-const MIXED_SHAPE = [
-  0.78, 0.76, 0.74, 0.72, 0.70, 0.72, 0.78, 0.90,
-  1.02, 1.12, 1.18, 1.22, 1.20, 1.14, 1.08, 1.02,
-  0.98, 0.96, 0.94, 0.92, 0.88, 0.84, 0.82, 0.80,
-];
 
 export interface EskomPageMeta {
   title: string;
+  csvUrl: string;
+}
+
+function absoluteUrl(url: string): string {
+  if (/^https?:\/\//i.test(url)) return url;
+  return new URL(url, ESKOM_PAGE_URL).toString();
 }
 
 export function parseEskomDataPortal(html: string): EskomPageMeta {
   const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
   if (!titleMatch) throw new Error("Eskom data portal missing <title>");
-  return { title: titleMatch[1].trim() };
+  const csvMatch = html.match(/https?:\/\/[^"'<> ]+Total_Hourly_Generation\.csv|\/dataportal\/wp-content\/uploads\/[^"'<> ]+Total_Hourly_Generation\.csv/i);
+  return {
+    title: titleMatch[1].trim(),
+    csvUrl: csvMatch ? absoluteUrl(csvMatch[0].replace(/&amp;/g, "&")) : FALLBACK_CSV_URL,
+  };
 }
 
-function buildProfileHistory(now: Date, averageCurtailmentMw: number): CurtailmentPoint[] {
-  const scale = averageCurtailmentMw / (MIXED_SHAPE.reduce((sum, value) => sum + value, 0) / 24);
-  const points: CurtailmentPoint[] = [];
-
-  for (let day = 29; day >= 0; day--) {
-    for (let hour = 0; hour < 24; hour++) {
-      const timestamp = new Date(
-        Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - day, hour, 0, 0),
-      );
-      points.push({
-        utcTimestamp: timestamp.toISOString(),
-        mw: MIXED_SHAPE[hour] * scale,
-      });
-    }
-  }
-
-  return points;
+function parseNumber(value: string | undefined): number {
+  const n = Number((value ?? "").replace(/,/g, ""));
+  return Number.isFinite(n) ? n : 0;
 }
 
-const run = async (): Promise<RegionData> => {
-  const html = await fetchText(ESKOM_URL, { timeoutMs: 45000, retries: 1 });
-  const meta = parseEskomDataPortal(html);
-  const now = new Date();
-  const points = buildProfileHistory(now, ESTIMATED_RENEWABLE_AVG_MW * CURTAILMENT_RATE);
+export function parseEskomTotalHourlyGeneration(csv: string, curtailmentRate = CURTAILMENT_RATE): CurtailmentPoint[] {
+  return parseDelimitedRows(csv)
+    .map((row): CurtailmentPoint | null => {
+      const timestamp = row["Date Time Hour Beginning"];
+      if (!timestamp) return null;
+      const utcTimestamp = new Date(`${timestamp.replace(" ", "T")}+02:00`).toISOString();
+      const renewableMw =
+        parseNumber(row.Wind) +
+        parseNumber(row.PV) +
+        parseNumber(row.CSP) +
+        parseNumber(row.Other_RE);
+      return {
+        utcTimestamp,
+        mw: Math.max(0, renewableMw * curtailmentRate),
+        intervalHours: 1,
+      };
+    })
+    .filter((point): point is CurtailmentPoint => point !== null);
+}
 
-  // Probe-only loader: the Eskom Data Portal exposes the page but no
-  // hourly CSV / chart endpoint, so the profile emitted here is the
-  // calibrated wind+solar typical-shape (MIXED_SHAPE × scale) scaled to
-  // the 2024 anchor, not an actual dispatch-down series. Tier is
-  // T3-modelled per `src/lib/uncertainty.ts::deriveTier` rules for
-  // static + mixed-profile regions.
+function trailingPoints(points: CurtailmentPoint[], days = 30): CurtailmentPoint[] {
+  const sorted = [...points].sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+  const latest = sorted.at(-1);
+  if (!latest) return [];
+  const cutoff = new Date(new Date(latest.utcTimestamp).getTime() - days * 24 * 3600 * 1000);
+  return sorted.filter((point) => new Date(point.utcTimestamp) >= cutoff);
+}
+
+function buildRegion(points: CurtailmentPoint[], lastUpdated: string, sourceNote: string): RegionData {
   const base: RegionData = {
     regionId: "south-africa",
     profile: timeOfDayAverageGW(points),
-    latestProfile: null,
+    latestProfile: latestCompleteUtcDayProfileGW(points),
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
-    lastUpdated: now.toISOString(),
-    lastSuccessAt: now.toISOString(),
-    sourceNote:
-      `Eskom Data Portal reachable (${meta.title}); CSV/chart endpoint not exposed publicly, so this loader emits a calibrated wind+solar fallback profile scaled to 4.4 TWh/yr (SAREM 2025 / Eskom MTSAO Oct 2025 report 4,363 GWh curtailment in 2024 — 12% of renewable output, concentrated Northern+Western Cape)`,
+    lastUpdated,
+    lastSuccessAt: lastUpdated,
+    sourceNote,
+    fuelShare: { wind: 0.55, solar: 0.45 },
   };
-  return applyUncertainty(base, { regionTier: "static", profileKind: "mixed" });
+  return applyUncertainty(base, { regionTier: "live" });
+}
+
+const run = async (): Promise<RegionData> => {
+  const html = await fetchText(ESKOM_PAGE_URL, { timeoutMs: 45000, retries: 1 });
+  const meta = parseEskomDataPortal(html);
+  const csv = await fetchText(meta.csvUrl, { timeoutMs: 45000, retries: 1 });
+  const points = trailingPoints(parseEskomTotalHourlyGeneration(csv));
+  if (points.length === 0) throw new Error("Eskom Total_Hourly_Generation CSV contained no renewable points");
+  const lastUpdated = points.at(-1)!.utcTimestamp;
+  return buildRegion(
+    points,
+    lastUpdated,
+    `Eskom Data Portal total hourly renewable generation CSV (${meta.csvUrl}); live wind+PV+CSP+other-RE generation shape multiplied by 12% curtailment calibration from SAREM 2025 / Eskom MTSAO Oct 2025 4,363 GWh renewable-curtailment anchor.`,
+  );
 };
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;

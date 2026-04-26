@@ -13,7 +13,7 @@ describe("regions", () => {
     expect(REGIONS.length).toBe(128);
   });
 
-  it("has 62 live regions", () => {
+  it("has 66 live regions", () => {
     // v0.6: -5 aggregates + 10 splits = +5 live -> 49 + 5 = 54; Turkey live re-add -> 55.
     // europe-expansion: -1 n-norway + 5 Norway zones + 1 Switzerland = +5 → 60.
     // tier-routing fix (2026-04-25): brazil-mg/sp/mt/go/pr/rs reclassified
@@ -21,29 +21,35 @@ describe("regions", () => {
     // Brazilian states (NE + non-NE) from the same ONS feed; the 6 non-NE
     // states had been incorrectly held as static fallbacks. 60 + 6 = 66.
     // tier-overstatement fix (2026-04-25, batch 1): peru and south-africa
-    // demoted live → static. Their loaders are probe-only — they hit the
-    // COES / Eskom dashboards for reachability and freshness but emit
-    // calibrated typical-shape profiles, not measured hourly curtailment.
-    // 66 - 2 = 64.
+    // briefly demoted live → static when their loaders were probe-only.
+    // Phase-2.6 (2026-04-26): peru loader rewired to fetch live COES half-
+    // hourly hydro+solar+wind generation × calibrated 2% curtailment rate;
+    // south-africa loader rewired to fetch live Eskom hourly renewable
+    // generation × 12% MTSAO curtailment rate. Both back to live: 66 → 66
+    // (net zero — they were demoted then immediately re-promoted within
+    // the same expectations table).
     // tier-overstatement fix (2026-04-25, batch 2): ireland-republic and
-    // northern-ireland demoted live → static. The EirGrid loader is the
-    // same probe-only pattern — fetches the renewables page for freshness,
-    // emits a calibrated wind typical-shape scaled to the SONI/EirGrid
-    // 2024 anchor, then splits 58/42 at consumption time. 64 - 2 = 62.
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(62);
+    // northern-ireland same trajectory. Phase-2.6 wires the EirGrid/SONI
+    // half-hourly DD-HH workbook (real measured dispatch-down) through a
+    // single fetch that emits both child regions. Net 66 live (12 ENTSO-E
+    // + 5 Norway + 1 Switzerland + 7 USA-ISO + 5 AEMO + 6 Brazil-NE +
+    // 6 Brazil-non-NE + 1 Belgium + 1 Hungary + 1 Czech + 1 Bulgaria +
+    // 1 Baltics + 2 GB + 1 Ukraine* + 2 Italy + 1 Greece + 1 Romania +
+    // 1 Turkey + 2 Sweden + 1 Portugal + 1 NZ + 2 Chile-Atacama-Wind* +
+    // 2 Canada + 2 Ireland + 1 Peru + 1 South Africa).
+    expect(REGIONS.filter(r => r.tier === "live").length).toBe(66);
   });
 
-  it("has 62 static regions", () => {
+  it("has 58 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
-    // tier-overstatement fix (2026-04-25, batch 1): +2 (peru, south-africa
-    // demoted live → static; both are probe-only loaders emitting
-    // typical-shape profiles). 58 + 2 = 60.
-    // tier-overstatement fix (2026-04-25, batch 2): +2 (ireland-republic,
-    // northern-ireland demoted live → static; same probe-only pattern as
-    // peru/south-africa). 60 + 2 = 62.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(62);
+    // Phase-2.6 (2026-04-26): peru, south-africa, ireland-republic, and
+    // northern-ireland promoted from probe-only-static back to live as
+    // their loaders were rewired to fetch real measured dispatch-down /
+    // generation series (EirGrid DD-HH workbook, COES generation API,
+    // Eskom Total_Hourly_Generation CSV). 62 - 4 = 58.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(58);
   });
 
   it("has 4 flare regions", () => {
@@ -233,16 +239,17 @@ describe("regions", () => {
   });
 
   it("includes the v0.6 Codex global-coverage-audit splits and additions", () => {
-    // 5 aggregates split into 10 sub-zones. All pairs except the Ireland
-    // split remain tier:"live" — the Ireland pair was demoted to
-    // tier:"static" by the 2026-04-25 batch-2 tier-overstatement fix
-    // (the EirGrid loader is probe-only, emitting a calibrated wind
-    // typical-shape rather than measured hourly DD).
+    // 5 aggregates split into 10 sub-zones. All pairs are tier:"live" —
+    // the Ireland pair was briefly demoted on 2026-04-25 when its loader
+    // was probe-only, then re-promoted on 2026-04-26 once the loader was
+    // rewired to fetch the EirGrid/SONI DD-HH half-hourly workbook
+    // (measured dispatch-down, split 58/42 ROI/NI at fetch time).
     const livePairs: Array<[string, string]> = [
       ["iso-ne-maine-vermont", "iso-ne-rest"],
       ["nyiso-zones-d-e", "nyiso-rest"],
       ["gb-scotland", "gb-england-wales"],
       ["denmark-west", "denmark-east"],
+      ["ireland-republic", "northern-ireland"],
     ];
     for (const [a, b] of livePairs) {
       for (const id of [a, b]) {
@@ -250,11 +257,6 @@ describe("regions", () => {
         expect(region, `missing split region ${id}`).toBeDefined();
         expect(region?.tier).toBe("live");
       }
-    }
-    for (const id of ["ireland-republic", "northern-ireland"]) {
-      const region = REGIONS.find(r => r.id === id);
-      expect(region, `missing split region ${id}`).toBeDefined();
-      expect(region?.tier).toBe("static");
     }
 
     // 5 new statics — Hawaii 3-island system, Austria, Russia Murmansk wind.
