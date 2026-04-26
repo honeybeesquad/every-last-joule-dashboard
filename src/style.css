@@ -294,7 +294,12 @@ html:not([data-theme]) body {
 
 /* Backwards-compatibility aliases for any chrome rule that still references the
    removed Stacked palette tokens. Any rule using these will compile against the
-   active theme's brand/ink. Remove once we have grepped the file clean. */
+   active theme's brand/ink. Remove once we have grepped the file clean.
+   TODO(task-6): Non-chrome rules (data panels, globe, chart elements) still use
+   --teal-*, --white, rgba(20,175,172,…) — migrate those rules before removing
+   this block. See grep output at lines ~667, 683, 721, 774, 803, 821, 838, 879,
+   1024, 1054, 1067-68, 1110, 1243-45, 1259, 1288-90, 1345, 1350, 1373, 1383,
+   1412-14, 1424, 1440, 1445, 1451-52, 1525-26. */
 :root {
   --teal-500:  var(--brand);
   --teal-600:  var(--brand-strong);
@@ -420,8 +425,8 @@ code, .mono {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--teal-500) 40%,
-    rgba(20,175,172,0.6) 60%,
+    var(--brand) 40%,
+    rgba(255, 255, 255, 0) 60%,
     transparent 100%
   );
   animation: loader-sweep 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -435,7 +440,7 @@ code, .mono {
 /* Centred mark + label */
 .loader-center-mark {
   font-size: 22px;
-  color: var(--teal-500);
+  color: var(--brand);
   animation: loader-pulse 1.6s ease-in-out infinite;
   line-height: 1;
 }
@@ -489,7 +494,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--teal-500);
+  outline: 2px solid var(--brand);
   outline-offset: 3px;
   border-radius: var(--r-sm);
 }
@@ -524,7 +529,7 @@ main table {
   margin: 0 auto;
   padding: 24px 32px;
   gap: 16px;
-  color: var(--white);
+  color: var(--ink);
 }
 
 .app-header {
@@ -532,7 +537,7 @@ main table {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--hairline);
 }
 
 .app-title {
@@ -542,7 +547,7 @@ main table {
 }
 
 .app-mark {
-  color: var(--teal-500);
+  color: var(--brand);
   font-size: 20px;
 }
 
@@ -550,7 +555,7 @@ main table {
   font-weight: 800;
   font-size: 16px;
   letter-spacing: 0.04em;
-  color: var(--white);
+  color: var(--ink);
 }
 
 .app-tag {
@@ -558,26 +563,26 @@ main table {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
+  color: var(--ink-muted);
   padding-left: 14px;
-  border-left: 1px solid rgba(255,255,255,0.15);
+  border-left: 1px solid var(--hairline-strong);
   margin-left: 2px;
 }
 
 .app-methodology {
   font-size: 12px;
   letter-spacing: 0.06em;
-  color: rgba(255,255,255,0.75);
+  color: var(--ink-muted);
   text-decoration: none;
   padding: 8px 14px;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid var(--hairline-strong);
   border-radius: 999px;
 }
 
 .app-methodology:hover {
-  background: rgba(20,175,172,0.08);
-  color: var(--white);
-  border-color: var(--teal-500);
+  background: var(--brand-subtle);
+  color: var(--ink);
+  border-color: var(--brand);
 }
 
 /* Primary nav (right-aligned in header) */
@@ -589,7 +594,7 @@ main table {
 .app-nav a {
   font-size: 12px;
   letter-spacing: 0.06em;
-  color: rgba(255,255,255,0.72);
+  color: var(--ink-muted);
   text-decoration: none;
   padding: 7px 14px;
   border-radius: 999px;
@@ -598,9 +603,9 @@ main table {
 }
 .app-nav a:hover,
 .app-nav a[aria-current="page"] {
-  background: rgba(20,175,172,0.08);
-  color: var(--white);
-  border-color: rgba(20,175,172,0.4);
+  background: var(--brand-subtle);
+  color: var(--ink);
+  border-color: var(--brand);
 }
 
 .app-body {
