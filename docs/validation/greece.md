@@ -48,6 +48,10 @@ The 2024 backfill annual total for Greece is 0.802 TWh, which overreports by 129
 *   **Uniform Rate Across Years**: The 3.6% aggregate rate is applied uniformly across all backfilled years (2020–2026). While this is consistent with the backfill methodology for regions without documented per-year rate variants, it can lead to year-over-year drift compared to actual TSO figures as capacity mixes and operational conditions change.
 *   **Potential Reporting Latency**: As an ENTSO-E region, Greece may be subject to reporting-latency holes (1–3 month lag), which the backfill tolerates up to 10% per year.
 
+## v0.5 decision
+
+Documented as a residual outlier (+129.1%) under the §4.4 envelope-transparency principle; rate unchanged in v0.5. **v1 candidate** for Ember 2024–25 denominator refresh — see `docs/methodology/validation-discrepancies.md` row `greece` and `_provenance.haee-ipto-2024-annual.notes` in `scripts/validation/external-anchors.json`.
+
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_

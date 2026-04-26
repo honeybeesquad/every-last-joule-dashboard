@@ -193,7 +193,8 @@
         "needs_url": true
       },
       "retrieved_at": "2026-04-26",
-      "retrieved_by": "gemini"
+      "retrieved_by": "gemini",
+      "notes": "v0.5 backfill reconstructs Portugal 2024 curtailment at 0.913 TWh, +128% vs this anchor's 0.400 TWh. Diagnosis: rate placeholder — 10% (solar) / 3% (wind) flagged in docs/methodology/entsoe-rates.md; no citable 2024 curtailed-energy total published by REN to ground-truth the rate against. Documented in docs/methodology/validation-discrepancies.md (Portugal row); Figure 2 row retained to document the gap. v1 candidate for REN 2024 Dados Técnicos / SEN bulletin scrape."
     },
     "mavir-2024-annual": {
       "title": "MAVIR Annual Report 2024",
@@ -336,7 +337,8 @@
         "needs_url": true
       },
       "retrieved_at": "2026-04-26",
-      "retrieved_by": "gemini"
+      "retrieved_by": "gemini",
+      "notes": "v0.5 backfill reconstructs Greece 2024 curtailment at 0.802 TWh, +129% vs this anchor's 0.350 TWh. Diagnosis: aggregate rate 3.6% grounded against HAEE 860 GWh (2023-era); Ember-2024 VRE denominator may underrepresent 2024 growth. Documented in docs/methodology/validation-discrepancies.md (Greece row); flagged as v1 candidate for Ember denominator refresh."
     },
     "hawaiian-2024-annual": {
       "title": "Hawaiian Annual Report 2024",
