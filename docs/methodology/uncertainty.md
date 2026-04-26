@@ -24,7 +24,7 @@ The live-feed tier was subdivided into three sub-tiers in CODEX-7 (locked 2026-0
 
 T4 is reserved — structural-gap regions are documented in `docs/known-limitations.md` and do not appear as rows in `RegionData`. Tier derivation is implemented in `uncertainty.ts::deriveTier` and is deterministic — given a loader id and its profile kind, the tier is fixed.
 
-**Current per-tier population** (emitted by `npx tsx scripts/tally-tiers.ts` on 2026-04-26): T1a = 61 regions, T1b = 4 (italy-sardinia, italy-north-zone, netherlands, baltics), T1c = 1 (switzerland), T2 = 2, T2-flare = 4, T3 = 56, total 128.
+**Current per-tier population** (emitted by `npx tsx scripts/tally-tiers.ts` on 2026-04-26): T1a = 63 regions, T1b = 4 (italy-sardinia, italy-north-zone, netherlands, baltics), T1c = 1 (switzerland), T2 = 2, T2-flare = 4, T3 = 54, total 128.
 
 **Why T1b and T1c skip the 2σ shortcut.** T1a regions have a single coherent calibration: the live feed and the curtailment rate measure the same dispatch series in the same jurisdiction, so 5-year σ on the live feed is a faithful empirical envelope. T1b and T1c carry a *systematic* anchor-scope offset that the live series cannot self-detect — Italy-Sardinia's bidding-zone live feed against a national-anchor zone-split, Switzerland against Czech rates — and the 2σ shortcut would understate the envelope. The implementation in `computeBounds` therefore applies the empirical fractional envelope (±50 % / ±35.5 %) to T1b and T1c regardless of `observedStdGW`, and reserves the 2σ branch for T1a (and the legacy T1-live-TSO alias) only.
 
