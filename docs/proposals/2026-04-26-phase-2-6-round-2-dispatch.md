@@ -10,14 +10,22 @@ Date: 2026-04-26 · Author: Claude (audit-driven selection) · Target: Scientifi
 
 ## 1. Selection rubric
 
-Round 2 picks come directly from the audit's `recommended_action ∈ {introduce-as-T1, promote-to-T1}` set, ranked by the audit's recomputed `priority_score`:
+Round 2 picks come directly from the audit's `recommended_action ∈ {introduce-as-T1, promote-to-T1}` set, ranked by the audit's recomputed `priority_score` per the formula in `scripts/validation/coverage_audit_schema.py::priority_score()` and spec §4.5:
 
 ```
-priority_score = annual_anchor_TWh
-               × tier_uplift_weight       (3.0 introduce-as-T1 / 1.0 promote-to-T1)
-               × format_accessibility_weight  (1.0 JSON-API / 0.9 CSV / 0.7 XLSX / 0.5 HTML / 0.3 PDF)
-              − already_modelled_penalty   (0.5 if already in regions.ts)
+priority_score = (annual_anchor_TWh × tier_uplift_weight × format_accessibility_weight)
+                − already_modelled_penalty
+
+  tier_uplift_weight        = 1.0 if region is new (introduce-as-T1)
+                            = 0.6 if region already exists in regions.ts (promote-to-T1)
+  format_accessibility_weight = JSON-API 1.0 │ CSV-download 0.9 │ parseable-HTML-table 0.7 │
+                                XML-feed 0.7 │ XLSX-table 0.6 │ JS-rendered-SPA 0.4 │
+                                auth-walled 0.2 │ geo-blocked 0.1 │ PDF-only 0.1 │
+                                unreachable 0.0 │ no-public-data 0.0
+  already_modelled_penalty   = 0.5 × annual_anchor_TWh  if region already in regions.ts; else 0
 ```
+
+Note the formula deliberately discounts already-modelled regions (the `0.6` tier-uplift × the `0.5×anchor` penalty), which is why `mexico` (3.0 TWh anchor, but currently `T3-modelled`) scores only 0.12 despite the largest anchor in the candidate set, while `japan-tohoku` (1.0 TWh, but `not-modelled`) tops the list at 0.90.
 
 The audit identified 12 candidates total. Top of the raw list is heavily Japan-skewed (4 of top 5 are juyo zones), so this brief diversifies by country and continent rather than letting Asia-East dominate.
 
@@ -31,7 +39,7 @@ The audit identified 12 candidates total. Top of the raw list is heavily Japan-s
 | 4 | `chile-wind` | 12 (-0.10) | 0.7 | CHL | Latin America | promote-to-T1 | XLSX-table | Pattern-A (extend) |
 | 5 | `uruguay` | 11 (-0.07) | 0.5 | URY | Latin America | promote-to-T1 | XLSX-table | Pattern-A |
 
-Combined: **5.6 TWh** of curtailment-anchor moved out of `not-modelled` / T3 (±40%) into T1a (±15% / 2σ-empirical). The audit-side tier impact is +2 introduce-as-T1, +3 promote-to-T1 (from existing T3 statics).
+Combined: **5.6 TWh** of curtailment-anchor moved out of `not-modelled` / T3 (±40%) into T1a (±15% / 2σ-empirical). The audit-side tier impact is +2 introduce-as-T1, +3 promote-to-T1 (from existing T3 statics). All 5 picks fall under Pattern-A (live unauthenticated hourly fetch); Pattern-B/C/D are not exercised in this round (Pattern-D anchor-metadata cleanup is reserved for the audit's `introduce-as-T3` queue).
 
 ### Why this five and not the raw top 5
 
