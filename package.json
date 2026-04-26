@@ -19,6 +19,8 @@
     "ci:tally-golden": "tsx scripts/ci/check-tally-golden.ts",
     "ci:docs-drift": "tsx scripts/ci/check-docs-drift.ts",
     "ci:gates": "npm run ci:tier-coherence && npm run ci:tally-golden && npm run ci:docs-drift",
+    "lint:coverage-audit": "python3 scripts/validation/lint_coverage_audit.py data/coverage-audit/2026-04-26-world.csv",
+    "test:coverage-audit": "python3 -m pytest scripts/validation/test_coverage_audit_schema.py scripts/validation/test_lint_coverage_audit.py scripts/validation/test_merge_coverage_audit.py -v",
     "data:refresh": "observable build",
     "snapshot": "tsx scripts/write-snapshot.ts",
     "reproduce:ercot-west": "python3 scripts/reproduce/reproduce_2024_ercot_west.py",
