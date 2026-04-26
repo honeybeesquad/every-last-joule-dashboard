@@ -37,24 +37,22 @@ The audit identified 12 candidates total. Top of the raw list is heavily Japan-s
 | 2 | `colombia` | 3 (0.40) | 0.4 | COL | Latin America | introduce-as-T1 | JSON-API | Pattern-A |
 | 3 | `mexico` | 9 (0.12) | 3.0 | MEX | Latin America | promote-to-T1 | CSV-download | Pattern-A |
 | 4 | `chile-wind` | 12 (-0.10) | 0.7 | CHL | Latin America | promote-to-T1 | XLSX-table | Pattern-A (extend) |
-| 5 | `uruguay` | 11 (-0.07) | 0.5 | URY | Latin America | promote-to-T1 | XLSX-table | Pattern-A |
+| 5 | `japan-tokyo` | 2 (0.45) | 0.5 | JPN | Asia-East | introduce-as-T1 | CSV-download | Pattern-A (juyo) |
 
-Combined: **5.6 TWh** of curtailment-anchor moved out of `not-modelled` / T3 (±40%) into T1a (±15% / 2σ-empirical). The audit-side tier impact is +2 introduce-as-T1, +3 promote-to-T1 (from existing T3 statics). All 5 picks fall under Pattern-A (live unauthenticated hourly fetch); Pattern-B/C/D are not exercised in this round (Pattern-D anchor-metadata cleanup is reserved for the audit's `introduce-as-T3` queue).
+Combined: **5.6 TWh** of curtailment-anchor moved out of `not-modelled` / T3 (±40%) into T1a (±15% / 2σ-empirical). The audit-side tier impact is +3 introduce-as-T1 (`japan-tohoku`, `colombia`, `japan-tokyo`), +2 promote-to-T1 (`mexico`, `chile-wind`). All 5 picks fall under Pattern-A (live unauthenticated hourly fetch); Pattern-B/C/D are not exercised in this round (Pattern-D anchor-metadata cleanup is reserved for the audit's `introduce-as-T3` queue).
 
 ### Why this five and not the raw top 5
 
-The raw priority-score top 5 is Tohoku (0.90) + TEPCO Tokyo (0.45) + COL XM (0.40) + Hokkaido (0.36) + Shikoku (0.36) — four of five are Japanese juyo zones. Shipping all five Japanese zones at once would:
+The raw priority-score top 5 is Tohoku (0.90) + TEPCO Tokyo (0.45) + COL XM (0.40) + Hokkaido (0.36) + Shikoku (0.36) — four of five are Japanese juyo zones. Shipping all five Japanese zones at once would leave entire continents unrepresented in round 2 (South America has zero T1 dispatch coverage in v0.5; the audit identifies COL/MEX/CHL all with credible promote/introduce paths).
 
-- **Burn Codex bandwidth on a single loader pattern.** Tohoku's brief proves the juyo CSV pattern. Once landed, follow-up zones are 1-day fast-follows that reuse `parseJuyoCsv()`, not 2-day independent dispatches.
-- **Leave entire continents unrepresented in round 2.** South America has zero T1 dispatch coverage in v0.5; the audit identifies COL/MEX/CHL/URY all with credible promote/introduce paths. Diversifying captures them in this round.
+The compromise: **two** of the highest-priority juyo zones (Tohoku as the parser-extraction lead, TEPCO as the proof-of-generalisation fast-follow), plus three Latin-American picks (COL, MEX, CHL) for continental balance. The remaining six Japanese juyo zones (Hokkaido, Shikoku, Chubu, Kansai, Chugoku, Hokuriku) become a documented round-3 fast-follow once `src/data/juyo.ts` is in place — each a 1-day brief at that point.
 
-So Tohoku is taken as the lead Japanese pick (anchors the juyo cluster + highest priority score in the entire audit), and the remaining four picks are South-American or North-American to broaden continental footprint. The other seven Japanese juyo zones (TEPCO, Hokkaido, Shikoku, Chubu, Kansai, Chugoku, Hokuriku) become a documented round-3 fast-follow once Tohoku's parser is extracted to `src/data/juyo.ts`.
+The TEPCO swap was a Simon-directed override of the original draft, which had `uruguay` (priority -0.07) as the fifth pick. TEPCO's 0.5 TWh anchor has the same headline impact, lands at higher priority-score (+0.45 vs -0.07), and exercises the juyo parser a second time at near-zero incremental cost — strengthening the case for round-3 by demonstrating the abstraction generalises beyond a single zone before the remaining six are queued.
 
 ### Things Simon may want to override
 
-1. **Drop URY for a 5th Japanese zone.** URY has the lowest priority score in the audit (-0.07) and a thin anchor (~0.5 TWh wind, no single dispatched-down series). If Codex bandwidth is tight and the Tohoku brief lands on day 1, dropping URY and adding TEPCO (0.45) would push +0.5 TWh more impact for the same dispatch slot — and TEPCO's juyo CSV is mechanically identical to Tohoku's once the parser exists.
-2. **Skip CHL wind entirely.** The Atacama loader (`src/data/atacama-chile.json.ts`) already fetches the CEN ERV XLSX for solar. The "promotion" is more accurately framed as "extend the Atacama XLSX parse to also read sheet `Resumen-DiarioHorario-Eolico`." If Simon prefers, this can fold into the Atacama loader (zero new branch) and free the round-2 slot for another country.
-3. **Continental balance.** Round 2 as drafted is 1×Asia + 4×Latin-America. That's deliberate (Latin America had zero round-1 dispatches), but if Simon wants a North-America representative, swap CHL wind for a USA candidate. The audit doesn't list any North-America `introduce-as-T1` rows (USA is fully ISO-covered already), so a swap would mean reaching into `introduce-as-T3` territory — outside this brief's scope.
+1. **Skip CHL wind entirely.** Round-2 as drafted treats this as a separate loader (`src/data/chile-wind.json.ts` extending shared XLSX-fetch via `src/data/cen-erv.ts`). The alternative is folding CHL wind into the existing Atacama loader as a second emitted series. Both produce the same `chile-wind` output region; the separate-loader path preserves the project's 1-loader-per-region convention and keeps the wind/solar series independently testable, which is why this brief picks it. Override if Simon prefers the fold-in — the brief is one step of refactor either way.
+2. **Continental balance.** Round 2 as drafted is 2×Asia-East (Tohoku + TEPCO) + 3×Latin-America (COL + MEX + CHL). The Asia-East lean is defensible on priority-score grounds (Tohoku at 0.90 and TEPCO at 0.45 are #1 and #2 in the audit), and Simon has confirmed this balance is acceptable. If a future revision wants North-America representation, the audit doesn't list any North-America `introduce-as-T1` rows (USA is fully ISO-covered already), so any swap would reach into `introduce-as-T3` territory — outside this brief's scope.
 
 ---
 
@@ -106,7 +104,7 @@ Each section below is **self-contained**. Paste it directly into a Codex session
 **Repo:** `/Users/simoncollins/code/every-last-joule-dashboard/`
 **Branch:** create `codex/phase-26r2-japan-tohoku` from `v0-build`.
 
-**Goal.** Introduce a new region `japan-tohoku` at T1a-live-tso by wiring Tohoku Electric Power Network's hourly juyo CSV (the same family as the Kyushu CSV that round 1 landed for `japan-kyushu`). Extract a reusable parser into `src/data/juyo.ts` so the remaining seven juyo zones (TEPCO, Hokkaido, Shikoku, Chubu, Kansai, Chugoku, Hokuriku) become 1-day fast-follows.
+**Goal.** Introduce a new region `japan-tohoku` at T1a-live-tso by wiring Tohoku Electric Power Network's hourly juyo CSV (the same family as the Kyushu CSV that round 1 landed for `japan-kyushu`). Extract a reusable parser into `src/data/juyo.ts` so the second juyo region in round 2 (`japan-tokyo` / TEPCO via CODEX-PHASE26R2-TE) and the six round-3 fast-follows (Hokkaido, Shikoku, Chubu, Kansai, Chugoku, Hokuriku) become 1-day briefs each.
 
 **Why this is high-impact.** Tohoku is the highest-priority candidate in the entire world-coverage audit (priority_score 0.90, see `data/coverage-audit/2026-04-26-world.csv` row `JPN / Tohoku area / Tohoku Electric Power Network`). Tohoku is Japan's second-largest TSO area and hosts the bulk of OCCTO-reported wind+solar curtailment outside Kyushu (~1.0 TWh/yr 2024). Adds an Asia-Pacific data point at sub-TSO-area resolution which the existing country-level `japan-kyushu` loader cannot.
 
@@ -135,7 +133,7 @@ Each section below is **self-contained**. Paste it directly into a Codex session
 
 **Constraint.**
 - Tohoku CSV is Shift-JIS, same as Kyushu. Reuse Kyushu's decoding approach.
-- Do NOT add the other six juyo zones in this brief. They are explicit round-3 fast-follows. The whole point of `juyo.ts` is to make them trivial after this lands.
+- Do NOT add TEPCO or the other six juyo zones in this brief. TEPCO has its own paired brief (CODEX-PHASE26R2-TE) that depends on `juyo.ts` landing here first; the remaining six (Hokkaido, Shikoku, Chubu, Kansai, Chugoku, Hokuriku) are explicit round-3 fast-follows. The whole point of `juyo.ts` is to make all subsequent zones trivial after this lands.
 - Do NOT modify the existing `japan` loader (which is the country-level static fallback). Tohoku is a separate `japan-tohoku` region; the country-level `japan` row is not affected by this dispatch.
 - Do NOT change `src/data/japan-kyushu.json.ts` semantics — only the internal refactor that lifts the parser out into `juyo.ts`. The output of the Kyushu loader must remain bit-identical to its current snapshot (verified via `npm run validate`).
 
@@ -294,49 +292,51 @@ Each section below is **self-contained**. Paste it directly into a Codex session
 
 ---
 
-### CODEX-PHASE26R2-U — Uruguay ADME XLT/XLSX promotion
+### CODEX-PHASE26R2-TE — TEPCO juyo CSV introduction (juyo fast-follow)
 
-**Repo:** same. **Branch:** `codex/phase-26r2-uruguay-live` from `v0-build`.
+**Repo:** same. **Branch:** `codex/phase-26r2-japan-tokyo` from `v0-build`.
 
-**Goal.** Promote `uruguay` from T3-modelled (typical-wind shape × 0.4 TWh/yr) to T1a-live-tso by wiring ADME (Administración del Mercado Eléctrico) hourly market XLT/XLSX downloads, capturing winter-low-demand wind curtailment events.
+**Goal.** Introduce a new region `japan-tokyo` at T1a-live-tso by wiring Tokyo Electric Power Company (TEPCO Power Grid) hourly juyo CSV. **This brief is a deliberate fast-follow of CODEX-PHASE26R2-T (Tohoku):** it depends on the shared `src/data/juyo.ts` parser that the Tohoku brief extracts, so its time budget collapses to 1 day rather than 2.
 
-**Why this is here.** Lowest priority score in round 2 (-0.07) but **structurally important.** Uruguay is the densest-wind-penetration grid in the Americas (~30% wind share), and v0.5 currently leaves it as a typical-wind shape — a poor fit for a grid where the curtailment signal is bursty (winter low-demand windows) rather than diurnal. Promoting opens the door to a more honest seasonal shape.
+**Why this is here.** TEPCO is the second-highest-priority candidate in the entire world-coverage audit (priority_score 0.45, see `data/coverage-audit/2026-04-26-world.csv` row `JPN / Tokyo area / Tokyo Electric Power Company (TEPCO Power Grid)`). TEPCO is Japan's largest TSO area by demand, hosts the Kanto solar build-out, and currently has no representation in the dashboard at all (the country-level `japan` static row covers the whole country at low resolution). Adds the densest-load Asia-Pacific area to the live-T1 set with near-zero incremental loader complexity once Tohoku has landed.
 
 **Source discovery.**
-- ADME homepage: https://adme.com.uy/
-- Public spot-price + agua (water-value) XLT files: typically reachable via `https://adme.com.uy/db/...` or `https://adme.com.uy/informes/...`. ADME publishes daily XLT (Excel format) files with hourly spot prices and reservoir levels.
-- Wind curtailment proxy: when spot price hits zero or negative AND wind generation < installed capacity × instantaneous capacity factor, the difference is curtailment. ADME doesn't publish a direct "MW curtailed" series, so this is a model-derived proxy — **not a measured series like CEN's**. That makes the calibration rate critical.
-- Best probable endpoint: `https://adme.com.uy/db/SpotByHour.xlt` (or similar) for spot prices, plus `https://adme.com.uy/db/PostDespachoHorario.xlt` for hourly per-fuel generation. Find the actual filenames via the ADME `Informes` page.
-- Calibration rate: ADME Informe Anual 2024 cites wind curtailment events totalling ~0.4–0.5 TWh against ~6 TWh annual wind generation = `RATE_BASE = 0.075` (7.5%). Apply to fetched per-hour wind MW, but ONLY for hours where spot price ≤ $0/MWh OR demand < `minDemandThreshold`. Outside those windows, curtailment is effectively zero.
+- TEPCO forecast / setsuden portal: https://www.tepco.co.jp/forecast/
+- juyo CSV typical pattern (proven on Kyushu, extracted by Tohoku into `src/data/juyo.ts`): expect a path like `https://www.tepco.co.jp/forecast/html/images/juyo-2024.csv` or `https://www.tepco.co.jp/forecast/common/demand/juyo_2024_tokyo.csv` — Shift-JIS encoded, columns are date, hour, demand-MW, then per-fuel supply MW (thermal, nuclear, hydro, solar, wind, etc.). The audit probe confirmed the CSV-download section exists on the homepage; verify the exact URL via DevTools/`curl` against the page before wiring.
+- Calibration rate: 2024 TEPCO area wind+solar curtailment ~0.5 TWh against ~25 TWh wind+solar generation (high-demand, low-RE-share zone) = `RATE = 0.02` (2%, well below Kyushu's 10% and Tohoku's 7.1% because TEPCO's demand absorbs renewable output without dispatching down outside narrow shoulder windows).
+- Cross-check the `src/data/juyo.ts` module landed by CODEX-PHASE26R2-T for parser semantics. TEPCO's CSV column layout mirrors Tohoku's and Kyushu's.
 
 **Required implementation.**
-1. Replace `src/data/uruguay.json.ts` body with a Pattern-A live loader (mirror `france.json.ts` if JSON-via-XLT, mirror `atacama-chile.json.ts` if true-XLSX).
-2. Loop the ADME endpoint daily back 30 days.
-3. Parse hourly wind generation MW + hourly spot price ($/MWh). For each hour: `mw_curtailed = (spotPrice <= 0 ? windGenMW × RATE_BASE : 0)`. The price-gated approach is what differentiates Uruguay from the other Latin-American picks — apply the rate ONLY during oversupply hours.
-4. Keep `REGION_ID = "uruguay"`. Update `src/lib/regions.ts` `uruguay` entry's `tier: "live"`.
+1. **Hard dependency:** `src/data/juyo.ts` must already exist on `v0-build` from CODEX-PHASE26R2-T. If it does not, STOP and report back — do not duplicate the parser inline.
+2. Create `src/data/japan-tokyo.json.ts` mirroring the Tohoku loader structure, calling `parseJuyoCsv(buffer, { area: "tokyo", rate: 0.02 })`.
+3. Loop the TEPCO CSV endpoint daily back ~30 days for backfill. juyo CSVs are typically year-keyed, so the loader fetches the current-year file once and slices the latest 30 days.
+4. `REGION_ID = "japan-tokyo"`. Add to `src/lib/regions.ts` with lat/lon ~35.68°N, 139.69°E (Tokyo) and `tier: "live"`.
 5. Wrap in `withFallback({ regionTier: "live", ... })`.
-6. `sourceNote`: `"ADME hourly XLT spot-price + per-fuel generation; wind curtailment proxied at 7.5% during spot-price≤0 hours (Uruguay 2024 anchor: ~0.4 TWh/yr per ADME Informe Anual; winter-low-demand events)"`.
+6. `sourceNote`: `"TEPCO Power Grid juyo CSV hourly wind+solar × 2% calibrated curtailment (Tokyo area 2024 anchor: ~0.5 TWh/yr; Kanto solar + small wind; OCCTO area-curtailment data)"`.
 
-**Calibration rate sanity-check.** Emitted 30-day `totalTWh` should land near `0.4 × (30/365) ≈ 0.033 TWh`. The price-gated rate makes this very seasonal — May–August Uruguay would be much higher than Nov–Feb. If the 30-day window is summer, the value can legitimately be near zero; if winter, can be near `0.06 TWh`. ±100% range is acceptable here given the seasonality, but call out the seasonal-skew explicitly in the loader's `sourceNote`.
+**Calibration rate sanity-check.** Emitted 30-day `totalTWh` should land near `0.5 × (30/365) ≈ 0.041 TWh`. Within ±50% is good calibration. If it's 5× off, the rate is wrong (the most likely failure mode is treating TEPCO's much-larger demand series as if it were generation — verify column indexing against the Tohoku loader's known-good example).
 
 **Tests.**
-- `tests/data/uruguay.test.ts` against fixture XLT and a fixture price series.
-- Assert 24-element profile, all values finite ≥0, `peakGW` > 0.
-- Two fixtures: one with typical winter prices (curtailment > 0) and one with typical summer prices (curtailment ~0). Both must produce valid profiles, just with different magnitudes.
-- Snapshot validator must accept.
+- `tests/data/japan-tokyo.test.ts` — assert 24-element profile, all values finite ≥0, `totalTWh` within ±50% of `0.041`, `peakGW` > 0.
+- The existing `tests/data/juyo.test.ts` (from CODEX-PHASE26R2-T) should already cover parser-level assertions — extend it with a TEPCO fixture row only if a TEPCO-specific column quirk is discovered during implementation.
+- Snapshot validator (`npm run validate`) must accept the new `japan-tokyo.json` snapshot.
+- Update `tests/regions.test.ts` count (region count goes up by 1).
 
 **Constraint.**
-- If ADME serves XLT files but they're actually HTML masquerading as `.xlt` (not real Excel), STOP. Use a real-XLSX or CSV alternative if ADME publishes one; otherwise fall back to a refreshed T2-annual-calibrated treatment.
-- The price-gate logic is **load-bearing** — without it, applying RATE_BASE to all hours over-counts by ~5×. Do not skip the spot-price filter even if it makes the 30-day totals look small.
-- Do NOT introduce Argentina, Paraguay, or other Cone-Sur regions in this brief.
+- TEPCO CSV is Shift-JIS, same as Tohoku and Kyushu. Reuse `parseJuyoCsv` semantics — do NOT add a TEPCO-specific decoder.
+- Do NOT add the other six juyo zones (Hokkaido, Chubu, Kansai, Chugoku, Shikoku, Hokuriku) in this brief. They remain explicit round-3 fast-follows; this brief is the second proof that the `juyo.ts` parser generalises.
+- Do NOT modify the existing `japan` loader (which is the country-level static fallback). `japan-tokyo` is a separate region; the country-level `japan` row is not affected by this dispatch.
+- Do NOT modify `src/data/japan-tohoku.json.ts` or `src/data/japan-kyushu.json.ts` semantics — both must remain bit-identical via `npm run validate`.
 
 **Done when.**
-- typecheck, test, validate, ci:gates green.
-- `data/snapshots/last-good/uruguay.json` regenerated with `confidenceTier: "T1a-live-tso"` and `sourceStatus: "live"`.
-- `tier-counts.json` golden bumped: T1a +1, T3 −1.
-- Commit on `codex/phase-26r2-uruguay-live`. Message: `feat(phase-2.6r2): promote uruguay to T1a-live-tso via ADME spot-price-gated wind curtailment loader`.
+- `npm run typecheck && npm test -- --run && npm run validate && npm run ci:gates` all pass.
+- `npm run snapshot -- japan-tokyo` regenerates `data/snapshots/last-good/japan-tokyo.json` with `confidenceTier: "T1a-live-tso"` and `sourceStatus: "live"`.
+- Tohoku and Kyushu snapshots remain bit-identical to their pre-merge state.
+- `tests/data/japan-tokyo.test.ts` exists and passes against fixtures.
+- `tier-counts.json` golden file bumped: T1a +1, total +1.
+- Commit on `codex/phase-26r2-japan-tokyo`. Message: `feat(phase-2.6r2): introduce japan-tokyo as T1a-live-tso via TEPCO juyo CSV (reuses juyo.ts parser)`.
 
-**Time budget.** 2 days (extra care on the price-gating logic).
+**Time budget.** 1 day (fast-follow of CODEX-PHASE26R2-T; the parser already exists, this brief is just URL discovery + region wiring + calibration verification).
 
 ---
 
@@ -344,23 +344,24 @@ Each section below is **self-contained**. Paste it directly into a Codex session
 
 Recommended order (parallel where possible):
 
-1. **Day 0:** Dispatch CODEX-PHASE26R2-CHL (lowest risk — extending an existing parser). Concurrently dispatch CODEX-PHASE26R2-T (longest pole — parser extraction blocks the other 7 juyo zones in round 3).
-2. **Day 1–2:** Once CHL lands, dispatch CODEX-PHASE26R2-C (medium risk — XHR discovery). CHL landing first proves Cloudflare-via-Vercel still works.
-3. **Day 2–3:** Dispatch CODEX-PHASE26R2-M (highest risk — CENACE WebForms). Allow 3 days before treating it as fall-through.
-4. **Day 3–4:** Dispatch CODEX-PHASE26R2-U (independent, lowest priority). Drop if Codex bandwidth is constrained.
+1. **Day 0:** Dispatch CODEX-PHASE26R2-CHL (lowest risk — extending an existing parser) and CODEX-PHASE26R2-T (longest pole — parser extraction blocks the remaining juyo zones) in parallel. CHL landing first proves Cloudflare-via-Vercel still passes.
+2. **Day 1:** Once CODEX-PHASE26R2-T merges (`src/data/juyo.ts` exists on `v0-build`), dispatch CODEX-PHASE26R2-TE (TEPCO). 1-day fast-follow — just URL discovery + region wiring + calibration.
+3. **Day 1–2:** Dispatch CODEX-PHASE26R2-C (Colombia, medium risk — XHR discovery).
+4. **Day 2–3:** Dispatch CODEX-PHASE26R2-M (Mexico, highest risk — CENACE WebForms). Allow 3 days before treating it as a fall-through.
 
-Net wall-clock for all five: ~5–7 days assuming no fall-throughs.
+Net wall-clock for all five: ~4–6 days assuming no fall-throughs (TEPCO collapsing the last day vs the previous URY plan).
 
 After all five land, expected tally shift:
 - T1a: 66 → 71 (+5)
-- T3: 51 → 48 (−3, three promotions)
-- Newly-introduced (`japan-tohoku`, `colombia`): +2 to total region count
+- T3: 51 → 49 (−2, two promotions: `mexico` and `chile-wind`)
+- Newly-introduced (`japan-tohoku`, `colombia`, `japan-tokyo`): +3 to total region count
 - Update `scripts/ci/golden/tier-counts.json` in the same PR that lands the last loader, or in a follow-up commit immediately after.
 - Run `python3 scripts/validation/build_region_docs.py` after each lands to refresh per-region docs (the docs-drift gate will fail otherwise).
 
 ## 5. Out of scope / deferred
 
-- **Other 7 Japanese juyo zones** (TEPCO, Hokkaido, Shikoku, Chubu, Kansai, Chugoku, Hokuriku) — round 3 fast-follow once `src/data/juyo.ts` exists from CODEX-PHASE26R2-T. Each is a 1-day brief at that point.
+- **Other 6 Japanese juyo zones** (Hokkaido, Shikoku, Chubu, Kansai, Chugoku, Hokuriku) — round 3 fast-follow once `src/data/juyo.ts` and the second proof-of-generalisation `japan-tokyo` exist from CODEX-PHASE26R2-T and CODEX-PHASE26R2-TE. Each is a 1-day brief at that point.
+- **Uruguay (`uruguay`)** — round-2 candidate dropped in favour of TEPCO. Uruguay's anchor (~0.5 TWh wind) is real but the upstream is bursty (winter low-demand events), the ADME XLT format is fragile (price-gated proxy, no measured-curtailment series), and the priority score is the lowest in the candidate set (-0.07). Belongs to a future round once a more honest seasonal-shape upstream is identified.
 - **Other Latin-American grids** (Argentina, Paraguay, Bolivia, Ecuador, Peru) — Argentina was probed in v0.5 and remained opaque (CAMMESA returns timeouts); Paraguay's Itaipu spill has no hourly endpoint; Bolivia/Ecuador/Peru fall under the round-1 "audit-says-introduce-as-T3" treatment until a hourly upstream emerges.
 - **All Africa, Middle East, Central Asia, Asia-South** — round-2 picks deliberately avoid these. The audit's `introduce-as-T1` set for these continents is empty (Africa, North-America, Oceania-Pacific, Europe-ENTSO-E all have zero `introduce-as-T1` rows per the audit digest's "Weak-coverage flag" section). Promoting those would mean reaching into `introduce-as-T3` rows, which is outside this round's scope.
 - **CENACE per-balancing-area split** — round-2 Mexico ships at country-level; per-area split is a v1 follow-up after the CENACE loader proves it can fetch CSVs at all.
@@ -373,7 +374,7 @@ After all five land, expected tally shift:
 After all five land, update:
 - `docs/methodology/uncertainty.md` Tier-definitions table — increment T1a population from 66 to 71.
 - `src/methodology.md` §2.1 — add the five new T1a regions to the prose listing.
-- `scripts/ci/golden/tier-counts.json` — bump T1a to 71, T3 to 48, total +2 (japan-tohoku + colombia).
+- `scripts/ci/golden/tier-counts.json` — bump T1a to 71, T3 to 49, total +3 (japan-tohoku + colombia + japan-tokyo).
 - `docs/data-source-log.md` — one new entry per loader (mirror the format used for `france`, `ontario`, `japan-kyushu`, `wa-swis`).
 - `docs/coverage-audit/2026-04-26-world.md` — append a "round-2 disposition" footer to mirror the round-1 disposition footer in `docs/proposals/2026-04-26-phase-2-6-static-promotions-dispatch.md` (which loaders shipped, which hit STOP-conditions).
 - `data/coverage-audit/2026-04-26-world.csv` — for each landed loader, the corresponding row stays as-is (the CSV is a snapshot of the audit at 2026-04-26, not a live tracker). The disposition footer in the digest is the truth-ledger for what subsequently shipped.
@@ -384,6 +385,6 @@ These updates are in scope of the **last** Codex brief in the dispatch chain, NO
 
 ## 7. Provenance
 
-This brief is derived directly from the world-coverage audit at `data/coverage-audit/2026-04-26-world.csv` (347 rows) and digest at `docs/coverage-audit/2026-04-26-world.md`. The 5 picks are the top of the audit's `recommended_action ∈ {introduce-as-T1, promote-to-T1}` set after country/continent diversification. The 7 unselected picks (TEPCO, Hokkaido, Shikoku, Chubu, Kansai, Chugoku, Hokuriku) are queued as a round-3 fast-follow once Tohoku's `juyo.ts` parser lands.
+This brief is derived directly from the world-coverage audit at `data/coverage-audit/2026-04-26-world.csv` (345 rows) and digest at `docs/coverage-audit/2026-04-26-world.md`. The 5 picks are the top of the audit's `recommended_action ∈ {introduce-as-T1, promote-to-T1}` set after country/continent diversification, with one Simon-directed override swapping `uruguay` (priority -0.07) for `japan-tokyo` (priority 0.45). The 6 unselected juyo zones (Hokkaido, Shikoku, Chubu, Kansai, Chugoku, Hokuriku) are queued as a round-3 fast-follow once Tohoku's `juyo.ts` parser and TEPCO's proof-of-generalisation land.
 
 For corrections or audit-row updates: simon@collins.nu.
