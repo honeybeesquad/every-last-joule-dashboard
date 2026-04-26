@@ -58,6 +58,7 @@ const LOADER_CLASS: Record<string, LoaderClass> = {
   france:         { tier: "live" },
   ireland:        { tier: "live" },
   "iso-ne":       { tier: "live" },
+  japan:          { tier: "live" },
   miso:           { tier: "live" },
   "new-zealand":  { tier: "live" },
   "north-sea":    { tier: "live" },
@@ -89,7 +90,7 @@ const LOADER_CLASS: Record<string, LoaderClass> = {
   iran:             { tier: "static", profileKind: "solar" },
   "iraq-mainland":  { tier: "static", profileKind: "solar" },
   israel:           { tier: "static", profileKind: "solar" },
-  japan:            { tier: "static", profileKind: "solar" },
+  // japan: promoted live in Phase-2.6 (2026-04-26); see live block above.
   jeju:             { tier: "static", profileKind: "wind" },
   jordan:           { tier: "static", profileKind: "solar" },
   kazakhstan:       { tier: "static", profileKind: "wind" },

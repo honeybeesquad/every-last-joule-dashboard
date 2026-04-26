@@ -74,6 +74,12 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "ireland-republic": "wind",
   "northern-ireland": "wind",
   israel: "solar",
+  // japan: live as of CODEX-PHASE26-J (2026-04-26). Loader fetches the
+  // Kyushu Electric T&D `td_power_usages` daily area-demand CSV (Shift-JIS,
+  // 5-min solar generation column) and applies a 10% calibration rate
+  // against the Kyushu 2024 ~1.7 TWh/yr anchor. The solar entry here is
+  // the fallback profileKind if Kyushu Electric's CSV becomes inaccessible
+  // and the loader has to be reverted to probe-only.
   japan: "solar",
   jeju: "wind",
   jordan: "solar",

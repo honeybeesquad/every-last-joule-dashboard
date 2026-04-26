@@ -6,12 +6,12 @@ Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `japan`
 - **Country:** JPN
-- **Tier:** static
+- **Tier:** live
 - **Kind:** solar
-- **Source:** OCCTO/JEPX fallback
-- **Source URL:** [https://www.occto.or.jp/](https://www.occto.or.jp/)
+- **Source:** Kyushu Electric area-demand CSV (5-min solar) × 10% calibrated curtailment (Kyushu 2024 anchor: ~1.7 TWh/yr)
+- **Source URL:** [https://www.kyuden.co.jp/td_power_usages/pc.html](https://www.kyuden.co.jp/td_power_usages/pc.html)
 - **Loader:** [`japan.json.ts`](../../src/data/japan.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -26,18 +26,20 @@ Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** METI/OCCTO 2024 wind+solar curtailment ~2.5 TWh (Kyushu dominant)
+- **TSO annual curtailment (latest published):** OCCTO 2024 nationwide solar curtailment ~1.7–2.0 TWh, of which Kyushu carries the bulk (METI/OCCTO 2024 reports + Kyushu Electric output-control statistics).
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** —
+- **Other:** Kyushu Electric T&D `td_power_usages` daily area-demand CSV (Shift-JIS, 5-minute solar generation column).
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+_30-day live total should land near 1.7 × (30/365) ≈ 0.14 TWh per the Phase-2.6 calibration sanity-check. If a future expansion adds Tohoku/Chubu/TEPCO area CSVs the anchor rises to ~2.0 TWh/yr; until then this loader treats Kyushu as the Japan signal._
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+**Promoted to `T1a-live-tso` (2026-04-26)** via the Kyushu Electric area-demand CSV. The loader fetches `https://www.kyuden.co.jp/td_power_usages/csv/juyo-hourly-YYYYMMDD.csv` daily for the trailing 30 days, decodes the upstream's Shift-JIS bytes via Node 20's built-in `TextDecoder('shift-jis')` (no `iconv-lite` dependency), locates the 5-minute solar section by its 4-column `DATE,TIME,...,...` header (column-count signature avoids any reliance on Japanese header text), converts JST timestamps to UTC, and applies a 10% calibration rate to the 万kW solar generation column — calibrated against the 2024 Kyushu solar curtailment ~1.7 TWh / ~16 TWh solar generation ratio. Kyushu is not the whole of Japan, but it carries the bulk of OCCTO-reported nationwide solar curtailment since 2018; per-area expansion (TEPCO/Tohoku/Chubu) is a follow-up brief. JEPX historical CSV remains an alternative reference.
+
+See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
