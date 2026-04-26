@@ -59,7 +59,7 @@ cross-references:
 - `dataset/SCHEMA.md` — per-field schema (§3 primary source).
 - `dataset/FAIR.md` — FAIR self-assessment (§5, §6).
 - `dataset/CITATION.cff` — machine-readable citation (§5, §6).
-- `docs/known-limitations.md` — structural-gap + blind-spot
+- `docs/known-limitations.md` — documented-gap + blind-spot
   ledger (§5 primary source).
 - `docs/validation/<region>.md` — 130 per-region triangulation
   documents (§4).

@@ -58,14 +58,16 @@ Before using a region's values, check its `confidenceTier`:
 
 | Tier | Envelope | Treatment guidance |
 |---|---|---|
-| `T1-live-TSO` | ±15% (or 2σ where backfill ≥ 3 yrs) | Defensible for most analyses; see per-region validation MD for any scope mismatch. |
+| `T1a-live-tso` | ±15% (or 2σ where backfill ≥ 3 yrs) | Live hourly feed + own-jurisdiction calibration rate (TSO/regulator). Defensible for most analyses; see per-region validation MD for any scope mismatch. |
+| `T1b-live-domestic-anchored` | ±50% (empirical, post-B1 rerun) | Live feed + domestic-stat-agency or modelled-share rate. Italy-Sardinia, Italy-North-Zone, Netherlands, Baltics. Use with anchor-aware caveats. |
+| `T1c-live-neighbour-anchored` | ±35.5% (empirical) | Live feed + rate extrapolated from neighbouring zone. Switzerland (Czech CEPS rate). |
 | `T2-annual-calibrated` | ±20% | Annual total is anchored; hourly shape is reconstructed from live generation × rate. Defensible for annual totals, use with caution at hour level. |
 | `T2 flare` | ±20%, flat 24/7 | Flare is continuous; the flat profile is methodologically correct, not a data gap. |
 | `T3-modelled` | ±40% | Static annual + typical shape. Treat as order-of-magnitude estimate; do not use hour-level reconstructions for modelling. |
 
 Full tier methodology: `docs/methodology/uncertainty.md`.
 
-## 5.3 Structural coverage gaps
+## 5.3 Documented coverage gaps
 
 The dataset does not publish hourly values for jurisdictions with
 no public hourly upstream source. Explicit gaps:
@@ -78,8 +80,8 @@ no public hourly upstream source. Explicit gaps:
   fallback estimates appear as T3-modelled (typical solar shape
   scaled to a published annual) — see `docs/known-limitations.md`.
 - **Sub-Saharan Africa outside ESKOM**. Eskom (South Africa)
-  is T1 via the data portal; other sub-Saharan grids have
-  patchy published generation and no curtailment accounting.
+  is T1a-live-tso via the data portal; other sub-Saharan grids
+  have patchy published generation and no curtailment accounting.
 - **Central Asia and Russia outside W. Siberia flare.** Russian
   European grid carries a 1 TWh/yr T3-modelled hydro-seasonal
   fallback; Murmansk wind is a T2-annual-calibrated flat estimate;
@@ -92,7 +94,7 @@ no public hourly upstream source. Explicit gaps:
   published annuals. No public hourly API exists for any Chinese
   province.
 
-Full structural-gap ledger: `docs/known-limitations.md`.
+Full documented-gap ledger: `docs/known-limitations.md`.
 
 ## 5.4 Known blind spots in the phenomenon being measured
 
@@ -188,5 +190,5 @@ Examples of analyses this dataset supports:
 - `dataset/SCHEMA.md` — full field schema.
 - `dataset/FAIR.md` — FAIR self-assessment (§7: re-use
   guidance).
-- `docs/known-limitations.md` — complete structural-gap and
+- `docs/known-limitations.md` — complete documented-gap and
   blind-spot ledger.
