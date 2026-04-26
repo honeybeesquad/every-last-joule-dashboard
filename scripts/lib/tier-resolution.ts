@@ -65,10 +65,12 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "inner-mongolia": "wind",
   iran: "solar",
   "iraq-mainland": "solar",
-  // ireland-republic / northern-ireland: 2026-04-25 demoted live → static.
-  // The EirGrid loader is probe-only; the emitted profile is a calibrated
-  // wind typical-shape scaled to SONI/EirGrid 2024 anchor (2.18 TWh
-  // all-island), split 58/42 at consumption time.
+  // ireland-republic / northern-ireland: live as of 82b5496 (Phase 2.6).
+  // The entries below are kept as a fallback profileKind in case the
+  // EirGrid/SONI DD-HH workbook becomes inaccessible and the loader has
+  // to be reverted to a typical-shape probe-only static. Profile shape
+  // is wind-dominant; the all-island DD is split ROI 58% / NI 42% per
+  // the SONI/EirGrid 2024 annual constraint+curtailment anchor.
   "ireland-republic": "wind",
   "northern-ireland": "wind",
   israel: "solar",
@@ -91,9 +93,12 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   paraguay: "hydro-seasonal",
   peru: "hydro-seasonal",
   qinghai: "solar",
-  // south-africa: 2026-04-25 demoted live → static. The Eskom Data Portal
-  // loader is probe-only; the emitted profile is calibrated wind+solar
-  // mixed-shape scaled to ~4.4 TWh/yr (SAREM 2025).
+  // south-africa: live as of 82b5496 (Phase 2.6). Loader fetches the
+  // Eskom Data Portal Total_Hourly_Generation.csv and applies a 12%
+  // calibration rate against the SAREM 2025 / Eskom MTSAO Oct 2025
+  // 4,363 GWh annual renewable-curtailment anchor. The mixed entry
+  // here is the fallback profileKind if the live CSV becomes
+  // inaccessible and the loader has to be reverted to probe-only.
   "south-africa": "mixed",
   quebec: "hydro-seasonal",
   "russia-mainland": "hydro-seasonal",
