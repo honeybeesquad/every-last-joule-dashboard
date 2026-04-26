@@ -11,3 +11,6 @@ verify-b1.mjs
 __pycache__/
 *.pyc
 .venv/
+
+# Superpowers brainstorming workspace
+.superpowers/
