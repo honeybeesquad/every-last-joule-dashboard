@@ -36,7 +36,7 @@ per GitHub Actions cron).
 | `fuelShare` | `Record<string, number>` | Fuel split of curtailed energy, fractions 0–1, keys ⊂ `{solar, wind, hydro, geothermal, flare}`. |
 | `uncertaintyLowGW` | `number` | Lower bound of the confidence envelope on `peakGW`. |
 | `uncertaintyHighGW` | `number` | Upper bound of the confidence envelope on `peakGW`. |
-| `confidenceTier` | `string` | One of `T1-live-TSO`, `T2-annual-calibrated`, `T3-modelled`. |
+| `confidenceTier` | `string` | One of `T1a-live-tso`, `T1b-live-domestic-anchored`, `T1c-live-neighbour-anchored`, `T2-annual-calibrated`, `T2-flare`, `T3-modelled`. The legacy value `T1-live-TSO` is retained as an alias of `T1a-live-tso` for pre-2026-04-25 snapshots. |
 
 ### Example record
 
@@ -54,7 +54,7 @@ per GitHub Actions cron).
   "fuelShare": {"solar": 0.88, "wind": 0.12},
   "uncertaintyLowGW": 0.620,
   "uncertaintyHighGW": 0.838,
-  "confidenceTier": "T1-live-TSO"
+  "confidenceTier": "T1a-live-tso"
 }
 ```
 
@@ -93,7 +93,7 @@ Full field descriptions and update semantics: `dataset/SCHEMA.md`.
 **Size:** 2,590,195 rows (≈ 20 MB compressed).
 **Coverage window:** 2020-01-01 → 2026-04-24 (partial-year final
 year).
-**Regions covered:** 29 (all T1-live-TSO; regions without
+**Regions covered:** 29 (all T1a-live-tso; regions without
 multi-year upstream archives are not backfilled).
 **Partitioning on disk:** flat per-year files at
 `data/historical/backfill/<source>_<zone>_<year>.parquet`
@@ -142,8 +142,8 @@ uncertainty envelope; the hourly backfill (§3.3) does not.
 | `n_hourly_rows` | `int32` | Non-null hours observed for this region in this year (full year = 8,760, leap year = 8,784). |
 | `annual_twh` | `float32` | Σ `curtailment_gw` × 1h ÷ 1000 across the year. |
 | `peak_gw` | `float32` | Max hourly `curtailment_gw` across the year. |
-| `confidence_tier` | `string` | `T1-live-TSO`, `T2-annual-calibrated`, or `T3-modelled`. |
-| `tier_fraction` | `float32` | Per-tier envelope half-width (0.15 / 0.20 / 0.40). |
+| `confidence_tier` | `string` | One of `T1a-live-tso`, `T1b-live-domestic-anchored`, `T1c-live-neighbour-anchored`, `T2-annual-calibrated`, `T2-flare`, or `T3-modelled` (legacy `T1-live-TSO` is an alias of T1a-live-tso for pre-2026-04-25 snapshots). |
+| `tier_fraction` | `float32` | Per-tier envelope half-width (0.15 T1a / 0.50 T1b / 0.355 T1c / 0.20 T2 / 0.40 T3). |
 | `uncertainty_low_gw` | `float32` | `peak_gw × (1 − tier_fraction)`, clamped to ≥ 0. |
 | `uncertainty_high_gw` | `float32` | `peak_gw × (1 + tier_fraction)`. |
 | `uncertainty_low_twh` | `float32` | `annual_twh × (1 − tier_fraction)`, clamped to ≥ 0. |

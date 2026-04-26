@@ -172,27 +172,39 @@ roadmap is.
 
 ## 2.5 Confidence tiers
 
-Every region is deterministically assigned to one of four tiers
-(implemented in `src/lib/uncertainty.ts::deriveTier`):
+Every region is deterministically assigned to one of six tier
+buckets (implemented in `src/lib/uncertainty.ts::deriveTier`).
+Documented-gap regions (Mexico CENACE, etc.) are listed in
+`docs/known-limitations.md` and do not appear in this table —
+they are out-of-scope for tier assignment by definition (a tier
+describes how confidently we know an *emitted* value; gap
+regions emit nothing).
 
 | Tier | Criterion | Uncertainty envelope |
 |---|---|---|
-| T1-live-TSO | Live hourly feed + historical backfill | ±15% of peakGW (fallback) or 2σ of backfill annual peakGW (when backfill ≥ 3 yrs) |
-| T2-annual-calibrated | Published annual anchor, no hourly feed | ±20% of peakGW |
-| T2 flare | Flare region, flat 24/7 base-load | ±20% |
+| T1a-live-tso | Live hourly feed + own-jurisdiction calibration rate (TSO/regulator) | ±15% of peakGW (fallback) or 2σ of backfill annual peakGW (when backfill ≥ 3 yrs) |
+| T1b-live-domestic-anchored | Live feed + domestic-stat-agency or modelled-share rate | ±50% of peakGW (empirical, post-B1 rerun) |
+| T1c-live-neighbour-anchored | Live feed + rate extrapolated from neighbouring zone | ±35.5% of peakGW (empirical) |
+| T2-annual-calibrated | Published annual anchor, no hourly feed (incl. flat-base proxies) | ±20% of peakGW |
+| T2 flare | Flare region, flat 24/7 base-load | ±20% (presentational split from T2; same envelope) |
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
-| T4-structural-gap | No hourly claim made | n/a — not published |
 
-The tier distribution in v0.5: 62 T1, 2 T2-annual-calibrated, 4
-T2 flare, 60 T3 (total 128). The two T2 regions are Austria (APG
-provisional anchor, flat-base proxy) and Russia Murmansk wind
-(SO UPS dispatch-limit estimate, flat). The 4 T2-flare regions are
-the Permian, West Siberia, South Iraq, and East Saudi flare basins.
-The 60 T3 regions are static annual anchors (Ember, IRENA, regulator
-reports) combined with a typical diurnal or monthly-seasonal shape
-(solar cosine, wind broad-overnight, hydro monthly, mixed fuel-share,
-geothermal-overnight). Full methodology and per-region rationale in
-`docs/methodology/uncertainty.md`; live counts emitted by
+The tier distribution at submission: **63 T1a, 4 T1b, 1 T1c, 2
+T2-annual-calibrated, 4 T2-flare, 54 T3** (total 128). The four
+T1b zones are Italy-Sardinia, Italy-North-Zone, the Netherlands,
+and the Baltics — each pairing a bidding-zone live feed against
+either a national-anchor zone-share or a domestic stat-agency
+rate. The single T1c zone is Switzerland (Swissgrid live feed
+with the Czech CEPS rate as a neighbouring proxy). The two T2
+regions are Austria (APG provisional anchor, flat-base proxy)
+and Russia Murmansk wind (SO UPS dispatch-limit estimate, flat).
+The four T2-flare regions are the Permian, West Siberia, South
+Iraq, and East Saudi flare basins. The 54 T3 regions are static
+annual anchors (Ember, IRENA, regulator reports) combined with a
+typical diurnal or monthly-seasonal shape (solar cosine, wind
+broad-overnight, hydro monthly, mixed fuel-share,
+geothermal-overnight). Full methodology and per-region rationale
+in `docs/methodology/uncertainty.md`; live counts emitted by
 `scripts/tally-tiers.ts` so any classification drift is auditable.
 
 ## 2.6 Handling of regime changes and discrepancies
@@ -214,8 +226,9 @@ jurisdictions with no public hourly source. These are enumerated
 in `docs/known-limitations.md` and include: Mexico CENACE,
 most Middle East outside flare basins, much of sub-Saharan
 Africa, and Chinese provinces without a public hourly API.
-These are T4 (structural gap); no synthetic series is published
-for them. Annual estimates for T4 jurisdictions appear in
+These are documented gaps (taxonomy axis: `coverage_status =
+"documented-gap"`); no synthetic series is published for them.
+Annual estimates for documented-gap jurisdictions appear in
 methodology prose only, never as published hourly data.
 
 ## 2.8 Agentic workflow disclosure

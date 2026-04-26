@@ -34,7 +34,7 @@ From `docs/methodology/validation-discrepancies.md`:
 
 | Count | Classification | Region-year pairs |
 |---:|---|---|
-| 4 | Within ±15% T1 envelope | ercot-east, ercot-west, nyiso, poland |
+| 4 | Within ±15% T1a envelope | ercot-east, ercot-west, nyiso, poland |
 | 7 | Moderate (15% < |Δ%| ≤ 50%) | bulgaria, caiso, hungary, italy-north-zone, spp, sweden-south, switzerland |
 | 12 | Material (|Δ%| > 50%) | norway-no3, norway-no4, iberia, iso-ne, greece, portugal, italy-sardinia, czech-republic, netherlands, baltics, germany, miso |
 
@@ -131,11 +131,13 @@ Three reasons, each grounded in the integrity of what is published:
    accounting concept, not arithmetic miscalibration. Changing the
    rate would hide a real methodological divergence we want
    reviewers to see.
-3. **Envelope transparency.** The ±15% T1 envelope is a *target*
-   for where the rate-model converges, not a claim that every
-   region lies within it. The 4 rule-green points (ercot-east,
-   ercot-west, nyiso, poland) are identified and counted; the 12
-   material points each carry a per-region diagnosis.
+3. **Envelope transparency.** The ±15% T1a envelope is a *target*
+   for where the rate-model converges on an own-jurisdiction anchor,
+   not a claim that every region lies within it. T1b zones carry a
+   ±50% empirical envelope; T1c carries ±35.5%. The 4 rule-green
+   points (ercot-east, ercot-west, nyiso, poland) are identified
+   and counted; the 12 material points each carry a per-region
+   diagnosis.
 
 The v1 recalibration roadmap is five concrete items listed in
 `docs/methodology/validation-discrepancies.md §"v1 candidates"`.
@@ -146,16 +148,25 @@ Figure 4 answers the single-glance question "where is the dataset
 strong and where is it weak?" at geographic scale. Each of the 128
 regions renders as a tier-coloured dot:
 
-- **T1-live-TSO (62 regions, teal).** Dense over North America,
-  Europe, the Nordics, Australia (AEMO five states), Brazil (eleven
-  ONS states), Norway (NO1–NO5), and the UK; the EIA + ENTSO-E +
-  AEMO + ONS quartet is the dataset's strongest spine.
+- **T1a-live-tso (63 regions, teal).** Live hourly feed + own-
+  jurisdiction calibration rate. Dense over North America, Europe,
+  the Nordics, Australia (AEMO five states), Brazil (eleven ONS
+  states), Norway (NO1–NO5), and the UK, plus AEMO WEM (WA-SWIS)
+  and Kyushu Electric (Japan). The EIA + ENTSO-E + AEMO + ONS
+  quartet is the dataset's strongest spine.
+- **T1b-live-domestic-anchored (4 regions, teal).** Italy-Sardinia,
+  Italy-North-Zone, Netherlands, Baltics — bidding-zone live feeds
+  paired with a domestic-stat-agency or modelled-share rate; ±50%
+  empirical envelope.
+- **T1c-live-neighbour-anchored (1 region, teal).** Switzerland —
+  Swissgrid live feed against the Czech CEPS rate as a neighbouring
+  proxy; ±35.5% empirical envelope.
 - **T2-annual-calibrated (2 regions, amber).** Austria APG and
   Russia Murmansk wind — both flat-base proxies built on a
   published annual without diurnal modelling.
 - **T2 flare (4 regions, brown square).** Permian, West Siberia,
   South Iraq, East Saudi — correctly flat 24/7 baseload.
-- **T3-modelled (60 regions, terracotta).** Static annual anchors
+- **T3-modelled (54 regions, terracotta).** Static annual anchors
   (Ember, IRENA, regulator reports) combined with a typical diurnal
   or monthly-seasonal shape. Covers Ireland (Republic + Northern,
   EirGrid reachability probe scaled to the SONI/EirGrid 2024
@@ -203,9 +214,11 @@ across 2020–2026 and plots the top 20 as a 4×5 facet grid. The
 narrative payoff — the paper's "curtailment is concentrated"
 thesis — is visible in the data: the top 3 regions (Germany,
 Iberia, MISO) account for ~51% of the combined top-20 total.
-Every panel is T1-live-TSO in v0.5 (teal); tier-colour
-infrastructure is in place for v1 rate-recalibrations that may
-promote T2 regions into the top tier.
+Every panel is a live-feed sub-tier in v0.5 (teal) — predominantly
+T1a-live-tso, with Italy-Sardinia, Italy-North-Zone, and Switzerland
+sitting at T1b/T1c where their bidding-zone calibration provenance
+applies. Tier-colour infrastructure is in place for v1
+rate-recalibrations that may promote T2 regions into the top tier.
 
 ## 4.8 Current-snapshot validation (Figure 1)
 

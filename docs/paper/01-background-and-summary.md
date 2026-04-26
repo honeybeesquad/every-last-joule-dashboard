@@ -44,17 +44,23 @@ regions where gas flaring is the dominant "wasted-energy" source.
 
 ## What the dataset contains (150 words)
 
-- **128 regions.** 62 in `T1-live-TSO` (ENTSO-E and EIA with
-  ERCOT and CAISO sub-zones; AEMO, Elexon, ONS Brazil, RTE,
-  Energinet, Elia, IESO, AESO, EMI New Zealand, EPİAŞ Turkey,
-  CEN Chile, Nord Pool); 2 in `T2-annual-calibrated` (Austria
-  APG, Russia Murmansk); 4 flare regions (Permian, West Siberia,
-  South Iraq, East Saudi); 60 in `T3-modelled` (annual anchor +
-  typical shape — Ireland (Republic and Northern), Argentina,
-  Peru, South Africa, Uruguay, Paraguay, Mexico and the rest of
-  Latin America outside Brazil/Atacama, South Asia, sub-Saharan
-  Africa outside the Eskom probe, the non-flare Middle East, the
-  eight Chinese provinces, and Hawaii).
+- **128 regions.** 63 in `T1a-live-tso` (own-jurisdiction
+  rate; ENTSO-E and EIA with ERCOT and CAISO sub-zones; AEMO
+  per-state; Elexon; ONS Brazil; RTE; Energinet; Elia; IESO;
+  AESO; EMI New Zealand; EPİAŞ Turkey; CEN Chile; Nord Pool;
+  AEMO WEM Facility SCADA for WA-SWIS; Kyushu Electric for
+  Japan); 4 in `T1b-live-domestic-anchored` (live feed +
+  domestic-stat-agency rate: Italy-Sardinia, Italy-North-Zone,
+  Netherlands, Baltics); 1 in `T1c-live-neighbour-anchored`
+  (Switzerland on the Czech CEPS rate); 2 in
+  `T2-annual-calibrated` (Austria APG, Russia Murmansk);
+  4 flare regions (Permian, West Siberia, South Iraq, East
+  Saudi); 54 in `T3-modelled` (annual anchor + typical shape —
+  Ireland (Republic and Northern), Argentina, Peru, South Africa,
+  Uruguay, Paraguay, Mexico and the rest of Latin America outside
+  Brazil/Atacama, South Asia, sub-Saharan Africa outside the Eskom
+  probe, the non-flare Middle East, the eight Chinese provinces,
+  and Hawaii).
 - **Hourly resolution** for every live-feed region; hourly
   reconstruction backfilled to 2020-01-01 where upstream archives
   support it (2.59 M rows in `curtailment_backfill.parquet`).
@@ -66,22 +72,25 @@ regions where gas flaring is the dominant "wasted-energy" source.
 
 ## What distinguishes this dataset (150 words)
 
-Three aspects set this work apart from existing curtailment
-collections:
+The dataset is organised on two orthogonal axes (full taxonomy:
+`docs/methodology/taxonomy.md`):
+
+| | `published` | `documented-gap` |
+|---|---|---|
+| **`curtailment-renewable`** | 124 regions: live ENTSO-E/EIA/AEMO/Elexon/etc.; T2 calibrated; T3 modelled. | Mexico CENACE, parts of SE Asia, Iran solar… (see `docs/known-limitations.md`) |
+| **`flare-associated-gas`** | 4 regions: Permian, West Siberia, South Iraq, East Saudi. | Iran flaring (no GGFR-equivalent disaggregation). |
+
+Three aspects set this work apart:
 
 1. **Reproducibility-first.** Every loader is deterministic given
    its upstream response. Every figure is regenerable from
    committed source data on a clean `matplotlib`+`pyarrow` install.
-   Every calibration rate has a provenance document
-   (`docs/methodology/*.md`).
-2. **Honest coverage.** Regions where we could not find a public
-   hourly source are classified T3 (modelled) or T4 (structural gap,
-   not published) rather than filled with fiction. Structural gaps
-   are enumerated in the Usage Notes.
+2. **Honest coverage.** Gap regions are documented, not invented.
 3. **Tier-explicit uncertainty.** Every emitted value carries a
-   confidence tier (T1 ±15%, T2 ±20%, T3 ±40%) and an uncertainty
-   envelope grounded either in observed backfill variance or in the
-   upstream publisher's own stated precision.
+   confidence tier (T1a ±15%, T1b ±50% empirical, T1c ±35.5%
+   empirical, T2 ±20%, T3 ±40%) with an envelope grounded either in
+   observed backfill variance or in the upstream publisher's own
+   stated precision.
 
 ## Companion analysis (100 words)
 

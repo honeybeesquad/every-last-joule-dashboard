@@ -16,9 +16,11 @@ journal's reporting guidelines.
 ## Figure 1
 
 **Global curtailment snapshot.** Per-region dots coloured by
-confidence tier (green: T1-live-TSO with hourly feeds and ±15%
-uncertainty; amber: T2 annual-calibrated with ±20% uncertainty; brown
-square: T2 flare regions with 24/7 baseload shape; terracotta: T3
+confidence tier (green-teal: live-feed sub-tiers — T1a-live-tso with
+own-jurisdiction rate and ±15% uncertainty, T1b-live-domestic-anchored
+with ±50% empirical, T1c-live-neighbour-anchored with ±35.5%
+empirical; amber: T2 annual-calibrated with ±20% uncertainty; brown
+square: T2-flare regions with 24/7 baseload shape; terracotta: T3
 typical-profile modelled with ±40% uncertainty). Dot area is scaled
 to √(peak GW) from the most recent snapshot, so a 10 GW hotspot is
 roughly 3× the visible area of a 1 GW region. The top-8 regions by
@@ -41,8 +43,9 @@ x = published anchor (TWh), y = our HB backfill reconstruction (TWh).
 Both axes are logarithmic to span the ~3 orders of magnitude between
 the smallest (iso-ne, 0.034 TWh) and largest (Germany, 23 TWh)
 anchors. Error bars show each point's ±tier-fraction uncertainty
-envelope (±15% for T1-live-TSO). The shaded band is the
-±15% T1 target envelope; the soft amber band is ±50% for reference.
+envelope (±15% for T1a-live-tso, ±50% for T1b-live-domestic-anchored,
+±35.5% for T1c-live-neighbour-anchored). The shaded band is the
+±15% T1a target envelope; the soft amber band is ±50% for reference.
 Point colour encodes |Δ%|: green ≤ 15% (4/23), amber ≤ 50% (7/23),
 terracotta > 50% (12/23). Median |Δ%| across all pairs is 53.4%.
 Every material discrepancy (|Δ%| > 50%) is diagnosed in the
@@ -77,16 +80,22 @@ by `scripts/validation/figure3_temporal_trace.py`.
 
 **Per-region confidence tier assignment.** The same geographic base
 as Figure 1 with dot size held constant and tier colour carrying the
-full visual signal. Green dots (n=62) are T1-live-TSO regions backed
-by hourly feeds and the 2020–2026 HB backfill (±15% envelope). Amber
-dots (n=2) are T2 annual-calibrated regions with a published annual
-anchor and a flat-shape proxy (Austria APG, Russia Murmansk wind;
-±20%). Brown squares (n=4) are T2 flare regions whose correct shape
-is 24/7 baseload (Permian, West Siberia, South Iraq, East Saudi).
-Terracotta dots (n=60) are T3 typical-profile modelled regions —
-static annual anchors combined with a typical diurnal/seasonal shape
-(solar cosine, wind broad-overnight, hydro monthly-seasonal, mixed
-fuel-share, geothermal-overnight). Total n=128 regions. The figure
+full visual signal. Teal dots (n=63) are T1a-live-tso regions backed
+by hourly feeds + own-jurisdiction calibration rate and the 2020–2026
+HB backfill (±15% envelope). Teal dots (n=4) are T1b-live-domestic-
+anchored regions whose live feed pairs with a domestic-stat-agency
+or modelled-share rate (Italy-Sardinia, Italy-North-Zone, Netherlands,
+Baltics; ±50% empirical). One teal dot (n=1) is T1c-live-neighbour-
+anchored — Switzerland, Swissgrid live feed against the Czech CEPS
+rate (±35.5% empirical). Amber dots (n=2) are T2 annual-calibrated
+regions with a published annual anchor and a flat-shape proxy
+(Austria APG, Russia Murmansk wind; ±20%). Brown squares (n=4) are
+T2-flare regions whose correct shape is 24/7 baseload (Permian, West
+Siberia, South Iraq, East Saudi). Terracotta dots (n=54) are T3
+typical-profile modelled regions — static annual anchors combined
+with a typical diurnal/seasonal shape (solar cosine, wind
+broad-overnight, hydro monthly-seasonal, mixed fuel-share,
+geothermal-overnight). Total n=128 regions. The figure
 is the single-glance answer to "where is the dataset strong and
 where is it weak?" — T1 coverage is dense over North America, Europe,
 the Nordics, Australia, and Brazil, while large parts of South Asia,
@@ -110,10 +119,12 @@ in the descriptor: the top 3 regions (Germany, Iberia, MISO) alone
 account for ~51% of the combined top-20 total across the backfill
 window. The partial-year
 downturn visible at 2026 in every panel is an artefact of the
-archive end-date, not a real curtailment decline. All 20 panels are
-T1-live-TSO in v0.5 (teal); tier-colour infrastructure is in place
-for future rate revisions that may promote T2 regions into the top
-tier. Source data: `data/historical/per_region_annual.parquet`
+archive end-date, not a real curtailment decline. All 20 panels render in
+the live-feed teal in v0.5 — predominantly T1a-live-tso, with
+Italy-Sardinia, Italy-North-Zone, and Switzerland sitting at T1b/T1c
+where their bidding-zone calibration provenance applies; tier-colour
+infrastructure is in place for future rate revisions that may promote
+T2 regions into the top tier. Source data: `data/historical/per_region_annual.parquet`
 (n=203 rows, 29 regions × 7 years).
 
 ---
