@@ -330,3 +330,14 @@ After all five land, update:
 - `docs/coverage-gaps-europe.md` — not affected (these are Asia/Pacific picks).
 
 These updates are in scope of the **last** Codex brief in the dispatch chain, NOT each individual loader brief — the agent landing the final loader does the methodology sweep in the same commit.
+
+---
+
+## v0.5 disposition (added 2026-04-26)
+
+Of the original five candidates:
+
+- **Vietnam, India-North, India-South:** hit STOP-conditions during round 1 (no public hourly upstream). Confirmed in the world-coverage audit dated 2026-04-26 — see master CSV rows for `vietnam` (introduce-as-T3, anchor: EVN 2024 Operations Report) and `india-north` / `india-south` (introduce-as-T3, anchor: POSOCO 2024 reports). v1 candidates for Pattern-D anchor-metadata cleanup once a richer hourly upstream becomes available.
+- **Japan, WA-SWIS:** shipped in round 1 as live T1a (`japan-kyushu`, `wa-swis`).
+
+The audit's master CSV (`data/coverage-audit/2026-04-26-world.csv`) is the single source of truth for round 2 candidate selection; this brief is retained as historical context only.

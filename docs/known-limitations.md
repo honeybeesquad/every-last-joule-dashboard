@@ -62,34 +62,15 @@ Brazil NE wind and solar constrained-off rows are grouped by the ONS `id_estado`
 
 ### 12. v1f regional expansion uses documented fallback shapes where live feeds were hostile
 
-Argentina, Uruguay, Paraguay, Mexico, Vietnam, Thailand, North India, Cyprus, and Ethiopia all sit in `T3-modelled`: typical solar/wind/hydro profiles scaled to documented annual curtailment or spill estimates after public live-data probes found no stable unauthenticated hourly feed. Envelope ±40% of `peakGW`. They keep geographic coverage visible, but `latestProfile` is intentionally `null` and the `sourceNote` labels each as a fallback.
-
-Japan was on this list through v1f but was promoted to `T1a-live-tso` on 2026-04-26 (Phase-2.6 J brief): the loader now fetches Kyushu Electric's area-demand 5-minute solar CSV and applies a 10% calibration rate against the 2024 Kyushu output-control anchor (~1.7 TWh/yr). See `docs/validation/japan.md`.
-
-Phase-2.6 also attempted live promotions for North India and Vietnam; both fell back per their briefs' STOP conditions. Documented blockers:
-
-- **North India (NRLDC).** POSOCO/Grid-India daily reports are PDF-only — no XLS/structured download was surfaced from any of `report.grid-india.in`, `nrldc.in`, `posoco.in`, or HPSLDC mirrors. Both `nrldc.in` and `report.grid-india.in` were also unreachable from the build environment (TLS handshake timeout / connection reset); upstream-side blocking, not a local network failure. The brief explicitly forbade writing a PDF parser. The region remains anchored to the Ember India 2025 figure (~3.5 TWh/yr).
-- **Vietnam (EVN/NLDC).** The operational data section under `nldc.evn.vn/Renewable/...` is gated behind a Vietnamese-language login (`xac-thuc/dang-nhap`) and likely also IP-allowlisted to Vietnam-domestic egress (the host was unreachable from two distinct egresses). The public `evn.com.vn` site is a SPA shell that exposes no operational JSON XHR. The EVN 2024–2025 annual report carries only annual aggregates (RE 2024 = 39,641 GWh). The region remains anchored to ~4 TWh/yr Ninh Thuan / Binh Thuan solar curtailment.
-
-Both will require either authenticated credentials with appropriate egress, or a third-party redistribution that doesn't yet exist (no Ember/IEA/Climate-TRACE hourly feed for either jurisdiction).
-
-Turkey was removed in v1f after ENTSO-E returned no usable A75 renewable generation signal and no stable unauthenticated TEIAS/EPIAS endpoint was integrated in the time-box. In the 2026-04-24 re-probe, the newer EPIAS electricity-service dashboard endpoint did return unauthenticated current-day wind and solar generation by hour, so Turkey is promoted back to `T1-live-TSO` as a conservative calibrated proxy. The endpoint is current-day dashboard data rather than a 30-day history API; `latestProfile` remains `null` until a complete Turkey day is available from the live response, and the source note labels this limitation.
+See `data/coverage-audit/2026-04-26-world.csv` and the digest at `docs/coverage-audit/2026-04-26-world.md` for the canonical operator-by-operator coverage state. Per-row caveats live in the `notes` column. Phase-2.6 round-1 outcomes (Japan promotion, North India/Vietnam STOP-conditions) are annotated in the round-1 dispatch brief at `docs/proposals/2026-04-26-phase-2-6-static-promotions-dispatch.md`.
 
 ### 13. Alaska is below the inclusion threshold, not omitted for lack of curtailment
 
-Alaska's Railbelt grid (Chugach, Matanuska, GVEA) does see documented renewable curtailment — intermittent wind-spill at Fire Island and Eva Creek during low-load shoulder hours, plus asset-owner throttling at rural AVEC village microgrids when diesel-hybrid dispatch can't absorb peak solar. NREL's 2023 Railbelt integration study and subsequent KEA/AVEC rate-case testimony place the aggregate at well under 0.01 TWh/year, roughly three orders of magnitude below the smallest region currently tracked. There is also no public hourly feed: Railbelt operators publish monthly fuel-use summaries, not a SCADA-level dispatch stream. v0 therefore documents Alaska's absence rather than including it as a near-zero row. If a public Railbelt hourly feed becomes available, or if Fire Island/Eva Creek curtailment scales past the 0.05 TWh/year threshold used elsewhere, it will be added with the same fallback-profile treatment applied to other small grids.
+See `data/coverage-audit/2026-04-26-world.csv` and the digest at `docs/coverage-audit/2026-04-26-world.md` for the canonical operator-by-operator coverage state. Per-row caveats live in the `notes` column.
 
 ### 14. v1k global expansion is coverage-first and fallback-labelled
 
-NT & Pilbara, Indonesia, Malaysia, South Korea mainland, Russia (European grid), Taiwan, Jordan, Saudi Arabia solar, UAE, Oman, and Israel all sit in `T3-modelled`: typical profiles after live probes failed to find stable unauthenticated hourly curtailment feeds. Envelope ±40% of `peakGW`. These are coverage-gap estimates, not measured curtailment series, and every loader labels the fallback in `sourceNote`.
-
-WA-SWIS was on this list through v1k but was promoted to `T1a-live-tso` on 2026-04-26 (Phase-2.6 WA brief): the loader now fetches AEMO's WEM Facility SCADA daily JSON (`data.wa.aemo.com.au/public/market-data/wemde/facilityScada/previous/`) at 5-minute resolution per facility and applies an 8% calibration rate against the AEMO WA SWIS 2024 ~0.4 TWh anchor. See `docs/validation/wa-swis.md`.
-
-- **Australia non-NEM:** NT & Pilbara uses 0.2 TWh/yr captive solar. (WA-SWIS is now live; see above.)
-- **South/Southeast Asia:** Indonesia uses 0.3 TWh/yr Java-Bali solar; Malaysia uses 0.15 TWh/yr Peninsular solar.
-- **East Asia:** South Korea mainland remains a 0.5 TWh/yr solar-shaped fallback, excluding Jeju. A 2026-04-24 refresh found reachable KPX/EPSIS/KEEI portal pages and KPX generation APIs on Korea Open Data Portal, but the useful hourly solar/generation APIs require an approved `serviceKey` and no unauthenticated mainland curtailment feed was found. Taiwan uses 0.6 TWh/yr mixed offshore wind and solar.
-- **Russia non-flare:** Russia (European grid) uses 1 TWh/yr seasonal hydro spill. W. Siberia remains the separate flare region and is not reclassified.
-- **Middle East:** Jordan uses 0.35 TWh/yr mixed wind/solar calibrated to the 17% wind-curtailment headline; Saudi Arabia solar uses 0.3 TWh/yr and remains separate from `e-saudi` flare; UAE uses 0.2 TWh/yr; Oman uses 0.1 TWh/yr; Israel uses 0.15 TWh/yr.
+See `data/coverage-audit/2026-04-26-world.csv` and the digest at `docs/coverage-audit/2026-04-26-world.md` for the canonical operator-by-operator coverage state. Per-row caveats live in the `notes` column.
 
 ### 15. Several ENTSO-E rates remain placeholders after the 2026-04-24 audit
 
