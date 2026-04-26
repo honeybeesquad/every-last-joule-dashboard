@@ -21,6 +21,28 @@
 @font-face { font-family: "Gotham"; src: url("/fonts/Gotham-Ultra.ttf") format("truetype");        font-weight: 900; font-style: normal; font-display: swap; }
 @font-face { font-family: "Gotham"; src: url("/fonts/Gotham-UltraItalic.ttf") format("truetype");  font-weight: 900; font-style: italic; font-display: swap; }
 
+/* ---------- Theme system fonts (woff2, self-hosted, OFL) ---------- */
+@font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-Regular.woff2")     format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-SemiBold.woff2")    format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-ExtraBold.woff2")   format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
+
+@font-face { font-family: "Inter";           src: url("/fonts/Inter-Regular.woff2")        format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Inter";           src: url("/fonts/Inter-Medium.woff2")         format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Inter";           src: url("/fonts/Inter-Bold.woff2")           format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+
+@font-face { font-family: "Spectral";        src: url("/fonts/Spectral-Regular.woff2")     format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Spectral";        src: url("/fonts/Spectral-Medium.woff2")      format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Spectral";        src: url("/fonts/Spectral-Bold.woff2")        format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+
+@font-face { font-family: "Frank Ruhl Libre";src: url("/fonts/FrankRuhlLibre-Bold.woff2")  format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Frank Ruhl Libre";src: url("/fonts/FrankRuhlLibre-Black.woff2") format("woff2"); font-weight: 900; font-style: normal; font-display: swap; }
+
+@font-face { font-family: "IBM Plex Sans";   src: url("/fonts/IBMPlexSans-Regular.woff2")  format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "IBM Plex Sans";   src: url("/fonts/IBMPlexSans-Medium.woff2")   format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "IBM Plex Sans";   src: url("/fonts/IBMPlexSans-Bold.woff2")     format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+
+@font-face { font-family: "IBM Plex Mono";   src: url("/fonts/IBMPlexMono-Medium.woff2")   format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+
 :root {
   /* ============ BRAND COLORS ============ */
   /* Teal — primary. Sampled from the logo: rgb(20,175,172). */
