@@ -13,7 +13,7 @@ describe("regions", () => {
     expect(REGIONS.length).toBe(128);
   });
 
-  it("has 66 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
+  it("has 68 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
     // v0.6: -5 aggregates + 10 splits = +5 live -> 49 + 5 = 54; Turkey live re-add -> 55.
     // europe-expansion: -1 n-norway + 5 Norway zones + 1 Switzerland = +5 → 60.
     // tier-routing fix (2026-04-25): brazil-mg/sp/mt/go/pr/rs reclassified
@@ -24,22 +24,27 @@ describe("regions", () => {
     // ireland — all four cycled live → static → live again as their
     // loaders moved from probe-only to real measured fetches in the same
     // expectations table; net 66.
-    // CODEX-7 / B4 Option B (locked 2026-04-25): the 66 live regions are
+    // CODEX-7 / B4 Option B (locked 2026-04-25): the live regions are
     // now subdivided into three live sub-tiers for paper presentation.
     // Bounds (T1a ±15%, T1b ±50%, T1c ±35.5%) and labels are the only
     // thing that change — for rendering, all three behave identically.
-    // Phase-2.6 (2026-04-26): wa-swis promoted static → live via AEMO
-    // WEM Facility SCADA daily JSON × 8% calibrated curtailment. 66 + 1 = 67.
+    // Phase-2.6 WA brief (2026-04-26): wa-swis promoted static → live via
+    // AEMO WEM Facility SCADA daily JSON × 8% calibrated curtailment.
+    // 66 + 1 = 67.
+    // Phase-2.6 J brief (2026-04-26): japan promoted static → live via the
+    // Kyushu Electric area-demand CSV 5-min solar feed × 10% calibrated
+    // curtailment rate (own-jurisdiction Kyushu 2024 anchor ~1.7 TWh/yr).
+    // 67 + 1 = 68.
     //   T1c live-neighbour-anchored: 1 (switzerland; Czech rate)
     //   T1b live-domestic-anchored:  4 (italy-sardinia, italy-north-zone,
     //                                   netherlands, baltics)
-    //   T1a live-tso (own-jurisdiction rate): 62 (the rest)
-    // Total live = 62 + 4 + 1 = 67.
+    //   T1a live-tso (own-jurisdiction rate): 63 (the rest, incl. wa-swis & japan).
+    // Total live = 63 + 4 + 1 = 68.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(67);
+    expect(liveTotal).toBe(68);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(62);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(63);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -55,7 +60,7 @@ describe("regions", () => {
     }
   });
 
-  it("has 57 static regions", () => {
+  it("has 56 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
@@ -67,7 +72,10 @@ describe("regions", () => {
     // Phase-2.6 WA brief (2026-04-26): wa-swis promoted static → live via
     // AEMO WEM Facility SCADA daily JSON × 8% calibrated curtailment.
     // 58 - 1 = 57.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(57);
+    // Phase-2.6 J brief (2026-04-26): japan promoted static → live via
+    // Kyushu Electric area-demand CSV 5-min solar feed × 10% calibrated
+    // curtailment. 57 - 1 = 56.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(56);
   });
 
   it("has 4 flare regions", () => {

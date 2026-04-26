@@ -123,7 +123,7 @@ export const REGIONS: Region[] = [
   { id: "uruguay",          name: "Uruguay",         country: "URY", lat: -33.5, lon: -56.0, tier: "static", kind: "wind",  source: "ADME fallback", sourceUrl: "https://adme.com.uy/" },
   { id: "paraguay",         name: "Paraguay",        country: "PRY", lat: -25.4, lon: -54.6, tier: "static", kind: "hydro", source: "Itaipu fallback", sourceUrl: "https://www.itaipu.gov.py/" },
   { id: "mexico",           name: "Mexico",          country: "MEX", lat: 25.0, lon: -103.0, tier: "static", kind: "solar", source: "CENACE fallback", sourceUrl: "https://www.cenace.gob.mx/SIM/Reportes/" },
-  { id: "japan",            name: "Japan",           country: "JPN", lat: 33.0, lon:  131.0, tier: "static", kind: "solar", source: "OCCTO/JEPX fallback", sourceUrl: "https://www.occto.or.jp/" },
+  { id: "japan",            name: "Japan",           country: "JPN", lat: 33.0, lon:  131.0, tier: "live",   kind: "solar", source: "Kyushu Electric area-demand CSV (5-min solar) × 10% calibrated curtailment (Kyushu 2024 anchor: ~1.7 TWh/yr)", sourceUrl: "https://www.kyuden.co.jp/td_power_usages/pc.html" },
   { id: "vietnam",          name: "Vietnam",         country: "VNM", lat: 11.5, lon:  108.8, tier: "static", kind: "solar", source: "EVN fallback", sourceUrl: "https://www.evn.com.vn/" },
   { id: "thailand",         name: "Thailand",        country: "THA", lat: 14.5, lon:  101.0, tier: "static", kind: "solar", source: "EGAT fallback", sourceUrl: "https://www.egat.co.th/en/" },
   { id: "india-north",      name: "North India",     country: "IND", lat: 26.5, lon:   73.0, tier: "static", kind: "solar", source: "NRLDC fallback", sourceUrl: "https://www.nrldc.in/" },
