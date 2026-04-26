@@ -1,6 +1,6 @@
 # Validation — Czech Republic (`czech-republic`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -32,7 +32,7 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** ČEPS 2024 RES curtailment <0.1 TWh (treated as 0.05 TWh midpoint for Δ% calc)
+- **TSO annual curtailment (latest published):** ČEPS 2024 RES curtailment statement: '<0.1 TWh' (no precise figure published). Anchor uses 0.05 TWh midpoint for Δ% calc but any parquet value up to 0.1 TWh is consistent with the published upper bound.
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —

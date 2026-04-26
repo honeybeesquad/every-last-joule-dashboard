@@ -1,5 +1,28 @@
-/** Canonical region tier determines rendering and cadence treatment. */
-export type RegionTier = "live" | "static" | "flare";
+/**
+ * Canonical region tier determines rendering and cadence treatment.
+ *
+ * The three live sub-tiers reflect rate-derivation provenance (B4 Option B,
+ * locked 2026-04-25 in `docs/proposals/b4-option-b-decision.md`):
+ *
+ *   "live"                       — TSO publishes hourly + own-jurisdiction
+ *                                  calibration rate (T1a, ±15%)
+ *   "live-domestic-anchored"     — TSO publishes hourly + domestic stat-
+ *                                  agency rate or modelled-share split
+ *                                  (T1b, ±50% empirical post-B1 rerun)
+ *   "live-neighbour-anchored"    — TSO publishes hourly + rate is
+ *                                  extrapolated from a neighbouring zone
+ *                                  (T1c, ±35.5% empirical)
+ *
+ * For rendering, all three live sub-tiers behave identically. The
+ * distinction is surfaced in the methodology page and the §2.5 / §5.2
+ * paper tier table only.
+ */
+export type RegionTier =
+  | "live"
+  | "live-domestic-anchored"
+  | "live-neighbour-anchored"
+  | "static"
+  | "flare";
 
 /** The waste modality drives colouring (teal vs orange) and narrative. */
 export type RegionKind = "solar" | "wind" | "hydro" | "mixed" | "flare";
@@ -60,13 +83,29 @@ export interface RegionData {
    * See `src/lib/uncertainty.ts` for derivation and
    * `docs/methodology/uncertainty.md` for the methodology writeup.
    *
-   *   T1-live-TSO         live feed, ±2σ from 5yr backfill
-   *   T2-annual-calibrated static anchored to published annual (±20%)
-   *   T3-modelled         static with typical-shape profile (±40%)
-   *   T4-structural-gap   reserved; not emitted in RegionData
+   *   T1a-live-tso                     live feed + own-jurisdiction
+   *                                    calibration rate, ±2σ from 5yr
+   *                                    backfill (fallback ±15%)
+   *   T1b-live-domestic-anchored       live feed + domestic stat-agency
+   *                                    rate or modelled-share split
+   *                                    (empirical ±50% post-B1 rerun)
+   *   T1c-live-neighbour-anchored      live feed + neighbour-extrapolated
+   *                                    rate (empirical ±35.5%)
+   *   T2-annual-calibrated             static anchored to published annual
+   *                                    (±20%)
+   *   T3-modelled                      static with typical-shape profile
+   *                                    (±40%)
+   *   T4-structural-gap                reserved; not emitted in RegionData
+   *
+   * The pre-2026-04-25 single label "T1-live-TSO" is retained as an alias
+   * mapped from `regionTier === "live"` for backward compatibility with
+   * older snapshots; new emissions use the T1a/T1b/T1c labels.
    */
   confidenceTier?:
     | "T1-live-TSO"
+    | "T1a-live-tso"
+    | "T1b-live-domestic-anchored"
+    | "T1c-live-neighbour-anchored"
     | "T2-annual-calibrated"
     | "T3-modelled"
     | "T4-structural-gap";

@@ -1,6 +1,6 @@
 # Validation — Iberia (`iberia`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -26,16 +26,16 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2021 | 16,315 | 7.874 | — | — | entsoe |
 | 2022 | 16,076 | 8.173 | — | — | entsoe |
 | 2023 | 16,265 | 8.937 | — | — | entsoe |
-| 2024 | 16,213 | 9.084 | 2.100 | +332.6% | entsoe |
+| 2024 | 16,213 | 9.084 | 10.600 | -14.3% | entsoe |
 | 2025 | 16,179 | 8.995 | — | — | entsoe |
 | 2026 | 4,827 | 3.133 | — | — | entsoe |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** REE 2024 renewable curtailment ~2.1 TWh (Spain)
+- **TSO annual curtailment (latest published):** REE Informe del Sistema Eléctrico 2024 broad renewable curtailment: 6.8 TWh wind + 2.4 TWh PV + 1.4 TWh CSP = ~10.6 TWh/yr total. The wind+solar+CSP rates in src/data/entsoe.json.ts were calibrated to this broad figure (vertidos por restricciones técnicas + redespacho + congestión).
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** REE Informe del Sistema Eléctrico 2024
+- **Other:** Narrow REE congestion-only figure (vertidos por congestión): ~2.1 TWh 2024 — different scope, excludes restricciones técnicas and redespacho.
 
 ## Discrepancy analysis
 

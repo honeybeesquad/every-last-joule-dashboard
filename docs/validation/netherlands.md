@@ -1,12 +1,12 @@
 # Validation — Netherlands (`netherlands`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `netherlands`
 - **Country:** NLD
-- **Tier:** live
+- **Tier:** live-domestic-anchored
 - **Kind:** mixed
 - **Source:** ENTSO-E
 - **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
@@ -26,16 +26,16 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2021 | 17,518 | 0.495 | — | — | entsoe |
 | 2022 | 17,519 | 0.442 | — | — | entsoe |
 | 2023 | 17,519 | 0.568 | — | — | entsoe |
-| 2024 | 17,568 | 0.809 | 3.000 | -73.0% | entsoe |
+| 2024 | 17,568 | 0.809 | 0.800 | +1.1% | entsoe |
 | 2025 | 17,520 | 0.901 | — | — | entsoe |
 | 2026 | 5,219 | 0.313 | — | — | entsoe |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** IEEFA 2025 summary of TenneT 2024 curtailment: 3.0 TWh wind+solar (4.9% VRE curtailment rate) — the number the wind+solar rates in src/data/entsoe.json.ts were calibrated to.
+- **TSO annual curtailment (latest published):** TenneT TSO-only wind+solar curtailment 2024: ~0.8 TWh transmission-connected (ENTSO-E A75 scope). The loader src/data/entsoe.json.ts uses ENTSO-E A75 actual-generation × calibrated rates; A75 reports transmission-level only and cannot see distribution-PV (Liander/Stedin/Enexis grids), which dominates NL solar capacity.
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** TenneT Kwaliteits- en Capaciteitsdocument 2024 cites broader ~2.5 TWh 'redispatch+curtailment all technologies' — different scope
+- **Other:** Broader IEEFA 2025 summary of TenneT 2024: ~3.0 TWh wind+solar (4.9% VRE rate) including distribution-grid PV curtailment — different scope, ~2.2 TWh additional sits below the TSO measurement layer.
 
 ## Discrepancy analysis
 

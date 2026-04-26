@@ -3,14 +3,20 @@
  *
  * Walks `REGIONS` from src/lib/regions.ts and resolves each region's tier
  * the same way the dashboard does:
- *   - `Region.tier === "live"`     → T1-live-TSO
- *   - `Region.tier === "flare"`    → T2 flare (presented separately)
+ *   - `Region.tier === "live"`                     → T1a-live-tso
+ *   - `Region.tier === "live-domestic-anchored"`   → T1b-live-domestic-anchored
+ *   - `Region.tier === "live-neighbour-anchored"`  → T1c-live-neighbour-anchored
+ *   - `Region.tier === "flare"`                    → T2 flare (presented separately)
  *   - `Region.tier === "static"`:
  *       * Look up the loader / static spec to get profileKind
  *       * Pass through deriveTier
  *
  * Output: per-tier counts and per-tier region lists, suitable for pasting
  * into Figure 4 caption, §4.5 classification table, and CHANGELOG counts.
+ *
+ * The B4-Option-B subdivision (locked 2026-04-25) splits the legacy
+ * `T1-live-TSO` bucket into T1a/T1b/T1c. For continuity with pre-2026
+ * snapshots the legacy `T1-live-TSO` label is mapped to the T1a bucket.
  */
 
 import { REGIONS } from "../src/lib/regions.js";
@@ -99,11 +105,13 @@ const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
 
 const FLARE_IDS = new Set(["permian", "w-siberia", "s-iraq", "e-saudi"]);
 
+type Bucket = "T1a" | "T1b" | "T1c" | "T2-flare" | "T2" | "T3";
+
 interface ResolvedRegion {
   id: string;
   name: string;
   tier: ConfidenceTier;
-  bucket: "T1" | "T2-flare" | "T2" | "T3";
+  bucket: Bucket;
 }
 
 const resolved: ResolvedRegion[] = [];
@@ -113,6 +121,10 @@ for (const r of REGIONS) {
   let inputs: TierInputs;
   if (r.tier === "live") {
     inputs = { regionTier: "live" };
+  } else if (r.tier === "live-domestic-anchored") {
+    inputs = { regionTier: "live-domestic-anchored" };
+  } else if (r.tier === "live-neighbour-anchored") {
+    inputs = { regionTier: "live-neighbour-anchored" };
   } else if (r.tier === "flare") {
     inputs = { regionTier: "flare" };
   } else {
@@ -124,29 +136,40 @@ for (const r of REGIONS) {
     inputs = { regionTier: "static", profileKind: kind };
   }
   const tier = deriveTier(inputs);
-  let bucket: ResolvedRegion["bucket"];
-  if (tier === "T1-live-TSO") bucket = "T1";
+  let bucket: Bucket;
+  if (tier === "T1a-live-tso" || tier === "T1-live-TSO") bucket = "T1a";
+  else if (tier === "T1b-live-domestic-anchored") bucket = "T1b";
+  else if (tier === "T1c-live-neighbour-anchored") bucket = "T1c";
   else if (tier === "T3-modelled") bucket = "T3";
   else if (FLARE_IDS.has(r.id)) bucket = "T2-flare";
   else bucket = "T2";
   resolved.push({ id: r.id, name: r.name, tier, bucket });
 }
 
-const counts = { T1: 0, T2: 0, "T2-flare": 0, T3: 0 };
+const counts: Record<Bucket, number> = {
+  T1a: 0,
+  T1b: 0,
+  T1c: 0,
+  T2: 0,
+  "T2-flare": 0,
+  T3: 0,
+};
 for (const r of resolved) counts[r.bucket]++;
 
 console.log("=== Tier counts ===");
-console.log(`T1-live-TSO:           ${counts.T1}`);
-console.log(`T2-annual-calibrated:  ${counts.T2}`);
-console.log(`T2-flare:              ${counts["T2-flare"]}`);
-console.log(`T3-modelled:           ${counts.T3}`);
-console.log(`Total:                 ${resolved.length}`);
+console.log(`T1a-live-tso:                  ${counts.T1a}`);
+console.log(`T1b-live-domestic-anchored:    ${counts.T1b}`);
+console.log(`T1c-live-neighbour-anchored:   ${counts.T1c}`);
+console.log(`T2-annual-calibrated:          ${counts.T2}`);
+console.log(`T2-flare:                      ${counts["T2-flare"]}`);
+console.log(`T3-modelled:                   ${counts.T3}`);
+console.log(`Total:                         ${resolved.length}`);
 if (unresolved.length) {
   console.log(`\n!! Unresolved (no profileKind mapping): ${unresolved.join(", ")}`);
 }
 
 console.log("\n=== Per-bucket lists ===");
-for (const bucket of ["T1", "T2", "T2-flare", "T3"] as const) {
+for (const bucket of ["T1a", "T1b", "T1c", "T2", "T2-flare", "T3"] as const) {
   const inBucket = resolved.filter((r) => r.bucket === bucket);
   console.log(`\n${bucket} (${inBucket.length}):`);
   for (const r of inBucket) {

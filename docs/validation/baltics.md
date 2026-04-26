@@ -1,12 +1,12 @@
 # Validation — Baltic states (`baltics`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `baltics`
 - **Country:** EST
-- **Tier:** live
+- **Tier:** live-domestic-anchored
 - **Kind:** wind
 - **Source:** ENTSO-E Litgrid
 - **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)

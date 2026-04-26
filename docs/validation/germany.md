@@ -1,6 +1,6 @@
 # Validation — Germany (`germany`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -26,16 +26,16 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2021 | 17,519 | 8.039 | — | — | entsoe |
 | 2022 | 17,520 | 8.731 | — | — | entsoe |
 | 2023 | 17,520 | 9.054 | — | — | entsoe |
-| 2024 | 17,568 | 9.417 | 23.200 | -59.4% | entsoe |
+| 2024 | 17,568 | 9.417 | 9.000 | +4.6% | entsoe |
 | 2025 | 17,520 | 9.586 | — | — | entsoe |
 | 2026 | 5,448 | 3.612 | — | — | entsoe |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** BNetzA 2024: ~19.5 TWh onshore wind, ~3.1 TWh offshore wind, ~0.6 TWh solar curtailment
+- **TSO annual curtailment (latest published):** BNetzA 2024 narrow EEG-only Einspeisemanagement (the figure src/data/entsoe.json.ts rates are calibrated to): ~9 TWh wind+solar feed-in management. Excludes redispatch and distribution-grid curtailment — both invisible to ENTSO-E A75 transmission-level actual-generation feed.
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** BNetzA Monitoringbericht 2024; Bundesnetzagentur Redispatch report
+- **Other:** Broad BNetzA Monitoringbericht 2024 figure (~23.2 TWh = ~19.5 onshore wind + ~3.1 offshore wind + ~0.6 solar) includes EEG + redispatch across all grid levels — different scope, ~14 TWh additional on top of the EEG-only figure the loader measures.
 
 ## Discrepancy analysis
 

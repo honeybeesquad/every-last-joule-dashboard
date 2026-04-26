@@ -1,9 +1,22 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import type { RegionData, SourceStatus } from "./types.js";
+import type { RegionData, RegionTier, SourceStatus } from "./types.js";
+import { REGIONS } from "./regions.js";
 import { applyUncertainty } from "./uncertainty.js";
 
 export const DEFAULT_STALENESS_THRESHOLD_HOURS = 24;
+
+/**
+ * Per-region tier lookup, built from the canonical REGIONS table. Used by
+ * `enrichWithTier` so multi-region loaders that pass a single loader-level
+ * `regionTier` (e.g. entsoe → "live") still emit per-sub-region tier
+ * metadata when the canonical table classifies a sub-region differently
+ * (e.g. switzerland → "live-neighbour-anchored", italy-sardinia →
+ * "live-domestic-anchored"). See `docs/proposals/b4-option-b-decision.md`.
+ */
+const REGION_TIER_BY_ID: Record<string, RegionTier> = Object.fromEntries(
+  REGIONS.map((r) => [r.id, r.tier]),
+);
 
 /**
  * Resilience wrapper. Runs fetchFn, writes its output to a snapshot, and
@@ -29,11 +42,18 @@ export interface WithFallbackOptions<T> {
   /** Tag sourceStatus on a cached result. Returns the (possibly-mutated) result. */
   tagCached?: (cached: T) => T;
   /**
-   * Region.tier value for this loader. When set, the output is enriched
-   * with confidenceTier/uncertaintyLow/HighGW at the cache boundary.
-   * Idempotent — already-tiered sub-regions are left untouched.
+   * Loader-level default `Region.tier` value for this loader. When set, the
+   * output is enriched with confidenceTier/uncertaintyLow/HighGW at the
+   * cache boundary. Idempotent — already-tiered sub-regions are left
+   * untouched.
+   *
+   * Multi-region loaders pass the most-common tier here (typically "live"
+   * for ENTSO-E etc.); per-sub-region overrides are pulled from the
+   * canonical REGIONS table by id, so the entsoe loader still emits the
+   * correct T1b/T1c sub-tiers for italy-sardinia/netherlands/baltics/
+   * italy-north-zone/switzerland.
    */
-  regionTier?: "live" | "static" | "flare";
+  regionTier?: RegionTier;
   /**
    * Maximum age of a last-good snapshot before a cache fallback is labelled
    * degraded instead of cached. Defaults to 24h.
@@ -60,13 +80,18 @@ function isRegionData(value: unknown): value is RegionData {
 /**
  * Apply uncertainty fields to every RegionData reachable from `value`,
  * preserving any that already carry `confidenceTier` (idempotent).
+ *
+ * The loader passes one default `regionTier`; for each sub-region we
+ * prefer the canonical REGIONS-table entry by id when available so
+ * loaders don't have to thread per-region tier metadata explicitly.
  */
-function enrichWithTier<T>(value: T, regionTier: "live" | "static" | "flare"): T {
+function enrichWithTier<T>(value: T, defaultTier: RegionTier): T {
   if (value == null || typeof value !== "object") return value;
 
   if (isRegionData(value)) {
     if (value.confidenceTier) return value;
-    return applyUncertainty(value, { regionTier }) as unknown as T;
+    const tier = REGION_TIER_BY_ID[value.regionId] ?? defaultTier;
+    return applyUncertainty(value, { regionTier: tier }) as unknown as T;
   }
 
   // Record<string, RegionData> case: walk each sub-region.
@@ -75,7 +100,11 @@ function enrichWithTier<T>(value: T, regionTier: "live" | "static" | "flare"): T
   let touched = false;
   for (const [k, v] of Object.entries(record)) {
     if (isRegionData(v) && !v.confidenceTier) {
-      out[k] = applyUncertainty(v, { regionTier });
+      // Prefer regionId on the payload; fall back to the record key (=id)
+      // when the sub-region object is missing one (defensive).
+      const id = v.regionId ?? k;
+      const tier = REGION_TIER_BY_ID[id] ?? defaultTier;
+      out[k] = applyUncertainty(v, { regionTier: tier });
       touched = true;
     } else {
       out[k] = v;

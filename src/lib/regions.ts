@@ -31,7 +31,11 @@ export const REGIONS: Region[] = [
   { id: "germany",          name: "Germany",         country: "DEU", lat: 52.5, lon:   10.5, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "finland",          name: "Finland",         country: "FIN", lat: 62.0, lon:   25.0, tier: "live", kind: "wind",  source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "france",           name: "France",          country: "FRA", lat: 46.5, lon:    2.5, tier: "live", kind: "mixed", source: "RTE eco2mix wind+solar", sourceUrl: "https://odre.opendatasoft.com/" },
-  { id: "netherlands",      name: "Netherlands",     country: "NLD", lat: 52.2, lon:    5.3, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Netherlands rate is a TenneT BritNed/COBRA cross-border-loss share rather
+  // than a directly-published curtailment-as-fraction-of-generation; counted
+  // as T1b live-domestic-anchored per B4 Option B (locked 2026-04-25). See
+  // docs/proposals/b4-option-b-decision.md §"Post-B1 rerun (2026-04-26)".
+  { id: "netherlands",      name: "Netherlands",     country: "NLD", lat: 52.2, lon:    5.3, tier: "live-domestic-anchored", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   // Denmark split by Energinet PriceArea. DK1 (Jutland/Fyn) hosts most
   // onshore wind and is interconnected to Germany; DK2 (Zealand) sits
   // across the Øresund from Sweden. Energi Data Service is natively zonal;
@@ -42,16 +46,25 @@ export const REGIONS: Region[] = [
   { id: "greece",           name: "Greece",          country: "GRC", lat: 39.0, lon:   22.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "romania",          name: "Romania",         country: "ROU", lat: 45.9, lon:   25.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "turkey",           name: "Turkey",          country: "TUR", lat: 39.0, lon:   35.0, tier: "live", kind: "mixed", source: "EPIAS Transparency dashboard wind+solar", sourceUrl: "https://seffaflik.epias.com.tr/electricity-service/v1/dashboard/realtime-generation" },
-  { id: "italy-north-zone", name: "Italy North",     country: "ITA", lat: 45.0, lon:   10.0, tier: "live", kind: "mixed", source: "ENTSO-E Terna (North zone)", sourceUrl: "https://transparency.entsoe.eu/" },
+  // italy-north-zone uses a Terna national-MSD-share rate rather than a
+  // North-zone-specific MSD figure; T1b live-domestic-anchored per B4
+  // Option B (modelled-share scope mismatch).
+  { id: "italy-north-zone", name: "Italy North",     country: "ITA", lat: 45.0, lon:   10.0, tier: "live-domestic-anchored", kind: "mixed", source: "ENTSO-E Terna (North zone)", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "italy-south",     name: "Italy South",     country: "ITA", lat: 40.5, lon:   16.0, tier: "live", kind: "mixed", source: "ENTSO-E Terna (South zone)", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "italy-sardinia",  name: "Sardinia",        country: "ITA", lat: 40.1, lon:    9.1, tier: "live", kind: "mixed", source: "ENTSO-E Terna (Sardinia)", sourceUrl: "https://transparency.entsoe.eu/" },
+  // italy-sardinia uses the Terna national MSD rate scaled to Sardinia's
+  // wind+PV share — a modelled-share split that captures the wrong scope.
+  // T1b live-domestic-anchored per B4 Option B (post-B1 P67 +87.6% residual).
+  { id: "italy-sardinia",  name: "Sardinia",        country: "ITA", lat: 40.1, lon:    9.1, tier: "live-domestic-anchored", kind: "mixed", source: "ENTSO-E Terna (Sardinia)", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "sweden-north",     name: "Sweden North",    country: "SWE", lat: 63.5, lon:   18.5, tier: "live", kind: "wind",  source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "sweden-south",     name: "Sweden South",    country: "SWE", lat: 56.0, lon:   14.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "ukraine",          name: "Ukraine",         country: "UKR", lat: 48.38, lon: 31.17, tier: "static", kind: "solar", source: "Ember Ukraine 2024 (ENTSO-E absent post-war)", sourceUrl: "https://ember-energy.org/global-insights/ukraine-electricity-tracker/" },
   { id: "hungary",          name: "Hungary",         country: "HUN", lat: 47.16, lon: 19.50, tier: "live", kind: "mixed", source: "ENTSO-E MAVIR", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "czech-republic",   name: "Czech Republic",  country: "CZE", lat: 49.82, lon: 15.47, tier: "live", kind: "mixed", source: "ENTSO-E CEPS", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "bulgaria",         name: "Bulgaria",        country: "BGR", lat: 42.73, lon: 25.49, tier: "live", kind: "mixed", source: "ENTSO-E ESO", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "baltics",          name: "Baltic states",   country: "EST", lat: 57.0,  lon: 24.0,  tier: "live", kind: "wind",  source: "ENTSO-E Litgrid", sourceUrl: "https://transparency.entsoe.eu/" },
+  // baltics uses a Litgrid Estonia-share extrapolation across the three
+  // Baltic states rather than a published Baltic curtailment rate.
+  // T1b live-domestic-anchored per B4 Option B (modelled-share split).
+  { id: "baltics",          name: "Baltic states",   country: "EST", lat: 57.0,  lon: 24.0,  tier: "live-domestic-anchored", kind: "wind",  source: "ENTSO-E Litgrid", sourceUrl: "https://transparency.entsoe.eu/" },
   // GB split — NESO Markets Roadmap 2024 reports ~11 TWh/yr of constraint
   // actions, dominated by the Scotland-to-England export boundary. Split
   // 70/30 at consumption: Scotland carries the bulk of curtailed wind.
@@ -79,8 +92,11 @@ export const REGIONS: Region[] = [
   // Switzerland — PV-only ENTSO-E feed via Swissgrid. Hydro spill is
   // not captured in A75 data, so this understates total Swiss
   // curtailment but captures the fastest-growing summer-midday PV
-  // oversupply component.
-  { id: "switzerland",      name: "Switzerland",     country: "CHE", lat: 46.8, lon:    8.2, tier: "live", kind: "solar", source: "ENTSO-E Swissgrid PV-only (hydro spill not in A75)", sourceUrl: "https://transparency.entsoe.eu/" },
+  // oversupply component. The calibration rate is extrapolated from
+  // the Czech Republic CEPS rate (no domestic Swiss rate is published),
+  // so this is T1c live-neighbour-anchored per B4 Option B (post-B1
+  // empirical residual −35.5%).
+  { id: "switzerland",      name: "Switzerland",     country: "CHE", lat: 46.8, lon:    8.2, tier: "live-neighbour-anchored", kind: "solar", source: "ENTSO-E Swissgrid PV-only (hydro spill not in A75)", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "ontario",          name: "Ontario",         country: "CAN", lat: 44.0, lon:  -81.0, tier: "live", kind: "mixed", source: "IESO wind+solar", sourceUrl: "https://reports-public.ieso.ca/public/GenOutputCapability/" },
   { id: "alberta",          name: "Alberta",         country: "CAN", lat: 51.5, lon: -114.0, tier: "live", kind: "mixed", source: "AESO wind+solar", sourceUrl: "http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet" },
   // Ireland loader emits both children from one EirGrid/SONI DD half-hourly

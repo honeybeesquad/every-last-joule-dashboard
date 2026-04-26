@@ -54,7 +54,14 @@ const REQUIRED = [
 
 const FUEL_KEYS = new Set(["solar", "wind", "hydro", "geothermal", "flare"]);
 const TIER_ENUM = new Set([
+  // Legacy alias retained for backward compatibility on pre-2026-04-25
+  // snapshots (treated as T1a for envelope sizing). New emissions use the
+  // T1a/T1b/T1c sub-tiers per B4 Option B (locked 2026-04-25, see
+  // docs/proposals/b4-option-b-decision.md).
   "T1-live-TSO",
+  "T1a-live-tso",
+  "T1b-live-domestic-anchored",
+  "T1c-live-neighbour-anchored",
   "T2-annual-calibrated",
   "T3-modelled",
   "T4-structural-gap"

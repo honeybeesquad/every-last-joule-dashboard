@@ -89,8 +89,16 @@
     },
     "confidenceTier": {
       "type": "string",
-      "enum": ["T1-live-TSO", "T2-annual-calibrated", "T3-modelled", "T4-structural-gap"],
-      "description": "Deterministic source-quality classification. T1 = live TSO/ISO feed. T2 = static anchored to a published annual (Ember, IRENA, GGFR, TSO annual). T3 = static annual + typical-shape profile (solar/wind/hydro-seasonal/mixed/overnight). T4 is reserved in the enum for symmetry but is never emitted \u2014 structural-gap regions do not appear in the dataset at all. Derived deterministically by src/lib/uncertainty.ts::deriveTier; see docs/methodology/uncertainty.md."
+      "enum": [
+        "T1-live-TSO",
+        "T1a-live-tso",
+        "T1b-live-domestic-anchored",
+        "T1c-live-neighbour-anchored",
+        "T2-annual-calibrated",
+        "T3-modelled",
+        "T4-structural-gap"
+      ],
+      "description": "Deterministic source-quality classification. Per B4 Option B (locked 2026-04-25, see docs/proposals/b4-option-b-decision.md), T1 is subdivided into T1a (own-jurisdiction calibration rate; \u00b115%), T1b (domestic-stat-agency rate or modelled-share split; empirical \u00b150%), and T1c (neighbour-extrapolated rate; empirical \u00b135.5%). T2 = static anchored to a published annual (Ember, IRENA, GGFR, TSO annual; \u00b120%). T3 = static annual + typical-shape profile (solar/wind/hydro-seasonal/mixed/overnight; \u00b140%). T4 is reserved in the enum for symmetry but is never emitted \u2014 structural-gap regions do not appear in the dataset at all. The pre-2026-04-25 single label \"T1-live-TSO\" is retained for backward compatibility on legacy snapshots; new emissions use T1a/T1b/T1c. Derived deterministically by src/lib/uncertainty.ts::deriveTier; see docs/methodology/uncertainty.md."
     }
   },
   "additionalProperties": false

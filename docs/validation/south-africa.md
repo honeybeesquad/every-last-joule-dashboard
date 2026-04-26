@@ -1,15 +1,15 @@
 # Validation — South Africa (`south-africa`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `south-africa`
 - **Country:** ZAF
-- **Tier:** static (T3-modelled, ±40% — demoted from live on 2026-04-25; see "Known limitations" below)
+- **Tier:** live
 - **Kind:** mixed
-- **Source:** Eskom Data Portal probe + wind+solar mixed typical-shape (~4.4 TWh/yr SAREM 2025 anchor)
-- **Source URL:** [https://www.eskom.co.za/dataportal/](https://www.eskom.co.za/dataportal/)
+- **Source:** Eskom Data Portal total hourly renewable generation × MTSAO curtailment rate
+- **Source URL:** [https://www.eskom.co.za/dataportal/renewables-performance/total-hourly-renewable-generation/](https://www.eskom.co.za/dataportal/renewables-performance/total-hourly-renewable-generation/)
 - **Loader:** [`south-africa.json.ts`](../../src/data/south-africa.json.ts)
 - **Structural gap:** no
 

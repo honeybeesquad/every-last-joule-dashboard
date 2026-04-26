@@ -1,14 +1,14 @@
 # Validation — Peru (`peru`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `peru`
 - **Country:** PER
-- **Tier:** static (T3-modelled, ±40% — demoted from live on 2026-04-25; see "Known limitations" below)
+- **Tier:** live
 - **Kind:** mixed
-- **Source:** COES-SINAC probe + bimodal hydro-seasonal typical-shape (~0.8 TWh/yr 2024 anchor)
+- **Source:** COES-SINAC live hydro+solar+wind generation shaped to vertimiento anchor
 - **Source URL:** [https://www.coes.org.pe/Portal/portalinformacion/generacion](https://www.coes.org.pe/Portal/portalinformacion/generacion)
 - **Loader:** [`peru.json.ts`](../../src/data/peru.json.ts)
 - **Structural gap:** no

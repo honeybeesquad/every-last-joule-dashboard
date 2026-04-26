@@ -1,6 +1,6 @@
 # Validation — ISO-NE Maine/Vermont (`iso-ne-maine-vermont`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 

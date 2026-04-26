@@ -167,6 +167,24 @@ function isRegionData(value: unknown): value is RegionData {
   );
 }
 
+/**
+ * Per-region B4-Option-B overrides — sub-zones inside a "live" loader that
+ * actually classify as T1b (domestic-anchor-modelled) or T1c (neighbour-
+ * extrapolated) per the locked decision in
+ * `docs/proposals/b4-option-b-decision.md` (post-B1 rerun 2026-04-26).
+ *
+ * The underlying loader (e.g. entsoe) still passes through as "live"; this
+ * map gives a per-regionId override before falling back to the loader-level
+ * tier. Mirrors the canonical REGIONS table — keep in sync.
+ */
+const LIVE_TIER_OVERRIDES: Record<string, "live-domestic-anchored" | "live-neighbour-anchored"> = {
+  "italy-sardinia": "live-domestic-anchored",
+  "italy-north-zone": "live-domestic-anchored",
+  "netherlands": "live-domestic-anchored",
+  "baltics": "live-domestic-anchored",
+  "switzerland": "live-neighbour-anchored",
+};
+
 function tierInputsFor(loaderId: string, regionId: string): TierInputs | null {
   if (loaderId === "statics") {
     const kind = STATICS_PROFILE_KIND[regionId];
@@ -177,7 +195,11 @@ function tierInputsFor(loaderId: string, regionId: string): TierInputs | null {
   }
   const cls = LOADER_CLASS[loaderId];
   if (!cls) return null;
-  if (cls.tier === "live") return { regionTier: "live" };
+  if (cls.tier === "live") {
+    const override = LIVE_TIER_OVERRIDES[regionId];
+    if (override) return { regionTier: override };
+    return { regionTier: "live" };
+  }
   if (cls.tier === "flare") return { regionTier: "flare" };
   return { regionTier: "static", profileKind: cls.profileKind };
 }

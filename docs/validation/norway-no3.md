@@ -1,6 +1,6 @@
 # Validation — Norway NO3 (Trondheim) (`norway-no3`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -26,16 +26,16 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 | 2021 | 17,519 | 0.844 | — | — | entsoe |
 | 2022 | 17,518 | 0.922 | — | — | entsoe |
 | 2023 | 17,520 | 0.752 | — | — | entsoe |
-| 2024 | 17,566 | 0.722 | 0.100 | +622.3% | entsoe |
+| 2024 | 17,566 | 0.722 | — | — | entsoe |
 | 2025 | 17,520 | 0.877 | — | — | entsoe |
 | 2026 | 5,448 | 0.297 | — | — | entsoe |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** Statnett NO3 ~0.1 TWh wind curtailment
+- **TSO annual curtailment (latest published):** No directly-comparable broad-scope anchor available. Statnett, NVE, RME, and SSB do NOT publish per-price-area all-fuel curtailment in TWh. The narrow Statnett wind-only figure (~0.1 TWh 2024) excludes hydro spill, which dominates curtailment in this export-constrained zone (high reservoir levels at historic maximum throughout 2024 per SSB; NO3+NO4 hydro production rose 8.5→11.4 TWh year-over-year). Loader src/data/norway.json.ts uses ENTSO-E A75 B12 hydro + B19 wind × 4% rate, matching the methodology §2 broad-curtailment framing. Treat loader output as the best-available public estimate; this zone is excluded from |Δ%| calibration corpus pending publication of broad-scope anchor.
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** —
+- **Other:** Narrow scope: Statnett NO3 ~0.1 TWh wind-only curtailment 2024 — NOT a valid comparator for the broad-scope hydro+wind loader. National context: Norway 2024 surplus 18 TWh (record); national hydro spillage estimated 8-10 TWh in normal precipitation years (energifaktanorge.no), likely higher in 2024 given extreme weather and full reservoirs.
 
 ## Discrepancy analysis
 

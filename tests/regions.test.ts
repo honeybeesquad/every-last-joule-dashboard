@@ -13,31 +13,44 @@ describe("regions", () => {
     expect(REGIONS.length).toBe(128);
   });
 
-  it("has 66 live regions", () => {
+  it("has 66 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
     // v0.6: -5 aggregates + 10 splits = +5 live -> 49 + 5 = 54; Turkey live re-add -> 55.
     // europe-expansion: -1 n-norway + 5 Norway zones + 1 Switzerland = +5 → 60.
     // tier-routing fix (2026-04-25): brazil-mg/sp/mt/go/pr/rs reclassified
     // static → live. The brazil-ne loader emits hourly data for all 13
     // Brazilian states (NE + non-NE) from the same ONS feed; the 6 non-NE
     // states had been incorrectly held as static fallbacks. 60 + 6 = 66.
-    // tier-overstatement fix (2026-04-25, batch 1): peru and south-africa
-    // briefly demoted live → static when their loaders were probe-only.
-    // Phase-2.6 (2026-04-26): peru loader rewired to fetch live COES half-
-    // hourly hydro+solar+wind generation × calibrated 2% curtailment rate;
-    // south-africa loader rewired to fetch live Eskom hourly renewable
-    // generation × 12% MTSAO curtailment rate. Both back to live: 66 → 66
-    // (net zero — they were demoted then immediately re-promoted within
-    // the same expectations table).
-    // tier-overstatement fix (2026-04-25, batch 2): ireland-republic and
-    // northern-ireland same trajectory. Phase-2.6 wires the EirGrid/SONI
-    // half-hourly DD-HH workbook (real measured dispatch-down) through a
-    // single fetch that emits both child regions. Net 66 live (12 ENTSO-E
-    // + 5 Norway + 1 Switzerland + 7 USA-ISO + 5 AEMO + 6 Brazil-NE +
-    // 6 Brazil-non-NE + 1 Belgium + 1 Hungary + 1 Czech + 1 Bulgaria +
-    // 1 Baltics + 2 GB + 1 Ukraine* + 2 Italy + 1 Greece + 1 Romania +
-    // 1 Turkey + 2 Sweden + 1 Portugal + 1 NZ + 2 Chile-Atacama-Wind* +
-    // 2 Canada + 2 Ireland + 1 Peru + 1 South Africa).
-    expect(REGIONS.filter(r => r.tier === "live").length).toBe(66);
+    // Phase-2.6 (2026-04-26): peru/south-africa/ireland-republic/northern-
+    // ireland — all four cycled live → static → live again as their
+    // loaders moved from probe-only to real measured fetches in the same
+    // expectations table; net 66.
+    // CODEX-7 / B4 Option B (locked 2026-04-25): the 66 live regions are
+    // now subdivided into three live sub-tiers for paper presentation.
+    // Bounds (T1a ±15%, T1b ±50%, T1c ±35.5%) and labels are the only
+    // thing that change — for rendering, all three behave identically.
+    //   T1c live-neighbour-anchored: 1 (switzerland; Czech rate)
+    //   T1b live-domestic-anchored:  4 (italy-sardinia, italy-north-zone,
+    //                                   netherlands, baltics)
+    //   T1a live-tso (own-jurisdiction rate): 61 (the rest)
+    // Total live = 61 + 4 + 1 = 66.
+    const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
+    const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
+    expect(liveTotal).toBe(66);
+
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(61);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
+    expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
+  });
+
+  it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
+    // Per docs/proposals/b4-option-b-decision.md §"Post-B1 rerun":
+    //   T1c (1 zone): switzerland (Czech rate, residual −35.5%)
+    //   T1b (4 zones): italy-sardinia (+87.6%), netherlands (−73.0%),
+    //                   baltics (−58.9%), italy-north-zone (−45.0%)
+    expect(REGIONS.find((r) => r.id === "switzerland")?.tier).toBe("live-neighbour-anchored");
+    for (const id of ["italy-sardinia", "netherlands", "baltics", "italy-north-zone"]) {
+      expect(REGIONS.find((r) => r.id === id)?.tier, `${id} should be live-domestic-anchored`).toBe("live-domestic-anchored");
+    }
   });
 
   it("has 58 static regions", () => {
@@ -290,9 +303,12 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "n-norway")).toBeUndefined();
 
     // Switzerland added as live ENTSO-E region (PV-only via Swissgrid).
+    // CODEX-7 / B4 Option B: Switzerland is the only T1c live-neighbour-
+    // anchored region; its calibration rate is extrapolated from the
+    // Czech CEPS rate (no domestic Swiss curtailment rate is published).
     const switzerland = REGIONS.find(r => r.id === "switzerland");
     expect(switzerland).toBeDefined();
-    expect(switzerland?.tier).toBe("live");
+    expect(switzerland?.tier).toBe("live-neighbour-anchored");
     expect(switzerland?.kind).toBe("solar");
     expect(switzerland?.country).toBe("CHE");
   });

@@ -1,12 +1,12 @@
 # Validation — Sardinia (`italy-sardinia`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `italy-sardinia`
 - **Country:** ITA
-- **Tier:** live
+- **Tier:** live-domestic-anchored
 - **Kind:** mixed
 - **Source:** ENTSO-E Terna (Sardinia)
 - **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
@@ -32,7 +32,7 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** Terna 2024 Sardinia ~0.062 TWh (20% of Terna national 0.31 TWh RES curtailment anchor, used for rate calibration).
+- **TSO annual curtailment (latest published):** MODELLED: 20% of Terna 2024 national 0.31 TWh RES curtailment anchor = ~0.062 TWh. Modelled split (see italy-north-zone note). The Sardinia share assumption reflects island isolation (HVDC Sapei link capacity-limited) producing higher per-GWh curtailment rate; not a directly-published Terna Sardinia-specific figure.
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —

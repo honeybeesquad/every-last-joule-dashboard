@@ -1,6 +1,6 @@
 # Validation — NT & Pilbara (`nt-pilbara`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -26,14 +26,14 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** —
+- **TSO annual curtailment (latest published):** PSM 2024 Pilbara grid curtailment ~0.1 TWh (mining-dominated demand)
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
 
-_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
+_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
 
 ## Known limitations
 

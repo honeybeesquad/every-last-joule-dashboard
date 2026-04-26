@@ -1,12 +1,12 @@
 # Validation — Switzerland (`switzerland`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `switzerland`
 - **Country:** CHE
-- **Tier:** live
+- **Tier:** live-neighbour-anchored
 - **Kind:** solar
 - **Source:** ENTSO-E Swissgrid PV-only (hydro spill not in A75)
 - **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)

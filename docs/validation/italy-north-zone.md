@@ -1,12 +1,12 @@
 # Validation — Italy North (`italy-north-zone`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `italy-north-zone`
 - **Country:** ITA
-- **Tier:** live
+- **Tier:** live-domestic-anchored
 - **Kind:** mixed
 - **Source:** ENTSO-E Terna (North zone)
 - **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
@@ -32,10 +32,10 @@ Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** Terna 2024 North zone ~0.108 TWh (35% of Terna national 0.31 TWh RES curtailment anchor, used for rate calibration). Broader Terna 'zonal overflow redispatch' ~1.1 TWh is a different metric.
+- **TSO annual curtailment (latest published):** MODELLED: 35% of Terna 2024 national 0.31 TWh RES curtailment anchor = ~0.108 TWh. The 35/45/20 zonal split (north/south/sardinia) is a modelling assumption based on bidding-zone congestion patterns in Terna 2023 RES Integration Report, NOT a directly-published Terna per-zone figure. Used for src/data/entsoe.json.ts rate calibration. Follow-up: hunt Terna Rapporto Adeguatezza Annuale for actual per-zone published figures and replace this modelled split if found.
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** —
+- **Other:** Broader Terna 'zonal overflow redispatch' ~1.1 TWh is a different metric (redispatch, not RES curtailment).
 
 ## Discrepancy analysis
 

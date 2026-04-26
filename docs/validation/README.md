@@ -1,6 +1,6 @@
 # Validation index
 
-Last generated: 2026-04-25 (manual tier-line patches for Peru, South Africa, Ireland (Republic + Northern) post tier-overstatement remediation; full regen via `scripts/validation/build_region_docs.py` deferred until backfill state advances)
+Last generated: 2026-04-26
 
 | Region | Tier | Kind | Backfill years | Validation doc |
 |---|---|---|---|---|
@@ -19,23 +19,23 @@ Last generated: 2026-04-25 (manual tier-line patches for Peru, South Africa, Ire
 | Bulgaria | live | mixed | 7 | [bulgaria](./bulgaria.md) |
 | Bahia | live | mixed | 0 | [brazil-bahia](./brazil-bahia.md) |
 | Ceara | live | mixed | 0 | [brazil-ce](./brazil-ce.md) |
-| Goias | static | mixed | 0 | [brazil-go](./brazil-go.md) |
-| Minas Gerais | static | mixed | 0 | [brazil-mg](./brazil-mg.md) |
-| Mato Grosso | static | mixed | 0 | [brazil-mt](./brazil-mt.md) |
+| Goias | live | mixed | 0 | [brazil-go](./brazil-go.md) |
+| Minas Gerais | live | mixed | 0 | [brazil-mg](./brazil-mg.md) |
+| Mato Grosso | live | mixed | 0 | [brazil-mt](./brazil-mt.md) |
 | Brazil NE Other | live | mixed | 0 | [brazil-other](./brazil-other.md) |
 | Pernambuco | live | mixed | 0 | [brazil-pernambuco](./brazil-pernambuco.md) |
 | Piaui | live | mixed | 0 | [brazil-piaui](./brazil-piaui.md) |
-| Parana | static | mixed | 0 | [brazil-pr](./brazil-pr.md) |
+| Parana | live | mixed | 0 | [brazil-pr](./brazil-pr.md) |
 | Rio Grande do Norte | live | mixed | 0 | [brazil-rn](./brazil-rn.md) |
-| Rio Grande do Sul | static | mixed | 0 | [brazil-rs](./brazil-rs.md) |
-| Sao Paulo | static | mixed | 0 | [brazil-sp](./brazil-sp.md) |
+| Rio Grande do Sul | live | mixed | 0 | [brazil-rs](./brazil-rs.md) |
+| Sao Paulo | live | mixed | 0 | [brazil-sp](./brazil-sp.md) |
 | Alberta | live | mixed | 0 | [alberta](./alberta.md) |
 | British Columbia | static | hydro | 0 | [british-columbia](./british-columbia.md) |
 | Manitoba | static | mixed | 0 | [manitoba](./manitoba.md) |
 | Ontario | live | mixed | 0 | [ontario](./ontario.md) |
 | Quebec | static | hydro | 0 | [quebec](./quebec.md) |
 | Saskatchewan | static | wind | 0 | [saskatchewan](./saskatchewan.md) |
-| Switzerland | live | solar | 7 | [switzerland](./switzerland.md) |
+| Switzerland | live-neighbour-anchored | solar | 7 | [switzerland](./switzerland.md) |
 | Atacama | live | solar | 0 | [atacama](./atacama.md) |
 | Chile Wind | static | wind | 0 | [chile-wind](./chile-wind.md) |
 | Gansu | static | mixed | 0 | [gansu](./gansu.md) |
@@ -53,13 +53,13 @@ Last generated: 2026-04-25 (manual tier-line patches for Peru, South Africa, Ire
 | Denmark DK1 | live | mixed | 0 | [denmark-west](./denmark-west.md) |
 | Egypt | static | solar | 0 | [egypt](./egypt.md) |
 | Iberia | live | mixed | 7 | [iberia](./iberia.md) |
-| Baltic states | live | wind | 7 | [baltics](./baltics.md) |
+| Baltic states | live-domestic-anchored | wind | 7 | [baltics](./baltics.md) |
 | Ethiopia | static | hydro | 0 | [ethiopia](./ethiopia.md) |
 | Finland | live | wind | 0 | [finland](./finland.md) |
 | France | live | mixed | 0 | [france](./france.md) |
 | GB England+Wales | live | mixed | 0 | [gb-england-wales](./gb-england-wales.md) |
 | GB Scotland | live | wind | 0 | [gb-scotland](./gb-scotland.md) |
-| Northern Ireland | static | wind | 0 | [northern-ireland](./northern-ireland.md) |
+| Northern Ireland | live | wind | 0 | [northern-ireland](./northern-ireland.md) |
 | Greece | live | mixed | 7 | [greece](./greece.md) |
 | Honduras | static | solar | 0 | [honduras](./honduras.md) |
 | Hungary | live | mixed | 7 | [hungary](./hungary.md) |
@@ -68,15 +68,15 @@ Last generated: 2026-04-25 (manual tier-line patches for Peru, South Africa, Ire
 | North India | static | solar | 0 | [india-north](./india-north.md) |
 | India South | static | mixed | 0 | [india-south](./india-south.md) |
 | India West | static | mixed | 0 | [india-west](./india-west.md) |
-| Ireland (Republic) | static | wind | 0 | [ireland-republic](./ireland-republic.md) |
+| Ireland (Republic) | live | wind | 0 | [ireland-republic](./ireland-republic.md) |
 | Iran | static | solar | 0 | [iran](./iran.md) |
 | Iraq (non-flare) | static | solar | 0 | [iraq-mainland](./iraq-mainland.md) |
 | Kurdistan (KRG) | static | solar | 0 | [kurdistan](./kurdistan.md) |
 | S. Iraq | flare | flare | 0 | [s-iraq](./s-iraq.md) |
 | Iceland | static | hydro | 0 | [iceland](./iceland.md) |
 | Israel | static | solar | 0 | [israel](./israel.md) |
-| Italy North | live | mixed | 7 | [italy-north-zone](./italy-north-zone.md) |
-| Sardinia | live | mixed | 7 | [italy-sardinia](./italy-sardinia.md) |
+| Italy North | live-domestic-anchored | mixed | 7 | [italy-north-zone](./italy-north-zone.md) |
+| Sardinia | live-domestic-anchored | mixed | 7 | [italy-sardinia](./italy-sardinia.md) |
 | Italy South | live | mixed | 0 | [italy-south](./italy-south.md) |
 | Jordan | static | mixed | 0 | [jordan](./jordan.md) |
 | Japan | static | solar | 0 | [japan](./japan.md) |
@@ -89,7 +89,7 @@ Last generated: 2026-04-25 (manual tier-line patches for Peru, South Africa, Ire
 | Mongolia | static | wind | 0 | [mongolia](./mongolia.md) |
 | Malaysia | static | solar | 0 | [malaysia](./malaysia.md) |
 | Namibia | static | solar | 0 | [namibia](./namibia.md) |
-| Netherlands | live | mixed | 7 | [netherlands](./netherlands.md) |
+| Netherlands | live-domestic-anchored | mixed | 7 | [netherlands](./netherlands.md) |
 | Norway NO1 (Oslo) | live | mixed | 7 | [norway-no1](./norway-no1.md) |
 | Norway NO2 (Kristiansand) | live | mixed | 7 | [norway-no2](./norway-no2.md) |
 | Norway NO3 (Trondheim) | live | mixed | 7 | [norway-no3](./norway-no3.md) |
@@ -98,7 +98,7 @@ Last generated: 2026-04-25 (manual tier-line patches for Peru, South Africa, Ire
 | New Zealand | live | mixed | 0 | [new-zealand](./new-zealand.md) |
 | Oman | static | solar | 0 | [oman](./oman.md) |
 | Pakistan | static | mixed | 0 | [pakistan](./pakistan.md) |
-| Peru | static | mixed | 0 | [peru](./peru.md) |
+| Peru | live | mixed | 0 | [peru](./peru.md) |
 | Poland | live | mixed | 7 | [poland](./poland.md) |
 | Portugal | live | mixed | 7 | [portugal](./portugal.md) |
 | Paraguay | static | hydro | 0 | [paraguay](./paraguay.md) |
@@ -133,4 +133,4 @@ Last generated: 2026-04-25 (manual tier-line patches for Peru, South Africa, Ire
 | PJM | live | mixed | 7 | [pjm](./pjm.md) |
 | SPP | live | mixed | 7 | [spp](./spp.md) |
 | Vietnam | static | solar | 0 | [vietnam](./vietnam.md) |
-| South Africa | static | mixed | 0 | [south-africa](./south-africa.md) |
+| South Africa | live | mixed | 0 | [south-africa](./south-africa.md) |

@@ -1,15 +1,15 @@
 # Validation — Northern Ireland (`northern-ireland`)
 
-Last updated: 2026-04-24 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `northern-ireland`
 - **Country:** GBR
-- **Tier:** static (T3-modelled, ±40% — demoted from live on 2026-04-25; see "Known limitations" below)
+- **Tier:** live
 - **Kind:** wind
-- **Source:** EirGrid probe + wind typical-shape (NI 42% of 2.18 TWh/yr SONI/EirGrid 2024 anchor)
-- **Source URL:** [https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf](https://cms.soni.ltd.uk/sites/default/files/publications/Annual%20Renewable%20Constraint%20and%20Curtailment%20Report%202024%20V1.0.pdf)
+- **Source:** EirGrid/SONI DD half-hourly workbook (NI 42% of all-island DD)
+- **Source URL:** [https://www.eirgrid.ie/grid/system-and-renewable-data-reports](https://www.eirgrid.ie/grid/system-and-renewable-data-reports)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
