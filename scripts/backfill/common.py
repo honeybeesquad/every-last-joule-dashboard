@@ -43,7 +43,12 @@ except ImportError:
     sys.exit(2)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-OUTPUT_DIR = REPO_ROOT / "data" / "historical" / "backfill"
+# Output directory for partitioned Parquet files. Defaults to the in-repo
+# `data/historical/backfill/` location used by the live build. Tests and
+# reproducer scripts (e.g., scripts/reproduce/reproduce_2024_ercot_west.py)
+# override via BACKFILL_OUTPUT_DIR so they can regenerate a partition into
+# a tempdir without overwriting the committed file.
+OUTPUT_DIR = Path(os.environ.get("BACKFILL_OUTPUT_DIR", str(REPO_ROOT / "data" / "historical" / "backfill")))
 ZONES_FILE = Path(__file__).resolve().parent / "zones.json"
 
 

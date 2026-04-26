@@ -21,6 +21,7 @@
     "ci:gates": "npm run ci:tier-coherence && npm run ci:tally-golden && npm run ci:docs-drift",
     "data:refresh": "observable build",
     "snapshot": "tsx scripts/write-snapshot.ts",
+    "reproduce:ercot-west": "python3 scripts/reproduce/reproduce_2024_ercot_west.py",
     "postinstall": "git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {

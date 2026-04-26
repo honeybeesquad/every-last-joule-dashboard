@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 import urllib.error
@@ -43,7 +44,10 @@ from scripts.backfill.common import (
     write_partition,
 )
 
-STATE_DIR = REPO_ROOT / "scripts" / "backfill" / "state"
+# Resume-state directory. Defaults to scripts/backfill/state/. Tests and
+# reproducer scripts override via BACKFILL_STATE_DIR so a fresh run sees an
+# empty completed_years list and re-fetches the year under test.
+STATE_DIR = Path(os.environ.get("BACKFILL_STATE_DIR", str(REPO_ROOT / "scripts" / "backfill" / "state")))
 API_BASE = "https://api.eia.gov/v2/electricity/rto/fuel-type-data/data/"
 
 

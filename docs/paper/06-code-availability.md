@@ -34,6 +34,19 @@ every Parquet file from a tagged commit is documented in
 `docs/figures/README.md` (figure chain). No proprietary data or
 manual post-processing is involved at any step.
 
+**End-to-end reproducer (verified):** A canonical reproducer at
+`scripts/reproduce/reproduce_2024_ercot_west.py` (also exposed as
+`npm run reproduce:ercot-west`) regenerates
+`data/historical/backfill/eia_ercot-west_2024.parquet` from the
+raw EIA Hourly Electric Grid Monitor API given only an
+`EIA_API_KEY` and confirms it matches the committed Parquet
+within 0.1% tolerance on row count and aggregate
+`curtailment_gw`. Runtime ~30 seconds (24 month-fuel API calls
+at the EIA rate limit). The reproducer pattern generalises to
+any committed Parquet — the wrapper's only ERCOT-West-specific
+constants are `ISO = "ercot-west"` and `YEAR = 2024`. This is
+the council-finding-S3 verifiable-reproducibility surface.
+
 **Scheduled builds** run via GitHub Actions (`.github/workflows/`)
 on a ~6-hour cadence, appending to the rolling Parquet history
 and overwriting the per-region JSON snapshots.
