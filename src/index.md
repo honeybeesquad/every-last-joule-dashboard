@@ -11,6 +11,7 @@
 import { createClock } from "./components/clock.js";
 import { mountControls } from "./components/controls.js";
 import { mountModeToggle } from "./components/mode-toggle.js";
+import { mountThemeToggle } from "./components/theme-toggle.js";
 import { mountTimeline } from "./components/timeline.js";
 import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
@@ -127,10 +128,13 @@ document.getElementById("app-root").innerHTML = `
         <span class="app-wordmark">Every Last Joule</span>
         <span class="app-tag">Wasted Energy Database · v0</span>
       </div>
-      <nav class="app-nav" aria-label="Primary">
-        <a href="./methodology">Methodology</a>
-        <a href="./about">About</a>
-      </nav>
+      <div class="app-header-right">
+        <div id="theme-toggle-mount"></div>
+        <nav class="app-nav" aria-label="Primary">
+          <a href="./methodology">Methodology</a>
+          <a href="./about">About</a>
+        </nav>
+      </div>
     </header>
 
     <div class="app-body">
@@ -451,6 +455,9 @@ mountModeToggle(document.getElementById("mode-toggle"), {
     globe?.update({ utcHour: clock.hour, mode: nextMode });
   },
 });
+
+const themeToggleHost = document.getElementById("theme-toggle-mount");
+if (themeToggleHost) mountThemeToggle(themeToggleHost);
 
 const regionTooltip = mountRegionTooltip({
   clock,
