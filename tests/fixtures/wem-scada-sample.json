@@ -1,0 +1,10 @@
+{
+  "data": {
+    "facilityScadaDispatchIntervals": [
+      { "dispatchInterval": "2026-04-24T08:00:00+08:00", "code": "ALBANY_WF1", "quantity": 0.2 },
+      { "dispatchInterval": "2026-04-24T08:05:00+08:00", "code": "ALBANY_WF1", "quantity": 0.25 },
+      { "dispatchInterval": "2026-04-24T08:00:00+08:00", "code": "GREENOUGH_RIVER_PV1", "quantity": 1.7 },
+      { "dispatchInterval": "2026-04-24T08:05:00+08:00", "code": "GREENOUGH_RIVER_PV1", "quantity": 1.8 }
+    ]
+  }
+}

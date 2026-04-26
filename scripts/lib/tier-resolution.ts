@@ -111,6 +111,13 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   uae: "solar",
   uruguay: "wind",
   vietnam: "solar",
+  // wa-swis: live as of 2026-04-26 (Phase-2.6 WA brief). Loader fetches the
+  // AEMO WEM Facility SCADA daily JSON and applies an 8% calibration rate
+  // against the AEMO WA SWIS 2024 ~0.4 TWh RES curtailment anchor. The
+  // entry below is retained as a fallback profileKind in case the WEM
+  // endpoint becomes inaccessible and the loader has to be reverted to a
+  // typical-shape probe-only static. SWIS mix is roughly 70% solar / 30%
+  // wind by capacity, hence the "solar" profileKind fallback.
   "wa-swis": "solar",
   yunnan: "hydro-seasonal",
 };

@@ -140,7 +140,7 @@ export const REGIONS: Region[] = [
   { id: "mongolia",         name: "Mongolia",        country: "MNG", lat: 47.0, lon:  105.0, tier: "static", kind: "wind",  source: "NPTG fallback", sourceUrl: "https://nptg.mn/" },
   { id: "honduras",         name: "Honduras",        country: "HND", lat: 15.2, lon:  -86.2, tier: "static", kind: "solar", source: "ODS Honduras fallback", sourceUrl: "https://ods.org.hn/" },
   { id: "jeju",             name: "Jeju (S. Korea)", country: "KOR", lat: 33.49, lon: 126.50, tier: "static", kind: "wind",  source: "KPX Jeju fallback", sourceUrl: "https://www.kpx.or.kr/" },
-  { id: "wa-swis",          name: "Western Australia (SWIS)", country: "AUS", lat: -32.0, lon: 116.0, tier: "static", kind: "mixed", source: "AEMO WEM fallback", sourceUrl: "https://data.wa.aemo.com.au/" },
+  { id: "wa-swis",          name: "Western Australia (SWIS)", country: "AUS", lat: -32.0, lon: 116.0, tier: "live",   kind: "mixed", source: "AEMO WEM Facility SCADA", sourceUrl: "https://data.wa.aemo.com.au/" },
   { id: "nt-pilbara",       name: "NT & Pilbara",    country: "AUS", lat: -22.0, lon: 118.0, tier: "static", kind: "solar", source: "Horizon/Pilbara fallback", sourceUrl: "https://www.horizonpower.com.au/" },
   { id: "indonesia",        name: "Indonesia",       country: "IDN", lat:  -7.0, lon: 110.0, tier: "static", kind: "solar", source: "PLN fallback", sourceUrl: "https://web.pln.co.id/" },
   { id: "malaysia",         name: "Malaysia",        country: "MYS", lat:   3.5, lon: 102.0, tier: "static", kind: "solar", source: "TNB/SEDA fallback", sourceUrl: "https://www.tnb.com.my/" },

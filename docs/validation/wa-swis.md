@@ -6,9 +6,9 @@ Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `wa-swis`
 - **Country:** AUS
-- **Tier:** static
+- **Tier:** live
 - **Kind:** mixed
-- **Source:** AEMO WEM fallback
+- **Source:** AEMO WEM Facility SCADA
 - **Source URL:** [https://data.wa.aemo.com.au/](https://data.wa.aemo.com.au/)
 - **Loader:** [`wa-swis.json.ts`](../../src/data/wa-swis.json.ts)
 - **Structural gap:** yes
