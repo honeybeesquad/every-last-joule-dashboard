@@ -57,8 +57,8 @@ For each zone, we collect:
 | switzerland | 0.100 | 0.065 | −36% | (T1c band) | D — within tier envelope, no change |
 | germany | 23.20 | 9.42 | −59% | GRID + FUEL | B — anchor broad (BNetzA all-curtailment), loader narrow (EEG-only); re-anchor to narrow figure |
 | iberia | 2.10 | 9.08 | +333% | METHODOLOGY | C — anchor cites narrow REE figure; loader rates calibrated to broad REE figure (10.6 TWh); re-anchor to broad |
-| norway-no3 | 0.10 | 0.72 | +622% | FUEL | B — anchor wind-only, loader wind+hydro; either re-anchor or narrow loader |
-| norway-no4 | 0.30 | 1.20 | +299% | FUEL | B — same as NO3 |
+| norway-no3 | (removed) | 0.72 | excluded | FUEL → DATA GAP | RESOLVED 2026-04-26: numeric anchor removed, narrow wind-only fig moved to other_anchor; no public broad-scope comparator |
+| norway-no4 | (removed) | 1.20 | excluded | FUEL → DATA GAP | RESOLVED 2026-04-26: same as NO3 |
 | iso-ne | 0.034 | 0.131 | +284% | METHODOLOGY | C — anchor IMM dispatch-down, loader broader interpretation; re-anchor or re-rate |
 | greece | 0.350 | 0.802 | +129% | METHODOLOGY | E — escalate, anchor source unclear |
 | portugal | 0.400 | 0.913 | +128% | METHODOLOGY | E — escalate, anchor source unclear |
@@ -359,10 +359,10 @@ was actually built for).
 
 Brings iberia |Δ%| from 333% down to ~14%.
 
-### norway-no3 / norway-no4 (Class B — FUEL scope mismatch)
+### norway-no3 / norway-no4 (Class B → resolved as data gap)
 
-**Anchor:** Statnett figures are **wind-only** (NO3 ~0.1, NO4 ~0.3
-TWh). Hydro spill is explicitly excluded.
+**Original anchor:** Statnett figures ~0.1 TWh NO3 / ~0.3 TWh NO4
+(wind-only).
 
 **Loader:** `src/data/norway.json.ts` fetches B12 (hydro) **AND** B19
 (wind) from ENTSO-E A75 and applies a single zone-level rate (NO3
@@ -374,36 +374,33 @@ spring melt produces large hydro-curtailment.
 - NO3: 0.88 → 0.84 → 0.92 → 0.75 → **0.72 (2024)** → 0.88 (2025).
 - NO4: 1.33 → 1.49 → 1.66 → 1.47 → **1.20 (2024)** → 1.42 (2025).
 
-**Diagnosis:** +622% (NO3) and +299% (NO4) Δ% reflect that we are
-including hydro curtailment which the Statnett wind-only anchors do
+**Original diagnosis:** +622% (NO3) and +299% (NO4) Δ% reflected
+including hydro curtailment which the Statnett wind-only anchors did
 not. The fuel-share data the loader emits (line 80 of norway.json.ts)
 shows NO3 and NO4 are typically 80–95% hydro by volume.
 
-**Action:** Two options, pick one (this is a paper-narrative decision,
-not a numbers decision):
+**Resolution (2026-04-26 investigation):** Searched Statnett
+Kraftmarkedsåret 2024, RME Driften av kraftsystemet 2024, Statnett
+Annual & Sustainability Report 2024, and SSB hydropower statistics.
+**Norway does not publish per-zone all-fuel curtailment in TWh.**
+The narrow wind-only figures aren't a valid comparator for our
+hydro-inclusive loader.
 
-**Option N-1 (preferred):** Re-anchor to a hydro-inclusive figure.
+Action taken (committed):
 
-1. Update `norway-no3.tso_annual_twh.2024` from `0.1` to a value that
-   reflects hydro spill + wind. Statnett Annual Report 2024 publishes
-   total reservoir spill in TWh per zone — extract NO3 number.
-2. Same for NO4.
-3. Update `_provenance.notes`: `"Includes B12 hydro spill from ENTSO-E
-   A75 in addition to B19 wind. Statnett 2024 wind-only figure
-   (~0.1 TWh NO3, ~0.3 TWh NO4) is in other_anchor — narrower scope
-   than loader."`
+1. Removed `tso_annual_twh.2024` numeric value from both
+   `norway-no3` and `norway-no4` entries.
+2. Moved narrow Statnett wind-only figures to `other_anchor` with
+   "NOT a valid comparator" annotation.
+3. Updated `tso_annual_latest` to document what Statnett/NVE/RME/SSB
+   do and don't publish, and noted that loader output is the
+   best-available public estimate.
+4. Loader unchanged (B12 + B19, broad scope per methodology §2).
 
-**Option N-2:** Narrow the loader (drop B12 from norway.json.ts so it
-matches the wind-only anchor).
-
-Drop hydro signal from Norway. This loses ~0.6 TWh NO3 + ~0.9 TWh NO4
-of legitimate spilled hydro from the global aggregate — meaningful
-loss. Not preferred unless the paper narrative specifically scopes
-"curtailment" to wind+solar only (it does not — flare regions, hydro
-spill, and conventional redispatch are all in scope per §2 of the
-methodology).
-
-**Recommendation: N-1.** Statnett does publish reservoir spill annually.
+These zones are now excluded from the |Δ%| calibration corpus —
+correct outcome for "no comparable public anchor." They remain T1 in
+the tier system (live TSO feed) and will receive a paper footnote
+acknowledging the data gap.
 
 ### iso-ne (Class C — METHODOLOGY)
 
@@ -530,7 +527,7 @@ reality on the ground / use locally-accurate names, individual
 countries where possible, disaggregation if possible / broad scope
 unless there's a compelling reason not to."*
 
-### Q1 Norway — DECIDED: Option N-1 (hydro-inclusive)
+### Q1 Norway — DECIDED: Option N-1 (hydro-inclusive); RESOLVED 2026-04-26: data gap acknowledged
 
 Hydro spill during reservoir overflow IS curtailment in the paper's
 framing — energy that physically could not be used because of
@@ -539,10 +536,56 @@ framing (which already includes flare gas burnoff as "wasted joules at
 24/7 base load"), Norwegian spring spill belongs in the global
 aggregate.
 
-**Action:** Re-anchor norway-no3 and norway-no4 to hydro-inclusive
-Statnett figures. Statnett Annual Report 2024 publishes total
-reservoir spill in TWh per zone — extract those numbers. Loader stays
-unchanged (B12 hydro + B19 wind).
+**Investigation (2026-04-26):** Read Statnett Kraftmarkedsåret 2024
+report, RME Driften av kraftsystemet 2024 (Rapport 5/2025), Statnett
+Annual & Sustainability Report 2024, and SSB / energifaktanorge.no
+hydropower statistics. **Conclusion: Norway does not publish per-price-
+area all-fuel curtailment in TWh.** Statnett, NVE, RME, and SSB all
+publish high-level aggregate figures (national hydro production, total
+surplus, negative-price-hour counts per zone) but not the broad-scope
+per-zone TWh number that would be a valid comparator for our
+hydro+wind loader.
+
+What IS published:
+- Statnett wind-only narrow figures: ~0.1 TWh NO3, ~0.3 TWh NO4 (2024)
+  — does not include hydro spill, mismatched scope vs. our loader
+- National hydro production 2024: 137.6 TWh (record level)
+- National power surplus 2024: 18 TWh (historically large)
+- National hydropower spillage estimate: 8–10 TWh in normal precipitation
+  years (energifaktanorge.no), likely higher in 2024 given extreme
+  weather and reservoirs at historic maximum
+- NO3+NO4 hydro production 2024: 11.4 TWh (up from 8.5 TWh in 2023, +34%)
+  — driven by reservoirs above previously-recorded maximum
+
+What is NOT published: per-zone TWh figure for hydro spill or all-fuel
+curtailment.
+
+**Action:** Honest acknowledgment of data gap.
+
+1. Update `norway-no3` and `norway-no4` anchor entries to remove the
+   numeric `tso_annual_twh.2024` (the wind-only figure was being
+   compared against the broad hydro+wind loader and producing a
+   misleading +622% / +299% Δ%).
+2. Move the narrow Statnett wind-only figures to `other_anchor` with
+   explicit "NOT a valid comparator" note.
+3. Document in `tso_annual_latest` that loader output is the
+   best-available public estimate and that these zones are excluded
+   from the |Δ%| calibration corpus pending publication of a
+   broad-scope anchor by Statnett or NVE.
+4. Loader stays unchanged (B12 hydro + B19 wind, broad scope).
+
+This drops Norway from the calibration scoring entirely — which is the
+correct outcome, because there is no public comparator. NO3 and NO4
+are still T1 in the tier system (live TSO feed) but receive a footnote
+in the paper acknowledging the data gap.
+
+**Empirical impact (Norway re-anchor only, on top of Tier-1 edits):**
+- Median signed Δ%: +4.6% → **+1.1%** (bias eliminated)
+- Median |Δ%|: 35.5% → **29.3%**
+- Coverage at ±15%: 30.4% → **33.3%**
+- own-tso median |Δ%|: 23.9% → **18.3%**
+- Anchored region-years drop 23 → 21 (Norway zones excluded as
+  no-valid-comparator)
 
 ### Q2 Italy splits — DECIDED: mark MODELLED, but hunt for published per-zone figures
 
@@ -618,14 +661,13 @@ Expected post-edit Δ%: iberia ~+14%, germany ~+5%, netherlands ~+1%
 
 ### Tier 2 — research-required anchor edits (one-day investigations)
 
-| Zone | Action |
-|---|---|
-| norway-no3 | Read Statnett 2024 Annual Report; extract NO3 reservoir spill TWh; re-anchor |
-| norway-no4 | Same for NO4 |
-| iso-ne | Read EIA renewable curtailment proxy methodology; determine scope; either re-anchor to ISO-NE Renewable Procurement broad figure or narrow EIA proxy |
-| greece | Re-read HAEE 2024 RES Curtailment Annual Report; determine if 0.35 TWh is wind-only / pre-2024 / or actually broad-2024 |
-| portugal | Re-read REN Dados Técnicos 2024; determine 0.4 TWh scope |
-| italy-sardinia / italy-north-zone | Hunt Terna Rapporto Adeguatezza for actual per-zone published figures; replace modelled splits if found |
+| Zone | Action | Status |
+|---|---|---|
+| norway-no3 / norway-no4 | Investigate Statnett 2024 Annual Report etc. for broad-scope per-zone TWh | **DONE 2026-04-26: data gap acknowledged** — Norway does not publish broad-scope per-zone curtailment; numeric anchors removed, zones excluded from |Δ%| corpus |
+| iso-ne | Read EIA renewable curtailment proxy methodology; determine scope; either re-anchor to ISO-NE Renewable Procurement broad figure or narrow EIA proxy | pending |
+| greece | Re-read HAEE 2024 RES Curtailment Annual Report; determine if 0.35 TWh is wind-only / pre-2024 / or actually broad-2024 | pending |
+| portugal | Re-read REN Dados Técnicos 2024; determine 0.4 TWh scope | pending |
+| italy-sardinia / italy-north-zone | Hunt Terna Rapporto Adeguatezza for actual per-zone published figures; replace modelled splits if found | pending |
 
 ### Tier 3 — region-set expansion (multi-PR work)
 

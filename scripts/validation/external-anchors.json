@@ -331,12 +331,12 @@
     "tso_annual_latest": "Statnett NO2 small curtailment; cable corridor mostly exports out"
   },
   "norway-no3": {
-    "tso_annual_latest": "Statnett NO3 ~0.1 TWh wind curtailment",
-    "tso_annual_twh": {"2024": 0.10}
+    "tso_annual_latest": "No directly-comparable broad-scope anchor available. Statnett, NVE, RME, and SSB do NOT publish per-price-area all-fuel curtailment in TWh. The narrow Statnett wind-only figure (~0.1 TWh 2024) excludes hydro spill, which dominates curtailment in this export-constrained zone (high reservoir levels at historic maximum throughout 2024 per SSB; NO3+NO4 hydro production rose 8.5→11.4 TWh year-over-year). Loader src/data/norway.json.ts uses ENTSO-E A75 B12 hydro + B19 wind × 4% rate, matching the methodology §2 broad-curtailment framing. Treat loader output as the best-available public estimate; this zone is excluded from |Δ%| calibration corpus pending publication of broad-scope anchor.",
+    "other_anchor": "Narrow scope: Statnett NO3 ~0.1 TWh wind-only curtailment 2024 — NOT a valid comparator for the broad-scope hydro+wind loader. National context: Norway 2024 surplus 18 TWh (record); national hydro spillage estimated 8-10 TWh in normal precipitation years (energifaktanorge.no), likely higher in 2024 given extreme weather and full reservoirs."
   },
   "norway-no4": {
-    "tso_annual_latest": "Statnett NO4 ~0.3 TWh wind curtailment (export-constrained north)",
-    "tso_annual_twh": {"2024": 0.30}
+    "tso_annual_latest": "No directly-comparable broad-scope anchor available. Statnett, NVE, RME, and SSB do NOT publish per-price-area all-fuel curtailment in TWh. The narrow Statnett wind-only figure (~0.3 TWh 2024) excludes hydro spill, which dominates curtailment in this export-constrained northernmost zone (combined NO3+NO4 reservoirs above previously-recorded maximum throughout 2024 per SSB). Loader src/data/norway.json.ts uses ENTSO-E A75 B12 hydro + B19 wind × 6% rate, matching the methodology §2 broad-curtailment framing. Treat loader output as the best-available public estimate; this zone is excluded from |Δ%| calibration corpus pending publication of broad-scope anchor.",
+    "other_anchor": "Narrow scope: Statnett NO4 ~0.3 TWh wind-only curtailment 2024 (export-constrained north) — NOT a valid comparator for the broad-scope hydro+wind loader."
   },
   "norway-no5": {
     "tso_annual_latest": "Statnett NO5 hydro spring spill only (not in A75)"
