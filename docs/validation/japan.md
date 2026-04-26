@@ -26,10 +26,10 @@ Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** OCCTO 2024 nationwide solar curtailment ~1.7–2.0 TWh, of which Kyushu carries the bulk (METI/OCCTO 2024 reports + Kyushu Electric output-control statistics).
+- **TSO annual curtailment (latest published):** METI/OCCTO 2024 wind+solar curtailment ~2.5 TWh (Kyushu dominant)
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** Kyushu Electric T&D `td_power_usages` daily area-demand CSV (Shift-JIS, 5-minute solar generation column).
+- **Other:** —
 
 ## Discrepancy analysis
 

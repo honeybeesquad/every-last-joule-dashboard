@@ -12,7 +12,7 @@ Last generated: 2026-04-26
 | Tasmania | live | mixed | 0 | [aemo-tas](./aemo-tas.md) |
 | Victoria | live | mixed | 0 | [aemo-vic](./aemo-vic.md) |
 | NT & Pilbara | static | solar | 0 | [nt-pilbara](./nt-pilbara.md) |
-| Western Australia (SWIS) | static | mixed | 0 | [wa-swis](./wa-swis.md) |
+| Western Australia (SWIS) | live | mixed | 0 | [wa-swis](./wa-swis.md) |
 | Austria | static | mixed | 0 | [austria](./austria.md) |
 | Belgium | live | mixed | 0 | [belgium](./belgium.md) |
 | Bangladesh | static | solar | 0 | [bangladesh](./bangladesh.md) |
@@ -79,7 +79,7 @@ Last generated: 2026-04-26
 | Sardinia | live-domestic-anchored | mixed | 7 | [italy-sardinia](./italy-sardinia.md) |
 | Italy South | live | mixed | 0 | [italy-south](./italy-south.md) |
 | Jordan | static | mixed | 0 | [jordan](./jordan.md) |
-| Japan | static | solar | 0 | [japan](./japan.md) |
+| Japan | live | solar | 0 | [japan](./japan.md) |
 | Kazakhstan | static | wind | 0 | [kazakhstan](./kazakhstan.md) |
 | Kenya | static | hydro | 0 | [kenya](./kenya.md) |
 | Jeju (S. Korea) | static | wind | 0 | [jeju](./jeju.md) |

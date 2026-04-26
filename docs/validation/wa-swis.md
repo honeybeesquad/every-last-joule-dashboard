@@ -11,7 +11,7 @@ Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Techni
 - **Source:** AEMO WEM Facility SCADA
 - **Source URL:** [https://data.wa.aemo.com.au/](https://data.wa.aemo.com.au/)
 - **Loader:** [`wa-swis.json.ts`](../../src/data/wa-swis.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
