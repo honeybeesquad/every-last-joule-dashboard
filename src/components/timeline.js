@@ -1,5 +1,6 @@
 import { regionGWAtHour } from "../lib/calc.js";
-import { FUEL_ORDER, FUEL_COLOR, fuelShare } from "../lib/fuel.js";
+import { FUEL_ORDER, fuelShare } from "../lib/fuel.js";
+import { getFuelColor } from "../lib/fuel.js";
 
 const PAD = 14;
 const SAMPLES_PER_HOUR = 4; // 96 samples across 24h for smooth area curves
@@ -83,7 +84,7 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
 
     for (let f = 0; f < FUEL_ORDER.length; f += 1) {
       const fuel = FUEL_ORDER[f];
-      const colorHex = FUEL_COLOR[fuel];
+      const colorHex = getFuelColor(fuel);
       const grad = ctx.createLinearGradient(0, PAD, 0, baseY);
       grad.addColorStop(0, colorHex + "aa"); // ~67% alpha at top
       grad.addColorStop(1, colorHex + "22"); // ~13% at bottom

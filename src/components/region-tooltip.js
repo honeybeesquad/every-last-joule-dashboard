@@ -1,5 +1,5 @@
 import { regionGWAtHour } from "../lib/calc.js";
-import { FUEL_COLOR, FUEL_LABEL, dominantFuel } from "../lib/fuel.js";
+import { getFuelColor, FUEL_LABEL, dominantFuel } from "../lib/fuel.js";
 
 const FLARE_COLOR = "#f7931a";
 
@@ -32,7 +32,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
 
   function colorFor(region) {
     if (region.kind === "flare") return FLARE_COLOR;
-    return FUEL_COLOR[dominantFuel(region, regionData[region.id])];
+    return getFuelColor(dominantFuel(region, regionData[region.id]));
   }
 
   function fuelLabel(region) {
