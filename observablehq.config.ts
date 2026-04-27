@@ -49,7 +49,13 @@ export default {
   // The framework's default viewport meta uses `maximum-scale=1` which
   // disables pinch-zoom — bad for accessibility and mobile readability.
   // We emit our own viewport tag later in the head to override it.
-  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<link rel="stylesheet" href="./style.css">`,
+  // No-FOUC boot script: must run before stylesheet eval so the chosen
+  // theme's CSS variables resolve on first paint. Inline-synchronous; the
+  // entire payload is ~250 bytes and runs in <1ms.
+  // Lives in head: (raw HTML injection) rather than inside src/index.md
+  // because Observable Framework hoists markdown <script> blocks into ES
+  // modules, which would defer them past first paint.
+  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<script>(function(){var t=localStorage.getItem("elj-theme");if(t!=="sunfire"&&t!=="vellum"&&t!=="eclipse")t="sunfire";document.documentElement.setAttribute("data-theme",t);})();</script><link rel="stylesheet" href="./style.css">`,
   theme: "dark",
   footer: "",
   toc: false,
