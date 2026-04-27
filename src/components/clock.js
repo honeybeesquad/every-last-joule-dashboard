@@ -12,6 +12,11 @@ export function createClock(initialHourUtc) {
     // to glance at the whole cycle at a go.
     speed: 0.5,
     playing: true,
+    // When true, the tick loop ignores `speed` and locks `hour` to the
+    // actual wall-clock UTC each frame (≈ 0.000278 h/s). Lets viewers
+    // watch the dashboard advance at "true" rate after scrubbing around.
+    // Any setSpeed/scrub interaction clears the flag automatically.
+    realTime: false,
     lastTs: null
   };
   const listeners = new Set();
@@ -23,15 +28,29 @@ export function createClock(initialHourUtc) {
     for (const fn of listeners) fn(state.hour);
   }
 
+  function utcNowHour() {
+    const d = new Date();
+    return d.getUTCHours()
+      + d.getUTCMinutes() / 60
+      + d.getUTCSeconds() / 3600
+      + d.getUTCMilliseconds() / 3_600_000;
+  }
+
   function tick(now) {
     if (!state.playing) {
       raf = null;
       return;
     }
-    const dt = state.lastTs == null ? 0 : (now - state.lastTs) / 1000;
+    if (state.realTime) {
+      // Pull from the wall clock each frame. Avoids dt drift from
+      // long pauses (background tabs, debugger stops).
+      state.hour = utcNowHour();
+    } else {
+      const dt = state.lastTs == null ? 0 : (now - state.lastTs) / 1000;
+      state.hour += 0.4 * state.speed * dt;
+      while (state.hour >= 24) state.hour -= 24;
+    }
     state.lastTs = now;
-    state.hour += 0.4 * state.speed * dt;
-    while (state.hour >= 24) state.hour -= 24;
     emit();
     raf = requestAnimationFrame(tick);
   }
@@ -52,6 +71,9 @@ export function createClock(initialHourUtc) {
     get speed() {
       return state.speed;
     },
+    get realTime() {
+      return state.realTime;
+    },
     subscribe(fn) {
       listeners.add(fn);
       fn(state.hour);
@@ -68,9 +90,28 @@ export function createClock(initialHourUtc) {
     },
     setSpeed(multiplier) {
       state.speed = multiplier;
+      // Picking a speed always means "I want synthetic playback at
+      // this rate", so we drop out of real-time tracking.
+      state.realTime = false;
     },
     scrub(hour) {
       state.hour = ((hour % 24) + 24) % 24;
+      // Manually positioning the clock is incompatible with the
+      // wall-clock lock — the next tick would overwrite us.
+      state.realTime = false;
+      emit();
+    },
+    enableRealTime() {
+      // Snap to actual UTC immediately so the UI doesn't have to wait
+      // for the first RAF frame, then ensure playback is running so
+      // the wall-clock branch in tick() keeps it in sync going forward.
+      state.realTime = true;
+      state.hour = utcNowHour();
+      state.lastTs = null;
+      if (!state.playing) {
+        state.playing = true;
+        start(true);
+      }
       emit();
     }
   };
