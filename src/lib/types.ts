@@ -115,6 +115,18 @@ export interface RegionData {
   uncertaintyHighGW?: number;
   /** Empirical standard deviation of historical annual peakGW, used for T1 2σ bounds. */
   observedStdGW?: number;
+  /**
+   * Optional hourly renewable generation profile (24 GW values, index = UTC hour).
+   * Reserved in v1.0.0 for the two-output positioning: this dataset documents
+   * BOTH gross renewable generation AND the curtailment fraction derived from
+   * it. When present, exposes the gross renewable generation that the
+   * curtailment estimate was computed against. Loaders populate this
+   * progressively across v1.x; absence means the loader has not yet exposed
+   * generation as a first-class field.
+   */
+  generationProfile?: number[];
+  /** Trailing-30-day total renewable generation (TWh), companion to generationProfile. */
+  generationTotalTWh?: number;
 }
 
 /** Network consumption and hashrate reference from Cambridge CBECI. */

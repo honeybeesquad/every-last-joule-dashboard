@@ -25,6 +25,8 @@ One file per region. Overwritten on each scheduled build. Historical values acce
 | `confidenceTier` | `string` | One of `"T1-live-TSO"`, `"T2-annual-calibrated"`, `"T3-modelled"`. Derived deterministically by `src/lib/uncertainty.ts::deriveTier`. See `docs/methodology/uncertainty.md`. | Yes (legacy snapshots may pre-date S2 enrichment) |
 | `uncertaintyLowGW` | `number` | Lower bound of the per-tier envelope on `peakGW`. `max(0, peakGW − δ)`. | Yes |
 | `uncertaintyHighGW` | `number` | Upper bound of the per-tier envelope on `peakGW`. `peakGW + δ`. | Yes |
+| `generationProfile` | `number[24]` | Optional 30-day trailing average **gross renewable generation** in GW per UTC hour. Companion to `profile` as part of the v1.0.0 two-output positioning: when present, exposes the gross renewable generation that the curtailment estimate was computed against. The contract is locked in v1.0.0; loaders populate the field progressively across v1.x. | Yes (absent on loaders that have not yet exposed generation as a first-class field) |
+| `generationTotalTWh` | `number` | Optional 30-day trailing total gross renewable generation in TWh. Companion to `generationProfile`. | Yes |
 
 ### Example
 
@@ -51,7 +53,11 @@ Six loaders (`aemo`, `brazil-ne`, `entsoe`, `ercot`, `ercot-native`, `norway`) e
 
 ### JSON Schema
 
-Machine-readable version: [`schema/region-snapshot.schema.json`](schema/region-snapshot.schema.json), covering the per-region shape including the S2 uncertainty fields (`confidenceTier`, `uncertaintyLowGW`, `uncertaintyHighGW`).
+Machine-readable version: [`schema/region-snapshot.schema.json`](schema/region-snapshot.schema.json), covering the per-region shape including the S2 uncertainty fields (`confidenceTier`, `uncertaintyLowGW`, `uncertaintyHighGW`) and the v1.0.0 two-output generation fields (`generationProfile`, `generationTotalTWh`).
+
+### Two-output positioning (v1.0.0+)
+
+The dataset documents both gross renewable generation and the curtailment fraction derived from it. The curtailment fields (`profile`, `totalTWh`, `peakGW`) are required and populated for every region. The generation fields (`generationProfile`, `generationTotalTWh`) are optional and reserved in the v1.0.0 schema contract; individual loaders expose them as the upstream feed permits, so the absence of `generationProfile` for a given region snapshot means the loader has not yet been migrated to the two-output convention, not that generation is unmeasured. Consumers that only need curtailment can ignore the generation fields entirely; consumers that need supply-side renewable totals should filter to records with non-null `generationTotalTWh`.
 
 ## Parquet rolling history
 

@@ -48,6 +48,28 @@ in `src/lib/regions.ts`.
 `profile[24]` is the 30-day trailing average in GW per UTC hour;
 `latestProfile[24]` is the single-day latest snapshot.
 
+**Two-output positioning.** From v1.0.0 the dataset documents both
+the gross renewable generation and the curtailment fraction derived
+from it, rather than curtailment alone. Each per-region snapshot
+exposes the curtailment series (`profile`, `totalTWh`, `peakGW`) as
+required fields and reserves an optional companion generation series
+(`generationProfile`, `generationTotalTWh`) on the same shape. This
+matters because the curtailment estimate for most regions is
+constructed as `generation × calibration_rate` (§2.3): publishing
+both halves of that product lets downstream users audit the
+calibration step end-to-end and reuse the gross-generation half on
+its own. The schema contract is locked at v1.0.0; loaders populate
+the generation fields progressively across v1.x as the upstream
+feeds permit. Absence of `generationProfile` on a snapshot therefore
+means the loader has not yet been migrated to the two-output
+convention, not that the underlying generation is unmeasured. Three
+consequences for users follow: (i) consumers that only need
+curtailment can ignore the generation fields entirely; (ii) consumers
+that need supply-side renewable totals should filter to records with
+non-null `generationTotalTWh`; (iii) records of both kinds remain
+schema-valid against the same JSON Schema, so the dataset stays
+usable as a single artifact across the v1.x population horizon.
+
 ## 2.2 Upstream sources and fetch protocol
 
 | Source | Regions | Fetch protocol |

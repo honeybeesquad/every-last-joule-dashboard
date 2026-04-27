@@ -4,6 +4,13 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Added — Two-output positioning (Option C, locked 2026-04-27)
+- `generationProfile?: number[24]` and `generationTotalTWh?: number` optional fields on `RegionData` (`src/lib/types.ts`) — companion to the existing curtailment fields (`profile`, `totalTWh`, `peakGW`). When present, exposes the gross renewable generation that the curtailment estimate was derived from.
+- `dataset/schema/region-snapshot.schema.json` extended with the two new optional properties; existing snapshots remain valid because the fields are not required.
+- `dataset/SCHEMA.md` documents the new fields and the v1.0.0 contract semantics: contract is locked at v1.0.0, loaders populate the fields progressively across v1.x, absence on a snapshot means the loader has not yet been migrated rather than that generation is unmeasured.
+- `dataset/CITATION.cff` abstract reframed from "curtailment and associated-gas flaring" to "renewable-electricity **generation**, curtailment, and associated-gas flaring" — the dataset is now positioned as both an open model of renewable-energy supply and of the wasted-energy stream.
+- Methodology rationale for the two-output positioning to be added to `docs/paper/02-methods.md` (separate commit).
+
 ### Added — S1 Validation sprint (130 per-region triangulation MDs)
 - `docs/validation/<region>.md` for every tier-live region plus every static/flare region with a public anchor (130 region files plus a directory README and `_template.md` scaffold = 132 *.md total in the directory). Each region file carries a commit-grade discrepancy analysis vs. published TSO / ISO / IMM / SoM / IRENA / Ember / GGFR annuals.
 - `scripts/validation/enrich_discrepancy.py` — gemini-2.5-flash-backed enrichment script with rule 4 enforced ("say 'no anchor extracted' rather than making one up"). Idempotent via `--skip-enriched`.
@@ -56,7 +63,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 - `dataset/SCHEMA.md` describing the Parquet history schema and per-region JSON snapshot schema.
 - `dataset/CITATION.cff` machine-readable citation metadata.
 
-## [1.0.0] — 2026-04-XX (tag pending)
+## [1.0.0] — 2026-04-27
 
 Initial archival release. Matches the state of the dashboard immediately before the Scientific Data submission sprint begins.
 
