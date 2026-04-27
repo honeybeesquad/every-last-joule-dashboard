@@ -264,12 +264,17 @@ export async function mountGlobe(canvas, initial) {
         const tipX = point[0] + dx * pillarH;
         const tipY = point[1] + dy * pillarH;
         const pillarGradient = ctx.createLinearGradient(point[0], point[1], tipX, tipY);
-        pillarGradient.addColorStop(0, `${color}66`);
+        // Base of pillar (at the hotspot) used to be 0x66 = 40% alpha, which
+        // made the lower half of every spike fade out — pillars read as too
+        // dim across all three themes. Bump to 0x99 = 60% so the spike has a
+        // visible body, and pin the per-pillar globalAlpha to a flat 1.0 so
+        // tips render at full token brightness (was 0.95).
+        pillarGradient.addColorStop(0, `${color}99`);
         pillarGradient.addColorStop(1, color);
         ctx.strokeStyle = pillarGradient;
         ctx.lineWidth = pillarW;
         ctx.lineCap = "round";
-        ctx.globalAlpha = 0.95 * visible * sunDim;
+        ctx.globalAlpha = 1.0 * visible * sunDim;
         ctx.beginPath();
         ctx.moveTo(point[0], point[1]);
         ctx.lineTo(tipX, tipY);
