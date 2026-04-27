@@ -199,6 +199,11 @@ EXECUTION RULES (non-negotiable):
 9. NEVER \`git add .\` or \`git add -A\`. Stage only the specific files the
    task modifies. Files under \`data/snapshots/\` are runtime caches that
    regenerate during \`npm test\` — never stage or commit them.
+10. After your final edit, IMMEDIATELY proceed to the task's commit step.
+    Do NOT run \`npm run build\`, \`npm run dev\`, or any other verification
+    beyond what the task explicitly asks for. Your run terminates after
+    the commit; if you wander into out-of-scope verification you will
+    burn tokens and lose your unfinalised work.
 
 EXTRA SCOPE NOTE FOR THIS TASK:
 $scope
