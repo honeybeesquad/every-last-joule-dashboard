@@ -221,5 +221,10 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     hide();
   }, true);
 
+  function onThemeChange() {
+    if (!el.hidden) updateLive();   // re-paints the sparkline with new fuel colour
+  }
+  window.addEventListener("themechange", onThemeChange);
+
   return { show, hide, element: el };
 }

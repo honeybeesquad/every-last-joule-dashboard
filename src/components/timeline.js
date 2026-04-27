@@ -184,10 +184,16 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
   clock.subscribe(() => render());
   render();
 
+  function onThemeChange() { render(); }
+  window.addEventListener("themechange", onThemeChange);
+
   return {
     update(next = {}) {
       if (next.mode) mode = next.mode;
       render();
+    },
+    destroy() {
+      window.removeEventListener("themechange", onThemeChange);
     },
   };
 }
