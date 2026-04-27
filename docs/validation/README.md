@@ -62,8 +62,8 @@ Last generated: 2026-04-27
 | Cyprus | static | solar | 0 | [cyprus](./cyprus.md) |
 | Czech Republic | live | mixed | 7 | [czech-republic](./czech-republic.md) |
 | Germany | live | mixed | 7 | [germany](./germany.md) |
-| Denmark DK2 | live | mixed | 0 | [denmark-east](./denmark-east.md) |
-| Denmark DK1 | live | mixed | 0 | [denmark-west](./denmark-west.md) |
+| Denmark (Solar) | live | solar | 0 | [denmark-solar](./denmark-solar.md) |
+| Denmark (Wind) | live | wind | 0 | [denmark-wind](./denmark-wind.md) |
 | Dominican Republic | static | solar | 0 | [dominican-republic](./dominican-republic.md) |
 | Algeria | static | solar | 0 | [algeria](./algeria.md) |
 | Ecuador | static | hydro | 0 | [ecuador](./ecuador.md) |

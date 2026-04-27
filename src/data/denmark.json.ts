@@ -1,11 +1,12 @@
 import { pathToFileURL } from "node:url";
-import { fetchText } from "../lib/fetch.js";
+import { fetchJSON } from "../lib/fetch.js"; // Changed from fetchText
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
 const API = "https://api.energidataservice.dk/dataset/ProductionConsumptionSettlement";
-const CURTAILMENT_RATE = 0.04;
+const SOLAR_RATE = 0.04;
+const WIND_RATE = 0.04;
 const WIND_COLUMNS = [
   "OffshoreWindLt100MW_MWh",
   "OffshoreWindGe100MW_MWh",
@@ -18,26 +19,24 @@ const SOLAR_COLUMNS = [
   "SolarPowerGe40kW_MWh",
   "SolarPowerSelfConMWh",
 ];
-const WIND_SOLAR_COLUMNS = [...WIND_COLUMNS, ...SOLAR_COLUMNS];
 
 interface EnerginetResponse {
   records: Array<Record<string, string | number | null>>;
 }
 
 export interface EnerginetParsed {
-  points: CurtailmentPoint[];
-  windMwhTotal: number;
-  solarMwhTotal: number;
+  windPoints: CurtailmentPoint[];
+  solarPoints: CurtailmentPoint[];
 }
 
-export function parseEnerginetPayload(payload: string): EnerginetParsed {
-  const parsed = JSON.parse(payload) as EnerginetResponse;
-  const totals = new Map<string, number>();
-  let windMwhTotal = 0;
-  let solarMwhTotal = 0;
-  for (const row of parsed.records ?? []) {
+export function parseEnerginetPayload(payload: EnerginetResponse): EnerginetParsed {
+  const windTotals = new Map<string, number>();
+  const solarTotals = new Map<string, number>();
+
+  for (const row of payload.records ?? []) {
     const ts = String(row.HourUTC ?? "");
     if (!ts) continue;
+
     const windMwh = WIND_COLUMNS.reduce((sum, col) => {
       const v = Number(row[col] ?? 0);
       return sum + (Number.isFinite(v) ? v : 0);
@@ -46,52 +45,79 @@ export function parseEnerginetPayload(payload: string): EnerginetParsed {
       const v = Number(row[col] ?? 0);
       return sum + (Number.isFinite(v) ? v : 0);
     }, 0);
-    windMwhTotal += Math.max(0, windMwh);
-    solarMwhTotal += Math.max(0, solarMwh);
-    const mwh = Math.max(0, windMwh + solarMwh);
+
     const utcTimestamp = new Date(`${ts}Z`).toISOString();
-    totals.set(utcTimestamp, (totals.get(utcTimestamp) ?? 0) + mwh * CURTAILMENT_RATE);
+    windTotals.set(utcTimestamp, (windTotals.get(utcTimestamp) ?? 0) + Math.max(0, windMwh));
+    solarTotals.set(utcTimestamp, (solarTotals.get(utcTimestamp) ?? 0) + Math.max(0, solarMwh));
   }
-  const points = Array.from(totals.entries())
+
+  const windPoints = Array.from(windTotals.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
-  return { points, windMwhTotal, solarMwhTotal };
+
+  const solarPoints = Array.from(solarTotals.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
+
+  return { windPoints, solarPoints };
 }
 
-export function buildDenmarkData(parsed: EnerginetParsed): RegionData {
-  const { points, windMwhTotal, solarMwhTotal } = parsed;
-  const denom = windMwhTotal + solarMwhTotal;
-  const fuelShare = denom > 0
-    ? { wind: windMwhTotal / denom, solar: solarMwhTotal / denom }
-    : undefined;
+/** Build a per-fuel RegionData record. fuelShare is hard-set to 100%/0% for the fuel. */
+export function buildPerFuelRegion(
+  regionId: "denmark-solar" | "denmark-wind",
+  points: CurtailmentPoint[],
+  rate: number,
+  sourceNote: string,
+): RegionData {
+  const curtailedPoints = points.map((p) => ({ utcTimestamp: p.utcTimestamp, mw: p.mw * rate }));
+  const lastUpdated = curtailedPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
   return {
-    regionId: "denmark",
-    profile: timeOfDayAverageGW(points),
-    latestProfile: latestCompleteUtcDayProfileGW(points),
-    totalTWh: totalTWh30d(points),
-    peakGW: peakGW(points),
-    lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote: fuelShare
-      ? `Energinet wind+solar × 4% curtailment proxy (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
-      : "Energinet ProductionConsumptionSettlement wind+solar × 4% calibrated curtailment rate",
-    ...(fuelShare ? { fuelShare } : {}),
+    regionId,
+    profile: timeOfDayAverageGW(curtailedPoints),
+    latestProfile: latestCompleteUtcDayProfileGW(curtailedPoints),
+    totalTWh: totalTWh30d(curtailedPoints),
+    peakGW: peakGW(curtailedPoints),
+    lastUpdated,
+    lastSuccessAt: lastUpdated,
+    sourceNote,
+    fuelShare: regionId === "denmark-solar" ? { solar: 1, wind: 0 } : { solar: 0, wind: 1 },
   };
 }
 
-const run = async (): Promise<RegionData> => {
+export interface DenmarkOutput {
+  "denmark-solar": RegionData;
+  "denmark-wind": RegionData;
+}
+
+const run = async (): Promise<DenmarkOutput> => {
   const end = new Date();
   const start = new Date(end.getTime() - 30 * 24 * 3600 * 1000);
   const params = new URLSearchParams({
     start: start.toISOString().slice(0, 16),
     end: end.toISOString().slice(0, 16),
-    format: "csv",
+    format: "json", // Changed from csv
   });
-  return buildDenmarkData(parseEnerginetPayload(await fetchText(`${API}?${params.toString()}`)));
+  const payload = await fetchJSON<EnerginetResponse>(`${API}?${params.toString()}`); // Changed from fetchText
+  const { windPoints, solarPoints } = parseEnerginetPayload(payload);
+
+  return {
+    "denmark-solar": buildPerFuelRegion(
+      "denmark-solar",
+      solarPoints,
+      SOLAR_RATE,
+      "Energinet solar data × 4% calibrated curtailment (Denmark 2024)",
+    ),
+    "denmark-wind": buildPerFuelRegion(
+      "denmark-wind",
+      windPoints,
+      WIND_RATE,
+      "Energinet wind data × 4% calibrated curtailment (Denmark 2024)",
+    ),
+  };
 };
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  withFallback<RegionData>("denmark", run, {
+  withFallback<DenmarkOutput>("denmark", run, {
     regionTier: "live" as const,
     tagLive: (r) => ({ ...r, sourceStatus: "live" }),
     tagCached: (c) => ({ ...c, sourceStatus: "cached" }),

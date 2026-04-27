@@ -245,12 +245,10 @@ const regionData = {
   finland: entsoe.finland,
   france,
   netherlands: entsoe.netherlands,
-  // Denmark split by Energinet PriceArea. DK1 (Jutland/Fyn) hosts most
-  // onshore wind and interconnects with Germany; DK2 (Zealand) is across
-  // Øresund from Sweden. 75/25 approximates DK1's share of combined
-  // wind+solar generation.
-  "denmark-west": splitRegion(denmark, "denmark-west", 0.75, "DK1 (Jutland/Fyn) share of Energinet wind+solar"),
-  "denmark-east": splitRegion(denmark, "denmark-east", 0.25, "DK2 (Zealand) share of Energinet wind+solar"),
+  // Denmark split per-fuel (2026-04-27): the v0 split into DK1 (Jutland/Fyn)
+  // and DK2 (Zealand) is replaced by a single `denmark-solar` and
+  // `denmark-wind` region. The loader now emits a Record so we spread it.
+  ...denmark,
   poland: entsoe.poland,
   greece: entsoe.greece,
   romania: entsoe.romania,

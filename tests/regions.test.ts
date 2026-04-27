@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 171 canonical regions", () => {
+  it("has 172 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -24,8 +24,11 @@ describe("regions", () => {
     // sun-down. Net +1. 170 + 1 = 171.
     // Belgium per-fuel split (2026-04-27): `belgium` replaced by
     // `belgium-solar` + `belgium-wind`. Net +1. 171 + 1 = 172. Other blended
-    // loaders (denmark, north-sea, france, alberta) follow in subsequent
-    // commits on this branch.
+    // loaders (north-sea, france, alberta) follow in subsequent commits on
+    // this branch.
+    // Denmark per-fuel split (2026-04-27): the v0.6 geographic split
+    // {denmark-west, denmark-east} is replaced by the per-fuel split
+    // {denmark-solar, denmark-wind}. Net 0 (2→2 substitution). 172 stays.
     expect(REGIONS.length).toBe(172);
   });
 
@@ -159,10 +162,14 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "belgium")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "belgium-solar")).toBeDefined();
     expect(REGIONS.find(r => r.id === "belgium-wind")).toBeDefined();
-    // Denmark split in v0.6; see coverage-audit test block below.
+    // Per-fuel split (2026-04-27): denmark v0.6 geographic split (denmark-west
+    // + denmark-east) replaced by per-fuel split (denmark-solar + denmark-wind).
     expect(REGIONS.find(r => r.id === "denmark")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "denmark-west")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "denmark-east")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "denmark-solar")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "denmark-wind")).toBeDefined();
     expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();
-    // denmark-west/denmark-east now exist as v0.6 split regions.
   });
 
   it("includes the v1f regional expansion", () => {
@@ -296,16 +303,18 @@ describe("regions", () => {
   });
 
   it("includes the v0.6 Codex global-coverage-audit splits and additions", () => {
-    // 5 aggregates split into 10 sub-zones. All pairs are tier:"live" —
+    // 4 aggregates remain split into 8 sub-zones. All pairs are tier:"live" —
     // the Ireland pair was briefly demoted on 2026-04-25 when its loader
     // was probe-only, then re-promoted on 2026-04-26 once the loader was
     // rewired to fetch the EirGrid/SONI DD-HH half-hourly workbook
     // (measured dispatch-down, split 58/42 ROI/NI at fetch time).
+    // Per-fuel split (2026-04-27): denmark's v0.6 geographic split
+    // (denmark-west, denmark-east) was replaced by a per-fuel split
+    // (denmark-solar, denmark-wind) — see the per-fuel block below.
     const livePairs: Array<[string, string]> = [
       ["iso-ne-maine-vermont", "iso-ne-rest"],
       ["nyiso-zones-d-e", "nyiso-rest"],
       ["gb-scotland", "gb-england-wales"],
-      ["denmark-west", "denmark-east"],
       ["ireland-republic", "northern-ireland"],
     ];
     for (const [a, b] of livePairs) {

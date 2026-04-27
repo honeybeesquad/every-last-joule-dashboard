@@ -44,12 +44,11 @@ export const REGIONS: Region[] = [
   // as T1b live-domestic-anchored per B4 Option B (locked 2026-04-25). See
   // docs/proposals/b4-option-b-decision.md §"Post-B1 rerun (2026-04-26)".
   { id: "netherlands",      name: "Netherlands",     country: "NLD", lat: 52.2, lon:    5.3, tier: "live-domestic-anchored", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  // Denmark split by Energinet PriceArea. DK1 (Jutland/Fyn) hosts most
-  // onshore wind and is interconnected to Germany; DK2 (Zealand) sits
-  // across the Øresund from Sweden. Energi Data Service is natively zonal;
-  // split 75/25 reflects DK1's share of combined wind+solar generation.
-  { id: "denmark-west",      name: "Denmark DK1",     country: "DNK", lat: 56.2, lon:    9.1, tier: "live", kind: "mixed", source: "Energinet wind+solar (DK1)", sourceUrl: "https://api.energidataservice.dk/" },
-  { id: "denmark-east",      name: "Denmark DK2",     country: "DNK", lat: 55.4, lon:   12.3, tier: "live", kind: "mixed", source: "Energinet wind+solar (DK2)", sourceUrl: "https://api.energidataservice.dk/" },
+  // Denmark split per-fuel (2026-04-27): the v0 split into DK1 (Jutland/Fyn)
+  // and DK2 (Zealand) is replaced by a single `denmark-solar` and
+  // `denmark-wind` region.
+  { id: "denmark-solar",    name: "Denmark (Solar)", country: "DNK", lat: 55.7, lon: 12.5, tier: "live", kind: "solar", source: "Energinet solar data", sourceUrl: "https://api.energidataservice.dk/" },
+  { id: "denmark-wind",     name: "Denmark (Wind)",  country: "DNK", lat: 56.3, lon:  8.5, tier: "live", kind: "wind",  source: "Energinet wind data",  sourceUrl: "https://api.energidataservice.dk/" },
   { id: "poland",           name: "Poland",          country: "POL", lat: 52.0, lon:   19.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "greece",           name: "Greece",          country: "GRC", lat: 39.0, lon:   22.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "romania",          name: "Romania",         country: "ROU", lat: 45.9, lon:   25.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
