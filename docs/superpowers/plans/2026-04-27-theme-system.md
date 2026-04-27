@@ -1,6 +1,8 @@
 # Theme system (Sunfire / Vellum / Eclipse) — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+>
+> **For M2.7 workers dispatched via `opencode run`:** the operational layer (per-task dispatch packets, quality gates, scope guardrails) lives in the companion file `docs/superpowers/plans/2026-04-27-theme-system-dispatch.md`. The architect (Claude) drives that playbook; M2.7's job is only to read the named task in this file and execute it.
 
 **Goal:** Decouple Every Last Joule's visual identity from its parent brand by introducing a runtime-switchable theme system with three dark-by-design themes (Sunfire default, Vellum, Eclipse), persisted to `localStorage`, while lifting night-side globe legibility — implementing exactly the design in `docs/superpowers/specs/2026-04-27-theme-system-design.md`.
 
