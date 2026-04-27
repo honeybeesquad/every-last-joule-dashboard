@@ -87,9 +87,18 @@ preflight() {
   [[ -f "$QUEUE_FILE" ]] || fatal "queue file missing: $QUEUE_FILE" 5
 
   # Worktree must be clean (no uncommitted changes that could mix with M2.7's work)
-  if [[ -n "$(git status --porcelain)" ]]; then
+  # EXCEPTION: data/snapshots/ paths are runtime caches re-written by `npm test`
+  # against live data sources — they regenerate on every run and are not source.
+  local dirty
+  dirty="$(git status --porcelain | grep -vE '^[ M?]+ data/snapshots/' || true)"
+  if [[ -n "$dirty" ]]; then
     fatal "worktree dirty; commit or stash first. git status:
-$(git status --short)" 5
+$dirty" 5
+  fi
+  # Reset any dirty snapshot caches so M2.7 starts from a clean tree.
+  if [[ -n "$(git status --porcelain data/snapshots/ 2>/dev/null)" ]]; then
+    log "resetting auto-regenerated data/snapshots/ before dispatch"
+    git checkout -- data/snapshots/ 2>/dev/null || true
   fi
 
   # Branch sanity
@@ -187,6 +196,9 @@ EXECUTION RULES (non-negotiable):
    the final line.
 7. Do not run \`git push\`. Do not modify git config.
 8. Stay inside the worktree at $WORKTREE.
+9. NEVER \`git add .\` or \`git add -A\`. Stage only the specific files the
+   task modifies. Files under \`data/snapshots/\` are runtime caches that
+   regenerate during \`npm test\` — never stage or commit them.
 
 EXTRA SCOPE NOTE FOR THIS TASK:
 $scope
@@ -280,6 +292,12 @@ dispatch_one() {
     mark_task "$id" "failed" "$sha_after" "npm test failed"
     tail -20 "$log_test" >&2
     return 2
+  fi
+
+  # Auto-regenerated data/snapshots/ paths get rewritten by `npm test`.
+  # Reset them so the next task starts from a clean worktree.
+  if [[ -n "$(git status --porcelain data/snapshots/ 2>/dev/null)" ]]; then
+    git checkout -- data/snapshots/ 2>/dev/null || true
   fi
 
   log "✓ task $id: completed (commit=$sha_after)"
