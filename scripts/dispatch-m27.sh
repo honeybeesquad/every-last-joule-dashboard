@@ -163,6 +163,16 @@ Read Task $id's full section in that file (it has a "### Task $id:" heading).
 Execute every numbered step inside that task, in order, including running
 the shell commands and committing.
 
+ARCHITECT-MANAGED PRECONDITIONS (do NOT re-verify):
+- Branch state, base commit, prior tasks: handled by the architect (Claude).
+  HEAD will be ahead of cd2109f because plan/playbook/dispatcher commits
+  exist; this is correct. Do NOT roll back, reset, or verify cd2109f.
+- Task 0.1 (branch sanity) is complete. If your assigned task references a
+  precondition like "we are at cd2109f", treat that as architect-verified
+  and proceed.
+- All tasks with IDs numerically less than $id are complete. Trust git
+  history. Do not re-run their steps.
+
 EXECUTION RULES (non-negotiable):
 1. Do exactly the steps in Task $id. Do not implement other tasks.
 2. Do NOT modify files outside the task's stated "Files:" list.
@@ -172,7 +182,8 @@ EXECUTION RULES (non-negotiable):
 5. Use the EXACT commit message in the task. Append exactly this trailer
    (separate paragraph, leading blank line):
        Co-Authored-By: MiniMax-M2.7 (via opencode) <noreply@opencode.ai>
-6. If a step is ambiguous, stop without committing and write a question on
+6. If a step is ambiguous AND not covered by the architect-managed
+   preconditions above, stop without committing and write a question on
    the final line.
 7. Do not run \`git push\`. Do not modify git config.
 8. Stay inside the worktree at $WORKTREE.
