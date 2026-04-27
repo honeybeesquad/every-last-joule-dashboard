@@ -162,6 +162,37 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   guyana: "mixed",
   suriname: "mixed",
   "french-guiana": "solar",
+  // Phase-2.7 Pattern-D — Africa bulk-add (2026-04-27).
+  // 26 net-new T3-modelled statics. Map value mirrors the StaticSpec.kind
+  // collapse done inside `buildStaticRegion` (hydro→mixed for tier
+  // resolution, since both produce a flat profile and route to T3-modelled).
+  // See `src/data/statics.json.ts` for the canonical specs.
+  algeria: "solar",
+  angola: "solar",
+  benin: "solar",
+  botswana: "solar",
+  "burkina-faso": "solar",
+  "cabo-verde": "mixed",
+  cameroon: "mixed",
+  "congo-drc": "mixed",
+  "cote-divoire": "mixed",
+  eswatini: "mixed",
+  gabon: "mixed",
+  ghana: "mixed",
+  madagascar: "mixed",
+  malawi: "mixed",
+  mauritania: "wind",
+  mauritius: "mixed",
+  mozambique: "mixed",
+  nigeria: "mixed",
+  rwanda: "mixed",
+  senegal: "mixed",
+  tanzania: "mixed",
+  togo: "solar",
+  tunisia: "mixed",
+  uganda: "mixed",
+  zambia: "mixed",
+  zimbabwe: "mixed",
 };
 
 /**

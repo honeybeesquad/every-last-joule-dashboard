@@ -208,6 +208,45 @@ export const REGIONS: Region[] = [
   { id: "guyana",             name: "Guyana",               country: "GUY", lat: 6.80, lon:  -58.2, tier: "static", kind: "flare", source: "GGFR 2024 Guyana Stabroek block flaring offshore (Liza FPSO; upstream off-grid lifted onto GPL coverage)", sourceUrl: "https://www.gplinc.com/" },
   { id: "suriname",           name: "Suriname",             country: "SUR", lat: 5.85, lon:  -55.2, tier: "static", kind: "flare", source: "GGFR 2024 Suriname Block 58 offshore flaring forecast (upstream off-grid; at inclusion threshold)", sourceUrl: "https://www.nvebs.com/" },
   { id: "french-guiana",      name: "French Guiana",        country: "GUF", lat: 4.92, lon:  -52.3, tier: "static", kind: "solar", source: "EDF SEI Bilan Previsionnel Guyane 2024 (below normal inclusion threshold; included for completeness as the only South-American French overseas territory)", sourceUrl: "https://www.edf.fr/edf-sei/" },
+  // Phase-2.7 Pattern-D — Africa bulk-add (2026-04-27).
+  // 32 audit rows tagged `recommended_action: introduce-as-T3` in
+  // `data/coverage-audit/2026-04-26-africa.csv`; 6 sub-0.05 TWh rows skipped
+  // (Burundi, Gambia, Lesotho, Liberia, Seychelles, Sierra Leone). Net 26
+  // T3-modelled statics; ~11.7 TWh aggregate anchor. ±40% envelope.
+  // Lat/lon = capital city by default (operator-published curtailment is
+  // country-level, not zone-level, so a single capital point is the most
+  // honest representation). Region.kind reflects the dominant fuel of the
+  // grid; the StaticSpec.kind in src/data/statics.json.ts may collapse
+  // hydro/mixed to a flat profile when no curated seasonal-share data is
+  // available — both still land at T3-modelled.
+  // See `docs/proposals/2026-04-27-phase-2-7-pattern-d-dispatch.md` §3 +
+  // §4 CODEX-PHASE27-AFR for the canonical pattern.
+  { id: "algeria",          name: "Algeria",           country: "DZA", lat:  36.75, lon:    3.06, tier: "static", kind: "solar", source: "IRENA Country Statistics 2024 (Algeria SONELGAZ/OS, ~1.5 GW wind+PV)", sourceUrl: "https://www.grte.dz/" },
+  { id: "angola",           name: "Angola",            country: "AGO", lat:  -8.84, lon:   13.23, tier: "static", kind: "solar", source: "IRENA Angola 2024 (RNT transmission; nascent solar)", sourceUrl: "https://www.rnt.co.ao/" },
+  { id: "benin",            name: "Benin",             country: "BEN", lat:   6.37, lon:    2.39, tier: "static", kind: "solar", source: "IRENA Benin 2024 (SBEE; imports ~80% via WAPP)", sourceUrl: "https://sbee.bj/" },
+  { id: "botswana",         name: "Botswana",          country: "BWA", lat: -24.65, lon:   25.91, tier: "static", kind: "solar", source: "IRENA Botswana 2024 (BPC; SAPP member; Mmadinare PV)", sourceUrl: "https://www.bpc.bw/" },
+  { id: "burkina-faso",     name: "Burkina Faso",      country: "BFA", lat:  12.37, lon:   -1.52, tier: "static", kind: "solar", source: "IRENA Burkina Faso 2024 (SONABEL; Zagtouli + Nagreongo PV ~70 MW)", sourceUrl: "https://www.sonabel.bf/" },
+  { id: "cabo-verde",       name: "Cabo Verde",        country: "CPV", lat:  14.93, lon:  -23.51, tier: "static", kind: "mixed", source: "IRENA Cabo Verde 2024 (ELECTRA; 9-island system; high VRE)", sourceUrl: "https://www.electra.cv/" },
+  { id: "cameroon",         name: "Cameroon",          country: "CMR", lat:   3.85, lon:   11.50, tier: "static", kind: "hydro", source: "IRENA Cameroon 2024 (ENEO/SONATREL; mostly hydro)", sourceUrl: "https://eneo.cm/" },
+  { id: "congo-drc",        name: "DR Congo",          country: "COD", lat:  -4.32, lon:   15.32, tier: "static", kind: "hydro", source: "IRENA DRC 2024 (SNEL; Inga hydro complex ~2.5 GW; SAPP)", sourceUrl: "https://www.snel.cd/" },
+  { id: "cote-divoire",     name: "Cote d'Ivoire",     country: "CIV", lat:   5.32, lon:   -4.02, tier: "static", kind: "mixed", source: "IRENA Cote d'Ivoire 2024 (CIE; major WAPP exporter)", sourceUrl: "https://www.cie.ci/" },
+  { id: "eswatini",         name: "Eswatini",          country: "SWZ", lat: -26.31, lon:   31.13, tier: "static", kind: "mixed", source: "IRENA Eswatini 2024 (EEC; SAPP member; biomass+hydro)", sourceUrl: "https://www.eec.co.sz/" },
+  { id: "gabon",            name: "Gabon",             country: "GAB", lat:   0.42, lon:    9.45, tier: "static", kind: "hydro", source: "IRENA Gabon 2024 (SEEG; hydro+gas; flaring relevant)", sourceUrl: "https://www.seeg-gabon.com/" },
+  { id: "ghana",            name: "Ghana",             country: "GHA", lat:   5.61, lon:   -0.20, tier: "static", kind: "hydro", source: "Ember Ghana 2024 (GRIDCo TSO; Akosombo hydro + PV)", sourceUrl: "https://www.gridcogh.com/" },
+  { id: "madagascar",       name: "Madagascar",        country: "MDG", lat: -18.88, lon:   47.51, tier: "static", kind: "hydro", source: "IRENA Madagascar 2024 (JIRAMA; hydro+thermal isolated grids)", sourceUrl: "https://www.jirama.mg/" },
+  { id: "malawi",           name: "Malawi",            country: "MWI", lat: -13.95, lon:   33.78, tier: "static", kind: "hydro", source: "IRENA Malawi 2024 (ESCOM/EGENCO; Shire hydro + Salima PV; SAPP)", sourceUrl: "https://www.escom.mw/" },
+  { id: "mauritania",       name: "Mauritania",        country: "MRT", lat:  18.07, lon:  -15.97, tier: "static", kind: "wind",  source: "IRENA Mauritania 2024 (SOMELEC; Boulenouar wind 100 MW + Sheikh Zayed PV)", sourceUrl: "https://somelec.mr/" },
+  { id: "mauritius",        name: "Mauritius",         country: "MUS", lat: -20.16, lon:   57.51, tier: "static", kind: "mixed", source: "IRENA Mauritius 2024 (CEB; bagasse+coal+oil + PV; island)", sourceUrl: "https://ceb.mu/" },
+  { id: "mozambique",       name: "Mozambique",        country: "MOZ", lat: -25.97, lon:   32.58, tier: "static", kind: "hydro", source: "IRENA Mozambique 2024 (EDM; Cahora Bassa hydro; SAPP)", sourceUrl: "https://www.edm.co.mz/" },
+  { id: "nigeria",          name: "Nigeria",           country: "NGA", lat:   9.00, lon:    8.50, tier: "static", kind: "mixed", source: "Ember Nigeria 2024 + GGFR Niger Delta flaring 2024-25 (TCN; load-shed + ~7 TWh-eq/yr flare composite)", sourceUrl: "https://www.tcn.org.ng/" },
+  { id: "rwanda",           name: "Rwanda",            country: "RWA", lat:  -1.94, lon:   30.06, tier: "static", kind: "mixed", source: "IRENA Rwanda 2024 (REG/EUCL; Lake Kivu methane + hydro+solar)", sourceUrl: "https://www.reg.rw/" },
+  { id: "senegal",          name: "Senegal",           country: "SEN", lat:  14.69, lon:  -17.45, tier: "static", kind: "mixed", source: "IRENA Senegal 2024 (SENELEC; Taiba N'Diaye 158 MW wind + PV)", sourceUrl: "https://www.senelec.sn/" },
+  { id: "tanzania",         name: "Tanzania",          country: "TZA", lat:  -6.79, lon:   39.21, tier: "static", kind: "hydro", source: "IRENA Tanzania 2024 + JNHPP commissioning (TANESCO; gas+hydro)", sourceUrl: "https://www.tanesco.co.tz/" },
+  { id: "togo",             name: "Togo",              country: "TGO", lat:   6.13, lon:    1.22, tier: "static", kind: "solar", source: "IRENA Togo 2024 (CEET; WAPP imports; Blitta PV 50 MW)", sourceUrl: "https://ceet.tg/" },
+  { id: "tunisia",          name: "Tunisia",           country: "TUN", lat:  36.81, lon:   10.18, tier: "static", kind: "mixed", source: "IRENA Tunisia 2024 + STEG Annual Report (Bizerte wind + PV; gas-dominated)", sourceUrl: "https://www.steg.com.tn/" },
+  { id: "uganda",           name: "Uganda",            country: "UGA", lat:   0.32, lon:   32.58, tier: "static", kind: "hydro", source: "ERA Annual Performance 2024 (UETCL/UEDCL; Karuma+Isimba hydro)", sourceUrl: "https://www.uetcl.com/" },
+  { id: "zambia",           name: "Zambia",            country: "ZMB", lat: -15.42, lon:   28.28, tier: "static", kind: "hydro", source: "Ember Zambia 2024 + Kariba drought (ZESCO; Kariba+Kafue; severe drought load-shed; SAPP)", sourceUrl: "https://www.zesco.co.zm/" },
+  { id: "zimbabwe",         name: "Zimbabwe",          country: "ZWE", lat: -17.83, lon:   31.05, tier: "static", kind: "hydro", source: "Ember Zimbabwe 2024 + Kariba South (ZPC/ZETDC; Kariba South hydro+coal; SAPP)", sourceUrl: "https://www.zetdc.co.zw/" },
   // Tier 3 - flare (4 regions)
   { id: "permian",   name: "Permian Basin",   country: "USA",    lat:  31.9, lon: -102.5, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
   { id: "w-siberia", name: "W. Siberia",      country: "RUS",    lat:  61.0, lon:   73.0, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
