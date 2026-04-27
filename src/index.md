@@ -13,6 +13,7 @@ import { mountControls } from "./components/controls.js";
 import { mountModeToggle } from "./components/mode-toggle.js";
 import { mountTimeline } from "./components/timeline.js";
 import { mountRegionTooltip } from "./components/region-tooltip.js";
+import { mountThemeToggle } from "./components/theme-toggle.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
 import { FUEL_ORDER, FUEL_LABEL, FUEL_COLOR, fuelShare, isRenewable } from "./lib/fuel.js";
@@ -127,10 +128,13 @@ document.getElementById("app-root").innerHTML = `
         <span class="app-wordmark">Every Last Joule</span>
         <span class="app-tag">Wasted Energy Database · v0</span>
       </div>
-      <nav class="app-nav" aria-label="Primary">
-        <a href="./methodology">Methodology</a>
-        <a href="./about">About</a>
-      </nav>
+      <div class="app-header-actions">
+        <div id="theme-toggle-slot"></div>
+        <nav class="app-nav" aria-label="Primary">
+          <a href="./methodology">Methodology</a>
+          <a href="./about">About</a>
+        </nav>
+      </div>
     </header>
 
     <div class="app-body">
@@ -441,6 +445,8 @@ canvas.hidden = true;
 let globe;
 
 const timeline = mountTimeline(document.getElementById("timeline-canvas"), { regions: REGIONS, regionData, cbeci, clock });
+const themeSlot = document.getElementById("theme-toggle-slot");
+if (themeSlot) mountThemeToggle(themeSlot);
 mountControls(document.getElementById("timeline-controls"), clock);
 mountModeToggle(document.getElementById("mode-toggle"), {
   initial: mode.value,

@@ -483,6 +483,15 @@ main table {
   padding-bottom: 16px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
+.app-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+@media (max-width: 720px) {
+  .app-header { flex-wrap: wrap; gap: 10px; }
+  .app-header-actions { flex-wrap: wrap; }
+}
 
 .app-title {
   display: flex;
