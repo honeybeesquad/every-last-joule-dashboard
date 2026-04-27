@@ -16,15 +16,35 @@ export const FUEL_LABEL: Record<Fuel, string> = {
 };
 
 /**
- * Colour tokens for timeline areas, hotspot column dots, and (optionally)
- * globe pillars. Chosen to sit in the existing teal palette while staying
- * visually separable.
+ * Per-theme fuel colour reader. The actual values live in CSS variables
+ * (--fuel-solar / --fuel-wind / --fuel-hydro) on :root[data-theme="..."].
+ *
+ * Canvas-painted consumers must call this on `themechange` (or per-render);
+ * CSS-only consumers should reference `var(--fuel-{solar,wind,hydro})`
+ * directly and skip this function.
  */
-export const FUEL_COLOR: Record<Fuel, string> = {
-  solar: "#f5c542",   // warm amber - mid-day sun
-  wind:  "#14afac",   // brand teal
-  hydro: "#3b82c4",   // water blue
+const FUEL_VAR: Record<Fuel, string> = {
+  solar: "--fuel-solar",
+  wind:  "--fuel-wind",
+  hydro: "--fuel-hydro",
 };
+
+/** SSR / build-time fallback — Sunfire defaults. Browser path always wins. */
+const FUEL_FALLBACK: Record<Fuel, string> = {
+  solar: "#ffd05a",
+  wind:  "#67e8f9",
+  hydro: "#b8cdff",
+};
+
+export function getFuelColor(fuel: Fuel): string {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    return FUEL_FALLBACK[fuel];
+  }
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue(FUEL_VAR[fuel])
+    .trim();
+  return value || FUEL_FALLBACK[fuel];
+}
 
 /**
  * Empirical curtailment split for `kind: "mixed"` regions, derived from
