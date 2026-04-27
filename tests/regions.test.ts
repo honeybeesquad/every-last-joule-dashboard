@@ -35,7 +35,10 @@ describe("regions", () => {
     // {gb-scotland, gb-england-wales} (a 70/30 single-rate fan-out of the
     // Elexon BMRS AGWS feed) is replaced by the per-fuel split
     // {north-sea-solar, north-sea-wind}. Net 0 (2→2 substitution). 173 stays.
-    expect(REGIONS.length).toBe(173);
+    // Alberta per-fuel split (2026-04-27): single blended `alberta`
+    // replaced by `alberta-solar` + `alberta-wind`. Net +1. 173 + 1 = 174.
+    // This is the last loader in the per-fuel-split batch on this branch.
+    expect(REGIONS.length).toBe(174);
   });
 
   it("has 71 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -76,11 +79,13 @@ describe("regions", () => {
     // {gb-scotland, gb-england-wales} (both T1a live) is replaced by the
     // per-fuel split {north-sea-solar, north-sea-wind} (both T1a live).
     // Net 0 (2→2 substitution). T1a stays 66, total live stays 71.
+    // Alberta per-fuel split (2026-04-27): single `alberta` replaced by
+    // `alberta-solar` + `alberta-wind`. Net +1 T1a live region. 71 + 1 = 72.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(71);
+    expect(liveTotal).toBe(72);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(66);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(67);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -158,7 +163,9 @@ describe("regions", () => {
     // see the dedicated test block below.
     expect(REGIONS.find(r => r.id === "n-norway")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "ontario")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "alberta")).toBeDefined();
+    // Per-fuel split (2026-04-27): `alberta` replaced by
+    // alberta-solar (Brooks/Medicine Hat) + alberta-wind (Pincher Creek).
+    expect(REGIONS.find(r => r.id === "alberta")).toBeUndefined();
     // Ireland split in v0.6; see coverage-audit test block below.
     expect(REGIONS.find(r => r.id === "ireland")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "peru")).toBeDefined();
@@ -193,6 +200,11 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "gb-england-wales")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "north-sea-solar")).toBeDefined();
     expect(REGIONS.find(r => r.id === "north-sea-wind")).toBeDefined();
+    // Alberta per-fuel split (2026-04-27): single blended `alberta`
+    // replaced by alberta-solar (Brooks/Medicine Hat) + alberta-wind
+    // (Pincher Creek / Crowsnest).
+    expect(REGIONS.find(r => r.id === "alberta-solar")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "alberta-wind")).toBeDefined();
     expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();
   });
 

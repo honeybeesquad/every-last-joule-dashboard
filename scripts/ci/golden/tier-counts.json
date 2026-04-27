@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-04-27 (per-fuel split for North-Sea: the v0.6 geographic split {gb-scotland 70%, gb-england-wales 30%} replaced by the per-fuel split {north-sea-solar, north-sea-wind}; both pairs are T1a live so this is a 2→2 substitution — T1a stays 66, total stays 173. Earlier same day: france per-fuel split bumped T1a 65→66 and total 172→173; denmark per-fuel split was a 2→2 substitution (T1a/total unchanged); belgium per-fuel split bumped T1a 64→65 and total 171→172. Last blended loader — alberta — is queued for the same split in a subsequent commit on this branch).",
-  "T1a": 66,
+  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-04-27 (per-fuel split for Alberta: single blended `alberta` replaced by `alberta-solar` (Brooks/Medicine Hat) + `alberta-wind` (Pincher Creek). T1a 66→67, total 173→174. Earlier same day on this branch: north-sea per-fuel split was a 2→2 substitution (T1a/total unchanged); france per-fuel split bumped T1a 65→66 and total 172→173; denmark per-fuel split was a 2→2 substitution; belgium per-fuel split bumped T1a 64→65 and total 171→172. Alberta is the last blended loader in the per-fuel-split batch on this branch — all four blended loaders (caiso, belgium, denmark, france, north-sea, alberta) now emit per-fuel records).",
+  "T1a": 67,
   "T1b": 4,
   "T1c": 1,
   "T2": 2,
   "T2-flare": 4,
   "T3": 96,
-  "total": 173
+  "total": 174
 }

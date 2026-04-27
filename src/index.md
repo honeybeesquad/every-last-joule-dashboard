@@ -283,7 +283,10 @@ const regionData = {
   // norway loader emits a Record keyed by norway-no1..norway-no5.
   ...norway,
   ontario,
-  alberta,
+  // Alberta per-fuel split (2026-04-27): replaces single blended
+  // `alberta` regionId with `alberta-solar` + `alberta-wind`. The loader
+  // now emits a Record so we spread it.
+  ...alberta,
   ...ireland,
   peru,
   "south-africa": southAfrica,

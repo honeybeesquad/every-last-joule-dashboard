@@ -1,14 +1,14 @@
-# Validation — Alberta (`alberta`)
+# Validation — Alberta (Wind) (`alberta-wind`)
 
 Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `alberta`
+- **Region id:** `alberta-wind`
 - **Country:** CAN
 - **Tier:** live
-- **Kind:** mixed
-- **Source:** AESO wind+solar
+- **Kind:** wind
+- **Source:** AESO wind snapshot
 - **Source URL:** [http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet](http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet)
 - **Loader:** [`alberta.json.ts`](../../src/data/alberta.json.ts)
 - **Structural gap:** no
@@ -26,14 +26,14 @@ Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** AESO 2024 wind curtailment ~0.4 TWh
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
 
 ## Known limitations
 
@@ -42,7 +42,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 ## Links
 
 - Loader source: [`alberta.json.ts`](../../src/data/alberta.json.ts)
-- Backfill archive: `data/historical/backfill/*_alberta_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_alberta-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

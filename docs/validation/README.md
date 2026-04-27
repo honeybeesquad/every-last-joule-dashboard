@@ -36,7 +36,8 @@ Last generated: 2026-04-27
 | Sao Paulo | live | mixed | 0 | [brazil-sp](./brazil-sp.md) |
 | Barbados | static | solar | 0 | [barbados](./barbados.md) |
 | Botswana | static | solar | 0 | [botswana](./botswana.md) |
-| Alberta | live | mixed | 0 | [alberta](./alberta.md) |
+| Alberta (Solar) | live | solar | 0 | [alberta-solar](./alberta-solar.md) |
+| Alberta (Wind) | live | wind | 0 | [alberta-wind](./alberta-wind.md) |
 | British Columbia | static | hydro | 0 | [british-columbia](./british-columbia.md) |
 | Manitoba | static | mixed | 0 | [manitoba](./manitoba.md) |
 | Ontario | live | mixed | 0 | [ontario](./ontario.md) |

@@ -114,7 +114,14 @@ export const REGIONS: Region[] = [
   // empirical residual −35.5%).
   { id: "switzerland",      name: "Switzerland",     country: "CHE", lat: 46.8, lon:    8.2, tier: "live-neighbour-anchored", kind: "solar", source: "ENTSO-E Swissgrid PV-only (hydro spill not in A75)", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "ontario",          name: "Ontario",         country: "CAN", lat: 44.0, lon:  -81.0, tier: "live", kind: "mixed", source: "IESO wind+solar", sourceUrl: "https://reports-public.ieso.ca/public/GenOutputCapability/" },
-  { id: "alberta",          name: "Alberta",         country: "CAN", lat: 51.5, lon: -114.0, tier: "live", kind: "mixed", source: "AESO wind+solar", sourceUrl: "http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet" },
+  // Alberta split per-fuel (2026-04-27): replaces the v0 single blended
+  // `alberta` regionId (single-rate fan-out of the AESO CSD snapshot) with
+  // a per-fuel split so the dashboard's "solar curtailment" doesn't carry
+  // the steady wind floor under the solar series. Wind centroid sits over
+  // the southern Alberta wind belt (Pincher Creek / Crowsnest); solar
+  // centroid over the Brooks / Medicine Hat utility-scale solar cluster.
+  { id: "alberta-solar",    name: "Alberta (Solar)", country: "CAN", lat: 50.0, lon: -111.0, tier: "live", kind: "solar", source: "AESO solar snapshot",                  sourceUrl: "http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet" },
+  { id: "alberta-wind",     name: "Alberta (Wind)",  country: "CAN", lat: 49.5, lon: -113.9, tier: "live", kind: "wind",  source: "AESO wind snapshot",                   sourceUrl: "http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet" },
   // Ireland loader emits both children from one EirGrid/SONI DD half-hourly
   // workbook fetch. The all-island half-hourly DD feed is split 58/42 using
   // the 2024 annual ROI/NI anchor.
