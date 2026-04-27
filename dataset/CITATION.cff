@@ -3,7 +3,7 @@ message: "If you use this dataset in academic work, please cite it as below."
 type: dataset
 title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring"
 version: 1.0.0
-date-released: 2026-04-30
+date-released: 2026-04-28
 abstract: >-
   A versioned, reproducible synthesis dataset of hourly renewable-electricity
   curtailment and associated-gas flaring, covering 128 regions across six
@@ -19,7 +19,7 @@ authors:
   - family-names: Collins
     given-names: Simon
     email: simon@collins.nu
-    orcid: "https://orcid.org/0000-0000-0000-0000"  # TODO: replace with real ORCID before submission
+    orcid: "https://orcid.org/0009-0004-7547-120X"
 keywords:
   - curtailment
   - renewable energy

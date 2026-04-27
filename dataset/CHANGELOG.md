@@ -56,7 +56,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 - `dataset/SCHEMA.md` describing the Parquet history schema and per-region JSON snapshot schema.
 - `dataset/CITATION.cff` machine-readable citation metadata.
 
-## [1.0.0] — 2026-04-XX (tag pending)
+## [1.0.0] — 2026-04-28
 
 Initial archival release. Matches the state of the dashboard immediately before the Scientific Data submission sprint begins.
 
