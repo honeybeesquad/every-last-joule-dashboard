@@ -530,6 +530,37 @@ main table {
   border-color: var(--brand);
 }
 
+/* ============ THEME TOGGLE ============ */
+.theme-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--surface-raised);
+}
+.theme-toggle button {
+  font: 500 11px / 1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: background 140ms ease, color 140ms ease;
+}
+.theme-toggle button:hover { color: var(--ink); }
+.theme-toggle button[aria-checked="true"] {
+  background: var(--brand-subtle);
+  color: var(--brand);
+}
+.theme-toggle button:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
 /* Primary nav (right-aligned in header) */
 .app-nav {
   display: inline-flex;
