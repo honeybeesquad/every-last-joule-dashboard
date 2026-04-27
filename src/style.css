@@ -131,6 +131,7 @@
   --day-gradient-2:      rgba(230, 160, 32, 0.25);
   --day-gradient-3:      rgba(0, 0, 0, 0);
   --night-overlay:       rgba(20, 14, 5, 0.42);
+  --pillar-base-alpha:   aa;   /* hex pair appended to fuel hex; 0xaa ≈ 67% */
 
   --success:             #5eead4;
   --warning:             #ffb84d;
@@ -186,6 +187,7 @@
   --day-gradient-2:      rgba(179, 166, 132, 0.20);
   --day-gradient-3:      rgba(0, 0, 0, 0);
   --night-overlay:       rgba(20, 18, 14, 0.40);
+  --pillar-base-alpha:   ee;   /* parchment day-side needs bolder pillars; ~93% */
 
   --success:             #4f8cff;
   --warning:             #ffb84d;
@@ -242,6 +244,7 @@
   /* Eclipse uses a gradient string for the night overlay; globe.js detects
      the leading "linear-gradient(" prefix and rebuilds via createLinearGradient. */
   --night-overlay:       linear-gradient(135deg, rgba(40, 30, 20, 0.30) 0%, rgba(15, 10, 5, 0.55) 100%);
+  --pillar-base-alpha:   aa;   /* B&W magazine; 0xaa ≈ 67% */
 
   --success:             #ec4899;
   --warning:             #ffb84d;

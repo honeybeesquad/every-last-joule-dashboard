@@ -34,6 +34,18 @@ export function isGradientOverlay(value) {
 }
 
 /**
+ * Sanitise the --pillar-base-alpha token to a 2-char lowercase hex pair.
+ * Accepts "aa", "0xAA", or "AA" — anything else falls back to the supplied
+ * default so a typo never paints garbage onto the canvas via string concat.
+ */
+export function sanitisePillarAlpha(raw, fallback = "aa") {
+  if (typeof raw !== "string") return fallback;
+  const cleaned = raw.trim().toLowerCase().replace(/^0x/, "");
+  if (/^[0-9a-f]{2}$/.test(cleaned)) return cleaned;
+  return fallback;
+}
+
+/**
  * Read the current theme's globe-relevant tokens. Returned object is safe to
  * call in the canvas render path; values are pre-parsed.
  *
@@ -47,6 +59,8 @@ export function isGradientOverlay(value) {
  *     dayGrad3: string
  *     nightOverlay:       string             // raw CSS value (rgba or gradient)
  *     nightOverlayKind:   "color"|"gradient"
+ *     pillarBaseAlpha:    "aa"               // 2-char hex appended to fuel hex
+ *                                             // for the pillar gradient base stop
  *   }
  */
 export function readGlobeTokens(rootEl) {
@@ -63,5 +77,6 @@ export function readGlobeTokens(rootEl) {
     dayGrad3: get("--day-gradient-3") || "rgba(0,0,0,0)",
     nightOverlay: overlayRaw,
     nightOverlayKind: isGradientOverlay(overlayRaw) ? "gradient" : "color",
+    pillarBaseAlpha: sanitisePillarAlpha(get("--pillar-base-alpha"), "aa"),
   };
 }

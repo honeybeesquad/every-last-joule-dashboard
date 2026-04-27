@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseColorToRgb, isGradientOverlay } from "../../src/lib/theme-tokens.js";
+import { parseColorToRgb, isGradientOverlay, sanitisePillarAlpha } from "../../src/lib/theme-tokens.js";
 
 describe("parseColorToRgb", () => {
   it("parses 6-digit hex", () => {
@@ -33,5 +33,37 @@ describe("isGradientOverlay", () => {
   it("rejects empty/undefined", () => {
     expect(isGradientOverlay("")).toBe(false);
     expect(isGradientOverlay(undefined)).toBe(false);
+  });
+});
+
+describe("sanitisePillarAlpha", () => {
+  it("accepts a clean 2-char hex pair", () => {
+    expect(sanitisePillarAlpha("aa")).toBe("aa");
+    expect(sanitisePillarAlpha("ee")).toBe("ee");
+  });
+  it("lowercases uppercase hex", () => {
+    expect(sanitisePillarAlpha("AA")).toBe("aa");
+    expect(sanitisePillarAlpha("FF")).toBe("ff");
+  });
+  it("strips a leading 0x", () => {
+    expect(sanitisePillarAlpha("0xee")).toBe("ee");
+    expect(sanitisePillarAlpha("0XEE")).toBe("ee");
+  });
+  it("trims surrounding whitespace", () => {
+    expect(sanitisePillarAlpha("  cc  ")).toBe("cc");
+  });
+  it("falls back on garbage input", () => {
+    expect(sanitisePillarAlpha("not-a-hex")).toBe("aa");
+    expect(sanitisePillarAlpha("ggg")).toBe("aa");
+    expect(sanitisePillarAlpha("a")).toBe("aa");
+    expect(sanitisePillarAlpha("aaa")).toBe("aa");
+  });
+  it("falls back on non-string", () => {
+    expect(sanitisePillarAlpha(undefined)).toBe("aa");
+    expect(sanitisePillarAlpha(null)).toBe("aa");
+    expect(sanitisePillarAlpha(255)).toBe("aa");
+  });
+  it("uses a custom fallback when provided", () => {
+    expect(sanitisePillarAlpha("garbage", "ee")).toBe("ee");
   });
 });
