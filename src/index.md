@@ -16,7 +16,7 @@ import { mountTimeline } from "./components/timeline.js";
 import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
-import { FUEL_ORDER, FUEL_LABEL, FUEL_COLOR, fuelShare, isRenewable } from "./lib/fuel.js";
+import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./lib/fuel.js";
 import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
 import { mountGlobe } from "./globe.js";
@@ -178,7 +178,7 @@ document.getElementById("app-root").innerHTML = `
             return `
               <div class="hotspot-column">
                 <div class="hotspot-column-title">
-                  <span class="dot" style="background:${FUEL_COLOR[fuel]};box-shadow:0 0 10px ${FUEL_COLOR[fuel]}66;"></span>
+                  <span class="dot" style="background:${getFuelColor(fuel)};box-shadow:0 0 10px ${getFuelColor(fuel)}66;"></span>
                   <span>${FUEL_LABEL[fuel]}</span>
                 </div>
                 <div class="hotspot-column-subtitle">${subtitle}</div>
@@ -421,7 +421,7 @@ function renderAt(hour) {
 
   const itemHtml = (fuel) => ({ region, gw }) => `
     <li class="hotspot-item">
-      <span class="dot" style="background:${FUEL_COLOR[fuel]};box-shadow:0 0 8px ${FUEL_COLOR[fuel]}66;"></span>
+      <span class="dot" style="background:${getFuelColor(fuel)};box-shadow:0 0 8px ${getFuelColor(fuel)}66;"></span>
       <span class="hotspot-name">${region.name}</span>
       <span class="hotspot-gw num-tabular">${fmtGW(gw)} GW</span>
     </li>

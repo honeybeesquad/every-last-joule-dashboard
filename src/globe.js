@@ -1,7 +1,7 @@
 import * as d3 from "npm:d3";
 import * as topojson from "npm:topojson-client";
 import { regionGWAtHour } from "./lib/calc.js";
-import { FUEL_COLOR, dominantFuel } from "./lib/fuel.js";
+import { getFuelColor, dominantFuel } from "./lib/fuel.js";
 
 // Locally-vendored world atlas: previously fetched from unpkg.com, which
 // added a third-party DNS + TLS handshake (~200–400ms on cellular) to
@@ -202,7 +202,7 @@ export async function mountGlobe(canvas, initial) {
       if (!point) continue;
 
       const visible = 1 - dist / (Math.PI / 2);
-      const color = FUEL_COLOR[dominantFuel(region, data)];
+      const color = getFuelColor(dominantFuel(region, data));
       const weight = Math.sqrt(gw);
       const glowR = 4 + weight * 5;
       const coreR = 1.5 + weight * 0.8;
