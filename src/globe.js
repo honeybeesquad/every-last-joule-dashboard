@@ -249,7 +249,7 @@ export async function mountGlobe(canvas, initial) {
         const tipX = point[0] + dx * pillarH;
         const tipY = point[1] + dy * pillarH;
         const pillarGradient = ctx.createLinearGradient(point[0], point[1], tipX, tipY);
-        pillarGradient.addColorStop(0, `${color}66`);
+        pillarGradient.addColorStop(0, `${color}aa`);
         pillarGradient.addColorStop(1, color);
         ctx.strokeStyle = pillarGradient;
         ctx.lineWidth = pillarW;
