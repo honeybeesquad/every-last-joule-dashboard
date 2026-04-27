@@ -227,6 +227,10 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     // the user is clicking inside the canvas (that will trigger show() or
     // show(null) which replaces/clears current region separately).
     if (canvas && canvas.contains(e.target)) return;
+    // The theme toggle should not dismiss the tooltip — instead the
+    // themechange listener below re-paints the open tooltip with the new
+    // theme's tokens, which is the spec's intended behaviour.
+    if (e.target.closest && e.target.closest(".theme-toggle")) return;
     hide();
   }, true);
 
