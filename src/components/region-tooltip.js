@@ -1,7 +1,14 @@
 import { regionGWAtHour } from "../lib/calc.js";
 import { getFuelColor, FUEL_LABEL, dominantFuel } from "../lib/fuel.js";
 
-const FLARE_COLOR = "#f7931a";
+function readToken(name, fallback) {
+  if (typeof window === "undefined" || typeof document === "undefined") return fallback;
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return v || fallback;
+}
+function flareColor() { return readToken("--data-flare", "#f7931a"); }
+function flareTipColor() { return readToken("--data-flare-tip", "#ffc46d"); }
+function fallbackRenewable() { return readToken("--data-renewable", "#67e8f9"); }
 
 /**
  * Floating detail card anchored to a globe click. Shows region identity,
@@ -31,7 +38,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
   }
 
   function colorFor(region) {
-    if (region.kind === "flare") return FLARE_COLOR;
+    if (region.kind === "flare") return flareColor();
     return getFuelColor(dominantFuel(region, regionData[region.id]));
   }
 
@@ -58,7 +65,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     const pad = 2;
     const plotW = w - pad * 2;
     const plotH = h - pad * 2;
-    const color = currentRegion ? colorFor(currentRegion) : "#14afac";
+    const color = currentRegion ? colorFor(currentRegion) : fallbackRenewable();
     // Fill
     const grad = ctx.createLinearGradient(0, pad, 0, h - pad);
     grad.addColorStop(0, color + "aa");
@@ -92,7 +99,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     const t = hourNow - Math.floor(hourNow);
     const interpGW = (profile[interpIdx] ?? 0) * (1 - t) + (profile[(interpIdx + 1) % 24] ?? 0) * t;
     const cy = pad + plotH - (interpGW / maxG) * plotH;
-    ctx.fillStyle = "#f7931a";
+    ctx.fillStyle = flareColor();
     ctx.beginPath();
     ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
     ctx.fill();
@@ -222,6 +229,14 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     if (canvas && canvas.contains(e.target)) return;
     hide();
   }, true);
+
+  // Re-render the live "now" + sparkline on theme change so the canvas-painted
+  // sparkline picks up new fuel colours.
+  window.addEventListener("themechange", () => {
+    if (!el.hidden && currentRegion) {
+      show(currentRegion, null);
+    }
+  });
 
   return { show, hide, element: el };
 }
