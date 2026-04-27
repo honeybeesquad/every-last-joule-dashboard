@@ -1,6 +1,6 @@
 # Validation — Portugal (`portugal`)
 
-Last updated: 2026-04-26 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -46,10 +46,6 @@ The backfill's 2024 annual total of 0.913 TWh for Portugal substantially overrep
 *   The curtailment rates for solar (B16) and wind (B19) in Portugal are currently ungrounded placeholders. No citable 2023/2024 TSO annual curtailment total has been extracted from REN data for calibration.
 *   As a result, the backfill annual totals are derived from illustrative floor/ceiling values rather than measured annual calibration.
 *   See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes on the backfill approach.
-
-## v0.5 decision
-
-Documented as a residual outlier (+128.1%) under the §4.4 envelope-transparency principle; rate placeholder retained in v0.5. **v1 candidate** for REN 2024 Dados Técnicos / SEN bulletin scrape to ground-truth the rate — see `docs/methodology/validation-discrepancies.md` row `portugal` and `_provenance.ren-2024-annual.notes` in `scripts/validation/external-anchors.json`.
 
 ## Links
 

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 128 canonical regions", () => {
+  it("has 144 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -10,7 +10,12 @@ describe("regions", () => {
     //   Prior 113 + 10 new splits + 5 new statics + Turkey live re-add - Colombia = 123.
     // europe-expansion (2026-04-24): Norway split n-norway → NO1-NO5 (net +4 live)
     // and Switzerland added via ENTSO-E (+1 live). 123 + 5 = 128.
-    expect(REGIONS.length).toBe(128);
+    // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27): +16 T3-static
+    // rows for Caribbean + Central American + small South American grids
+    // (guatemala, el-salvador, nicaragua, costa-rica, panama, guatemala-siepac,
+    // cuba, dominican-republic, jamaica, trinidad-tobago, barbados, bolivia,
+    // ecuador, guyana, suriname, french-guiana). 128 + 16 = 144.
+    expect(REGIONS.length).toBe(144);
   });
 
   it("has 68 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -60,7 +65,7 @@ describe("regions", () => {
     }
   });
 
-  it("has 56 static regions", () => {
+  it("has 72 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
@@ -75,7 +80,9 @@ describe("regions", () => {
     // Phase-2.6 J brief (2026-04-26): japan promoted static → live via
     // Kyushu Electric area-demand CSV 5-min solar feed × 10% calibrated
     // curtailment. 57 - 1 = 56.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(56);
+    // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27): +16 new
+    // T3-static rows. 56 + 16 = 72.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(72);
   });
 
   it("has 4 flare regions", () => {

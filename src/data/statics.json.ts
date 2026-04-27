@@ -1,6 +1,7 @@
 import type { RegionData } from "../lib/types.js";
 import {
   solarProfile,
+  windProfile,
   hydroSeasonalProfile,
   seasonalScaleFactor,
   HYDRO_SEASONAL_SHARES,
@@ -9,7 +10,22 @@ import { applyUncertainty } from "../lib/uncertainty.js";
 import { coerceLastSuccessAt } from "../lib/freshness.js";
 import { pathToFileURL } from "url";
 
-type ProfileKind = "flat" | "solar" | "hydro-seasonal";
+/**
+ * StaticSpec profile kinds. Drives both the diurnal-profile builder selected in
+ * `buildStaticRegion` and the confidence-tier routing in `applyUncertainty`:
+ *   "flat"           → T2-annual-calibrated (24/7 base load, e.g. flare or
+ *                      load-shed annual anchor with no hourly signature)
+ *   "solar"          → T3-modelled (Gaussian peak around `localSolarPeakUTC`)
+ *   "wind"           → T3-modelled (gentle diurnal bias, peak around
+ *                      `localSolarPeakUTC` per the windProfile shape)
+ *   "mixed"          → T3-modelled (flat 24/7 shape but ±40% T3 envelope —
+ *                      used where the underlying anchor is genuinely
+ *                      indeterminate-fuel-mix, e.g. composite operator
+ *                      annuals or offshore flare anchors lifted onto a
+ *                      country grid)
+ *   "hydro-seasonal" → T3-modelled (monthly shares × flat diurnal)
+ */
+type ProfileKind = "flat" | "solar" | "wind" | "mixed" | "hydro-seasonal";
 
 interface StaticSpec {
   annualTWh: number;
@@ -91,6 +107,38 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // energy not tabulated; estimated ~0.07 TWh/yr assuming ~80 MW limit
   // × several hundred hours across multiple months.
   "russia-murmansk-wind": { annualTWh: 0.07, kind: "flat", source: "SO UPS 2024 monthly DPM VIE reports (Kola Peninsula wind limits, est. ~0.07 TWh/yr from 84 MW Sep / 77 MW Nov limit events)", reportDate: "2024" },
+  // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27).
+  // Sixteen Caribbean + Central American + small South American grids tagged
+  // `recommended_action: introduce-as-T3` in the audit at
+  // `data/coverage-audit/2026-04-26-latin-america.csv`. Each row carries a
+  // sub-1 TWh anchor sourced from IRENA Country Statistics 2024, Ember 2024,
+  // GGFR 2024-25, or named operator annual reports. Profile shape defaults
+  // to `solar` for the tropical solar-build-out grids, with explicit
+  // exceptions for hydro-dominated rows (Costa Rica, Ecuador), the Cuba
+  // post-Hurricane-Ian mixed anchor, and the offshore-flare anchors lifted
+  // onto Trinidad & Tobago / Guyana / Suriname grids (modelled as flat 24/7
+  // base load via `kind: "mixed"` to keep the ±40% T3 envelope).
+  // Timezone mapping for `localSolarPeakUTC`:
+  //   AST (UTC−4, Caribbean+Bolivia) → 16.0
+  //   EST (UTC−5, Cuba/Jamaica/Panama/Ecuador) → 17.0
+  //   CST (UTC−6, Central America)  → 18.0
+  //   BRT/SRT/GFT (UTC−3) → 15.0
+  guatemala: { annualTWh: 0.4, kind: "solar", localSolarPeakUTC: 18.0, source: "IRENA Renewable Energy Statistics 2024 (Guatemala VRE share) + AMM Plan Operativo 2024 (provisional 0.4 TWh/yr; AMM publishes Resultados de la Operacion as PDF, no hourly feed; Pattern-D static)", reportDate: "2024" },
+  "el-salvador": { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 18.0, source: "IRENA Renewable Energy Statistics 2024 (El Salvador VRE share; provisional 0.2 TWh/yr; UT publishes daily operation reports as PDF only; Pattern-D static)", reportDate: "2024" },
+  nicaragua: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 18.0, source: "IRENA Nicaragua VRE statistics 2024 (provisional 0.1 TWh/yr; CNDC/ENATREL publish weekly bulletins as PDF; geothermal+wind ~25% of mix; Pattern-D static)", reportDate: "2024" },
+  "costa-rica": { annualTWh: 0.3, kind: "mixed", source: "IRENA Costa Rica 2024 (98% renewable; hydro spill documented but not anchored to hourly feed; CENCE inside ICE publishes server-rendered IBM WebSphere portal; provisional 0.3 TWh/yr Pattern-D static, hydro-dominant flat profile)", reportDate: "2024" },
+  panama: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 17.0, source: "Secretaria Nacional de Energia 2024 (solar+wind ~10% of mix; ETESA/CND publish Informe de Operacion daily as PDF; provisional 0.2 TWh/yr Pattern-D static)", reportDate: "2024" },
+  "guatemala-siepac": { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 18.0, source: "IRENA Central America Interconnect 2024 (SIEPAC corridor; EOR Ente Operador Regional publishes monthly Informe de Operacion Regional as PDF; provisional 0.1 TWh/yr Pattern-D static for the regional interconnect)", reportDate: "2024" },
+  cuba: { annualTWh: 0.1, kind: "mixed", source: "Cuba UNE 2022-24 grid restoration + Ember Cuba Electricity Review 2024 (provisional 0.1 TWh/yr reflects post-Hurricane-Ian grid stress, not normal operation; mixed-fuel flat profile; Pattern-D static — do not over-claim a steady-state anchor)", reportDate: "2024" },
+  "dominican-republic": { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Dominican Republic 2024 + OC (Organismo Coordinador del SENI) Reportes de Operacion 2024 (wind+solar ~10% of generation; some curtailment reported in PDF reports; provisional 0.5 TWh/yr Pattern-D static)", reportDate: "2024" },
+  jamaica: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 17.0, source: "Office of Utilities Regulation Jamaica Annual Report 2024 (Wigton wind + Content solar; JPS vertically integrated; provisional 0.2 TWh/yr Pattern-D static)", reportDate: "2024" },
+  "trinidad-tobago": { annualTWh: 0.3, kind: "mixed", source: "GGFR 2024 Trinidad offshore flares ~1 BCM (anchor is upstream offshore flare lifted onto T&TEC grid for coverage; power side has minimal VRE; flat 24/7 profile with mixed-fuel flag; provisional 0.3 TWh/yr-electrical-equivalent Pattern-D static)", reportDate: "2024" },
+  barbados: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Barbados Renewables 2024 (rooftop PV penetration; BLPC investor-owned via Emera; FRCS Caribbean reports occasional inverter trips; provisional 0.05 TWh/yr Pattern-D static at inclusion threshold)", reportDate: "2024" },
+  bolivia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Bolivia 2024 (hydro+gas dominated grid; solar+wind ~3% of mix; CNDC publishes Informe Mensual de Operacion as PDF; provisional 0.1 TWh/yr Pattern-D static for solar curtailment subset)", reportDate: "2024" },
+  ecuador: { annualTWh: 0.05, kind: "mixed", source: "IRENA Ecuador 2024 (hydro-dominated grid; CENACE Ecuador publishes Informe Anual + monthly Informe de Operacion as PDF; provisional 0.05 TWh/yr Pattern-D static at inclusion threshold; hydro-dominant flat profile)", reportDate: "2024" },
+  guyana: { annualTWh: 0.2, kind: "mixed", source: "GGFR 2024 Guyana Stabroek block flaring offshore (Liza FPSO upstream; not on grid; lifted onto GPL coverage for completeness; flat 24/7 profile; provisional 0.2 TWh/yr-electrical-equivalent Pattern-D static)", reportDate: "2024" },
+  suriname: { annualTWh: 0.05, kind: "mixed", source: "GGFR 2024 Suriname Block 58 offshore flaring forecast (upstream off-grid; lifted onto EBS coverage for completeness; flat 24/7 profile; provisional 0.05 TWh/yr-electrical-equivalent Pattern-D static at inclusion threshold)", reportDate: "2024" },
+  "french-guiana": { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 15.0, source: "EDF SEI Bilan Previsionnel Guyane 2024 (small grid; below normal inclusion threshold; included for completeness as the only South-American French overseas territory; ENTSO-E does not cover French overseas, EDF SEI alone; provisional 0.05 TWh/yr Pattern-D static)", reportDate: "2024" },
 };
 
 /** Pure builder: spec in, RegionData out. Exported for tests. */
@@ -101,6 +149,13 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
 
   if (spec.kind === "solar" && spec.localSolarPeakUTC != null) {
     profile = solarProfile(spec.localSolarPeakUTC, spec.annualTWh);
+  } else if (spec.kind === "wind" && spec.localSolarPeakUTC != null) {
+    // Reuse `localSolarPeakUTC` as the diurnal phase anchor for the wind shape.
+    // The windProfile baseline is 0.65 + 0.35×phase, so the difference between
+    // peak and trough is small; the field is named `localSolarPeakUTC` for
+    // historical consistency with the solar-only shape but here it parameterises
+    // the mild day/night swing in `windProfile`.
+    profile = windProfile(spec.localSolarPeakUTC, spec.annualTWh);
   } else if (spec.kind === "hydro-seasonal" && spec.seasonalSharesKey) {
     const shares = HYDRO_SEASONAL_SHARES[spec.seasonalSharesKey];
     profile = hydroSeasonalProfile(spec.annualTWh, shares, now);
@@ -108,6 +163,11 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
     scaledTotalTWh = spec.annualTWh * (30 / 365) * factor;
     sourceNote = `${spec.source} — current 30-day seasonal factor ${factor.toFixed(2)}×`;
   } else {
+    // "flat" (T2) and "mixed" (T3) both emit a flat 24/7 profile here. The
+    // shape is identical; the tier-routing distinction lives in the
+    // `profileKind` passed to `applyUncertainty` below ("flat" → T2, "mixed"
+    // → T3 because we explicitly acknowledge the shape is modelled-flat
+    // rather than physically-flat-flare).
     const flatGW = (spec.annualTWh * 1000) / 8760;
     profile = Array(24).fill(flatGW);
   }
@@ -122,8 +182,8 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
     sourceNote,
   };
   // S2 uncertainty: tier derived from static-region kind.
-  //   "flat"           → T2-annual-calibrated (flare or flat-base static, ±20%)
-  //   "solar"/"hydro-seasonal" → T3-modelled  (typical shape scaled to annual, ±40%)
+  //   "flat"                                    → T2-annual-calibrated (flare or flat-base static, ±20%)
+  //   "solar"/"wind"/"mixed"/"hydro-seasonal"   → T3-modelled (typical shape or modelled-flat scaled to annual, ±40%)
   // No backfill variance is available for statics, so the tier-default fraction applies.
   const profileKind = spec.kind ?? "flat";
   return applyUncertainty(

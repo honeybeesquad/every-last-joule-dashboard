@@ -183,6 +183,31 @@ export const REGIONS: Region[] = [
   // as a narrow source upgrade to russia-mainland for the one Russian
   // sub-region with public dispatch-curtailment evidence.
   { id: "russia-murmansk-wind", name: "Russia (Murmansk)", country: "RUS", lat: 68.90, lon:  33.10, tier: "static", kind: "wind",  source: "SO UPS 2024 monthly DPM VIE reports (Kola Peninsula wind dispatch limits)", sourceUrl: "https://www.so-ups.ru/functioning/markets/surveys/renewable/2024/" },
+  // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27, codex/phase-27-latam-pattern-d).
+  // Sixteen Caribbean + Central American + small South American grids tagged
+  // `recommended_action: introduce-as-T3` in the audit
+  // `data/coverage-audit/2026-04-26-latin-america.csv`. Each row is a sub-1 TWh
+  // anchor, all T3-modelled (±40% envelope) per the canonical Pattern-D entry
+  // pattern documented at `docs/proposals/2026-04-27-phase-2-7-pattern-d-dispatch.md` §3.
+  // No fetch logic — the matching `STATIC_REGIONS` entries in
+  // `src/data/statics.json.ts` carry the typical-shape × annual-TWh dispatch.
+  // lat/lon are capital-city coordinates unless noted otherwise.
+  { id: "guatemala",          name: "Guatemala",            country: "GTM", lat: 14.6, lon:  -90.5, tier: "static", kind: "solar", source: "IRENA Renewable Energy Statistics 2024 (Guatemala VRE share) + AMM Plan Operativo 2024", sourceUrl: "https://www.amm.org.gt/" },
+  { id: "el-salvador",        name: "El Salvador",          country: "SLV", lat: 13.7, lon:  -89.2, tier: "static", kind: "solar", source: "IRENA Renewable Energy Statistics 2024 (El Salvador VRE share)", sourceUrl: "https://www.ut.com.sv/" },
+  { id: "nicaragua",          name: "Nicaragua",            country: "NIC", lat: 12.1, lon:  -86.3, tier: "static", kind: "solar", source: "IRENA Nicaragua VRE statistics 2024 (CNDC/ENATREL weekly bulletins)", sourceUrl: "https://www.enatrel.gob.ni/" },
+  { id: "costa-rica",         name: "Costa Rica",           country: "CRI", lat: 9.93, lon:  -84.1, tier: "static", kind: "hydro", source: "IRENA Costa Rica 2024 (98% renewable; hydro spill not anchored to hourly feed; ICE/CENCE)", sourceUrl: "https://www.grupoice.com/" },
+  { id: "panama",             name: "Panama",               country: "PAN", lat: 8.98, lon:  -79.5, tier: "static", kind: "solar", source: "Secretaria Nacional de Energia 2024 (solar+wind ~10%; ETESA/CND PDF reports)", sourceUrl: "https://www.etesa.com.pa/" },
+  { id: "guatemala-siepac",   name: "Central America (SIEPAC)", country: "GTM", lat: 13.7, lon:  -86.0, tier: "static", kind: "solar", source: "IRENA Central America Interconnect 2024 (SIEPAC corridor; EOR Ente Operador Regional)", sourceUrl: "https://www.enteoperador.org/" },
+  { id: "cuba",               name: "Cuba",                 country: "CUB", lat: 23.1, lon:  -82.4, tier: "static", kind: "mixed", source: "Cuba UNE 2022-24 grid restoration + Ember Cuba Electricity Review 2024 (post-Hurricane-Ian grid stress; not steady-state anchor)", sourceUrl: "https://www.une.cu/" },
+  { id: "dominican-republic", name: "Dominican Republic",   country: "DOM", lat: 18.5, lon:  -69.9, tier: "static", kind: "solar", source: "IRENA Dominican Republic 2024 + OC (Organismo Coordinador del SENI) Reportes de Operacion 2024", sourceUrl: "https://www.oc.org.do/" },
+  { id: "jamaica",            name: "Jamaica",              country: "JAM", lat: 18.0, lon:  -76.8, tier: "static", kind: "solar", source: "Office of Utilities Regulation Jamaica Annual Report 2024 (Wigton wind + Content solar)", sourceUrl: "https://www.jpsco.com/" },
+  { id: "trinidad-tobago",    name: "Trinidad & Tobago",    country: "TTO", lat: 10.7, lon:  -61.5, tier: "static", kind: "flare", source: "GGFR 2024 Trinidad offshore flares ~1 BCM (upstream offshore flare lifted onto T&TEC grid coverage)", sourceUrl: "https://ttec.co.tt/" },
+  { id: "barbados",           name: "Barbados",             country: "BRB", lat: 13.1, lon:  -59.6, tier: "static", kind: "solar", source: "IRENA Barbados Renewables 2024 (rooftop PV; at inclusion threshold)", sourceUrl: "https://www.blpc.com.bb/" },
+  { id: "bolivia",            name: "Bolivia",              country: "BOL", lat: -16.5, lon: -68.2, tier: "static", kind: "solar", source: "IRENA Bolivia 2024 (hydro+gas dominated grid; solar+wind ~3% of mix; CNDC PDF reports)", sourceUrl: "https://www.cndc.bo/" },
+  { id: "ecuador",            name: "Ecuador",              country: "ECU", lat: -0.18, lon: -78.5, tier: "static", kind: "hydro", source: "IRENA Ecuador 2024 (hydro-dominated; CENACE Ecuador PDF reports; at inclusion threshold)", sourceUrl: "https://www.cenace.gob.ec/" },
+  { id: "guyana",             name: "Guyana",               country: "GUY", lat: 6.80, lon:  -58.2, tier: "static", kind: "flare", source: "GGFR 2024 Guyana Stabroek block flaring offshore (Liza FPSO; upstream off-grid lifted onto GPL coverage)", sourceUrl: "https://www.gplinc.com/" },
+  { id: "suriname",           name: "Suriname",             country: "SUR", lat: 5.85, lon:  -55.2, tier: "static", kind: "flare", source: "GGFR 2024 Suriname Block 58 offshore flaring forecast (upstream off-grid; at inclusion threshold)", sourceUrl: "https://www.nvebs.com/" },
+  { id: "french-guiana",      name: "French Guiana",        country: "GUF", lat: 4.92, lon:  -52.3, tier: "static", kind: "solar", source: "EDF SEI Bilan Previsionnel Guyane 2024 (below normal inclusion threshold; included for completeness as the only South-American French overseas territory)", sourceUrl: "https://www.edf.fr/edf-sei/" },
   // Tier 3 - flare (4 regions)
   { id: "permian",   name: "Permian Basin",   country: "USA",    lat:  31.9, lon: -102.5, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
   { id: "w-siberia", name: "W. Siberia",      country: "RUS",    lat:  61.0, lon:   73.0, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
