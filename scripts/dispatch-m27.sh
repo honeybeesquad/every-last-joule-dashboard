@@ -290,13 +290,21 @@ dispatch_one() {
     return 4
   fi
 
-  # Real commit landed. Run tests.
-  log "→ task $id: commit $sha_after; running npm test"
-  if ! npm test > "$log_test" 2>&1; then
-    log "✗ task $id: tests failed (commit=$sha_after, log=$log_test)"
-    mark_task "$id" "failed" "$sha_after" "npm test failed"
-    tail -20 "$log_test" >&2
-    return 2
+  # Real commit landed. Run tests, unless this task is marked skip_test
+  # (used for tasks that intentionally break consumers — the next task
+  # fixes them, and the npm test gate runs again post-fix).
+  local skip_test
+  skip_test="$(jq -r --arg id "$id" '.tasks[] | select(.id == $id) | .skip_test // false' "$QUEUE_FILE")"
+  if [[ "$skip_test" == "true" ]]; then
+    log "→ task $id: commit $sha_after; SKIPPING npm test (skip_test=true; consumer-fix task follows)"
+  else
+    log "→ task $id: commit $sha_after; running npm test"
+    if ! npm test > "$log_test" 2>&1; then
+      log "✗ task $id: tests failed (commit=$sha_after, log=$log_test)"
+      mark_task "$id" "failed" "$sha_after" "npm test failed"
+      tail -20 "$log_test" >&2
+      return 2
+    fi
   fi
 
   # Auto-regenerated data/snapshots/ paths get rewritten by `npm test`.
