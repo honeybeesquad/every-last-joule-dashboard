@@ -2,6 +2,7 @@ import * as d3 from "npm:d3";
 import * as topojson from "npm:topojson-client";
 import { regionGWAtHour } from "./lib/calc.js";
 import { FUEL_COLOR, dominantFuel } from "./lib/fuel.js";
+import { readGlobeTokens } from "./lib/theme-tokens.js";
 
 // Locally-vendored world atlas: previously fetched from unpkg.com, which
 // added a third-party DNS + TLS handshake (~200–400ms on cellular) to
@@ -56,6 +57,12 @@ export async function mountGlobe(canvas, initial) {
     rotation: [-10, -15, 0],
     dragging: false
   };
+  let tokens = readGlobeTokens();
+  function refreshTokens() {
+    tokens = readGlobeTokens();
+    render();
+  }
+  window.addEventListener("themechange", refreshTokens);
 
   /**
    * Hit-test: given client coords, return the closest rendered hotspot region
@@ -134,8 +141,10 @@ export async function mountGlobe(canvas, initial) {
 
     ctx.beginPath();
     path({ type: "Sphere" });
-    ctx.fillStyle = "#0a1114";
+    ctx.fillStyle = `rgb(${tokens.dotNight})`;
+    ctx.globalAlpha = 0.18;
     ctx.fill();
+    ctx.globalAlpha = 1;
 
     if (sunScreen) {
       const gradient = ctx.createRadialGradient(
@@ -146,9 +155,9 @@ export async function mountGlobe(canvas, initial) {
         sunScreen[1],
         size * 0.55
       );
-      gradient.addColorStop(0, "rgba(90, 150, 160, 0.75)");
-      gradient.addColorStop(0.45, "rgba(40, 80, 90, 0.35)");
-      gradient.addColorStop(1, "rgba(0,0,0,0)");
+      gradient.addColorStop(0,    tokens.dayGrad1);
+      gradient.addColorStop(0.45, tokens.dayGrad2);
+      gradient.addColorStop(1,    tokens.dayGrad3);
       ctx.fillStyle = gradient;
       ctx.beginPath();
       path({ type: "Sphere" });
@@ -157,7 +166,14 @@ export async function mountGlobe(canvas, initial) {
 
     ctx.beginPath();
     path(d3.geoCircle().center([antiSolarLng, -sunLat]).radius(90)());
-    ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
+    if (tokens.nightOverlayKind === "gradient") {
+      const grad = ctx.createLinearGradient(0, 0, width, height);
+      grad.addColorStop(0,   "rgba(40, 30, 20, 0.30)");
+      grad.addColorStop(1,   "rgba(15, 10, 5, 0.55)");
+      ctx.fillStyle = grad;
+    } else {
+      ctx.fillStyle = tokens.nightOverlay;
+    }
     ctx.fill();
 
     for (const [lon, lat] of dots) {
@@ -168,8 +184,9 @@ export async function mountGlobe(canvas, initial) {
       const fade = 1 - dist / (Math.PI / 2);
       const solarAngle = d3.geoDistance([lon, lat], [sunLng, sunLat]);
       const sunlit = Math.max(0, Math.cos(solarAngle));
-      const brightness = 0.05 + fade * 0.12 + Math.pow(sunlit, 0.7) * 0.85;
-      ctx.fillStyle = `rgba(20, 175, 172, ${brightness})`;
+      const brightness = 0.30 + fade * 0.10 + Math.pow(sunlit, 0.7) * 0.60;
+      const dotRGB = sunlit > 0.3 ? tokens.dotDay : tokens.dotNight;
+      ctx.fillStyle = `rgba(${dotRGB}, ${brightness})`;
       ctx.fillRect(point[0] - 0.6, point[1] - 0.6, 1.4, 1.4);
     }
 
@@ -178,13 +195,13 @@ export async function mountGlobe(canvas, initial) {
       type: "GeometryCollection",
       geometries: countries.features.map((feature) => feature.geometry)
     });
-    ctx.strokeStyle = "rgba(20, 175, 172, 0.22)";
+    ctx.strokeStyle = tokens.border;
     ctx.lineWidth = 0.4;
     ctx.stroke();
 
     ctx.beginPath();
     path({ type: "Sphere" });
-    ctx.strokeStyle = "rgba(20, 175, 172, 0.25)";
+    ctx.strokeStyle = tokens.border;
     ctx.lineWidth = 0.8;
     ctx.stroke();
 
@@ -392,6 +409,7 @@ export async function mountGlobe(canvas, initial) {
     destroy() {
       stopLoop();
       document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("themechange", refreshTokens);
       resizeObserver.disconnect();
     }
   };
