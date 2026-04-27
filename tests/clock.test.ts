@@ -69,7 +69,7 @@ describe("createClock - real-time mode", () => {
     vi.setSystemTime(new Date(fixed));
     let received: number | null = null;
     // subscribe fires immediately with current hour, so reset before enabling
-    const unsubscribe = clock.subscribe((h) => { received = h; });
+    const unsubscribe = clock.subscribe((h: number) => { received = h; });
     received = null;
     clock.enableRealTime();
     expect(received).toBeCloseTo(9, 5);
