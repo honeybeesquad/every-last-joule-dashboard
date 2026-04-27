@@ -122,14 +122,15 @@ reporting systematically under-captures certain behaviours:
 ## 5.5 Recommended citation
 
 Machine-readable citation metadata: `dataset/CITATION.cff`.
-Zenodo-minted DOI: see repository Zenodo badge.
+Zenodo-minted version DOI for v1.0.0: `10.5281/zenodo.19835566`.
+Concept DOI (resolves to latest version): `10.5281/zenodo.19835411`.
 
-Preferred human citation (once Zenodo DOI is minted):
+Preferred human citation:
 
 > Collins, S. (2026). Every Last Joule: an hourly synthesis of
 > renewable-electricity curtailment and associated-gas flaring
 > across 128 regions. Scientific Data.
-> https://doi.org/10.5281/zenodo.<id>
+> https://doi.org/10.5281/zenodo.19835566
 
 Cite the **version DOI** (not the concept DOI) when writing
 reproducible analyses; concept DOI is appropriate when citing

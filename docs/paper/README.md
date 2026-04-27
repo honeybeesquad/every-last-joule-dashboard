@@ -75,10 +75,11 @@ The sections above are **first drafts** suitable for:
 3. Scientific Data editor pre-inquiry to confirm fit before
    formal submission.
 
-On acceptance of the DOI-minting step (Zenodo v1.0.0 tag), the
-DOI will be inserted into every citation reference across these
-sections. Until then, every `DOI TBA` or `<id>` placeholder is
-intentional.
+The Zenodo DOI was minted on the v1.0.0 tag (2026-04-27):
+version DOI `10.5281/zenodo.19835566`, concept DOI
+`10.5281/zenodo.19835411`. Both are now inserted across the
+section drafts; any remaining `<id>` or "TBA" tokens are bugs to
+flag.
 
 ## Assembly for submission
 

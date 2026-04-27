@@ -22,40 +22,39 @@ Scoring scale:
 
 | Pillar | Sub-principles | Pass | Partial | Fail |
 |---|---:|---:|---:|---:|
-| Findable | F1 F2 F3 F4 | 3 | 1 | 0 |
+| Findable | F1 F2 F3 F4 | 4 | 0 | 0 |
 | Accessible | A1 A1.1 A1.2 A2 | 4 | 0 | 0 |
 | Interoperable | I1 I2 I3 | 3 | 0 | 0 |
 | Reusable | R1 R1.1 R1.2 R1.3 | 4 | 0 | 0 |
-| **Total** | **15** | **14** | **1** | **0** |
+| **Total** | **15** | **15** | **0** | **0** |
 
-Overall: **14 / 15 pass** (93%). The single *partial* is F1 (persistent
-identifier) which is scaffolded in `CITATION.cff` as a DOI placeholder and
-closes on Zenodo mint of the v1.0.0 tag (see `docs/academic-model/zenodo-setup.md`).
+Overall: **15 / 15 pass** (100%). The previously *partial* F1 closed on
+2026-04-27 when the v1.0.0 tag was pushed and Zenodo minted the
+versioned DOI `10.5281/zenodo.19835566` (concept DOI
+`10.5281/zenodo.19835411`).
 
 ## Findable
 
 ### F1 — (Meta)data are assigned a globally unique and persistent identifier
 
-**Score:** Partial (scaffold in place; minting pending v1.0.0 tag push).
+**Score:** Pass.
 
 **Evidence:**
 
-- `dataset/CITATION.cff` declares a DOI identifier slot under `identifiers:`
-  with `value: "TBA"` and `description: "Zenodo archival DOI (versioned)"`.
-- `docs/academic-model/zenodo-setup.md` documents the exact mint flow
-  (Simon toggles Zenodo→GitHub integration, seeds repo metadata, pushes
-  v1.0.0 tag → Zenodo mints DOI within ~5 min).
-- Zenodo issues both a **concept DOI** (resolves to the latest version) and
-  a **version DOI** (pins to exactly one tag). Both will be recorded in
-  `CITATION.cff` post-mint.
+- `dataset/CITATION.cff` declares two DOI identifiers under `identifiers:`:
+  the **version DOI** `10.5281/zenodo.19835566` (pins to the v1.0.0 tag) and
+  the **concept DOI** `10.5281/zenodo.19835411` (resolves to the latest
+  version across releases).
+- DOIs minted by Zenodo on 2026-04-27 via the GitHub-Zenodo integration
+  documented in `docs/academic-model/zenodo-setup.md`. Each future tag
+  auto-mints a new version DOI under the same concept-DOI lineage.
+- Both DOIs resolve to a Zenodo landing page that archives a zip of the
+  tagged commit and exposes Dublin-Core metadata (title, authors, ORCID,
+  abstract, keywords, licence).
 - Region IDs inside the dataset are globally unique kebab-case strings
   (e.g. `ercot-west`, `brazil-ne-ceara`, `norway-no4`) matched against
   `src/lib/regions.ts` and enforced by the JSON Schema
   (`dataset/schema/region-snapshot.schema.json`: `pattern: "^[a-z0-9][a-z0-9-]*$"`).
-
-**Closure path:** On v1.0.0 push, Simon writes the minted DOI into
-`CITATION.cff` `identifiers:`, `README.md` header, and `LICENSE`
-attribution example. This upgrades F1 to **Pass**.
 
 ### F2 — Data are described with rich metadata
 

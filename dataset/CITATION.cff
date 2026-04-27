@@ -37,8 +37,11 @@ repository-code: "https://github.com/honeybeesquad/every-last-joule-dashboard"
 url: "https://everylastjoule.com"
 identifiers:
   - type: doi
-    value: "TBA"  # Minted on v1.0.0 tag via Zenodo integration
-    description: "Zenodo archival DOI (versioned)"
+    value: "10.5281/zenodo.19835566"
+    description: "Zenodo archival DOI (versioned, v1.0.0)"
+  - type: doi
+    value: "10.5281/zenodo.19835411"
+    description: "Zenodo concept DOI (resolves to latest version)"
 preferred-citation:
   type: article
   title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 128 regions"

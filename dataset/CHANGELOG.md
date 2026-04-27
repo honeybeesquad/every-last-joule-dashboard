@@ -50,6 +50,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 ### Changed
 - Region count references updated from `122` → `128` across `dataset/README.md`, `dataset/CITATION.cff`, `dataset/LICENSE`, `dataset/CHANGELOG.md`, `dataset/SCHEMA.md`, `docs/academic-model/zenodo-setup.md`, `src/methodology.md` (9 textual references; counted authoritatively from `src/lib/regions.ts`).
 - `dataset/schema/region-snapshot.schema.json` — added uncertainty fields (`uncertaintyLowGW`, `uncertaintyHighGW`, `confidenceTier`) to the per-region snapshot schema.
+- **Zenodo DOI minted (2026-04-27)** — version DOI `10.5281/zenodo.19835566` pins v1.0.0; concept DOI `10.5281/zenodo.19835411` resolves to latest. Substituted the `TBA` placeholder across `dataset/CITATION.cff`, `dataset/README.md`, `README.md`, `docs/paper/05-usage-notes.md`, `docs/paper/README.md`. `dataset/FAIR.md` F1 sub-principle moved from *partial* to *pass*; headline scorecard now 15/15.
 
 ### Infrastructure
 - `dataset/` subdirectory as the canonical academic-facing entry point (separate from the dashboard source).
