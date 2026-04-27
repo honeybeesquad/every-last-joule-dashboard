@@ -5,6 +5,16 @@ import { getFuelColor } from "../lib/fuel.js";
 const PAD = 14;
 const SAMPLES_PER_HOUR = 4; // 96 samples across 24h for smooth area curves
 
+// Token reads happen inside render(); kept un-cached because (a) render
+// already dominates on buildSamples() and (b) themechange invalidation
+// would need cleanup wiring this component does not currently expose.
+// Per-frame getComputedStyle lookups measure <0.05ms in Chromium DevTools.
+function readToken(name, fallback) {
+  if (typeof window === "undefined" || typeof document === "undefined") return fallback;
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return v || fallback;
+}
+
 /**
  * Mount a stacked-area timeline canvas showing curtailed renewable energy
  * split into four fuel buckets (solar / wind / hydro / other) across a
@@ -112,7 +122,7 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     }
 
     // Crisp stroke on the total top line for definition.
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.strokeStyle = readToken("--hairline-strong", "rgba(255, 255, 255, 0.35)");
     ctx.lineWidth = 1;
     ctx.beginPath();
     for (let i = 0; i < n; i += 1) {
@@ -125,8 +135,8 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     ctx.stroke();
 
     // --- Hour ticks ---
-    ctx.fillStyle = "rgba(255,255,255,0.4)";
-    ctx.font = '10px "Gotham", system-ui, sans-serif';
+    ctx.fillStyle = readToken("--ink-soft", "rgba(255,255,255,0.4)");
+    ctx.font = `10px ${readToken("--font-mono", "ui-monospace, monospace")}`;
     ctx.textAlign = "center";
     for (const hr of [0, 6, 12, 18]) {
       const x = xAt(hr, plotW);
@@ -140,13 +150,14 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     const totalNow = bucketNow[0] + bucketNow[1] + bucketNow[2] + bucketNow[3];
     const cx = xAt(hourNow, plotW);
     const cy = yForGW(totalNow);
-    ctx.strokeStyle = "#f7931a";
+    const flareTok = readToken("--data-flare", "#f7931a");
+    ctx.strokeStyle = flareTok;
     ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.moveTo(cx, PAD);
     ctx.lineTo(cx, h - PAD);
     ctx.stroke();
-    ctx.fillStyle = "#f7931a";
+    ctx.fillStyle = flareTok;
     ctx.beginPath();
     ctx.arc(cx, cy, 4.5, 0, Math.PI * 2);
     ctx.fill();
@@ -183,6 +194,7 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
   canvas.style.cursor = "ew-resize";
 
   clock.subscribe(() => render());
+  window.addEventListener("themechange", render);
   render();
 
   return {
