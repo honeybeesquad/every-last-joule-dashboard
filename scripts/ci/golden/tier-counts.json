@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-04-27 (Phase-2.7 Pattern-D Latin-America bulk-add — 16 new T3-static rows: T3 54→70, total 128→144).",
+  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-04-27 (Phase-2.7 Pattern-D Africa bulk-add atop Latin-America — 26 new T3-static Africa rows on top of 16 LatAm rows; 6 sub-0.05 TWh African rows skipped per the brief: Burundi, Gambia, Lesotho, Liberia, Seychelles, Sierra Leone. T3 70→96, total 144→170).",
   "T1a": 63,
   "T1b": 4,
   "T1c": 1,
   "T2": 2,
   "T2-flare": 4,
-  "T3": 70,
-  "total": 144
+  "T3": 96,
+  "total": 170
 }

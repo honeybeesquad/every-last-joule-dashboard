@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 144 canonical regions", () => {
+  it("has 170 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -15,7 +15,10 @@ describe("regions", () => {
     // (guatemala, el-salvador, nicaragua, costa-rica, panama, guatemala-siepac,
     // cuba, dominican-republic, jamaica, trinidad-tobago, barbados, bolivia,
     // ecuador, guyana, suriname, french-guiana). 128 + 16 = 144.
-    expect(REGIONS.length).toBe(144);
+    // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27): +26 T3-static rows
+    // sourced from `data/coverage-audit/2026-04-26-africa.csv` introduce-as-T3
+    // subset (32 rows, 6 sub-0.05 TWh skipped). 144 + 26 = 170.
+    expect(REGIONS.length).toBe(170);
   });
 
   it("has 68 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -65,7 +68,7 @@ describe("regions", () => {
     }
   });
 
-  it("has 72 static regions", () => {
+  it("has 98 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
@@ -82,7 +85,12 @@ describe("regions", () => {
     // curtailment. 57 - 1 = 56.
     // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27): +16 new
     // T3-static rows. 56 + 16 = 72.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(72);
+    // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27): +26 T3-static rows
+    // (Algeria, Angola, Benin, Botswana, Burkina Faso, Cabo Verde, Cameroon,
+    // Congo DRC, Cote d'Ivoire, Eswatini, Gabon, Ghana, Madagascar, Malawi,
+    // Mauritania, Mauritius, Mozambique, Nigeria, Rwanda, Senegal, Tanzania,
+    // Togo, Tunisia, Uganda, Zambia, Zimbabwe). 72 + 26 = 98.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(98);
   });
 
   it("has 4 flare regions", () => {

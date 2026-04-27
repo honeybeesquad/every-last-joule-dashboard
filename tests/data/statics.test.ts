@@ -2,12 +2,14 @@ import { describe, it, expect } from "vitest";
 import { buildStaticRegion, buildAllStatics } from "../../src/data/statics.json";
 
 describe("static regions", () => {
-  it("produces 29 regions (13 prior + 16 Phase-2.7 Pattern-D Latin-America)", () => {
+  it("produces 55 regions (13 prior + 16 Phase-2.7 Pattern-D LatAm + 26 Phase-2.7 Pattern-D Africa)", () => {
     // v0.6 global-coverage-audit added: hawaii-oahu/maui/island, austria, russia-murmansk-wind.
     // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27): +16 T3-static
     // rows for Caribbean + Central American + small South American grids.
+    // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27): +26 T3-static rows
+    // sourced from the introduce-as-T3 subset of `data/coverage-audit/2026-04-26-africa.csv`.
     const data = buildAllStatics();
-    expect(Object.keys(data).length).toBe(29);
+    expect(Object.keys(data).length).toBe(55);
   });
 
   it("includes all expected ids", () => {
@@ -43,6 +45,33 @@ describe("static regions", () => {
       "guyana",
       "suriname",
       "french-guiana",
+      // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27).
+      "algeria",
+      "angola",
+      "benin",
+      "botswana",
+      "burkina-faso",
+      "cabo-verde",
+      "cameroon",
+      "congo-drc",
+      "cote-divoire",
+      "eswatini",
+      "gabon",
+      "ghana",
+      "madagascar",
+      "malawi",
+      "mauritania",
+      "mauritius",
+      "mozambique",
+      "nigeria",
+      "rwanda",
+      "senegal",
+      "tanzania",
+      "togo",
+      "tunisia",
+      "uganda",
+      "zambia",
+      "zimbabwe",
     ];
     for (const id of expected) expect(data[id]).toBeDefined();
   });

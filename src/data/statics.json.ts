@@ -18,6 +18,11 @@ import { pathToFileURL } from "url";
  *   "solar"          → T3-modelled (Gaussian peak around `localSolarPeakUTC`)
  *   "wind"           → T3-modelled (gentle diurnal bias, peak around
  *                      `localSolarPeakUTC` per the windProfile shape)
+ *   "hydro"          → T3-modelled (flat 24/7 profile because hydro spill is
+ *                      monthly-seasonal, not hourly; collapses to "mixed"
+ *                      inside `applyUncertainty` since the deriveTier enum
+ *                      doesn't distinguish them — both produce a flat shape
+ *                      under a ±40% T3 envelope)
  *   "mixed"          → T3-modelled (flat 24/7 shape but ±40% T3 envelope —
  *                      used where the underlying anchor is genuinely
  *                      indeterminate-fuel-mix, e.g. composite operator
@@ -25,17 +30,38 @@ import { pathToFileURL } from "url";
  *                      country grid)
  *   "hydro-seasonal" → T3-modelled (monthly shares × flat diurnal)
  */
-type ProfileKind = "flat" | "solar" | "wind" | "mixed" | "hydro-seasonal";
+type ProfileKind = "flat" | "solar" | "wind" | "hydro" | "mixed" | "hydro-seasonal";
 
 interface StaticSpec {
   annualTWh: number;
   source: string;
   reportDate: string;
-  /** Profile shape. "flat" for flare (24/7 by nature); "solar" for regions whose
-   *  curtailment correlates with local solar noon (Xinjiang); "hydro-seasonal"
-   *  for hydro regions with monsoon / snowmelt peaks (Sichuan, Iceland). */
+  /** Profile shape. Drives both the diurnal-shape generator and (for the
+   *  uncertainty engine) the confidenceTier landing — see `applyUncertainty`
+   *  in `src/lib/uncertainty.ts::deriveTier` for the static→tier rules.
+   *
+   *   "flat"            24/7 base load. Used for flare regions and grid-
+   *                     bottleneck statics with no diurnal signature. Routes
+   *                     to T2-annual-calibrated (±20%).
+   *   "solar"           cos-shape centred on local noon. Requires
+   *                     `localSolarPeakUTC`. Routes to T3-modelled (±40%).
+   *   "wind"            weak diurnal shape (overnight bias). Requires
+   *                     `localSolarPeakUTC` to set the trough/peak phase.
+   *                     Routes to T3-modelled (±40%).
+   *   "hydro"           flat 24/7 profile (hydro is monthly-seasonal, not
+   *                     hourly) but routes to T3-modelled (±40%) because
+   *                     the choice of "flat-as-typical" is itself a
+   *                     modelling assumption when no curated seasonal-share
+   *                     array is available for the basin.
+   *   "mixed"           flat 24/7 profile when fuel mix is genuinely
+   *                     indeterminate; `buildTypicalMixedRegion` is reserved
+   *                     for the fuel-share-known case. Routes to T3-modelled
+   *                     (±40%).
+   *   "hydro-seasonal"  monthly share array × flat diurnal. Requires
+   *                     `seasonalSharesKey`. Routes to T3-modelled (±40%).
+   */
   kind?: ProfileKind;
-  /** UTC hour of local solar noon, for "solar" kind. */
+  /** UTC hour of local solar noon, for "solar" or "wind" kind. */
   localSolarPeakUTC?: number;
   /** Key into HYDRO_SEASONAL_SHARES for "hydro-seasonal" kind. */
   seasonalSharesKey?: keyof typeof HYDRO_SEASONAL_SHARES;
@@ -139,6 +165,46 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   guyana: { annualTWh: 0.2, kind: "mixed", source: "GGFR 2024 Guyana Stabroek block flaring offshore (Liza FPSO upstream; not on grid; lifted onto GPL coverage for completeness; flat 24/7 profile; provisional 0.2 TWh/yr-electrical-equivalent Pattern-D static)", reportDate: "2024" },
   suriname: { annualTWh: 0.05, kind: "mixed", source: "GGFR 2024 Suriname Block 58 offshore flaring forecast (upstream off-grid; lifted onto EBS coverage for completeness; flat 24/7 profile; provisional 0.05 TWh/yr-electrical-equivalent Pattern-D static at inclusion threshold)", reportDate: "2024" },
   "french-guiana": { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 15.0, source: "EDF SEI Bilan Previsionnel Guyane 2024 (small grid; below normal inclusion threshold; included for completeness as the only South-American French overseas territory; ENTSO-E does not cover French overseas, EDF SEI alone; provisional 0.05 TWh/yr Pattern-D static)", reportDate: "2024" },
+  // Phase-2.7 Pattern-D — Africa bulk-add (2026-04-27).
+  // Source: data/coverage-audit/2026-04-26-africa.csv `introduce-as-T3` subset.
+  // 32 audit rows; 6 sub-0.05 TWh rows skipped (Burundi 0.01, Gambia 0.02,
+  // Lesotho 0.02, Liberia 0.02, Seychelles 0.01, Sierra Leone 0.02). Net 26
+  // landed; aggregate ~11.7 TWh anchor.
+  // Anchors: IRENA Country Statistics 2024, Ember country reports, GGFR
+  // Niger Delta (Nigeria flare component). All ±40% T3-modelled (or T3 via
+  // flat-as-typical for hydro/mixed) per the Pattern-D dispatch §3.
+  // Timezones for `localSolarPeakUTC`: UTC+1 (CET/WAT) → 11.0; UTC+2 (CAT/SAST) → 10.0;
+  // UTC+0 (GMT) → 12.0; UTC+3 (EAT) → 9.0; UTC+4 (MUT) → 8.0; UTC-1 (CVT) → 13.0.
+  algeria: { annualTWh: 0.4, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Country Statistics 2024 (Algeria SONELGAZ/OS; small wind+PV ~1.5 GW; no public dispatch data)", reportDate: "2024" },
+  angola: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Angola 2024 (RNT transmission; nascent solar; no operator-published curtailment)", reportDate: "2024" },
+  benin: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Benin 2024 (SBEE; imports ~80% via WAPP; minimal domestic VRE)", reportDate: "2024" },
+  botswana: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 10.0, source: "IRENA Botswana 2024 (BPC; SAPP member; small Mmadinare PV)", reportDate: "2024" },
+  "burkina-faso": { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Burkina Faso 2024 (SONABEL; Zagtouli + Nagreongo PV ~70 MW)", reportDate: "2024" },
+  "cabo-verde": { annualTWh: 0.05, kind: "mixed", source: "IRENA Cabo Verde 2024 (ELECTRA; island system 9 separate grids; high VRE share with no published curtailment metric)", reportDate: "2024" },
+  cameroon: { annualTWh: 0.1, kind: "hydro", source: "IRENA Cameroon 2024 (ENEO/SONATREL; mostly hydro; no dispatch portal)", reportDate: "2024" },
+  "congo-drc": { annualTWh: 0.5, kind: "hydro", source: "IRENA DRC 2024 (SNEL; Inga hydro complex ~2.5 GW; SAPP member)", reportDate: "2024" },
+  "cote-divoire": { annualTWh: 0.1, kind: "mixed", source: "IRENA Cote d'Ivoire 2024 (CIE; major WAPP exporter; thermal+hydro+growing PV)", reportDate: "2024" },
+  eswatini: { annualTWh: 0.05, kind: "mixed", source: "IRENA Eswatini 2024 (EEC; SAPP member; biomass+hydro+Eskom imports)", reportDate: "2024" },
+  gabon: { annualTWh: 0.05, kind: "hydro", source: "IRENA Gabon 2024 (SEEG; hydro+gas; oil-flaring relevant via GGFR)", reportDate: "2024" },
+  ghana: { annualTWh: 0.2, kind: "hydro", source: "Ember Ghana 2024 (GRIDCo TSO; Akosombo hydro + emerging PV)", reportDate: "2024" },
+  madagascar: { annualTWh: 0.05, kind: "hydro", source: "IRENA Madagascar 2024 (JIRAMA; hydro+thermal; small isolated grids)", reportDate: "2024" },
+  malawi: { annualTWh: 0.05, kind: "hydro", source: "IRENA Malawi 2024 (ESCOM/EGENCO; Shire hydro cascade + Salima PV 60 MW; SAPP member)", reportDate: "2024" },
+  mauritania: { annualTWh: 0.1, kind: "wind", localSolarPeakUTC: 12.0, source: "IRENA Mauritania 2024 (SOMELEC; Boulenouar wind 100 MW + Sheikh Zayed PV; OMVS member)", reportDate: "2024" },
+  mauritius: { annualTWh: 0.05, kind: "mixed", source: "IRENA Mauritius 2024 (CEB; bagasse+coal+oil with growing PV; island grid)", reportDate: "2024" },
+  mozambique: { annualTWh: 0.3, kind: "hydro", source: "IRENA Mozambique 2024 (EDM; Cahora Bassa hydro exports to Eskom via SAPP; growing solar)", reportDate: "2024" },
+  // Nigeria — composite phenomenon: chronic frequency-instability load-shed
+  // (Ember 2024) + Niger Delta gas flaring (~7 TWh-eq/yr per GGFR 2024-25).
+  // Treated as `kind: "mixed"` with a flat 24/7 profile per the Pattern-D
+  // dispatch brief; lat/lon at 9.0°N 8.5°E (country centroid) as specified.
+  nigeria: { annualTWh: 7.0, kind: "mixed", source: "Ember Nigeria 2024 + GGFR Niger Delta flaring 2024-25 (TCN as TSO; chronic frequency-instability load-shed + ~7 TWh-eq/yr Niger Delta gas flare composite; flat 24/7 profile)", reportDate: "2024" },
+  rwanda: { annualTWh: 0.05, kind: "mixed", source: "IRENA Rwanda 2024 (REG/EUCL; methane-from-Lake-Kivu + hydro+solar)", reportDate: "2024" },
+  senegal: { annualTWh: 0.3, kind: "mixed", source: "IRENA Senegal 2024 (SENELEC; Taiba N'Diaye 158 MW wind + PV; OMVS/OMVG member)", reportDate: "2024" },
+  tanzania: { annualTWh: 0.5, kind: "hydro", source: "IRENA Tanzania 2024 + Julius Nyerere HPP commissioning (TANESCO; JNHPP 2.1 GW commissioning 2024-25; gas+hydro)", reportDate: "2024" },
+  togo: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Togo 2024 (CEET; imports via WAPP; Blitta PV 50 MW)", reportDate: "2024" },
+  tunisia: { annualTWh: 0.4, kind: "mixed", source: "IRENA Tunisia 2024 + STEG Annual Report (gas-dominated; growing wind Bizerte + PV; ELMED HVDC to Italy planned)", reportDate: "2024" },
+  uganda: { annualTWh: 0.2, kind: "hydro", source: "ERA Annual Performance 2024 (UETCL TSO + UEDCL distribution; Karuma+Isimba hydro)", reportDate: "2024" },
+  zambia: { annualTWh: 0.5, kind: "hydro", source: "Ember Zambia 2024 + Kariba drought (ZESCO; hydro-dependent Kariba+Kafue; severe 2024-25 drought load-shedding; SAPP member)", reportDate: "2024" },
+  zimbabwe: { annualTWh: 0.3, kind: "hydro", source: "Ember Zimbabwe 2024 + Kariba South (ZPC generation, ZETDC T+D; Kariba South hydro+coal; SAPP member)", reportDate: "2024" },
 };
 
 /** Pure builder: spec in, RegionData out. Exported for tests. */
@@ -154,7 +220,8 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
     // The windProfile baseline is 0.65 + 0.35×phase, so the difference between
     // peak and trough is small; the field is named `localSolarPeakUTC` for
     // historical consistency with the solar-only shape but here it parameterises
-    // the mild day/night swing in `windProfile`.
+    // the mild day/night swing in `windProfile`. Routes to T3 because the
+    // chosen overnight-bias is modelled.
     profile = windProfile(spec.localSolarPeakUTC, spec.annualTWh);
   } else if (spec.kind === "hydro-seasonal" && spec.seasonalSharesKey) {
     const shares = HYDRO_SEASONAL_SHARES[spec.seasonalSharesKey];
@@ -163,11 +230,13 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
     scaledTotalTWh = spec.annualTWh * (30 / 365) * factor;
     sourceNote = `${spec.source} — current 30-day seasonal factor ${factor.toFixed(2)}×`;
   } else {
-    // "flat" (T2) and "mixed" (T3) both emit a flat 24/7 profile here. The
-    // shape is identical; the tier-routing distinction lives in the
-    // `profileKind` passed to `applyUncertainty` below ("flat" → T2, "mixed"
-    // → T3 because we explicitly acknowledge the shape is modelled-flat
-    // rather than physically-flat-flare).
+    // "flat" (T2), "hydro" (T3) and "mixed" (T3) all emit a flat 24/7 profile
+    // here. The shape is identical; the tier-routing distinction lives in the
+    // `profileKind` passed to `applyUncertainty` below ("flat" → T2,
+    // "hydro"/"mixed" → T3 because we explicitly acknowledge the shape is
+    // modelled-flat rather than physically-flat-flare). The "hydro" kind
+    // collapses to "mixed" inside applyUncertainty since the deriveTier enum
+    // doesn't distinguish them.
     const flatGW = (spec.annualTWh * 1000) / 8760;
     profile = Array(24).fill(flatGW);
   }
@@ -182,10 +251,16 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
     sourceNote,
   };
   // S2 uncertainty: tier derived from static-region kind.
-  //   "flat"                                    → T2-annual-calibrated (flare or flat-base static, ±20%)
-  //   "solar"/"wind"/"mixed"/"hydro-seasonal"   → T3-modelled (typical shape or modelled-flat scaled to annual, ±40%)
+  //   "flat"                              → T2-annual-calibrated (flare or flat-base static, ±20%)
+  //   "solar"/"wind"/"mixed"/"hydro"/     → T3-modelled (typical shape or
+  //   "hydro-seasonal"                       modelled-flat scaled to annual, ±40%)
   // No backfill variance is available for statics, so the tier-default fraction applies.
-  const profileKind = spec.kind ?? "flat";
+  // The `deriveTier` enum doesn't currently distinguish "hydro" from "mixed"
+  // (both are flat-with-T3-envelope); collapse here so the uncertainty engine
+  // doesn't need a parallel kind axis. The provenance of the choice is
+  // surfaced in `regions.ts` Region.kind and the `sourceNote` text.
+  const profileKind: "flat" | "solar" | "wind" | "mixed" | "hydro-seasonal" =
+    spec.kind === "hydro" ? "mixed" : (spec.kind ?? "flat");
   return applyUncertainty(
     base,
     { regionTier: "static", profileKind },
