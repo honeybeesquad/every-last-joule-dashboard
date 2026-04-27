@@ -1,15 +1,15 @@
-# Validation — GB Scotland (`gb-scotland`)
+# Validation — GB (Solar) (`north-sea-solar`)
 
 Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `gb-scotland`
+- **Region id:** `north-sea-solar`
 - **Country:** GBR
 - **Tier:** live
-- **Kind:** wind
-- **Source:** Elexon BMRS wind+solar (Scotland share, ~70% via NESO constraint boundary)
-- **Source URL:** [https://www.neso.energy/data-portal/monthly-operational-metered-wind-output](https://www.neso.energy/data-portal/monthly-operational-metered-wind-output)
+- **Kind:** solar
+- **Source:** Elexon BMRS AGWS Solar
+- **Source URL:** [https://www.elexon.co.uk/data/](https://www.elexon.co.uk/data/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
@@ -22,18 +22,18 @@ Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Techni
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| 2024 | — | — | 7.700 | — | — |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** NESO 2024 constraint actions ~11 TWh total, ~70% Scottish wind
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** NESO Markets Roadmap 2024
+- **Other:** —
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
 
 ## Known limitations
 
@@ -42,7 +42,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_gb-scotland_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_north-sea-solar_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

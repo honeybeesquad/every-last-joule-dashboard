@@ -31,6 +31,10 @@ describe("regions", () => {
     // {denmark-solar, denmark-wind}. Net 0 (2→2 substitution). 172 stays.
     // France per-fuel split (2026-04-27): single blended `france` replaced
     // by `france-solar` + `france-wind`. Net +1. 172 + 1 = 173.
+    // North-Sea per-fuel split (2026-04-27): the v0.6 geographic split
+    // {gb-scotland, gb-england-wales} (a 70/30 single-rate fan-out of the
+    // Elexon BMRS AGWS feed) is replaced by the per-fuel split
+    // {north-sea-solar, north-sea-wind}. Net 0 (2→2 substitution). 173 stays.
     expect(REGIONS.length).toBe(173);
   });
 
@@ -68,6 +72,10 @@ describe("regions", () => {
     // Total live = 65 + 4 + 1 = 70.
     // France per-fuel split (2026-04-27): single `france` replaced by
     // `france-solar` + `france-wind`. Net +1 T1a live region. 70 + 1 = 71.
+    // North-Sea per-fuel split (2026-04-27): the v0.6 geographic split
+    // {gb-scotland, gb-england-wales} (both T1a live) is replaced by the
+    // per-fuel split {north-sea-solar, north-sea-wind} (both T1a live).
+    // Net 0 (2→2 substitution). T1a stays 66, total live stays 71.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
     expect(liveTotal).toBe(71);
@@ -178,6 +186,13 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "france")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "france-solar")).toBeDefined();
     expect(REGIONS.find(r => r.id === "france-wind")).toBeDefined();
+    // North-Sea per-fuel split (2026-04-27): the v0.6 geographic split
+    // (gb-scotland 70% + gb-england-wales 30%) is replaced by the per-fuel
+    // split (north-sea-solar at UK central, north-sea-wind at Dogger Bank).
+    expect(REGIONS.find(r => r.id === "gb-scotland")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "gb-england-wales")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "north-sea-solar")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "north-sea-wind")).toBeDefined();
     expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();
   });
 
@@ -312,7 +327,7 @@ describe("regions", () => {
   });
 
   it("includes the v0.6 Codex global-coverage-audit splits and additions", () => {
-    // 4 aggregates remain split into 8 sub-zones. All pairs are tier:"live" —
+    // 3 aggregates remain split into 6 sub-zones. All pairs are tier:"live" —
     // the Ireland pair was briefly demoted on 2026-04-25 when its loader
     // was probe-only, then re-promoted on 2026-04-26 once the loader was
     // rewired to fetch the EirGrid/SONI DD-HH half-hourly workbook
@@ -320,10 +335,13 @@ describe("regions", () => {
     // Per-fuel split (2026-04-27): denmark's v0.6 geographic split
     // (denmark-west, denmark-east) was replaced by a per-fuel split
     // (denmark-solar, denmark-wind) — see the per-fuel block below.
+    // Per-fuel split (2026-04-27): north-sea's v0.6 geographic split
+    // (gb-scotland 70%, gb-england-wales 30%) was replaced by a per-fuel
+    // split (north-sea-solar, north-sea-wind) — see the per-fuel block
+    // below.
     const livePairs: Array<[string, string]> = [
       ["iso-ne-maine-vermont", "iso-ne-rest"],
       ["nyiso-zones-d-e", "nyiso-rest"],
-      ["gb-scotland", "gb-england-wales"],
       ["ireland-republic", "northern-ireland"],
     ];
     for (const [a, b] of livePairs) {

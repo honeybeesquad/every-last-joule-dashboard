@@ -75,8 +75,8 @@ Last generated: 2026-04-27
 | France (Solar) | live | solar | 0 | [france-solar](./france-solar.md) |
 | France (Wind) | live | wind | 0 | [france-wind](./france-wind.md) |
 | Gabon | static | hydro | 0 | [gabon](./gabon.md) |
-| GB England+Wales | live | mixed | 0 | [gb-england-wales](./gb-england-wales.md) |
-| GB Scotland | live | wind | 0 | [gb-scotland](./gb-scotland.md) |
+| GB (Solar) | live | solar | 0 | [north-sea-solar](./north-sea-solar.md) |
+| GB (Wind) | live | wind | 0 | [north-sea-wind](./north-sea-wind.md) |
 | Northern Ireland | live | wind | 0 | [northern-ireland](./northern-ireland.md) |
 | Ghana | static | hydro | 0 | [ghana](./ghana.md) |
 | Greece | live | mixed | 7 | [greece](./greece.md) |

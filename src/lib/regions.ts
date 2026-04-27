@@ -77,11 +77,15 @@ export const REGIONS: Region[] = [
   // Baltic states rather than a published Baltic curtailment rate.
   // T1b live-domestic-anchored per B4 Option B (modelled-share split).
   { id: "baltics",          name: "Baltic states",   country: "EST", lat: 57.0,  lon: 24.0,  tier: "live-domestic-anchored", kind: "wind",  source: "ENTSO-E Litgrid", sourceUrl: "https://transparency.entsoe.eu/" },
-  // GB split — NESO Markets Roadmap 2024 reports ~11 TWh/yr of constraint
-  // actions, dominated by the Scotland-to-England export boundary. Split
-  // 70/30 at consumption: Scotland carries the bulk of curtailed wind.
-  { id: "gb-scotland",      name: "GB Scotland",     country: "GBR", lat: 56.8, lon:   -4.2, tier: "live", kind: "wind",  source: "Elexon BMRS wind+solar (Scotland share, ~70% via NESO constraint boundary)", sourceUrl: "https://www.neso.energy/data-portal/monthly-operational-metered-wind-output" },
-  { id: "gb-england-wales", name: "GB England+Wales", country: "GBR", lat: 52.9, lon:  -1.8, tier: "live", kind: "mixed", source: "Elexon BMRS wind+solar (England+Wales share)", sourceUrl: "https://www.elexon.co.uk/data/" },
+  // North-Sea split per-fuel (2026-04-27): replaces the v0.6 modelled-share
+  // geographic split {gb-scotland, gb-england-wales} (which was a 70/30
+  // single-rate fan-out of the Elexon BMRS AGWS feed) with a per-fuel split
+  // {north-sea-solar, north-sea-wind} so the dashboard's "solar curtailment"
+  // doesn't carry an overnight wind-floor in the GB record. Wind centroid
+  // sits over the offshore zone (Dogger Bank / North Sea); solar centroid
+  // sits over UK central where utility-scale solar farms cluster.
+  { id: "north-sea-solar",  name: "GB (Solar)",      country: "GBR", lat: 51.5, lon:   -1.0, tier: "live", kind: "solar", source: "Elexon BMRS AGWS Solar",                  sourceUrl: "https://www.elexon.co.uk/data/" },
+  { id: "north-sea-wind",   name: "GB (Wind)",       country: "GBR", lat: 54.0, lon:    1.0, tier: "live", kind: "wind",  source: "Elexon BMRS AGWS Wind Onshore+Offshore",  sourceUrl: "https://www.elexon.co.uk/data/" },
   // Brazil NE: each state runs both wind and solar constrained-off via ONS;
   // kind="mixed" because the loader emits a data-driven wind/solar split.
   { id: "brazil-rn",        name: "Rio Grande do Norte", country: "BRA", lat: -5.8, lon: -36.3, tier: "live", kind: "mixed", source: "ONS wind+solar", sourceUrl: "https://www.ons.org.br/" },

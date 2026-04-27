@@ -269,11 +269,15 @@ const regionData = {
   // Switzerland — PV-only ENTSO-E feed; understates hydro spill but
   // captures summer-midday PV oversupply on Swissgrid's corridor.
   switzerland: entsoe.switzerland,
-  // GB split — NESO 2024 Markets Roadmap reports ~11 TWh/yr of constraint
-  // actions, dominated by the Scotland-to-England boundary. 70/30 split
-  // reflects Scotland's disproportionate share of curtailed wind.
-  "gb-scotland": splitRegion(northSea, "gb-scotland", 0.70, "Scotland share of GB wind+solar curtailment (NESO constraint data)"),
-  "gb-england-wales": splitRegion(northSea, "gb-england-wales", 0.30, "England+Wales share of GB wind+solar"),
+  // North-Sea per-fuel split (2026-04-27): replaces the v0.6 modelled
+  // geographic split (gb-scotland 70% / gb-england-wales 30%, single-rate
+  // fan-out) with a per-fuel split (north-sea-solar + north-sea-wind).
+  // Reason: GB's solar curtailment record was carrying an overnight wind
+  // floor under the solar label. The loader now emits a Record keyed by
+  // north-sea-solar (UK central solar centroid) + north-sea-wind (Dogger
+  // Bank / North Sea offshore centroid), each with its own 6.9% rate and
+  // hard-set fuelShare so wind cannot leak under the solar series.
+  ...northSea,
   ...brazilNE,
   // Norway split (2026-04-24): 5 ENTSO-E bidding zones NO1-NO5. The
   // norway loader emits a Record keyed by norway-no1..norway-no5.
