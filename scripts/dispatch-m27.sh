@@ -223,9 +223,12 @@ dispatch_one() {
 
   # Dispatch. Capture stdout (jsonl) to log; mirror to console.
   # Use bash's built-in to enforce a wall-clock cap on the dispatch.
+  # CRITICAL: redirect stdin from /dev/null so opencode does not consume
+  # the run_queue while-loop's heredoc-string stdin (which would cause
+  # the loop to exit after a single iteration).
   local rc=0
   (
-    opencode run -m "$MODEL" --format json "$prompt" 2>&1
+    opencode run -m "$MODEL" --format json "$prompt" </dev/null 2>&1
   ) | tee "$log_jsonl" &
   local pid=$!
 
@@ -296,7 +299,10 @@ run_queue() {
   fi
 
   local first=1
-  while IFS= read -r id; do
+  # Use fd 3 for the task_ids stream so dispatch_one's stdin (fd 0)
+  # is independent — any sub-command that reads stdin (e.g. opencode run)
+  # cannot drain the queue.
+  while IFS= read -r -u 3 id; do
     [[ -z "$id" ]] && continue
     if [[ $first -eq 0 ]]; then
       log "sleeping ${spacing}s before next dispatch"
@@ -310,7 +316,7 @@ run_queue() {
       print_summary
       return "$rc"
     fi
-  done <<<"$task_ids"
+  done 3<<<"$task_ids"
 
   log "queue complete; all tasks done"
   print_summary
