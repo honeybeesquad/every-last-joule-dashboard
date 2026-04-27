@@ -238,7 +238,7 @@ const regionData = {
   "iso-ne-rest": splitRegion(isoNe, "iso-ne-rest", 0.07, "Remainder of ISO-NE wind+solar"),
   bpa,
   ...aemo,
-  belgium,
+  ...belgium,
   germany: entsoe.germany,
   iberia: entsoe.iberia,
   portugal: entsoe.portugal,

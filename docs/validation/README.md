@@ -15,7 +15,8 @@ Last generated: 2026-04-27
 | NT & Pilbara | static | solar | 0 | [nt-pilbara](./nt-pilbara.md) |
 | Western Australia (SWIS) | live | mixed | 0 | [wa-swis](./wa-swis.md) |
 | Austria | static | mixed | 0 | [austria](./austria.md) |
-| Belgium | live | mixed | 0 | [belgium](./belgium.md) |
+| Belgium (Solar) | live | solar | 0 | [belgium-solar](./belgium-solar.md) |
+| Belgium (Wind) | live | wind | 0 | [belgium-wind](./belgium-wind.md) |
 | Benin | static | solar | 0 | [benin](./benin.md) |
 | Burkina Faso | static | solar | 0 | [burkina-faso](./burkina-faso.md) |
 | Bangladesh | static | solar | 0 | [bangladesh](./bangladesh.md) |

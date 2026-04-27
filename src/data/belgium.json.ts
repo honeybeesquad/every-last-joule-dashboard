@@ -1,5 +1,5 @@
 import { pathToFileURL } from "node:url";
-import { parseDelimitedRows, hourlyAverage } from "../lib/csv.js";
+import { parseDelimitedRows } from "../lib/csv.js";
 import { fetchText } from "../lib/fetch.js";
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
@@ -7,7 +7,8 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
 const WIND_URL = "https://opendata.elia.be/api/explore/v2.1/catalog/datasets/ods086/exports/csv";
 const SOLAR_URL = "https://opendata.elia.be/api/explore/v2.1/catalog/datasets/ods087/exports/csv";
-const CURTAILMENT_RATE = 0.02;
+const SOLAR_RATE = 0.02; // Keep existing 2% blended rate for now
+const WIND_RATE = 0.02; // Keep existing 2% blended rate for now
 
 export function parseEliaCsv(csv: string): CurtailmentPoint[] {
   const rows = parseDelimitedRows(csv, ";");
@@ -21,55 +22,61 @@ export function parseEliaCsv(csv: string): CurtailmentPoint[] {
   }
   return Array.from(totals.entries())
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw: mw * CURTAILMENT_RATE }));
+    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
 }
 
-export function buildBelgiumData(
+/** Build a per-fuel RegionData record. fuelShare is hard-set to 100%/0% for the fuel. */
+export function buildPerFuelRegion(
+  regionId: "belgium-solar" | "belgium-wind",
   points: CurtailmentPoint[],
-  fuelShare?: { wind: number; solar: number },
+  rate: number,
+  sourceNote: string,
 ): RegionData {
-  const hourly = hourlyAverage(points);
+  const curtailedPoints = points.map((p) => ({ utcTimestamp: p.utcTimestamp, mw: p.mw * rate }));
+  const lastUpdated = curtailedPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
   return {
-    regionId: "belgium",
-    profile: timeOfDayAverageGW(hourly),
-    latestProfile: latestCompleteUtcDayProfileGW(hourly),
-    totalTWh: totalTWh30d(hourly),
-    peakGW: peakGW(hourly),
-    lastUpdated: hourly.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    lastSuccessAt: hourly.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote: fuelShare
-      ? `Elia wind+solar realtime CSV × 2% calibrated curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
-      : "Elia wind+solar realtime CSV × 2% calibrated curtailment rate (Belgium 2024)",
-    ...(fuelShare ? { fuelShare } : {}),
+    regionId,
+    profile: timeOfDayAverageGW(curtailedPoints),
+    latestProfile: latestCompleteUtcDayProfileGW(curtailedPoints),
+    totalTWh: totalTWh30d(curtailedPoints),
+    peakGW: peakGW(curtailedPoints),
+    lastUpdated,
+    lastSuccessAt: lastUpdated,
+    sourceNote,
+    fuelShare: regionId === "belgium-solar" ? { solar: 1, wind: 0 } : { solar: 0, wind: 1 },
   };
 }
 
-const run = async (): Promise<RegionData> => {
-  const now = new Date();
-  const cutoff = now.getTime() - 30 * 24 * 3600 * 1000;
-  const windPoints: CurtailmentPoint[] = [];
-  const solarPoints: CurtailmentPoint[] = [];
-  for (const [url, bucket] of [
-    [WIND_URL, windPoints] as const,
-    [SOLAR_URL, solarPoints] as const,
-  ]) {
-    const csv = await fetchText(url);
-    bucket.push(...parseEliaCsv(csv));
-  }
-  const windRecent = windPoints.filter((p) => new Date(p.utcTimestamp).getTime() >= cutoff);
-  const solarRecent = solarPoints.filter((p) => new Date(p.utcTimestamp).getTime() >= cutoff);
-  const combined = [...windRecent, ...solarRecent];
-  const windMw = windRecent.reduce((s, p) => s + p.mw, 0);
-  const solarMw = solarRecent.reduce((s, p) => s + p.mw, 0);
-  const denom = windMw + solarMw;
-  const fuelShare = denom > 0
-    ? { wind: windMw / denom, solar: solarMw / denom }
-    : undefined;
-  return buildBelgiumData(combined, fuelShare);
+export interface BelgiumOutput {
+  "belgium-solar": RegionData;
+  "belgium-wind": RegionData;
+}
+
+const run = async (): Promise<BelgiumOutput> => {
+  const windCsv = await fetchText(WIND_URL);
+  const solarCsv = await fetchText(SOLAR_URL);
+
+  const windPoints = parseEliaCsv(windCsv);
+  const solarPoints = parseEliaCsv(solarCsv);
+
+  return {
+    "belgium-solar": buildPerFuelRegion(
+      "belgium-solar",
+      solarPoints,
+      SOLAR_RATE,
+      "Elia solar realtime CSV × 2% calibrated curtailment (Belgium 2024)",
+    ),
+    "belgium-wind": buildPerFuelRegion(
+      "belgium-wind",
+      windPoints,
+      WIND_RATE,
+      "Elia wind realtime CSV × 2% calibrated curtailment (Belgium 2024)",
+    ),
+  };
 };
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  withFallback<RegionData>("belgium", run, {
+  withFallback<BelgiumOutput>("belgium", run, {
     regionTier: "live" as const,
     tagLive: (r) => ({ ...r, sourceStatus: "live" }),
     tagCached: (c) => ({ ...c, sourceStatus: "cached" }),

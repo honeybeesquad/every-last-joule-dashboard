@@ -21,10 +21,12 @@ describe("regions", () => {
     // Per-fuel split (2026-04-27): the single `caiso` regionId was replaced
     // by `caiso-solar` + `caiso-wind` to fix the overnight-floor bug where
     // wind generation was lit under a "solar curtailment" label after
-    // sun-down. Net +1. 170 + 1 = 171. Other blended loaders (denmark-west/
-    // east, north-sea, france, belgium, alberta) follow in subsequent
+    // sun-down. Net +1. 170 + 1 = 171.
+    // Belgium per-fuel split (2026-04-27): `belgium` replaced by
+    // `belgium-solar` + `belgium-wind`. Net +1. 171 + 1 = 172. Other blended
+    // loaders (denmark, north-sea, france, alberta) follow in subsequent
     // commits on this branch.
-    expect(REGIONS.length).toBe(171);
+    expect(REGIONS.length).toBe(172);
   });
 
   it("has 68 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -52,18 +54,18 @@ describe("regions", () => {
     // Per-fuel split (2026-04-27): caiso (single regionId) replaced by
     // caiso-solar + caiso-wind to fix the overnight-floor bug where wind
     // generation leaked under the solar label. Net +1 T1a live region.
-    // 68 + 1 = 69.
+    // 68 + 1 (CAISO) + 1 (Belgium) = 70.
     //   T1c live-neighbour-anchored: 1 (switzerland; Czech rate)
     //   T1b live-domestic-anchored:  4 (italy-sardinia, italy-north-zone,
     //                                   netherlands, baltics)
-    //   T1a live-tso (own-jurisdiction rate): 64 (the rest, incl. wa-swis,
-    //                                   japan, and the per-fuel CAISO split).
-    // Total live = 64 + 4 + 1 = 69.
+    //   T1a live-tso (own-jurisdiction rate): 65 (the rest, incl. wa-swis,
+    //                                   japan, and the per-fuel CAISO/Belgium split).
+    // Total live = 65 + 4 + 1 = 70.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(69);
+    expect(liveTotal).toBe(70);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(64);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(65);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -153,7 +155,10 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "italy-north-zone")).toBeDefined();
     expect(REGIONS.find(r => r.id === "italy-south")).toBeDefined();
     expect(REGIONS.find(r => r.id === "italy-sardinia")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "belgium")).toBeDefined();
+    // Per-fuel split (2026-04-27): `belgium` replaced by belgium-solar + belgium-wind.
+    expect(REGIONS.find(r => r.id === "belgium")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "belgium-solar")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "belgium-wind")).toBeDefined();
     // Denmark split in v0.6; see coverage-audit test block below.
     expect(REGIONS.find(r => r.id === "denmark")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();
