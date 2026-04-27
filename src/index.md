@@ -243,7 +243,9 @@ const regionData = {
   iberia: entsoe.iberia,
   portugal: entsoe.portugal,
   finland: entsoe.finland,
-  france,
+  // France split per-fuel (2026-04-27): single blended `france` replaced by
+  // `france-solar` + `france-wind`. The loader now emits a Record so we spread.
+  ...france,
   netherlands: entsoe.netherlands,
   // Denmark split per-fuel (2026-04-27): the v0 split into DK1 (Jutland/Fyn)
   // and DK2 (Zealand) is replaced by a single `denmark-solar` and

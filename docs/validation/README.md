@@ -72,7 +72,8 @@ Last generated: 2026-04-27
 | Baltic states | live-domestic-anchored | wind | 7 | [baltics](./baltics.md) |
 | Ethiopia | static | hydro | 0 | [ethiopia](./ethiopia.md) |
 | Finland | live | wind | 0 | [finland](./finland.md) |
-| France | live | mixed | 0 | [france](./france.md) |
+| France (Solar) | live | solar | 0 | [france-solar](./france-solar.md) |
+| France (Wind) | live | wind | 0 | [france-wind](./france-wind.md) |
 | Gabon | static | hydro | 0 | [gabon](./gabon.md) |
 | GB England+Wales | live | mixed | 0 | [gb-england-wales](./gb-england-wales.md) |
 | GB Scotland | live | wind | 0 | [gb-scotland](./gb-scotland.md) |

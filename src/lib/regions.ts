@@ -38,7 +38,12 @@ export const REGIONS: Region[] = [
   { id: "portugal",         name: "Portugal",        country: "PRT", lat: 39.5, lon:   -8.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "germany",          name: "Germany",         country: "DEU", lat: 52.5, lon:   10.5, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "finland",          name: "Finland",         country: "FIN", lat: 62.0, lon:   25.0, tier: "live", kind: "wind",  source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "france",           name: "France",          country: "FRA", lat: 46.5, lon:    2.5, tier: "live", kind: "mixed", source: "RTE eco2mix wind+solar", sourceUrl: "https://odre.opendatasoft.com/" },
+  // France split per-fuel (2026-04-27): replaces the single blended `france`
+  // (RTE eco2mix solaire + eolien_*) with a solar entry centred on the
+  // Languedoc/Occitanie cluster (near Montpellier) and a wind entry centred
+  // on Hauts-de-France (Picardy wind cluster).
+  { id: "france-solar",     name: "France (Solar)",  country: "FRA", lat: 43.6, lon:    3.8, tier: "live", kind: "solar", source: "RTE eco2mix solaire",   sourceUrl: "https://odre.opendatasoft.com/" },
+  { id: "france-wind",      name: "France (Wind)",   country: "FRA", lat: 50.1, lon:    1.7, tier: "live", kind: "wind",  source: "RTE eco2mix eolien",    sourceUrl: "https://odre.opendatasoft.com/" },
   // Netherlands rate is a TenneT BritNed/COBRA cross-border-loss share rather
   // than a directly-published curtailment-as-fraction-of-generation; counted
   // as T1b live-domestic-anchored per B4 Option B (locked 2026-04-25). See

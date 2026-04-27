@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-04-27 (per-fuel split for Denmark: the v0.6 geographic split {denmark-west, denmark-east} replaced by per-fuel split {denmark-solar, denmark-wind} — both old and new are 2 T1a-live entries, so T1a stays 65 and total stays 172. Earlier same day: belgium per-fuel split bumped T1a 64→65 and total 171→172. Other blended loaders — north-sea, france, alberta — are queued for the same split in subsequent commits on this branch).",
-  "T1a": 65,
+  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-04-27 (per-fuel split for France: single blended `france` replaced by `france-solar` (Languedoc) + `france-wind` (Picardy). T1a 65→66, total 172→173. Earlier same day: denmark per-fuel split was a 2→2 substitution (T1a/total unchanged); belgium per-fuel split bumped T1a 64→65 and total 171→172. Other blended loaders — north-sea, alberta — are queued for the same split in subsequent commits on this branch).",
+  "T1a": 66,
   "T1b": 4,
   "T1c": 1,
   "T2": 2,
   "T2-flare": 4,
   "T3": 96,
-  "total": 172
+  "total": 173
 }

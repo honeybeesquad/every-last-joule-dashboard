@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 172 canonical regions", () => {
+  it("has 173 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -24,15 +24,17 @@ describe("regions", () => {
     // sun-down. Net +1. 170 + 1 = 171.
     // Belgium per-fuel split (2026-04-27): `belgium` replaced by
     // `belgium-solar` + `belgium-wind`. Net +1. 171 + 1 = 172. Other blended
-    // loaders (north-sea, france, alberta) follow in subsequent commits on
+    // loaders (north-sea, alberta) follow in subsequent commits on
     // this branch.
     // Denmark per-fuel split (2026-04-27): the v0.6 geographic split
     // {denmark-west, denmark-east} is replaced by the per-fuel split
     // {denmark-solar, denmark-wind}. Net 0 (2→2 substitution). 172 stays.
-    expect(REGIONS.length).toBe(172);
+    // France per-fuel split (2026-04-27): single blended `france` replaced
+    // by `france-solar` + `france-wind`. Net +1. 172 + 1 = 173.
+    expect(REGIONS.length).toBe(173);
   });
 
-  it("has 68 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
+  it("has 71 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
     // v0.6: -5 aggregates + 10 splits = +5 live -> 49 + 5 = 54; Turkey live re-add -> 55.
     // europe-expansion: -1 n-norway + 5 Norway zones + 1 Switzerland = +5 → 60.
     // tier-routing fix (2026-04-25): brazil-mg/sp/mt/go/pr/rs reclassified
@@ -64,11 +66,13 @@ describe("regions", () => {
     //   T1a live-tso (own-jurisdiction rate): 65 (the rest, incl. wa-swis,
     //                                   japan, and the per-fuel CAISO/Belgium split).
     // Total live = 65 + 4 + 1 = 70.
+    // France per-fuel split (2026-04-27): single `france` replaced by
+    // `france-solar` + `france-wind`. Net +1 T1a live region. 70 + 1 = 71.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(70);
+    expect(liveTotal).toBe(71);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(65);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(66);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -169,6 +173,11 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "denmark-east")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "denmark-solar")).toBeDefined();
     expect(REGIONS.find(r => r.id === "denmark-wind")).toBeDefined();
+    // Per-fuel split (2026-04-27): single blended `france` replaced by
+    // france-solar (Languedoc) + france-wind (Picardy).
+    expect(REGIONS.find(r => r.id === "france")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "france-solar")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "france-wind")).toBeDefined();
     expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();
   });
 

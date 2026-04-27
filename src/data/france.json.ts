@@ -6,85 +6,101 @@ import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
 const BASE_URL = "https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-national-tr/exports/csv";
-const CURTAILMENT_RATE = 0.03;
+const SOLAR_RATE = 0.03;
+const WIND_RATE = 0.03;
 
 export interface FranceParsed {
-  points: CurtailmentPoint[];
-  windMwTotal: number;
-  solarMwTotal: number;
+  windPoints: CurtailmentPoint[];
+  solarPoints: CurtailmentPoint[];
 }
 
 export function parseRteEco2MixCsv(csv: string): FranceParsed {
   const rows = parseDelimitedRows(csv, ";");
-  const totals = new Map<string, number>();
-  let windMwTotal = 0;
-  let solarMwTotal = 0;
+  const windTotals = new Map<string, number>();
+  const solarTotals = new Map<string, number>();
   for (const row of rows) {
     const ts = row.date_heure;
     if (!ts) continue;
     const wind = Number(row.eolien_terrestre || 0) + Number(row.eolien_offshore || 0);
     const solar = Number(row.solaire || 0);
-    const mw = wind + solar;
-    if (!Number.isFinite(mw)) continue;
+    if (!Number.isFinite(wind) && !Number.isFinite(solar)) continue;
     const utcTimestamp = new Date(ts).toISOString();
-    const windCurt = Math.max(0, wind) * CURTAILMENT_RATE;
-    const solarCurt = Math.max(0, solar) * CURTAILMENT_RATE;
-    windMwTotal += windCurt;
-    solarMwTotal += solarCurt;
-    totals.set(utcTimestamp, (totals.get(utcTimestamp) ?? 0) + windCurt + solarCurt);
+    windTotals.set(utcTimestamp, (windTotals.get(utcTimestamp) ?? 0) + Math.max(0, wind));
+    solarTotals.set(utcTimestamp, (solarTotals.get(utcTimestamp) ?? 0) + Math.max(0, solar));
   }
-  const points = hourlyAverage(Array.from(totals.entries())
+  const windPoints = hourlyAverage(Array.from(windTotals.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw })));
-  return { points, windMwTotal, solarMwTotal };
+  const solarPoints = hourlyAverage(Array.from(solarTotals.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw })));
+  return { windPoints, solarPoints };
 }
 
-export function buildFranceData(parsed: FranceParsed): RegionData {
-  const { points, windMwTotal, solarMwTotal } = parsed;
-  const denom = windMwTotal + solarMwTotal;
-  const fuelShare = denom > 0
-    ? { wind: windMwTotal / denom, solar: solarMwTotal / denom }
-    : undefined;
+/** Build a per-fuel RegionData record. fuelShare is hard-set to 100%/0% for the fuel. */
+export function buildPerFuelRegion(
+  regionId: "france-solar" | "france-wind",
+  points: CurtailmentPoint[],
+  rate: number,
+  sourceNote: string,
+): RegionData {
+  const curtailedPoints = points.map((p) => ({ utcTimestamp: p.utcTimestamp, mw: p.mw * rate }));
+  const lastUpdated = curtailedPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
   return {
-    regionId: "france",
-    profile: timeOfDayAverageGW(points),
-    latestProfile: latestCompleteUtcDayProfileGW(points),
-    totalTWh: totalTWh30d(points),
-    peakGW: peakGW(points),
-    lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote: fuelShare
-      ? `RTE eco2mix wind+solar × 3% curtailment (observed split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
-      : "RTE eco2mix national wind+solar CSV × 3% calibrated curtailment rate (France 2024)",
-    ...(fuelShare ? { fuelShare } : {}),
+    regionId,
+    profile: timeOfDayAverageGW(curtailedPoints),
+    latestProfile: latestCompleteUtcDayProfileGW(curtailedPoints),
+    totalTWh: totalTWh30d(curtailedPoints),
+    peakGW: peakGW(curtailedPoints),
+    lastUpdated,
+    lastSuccessAt: lastUpdated,
+    sourceNote,
+    fuelShare: regionId === "france-solar" ? { solar: 1, wind: 0 } : { solar: 0, wind: 1 },
   };
+}
+
+export interface FranceOutput {
+  "france-solar": RegionData;
+  "france-wind": RegionData;
 }
 
 function monthKey(d: Date) {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
-const run = async (): Promise<RegionData> => {
+const run = async (): Promise<FranceOutput> => {
   const now = new Date();
   const prev = new Date(now);
   prev.setUTCMonth(prev.getUTCMonth() - 1);
-  const allPoints: CurtailmentPoint[] = [];
-  let windMwTotal = 0;
-  let solarMwTotal = 0;
+  const allWind: CurtailmentPoint[] = [];
+  const allSolar: CurtailmentPoint[] = [];
   for (const month of [monthKey(prev), monthKey(now)]) {
     const url = `${BASE_URL}?refine=date_heure:${month}`;
     const parsed = parseRteEco2MixCsv(await fetchText(url));
-    allPoints.push(...parsed.points);
-    windMwTotal += parsed.windMwTotal;
-    solarMwTotal += parsed.solarMwTotal;
+    allWind.push(...parsed.windPoints);
+    allSolar.push(...parsed.solarPoints);
   }
   const cutoff = now.getTime() - 30 * 24 * 3600 * 1000;
-  const recent = allPoints.filter((p) => new Date(p.utcTimestamp).getTime() >= cutoff);
-  return buildFranceData({ points: recent, windMwTotal, solarMwTotal });
+  const recentWind = allWind.filter((p) => new Date(p.utcTimestamp).getTime() >= cutoff);
+  const recentSolar = allSolar.filter((p) => new Date(p.utcTimestamp).getTime() >= cutoff);
+  return {
+    "france-solar": buildPerFuelRegion(
+      "france-solar",
+      recentSolar,
+      SOLAR_RATE,
+      "RTE eco2mix solar (solaire) CSV × 3% calibrated curtailment (France 2024)",
+    ),
+    "france-wind": buildPerFuelRegion(
+      "france-wind",
+      recentWind,
+      WIND_RATE,
+      "RTE eco2mix wind (eolien_terrestre + eolien_offshore) CSV × 3% calibrated curtailment (France 2024)",
+    ),
+  };
 };
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  withFallback<RegionData>("france", run, {
+  withFallback<FranceOutput>("france", run, {
     regionTier: "live" as const,
     tagLive: (r) => ({ ...r, sourceStatus: "live" }),
     tagCached: (c) => ({ ...c, sourceStatus: "cached" }),
