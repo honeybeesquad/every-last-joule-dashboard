@@ -2,10 +2,12 @@ import { describe, it, expect } from "vitest";
 import { buildStaticRegion, buildAllStatics } from "../../src/data/statics.json";
 
 describe("static regions", () => {
-  it("produces 13 regions (8 prior + 5 v0.6 Codex audit additions)", () => {
+  it("produces 29 regions (13 prior + 16 Phase-2.7 Pattern-D Latin-America)", () => {
     // v0.6 global-coverage-audit added: hawaii-oahu/maui/island, austria, russia-murmansk-wind.
+    // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27): +16 T3-static
+    // rows for Caribbean + Central American + small South American grids.
     const data = buildAllStatics();
-    expect(Object.keys(data).length).toBe(13);
+    expect(Object.keys(data).length).toBe(29);
   });
 
   it("includes all expected ids", () => {
@@ -24,6 +26,23 @@ describe("static regions", () => {
       "hawaii-island",
       "austria",
       "russia-murmansk-wind",
+      // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27).
+      "guatemala",
+      "el-salvador",
+      "nicaragua",
+      "costa-rica",
+      "panama",
+      "guatemala-siepac",
+      "cuba",
+      "dominican-republic",
+      "jamaica",
+      "trinidad-tobago",
+      "barbados",
+      "bolivia",
+      "ecuador",
+      "guyana",
+      "suriname",
+      "french-guiana",
     ];
     for (const id of expected) expect(data[id]).toBeDefined();
   });

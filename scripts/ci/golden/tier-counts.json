@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-04-26 (Phase-2.6 J brief — japan promoted static→live via Kyushu Electric area-demand CSV; stacks on top of WA-SWIS: T1a 62→63, T3 55→54).",
+  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-04-27 (Phase-2.7 Pattern-D Latin-America bulk-add — 16 new T3-static rows: T3 54→70, total 128→144).",
   "T1a": 63,
   "T1b": 4,
   "T1c": 1,
   "T2": 2,
   "T2-flare": 4,
-  "T3": 54,
-  "total": 128
+  "T3": 70,
+  "total": 144
 }

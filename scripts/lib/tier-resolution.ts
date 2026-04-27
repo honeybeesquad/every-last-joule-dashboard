@@ -126,6 +126,42 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   // wind by capacity, hence the "solar" profileKind fallback.
   "wa-swis": "solar",
   yunnan: "hydro-seasonal",
+  // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27).
+  // Sixteen new T3-modelled statics from
+  // `data/coverage-audit/2026-04-26-latin-america.csv`. profileKind values
+  // mirror the StaticSpec.kind values declared in `src/data/statics.json.ts`
+  // for the same ids. All sixteen route to T3-modelled per
+  // `applyUncertainty` (`solar`, `wind`, `mixed`, `hydro-seasonal` profile
+  // kinds all map to T3 via deriveTier in src/lib/uncertainty.ts).
+  guatemala: "solar",
+  "el-salvador": "solar",
+  nicaragua: "solar",
+  // Costa Rica is hydro-dominated per IRENA 2024 but the StaticSpec emits
+  // a flat 24/7 profile (no seasonal-shares table for CR); routed via
+  // profileKind "mixed" to retain the ±40% T3 envelope honestly.
+  "costa-rica": "mixed",
+  panama: "solar",
+  "guatemala-siepac": "solar",
+  // Cuba's anchor reflects post-Hurricane-Ian grid stress (mixed-fuel
+  // composite); flat profile, T3 envelope.
+  cuba: "mixed",
+  "dominican-republic": "solar",
+  jamaica: "solar",
+  // Trinidad & Tobago's anchor is GGFR offshore flare lifted onto the
+  // T&TEC grid for coverage continuity. Flat 24/7 profile via the
+  // "mixed" profile kind so the ±40% T3 envelope correctly reflects
+  // the modelling uncertainty (rather than the ±20% T2-flare envelope
+  // we use for the directly-observed Permian / W-Siberia / S-Iraq /
+  // E-Saudi flare bboxes).
+  "trinidad-tobago": "mixed",
+  barbados: "solar",
+  bolivia: "solar",
+  ecuador: "mixed",
+  // Guyana / Suriname offshore flare anchors lifted onto the country
+  // grid for coverage; same modelling-flat treatment as Trinidad.
+  guyana: "mixed",
+  suriname: "mixed",
+  "french-guiana": "solar",
 };
 
 /**
