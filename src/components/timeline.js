@@ -1,5 +1,5 @@
 import { regionGWAtHour } from "../lib/calc.js";
-import { FUEL_ORDER, FUEL_COLOR, fuelShare } from "../lib/fuel.js";
+import { FUEL_ORDER, fuelShare, getFuelColor } from "../lib/fuel.js";
 
 const PAD = 14;
 const SAMPLES_PER_HOUR = 4; // 96 samples across 24h for smooth area curves
@@ -83,7 +83,7 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
 
     for (let f = 0; f < FUEL_ORDER.length; f += 1) {
       const fuel = FUEL_ORDER[f];
-      const colorHex = FUEL_COLOR[fuel];
+      const colorHex = getFuelColor(fuel);
       const grad = ctx.createLinearGradient(0, PAD, 0, baseY);
       grad.addColorStop(0, colorHex + "aa"); // ~67% alpha at top
       grad.addColorStop(1, colorHex + "22"); // ~13% at bottom
@@ -111,7 +111,7 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     }
 
     // Crisp stroke on the total top line for definition.
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--hairline-strong").trim() || "rgba(255,255,255,0.16)";
     ctx.lineWidth = 1;
     ctx.beginPath();
     for (let i = 0; i < n; i += 1) {
@@ -139,13 +139,13 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     const totalNow = bucketNow[0] + bucketNow[1] + bucketNow[2] + bucketNow[3];
     const cx = xAt(hourNow, plotW);
     const cy = yForGW(totalNow);
-    ctx.strokeStyle = "#f7931a";
+    ctx.strokeStyle = getFuelColor("flare");
     ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.moveTo(cx, PAD);
     ctx.lineTo(cx, h - PAD);
     ctx.stroke();
-    ctx.fillStyle = "#f7931a";
+    ctx.fillStyle = getFuelColor("flare");
     ctx.beginPath();
     ctx.arc(cx, cy, 4.5, 0, Math.PI * 2);
     ctx.fill();
@@ -184,10 +184,16 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
   clock.subscribe(() => render());
   render();
 
+  function onThemeChange() { render(); }
+  window.addEventListener("themechange", onThemeChange);
+
   return {
     update(next = {}) {
       if (next.mode) mode = next.mode;
       render();
+    },
+    destroy() {
+      window.removeEventListener("themechange", onThemeChange);
     },
   };
 }

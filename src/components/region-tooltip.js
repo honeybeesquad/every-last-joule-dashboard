@@ -1,7 +1,5 @@
 import { regionGWAtHour } from "../lib/calc.js";
-import { FUEL_COLOR, FUEL_LABEL, dominantFuel } from "../lib/fuel.js";
-
-const FLARE_COLOR = "#f7931a";
+import { getFuelColor, FUEL_LABEL, dominantFuel } from "../lib/fuel.js";
 
 /**
  * Floating detail card anchored to a globe click. Shows region identity,
@@ -31,8 +29,8 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
   }
 
   function colorFor(region) {
-    if (region.kind === "flare") return FLARE_COLOR;
-    return FUEL_COLOR[dominantFuel(region, regionData[region.id])];
+    if (region.kind === "flare") return getFuelColor("flare");
+    return getFuelColor(dominantFuel(region, regionData[region.id]));
   }
 
   function fuelLabel(region) {
@@ -92,7 +90,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     const t = hourNow - Math.floor(hourNow);
     const interpGW = (profile[interpIdx] ?? 0) * (1 - t) + (profile[(interpIdx + 1) % 24] ?? 0) * t;
     const cy = pad + plotH - (interpGW / maxG) * plotH;
-    ctx.fillStyle = "#f7931a";
+    ctx.fillStyle = getFuelColor("flare");
     ctx.beginPath();
     ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
     ctx.fill();
@@ -222,6 +220,11 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     if (canvas && canvas.contains(e.target)) return;
     hide();
   }, true);
+
+  function onThemeChange() {
+    if (!el.hidden) updateLive();   // re-paints the sparkline with new fuel colour
+  }
+  window.addEventListener("themechange", onThemeChange);
 
   return { show, hide, element: el };
 }
