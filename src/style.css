@@ -21,152 +21,217 @@
 @font-face { font-family: "Gotham"; src: url("/fonts/Gotham-Ultra.ttf") format("truetype");        font-weight: 900; font-style: normal; font-display: swap; }
 @font-face { font-family: "Gotham"; src: url("/fonts/Gotham-UltraItalic.ttf") format("truetype");  font-weight: 900; font-style: italic; font-display: swap; }
 
+/* ============ SHARED TOKENS (theme-invariant) ============ */
 :root {
-  /* ============ BRAND COLORS ============ */
-  /* Teal — primary. Sampled from the logo: rgb(20,175,172). */
-  --teal-900: #093c3b;
-  --teal-800: #0b5250;
-  --teal-700: #0e7370;
-  --teal-600: #12918e;
-  --teal-500: #14afac;   /* ← primary brand teal */
-  --teal-400: #3fc1be;
-  --teal-300: #6fd2d0;
-  --teal-200: #a6e3e2;
-  --teal-100: #d3f1f0;
-  --teal-50:  #ecf9f9;
+  /* Spacing */
+  --space-0: 0;  --space-1: 4px;  --space-2: 8px;  --space-3: 12px;
+  --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-8: 32px;
+  --space-10: 40px; --space-12: 48px; --space-16: 64px; --space-20: 80px;
+  --space-24: 96px; --space-32: 128px;
 
-  /* Slate — "black". Sampled from reverse logo: rgb(22,23,24). Slightly warm, near-pure. */
-  --slate-900: #0b0c0d;
-  --slate-800: #161718;   /* ← primary brand slate */
-  --slate-700: #23252a;
-  --slate-600: #343740;
-  --slate-500: #4a4e59;
-  --slate-400: #6b7180;
-  --slate-300: #9aa0ad;
-  --slate-200: #c5c9d2;
-  --slate-100: #e4e6eb;
-  --slate-50:  #f3f4f6;
+  /* Radii */
+  --r-none: 0; --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-xl: 20px; --r-pill: 999px;
 
-  /* Pure white — often used as reverse fg on slate. */
-  --white: #ffffff;
+  /* Shadows (alpha kept low; tinting per-theme would require ramps) */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.18);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.22);
+  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.30);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.40);
 
-  /* ============ SEMANTIC TOKENS ============ */
-  --brand:              var(--teal-500);
-  --brand-hover:        var(--teal-600);
-  --brand-pressed:      var(--teal-700);
-  --brand-subtle:       var(--teal-100);
-  --brand-subtlest:     var(--teal-50);
-  --brand-on:           var(--slate-800);   /* text on teal — slate, not white */
-
-  --ink:                var(--slate-800);   /* primary fg on light */
-  --ink-muted:          var(--slate-500);
-  --ink-soft:           var(--slate-400);
-
-  --surface:            var(--white);
-  --surface-raised:     var(--white);
-  --surface-sunken:     var(--slate-50);
-  --surface-inverse:    var(--slate-800);   /* dark bg */
-  --surface-inverse-alt:var(--slate-900);
-
-  --fg-on-dark:         var(--white);
-  --fg-on-dark-muted:   var(--slate-300);
-
-  --border:             var(--slate-100);
-  --border-strong:      var(--slate-200);
-  --border-inverse:     var(--slate-700);
-
-  /* States */
-  --success: #2fa37a;
-  --warning: #e0a82e;
-  --danger:  #d64545;
-  --info:    var(--teal-500);
-
-  /* Bitcoin accent — reserved, for price/BTC-specific contexts only.
-     Do NOT use as a general accent. */
-  --btc-orange: #f7931a;
-
-  /* ============ TYPOGRAPHY ============ */
-  --font-sans: "Gotham", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-
-  /* Weights (Gotham). Defaults favor Book (400) for body, Bold (700) for emphasis. */
-  --fw-thin: 100;
-  --fw-xlight: 200;
-  --fw-light: 300;
-  --fw-book: 400;
-  --fw-medium: 500;
-  --fw-bold: 700;
-  --fw-black: 800;
-  --fw-ultra: 900;
-
-  /* Type scale — geometric, optimized for the Gotham wordmark aesthetic.
-     Display steps are tight-tracked; body is set normal. */
-  --fs-display-xl: clamp(56px, 8vw, 112px);
-  --fs-display-lg: clamp(44px, 6vw, 80px);
-  --fs-display:    clamp(36px, 4.5vw, 60px);
-  --fs-h1:         44px;
-  --fs-h2:         32px;
-  --fs-h3:         24px;
-  --fs-h4:         20px;
-  --fs-body-lg:    18px;
-  --fs-body:       16px;
-  --fs-body-sm:    14px;
-  --fs-caption:    12px;
-  --fs-micro:      11px;
-
-  --lh-tight: 1.02;
-  --lh-display: 1.05;
-  --lh-heading: 1.15;
-  --lh-body: 1.55;
-  --lh-ui: 1.3;
-
-  --ls-tight: -0.02em;
-  --ls-display: -0.015em;
-  --ls-normal: 0;
-  --ls-caps: 0.12em;   /* ALL-CAPS eyebrows — signature */
-
-  /* ============ SPACING ============ */
-  --space-0: 0;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-  --space-20: 80px;
-  --space-24: 96px;
-  --space-32: 128px;
-
-  /* ============ RADII ============ */
-  --r-none: 0;
-  --r-sm: 4px;
-  --r-md: 8px;
-  --r-lg: 12px;
-  --r-xl: 20px;
-  --r-pill: 999px;
-
-  /* ============ SHADOWS ============ */
-  --shadow-xs: 0 1px 2px rgba(11, 12, 13, 0.04);
-  --shadow-sm: 0 2px 6px rgba(11, 12, 13, 0.06);
-  --shadow-md: 0 8px 20px rgba(11, 12, 13, 0.08);
-  --shadow-lg: 0 20px 40px rgba(11, 12, 13, 0.10);
-  --shadow-teal: 0 10px 30px rgba(20, 175, 172, 0.25);
-  --shadow-focus: 0 0 0 3px rgba(20, 175, 172, 0.35);
-
-  /* ============ MOTION ============ */
-  --dur-fast: 120ms;
-  --dur-base: 200ms;
-  --dur-slow: 320ms;
+  /* Motion */
+  --dur-fast: 120ms; --dur-base: 200ms; --dur-slow: 320ms;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* ============ LAYOUT ============ */
+  /* Layout */
   --container-max: 1200px;
   --container-wide: 1400px;
+
+  /* Type scale (theme-invariant; family + weight vary by theme) */
+  --fs-display-xl: clamp(56px, 8vw, 112px);
+  --fs-display-lg: clamp(44px, 6vw, 80px);
+  --fs-display:    clamp(36px, 4.5vw, 60px);
+  --fs-h1: 44px; --fs-h2: 32px; --fs-h3: 24px; --fs-h4: 20px;
+  --fs-body-lg: 18px; --fs-body: 16px; --fs-body-sm: 14px;
+  --fs-caption: 12px; --fs-micro: 11px;
+
+  --lh-tight: 1.02; --lh-display: 1.05; --lh-heading: 1.15;
+  --lh-body: 1.55; --lh-ui: 1.3;
+
+  --ls-tight: -0.02em; --ls-display: -0.015em;
+  --ls-normal: 0; --ls-caps: 0.12em;
+
+  /* Legacy weight scale (still referenced by Gotham fallback rules; safe to keep) */
+  --fw-thin: 100; --fw-xlight: 200; --fw-light: 300; --fw-book: 400;
+  --fw-medium: 500; --fw-bold: 700; --fw-black: 800; --fw-ultra: 900;
+
+  /* Pure white — used for high-contrast text on dark surfaces (every theme) */
+  --white: #ffffff;
+}
+
+/* ============ THEME: SUNFIRE (default) ============ */
+:root[data-theme="sunfire"] {
+  --brand:               #ffd05a;
+  --brand-strong:        #e6a020;
+  --brand-subtle:        rgba(255, 208, 90, 0.10);
+  --brand-on:            #150e08;
+
+  --surface-bg-1:        #2d1f0e;
+  --surface-bg-2:        #1a1207;
+  --surface-bg-3:        #0a0703;
+  --surface-raised:      #1f160a;
+  --hairline:            rgba(255, 248, 224, 0.08);
+  --hairline-strong:     rgba(255, 248, 224, 0.16);
+
+  --ink:                 #fff8e0;
+  --ink-muted:           rgba(255, 248, 224, 0.65);
+  --ink-soft:            rgba(255, 248, 224, 0.40);
+
+  --data-renewable:      #67e8f9;
+  --data-renewable-tip:  #cffafe;
+  --data-flare:          #f7931a;
+  --data-flare-tip:      #ffc46d;
+
+  --fuel-solar:          #ffd05a;
+  --fuel-wind:           #67e8f9;
+  --fuel-hydro:          #b8cdff;
+
+  --globe-dot-day:       #fff8e0;
+  --globe-dot-night:     #c9a662;
+  --globe-border:        rgba(255, 208, 90, 0.35);
+  --day-gradient-1:      rgba(255, 208, 90, 0.55);
+  --day-gradient-2:      rgba(230, 160, 32, 0.25);
+  --day-gradient-3:      rgba(0, 0, 0, 0);
+  --night-overlay:       rgba(20, 14, 5, 0.42);
+
+  --success:             #5eead4;
+  --warning:             #ffb84d;
+  --danger:              #f87171;
+  --info:                var(--data-renewable);
+
+  --font-display:        "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body:           "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-sans:           var(--font-body); /* legacy alias for existing rules */
+  --display-weight-strong: 800;
+  --display-weight-base:   600;
+
+  /* Page-loader chrome (always visible during boot, before app paint) */
+  --loader-bg-1:         #2d1f0e;
+  --loader-bg-2:         #1a1207;
+  --loader-bg-3:         #0a0703;
+  --loader-sweep:        var(--brand);
+  --loader-sweep-trail:  rgba(255, 208, 90, 0.6);
+}
+
+/* ============ THEME: VELLUM (parchment + ink) ============ */
+:root[data-theme="vellum"] {
+  --brand:               #ece4d2;
+  --brand-strong:        #b3a684;
+  --brand-subtle:        rgba(236, 228, 210, 0.10);
+  --brand-on:            #1a1814;
+
+  --surface-bg-1:        #221f1a;
+  --surface-bg-2:        #15130f;
+  --surface-bg-3:        #0c0b09;
+  --surface-raised:      #1c1a16;
+  --hairline:            rgba(236, 228, 210, 0.08);
+  --hairline-strong:     rgba(236, 228, 210, 0.18);
+
+  --ink:                 #ece4d2;
+  --ink-muted:           rgba(236, 228, 210, 0.65);
+  --ink-soft:            rgba(236, 228, 210, 0.40);
+
+  --data-renewable:      #4f8cff;
+  --data-renewable-tip:  #b8cdff;
+  --data-flare:          #f7931a;
+  --data-flare-tip:      #ffc46d;
+
+  --fuel-solar:          #ece4d2;
+  --fuel-wind:           #4f8cff;
+  --fuel-hydro:          #6b9bff;
+
+  --globe-dot-day:       #f8f1dc;
+  --globe-dot-night:     #a89a76;
+  --globe-border:        rgba(236, 228, 210, 0.30);
+  --day-gradient-1:      rgba(236, 228, 210, 0.40);
+  --day-gradient-2:      rgba(179, 166, 132, 0.20);
+  --day-gradient-3:      rgba(0, 0, 0, 0);
+  --night-overlay:       rgba(20, 18, 14, 0.40);
+
+  --success:             #4f8cff;
+  --warning:             #ffb84d;
+  --danger:              #d64545;
+  --info:                var(--data-renewable);
+
+  --font-display:        "Spectral", Georgia, "Times New Roman", serif;
+  --font-body:           "Spectral", Georgia, "Times New Roman", serif;
+  --font-mono:           "IBM Plex Mono", ui-monospace, monospace;
+  --font-sans:           var(--font-body);
+  --display-weight-strong: 700;
+  --display-weight-base:   500;
+
+  --loader-bg-1:         #221f1a;
+  --loader-bg-2:         #15130f;
+  --loader-bg-3:         #0c0b09;
+  --loader-sweep:        var(--brand);
+  --loader-sweep-trail:  rgba(236, 228, 210, 0.4);
+}
+
+/* ============ THEME: ECLIPSE (B&W magazine + magenta) ============ */
+:root[data-theme="eclipse"] {
+  --brand:               #fafafa;
+  --brand-strong:        #d4d4d4;
+  --brand-subtle:        rgba(250, 250, 250, 0.08);
+  --brand-on:            #050505;
+
+  --surface-bg-1:        #0d0d0d;
+  --surface-bg-2:        #050505;
+  --surface-bg-3:        #020202;
+  --surface-raised:      #111111;
+  --hairline:            rgba(250, 250, 250, 0.08);
+  --hairline-strong:     rgba(250, 250, 250, 0.18);
+
+  --ink:                 #fafafa;
+  --ink-muted:           rgba(250, 250, 250, 0.65);
+  --ink-soft:            rgba(250, 250, 250, 0.38);
+
+  --data-renewable:      #ec4899;
+  --data-renewable-tip:  #fbcfe8;
+  --data-flare:          #f7931a;
+  --data-flare-tip:      #ffc46d;
+
+  --fuel-solar:          #fafafa;
+  --fuel-wind:           #ec4899;
+  --fuel-hydro:          #f0abfc;
+
+  --globe-dot-day:       #ffffff;
+  --globe-dot-night:     #888888;
+  --globe-border:        rgba(250, 250, 250, 0.30);
+  --day-gradient-1:      rgba(250, 250, 250, 0.40);
+  --day-gradient-2:      rgba(212, 212, 212, 0.18);
+  --day-gradient-3:      rgba(0, 0, 0, 0);
+  /* Eclipse uses a gradient string for the night overlay; globe.js detects
+     the leading "linear-gradient(" prefix and rebuilds via createLinearGradient. */
+  --night-overlay:       linear-gradient(135deg, rgba(40, 30, 20, 0.30) 0%, rgba(15, 10, 5, 0.55) 100%);
+
+  --success:             #ec4899;
+  --warning:             #ffb84d;
+  --danger:              #ff6b6b;
+  --info:                var(--data-renewable);
+
+  --font-display:        "Frank Ruhl Libre", Georgia, "Times New Roman", serif;
+  --font-body:           "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono:           "IBM Plex Mono", ui-monospace, monospace;
+  --font-sans:           var(--font-body);
+  --display-weight-strong: 900;
+  --display-weight-base:   700;
+
+  --loader-bg-1:         #0d0d0d;
+  --loader-bg-2:         #050505;
+  --loader-bg-3:         #020202;
+  --loader-sweep:        var(--brand);
+  --loader-sweep-trail:  rgba(250, 250, 250, 0.4);
 }
 
 /* ============ SEMANTIC ELEMENT STYLES ============ */
