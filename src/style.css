@@ -835,17 +835,17 @@ main table {
 .region-tooltip-footer a:hover { text-decoration: underline; }
 
 .region-tooltip-freshness-live {
-  color: #3fc1be;
+  color: var(--success);
   font-size: 10.5px;
   white-space: nowrap;
 }
 .region-tooltip-freshness-cached {
-  color: #f5c542;
+  color: var(--warning);
   font-size: 10.5px;
   white-space: nowrap;
 }
 .region-tooltip-freshness-degraded {
-  color: #ff7a59;
+  color: var(--danger);
   font-size: 10.5px;
   white-space: nowrap;
 }
