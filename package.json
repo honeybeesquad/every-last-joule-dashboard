@@ -35,6 +35,12 @@
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
+    "@fontsource/frank-ruhl-libre": "^5.2.8",
+    "@fontsource/fraunces": "^5.2.9",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/ibm-plex-sans": "^5.2.8",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/spectral": "^5.2.8",
     "@types/d3": "^7.4.3",
     "@types/node": "^20.14.0",
     "@types/react": "^18.3.3",
