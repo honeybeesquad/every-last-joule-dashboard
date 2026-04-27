@@ -2,7 +2,7 @@ import { readdirSync } from "node:fs";
 import { join } from "node:path";
 
 const fontFiles = readdirSync(join("src", "fonts"))
-  .filter((file) => file.endsWith(".ttf"))
+  .filter((file) => file.endsWith(".ttf") || file.endsWith(".woff2"))
   .map((file) => `/fonts/${file}`);
 
 // Social-share card. The description is the one-line story the card tells
