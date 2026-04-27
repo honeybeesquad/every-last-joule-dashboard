@@ -169,6 +169,7 @@
   --day-gradient-2:      rgba(230, 160, 32, 0.25);
   --day-gradient-3:      rgba(0, 0, 0, 0);
   --night-overlay:       rgba(20, 14, 5, 0.42);
+  --pillar-base-alpha:   99;   /* hex pair appended to fuel hex; 0x99 ≈ 60% */
 
   /* state */
   --success:             #5eead4;
@@ -209,7 +210,7 @@
 
   --fuel-solar:          #ece4d2;
   --fuel-wind:           #4f8cff;
-  --fuel-hydro:          #6b9bff;
+  --fuel-hydro:          #5ab0a0;
 
   --globe-dot-day:       #f8f1dc;
   --globe-dot-night:     #a89a76;
@@ -218,6 +219,7 @@
   --day-gradient-2:      rgba(179, 166, 132, 0.20);
   --day-gradient-3:      rgba(0, 0, 0, 0);
   --night-overlay:       rgba(20, 18, 14, 0.40);
+  --pillar-base-alpha:   ee;   /* parchment day-side needs bolder pillars; ~93% */
 
   --success:             #4f8cff;
   --warning:             #ffb84d;
@@ -265,6 +267,7 @@
   --day-gradient-2:      rgba(212, 212, 212, 0.18);
   --day-gradient-3:      rgba(0, 0, 0, 0);
   --night-overlay:       linear-gradient(135deg, rgba(40, 30, 20, 0.30) 0%, rgba(15, 10, 5, 0.55) 100%);
+  --pillar-base-alpha:   99;   /* B&W magazine; 0x99 ≈ 60% */
 
   --success:             #ec4899;
   --warning:             #ffb84d;

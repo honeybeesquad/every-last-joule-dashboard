@@ -266,10 +266,11 @@ export async function mountGlobe(canvas, initial) {
         const pillarGradient = ctx.createLinearGradient(point[0], point[1], tipX, tipY);
         // Base of pillar (at the hotspot) used to be 0x66 = 40% alpha, which
         // made the lower half of every spike fade out — pillars read as too
-        // dim across all three themes. Bump to 0x99 = 60% so the spike has a
-        // visible body, and pin the per-pillar globalAlpha to a flat 1.0 so
-        // tips render at full token brightness (was 0.95).
-        pillarGradient.addColorStop(0, `${color}99`);
+        // dim across all three themes. Bump to a theme-scoped --pillar-base-alpha
+        // (sunfire/eclipse 0x99 ≈ 60%, vellum 0xee ≈ 93%) so each theme tunes its
+        // own pillar boldness against its own day-side gradient. globalAlpha is
+        // pinned to 1.0 so tips render at full token brightness.
+        pillarGradient.addColorStop(0, `${color}${tokens.pillarBaseAlpha}`);
         pillarGradient.addColorStop(1, color);
         ctx.strokeStyle = pillarGradient;
         ctx.lineWidth = pillarW;

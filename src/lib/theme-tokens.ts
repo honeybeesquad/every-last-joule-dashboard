@@ -18,6 +18,18 @@ export function parseHexToRGB(hex: string): string | null {
   return `${r},${g},${b}`;
 }
 
+/**
+ * Sanitise the --pillar-base-alpha token to a 2-char lowercase hex pair.
+ * Accepts "aa", "0xAA", or "AA" — anything else falls back to the supplied
+ * default so a typo never paints garbage onto the canvas via string concat.
+ */
+export function sanitisePillarAlpha(raw: unknown, fallback: string = "99"): string {
+  if (typeof raw !== "string") return fallback;
+  const cleaned = raw.trim().toLowerCase().replace(/^0x/, "");
+  if (/^[0-9a-f]{2}$/.test(cleaned)) return cleaned;
+  return fallback;
+}
+
 /** Tokens needed by `globe.js`. Strings as they appear in CSS — caller
  *  decides whether to use directly (rgba), parse (hex), or treat as a
  *  linear-gradient sentinel (Eclipse `--night-overlay`). */
@@ -38,6 +50,10 @@ export interface GlobeTokens {
   nightOverlay: string;
   /** Hex for the sphere base fill (--surface-bg-2 is a sensible source). */
   spherebaseHex: string;
+  /** 2-char hex pair appended to fuel hex for the pillar-gradient base
+   *  stop. Theme-scoped so Vellum's parchment day-side can use a bolder
+   *  base than Sunfire/Eclipse. */
+  pillarBaseAlpha: string;
 }
 
 /** Read all globe-relevant tokens off the document element in one pass. */
@@ -53,6 +69,7 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
     dayGradient3: get("--day-gradient-3")   || "rgba(0,0,0,0)",
     nightOverlay: get("--night-overlay")    || "rgba(20,14,5,0.42)",
     spherebaseHex: get("--surface-bg-2")    || "#1a1207",
+    pillarBaseAlpha: sanitisePillarAlpha(get("--pillar-base-alpha"), "99"),
   };
 }
 
