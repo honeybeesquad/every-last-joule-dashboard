@@ -1,0 +1,88 @@
+{
+  "queue_version": 1,
+  "plan_file": "docs/superpowers/plans/2026-04-27-theme-system.md",
+  "playbook_file": "docs/superpowers/plans/2026-04-27-theme-system-dispatch.md",
+  "branch": "feat/theme-system-spec",
+  "tasks": [
+    {
+      "id": "0.2",
+      "title": "Install jsdom devDep",
+      "scope_extra": "Mechanical npm install + 5-line probe test. The probe test must use the // @vitest-environment jsdom directive."
+    },
+    {
+      "id": "1.1",
+      "title": "Three :root[data-theme] blocks",
+      "scope_extra": "Replace the existing :root { ... } block in src/style.css with the three themed blocks. Do NOT add anything to style.css beyond what Task 1.1 specifies — the chrome-rule rewrites are Task 1.2's job, not 1.1. After the three blocks, the rest of style.css must remain byte-identical to its pre-task state. After edits run: grep -c '\\[data-theme=' src/style.css → expect 3."
+    },
+    {
+      "id": "1.2",
+      "title": "Chrome rule sweep",
+      "scope_extra": "Use the mapping table in Task 1.2 Step 2 as the authoritative list. After your edits run: grep -nE 'rgba\\(20.\\s*175.\\s*172' src/style.css and paste the output. Expected: 0 matches. Do NOT change CSS that already uses var(--token)."
+    },
+    {
+      "id": "2.1",
+      "title": "Source 15 woff2 fonts",
+      "scope_extra": "Use @fontsource packages exactly as Task 2.1 specifies; do NOT curl from google fonts CDN. After copying run: ls -la src/fonts/*.woff2 | wc -l → paste output. Expected: 15. Keep @fontsource packages as devDependencies."
+    },
+    {
+      "id": "2.2",
+      "title": "@font-face declarations + dynamicPaths",
+      "scope_extra": "The dynamicPaths edit in observablehq.config.ts must be a minimal surgical change: ADD .woff2 to the existing filter; do not refactor surrounding code. After edits paste: grep -n 'woff2' observablehq.config.ts and grep -c '@font-face' src/style.css. Expected: at least one woff2 reference in config; exactly 15 @font-face declarations in style.css."
+    },
+    {
+      "id": "3.1",
+      "title": "theme-tokens.js helper TDD",
+      "scope_extra": "TDD ORDER ENFORCED: write tests/lib/theme-tokens.test.ts FIRST, run vitest, paste FAIL output, THEN implement src/lib/theme-tokens.js. Do not skip the FAIL run. Final test run must show all 8 tests green. Helper exports exactly: parseColorToRgb, isGradientOverlay, readGlobeTokens (function names must match for downstream consumers)."
+    },
+    {
+      "id": "3.2",
+      "title": "globe.js token-reading + night-side legibility fix",
+      "scope_extra": "HIGH-CARE TASK. 8 specific paint sites change. Do not change any others. The night-overlay branch handles BOTH solid colours AND linear-gradient strings — gradient branch reconstructs via ctx.createLinearGradient. Read Task 3.2 Step 4 carefully. After implementation run: grep -nE 'rgba\\(20.\\s*175.\\s*172|#0a1114' src/globe.js and grep -n 'readGlobeTokens' src/globe.js. Expected: 0 matches for the first; readGlobeTokens referenced at import + cache + refresh sites."
+    },
+    {
+      "id": "4.1",
+      "title": "Head config inline boot script",
+      "scope_extra": "The boot script string is given verbatim in Task 4.1. Use it byte-for-byte. Insert into the head: field of observablehq.config.ts so the order is: <meta viewport> + ${socialMeta} + <script>...</script> + <link rel=stylesheet>. Paste the relevant lines after edit."
+    },
+    {
+      "id": "4.2",
+      "title": "ThemeToggle component TDD",
+      "scope_extra": "TDD ORDER ENFORCED: write tests/components/theme-toggle.test.ts FIRST. File MUST start with // @vitest-environment jsdom directive. Run vitest, paste FAIL output (8 tests should fail). Implement src/components/theme-toggle.js. Export mountThemeToggle(host, opts). Final run: 8/8 green. Component dispatches window-level CustomEvent named 'themechange' with detail: { theme: <new theme> }. localStorage key is exactly 'elj-theme'."
+    },
+    {
+      "id": "4.3",
+      "title": "Mount toggle in app-header",
+      "scope_extra": "src/index.md edit only. Do NOT modify the toggle component. Insert import at the top alongside other imports. Insert mount call IMMEDIATELY BEFORE the mountControls(...) call."
+    },
+    {
+      "id": "5.1",
+      "title": "fuel.ts → getFuelColor() TDD",
+      "scope_extra": "TDD ORDER ENFORCED. Write tests/lib/fuel.test.ts first (// @vitest-environment jsdom). Tests must cover: SSR fallback, browser path with mocked CSS vars, fallback when CSS var is missing, all three fuel types. Function name exactly getFuelColor. DELETE the old FUEL_COLOR const. Consumers break in this commit but Task 5.2 fixes them — that is intentional."
+    },
+    {
+      "id": "5.2",
+      "title": "Update FUEL_COLOR consumers",
+      "scope_extra": "4 files: src/globe.js, src/components/region-tooltip.js, src/components/timeline.js, src/index.md. Each: replace FUEL_COLOR[fuel] with getFuelColor(fuel). Update import. After all edits run: grep -rn 'FUEL_COLOR' src/. Expected: 0 matches. npm test must be green."
+    },
+    {
+      "id": "6.1",
+      "title": "Region-tooltip JS hardcodes",
+      "scope_extra": "3 hardcoded JS-side colour literals in src/components/region-tooltip.js become token reads. Add window-level themechange listener that re-reads tokens and re-renders the open tooltip if any. Cleanup on tooltip dismiss. After edit run: grep -nE '#[0-9a-fA-F]{6}|rgba\\(' src/components/region-tooltip.js. Only string literals that aren't colours (e.g. URLs) are acceptable matches."
+    },
+    {
+      "id": "6.2",
+      "title": "Region-tooltip CSS freshness colours",
+      "scope_extra": "src/style.css edit only. Replace freshness colours with var(--success/warning/danger). After edit run: grep -nE 'fresh|stale' src/style.css; every colour reference should be a var(--token)."
+    },
+    {
+      "id": "6.3",
+      "title": "Timeline canvas paint sweep",
+      "scope_extra": "src/components/timeline.js edit only. 4 hardcoded paints become readToken() reads per Task 6.3 pattern. INCLUDE the rationale comment specified in Phase 7.1 Step 6 (the comment about why timeline reads aren't cached) NOW; cleaner than backfilling. After edit run: grep -E 'rgba\\(255' src/components/timeline.js. Expected: 0 matches."
+    },
+    {
+      "id": "6.4",
+      "title": "Final hardcoded-colour sweep",
+      "scope_extra": "Run: grep -rnE 'rgba\\(20[,\\s]+175[,\\s]+172|#14afac|#f7931a' src/. For each match outside files already touched, decide if it should be tokenized or is an intentional non-theme literal (e.g. data-point colour in a JSON loader — leave alone). Document decisions in your final report (one line per file). Commit message: feat(theme): final hardcoded-colour sweep."
+    }
+  ]
+}

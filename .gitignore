@@ -14,3 +14,7 @@ __pycache__/
 
 # Superpowers brainstorming workspace
 .superpowers/
+
+# M2.7 dispatcher runtime artifacts
+scripts/.dispatch-state.json
+logs/dispatch-runs/
