@@ -10,27 +10,29 @@ import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
 /**
- * CAISO (California) solar curtailment loader - v0 proxy.
+ * CAISO (California) per-fuel curtailment loader.
  *
- * Source: EIA Hourly Electric Grid Monitor, CISO respondent, SUN fueltype.
- * CAISO's own OASIS API has obsolete curtailment-report query names in 2026;
- * EIA publishes the same underlying data with a stable schema.
+ * Source: EIA Hourly Electric Grid Monitor, CISO respondent, SUN + WND
+ * fueltypes (separately). Falls back to CAISO OASIS SLD_REN_CURTAIL when
+ * the direct curtailment endpoint is reachable; that path also splits by
+ * RENEWABLE_TYPE so solar and wind never share a time-series.
  *
- * Curtailment derivation: EIA does not directly publish curtailment for
- * CAISO.  We apply a calibrated proxy rate of 4.25% to hourly solar
- * generation.  The rate is CAISO's 2024 curtailment ratio (3.4 TWh
- * curtailed / 80 TWh generated) per Ascend Analytics, CAISO daily reports,
- * and `research/energy_arithmetic.md`.
+ * Why per-fuel: the v0 loader merged solar+wind generation into a single
+ * `caiso` regionId × 4.25% rate, producing a non-zero overnight floor
+ * (wind blows at night, so wind-curtailment was lit even after sun-down).
+ * The dashboard's visual story is "pillars rise as the sun crosses overhead";
+ * conflating solar and wind under one regionId obscures that. We now emit
+ * `caiso-solar` (Imperial Valley centroid) and `caiso-wind` (Tehachapi
+ * centroid) as two separate RegionData records.
  *
- * The 30-day time-of-day average inherits the real solar diurnal shape -
- * midday-heavy - which matches CAISO's actual duck-curve curtailment
- * pattern.
+ * Calibration rates (per CAISO daily reports + Ascend Analytics 2024
+ * curtailment summary, cross-referenced in research/energy_arithmetic.md):
+ *   solar — 4.25%   (~3.4 TWh curtailed of ~80 TWh generated, 2024)
+ *   wind  — 4.20%   (~0.5 TWh curtailed of ~12 TWh generated, 2024)
  */
 
-// CAISO 2024 curtailment: ~3.4 TWh solar out of ~80 TWh solar generated (~4.25%).
-// Wind curtailment ~0.5 TWh out of ~12 TWh wind generated (~4.2%). Rates close;
-// keep as 4.25% blended.
-const CURTAILMENT_RATE = 0.0425;
+const SOLAR_RATE = 0.0425;
+const WIND_RATE = 0.0420;
 const API_BASE = "https://api.eia.gov/v2/electricity/rto/fuel-type-data/data/";
 const OASIS_BASE = "https://oasis.caiso.com/oasisapi/SingleZip";
 
@@ -46,50 +48,58 @@ interface EIAResponse {
   };
 }
 
-/** Merge parallel fueltype EIA responses (solar + wind) into a single
- *  per-hour curtailment series. Each gets the same calibrated rate. */
-function mergeEiaResponses(
-  solar: EIAResponse,
-  wind?: EIAResponse,
-): { points: CurtailmentPoint[]; solarMw: number; windMw: number } {
-  const map = new Map<string, number>();
-  let solarMw = 0;
-  let windMw = 0;
-  const rows: Array<{ period: string; value: string; fuel: "solar" | "wind" }> = [
-    ...solar.response.data.map((r) => ({ period: r.period, value: r.value, fuel: "solar" as const })),
-    ...(wind?.response?.data ?? []).map((r) => ({ period: r.period, value: r.value, fuel: "wind" as const })),
-  ];
-  for (const r of rows) {
-    const ts = `${r.period}:00:00Z`;
-    const mw = Math.max(0, Number(r.value) * CURTAILMENT_RATE);
-    map.set(ts, (map.get(ts) ?? 0) + mw);
-    if (r.fuel === "solar") solarMw += mw;
-    else windMw += mw;
-  }
-  const points = Array.from(map.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
-  return { points, solarMw, windMw };
+export interface CaisoOutput {
+  "caiso-solar": RegionData;
+  "caiso-wind": RegionData;
 }
 
-export function parseCaiso(solarRaw: EIAResponse, windRaw?: EIAResponse): RegionData {
-  const { points, solarMw, windMw } = mergeEiaResponses(solarRaw, windRaw);
-  const denom = solarMw + windMw;
-  const fuelShare = denom > 0
-    ? { solar: solarMw / denom, wind: windMw / denom }
-    : { solar: 1, wind: 0 };
-  const lastPeriod = points.at(-1)?.utcTimestamp ?? new Date().toISOString();
+/** Build per-hour curtailment points from a single-fuel EIA response. */
+function buildEiaPoints(raw: EIAResponse, rate: number): CurtailmentPoint[] {
+  const map = new Map<string, number>();
+  for (const r of raw.response.data) {
+    const ts = `${r.period}:00:00Z`;
+    const mw = Math.max(0, Number(r.value) * rate);
+    map.set(ts, (map.get(ts) ?? 0) + mw);
+  }
+  return Array.from(map.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
+}
 
+/** Build a per-fuel RegionData record. fuelShare is hard-set to 100%/0% for the fuel. */
+function buildPerFuelRegion(
+  regionId: "caiso-solar" | "caiso-wind",
+  points: CurtailmentPoint[],
+  sourceNote: string,
+): RegionData {
+  const lastUpdated = points.at(-1)?.utcTimestamp ?? new Date().toISOString();
   return {
-    regionId: "caiso",
+    regionId,
     profile: timeOfDayAverageGW(points),
     latestProfile: latestCompleteUtcDayProfileGW(points),
     totalTWh: totalTWh30d(points),
     peakGW: peakGW(points),
-    lastUpdated: lastPeriod,
-    lastSuccessAt: lastPeriod,
-    sourceNote: `EIA hourly solar+wind × 4.25% calibrated curtailment (observed 30d split: solar ${(fuelShare.solar * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
-    fuelShare,
+    lastUpdated,
+    lastSuccessAt: lastUpdated,
+    sourceNote,
+    fuelShare: regionId === "caiso-solar" ? { solar: 1, wind: 0 } : { solar: 0, wind: 1 },
+  };
+}
+
+export function parseCaiso(solarRaw: EIAResponse, windRaw: EIAResponse): CaisoOutput {
+  const solarPoints = buildEiaPoints(solarRaw, SOLAR_RATE);
+  const windPoints = buildEiaPoints(windRaw, WIND_RATE);
+  return {
+    "caiso-solar": buildPerFuelRegion(
+      "caiso-solar",
+      solarPoints,
+      "EIA hourly CAISO solar × 4.25% calibrated curtailment (CAISO 2024 ratio: 3.4 TWh / 80 TWh)",
+    ),
+    "caiso-wind": buildPerFuelRegion(
+      "caiso-wind",
+      windPoints,
+      "EIA hourly CAISO wind × 4.20% calibrated curtailment (CAISO 2024 ratio: 0.5 TWh / 12 TWh)",
+    ),
   };
 }
 
@@ -104,16 +114,18 @@ function unzipText(zipBytes: Uint8Array): string {
   }
 }
 
-export function parseCaisoOasisCurtailmentCsv(csv: string): RegionData {
+export function parseCaisoOasisCurtailmentCsv(csv: string): CaisoOutput {
   if (/INVALID_REQUEST/i.test(csv)) throw new Error("CAISO OASIS returned INVALID_REQUEST");
   const rows = parseDelimitedRows(csv, ",");
-  const totals = new Map<string, number>();
-  let solarMw = 0;
-  let windMw = 0;
+  const solarTotals = new Map<string, number>();
+  const windTotals = new Map<string, number>();
 
   for (const row of rows) {
     const fuel = String(row.RENEWABLE_TYPE || row.FUEL_TYPE || row.FUEL_CATEGORY || "").toUpperCase();
-    if (fuel && !/(SOLAR|WIND)/.test(fuel)) continue;
+    const isSolar = fuel.includes("SOLAR");
+    const isWind = fuel.includes("WIND");
+    if (!isSolar && !isWind) continue;
+
     const rawTs = row.INTERVALSTARTTIME_GMT || row.INTERVAL_START_GMT || row.OPR_DT || row.DATA_ITEM;
     const interval = row.INTERVAL_NUM ? Number(row.INTERVAL_NUM) : 1;
     const ts = rawTs && /^\d{4}-\d{2}-\d{2}/.test(rawTs)
@@ -134,37 +146,36 @@ export function parseCaisoOasisCurtailmentCsv(csv: string): RegionData {
     );
     if (!Number.isFinite(value) || value <= 0) continue;
     const utcTimestamp = ts.toISOString();
-    totals.set(utcTimestamp, (totals.get(utcTimestamp) ?? 0) + value);
-    if (fuel.includes("SOLAR")) solarMw += value;
-    else if (fuel.includes("WIND")) windMw += value;
+    const target = isSolar ? solarTotals : windTotals;
+    target.set(utcTimestamp, (target.get(utcTimestamp) ?? 0) + value);
   }
 
-  const points = Array.from(totals.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
-  if (!points.length) throw new Error("CAISO OASIS curtailment CSV had no wind/solar rows");
+  const toPoints = (m: Map<string, number>): CurtailmentPoint[] =>
+    Array.from(m.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
 
-  const denom = solarMw + windMw;
-  const fuelShare = denom > 0
-    ? { solar: solarMw / denom, wind: windMw / denom }
-    : undefined;
+  const solarPoints = toPoints(solarTotals);
+  const windPoints = toPoints(windTotals);
+  if (!solarPoints.length && !windPoints.length) {
+    throw new Error("CAISO OASIS curtailment CSV had no wind/solar rows");
+  }
 
   return {
-    regionId: "caiso",
-    profile: timeOfDayAverageGW(points),
-    latestProfile: latestCompleteUtcDayProfileGW(points),
-    totalTWh: totalTWh30d(points),
-    peakGW: peakGW(points),
-    lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote: fuelShare
-      ? `CAISO OASIS SLD_REN_CURTAIL direct (observed 30d split: solar ${(fuelShare.solar * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}%)`
-      : "CAISO OASIS SLD_REN_CURTAIL direct wind+solar curtailment",
-    ...(fuelShare ? { fuelShare } : {}),
+    "caiso-solar": buildPerFuelRegion(
+      "caiso-solar",
+      solarPoints,
+      "CAISO OASIS SLD_REN_CURTAIL direct solar curtailment",
+    ),
+    "caiso-wind": buildPerFuelRegion(
+      "caiso-wind",
+      windPoints,
+      "CAISO OASIS SLD_REN_CURTAIL direct wind curtailment",
+    ),
   };
 }
 
-async function fetchCaisoOasisDirect(): Promise<RegionData> {
+async function fetchCaisoOasisDirect(): Promise<CaisoOutput> {
   const end = new Date();
   end.setUTCHours(0, 0, 0, 0);
   const start = new Date(end.getTime() - 30 * 24 * 3600 * 1000);
@@ -181,7 +192,7 @@ async function fetchCaisoOasisDirect(): Promise<RegionData> {
   return parseCaisoOasisCurtailmentCsv(unzipText(new Uint8Array(await res.arrayBuffer())));
 }
 
-const run = async (): Promise<RegionData> => {
+const run = async (): Promise<CaisoOutput> => {
   try {
     return await fetchCaisoOasisDirect();
   } catch (err) {
@@ -212,12 +223,14 @@ const run = async (): Promise<RegionData> => {
     });
     return `${API_BASE}?${params.toString()}`;
   };
+
+  // Per-fuel split: both fetches required. If either fails, withFallback
+  // returns the cached snapshot (which contains both keys). We deliberately
+  // do NOT degrade to solar-only here — the previous v0 behaviour of
+  // continuing solar-only obscured the absence of wind curtailment data.
   const [solar, wind] = await Promise.all([
     fetchJSON<EIAResponse>(makeUrl("SUN")),
-    fetchJSON<EIAResponse>(makeUrl("WND")).catch((err) => {
-      console.warn(`CAISO WND fetch failed, continuing solar-only: ${(err as Error).message}`);
-      return undefined;
-    }),
+    fetchJSON<EIAResponse>(makeUrl("WND")),
   ]);
   return parseCaiso(solar, wind);
 };
@@ -225,10 +238,8 @@ const run = async (): Promise<RegionData> => {
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback<RegionData>("caiso", run, {
+  withFallback<CaisoOutput>("caiso", run, {
     regionTier: "live" as const,
-    tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
-    tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
   })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {

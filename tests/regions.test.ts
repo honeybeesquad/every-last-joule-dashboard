@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 170 canonical regions", () => {
+  it("has 171 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -18,7 +18,13 @@ describe("regions", () => {
     // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27): +26 T3-static rows
     // sourced from `data/coverage-audit/2026-04-26-africa.csv` introduce-as-T3
     // subset (32 rows, 6 sub-0.05 TWh skipped). 144 + 26 = 170.
-    expect(REGIONS.length).toBe(170);
+    // Per-fuel split (2026-04-27): the single `caiso` regionId was replaced
+    // by `caiso-solar` + `caiso-wind` to fix the overnight-floor bug where
+    // wind generation was lit under a "solar curtailment" label after
+    // sun-down. Net +1. 170 + 1 = 171. Other blended loaders (denmark-west/
+    // east, north-sea, france, belgium, alberta) follow in subsequent
+    // commits on this branch.
+    expect(REGIONS.length).toBe(171);
   });
 
   it("has 68 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -43,16 +49,21 @@ describe("regions", () => {
     // Kyushu Electric area-demand CSV 5-min solar feed × 10% calibrated
     // curtailment rate (own-jurisdiction Kyushu 2024 anchor ~1.7 TWh/yr).
     // 67 + 1 = 68.
+    // Per-fuel split (2026-04-27): caiso (single regionId) replaced by
+    // caiso-solar + caiso-wind to fix the overnight-floor bug where wind
+    // generation leaked under the solar label. Net +1 T1a live region.
+    // 68 + 1 = 69.
     //   T1c live-neighbour-anchored: 1 (switzerland; Czech rate)
     //   T1b live-domestic-anchored:  4 (italy-sardinia, italy-north-zone,
     //                                   netherlands, baltics)
-    //   T1a live-tso (own-jurisdiction rate): 63 (the rest, incl. wa-swis & japan).
-    // Total live = 63 + 4 + 1 = 68.
+    //   T1a live-tso (own-jurisdiction rate): 64 (the rest, incl. wa-swis,
+    //                                   japan, and the per-fuel CAISO split).
+    // Total live = 64 + 4 + 1 = 69.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(68);
+    expect(liveTotal).toBe(69);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(63);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(64);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });

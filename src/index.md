@@ -220,7 +220,10 @@ const regionData = {
         "ercot-east": { ...ercotNative["ercot-native-east"], regionId: "ercot-east" }
       }
     : ercot),
-  caiso,
+  // CAISO split per-fuel (2026-04-27) — caiso-solar + caiso-wind. See
+  // src/data/caiso.json.ts for rationale. Loader emits a Record so we
+  // spread it into regionData.
+  ...caiso,
   miso,
   pjm,
   spp,

@@ -2,7 +2,14 @@ import type { Region } from "./types";
 
 export const REGIONS: Region[] = [
   // Tier 1 - live sub-hourly
-  { id: "caiso",            name: "California",      country: "USA", lat: 36.5, lon: -119.5, tier: "live", kind: "mixed", source: "CAISO OASIS / EIA (solar+wind)", sourceUrl: "https://oasis.caiso.com/oasisapi" },
+  // CAISO split per-fuel (2026-04-27): the v0 single-regionId loader
+  // merged solar+wind generation under one × 4.25% rate, leaving an
+  // overnight floor (wind blowing at California night) under a "solar"
+  // label. caiso-solar centroid = Imperial Valley (largest CAISO solar
+  // cluster); caiso-wind centroid = Tehachapi Pass (largest CAISO wind
+  // cluster). Calibrated separately: solar 4.25%, wind 4.20% (CAISO 2024).
+  { id: "caiso-solar",      name: "California (Solar)", country: "USA", lat: 33.0, lon: -115.5, tier: "live", kind: "solar", source: "CAISO OASIS / EIA (solar only)", sourceUrl: "https://oasis.caiso.com/oasisapi" },
+  { id: "caiso-wind",       name: "California (Wind)",  country: "USA", lat: 35.0, lon: -118.3, tier: "live", kind: "wind",  source: "CAISO OASIS / EIA (wind only)",  sourceUrl: "https://oasis.caiso.com/oasisapi" },
   { id: "ercot-west",       name: "ERCOT West",      country: "USA", lat: 33.5, lon: -102.0, tier: "live", kind: "mixed", source: "EIA / ERCOT (wind+solar)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
   { id: "ercot-east",       name: "ERCOT East",      country: "USA", lat: 31.8, lon:  -99.9, tier: "live", kind: "mixed", source: "EIA / ERCOT (wind+solar)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
   { id: "miso",             name: "MISO (Midwest)",  country: "USA", lat: 41.5, lon:  -93.0, tier: "live", kind: "mixed", source: "EIA MISO wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
