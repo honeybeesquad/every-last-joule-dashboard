@@ -2,6 +2,7 @@ import * as d3 from "npm:d3";
 import * as topojson from "npm:topojson-client";
 import { regionGWAtHour } from "./lib/calc.js";
 import { getFuelColor, dominantFuel } from "./lib/fuel.js";
+import { readGlobeTokens, isLinearGradientToken } from "./lib/theme-tokens.js";
 
 // Locally-vendored world atlas: previously fetched from unpkg.com, which
 // added a third-party DNS + TLS handshake (~200–400ms on cellular) to
@@ -56,6 +57,16 @@ export async function mountGlobe(canvas, initial) {
     rotation: [-10, -15, 0],
     dragging: false
   };
+
+  let tokens = readGlobeTokens(document.documentElement);
+
+  function refreshTokens() {
+    tokens = readGlobeTokens(document.documentElement);
+    // Force a redraw so the next paint uses the new colours immediately.
+    render();
+  }
+
+  window.addEventListener("themechange", refreshTokens);
 
   /**
    * Hit-test: given client coords, return the closest rendered hotspot region
@@ -134,7 +145,7 @@ export async function mountGlobe(canvas, initial) {
 
     ctx.beginPath();
     path({ type: "Sphere" });
-    ctx.fillStyle = "#0a1114";
+    ctx.fillStyle = tokens.spherebaseHex;
     ctx.fill();
 
     if (sunScreen) {
@@ -146,9 +157,9 @@ export async function mountGlobe(canvas, initial) {
         sunScreen[1],
         size * 0.55
       );
-      gradient.addColorStop(0, "rgba(90, 150, 160, 0.75)");
-      gradient.addColorStop(0.45, "rgba(40, 80, 90, 0.35)");
-      gradient.addColorStop(1, "rgba(0,0,0,0)");
+      gradient.addColorStop(0,    tokens.dayGradient1);
+      gradient.addColorStop(0.45, tokens.dayGradient2);
+      gradient.addColorStop(1,    tokens.dayGradient3);
       ctx.fillStyle = gradient;
       ctx.beginPath();
       path({ type: "Sphere" });
@@ -157,7 +168,27 @@ export async function mountGlobe(canvas, initial) {
 
     ctx.beginPath();
     path(d3.geoCircle().center([antiSolarLng, -sunLat]).radius(90)());
-    ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
+    if (isLinearGradientToken(tokens.nightOverlay)) {
+      // Eclipse uses a CSS linear-gradient(135deg, …) which canvas
+      // can't consume as a fillStyle string; reproduce it as a canvas
+      // gradient spanning the bounding box of the screen.
+      // NB: stops here must mirror --night-overlay in :root[data-theme="eclipse"]
+      // (in src/style.css). If you change one, change both.
+      const w = canvas.width / dpr;
+      const h = canvas.height / dpr;
+      const cosA = Math.cos((135 * Math.PI) / 180);
+      const sinA = Math.sin((135 * Math.PI) / 180);
+      const x0 = w / 2 - (w * cosA) / 2;
+      const y0 = h / 2 - (h * sinA) / 2;
+      const x1 = w / 2 + (w * cosA) / 2;
+      const y1 = h / 2 + (h * sinA) / 2;
+      const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+      grad.addColorStop(0, "rgba(40,30,20,0.30)");
+      grad.addColorStop(1, "rgba(15,10,5,0.55)");
+      ctx.fillStyle = grad;
+    } else {
+      ctx.fillStyle = tokens.nightOverlay;
+    }
     ctx.fill();
 
     for (const [lon, lat] of dots) {
@@ -168,8 +199,9 @@ export async function mountGlobe(canvas, initial) {
       const fade = 1 - dist / (Math.PI / 2);
       const solarAngle = d3.geoDistance([lon, lat], [sunLng, sunLat]);
       const sunlit = Math.max(0, Math.cos(solarAngle));
-      const brightness = 0.05 + fade * 0.12 + Math.pow(sunlit, 0.7) * 0.85;
-      ctx.fillStyle = `rgba(20, 175, 172, ${brightness})`;
+      const brightness = 0.30 + fade * 0.10 + Math.pow(sunlit, 0.7) * 0.60;
+      const dotRGB = sunlit > 0.3 ? tokens.dotDayRGB : tokens.dotNightRGB;
+      ctx.fillStyle = `rgba(${dotRGB}, ${brightness})`;
       ctx.fillRect(point[0] - 0.6, point[1] - 0.6, 1.4, 1.4);
     }
 
@@ -178,13 +210,13 @@ export async function mountGlobe(canvas, initial) {
       type: "GeometryCollection",
       geometries: countries.features.map((feature) => feature.geometry)
     });
-    ctx.strokeStyle = "rgba(20, 175, 172, 0.22)";
+    ctx.strokeStyle = tokens.border;
     ctx.lineWidth = 0.4;
     ctx.stroke();
 
     ctx.beginPath();
     path({ type: "Sphere" });
-    ctx.strokeStyle = "rgba(20, 175, 172, 0.25)";
+    ctx.strokeStyle = tokens.border;
     ctx.lineWidth = 0.8;
     ctx.stroke();
 
@@ -391,6 +423,7 @@ export async function mountGlobe(canvas, initial) {
     },
     destroy() {
       stopLoop();
+      window.removeEventListener("themechange", refreshTokens);
       document.removeEventListener("visibilitychange", onVisibility);
       resizeObserver.disconnect();
     }
