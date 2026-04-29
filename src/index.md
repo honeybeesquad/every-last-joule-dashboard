@@ -35,7 +35,7 @@ const [
   ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
   japan, vietnam, thailand, indiaNorth, cyprus, ethiopia, kazakhstan,
   honduras, jeju, kenya, egypt, morocco, namibia, waSwis, ntPilbara,
-  indonesia, malaysia, southKorea, russiaMainland, taiwan, jordan,
+  indonesia, malaysia, philippines, southKorea, russiaMainland, taiwan, jordan,
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
   yunnan, tibet, indiaSouth, indiaWest, indiaEast, pakistan, iran,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
@@ -90,6 +90,7 @@ const [
   FileAttachment("data/nt-pilbara.json").json(),
   FileAttachment("data/indonesia.json").json(),
   FileAttachment("data/malaysia.json").json(),
+  FileAttachment("data/philippines.json").json(),
   FileAttachment("data/south-korea.json").json(),
   FileAttachment("data/russia-mainland.json").json(),
   FileAttachment("data/taiwan.json").json(),
@@ -331,7 +332,8 @@ const regionData = {
   quebec,
   manitoba,
   saskatchewan,
-  ...statics
+  ...statics,
+  philippines
 };
 
 // S2 uncertainty: defensive fallback. Every loader is now responsible for
