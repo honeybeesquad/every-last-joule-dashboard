@@ -61,6 +61,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "india-south": "mixed",
   "india-west": "mixed",
   indonesia: "solar",
+  florida: "solar",
   "inner-mongolia": "wind",
   iran: "solar",
   "iraq-mainland": "solar",
@@ -85,6 +86,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   kazakhstan: "wind",
   kenya: "overnight",
   kurdistan: "solar",
+  malaysia: "solar",
   manitoba: "mixed",
   mexico: "solar",
   mongolia: "wind",
@@ -126,6 +128,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   // Cuba's anchor reflects post-Hurricane-Ian grid stress (mixed-fuel
   // composite); flat profile, T3 envelope.
   cuba: "mixed",
+  "dominican-republic": "solar",
   jamaica: "solar",
   // Trinidad & Tobago's anchor is GGFR offshore flare lifted onto the
   // T&TEC grid for coverage continuity. Flat 24/7 profile via the

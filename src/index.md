@@ -29,10 +29,10 @@ const HOTSPOT_LIST_LIMIT = 50;
 // network latency before first paint. HTTP/2 multiplexes these easily;
 // on a typical connection this drops to ~300–600ms for the lot.
 const [
-  cbeci, ercot, ercotNative, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
+  cbeci, ercot, ercotNative, caiso, florida, miso, pjm, spp, nyiso, isoNe, bpa,
   entsoe, aemo, belgium, france, denmark, newZealand, norway, atacama,
   chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
-  ireland, peru, southAfrica, argentina, dominicanRepublic, paraguay, mexico,
+  ireland, peru, southAfrica, argentina, uruguay, dominicanRepublic, paraguay, mexico,
   japan, vietnam, thailand, indiaNorth, cyprus, ethiopia, kazakhstan,
   honduras, jeju, kenya, egypt, morocco, namibia, waSwis, ntPilbara,
   indonesia, malaysia, southKorea, russiaMainland, taiwan, jordan,
@@ -45,6 +45,7 @@ const [
   FileAttachment("data/ercot.json").json(),
   FileAttachment("data/ercot-native.json").json(),
   FileAttachment("data/caiso.json").json(),
+  FileAttachment("data/florida.json").json(),
   FileAttachment("data/miso.json").json(),
   FileAttachment("data/pjm.json").json(),
   FileAttachment("data/spp.json").json(),
@@ -222,6 +223,7 @@ const regionData = {
       }
     : ercot),
   caiso,
+  florida,
   miso,
   pjm,
   spp,
@@ -286,6 +288,7 @@ const regionData = {
   "chile-wind": chileWind,
   argentina,
   uruguay,
+  "dominican-republic": dominicanRepublic,
   paraguay,
   mexico,
   japan,

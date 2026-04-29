@@ -2,6 +2,7 @@ import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalSolarRegion, buildTypicalWindRegion } from "../lib/typical-profiles.js";
+import { applyUncertainty } from "../lib/uncertainty.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "jordan";
@@ -11,14 +12,18 @@ function buildMixed(sourceNote: string): RegionData {
   const wind = buildTypicalWindRegion(REGION_ID, 21, 0.25, sourceNote, "2024");
   const solar = buildTypicalSolarRegion(REGION_ID, 10, 0.1, sourceNote, "2024");
   const profile = wind.profile.map((value, i) => value + solar.profile[i]);
-  return {
+  const base = {
     ...wind,
     profile,
     totalTWh: wind.totalTWh + solar.totalTWh,
     peakGW: Math.max(...profile),
+    confidenceTier: undefined,
+    uncertaintyLowGW: undefined,
+    uncertaintyHighGW: undefined,
     fuelShare: { wind: 0.7, solar: 0.3 },
     sourceNote: `${sourceNote} fuelShare: wind 70% / solar 30% from 17% wind-curtailment headline plus Ma'an solar estimate.`,
   };
+  return applyUncertainty(base, { regionTier: "static", profileKind: "mixed" });
 }
 
 async function run({ probe = true } = {}): Promise<RegionData> {

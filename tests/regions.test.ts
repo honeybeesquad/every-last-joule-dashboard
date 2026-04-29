@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 198 canonical regions", () => {
+  it("has 200 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -41,10 +41,10 @@ describe("regions", () => {
     // Philippines IEMOP RTD live feed: replaces single T3 static with two
     // T1a live children (philippines-solar, philippines-wind). Net +1.
     // 197 + 1 = 198 → 199 (static -1 but live +2 = net +1).
-    expect(REGIONS.length).toBe(199);
+    expect(REGIONS.length).toBe(200);
   });
 
-  it("has 97 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
+  it("has 99 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
     // ... (unchanged through phase-2.6) ...
     // PR #19 peru split (2026-04-29): peru → peru-hydro + peru-solar + peru-wind.
     // With the parent removed, this is net +2 live. 63 + 2 = 65.
@@ -74,18 +74,14 @@ describe("regions", () => {
     // Philippines IEMOP RTD live feed: replaces single T3 static with
     // two T1a live children (philippines-solar, philippines-wind). Net +2 live.
     // Total live = 92 + 4 + 1 = 99.
-    // Dominican Republic OC live feed: promotes from T3 static to T1b live-domestic-anchored.
-    // Static -1. 95 - 1 = 94.
-    // Malaysia GSO live solar actuals: promotes from T3 static to T1b
-    // live-domestic-anchored. Net +1 live. 99 + 1 = 100.
-    // Taiwan TAIPOWER genary.json live feed: promotes from T3 static to T1b
-    // live-domestic-anchored. Net +1 live. 100 + 1 = 101.
+    // Malaysia, Taiwan, and Dominican Republic remain T3-static: their public
+    // endpoints do not expose 30-day measured curtailment feeds.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(102);
+    expect(liveTotal).toBe(99);
 
     expect(REGIONS.filter((r) => r.tier === "live").length).toBe(94);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(7);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
 
@@ -94,11 +90,12 @@ describe("regions", () => {
     //   T1c (1 zone): switzerland (Czech rate, residual −35.5%)
     //   T1b (4 zones): italy-sardinia (+87.6%), netherlands (−73.0%),
     //                   baltics (−58.9%), italy-north-zone (−45.0%)
-    // Malaysia GSO live solar actuals (2026-04-29): promotes from T3 static
-    // to T1b live-domestic-anchored. T1b bucket grows to 6 zones.
     expect(REGIONS.find((r) => r.id === "switzerland")?.tier).toBe("live-neighbour-anchored");
-    for (const id of ["italy-sardinia", "netherlands", "baltics", "italy-north-zone", "malaysia", "taiwan"]) {
+    for (const id of ["italy-sardinia", "netherlands", "baltics", "italy-north-zone"]) {
       expect(REGIONS.find((r) => r.id === id)?.tier, `${id} should be live-domestic-anchored`).toBe("live-domestic-anchored");
+    }
+    for (const id of ["malaysia", "taiwan", "dominican-republic"]) {
+      expect(REGIONS.find((r) => r.id === id)?.tier, `${id} should stay static until curtailment data is verified`).toBe("static");
     }
   });
 
@@ -132,14 +129,8 @@ describe("regions", () => {
     // prior commit) with two T1a live children. Static count unchanged: -1
     // (philippines static removed) + 0 (philippines-solar/wind are live not
     // static) = net 0, but prior commit had +1 for T3 static. Back to 96.
-    // Malaysia GSO live solar actuals: promotes from T3 static to T1b
-    // live-domestic-anchored. Static -1. 96 - 1 = 95.
-    // Taiwan TAIPOWER genary.json live feed: promotes from T3 static to T1b
-    // live-domestic-anchored. Dominican Republic was already live-domestic-anchored.
-    // Static count: before=96 (after Malaysia -1), then after Taiwan -1 = 93.
-    // Dominican Republic OC live feed: promotes from T3 static to T1b
-    // live-domestic-anchored. Static -1. 95 - 1 = 94.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(93);
+    // Malaysia, Taiwan, Dominican Republic, and Florida stay static after source audit.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(97);
   });
 
   it("has 4 flare regions", () => {
