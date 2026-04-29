@@ -13,6 +13,15 @@ const CONTROL_PANEL_URL = "https://adme.com.uy/controlpanel.php";
 const INFO_CONSIGNAS_URL = "https://www.adme.com.uy/info_consignas.php";
 const RESTRICTIONS_URL = "https://www.adme.com.uy/panelControl/ro_excel.php";
 
+/**
+ * Fallback list of ADME renewable plants for cases where `info_consignas.php`
+ * is unreachable. STALENESS RISK: this list will silently drop any new
+ * wind/solar plants ADME adds after 2026-04-29 until the file is refreshed.
+ * The primary path through `info_consignas.php` parses live and is preferred;
+ * this set only kicks in on parse failure. Refresh by:
+ *   curl https://www.adme.com.uy/info_consignas.php | grep -oE 'consignas_[a-z0-9_-]+' | sort -u
+ * and reconciling against this set. Last refreshed: 2026-04-29.
+ */
 const FALLBACK_RENEWABLE_PLANTS = new Set([
   "18 de julio",
   "albisu",
