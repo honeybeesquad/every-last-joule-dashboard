@@ -30,9 +30,9 @@
 - `themechange` event re-paints canvas + open tooltips
 
 **Data coverage:**
-- 71 live region entries (T1a) + 4 live-domestic-anchored (T1b) + 1 live-neighbour-anchored (T1c) + 4 flare regions + 96 static entries in `src/lib/regions.ts` (176 canonical entries)
+- 94 live region entries (T1a) + 7 live-domestic-anchored (T1b) + 1 live-neighbour-anchored (T1c) + 4 flare regions + 93 static entries in `src/lib/regions.ts` (199 canonical entries)
 - `src/data/statics.json.ts` emits 56 canonical static/flare records by default; `buildAllStatics({ includeCandidates: true })` exposes the 68 non-canonical bulk-coverage candidates for research only
-- Tally buckets as of 2026-04-29: T1a=71, T1b=4, T1c=1, T2=2, T2-flare=4, T3=94
+- Tally buckets as of 2026-04-29: T1a=94, T1b=7, T1c=1, T2=0, T2-flare=4, T3=93
 - Full ENTSO-E zone fetch: DE/ES/FR/NL/DK/FI/BE/NO/IE/PT/GR/IT/CH/CZ/PL/RO/HU/AT (15 zones; croatia/slovakia/slovenia/latvia/lithuania/albania REMOVED from live fetch 2026-04-28 — no verifiable A75 published rate found; returned to T3 static pending actual calibration data)
 - `src/lib/typical-profiles.ts` for the few regions with no public hourly source (Sichuan/Xinjiang/Iceland — methodology disclosed)
 - `src/lib/resilient.ts::withFallback` wrapping every loader
@@ -45,6 +45,7 @@
 - **Data-quality elevation backlog** — `docs/research/2026-04-29-data-quality-elevation-backlog.md` is the current launch queue. Strict rule: no T3→T2 promotion without an explicit annual curtailed-energy citation; no profile-kind-only upgrades.
 - **Chile Wind source elevation** — `chile-wind` promoted T3→T1a on 2026-04-29 by parsing CEN monthly XLSX wind reductions (`Resumen-DiarioHorario-Eolico` / `PE-` plant rows), reusing the Atacama CEN workbook machinery via `src/data/chile-cen-reductions.ts`.
 - **Uruguay source elevation** — `uruguay` promoted T3→T1a on 2026-04-29 by parsing ADME's hourly `Restricciones Operativas` workbook (`ro_excel.php`), with renewable plant matching from `info_consignas.php`; 2024 direct workbook sum is ~0.108 TWh, not the old ~0.4-0.5 TWh modelled assumption.
+- **Malaysia / Dominican Republic / Taiwan live promotions** — `malaysia` (GSO Malaysia real-time solar actuals via ASP.NET AJAX, T1b), `dominican-republic` (OC Dominican Republic GetGeneracionReprogramadaJSon live feed, T1b), `taiwan` (TAIPOWER genary.json unit-level generation, T1b) all promoted from T3 static on 2026-04-29 via execFileSync/curl approach. World audit of all 95 T3 static regions found no additional T1 candidates — remaining 93 static regions have no accessible live feed, no published curtailment rate, or are blocked by geo-filter/DNS/SSL in this environment.
 - **Brazil regionalization** — `brazil-paraiba` and `brazil-maranhao` added as explicit T1a ONS state-code rows on 2026-04-29 after the April 2026 constrained-off CSV sample showed both were hidden in the old `brazil-other` residual bucket.
 - **PR #16** — `feat/two-output-schema-v1` — schema(v1.0.0): optional generation fields for two-output positioning. Open since 2026-04-27.
 - **PR #8** — `chore/anchor-refresh-decision` — anchor refresh decision request for ISO-NE / Greece / Portugal. Open since 2026-04-26.

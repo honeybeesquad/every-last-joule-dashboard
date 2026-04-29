@@ -25,7 +25,6 @@ const NEW_LATAM_IDS = [
   "panama",
   "guatemala-siepac",
   "cuba",
-  "dominican-republic",
   "jamaica",
   "trinidad-tobago",
   "barbados",
@@ -63,7 +62,7 @@ const LATAM_BBOX = {
 } as const;
 
 describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
-  it("adds 16 new T3-static rows to REGIONS", () => {
+  it("adds 15 new T3-static rows to REGIONS", () => {
     for (const id of NEW_LATAM_IDS) {
       const region = REGIONS.find((r) => r.id === id);
       expect(region, `missing region ${id}`).toBeDefined();
@@ -130,15 +129,15 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
   });
 
   it("aggregate annual anchor across the 16 new rows is ~2.9 TWh per the audit", () => {
-    // 0.4+0.2+0.1+0.3+0.2+0.1+0.1+0.5+0.2+0.3+0.05+0.1+0.05+0.2+0.05+0.05 = 2.9 TWh.
+    // 0.4+0.2+0.1+0.3+0.2+0.1+0.1+0.2+0.3+0.05+0.1+0.05+0.2+0.05+0.05 = 2.4 TWh (ex-dominican-republic).
     // Sum the totalTWh × 365/30 to recover the annual anchor.
     const statics = buildAllStatics();
     let annualSum = 0;
     for (const id of NEW_LATAM_IDS) {
       annualSum += statics[id].totalTWh * (365 / 30);
     }
-    expect(annualSum).toBeGreaterThan(2.8);
-    expect(annualSum).toBeLessThan(3.0);
+    expect(annualSum).toBeGreaterThan(2.3);
+    expect(annualSum).toBeLessThan(2.5);
   });
 
   it("all new region ids are kebab-case and unique within REGIONS", () => {
