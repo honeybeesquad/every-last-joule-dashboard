@@ -4,6 +4,12 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Changed — Tier audit (2026-04-29)
+- **Malaysia / Taiwan / Dominican Republic demoted T1b → T3-static.** Public endpoints (GSO real-time solar arrays, TAIPOWER `genary.json` current-unit output, OC `GetGeneracionReprogramadaJSon`) expose current-day generation/dispatch, not curtailed-energy. No 30-day archive, no published curtailment rate. Loaders simplified to `buildTypicalSolarRegion` / `buildTypicalMixedRegion` / `buildTypicalSolarRegion` thin wrappers with candid `sourceNote`s explaining the demotion. Held at T3 pending genuine curtailment sources.
+- **Philippines (philippines-solar, philippines-wind) demoted T1a → T3-static.** Same demotion rationale: IEMOP RTD endpoint exposes current-day dispatch schedules, not curtailed-energy. The 2% rate previously applied was an invented placeholder with no published source — explicitly rejected by the T1a rule "an estimated rate invented without a published source" in `docs/methodology/tier-classification-guide.md`. Loader rewritten to emit two static regions via `buildTypicalSolarRegion` + `buildTypicalWindRegion` with provisional IRENA Philippines RE Statistics 2024 anchors (~0.04 TWh/yr solar + ~0.02 TWh/yr wind).
+- **Florida added as T3-static placeholder.** EIA FLA solar generation exists but no public hourly curtailment feed or citable curtailed-energy annual was verified. Region.ts source string is explicit that the 0.5% rate is a placeholder pending FRCC market monitor or FPL IRP 2024 evidence.
+- **Tier-tally moves:** T1b 7→4 (Malaysia/Taiwan/DR demoted), T1a 94→92 (Philippines×2 demoted), T3 93→97 (+Florida +Malaysia +Taiwan +DR +2×Philippines = +6, net post all demotions). Total stays at 200 canonical entries.
+
 ### Added — S1 Validation sprint (130 per-region triangulation MDs)
 - `docs/validation/<region>.md` for every tier-live region plus every static/flare region with a public anchor (130 region files plus a directory README and `_template.md` scaffold = 132 *.md total in the directory). Each region file carries a commit-grade discrepancy analysis vs. published TSO / ISO / IMM / SoM / IRENA / Ember / GGFR annuals.
 - `scripts/validation/enrich_discrepancy.py` — gemini-2.5-flash-backed enrichment script with rule 4 enforced ("say 'no anchor extracted' rather than making one up"). Idempotent via `--skip-enriched`.

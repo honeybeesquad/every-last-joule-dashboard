@@ -6,9 +6,9 @@ Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `philippines-solar`
 - **Country:** PHL
-- **Tier:** live
+- **Tier:** static
 - **Kind:** solar
-- **Source:** IEMOP RTD dispatch × 2% curtailment calibration (WESM Luzon/Visayas/Mindanao)
+- **Source:** IRENA Philippines RE Statistics 2024 anchor; IEMOP RTD endpoint exposes current-day dispatch schedules, not curtailed-energy. The 2% rate previously applied was an invented placeholder with no published source. Held at T3 until IEMOP/WESM publishes a citable curtailment rate.
 - **Source URL:** [https://www.iemop.ph/market-data/rtd-prices-and-schedules/](https://www.iemop.ph/market-data/rtd-prices-and-schedules/)
 - **Loader:** [`philippines.json.ts`](../../src/data/philippines.json.ts)
 - **Structural gap:** no

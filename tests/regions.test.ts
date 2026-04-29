@@ -41,10 +41,14 @@ describe("regions", () => {
     // Philippines IEMOP RTD live feed: replaces single T3 static with two
     // T1a live children (philippines-solar, philippines-wind). Net +1.
     // 197 + 1 = 198 → 199 (static -1 but live +2 = net +1).
+    // Philippines T1a → T3 demotion (2026-04-29): the 2% curtailment rate
+    // was an invented placeholder with no published source, so per the
+    // tier-classification-guide rules the two children move from live to
+    // static. Total region count unchanged at 200 (only tier flipped).
     expect(REGIONS.length).toBe(200);
   });
 
-  it("has 99 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
+  it("has 97 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
     // ... (unchanged through phase-2.6) ...
     // PR #19 peru split (2026-04-29): peru → peru-hydro + peru-solar + peru-wind.
     // With the parent removed, this is net +2 live. 63 + 2 = 65.
@@ -71,16 +75,18 @@ describe("regions", () => {
     // wind/solar children. Net +5 T1a live. 73 + 5 = 78.
     // Brazil no-bundled-curtailment split: fourteen state/residual rows split
     // into wind/solar children. Net +14 T1a live. 78 + 14 = 92.
-    // Philippines IEMOP RTD live feed: replaces single T3 static with
-    // two T1a live children (philippines-solar, philippines-wind). Net +2 live.
-    // Total live = 92 + 4 + 1 = 99.
+    // Philippines T1a → T3 demotion (2026-04-29): philippines-solar and
+    // philippines-wind move from `tier: live` to `tier: static` because
+    // the 2% curtailment rate was an invented placeholder with no
+    // published source — same demotion rationale as Malaysia/Taiwan/DR.
+    // Total live = 92 + 4 + 1 = 97.
     // Malaysia, Taiwan, and Dominican Republic remain T3-static: their public
     // endpoints do not expose 30-day measured curtailment feeds.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(99);
+    expect(liveTotal).toBe(97);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(94);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(92);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -94,12 +100,12 @@ describe("regions", () => {
     for (const id of ["italy-sardinia", "netherlands", "baltics", "italy-north-zone"]) {
       expect(REGIONS.find((r) => r.id === id)?.tier, `${id} should be live-domestic-anchored`).toBe("live-domestic-anchored");
     }
-    for (const id of ["malaysia", "taiwan", "dominican-republic"]) {
+    for (const id of ["malaysia", "taiwan", "dominican-republic", "philippines-solar", "philippines-wind"]) {
       expect(REGIONS.find((r) => r.id === id)?.tier, `${id} should stay static until curtailment data is verified`).toBe("static");
     }
   });
 
-  it("has 97 static regions", () => {
+  it("has 99 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
@@ -125,12 +131,13 @@ describe("regions", () => {
     // 98 - 1 = 97.
     // Uruguay promoted static → live via ADME hourly Restricciones Operativas workbook.
     // 97 - 1 = 96.
-    // Philippines IEMOP RTD live feed: replaces single T3 static (added in
-    // prior commit) with two T1a live children. Static count unchanged: -1
-    // (philippines static removed) + 0 (philippines-solar/wind are live not
-    // static) = net 0, but prior commit had +1 for T3 static. Back to 96.
-    // Malaysia, Taiwan, Dominican Republic, and Florida stay static after source audit.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(97);
+    // Philippines T1a → T3 demotion (2026-04-29): philippines-solar and
+    // philippines-wind move from live to static. 97 + 2 = 99.
+    // Malaysia, Taiwan, Dominican Republic, Philippines (both fuels), and
+    // Florida all stay T3-static after source audit. Demotions all driven
+    // by the same rule: no live curtailment-specific feed and no
+    // published curtailment rate.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(99);
   });
 
   it("has 4 flare regions", () => {
