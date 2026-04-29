@@ -3,24 +3,25 @@ import { buildStaticRegion, buildAllStatics } from "../../src/data/statics.json"
 import { REGIONS } from "../../src/lib/regions";
 
 describe("static regions", () => {
-  it("emits only the 56 canonical static/flare regions by default", () => {
+  it("emits only the 57 canonical static/flare regions by default", () => {
     // v0.6 global-coverage-audit added: hawaii-oahu/maui/island, austria, russia-murmansk-wind.
     // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27): +16 T3-static
     // rows for Caribbean + Central American + small South American grids.
     // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27): +26 T3-static rows
     // sourced from the introduce-as-T3 subset of `data/coverage-audit/2026-04-26-africa.csv`.
+    // Philippines promoted from research candidate to launch T3 static (2026-04-29).
     const data = buildAllStatics();
-    expect(Object.keys(data).length).toBe(56);
+    expect(Object.keys(data).length).toBe(57);
   });
 
-  it("keeps the 68 non-canonical bulk-coverage candidates out of dashboard output", () => {
+  it("keeps the 67 non-canonical bulk-coverage candidates out of dashboard output", () => {
     const canonicalIds = new Set(REGIONS.map((r) => r.id));
     const data = buildAllStatics();
     expect(Object.keys(data).every((id) => canonicalIds.has(id))).toBe(true);
 
     const researchData = buildAllStatics({ includeCandidates: true });
     expect(Object.keys(researchData).length).toBe(124);
-    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(68);
+    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(67);
   });
 
   it("includes all expected ids", () => {
@@ -83,6 +84,7 @@ describe("static regions", () => {
       "uganda",
       "zambia",
       "zimbabwe",
+      "philippines",
     ];
     for (const id of expected) expect(data[id]).toBeDefined();
   });

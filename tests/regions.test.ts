@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 197 canonical regions", () => {
+  it("has 198 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -38,7 +38,9 @@ describe("regions", () => {
     // into wind + solar children. Net +5 live. 178 + 5 = 183.
     // Brazil no-bundled-curtailment split: fourteen ONS state/residual rows
     // each split into wind + solar children. Net +14 live. 183 + 14 = 197.
-    expect(REGIONS.length).toBe(197);
+    // Philippines promoted from a research-only candidate to a launch T3 static
+    // after confirming IEMOP market-data CSV endpoints. 197 + 1 = 198.
+    expect(REGIONS.length).toBe(198);
   });
 
   it("has 97 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -89,7 +91,7 @@ describe("regions", () => {
     }
   });
 
-  it("has 96 static regions", () => {
+  it("has 97 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
@@ -115,7 +117,8 @@ describe("regions", () => {
     // 98 - 1 = 97.
     // Uruguay promoted static → live via ADME hourly Restricciones Operativas workbook.
     // 97 - 1 = 96.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(96);
+    // Philippines promoted from research-only candidate to T3 static. 96 + 1 = 97.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(97);
   });
 
   it("has 4 flare regions", () => {
@@ -262,6 +265,7 @@ describe("regions", () => {
       "nt-pilbara",
       "indonesia",
       "malaysia",
+      "philippines",
       "south-korea",
       "russia-mainland",
       "taiwan",

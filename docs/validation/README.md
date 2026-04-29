@@ -155,6 +155,7 @@ Last generated: 2026-04-27
 | Peru Hydro | live | hydro | 0 | [peru-hydro](./peru-hydro.md) |
 | Peru Solar | live | solar | 0 | [peru-solar](./peru-solar.md) |
 | Peru Wind | live | wind | 0 | [peru-wind](./peru-wind.md) |
+| Philippines | static | solar | 0 | [philippines](./philippines.md) |
 | Poland | live | mixed | 7 | [poland](./poland.md) |
 | Portugal | live | mixed | 7 | [portugal](./portugal.md) |
 | Paraguay | static | hydro | 0 | [paraguay](./paraguay.md) |

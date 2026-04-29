@@ -166,6 +166,7 @@ export const REGIONS: Region[] = [
   { id: "nt-pilbara",       name: "NT & Pilbara",    country: "AUS", lat: -22.0, lon: 118.0, tier: "static", kind: "solar", source: "Horizon/Pilbara fallback", sourceUrl: "https://www.horizonpower.com.au/" },
   { id: "indonesia",        name: "Indonesia",       country: "IDN", lat:  -7.0, lon: 110.0, tier: "static", kind: "solar", source: "PLN fallback", sourceUrl: "https://web.pln.co.id/" },
   { id: "malaysia",         name: "Malaysia",        country: "MYS", lat:   3.5, lon: 102.0, tier: "static", kind: "solar", source: "TNB/SEDA fallback", sourceUrl: "https://www.tnb.com.my/" },
+  { id: "philippines",      name: "Philippines",     country: "PHL", lat:  14.6, lon: 121.0, tier: "static", kind: "solar", source: "IEMOP/NGCP/PEMC fallback", sourceUrl: "https://www.iemop.ph/the-market/market-data/" },
   { id: "south-korea",      name: "South Korea (mainland)", country: "KOR", lat: 35.5, lon: 127.0, tier: "static", kind: "solar", source: "KPX fallback", sourceUrl: "https://www.kpx.or.kr/eng/" },
   { id: "russia-mainland",  name: "Russia (European grid)", country: "RUS", lat: 55.8, lon:  38.0, tier: "static", kind: "hydro", source: "SO UES fallback", sourceUrl: "https://www.so-ups.ru/" },
   { id: "taiwan",           name: "Taiwan",          country: "TWN", lat:  23.9, lon: 120.4, tier: "static", kind: "mixed", source: "Taipower fallback", sourceUrl: "https://www.taipower.com.tw/" },
