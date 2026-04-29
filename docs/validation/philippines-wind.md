@@ -15,7 +15,7 @@ Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Calibration
 
-- **Rate source documented in:** `docs/methodology/` (see links below)
+- **Rate source:** n/a — T3 provisional anchor, no calibration rate applied. Annual anchor from IRENA Philippines RE Statistics 2024 (~0.02 TWh/yr wind).
 - **Uniform across backfill years:** n/a — no backfill
 
 ## Multi-year backfill annual totals
