@@ -17,9 +17,9 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   } catch (err) {
     return buildTypicalMixedRegion(
       REGION_ID,
-      0.3,
-      { solar: 0.6, wind: 0.4 },
-      `Typical-shape fallback: NEPRA 2024 live feed unavailable (${(err as Error).message}); Quaid-e-Azam solar plus Jhimpir/Gharo wind corridor curtailment anchored at ~0.3 TWh/yr.`,
+      1.34,
+      { solar: 0.1, wind: 0.9 },
+      `NEPRA State of Industry Report 2024 anchor: Non-Project Missed Volume (NPMV) for wind generation = 1,337 GWh in FY2023-24, equivalent to PKR 39.5 billion in compensation paid to wind IPPs for transmission-constrained dispatch-down in the Sindh wind corridor (Jhimpir/Gharo/Thatta). Solar curtailment exists per IGCEP narratives but is not separately quantified by NEPRA — small share-fraction held conservatively. Source: https://nepra.org.pk/publications/State%20of%20Industry%20Reports/State%20of%20Industry%20Report%202024.pdf — Gemini-3.1 research wave 2 (2026-04-30). Promotion path to T2-annual-calibrated: NEPRA monthly Generation Reports (PDF) are parseable on a quarterly refresh cadence.`,
       "2024",
       7,
       15,
