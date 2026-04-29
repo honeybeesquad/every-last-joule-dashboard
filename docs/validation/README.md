@@ -7,13 +7,19 @@ Last generated: 2026-04-27
 | Angola | static | solar | 0 | [angola](./angola.md) |
 | UAE | static | solar | 0 | [uae](./uae.md) |
 | Argentina | static | wind | 0 | [argentina](./argentina.md) |
-| New South Wales | live | mixed | 0 | [aemo-nsw](./aemo-nsw.md) |
-| Queensland | live | mixed | 0 | [aemo-qld](./aemo-qld.md) |
-| South Australia | live | mixed | 0 | [aemo-sa](./aemo-sa.md) |
-| Tasmania | live | mixed | 0 | [aemo-tas](./aemo-tas.md) |
-| Victoria | live | mixed | 0 | [aemo-vic](./aemo-vic.md) |
+| New South Wales Solar | live | solar | 0 | [aemo-nsw-solar](./aemo-nsw-solar.md) |
+| New South Wales Wind | live | wind | 0 | [aemo-nsw-wind](./aemo-nsw-wind.md) |
+| Queensland Solar | live | solar | 0 | [aemo-qld-solar](./aemo-qld-solar.md) |
+| Queensland Wind | live | wind | 0 | [aemo-qld-wind](./aemo-qld-wind.md) |
+| South Australia Solar | live | solar | 0 | [aemo-sa-solar](./aemo-sa-solar.md) |
+| South Australia Wind | live | wind | 0 | [aemo-sa-wind](./aemo-sa-wind.md) |
+| Tasmania Solar | live | solar | 0 | [aemo-tas-solar](./aemo-tas-solar.md) |
+| Tasmania Wind | live | wind | 0 | [aemo-tas-wind](./aemo-tas-wind.md) |
+| Victoria Solar | live | solar | 0 | [aemo-vic-solar](./aemo-vic-solar.md) |
+| Victoria Wind | live | wind | 0 | [aemo-vic-wind](./aemo-vic-wind.md) |
 | NT & Pilbara | static | solar | 0 | [nt-pilbara](./nt-pilbara.md) |
-| Western Australia (SWIS) | live | mixed | 0 | [wa-swis](./wa-swis.md) |
+| Western Australia Solar (SWIS) | live | solar | 0 | [wa-swis-solar](./wa-swis-solar.md) |
+| Western Australia Wind (SWIS) | live | wind | 0 | [wa-swis-wind](./wa-swis-wind.md) |
 | Austria | static | mixed | 0 | [austria](./austria.md) |
 | Belgium | live | mixed | 0 | [belgium](./belgium.md) |
 | Benin | static | solar | 0 | [benin](./benin.md) |
@@ -21,29 +27,47 @@ Last generated: 2026-04-27
 | Bangladesh | static | solar | 0 | [bangladesh](./bangladesh.md) |
 | Bulgaria | live | mixed | 7 | [bulgaria](./bulgaria.md) |
 | Bolivia | static | solar | 0 | [bolivia](./bolivia.md) |
-| Bahia | live | mixed | 0 | [brazil-bahia](./brazil-bahia.md) |
-| Ceara | live | mixed | 0 | [brazil-ce](./brazil-ce.md) |
-| Goias | live | mixed | 0 | [brazil-go](./brazil-go.md) |
-| Minas Gerais | live | mixed | 0 | [brazil-mg](./brazil-mg.md) |
-| Mato Grosso | live | mixed | 0 | [brazil-mt](./brazil-mt.md) |
-| Brazil NE Other | live | mixed | 0 | [brazil-other](./brazil-other.md) |
-| Pernambuco | live | mixed | 0 | [brazil-pernambuco](./brazil-pernambuco.md) |
-| Piaui | live | mixed | 0 | [brazil-piaui](./brazil-piaui.md) |
-| Parana | live | mixed | 0 | [brazil-pr](./brazil-pr.md) |
-| Rio Grande do Norte | live | mixed | 0 | [brazil-rn](./brazil-rn.md) |
-| Rio Grande do Sul | live | mixed | 0 | [brazil-rs](./brazil-rs.md) |
-| Sao Paulo | live | mixed | 0 | [brazil-sp](./brazil-sp.md) |
+| Bahia Solar | live | solar | 0 | [brazil-bahia-solar](./brazil-bahia-solar.md) |
+| Bahia Wind | live | wind | 0 | [brazil-bahia-wind](./brazil-bahia-wind.md) |
+| Ceara Solar | live | solar | 0 | [brazil-ce-solar](./brazil-ce-solar.md) |
+| Ceara Wind | live | wind | 0 | [brazil-ce-wind](./brazil-ce-wind.md) |
+| Goias Solar | live | solar | 0 | [brazil-go-solar](./brazil-go-solar.md) |
+| Goias Wind | live | wind | 0 | [brazil-go-wind](./brazil-go-wind.md) |
+| Minas Gerais Solar | live | solar | 0 | [brazil-mg-solar](./brazil-mg-solar.md) |
+| Minas Gerais Wind | live | wind | 0 | [brazil-mg-wind](./brazil-mg-wind.md) |
+| Mato Grosso Solar | live | solar | 0 | [brazil-mt-solar](./brazil-mt-solar.md) |
+| Mato Grosso Wind | live | wind | 0 | [brazil-mt-wind](./brazil-mt-wind.md) |
+| Maranhao Solar | live | solar | 0 | [brazil-maranhao-solar](./brazil-maranhao-solar.md) |
+| Maranhao Wind | live | wind | 0 | [brazil-maranhao-wind](./brazil-maranhao-wind.md) |
+| Brazil Other ONS States Solar | live | solar | 0 | [brazil-other-solar](./brazil-other-solar.md) |
+| Brazil Other ONS States Wind | live | wind | 0 | [brazil-other-wind](./brazil-other-wind.md) |
+| Paraiba Solar | live | solar | 0 | [brazil-paraiba-solar](./brazil-paraiba-solar.md) |
+| Paraiba Wind | live | wind | 0 | [brazil-paraiba-wind](./brazil-paraiba-wind.md) |
+| Pernambuco Solar | live | solar | 0 | [brazil-pernambuco-solar](./brazil-pernambuco-solar.md) |
+| Pernambuco Wind | live | wind | 0 | [brazil-pernambuco-wind](./brazil-pernambuco-wind.md) |
+| Piaui Solar | live | solar | 0 | [brazil-piaui-solar](./brazil-piaui-solar.md) |
+| Piaui Wind | live | wind | 0 | [brazil-piaui-wind](./brazil-piaui-wind.md) |
+| Parana Solar | live | solar | 0 | [brazil-pr-solar](./brazil-pr-solar.md) |
+| Parana Wind | live | wind | 0 | [brazil-pr-wind](./brazil-pr-wind.md) |
+| Rio Grande do Norte Solar | live | solar | 0 | [brazil-rn-solar](./brazil-rn-solar.md) |
+| Rio Grande do Norte Wind | live | wind | 0 | [brazil-rn-wind](./brazil-rn-wind.md) |
+| Rio Grande do Sul Solar | live | solar | 0 | [brazil-rs-solar](./brazil-rs-solar.md) |
+| Rio Grande do Sul Wind | live | wind | 0 | [brazil-rs-wind](./brazil-rs-wind.md) |
+| Sao Paulo Solar | live | solar | 0 | [brazil-sp-solar](./brazil-sp-solar.md) |
+| Sao Paulo Wind | live | wind | 0 | [brazil-sp-wind](./brazil-sp-wind.md) |
 | Barbados | static | solar | 0 | [barbados](./barbados.md) |
 | Botswana | static | solar | 0 | [botswana](./botswana.md) |
-| Alberta | live | mixed | 0 | [alberta](./alberta.md) |
+| Alberta Solar | live | solar | 0 | [alberta-solar](./alberta-solar.md) |
+| Alberta Wind | live | wind | 0 | [alberta-wind](./alberta-wind.md) |
 | British Columbia | static | hydro | 0 | [british-columbia](./british-columbia.md) |
 | Manitoba | static | mixed | 0 | [manitoba](./manitoba.md) |
-| Ontario | live | mixed | 0 | [ontario](./ontario.md) |
+| Ontario Solar | live | solar | 0 | [ontario-solar](./ontario-solar.md) |
+| Ontario Wind | live | wind | 0 | [ontario-wind](./ontario-wind.md) |
 | Quebec | static | hydro | 0 | [quebec](./quebec.md) |
 | Saskatchewan | static | wind | 0 | [saskatchewan](./saskatchewan.md) |
 | Switzerland | live-neighbour-anchored | solar | 7 | [switzerland](./switzerland.md) |
 | Atacama | live | solar | 0 | [atacama](./atacama.md) |
-| Chile Wind | static | wind | 0 | [chile-wind](./chile-wind.md) |
+| Chile Wind | live | wind | 0 | [chile-wind](./chile-wind.md) |
 | Gansu | static | mixed | 0 | [gansu](./gansu.md) |
 | Inner Mongolia | static | wind | 0 | [inner-mongolia](./inner-mongolia.md) |
 | Ningxia | static | mixed | 0 | [ningxia](./ningxia.md) |
@@ -128,7 +152,9 @@ Last generated: 2026-04-27
 | Oman | static | solar | 0 | [oman](./oman.md) |
 | Pakistan | static | mixed | 0 | [pakistan](./pakistan.md) |
 | Panama | static | solar | 0 | [panama](./panama.md) |
-| Peru | live | mixed | 0 | [peru](./peru.md) |
+| Peru Hydro | live | hydro | 0 | [peru-hydro](./peru-hydro.md) |
+| Peru Solar | live | solar | 0 | [peru-solar](./peru-solar.md) |
+| Peru Wind | live | wind | 0 | [peru-wind](./peru-wind.md) |
 | Poland | live | mixed | 7 | [poland](./poland.md) |
 | Portugal | live | mixed | 7 | [portugal](./portugal.md) |
 | Paraguay | static | hydro | 0 | [paraguay](./paraguay.md) |
@@ -154,7 +180,7 @@ Last generated: 2026-04-27
 | Tanzania | static | hydro | 0 | [tanzania](./tanzania.md) |
 | Uganda | static | hydro | 0 | [uganda](./uganda.md) |
 | Ukraine | static | solar | 0 | [ukraine](./ukraine.md) |
-| Uruguay | static | wind | 0 | [uruguay](./uruguay.md) |
+| Uruguay | live | wind | 0 | [uruguay](./uruguay.md) |
 | BPA | live | mixed | 7 | [bpa](./bpa.md) |
 | California | live | mixed | 7 | [caiso](./caiso.md) |
 | ERCOT East | live | mixed | 7 | [ercot-east](./ercot-east.md) |
@@ -173,6 +199,7 @@ Last generated: 2026-04-27
 | PJM | live | mixed | 7 | [pjm](./pjm.md) |
 | SPP | live | mixed | 7 | [spp](./spp.md) |
 | Vietnam | static | solar | 0 | [vietnam](./vietnam.md) |
-| South Africa | live | mixed | 0 | [south-africa](./south-africa.md) |
+| South Africa Solar | live | solar | 0 | [south-africa-solar](./south-africa-solar.md) |
+| South Africa Wind | live | wind | 0 | [south-africa-wind](./south-africa-wind.md) |
 | Zambia | static | hydro | 0 | [zambia](./zambia.md) |
 | Zimbabwe | static | hydro | 0 | [zimbabwe](./zimbabwe.md) |

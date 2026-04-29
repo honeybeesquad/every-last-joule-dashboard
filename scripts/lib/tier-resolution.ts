@@ -51,7 +51,6 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   argentina: "wind",
   bangladesh: "solar",
   "british-columbia": "hydro-seasonal",
-  "chile-wind": "wind",
   cyprus: "solar",
   egypt: "solar",
   ethiopia: "hydro-seasonal",
@@ -97,15 +96,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   oman: "solar",
   pakistan: "mixed",
   paraguay: "hydro-seasonal",
-  peru: "hydro-seasonal",
   qinghai: "solar",
-  // south-africa: live as of 82b5496 (Phase 2.6). Loader fetches the
-  // Eskom Data Portal Total_Hourly_Generation.csv and applies a 12%
-  // calibration rate against the SAREM 2025 / Eskom MTSAO Oct 2025
-  // 4,363 GWh annual renewable-curtailment anchor. The mixed entry
-  // here is the fallback profileKind if the live CSV becomes
-  // inaccessible and the loader has to be reverted to probe-only.
-  "south-africa": "mixed",
   quebec: "hydro-seasonal",
   "russia-mainland": "hydro-seasonal",
   saskatchewan: "wind",
@@ -115,16 +106,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   thailand: "solar",
   tibet: "hydro-seasonal",
   uae: "solar",
-  uruguay: "wind",
   vietnam: "solar",
-  // wa-swis: live as of 2026-04-26 (Phase-2.6 WA brief). Loader fetches the
-  // AEMO WEM Facility SCADA daily JSON and applies an 8% calibration rate
-  // against the AEMO WA SWIS 2024 ~0.4 TWh RES curtailment anchor. The
-  // entry below is retained as a fallback profileKind in case the WEM
-  // endpoint becomes inaccessible and the loader has to be reverted to a
-  // typical-shape probe-only static. SWIS mix is roughly 70% solar / 30%
-  // wind by capacity, hence the "solar" profileKind fallback.
-  "wa-swis": "solar",
   yunnan: "hydro-seasonal",
   // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27).
   // Sixteen new T3-modelled statics from

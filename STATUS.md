@@ -1,7 +1,7 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-04-28 by Claude (post-compaction cleanup)
-**Active branch:** `v0-build` @ `53ad6b1`
+**Last verified against git:** 2026-04-29 by Codex (split-region stabilization + data-quality backlog)
+**Active branch:** `research/phase1-data-audit` @ `9038141` (dirty worktree; contains PR #19 split-region cleanup plus data-quality guardrails)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `v0-build`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
 > **For AI sessions:** read this file before drafting plans, brainstorming, or creating worktrees. Plans in `~/.claude/plans/` and `docs/superpowers/plans/` may be SHIPPED — check this file before treating any plan as live work.
@@ -30,7 +30,10 @@
 - `themechange` event re-paints canvas + open tooltips
 
 **Data coverage:**
-- 77 region loaders in `src/data/*.json.ts` covering: ENTSO-E zones (DE/ES/FR/NL/DK/FI/BE/NO/IE/PT/GR/IT/CH/CZ/PL/RO/HU/AT…), UK NESO, ERCOT (split + native), CAISO/MISO/NYISO/PJM/SPP/ISO-NE/BPA, AEMO per-state, Brazil-NE clusters, Atacama Chile, Canada (Ontario/Alberta/Quebec/Manitoba/Saskatchewan/BC), Mexico, all India zones, China provinces (Gansu/Inner-Mongolia/Ningxia/Qinghai/Tibet/Yunnan), Japan, Korea + Jeju, Taiwan, SE Asia (TH/VN/MY/ID/PH), Russia, Kazakhstan, Mongolia, Pakistan/Bangladesh, MENA (UAE/Saudi/Iran/Iraq/Israel/Jordan/Egypt/Morocco/Turkey/Cyprus), Africa Pattern-D sweep (PR #18, +26 regions), LatAm Pattern-D sweep (PR #17, +16 regions), Oman, Kenya, Ethiopia, Namibia, NZ, others.
+- 71 live region entries (T1a) + 4 live-domestic-anchored (T1b) + 1 live-neighbour-anchored (T1c) + 4 flare regions + 96 static entries in `src/lib/regions.ts` (176 canonical entries)
+- `src/data/statics.json.ts` emits 56 canonical static/flare records by default; `buildAllStatics({ includeCandidates: true })` exposes the 68 non-canonical bulk-coverage candidates for research only
+- Tally buckets as of 2026-04-29: T1a=71, T1b=4, T1c=1, T2=2, T2-flare=4, T3=94
+- Full ENTSO-E zone fetch: DE/ES/FR/NL/DK/FI/BE/NO/IE/PT/GR/IT/CH/CZ/PL/RO/HU/AT (15 zones; croatia/slovakia/slovenia/latvia/lithuania/albania REMOVED from live fetch 2026-04-28 — no verifiable A75 published rate found; returned to T3 static pending actual calibration data)
 - `src/lib/typical-profiles.ts` for the few regions with no public hourly source (Sichuan/Xinjiang/Iceland — methodology disclosed)
 - `src/lib/resilient.ts::withFallback` wrapping every loader
 
@@ -38,7 +41,11 @@
 
 ## What's NOT shipped (open PRs / threads)
 
-- **PR #19** — `feat/per-fuel-region-split` — CAISO per-fuel split fixes overnight curtailment floor. Canonical pattern for per-fuel splitting; if merged, replicate to other ISOs. Open since 2026-04-27.
+- **PR #19 / research branch cleanup** — per-fuel splits: wa-swis-solar/wind, south-africa-solar/wind, peru-hydro/solar/wind. Parent rows/docs/snapshots have been removed or normalized. Canonical total is now 174 because the stale Peru parent was dropped. ENTSO-E elevation attempt for croatia/slovakia/slovenia/latvia/lithuania/albania REVERTED (2026-04-28): no verifiable A75 published rate found; returned to T3/static-candidate handling pending actual calibration data.
+- **Data-quality elevation backlog** — `docs/research/2026-04-29-data-quality-elevation-backlog.md` is the current launch queue. Strict rule: no T3→T2 promotion without an explicit annual curtailed-energy citation; no profile-kind-only upgrades.
+- **Chile Wind source elevation** — `chile-wind` promoted T3→T1a on 2026-04-29 by parsing CEN monthly XLSX wind reductions (`Resumen-DiarioHorario-Eolico` / `PE-` plant rows), reusing the Atacama CEN workbook machinery via `src/data/chile-cen-reductions.ts`.
+- **Uruguay source elevation** — `uruguay` promoted T3→T1a on 2026-04-29 by parsing ADME's hourly `Restricciones Operativas` workbook (`ro_excel.php`), with renewable plant matching from `info_consignas.php`; 2024 direct workbook sum is ~0.108 TWh, not the old ~0.4-0.5 TWh modelled assumption.
+- **Brazil regionalization** — `brazil-paraiba` and `brazil-maranhao` added as explicit T1a ONS state-code rows on 2026-04-29 after the April 2026 constrained-off CSV sample showed both were hidden in the old `brazil-other` residual bucket.
 - **PR #16** — `feat/two-output-schema-v1` — schema(v1.0.0): optional generation fields for two-output positioning. Open since 2026-04-27.
 - **PR #8** — `chore/anchor-refresh-decision` — anchor refresh decision request for ISO-NE / Greece / Portugal. Open since 2026-04-26.
 

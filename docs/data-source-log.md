@@ -4,6 +4,23 @@ Per-source notes on status, API quirks, and access. One section per feed.
 
 ---
 
+## CEN Chile ERV reductions (used)
+
+**Feed status:** public monthly XLSX workbooks from Coordinador Electrico Nacional, published after month close under `Reducciones de Generacion Renovable`.
+
+**Primary source:** `https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/`
+
+**Implementation:** `src/data/chile-cen-reductions.ts` fetches the latest workbook and parses:
+
+- `Resumen-DiarioHorario-Solar` with `PFV-` plant rows for `atacama`.
+- `Resumen-DiarioHorario-Eolico` with `PE-` plant rows for `chile-wind`.
+
+**2026-04-29 outcome:** `chile-wind` promoted from T3 modelled to T1a live TSO because the current workbook exposes plant-level hourly wind reduction MWh. The loader sums hourly plant rows into regional wind curtailed MW and writes `data/snapshots/last-good/chile-wind.json`.
+
+**Limitations:** workbook cadence is monthly, not real-time. Atacama solar has an additional daily-PDF apportionment path; Chile Wind currently uses the monthly measured workbook only.
+
+---
+
 ## China NEA provincial static calibration (used)
 
 **Feed status:** public annual/quarterly source chain, not a live hourly feed.
@@ -333,9 +350,13 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 - `BA -> brazil-bahia`
 - `PI -> brazil-piaui`
 - `PE -> brazil-pernambuco`
+- `PB -> brazil-paraiba`
+- `MA -> brazil-maranhao`
 - everything else -> `brazil-other`
 
 **2026-04-24 provenance audit:** this is a state-code mapping, not a plant-ID prefix mapping. ONS data dictionaries document `id_estado` as the required two-character state code and `id_ons` as the plant or plant-set identifier. The loader uses `id_estado` directly, which avoids missing plants when ONS plant-set identifiers change or when `ceg` is `-` for plant sets.
+
+**2026-04-29 northern-Brazil refinement:** sampled April 2026 ONS wind/solar CSVs showed the former residual bucket was hiding material Paraiba curtailment (31.333 GWh wind plus 29.055 GWh solar in the month-to-date sample) and smaller Maranhao wind curtailment (4.725 GWh). Both are now explicit live ONS rows; `brazil-other` remains only as a residual for smaller untracked state codes.
 
 March 2026 ONS constrained-off rows observed the following member counts in the five NE dashboard clusters:
 
@@ -556,6 +577,20 @@ The existing South Korea mainland loader remains a conservative typical solar pr
 - Method: sum `SOLAR` + `EÓLICA/EOLICA`, aggregate half-hours to hourly values, then apply a 2% calibrated curtailment proxy
 - Calibration rationale: Peru renewable curtailment is still modest at a system scale, but southern transmission constraints justify a small non-zero proxy
 - Quirk: timestamps are local Peru time and converted to UTC in-loader
+
+---
+
+## Uruguay ADME restriction workbook (used)
+
+**Feed used:** `https://www.adme.com.uy/panelControl/ro_excel.php`
+
+- Auth: none; public control-panel workbook.
+- Cadence: month-complete DTE/control-panel publication, with latest available month advertised in `controlpanel.php`.
+- Window: loader fetches the latest complete month and emits the latest 30 complete days from the workbook.
+- Method: parse the hourly "Restricciones Operativas" XLSX, match renewable plant columns against `info_consignas.php` plus a fallback renewable plant registry, and sum hourly MWh directly.
+- Calibration rationale: no rate calibration is applied; ADME workbook values are already hourly MWh of energy not supplied from operating restrictions.
+- Cross-check: Jan-Dec 2024 sums to ~0.108 TWh; Jan-Dec 2025 sums to ~0.0055 TWh. This resolves the prior 0.4-0.5 TWh modelled assumption downward.
+- Quirk: source is measured TSO data but monthly-fresh, not real-time; if the workbook or plant matching fails, `withFallback` serves the last-good snapshot.
 
 ---
 

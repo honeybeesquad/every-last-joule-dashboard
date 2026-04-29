@@ -1,48 +1,47 @@
 # Validation — Uruguay (`uruguay`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-29 · Sprint: data-quality elevation · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `uruguay`
 - **Country:** URY
-- **Tier:** static
+- **Tier:** live
 - **Kind:** wind
-- **Source:** ADME fallback
-- **Source URL:** [https://adme.com.uy/](https://adme.com.uy/)
+- **Source:** ADME hourly Restricciones Operativas workbook
+- **Source URL:** [https://www.adme.com.uy/panelControl/ro_excel.php](https://www.adme.com.uy/panelControl/ro_excel.php)
 - **Loader:** [`uruguay.json.ts`](../../src/data/uruguay.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
-- **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a — no backfill
+- **Rate source documented in:** ADME control-panel hourly "Energía no Suministrada (Restricciones Operativas)" workbook.
+- **Uniform across backfill years:** n/a — the loader consumes measured hourly MWh restrictions directly.
 
 ## Multi-year backfill annual totals
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
-|---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
+|---|---:|---:|---:|---:|---|
+| 2024 | 8,784 hourly rows | 0.108 | 0.108 | 0.0% | ADME `ro_excel.php` Jan-Dec 2024 |
+| 2025 | 8,760 hourly rows | 0.0055 | 0.0055 | 0.0% | ADME `ro_excel.php` Jan-Dec 2025 |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** ADME 2024 wind curtailment ~0.1 TWh
+- **TSO annual curtailment (latest audited):** ADME 2024 hourly restrictions sum to ~0.108 TWh; 2025 is much lower at ~0.0055 TWh.
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+The prior T3 assumption of ~0.4-0.5 TWh/yr is not supported by the ADME hourly restriction workbook. Direct ADME rows resolve the annual-anchor conflict toward ~0.1 TWh for 2024 and near-zero 2025 restrictions.
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+ADME publishes the current restriction-status table in quasi-real time, but the control-panel restriction workbook is month-complete DTE data. This is measured TSO data, not a modelled shape, but freshness is monthly rather than sub-hourly.
 
 ## Links
 
 - Loader source: [`uruguay.json.ts`](../../src/data/uruguay.json.ts)
-- Backfill archive: `data/historical/backfill/*_uruguay_*.parquet` (0 years)
-- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

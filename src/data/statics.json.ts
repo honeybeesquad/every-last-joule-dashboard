@@ -8,6 +8,7 @@ import {
 } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
 import { coerceLastSuccessAt } from "../lib/freshness.js";
+import { REGIONS } from "../lib/regions.js";
 import { pathToFileURL } from "url";
 
 /**
@@ -205,6 +206,86 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   uganda: { annualTWh: 0.2, kind: "hydro", source: "ERA Annual Performance 2024 (UETCL TSO + UEDCL distribution; Karuma+Isimba hydro)", reportDate: "2024" },
   zambia: { annualTWh: 0.5, kind: "hydro", source: "Ember Zambia 2024 + Kariba drought (ZESCO; hydro-dependent Kariba+Kafue; severe 2024-25 drought load-shedding; SAPP member)", reportDate: "2024" },
   zimbabwe: { annualTWh: 0.3, kind: "hydro", source: "Ember Zimbabwe 2024 + Kariba South (ZPC generation, ZETDC T+D; Kariba South hydro+coal; SAPP member)", reportDate: "2024" },
+  // PR #bulk-coverage (2026-04-28): 68 countries added to close global gap.
+  // --- AMERICAS (7 new) ---
+  bahamas: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 12.5, source: "IRENA Bahamas 2024 (BPL; solar+oil; island grids)", reportDate: "2024" },
+  belize: { annualTWh: 0.02, kind: "hydro", source: "IRENA Belize 2024 (BEL); Herrera hydroelectric + Belize oil + solar", reportDate: "2024" },
+  colombia: { annualTWh: 0.8, kind: "hydro", source: "IRENA Colombia 2024 (XM/TSO); hydro ~70 percent; solar growing; SILEC member)", reportDate: "2024" },
+  dominica: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Dominica 2024 (DOMLEC; hydro+solar+geothermal)", reportDate: "2024" },
+  grenada: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 12.0, source: "GRENLEC solar+oil; IRENA Grenada 2024", reportDate: "2024" },
+  haiti: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Haiti 2024 (EDH); severe load-shed; solar+hydro; small grid)", reportDate: "2024" },
+  venezuela: { annualTWh: 0.5, kind: "hydro", source: "IRENA Venezuela 2024 (CORPOELEC); hydro ~60 percent + thermal + solar; grid distress)", reportDate: "2024" },
+  // --- EUROPE (9 new) ---
+  andorra: { annualTWh: 0.01, kind: "hydro", source: "IRENA Andorra 2024 (FEDA); hydro+pumped storage; small high-altitude grid)", reportDate: "2024" },
+  liechtenstein: { annualTWh: 0.01, kind: "hydro", source: "IRENA Liechtenstein 2024 (LFV); Alpine hydro+pumped storage; import-dependent)", reportDate: "2024" },
+  malta: { annualTWh: 0.03, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Malta 2024 (ENEMalta); gas+solar; EU island state)", reportDate: "2024" },
+  moldova: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Moldova 2024 (Moldelectrica); solar+gas; ENTSO-E continental sync 2022)", reportDate: "2024" },
+  // Reverted from ENTSO-E live T1a (2026-04-28): no verifiable A75 published
+  // curtailment rate found for these 6 TSOs. Returned to T3 static pending
+  // actual calibration data from HOPS (croatia), SEPS (slovakia), ELES
+  // (slovenia), Litgrid (lithuania), AST (latvia), ERE (albania).
+  croatia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Croatia 2024 (HOPS); solar+wind+hydro; HOPS publishes monthly wind PDF reports, not machine-readable A75; ENTSO-E A75 verification pending)", reportDate: "2024" },
+  slovakia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Slovakia 2024 (SEPS); solar+wind; SEPS dashboard has generation data but no published curtailment rate; ENTSO-E A75 verification pending)", reportDate: "2024" },
+  slovenia: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Slovenia 2024 (ELES); solar+hydro+wind; ELES publishes generation data but no published curtailment rate; ENTSO-E A75 verification pending)", reportDate: "2024" },
+  lithuania: { annualTWh: 0.2, kind: "wind", localSolarPeakUTC: 9.0, source: "IRENA Lithuania 2024 (ESO); solar+wind; BRELL ring member; ENTSO-E A75 verification pending)", reportDate: "2024" },
+  latvia: { annualTWh: 0.1, kind: "hydro", source: "IRENA Latvia 2024 (AST); Augstkaigo + Ventspils nafta + solar; BRELL; ENTSO-E A75 verification pending)", reportDate: "2024" },
+  albania: { annualTWh: 0.05, kind: "mixed", source: "IRENA Albania 2024 (ERE); OSCE member since 2017; hydro-dominant; ENTSO-E A75 verification pending; no public hourly feed identified)", reportDate: "2024" },
+  // --- MIDDLE EAST / CENTRAL ASIA (16 new) ---
+  afghanistan: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 4.5, source: "IRENA Afghanistan 2024 (DABS); solar+hydro+wind; diesel backup; small grid)", reportDate: "2024" },
+  armenia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 4.0, source: "IRENA Armenia 2024 (TSO); Metsamor nuclear + hydro + solar; WREM)", reportDate: "2024" },
+  azerbaijan: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 4.0, source: "IRENA Azerbaijan 2024 (AZERENERGY); oil+gas+solar; growing RE)", reportDate: "2024" },
+  bahrain: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Bahrain 2024 (EWA); gas+solar; small high-Temperature grid)", reportDate: "2024" },
+  georgia: { annualTWh: 0.2, kind: "hydro", source: "IRENA Georgia 2024 (GSE); hydro+solar+wind; ENTSO-E synchronisation ongoing)", reportDate: "2024" },
+  jordan: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Jordan 2024 (NEPCO); solar+wind+gas; high VRE penetration)", reportDate: "2024" },
+  kuwait: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Kuwait 2024 (MEW); gas+solar; growing solar)", reportDate: "2024" },
+  kyrgyzstan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Kyrgyzstan 2024 (NEK); hydro+solar; CASA-1000 candidate)", reportDate: "2024" },
+  lebanon: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Lebanon 2024 (EDL); severe crisis; diesel+solar+hydro; small grid)", reportDate: "2024" },
+  palestine: { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Palestine 2024 (PEC); Israel-interconnected; solar+wind)", reportDate: "2024" },
+  syria: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Syria 2024 (PEO); solar+oil+diesel; war-affected)", reportDate: "2024" },
+  tajikistan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Tajikistan 2024 (Barki Tojik); hydro+solar; CASA-1000)", reportDate: "2024" },
+  turkmenistan: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 4.5, source: "IRENA Turkmenistan 2024 (TDS); gas+solar; isolated grid)", reportDate: "2024" },
+  uzbekistan: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 5.0, source: "IRENA Uzbekistan 2024 (UzbekEnergo); hydro+solar+gas; solar program)", reportDate: "2024" },
+  yemen: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Yemen 2024 (PC); solar+diesel; war-affected small grid)", reportDate: "2024" },
+  qatar: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Qatar 2024 (Kahramaa); gas+solar; small high-T solar program)", reportDate: "2024" },
+  // --- SOUTH ASIA (3 new) ---
+  srilanka: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 5.5, source: "CEB Sri Lanka 450 MW solar + hydro + wind; IRENA Sri Lanka 2024", reportDate: "2024" },
+  nepal: { annualTWh: 0.2, kind: "hydro", source: "IRENA Nepal 2024 (NEA); hydro-dominant ~95 percent; solar growing; Himalayan", reportDate: "2024" },
+  bhutan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Bhutan 2024 (DHI/BPC); hydro-dominant; export to India; large projects)", reportDate: "2024" },
+  // --- EAST ASIA / PACIFIC (10 new) ---
+  brunei: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Brunei 2024 (AEDED); gas+solar; small high-income grid)", reportDate: "2024" },
+  cambodia: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 7.0, source: "IRENA Cambodia 2024 (EDC); hydro+solar+coal; rapid solar growth)", reportDate: "2024" },
+  myanmar: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 6.5, source: "IRENA Myanmar 2024 (MEPE); hydro+solar+gas; war-affected grid)", reportDate: "2024" },
+  philippines: { annualTWh: 1.0, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Philippines 2024 (WREM/NGCP); solar+wind+hydro; island grids)", reportDate: "2024" },
+  singapore: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Singapore 2024 (EMA); gas+solar+pipeline floating solar)", reportDate: "2024" },
+  png: { annualTWh: 0.1, kind: "hydro", source: "IRENA PNG 2024 (PNG-Power); hydro+solar+diesel; island grid)", reportDate: "2024" },
+  fiji: { annualTWh: 0.02, kind: "hydro", source: "IRENA Fiji 2024 (EFL); hydro+solar+diesel; Pacific island)", reportDate: "2024" },
+  kiribati: { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Kiribati 2024 (UTT); solar+diesel; atoll islands)", reportDate: "2024" },
+  vanuatu: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Vanuatu 2024 (UNELCO); solar+hydro+diesel; Pacific islands)", reportDate: "2024" },
+  tonga: { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 12.5, source: "IRENA Tonga 2024 (TPL); solar+diesel+pumped hydro; Pacific island)", reportDate: "2024" },
+  // --- AFRICA (23 new) ---
+  burundi: { annualTWh: 0.05, kind: "hydro", source: "IRENA Burundi 2024 (REGIDECO); hydro+thermal; small grid; NELS", reportDate: "2024" },
+  "central-african-republic": { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 7.0, source: "IRENA CAR 2024 (ENERCA); hydro+solar+diesel; post-conflict small grid)", reportDate: "2024" },
+  chad: { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 7.0, source: "IRENA Chad 2024 (STEE); solar+diesel+gas; isolated grid)", reportDate: "2024" },
+  comoros: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Comoros 2024 (MAMWE); solar+diesel; island grid)", reportDate: "2024" },
+  "congo-republic": { annualTWh: 0.1, kind: "hydro", source: "IRENA Congo Rep. 2024 (MCPT); hydro+solar; SAPP member", reportDate: "2024" },
+  djibouti: { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Djibouti 2024 (EDD); solar+diesel; small grid; Gulf)", reportDate: "2024" },
+  eritrea: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Eritrea 2024 (EWA); solar+diesel; isolated grid)", reportDate: "2024" },
+  gambia: { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Gambia 2024 (NAWEC); solar+diesel; small West African grid)", reportDate: "2024" },
+  guinea: { annualTWh: 0.1, kind: "hydro", source: "IRENA Guinea 2024 (EDG); hydro+solar; large Fomi hydro project)", reportDate: "2024" },
+  "guinea-bissau": { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Guinea-Bissau 2024 (EGB); solar+diesel; small W African grid)", reportDate: "2024" },
+  "equatorial-guinea": { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 7.0, source: "IRENA Equatorial Guinea 2024 (SONERG); gas+solar+diesel; small grid)", reportDate: "2024" },
+  liberia: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Liberia 2024 (LEC); hydro+solar+diesel; WAPP member)", reportDate: "2024" },
+  libya: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Libya 2024 (GECOL); solar+gas+diesel; war-affected grid)", reportDate: "2024" },
+  mali: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Mali 2024 (EDM); solar+hydro+gas; WAPP member)", reportDate: "2024" },
+  niger: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 13.0, source: "IRENA Niger 2024 (NIGELEC); solar+diesel; small Sahelian grid)", reportDate: "2024" },
+  "sierra-leone": { annualTWh: 0.02, kind: "hydro", source: "IRENA Sierra Leone 2024 (EDSA); hydro+solar+diesel; WAPP", reportDate: "2024" },
+  somalia: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Somalia 2024; solar+diesel; fragmented grid; conflict", reportDate: "2024" },
+  "south-sudan": { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA South Sudan 2024 (MEM); solar+diesel; war-affected grid)", reportDate: "2024" },
+  sudan: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Sudan 2024 (NEC); hydro+solar+gas; large grid)", reportDate: "2024" },
+  seychelles: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Seychelles 2024 (PUC); solar+diesel+pumped hydro; island)", reportDate: "2024" },
+  "north-korea": { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.5, source: "IRENA North Korea 2024 (KEPA); isolated grid; no public data; Pattern-D T3 static", reportDate: "2024" },
+  laos: { annualTWh: 0.2, kind: "hydro", source: "IRENA Laos 2024 (EDL); hydro+solar; export-oriented grid", reportDate: "2024" },
+  "east-timor": { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Timor-Leste 2024 (EDTL); solar+diesel; small island grid", reportDate: "2024" },
 };
 
 /** Pure builder: spec in, RegionData out. Exported for tests. */
@@ -267,10 +348,18 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
   );
 }
 
-/** Build the entire static-region map. */
-export function buildAllStatics(): Record<string, RegionData> {
+const CANONICAL_REGION_IDS = new Set(REGIONS.map((region) => region.id));
+
+interface BuildAllStaticsOptions {
+  /** Include non-canonical audit candidates for research checks, not dashboard output. */
+  includeCandidates?: boolean;
+}
+
+/** Build the static-region map emitted to the dashboard by default. */
+export function buildAllStatics(options: BuildAllStaticsOptions = {}): Record<string, RegionData> {
   const out: Record<string, RegionData> = {};
   for (const [id, spec] of Object.entries(STATIC_REGIONS)) {
+    if (!options.includeCandidates && !CANONICAL_REGION_IDS.has(id)) continue;
     out[id] = buildStaticRegion(id, spec);
   }
   return out;

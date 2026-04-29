@@ -275,8 +275,8 @@ const regionData = {
   // Norway split (2026-04-24): 5 ENTSO-E bidding zones NO1-NO5. The
   // norway loader emits a Record keyed by norway-no1..norway-no5.
   ...norway,
-  ontario,
-  alberta,
+  ...ontario,
+  ...alberta,
   ...ireland,
   peru,
   "south-africa": southAfrica,

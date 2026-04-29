@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 170 canonical regions", () => {
+  it("has 197 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -18,41 +18,62 @@ describe("regions", () => {
     // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27): +26 T3-static rows
     // sourced from `data/coverage-audit/2026-04-26-africa.csv` introduce-as-T3
     // subset (32 rows, 6 sub-0.05 TWh skipped). 144 + 26 = 170.
-    expect(REGIONS.length).toBe(170);
+    // PR #19 wa-swis per-fuel split (2026-04-28): wa-swis → wa-swis-solar +
+    // wa-swis-wind (net +1 live). 170 + 1 = 171.
+    // PR #19 south-africa per-fuel split (2026-04-28): south-africa →
+    // south-africa-solar + south-africa-wind (net +1 live). 171 + 1 = 172.
+    // PR #19 peru per-fuel split (2026-04-29): peru → peru-hydro + peru-solar +
+    // peru-wind (net +2 live). 172 + 2 = 174.
+    // ENTSO-E elevations reverted (2026-04-28): croatia/slovakia/slovenia/latvia/
+    // lithuania/albania removed from live ENTSO-E fetch; returned to T3 static
+    // (no verifiable A75 published rate found). No net change to region count
+    // since they were never added to regions.ts in this session — only the
+    // peru/south-africa/wa-swis splits added net +4 live.
+    // Brazil ONS residual split (2026-04-29): Paraiba and Maranhao become
+    // first-class live state-code rows, with brazil-other retained at that
+    // point as the residual ONS bucket. 174 + 2 = 176.
+    // Canada no-bundled-curtailment split (2026-04-29): alberta and ontario
+    // each split into wind + solar children. Net +2 live. 176 + 2 = 178.
+    // AEMO no-bundled-curtailment split: five NEM state rows each split
+    // into wind + solar children. Net +5 live. 178 + 5 = 183.
+    // Brazil no-bundled-curtailment split: fourteen ONS state/residual rows
+    // each split into wind + solar children. Net +14 live. 183 + 14 = 197.
+    expect(REGIONS.length).toBe(197);
   });
 
-  it("has 68 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
-    // v0.6: -5 aggregates + 10 splits = +5 live -> 49 + 5 = 54; Turkey live re-add -> 55.
-    // europe-expansion: -1 n-norway + 5 Norway zones + 1 Switzerland = +5 → 60.
-    // tier-routing fix (2026-04-25): brazil-mg/sp/mt/go/pr/rs reclassified
-    // static → live. The brazil-ne loader emits hourly data for all 13
-    // Brazilian states (NE + non-NE) from the same ONS feed; the 6 non-NE
-    // states had been incorrectly held as static fallbacks. 60 + 6 = 66.
-    // Phase-2.6 (2026-04-26): peru/south-africa/ireland-republic/northern-
-    // ireland — all four cycled live → static → live again as their
-    // loaders moved from probe-only to real measured fetches in the same
-    // expectations table; net 66.
-    // CODEX-7 / B4 Option B (locked 2026-04-25): the live regions are
-    // now subdivided into three live sub-tiers for paper presentation.
-    // Bounds (T1a ±15%, T1b ±50%, T1c ±35.5%) and labels are the only
-    // thing that change — for rendering, all three behave identically.
-    // Phase-2.6 WA brief (2026-04-26): wa-swis promoted static → live via
-    // AEMO WEM Facility SCADA daily JSON × 8% calibrated curtailment.
-    // 66 + 1 = 67.
-    // Phase-2.6 J brief (2026-04-26): japan promoted static → live via the
-    // Kyushu Electric area-demand CSV 5-min solar feed × 10% calibrated
-    // curtailment rate (own-jurisdiction Kyushu 2024 anchor ~1.7 TWh/yr).
-    // 67 + 1 = 68.
+  it("has 97 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
+    // ... (unchanged through phase-2.6) ...
+    // PR #19 peru split (2026-04-29): peru → peru-hydro + peru-solar + peru-wind.
+    // With the parent removed, this is net +2 live. 63 + 2 = 65.
+    // PR #19 south-africa split: net +1 live. 65 + 1 = 66.
+    // PR #19 wa-swis split: net +1 live. 66 + 1 = 67.
+    // Chile Wind promoted T3 → T1a from measured CEN monthly XLSX wind
+    // reductions. 67 + 1 = 68.
+    // Uruguay promoted T3 → T1a from ADME hourly Restricciones Operativas
+    // workbook. 68 + 1 = 69.
+    // Brazil ONS residual split: Paraiba and Maranhao added as first-class
+    // T1a live ONS state rows, with brazil-other still a live residual bucket.
+    // 69 + 2 = 71.
+    // ENTSO-E elevations reverted: no change (were never in regions.ts).
     //   T1c live-neighbour-anchored: 1 (switzerland; Czech rate)
     //   T1b live-domestic-anchored:  4 (italy-sardinia, italy-north-zone,
     //                                   netherlands, baltics)
-    //   T1a live-tso (own-jurisdiction rate): 63 (the rest, incl. wa-swis & japan).
-    // Total live = 63 + 4 + 1 = 68.
+    //   T1a live-tso (own-jurisdiction rate): 71 (the rest, incl. wa-swis-solar,
+    //           wa-swis-wind, south-africa-solar, south-africa-wind,
+    //           peru-hydro, peru-solar, peru-wind, chile-wind, uruguay,
+    //           brazil-paraiba, brazil-maranhao & japan).
+    // Canada no-bundled-curtailment split: alberta and ontario each split
+    // into wind + solar children. Net +2 T1a live. 71 + 2 = 73.
+    // AEMO no-bundled-curtailment split: five state rows split into ten
+    // wind/solar children. Net +5 T1a live. 73 + 5 = 78.
+    // Brazil no-bundled-curtailment split: fourteen state/residual rows split
+    // into wind/solar children. Net +14 T1a live. 78 + 14 = 92.
+    // Total live = 92 + 4 + 1 = 97.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(68);
+    expect(liveTotal).toBe(97);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(63);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(92);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -68,7 +89,7 @@ describe("regions", () => {
     }
   });
 
-  it("has 98 static regions", () => {
+  it("has 96 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
@@ -90,7 +111,11 @@ describe("regions", () => {
     // Congo DRC, Cote d'Ivoire, Eswatini, Gabon, Ghana, Madagascar, Malawi,
     // Mauritania, Mauritius, Mozambique, Nigeria, Rwanda, Senegal, Tanzania,
     // Togo, Tunisia, Uganda, Zambia, Zimbabwe). 72 + 26 = 98.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(98);
+    // Chile Wind promoted static → live via measured CEN XLSX wind reductions.
+    // 98 - 1 = 97.
+    // Uruguay promoted static → live via ADME hourly Restricciones Operativas workbook.
+    // 97 - 1 = 96.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(96);
   });
 
   it("has 4 flare regions", () => {
@@ -101,6 +126,35 @@ describe("regions", () => {
     for (const r of REGIONS.filter(x => x.tier === "flare")) {
       expect(r.kind).toBe("flare");
     }
+  });
+
+  it("keeps remaining mixed rows explicit so no new bundled curtailment slips in", () => {
+    const allowedBundledBacklog = new Set([
+      "caiso", "ercot-west", "ercot-east", "miso", "pjm", "spp",
+      "nyiso-rest", "iso-ne-rest", "bpa",
+      "belgium", "iberia", "portugal", "germany", "france",
+      "netherlands", "denmark-west", "denmark-east", "poland",
+      "greece", "romania", "turkey", "italy-north-zone",
+      "italy-south", "italy-sardinia", "sweden-south", "hungary",
+      "czech-republic", "bulgaria", "gb-england-wales",
+      "norway-no1", "norway-no2", "norway-no3", "norway-no4",
+      "new-zealand",
+      "gansu", "ningxia", "india-south", "india-west", "morocco",
+      "taiwan", "jordan", "pakistan", "manitoba", "hawaii-island",
+      "austria", "cuba", "cabo-verde", "cote-divoire", "eswatini",
+      "mauritius", "nigeria", "rwanda", "senegal", "tunisia",
+    ]);
+
+    const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
+    expect(mixedIds).toEqual([...allowedBundledBacklog].sort());
+    expect(mixedIds).not.toContain("alberta");
+    expect(mixedIds).not.toContain("ontario");
+    expect(mixedIds).not.toContain("aemo-nsw");
+    expect(mixedIds).not.toContain("aemo-vic");
+    expect(mixedIds).not.toContain("aemo-qld");
+    expect(mixedIds).not.toContain("aemo-sa");
+    expect(mixedIds).not.toContain("aemo-tas");
+    expect(mixedIds.some((id) => id.startsWith("brazil-"))).toBe(false);
   });
 
   it("all region ids are unique and kebab-case", () => {
@@ -123,18 +177,35 @@ describe("regions", () => {
   });
 
   it("includes the new live regional expansions", () => {
-    expect(REGIONS.find(r => r.id === "aemo-nsw")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "brazil-rn")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "aemo-nsw")).toBeUndefined();
+    for (const id of [
+      "aemo-nsw-wind", "aemo-nsw-solar",
+      "aemo-vic-wind", "aemo-vic-solar",
+      "aemo-qld-wind", "aemo-qld-solar",
+      "aemo-sa-wind", "aemo-sa-solar",
+      "aemo-tas-wind", "aemo-tas-solar",
+    ]) {
+      expect(REGIONS.find(r => r.id === id)).toBeDefined();
+    }
+    expect(REGIONS.find(r => r.id === "brazil-rn")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "brazil-rn-wind")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "brazil-rn-solar")).toBeDefined();
     expect(REGIONS.find(r => r.id === "ercot-west")).toBeDefined();
     // n-norway replaced by Norway NO1-NO5 split in europe-expansion;
     // see the dedicated test block below.
     expect(REGIONS.find(r => r.id === "n-norway")).toBeUndefined();
-    expect(REGIONS.find(r => r.id === "ontario")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "alberta")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "ontario-wind")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "ontario-solar")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "alberta-wind")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "alberta-solar")).toBeDefined();
     // Ireland split in v0.6; see coverage-audit test block below.
     expect(REGIONS.find(r => r.id === "ireland")).toBeUndefined();
-    expect(REGIONS.find(r => r.id === "peru")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "south-africa")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "peru")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "peru-hydro")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "peru-solar")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "peru-wind")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "south-africa-solar")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "south-africa-wind")).toBeDefined();
     expect(REGIONS.find(r => r.id === "poland")).toBeDefined();
     expect(REGIONS.find(r => r.id === "turkey")).toBeDefined();
     expect(REGIONS.find(r => r.id === "greece")).toBeDefined();
@@ -186,7 +257,8 @@ describe("regions", () => {
 
   it("includes the v1k global fallback expansion", () => {
     for (const id of [
-      "wa-swis",
+      "wa-swis-solar",
+      "wa-swis-wind",
       "nt-pilbara",
       "indonesia",
       "malaysia",
@@ -228,8 +300,8 @@ describe("regions", () => {
   it("includes the v1p porcupine fill", () => {
     // brazil-mg/sp/mt/go/pr/rs were originally added here as static
     // fallbacks; on 2026-04-25 they were reclassified live because the
-    // brazil-ne loader actually emits them. They're now exercised by the
-    // separate "Brazilian non-NE states are live" test below.
+    // brazil-ne loader actually emits them. The no-bundled-curtailment split
+    // now exercises their wind/solar children in the dedicated test below.
     for (const id of [
       "inner-mongolia",
       "gansu",
@@ -257,11 +329,11 @@ describe("regions", () => {
     }
   });
 
-  it("Brazilian non-NE states are live (sourced from the same ONS feed as brazil-ne)", () => {
-    // The brazil-ne loader's STATE_TO_REGION map emits all 13 Brazilian
+  it("Brazilian non-NE state fuel children are live (sourced from the same ONS feed as brazil-ne)", () => {
+    // The brazil-ne loader's STATE_TO_REGION map emits named Brazilian
     // states from the ONS hourly CSV. The 6 non-NE states were
     // incorrectly held as static fallbacks until the 2026-04-25 fix.
-    for (const id of [
+    for (const parentId of [
       "brazil-mg",
       "brazil-sp",
       "brazil-mt",
@@ -269,10 +341,27 @@ describe("regions", () => {
       "brazil-pr",
       "brazil-rs",
     ]) {
-      const region = REGIONS.find(r => r.id === id);
-      expect(region).toBeDefined();
-      expect(region?.tier).toBe("live");
+      expect(REGIONS.find(r => r.id === parentId)).toBeUndefined();
+      for (const fuel of ["wind", "solar"]) {
+        const region = REGIONS.find(r => r.id === `${parentId}-${fuel}`);
+        expect(region).toBeDefined();
+        expect(region?.tier).toBe("live");
+      }
     }
+  });
+
+  it("includes the northern Brazil ONS refinements", () => {
+    for (const parentId of ["brazil-paraiba", "brazil-maranhao"]) {
+      expect(REGIONS.find(r => r.id === parentId)).toBeUndefined();
+      for (const fuel of ["wind", "solar"]) {
+        const region = REGIONS.find(r => r.id === `${parentId}-${fuel}`);
+        expect(region).toBeDefined();
+        expect(region?.tier).toBe("live");
+      }
+    }
+    expect(REGIONS.find(r => r.id === "brazil-other")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "brazil-other-wind")?.name).toBe("Brazil Other ONS States Wind");
+    expect(REGIONS.find(r => r.id === "brazil-other-solar")?.name).toBe("Brazil Other ONS States Solar");
   });
 
   it("does not include Colombia without reachable live XM API data", () => {

@@ -7,6 +7,7 @@ import { fetchText } from "../lib/fetch.js";
 import { hourlyAverage } from "../lib/csv.js";
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
+import { splitRegion } from "../lib/split-region.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
 /**
@@ -31,9 +32,14 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
  * series is hourly TSO-published; only the multiplier is calibrated. This
  * matches the precedent set by the south-africa loader (Eskom Total_Hourly_
  * Generation × 12% calibrated curtailment).
+ *
+ * Per-fuel split (Pattern-PF, PR #19): the WEM SCADA data tags each facility
+ * by DUID so wind and solar are tracked separately. Instead of one blended
+ * `RegionData`, the loader returns a `Record<"wa-swis-solar"|"wa-swis-wind", RegionData>`
+ * with distinct centroids and `kind` values, so each fuel appears in the
+ * correct hotspot column and the solar pillar disappears overnight.
  */
 
-const REGION_ID = "wa-swis";
 const DIRECTORY_URL = "https://data.wa.aemo.com.au/public/market-data/wemde/facilityScada/previous/";
 const RATE = 0.08; // 8% calibrated curtailment rate (WA-SWIS 2024 anchor: 0.4 TWh/yr)
 
@@ -96,15 +102,9 @@ function unzipJson(zipBytes: Uint8Array): string {
 }
 
 function listRecentZips(html: string, limit = 30): string[] {
-  // AEMO WEM directory listings emit absolute paths in HREFs:
-  // <A HREF="/public/market-data/wemde/facilityScada/previous/FacilityScada_20260424.zip">
-  // Match either an absolute or bare filename to be defensive against future
-  // template changes; new URL(href, DIRECTORY_URL) handles both.
   const matches = Array.from(
     html.matchAll(/href="([^"]*FacilityScada_\d{8}\.zip)"/gi),
   ).map((m) => m[1]);
-  // The listing is sorted oldest-first; take the last `limit` entries to get
-  // the most recent ~30 days.
   return matches.slice(-limit).map((href) => new URL(href, DIRECTORY_URL).toString());
 }
 
@@ -115,22 +115,23 @@ export interface WemScadaParsed {
   windMwhTotal: number;
   /** 30-day-window solar curtailment-proxy MWh total. */
   solarMwhTotal: number;
+  /**
+   * Per-timestamp curtailment-proxy MW breakdown by fuel.
+   * Key = UTC ISO timestamp, value = { windMw, solarMw }.
+   * Used to build per-fuel separate point arrays for the split output.
+   */
+  byTimestamp: Map<string, { windMw: number; solarMw: number }>;
 }
 
 /**
- * Parse one daily SCADA JSON. Sums wind+solar generation across all matched
- * facilities at each 5-minute timestamp before applying the calibration rate;
- * this preserves the regional curtailment-proxy MW magnitude. Without this
- * sum, hourlyAverage downstream would average per-facility values and dilute
- * the signal by the count of active facilities.
+ * Parse one daily SCADA JSON. Tracks wind and solar separately at each
+ * 5-minute timestamp and accumulates per-fuel MWh totals.
  */
 export function parseWemScadaJson(jsonStr: string): WemScadaParsed {
   const parsed = JSON.parse(jsonStr) as WemScadaResponse;
   const intervals = parsed.data?.facilityScadaDispatchIntervals ?? [];
 
-  // Bucket per UTC timestamp. We track wind+solar separately so we can
-  // accumulate the per-fuel MWh totals for the observed fuelShare.
-  const sums = new Map<string, { windMw: number; solarMw: number }>();
+  const byTimestamp = new Map<string, { windMw: number; solarMw: number }>();
   let windMwhTotal = 0;
   let solarMwhTotal = 0;
 
@@ -144,12 +145,10 @@ export function parseWemScadaJson(jsonStr: string): WemScadaParsed {
     const utcTimestamp = new Date(interval.dispatchInterval).toISOString();
     if (Number.isNaN(new Date(utcTimestamp).getTime())) continue;
 
-    // 5-minute MWh × 12 → instantaneous MW
-    const generatedMw = energyMwh * 12;
-    const curtailedMw = generatedMw * RATE;
+    const curtailedMw = energyMwh * 12 * RATE;
     const curtailedMwh = energyMwh * RATE;
 
-    const bucket = sums.get(utcTimestamp) ?? { windMw: 0, solarMw: 0 };
+    const bucket = byTimestamp.get(utcTimestamp) ?? { windMw: 0, solarMw: 0 };
     if (isWind) {
       bucket.windMw += curtailedMw;
       windMwhTotal += curtailedMwh;
@@ -157,28 +156,68 @@ export function parseWemScadaJson(jsonStr: string): WemScadaParsed {
       bucket.solarMw += curtailedMw;
       solarMwhTotal += curtailedMwh;
     }
-    sums.set(utcTimestamp, bucket);
+    byTimestamp.set(utcTimestamp, bucket);
   }
 
-  const points: CurtailmentPoint[] = Array.from(sums.entries())
+  const points: CurtailmentPoint[] = Array.from(byTimestamp.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([utcTimestamp, b]) => ({
       utcTimestamp,
       mw: b.windMw + b.solarMw,
     }));
 
-  return { points, windMwhTotal, solarMwhTotal };
+  return { points, windMwhTotal, solarMwhTotal, byTimestamp };
 }
 
-const run = async (): Promise<RegionData> => {
+function buildWaSwisRegionData(
+  regionId: "wa-swis-solar" | "wa-swis-wind",
+  points: CurtailmentPoint[],
+  fuel: "solar" | "wind",
+): RegionData {
+  const hourly = hourlyAverage(points);
+  const lastUpdated = hourly.at(-1)?.utcTimestamp ?? new Date().toISOString();
+  return {
+    regionId,
+    profile: timeOfDayAverageGW(hourly),
+    latestProfile: latestCompleteUtcDayProfileGW(hourly),
+    totalTWh: totalTWh30d(hourly),
+    peakGW: peakGW(hourly),
+    lastUpdated,
+    lastSuccessAt: new Date().toISOString(),
+    sourceNote: `AEMO WEM Facility SCADA hourly RE × 8% calibrated curtailment (WA-SWIS 2024 anchor: 0.4 TWh/yr; SWIS islanded; fuel type: ${fuel})`,
+    fuelShare: { [fuel]: 1 },
+  };
+}
+
+function isRegionData(value: unknown): value is RegionData {
+  return typeof value === "object" && value !== null
+    && typeof (value as RegionData).regionId === "string"
+    && Array.isArray((value as RegionData).profile);
+}
+
+function forceFuel(data: RegionData, fuel: "solar" | "wind"): RegionData {
+  return { ...data, fuelShare: { [fuel]: 1 } };
+}
+
+function normalizeCachedWaSwis(cached: unknown): Record<string, RegionData> {
+  if (isRegionData(cached)) {
+    const solar = cached.fuelShare?.solar ?? 0.7;
+    const wind = cached.fuelShare?.wind ?? 0.3;
+    return {
+      "wa-swis-solar": forceFuel(splitRegion(cached, "wa-swis-solar", solar, "Legacy WA-SWIS aggregate cache split by prior solar share"), "solar"),
+      "wa-swis-wind": forceFuel(splitRegion(cached, "wa-swis-wind", wind, "Legacy WA-SWIS aggregate cache split by prior wind share"), "wind"),
+    };
+  }
+  return cached as Record<string, RegionData>;
+}
+
+const run = async (): Promise<Record<string, RegionData>> => {
   const listing = await fetchText(DIRECTORY_URL);
   const urls = listRecentZips(listing, 30);
   if (!urls.length) throw new Error("AEMO WEM directory listing returned no daily SCADA zips");
 
-  const allPoints: CurtailmentPoint[] = [];
-  let windMwhTotal = 0;
-  let solarMwhTotal = 0;
-
+  const windPoints: CurtailmentPoint[] = [];
+  const solarPoints: CurtailmentPoint[] = [];
   for (const url of urls) {
     try {
       const res = await fetch(url);
@@ -188,53 +227,45 @@ const run = async (): Promise<RegionData> => {
       }
       const jsonStr = unzipJson(new Uint8Array(await res.arrayBuffer()));
       const parsed = parseWemScadaJson(jsonStr);
-      allPoints.push(...parsed.points);
-      windMwhTotal += parsed.windMwhTotal;
-      solarMwhTotal += parsed.solarMwhTotal;
+
+      for (const [ts, bucket] of parsed.byTimestamp) {
+        if (bucket.windMw > 0) windPoints.push({ utcTimestamp: ts, mw: bucket.windMw });
+        if (bucket.solarMw > 0) solarPoints.push({ utcTimestamp: ts, mw: bucket.solarMw });
+      }
     } catch (err) {
       console.warn(`WEM processing skipped: ${url}: ${(err as Error).message}`);
     }
   }
 
-  if (allPoints.length === 0) {
+  if (windPoints.length === 0 && solarPoints.length === 0) {
     throw new Error("AEMO WEM returned no usable wind or solar SCADA points");
   }
 
-  // Bucket 5-minute MW values to hourly averages (per-hour mean of the 12
-  // five-minute regional-total MW samples). The downstream profile helpers
-  // (timeOfDayAverageGW, totalTWh30d, peakGW, latestCompleteUtcDayProfileGW)
-  // assume hourly cadence with default intervalHours=1.
-  const points = hourlyAverage(allPoints);
-
-  if (points.length === 0) {
-    throw new Error("AEMO WEM produced points before bucketing but none after; timestamp parse failed");
+  const out: Record<string, RegionData> = {};
+  if (solarPoints.length > 0) {
+    out["wa-swis-solar"] = buildWaSwisRegionData("wa-swis-solar", solarPoints, "solar");
   }
-
-  const denom = windMwhTotal + solarMwhTotal;
-  const fuelShare = denom > 0
-    ? { wind: windMwhTotal / denom, solar: solarMwhTotal / denom }
-    : { wind: 0.3, solar: 0.7 }; // typical SWIS mix fallback
-
-  return {
-    regionId: REGION_ID,
-    profile: timeOfDayAverageGW(points),
-    latestProfile: latestCompleteUtcDayProfileGW(points),
-    totalTWh: totalTWh30d(points),
-    peakGW: peakGW(points),
-    lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    lastSuccessAt: new Date().toISOString(),
-    sourceNote: `AEMO WEM Facility SCADA hourly RE × 8% calibrated curtailment (WA-SWIS 2024 anchor: 0.4 TWh/yr; SWIS is islanded so curtailment-rate higher than NEM; observed split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
-    fuelShare,
-  };
+  if (windPoints.length > 0) {
+    out["wa-swis-wind"] = buildWaSwisRegionData("wa-swis-wind", windPoints, "wind");
+  }
+  return out;
 };
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback<RegionData>(REGION_ID, run, {
+  withFallback<Record<string, RegionData>>("wa-swis", run, {
     regionTier: "live" as const,
-    tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
-    tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+    tagLive: (r) => {
+      const tagged: Record<string, RegionData> = {};
+      for (const [k, v] of Object.entries(r)) tagged[k] = { ...v, sourceStatus: "live" as const };
+      return tagged;
+    },
+    tagCached: (c) => {
+      const tagged: Record<string, RegionData> = {};
+      for (const [k, v] of Object.entries(normalizeCachedWaSwis(c))) tagged[k] = { ...v, sourceStatus: "cached" as const };
+      return tagged;
+    },
   })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {

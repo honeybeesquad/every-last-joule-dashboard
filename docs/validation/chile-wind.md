@@ -1,17 +1,17 @@
 # Validation — Chile Wind (`chile-wind`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `chile-wind`
 - **Country:** CHL
-- **Tier:** static
+- **Tier:** live
 - **Kind:** wind
-- **Source:** CEN Chile 2024 ERV wind estimate
+- **Source:** CEN Chile monthly XLSX wind reductions
 - **Source URL:** [https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/](https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/)
 - **Loader:** [`chile-wind.json.ts`](../../src/data/chile-wind.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -26,18 +26,18 @@ Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** CEN 2024 wind curtailment ~0.4 TWh (northern regions)
+- **TSO annual curtailment (latest published):** CEN monthly ERV workbooks publish plant-level hourly wind reductions after month close
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+_No historical backfill parquet yet. The live snapshot now comes directly from CEN monthly wind-reduction workbooks rather than a typical wind profile._
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+CEN publishes the workbook after month close, so the feed is measured but not real-time. The loader parses the `Resumen-DiarioHorario-Eolico` wind sheet and sums `PE-` plant rows into hourly regional reductions. Daily PDF apportionment is currently implemented only for Atacama solar.
 
 ## Links
 

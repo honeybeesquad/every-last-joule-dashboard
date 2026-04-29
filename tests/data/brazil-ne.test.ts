@@ -51,7 +51,20 @@ describe("brazil-ne parser", () => {
       "N;NORTE;MA;MARANHAO;PLANT B;B;-;2026-03-01 00:00:00;7.593;1.5;386.265;20.27;;;;",
     ].join("\n");
     const points = parseOnsCurtailmentCsv(sample);
-    expect(points["brazil-other"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5 }]);
+    expect(points["brazil-maranhao"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5 }]);
+  });
+
+  it("breaks out Paraiba and Maranhao from the residual ONS bucket", () => {
+    const sample = [
+      "id_subsistema;nom_subsistema;id_estado;nom_estado;nom_usina;id_ons;ceg;din_instante;val_geracao;val_geracaolimitada;val_disponibilidade;val_geracaoreferencia;val_geracaoreferenciafinal;cod_razaorestricao;cod_origemrestricao;dsc_restricao",
+      "NE;NORDESTE;PB;PARAIBA;PLANT PB;A;-;2026-03-01 00:00:00;12;2.5;389.1;20.721;;;;",
+      "N;NORTE;MA;MARANHAO;PLANT MA;B;-;2026-03-01 00:00:00;7;1.5;386.265;20.27;;;;",
+      "S;SUL;SC;SANTA CATARINA;PLANT SC;C;-;2026-03-01 00:00:00;3;0.5;100;4;;;;",
+    ].join("\n");
+    const points = parseOnsCurtailmentCsv(sample);
+    expect(points["brazil-paraiba"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 2.5 }]);
+    expect(points["brazil-maranhao"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5 }]);
+    expect(points["brazil-other"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 0.5 }]);
   });
 
   it("timestamps are chronological within each cluster", () => {

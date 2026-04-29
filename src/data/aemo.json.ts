@@ -12,9 +12,11 @@ import { AEMO_UNIT_MAP } from "./aemo-unit-map.js";
 
 const DIRECTORY_URL = "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/";
 
-type AemoRegionId = "aemo-nsw" | "aemo-vic" | "aemo-qld" | "aemo-sa" | "aemo-tas";
+type AemoStateId = "aemo-nsw" | "aemo-vic" | "aemo-qld" | "aemo-sa" | "aemo-tas";
+type AemoFuel = "wind" | "solar";
+type AemoRegionId = `${AemoStateId}-${AemoFuel}`;
 
-const REGION_CODE_TO_ID: Record<string, AemoRegionId> = {
+const REGION_CODE_TO_ID: Record<string, AemoStateId> = {
   NSW1: "aemo-nsw",
   VIC1: "aemo-vic",
   QLD1: "aemo-qld",
@@ -39,14 +41,18 @@ function parseAemoDate(localAest: string): string | null {
 
 export interface AemoParsed {
   /** Total (wind+solar) curtailment points per state. */
-  points: Record<AemoRegionId, CurtailmentPoint[]>;
+  points: Record<AemoStateId, CurtailmentPoint[]>;
+  /** Wind-only curtailment points per state. */
+  windPoints: Record<AemoStateId, CurtailmentPoint[]>;
+  /** Solar-only curtailment points per state. */
+  solarPoints: Record<AemoStateId, CurtailmentPoint[]>;
   /** Per-state 30-day-window wind MWh total, for fuelShare derivation. */
-  windMwhTotal: Record<AemoRegionId, number>;
+  windMwhTotal: Record<AemoStateId, number>;
   /** Per-state 30-day-window solar MWh total. */
-  solarMwhTotal: Record<AemoRegionId, number>;
+  solarMwhTotal: Record<AemoStateId, number>;
 }
 
-function emptyAemoMap<T>(factory: () => T): Record<AemoRegionId, T> {
+function emptyAemoMap<T>(factory: () => T): Record<AemoStateId, T> {
   return {
     "aemo-nsw": factory(),
     "aemo-vic": factory(),
@@ -57,7 +63,9 @@ function emptyAemoMap<T>(factory: () => T): Record<AemoRegionId, T> {
 }
 
 export function parseAemoDispatchCsv(csv: string): AemoParsed {
-  const totals = new Map<AemoRegionId, Map<string, number>>();
+  const totals = new Map<AemoStateId, Map<string, number>>();
+  const windTotals = new Map<AemoStateId, Map<string, number>>();
+  const solarTotals = new Map<AemoStateId, Map<string, number>>();
   const windMwh = emptyAemoMap<number>(() => 0);
   const solarMwh = emptyAemoMap<number>(() => 0);
   let headers: string[] = [];
@@ -98,26 +106,43 @@ export function parseAemoDispatchCsv(csv: string): AemoParsed {
 
     // Accumulate per-fuel totals for observed wind/solar split.
     const tech = (unit as { fueltech?: string }).fueltech;
-    if (tech === "wind") windMwh[regionId] += curtailedMw;
-    else if (tech === "solar") solarMwh[regionId] += curtailedMw;
+    if (tech === "wind") {
+      let windBucket = windTotals.get(regionId);
+      if (!windBucket) windTotals.set(regionId, (windBucket = new Map<string, number>()));
+      windBucket.set(utcTimestamp, (windBucket.get(utcTimestamp) ?? 0) + curtailedMw);
+      windMwh[regionId] += curtailedMw;
+    } else if (tech === "solar") {
+      let solarBucket = solarTotals.get(regionId);
+      if (!solarBucket) solarTotals.set(regionId, (solarBucket = new Map<string, number>()));
+      solarBucket.set(utcTimestamp, (solarBucket.get(utcTimestamp) ?? 0) + curtailedMw);
+      solarMwh[regionId] += curtailedMw;
+    }
   }
 
-  const points = Object.fromEntries(
-    Object.values(REGION_CODE_TO_ID).map((regionId) => [
-      regionId,
-      Array.from(totals.get(regionId)?.entries() ?? [])
+  const pointsFrom = (source: Map<AemoStateId, Map<string, number>>) => Object.fromEntries(
+    Object.values(REGION_CODE_TO_ID).map((stateId) => [
+      stateId,
+      Array.from(source.get(stateId)?.entries() ?? [])
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw })),
     ]),
-  ) as Record<AemoRegionId, CurtailmentPoint[]>;
+  ) as Record<AemoStateId, CurtailmentPoint[]>;
 
-  return { points, windMwhTotal: windMwh, solarMwhTotal: solarMwh };
+  const points = pointsFrom(totals);
+
+  return {
+    points,
+    windPoints: pointsFrom(windTotals),
+    solarPoints: pointsFrom(solarTotals),
+    windMwhTotal: windMwh,
+    solarMwhTotal: solarMwh,
+  };
 }
 
 export const parseAemoIntermittentCsv = parseAemoDispatchCsv;
 
 /** Backwards-compat helper for tests: returns just the per-state points. */
-export function parseAemoDispatchCsvPoints(csv: string): Record<AemoRegionId, CurtailmentPoint[]> {
+export function parseAemoDispatchCsvPoints(csv: string): Record<AemoStateId, CurtailmentPoint[]> {
   return parseAemoDispatchCsv(csv).points;
 }
 
@@ -144,32 +169,25 @@ const run = async (): Promise<Record<AemoRegionId, RegionData>> => {
   const urls = listRecentZips(listing, 30);
   if (!urls.length) throw new Error("AEMO directory listing returned no daily dispatch zips");
 
-  const allPoints: Record<AemoRegionId, CurtailmentPoint[]> = emptyAemoMap(() => []);
-  const windTotals: Record<AemoRegionId, number> = emptyAemoMap(() => 0);
-  const solarTotals: Record<AemoRegionId, number> = emptyAemoMap(() => 0);
+  const windPoints: Record<AemoStateId, CurtailmentPoint[]> = emptyAemoMap(() => []);
+  const solarPoints: Record<AemoStateId, CurtailmentPoint[]> = emptyAemoMap(() => []);
 
   for (const url of urls) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
     const csv = unzipCsv(new Uint8Array(await res.arrayBuffer()));
     const parsed = parseAemoDispatchCsv(csv);
-    for (const regionId of Object.keys(allPoints) as AemoRegionId[]) {
-      allPoints[regionId].push(...parsed.points[regionId]);
-      windTotals[regionId] += parsed.windMwhTotal[regionId];
-      solarTotals[regionId] += parsed.solarMwhTotal[regionId];
+    for (const stateId of Object.values(REGION_CODE_TO_ID)) {
+      windPoints[stateId].push(...parsed.windPoints[stateId]);
+      solarPoints[stateId].push(...parsed.solarPoints[stateId]);
     }
   }
 
   const out = {} as Record<AemoRegionId, RegionData>;
-  for (const regionId of Object.keys(allPoints) as AemoRegionId[]) {
-    const points = hourlyAverage(allPoints[regionId]);
-    const windTot = windTotals[regionId];
-    const solarTot = solarTotals[regionId];
-    const denom = windTot + solarTot;
-    const fuelShare = denom > 0
-      ? { wind: windTot / denom, solar: solarTot / denom }
-      : undefined;
-    out[regionId] = {
+  const buildRegion = (stateId: AemoStateId, fuel: AemoFuel, rawPoints: CurtailmentPoint[]): RegionData => {
+    const points = hourlyAverage(rawPoints);
+    const regionId = `${stateId}-${fuel}` as AemoRegionId;
+    return {
       regionId,
       profile: timeOfDayAverageGW(points),
       latestProfile: latestCompleteUtcDayProfileGW(points),
@@ -177,29 +195,63 @@ const run = async (): Promise<Record<AemoRegionId, RegionData>> => {
       peakGW: peakGW(points),
       lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
       lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-      sourceNote: fuelShare
-        ? `NEMWEB SEMIDISPATCHCAP direct curtailment (observed ${regionId.replace("aemo-", "").toUpperCase()} split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
-        : "NEMWEB DISPATCHIS/Next Day Dispatch SEMIDISPATCHCAP direct curtailment per state",
-      ...(fuelShare ? { fuelShare } : {}),
+      sourceNote: `NEMWEB SEMIDISPATCHCAP direct ${fuel} curtailment (${stateId.replace("aemo-", "").toUpperCase()})`,
     };
+  };
+
+  for (const stateId of Object.values(REGION_CODE_TO_ID)) {
+    out[`${stateId}-wind` as AemoRegionId] = buildRegion(stateId, "wind", windPoints[stateId]);
+    out[`${stateId}-solar` as AemoRegionId] = buildRegion(stateId, "solar", solarPoints[stateId]);
   }
 
   return out;
 };
 
+function splitLegacyAemoCache(
+  cached: Record<AemoStateId, RegionData> | Record<AemoRegionId, RegionData>,
+): Record<AemoRegionId, RegionData> {
+  if ("aemo-nsw-wind" in cached && "aemo-nsw-solar" in cached) {
+    return cached as Record<AemoRegionId, RegionData>;
+  }
+
+  const out = {} as Record<AemoRegionId, RegionData>;
+  for (const stateId of Object.values(REGION_CODE_TO_ID)) {
+    const parent = (cached as Record<AemoStateId, RegionData>)[stateId];
+    if (!parent) continue;
+    const scale = (fuel: AemoFuel, share: number): RegionData => ({
+      ...parent,
+      regionId: `${stateId}-${fuel}` as AemoRegionId,
+      profile: parent.profile.map((value) => value * share),
+      latestProfile: parent.latestProfile ? parent.latestProfile.map((value) => value * share) : null,
+      totalTWh: parent.totalTWh * share,
+      peakGW: parent.peakGW * share,
+      sourceNote: `NEMWEB SEMIDISPATCHCAP direct ${fuel} curtailment (${stateId.replace("aemo-", "").toUpperCase()}; split from legacy state wind+solar cache)`,
+      fuelShare: undefined,
+      confidenceTier: undefined,
+      uncertaintyLowGW: undefined,
+      uncertaintyHighGW: undefined,
+    });
+    out[`${stateId}-wind` as AemoRegionId] = scale("wind", parent.fuelShare?.wind ?? 0);
+    out[`${stateId}-solar` as AemoRegionId] = scale("solar", parent.fuelShare?.solar ?? 0);
+  }
+  return out;
+}
+
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback<Record<AemoRegionId, RegionData>>("aemo", run, {
+  withFallback<Record<AemoRegionId, RegionData> | Record<AemoStateId, RegionData>>("aemo", run, {
     regionTier: "live" as const,
     tagLive: (r) => Object.fromEntries(
       Object.entries(r).map(([k, v]) => [k, { ...v, sourceStatus: "live" as const }]),
     ) as Record<AemoRegionId, RegionData>,
-    tagCached: (c) => Object.fromEntries(
-      Object.entries(c).map(([k, v]) => [k, { ...v, sourceStatus: "cached" as const }]),
-    ) as Record<AemoRegionId, RegionData>,
+    tagCached: (c) => splitLegacyAemoCache(
+      Object.fromEntries(
+        Object.entries(c).map(([k, v]) => [k, { ...v, sourceStatus: "cached" as const }]),
+      ) as Record<AemoStateId, RegionData> | Record<AemoRegionId, RegionData>,
+    ),
   })
-    .then((data) => process.stdout.write(JSON.stringify(data)))
+    .then((data) => process.stdout.write(JSON.stringify(splitLegacyAemoCache(data))))
     .catch((err) => {
       console.error("aemo loader failed", err);
       process.exit(1);

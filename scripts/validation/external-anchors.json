@@ -60,6 +60,16 @@
       "retrieved_by": "gemini",
       "notes": "Plant-level curtailment by id_ons; aggregated to state by `src/lib/brazil-clusters.ts`."
     },
+    "cen-erv-monthly": {
+      "title": "Reducciones de Generacion Renovable",
+      "publisher": "Coordinador Electrico Nacional",
+      "publication_date": "2026-04-12",
+      "source_url": "https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/reducciones-erv-2026/",
+      "release_id": "CEN-ERV-monthly-XLSX",
+      "retrieved_at": "2026-04-29",
+      "retrieved_by": "codex",
+      "notes": "Monthly XLSX workbooks with plant-level hourly wind, solar, and hydro reductions after month close."
+    },
     "entsoe-2024-a75": {
       "title": "ENTSO-E Transparency Platform — A75 Actual Generation per Generation Unit (dispatch-down derivation)",
       "publisher": "ENTSO-E",
@@ -627,15 +637,15 @@
       "retrieved_by": "gemini"
     },
     "adme-2024-annual": {
-      "title": "ADME Annual Report 2024",
+      "title": "ADME control-panel Restricciones Operativas workbook, Jan-Dec 2024",
       "publisher": "ADME",
       "publication_date": "2024-12-31",
-      "source_url": null,
+      "source_url": "https://www.adme.com.uy/panelControl/ro_excel.php?anod=2024&mesd=01&anoh=2024&mesh=12",
       "_provenance_meta": {
-        "needs_url": true
+        "notes": "Direct hourly MWh restrictions workbook; local audit sum on 2026-04-29 was ~0.108 TWh across renewable plant columns."
       },
-      "retrieved_at": "2026-04-26",
-      "retrieved_by": "gemini"
+      "retrieved_at": "2026-04-29",
+      "retrieved_by": "codex"
     },
     "evn-2024-annual": {
       "title": "EVN Annual Report 2024",
@@ -986,18 +996,17 @@
     }
   },
   "chile-wind": {
-    "tso_annual_latest": "CEN 2024 wind curtailment ~0.4 TWh (northern regions)",
-    "tso_annual_anchors": {
-      "2024": {
-        "value": 0.4,
-        "unit": "TWh",
-        "provenance_id": "ons-2024-restricao",
-        "method": "inferred"
+    "tso_annual_latest": "CEN monthly ERV workbooks publish plant-level hourly wind reductions after month close; latest loader snapshot parsed the February 2026 workbook",
+    "other_anchor": "CEN Reducciones ERV monthly XLSX wind sheet",
+    "other_anchors": [
+      {
+        "label": "CEN Reducciones ERV monthly XLSX wind sheet",
+        "provenance_id": "cen-erv-monthly"
       }
-    },
+    ],
     "_anchor_meta": {
       "migrated_to_v2": true,
-      "migrated_at": "2026-04-26"
+      "migrated_at": "2026-04-29"
     }
   },
   "cyprus": {
@@ -2293,13 +2302,13 @@
     }
   },
   "uruguay": {
-    "tso_annual_latest": "ADME 2024 wind curtailment ~0.1 TWh",
+    "tso_annual_latest": "ADME 2024 hourly renewable operating restrictions ~0.108 TWh",
     "tso_annual_anchors": {
       "2024": {
-        "value": 0.1,
+        "value": 0.108,
         "unit": "TWh",
         "provenance_id": "adme-2024-annual",
-        "method": "inferred"
+        "method": "direct-hourly-sum"
       }
     },
     "_anchor_meta": {

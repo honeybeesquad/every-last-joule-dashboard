@@ -38,6 +38,8 @@ interface OntarioOutput {
 
 export interface OntarioParsed {
   points: CurtailmentPoint[];
+  windPoints: CurtailmentPoint[];
+  solarPoints: CurtailmentPoint[];
   windMwTotal: number;
   solarMwTotal: number;
 }
@@ -47,13 +49,15 @@ export function parseOntarioXml(xml: string): OntarioParsed {
   const doc = parser.parse(xml) as OntarioDoc;
   const body = doc.IMODocument?.IMODocBody;
   const reportDate = body?.Date;
-  if (!reportDate) return { points: [], windMwTotal: 0, solarMwTotal: 0 };
+  if (!reportDate) return { points: [], windPoints: [], solarPoints: [], windMwTotal: 0, solarMwTotal: 0 };
 
   const generators = Array.isArray(body?.Generators?.Generator)
     ? body?.Generators?.Generator
     : [body?.Generators?.Generator].filter(Boolean);
 
   const totals = new Map<string, number>();
+  const windTotals = new Map<string, number>();
+  const solarTotals = new Map<string, number>();
   let windMwTotal = 0;
   let solarMwTotal = 0;
 
@@ -83,22 +87,68 @@ export function parseOntarioXml(xml: string): OntarioParsed {
       ).toISOString();
       const curtailedMw = Math.max(0, energyMw) * rate;
       totals.set(utcTimestamp, (totals.get(utcTimestamp) ?? 0) + curtailedMw);
-      if (fuel === "WIND") windMwTotal += curtailedMw;
-      else solarMwTotal += curtailedMw;
+      if (fuel === "WIND") {
+        windTotals.set(utcTimestamp, (windTotals.get(utcTimestamp) ?? 0) + curtailedMw);
+        windMwTotal += curtailedMw;
+      } else {
+        solarTotals.set(utcTimestamp, (solarTotals.get(utcTimestamp) ?? 0) + curtailedMw);
+        solarMwTotal += curtailedMw;
+      }
     }
   }
 
-  const points = Array.from(totals.entries())
+  const toPoints = (map: Map<string, number>) => Array.from(map.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
-  return { points, windMwTotal, solarMwTotal };
+  return {
+    points: toPoints(totals),
+    windPoints: toPoints(windTotals),
+    solarPoints: toPoints(solarTotals),
+    windMwTotal,
+    solarMwTotal,
+  };
 }
 
 function formatDate(date: Date): string {
   return date.toISOString().slice(0, 10).replace(/-/g, "");
 }
 
-const run = async (): Promise<RegionData> => {
+type OntarioRegions = Record<"ontario-wind" | "ontario-solar", RegionData>;
+
+function splitLegacyOntarioCache(data: RegionData | OntarioRegions): OntarioRegions {
+  if ("ontario-wind" in data && "ontario-solar" in data) return data;
+
+  const windShare = data.fuelShare?.wind ?? 1;
+  const solarShare = data.fuelShare?.solar ?? 0;
+  const scale = (regionId: "ontario-wind" | "ontario-solar", share: number, sourceNote: string): RegionData => ({
+    ...data,
+    regionId,
+    profile: data.profile.map((value) => value * share),
+    latestProfile: data.latestProfile ? data.latestProfile.map((value) => value * share) : null,
+    totalTWh: data.totalTWh * share,
+    peakGW: data.peakGW * share,
+    sourceNote,
+    fuelShare: undefined,
+    confidenceTier: undefined,
+    uncertaintyLowGW: undefined,
+    uncertaintyHighGW: undefined,
+  });
+
+  return {
+    "ontario-wind": scale(
+      "ontario-wind",
+      windShare,
+      "IESO hourly wind generation capability × 4% calibrated curtailment proxy (split from legacy Ontario wind+solar cache)",
+    ),
+    "ontario-solar": scale(
+      "ontario-solar",
+      solarShare,
+      "IESO hourly solar generation capability × 2% calibrated curtailment proxy (split from legacy Ontario wind+solar cache)",
+    ),
+  };
+}
+
+const run = async (): Promise<OntarioRegions> => {
   const now = new Date();
   const urls = [`${IESO_BASE}/PUB_GenOutputCapability.xml`];
 
@@ -118,39 +168,47 @@ const run = async (): Promise<RegionData> => {
     }),
   );
 
-  const parsedDocs = xmlDocs.map((xml) => (xml ? parseOntarioXml(xml) : { points: [], windMwTotal: 0, solarMwTotal: 0 }));
+  const parsedDocs = xmlDocs.map((xml) => (xml ? parseOntarioXml(xml) : { points: [], windPoints: [], solarPoints: [], windMwTotal: 0, solarMwTotal: 0 }));
   const points = parsedDocs.flatMap((p) => p.points);
   if (points.length === 0) throw new Error("IESO returned no usable wind or solar output points");
 
-  const windMwTotal = parsedDocs.reduce((s, p) => s + p.windMwTotal, 0);
-  const solarMwTotal = parsedDocs.reduce((s, p) => s + p.solarMwTotal, 0);
-  const denom = windMwTotal + solarMwTotal;
-  const fuelShare = denom > 0
-    ? { wind: windMwTotal / denom, solar: solarMwTotal / denom }
-    : { wind: 1, solar: 0 };
+  const buildRegion = (
+    regionId: "ontario-wind" | "ontario-solar",
+    fuelPoints: CurtailmentPoint[],
+    sourceNote: string,
+  ): RegionData => ({
+    regionId,
+    profile: timeOfDayAverageGW(fuelPoints),
+    latestProfile: latestCompleteUtcDayProfileGW(fuelPoints),
+    totalTWh: totalTWh30d(fuelPoints),
+    peakGW: peakGW(fuelPoints),
+    lastUpdated: fuelPoints.at(-1)?.utcTimestamp ?? points.at(-1)?.utcTimestamp ?? now.toISOString(),
+    lastSuccessAt: fuelPoints.at(-1)?.utcTimestamp ?? points.at(-1)?.utcTimestamp ?? now.toISOString(),
+    sourceNote,
+  });
 
   return {
-    regionId: "ontario",
-    profile: timeOfDayAverageGW(points),
-    latestProfile: latestCompleteUtcDayProfileGW(points),
-    totalTWh: totalTWh30d(points),
-    peakGW: peakGW(points),
-    lastUpdated: points.at(-1)?.utcTimestamp ?? now.toISOString(),
-    lastSuccessAt: points.at(-1)?.utcTimestamp ?? now.toISOString(),
-    sourceNote: `IESO hourly wind × 4% + solar × 2% calibrated curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
-    fuelShare,
+    "ontario-wind": buildRegion(
+      "ontario-wind",
+      parsedDocs.flatMap((p) => p.windPoints),
+      "IESO hourly wind generation capability × 4% calibrated curtailment proxy",
+    ),
+    "ontario-solar": buildRegion(
+      "ontario-solar",
+      parsedDocs.flatMap((p) => p.solarPoints),
+      "IESO hourly solar generation capability × 2% calibrated curtailment proxy",
+    ),
   };
 };
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback<RegionData>("ontario", run, {
+  withFallback<OntarioRegions | RegionData>("ontario", run, {
     regionTier: "live" as const,
-    tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
-    tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+    tagCached: splitLegacyOntarioCache,
   })
-    .then((data) => process.stdout.write(JSON.stringify(data)))
+    .then((data) => process.stdout.write(JSON.stringify(splitLegacyOntarioCache(data))))
     .catch((err) => {
       console.error("ontario loader failed", err);
       process.exit(1);

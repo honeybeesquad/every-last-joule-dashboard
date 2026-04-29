@@ -1,15 +1,26 @@
 import { describe, it, expect } from "vitest";
 import { buildStaticRegion, buildAllStatics } from "../../src/data/statics.json";
+import { REGIONS } from "../../src/lib/regions";
 
 describe("static regions", () => {
-  it("produces 55 regions (13 prior + 16 Phase-2.7 Pattern-D LatAm + 26 Phase-2.7 Pattern-D Africa)", () => {
+  it("emits only the 56 canonical static/flare regions by default", () => {
     // v0.6 global-coverage-audit added: hawaii-oahu/maui/island, austria, russia-murmansk-wind.
     // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27): +16 T3-static
     // rows for Caribbean + Central American + small South American grids.
     // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27): +26 T3-static rows
     // sourced from the introduce-as-T3 subset of `data/coverage-audit/2026-04-26-africa.csv`.
     const data = buildAllStatics();
-    expect(Object.keys(data).length).toBe(55);
+    expect(Object.keys(data).length).toBe(56);
+  });
+
+  it("keeps the 68 non-canonical bulk-coverage candidates out of dashboard output", () => {
+    const canonicalIds = new Set(REGIONS.map((r) => r.id));
+    const data = buildAllStatics();
+    expect(Object.keys(data).every((id) => canonicalIds.has(id))).toBe(true);
+
+    const researchData = buildAllStatics({ includeCandidates: true });
+    expect(Object.keys(researchData).length).toBe(124);
+    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(68);
   });
 
   it("includes all expected ids", () => {
@@ -80,6 +91,26 @@ describe("static regions", () => {
     const data = buildAllStatics();
     for (const r of Object.values(data)) {
       expect(r.profile.length).toBe(24);
+    }
+  });
+
+  it("never emits flat 24h profiles for static rows classified as solar", () => {
+    const data = buildAllStatics();
+    const solarIds = REGIONS
+      .filter((region) => region.tier === "static" && region.kind === "solar" && data[region.id])
+      .map((region) => region.id);
+
+    expect(solarIds).toContain("xinjiang");
+    expect(solarIds).toContain("algeria");
+    expect(solarIds).toContain("togo");
+
+    for (const id of solarIds) {
+      const profile = data[id].profile;
+      const min = Math.min(...profile);
+      const max = Math.max(...profile);
+      expect(min, `${id} should have zero-output night hours`).toBeCloseTo(0, 6);
+      expect(max, `${id} should have a daylight solar peak`).toBeGreaterThan(0);
+      expect(new Set(profile.map((value) => value.toFixed(8))).size, `${id} should not be flat`).toBeGreaterThan(1);
     }
   });
 

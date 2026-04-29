@@ -226,12 +226,13 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     }
   });
 
-  it("does NOT modify the south-africa Eskom row (out of scope, T1b-live)", () => {
-    const sa = REGIONS.find((r) => r.id === "south-africa");
-    expect(sa).toBeDefined();
-    // Eskom is a live region (live or live-domestic-anchored). The brief
-    // explicitly excludes it from this batch.
-    expect(sa?.tier).toMatch(/^live/);
+  it("south-africa per-fuel split child rows are live (PR #19, out of scope for Pattern-D Africa bulk-add)", () => {
+    const solar = REGIONS.find((r) => r.id === "south-africa-solar");
+    const wind = REGIONS.find((r) => r.id === "south-africa-wind");
+    expect(solar).toBeDefined();
+    expect(wind).toBeDefined();
+    expect(solar?.tier).toMatch(/^live/);
+    expect(wind?.tier).toMatch(/^live/);
   });
 
   it("static spec kind enum supports the values used by the Africa batch", () => {

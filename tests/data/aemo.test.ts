@@ -41,4 +41,16 @@ describe("aemo parser", () => {
     const anySolar = Object.values(solarMwhTotal as Record<string, number>).some((v) => v > 0);
     expect(anyWind || anySolar).toBe(true);
   });
+
+  it("keeps state wind and solar point streams separate", () => {
+    const { points, windPoints, solarPoints } = parseAemoDispatchCsv(csv);
+    const stateIds = ["aemo-nsw", "aemo-vic", "aemo-qld", "aemo-sa", "aemo-tas"];
+
+    for (const stateId of stateIds) {
+      const totalMw = points[stateId].reduce((sum: number, point: { mw: number }) => sum + point.mw, 0);
+      const windMw = windPoints[stateId].reduce((sum: number, point: { mw: number }) => sum + point.mw, 0);
+      const solarMw = solarPoints[stateId].reduce((sum: number, point: { mw: number }) => sum + point.mw, 0);
+      expect(totalMw).toBeCloseTo(windMw + solarMw, 6);
+    }
+  });
 });

@@ -10,20 +10,25 @@ const fixture = JSON.parse(
 );
 
 describe("peru parser (COES proxy)", () => {
-  it("returns non-empty hourly points", () => {
+  it("returns non-empty hydro+solar+wind points", () => {
     const result = parseCoesGeneration(fixture);
-    expect(result.length).toBeGreaterThan(0);
+    const total = result.hydroPoints.length + result.solarPoints.length + result.windPoints.length;
+    expect(total).toBeGreaterThan(0);
   });
 
-  it("produces non-negative curtailed MW values", () => {
+  it("produces non-negative curtailed MW values across all fuels", () => {
     const result = parseCoesGeneration(fixture);
-    for (const point of result) {
-      expect(point.mw).toBeGreaterThanOrEqual(0);
-    }
+    for (const pt of result.hydroPoints) expect(pt.mw).toBeGreaterThanOrEqual(0);
+    for (const pt of result.solarPoints) expect(pt.mw).toBeGreaterThanOrEqual(0);
+    for (const pt of result.windPoints) expect(pt.mw).toBeGreaterThanOrEqual(0);
   });
 
-  it("contains some non-zero renewable signal", () => {
+  it("contains some non-zero renewable signal across at least one fuel", () => {
     const result = parseCoesGeneration(fixture);
-    expect(result.some((point) => point.mw > 0)).toBe(true);
+    const hasSignal =
+      result.hydroPoints.some((p) => p.mw > 0) ||
+      result.solarPoints.some((p) => p.mw > 0) ||
+      result.windPoints.some((p) => p.mw > 0);
+    expect(hasSignal).toBe(true);
   });
 });
