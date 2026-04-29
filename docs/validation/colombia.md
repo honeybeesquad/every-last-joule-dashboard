@@ -18,9 +18,13 @@ Last updated: 2026-04-30 · Sprint: S1 + Gemini research wave 1 + XM API verific
 - **Rate source:** n/a — vertimientos are direct measurements of energy-equivalent spillage, not a generation × rate calibration. Anchor = 5-year mean of monthly XM totals.
 - **Uniform across backfill years:** No — vertimientos vary by ~25× year-on-year because of ENSO. 2020 (drought tail): 0.53 TWh. 2022 (very wet): 13.12 TWh. The 5-year mean smooths this for the static anchor.
 
-## Multi-year monthly verification (2020–2025-Q1)
+## Multi-year daily verification (2020-01-01 → 2026-04-28)
 
-Source: XM SinerGox API, `MetricId=VertEner`, `Entity=Sistema`, daily values summed per month, kWh→GWh. Full data captured at [`data/historical/colombia-vertimientos-monthly.csv`](../../data/historical/colombia-vertimientos-monthly.csv).
+Source: XM SinerGox API, `MetricId=VertEner`, `Entity=Sistema`, daily values, kWh→GWh.
+
+- **Daily data (full history):** [`data/historical/colombia-vertimientos-daily.csv`](../../data/historical/colombia-vertimientos-daily.csv) — 1,667 day-records pulled 2026-04-30 via the Britta+Mullvad+WireGuard relay. Documented at `docs/methodology/2026-04-29-gemini-research-wave-1.md` §"Britta relay live 2026-04-30".
+- **Monthly aggregates:** [`data/historical/colombia-vertimientos-monthly.csv`](../../data/historical/colombia-vertimientos-monthly.csv) — derived rollup, 76 monthly totals.
+- **Live daily fetch:** runs nightly on Britta @ 18:30 NZ, appends to the rolling CSV.
 
 | Year | Annual GWh | Annual TWh | Notes |
 |---|---:|---:|---|
@@ -29,8 +33,10 @@ Source: XM SinerGox API, `MetricId=VertEner`, `Entity=Sistema`, daily values sum
 | 2022 | 13,123.83 | 13.12 | wettest in series |
 | 2023 | 9,664.10 | 9.66 | wet, especially Jan-May |
 | 2024 | 6,172.53 | 6.17 | El Niño Q1 (almost zero) → wet Q2-Q3 |
-| 2025 (Jan-Apr) | 3,682.32 | 3.68 | Q1+Q2 already wet; full-year likely ~10 TWh |
+| 2025 (full) | 16,134 | **16.13** | wettest year on record — beat 2022 |
+| 2026 (Jan-Apr) | 2,833 | 2.83 | running wet; bootstrap 2026-04-28 |
 | **5-yr mean (2020-2024)** | **7,529.74** | **7.53** | **canonical T3 anchor** |
+| 5-yr rolling (2021-2025) | 10,654 | 10.65 | what the anchor WOULD be if rolled forward; held at 7.5 for v1.0 reproducibility |
 
 ## Published anchors
 

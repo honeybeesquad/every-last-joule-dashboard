@@ -164,3 +164,45 @@ The only blocker is persistent Colombian egress. Options:
 - **Residential proxy with Colombian PoPs** ($10–50/mo): commercial path.
 
 For v1.0 the static 7.5 TWh anchor is honest and usable. T1a promotion is a v1.1+ task.
+
+---
+
+## Britta relay live 2026-04-30
+
+The Mullvad+WireGuard+Britta relay built today is now live. Architecture:
+
+```
+[Britta — Apple Silicon Mac, NZ]
+  ├── /opt/homebrew/etc/wireguard/elj-co.conf     ← Mullvad CO WG config
+  ├── ~/.config/elj-relay/                        ← keypair, assigned IP, relay JSON
+  ├── ~/code/elj-relay/
+  │     ├── fetchers/colombia.sh                  ← daily fetcher (yesterday in Bogotá tz)
+  │     ├── fetchers/colombia-bootstrap.sh        ← one-time historical pull
+  │     ├── cron-wrapper.sh                       ← cron entry point
+  │     ├── data/colombia-daily.csv               ← rolling daily output
+  │     └── logs/                                 ← per-run log files
+  └── crontab:  30 18 * * * (daily 18:30 NZ = ~03:30 Bogotá → safely past midnight)
+```
+
+**Routing trick:** Britta also runs Tailscale and a separate WireGuard tunnel ("britta-plex"), so we can't claim the default route via Mullvad without breaking other services. The elj-co tunnel uses **narrow `AllowedIPs`** — `179.1.0.0/16, 190.90.0.0/16, 191.97.0.0/16` — covering XM's IP rotation pool. Only XM-bound packets route through Colombia; everything else stays on Britta's normal egress.
+
+**DNS workaround:** Britta's default resolver (Cloudflare 1.1.1.1) does NOT resolve `xm.com.co` — XM's authoritative DNS appears to refuse Cloudflare. The fetcher uses `dig @8.8.8.8` to get the current IP, then `curl --resolve` to pin the connection. Robust against XM's IP rotation.
+
+**Permissions trick:** No interactive sudo password is needed because Simon's `sudoers` already grants `NOPASSWD` for `/opt/homebrew/bin/wg-quick` (originally for an existing WireGuard tunnel). The fetcher cron job runs unattended.
+
+**Bootstrap output (run 2026-04-30):** 1,667 day-records, 76 months, 2020-01-01 → 2026-04-28. ~2 minutes wall time for the full history. Verified the 5-year mean (2020-2024) reproduces exactly at 7.53 TWh.
+
+**New 2025 annual:** 16.13 TWh — the wettest year in the series, exceeding 2022's previous high of 13.12 TWh. If we were using a rolling 5-year window the anchor would shift up to ~10.7 TWh; we hold at 7.5 (fixed 2020-2024 window) for v1.0 reproducibility but flag this in the source string.
+
+**Committed daily data:** `data/historical/colombia-vertimientos-daily.csv` (1,667 rows). Source of truth for any future Colombia T1a loader. Ongoing daily appends happen on Britta; periodic pull-to-repo is currently manual but a deploy-key-based push from Britta is a clean follow-up.
+
+### Path to T1a-live
+
+The relay infrastructure already does the hard part. To complete the T1a promotion:
+1. Set up a GitHub deploy key on Britta scoped to a `every-last-joule-data-relay` repo (write access only on that repo)
+2. Add `push.sh` to elj-relay/ that commits + pushes after each daily fetch
+3. Add a GitHub Action in the main dashboard repo that pulls from data-relay and updates the Colombia loader's input
+4. Rewrite `colombia` in `STATIC_REGIONS` as a real loader fetching from the daily CSV — emits hourly profile via `splitRegion` or similar
+5. Tier resolves to T1a-live-tso (XM is the system operator, vertimientos is a direct-measurement quantity, no rate calibration needed)
+
+The data exists. The pipeline exists. T1a is now a packaging task, not a data-acquisition task.
