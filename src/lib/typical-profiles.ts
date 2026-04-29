@@ -121,6 +121,12 @@ export const HYDRO_SEASONAL_SHARES = {
   // adjacent region is solar-dominant, central Andes is hydro. Bimodal-ish,
   // with Jan-Apr rainy season being the bigger hydro-spill window.
   peru: [0.15, 0.15, 0.13, 0.10, 0.06, 0.04, 0.04, 0.04, 0.05, 0.06, 0.08, 0.10],
+  // Colombia bimodal precipitation: Apr-May and Oct-Nov rainy seasons.
+  // Vertimientos lag the rainfall peaks by reservoir-fill cycle, so peak
+  // spillage in May-Jun and Nov-Dec. Mid-year and Jan-Feb are dry windows.
+  // Source: Gemini-3.1 research wave 2026-04-29 + Andean climatology general
+  // knowledge. Sum normalised to 1.0.
+  colombia: [0.05, 0.04, 0.05, 0.10, 0.14, 0.10, 0.05, 0.04, 0.06, 0.13, 0.14, 0.10],
   // Kenya Olkaria geothermal steam-venting — tracks inverse of demand, not
   // rainfall. July peak (117.5 GWh in Jul 2024 per EPRA), June trough (6.6 GWh
   // in Jun 2025). July is coolest/lowest-demand month; June is outlier low

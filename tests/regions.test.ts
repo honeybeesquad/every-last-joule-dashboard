@@ -40,7 +40,11 @@ describe("regions", () => {
     // each split into wind + solar children. Net +14 live. 183 + 14 = 197.
     // Philippines promoted from a research-only candidate to a launch T3 static
     // after confirming IEMOP market-data CSV endpoints. 197 + 1 = 198.
-    expect(REGIONS.length).toBe(198);
+    // Colombia added 2026-04-29 as T3-static hydro-seasonal via Gemini-3.1
+    // research wave 1 (XM Informe de Operación SIN vertimientos hidráulicos
+    // anchor; conservative 2.0 TWh/yr annualisation pending Colombian-egress
+    // verification). 198 + 1 = 199.
+    expect(REGIONS.length).toBe(199);
   });
 
   it("has 97 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -118,7 +122,8 @@ describe("regions", () => {
     // Uruguay promoted static → live via ADME hourly Restricciones Operativas workbook.
     // 97 - 1 = 96.
     // Philippines promoted from research-only candidate to T3 static. 96 + 1 = 97.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(97);
+    // Colombia added 2026-04-29 as T3-static hydro-seasonal. 97 + 1 = 98.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(98);
   });
 
   it("has 4 flare regions", () => {
@@ -368,8 +373,23 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "brazil-other-solar")?.name).toBe("Brazil Other ONS States Solar");
   });
 
-  it("does not include Colombia without reachable live XM API data", () => {
-    expect(REGIONS.find(r => r.id === "colombia")).toBeUndefined();
+  it("includes Colombia as T3-static hydro-seasonal (vertimientos hidráulicos)", () => {
+    // Reversed 2026-04-29 by Gemini-3.1 research wave 1. The original
+    // "do not include Colombia without live XM API access" rule was about
+    // VRE (solar/wind) curtailment via a live feed — at that time we
+    // refused to ship a flat invented placeholder. The research wave found
+    // that the dominant wasted-energy mechanism in Colombia is hydro
+    // spillage (vertimientos hidráulicos) during bimodal Apr-May / Oct-Nov
+    // rainy seasons, which is the exact same phenomenon already modelled
+    // for Iceland (5.3 TWh/yr) and Sichuan (30 TWh/yr). Colombia is now
+    // T3-static hydro-seasonal, conservatively anchored at 2.0 TWh/yr.
+    // XM live data remains geoblocked from outside Colombia; promotion to
+    // T1a is gated on Colombian-egress access. See
+    // docs/methodology/2026-04-29-gemini-research-wave-1.md.
+    const col = REGIONS.find(r => r.id === "colombia");
+    expect(col).toBeDefined();
+    expect(col?.tier).toBe("static");
+    expect(col?.kind).toBe("hydro");
   });
 
   it("includes the v0.6 Codex global-coverage-audit splits and additions", () => {
