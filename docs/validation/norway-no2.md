@@ -1,6 +1,6 @@
 # Validation — Norway NO2 (Kristiansand) (`norway-no2`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 

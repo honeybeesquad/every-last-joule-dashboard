@@ -1,4 +1,4 @@
-# Validation - South Africa Wind (`south-africa-wind`)
+# Validation — South Africa Wind (`south-africa-wind`)
 
 Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
@@ -8,28 +8,28 @@ Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** ZAF
 - **Tier:** live
 - **Kind:** wind
-- **Source:** Eskom Data Portal total hourly renewable generation (Wind column x 12% curtailment)
+- **Source:** Eskom Data Portal total hourly renewable generation (Wind column × 12% curtailment)
 - **Source URL:** [https://www.eskom.co.za/dataportal/renewables-performance/total-hourly-renewable-generation/](https://www.eskom.co.za/dataportal/renewables-performance/total-hourly-renewable-generation/)
-- **Loader:** [`south-africa.json.ts`](../../src/data/south-africa.json.ts)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
 ## Calibration
 
 - **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a - no backfill
+- **Uniform across backfill years:** n/a — no backfill
 
 ## Multi-year backfill annual totals
 
-| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Delta % | Source |
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet - will be populated after HB fan-out completes)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** SAREM 2025 / Eskom MTSAO Oct 2025 reports 4,363 GWh renewable curtailment in 2024
-- **Ember annual:** -
-- **IRENA annual:** -
-- **Other:** Eskom Data Portal Total_Hourly_Generation CSV
+- **TSO annual curtailment (latest published):** —
+- **Ember annual:** —
+- **IRENA annual:** —
+- **Other:** —
 
 ## Discrepancy analysis
 
@@ -41,7 +41,7 @@ The Eskom CSV provides hourly renewable generation, not a direct curtailed-energ
 
 ## Links
 
-- Loader source: [`south-africa.json.ts`](../../src/data/south-africa.json.ts)
+- Loader source: _(no single-file loader — see multi-region source)_
 - Backfill archive: `data/historical/backfill/*_south-africa-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

@@ -1,4 +1,4 @@
-# Validation - Peru Wind (`peru-wind`)
+# Validation — Peru Wind (`peru-wind`)
 
 Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
@@ -8,7 +8,7 @@ Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** PER
 - **Tier:** live
 - **Kind:** wind
-- **Source:** COES-SINAC live wind generation x 2% curtailment calibration (vertimiento anchor ~0.8 TWh/yr)
+- **Source:** COES-SINAC live wind generation × 2% curtailment calibration (vertimiento anchor ~0.8 TWh/yr)
 - **Source URL:** [https://www.coes.org.pe/Portal/portalinformacion/generacion](https://www.coes.org.pe/Portal/portalinformacion/generacion)
 - **Loader:** [`peru.json.ts`](../../src/data/peru.json.ts)
 - **Structural gap:** no
@@ -16,20 +16,20 @@ Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Techni
 ## Calibration
 
 - **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a - no backfill
+- **Uniform across backfill years:** n/a — no backfill
 
 ## Multi-year backfill annual totals
 
-| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Delta % | Source |
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet - will be populated after HB fan-out completes)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** COES-SINAC 2024 aggregate vertimiento anchor ~0.8 TWh/yr
-- **Ember annual:** -
-- **IRENA annual:** -
-- **Other:** Wind child is split from the COES generation-by-fuel stream and aggregate vertimiento calibration.
+- **TSO annual curtailment (latest published):** —
+- **Ember annual:** —
+- **IRENA annual:** —
+- **Other:** —
 
 ## Discrepancy analysis
 

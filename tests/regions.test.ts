@@ -74,12 +74,14 @@ describe("regions", () => {
     // Philippines IEMOP RTD live feed: replaces single T3 static with
     // two T1a live children (philippines-solar, philippines-wind). Net +2 live.
     // Total live = 92 + 4 + 1 = 99.
+    // Malaysia GSO live solar actuals: promotes from T3 static to T1b
+    // live-domestic-anchored. Net +1 live. 99 + 1 = 100.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(99);
+    expect(liveTotal).toBe(100);
 
     expect(REGIONS.filter((r) => r.tier === "live").length).toBe(94);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(5);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
 
@@ -88,8 +90,10 @@ describe("regions", () => {
     //   T1c (1 zone): switzerland (Czech rate, residual −35.5%)
     //   T1b (4 zones): italy-sardinia (+87.6%), netherlands (−73.0%),
     //                   baltics (−58.9%), italy-north-zone (−45.0%)
+    // Malaysia GSO live solar actuals (2026-04-29): promotes from T3 static
+    // to T1b live-domestic-anchored. T1b bucket grows to 5 zones.
     expect(REGIONS.find((r) => r.id === "switzerland")?.tier).toBe("live-neighbour-anchored");
-    for (const id of ["italy-sardinia", "netherlands", "baltics", "italy-north-zone"]) {
+    for (const id of ["italy-sardinia", "netherlands", "baltics", "italy-north-zone", "malaysia"]) {
       expect(REGIONS.find((r) => r.id === id)?.tier, `${id} should be live-domestic-anchored`).toBe("live-domestic-anchored");
     }
   });
@@ -124,7 +128,9 @@ describe("regions", () => {
     // prior commit) with two T1a live children. Static count unchanged: -1
     // (philippines static removed) + 0 (philippines-solar/wind are live not
     // static) = net 0, but prior commit had +1 for T3 static. Back to 96.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(96);
+    // Malaysia GSO live solar actuals: promotes from T3 static to T1b
+    // live-domestic-anchored. Static -1. 96 - 1 = 95.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(95);
   });
 
   it("has 4 flare regions", () => {
