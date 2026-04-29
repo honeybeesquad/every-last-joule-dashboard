@@ -255,7 +255,6 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   brunei: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Brunei 2024 (AEDED); gas+solar; small high-income grid)", reportDate: "2024" },
   cambodia: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 7.0, source: "IRENA Cambodia 2024 (EDC); hydro+solar+coal; rapid solar growth)", reportDate: "2024" },
   myanmar: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 6.5, source: "IRENA Myanmar 2024 (MEPE); hydro+solar+gas; war-affected grid)", reportDate: "2024" },
-  philippines: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 4.0, source: "IEMOP Market Data + NGCP/PEMC 2024 audit composite (WESM island grids; IEMOP CAPEG confirms solar/wind resource registry, MOT redispatch feed currently sparse; provisional T3 solar-shaped fallback)", reportDate: "2024" },
   singapore: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Singapore 2024 (EMA); gas+solar+pipeline floating solar)", reportDate: "2024" },
   png: { annualTWh: 0.1, kind: "hydro", source: "IRENA PNG 2024 (PNG-Power); hydro+solar+diesel; island grid)", reportDate: "2024" },
   fiji: { annualTWh: 0.02, kind: "hydro", source: "IRENA Fiji 2024 (EFL); hydro+solar+diesel; Pacific island)", reportDate: "2024" },

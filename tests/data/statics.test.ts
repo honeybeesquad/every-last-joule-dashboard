@@ -9,9 +9,10 @@ describe("static regions", () => {
     // rows for Caribbean + Central American + small South American grids.
     // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27): +26 T3-static rows
     // sourced from the introduce-as-T3 subset of `data/coverage-audit/2026-04-26-africa.csv`.
-    // Philippines promoted from research candidate to launch T3 static (2026-04-29).
+    // Philippines IEMOP RTD live feed (2026-04-29): promoted from T3 static to
+    // T1a live (philippines-solar + philippines-wind sub-regions). -1 static.
     const data = buildAllStatics();
-    expect(Object.keys(data).length).toBe(57);
+    expect(Object.keys(data).length).toBe(56);
   });
 
   it("keeps the 67 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -20,7 +21,7 @@ describe("static regions", () => {
     expect(Object.keys(data).every((id) => canonicalIds.has(id))).toBe(true);
 
     const researchData = buildAllStatics({ includeCandidates: true });
-    expect(Object.keys(researchData).length).toBe(124);
+    expect(Object.keys(researchData).length).toBe(123);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(67);
   });
 
@@ -84,7 +85,6 @@ describe("static regions", () => {
       "uganda",
       "zambia",
       "zimbabwe",
-      "philippines",
     ];
     for (const id of expected) expect(data[id]).toBeDefined();
   });

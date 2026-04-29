@@ -38,9 +38,10 @@ describe("regions", () => {
     // into wind + solar children. Net +5 live. 178 + 5 = 183.
     // Brazil no-bundled-curtailment split: fourteen ONS state/residual rows
     // each split into wind + solar children. Net +14 live. 183 + 14 = 197.
-    // Philippines promoted from a research-only candidate to a launch T3 static
-    // after confirming IEMOP market-data CSV endpoints. 197 + 1 = 198.
-    expect(REGIONS.length).toBe(198);
+    // Philippines IEMOP RTD live feed: replaces single T3 static with two
+    // T1a live children (philippines-solar, philippines-wind). Net +1.
+    // 197 + 1 = 198 → 199 (static -1 but live +2 = net +1).
+    expect(REGIONS.length).toBe(199);
   });
 
   it("has 97 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -70,12 +71,14 @@ describe("regions", () => {
     // wind/solar children. Net +5 T1a live. 73 + 5 = 78.
     // Brazil no-bundled-curtailment split: fourteen state/residual rows split
     // into wind/solar children. Net +14 T1a live. 78 + 14 = 92.
-    // Total live = 92 + 4 + 1 = 97.
+    // Philippines IEMOP RTD live feed: replaces single T3 static with
+    // two T1a live children (philippines-solar, philippines-wind). Net +2 live.
+    // Total live = 92 + 4 + 1 = 99.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(97);
+    expect(liveTotal).toBe(99);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(92);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(94);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -117,8 +120,11 @@ describe("regions", () => {
     // 98 - 1 = 97.
     // Uruguay promoted static → live via ADME hourly Restricciones Operativas workbook.
     // 97 - 1 = 96.
-    // Philippines promoted from research-only candidate to T3 static. 96 + 1 = 97.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(97);
+    // Philippines IEMOP RTD live feed: replaces single T3 static (added in
+    // prior commit) with two T1a live children. Static count unchanged: -1
+    // (philippines static removed) + 0 (philippines-solar/wind are live not
+    // static) = net 0, but prior commit had +1 for T3 static. Back to 96.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(96);
   });
 
   it("has 4 flare regions", () => {
@@ -265,7 +271,8 @@ describe("regions", () => {
       "nt-pilbara",
       "indonesia",
       "malaysia",
-      "philippines",
+      "philippines-solar",
+      "philippines-wind",
       "south-korea",
       "russia-mainland",
       "taiwan",
