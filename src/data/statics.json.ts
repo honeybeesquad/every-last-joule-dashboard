@@ -100,7 +100,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // VRE (solar/wind) curtailment is currently <1% — the wasted-energy
   // story is dominated by hydro spillage, same modelling approach as
   // Iceland and Sichuan.
-  colombia: { annualTWh: 2.0, kind: "hydro-seasonal", seasonalSharesKey: "colombia", source: "XM Informe de Operación SIN (vertimientos hidráulicos; bimodal Apr-May / Oct-Nov rainy seasons; conservative 2.0 TWh/yr annualisation pending Colombian-egress verification of the Feb-2025 705.24 GWh-mes figure cited by the Gemini-3.1 research wave 2026-04-29)", reportDate: "2025-02" },
+  colombia: { annualTWh: 7.5, kind: "hydro-seasonal", seasonalSharesKey: "colombia", source: "XM SinerGox API (servapibi.xm.com.co/daily, MetricId=VertEner Entity=Sistema). 5-year mean 2020-2024 = 7.53 TWh/yr (range 0.53-13.12 TWh/yr ENSO-driven). Verified 2026-04-30 via Colombian-egress probe; same API confirms Gemini-3.1 cited Feb-2025 figure of 705.24 GWh-mes exactly.", reportDate: "2026-04-30" },
   // Ukraine: ENTSO-E Ukrenergo returns empty A75 data post-2022 synchronisation.
   // Solar-dominant fallback at 1.2 TWh/yr; Ukrainian renewables are ~60% solar
   // (southern steppes: Nikopol, Zaporizhzhia, Kherson), ~40% wind (southern coast).

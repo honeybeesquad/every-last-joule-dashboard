@@ -107,3 +107,60 @@ This is conceptually identical to the spillage already modelled in the dataset f
 R4–R6 deferred until R1–R3 workflow is validated by review. Candidate countries for follow-on waves: Indonesia, South Korea, Vietnam, Thailand, Pakistan. Same query template, same disposition rule.
 
 If Colombian egress can be set up (e.g., Colombian-hosted runner or Mastodon-tier proxy with PoP in Bogotá), Colombia could be promoted from T3-static to T1a-live by parsing the actual XM Informe de Operación monthly PDFs / Sinergox CSVs.
+
+---
+
+## Verification 2026-04-30
+
+Simon connected to NordVPN Bogotá POP (egress IP `185.216.73.22`, country `CO`) and proxied curl/Python through it. With Colombian egress established, three breakthrough findings:
+
+1. **The XM SinerGox API is fully open and reachable** at `https://servapibi.xm.com.co/lists`, `/daily`, `/hourly`, `/monthly`. No auth required — quoted from XM's own GitHub repo `EquipoAnaliticaXM/API_XM`: *"Para utilizar la API XM no se requiere gestionar ningún usuario o clave"*. Self-signed cert in the chain (Python urllib trips on `[SSL: CERTIFICATE_VERIFY_FAILED]` but curl trusts it via macOS keychain).
+
+2. **The canonical metric ID for system-wide vertimientos is `VertEner` with `Entity=Sistema`.** Discovered via `POST /lists` with body `{"MetricId":"ListadoMetricas"}` → returns the full 193-metric catalog. Description from the catalog itself: *"Los vertimientos estan relacionados con la cantidad de agua que debe ser evacuada en los embalses cuando la reserva sobrepasa la capacidad maxima de almacenamiento."* Units: kWh, granularity: daily, max-window: 31 days.
+
+3. **Gemini's cited figure was EXACT.** Feb-2025 vertimientos = `705.24 GWh-mes` to two decimal places. The Gemini citation was correct; my prior validation MD's "not externally verified due to geoblocked access" was technically true but materially misleading — the figure was real and verifiable, just blocked by a one-time egress hurdle.
+
+### Monthly data 2020 – 2025-Q1
+
+Captured at `data/historical/colombia-vertimientos-monthly.csv`. Annual summary:
+
+| Year | Annual GWh | Annual TWh |
+|---|---:|---:|
+| 2020 | 526.93 | 0.53 |
+| 2021 | 8,161.33 | 8.16 |
+| 2022 | 13,123.83 | 13.12 |
+| 2023 | 9,664.10 | 9.66 |
+| 2024 | 6,172.53 | 6.17 |
+| 2025 (Jan-Apr) | 3,682.32 | 3.68 |
+| **5-yr mean (2020-2024)** | **7,529.74** | **7.53** |
+
+ENSO-driven year-on-year variance is enormous (0.53–13.12 TWh, 25× ratio). The ±40% T3 envelope under-states this; year-specific honesty would require a T1a live loader that surfaces monthly figures rather than collapsing to a static mean.
+
+### Anchor update
+
+Colombia's `STATIC_REGIONS.colombia` annualTWh moved from 2.0 (conservative placeholder) to **7.5** (5-year mean). The `regions.ts` source string and `docs/validation/colombia.md` are updated to reflect the verified XM API source. Snapshot regenerated.
+
+### Implications for the broader methodology
+
+The pattern *"Gemini cites figure → cannot externally verify → land conservatively → flag for verification"* worked exactly as designed: Gemini surfaced a real figure, my disposition was honest about not having verified it, the verification step found the figure was correct, and the dataset gets updated. **The conservative-anchor-with-disclosure rule is sound** even when the cited figure turns out to be exactly right.
+
+Future research waves should keep this discipline: cite-then-verify, never cite-without-verifying. Disposition for unverifiable findings remains "include conservatively + disclose openly" rather than "discard entirely."
+
+### Implications for T1a promotion
+
+Colombia is now first in line for T1a promotion. The data path is clear:
+
+```python
+# pseudocode for the Colombia live loader
+POST https://servapibi.xm.com.co/daily
+Body: {"MetricId":"VertEner","StartDate":"YYYY-MM-DD","EndDate":"YYYY-MM-DD","Entity":"Sistema"}
+# parse response.Items[].DailyEntities[].Value (kWh) → CurtailmentPoint[]
+```
+
+The only blocker is persistent Colombian egress. Options:
+
+- **Colombian VPS** ($5/mo at e.g. ColomboHosting): build the loader on a small box in Bogotá, expose a thin relay endpoint to the dashboard's CI.
+- **Cloudflare Workers with country-routing**: Workers don't expose Colombian PoPs directly, but can chain through a small Colombian relay.
+- **Residential proxy with Colombian PoPs** ($10–50/mo): commercial path.
+
+For v1.0 the static 7.5 TWh anchor is honest and usable. T1a promotion is a v1.1+ task.
