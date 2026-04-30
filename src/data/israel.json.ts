@@ -18,8 +18,8 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     return buildTypicalSolarRegion(
       REGION_ID,
       10,
-      0.15,
-      `Typical-shape fallback: Israel live feed unavailable (${(err as Error).message}); calibration anchor ~0.15 TWh/yr Negev solar curtailment.`,
+      1.2,
+      `Typical-shape fallback: Israel live feed unavailable (${(err as Error).message}); calibration anchor ~1.2 TWh/yr system-wide solar curtailment. Source: Israel Electricity Authority (PUA) 2024 Status Report — ~1.5 pp shortfall between potential (16.2%) and actual consumed (14.7%) renewable generation; Noga-ISO corporate responsibility reports 2023–2024.`,
       "2024",
     );
   }
