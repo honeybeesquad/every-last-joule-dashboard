@@ -18,13 +18,13 @@ name: Historical snapshot append
 #   profile_h00 … profile_h23  — float32, one column per UTC hour
 #
 # The Parquet file uses Snappy compression and is committed back to the repo
-# on the v0-build branch.  At ~75 regions × ~100 bytes per row × 365 days
+# on the main branch.  At ~75 regions × ~100 bytes per row × 365 days
 # ≈ 2.7 MB/yr — tiny.  DuckDB or pandas can read it directly.
 #
 # Example usage:
 #   import pandas as pd
 #   df = pd.read_parquet("https://raw.githubusercontent.com/honeybeesquad/
-#       every-last-joule-dashboard/v0-build/data/historical/
+#       every-last-joule-dashboard/main/data/historical/
 #       curtailment_history.parquet")
 #   df.query("region_id == 'caiso'").plot(x="build_timestamp", y="peak_gw")
 
@@ -52,7 +52,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: v0-build
+          ref: main
           # Full history not needed — just the current files.
           fetch-depth: 1
 
