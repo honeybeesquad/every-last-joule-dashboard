@@ -39,7 +39,7 @@ const [
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
   yunnan, tibet, indiaSouth, indiaWest, indiaEast, pakistan, iran,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
-  quebec, manitoba, saskatchewan, turkey
+  quebec, manitoba, saskatchewan, turkey, colombia
 ] = await Promise.all([
   FileAttachment("data/cbeci.json").json(),
   FileAttachment("data/ercot.json").json(),
@@ -118,7 +118,8 @@ const [
   FileAttachment("data/quebec.json").json(),
   FileAttachment("data/manitoba.json").json(),
   FileAttachment("data/saskatchewan.json").json(),
-  FileAttachment("data/turkey.json").json()
+  FileAttachment("data/turkey.json").json(),
+  FileAttachment("data/colombia.json").json()
 ]);
 
 document.getElementById("app-root").innerHTML = `
@@ -340,6 +341,9 @@ const regionData = {
   quebec,
   manitoba,
   saskatchewan,
+  // Colombia: T1b-CSV loader reads committed XM API data (Britta daily relay).
+  // Supersedes the T3-static entry in buildAllStatics().
+  colombia,
   ...statics,
   philippines
 };

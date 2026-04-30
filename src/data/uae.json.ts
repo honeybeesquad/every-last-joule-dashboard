@@ -18,9 +18,9 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     return buildTypicalSolarRegion(
       REGION_ID,
       8,
-      0.2,
-      "No public hourly curtailment feed; DEWA/EWEC public pages do not expose hourly solar curtailment, so the ~0.2 TWh/yr calibration anchor is applied to a typical solar profile shape (T3-modelled, ±40% envelope).",
-      "2024",
+      0.3,
+      "No public hourly curtailment feed; DEWA/EWEC public pages do not expose hourly solar curtailment. Calibration anchor ~0.3 TWh/yr (200–330 GWh) solar curtailment driven by Al Dhafra 2 GW solar + 5.6 GW Barakah nuclear baseload duck-curve. Sources: EWEC Statistical Report 2023/2024; Abu Dhabi DoE Technical Report 2023; IEA Electricity 2026. T3-modelled, ±40% envelope.",
+      "2025",
     );
   }
 }

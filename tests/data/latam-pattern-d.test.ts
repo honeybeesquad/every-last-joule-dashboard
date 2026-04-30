@@ -129,16 +129,18 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     }
   });
 
-  it("aggregate annual anchor across the 16 new rows is ~2.9 TWh per the audit", () => {
-    // 0.4+0.2+0.1+0.3+0.2+0.1+0.1+0.5+0.2+0.3+0.05+0.1+0.05+0.2+0.05+0.05 = 2.9 TWh.
+  it("aggregate annual anchor across the 16 new rows is ~2.7 TWh per the audit", () => {
+    // 0.4+0.2+0.1+0.3+0.2+0.1+0.1+0.5+0.003+0.3+0.05+0.1+0.05+0.2+0.05+0.05 ≈ 2.703 TWh.
+    // Jamaica revised 0.2→0.003 in Wave-5 calibration (2026-04-30): IEA/IDB 2024 found
+    // ≤3 GWh/yr actual curtailment (vs implausible 40% curtailment rate at 0.2 TWh).
     // Sum the totalTWh × 365/30 to recover the annual anchor.
     const statics = buildAllStatics();
     let annualSum = 0;
     for (const id of NEW_LATAM_IDS) {
       annualSum += statics[id].totalTWh * (365 / 30);
     }
-    expect(annualSum).toBeGreaterThan(2.8);
-    expect(annualSum).toBeLessThan(3.0);
+    expect(annualSum).toBeGreaterThan(2.6);
+    expect(annualSum).toBeLessThan(2.8);
   });
 
   it("all new region ids are kebab-case and unique within REGIONS", () => {
