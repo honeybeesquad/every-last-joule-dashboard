@@ -201,9 +201,11 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   mozambique: { annualTWh: 0.3, kind: "hydro", source: "IRENA Mozambique 2024 (EDM; Cahora Bassa hydro exports to Eskom via SAPP; growing solar)", reportDate: "2024" },
   // Nigeria — composite phenomenon: chronic frequency-instability load-shed
   // (Ember 2024) + Niger Delta gas flaring (~7 TWh-eq/yr per GGFR 2024-25).
-  // Treated as `kind: "mixed"` with a flat 24/7 profile per the Pattern-D
-  // dispatch brief; lat/lon at 9.0°N 8.5°E (country centroid) as specified.
-  nigeria: { annualTWh: 7.0, kind: "mixed", source: "Ember Nigeria 2024 + GGFR Niger Delta flaring 2024-25 (TCN as TSO; chronic frequency-instability load-shed + ~7 TWh-eq/yr Niger Delta gas flare composite; flat 24/7 profile)", reportDate: "2024" },
+  // Nigeria: solar-shaped profile for the renewables curtailment component.
+  // The Niger Delta gas flare (~7 TWh-eq/yr) is a separate flat-baseload signal
+  // not captured here; the 0.5 TWh anchor covers grid solar curtailment only
+  // (TCN frequency instability causes daytime solar tripping). lat/lon at 9.0°N 8.5°E.
+  nigeria: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 11, source: "Ember Nigeria 2024 + TCN Grid Stability Report 2024 (solar curtailment from TCN frequency-instability; Niger Delta gas flare ~7 TWh-eq/yr is a separate flat-baseload signal; 0.5 TWh/yr anchor covers daytime solar tripping only; Wave-5 revised 2026-04-30)", reportDate: "2025" },
   rwanda: { annualTWh: 0.05, kind: "mixed", source: "IRENA Rwanda 2024 (REG/EUCL; methane-from-Lake-Kivu + hydro+solar)", reportDate: "2024" },
   senegal: { annualTWh: 0.3, kind: "solar", localSolarPeakUTC: 12, source: "IRENA Senegal 2024 (SENELEC; Taiba N'Diaye 158 MW wind + PV; OMVS/OMVG member). Solar-shaped (peak local noon ≈ UTC 12) since SENELEC's RE mix is solar-dominant; small wind share absorbed into the same shape as a methodological simplification.", reportDate: "2024" },
   tanzania: { annualTWh: 0.5, kind: "hydro", source: "IRENA Tanzania 2024 + Julius Nyerere HPP commissioning (TANESCO; JNHPP 2.1 GW commissioning 2024-25; gas+hydro)", reportDate: "2024" },

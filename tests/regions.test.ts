@@ -156,7 +156,7 @@ describe("regions", () => {
       "gansu", "ningxia", "india-south", "india-west", "morocco",
       "taiwan", "jordan", "pakistan", "manitoba", "hawaii-island",
       "austria", "cuba", "cabo-verde", "cote-divoire", "eswatini",
-      "mauritius", "nigeria", "rwanda", "senegal", "tunisia",
+      "mauritius", "rwanda", "senegal", "tunisia",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
