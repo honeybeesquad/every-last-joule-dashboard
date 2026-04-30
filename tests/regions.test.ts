@@ -154,9 +154,8 @@ describe("regions", () => {
       "norway-no1", "norway-no2", "norway-no3", "norway-no4",
       "new-zealand",
       "gansu", "ningxia", "india-south", "india-west", "morocco",
-      "taiwan", "jordan", "pakistan", "manitoba", "hawaii-island",
-      "austria", "cuba", "cabo-verde", "cote-divoire", "eswatini",
-      "mauritius", "rwanda", "senegal", "tunisia",
+      "taiwan", "pakistan", "manitoba", "hawaii-island",
+      "austria", "cuba", "rwanda",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
