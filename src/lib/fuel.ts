@@ -32,7 +32,7 @@ const FUEL_DEFAULT: Record<Fuel | "flare", string> = {
   solar: "#ffd05a", // Sunfire default — used in SSR / non-DOM contexts only.
   wind:  "#67e8f9",
   hydro: "#b8cdff",
-  flare: "#f7931a",
+  flare: "#d83923",
 };
 
 export function getFuelColor(fuel: Fuel | "flare"): string {

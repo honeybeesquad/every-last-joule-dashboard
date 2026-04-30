@@ -153,8 +153,8 @@
   /* data semantics */
   --data-renewable:      #67e8f9;
   --data-renewable-tip:  #cffafe;
-  --data-flare:          #f7931a;
-  --data-flare-tip:      #ffc46d;
+  --data-flare:          #d83923;
+  --data-flare-tip:      #ff7048;
 
   /* fuel breakouts */
   --fuel-solar:          #ffd05a;
@@ -205,8 +205,8 @@
 
   --data-renewable:      #4f8cff;
   --data-renewable-tip:  #b8cdff;
-  --data-flare:          #f7931a;
-  --data-flare-tip:      #ffc46d;
+  --data-flare:          #d83923;
+  --data-flare-tip:      #ff7048;
 
   --fuel-solar:          #ece4d2;
   --fuel-wind:           #4f8cff;
@@ -253,8 +253,8 @@
 
   --data-renewable:      #ec4899;
   --data-renewable-tip:  #fbcfe8;
-  --data-flare:          #f7931a;
-  --data-flare-tip:      #ffc46d;
+  --data-flare:          #d83923;
+  --data-flare-tip:      #ff7048;
 
   --fuel-solar:          #fafafa;
   --fuel-wind:           #ec4899;
@@ -638,14 +638,22 @@ main table {
 }
 
 .panel-center {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   min-height: 520px;
   position: relative;
 }
 
-.panel-center > * {
+/* Inner grid stacks canvas + placeholder in the same cell. */
+.globe-canvas-area {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.globe-canvas-area > * {
   grid-area: 1 / 1;
 }
 
@@ -692,27 +700,32 @@ main table {
   color: rgba(255,255,255,0.58);
 }
 
-/* Vertical zoom slider in the bottom-right corner of the globe panel */
+/* Zoom control row — sits below the globe canvas, right-aligned. */
 .globe-zoom-controls {
-  position: absolute;
-  bottom: 1.25rem;
-  right: 1.25rem;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  z-index: 10;
-  pointer-events: auto;
+  gap: 8px;
+  align-self: flex-end;
+  max-width: 580px;
+  width: 100%;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.globe-zoom-label {
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.40);
+  user-select: none;
+  flex-shrink: 0;
 }
 
 .globe-zoom-slider {
-  -webkit-appearance: slider-vertical;
-  writing-mode: vertical-lr;
-  direction: rtl;
-  width: 28px;
-  height: 110px;
+  width: 110px;
   cursor: pointer;
-  accent-color: rgba(255,255,255,0.7);
-  opacity: 0.7;
+  accent-color: rgba(255,255,255,0.65);
+  opacity: 0.65;
   transition: opacity 0.15s;
 }
 
@@ -729,43 +742,74 @@ main table {
 
 @media (hover: none) {
   .globe-zoom-slider {
-    height: 130px;
-    width: 36px;
+    width: 140px;
   }
 }
 
-.globe-flare-btn {
-  position: absolute;
-  bottom: calc(1.25rem + 110px + 12px); /* above zoom slider */
-  right: 1.1rem;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(0,0,0,0.45);
-  font-size: 14px;
-  line-height: 1;
-  cursor: pointer;
+/* Flare toggle — sits inline to the right of the flare footnote paragraph. */
+.flare-footnote-row {
   display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hairline);
+}
+
+.flare-toggle-wrap {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  opacity: 0.7;
-  transition: opacity 0.15s, background 0.15s, box-shadow 0.15s;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  gap: 5px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.flare-toggle-btn {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.20);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.flare-toggle-thumb {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.45);
+  transition: transform 0.2s ease, background 0.2s;
+}
+
+.flare-toggle-btn:hover {
+  background: rgba(255,255,255,0.16);
+}
+
+.flare-toggle-btn.is-active {
+  background: rgba(216,57,35,0.28);
+  border-color: rgba(216,57,35,0.60);
+}
+
+.flare-toggle-btn.is-active .flare-toggle-thumb {
+  transform: translateX(16px);
+  background: var(--data-flare);
+}
+
+.flare-toggle-label {
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.40);
   user-select: none;
-  -webkit-user-select: none;
-}
-.globe-flare-btn:hover { opacity: 1; background: rgba(255,255,255,0.12); }
-.globe-flare-btn.is-active {
-  opacity: 1;
-  background: rgba(255,140,0,0.25);
-  border-color: rgba(255,140,0,0.6);
-  box-shadow: 0 0 8px rgba(255,140,0,0.4);
-}
-@media (hover: none) {
-  .globe-flare-btn { width: 44px; height: 44px; font-size: 18px;
-    bottom: calc(1.25rem + 130px + 12px); right: 0.8rem; }
+  white-space: nowrap;
 }
 
 #pct-readout .pct-sign,
@@ -787,12 +831,10 @@ main table {
 }
 
 .flare-footnote {
-  margin-top: 14px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255,255,255,0.08);
   font-size: 12px;
   line-height: 1.45;
   color: rgba(255,255,255,0.55);
+  margin: 0;
 }
 
 .flare-footnote #flare-readout {
@@ -1162,7 +1204,7 @@ main table {
 
 .dot-orange {
   background: var(--btc-orange);
-  box-shadow: 0 0 10px rgba(247,147,26,0.5);
+  box-shadow: 0 0 10px rgba(216,57,35,0.5);
 }
 
 .legend {
