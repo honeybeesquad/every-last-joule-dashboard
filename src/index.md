@@ -496,7 +496,7 @@ document.getElementById("globe-placeholder")?.remove();
 const zoomControls = document.getElementById("globe-zoom-controls");
 if (zoomControls && zoomSlider) {
   zoomControls.hidden = false;
-  zoomSlider.addEventListener("input", () => globe?.setZoom(parseFloat(zoomSlider.value)));
+  zoomSlider.addEventListener("input", () => globe?.setZoom(parseFloat(zoomSlider.value) || 1));
 }
 
 // Wire up flare toggle button.
@@ -508,7 +508,9 @@ if (flareToggle) {
     flareOn = !flareOn;
     globe?.update({ showFlare: flareOn });
     flareToggle.classList.toggle("is-active", flareOn);
-    flareToggle.title = flareOn ? "Hide flared-gas basins" : "Show flared-gas basins";
+    const flareLabel = flareOn ? "Hide flared-gas basins" : "Show flared-gas basins";
+    flareToggle.title = flareLabel;
+    flareToggle.setAttribute("aria-label", flareLabel);
   });
 }
 

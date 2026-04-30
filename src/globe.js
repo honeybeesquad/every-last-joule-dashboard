@@ -374,6 +374,7 @@ export async function mountGlobe(canvas, initial) {
       const dist = Math.hypot(pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]);
       if (pinchInitDist > 0) {
         state.zoomScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, pinchInitZoom * (dist / pinchInitDist)));
+        initial.onZoomChange?.(state.zoomScale); // keep slider in sync with pinch
         render();
       }
       return;
@@ -520,7 +521,7 @@ export async function mountGlobe(canvas, initial) {
     },
     zoomIn()  { applyZoom(1.25); },
     zoomOut() { applyZoom(1 / 1.25); },
-    resetZoom() { state.zoomScale = 1.0; render(); },
+    resetZoom() { state.zoomScale = 1.0; initial.onZoomChange?.(1.0); render(); },
     setZoom(s) { applyZoom(s / state.zoomScale); },
     destroy() {
       stopLoop();
