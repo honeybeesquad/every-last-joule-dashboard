@@ -56,7 +56,8 @@ export async function mountGlobe(canvas, initial) {
     mode: initial.mode ?? "avg30d",
     rotation: [-10, -15, 0],
     dragging: false,
-    zoomScale: 1.0
+    zoomScale: 1.0,
+    showFlare: false
   };
 
   const ZOOM_MIN = 0.5;
@@ -66,6 +67,7 @@ export async function mountGlobe(canvas, initial) {
     state.zoomScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, state.zoomScale * factor));
     // Pause auto-rotation while the user is zooming (same delay as after a drag).
     autoResumeAt = performance.now() + AUTO_RESUME_DELAY_MS;
+    initial.onZoomChange?.(state.zoomScale);
     render();
   }
 
@@ -101,7 +103,7 @@ export async function mountGlobe(canvas, initial) {
     let best = null;
     let bestDist2 = threshold * threshold;
     for (const region of state.regions) {
-      if (region.kind === "flare") continue; // flare regions no longer rendered on globe
+      if (region.kind === "flare" && !state.showFlare) continue;
       const dist = d3.geoDistance([region.lon, region.lat], centerLngLat);
       if (dist > Math.PI / 2) continue; // far side of globe
       const point = projection([region.lon, region.lat]);
@@ -233,9 +235,9 @@ export async function mountGlobe(canvas, initial) {
 
     for (const region of state.regions) {
       // Flare regions are renewable-dashboard-excluded: not scored in the
-      // headline, not bucketed in hotspot columns, and now not rendered on
-      // the globe either. The flare story lives only in the stats footnote.
-      if (region.kind === "flare") continue;
+      // headline, not bucketed in hotspot columns. They can be toggled
+      // visible via the flare button; hidden by default.
+      if (region.kind === "flare" && !state.showFlare) continue;
       const data = state.regionData[region.id];
       const gw = data ? regionGWAtHour(data, hour, state.mode) : 0;
       if (gw <= 0.01) continue;
@@ -519,6 +521,7 @@ export async function mountGlobe(canvas, initial) {
     zoomIn()  { applyZoom(1.25); },
     zoomOut() { applyZoom(1 / 1.25); },
     resetZoom() { state.zoomScale = 1.0; render(); },
+    setZoom(s) { applyZoom(s / state.zoomScale); },
     destroy() {
       stopLoop();
       window.removeEventListener("themechange", refreshTokens);
