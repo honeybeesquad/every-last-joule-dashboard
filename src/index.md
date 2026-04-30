@@ -159,17 +159,28 @@ document.getElementById("app-root").innerHTML = `
             <div class="num-tabular stat-value" id="supportable-readout">—</div>
           </div>
         </div>
-        <p class="flare-footnote" id="flare-footnote">Plus <span id="flare-readout">—</span> of continuous flared-gas waste in four oil basins — a 24/7 base load, physically separate from the dispatch-down story above and excluded from the headline ratio.</p>
+        <div class="flare-footnote-row">
+          <p class="flare-footnote" id="flare-footnote">Plus <span id="flare-readout">—</span> of continuous flared-gas waste in four oil basins — a 24/7 base load, physically separate from the dispatch-down story above and excluded from the headline ratio.</p>
+          <div class="flare-toggle-wrap" id="flare-toggle-wrap" hidden>
+            <button class="flare-toggle-btn" id="globe-flare-toggle"
+                    role="switch" aria-checked="false"
+                    aria-label="Show flared-gas basins" title="Show flared-gas basins">
+              <span class="flare-toggle-thumb"></span>
+            </button>
+            <span class="flare-toggle-label">Flare gas</span>
+          </div>
+        </div>
       </section>
 
       <section class="panel panel-center" aria-label="Globe">
-        <div class="globe-placeholder" id="globe-placeholder" aria-live="polite">
-          <span class="globe-placeholder-label">Computing land mask…</span>
+        <div class="globe-canvas-area">
+          <div class="globe-placeholder" id="globe-placeholder" aria-live="polite">
+            <span class="globe-placeholder-label">Computing land mask…</span>
+          </div>
+          <canvas id="globe-canvas" role="img" aria-label="Rotating globe showing active waste-energy hotspots"></canvas>
         </div>
-        <canvas id="globe-canvas" role="img" aria-label="Rotating globe showing active waste-energy hotspots"></canvas>
-        <button class="globe-flare-btn" id="globe-flare-toggle" hidden
-                aria-label="Toggle flare gas basins" title="Show flared-gas basins">🔥</button>
         <div class="globe-zoom-controls" id="globe-zoom-controls" hidden>
+          <span class="globe-zoom-label">Zoom</span>
           <input type="range" id="globe-zoom-slider"
                  class="globe-zoom-slider"
                  min="0.5" max="4" step="0.05" value="1"
@@ -507,18 +518,18 @@ if (zoomControls && zoomSlider) {
   zoomSlider.addEventListener("input", () => globe?.setZoom(parseFloat(zoomSlider.value) || 1));
 }
 
-// Wire up flare toggle button.
+// Wire up flare toggle.
+const flareToggleWrap = document.getElementById("flare-toggle-wrap");
 const flareToggle = document.getElementById("globe-flare-toggle");
-if (flareToggle) {
-  flareToggle.hidden = false;
+if (flareToggleWrap && flareToggle) {
+  flareToggleWrap.hidden = false;
   let flareOn = false;
   flareToggle.addEventListener("click", () => {
     flareOn = !flareOn;
     globe?.update({ showFlare: flareOn });
     flareToggle.classList.toggle("is-active", flareOn);
-    const flareLabel = flareOn ? "Hide flared-gas basins" : "Show flared-gas basins";
-    flareToggle.title = flareLabel;
-    flareToggle.setAttribute("aria-label", flareLabel);
+    flareToggle.setAttribute("aria-checked", String(flareOn));
+    flareToggle.setAttribute("aria-label", flareOn ? "Hide flared-gas basins" : "Show flared-gas basins");
   });
 }
 
