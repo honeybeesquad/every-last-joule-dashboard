@@ -264,7 +264,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   qatar: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Qatar 2024 (Kahramaa); gas+solar; small high-T solar program)", reportDate: "2024" },
   // --- SOUTH ASIA (3 new) ---
   srilanka: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 5.5, source: "CEB Sri Lanka 450 MW solar + hydro + wind; IRENA Sri Lanka 2024", reportDate: "2024" },
-  nepal: { annualTWh: 0.2, kind: "hydro", source: "IRENA Nepal 2024 (NEA); hydro-dominant ~95 percent; solar growing; Himalayan", reportDate: "2024" },
+  nepal: { annualTWh: 0.5, kind: "hydro-seasonal", seasonalSharesKey: "nepal", source: "World Bank Nepal Development Update 2024: 'Estimated annual renewable energy spillage exceeding 0.5 TWh (500 GWh) due to infrastructure limitations' — driven by monsoon-season run-of-river overgeneration vs transmission bottlenecks + limited India-export capacity. NEA / Department of Electricity Development confirms during FY2023/24. Same modelling treatment as Ethiopia + Iceland + Colombia (hydro spillage as wasted potential renewable energy). Gemini-3.1 research wave 4 (2026-04-30, reliability 5/5).", reportDate: "2024" },
   bhutan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Bhutan 2024 (DHI/BPC); hydro-dominant; export to India; large projects)", reportDate: "2024" },
   // --- EAST ASIA / PACIFIC (10 new) ---
   brunei: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Brunei 2024 (AEDED); gas+solar; small high-income grid)", reportDate: "2024" },

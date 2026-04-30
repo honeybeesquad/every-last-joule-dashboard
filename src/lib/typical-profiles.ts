@@ -107,6 +107,10 @@ export const HYDRO_SEASONAL_SHARES = {
   paraguay: [0.20, 0.18, 0.13, 0.08, 0.04, 0.02, 0.02, 0.02, 0.03, 0.05, 0.10, 0.13],
   // Blue Nile / Kiremt monsoon NH summer peak Jul-Aug (Ethiopia / GERD)
   ethiopia: [0.02, 0.02, 0.03, 0.04, 0.06, 0.12, 0.20, 0.22, 0.15, 0.09, 0.03, 0.02],
+  // Himalayan summer monsoon, peak Jul-Sep (Nepal NEA spillage during wet
+  // season + India-export congestion). Wikipedia & ICIMOD docs put Nepal
+  // monsoon contribution at ~75% of annual hydrology Jun-Sep. Sums to 1.0.
+  nepal: [0.02, 0.02, 0.03, 0.04, 0.06, 0.16, 0.22, 0.20, 0.14, 0.07, 0.03, 0.01],
   // Volga / western Russia snowmelt and wet-season hydro spill, NH summer peak
   "russia-mainland": [0.03, 0.03, 0.05, 0.10, 0.16, 0.18, 0.16, 0.12, 0.07, 0.04, 0.03, 0.03],
   // Lancang River / southwest China monsoon hydro spill, NH summer peak Jul-Sep

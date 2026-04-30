@@ -44,7 +44,10 @@ describe("regions", () => {
     // research wave 1 (XM Informe de Operación SIN vertimientos hidráulicos
     // anchor; conservative 2.0 TWh/yr annualisation pending Colombian-egress
     // verification). 198 + 1 = 199.
-    expect(REGIONS.length).toBe(199);
+    // Nepal added 2026-04-30 as T3-static hydro-seasonal via Gemini-3.1
+    // research wave 4 (World Bank Nepal Development Update 2024 — ~0.5 TWh/yr
+    // monsoon-season run-of-river spillage). 199 + 1 = 200.
+    expect(REGIONS.length).toBe(200);
   });
 
   it("has 97 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -123,7 +126,8 @@ describe("regions", () => {
     // 97 - 1 = 96.
     // Philippines promoted from research-only candidate to T3 static. 96 + 1 = 97.
     // Colombia added 2026-04-29 as T3-static hydro-seasonal. 97 + 1 = 98.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(98);
+    // Nepal added 2026-04-30 as T3-static hydro-seasonal. 98 + 1 = 99.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(99);
   });
 
   it("has 4 flare regions", () => {
