@@ -17,9 +17,9 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   } catch (err) {
     return buildTypicalSolarRegion(
       REGION_ID,
-      8,
+      4,
       0.2,
-      "No public hourly curtailment feed; DEWA/EWEC public pages do not expose hourly solar curtailment, so the ~0.2 TWh/yr calibration anchor is applied to a typical solar profile shape (T3-modelled, ±40% envelope).",
+      "No public hourly curtailment feed; calibration anchor ~0.2 TWh/yr (200 GWh) — EWEC Statistical Report 2023/2024 + Abu Dhabi Department of Energy 2023 Technical Report confirm ~200-330 GWh curtailed in 2024 as Al Dhafra 2 GW solar reached full capacity alongside 5.6 GW Barakah nuclear baseload; DEWA Dubai reports near-zero curtailment (CSP storage + high midday AC load absorbs generation). IRENA Renewable Energy Statistics 2024 confirms UAE total solar capacity 6.05 GW end-2023. UTC+4 Gulf Standard Time. T3-modelled, ±40% envelope. Gemini-3.1 research wave 5 (2026-04-30).",
       "2024",
     );
   }

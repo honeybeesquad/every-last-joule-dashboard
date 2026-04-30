@@ -17,9 +17,9 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   } catch (err) {
     return buildTypicalSolarRegion(
       REGION_ID,
-      8,
+      4,
       0.1,
-      `Typical-shape fallback: Oman live feed unavailable (${(err as Error).message}); calibration anchor ~0.1 TWh/yr solar curtailment.`,
+      `Typical-shape fallback: Oman live feed unavailable (${(err as Error).message}); calibration anchor ~0.1 TWh/yr solar curtailment — Nama PWP (formerly OPWP) 7-Year Statement 2024-2030 (Table 14 "Renewable Energy Spillage") confirms negligible (~0 GWh) actual curtailment 2022-2024 (Ibri II 500 MW and Dhofar Wind 50 MW fully absorbed); 114 GWh projected for 2025 when Manah I/II 1,000 MW comes online; 245 GWh projected 2026. Anchor held at 0.1 TWh as transitional forward estimate. UTC+4 Arabia Standard Time. T3-modelled, ±40% envelope. Gemini-3.1 research wave 5 (2026-04-30).`,
       "2024",
     );
   }

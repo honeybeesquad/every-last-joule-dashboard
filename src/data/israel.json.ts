@@ -17,9 +17,9 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   } catch (err) {
     return buildTypicalSolarRegion(
       REGION_ID,
-      10,
-      0.15,
-      `Typical-shape fallback: Israel live feed unavailable (${(err as Error).message}); calibration anchor ~0.15 TWh/yr Negev solar curtailment.`,
+      2,
+      1.2,
+      `Typical-shape fallback: Israel live feed unavailable (${(err as Error).message}); calibration anchor ~1.2 TWh/yr (1,200 GWh) solar curtailment — Noga-ISO ESG and Sustainability Report 2024 + Electricity Authority (PUA) Renewable Energy Status Report 2024 (gap between 16.2% potential share and 14.7% actual share of ~81.5 TWh demand; Negev/Arava 5-8% curtailment rate during midday transmission bottlenecks). UTC+2 Israel Standard Time. No public hourly curtailment feed. T3-modelled, ±40% envelope. Gemini-3.1 research wave 5 (2026-04-30).`,
       "2024",
     );
   }
