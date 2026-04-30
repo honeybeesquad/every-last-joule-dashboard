@@ -4,6 +4,8 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-05-01
+
 ### Added — S1 Validation sprint (130 per-region triangulation MDs)
 - `docs/validation/<region>.md` for every tier-live region plus every static/flare region with a public anchor (130 region files plus a directory README and `_template.md` scaffold = 132 *.md total in the directory). Each region file carries a commit-grade discrepancy analysis vs. published TSO / ISO / IMM / SoM / IRENA / Ember / GGFR annuals.
 - `scripts/validation/enrich_discrepancy.py` — gemini-2.5-flash-backed enrichment script with rule 4 enforced ("say 'no anchor extracted' rather than making one up"). Idempotent via `--skip-enriched`.
@@ -48,6 +50,13 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 - `dataset/FAIR.md` — replaced placeholder with 403-line evidence-grounded manual scorecard. 14/15 sub-principles pass; 1 partial (F1 DOI, scaffolded, mints on v1.0.0 tag). Cross-references every artefact in this repo.
 
 ### Changed
+- **Italy South → Sicily** — ENTSO-E domain `10Y1001A1001A86H` (IT-South mainland) replaced by `10Y1001A1001A75E` (IT-Sicily) in the live ENTSO-E feed. IT-South returns error 999 (Terna publishes no A75 actual-generation data for mainland southern bidding zones). Sicily carries comparable HVDC-island transmission-constraint characteristics and has rich published data. Updated `src/data/entsoe.json.ts`, `src/lib/regions.ts`, `src/index.md`; tier promoted from `live` to `live-domestic-anchored`. Snapshot refreshed.
+- **Region count 128 → 202** — cumulative region additions since v1.0.0: Saudi Arabia (solar), Nepal (solar), Philippines (wind + two-output schema), Florida (T3 modelled), plus wave-4/5 research calibration expansions across Middle East, Caribbean, Sub-Saharan Africa.
+- **Colombia promoted to T1b-CSV** (`live-domestic-anchored`) via Britta daily relay — autonomous XM data-collection pipeline operational; snapshot committed. Tier-counts golden files updated.
+- **Globe interactive controls** — scroll-wheel zoom, pinch zoom, and zoom-level slider (PR #26); flare-region toggle with gas-red colouring (PR #27).
+- **Wave-5 anchor revisions** — Israel, UAE, Oman, Jamaica, Botswana TWh anchors refreshed against latest published figures.
+- **Solar-kind sweep** — Ghana, Jordan (UTC offset fix), and six mixed→solar region reclassifications corrected. Nigeria switched to solar kind with diurnal profile.
+- **CI / deploy pipeline** — `history-append.yml` workflow and Vercel deploy hook both retargeted from `v0-build` to `main`; production branch setting corrected in Vercel project link.
 - Region count references updated from `122` → `128` across `dataset/README.md`, `dataset/CITATION.cff`, `dataset/LICENSE`, `dataset/CHANGELOG.md`, `dataset/SCHEMA.md`, `docs/academic-model/zenodo-setup.md`, `src/methodology.md` (9 textual references; counted authoritatively from `src/lib/regions.ts`).
 - `dataset/schema/region-snapshot.schema.json` — added uncertainty fields (`uncertaintyLowGW`, `uncertaintyHighGW`, `confidenceTier`) to the per-region snapshot schema.
 - **Zenodo DOI minted (2026-04-27)** — version DOI `10.5281/zenodo.19835566` pins v1.0.0; concept DOI `10.5281/zenodo.19835411` resolves to latest. Substituted the `TBA` placeholder across `dataset/CITATION.cff`, `dataset/README.md`, `README.md`, `docs/paper/05-usage-notes.md`, `docs/paper/README.md`. `dataset/FAIR.md` F1 sub-principle moved from *partial* to *pass*; headline scorecard now 15/15.
