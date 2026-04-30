@@ -64,6 +64,8 @@ export async function mountGlobe(canvas, initial) {
 
   function applyZoom(factor) {
     state.zoomScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, state.zoomScale * factor));
+    // Pause auto-rotation while the user is zooming (same delay as after a drag).
+    autoResumeAt = performance.now() + AUTO_RESUME_DELAY_MS;
     render();
   }
 
@@ -330,6 +332,8 @@ export async function mountGlobe(canvas, initial) {
   let pinchInitDist = 0;
   let pinchInitZoom = 1;
   let isPinching = false;
+  // Prevent the last-finger lift after a pinch from firing onRegionClick.
+  let suppressNextClick = false;
 
   canvas.addEventListener("pointerdown", (event) => {
     event.preventDefault();
@@ -392,6 +396,10 @@ export async function mountGlobe(canvas, initial) {
       if (pointerPositions.size < 2) {
         // Exit pinch mode; if one finger remains, restart drag from that position.
         isPinching = false;
+        // Suppress the imminent click that would otherwise fire when this
+        // remaining finger lifts without travelling far (the user was pinching,
+        // not tapping).
+        suppressNextClick = true;
         if (pointerPositions.size === 1) {
           const [remId, remPos] = [...pointerPositions.entries()][0];
           activePointerId = remId;
@@ -419,10 +427,12 @@ export async function mountGlobe(canvas, initial) {
       canvas.releasePointerCapture(event.pointerId);
     }
     // Treat a small-travel pointerup as a click and run hit-testing.
-    if (onRegionClick && traveled < CLICK_MAX_TRAVEL_PX && event.type === "pointerup") {
+    // Skip if we just exited a pinch — the finger lift is not a tap.
+    if (onRegionClick && traveled < CLICK_MAX_TRAVEL_PX && event.type === "pointerup" && !suppressNextClick) {
       const hit = hitTestRegion(event.clientX, event.clientY);
       onRegionClick(hit, { clientX: event.clientX, clientY: event.clientY });
     }
+    suppressNextClick = false;
   }
 
   canvas.addEventListener("pointerup", releasePointer);
@@ -434,14 +444,18 @@ export async function mountGlobe(canvas, initial) {
   });
 
   // Scroll-wheel zoom (desktop trackpad + mouse wheel).
-  canvas.addEventListener("wheel", (event) => {
+  // Named reference so destroy() can remove it.
+  function onWheel(event) {
     event.preventDefault();
     // Normalise delta across deltaMode values (0=pixels, 1=lines, 2=pages).
+    // Cap page-mode at 200 pixel-equivalent to avoid a single event zooming
+    // more than ~18% (0.999^200 ≈ 0.82).
     const pixels = event.deltaMode === 1 ? event.deltaY * 20
-                 : event.deltaMode === 2 ? event.deltaY * 400
+                 : event.deltaMode === 2 ? Math.min(event.deltaY * 400, 200)
                  : event.deltaY;
     applyZoom(Math.pow(0.999, pixels));
-  }, { passive: false });
+  }
+  canvas.addEventListener("wheel", onWheel, { passive: false });
 
   resize();
 
@@ -510,6 +524,7 @@ export async function mountGlobe(canvas, initial) {
       window.removeEventListener("themechange", refreshTokens);
       document.removeEventListener("visibilitychange", onVisibility);
       resizeObserver.disconnect();
+      canvas.removeEventListener("wheel", onWheel);
     }
   };
 }

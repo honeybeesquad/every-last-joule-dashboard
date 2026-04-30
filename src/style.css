@@ -728,6 +728,15 @@ main table {
   -webkit-backdrop-filter: blur(4px);
 }
 
+/* Meet iOS HIG / Material min tap target (44 × 44) on touch devices. */
+@media (hover: none) {
+  .globe-zoom-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+}
+
 .globe-zoom-btn:hover {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.35);
