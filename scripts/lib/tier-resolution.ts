@@ -92,6 +92,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   mongolia: "wind",
   morocco: "wind",
   namibia: "solar",
+  nepal: "hydro-seasonal",
   ningxia: "mixed",
   "nt-pilbara": "solar",
   oman: "solar",

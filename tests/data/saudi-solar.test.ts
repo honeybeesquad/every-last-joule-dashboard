@@ -9,7 +9,8 @@ describe("saudi-solar loader", () => {
     expect(data.latestProfile).toBeNull();
     expect(data.totalTWh).toBeGreaterThan(0);
     expect(data.peakGW).toBeGreaterThan(0);
-    expect(data.sourceNote).toContain("No public hourly curtailment feed");
+    // Updated 2026-04-30 (Gemini wave 4): GASTAT 2024 is now the cited anchor.
+    expect(data.sourceNote).toContain("GASTAT");
     expect(data.sourceNote).toContain("T3-modelled, ±40% envelope");
     expect(data.sourceNote).not.toMatch(/live feed unavailable/i);
   });

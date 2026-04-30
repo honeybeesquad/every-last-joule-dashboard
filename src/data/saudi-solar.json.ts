@@ -18,8 +18,8 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     return buildTypicalSolarRegion(
       REGION_ID,
       9,
-      0.3,
-      "No public hourly curtailment feed; SEC/ECRA public pages do not expose hourly solar curtailment, so the ~0.3 TWh/yr Sudair/Sakaka solar calibration anchor is applied to a typical solar profile shape (T3-modelled, ±40% envelope).",
+      0.8,
+      "GASTAT (General Authority for Statistics) Renewable Energy Statistics Publication 2024 (published 2025): Saudi Arabia recorded 5.2% renewable curtailment rate in 2024, ~0.8 TWh, attributed to grid constraints and rapid scale-up of utility-scale solar (Sudair, Sakaka, NEOM Helios) outpacing transmission expansion. T3-modelled, ±40% envelope. Source: https://www.stats.gov.sa/ — Gemini-3.1 research wave 4 (2026-04-30, reliability 5/5). Expected to fluctuate as Vision 2030 BESS + transmission upgrades land.",
       "2024",
     );
   }
