@@ -89,18 +89,12 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // 70.79 TWh and PV 38.037 TWh, implying ~8.2 TWh curtailed.
   xinjiang: { annualTWh: 8.2, kind: "solar", localSolarPeakUTC: 6.33, source: "NEA 2024 renewable monitoring evaluation + Huaon/NBS generation by fuel (Xinjiang wind/PV curtailment ~8.2 TWh; solar-shaped fallback centred on local noon UTC 06:20)", reportDate: "2024" },
   iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
-  // Colombia: hydro-dominant SIN with bimodal precipitation. XM publishes
-  // monthly vertimientos hidráulicos (reservoir-overflow spillage) in the
-  // Informe de Operación SIN. Gemini-3.1 research wave 2026-04-29 cited
-  // 705.24 GWh-mes for Feb-2025 vertimientos; XM site is geoblocked from
-  // outside Colombia preventing direct verification, so a conservative
-  // 2.0 TWh/yr annualisation is held as the T3 anchor. Bimodal seasonal
-  // shape (Apr-May + Oct-Nov rainfall, with reservoir-fill lag pushing
-  // peak spillage to May-Jun and Nov-Dec). UPME / SER Colombia note that
-  // VRE (solar/wind) curtailment is currently <1% — the wasted-energy
-  // story is dominated by hydro spillage, same modelling approach as
-  // Iceland and Sichuan.
-  colombia: { annualTWh: 7.5, kind: "hydro-seasonal", seasonalSharesKey: "colombia", source: "XM SinerGox API (servapibi.xm.com.co/daily, MetricId=VertEner Entity=Sistema). 5-year mean 2020-2024 = 7.53 TWh/yr (range 0.53-13.12 TWh/yr ENSO-driven). Verified 2026-04-30 via Colombian-egress probe; same API confirms Gemini-3.1 cited Feb-2025 figure of 705.24 GWh-mes exactly.", reportDate: "2026-04-30" },
+  // Colombia: promoted to T1b-CSV loader (src/data/colombia.json.ts).
+  // The loader reads the committed daily XM API CSV (Britta relay) and
+  // computes a trailing-365-day annualised TWh figure. Removed from statics
+  // 2026-04-30; the entry in regionData in index.md takes precedence via
+  // object spread order (explicit `colombia` key before `...statics`).
+  // colombia: SUPERSEDED BY LOADER — do not add back here.
   // Ukraine: ENTSO-E Ukrenergo returns empty A75 data post-2022 synchronisation.
   // Solar-dominant fallback at 1.2 TWh/yr; Ukrainian renewables are ~60% solar
   // (southern steppes: Nikopol, Zaporizhzhia, Kherson), ~40% wind (southern coast).
