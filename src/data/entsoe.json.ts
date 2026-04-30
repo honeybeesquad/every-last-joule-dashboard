@@ -79,12 +79,18 @@ export const ZONES = [
     ],
     sourceNote: "Romania Transelectrica 2024 calibration; solar fixed in v1.f plus wind added.",
   },
-  // Italy split into three ENTSO-E bidding zones (v1t). Previous italy-national
-  // used the aggregate national domain (10YIT-GRTN-----B) which is correct at
-  // the national total level but hides geographic variation. Terna 2024 national
-  // total 0.31 TWh/yr split approximately 35% north / 45% south / 20% islands.
-  // North Italy is better-connected (Alps hydro + pumped storage absorbs solar);
-  // South Italy and Sardinia are transmission-constrained → higher curtailment rates.
+  // Italy split into three ENTSO-E bidding zones. Terna 2024 national total
+  // 0.31 TWh/yr; North Italy is better-connected (Alps hydro absorbs solar),
+  // Sicily and Sardinia are island-isolated (HVDC capacity-limited) and carry
+  // the highest per-GWh curtailment rates.
+  //
+  // NOTE: ENTSO-E domains IT-South (10Y1001A1001A86H), IT-Central North
+  // (10Y1001A1001A84D), and IT-Central South (10Y1001A1001A85B) all return
+  // error code 999 — Terna does not publish A75 data for those mainland zones.
+  // IT-Sicily (10Y1001A1001A75E) is well-published and is used in place of
+  // the original italy-south entry. Sicily is heavily wind-loaded and
+  // transmission-constrained via the Sorgente-Rizziconi HVDC link, making it
+  // the most representative southern-Italy curtailment signal available.
   {
     id: "italy-north-zone",
     domain: "10Y1001A1001A73I",
@@ -95,13 +101,13 @@ export const ZONES = [
     sourceNote: "ENTSO-E North Italy bidding zone; ~35% of Terna 2024 0.31 TWh national curtailment anchor (well-connected via Alps links, lower rates).",
   },
   {
-    id: "italy-south",
-    domain: "10Y1001A1001A86H",
+    id: "italy-sicily",
+    domain: "10Y1001A1001A75E",
     technologies: [
-      { psrType: "B16", fuel: "solar", rate: 0.019 },
-      { psrType: "B19", fuel: "wind", rate: 0.010 },
+      { psrType: "B16", fuel: "solar", rate: 0.040 },
+      { psrType: "B19", fuel: "wind", rate: 0.035 },
     ],
-    sourceNote: "ENTSO-E South Italy bidding zone (Apulia / Basilicata / Calabria); ~45% of Terna 2024 national anchor — transmission-constrained North-South corridor, high solar+wind curtailment.",
+    sourceNote: "ENTSO-E Sicily bidding zone; island isolation (Sorgente-Rizziconi HVDC capacity-limited), wind-dominant with significant solar — replaces IT-South (10Y1001A1001A86H) which returns no A75 data from Terna.",
   },
   {
     id: "italy-sardinia",

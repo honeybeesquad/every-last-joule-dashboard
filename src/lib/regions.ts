@@ -55,7 +55,7 @@ export const REGIONS: Region[] = [
   // North-zone-specific MSD figure; T1b live-domestic-anchored per B4
   // Option B (modelled-share scope mismatch).
   { id: "italy-north-zone", name: "Italy North",     country: "ITA", lat: 45.0, lon:   10.0, tier: "live-domestic-anchored", kind: "mixed", source: "ENTSO-E Terna (North zone)", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "italy-south",     name: "Italy South",     country: "ITA", lat: 40.5, lon:   16.0, tier: "live", kind: "mixed", source: "ENTSO-E Terna (South zone)", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "italy-sicily",    name: "Sicily",          country: "ITA", lat: 37.6, lon:   14.0, tier: "live-domestic-anchored", kind: "mixed", source: "ENTSO-E Terna (Sicily)", sourceUrl: "https://transparency.entsoe.eu/" },
   // italy-sardinia uses the Terna national MSD rate scaled to Sardinia's
   // wind+PV share — a modelled-share split that captures the wrong scope.
   // T1b live-domestic-anchored per B4 Option B (post-B1 P67 +87.6% residual).
