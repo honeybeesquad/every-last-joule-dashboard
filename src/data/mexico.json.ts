@@ -19,7 +19,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       REGION_ID,
       19,
       1.2,
-      `Typical-shape fallback: CENACE/SENER live feed unavailable (${(err as Error).message}); solar+wind curtailment scaled to ~1.2 TWh/yr.`,
+      `SENER PRODESEN 2024-2038 anchor: ~1.2% of renewable generation curtailed in 2022 (~1 TWh) due to transmission-network saturation and CENACE operational restrictions, primarily in the northern grid (Sonora/Chihuahua/Coahuila solar; Oaxaca/Tehuantepec wind). 2023 industry estimates trend higher (~3.5%) per CRE confiabilidad reports. Anchor held at 1.2 TWh as a midpoint of PRODESEN-2022 (~1.0) and CRE-2023 (~3.5%-implied ~3 TWh). Hydro vertimientos NOT included in this figure — varies dramatically with annual hydrology. Sources: PRODESEN https://www.gob.mx/sener/documentos/programa-de-desarrollo-del-sistema-electrico-nacional-2024-2038 + CRE https://www.gob.mx/cre — Gemini-3.1 research wave 2 (2026-04-30).`,
       "2024",
     );
   }

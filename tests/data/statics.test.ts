@@ -3,25 +3,28 @@ import { buildStaticRegion, buildAllStatics } from "../../src/data/statics.json"
 import { REGIONS } from "../../src/lib/regions";
 
 describe("static regions", () => {
-  it("emits only the 57 canonical static/flare regions by default", () => {
+  it("emits only the 58 canonical static/flare regions by default", () => {
     // v0.6 global-coverage-audit added: hawaii-oahu/maui/island, austria, russia-murmansk-wind.
     // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27): +16 T3-static
     // rows for Caribbean + Central American + small South American grids.
     // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27): +26 T3-static rows
     // sourced from the introduce-as-T3 subset of `data/coverage-audit/2026-04-26-africa.csv`.
     // Philippines promoted from research candidate to launch T3 static (2026-04-29).
+    // Colombia added 2026-04-29 as T3-static hydro-seasonal via Gemini-3.1
+    // research wave 1 (XM Informe de Operación SIN vertimientos hidráulicos).
+    // Old non-canonical bulk-coverage Colombia entry deleted in the same change.
     const data = buildAllStatics();
-    expect(Object.keys(data).length).toBe(57);
+    expect(Object.keys(data).length).toBe(58);
   });
 
-  it("keeps the 67 non-canonical bulk-coverage candidates out of dashboard output", () => {
+  it("keeps the 66 non-canonical bulk-coverage candidates out of dashboard output", () => {
     const canonicalIds = new Set(REGIONS.map((r) => r.id));
     const data = buildAllStatics();
     expect(Object.keys(data).every((id) => canonicalIds.has(id))).toBe(true);
 
     const researchData = buildAllStatics({ includeCandidates: true });
     expect(Object.keys(researchData).length).toBe(124);
-    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(67);
+    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(66);
   });
 
   it("includes all expected ids", () => {

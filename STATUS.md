@@ -30,9 +30,9 @@
 - `themechange` event re-paints canvas + open tooltips
 
 **Data coverage:**
-- 71 live region entries (T1a) + 4 live-domestic-anchored (T1b) + 1 live-neighbour-anchored (T1c) + 4 flare regions + 96 static entries in `src/lib/regions.ts` (176 canonical entries)
-- `src/data/statics.json.ts` emits 56 canonical static/flare records by default; `buildAllStatics({ includeCandidates: true })` exposes the 68 non-canonical bulk-coverage candidates for research only
-- Tally buckets as of 2026-04-29: T1a=71, T1b=4, T1c=1, T2=2, T2-flare=4, T3=94
+- 92 live region entries (T1a) + 4 live-domestic-anchored (T1b) + 1 live-neighbour-anchored (T1c) + 4 flare regions + 98 static entries in `src/lib/regions.ts` (199 canonical entries — incl. Colombia added 2026-04-29 from Gemini-3.1 research wave 1)
+- `src/data/statics.json.ts` emits 57 canonical static/flare records by default; `buildAllStatics({ includeCandidates: true })` exposes the non-canonical bulk-coverage candidates for research only
+- Tally buckets as of 2026-04-29: T1a=92, T1b=4, T1c=1, T2=2, T2-flare=4, T3=96
 - Full ENTSO-E zone fetch: DE/ES/FR/NL/DK/FI/BE/NO/IE/PT/GR/IT/CH/CZ/PL/RO/HU/AT (15 zones; croatia/slovakia/slovenia/latvia/lithuania/albania REMOVED from live fetch 2026-04-28 — no verifiable A75 published rate found; returned to T3 static pending actual calibration data)
 - `src/lib/typical-profiles.ts` for the few regions with no public hourly source (Sichuan/Xinjiang/Iceland — methodology disclosed)
 - `src/lib/resilient.ts::withFallback` wrapping every loader

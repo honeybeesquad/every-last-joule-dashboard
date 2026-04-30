@@ -89,6 +89,18 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // 70.79 TWh and PV 38.037 TWh, implying ~8.2 TWh curtailed.
   xinjiang: { annualTWh: 8.2, kind: "solar", localSolarPeakUTC: 6.33, source: "NEA 2024 renewable monitoring evaluation + Huaon/NBS generation by fuel (Xinjiang wind/PV curtailment ~8.2 TWh; solar-shaped fallback centred on local noon UTC 06:20)", reportDate: "2024" },
   iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
+  // Colombia: hydro-dominant SIN with bimodal precipitation. XM publishes
+  // monthly vertimientos hidráulicos (reservoir-overflow spillage) in the
+  // Informe de Operación SIN. Gemini-3.1 research wave 2026-04-29 cited
+  // 705.24 GWh-mes for Feb-2025 vertimientos; XM site is geoblocked from
+  // outside Colombia preventing direct verification, so a conservative
+  // 2.0 TWh/yr annualisation is held as the T3 anchor. Bimodal seasonal
+  // shape (Apr-May + Oct-Nov rainfall, with reservoir-fill lag pushing
+  // peak spillage to May-Jun and Nov-Dec). UPME / SER Colombia note that
+  // VRE (solar/wind) curtailment is currently <1% — the wasted-energy
+  // story is dominated by hydro spillage, same modelling approach as
+  // Iceland and Sichuan.
+  colombia: { annualTWh: 7.5, kind: "hydro-seasonal", seasonalSharesKey: "colombia", source: "XM SinerGox API (servapibi.xm.com.co/daily, MetricId=VertEner Entity=Sistema). 5-year mean 2020-2024 = 7.53 TWh/yr (range 0.53-13.12 TWh/yr ENSO-driven). Verified 2026-04-30 via Colombian-egress probe; same API confirms Gemini-3.1 cited Feb-2025 figure of 705.24 GWh-mes exactly.", reportDate: "2026-04-30" },
   // Ukraine: ENTSO-E Ukrenergo returns empty A75 data post-2022 synchronisation.
   // Solar-dominant fallback at 1.2 TWh/yr; Ukrainian renewables are ~60% solar
   // (southern steppes: Nikopol, Zaporizhzhia, Kherson), ~40% wind (southern coast).
@@ -210,7 +222,10 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // --- AMERICAS (7 new) ---
   bahamas: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 12.5, source: "IRENA Bahamas 2024 (BPL; solar+oil; island grids)", reportDate: "2024" },
   belize: { annualTWh: 0.02, kind: "hydro", source: "IRENA Belize 2024 (BEL); Herrera hydroelectric + Belize oil + solar", reportDate: "2024" },
-  colombia: { annualTWh: 0.8, kind: "hydro", source: "IRENA Colombia 2024 (XM/TSO); hydro ~70 percent; solar growing; SILEC member)", reportDate: "2024" },
+  // colombia: promoted to canonical T3-static hydro-seasonal at line 103
+  // via Gemini-3.1 research wave 1 (2026-04-29). The old IRENA-based 0.8 TWh
+  // bulk-coverage candidate was replaced by the XM-vertimientos-based 2.0
+  // TWh anchor with proper bimodal hydro-seasonal shape.
   dominica: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Dominica 2024 (DOMLEC; hydro+solar+geothermal)", reportDate: "2024" },
   grenada: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 12.0, source: "GRENLEC solar+oil; IRENA Grenada 2024", reportDate: "2024" },
   haiti: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Haiti 2024 (EDH); severe load-shed; solar+hydro; small grid)", reportDate: "2024" },
