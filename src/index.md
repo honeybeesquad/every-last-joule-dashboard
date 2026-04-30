@@ -274,9 +274,11 @@ const regionData = {
   greece: entsoe.greece,
   romania: entsoe.romania,
   turkey,
-  // Italy split into three ENTSO-E bidding zones (v1t)
+  // Italy split into three ENTSO-E bidding zones. IT-South domain
+  // (10Y1001A1001A86H) returns ENTSO-E error 999 from Terna, so Sicily
+  // (10Y1001A1001A75E) is used as the southern-IT signal in its place.
   "italy-north-zone": entsoe["italy-north-zone"],
-  "italy-south": entsoe["italy-south"],
+  "italy-sicily": entsoe["italy-sicily"],
   "italy-sardinia": entsoe["italy-sardinia"],
   "sweden-north": entsoe["sweden-north"],
   "sweden-south": entsoe["sweden-south"],

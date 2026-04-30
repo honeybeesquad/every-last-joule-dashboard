@@ -85,8 +85,10 @@ describe("regions", () => {
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
     expect(liveTotal).toBe(98);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(93);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
+    // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
+    // since Sicily is anchored to Terna national 0.31 TWh via modelled share).
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(92);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(5);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
 
@@ -153,7 +155,7 @@ describe("regions", () => {
       "belgium", "iberia", "portugal", "germany", "france",
       "netherlands", "denmark-west", "denmark-east", "poland",
       "greece", "romania", "turkey", "italy-north-zone",
-      "italy-south", "italy-sardinia", "sweden-south", "hungary",
+      "italy-sicily", "italy-sardinia", "sweden-south", "hungary",
       "czech-republic", "bulgaria", "gb-england-wales",
       "norway-no1", "norway-no2", "norway-no3", "norway-no4",
       "new-zealand",
@@ -228,7 +230,7 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "greece")).toBeDefined();
     expect(REGIONS.find(r => r.id === "romania")).toBeDefined();
     expect(REGIONS.find(r => r.id === "italy-north-zone")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "italy-south")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "italy-sicily")).toBeDefined();
     expect(REGIONS.find(r => r.id === "italy-sardinia")).toBeDefined();
     expect(REGIONS.find(r => r.id === "belgium")).toBeDefined();
     // Denmark split in v0.6; see coverage-audit test block below.
