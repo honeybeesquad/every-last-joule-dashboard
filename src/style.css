@@ -291,7 +291,7 @@
 :root:not([data-theme]),
 html:not([data-theme]) body {
   /* paint at least the page chrome with hardcoded Sunfire values */
-  background: radial-gradient(ellipse at 30% 40%, #2d1f0e 0%, #1a1207 60%, #0a0703 100%);
+  background: radial-gradient(ellipse at 50% 40%, #2d1f0e 0%, #1a1207 60%, #0a0703 100%);
   color: #fff8e0;
 }
 
@@ -325,7 +325,7 @@ html:not([data-theme]) body {
 html, body {
   font-family: var(--font-sans);
   color: var(--ink);
-  background: radial-gradient(ellipse at 30% 40%, var(--surface-bg-1) 0%, var(--surface-bg-2) 60%, var(--surface-bg-3) 100%);
+  background: radial-gradient(ellipse at 50% 40%, var(--surface-bg-1) 0%, var(--surface-bg-2) 60%, var(--surface-bg-3) 100%);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   font-weight: var(--fw-book);
@@ -393,7 +393,7 @@ code, .mono {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: radial-gradient(ellipse at 30% 40%, var(--surface-bg-1) 0%, var(--surface-bg-2) 60%, var(--surface-bg-3) 100%);
+  background: radial-gradient(ellipse at 50% 40%, var(--surface-bg-1) 0%, var(--surface-bg-2) 60%, var(--surface-bg-3) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -468,7 +468,7 @@ code, .mono {
    the start (#0f1517) is teal-shifted for cool chrome feel. */
 html,
 body {
-  background: radial-gradient(ellipse at 30% 40%, var(--surface-bg-1) 0%, var(--surface-bg-2) 60%, var(--surface-bg-3) 100%);
+  background: radial-gradient(ellipse at 50% 40%, var(--surface-bg-1) 0%, var(--surface-bg-2) 60%, var(--surface-bg-3) 100%);
   color: var(--ink);
   min-height: 100vh;
 }

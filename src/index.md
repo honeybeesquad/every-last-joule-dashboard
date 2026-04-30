@@ -127,7 +127,7 @@ document.getElementById("app-root").innerHTML = `
       <div class="app-title">
         <span class="app-mark">●</span>
         <span class="app-wordmark">Every Last Joule</span>
-        <span class="app-tag">Wasted Energy Database · v0</span>
+        <span class="app-tag">Wasted Energy Database · v1.0.0</span>
       </div>
       <div class="app-header-right">
         <div id="theme-toggle-mount"></div>
