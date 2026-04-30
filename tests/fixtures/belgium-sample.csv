@@ -1,0 +1,4 @@
+datetime;resolutioncode;region;realtime;mostrecentforecast;monitoredcapacity
+2026-04-01T00:00:00+00:00;PT15M;Flanders;100;90;1000
+2026-04-01T00:15:00+00:00;PT15M;Wallonia;;50;1000
+2026-04-01T01:00:00+00:00;PT15M;Flanders;200;190;1000

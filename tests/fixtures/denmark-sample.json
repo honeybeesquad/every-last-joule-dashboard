@@ -1,0 +1,5 @@
+{"records":[
+  {"HourUTC":"2026-04-01T00:00:00","PriceArea":"DK1","OffshoreWindLt100MW_MWh":1,"OffshoreWindGe100MW_MWh":2,"OnshoreWindLt50kW_MWh":3,"OnshoreWindGe50kW_MWh":4,"SolarPowerLt10kW_MWh":5,"SolarPowerGe10Lt40kW_MWh":6,"SolarPowerGe40kW_MWh":7,"SolarPowerSelfConMWh":8},
+  {"HourUTC":"2026-04-01T00:00:00","PriceArea":"DK2","OffshoreWindLt100MW_MWh":10,"OffshoreWindGe100MW_MWh":0,"OnshoreWindLt50kW_MWh":0,"OnshoreWindGe50kW_MWh":0,"SolarPowerLt10kW_MWh":0,"SolarPowerGe10Lt40kW_MWh":0,"SolarPowerGe40kW_MWh":0,"SolarPowerSelfConMWh":0},
+  {"HourUTC":"2026-04-01T01:00:00","PriceArea":"DK1","OffshoreWindLt100MW_MWh":0,"OffshoreWindGe100MW_MWh":0,"OnshoreWindLt50kW_MWh":0,"OnshoreWindGe50kW_MWh":100,"SolarPowerLt10kW_MWh":0,"SolarPowerGe10Lt40kW_MWh":0,"SolarPowerGe40kW_MWh":0,"SolarPowerSelfConMWh":0}
+]}

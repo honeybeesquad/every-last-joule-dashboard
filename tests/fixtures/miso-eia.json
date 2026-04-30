@@ -1,0 +1,2762 @@
+{
+  "wind": {
+    "response": {
+      "total": "149",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6780",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6322",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6717",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7792",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9210",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9553",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9159",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8518",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8050",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9275",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10136",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10728",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10991",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "11439",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10367",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9358",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10499",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "11945",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "12478",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14932",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16179",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15721",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14947",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14569",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "13946",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "13629",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14643",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14962",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15303",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16046",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16471",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16555",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16308",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16191",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16346",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16067",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16681",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17991",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17647",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17515",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18013",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19335",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19889",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20220",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20425",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21254",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21754",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22140",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22520",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23126",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23840",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23786",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23774",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23182",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22373",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21925",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21686",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21799",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21628",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21474",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22172",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22248",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23546",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23404",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22820",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21998",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21420",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20546",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20859",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21381",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20917",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21052",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21695",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20375",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18012",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15239",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14105",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14154",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "13159",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "12183",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "12069",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "13330",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "13574",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14498",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14971",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14888",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14360",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15188",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15937",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15598",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15238",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14412",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "12752",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "11664",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10939",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10628",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10132",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8653",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7646",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7995",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8838",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9211",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9417",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9546",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9459",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9528",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9979",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10034",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10938",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "12796",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "12808",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14179",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14780",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14808",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14884",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15104",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15738",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16064",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16497",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16389",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16672",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16324",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17446",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18297",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19434",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19788",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19784",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19602",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19238",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18757",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18525",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18793",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18772",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18153",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15068",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "12627",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "11872",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9967",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8298",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8002",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8594",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9219",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9521",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9626",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8669",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7698",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8797",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "11104",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "13437",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "MISO"
+          ],
+          "fueltype": [
+            "WND"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  },
+  "solar": {
+    "response": {
+      "total": "149",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2678",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "318",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "9",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "43",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1758",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6474",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10014",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12609",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14116",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14812",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "15353",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "15071",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14350",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13094",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11441",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5959",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "649",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "20",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "33",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "277",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4050",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10320",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13256",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14577",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14502",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14225",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13590",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12834",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11431",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "9565",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6787",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2941",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "311",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "21",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "25",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "23",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "775",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3126",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4755",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6422",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7247",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7963",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8754",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8931",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8123",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7716",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6721",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4183",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "530",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "622",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6687",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13358",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14204",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14871",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14775",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14710",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14151",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14234",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13428",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13248",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12257",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6867",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "816",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "757",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7788",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "15717",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "18127",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "18444",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "18437",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "18543",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "18496",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "18208",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "17735",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "16966",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14364",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7491",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "854",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "611",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7028",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14416",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "16542",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "17311",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "17377",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "16966",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "17125",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "16706",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "15853",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14086",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12001",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6139",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "795",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T04",
+          "respondent": "MISO",
+          "respondent-name": "Midcontinent Independent System Operator, Inc.",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "MISO"
+          ],
+          "fueltype": [
+            "SUN"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  }
+}

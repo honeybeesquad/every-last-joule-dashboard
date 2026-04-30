@@ -1,0 +1,410 @@
+{
+  "generated": "2026-04-24T10:38:28.054Z",
+  "note": "Auto-generated from src/data/*.json.ts. Do not edit by hand; re-run scripts/backfill/emit-zones.ts.",
+  "zones": [
+    {
+      "source": "entsoe",
+      "id": "germany",
+      "domain": "10Y1001A1001A82H",
+      "technologies": [
+        {
+          "psrType": "B18",
+          "fuel": "wind",
+          "rate": 0.178
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.03
+        },
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.023
+        }
+      ],
+      "sourceNote": "Germany 2024 calibrated to BNetzA/SMARD: 4.56 TWh offshore wind, 3.38 TWh onshore wind, and 1.39 TWh solar curtailed."
+    },
+    {
+      "source": "entsoe",
+      "id": "iberia",
+      "domain": "10YES-REE------0",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.055
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.11
+        }
+      ],
+      "sourceNote": "Spain 2024 calibrated to REE Informe del Sistema Eléctrico 2024: 6.8 TWh wind + 2.4 TWh PV + 1.4 TWh CSP = ~10.6 TWh/yr total."
+    },
+    {
+      "source": "entsoe",
+      "id": "portugal",
+      "domain": "10YPT-REN------W",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.1
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.03
+        }
+      ],
+      "sourceNote": "Portugal 2024 calibration: solar primary plus ~0.1 TWh/yr wind."
+    },
+    {
+      "source": "entsoe",
+      "id": "finland",
+      "domain": "10YFI-1--------U",
+      "technologies": [
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.05
+        }
+      ],
+      "sourceNote": "Finland wind-only calibration; solar negligible at Finnish latitude."
+    },
+    {
+      "source": "entsoe",
+      "id": "netherlands",
+      "domain": "10YNL----------L",
+      "technologies": [
+        {
+          "psrType": "B18",
+          "fuel": "wind",
+          "rate": 0.049
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.045
+        },
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.045
+        }
+      ],
+      "sourceNote": "Netherlands calibrated to IEEFA 2025 summary of 2024 curtailment: 3.0 TWh wind+solar, 4.9% VRE curtailment rate."
+    },
+    {
+      "source": "entsoe",
+      "id": "poland",
+      "domain": "10YPL-AREA-----S",
+      "technologies": [
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.005
+        },
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.035
+        }
+      ],
+      "sourceNote": "Poland calibrated to URE 2024 redispatch report: 621 GWh PV and 128 GWh wind non-market RES reductions."
+    },
+    {
+      "source": "entsoe",
+      "id": "greece",
+      "domain": "10YGR-HTSO-----Y",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.036
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.036
+        }
+      ],
+      "sourceNote": "Greece calibrated to HAEE/IPTO official 2024 RES curtailment of 860 GWh, applied as one wind+solar aggregate rate."
+    },
+    {
+      "source": "entsoe",
+      "id": "romania",
+      "domain": "10YRO-TEL------P",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.04
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.025
+        }
+      ],
+      "sourceNote": "Romania Transelectrica 2024 calibration; solar fixed in v1.f plus wind added."
+    },
+    {
+      "source": "entsoe",
+      "id": "italy-north-zone",
+      "domain": "10Y1001A1001A73I",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.006
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.003
+        }
+      ],
+      "sourceNote": "ENTSO-E North Italy bidding zone; ~35% of Terna 2024 0.31 TWh national curtailment anchor (well-connected via Alps links, lower rates)."
+    },
+    {
+      "source": "entsoe",
+      "id": "italy-south",
+      "domain": "10Y1001A1001A86H",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.019
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.01
+        }
+      ],
+      "sourceNote": "ENTSO-E South Italy bidding zone (Apulia / Basilicata / Calabria); ~45% of Terna 2024 national anchor — transmission-constrained North-South corridor, high solar+wind curtailment."
+    },
+    {
+      "source": "entsoe",
+      "id": "italy-sardinia",
+      "domain": "10Y1001A1001A74G",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.047
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.02
+        }
+      ],
+      "sourceNote": "ENTSO-E Sardinia bidding zone; ~20% of Terna 2024 national anchor — island isolation (HVDC Sapei link capacity-limited), high per-GWh curtailment rate."
+    },
+    {
+      "source": "entsoe",
+      "id": "sweden-north",
+      "domain": "10Y1001A1001A46L",
+      "technologies": [
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.01
+        }
+      ],
+      "sourceNote": "ENTSO-E SE2 wind-only calibration; solar negligible in SE2."
+    },
+    {
+      "source": "entsoe",
+      "id": "sweden-south",
+      "domain": "10Y1001A1001A47J",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.07
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.02
+        }
+      ],
+      "sourceNote": "ENTSO-E SE4 mixed calibration with PV and some wind."
+    },
+    {
+      "source": "entsoe",
+      "id": "hungary",
+      "domain": "10YHU-MAVIR----U",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.03
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.01
+        }
+      ],
+      "sourceNote": "MAVIR 2024 calibration: solar dominant, small wind."
+    },
+    {
+      "source": "entsoe",
+      "id": "czech-republic",
+      "domain": "10YCZ-CEPS-----N",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.02
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.01
+        }
+      ],
+      "sourceNote": "CEPS 2024 calibration: solar dominant, wind secondary."
+    },
+    {
+      "source": "entsoe",
+      "id": "bulgaria",
+      "domain": "10YCA-BULGARIA-R",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.02
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.015
+        }
+      ],
+      "sourceNote": "ESO Bulgaria 2024 mixed wind+solar calibration."
+    },
+    {
+      "source": "entsoe",
+      "id": "baltics",
+      "domain": "10YLT-1001A0008Q",
+      "technologies": [
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.025
+        }
+      ],
+      "sourceNote": "ENTSO-E Litgrid wind-only Baltic regional proxy; solar negligible for this feed."
+    },
+    {
+      "source": "entsoe",
+      "id": "switzerland",
+      "domain": "10YCH-SWISSGRIDZ",
+      "technologies": [
+        {
+          "psrType": "B16",
+          "fuel": "solar",
+          "rate": 0.015
+        }
+      ],
+      "sourceNote": "Swissgrid PV-only ENTSO-E feed; wind negligible and hydro spill not in A75. Models summer-midday PV oversupply only; understates total Swiss curtailment."
+    },
+    {
+      "source": "entsoe",
+      "id": "norway-no1",
+      "domain": "10YNO-1--------2",
+      "technologies": [
+        {
+          "psrType": "B12",
+          "fuel": "hydro",
+          "rate": 0.015
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.015
+        }
+      ],
+      "sourceNote": "Norway NO1 Oslo / South-East hydro (load-centre, low curtailment)"
+    },
+    {
+      "source": "entsoe",
+      "id": "norway-no2",
+      "domain": "10YNO-2--------T",
+      "technologies": [
+        {
+          "psrType": "B12",
+          "fuel": "hydro",
+          "rate": 0.08
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.08
+        }
+      ],
+      "sourceNote": "Norway NO2 Kristiansand / South-West hydro+offshore wind (export-constrained)"
+    },
+    {
+      "source": "entsoe",
+      "id": "norway-no3",
+      "domain": "10YNO-3--------J",
+      "technologies": [
+        {
+          "psrType": "B12",
+          "fuel": "hydro",
+          "rate": 0.04
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.04
+        }
+      ],
+      "sourceNote": "Norway NO3 Trondheim / Central hydro+onshore wind"
+    },
+    {
+      "source": "entsoe",
+      "id": "norway-no4",
+      "domain": "10YNO-4--------9",
+      "technologies": [
+        {
+          "psrType": "B12",
+          "fuel": "hydro",
+          "rate": 0.06
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.06
+        }
+      ],
+      "sourceNote": "Norway NO4 Tromsø / North hydro+wind (export-constrained)"
+    },
+    {
+      "source": "entsoe",
+      "id": "norway-no5",
+      "domain": "10YNO-5--------8",
+      "technologies": [
+        {
+          "psrType": "B12",
+          "fuel": "hydro",
+          "rate": 0.025
+        },
+        {
+          "psrType": "B19",
+          "fuel": "wind",
+          "rate": 0.025
+        }
+      ],
+      "sourceNote": "Norway NO5 Bergen / West reservoir hydro (spring-spill only)"
+    }
+  ]
+}

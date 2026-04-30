@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# Block commits that introduce API keys, tokens, or other secrets.
+#
+# Runs on staged changes only. Matches known-burned values as exact strings
+# and a set of common key-shaped patterns (api_key JSON field, Bearer tokens,
+# Porkbun / Stripe / Slack / AWS / GitHub PAT / PEM private keys). Any hit
+# that doesn't contain the literal safe-placeholder REDACTED or test-dummy
+# blocks the commit.
+#
+# Bypass with --no-verify only if you're certain the match is benign. Prefer
+# replacing the real value with REDACTED_FOR_FIXTURES in committed files.
+
+set -uo pipefail
+
+# Only scan the diff of staged additions; deletions can never add a secret.
+# Exclude .githooks/* from the scan: this file itself contains the burned-key
+# literal as a detection seed — that's a guardrail, not a leak.
+diff=$(git diff --cached --no-color -- ':(exclude).githooks/*' 2>/dev/null || true)
+if [ -z "$diff" ]; then
+  exit 0
+fi
+
+# Specific burned values we never want to see again. Add to this list when
+# a future leak is detected and redacted.
+burned_keys=(
+  "DH9JVaE0bgVOzpxjk50dYoEt21ZUOVcH34l1ftRB"   # EIA HEGM key, leaked 2026-04 in v1o, redacted b9c63c4
+)
+
+violations=""
+
+check_pattern() {
+  # Arg 1: extended regex. Arg 2: short human label.
+  local pattern="$1"
+  local label="$2"
+  local matches
+  matches=$(printf '%s\n' "$diff" \
+    | grep -nE -- "^\+" \
+    | grep -vE -- "^(\+\+\+|\+---)" \
+    | grep -E -e "$pattern" \
+    | grep -v -- "REDACTED" \
+    | grep -v -- "test-dummy" \
+    || true)
+  if [ -n "$matches" ]; then
+    violations="${violations}
+[${label}]
+${matches}
+"
+  fi
+}
+
+# 1) Exact burned values — highest priority, zero false-positive risk.
+for key in "${burned_keys[@]}"; do
+  escaped=$(printf '%s' "$key" | sed 's/[][\\.*^$(){}?+|/]/\\&/g')
+  check_pattern "$escaped" "burned-key"
+done
+
+# 2) Generic patterns — may occasionally false-positive; reviewer can bypass
+#    with --no-verify or swap in REDACTED_FOR_FIXTURES.
+check_pattern '"api_key"[[:space:]]*:[[:space:]]*"[A-Za-z0-9_-]{20,}"' "api_key JSON literal"
+check_pattern '"secretapikey"[[:space:]]*:[[:space:]]*"[A-Za-z0-9_-]+"' "porkbun secretapikey"
+check_pattern 'Ocp-Apim-Subscription-Key[:[:space:]]+[a-f0-9]{32}' "ERCOT subscription key"
+check_pattern 'Bearer[[:space:]]+[A-Za-z0-9._-]{30,}' "Bearer token"
+check_pattern 'sk_live_[A-Za-z0-9]{20,}' "Stripe live secret"
+check_pattern 'xox[baprs]-[A-Za-z0-9-]{10,}' "Slack token"
+check_pattern '-----BEGIN [A-Z ]+PRIVATE KEY-----' "PEM private key"
+check_pattern 'sk1_[a-f0-9]{32,}' "Porkbun secret key"
+check_pattern 'ghp_[A-Za-z0-9]{30,}' "GitHub personal access token"
+check_pattern 'AKIA[0-9A-Z]{16}' "AWS access key ID"
+
+if [ -n "$violations" ]; then
+  printf '\n'
+  printf '❌ pre-commit: secret-like pattern detected in staged changes\n'
+  printf '%s\n' "$violations"
+  printf 'If this is a false positive, either:\n'
+  printf '  1. Replace the literal value with "REDACTED_FOR_FIXTURES" in the committed file.\n'
+  printf '  2. Reword the commit to exclude the offending file.\n'
+  printf '  3. Bypass (last resort, document why): git commit --no-verify\n\n'
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,2744 @@
+{
+  "wind": {
+    "response": {
+      "total": "148",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5021",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5177",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6919",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6758",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6727",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6439",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5897",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5709",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4630",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4984",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5355",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6285",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7005",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6879",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6333",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6560",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6832",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6606",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6753",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6799",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6744",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6472",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5887",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4467",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3294",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2497",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2005",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1706",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1616",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2072",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2651",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3464",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3713",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3314",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3038",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2860",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2833",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3265",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2879",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2573",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3037",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4012",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5245",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5962",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6338",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6505",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6686",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6736",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6428",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6549",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7073",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6688",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6767",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5626",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5035",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4497",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4995",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4543",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5435",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6038",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6199",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6250",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6707",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7160",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6431",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6129",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5888",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6085",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6183",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6271",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6435",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6565",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6977",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7905",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7790",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6901",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5614",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4337",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3954",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4500",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4741",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4836",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4865",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5097",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4995",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4354",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3258",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3483",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4730",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6114",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7195",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7941",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7843",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8342",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7715",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7422",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6598",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5087",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3646",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3260",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2909",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2620",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2099",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1710",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1262",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "960",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "922",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "986",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1009",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1081",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1000",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1121",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1268",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1348",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1478",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1591",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1747",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1764",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1759",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2007",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2251",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2501",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3326",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "3967",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5094",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5662",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5204",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5283",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4901",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4722",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4964",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4982",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6350",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6414",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6228",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6837",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7007",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7049",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7287",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7406",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7619",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7703",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7671",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7370",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6637",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5489",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5161",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5203",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "PJM"
+          ],
+          "fueltype": [
+            "WND"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  },
+  "solar": {
+    "response": {
+      "total": "148",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "721",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "17",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "9",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1314",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5717",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8603",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10412",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11176",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11327",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10661",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "9778",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10384",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11320",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10192",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6430",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1522",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "48",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1388",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6504",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10267",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11561",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12098",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12002",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12135",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12201",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11989",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12060",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11278",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7312",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1511",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "17",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1501",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5169",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8411",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8942",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8869",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8601",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8372",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8525",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8505",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8011",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5417",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2631",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "693",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "34",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "965",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4701",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7174",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7733",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7778",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7556",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8013",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8298",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8387",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7842",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6860",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4772",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1297",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "42",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "27",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2272",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8608",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11904",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12672",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12288",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11940",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11768",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11823",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11687",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11793",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11136",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8167",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2383",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "71",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "51",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2251",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8249",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12898",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13782",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14017",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13852",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13564",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13520",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "13460",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12817",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11102",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6328",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1529",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "59",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "PJM",
+          "respondent-name": "PJM Interconnection, LLC",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "PJM"
+          ],
+          "fueltype": [
+            "SUN"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  }
+}

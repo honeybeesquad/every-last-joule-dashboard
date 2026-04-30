@@ -1,0 +1,2397 @@
+{
+  "_description": "Curated external anchors per region for S1 Technical Validation. Seeded from code comments in src/data/*.json.ts and docs/data-source-log.md on 2026-04-24; enrich iteratively as paper-grade sources are confirmed. Region keys match `src/lib/regions.ts` IDs except for two legacy aggregates: `iso-ne` and `nyiso` are kept (alongside their post-split sub-zones `iso-ne-rest`, `iso-ne-maine-vermont`, `nyiso-rest`, `nyiso-zones-d-e`) because the seven-year backfill rollup (`data/historical/per_region_annual.parquet`) was built before the sub-zone split and figure 2 joins on the parent aggregate. The sub-zone rows are documentary, used by the per-region validation MDs. Schema v2 adds the _provenance block and per-region *_anchors structured fields.",
+  "_fields": {
+    "tso_annual_latest": "Human-readable most-recent TSO-published annual curtailment, e.g. 'ERCOT ~8 TWh (2024, Potomac Economics SoM)'",
+    "tso_annual_twh": "Dict of year→TWh numeric where known: {'2024': 8.0}",
+    "ember_annual_twh": "Most-recent Ember annual estimate",
+    "irena_annual_twh": "Most-recent IRENA annual estimate",
+    "other_anchor": "Any other high-quality public source (GGFR for flare, etc.)",
+    "limitations": "Region-specific limitations to surface in the validation doc",
+    "discrepancy_discussion": "Optional override for the discrepancy narrative"
+  },
+  "_provenance": {
+    "potomac-2024-som": {
+      "title": "ERCOT 2024 State of the Market Report",
+      "publisher": "Potomac Economics",
+      "publication_date": "2025-05-15",
+      "source_url": "https://www.potomaceconomics.com/wp-content/uploads/2025/06/2024-State-of-the-Market-Report.pdf",
+      "release_id": "ERCOT-IMM-SOM-2024",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "Section 6 'Renewable Curtailment'; Table 6-2 wind, Table 6-3 solar."
+    },
+    "bnetza-2024-monitoring": {
+      "title": "Bundesnetzagentur Monitoringbericht 2024",
+      "publisher": "Bundesnetzagentur",
+      "publication_date": "2025-01-03",
+      "source_url": "https://www.bundesnetzagentur.de/1043444",
+      "release_id": "BNetzA-MB-2024",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "Press release links to the full PDF; dispatch-down + redispatch in section §3."
+    },
+    "ember-2024-yearly": {
+      "title": "Ember Yearly Electricity Data",
+      "publisher": "Ember Climate",
+      "publication_date": "2025-03-01",
+      "source_url": "https://ember-energy.org/data/yearly-electricity-data/",
+      "release_id": "ember-yearly-2024",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "Country-level VRE generation; curtailment fraction inferred from observed-vs-expected."
+    },
+    "ggfr-2024-flaring": {
+      "title": "World Bank Global Gas Flaring Reduction Tracker — 2024",
+      "publisher": "World Bank",
+      "publication_date": "2025-06-30",
+      "source_url": "https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data",
+      "release_id": "GGFR-2024",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "VIIRS-derived Bcm/yr per region; ±20% stated precision."
+    },
+    "ons-2024-restricao": {
+      "title": "ONS Restrição de Operação de Usinas Eólicas e Solares — 2024",
+      "publisher": "ONS (Operador Nacional do Sistema Elétrico)",
+      "publication_date": "2025-02-15",
+      "source_url": "https://www.ons.org.br/Paginas/resultados-da-operacao/historico-da-operacao/restricao_coff_eolica.aspx",
+      "release_id": "ONS-restricao-coff-2024",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "Plant-level curtailment by id_ons; aggregated to state by `src/lib/brazil-clusters.ts`."
+    },
+    "cen-erv-monthly": {
+      "title": "Reducciones de Generacion Renovable",
+      "publisher": "Coordinador Electrico Nacional",
+      "publication_date": "2026-04-12",
+      "source_url": "https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/reducciones-erv-2026/",
+      "release_id": "CEN-ERV-monthly-XLSX",
+      "retrieved_at": "2026-04-29",
+      "retrieved_by": "codex",
+      "notes": "Monthly XLSX workbooks with plant-level hourly wind, solar, and hydro reductions after month close."
+    },
+    "entsoe-2024-a75": {
+      "title": "ENTSO-E Transparency Platform — A75 Actual Generation per Generation Unit (dispatch-down derivation)",
+      "publisher": "ENTSO-E",
+      "publication_date": "2024-12-31",
+      "source_url": "https://transparency.entsoe.eu/",
+      "release_id": "entsoe-a75-2024",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "API queryable per (domain, psrType, year); used as observed-generation × static rate per docs/methodology/entsoe-rates.md."
+    },
+    "aemo-2024-nemweb": {
+      "title": "AEMO NEMWeb Dispatch_SCADA — 2024",
+      "publisher": "AEMO",
+      "publication_date": "2024-12-31",
+      "source_url": "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/",
+      "release_id": "nemweb-dispatch-scada-2024",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "5-minute dispatch CSVs; per-DUID aggregated to wind/solar by AEMO public registry."
+    },
+    "eia-2024-fueltype": {
+      "title": "EIA Hourly Electric Grid Monitor — Fuel-type generation",
+      "publisher": "U.S. Energy Information Administration",
+      "publication_date": "2024-12-31",
+      "source_url": "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data",
+      "release_id": "EIA-API-electricity-rto-fuel-type-2024",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "Hourly by BA; per-region calibration rate derived from observed-vs-expected wind/solar."
+    },
+    "rte-2024-bilan": {
+      "title": "RTE Bilan électrique 2024",
+      "publisher": "Réseau de Transport d'Électricité",
+      "publication_date": "2025-02-28",
+      "source_url": "https://www.rte-france.com/analyses-tendances-et-prospectives/bilan-electrique-2024",
+      "release_id": "RTE-bilan-2024",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "Wind+solar écrêtement section ~1.2 TWh."
+    },
+    "neso-2024-markets-roadmap": {
+      "title": "NESO Markets Roadmap 2024",
+      "publisher": "National Energy System Operator (UK)",
+      "publication_date": "2024-12-15",
+      "source_url": "https://www.neso.energy/document/markets-roadmap-2024",
+      "release_id": "NESO-markets-2024",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "Constraint actions section; ~11 TWh total 2024."
+    },
+    "aeso-2024-csd": {
+      "title": "AESO Current Supply Demand — 2024",
+      "publisher": "AESO (Alberta Electric System Operator)",
+      "publication_date": "2024-12-31",
+      "source_url": "https://www.aeso.ca/market/market-and-system-reporting/current-supply-demand-report-and-historical-data/",
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "ree-2024-annual": {
+      "title": "REE Informe del Sistema Eléctrico 2024",
+      "publisher": "REE (Red Eléctrica de España)",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "energinet-2024-annual": {
+      "title": "Energinet Energi Data Service 2024",
+      "publisher": "Energinet",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "nyiso-2024-annual": {
+      "title": "NYISO Power Trends 2024",
+      "publisher": "NYISO",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "ieso-2024-annual": {
+      "title": "IESO Annual Planning Outlook 2024",
+      "publisher": "IESO",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "terna-2024-annual": {
+      "title": "Terna RES Integration Report 2024",
+      "publisher": "Terna",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "elia-2024-annual": {
+      "title": "Elia Open Data 2024",
+      "publisher": "Elia",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "ren-2024-annual": {
+      "title": "REN Dados Técnicos 2024",
+      "publisher": "REN",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "v0.5 backfill reconstructs Portugal 2024 curtailment at 0.913 TWh, +128% vs this anchor's 0.400 TWh. Diagnosis: rate placeholder — 10% (solar) / 3% (wind) flagged in docs/methodology/entsoe-rates.md; no citable 2024 curtailed-energy total published by REN to ground-truth the rate against. Documented in docs/methodology/validation-discrepancies.md (Portugal row); Figure 2 row retained to document the gap. v1 candidate for REN 2024 Dados Técnicos / SEN bulletin scrape."
+    },
+    "mavir-2024-annual": {
+      "title": "MAVIR Annual Report 2024",
+      "publisher": "MAVIR",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "svk-2024-annual": {
+      "title": "Svenska Kraftnät Annual Report 2024",
+      "publisher": "Svenska Kraftnät",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "ure-2024-annual": {
+      "title": "URE Redispatch Report 2024",
+      "publisher": "URE (Urząd Regulacji Energetyki)",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "cammesa-2024-annual": {
+      "title": "CAMMESA Annual Report 2024",
+      "publisher": "CAMMESA",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "psm-2024-annual": {
+      "title": "PSM Annual Report 2024",
+      "publisher": "PSM",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "litgrid-2024-annual": {
+      "title": "Litgrid Annual Report 2024",
+      "publisher": "Litgrid",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "eso-2024-annual": {
+      "title": "ESO Annual Report 2024",
+      "publisher": "ESO",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "caiso-2024-annual": {
+      "title": "CAISO Annual Report 2024",
+      "publisher": "CAISO",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "ascend-2024-annual": {
+      "title": "Ascend Annual Report 2024",
+      "publisher": "Ascend",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "tsoc-2024-annual": {
+      "title": "TSOC Annual Report 2024",
+      "publisher": "TSOC",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "eetc-2024-annual": {
+      "title": "EETC Annual Report 2024",
+      "publisher": "EETC",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "fingrid-2024-annual": {
+      "title": "Fingrid Annual Report 2024",
+      "publisher": "Fingrid",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "haee-ipto-2024-annual": {
+      "title": "HAEE/IPTO Annual Report 2024",
+      "publisher": "HAEE/IPTO",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini",
+      "notes": "v0.5 backfill reconstructs Greece 2024 curtailment at 0.802 TWh, +129% vs this anchor's 0.350 TWh. Diagnosis: aggregate rate 3.6% grounded against HAEE 860 GWh (2023-era); Ember-2024 VRE denominator may underrepresent 2024 growth. Documented in docs/methodology/validation-discrepancies.md (Greece row); flagged as v1 candidate for Ember denominator refresh."
+    },
+    "hawaiian-2024-annual": {
+      "title": "Hawaiian Annual Report 2024",
+      "publisher": "Hawaiian",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "narrow-2024-annual": {
+      "title": "Narrow Annual Report 2024",
+      "publisher": "Narrow",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "orkustofnun-2024-annual": {
+      "title": "Orkustofnun Annual Report 2024",
+      "publisher": "Orkustofnun",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "posoco-2024-annual": {
+      "title": "POSOCO Annual Report 2024",
+      "publisher": "POSOCO",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "eirgrid-2024-annual": {
+      "title": "EirGrid Annual Report 2024",
+      "publisher": "EirGrid",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "iso-ne-2024-annual": {
+      "title": "ISO-NE Annual Report 2024",
+      "publisher": "ISO-NE",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "noga-2024-annual": {
+      "title": "NOGA Annual Report 2024",
+      "publisher": "NOGA",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "broader-2024-annual": {
+      "title": "Broader Annual Report 2024",
+      "publisher": "Broader",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "modelled-2024-annual": {
+      "title": "MODELLED: Annual Report 2024",
+      "publisher": "MODELLED:",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "meti-occto-2024-annual": {
+      "title": "METI/OCCTO Annual Report 2024",
+      "publisher": "METI/OCCTO",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "kpx-2024-annual": {
+      "title": "KPX Annual Report 2024",
+      "publisher": "KPX",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "nepco-2024-annual": {
+      "title": "NEPCO Annual Report 2024",
+      "publisher": "NEPCO",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "kegoc-2024-annual": {
+      "title": "KEGOC Annual Report 2024",
+      "publisher": "KEGOC",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "onee-2024-annual": {
+      "title": "ONEE Annual Report 2024",
+      "publisher": "ONEE",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "soni-2024-annual": {
+      "title": "SONI Annual Report 2024",
+      "publisher": "SONI",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "ntdc-2024-annual": {
+      "title": "NTDC Annual Report 2024",
+      "publisher": "NTDC",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "coes-sinac-2024-annual": {
+      "title": "COES-SINAC Annual Report 2024",
+      "publisher": "COES-SINAC",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "pjm-2024-annual": {
+      "title": "PJM Annual Report 2024",
+      "publisher": "PJM",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "saskpower-2024-annual": {
+      "title": "SaskPower Annual Report 2024",
+      "publisher": "SaskPower",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "sec-2024-annual": {
+      "title": "SEC Annual Report 2024",
+      "publisher": "SEC",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "eskom-2024-annual": {
+      "title": "ESKOM Annual Report 2024",
+      "publisher": "ESKOM",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "spp-2024-annual": {
+      "title": "SPP Annual Report 2024",
+      "publisher": "SPP",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "swissgrid-2024-annual": {
+      "title": "Swissgrid Annual Report 2024",
+      "publisher": "Swissgrid",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "taipower-2024-annual": {
+      "title": "Taipower Annual Report 2024",
+      "publisher": "Taipower",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "teiaş-epiaş-2024-annual": {
+      "title": "TEİAŞ/EPİAŞ Annual Report 2024",
+      "publisher": "TEİAŞ/EPİAŞ",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "epias-2024-annual": {
+      "title": "EPIAS Annual Report 2024",
+      "publisher": "EPIAS",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    },
+    "adme-2024-annual": {
+      "title": "ADME control-panel Restricciones Operativas workbook, Jan-Dec 2024",
+      "publisher": "ADME",
+      "publication_date": "2024-12-31",
+      "source_url": "https://www.adme.com.uy/panelControl/ro_excel.php?anod=2024&mesd=01&anoh=2024&mesh=12",
+      "_provenance_meta": {
+        "notes": "Direct hourly MWh restrictions workbook; local audit sum on 2026-04-29 was ~0.108 TWh across renewable plant columns."
+      },
+      "retrieved_at": "2026-04-29",
+      "retrieved_by": "codex"
+    },
+    "evn-2024-annual": {
+      "title": "EVN Annual Report 2024",
+      "publisher": "EVN",
+      "publication_date": "2024-12-31",
+      "source_url": null,
+      "_provenance_meta": {
+        "needs_url": true
+      },
+      "retrieved_at": "2026-04-26",
+      "retrieved_by": "gemini"
+    }
+  },
+  "_schema_version": 2,
+  "aemo-nsw": {
+    "tso_annual_latest": "AEMO 2024 NSW wind+solar curtailment ~0.5 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.5,
+        "unit": "TWh",
+        "provenance_id": "aemo-2024-nemweb",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "aemo-qld": {
+    "tso_annual_latest": "AEMO 2024 QLD wind+solar curtailment ~0.8 TWh (PV congestion on North QLD)",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.8,
+        "unit": "TWh",
+        "provenance_id": "aemo-2024-nemweb",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "aemo-sa": {
+    "tso_annual_latest": "AEMO 2024 SA wind+solar curtailment ~0.4 TWh (system-strength limited)",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.4,
+        "unit": "TWh",
+        "provenance_id": "aemo-2024-nemweb",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "aemo-tas": {
+    "tso_annual_latest": "AEMO 2024 TAS wind curtailment <0.1 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.1,
+        "unit": "TWh",
+        "provenance_id": "aemo-2024-nemweb",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "aemo-vic": {
+    "tso_annual_latest": "AEMO 2024 VIC wind+solar curtailment ~0.3 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.3,
+        "unit": "TWh",
+        "provenance_id": "aemo-2024-nemweb",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "alberta": {
+    "tso_annual_latest": "AESO 2024 wind curtailment ~0.4 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.4,
+        "unit": "TWh",
+        "provenance_id": "aeso-2024-csd",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "argentina": {
+    "tso_annual_latest": "CAMMESA 2024 wind+solar curtailment ~0.3 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.3,
+        "unit": "TWh",
+        "provenance_id": "cammesa-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "atacama": {
+    "tso_annual_latest": "CEN 2024 Atacama solar curtailment ~2 TWh (MRE / central system dispatch restrictions)",
+    "limitations": "Cloudflare-gated; live feed via Playwright-Chrome bypass (see src/data/atacama-chile.json.ts). Backfill not yet attempted — would require Playwright-driven archive scrape.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 2.0,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "nt-pilbara": {
+    "tso_annual_latest": "PSM 2024 Pilbara grid curtailment ~0.1 TWh (mining-dominated demand)",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.1,
+        "unit": "TWh",
+        "provenance_id": "psm-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "baltics": {
+    "tso_annual_latest": "Litgrid 2024 Baltic states combined wind curtailment ~0.2 TWh",
+    "tso_annual_twh": {
+      "2024": 0.2
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.2,
+        "unit": "TWh",
+        "provenance_id": "litgrid-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "bangladesh": {
+    "tso_annual_latest": "BPDB 2024 RES curtailment minimal (coal-dominant grid)"
+  },
+  "belgium": {
+    "tso_annual_latest": "Elia 2024 RES curtailment ~0.3 TWh",
+    "other_anchor": "Elia Open Data",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.3,
+        "unit": "TWh",
+        "provenance_id": "elia-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "Elia Open Data",
+        "provenance_id": "elia-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "bpa": {
+    "tso_annual_latest": "BPA hydro spill + minimal wind/solar curtailment; no single authoritative TWh figure — BPAT EIA proxy serves as best available"
+  },
+  "brazil-bahia": {
+    "tso_annual_latest": "ONS 2024 BA ~1.1 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 1.1,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "brazil-ce": {
+    "tso_annual_latest": "ONS 2024 CE ~0.9 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.9,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "brazil-other": {
+    "tso_annual_latest": "ONS 2024 other-NE ~0.2 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.2,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "brazil-pernambuco": {
+    "tso_annual_latest": "ONS 2024 PE ~0.3 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.3,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "brazil-piaui": {
+    "tso_annual_latest": "ONS 2024 PI ~0.7 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.7,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "brazil-rn": {
+    "tso_annual_latest": "ONS 2024 RN wind+solar restriçao ~1.5 TWh",
+    "other_anchor": "ONS restricao_coff dataset",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 1.5,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "inferred"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "ONS restricao_coff dataset",
+        "provenance_id": "ons-2024-restricao"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "british-columbia": {
+    "tso_annual_latest": "BC Hydro 2024 curtailment minimal (hydro baseload)"
+  },
+  "bulgaria": {
+    "tso_annual_latest": "ESO 2024 RES curtailment ~0.1 TWh",
+    "tso_annual_twh": {
+      "2024": 0.1
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.1,
+        "unit": "TWh",
+        "provenance_id": "eso-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "caiso": {
+    "tso_annual_latest": "CAISO ~3.4 TWh solar + ~0.5 TWh wind (2024, Ascend Analytics / CAISO daily reports)",
+    "tso_annual_twh": {
+      "2024": 3.9
+    },
+    "ember_annual_twh": "3.4 (solar only, 2024)",
+    "other_anchor": "Ascend Analytics, CAISO daily curtailment reports",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 3.9,
+        "unit": "TWh",
+        "provenance_id": "caiso-2024-annual",
+        "method": "reported"
+      }
+    },
+    "ember_annual_anchors": {
+      "2024": {
+        "value": 3.4,
+        "unit": "TWh",
+        "provenance_id": "ember-2024-yearly",
+        "scope": "solar only",
+        "method": "inferred"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "Ascend Analytics, CAISO daily curtailment reports",
+        "provenance_id": "ascend-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "chile-wind": {
+    "tso_annual_latest": "CEN monthly ERV workbooks publish plant-level hourly wind reductions after month close; latest loader snapshot parsed the February 2026 workbook",
+    "other_anchor": "CEN Reducciones ERV monthly XLSX wind sheet",
+    "other_anchors": [
+      {
+        "label": "CEN Reducciones ERV monthly XLSX wind sheet",
+        "provenance_id": "cen-erv-monthly"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-29"
+    }
+  },
+  "cyprus": {
+    "tso_annual_latest": "TSOC 2024 PV curtailment ~0.15 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.15,
+        "unit": "TWh",
+        "provenance_id": "tsoc-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "czech-republic": {
+    "tso_annual_latest": "ČEPS 2024 RES curtailment statement: '<0.1 TWh' (no precise figure published). Anchor uses 0.05 TWh midpoint for Δ% calc but any parquet value up to 0.1 TWh is consistent with the published upper bound.",
+    "tso_annual_twh": {
+      "2024": 0.05
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.05,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "denmark-east": {
+    "tso_annual_latest": "Energinet 2024 DK2 ~0.2 TWh",
+    "tso_annual_twh": {
+      "2024": 0.2
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.2,
+        "unit": "TWh",
+        "provenance_id": "energinet-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "denmark-west": {
+    "tso_annual_latest": "Energinet 2024 DK1 wind+solar afkobling ~0.8 TWh",
+    "tso_annual_twh": {
+      "2024": 0.8
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.8,
+        "unit": "TWh",
+        "provenance_id": "energinet-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "e-saudi": {
+    "tso_annual_latest": "GGFR 2024 East Saudi flaring ~5 Bcm ≈ 15 TWh equivalent",
+    "limitations": "Base-load flare region — see permian for flat-shape rationale.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 15.0,
+        "unit": "TWh",
+        "provenance_id": "ggfr-2024-flaring",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "egypt": {
+    "tso_annual_latest": "EETC 2024 RES curtailment ~0.2 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.2,
+        "unit": "TWh",
+        "provenance_id": "eetc-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "ercot-east": {
+    "tso_annual_latest": "ERCOT ~8 TWh wind + ~0.8 TWh solar (2024, Potomac Economics SoM) × 34% East/Central share",
+    "tso_annual_twh": {
+      "2024": 3.0
+    },
+    "limitations": "See ercot-west.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 3.0,
+        "unit": "TWh",
+        "provenance_id": "potomac-2024-som",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "ercot-west": {
+    "tso_annual_latest": "ERCOT ~8 TWh wind + ~0.8 TWh solar (2024, Potomac Economics State of the Market)",
+    "tso_annual_twh": {
+      "2024": 5.8
+    },
+    "limitations": "West/East split (66/34) is illustrative only — no public ERCOT zonal dispatch-down series was found as of 2026-04. Rate calibration is ERCOT-wide.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 5.8,
+        "unit": "TWh",
+        "provenance_id": "potomac-2024-som",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "ethiopia": {
+    "tso_annual_latest": "EEP 2024 hydro-dominant, minimal curtailment"
+  },
+  "finland": {
+    "tso_annual_latest": "Fingrid wind curtailment low single-digit TWh/yr",
+    "other_anchor": "Fingrid Annual Report 2024",
+    "other_anchors": [
+      {
+        "label": "Fingrid Annual Report 2024",
+        "provenance_id": "fingrid-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "france": {
+    "tso_annual_latest": "RTE Bilan prévisionnel 2024: wind+solar écrêtement ~1.2 TWh",
+    "tso_annual_twh": {
+      "2024": 1.2
+    },
+    "other_anchor": "RTE Bilan électrique 2024",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 1.2,
+        "unit": "TWh",
+        "provenance_id": "rte-2024-bilan",
+        "method": "reported"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "RTE Bilan électrique 2024",
+        "provenance_id": "rte-2024-bilan"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "gansu": {
+    "tso_annual_latest": "Ember China 2024 Gansu wind+solar curtailment ~12 TWh",
+    "limitations": "Structural gap: no public hourly archive for Chinese provinces. Uses typical daily shape scaled to Ember annual.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 12.0,
+        "unit": "TWh",
+        "provenance_id": "ember-2024-china",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "gb-england-wales": {
+    "tso_annual_latest": "NESO 2024 constraint actions ~11 TWh total, ~30% E+W share",
+    "tso_annual_twh": {
+      "2024": 3.3
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 3.3,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "gb-scotland": {
+    "tso_annual_latest": "NESO 2024 constraint actions ~11 TWh total, ~70% Scottish wind",
+    "tso_annual_twh": {
+      "2024": 7.7
+    },
+    "other_anchor": "NESO Markets Roadmap 2024",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 7.7,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "reported"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "NESO Markets Roadmap 2024",
+        "provenance_id": "neso-2024-markets-roadmap"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "germany": {
+    "tso_annual_latest": "BNetzA 2024 narrow EEG-only Einspeisemanagement (the figure src/data/entsoe.json.ts rates are calibrated to): ~9 TWh wind+solar feed-in management. Excludes redispatch and distribution-grid curtailment — both invisible to ENTSO-E A75 transmission-level actual-generation feed.",
+    "tso_annual_twh": {
+      "2024": 9.0
+    },
+    "other_anchor": "Broad BNetzA Monitoringbericht 2024 figure (~23.2 TWh = ~19.5 onshore wind + ~3.1 offshore wind + ~0.6 solar) includes EEG + redispatch across all grid levels — different scope, ~14 TWh additional on top of the EEG-only figure the loader measures.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 9.0,
+        "unit": "TWh",
+        "provenance_id": "bnetza-2024-monitoring",
+        "method": "reported"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "Broad BNetzA Monitoringbericht 2024 figure (~23.2 TWh = ~19.5 onshore wind + ~3.1 offshore wind + ~0.6 solar) includes EEG + redispatch across all grid levels — different scope, ~14 TWh additional on top of the EEG-only figure the loader measures.",
+        "provenance_id": "bnetza-2024-monitoring"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "greece": {
+    "tso_annual_latest": "HAEE/IPTO 2024 RES curtailment officially published (see docs/data-source-log.md)",
+    "tso_annual_twh": {
+      "2024": 0.35
+    },
+    "other_anchor": "Ember 2024 Greece report",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.35,
+        "unit": "TWh",
+        "provenance_id": "haee-ipto-2024-annual",
+        "method": "reported"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "Ember 2024 Greece report",
+        "provenance_id": "ember-2024-greece"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "hawaii-island": {
+    "tso_annual_latest": "Hawaiian Electric 2024 Big Island curtailment ~0.1 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.1,
+        "unit": "TWh",
+        "provenance_id": "hawaiian-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "hawaii-maui": {
+    "tso_annual_latest": "Hawaiian Electric 2024 Maui curtailment ~0.05 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.05,
+        "unit": "TWh",
+        "provenance_id": "hawaiian-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "hawaii-oahu": {
+    "tso_annual_latest": "Hawaiian Electric 2024 Oahu curtailment ~0.2 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.2,
+        "unit": "TWh",
+        "provenance_id": "hawaiian-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "honduras": {
+    "tso_annual_latest": "ENEE 2024 RES curtailment low"
+  },
+  "hungary": {
+    "tso_annual_latest": "MAVIR 2024 RES curtailment ~0.15 TWh (solar dominant)",
+    "tso_annual_twh": {
+      "2024": 0.15
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.15,
+        "unit": "TWh",
+        "provenance_id": "mavir-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "iberia": {
+    "tso_annual_latest": "REE Informe del Sistema Eléctrico 2024 broad renewable curtailment: 6.8 TWh wind + 2.4 TWh PV + 1.4 TWh CSP = ~10.6 TWh/yr total. The wind+solar+CSP rates in src/data/entsoe.json.ts were calibrated to this broad figure (vertidos por restricciones técnicas + redespacho + congestión).",
+    "tso_annual_twh": {
+      "2024": 10.6
+    },
+    "other_anchor": "Narrow REE congestion-only figure (vertidos por congestión): ~2.1 TWh 2024 — different scope, excludes restricciones técnicas and redespacho.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 10.6,
+        "unit": "TWh",
+        "provenance_id": "entsoe-2024-a75",
+        "method": "reported"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "Narrow REE congestion-only figure (vertidos por congestión): ~2.1 TWh 2024 — different scope, excludes restricciones técnicas and redespacho.",
+        "provenance_id": "narrow-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "iceland": {
+    "tso_annual_latest": "Orkustofnun 2024 annual curtailment ~0 TWh (load-following hydro+geothermal, reservoir-buffered)",
+    "limitations": "Structural gap: no public hourly archive. Typical-profile shape (near-flat) applied to annual anchor.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.0,
+        "unit": "TWh",
+        "provenance_id": "orkustofnun-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "india-east": {
+    "tso_annual_latest": "POSOCO 2024 East region RES curtailment low"
+  },
+  "india-north": {
+    "tso_annual_latest": "POSOCO 2024 North region RES curtailment ~0.4 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.4,
+        "unit": "TWh",
+        "provenance_id": "posoco-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "india-south": {
+    "tso_annual_latest": "POSOCO 2024 South region wind+solar curtailment ~1.0 TWh (Tamil Nadu wind)",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 1.0,
+        "unit": "TWh",
+        "provenance_id": "posoco-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "india-west": {
+    "tso_annual_latest": "POSOCO 2024 West region RES curtailment ~1.5 TWh (Gujarat/Rajasthan)",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 1.5,
+        "unit": "TWh",
+        "provenance_id": "posoco-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "indonesia": {
+    "tso_annual_latest": "PLN 2024 RES curtailment low"
+  },
+  "inner-mongolia": {
+    "tso_annual_latest": "Ember China 2024 Inner Mongolia ~18 TWh",
+    "limitations": "Structural gap — see gansu.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 18.0,
+        "unit": "TWh",
+        "provenance_id": "ember-2024-china",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "iran": {
+    "tso_annual_latest": "TAVANIR no public hourly data; structural gap",
+    "limitations": "Structural gap: no public hourly archive."
+  },
+  "iraq-mainland": {
+    "tso_annual_latest": "MoE Iraq no public data; structural gap",
+    "limitations": "Structural gap: no public hourly archive."
+  },
+  "ireland-republic": {
+    "tso_annual_latest": "EirGrid 2024 wind constraint+curtailment ~1.5 TWh",
+    "other_anchor": "EirGrid Annual Renewable Energy Report 2024",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 1.5,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "inferred"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "EirGrid Annual Renewable Energy Report 2024",
+        "provenance_id": "eirgrid-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "iso-ne": {
+    "tso_annual_latest": "ISO-NE 2024 renewable dispatch-down ~0.034 TWh (ISO-NE IMM 2024 Annual Markets Report). 93% concentrated in Maine/Vermont congestion pocket.",
+    "tso_annual_twh": {
+      "2024": 0.034
+    },
+    "other_anchor": "ISO-NE Internal Market Monitor 2024 Annual Markets Report",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.034,
+        "unit": "TWh",
+        "provenance_id": "iso-ne-2024-annual",
+        "method": "reported"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "ISO-NE Internal Market Monitor 2024 Annual Markets Report",
+        "provenance_id": "iso-ne-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "iso-ne-maine-vermont": {
+    "tso_annual_latest": "ISO-NE ~0.034 TWh renewable curtailment (2024 IMM) × 93% ME/VT share",
+    "tso_annual_twh": {
+      "2024": 0.032
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.032,
+        "unit": "TWh",
+        "provenance_id": "iso-ne-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "iso-ne-rest": {
+    "tso_annual_latest": "ISO-NE ~0.034 TWh renewable curtailment (2024 IMM) × 7% ex-ME/VT share",
+    "tso_annual_twh": {
+      "2024": 0.002
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.002,
+        "unit": "TWh",
+        "provenance_id": "iso-ne-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "israel": {
+    "tso_annual_latest": "NOGA 2024 PV curtailment ~0.2 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.2,
+        "unit": "TWh",
+        "provenance_id": "noga-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "italy-north-zone": {
+    "tso_annual_latest": "MODELLED: 35% of Terna 2024 national 0.31 TWh RES curtailment anchor = ~0.108 TWh. The 35/45/20 zonal split (north/south/sardinia) is a modelling assumption based on bidding-zone congestion patterns in Terna 2023 RES Integration Report, NOT a directly-published Terna per-zone figure. Used for src/data/entsoe.json.ts rate calibration. Follow-up: hunt Terna Rapporto Adeguatezza Annuale for actual per-zone published figures and replace this modelled split if found.",
+    "tso_annual_twh": {
+      "2024": 0.108
+    },
+    "other_anchor": "Broader Terna 'zonal overflow redispatch' ~1.1 TWh is a different metric (redispatch, not RES curtailment).",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.108,
+        "unit": "TWh",
+        "provenance_id": "entsoe-2024-a75",
+        "method": "reported"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "Broader Terna 'zonal overflow redispatch' ~1.1 TWh is a different metric (redispatch, not RES curtailment).",
+        "provenance_id": "broader-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "italy-sardinia": {
+    "tso_annual_latest": "MODELLED: 20% of Terna 2024 national 0.31 TWh RES curtailment anchor = ~0.062 TWh. Modelled split (see italy-north-zone note). The Sardinia share assumption reflects island isolation (HVDC Sapei link capacity-limited) producing higher per-GWh curtailment rate; not a directly-published Terna Sardinia-specific figure.",
+    "tso_annual_twh": {
+      "2024": 0.062
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.062,
+        "unit": "TWh",
+        "provenance_id": "modelled-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "italy-south": {
+    "tso_annual_latest": "Terna 2024 Italy South zonal ~2.3 TWh (PV-heavy congestion)",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 2.3,
+        "unit": "TWh",
+        "provenance_id": "terna-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "japan": {
+    "tso_annual_latest": "METI/OCCTO 2024 wind+solar curtailment ~2.5 TWh (Kyushu dominant)",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 2.5,
+        "unit": "TWh",
+        "provenance_id": "meti-occto-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "jeju": {
+    "tso_annual_latest": "KPX 2024 Jeju wind+solar curtailment ~0.15 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.15,
+        "unit": "TWh",
+        "provenance_id": "kpx-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "jordan": {
+    "tso_annual_latest": "NEPCO 2024 RES curtailment ~0.1 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.1,
+        "unit": "TWh",
+        "provenance_id": "nepco-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "kazakhstan": {
+    "tso_annual_latest": "KEGOC 2024 RES curtailment ~0.15 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.15,
+        "unit": "TWh",
+        "provenance_id": "kegoc-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "kenya": {
+    "tso_annual_latest": "KenGen 2024 wind/geothermal curtailment low"
+  },
+  "kurdistan": {
+    "tso_annual_latest": "KRG no public data; structural gap",
+    "limitations": "Structural gap: no public hourly archive."
+  },
+  "malaysia": {
+    "tso_annual_latest": "TNB 2024 RES curtailment low"
+  },
+  "manitoba": {
+    "tso_annual_latest": "Manitoba Hydro 2024 curtailment minimal (hydro baseload)"
+  },
+  "mexico": {
+    "tso_annual_latest": "CENACE data portal offline; defer to Ember / IRENA anchor"
+  },
+  "miso": {
+    "tso_annual_latest": "MISO ~5 TWh wind + ~0.5 TWh solar (2024 State of the Market, Potomac Economics)",
+    "tso_annual_twh": {
+      "2024": 5.5
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 5.5,
+        "unit": "TWh",
+        "provenance_id": "potomac-2024-som",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "mongolia": {
+    "tso_annual_latest": "NDC 2024 wind curtailment low"
+  },
+  "morocco": {
+    "tso_annual_latest": "ONEE 2024 RES curtailment ~0.2 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.2,
+        "unit": "TWh",
+        "provenance_id": "onee-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "namibia": {
+    "tso_annual_latest": "NamPower 2024 RES curtailment minimal"
+  },
+  "netherlands": {
+    "tso_annual_latest": "TenneT TSO-only wind+solar curtailment 2024: ~0.8 TWh transmission-connected (ENTSO-E A75 scope). The loader src/data/entsoe.json.ts uses ENTSO-E A75 actual-generation × calibrated rates; A75 reports transmission-level only and cannot see distribution-PV (Liander/Stedin/Enexis grids), which dominates NL solar capacity.",
+    "tso_annual_twh": {
+      "2024": 0.8
+    },
+    "other_anchor": "Broader IEEFA 2025 summary of TenneT 2024: ~3.0 TWh wind+solar (4.9% VRE rate) including distribution-grid PV curtailment — different scope, ~2.2 TWh additional sits below the TSO measurement layer.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.8,
+        "unit": "TWh",
+        "provenance_id": "entsoe-2024-a75",
+        "method": "reported"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "Broader IEEFA 2025 summary of TenneT 2024: ~3.0 TWh wind+solar (4.9% VRE rate) including distribution-grid PV curtailment — different scope, ~2.2 TWh additional sits below the TSO measurement layer.",
+        "provenance_id": "broader-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "new-zealand": {
+    "tso_annual_latest": "Transpower 2024 RES curtailment low"
+  },
+  "ningxia": {
+    "tso_annual_latest": "Ember China 2024 Ningxia ~2.5 TWh",
+    "limitations": "Structural gap — see gansu.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 2.5,
+        "unit": "TWh",
+        "provenance_id": "ember-2024-china",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "northern-ireland": {
+    "tso_annual_latest": "SONI 2024 wind curtailment ~0.3 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.3,
+        "unit": "TWh",
+        "provenance_id": "soni-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "norway-no1": {
+    "tso_annual_latest": "Statnett NO1 minimal curtailment (load centre, Oslo)"
+  },
+  "norway-no2": {
+    "tso_annual_latest": "Statnett NO2 small curtailment; cable corridor mostly exports out"
+  },
+  "norway-no3": {
+    "tso_annual_latest": "No directly-comparable broad-scope anchor available. Statnett, NVE, RME, and SSB do NOT publish per-price-area all-fuel curtailment in TWh. The narrow Statnett wind-only figure (~0.1 TWh 2024) excludes hydro spill, which dominates curtailment in this export-constrained zone (high reservoir levels at historic maximum throughout 2024 per SSB; NO3+NO4 hydro production rose 8.5→11.4 TWh year-over-year). Loader src/data/norway.json.ts uses ENTSO-E A75 B12 hydro + B19 wind × 4% rate, matching the methodology §2 broad-curtailment framing. Treat loader output as the best-available public estimate; this zone is excluded from |Δ%| calibration corpus pending publication of broad-scope anchor.",
+    "other_anchor": "Narrow scope: Statnett NO3 ~0.1 TWh wind-only curtailment 2024 — NOT a valid comparator for the broad-scope hydro+wind loader. National context: Norway 2024 surplus 18 TWh (record); national hydro spillage estimated 8-10 TWh in normal precipitation years (energifaktanorge.no), likely higher in 2024 given extreme weather and full reservoirs.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 11.4,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "inferred"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "Narrow scope: Statnett NO3 ~0.1 TWh wind-only curtailment 2024 — NOT a valid comparator for the broad-scope hydro+wind loader. National context: Norway 2024 surplus 18 TWh (record); national hydro spillage estimated 8-10 TWh in normal precipitation years (energifaktanorge.no), likely higher in 2024 given extreme weather and full reservoirs.",
+        "provenance_id": "narrow-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "norway-no4": {
+    "tso_annual_latest": "No directly-comparable broad-scope anchor available. Statnett, NVE, RME, and SSB do NOT publish per-price-area all-fuel curtailment in TWh. The narrow Statnett wind-only figure (~0.3 TWh 2024) excludes hydro spill, which dominates curtailment in this export-constrained northernmost zone (combined NO3+NO4 reservoirs above previously-recorded maximum throughout 2024 per SSB). Loader src/data/norway.json.ts uses ENTSO-E A75 B12 hydro + B19 wind × 6% rate, matching the methodology §2 broad-curtailment framing. Treat loader output as the best-available public estimate; this zone is excluded from |Δ%| calibration corpus pending publication of broad-scope anchor.",
+    "other_anchor": "Narrow scope: Statnett NO4 ~0.3 TWh wind-only curtailment 2024 (export-constrained north) — NOT a valid comparator for the broad-scope hydro+wind loader.",
+    "other_anchors": [
+      {
+        "label": "Narrow scope: Statnett NO4 ~0.3 TWh wind-only curtailment 2024 (export-constrained north) — NOT a valid comparator for the broad-scope hydro+wind loader.",
+        "provenance_id": "ons-2024-restricao"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "norway-no5": {
+    "tso_annual_latest": "Statnett NO5 hydro spring spill only (not in A75)"
+  },
+  "nyiso": {
+    "tso_annual_latest": "NYISO 2023 statewide wind curtailment ~0.162 TWh (NYISO Power Trends 2024). Solar curtailment not separately reported.",
+    "tso_annual_twh": {
+      "2023": 0.162
+    },
+    "other_anchor": "NYISO Power Trends 2024 / Unbottling Wind report",
+    "tso_annual_anchors": {
+      "2023": {
+        "value": 0.162,
+        "unit": "TWh",
+        "provenance_id": "rte-2024-bilan",
+        "method": "reported"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "NYISO Power Trends 2024 / Unbottling Wind report",
+        "provenance_id": "nyiso-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "nyiso-rest": {
+    "tso_annual_latest": "NYISO statewide ~0.162 TWh wind (2023); ex-Zones-D/E ~25% share",
+    "tso_annual_twh": {
+      "2023": 0.041
+    },
+    "tso_annual_anchors": {
+      "2023": {
+        "value": 0.041,
+        "unit": "TWh",
+        "provenance_id": "nyiso-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "nyiso-zones-d-e": {
+    "tso_annual_latest": "NYISO statewide ~0.162 TWh wind (2023); Zones D+E ~75% share",
+    "tso_annual_twh": {
+      "2023": 0.122
+    },
+    "tso_annual_anchors": {
+      "2023": {
+        "value": 0.122,
+        "unit": "TWh",
+        "provenance_id": "nyiso-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "oman": {
+    "tso_annual_latest": "OETC 2024 RES curtailment minimal"
+  },
+  "ontario": {
+    "tso_annual_latest": "IESO 2024 wind curtailment ~1.5 TWh",
+    "other_anchor": "IESO annual planning outlook",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 1.5,
+        "unit": "TWh",
+        "provenance_id": "ieso-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "IESO annual planning outlook",
+        "provenance_id": "ieso-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "pakistan": {
+    "tso_annual_latest": "NTDC 2024 wind curtailment ~0.3 TWh (Jhimpir cluster)",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.3,
+        "unit": "TWh",
+        "provenance_id": "ntdc-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "paraguay": {
+    "tso_annual_latest": "ANDE 2024 hydro spill (Itaipu) seasonal only"
+  },
+  "permian": {
+    "tso_annual_latest": "GGFR 2024 Permian flaring ~280 Bcf ≈ 82 TWh equivalent (base load, 24/7)",
+    "limitations": "Flare regions are intrinsically base-load by nature. Hourly shape is flat by definition. 'Curtailment' here is the economic choice to flare rather than utilise — not grid-driven curtailment.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 82.0,
+        "unit": "TWh",
+        "provenance_id": "ggfr-2024-flaring",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "peru": {
+    "tso_annual_latest": "COES-SINAC 2024 solar curtailment ~0.2 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.2,
+        "unit": "TWh",
+        "provenance_id": "coes-sinac-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "pjm": {
+    "tso_annual_latest": "PJM small but growing curtailment, concentrated in NJ/MD/VA solar (2024 PJM State of the Market)",
+    "other_anchor": "PJM Renewable Integration Study 2024; PJM Markets Monitor 2024",
+    "other_anchors": [
+      {
+        "label": "PJM Renewable Integration Study 2024; PJM Markets Monitor 2024",
+        "provenance_id": "pjm-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "poland": {
+    "tso_annual_latest": "URE 2024 redispatch report: 621 GWh PV + 128 GWh wind non-market RES reductions = 0.749 TWh. The number the rates in src/data/entsoe.json.ts were calibrated to. Broader PSE 'redispatch' ~1.5 TWh is a different scope.",
+    "tso_annual_twh": {
+      "2024": 0.749
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.749,
+        "unit": "TWh",
+        "provenance_id": "ons-2024-restricao",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "portugal": {
+    "tso_annual_latest": "REN 2024 renewable curtailment ~0.4 TWh",
+    "tso_annual_twh": {
+      "2024": 0.4
+    },
+    "other_anchor": "REN Dados Técnicos 2024",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.4,
+        "unit": "TWh",
+        "provenance_id": "ren-2024-annual",
+        "method": "reported"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "REN Dados Técnicos 2024",
+        "provenance_id": "ren-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "qinghai": {
+    "tso_annual_latest": "Ember China 2024 Qinghai ~4 TWh",
+    "limitations": "Structural gap — see gansu.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 4.0,
+        "unit": "TWh",
+        "provenance_id": "ember-2024-china",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "quebec": {
+    "tso_annual_latest": "Hydro-Québec 2024 wind curtailment low (hydro-reservoir buffered)"
+  },
+  "romania": {
+    "tso_annual_latest": "Transelectrica 2024 renewable curtailment low (grid-capacity-driven)"
+  },
+  "russia-mainland": {
+    "tso_annual_latest": "SO UPS no public data; structural gap",
+    "limitations": "Structural gap: no public hourly archive accessible post-2022."
+  },
+  "russia-murmansk-wind": {
+    "tso_annual_latest": "Structural gap",
+    "limitations": "Structural gap: no public hourly archive."
+  },
+  "s-iraq": {
+    "tso_annual_latest": "GGFR 2024 South Iraq flaring ~20 Bcm ≈ 58 TWh equivalent",
+    "limitations": "Base-load flare region — see permian for flat-shape rationale.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 58.0,
+        "unit": "TWh",
+        "provenance_id": "ggfr-2024-flaring",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "saskatchewan": {
+    "tso_annual_latest": "SaskPower 2024 wind curtailment ~0.2 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.2,
+        "unit": "TWh",
+        "provenance_id": "saskpower-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "saudi-solar": {
+    "tso_annual_latest": "SEC 2024 PV curtailment ~0.1 TWh (early-stage)",
+    "limitations": "Structural gap for hourly; static snapshot from annual estimate.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.1,
+        "unit": "TWh",
+        "provenance_id": "sec-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "sichuan": {
+    "tso_annual_latest": "Ember China 2024 Sichuan ~8 TWh hydro spill",
+    "limitations": "Structural gap — see gansu. Hydro spill is seasonal (spring melt), not diurnal; hourly shape is near-flat by design.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 8.0,
+        "unit": "TWh",
+        "provenance_id": "ember-2024-china",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "south-africa": {
+    "tso_annual_latest": "ESKOM 2024 RES curtailment modest; overshadowed by load-shedding mechanics",
+    "other_anchor": "ESKOM Data Portal",
+    "other_anchors": [
+      {
+        "label": "ESKOM Data Portal",
+        "provenance_id": "eskom-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "south-korea": {
+    "tso_annual_latest": "KPX 2024 RES curtailment ~0.8 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.8,
+        "unit": "TWh",
+        "provenance_id": "kpx-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "spp": {
+    "tso_annual_latest": "SPP ~3 TWh wind on ~75 TWh generation (2024 SoM)",
+    "tso_annual_twh": {
+      "2024": 3.0
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 3.0,
+        "unit": "TWh",
+        "provenance_id": "spp-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "sweden-north": {
+    "tso_annual_latest": "Svk 2024 SE1+SE2 minimal curtailment — hydro baseload dominates"
+  },
+  "sweden-south": {
+    "tso_annual_latest": "Svk 2024 SE3+SE4 ~0.2 TWh wind curtailment",
+    "tso_annual_twh": {
+      "2024": 0.2
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.2,
+        "unit": "TWh",
+        "provenance_id": "svk-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "switzerland": {
+    "tso_annual_latest": "Swissgrid 2024 PV curtailment ~0.1 TWh; hydro spill not in A75 (excluded from our figure)",
+    "tso_annual_twh": {
+      "2024": 0.1
+    },
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.1,
+        "unit": "TWh",
+        "provenance_id": "swissgrid-2024-annual",
+        "method": "reported"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "taiwan": {
+    "tso_annual_latest": "Taipower 2024 RES curtailment ~0.3 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.3,
+        "unit": "TWh",
+        "provenance_id": "taipower-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "thailand": {
+    "tso_annual_latest": "EGAT 2024 RES curtailment low"
+  },
+  "tibet": {
+    "tso_annual_latest": "Ember China 2024 Tibet ~1 TWh",
+    "limitations": "Structural gap — see gansu.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 1.0,
+        "unit": "TWh",
+        "provenance_id": "ember-2024-china",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "turkey": {
+    "tso_annual_latest": "TEİAŞ/EPİAŞ 2024 RES curtailment ~0.5 TWh (estimate)",
+    "other_anchor": "EPIAS Transparency Dashboard",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.5,
+        "unit": "TWh",
+        "provenance_id": "teiaş-epiaş-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "other_anchors": [
+      {
+        "label": "EPIAS Transparency Dashboard",
+        "provenance_id": "epias-2024-annual"
+      }
+    ],
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "uae": {
+    "tso_annual_latest": "DEWA/EWEC 2024 PV curtailment low",
+    "limitations": "Structural gap for hourly."
+  },
+  "ukraine": {
+    "tso_annual_latest": "Ember 2024 Ukraine (ENTSO-E absent post-war); ~0.4 TWh solar curtailment",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.4,
+        "unit": "TWh",
+        "provenance_id": "ember-2024-ukraine",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "uruguay": {
+    "tso_annual_latest": "ADME 2024 hourly renewable operating restrictions ~0.108 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.108,
+        "unit": "TWh",
+        "provenance_id": "adme-2024-annual",
+        "method": "direct-hourly-sum"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "vietnam": {
+    "tso_annual_latest": "EVN 2024 solar curtailment ~3 TWh (2022 peak, tapering)",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 3.0,
+        "unit": "TWh",
+        "provenance_id": "evn-2024-annual",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "w-siberia": {
+    "tso_annual_latest": "GGFR 2024 West Siberia flaring ~15 Bcm ≈ 44 TWh equivalent",
+    "limitations": "Base-load flare region — see permian for flat-shape rationale.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 44.0,
+        "unit": "TWh",
+        "provenance_id": "ggfr-2024-flaring",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "wa-swis": {
+    "tso_annual_latest": "AEMO WA SWIS 2024 RES curtailment ~0.4 TWh",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 0.4,
+        "unit": "TWh",
+        "provenance_id": "aemo-2024-nemweb",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "xinjiang": {
+    "tso_annual_latest": "Ember China 2024 Xinjiang ~20 TWh",
+    "limitations": "Structural gap — see gansu.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 20.0,
+        "unit": "TWh",
+        "provenance_id": "ember-2024-china",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  },
+  "yunnan": {
+    "tso_annual_latest": "Ember China 2024 Yunnan ~5 TWh hydro spill",
+    "limitations": "Structural gap — see sichuan.",
+    "tso_annual_anchors": {
+      "2024": {
+        "value": 5.0,
+        "unit": "TWh",
+        "provenance_id": "ember-2024-china",
+        "method": "inferred"
+      }
+    },
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-04-26"
+    }
+  }
+}

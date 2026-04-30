@@ -1,0 +1,162 @@
+name: Dashboard health check
+
+# Runs every 6 hours on a schedule offset from the data-refresh cron.  Fetches
+# the live dashboard's emitted region JSONs, counts cached-fallback regions
+# and zero-output regions, and opens a GitHub Issue when degradation crosses
+# a threshold.  Zero cost: checks run against the public Vercel deployment,
+# no local build required.
+#
+# Thresholds are conservative — small cached counts are normal (upstream
+# hiccups, weekend-maintenance downtime), but sustained high counts usually
+# indicate a real source change that needs a code patch.
+
+on:
+  schedule:
+    - cron: "45 */6 * * *"   # offset from data-refresh 15-past schedule
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (for issue template + source list)
+        uses: actions/checkout@v4
+
+      - name: Fetch deployed dashboard asset manifest
+        id: manifest
+        run: |
+          set -euo pipefail
+          html=$(curl -sS "https://everylastjoule.com/?cb=$(date +%s)" --max-time 30)
+          # Extract all hashed data JSON URLs referenced by the current build.
+          echo "$html" | grep -oE 'data/[a-z0-9-]+\.[a-f0-9]+\.json' | sort -u > /tmp/manifest.txt
+          wc -l /tmp/manifest.txt
+          head /tmp/manifest.txt
+
+      - name: Inspect each region payload for degradation
+        id: inspect
+        run: |
+          set -euo pipefail
+          cached=0
+          zero=0
+          live=0
+          total=0
+          degraded_list=""
+          zero_list=""
+
+          while read -r path; do
+            [ -z "$path" ] && continue
+            total=$((total + 1))
+            url="https://everylastjoule.com/_file/$path"
+            json=$(curl -sS --max-time 20 "$url" || echo "{}")
+            # Skip aggregate files (cbeci, anchor) — they aren't regional payloads
+            if [[ "$path" == *"cbeci"* ]] || [[ "$path" == *"anchor"* ]]; then continue; fi
+
+            # sourceStatus "cached" means withFallback served last-good instead of a fresh fetch
+            if echo "$json" | grep -q '"sourceStatus":"cached"'; then
+              cached=$((cached + 1))
+              region_id=$(basename "$path" | cut -d. -f1)
+              degraded_list="${degraded_list}- ${region_id} (cached)\n"
+            else
+              live=$((live + 1))
+            fi
+
+            # Peak GW near zero on a region we expect output from — flag it
+            peak=$(echo "$json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(max(d.get('profile',[0]) or [0]))" 2>/dev/null || echo "0")
+            if python3 -c "exit(0 if float('$peak') < 0.001 else 1)"; then
+              zero=$((zero + 1))
+              region_id=$(basename "$path" | cut -d. -f1)
+              # multi-region loaders (entsoe, aemo, brazil-ne) hold multiple regions; a zero at top-level is fine for those.
+              if ! echo "$path" | grep -qE "^data/(entsoe|aemo|brazil-ne|ercot|ercot-native)\."; then
+                zero_list="${zero_list}- ${region_id} (peak GW ~0)\n"
+              fi
+            fi
+          done < /tmp/manifest.txt
+
+          echo "total=$total" >> $GITHUB_OUTPUT
+          echo "cached=$cached" >> $GITHUB_OUTPUT
+          echo "live=$live" >> $GITHUB_OUTPUT
+          echo "zero=$zero" >> $GITHUB_OUTPUT
+          echo "degraded<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$degraded_list" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "zeros<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$zero_list" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "::notice::checked $total regions: live=$live cached=$cached zero-peak=$zero"
+
+      - name: Ensure auto-health label exists
+        if: steps.inspect.outputs.cached >= '10' || steps.inspect.outputs.zero >= '5'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Idempotent: succeed whether the label already exists or not.
+          gh label create auto-health \
+            --color "fbca04" \
+            --description "Auto-generated health-check degradation issues" \
+            2>/dev/null || true
+
+      - name: Open GitHub Issue if degradation exceeds threshold
+        if: steps.inspect.outputs.cached >= '10' || steps.inspect.outputs.zero >= '5'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CACHED: ${{ steps.inspect.outputs.cached }}
+          ZERO: ${{ steps.inspect.outputs.zero }}
+          TOTAL: ${{ steps.inspect.outputs.total }}
+          LIVE: ${{ steps.inspect.outputs.live }}
+          DEGRADED_LIST: ${{ steps.inspect.outputs.degraded }}
+          ZERO_LIST: ${{ steps.inspect.outputs.zeros }}
+        run: |
+          title="[health] Dashboard degraded: ${CACHED} cached, ${ZERO} zero-peak (of ${TOTAL})"
+          body=$(cat <<EOF
+          Automated health-check run at $(date -u +"%Y-%m-%dT%H:%M:%SZ") flagged degradation on the live dashboard.
+
+          **Summary:**
+          - Total regions checked: ${TOTAL}
+          - Live (fresh fetch): ${LIVE}
+          - Cached fallback: ${CACHED}
+          - Zero-peak output: ${ZERO}
+
+          **Cached fallback regions (withFallback served last-good):**
+
+          ${DEGRADED_LIST}
+
+          **Zero-peak regions (possible loader breakage):**
+
+          ${ZERO_LIST}
+
+          **Likely causes:**
+          1. Upstream source URL changed (common for ENTSO-E psrType codes, ONS Brazil filename patterns)
+          2. TSO page behind new CAPTCHA / Cloudflare challenge
+          3. API quota exhaustion (EIA 5000 req/hr)
+          4. Network event during the last rebuild
+
+          **Action:** review failing loader logs in the most recent Vercel deployment, then patch the relevant \`src/data/<region>.json.ts\`. Automated self-repair is future work; manual review is the current expectation for these alerts.
+
+          This issue will be auto-closed when a subsequent health-check run shows cached < 10 and zero < 5.
+          EOF
+          )
+
+          # Close any existing open health issues if the current run is green — handled above via threshold
+          # Otherwise create a new issue (dedup by checking if there's already an open one from this workflow)
+          existing=$(gh issue list --label "auto-health" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            echo "Updating existing auto-health issue #$existing"
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body" --label "auto-health"
+          fi
+
+      - name: Auto-close stale health issues when healthy
+        if: steps.inspect.outputs.cached < '10' && steps.inspect.outputs.zero < '5'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          open=$(gh issue list --label "auto-health" --state open --json number --jq '.[].number')
+          for n in $open; do
+            gh issue close "$n" --comment "Auto-closed: health metrics back within threshold (cached < 10, zero < 5)."
+          done

@@ -1,0 +1,2762 @@
+{
+  "wind": {
+    "response": {
+      "total": "149",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10483",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8849",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8705",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9003",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9542",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9533",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10964",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "12624",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14676",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16067",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16797",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16997",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17098",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16965",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14300",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10795",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9790",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "11758",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14977",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17098",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18418",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19891",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21275",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22090",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22235",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22050",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22894",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23641",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23653",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22725",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21865",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21424",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21143",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20955",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21049",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21580",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22525",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23082",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23150",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22686",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22886",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22894",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23126",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22733",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22745",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22475",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22352",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21995",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21876",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22034",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22654",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22265",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21584",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20559",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19727",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19510",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18627",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18735",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18763",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18958",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18931",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18185",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15314",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15239",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15908",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15893",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15650",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15592",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15142",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14799",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14177",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "12332",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10297",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7725",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5627",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5735",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6786",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8566",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8566",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19510",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18627",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18735",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18763",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18958",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18931",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18185",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15314",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15239",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15908",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15893",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15650",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15592",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15142",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14799",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "14177",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "12332",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10297",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "7725",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5627",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5735",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "6786",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "8566",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21962",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21055",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21347",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20841",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21172",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21207",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21208",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20896",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19543",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18496",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18653",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19268",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19280",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19509",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20061",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20151",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20261",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21023",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21141",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21152",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21674",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21767",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21016",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20613",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20363",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19815",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19810",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19220",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19322",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19725",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19863",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19306",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17732",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16975",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16059",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15643",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15761",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "16723",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17243",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17566",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17705",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "17732",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "18519",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19558",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21565",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22537",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "22184",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "SWPP"
+          ],
+          "fueltype": [
+            "WND"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  },
+  "solar": {
+    "response": {
+      "total": "149",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1036",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "345",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "121",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "796",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1310",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1567",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1542",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1563",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1569",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1405",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1385",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1278",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1111",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "717",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "197",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "96",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "586",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "924",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "960",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1003",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1053",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1156",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1023",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1033",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "971",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "817",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "664",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "270",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "9",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "179",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1012",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1379",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1408",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1434",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1472",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1588",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1518",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1440",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1606",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1566",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1339",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "446",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "179",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1012",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1379",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1408",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1434",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1472",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1588",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1518",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1440",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1606",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1566",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1339",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "446",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "204",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "945",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1362",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1491",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1455",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1445",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1425",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1364",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1283",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1213",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1091",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "949",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "276",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "185",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "689",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "915",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1189",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1319",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1328",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1301",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1209",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1213",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1113",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1096",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "732",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "235",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T04",
+          "respondent": "SWPP",
+          "respondent-name": "Southwest Power Pool",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "SWPP"
+          ],
+          "fueltype": [
+            "SUN"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  }
+}

@@ -1,0 +1,17 @@
+node_modules/
+dist/
+**/.observablehq/cache/
+.env
+.env.local
+.DS_Store
+*.log
+.vercel
+gemini-cli/
+verify-b1.mjs
+__pycache__/
+*.pyc
+.venv/
+
+# Superpowers brainstorming workspace
+.superpowers/
+.claude/

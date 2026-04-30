@@ -1,0 +1,2798 @@
+{
+  "wind": {
+    "response": {
+      "total": "151",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2815",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2744",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2781",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2663",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2770",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2711",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2403",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2288",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2237",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2210",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2427",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2469",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2489",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2490",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2449",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2326",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1886",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1874",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1684",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1545",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1836",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2123",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2323",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2424",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2620",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2661",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2691",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2645",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2456",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2301",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2127",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2028",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1947",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1989",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1894",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1861",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1796",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1623",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1548",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1295",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1192",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "968",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "609",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "332",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "165",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "81",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "40",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "5",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "21",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "75",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "110",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "150",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "257",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "294",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "250",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "158",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "96",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "76",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "64",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "47",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "30",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "27",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "26",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "28",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "81",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "97",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "115",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "147",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "141",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "171",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "217",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "313",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "319",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "519",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "357",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "168",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "115",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "209",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "246",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "187",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "178",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "237",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "167",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "156",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "103",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "82",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "92",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "149",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "157",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "194",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "254",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "356",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "358",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "346",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "353",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "231",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "145",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "89",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "69",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "82",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "93",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "72",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "56",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "56",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "49",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "29",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "19",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "9",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "23",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "11",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "13",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "13",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "15",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "34",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "20",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "10",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "41",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "76",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "267",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "462",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "257",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "136",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "154",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "398",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "697",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1073",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1400",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1265",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1208",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1598",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1544",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1431",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1577",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1651",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1594",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1839",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2150",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2399",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2373",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2418",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2508",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2705",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2502",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2552",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2689",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2763",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "2712",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "BPAT"
+          ],
+          "fueltype": [
+            "WND"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  },
+  "solar": {
+    "response": {
+      "total": "151",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "95",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "106",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "51",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "70",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "156",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "154",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "168",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "161",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "163",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "157",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "166",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "186",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "189",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "189",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "108",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "12",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "91",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "192",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "206",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "206",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "201",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "193",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "176",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "198",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "188",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "182",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "153",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "71",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "9",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "48",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "132",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "170",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "197",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "205",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "207",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "197",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "203",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "206",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "206",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "185",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "110",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "39",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "98",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "136",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "147",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "149",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "181",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "182",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "182",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "181",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "126",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "83",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "40",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "6",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "40",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "131",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "185",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "204",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "186",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "191",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "221",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "202",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "184",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "181",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "160",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "74",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-4",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "75",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "112",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "128",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "160",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "176",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "208",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "196",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "166",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "144",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "66",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "42",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "2",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T04",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T05",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T06",
+          "respondent": "BPAT",
+          "respondent-name": "Bonneville Power Administration",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "-2",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "BPAT"
+          ],
+          "fueltype": [
+            "SUN"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  }
+}

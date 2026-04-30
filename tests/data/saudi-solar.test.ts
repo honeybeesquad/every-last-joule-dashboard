@@ -1,0 +1,17 @@
+import { describe, expect, it } from "vitest";
+import { buildSaudiSolarData } from "../../src/data/saudi-solar.json";
+
+describe("saudi-solar loader", () => {
+  it("returns a valid positive RegionData shape", async () => {
+    const data = await buildSaudiSolarData();
+    expect(data.regionId).toBe("saudi-solar");
+    expect(data.profile).toHaveLength(24);
+    expect(data.latestProfile).toBeNull();
+    expect(data.totalTWh).toBeGreaterThan(0);
+    expect(data.peakGW).toBeGreaterThan(0);
+    // Updated 2026-04-30 (Gemini wave 4): GASTAT 2024 is now the cited anchor.
+    expect(data.sourceNote).toContain("GASTAT");
+    expect(data.sourceNote).toContain("T3-modelled, ±40% envelope");
+    expect(data.sourceNote).not.toMatch(/live feed unavailable/i);
+  });
+});

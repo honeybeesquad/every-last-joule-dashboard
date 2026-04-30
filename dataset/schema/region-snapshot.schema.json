@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://everylastjoule.com/schema/region-snapshot.schema.json",
+  "title": "Every Last Joule — per-region snapshot",
+  "description": "Schema for data/snapshots/last-good/<regionId>.json. One snapshot per region per build. Single-region loaders emit the object below; multi-region loaders (aemo, brazil-ne, entsoe, ercot, ercot-native, norway) emit a Record<regionId, this>. The runtime source of truth is the RegionData interface in src/lib/types.ts. See dataset/SCHEMA.md for the human-readable description.",
+  "type": "object",
+  "required": [
+    "regionId",
+    "profile",
+    "latestProfile",
+    "totalTWh",
+    "peakGW",
+    "lastUpdated",
+    "lastSuccessAt"
+  ],
+  "properties": {
+    "regionId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Stable ID matching src/lib/regions.ts. Kebab-case."
+    },
+    "profile": {
+      "type": "array",
+      "description": "30-day trailing average curtailment in GW, one value per UTC hour (index 0 = 00:00\u201301:00 UTC).",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {"type": "number", "minimum": 0}
+    },
+    "latestProfile": {
+      "description": "Single-day latest snapshot in GW per UTC hour. Null when the loader cannot pin a single most-recent UTC day (e.g. when the upstream feed is built from a multi-day rolling window without a daily anchor). Loaders that publish a same-day raw curve emit a 24-element array; loaders that don't emit null.",
+      "oneOf": [
+        {
+          "type": "array",
+          "minItems": 24,
+          "maxItems": 24,
+          "items": {"type": "number", "minimum": 0}
+        },
+        {"type": "null"}
+      ]
+    },
+    "totalTWh": {
+      "type": "number",
+      "minimum": 0,
+      "description": "30-day trailing total curtailment in TWh."
+    },
+    "peakGW": {
+      "type": "number",
+      "minimum": 0,
+      "description": "30-day trailing peak hourly GW."
+    },
+    "lastUpdated": {
+      "type": "string",
+      "description": "Calibration-anchor date: YYYY, YYYY-Q#, or ISO-8601."
+    },
+    "lastSuccessAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC timestamp when this snapshot was last successfully refreshed. Cache fallbacks use this to distinguish recent cached data from degraded stale data."
+    },
+    "sourceNote": {
+      "type": "string",
+      "description": "Optional human-readable provenance string surfaced in the dashboard tooltip and paper Usage Notes. Absent on legacy snapshots that pre-date the provenance-string convention."
+    },
+    "sourceStatus": {
+      "type": ["string", "null"],
+      "enum": ["live", "cached", "degraded", null],
+      "description": "Whether the last fetch was fresh (live), a recent withFallback snapshot (cached), or a stale withFallback snapshot beyond the configured staleness threshold (degraded)."
+    },
+    "fuelShare": {
+      "type": "object",
+      "description": "Optional fuel-type split of the curtailed energy, fractions 0\u20131. Loaders that pull technology-separated feeds (e.g. ONS Brazil) populate this; loaders that don't omit the field. The runtime keys in src/lib/types.ts are {solar, wind, hydro}; the historical snapshot corpus also contains {geothermal, flare} from earlier loader generations. Keys outside this enum should be treated as data-quality issues.",
+      "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1},
+      "propertyNames": {"enum": ["solar", "wind", "hydro", "geothermal", "flare"]}
+    },
+    "uncertaintyLowGW": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Lower bound of the per-tier envelope on peakGW (max(0, peakGW \u2212 \u03b4)). Half-width \u03b4 is per-tier: 2\u03c3 from the 5-year backfill where available, else \u00b115% (T1) / \u00b120% (T2) / \u00b140% (T3). Derived deterministically by src/lib/uncertainty.ts::deriveTier; see docs/methodology/uncertainty.md for the methodology."
+    },
+    "uncertaintyHighGW": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Upper bound of the per-tier envelope on peakGW (peakGW + \u03b4). Same per-tier \u03b4 as uncertaintyLowGW."
+    },
+    "observedStdGW": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Empirical standard deviation of historical annual peakGW, used for T1 2\u03c3 uncertainty bounds when available."
+    },
+    "confidenceTier": {
+      "type": "string",
+      "enum": [
+        "T1-live-TSO",
+        "T1a-live-tso",
+        "T1b-live-domestic-anchored",
+        "T1c-live-neighbour-anchored",
+        "T2-annual-calibrated",
+        "T3-modelled",
+        "T4-structural-gap"
+      ],
+      "description": "Deterministic source-quality classification. Per B4 Option B (locked 2026-04-25, see docs/proposals/b4-option-b-decision.md), T1 is subdivided into T1a (own-jurisdiction calibration rate; \u00b115%), T1b (domestic-stat-agency rate or modelled-share split; empirical \u00b150%), and T1c (neighbour-extrapolated rate; empirical \u00b135.5%). T2 = static anchored to a published annual (Ember, IRENA, GGFR, TSO annual; \u00b120%). T3 = static annual + typical-shape profile (solar/wind/hydro-seasonal/mixed/overnight; \u00b140%). T4 is reserved in the enum for symmetry but is never emitted \u2014 structural-gap regions do not appear in the dataset at all. The pre-2026-04-25 single label \"T1-live-TSO\" is retained for backward compatibility on legacy snapshots; new emissions use T1a/T1b/T1c. Derived deterministically by src/lib/uncertainty.ts::deriveTier; see docs/methodology/uncertainty.md."
+    }
+  },
+  "additionalProperties": false
+}

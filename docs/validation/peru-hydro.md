@@ -1,0 +1,48 @@
+# Validation - Peru Hydro (`peru-hydro`)
+
+Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+
+## Source
+
+- **Region id:** `peru-hydro`
+- **Country:** PER
+- **Tier:** live
+- **Kind:** hydro
+- **Source:** COES-SINAC live hydro generation x 2% curtailment calibration (vertimiento anchor ~0.8 TWh/yr)
+- **Source URL:** [https://www.coes.org.pe/Portal/portalinformacion/generacion](https://www.coes.org.pe/Portal/portalinformacion/generacion)
+- **Loader:** [`peru.json.ts`](../../src/data/peru.json.ts)
+- **Structural gap:** no
+
+## Calibration
+
+- **Rate source documented in:** `docs/methodology/` (see links below)
+- **Uniform across backfill years:** n/a - no backfill
+
+## Multi-year backfill annual totals
+
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Delta % | Source |
+|---|---|---|---|---|---|
+| _(no backfill or TSO anchors yet - will be populated after HB fan-out completes)_ | | | | | |
+
+## Published anchors
+
+- **TSO annual curtailment (latest published):** COES-SINAC 2024 aggregate vertimiento anchor ~0.8 TWh/yr
+- **Ember annual:** -
+- **IRENA annual:** -
+- **Other:** Hydro child is split from the COES generation-by-fuel stream and aggregate vertimiento calibration.
+
+## Discrepancy analysis
+
+_No backfill and no child-level TSO anchor. Region relies on the live COES generation-by-fuel shape and the aggregate vertimiento calibration._
+
+## Known limitations
+
+The COES loader emits a calibrated generation proxy rather than direct dispatch-down telemetry. `sourceStatus="live"` means the COES generation endpoint was reachable and returned recent hydro observations; the 2% curtailment multiplier and aggregate annual anchor remain the limiting assumptions.
+
+## Links
+
+- Loader source: [`peru.json.ts`](../../src/data/peru.json.ts)
+- Backfill archive: `data/historical/backfill/*_peru-hydro_*.parquet` (0 years)
+- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
+- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
+- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

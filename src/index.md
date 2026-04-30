@@ -1,0 +1,506 @@
+# Every Last Joule
+
+<div id="page-loader" role="status" aria-label="Loading dashboard data">
+  <div class="loader-topbar"><div class="loader-topbar-fill"></div></div>
+  <div class="loader-center-mark">●</div>
+  <div class="loader-center-text">Loading data…</div>
+</div>
+<div id="app-root"></div>
+
+```js
+import { createClock } from "./components/clock.js";
+import { mountControls } from "./components/controls.js";
+import { mountModeToggle } from "./components/mode-toggle.js";
+import { mountThemeToggle } from "./components/theme-toggle.js";
+import { mountTimeline } from "./components/timeline.js";
+import { mountRegionTooltip } from "./components/region-tooltip.js";
+import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
+import { REGIONS } from "./lib/regions.js";
+import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./lib/fuel.js";
+import { applyUncertainty } from "./lib/uncertainty.js";
+import { splitRegion } from "./lib/split-region.js";
+import { mountGlobe } from "./globe.js";
+
+const ERCOT_NATIVE_ENABLED = false;
+const HOTSPOT_LIST_LIMIT = 50;
+
+// Fetch all region data in parallel. Prior to this, every FileAttachment
+// was awaited sequentially — 76 round-trips serialised = ~3–5s of pure
+// network latency before first paint. HTTP/2 multiplexes these easily;
+// on a typical connection this drops to ~300–600ms for the lot.
+const [
+  cbeci, ercot, ercotNative, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
+  entsoe, aemo, belgium, france, denmark, newZealand, norway, atacama,
+  chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
+  ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
+  japan, vietnam, thailand, indiaNorth, cyprus, ethiopia, kazakhstan,
+  honduras, jeju, kenya, egypt, morocco, namibia, waSwis, ntPilbara,
+  indonesia, malaysia, philippines, southKorea, russiaMainland, taiwan, jordan,
+  saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
+  yunnan, tibet, indiaSouth, indiaWest, indiaEast, pakistan, iran,
+  iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
+  quebec, manitoba, saskatchewan, turkey
+] = await Promise.all([
+  FileAttachment("data/cbeci.json").json(),
+  FileAttachment("data/ercot.json").json(),
+  FileAttachment("data/ercot-native.json").json(),
+  FileAttachment("data/caiso.json").json(),
+  FileAttachment("data/miso.json").json(),
+  FileAttachment("data/pjm.json").json(),
+  FileAttachment("data/spp.json").json(),
+  FileAttachment("data/nyiso.json").json(),
+  FileAttachment("data/iso-ne.json").json(),
+  FileAttachment("data/bpa.json").json(),
+  FileAttachment("data/entsoe.json").json(),
+  FileAttachment("data/aemo.json").json(),
+  FileAttachment("data/belgium.json").json(),
+  FileAttachment("data/france.json").json(),
+  FileAttachment("data/denmark.json").json(),
+  FileAttachment("data/new-zealand.json").json(),
+  FileAttachment("data/norway.json").json(),
+  FileAttachment("data/atacama-chile.json").json(),
+  FileAttachment("data/chile-wind.json").json(),
+  FileAttachment("data/statics.json").json(),
+  FileAttachment("data/anchor.json").json(),
+  FileAttachment("data/north-sea.json").json(),
+  FileAttachment("data/brazil-ne.json").json(),
+  FileAttachment("data/ontario.json").json(),
+  FileAttachment("data/alberta.json").json(),
+  FileAttachment("data/ireland.json").json(),
+  FileAttachment("data/peru.json").json(),
+  FileAttachment("data/south-africa.json").json(),
+  FileAttachment("data/argentina.json").json(),
+  FileAttachment("data/uruguay.json").json(),
+  FileAttachment("data/paraguay.json").json(),
+  FileAttachment("data/mexico.json").json(),
+  FileAttachment("data/japan.json").json(),
+  FileAttachment("data/vietnam.json").json(),
+  FileAttachment("data/thailand.json").json(),
+  FileAttachment("data/india-north.json").json(),
+  FileAttachment("data/cyprus.json").json(),
+  FileAttachment("data/ethiopia.json").json(),
+  FileAttachment("data/kazakhstan.json").json(),
+  FileAttachment("data/honduras.json").json(),
+  FileAttachment("data/jeju.json").json(),
+  FileAttachment("data/kenya.json").json(),
+  FileAttachment("data/egypt.json").json(),
+  FileAttachment("data/morocco.json").json(),
+  FileAttachment("data/namibia.json").json(),
+  FileAttachment("data/wa-swis.json").json(),
+  FileAttachment("data/nt-pilbara.json").json(),
+  FileAttachment("data/indonesia.json").json(),
+  FileAttachment("data/malaysia.json").json(),
+  FileAttachment("data/philippines.json").json(),
+  FileAttachment("data/south-korea.json").json(),
+  FileAttachment("data/russia-mainland.json").json(),
+  FileAttachment("data/taiwan.json").json(),
+  FileAttachment("data/jordan.json").json(),
+  FileAttachment("data/saudi-solar.json").json(),
+  FileAttachment("data/uae.json").json(),
+  FileAttachment("data/oman.json").json(),
+  FileAttachment("data/israel.json").json(),
+  FileAttachment("data/inner-mongolia.json").json(),
+  FileAttachment("data/gansu.json").json(),
+  FileAttachment("data/qinghai.json").json(),
+  FileAttachment("data/ningxia.json").json(),
+  FileAttachment("data/yunnan.json").json(),
+  FileAttachment("data/tibet.json").json(),
+  FileAttachment("data/india-south.json").json(),
+  FileAttachment("data/india-west.json").json(),
+  FileAttachment("data/india-east.json").json(),
+  FileAttachment("data/pakistan.json").json(),
+  FileAttachment("data/iran.json").json(),
+  FileAttachment("data/iraq-mainland.json").json(),
+  FileAttachment("data/kurdistan.json").json(),
+  FileAttachment("data/bangladesh.json").json(),
+  FileAttachment("data/mongolia.json").json(),
+  FileAttachment("data/british-columbia.json").json(),
+  FileAttachment("data/quebec.json").json(),
+  FileAttachment("data/manitoba.json").json(),
+  FileAttachment("data/saskatchewan.json").json(),
+  FileAttachment("data/turkey.json").json()
+]);
+
+document.getElementById("app-root").innerHTML = `
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="app-title">
+        <span class="app-mark">●</span>
+        <span class="app-wordmark">Every Last Joule</span>
+        <span class="app-tag">Wasted Energy Database · v1.0.0</span>
+      </div>
+      <div class="app-header-right">
+        <div id="theme-toggle-mount"></div>
+        <nav class="app-nav" aria-label="Primary">
+          <a href="./methodology">Methodology</a>
+          <a href="./about">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <section class="panel panel-left" aria-label="Headline">
+        <div class="eyebrow">Sustainable hashrate · unlocked right now</div>
+        <div class="display-xl num-tabular" id="pct-readout">—%</div>
+        <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was wasted in the last thirty days — observed curtailed, spilled, or constrained-off across <span id="region-count">—</span> tracked regions. A measured floor, not a speculative ceiling.</p>
+        <div class="stats-row">
+          <div class="stat">
+            <div class="eyebrow micro">Bitcoin network hashrate</div>
+            <div class="num-tabular stat-value" id="hashrate-readout">—</div>
+          </div>
+          <div class="stat">
+            <div class="eyebrow micro">Curtailed this hour</div>
+            <div class="num-tabular stat-value" id="gw-readout">—</div>
+          </div>
+          <div class="stat">
+            <div class="eyebrow micro">Hashrate this could support</div>
+            <div class="num-tabular stat-value" id="supportable-readout">—</div>
+          </div>
+        </div>
+        <p class="flare-footnote" id="flare-footnote">Plus <span id="flare-readout">—</span> of continuous flared-gas waste in four oil basins — a 24/7 base load, physically separate from the dispatch-down story above and excluded from the headline ratio.</p>
+      </section>
+
+      <section class="panel panel-center" aria-label="Globe">
+        <div class="globe-placeholder" id="globe-placeholder" aria-live="polite">
+          <span class="globe-placeholder-label">Computing land mask…</span>
+        </div>
+        <canvas id="globe-canvas" role="img" aria-label="Rotating globe showing active waste-energy hotspots"></canvas>
+        <div class="globe-zoom-controls" id="globe-zoom-controls" hidden>
+          <button class="globe-zoom-btn" id="globe-zoom-in"  aria-label="Zoom in"  title="Zoom in">+</button>
+          <button class="globe-zoom-btn" id="globe-zoom-out" aria-label="Zoom out" title="Zoom out">−</button>
+        </div>
+      </section>
+
+      <section class="panel panel-right" aria-label="Biggest curtailments right now">
+        <div class="eyebrow" id="hotspots-title">Biggest curtailments right now · UTC —</div>
+        <div class="hotspot-columns hotspot-columns-three">
+          ${FUEL_ORDER.map((fuel) => {
+            const subtitle = fuel === "solar"
+              ? "Peaks at local noon"
+              : fuel === "wind"
+                ? "Often peaks overnight"
+                : "Seasonal — flat within a day";
+            return `
+              <div class="hotspot-column">
+                <div class="hotspot-column-title">
+                  <span class="dot" style="background:${getFuelColor(fuel)};box-shadow:0 0 10px ${getFuelColor(fuel)}66;"></span>
+                  <span>${FUEL_LABEL[fuel]}</span>
+                </div>
+                <div class="hotspot-column-subtitle">${subtitle}</div>
+                <ol class="hotspot-list" id="hotspot-list-${fuel}"></ol>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </section>
+    </div>
+
+    <div class="app-timeline">
+      <div class="timeline-header">
+        <span class="eyebrow">Global curtailment across a 24-hour cycle (GW, stacked by fuel)</span>
+        <span class="caption">drag to scrub through the day · press play to watch it loop · toggle Last 24h for raw yesterday</span>
+      </div>
+      <canvas id="timeline-canvas"></canvas>
+      <div class="timeline-controls">
+        <div id="timeline-controls"></div>
+        <div id="mode-toggle"></div>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <p class="caption" id="caption-copy">
+        <strong>Network hashrate</strong> from mempool.space (24-hour rolling).
+        <strong>Grid curtailment</strong> from EIA (US), ENTSO-E (Europe), Elia (BE), RTE (FR), Energinet (DK), AEMO NEMWeb (AU), Elexon BMRS (UK), ONS (BR), EPRA (KE), Coordinador Nacional (CL), Electricity Authority EMI (NZ), IESO (ON), AESO (AB), and more.
+        <strong>Annual baselines</strong> from Ember, IEA, GGFR, and regional regulator reports (see <a href="./methodology">Methodology</a>).
+        <span class="footer-refresh">Last refreshed <span id="refreshed-at">—</span>.</span>
+      </p>
+    </footer>
+  </div>
+`;
+
+const regionData = {
+  ...(ERCOT_NATIVE_ENABLED
+    ? {
+        "ercot-west": { ...ercotNative["ercot-native-west"], regionId: "ercot-west" },
+        "ercot-east": { ...ercotNative["ercot-native-east"], regionId: "ercot-east" }
+      }
+    : ercot),
+  caiso,
+  miso,
+  pjm,
+  spp,
+  // NYISO zonal split — NYISO Power Trends 2024 / Unbottling Wind
+  // attributes most 2023 wind curtailment (0.162 TWh statewide) to
+  // Zones D and E. 75/25 split approximates that geographic concentration.
+  "nyiso-zones-d-e": splitRegion(nyiso, "nyiso-zones-d-e", 0.75, "Zones D+E share of 2023 statewide wind curtailment (NYISO Power Trends 2024)"),
+  "nyiso-rest": splitRegion(nyiso, "nyiso-rest", 0.25, "Remainder of NYISO wind+solar"),
+  // ISO-NE split — IMM 2024 Annual Markets Report states 93% of 2020-2024
+  // curtailed renewable capacity in New England was in Maine and Vermont.
+  "iso-ne-maine-vermont": splitRegion(isoNe, "iso-ne-maine-vermont", 0.93, "ME+VT share (93% of 2020-2024 NE curtailment per ISO-NE IMM)"),
+  "iso-ne-rest": splitRegion(isoNe, "iso-ne-rest", 0.07, "Remainder of ISO-NE wind+solar"),
+  bpa,
+  ...aemo,
+  belgium,
+  germany: entsoe.germany,
+  iberia: entsoe.iberia,
+  portugal: entsoe.portugal,
+  finland: entsoe.finland,
+  france,
+  netherlands: entsoe.netherlands,
+  // Denmark split by Energinet PriceArea. DK1 (Jutland/Fyn) hosts most
+  // onshore wind and interconnects with Germany; DK2 (Zealand) is across
+  // Øresund from Sweden. 75/25 approximates DK1's share of combined
+  // wind+solar generation.
+  "denmark-west": splitRegion(denmark, "denmark-west", 0.75, "DK1 (Jutland/Fyn) share of Energinet wind+solar"),
+  "denmark-east": splitRegion(denmark, "denmark-east", 0.25, "DK2 (Zealand) share of Energinet wind+solar"),
+  poland: entsoe.poland,
+  greece: entsoe.greece,
+  romania: entsoe.romania,
+  turkey,
+  // Italy split into three ENTSO-E bidding zones (v1t)
+  "italy-north-zone": entsoe["italy-north-zone"],
+  "italy-south": entsoe["italy-south"],
+  "italy-sardinia": entsoe["italy-sardinia"],
+  "sweden-north": entsoe["sweden-north"],
+  "sweden-south": entsoe["sweden-south"],
+  // ukraine moved to statics (ENTSO-E Ukrenergo returns empty post-war)
+  hungary: entsoe.hungary,
+  "czech-republic": entsoe["czech-republic"],
+  bulgaria: entsoe.bulgaria,
+  baltics: entsoe.baltics,
+  // Switzerland — PV-only ENTSO-E feed; understates hydro spill but
+  // captures summer-midday PV oversupply on Swissgrid's corridor.
+  switzerland: entsoe.switzerland,
+  // GB split — NESO 2024 Markets Roadmap reports ~11 TWh/yr of constraint
+  // actions, dominated by the Scotland-to-England boundary. 70/30 split
+  // reflects Scotland's disproportionate share of curtailed wind.
+  "gb-scotland": splitRegion(northSea, "gb-scotland", 0.70, "Scotland share of GB wind+solar curtailment (NESO constraint data)"),
+  "gb-england-wales": splitRegion(northSea, "gb-england-wales", 0.30, "England+Wales share of GB wind+solar"),
+  ...brazilNE,
+  // Norway split (2026-04-24): 5 ENTSO-E bidding zones NO1-NO5. The
+  // norway loader emits a Record keyed by norway-no1..norway-no5.
+  ...norway,
+  ...ontario,
+  ...alberta,
+  ...ireland,
+  peru,
+  "south-africa": southAfrica,
+  "new-zealand": newZealand,
+  atacama,
+  "chile-wind": chileWind,
+  argentina,
+  uruguay,
+  paraguay,
+  mexico,
+  japan,
+  vietnam,
+  thailand,
+  "india-north": indiaNorth,
+  cyprus,
+  ethiopia,
+  kazakhstan,
+  honduras,
+  jeju,
+  kenya,
+  egypt,
+  morocco,
+  namibia,
+  "wa-swis": waSwis,
+  "nt-pilbara": ntPilbara,
+  indonesia,
+  malaysia,
+  "south-korea": southKorea,
+  "russia-mainland": russiaMainland,
+  taiwan,
+  jordan,
+  "saudi-solar": saudiSolar,
+  uae,
+  oman,
+  israel,
+  "inner-mongolia": innerMongolia,
+  gansu,
+  qinghai,
+  ningxia,
+  yunnan,
+  tibet,
+  "india-south": indiaSouth,
+  "india-west": indiaWest,
+  "india-east": indiaEast,
+  pakistan,
+  iran,
+  "iraq-mainland": iraqMainland,
+  kurdistan,
+  bangladesh,
+  mongolia,
+  "british-columbia": britishColumbia,
+  quebec,
+  manitoba,
+  saskatchewan,
+  ...statics,
+  philippines
+};
+
+// S2 uncertainty: defensive fallback. Every loader is now responsible for
+// setting confidenceTier + uncertaintyLow/HighGW upstream — typical-shape
+// builders in `src/lib/typical-profiles.ts`, the statics builder in
+// `src/data/statics.json.ts`, and the cache-boundary `enrichWithTier` in
+// `src/lib/resilient.ts` between them cover live, static-modelled, and
+// flare regions. This loop is a defensive shim for any region that slips
+// through (e.g. a future region added to regions.ts without a loader call
+// to applyUncertainty).
+//
+// We derive profileKind from regions.ts kind so the fallback assigns the
+// correct tier rather than silently routing every static through T2:
+//   wind/solar/mixed → T3-modelled
+//   hydro            → T3-modelled (hydro-seasonal fallback)
+//   flare            → T2-annual-calibrated (flat 24/7)
+//   live regions     → T1-live-TSO (no profileKind)
+const KIND_TO_PROFILE = {
+  wind: "wind",
+  solar: "solar",
+  mixed: "mixed",
+  hydro: "hydro-seasonal",
+  flare: "flat"
+};
+for (const region of REGIONS) {
+  const d = regionData[region.id];
+  if (!d) continue;
+  if (d.confidenceTier) continue; // preserve tier already set by loader
+  const profileKind = region.tier === "static" ? KIND_TO_PROFILE[region.kind] : undefined;
+  console.warn(`[uncertainty] late-binding tier for ${region.id} (kind=${region.kind}); loader should set this upstream`);
+  regionData[region.id] = applyUncertainty(d, { regionTier: region.tier, profileKind });
+}
+
+// Populate the region-count span inside the lead copy without clobbering
+// the surrounding HTML (the ${FUEL_ORDER.map} earlier baked it in at render).
+{
+  const liveRegionCount = REGIONS.filter((r) => r.kind !== "flare").length;
+  const countEl = document.getElementById("region-count");
+  if (countEl) countEl.textContent = String(liveRegionCount);
+}
+document.getElementById("refreshed-at").textContent = cbeci.lastUpdated;
+
+const now = new Date();
+const initialHour = now.getUTCHours() + now.getUTCMinutes() / 60;
+const clock = createClock(initialHour);
+const mode = typeof Mutable === "function" ? Mutable("avg30d") : { value: "avg30d" };
+
+function renderAt(hour) {
+  const wrappedHour = ((hour % 24) + 24) % 24;
+  const activeMode = mode.value ?? "avg30d";
+  // Pass the fractional hour so the aggregate tweens between integer hours;
+  // the headline readouts (pct, GW) smooth in lock-step with the pillars.
+  const result = aggregateAtHour(regionData, cbeci, wrappedHour, activeMode);
+  const hh = String(Math.floor(wrappedHour)).padStart(2, "0");
+  const mm = String(Math.floor((wrappedHour % 1) * 60)).padStart(2, "0");
+
+  // Renewable-only aggregate — flare excluded from the headline because
+  // it is continuous 24/7 base load, not a diurnal curtailment story.
+  let renewableGW = 0;
+  let flareGW = 0;
+  for (const region of REGIONS) {
+    const gw = result.perRegionGW[region.id] ?? 0;
+    if (region.kind === "flare") flareGW += gw;
+    else renewableGW += gw;
+  }
+  const renewableEHs = ehsFromGW(renewableGW);
+  const renewablePct = cbeci.hashrateEHps > 0 ? (renewableEHs / cbeci.hashrateEHps) * 100 : 0;
+
+  // Headline readouts: integer pct and 1-decimal GW. At 2× playback the
+  // trailing hundredth-digits churn faster than the eye can read them and
+  // carry no information (our calibration noise is ≫ 0.01 pp / 10 MW).
+  document.getElementById("pct-readout").textContent = `${renewablePct.toFixed(0)}%`;
+  document.getElementById("hashrate-readout").innerHTML = `${cbeci.hashrateEHps.toFixed(1)} <span class="stat-unit">EH/s</span>`;
+  document.getElementById("gw-readout").innerHTML = `${renewableGW.toFixed(1)} <span class="stat-unit">GW</span>`;
+  document.getElementById("supportable-readout").innerHTML = `${renewableEHs.toFixed(1)} <span class="stat-unit">EH/s</span>`;
+  document.getElementById("hotspots-title").textContent = `Active hotspots · UTC ${hh}:${mm}`;
+  document.getElementById("flare-readout").textContent = `${flareGW.toFixed(0)} GW`;
+
+  const renewableEntries = REGIONS
+    .filter(isRenewable)
+    .map((region) => ({ region, gw: result.perRegionGW[region.id] ?? 0 }));
+
+  // Display format: 2 decimals for sub-GW values so small-grid regions
+  // don't collapse to "0.0 GW" (e.g. Peru 0.02, Baltics 0.02, NYISO 0.03).
+  // 1 decimal for values ≥ 1 GW where that granularity matters less.
+  const fmtGW = (gw) => (gw >= 1 ? gw.toFixed(1) : gw.toFixed(2));
+
+  const itemHtml = (fuel) => ({ region, gw }) => `
+    <li class="hotspot-item">
+      <span class="dot" style="background:${getFuelColor(fuel)};box-shadow:0 0 8px ${getFuelColor(fuel)}66;"></span>
+      <span class="hotspot-name">${region.name}</span>
+      <span class="hotspot-gw num-tabular">${fmtGW(gw)} GW</span>
+    </li>
+  `;
+
+  for (const fuel of FUEL_ORDER) {
+    const rows = renewableEntries
+      .map(({ region, gw }) => ({
+        region,
+        gw: gw * fuelShare(region, fuel, regionData[region.id]),
+      }))
+      .filter(({ gw }) => gw > 0)
+      .sort((a, b) => b.gw - a.gw)
+      .slice(0, HOTSPOT_LIST_LIMIT);
+    document.getElementById(`hotspot-list-${fuel}`).innerHTML = rows.map(itemHtml(fuel)).join("");
+  }
+}
+
+const canvas = document.getElementById("globe-canvas");
+canvas.hidden = true;
+let globe;
+
+const timeline = mountTimeline(document.getElementById("timeline-canvas"), { regions: REGIONS, regionData, cbeci, clock });
+mountControls(document.getElementById("timeline-controls"), clock);
+mountModeToggle(document.getElementById("mode-toggle"), {
+  initial: mode.value,
+  onChange(nextMode) {
+    mode.value = nextMode;
+    renderAt(clock.hour);
+    timeline.update({ mode: nextMode });
+    globe?.update({ utcHour: clock.hour, mode: nextMode });
+  },
+});
+
+const themeToggleHost = document.getElementById("theme-toggle-mount");
+if (themeToggleHost) mountThemeToggle(themeToggleHost);
+
+const regionTooltip = mountRegionTooltip({
+  clock,
+  regionData,
+  getMode: () => mode.value,
+  regions: REGIONS,
+});
+
+globe = await mountGlobe(canvas, {
+  regions: REGIONS,
+  regionData,
+  utcHour: initialHour,
+  mode: mode.value,
+  topologyUrl: await FileAttachment("data/countries-110m.json").url(),
+  onRegionClick(region, anchor) {
+    if (region) regionTooltip.show(region, anchor);
+    else regionTooltip.hide();
+  },
+});
+canvas.hidden = false;
+document.getElementById("globe-placeholder")?.remove();
+
+// Wire up zoom buttons now that the globe is live.
+const zoomControls = document.getElementById("globe-zoom-controls");
+if (zoomControls) {
+  zoomControls.hidden = false;
+  document.getElementById("globe-zoom-in")?.addEventListener("click",  () => globe?.zoomIn());
+  document.getElementById("globe-zoom-out")?.addEventListener("click", () => globe?.zoomOut());
+}
+
+// Dismiss the loading screen now that the globe and all data are ready.
+const pageLoader = document.getElementById("page-loader");
+if (pageLoader) {
+  pageLoader.classList.add("is-fading");
+  setTimeout(() => pageLoader.remove(), 380);
+}
+
+clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value }));
+clock.subscribe(renderAt);
+```

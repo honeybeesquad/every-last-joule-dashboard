@@ -1,0 +1,2744 @@
+{
+  "wind": {
+    "response": {
+      "total": "148",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "284",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "284",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "409",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "426",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "402",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "397",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "405",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "355",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "160",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "150",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "134",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "138",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "129",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "185",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "186",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "183",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "180",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "225",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "278",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "288",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "308",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "376",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "474",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "561",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "651",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "790",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "890",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "833",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "803",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "722",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "625",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "632",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "646",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "735",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "698",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "593",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "511",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "439",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "393",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "321",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "191",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "196",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "284",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "361",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "476",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "500",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "424",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "340",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "354",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "501",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "615",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "672",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "763",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "894",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "932",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "976",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1253",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1176",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "848",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "699",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "846",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "921",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "807",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "770",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "778",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "831",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "874",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "979",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "972",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1074",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1121",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1112",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1001",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "910",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "852",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "795",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "783",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "713",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "701",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "628",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "549",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "498",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "440",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "477",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "634",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "840",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "826",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "900",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "963",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "951",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "988",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "998",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1093",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1258",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1424",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1510",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1588",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1533",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1549",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1534",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1491",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1398",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1324",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1193",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "984",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "781",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "670",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "529",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "459",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "416",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "400",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "424",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "427",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "479",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "579",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "735",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "784",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "778",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "746",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "648",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "506",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "488",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "388",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "316",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "298",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "425",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "423",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "496",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "491",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "466",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "422",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "386",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "321",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "254",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "200",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "152",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "107",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "72",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "58",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "58",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "77",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "107",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "147",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "157",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "112",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "186",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "327",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "380",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "ISNE"
+          ],
+          "fueltype": [
+            "WND"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  },
+  "solar": {
+    "response": {
+      "total": "148",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "16",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "15",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "10",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "90",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "267",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "440",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "601",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "690",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "716",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "683",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "589",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "511",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "346",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "228",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "91",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "11",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "7",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "55",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "198",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "322",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "468",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "462",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "565",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "694",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "546",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "540",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "499",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "334",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "121",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "8",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "31",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "129",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "207",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "270",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "395",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "525",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "633",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "673",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "572",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "512",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "379",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "172",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "47",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "5",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "23",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "41",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "59",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "117",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "137",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "124",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "131",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "147",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "103",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "65",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "65",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "73",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "9",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "49",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "293",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "651",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "729",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "602",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "539",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "685",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "608",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "568",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "534",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "440",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "370",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "157",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "14",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "1",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "58",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "317",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "667",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "923",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "978",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "984",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "985",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "982",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "951",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "938",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "805",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "597",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "179",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "21",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "3",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "ISNE",
+          "respondent-name": "ISO New England",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "ISNE"
+          ],
+          "fueltype": [
+            "SUN"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  }
+}

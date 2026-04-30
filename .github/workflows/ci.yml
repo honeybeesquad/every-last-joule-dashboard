@@ -1,0 +1,83 @@
+name: CI
+
+# Runs the dataset's structural invariants on every push and pull request.
+# Catches the class of regression where a loader change silently breaks the
+# committed snapshot contract, the JSON schema, or the runtime types — the
+# things a Sci Data reviewer would notice if they cloned the repo and ran
+# the verification scripts.
+#
+# Steps in order:
+#   1. typecheck       — tsc --noEmit. Surfaces shape-of-RegionData drift
+#                        before it reaches a loader or a snapshot.
+#   2. tests           — vitest run. Unit-level invariants: 24-hour
+#                        profiles, aggregate maths, region-list shape,
+#                        calc helpers.
+#   3. validate        — scripts/validate-snapshots.ts. Walks every
+#                        committed snapshot under data/snapshots/last-good/
+#                        and asserts conformance to dataset/schema/region-snapshot.schema.json
+#                        (envelope-straddle, tier-enum, fuel-share keys).
+#   4. tier-coherence  — scripts/ci/check-tier-coherence.ts. Asserts the
+#                        confidenceTier on every snapshot region matches
+#                        what the canonical regions.ts + tier-resolution.ts
+#                        would derive. Catches stale snapshots after a
+#                        Region.tier change.
+#   5. tally-golden    — scripts/ci/check-tally-golden.ts. Asserts the
+#                        per-bucket population of REGIONS matches the
+#                        locked golden in scripts/ci/golden/tier-counts.json.
+#                        Forces tier movements to appear in PR review.
+#   6. docs-drift      — scripts/ci/check-docs-drift.ts. Asserts every
+#                        region has a docs/validation/<id>.md and the
+#                        Tier line matches Region.tier.
+#   7. tally:tiers     — scripts/tally-tiers.ts. Informational: prints
+#                        the T1a/T1b/T1c/T2/T2-flare/T3 counts. Exits 0
+#                        always; the value is the visible log that lets
+#                        a reviewer see the count without re-running.
+#
+# We deliberately do NOT run `observable build` here — that pulls live data
+# from EIA / ENTSO-E / ONS / NEMWeb, which would make CI flaky on upstream
+# blips and is already covered by the scheduled-data-refresh workflow that
+# rebuilds the deployment every 3 hours.
+
+on:
+  push:
+    branches: [v0-build, main]
+  pull_request:
+    branches: [v0-build, main]
+  workflow_dispatch: {}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Validate committed snapshots against schema
+        run: npm run validate
+
+      - name: Tier coherence (snapshots vs canonical regions.ts)
+        run: npm run ci:tier-coherence
+
+      - name: Tally golden (per-bucket population vs locked golden)
+        run: npm run ci:tally-golden
+
+      - name: Docs drift (validation MDs vs canonical regions.ts)
+        run: npm run ci:docs-drift
+
+      - name: Tally tier counts (informational)
+        run: npm run tally:tiers

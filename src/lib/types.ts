@@ -1,0 +1,153 @@
+/**
+ * Canonical region tier determines rendering and cadence treatment.
+ *
+ * The three live sub-tiers reflect rate-derivation provenance (B4 Option B,
+ * locked 2026-04-25 in `docs/proposals/b4-option-b-decision.md`):
+ *
+ *   "live"                       — TSO publishes hourly + own-jurisdiction
+ *                                  calibration rate (T1a, ±15%)
+ *   "live-domestic-anchored"     — TSO publishes hourly + domestic stat-
+ *                                  agency rate or modelled-share split
+ *                                  (T1b, ±50% empirical post-B1 rerun)
+ *   "live-neighbour-anchored"    — TSO publishes hourly + rate is
+ *                                  extrapolated from a neighbouring zone
+ *                                  (T1c, ±35.5% empirical)
+ *
+ * For rendering, all three live sub-tiers behave identically. The
+ * distinction is surfaced in the methodology page and the §2.5 / §5.2
+ * paper tier table only.
+ */
+export type RegionTier =
+  | "live"
+  | "live-domestic-anchored"
+  | "live-neighbour-anchored"
+  | "static"
+  | "flare";
+
+/** The waste modality drives colouring (teal vs orange) and narrative. */
+export type RegionKind = "solar" | "wind" | "hydro" | "mixed" | "flare";
+
+/** Freshness state of an upstream source or fallback snapshot. */
+export type SourceStatus = "live" | "cached" | "degraded";
+
+/** Canonical region definition. Immutable; does not change per build. */
+export interface Region {
+  id: string;              // kebab-case stable id
+  name: string;            // display name
+  country: string;         // ISO-3 or display country
+  lat: number;             // WGS84 latitude
+  lon: number;             // WGS84 longitude
+  tier: RegionTier;
+  kind: RegionKind;
+  source: string;          // primary data source label
+  sourceUrl: string;       // canonical source URL
+}
+
+/** A single instantaneous observation from a grid API. */
+export interface CurtailmentPoint {
+  utcTimestamp: string;    // ISO 8601 UTC
+  mw: number;              // non-negative megawatts curtailed
+  intervalHours?: number;  // duration represented by this observation; defaults to 1h
+}
+
+/** Data produced by a loader for one region. */
+export interface RegionData {
+  regionId: string;
+  profile: number[];       // 24 GW values, index = UTC hour 0..23
+  latestProfile: number[] | null; // latest complete UTC day, raw hourly GW; null when unavailable
+  totalTWh: number;        // trailing-30-day total (scaled to annual)
+  peakGW: number;          // max of profile
+  lastUpdated: string;     // ISO 8601 UTC of most recent source data
+  lastSuccessAt: string;   // ISO 8601 UTC when this snapshot was last refreshed successfully
+  sourceNote?: string;     // optional provenance addendum
+  /**
+   * Indicates whether the current payload came from a live fetch,
+   * a recent fallback snapshot, or a stale fallback snapshot.
+   * Surfaced in the methodology page so readers can see freshness.
+   */
+  sourceStatus?: SourceStatus;
+  /**
+   * Data-driven fuel-mix override. If present, this takes precedence over the
+   * region's canonical `kind` for bucketing in hotspot columns and timeline
+   * stacking. Values are fractions in 0..1 and should sum to ≤ 1.
+   *
+   * Loaders that pull technology-separated curtailment feeds (e.g. ONS Brazil
+   * which publishes wind and solar constrained-off in parallel) compute this
+   * ratio from observed volumes so Bahia or Piauí can appear correctly in
+   * BOTH the wind and solar hotspot columns proportional to real curtailment.
+   */
+  fuelShare?: Partial<Record<"solar" | "wind" | "hydro", number>>;
+  /**
+   * Confidence tier for the emitted peakGW value. Derived deterministically
+   * from the loader's Region.tier and (for statics) the profile kind.
+   * See `src/lib/uncertainty.ts` for derivation and
+   * `docs/methodology/uncertainty.md` for the methodology writeup.
+   *
+   *   T1a-live-tso                     live feed + own-jurisdiction
+   *                                    calibration rate, ±2σ from 5yr
+   *                                    backfill (fallback ±15%)
+   *   T1b-live-domestic-anchored       live feed + domestic stat-agency
+   *                                    rate or modelled-share split
+   *                                    (empirical ±50% post-B1 rerun)
+   *   T1c-live-neighbour-anchored      live feed + neighbour-extrapolated
+   *                                    rate (empirical ±35.5%)
+   *   T2-annual-calibrated             static anchored to published annual
+   *                                    (±20%)
+   *   T3-modelled                      static with typical-shape profile
+   *                                    (±40%)
+   *   T4-structural-gap                reserved; not emitted in RegionData
+   *
+   * The pre-2026-04-25 single label "T1-live-TSO" is retained as an alias
+   * mapped from `regionTier === "live"` for backward compatibility with
+   * older snapshots; new emissions use the T1a/T1b/T1c labels.
+   */
+  confidenceTier?:
+    | "T1-live-TSO"
+    | "T1a-live-tso"
+    | "T1b-live-domestic-anchored"
+    | "T1c-live-neighbour-anchored"
+    | "T2-annual-calibrated"
+    | "T3-modelled"
+    | "T4-structural-gap";
+  /** Lower bound on peakGW (GW). peakGW - uncertaintyLowGW is the half-width when symmetric. */
+  uncertaintyLowGW?: number;
+  /** Upper bound on peakGW (GW). peakGW + uncertaintyHighGW is the upper half-width when symmetric. */
+  uncertaintyHighGW?: number;
+  /** Empirical standard deviation of historical annual peakGW, used for T1 2σ bounds. */
+  observedStdGW?: number;
+}
+
+/** Network consumption and hashrate reference from Cambridge CBECI. */
+export interface CBECIData {
+  hashrateEHps: number;           // current network hashrate
+  annualisedConsumptionTWh: number; // current network consumption
+  lastUpdated: string;             // ISO 8601
+  lastSuccessAt?: string;           // ISO 8601 UTC when this snapshot was last refreshed successfully
+  sourceStatus?: SourceStatus;
+}
+
+/** Global anchor figure from Ember / IEA. */
+export interface GlobalAnchor {
+  sourceName: string;
+  globalCurtailmentTWh: number;
+  sourceReportDate: string;
+  sourceUrl: string;
+}
+
+/** Combined per-hour aggregate. */
+export interface AggregateResult {
+  utcHour: number;               // 0..23
+  totalGW: number;
+  hashrateEHps: number;          // at 16 J/TH
+  pctOfNetwork: number;          // 0..100+
+  perRegionGW: Record<string, number>;
+}
+
+/** The object index.md consumes. */
+export interface DashboardData {
+  regions: Region[];
+  regionData: Record<string, RegionData>;
+  cbeci: CBECIData;
+  anchor: GlobalAnchor;
+  generatedAt: string;           // build timestamp
+}

@@ -1,0 +1,2744 @@
+{
+  "wind": {
+    "response": {
+      "total": "148",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "133",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "428",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "598",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "593",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "736",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "788",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "654",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "490",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "424",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "578",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "709",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "791",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "790",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "826",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "696",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "605",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "738",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "967",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1087",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1002",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "909",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1043",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1094",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1145",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "941",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "765",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "634",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "546",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "570",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "555",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "518",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "478",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "412",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "285",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "285",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "251",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "208",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "184",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "168",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "147",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "105",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "105",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "95",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "103",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "149",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "194",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "141",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "105",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "99",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "151",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "254",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "472",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "702",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "911",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1223",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1243",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1234",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1474",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1646",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1847",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1818",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1683",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1802",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1799",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1699",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1741",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1810",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1861",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1879",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1902",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1940",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1873",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1698",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1600",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1396",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1268",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1164",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1164",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1223",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1243",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1234",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1474",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1646",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1847",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1818",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1683",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1802",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1799",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1699",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1741",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1810",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1861",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1879",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1902",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1940",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1873",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1698",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1600",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1396",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1268",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1164",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "816",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "895",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "849",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "708",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "728",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "806",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "691",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "667",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "706",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "604",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "597",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "636",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "725",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "862",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "872",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "827",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "802",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "722",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "645",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "496",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "348",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "334",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "404",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "446",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "387",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "344",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "285",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "306",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "335",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "436",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "542",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "623",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "527",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "469",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "426",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "422",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "377",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "373",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "362",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "363",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "331",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "334",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "444",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "680",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "794",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "938",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "WND",
+          "type-name": "Wind",
+          "value": "1063",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "NYIS"
+          ],
+          "fueltype": [
+            "WND"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  },
+  "solar": {
+    "response": {
+      "total": "148",
+      "dateFormat": "YYYY-MM-DD\"T\"HH24",
+      "frequency": "hourly",
+      "data": [
+        {
+          "period": "2026-04-16T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-16T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-17T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-18T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-19T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-20T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T04",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T05",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T06",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T07",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T08",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T09",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T10",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T11",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T12",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T13",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T14",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T15",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T16",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T17",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T18",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T19",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T20",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T21",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T22",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-21T23",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T00",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T01",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T02",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        },
+        {
+          "period": "2026-04-22T03",
+          "respondent": "NYIS",
+          "respondent-name": "New York Independent System Operator",
+          "fueltype": "SUN",
+          "type-name": "Solar",
+          "value": "0",
+          "value-units": "megawatthours"
+        }
+      ],
+      "description": "Hourly net generation by balancing authority and energy source.  \n    Source: Form EIA-930\n    Product: Hourly Electric Grid Monitor"
+    },
+    "request": {
+      "command": "/v2/electricity/rto/fuel-type-data/data/",
+      "params": {
+        "api_key": "REDACTED_FOR_FIXTURES",
+        "frequency": "hourly",
+        "data": [
+          "value"
+        ],
+        "facets": {
+          "respondent": [
+            "NYIS"
+          ],
+          "fueltype": [
+            "SUN"
+          ]
+        },
+        "start": "2026-04-16T00",
+        "end": "2026-04-23T00",
+        "sort": [
+          {
+            "column": "period",
+            "direction": "asc"
+          }
+        ],
+        "length": "5000"
+      }
+    },
+    "apiVersion": "2.1.12",
+    "ExcelAddInVersion": "2.1.0"
+  }
+}

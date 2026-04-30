@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pillar + glow concept · Every Last Joule</title>
+  <style>
+    :root {
+      --teal-500: #14afac;
+      --slate-900: #0b0c0d;
+      --btc-orange: #f7931a;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(ellipse at 30% 20%, #0f1517 0%, #0a0b0c 60%, #050607 100%);
+      color: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      padding: 24px 32px;
+    }
+    h1 { font-weight: 800; font-size: 24px; letter-spacing: -0.02em; margin-bottom: 4px; }
+    .sub { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 20px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .panel {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .eyebrow {
+      color: var(--teal-500);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    h2 { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+    .globe-container {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #050607;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    canvas { display: block; width: 100%; height: 100%; }
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
+    .utc-display {
+      font-variant-numeric: tabular-nums;
+      background: rgba(20,175,172,0.12);
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: var(--teal-500);
+      font-weight: 700;
+    }
+    .speed-chip {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font: inherit;
+    }
+    .speed-chip.active {
+      background: rgba(20,175,172,0.2);
+      border-color: var(--teal-500);
+      color: var(--teal-500);
+    }
+    .note {
+      color: rgba(255,255,255,0.55);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 14px;
+    }
+    .legend {
+      display: flex;
+      gap: 14px;
+      margin-top: 10px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    .dot-teal { background: var(--teal-500); box-shadow: 0 0 10px var(--teal-500); }
+    .dot-orange { background: var(--btc-orange); box-shadow: 0 0 10px var(--btc-orange); }
+  </style>
+</head>
+<body>
+  <h1>Pillar + glow concept</h1>
+  <p class="sub">Option (b): keep the blurred-glow hotspot for recognisability, add an outward pillar whose height encodes current GW. Drag the globe to rotate. Playback auto-advances UTC hour.</p>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="eyebrow">Current (v0 live)</div>
+      <h2>Glow only</h2>
+      <div class="globe-container"><canvas id="globe-a"></canvas></div>
+      <div class="controls">
+        <span class="utc-display" id="utc-a">00:00 UTC</span>
+        <span>Hotspots are cored circles + blurred glow.  Size changes with GW but does not encode temporal change clearly at a glance.</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="eyebrow">Proposed v0.5</div>
+      <h2>Glow + outward pillar</h2>
+      <div class="globe-container"><canvas id="globe-b"></canvas></div>
+      <div class="controls">
+        <span class="utc-display" id="utc-b">00:00 UTC</span>
+        <button class="speed-chip" id="speed-1" data-speed="1">1×</button>
+        <button class="speed-chip active" id="speed-2" data-speed="2">2×</button>
+        <button class="speed-chip" id="speed-4" data-speed="4">4×</button>
+      </div>
+      <p class="note">Pillar height ∝ √GW at the current hour.  As the simulated day advances the pillars grow, shrink, and appear/disappear - showing how curtailment emerges and dissipates across the solar block.</p>
+      <div class="legend">
+        <span><span class="dot dot-teal"></span>Renewable curtailment</span>
+        <span><span class="dot dot-orange"></span>Flared gas (base load)</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+  <script>
+  // Sample regions with representative 24h profiles (derived from real patterns).
+  // Teal = renewable, orange = flare.
+  const REGIONS = [
+    // Solar-driven (midday peak in local time → UTC shifted by longitude)
+    { id: 'caiso',    name: 'California',   lat:  36.5, lon: -119.5, kind: 'renewable', solarPeakUTC: 20, peak: 3.2 },
+    { id: 'ercot',    name: 'Texas',        lat:  31.8, lon:  -99.9, kind: 'renewable', solarPeakUTC: 18, peak: 2.6, wind: { peakUTC: 8, amp: 2.1 } },
+    { id: 'iberia',   name: 'Iberia',       lat:  39.5, lon:   -3.5, kind: 'renewable', solarPeakUTC: 12, peak: 2.4 },
+    { id: 'atacama',  name: 'Atacama',      lat: -24.5, lon:  -69.2, kind: 'renewable', solarPeakUTC: 16, peak: 1.8 },
+    { id: 'xinjiang', name: 'Xinjiang',     lat:  41.5, lon:   85.0, kind: 'renewable', solarPeakUTC:  6, peak: 3.1 },
+    { id: 'aus',      name: 'S. Australia', lat: -34.9, lon:  138.6, kind: 'renewable', solarPeakUTC:  3, peak: 1.1 },
+    // Wind-driven (overnight/early-morning)
+    { id: 'uk',       name: 'North Sea',    lat:  56.5, lon:   -2.0, kind: 'renewable', solarPeakUTC: 12, peak: 0.6, wind: { peakUTC: 3, amp: 2.8 } },
+    { id: 'germany',  name: 'Germany',      lat:  52.5, lon:   10.5, kind: 'renewable', solarPeakUTC: 11, peak: 1.1, wind: { peakUTC: 2, amp: 2.0 } },
+    { id: 'finland',  name: 'Finland',      lat:  62.0, lon:   25.0, kind: 'renewable', solarPeakUTC: 10, peak: 0,   wind: { peakUTC: 1, amp: 1.4 } },
+    // Flare (flat 24/7)
+    { id: 'permian',  name: 'Permian',      lat:  31.9, lon: -102.5, kind: 'flare',     flat: 2.0 },
+    { id: 'ksa',      name: 'E. Saudi',     lat:  26.5, lon:   49.5, kind: 'flare',     flat: 1.6 },
+    { id: 'iraq',     name: 'S. Iraq',      lat:  30.5, lon:   47.5, kind: 'flare',     flat: 2.1 },
+    { id: 'siberia',  name: 'W. Siberia',   lat:  61.0, lon:   73.0, kind: 'flare',     flat: 2.4 },
+  ];
+
+  // Gaussian bump centred at hour c, width sigma, peak amp
+  const bump = (h, c, sigma, amp) => {
+    let d = ((h - c + 36) % 24) - 12;
+    return amp * Math.exp(-(d * d) / (2 * sigma * sigma));
+  };
+
+  function gwAt(region, utcHour) {
+    if (region.kind === 'flare') return region.flat;
+    let v = bump(utcHour, region.solarPeakUTC, 2.2, region.peak);
+    if (region.wind) v += bump(utcHour, region.wind.peakUTC, 3.0, region.wind.amp);
+    return Math.max(0, v);
+  }
+
+  const WORLD = 'https://unpkg.com/world-atlas@2/countries-110m.json';
+  const TEAL = '#14afac';
+  const ORANGE = '#f7931a';
+
+  async function init() {
+    const topology = await fetch(WORLD).then(r => r.json());
+    const countries = topojson.feature(topology, topology.objects.countries);
+
+    const stateA = setupGlobe(document.getElementById('globe-a'), countries, { pillars: false });
+    const stateB = setupGlobe(document.getElementById('globe-b'), countries, { pillars: true });
+
+    // Shared playback - advance UTC hour
+    let utc = 0;
+    let speed = 2;
+    let lastTs = performance.now();
+
+    document.querySelectorAll('.speed-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.speed-chip').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        speed = Number(btn.dataset.speed);
+      });
+    });
+
+    function tick(now) {
+      const dt = (now - lastTs) / 1000; lastTs = now;
+      utc = (utc + 0.8 * speed * dt) % 24;  // 1x = ~30s per 24h
+      const hh = String(Math.floor(utc)).padStart(2, '0');
+      const mm = String(Math.floor((utc % 1) * 60)).padStart(2, '0');
+      document.getElementById('utc-a').textContent = `${hh}:${mm} UTC`;
+      document.getElementById('utc-b').textContent = `${hh}:${mm} UTC`;
+      stateA.render(utc);
+      stateB.render(utc);
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function setupGlobe(canvas, countries, opts) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+    }
+    resize();
+    new ResizeObserver(resize).observe(canvas);
+    const ctx = canvas.getContext('2d');
+
+    const rotation = [-10, -15, 0];
+    let dragging = false;
+
+    canvas.addEventListener('pointerdown', e => { dragging = true; canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      rotation[0] += e.movementX * 0.3;
+      rotation[1] = Math.max(-90, Math.min(90, rotation[1] - e.movementY * 0.3));
+    });
+    canvas.addEventListener('pointerup', e => { dragging = false; canvas.releasePointerCapture(e.pointerId); });
+
+    // Auto-rotate unless user is dragging
+    let autoRot = true;
+
+    // Precompute land-dots (coarse for speed in the demo)
+    const dots = [];
+    for (let lat = -80; lat <= 80; lat += 3) {
+      const cos = Math.cos(lat * Math.PI / 180);
+      const step = 3 / Math.max(cos, 0.2);
+      for (let lon = -180; lon <= 180; lon += step) {
+        let onLand = false;
+        for (const f of countries.features) {
+          if (d3.geoContains(f, [lon, lat])) { onLand = true; break; }
+        }
+        if (onLand) dots.push([lon, lat]);
+      }
+    }
+
+    function render(utcHour) {
+      const w = canvas.width / dpr, h = canvas.height / dpr;
+      const size = Math.min(w, h);
+      if (autoRot && !dragging) rotation[0] += 0.04;
+
+      // Solar sub-point: longitude moves westward as UTC advances
+      const sunLng = (12 - utcHour) * 15;   // UTC 12 → lng 0
+      const sunLat = 0;
+
+      const projection = d3.geoOrthographic()
+        .scale(size * 0.46)
+        .translate([w / 2, h / 2])
+        .clipAngle(90)
+        .rotate(rotation);
+      const path = d3.geoPath(projection, ctx);
+
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, w, h);
+
+      // Sphere base
+      ctx.beginPath(); path({ type: 'Sphere' });
+      ctx.fillStyle = '#0a1114';
+      ctx.fill();
+
+      // Day-side warm highlight (centred at projected sub-solar point if visible)
+      const sunScreen = projection([sunLng, sunLat]);
+      if (sunScreen) {
+        const g = ctx.createRadialGradient(sunScreen[0], sunScreen[1], size * 0.04, sunScreen[0], sunScreen[1], size * 0.55);
+        g.addColorStop(0, 'rgba(90, 150, 160, 0.75)');
+        g.addColorStop(0.45, 'rgba(40, 80, 90, 0.35)');
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); path({ type: 'Sphere' });
+        ctx.fill();
+      }
+
+      // Night-side shadow: clip a hemisphere centred on the anti-solar point and fill dark.
+      // d3.geoCircle with radius 90° gives a hemisphere polygon; its projected outline fills
+      // the half of the sphere facing away from the sun.
+      const antiSolarLng = (sunLng + 180) % 360;
+      const nightFeature = d3.geoCircle().center([antiSolarLng, 0]).radius(90)();
+      ctx.beginPath(); path(nightFeature);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+      ctx.fill();
+
+      // Dots: brightness modulated by solar angle (night side strongly darker)
+      const center = [-rotation[0], -rotation[1]];
+      for (const [lon, lat] of dots) {
+        const dist = d3.geoDistance([lon, lat], center);
+        if (dist > Math.PI / 2 - 0.02) continue;
+        const p = projection([lon, lat]);
+        if (!p) continue;
+        const fade = 1 - dist / (Math.PI / 2);
+        const solarAngle = d3.geoDistance([lon, lat], [sunLng, sunLat]);
+        const sunlit = Math.max(0, Math.cos(solarAngle));  // 1 at sub-solar, 0 at terminator
+        // Heavy night-dimming: night dots almost invisible, day dots bright
+        const brightness = 0.05 + fade * 0.12 + Math.pow(sunlit, 0.7) * 0.85;
+        ctx.fillStyle = `rgba(20, 175, 172, ${brightness})`;
+        ctx.fillRect(p[0] - 0.6, p[1] - 0.6, 1.4, 1.4);
+      }
+
+      // Country borders
+      ctx.beginPath();
+      path({ type: 'GeometryCollection', geometries: countries.features.map(f => f.geometry) });
+      ctx.strokeStyle = 'rgba(20, 175, 172, 0.22)';
+      ctx.lineWidth = 0.4;
+      ctx.stroke();
+
+      // Sphere outline
+      ctx.beginPath(); path({ type: 'Sphere' });
+      ctx.strokeStyle = 'rgba(20, 175, 172, 0.25)';
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+
+      // Hotspots
+      for (const r of REGIONS) {
+        const gw = gwAt(r, utcHour);
+        if (gw <= 0.01) continue;
+        const dist = d3.geoDistance([r.lon, r.lat], center);
+        if (dist > Math.PI / 2) continue;
+        const p = projection([r.lon, r.lat]);
+        if (!p) continue;
+        const visible = 1 - dist / (Math.PI / 2);
+        const color = r.kind === 'flare' ? ORANGE : TEAL;
+        const weight = Math.sqrt(gw);
+        const glowR = 5 + weight * 5;
+        const coreR = 1.5 + weight * 0.8;
+
+        // Glow (blurred)
+        ctx.save();
+        ctx.filter = 'blur(4px)';
+        ctx.globalAlpha = 0.45 * visible;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], glowR, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Outward pillar (option B only)
+        if (opts.pillars) {
+          const cx = w / 2, cy = h / 2;
+          let dx = p[0] - cx, dy = p[1] - cy;
+          const len = Math.sqrt(dx*dx + dy*dy);
+          if (len > 0.1) {
+            dx /= len; dy /= len;
+            const pillarH = 3 + weight * 48;
+            const pillarW = 3.0;
+            const tipX = p[0] + dx * pillarH;
+            const tipY = p[1] + dy * pillarH;
+
+            // Pillar body: linear gradient from dim at base to bright at tip
+            const gp = ctx.createLinearGradient(p[0], p[1], tipX, tipY);
+            gp.addColorStop(0, color + '66');
+            gp.addColorStop(1, color);
+            ctx.strokeStyle = gp;
+            ctx.lineWidth = pillarW;
+            ctx.lineCap = 'round';
+            ctx.globalAlpha = 0.95 * visible;
+            ctx.beginPath();
+            ctx.moveTo(p[0], p[1]);
+            ctx.lineTo(tipX, tipY);
+            ctx.stroke();
+
+            // Subtle glow on the tip
+            ctx.save();
+            ctx.filter = 'blur(3px)';
+            ctx.globalAlpha = 0.5 * visible;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(tipX, tipY, pillarW * 1.6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        }
+
+        // Core dot with white stroke
+        ctx.globalAlpha = visible;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], coreR, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+
+    return { render };
+  }
+
+  init().catch(e => { console.error(e); document.body.innerHTML += `<pre style="color:red">${e.stack}</pre>`; });
+  </script>
+</body>
+</html>
