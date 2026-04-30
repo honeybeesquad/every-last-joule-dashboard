@@ -692,59 +692,80 @@ main table {
   color: rgba(255,255,255,0.58);
 }
 
-/* Zoom buttons — stacked in the bottom-right corner of the globe panel.
-   panel-center is position:relative, so these sit over the canvas. */
+/* Vertical zoom slider in the bottom-right corner of the globe panel */
 .globe-zoom-controls {
   position: absolute;
   bottom: 1.25rem;
   right: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  align-items: center;
   z-index: 10;
-  /* Keep controls within the panel stacking context but out of the
-     grid flow so they don't affect globe canvas layout. */
   pointer-events: auto;
 }
 
-.globe-zoom-btn {
+.globe-zoom-slider {
+  -webkit-appearance: slider-vertical;
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 28px;
+  height: 110px;
+  cursor: pointer;
+  accent-color: rgba(255,255,255,0.7);
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.globe-zoom-slider:hover,
+.globe-zoom-slider:focus {
+  opacity: 1;
+  outline: none;
+}
+
+.globe-zoom-slider:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+@media (hover: none) {
+  .globe-zoom-slider {
+    height: 130px;
+    width: 36px;
+  }
+}
+
+.globe-flare-btn {
+  position: absolute;
+  bottom: calc(1.25rem + 110px + 12px); /* above zoom slider */
+  right: 1.1rem;
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(0, 0, 0, 0.45);
-  color: rgba(255, 255, 255, 0.80);
-  font-size: 18px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(0,0,0,0.45);
+  font-size: 14px;
   line-height: 1;
-  font-family: inherit;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  user-select: none;
-  -webkit-user-select: none;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  opacity: 0.7;
+  transition: opacity 0.15s, background 0.15s, box-shadow 0.15s;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  user-select: none;
+  -webkit-user-select: none;
 }
-
-/* Meet iOS HIG / Material min tap target (44 × 44) on touch devices. */
+.globe-flare-btn:hover { opacity: 1; background: rgba(255,255,255,0.12); }
+.globe-flare-btn.is-active {
+  opacity: 1;
+  background: rgba(255,140,0,0.25);
+  border-color: rgba(255,140,0,0.6);
+  box-shadow: 0 0 8px rgba(255,140,0,0.4);
+}
 @media (hover: none) {
-  .globe-zoom-btn {
-    width: 44px;
-    height: 44px;
-    font-size: 22px;
-  }
-}
-
-.globe-zoom-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.35);
-  color: rgba(255, 255, 255, 1);
-}
-
-.globe-zoom-btn:active {
-  background: rgba(255, 255, 255, 0.22);
+  .globe-flare-btn { width: 44px; height: 44px; font-size: 18px;
+    bottom: calc(1.25rem + 130px + 12px); right: 0.8rem; }
 }
 
 #pct-readout .pct-sign,

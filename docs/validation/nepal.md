@@ -1,6 +1,6 @@
 # Validation — Nepal (`nepal`)
 
-Last updated: 2026-04-30 · Sprint: Gemini research wave 4 · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,22 +8,28 @@ Last updated: 2026-04-30 · Sprint: Gemini research wave 4 · Paper section: Tec
 - **Country:** NPL
 - **Tier:** static
 - **Kind:** hydro
-- **Source:** World Bank Nepal Development Update 2024 — estimated >0.5 TWh/yr renewable energy spillage from monsoon-season run-of-river overgeneration vs transmission bottlenecks and limited India-export capacity. Confirmed by NEA / Department of Electricity Development for FY2023/24 (5.4% of generation). Same modelling treatment as Ethiopia / Iceland / Colombia hydro spillage — wasted potential renewable energy when reservoirs and run-of-river plants exceed grid absorption.
+- **Source:** World Bank Nepal Development Update 2024 — estimated >0.5 TWh/yr renewable energy spillage from monsoon-season run-of-river overgeneration vs transmission bottlenecks and limited India-export capacity. NEA confirms during FY2023/24. Same modelling treatment as Ethiopia/Iceland/Colombia hydro spillage. Himalayan summer-monsoon shape (peak Jul-Sep). Gemini-3.1 research wave 4 (2026-04-30, reliability 5/5).
 - **Source URL:** [https://www.worldbank.org/en/country/nepal/publication/nepal-development-update](https://www.worldbank.org/en/country/nepal/publication/nepal-development-update)
-- **Loader:** _(no single-file loader — emitted via `STATIC_REGIONS.nepal` in `src/data/statics.json.ts`)_
-- **Structural gap:** no (NEA publishes annual reports; could be elevated to T2-annual-calibrated with periodic refresh)
+- **Loader:** _(no single-file loader — see multi-region source)_
+- **Structural gap:** yes
 
 ## Calibration
 
-- **Rate source:** n/a — anchor is direct annual spillage figure from World Bank, not generation × rate. The 5.4% rate is a derived percentage not a calibration input.
-- **Uniform across backfill years:** No — varies with monsoon strength + India-export utilization. 0.5 TWh is a conservative recent-year baseline.
+- **Rate source documented in:** `docs/methodology/` (see links below)
+- **Uniform across backfill years:** n/a — no backfill
+
+## Multi-year backfill annual totals
+
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
+|---|---|---|---|---|---|
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **World Bank Nepal Development Update 2024:** "Estimated annual renewable energy spillage exceeding 0.5 TWh (500 GWh) due to infrastructure limitations" — reliability 5/5, confidence high (Gemini-3.1 research wave 4, 2026-04-30)
-- **NEA annual reports:** confirms the underlying mechanism (Kulekhani, Marshyangdi cascade run-of-river spillage during monsoon when domestic load + India export are saturated)
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
-- **IRENA annual:** Earlier IRENA Nepal 2024 cite was used for the prior 0.2 TWh/yr placeholder; superseded by the World Bank figure which is more specific.
+- **IRENA annual:** —
+- **Other:** —
 
 ## Discrepancy analysis
 
@@ -39,8 +45,8 @@ T3-modelled, ±40% envelope. Himalayan summer-monsoon hydro-seasonal shape (`HYD
 
 ## Links
 
-- Loader: `src/data/statics.json.ts` (`STATIC_REGIONS.nepal`)
-- Seasonal shape: `src/lib/typical-profiles.ts` (`HYDRO_SEASONAL_SHARES.nepal`)
-- Research wave methodology: [`docs/methodology/2026-04-29-gemini-research-wave-1.md`](../methodology/2026-04-29-gemini-research-wave-1.md)
+- Loader source: _(no single-file loader — see multi-region source)_
+- Backfill archive: `data/historical/backfill/*_nepal_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
+- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

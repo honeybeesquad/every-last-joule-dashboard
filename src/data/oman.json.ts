@@ -19,8 +19,8 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       REGION_ID,
       8,
       0.1,
-      `Typical-shape fallback: Oman live feed unavailable (${(err as Error).message}); calibration anchor ~0.1 TWh/yr solar curtailment.`,
-      "2024",
+      `Typical-shape fallback: Oman live feed unavailable (${(err as Error).message}); calibration anchor ≤0.1 TWh/yr solar curtailment — OPWP actively manages curtailment via the Rabt interconnector; no large-scale curtailment reported. Sources: OPWP 7-Year Statement 2023–2029 & 2025–2031 editions; IEA Renewables 2024 report. T3-modelled, ±40% envelope.`,
+      "2025",
     );
   }
 }

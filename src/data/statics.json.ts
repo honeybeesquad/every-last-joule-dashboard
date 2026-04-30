@@ -89,18 +89,12 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // 70.79 TWh and PV 38.037 TWh, implying ~8.2 TWh curtailed.
   xinjiang: { annualTWh: 8.2, kind: "solar", localSolarPeakUTC: 6.33, source: "NEA 2024 renewable monitoring evaluation + Huaon/NBS generation by fuel (Xinjiang wind/PV curtailment ~8.2 TWh; solar-shaped fallback centred on local noon UTC 06:20)", reportDate: "2024" },
   iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
-  // Colombia: hydro-dominant SIN with bimodal precipitation. XM publishes
-  // monthly vertimientos hidráulicos (reservoir-overflow spillage) in the
-  // Informe de Operación SIN. Gemini-3.1 research wave 2026-04-29 cited
-  // 705.24 GWh-mes for Feb-2025 vertimientos; XM site is geoblocked from
-  // outside Colombia preventing direct verification, so a conservative
-  // 2.0 TWh/yr annualisation is held as the T3 anchor. Bimodal seasonal
-  // shape (Apr-May + Oct-Nov rainfall, with reservoir-fill lag pushing
-  // peak spillage to May-Jun and Nov-Dec). UPME / SER Colombia note that
-  // VRE (solar/wind) curtailment is currently <1% — the wasted-energy
-  // story is dominated by hydro spillage, same modelling approach as
-  // Iceland and Sichuan.
-  colombia: { annualTWh: 7.5, kind: "hydro-seasonal", seasonalSharesKey: "colombia", source: "XM SinerGox API (servapibi.xm.com.co/daily, MetricId=VertEner Entity=Sistema). 5-year mean 2020-2024 = 7.53 TWh/yr (range 0.53-13.12 TWh/yr ENSO-driven). Verified 2026-04-30 via Colombian-egress probe; same API confirms Gemini-3.1 cited Feb-2025 figure of 705.24 GWh-mes exactly.", reportDate: "2026-04-30" },
+  // Colombia: promoted to T1b-CSV loader (src/data/colombia.json.ts).
+  // The loader reads the committed daily XM API CSV (Britta relay) and
+  // computes a trailing-365-day annualised TWh figure. Removed from statics
+  // 2026-04-30; the entry in regionData in index.md takes precedence via
+  // object spread order (explicit `colombia` key before `...statics`).
+  // colombia: SUPERSEDED BY LOADER — do not add back here.
   // Ukraine: ENTSO-E Ukrenergo returns empty A75 data post-2022 synchronisation.
   // Solar-dominant fallback at 1.2 TWh/yr; Ukrainian renewables are ~60% solar
   // (southern steppes: Nikopol, Zaporizhzhia, Kherson), ~40% wind (southern coast).
@@ -170,7 +164,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   "guatemala-siepac": { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 18.0, source: "IRENA Central America Interconnect 2024 (SIEPAC corridor; EOR Ente Operador Regional publishes monthly Informe de Operacion Regional as PDF; provisional 0.1 TWh/yr Pattern-D static for the regional interconnect)", reportDate: "2024" },
   cuba: { annualTWh: 0.1, kind: "mixed", source: "Cuba UNE 2022-24 grid restoration + Ember Cuba Electricity Review 2024 (provisional 0.1 TWh/yr reflects post-Hurricane-Ian grid stress, not normal operation; mixed-fuel flat profile; Pattern-D static — do not over-claim a steady-state anchor)", reportDate: "2024" },
   "dominican-republic": { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Dominican Republic 2024 + OC (Organismo Coordinador del SENI) Reportes de Operacion 2024 (wind+solar ~10% of generation; some curtailment reported in PDF reports; provisional 0.5 TWh/yr Pattern-D static)", reportDate: "2024" },
-  jamaica: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 17.0, source: "Office of Utilities Regulation Jamaica Annual Report 2024 (Wigton wind + Content solar; JPS vertically integrated; provisional 0.2 TWh/yr Pattern-D static)", reportDate: "2024" },
+  jamaica: { annualTWh: 0.003, kind: "solar", localSolarPeakUTC: 17.0, source: "IEA / IDB 2024 (Wigton wind + Content solar; JPS vertically integrated; ~1–3 GWh/yr solar curtailment, low confidence; previous 0.2 TWh anchor was implausible at ~40% curtailment rate for small island; Wave-5 revised 2026-04-30)", reportDate: "2025" },
   "trinidad-tobago": { annualTWh: 0.3, kind: "mixed", source: "GGFR 2024 Trinidad offshore flares ~1 BCM (anchor is upstream offshore flare lifted onto T&TEC grid for coverage; power side has minimal VRE; flat 24/7 profile with mixed-fuel flag; provisional 0.3 TWh/yr-electrical-equivalent Pattern-D static)", reportDate: "2024" },
   barbados: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Barbados Renewables 2024 (rooftop PV penetration; BLPC investor-owned via Emera; FRCS Caribbean reports occasional inverter trips; provisional 0.05 TWh/yr Pattern-D static at inclusion threshold)", reportDate: "2024" },
   bolivia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Bolivia 2024 (hydro+gas dominated grid; solar+wind ~3% of mix; CNDC publishes Informe Mensual de Operacion as PDF; provisional 0.1 TWh/yr Pattern-D static for solar curtailment subset)", reportDate: "2024" },
@@ -191,7 +185,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   algeria: { annualTWh: 0.4, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Country Statistics 2024 (Algeria SONELGAZ/OS; small wind+PV ~1.5 GW; no public dispatch data)", reportDate: "2024" },
   angola: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Angola 2024 (RNT transmission; nascent solar; no operator-published curtailment)", reportDate: "2024" },
   benin: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Benin 2024 (SBEE; imports ~80% via WAPP; minimal domestic VRE)", reportDate: "2024" },
-  botswana: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 10.0, source: "IRENA Botswana 2024 (BPC; SAPP member; small Mmadinare PV)", reportDate: "2024" },
+  botswana: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 10.0, source: "BPC / IEA 2023–2024 (small Mmadinare PV; negligible measured curtailment ≈0 TWh/yr; held at 0.05 inclusion-floor for coverage completeness; high-confidence zero from BPC/IEA; Wave-5 revised 2026-04-30)", reportDate: "2025" },
   "burkina-faso": { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Burkina Faso 2024 (SONABEL; Zagtouli + Nagreongo PV ~70 MW)", reportDate: "2024" },
   "cabo-verde": { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 13, source: "IRENA Cabo Verde 2024 (ELECTRA; island system 9 separate grids; high VRE share with no published curtailment metric). Solar-shaped (peak local noon ≈ UTC 13, Cabo Verde UTC-1).", reportDate: "2024" },
   cameroon: { annualTWh: 0.1, kind: "hydro", source: "IRENA Cameroon 2024 (ENEO/SONATREL; mostly hydro; no dispatch portal)", reportDate: "2024" },
@@ -199,7 +193,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   "cote-divoire": { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 12, source: "IRENA Cote d'Ivoire 2024 (CIE; major WAPP exporter; thermal+hydro+growing PV). Solar-shaped: PV is the growing wasted-energy component; thermal/hydro are dispatchable.", reportDate: "2024" },
   eswatini: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 10, source: "IRENA Eswatini 2024 (EEC; SAPP member; biomass+hydro+Eskom imports). Solar-shaped (peak local noon ≈ UTC 10, Eswatini UTC+2). Growing PV anchor.", reportDate: "2024" },
   gabon: { annualTWh: 0.05, kind: "hydro", source: "IRENA Gabon 2024 (SEEG; hydro+gas; oil-flaring relevant via GGFR)", reportDate: "2024" },
-  ghana: { annualTWh: 0.2, kind: "hydro", source: "Ember Ghana 2024 (GRIDCo TSO; Akosombo hydro + emerging PV)", reportDate: "2024" },
+  ghana: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 12, source: "Ember Ghana 2024 (GRIDCo TSO; Akosombo hydro dominant but emerging PV is the curtailment signal; solar-shaped at peakHourUtc 12, Ghana at -0.2°E ≈ UTC 12 solar noon; Wave-5 revised 2026-04-30)", reportDate: "2025" },
   madagascar: { annualTWh: 0.05, kind: "hydro", source: "IRENA Madagascar 2024 (JIRAMA; hydro+thermal; small isolated grids)", reportDate: "2024" },
   malawi: { annualTWh: 0.05, kind: "hydro", source: "IRENA Malawi 2024 (ESCOM/EGENCO; Shire hydro cascade + Salima PV 60 MW; SAPP member)", reportDate: "2024" },
   mauritania: { annualTWh: 0.1, kind: "wind", localSolarPeakUTC: 12.0, source: "IRENA Mauritania 2024 (SOMELEC; Boulenouar wind 100 MW + Sheikh Zayed PV; OMVS member)", reportDate: "2024" },
@@ -207,14 +201,16 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   mozambique: { annualTWh: 0.3, kind: "hydro", source: "IRENA Mozambique 2024 (EDM; Cahora Bassa hydro exports to Eskom via SAPP; growing solar)", reportDate: "2024" },
   // Nigeria — composite phenomenon: chronic frequency-instability load-shed
   // (Ember 2024) + Niger Delta gas flaring (~7 TWh-eq/yr per GGFR 2024-25).
-  // Treated as `kind: "mixed"` with a flat 24/7 profile per the Pattern-D
-  // dispatch brief; lat/lon at 9.0°N 8.5°E (country centroid) as specified.
-  nigeria: { annualTWh: 7.0, kind: "mixed", source: "Ember Nigeria 2024 + GGFR Niger Delta flaring 2024-25 (TCN as TSO; chronic frequency-instability load-shed + ~7 TWh-eq/yr Niger Delta gas flare composite; flat 24/7 profile)", reportDate: "2024" },
+  // Nigeria: solar-shaped profile for the renewables curtailment component.
+  // The Niger Delta gas flare (~7 TWh-eq/yr) is a separate flat-baseload signal
+  // not captured here; the 0.5 TWh anchor covers grid solar curtailment only
+  // (TCN frequency instability causes daytime solar tripping). lat/lon at 9.0°N 8.5°E.
+  nigeria: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 11, source: "Ember Nigeria 2024 + TCN Grid Stability Report 2024 (solar curtailment from TCN frequency-instability; Niger Delta gas flare ~7 TWh-eq/yr is a separate flat-baseload signal; 0.5 TWh/yr anchor covers daytime solar tripping only; Wave-5 revised 2026-04-30)", reportDate: "2025" },
   rwanda: { annualTWh: 0.05, kind: "mixed", source: "IRENA Rwanda 2024 (REG/EUCL; methane-from-Lake-Kivu + hydro+solar)", reportDate: "2024" },
   senegal: { annualTWh: 0.3, kind: "solar", localSolarPeakUTC: 12, source: "IRENA Senegal 2024 (SENELEC; Taiba N'Diaye 158 MW wind + PV; OMVS/OMVG member). Solar-shaped (peak local noon ≈ UTC 12) since SENELEC's RE mix is solar-dominant; small wind share absorbed into the same shape as a methodological simplification.", reportDate: "2024" },
   tanzania: { annualTWh: 0.5, kind: "hydro", source: "IRENA Tanzania 2024 + Julius Nyerere HPP commissioning (TANESCO; JNHPP 2.1 GW commissioning 2024-25; gas+hydro)", reportDate: "2024" },
   togo: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Togo 2024 (CEET; imports via WAPP; Blitta PV 50 MW)", reportDate: "2024" },
-  tunisia: { annualTWh: 0.4, kind: "mixed", source: "IRENA Tunisia 2024 + STEG Annual Report (gas-dominated; growing wind Bizerte + PV; ELMED HVDC to Italy planned)", reportDate: "2024" },
+  tunisia: { annualTWh: 0.4, kind: "solar", localSolarPeakUTC: 11, source: "IRENA Tunisia 2024 + STEG Annual Report (gas-dominated grid; growing PV Tataouine + wind Bizerte; ELMED HVDC to Italy planned; solar-shaped at peakHourUtc 11, Tunisia at 9°E → solar noon ≈ UTC 11:24; Wave-5 revised 2026-04-30)", reportDate: "2025" },
   uganda: { annualTWh: 0.2, kind: "hydro", source: "ERA Annual Performance 2024 (UETCL TSO + UEDCL distribution; Karuma+Isimba hydro)", reportDate: "2024" },
   zambia: { annualTWh: 0.5, kind: "hydro", source: "Ember Zambia 2024 + Kariba drought (ZESCO; hydro-dependent Kariba+Kafue; severe 2024-25 drought load-shedding; SAPP member)", reportDate: "2024" },
   zimbabwe: { annualTWh: 0.3, kind: "hydro", source: "Ember Zimbabwe 2024 + Kariba South (ZPC generation, ZETDC T+D; Kariba South hydro+coal; SAPP member)", reportDate: "2024" },
@@ -251,7 +247,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   azerbaijan: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 4.0, source: "IRENA Azerbaijan 2024 (AZERENERGY); oil+gas+solar; growing RE)", reportDate: "2024" },
   bahrain: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Bahrain 2024 (EWA); gas+solar; small high-Temperature grid)", reportDate: "2024" },
   georgia: { annualTWh: 0.2, kind: "hydro", source: "IRENA Georgia 2024 (GSE); hydro+solar+wind; ENTSO-E synchronisation ongoing)", reportDate: "2024" },
-  jordan: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Jordan 2024 (NEPCO); solar+wind+gas; high VRE penetration)", reportDate: "2024" },
+  jordan: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 10, source: "IRENA Jordan 2024 (NEPCO; solar+wind+gas; high VRE penetration). peakHourUtc 10: Jordan at 36°E → solar noon ≈ UTC 09:36. Previous value of 3.0 was wrong (was UTC timezone offset, not solar noon hour).", reportDate: "2025" },
   kuwait: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Kuwait 2024 (MEW); gas+solar; growing solar)", reportDate: "2024" },
   kyrgyzstan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Kyrgyzstan 2024 (NEK); hydro+solar; CASA-1000 candidate)", reportDate: "2024" },
   lebanon: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Lebanon 2024 (EDL); severe crisis; diesel+solar+hydro; small grid)", reportDate: "2024" },
@@ -270,7 +266,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   brunei: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Brunei 2024 (AEDED); gas+solar; small high-income grid)", reportDate: "2024" },
   cambodia: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 7.0, source: "IRENA Cambodia 2024 (EDC); hydro+solar+coal; rapid solar growth)", reportDate: "2024" },
   myanmar: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 6.5, source: "IRENA Myanmar 2024 (MEPE); hydro+solar+gas; war-affected grid)", reportDate: "2024" },
-  philippines: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 4.0, source: "IEMOP Market Data + NGCP/PEMC 2024 audit composite (WESM island grids; IEMOP CAPEG confirms solar/wind resource registry, MOT redispatch feed currently sparse; provisional T3 solar-shaped fallback)", reportDate: "2024" },
+  // philippines moved to src/data/philippines.json.ts (fuel-split: solar + wind, 2026-04-30)
   singapore: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Singapore 2024 (EMA); gas+solar+pipeline floating solar)", reportDate: "2024" },
   png: { annualTWh: 0.1, kind: "hydro", source: "IRENA PNG 2024 (PNG-Power); hydro+solar+diesel; island grid)", reportDate: "2024" },
   fiji: { annualTWh: 0.02, kind: "hydro", source: "IRENA Fiji 2024 (EFL); hydro+solar+diesel; Pacific island)", reportDate: "2024" },

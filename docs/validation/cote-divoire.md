@@ -1,13 +1,13 @@
 # Validation — Cote d'Ivoire (`cote-divoire`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `cote-divoire`
 - **Country:** CIV
 - **Tier:** static
-- **Kind:** mixed
+- **Kind:** solar
 - **Source:** IRENA Cote d'Ivoire 2024 (CIE; major WAPP exporter)
 - **Source URL:** [https://www.cie.ci/](https://www.cie.ci/)
 - **Loader:** _(no single-file loader — see multi-region source)_

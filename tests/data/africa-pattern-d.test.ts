@@ -181,9 +181,13 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     }
   });
 
-  it("aggregate annual anchor across the 26 new rows is ~11.7 TWh per the audit", () => {
+  it("aggregate annual anchor across the 26 new rows is ~5.2 TWh per the audit", () => {
     // 0.4+0.2+0.05+0.05+0.1+0.05+0.1+0.5+0.1+0.05+0.05+0.2+0.05+0.05+0.1+
-    // 0.05+0.3+7.0+0.05+0.3+0.5+0.05+0.4+0.2+0.5+0.3 = 11.7 TWh.
+    // 0.05+0.3+0.5+0.05+0.3+0.5+0.05+0.4+0.2+0.5+0.3 = 5.2 TWh.
+    // Nigeria revised 7.0→0.5 TWh in Wave-5 (2026-04-30): the 7 TWh composite
+    // was dominated by Niger Delta gas flaring (flat 24/7 baseload, a separate
+    // signal). The 0.5 TWh anchor now covers solar curtailment only (TCN
+    // frequency-instability daytime solar tripping).
     // Sum the totalTWh × 365/30 to recover the annual anchor (note: hydro-
     // seasonal entries carry a seasonal factor so this approximation is
     // ±20% — none of the Africa batch uses hydro-seasonal, so the sum is
@@ -193,8 +197,8 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     for (const id of NEW_AFRICA_IDS) {
       annualSum += statics[id].totalTWh * (365 / 30);
     }
-    expect(annualSum).toBeGreaterThan(11.5);
-    expect(annualSum).toBeLessThan(11.9);
+    expect(annualSum).toBeGreaterThan(4.9);
+    expect(annualSum).toBeLessThan(5.5);
   });
 
   it("all new region ids are kebab-case and unique within REGIONS", () => {
@@ -205,15 +209,20 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     }
   });
 
-  it("Nigeria special-handling row is kind: mixed and cites both Ember and GGFR", () => {
+  it("Nigeria row is kind: solar and cites Ember + TCN (Wave-5 revised from mixed/GGFR)", () => {
+    // Nigeria was kind:"mixed" with a 7 TWh gas-flare composite anchor.
+    // Wave-5 (2026-04-30) split the signal: solar curtailment = 0.5 TWh/yr
+    // with a diurnal solar profile (peakHourUtc 11, Nigeria at 8.5°E).
+    // The Niger Delta flare component is noted in the source but is a separate
+    // flat-baseload signal not captured in this T3-static entry.
     const nigeria = REGIONS.find((r) => r.id === "nigeria");
     expect(nigeria).toBeDefined();
-    expect(nigeria?.kind).toBe("mixed");
+    expect(nigeria?.kind).toBe("solar");
     expect(nigeria?.country).toBe("NGA");
     expect(nigeria?.lat).toBe(9.0);
     expect(nigeria?.lon).toBe(8.5);
     expect(nigeria?.source).toMatch(/Ember/);
-    expect(nigeria?.source).toMatch(/GGFR/);
+    expect(nigeria?.source).toMatch(/TCN/);
   });
 
   it("does NOT add the 5 existing African T3 statics again (egypt/ethiopia/kenya/morocco/namibia)", () => {

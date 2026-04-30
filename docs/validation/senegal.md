@@ -1,13 +1,13 @@
 # Validation — Senegal (`senegal`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `senegal`
 - **Country:** SEN
 - **Tier:** static
-- **Kind:** mixed
+- **Kind:** solar
 - **Source:** IRENA Senegal 2024 (SENELEC; Taiba N'Diaye 158 MW wind + PV)
 - **Source URL:** [https://www.senelec.sn/](https://www.senelec.sn/)
 - **Loader:** _(no single-file loader — see multi-region source)_

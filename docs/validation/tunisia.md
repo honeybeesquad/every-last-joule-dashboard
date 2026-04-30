@@ -1,13 +1,13 @@
 # Validation — Tunisia (`tunisia`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `tunisia`
 - **Country:** TUN
 - **Tier:** static
-- **Kind:** mixed
+- **Kind:** solar
 - **Source:** IRENA Tunisia 2024 + STEG Annual Report (Bizerte wind + PV; gas-dominated)
 - **Source URL:** [https://www.steg.com.tn/](https://www.steg.com.tn/)
 - **Loader:** _(no single-file loader — see multi-region source)_

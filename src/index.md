@@ -39,7 +39,7 @@ const [
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
   yunnan, tibet, indiaSouth, indiaWest, indiaEast, pakistan, iran,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
-  quebec, manitoba, saskatchewan, turkey
+  quebec, manitoba, saskatchewan, turkey, colombia, florida
 ] = await Promise.all([
   FileAttachment("data/cbeci.json").json(),
   FileAttachment("data/ercot.json").json(),
@@ -118,7 +118,9 @@ const [
   FileAttachment("data/quebec.json").json(),
   FileAttachment("data/manitoba.json").json(),
   FileAttachment("data/saskatchewan.json").json(),
-  FileAttachment("data/turkey.json").json()
+  FileAttachment("data/turkey.json").json(),
+  FileAttachment("data/colombia.json").json(),
+  FileAttachment("data/florida.json").json()
 ]);
 
 document.getElementById("app-root").innerHTML = `
@@ -165,9 +167,13 @@ document.getElementById("app-root").innerHTML = `
           <span class="globe-placeholder-label">Computing land mask…</span>
         </div>
         <canvas id="globe-canvas" role="img" aria-label="Rotating globe showing active waste-energy hotspots"></canvas>
+        <button class="globe-flare-btn" id="globe-flare-toggle" hidden
+                aria-label="Toggle flare gas basins" title="Show flared-gas basins">🔥</button>
         <div class="globe-zoom-controls" id="globe-zoom-controls" hidden>
-          <button class="globe-zoom-btn" id="globe-zoom-in"  aria-label="Zoom in"  title="Zoom in">+</button>
-          <button class="globe-zoom-btn" id="globe-zoom-out" aria-label="Zoom out" title="Zoom out">−</button>
+          <input type="range" id="globe-zoom-slider"
+                 class="globe-zoom-slider"
+                 min="0.5" max="4" step="0.05" value="1"
+                 aria-label="Globe zoom" title="Zoom">
         </div>
       </section>
 
@@ -336,8 +342,14 @@ const regionData = {
   quebec,
   manitoba,
   saskatchewan,
+  // Colombia: T1b-CSV loader reads committed XM API data (Britta daily relay).
+  // Supersedes the T3-static entry in buildAllStatics().
+  colombia,
+  florida,
   ...statics,
-  philippines
+  // Philippines: split by fuel (solar + wind). Loader returns a Record so spread here.
+  // Supersedes the philippines statics entry (removed 2026-04-30).
+  ...philippines
 };
 
 // S2 uncertainty: defensive fallback. Every loader is now responsible for
@@ -472,6 +484,7 @@ const regionTooltip = mountRegionTooltip({
   regions: REGIONS,
 });
 
+const zoomSlider = document.getElementById("globe-zoom-slider");
 globe = await mountGlobe(canvas, {
   regions: REGIONS,
   regionData,
@@ -482,16 +495,31 @@ globe = await mountGlobe(canvas, {
     if (region) regionTooltip.show(region, anchor);
     else regionTooltip.hide();
   },
+  onZoomChange: (scale) => { if (zoomSlider) zoomSlider.value = String(scale.toFixed(3)); },
 });
 canvas.hidden = false;
 document.getElementById("globe-placeholder")?.remove();
 
-// Wire up zoom buttons now that the globe is live.
+// Wire up zoom slider now that the globe is live.
 const zoomControls = document.getElementById("globe-zoom-controls");
-if (zoomControls) {
+if (zoomControls && zoomSlider) {
   zoomControls.hidden = false;
-  document.getElementById("globe-zoom-in")?.addEventListener("click",  () => globe?.zoomIn());
-  document.getElementById("globe-zoom-out")?.addEventListener("click", () => globe?.zoomOut());
+  zoomSlider.addEventListener("input", () => globe?.setZoom(parseFloat(zoomSlider.value) || 1));
+}
+
+// Wire up flare toggle button.
+const flareToggle = document.getElementById("globe-flare-toggle");
+if (flareToggle) {
+  flareToggle.hidden = false;
+  let flareOn = false;
+  flareToggle.addEventListener("click", () => {
+    flareOn = !flareOn;
+    globe?.update({ showFlare: flareOn });
+    flareToggle.classList.toggle("is-active", flareOn);
+    const flareLabel = flareOn ? "Hide flared-gas basins" : "Show flared-gas basins";
+    flareToggle.title = flareLabel;
+    flareToggle.setAttribute("aria-label", flareLabel);
+  });
 }
 
 // Dismiss the loading screen now that the globe and all data are ready.

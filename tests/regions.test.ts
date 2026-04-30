@@ -47,10 +47,12 @@ describe("regions", () => {
     // Nepal added 2026-04-30 as T3-static hydro-seasonal via Gemini-3.1
     // research wave 4 (World Bank Nepal Development Update 2024 — ~0.5 TWh/yr
     // monsoon-season run-of-river spillage). 199 + 1 = 200.
-    expect(REGIONS.length).toBe(200);
+    // Philippines split solar+wind (2026-04-30): net +1. 200 + 1 = 201.
+    // Florida added 2026-04-30 as T3-static solar. 201 + 1 = 202.
+    expect(REGIONS.length).toBe(202);
   });
 
-  it("has 97 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
+  it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
     // ... (unchanged through phase-2.6) ...
     // PR #19 peru split (2026-04-29): peru → peru-hydro + peru-solar + peru-wind.
     // With the parent removed, this is net +2 live. 63 + 2 = 65.
@@ -77,12 +79,13 @@ describe("regions", () => {
     // wind/solar children. Net +5 T1a live. 73 + 5 = 78.
     // Brazil no-bundled-curtailment split: fourteen state/residual rows split
     // into wind/solar children. Net +14 T1a live. 78 + 14 = 92.
-    // Total live = 92 + 4 + 1 = 97.
+    // Colombia promoted from T3-static to T1b-CSV (Britta relay, 2026-04-30).
+    // 92 + 1 = 93. Total live = 93 + 4 + 1 = 98.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(97);
+    expect(liveTotal).toBe(98);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(92);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(93);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -98,7 +101,7 @@ describe("regions", () => {
     }
   });
 
-  it("has 97 static regions", () => {
+  it("has 98 static regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
@@ -127,7 +130,10 @@ describe("regions", () => {
     // Philippines promoted from research-only candidate to T3 static. 96 + 1 = 97.
     // Colombia added 2026-04-29 as T3-static hydro-seasonal. 97 + 1 = 98.
     // Nepal added 2026-04-30 as T3-static hydro-seasonal. 98 + 1 = 99.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(99);
+    // Colombia promoted T3-static → T1b-live (Britta relay, 2026-04-30). 99 - 1 = 98.
+    // Philippines split: 1 static → 2 statics (solar+wind). 98 + 1 = 99.
+    // Florida added 2026-04-30 as T3-static solar. 99 + 1 = 100.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(100);
   });
 
   it("has 4 flare regions", () => {
@@ -152,9 +158,8 @@ describe("regions", () => {
       "norway-no1", "norway-no2", "norway-no3", "norway-no4",
       "new-zealand",
       "gansu", "ningxia", "india-south", "india-west", "morocco",
-      "taiwan", "jordan", "pakistan", "manitoba", "hawaii-island",
-      "austria", "cuba", "cabo-verde", "cote-divoire", "eswatini",
-      "mauritius", "nigeria", "rwanda", "senegal", "tunisia",
+      "taiwan", "pakistan", "manitoba", "hawaii-island",
+      "austria", "cuba", "rwanda",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
@@ -274,7 +279,8 @@ describe("regions", () => {
       "nt-pilbara",
       "indonesia",
       "malaysia",
-      "philippines",
+      "philippines-solar",
+      "philippines-wind",
       "south-korea",
       "russia-mainland",
       "taiwan",
@@ -377,22 +383,15 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "brazil-other-solar")?.name).toBe("Brazil Other ONS States Solar");
   });
 
-  it("includes Colombia as T3-static hydro-seasonal (vertimientos hidráulicos)", () => {
-    // Reversed 2026-04-29 by Gemini-3.1 research wave 1. The original
-    // "do not include Colombia without live XM API access" rule was about
-    // VRE (solar/wind) curtailment via a live feed — at that time we
-    // refused to ship a flat invented placeholder. The research wave found
-    // that the dominant wasted-energy mechanism in Colombia is hydro
-    // spillage (vertimientos hidráulicos) during bimodal Apr-May / Oct-Nov
-    // rainy seasons, which is the exact same phenomenon already modelled
-    // for Iceland (5.3 TWh/yr) and Sichuan (30 TWh/yr). Colombia is now
-    // T3-static hydro-seasonal, conservatively anchored at 2.0 TWh/yr.
-    // XM live data remains geoblocked from outside Colombia; promotion to
-    // T1a is gated on Colombian-egress access. See
-    // docs/methodology/2026-04-29-gemini-research-wave-1.md.
+  it("includes Colombia as T1b-live hydro (vertimientos hidráulicos via Britta relay)", () => {
+    // Colombia promoted from T3-static to T1b-CSV loader on 2026-04-30.
+    // The XM API is geoblocked outside Colombia; a Britta daily relay
+    // (cron 18:30 UTC) commits fresh CSV data to data/historical/. The
+    // colombia.json.ts loader reads the CSV and computes a trailing-365-day
+    // annualised figure. Tier is now "live" (CSV-backed, not fully static).
     const col = REGIONS.find(r => r.id === "colombia");
     expect(col).toBeDefined();
-    expect(col?.tier).toBe("static");
+    expect(col?.tier).toBe("live");
     expect(col?.kind).toBe("hydro");
   });
 

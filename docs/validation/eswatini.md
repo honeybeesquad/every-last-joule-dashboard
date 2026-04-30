@@ -1,13 +1,13 @@
 # Validation — Eswatini (`eswatini`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `eswatini`
 - **Country:** SWZ
 - **Tier:** static
-- **Kind:** mixed
+- **Kind:** solar
 - **Source:** IRENA Eswatini 2024 (EEC; SAPP member; biomass+hydro)
 - **Source URL:** [https://www.eec.co.sz/](https://www.eec.co.sz/)
 - **Loader:** _(no single-file loader — see multi-region source)_

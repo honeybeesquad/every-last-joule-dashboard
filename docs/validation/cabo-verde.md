@@ -1,13 +1,13 @@
 # Validation — Cabo Verde (`cabo-verde`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `cabo-verde`
 - **Country:** CPV
 - **Tier:** static
-- **Kind:** mixed
+- **Kind:** solar
 - **Source:** IRENA Cabo Verde 2024 (ELECTRA; 9-island system; high VRE)
 - **Source URL:** [https://www.electra.cv/](https://www.electra.cv/)
 - **Loader:** _(no single-file loader — see multi-region source)_
