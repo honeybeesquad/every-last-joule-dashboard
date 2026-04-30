@@ -692,6 +692,52 @@ main table {
   color: rgba(255,255,255,0.58);
 }
 
+/* Zoom buttons — stacked in the bottom-right corner of the globe panel.
+   panel-center is position:relative, so these sit over the canvas. */
+.globe-zoom-controls {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 10;
+  /* Keep controls within the panel stacking context but out of the
+     grid flow so they don't affect globe canvas layout. */
+  pointer-events: auto;
+}
+
+.globe-zoom-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 0.80);
+  font-size: 18px;
+  line-height: 1;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.globe-zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 1);
+}
+
+.globe-zoom-btn:active {
+  background: rgba(255, 255, 255, 0.22);
+}
+
 #pct-readout .pct-sign,
 #pct-readout {
   line-height: 0.9;

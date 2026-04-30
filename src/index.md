@@ -165,6 +165,10 @@ document.getElementById("app-root").innerHTML = `
           <span class="globe-placeholder-label">Computing land mask…</span>
         </div>
         <canvas id="globe-canvas" role="img" aria-label="Rotating globe showing active waste-energy hotspots"></canvas>
+        <div class="globe-zoom-controls" id="globe-zoom-controls" hidden>
+          <button class="globe-zoom-btn" id="globe-zoom-in"  aria-label="Zoom in"  title="Zoom in">+</button>
+          <button class="globe-zoom-btn" id="globe-zoom-out" aria-label="Zoom out" title="Zoom out">−</button>
+        </div>
       </section>
 
       <section class="panel panel-right" aria-label="Biggest curtailments right now">
@@ -481,6 +485,14 @@ globe = await mountGlobe(canvas, {
 });
 canvas.hidden = false;
 document.getElementById("globe-placeholder")?.remove();
+
+// Wire up zoom buttons now that the globe is live.
+const zoomControls = document.getElementById("globe-zoom-controls");
+if (zoomControls) {
+  zoomControls.hidden = false;
+  document.getElementById("globe-zoom-in")?.addEventListener("click",  () => globe?.zoomIn());
+  document.getElementById("globe-zoom-out")?.addEventListener("click", () => globe?.zoomOut());
+}
 
 // Dismiss the loading screen now that the globe and all data are ready.
 const pageLoader = document.getElementById("page-loader");

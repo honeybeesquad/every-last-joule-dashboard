@@ -55,8 +55,17 @@ export async function mountGlobe(canvas, initial) {
     utcHour: initial.utcHour,
     mode: initial.mode ?? "avg30d",
     rotation: [-10, -15, 0],
-    dragging: false
+    dragging: false,
+    zoomScale: 1.0
   };
+
+  const ZOOM_MIN = 0.5;
+  const ZOOM_MAX = 4.0;
+
+  function applyZoom(factor) {
+    state.zoomScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, state.zoomScale * factor));
+    render();
+  }
 
   let tokens = readGlobeTokens(document.documentElement);
 
@@ -79,7 +88,7 @@ export async function mountGlobe(canvas, initial) {
     const size = Math.min(width, height);
     if (!width || !height) return null;
     const projection = d3.geoOrthographic()
-      .scale(size * 0.46)
+      .scale(size * 0.46 * state.zoomScale)
       .translate([width / 2, height / 2])
       .clipAngle(90)
       .rotate(state.rotation);
@@ -123,7 +132,7 @@ export async function mountGlobe(canvas, initial) {
     if (!width || !height) return;
 
     const projection = d3.geoOrthographic()
-      .scale(size * 0.46)
+      .scale(size * 0.46 * state.zoomScale)
       .translate([width / 2, height / 2])
       .clipAngle(90)
       .rotate(state.rotation);
@@ -316,20 +325,54 @@ export async function mountGlobe(canvas, initial) {
   const AUTO_RESUME_DELAY_MS = 2500;
   const CLICK_MAX_TRAVEL_PX = 5; // pointer travel threshold below which we treat as click, not drag
 
+  // Pinch-to-zoom: track all active pointers; switch to pinch mode at 2+.
+  const pointerPositions = new Map(); // pointerId → [clientX, clientY]
+  let pinchInitDist = 0;
+  let pinchInitZoom = 1;
+  let isPinching = false;
+
   canvas.addEventListener("pointerdown", (event) => {
     event.preventDefault();
-    state.dragging = true;
-    activePointerId = event.pointerId;
-    lastX = event.clientX;
-    lastY = event.clientY;
-    downX = event.clientX;
-    downY = event.clientY;
-    lastMoveAt = event.timeStamp;
-    canvas.classList.add("is-dragging");
+    pointerPositions.set(event.pointerId, [event.clientX, event.clientY]);
     try { canvas.setPointerCapture(event.pointerId); } catch {}
+
+    if (pointerPositions.size >= 2) {
+      // Enter pinch mode: stop any active drag first.
+      isPinching = true;
+      state.dragging = false;
+      canvas.classList.remove("is-dragging");
+      const pts = [...pointerPositions.values()];
+      pinchInitDist = Math.hypot(pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]);
+      pinchInitZoom = state.zoomScale;
+    } else {
+      // Single-pointer drag start (existing behaviour).
+      isPinching = false;
+      state.dragging = true;
+      activePointerId = event.pointerId;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      downX = event.clientX;
+      downY = event.clientY;
+      lastMoveAt = event.timeStamp;
+      canvas.classList.add("is-dragging");
+    }
   });
 
   canvas.addEventListener("pointermove", (event) => {
+    if (!pointerPositions.has(event.pointerId)) return;
+    pointerPositions.set(event.pointerId, [event.clientX, event.clientY]);
+
+    if (isPinching && pointerPositions.size >= 2) {
+      // Update pinch zoom.
+      const pts = [...pointerPositions.values()];
+      const dist = Math.hypot(pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]);
+      if (pinchInitDist > 0) {
+        state.zoomScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, pinchInitZoom * (dist / pinchInitDist)));
+        render();
+      }
+      return;
+    }
+
     if (!state.dragging || event.pointerId !== activePointerId) return;
     const dx = event.clientX - lastX;
     const dy = event.clientY - lastY;
@@ -342,7 +385,29 @@ export async function mountGlobe(canvas, initial) {
   });
 
   function releasePointer(event) {
-    if (activePointerId !== event.pointerId) return;
+    const wasTracked = pointerPositions.has(event.pointerId);
+    pointerPositions.delete(event.pointerId);
+
+    if (isPinching) {
+      if (pointerPositions.size < 2) {
+        // Exit pinch mode; if one finger remains, restart drag from that position.
+        isPinching = false;
+        if (pointerPositions.size === 1) {
+          const [remId, remPos] = [...pointerPositions.entries()][0];
+          activePointerId = remId;
+          lastX = remPos[0];
+          lastY = remPos[1];
+          downX = remPos[0];
+          downY = remPos[1];
+          state.dragging = true;
+          canvas.classList.add("is-dragging");
+        }
+      }
+      if (canvas.hasPointerCapture?.(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+      return;
+    }
+
+    if (activePointerId !== event.pointerId && !wasTracked) return;
     const travelX = event.clientX - downX;
     const travelY = event.clientY - downY;
     const traveled = Math.hypot(travelX, travelY);
@@ -363,10 +428,20 @@ export async function mountGlobe(canvas, initial) {
   canvas.addEventListener("pointerup", releasePointer);
   canvas.addEventListener("pointercancel", releasePointer);
   canvas.addEventListener("pointerleave", (event) => {
-    if (state.dragging && event.buttons === 0) {
+    if ((state.dragging || isPinching) && event.buttons === 0) {
       releasePointer(event);
     }
   });
+
+  // Scroll-wheel zoom (desktop trackpad + mouse wheel).
+  canvas.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    // Normalise delta across deltaMode values (0=pixels, 1=lines, 2=pages).
+    const pixels = event.deltaMode === 1 ? event.deltaY * 20
+                 : event.deltaMode === 2 ? event.deltaY * 400
+                 : event.deltaY;
+    applyZoom(Math.pow(0.999, pixels));
+  }, { passive: false });
 
   resize();
 
@@ -427,6 +502,9 @@ export async function mountGlobe(canvas, initial) {
       Object.assign(state, next);
       render();
     },
+    zoomIn()  { applyZoom(1.25); },
+    zoomOut() { applyZoom(1 / 1.25); },
+    resetZoom() { state.zoomScale = 1.0; render(); },
     destroy() {
       stopLoop();
       window.removeEventListener("themechange", refreshTokens);
