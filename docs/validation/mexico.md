@@ -1,6 +1,6 @@
 # Validation — Mexico (`mexico`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** MEX
 - **Tier:** static
 - **Kind:** solar
-- **Source:** CENACE fallback
-- **Source URL:** [https://www.cenace.gob.mx/SIM/Reportes/](https://www.cenace.gob.mx/SIM/Reportes/)
+- **Source:** SENER PRODESEN 2024-2038 + CRE confiabilidad reports — ~1.2 TWh/yr solar+wind curtailment from northern-grid transmission saturation (Sonora/Chihuahua/Coahuila/Oaxaca). Excludes hydro vertimientos. Gemini-3.1 research wave 2 (2026-04-30).
+- **Source URL:** [https://www.gob.mx/sener/documentos/programa-de-desarrollo-del-sistema-electrico-nacional-2024-2038](https://www.gob.mx/sener/documentos/programa-de-desarrollo-del-sistema-electrico-nacional-2024-2038)
 - **Loader:** [`mexico.json.ts`](../../src/data/mexico.json.ts)
 - **Structural gap:** yes
 

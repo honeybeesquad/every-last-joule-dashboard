@@ -1,6 +1,6 @@
 # Validation — Pakistan (`pakistan`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** PAK
 - **Tier:** static
 - **Kind:** mixed
-- **Source:** NEPRA fallback
-- **Source URL:** [https://nepra.org.pk/](https://nepra.org.pk/)
+- **Source:** NEPRA State of Industry Report 2024: Non-Project Missed Volume (NPMV) for wind power = 1,337 GWh FY2023-24 = PKR 39.5 billion in transmission-constrained dispatch-down compensation (Jhimpir/Gharo/Thatta wind corridor, Sindh). Solar curtailment exists but not separately quantified. Gemini-3.1 research wave 2 (2026-04-30).
+- **Source URL:** [https://nepra.org.pk/publications/State%20of%20Industry%20Reports/State%20of%20Industry%20Report%202024.pdf](https://nepra.org.pk/publications/State%20of%20Industry%20Reports/State%20of%20Industry%20Report%202024.pdf)
 - **Loader:** [`pakistan.json.ts`](../../src/data/pakistan.json.ts)
 - **Structural gap:** yes
 

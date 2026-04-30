@@ -1,6 +1,6 @@
 # Validation — Taiwan (`taiwan`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** TWN
 - **Tier:** static
 - **Kind:** mixed
-- **Source:** Taipower fallback
-- **Source URL:** [https://www.taipower.com.tw/](https://www.taipower.com.tw/)
+- **Source:** TAIPOWER + TREC + IRENA 2024 anchor. Live promotion attempt 2026-04-29 reverted: TAIPOWER `genary.json` exposes current-unit output and instantaneous renewable percentages, not a 30-day public curtailment archive or single published curtailment rate. Held at T3 pending the archive/rate chain.
+- **Source URL:** [https://www.taipower.com.tw/d006/loadGraph/loadGraph/genshx_.html](https://www.taipower.com.tw/d006/loadGraph/loadGraph/genshx_.html)
 - **Loader:** [`taiwan.json.ts`](../../src/data/taiwan.json.ts)
 - **Structural gap:** yes
 

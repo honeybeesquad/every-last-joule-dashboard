@@ -47,7 +47,9 @@ describe("regions", () => {
     // Nepal added 2026-04-30 as T3-static hydro-seasonal via Gemini-3.1
     // research wave 4 (World Bank Nepal Development Update 2024 — ~0.5 TWh/yr
     // monsoon-season run-of-river spillage). 199 + 1 = 200.
-    expect(REGIONS.length).toBe(200);
+    // Philippines split solar+wind (2026-04-30): net +1. 200 + 1 = 201.
+    // Florida added 2026-04-30 as T3-static solar. 201 + 1 = 202.
+    expect(REGIONS.length).toBe(202);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -129,7 +131,9 @@ describe("regions", () => {
     // Colombia added 2026-04-29 as T3-static hydro-seasonal. 97 + 1 = 98.
     // Nepal added 2026-04-30 as T3-static hydro-seasonal. 98 + 1 = 99.
     // Colombia promoted T3-static → T1b-live (Britta relay, 2026-04-30). 99 - 1 = 98.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(98);
+    // Philippines split: 1 static → 2 statics (solar+wind). 98 + 1 = 99.
+    // Florida added 2026-04-30 as T3-static solar. 99 + 1 = 100.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(100);
   });
 
   it("has 4 flare regions", () => {
@@ -275,7 +279,8 @@ describe("regions", () => {
       "nt-pilbara",
       "indonesia",
       "malaysia",
-      "philippines",
+      "philippines-solar",
+      "philippines-wind",
       "south-korea",
       "russia-mainland",
       "taiwan",

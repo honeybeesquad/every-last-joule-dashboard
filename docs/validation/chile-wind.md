@@ -1,6 +1,6 @@
 # Validation — Chile Wind (`chile-wind`)
 
-Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -26,10 +26,10 @@ Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** CEN monthly ERV workbooks publish plant-level hourly wind reductions after month close
+- **TSO annual curtailment (latest published):** CEN monthly ERV workbooks publish plant-level hourly wind reductions after month close; latest loader snapshot parsed the February 2026 workbook
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** —
+- **Other:** CEN Reducciones ERV monthly XLSX wind sheet
 
 ## Discrepancy analysis
 

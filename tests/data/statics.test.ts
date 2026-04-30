@@ -15,7 +15,8 @@ describe("static regions", () => {
     // Nepal moved from non-canonical to canonical 2026-04-30 (Gemini wave 4
     // World Bank cite — moved entry from research-pool to REGIONS).
     const data = buildAllStatics();
-    expect(Object.keys(data).length).toBe(58);
+    // philippines moved to standalone src/data/philippines.json.ts (2026-04-30): 58→57
+    expect(Object.keys(data).length).toBe(57);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -24,7 +25,8 @@ describe("static regions", () => {
     expect(Object.keys(data).every((id) => canonicalIds.has(id))).toBe(true);
 
     const researchData = buildAllStatics({ includeCandidates: true });
-    expect(Object.keys(researchData).length).toBe(123);
+    // philippines removed from statics (2026-04-30): 123→122
+    expect(Object.keys(researchData).length).toBe(122);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(65);
   });
 
@@ -89,7 +91,7 @@ describe("static regions", () => {
       "uganda",
       "zambia",
       "zimbabwe",
-      "philippines",
+      // philippines moved to standalone src/data/philippines.json.ts (2026-04-30)
     ];
     for (const id of expected) expect(data[id]).toBeDefined();
   });

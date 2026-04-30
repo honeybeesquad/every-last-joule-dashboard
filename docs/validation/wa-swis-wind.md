@@ -1,6 +1,6 @@
-# Validation - Western Australia Wind (SWIS) (`wa-swis-wind`)
+# Validation — Western Australia Wind (SWIS) (`wa-swis-wind`)
 
-Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -10,26 +10,26 @@ Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Techni
 - **Kind:** wind
 - **Source:** AEMO WEM Facility SCADA (wind DUIDs)
 - **Source URL:** [https://data.wa.aemo.com.au/](https://data.wa.aemo.com.au/)
-- **Loader:** [`wa-swis.json.ts`](../../src/data/wa-swis.json.ts)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
 ## Calibration
 
 - **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a - no backfill
+- **Uniform across backfill years:** n/a — no backfill
 
 ## Multi-year backfill annual totals
 
-| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Delta % | Source |
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet - will be populated after HB fan-out completes)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** AEMO WA SWIS 2024 RES curtailment ~0.4 TWh
-- **Ember annual:** -
-- **IRENA annual:** -
-- **Other:** Wind split comes from AEMO WEM Facility SCADA DUID classification.
+- **TSO annual curtailment (latest published):** —
+- **Ember annual:** —
+- **IRENA annual:** —
+- **Other:** —
 
 ## Discrepancy analysis
 
@@ -41,7 +41,7 @@ AEMO WEM Facility SCADA is a generation feed. The loader applies an 8% calibrate
 
 ## Links
 
-- Loader source: [`wa-swis.json.ts`](../../src/data/wa-swis.json.ts)
+- Loader source: _(no single-file loader — see multi-region source)_
 - Backfill archive: `data/historical/backfill/*_wa-swis-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

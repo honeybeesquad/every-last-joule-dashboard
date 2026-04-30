@@ -39,7 +39,7 @@ const [
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
   yunnan, tibet, indiaSouth, indiaWest, indiaEast, pakistan, iran,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
-  quebec, manitoba, saskatchewan, turkey, colombia
+  quebec, manitoba, saskatchewan, turkey, colombia, florida
 ] = await Promise.all([
   FileAttachment("data/cbeci.json").json(),
   FileAttachment("data/ercot.json").json(),
@@ -119,7 +119,8 @@ const [
   FileAttachment("data/manitoba.json").json(),
   FileAttachment("data/saskatchewan.json").json(),
   FileAttachment("data/turkey.json").json(),
-  FileAttachment("data/colombia.json").json()
+  FileAttachment("data/colombia.json").json(),
+  FileAttachment("data/florida.json").json()
 ]);
 
 document.getElementById("app-root").innerHTML = `
@@ -344,8 +345,11 @@ const regionData = {
   // Colombia: T1b-CSV loader reads committed XM API data (Britta daily relay).
   // Supersedes the T3-static entry in buildAllStatics().
   colombia,
+  florida,
   ...statics,
-  philippines
+  // Philippines: split by fuel (solar + wind). Loader returns a Record so spread here.
+  // Supersedes the philippines statics entry (removed 2026-04-30).
+  ...philippines
 };
 
 // S2 uncertainty: defensive fallback. Every loader is now responsible for

@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-04-30 (Colombia promoted from T3-static to T1a-live via XM SinerGox CSV daily relay — T1a+1, T3-1.)",
+  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-04-30 (Philippines split solar+wind (+1 T3), Florida added (+1 T3). T3: 96→98, total: 200→202.)",
   "T1a": 93,
   "T1b": 4,
   "T1c": 1,
   "T2": 2,
   "T2-flare": 4,
-  "T3": 96,
-  "total": 200
+  "T3": 98,
+  "total": 202
 }

@@ -1,13 +1,13 @@
 # Validation — Ghana (`ghana`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `ghana`
 - **Country:** GHA
 - **Tier:** static
-- **Kind:** hydro
+- **Kind:** solar
 - **Source:** Ember Ghana 2024 (GRIDCo TSO; Akosombo hydro + PV)
 - **Source URL:** [https://www.gridcogh.com/](https://www.gridcogh.com/)
 - **Loader:** _(no single-file loader — see multi-region source)_

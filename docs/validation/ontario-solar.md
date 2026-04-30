@@ -1,6 +1,6 @@
-# Validation - Ontario Solar (`ontario-solar`)
+# Validation — Ontario Solar (`ontario-solar`)
 
-Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -16,20 +16,20 @@ Last updated: 2026-04-29 · Sprint: S1 + HB integration · Paper section: Techni
 ## Calibration
 
 - **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a - no backfill
+- **Uniform across backfill years:** n/a — no backfill
 
 ## Multi-year backfill annual totals
 
-| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Delta % | Source |
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet - will be populated after HB fan-out completes)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** Ontario solar curtailment estimate ~0.2-0.3 TWh/yr
-- **Ember annual:** -
-- **IRENA annual:** -
-- **Other:** IESO annual planning outlook
+- **TSO annual curtailment (latest published):** —
+- **Ember annual:** —
+- **IRENA annual:** —
+- **Other:** —
 
 ## Discrepancy analysis
 

@@ -1,13 +1,13 @@
 # Validation — Mauritius (`mauritius`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `mauritius`
 - **Country:** MUS
 - **Tier:** static
-- **Kind:** mixed
+- **Kind:** solar
 - **Source:** IRENA Mauritius 2024 (CEB; bagasse+coal+oil + PV; island)
 - **Source URL:** [https://ceb.mu/](https://ceb.mu/)
 - **Loader:** _(no single-file loader — see multi-region source)_

@@ -1,6 +1,6 @@
 # Validation — Dominican Republic (`dominican-republic`)
 
-Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-04-30 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-04-27 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** DOM
 - **Tier:** static
 - **Kind:** solar
-- **Source:** IRENA Dominican Republic 2024 + OC (Organismo Coordinador del SENI) Reportes de Operacion 2024
+- **Source:** IRENA Dominican Republic 2024 + OC (Organismo Coordinador del SENI) Reportes de Operacion 2024. Live promotion attempt 2026-04-29 reverted: OC `GetGeneracionReprogramadaJSon` endpoint exposes scheduled/actual total generation, not renewable-specific curtailed-energy. Held at T3 pending a genuine curtailment source.
 - **Source URL:** [https://www.oc.org.do/](https://www.oc.org.do/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** yes
