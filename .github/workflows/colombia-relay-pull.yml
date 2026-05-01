@@ -1,0 +1,62 @@
+name: Colombia relay pull
+
+# Pulls the latest colombia-vertimientos-daily.csv from the private
+# every-last-joule-data-relay repo (written by Britta cron) and commits it
+# into data/historical/ so the Colombia loader always reads fresh data.
+#
+# Runs ~19:15 UTC daily — 45 min after Britta's push window (18:30–19:00 UTC).
+# Also triggerable manually.
+
+on:
+  schedule:
+    - cron: "15 19 * * *"
+  workflow_dispatch:
+
+jobs:
+  pull-relay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout dashboard repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "elj-relay-bot"
+          git config user.email "bot@everylastjoule.com"
+
+      - name: Fetch latest CSV from relay repo
+        env:
+          RELAY_DEPLOY_KEY: ${{ secrets.RELAY_DEPLOY_KEY }}
+        run: |
+          # Write the deploy key to a temp file
+          install -m 600 /dev/null /tmp/relay_deploy_key
+          echo "$RELAY_DEPLOY_KEY" > /tmp/relay_deploy_key
+
+          # Clone relay repo (shallow — we only need the latest CSV)
+          GIT_SSH_COMMAND="ssh -i /tmp/relay_deploy_key -o StrictHostKeyChecking=no" \
+            git clone --depth=1 \
+              git@github.com:honeybeesquad/every-last-joule-data-relay.git \
+              /tmp/relay
+
+          # Copy CSV into the dashboard repo
+          cp /tmp/relay/colombia-vertimientos-daily.csv \
+             data/historical/colombia-vertimientos-daily.csv
+
+          # Clean up key
+          rm /tmp/relay_deploy_key
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet data/historical/colombia-vertimientos-daily.csv; then
+            echo "No new rows — nothing to commit."
+          else
+            ROWS=$(wc -l < data/historical/colombia-vertimientos-daily.csv)
+            git add data/historical/colombia-vertimientos-daily.csv
+            git commit -m "chore(data): pull Colombia relay CSV (${ROWS} rows) [skip ci]"
+            git push origin main
+            echo "Committed and pushed updated CSV."
+          fi
