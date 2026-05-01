@@ -49,7 +49,10 @@ describe("regions", () => {
     // monsoon-season run-of-river spillage). 199 + 1 = 200.
     // Philippines split solar+wind (2026-04-30): net +1. 200 + 1 = 201.
     // Florida added 2026-04-30 as T3-static solar. 201 + 1 = 202.
-    expect(REGIONS.length).toBe(202);
+    // Wave-5 China+Japan additions (2026-05-01): Hebei, Jilin, Heilongjiang
+    // (NEA 2024 monitoring evaluation), Japan Tohoku (OCCTO/METI FY2023).
+    // 202 + 4 = 206.
+    expect(REGIONS.length).toBe(206);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -135,7 +138,9 @@ describe("regions", () => {
     // Colombia promoted T3-static → T1b-live (Britta relay, 2026-04-30). 99 - 1 = 98.
     // Philippines split: 1 static → 2 statics (solar+wind). 98 + 1 = 99.
     // Florida added 2026-04-30 as T3-static solar. 99 + 1 = 100.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(100);
+    // Wave-5 (2026-05-01): Hebei, Jilin, Heilongjiang, Japan Tohoku — all T3-static.
+    // 100 + 4 = 104.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(104);
   });
 
   it("has 4 flare regions", () => {

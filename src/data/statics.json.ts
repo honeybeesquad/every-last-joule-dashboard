@@ -88,6 +88,15 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // PV utilisation 92.2%; Huaon/NBS 2024 generation by fuel gives wind
   // 70.79 TWh and PV 38.037 TWh, implying ~8.2 TWh curtailed.
   xinjiang: { annualTWh: 8.2, kind: "solar", localSolarPeakUTC: 6.33, source: "NEA 2024 renewable monitoring evaluation + Huaon/NBS generation by fuel (Xinjiang wind/PV curtailment ~8.2 TWh; solar-shaped fallback centred on local noon UTC 06:20)", reportDate: "2024" },
+  // NEA 2024: Hebei wind 94.3% utilization → 5.7% curtailment; solar 97.5% → 2.5%.
+  // Wind ~44 TWh × 5.7% = 2.51 TWh + solar ~22 TWh × 2.5% = 0.55 TWh ≈ 3.1 TWh total.
+  hebei: { annualTWh: 3.1, kind: "wind", localSolarPeakUTC: 4.0, source: "NEA 2024 monitoring evaluation: wind utilization 94.3% → 5.7% curtailment, solar 97.5% → 2.5%; calibrated against CEC 2024 Hebei wind ~44 TWh + solar ~22 TWh generation", reportDate: "2024" },
+  // NEA 2024: Jilin wind 93.6% utilization → 6.4% curtailment (below 95% red line); solar 97.1% → 2.9%.
+  jilin: { annualTWh: 1.8, kind: "wind", localSolarPeakUTC: 3.6, source: "NEA 2024 monitoring evaluation: wind utilization 93.6% → 6.4% curtailment (below NEA 95% red line, rising trend); solar 97.1% → 2.9%; calibrated against ~25 TWh wind + 9 TWh solar generation", reportDate: "2024" },
+  // NEA 2024: Heilongjiang wind 95.2% → 4.8% curtailment; solar 99.1% → 0.9%.
+  heilongjiang: { annualTWh: 1.0, kind: "wind", localSolarPeakUTC: 3.5, source: "NEA 2024 monitoring evaluation: wind utilization 95.2% → 4.8% curtailment; solar 99.1% → 0.9%; historical hotspot (30% in 2016) re-emerging", reportDate: "2024" },
+  // OCCTO/METI FY2023: 130 GWh actual (0.8% rate on 79.7 TWh VRE); calibrated at 1.5% for rising trend.
+  "japan-tohoku": { annualTWh: 1.2, kind: "solar", localSolarPeakUTC: 2.67, source: "OCCTO/METI FY2023: 0.13 TWh actual (0.8% rate on 79.7 TWh VRE generation); calibrated at 1.5% rising trend (FY2024 projected ~1.5-2.0%). Solar-dominant. OCCTO public data.", reportDate: "FY2023" },
   iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
   // Colombia: promoted to T1b-CSV loader (src/data/colombia.json.ts).
   // The loader reads the committed daily XM API CSV (Britta relay) and

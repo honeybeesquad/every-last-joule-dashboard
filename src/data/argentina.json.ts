@@ -18,8 +18,8 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     return buildTypicalWindRegion(
       REGION_ID,
       3,
-      0.5,
-      `Typical-shape fallback: CAMMESA daily generation open data unreachable/not machine-readable (${(err as Error).message}); Patagonia wind curtailment scaled to ~0.5 TWh/yr.`,
+      0.7,
+      `Typical-shape fallback: CAMMESA open data unreachable/not machine-readable (${(err as Error).message}); Patagonia wind curtailment ~0.7 TWh/yr per CAMMESA Referencial A (Resolución SE 360/2023) formal 8% structural curtailment allowance for Patagonia-Buenos Aires transmission corridor.`,
       "2024",
     );
   }

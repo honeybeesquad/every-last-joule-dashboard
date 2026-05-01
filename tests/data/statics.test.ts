@@ -16,7 +16,8 @@ describe("static regions", () => {
     // World Bank cite — moved entry from research-pool to REGIONS).
     const data = buildAllStatics();
     // philippines moved to standalone src/data/philippines.json.ts (2026-04-30): 58→57
-    expect(Object.keys(data).length).toBe(57);
+    // Wave-5 China+Japan statics (2026-05-01): Hebei, Jilin, Heilongjiang, Japan Tohoku. 57+4=61.
+    expect(Object.keys(data).length).toBe(61);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -26,7 +27,8 @@ describe("static regions", () => {
 
     const researchData = buildAllStatics({ includeCandidates: true });
     // philippines removed from statics (2026-04-30): 123→122
-    expect(Object.keys(researchData).length).toBe(122);
+    // Wave-5 (2026-05-01): +4 canonical statics. 122+4=126.
+    expect(Object.keys(researchData).length).toBe(126);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(65);
   });
 
