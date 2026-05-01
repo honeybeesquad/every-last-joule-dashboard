@@ -14,21 +14,26 @@ Britta collects daily XM Colombia vertimientos data and pushes to the private
 
 ## What needs doing on Britta (one-time setup, ~5 min)
 
-### 1. Install the private deploy key
+### 1. Generate the deploy key on Britta
+
+The private key lives only on Britta — it was generated here and never needs
+to be copied anywhere else.
 
 ```bash
-install -m 700 -d ~/.ssh
-# Retrieve the private key from 1Password ("ELJ relay deploy key — Britta")
-# and paste it into this file:
-pbpaste > ~/.ssh/elj-relay-deploy   # macOS: copy from 1Password first
-chmod 600 ~/.ssh/elj-relay-deploy
+# Key already generated (2026-05-01). Verify it's in place:
+ls -la ~/.ssh/elj-relay-deploy
+# Expected: -rw------- ... /Users/simoncollins/.ssh/elj-relay-deploy
 ```
 
-> **Key fingerprint:** `SHA256:ZaMgCsjKpyuhmVIjNGS8R2qLeZM9A4mDVtmQwKq7NLk`  
-> **1Password label:** `ELJ relay deploy key — Britta`  
-> The private key was generated during relay setup and must be stored in
-> 1Password. Delete the `/tmp/elj-relay-deploy` copy from the machine it
-> was generated on.
+If the key file is ever lost, regenerate it and re-register:
+```bash
+ssh-keygen -t ed25519 -C "elj-relay-britta" -f ~/.ssh/elj-relay-deploy -N ""
+cat ~/.ssh/elj-relay-deploy.pub
+# → paste public key to Simon; he updates relay repo deploy key + RELAY_DEPLOY_KEY GHA secret
+```
+
+> **Current key fingerprint:** `SHA256:OEx7+nmGyZuVKHYzbA+qcKPsCzA9QHrPu1rwf8jjTWo`  
+> **Relay repo deploy key ID:** 150188426
 
 Test it works:
 ```bash
