@@ -79,9 +79,8 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   gansu: "mixed",
   honduras: "solar",
   "india-east": "solar",
-  // india-rajasthan: promoted to live tier (T1a); no profileKind entry needed.
-  "india-south": "mixed",
-  "india-west": "mixed",
+  // india-rajasthan: promoted to live T1a (India W1, 2026-05-02); no profileKind entry needed.
+  // india-south + india-west: promoted to T1a live (India W2, 2026-05-02); no profileKind entries needed.
   indonesia: "solar",
   "inner-mongolia": "wind",
   iran: "solar",

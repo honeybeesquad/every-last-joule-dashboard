@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-05-02 (india-north T3 → india-rajasthan T1a rename: T1a 102→103, T3 117→116; colombia T1a → T1b reclassification: T1a 103→102, T1b 4→5. Net: T1b +1, T3 -1, total 230 unchanged.)",
-  "T1a": 102,
+  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-05-02 (India W1+Colombia: india-north→india-rajasthan T1a, colombia T1a→T1b; India W2: india-south+india-west→india-gujarat+india-tamil-nadu+india-karnataka. T1a: 105, T1b: 5, T3: 114, total: 231.)",
+  "T1a": 105,
   "T1b": 5,
   "T1c": 1,
   "T2": 2,
   "T2-flare": 4,
-  "T3": 116,
-  "total": 230
+  "T3": 114,
+  "total": 231
 }
