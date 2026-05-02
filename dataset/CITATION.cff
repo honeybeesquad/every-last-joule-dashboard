@@ -6,7 +6,7 @@ version: 1.0.0
 date-released: 2026-04-28
 abstract: >-
   A versioned, reproducible synthesis dataset of hourly renewable-electricity
-  curtailment and associated-gas flaring, covering 128 regions across six
+  curtailment and associated-gas flaring, covering 233 regions across six
   continents. Built by combining live feeds from transmission system operators
   and energy regulators (ENTSO-E, EIA, AEMO, Elexon, ONS, and others) with
   published annual calibration anchors (IRENA, Ember, GGFR). Each region's
@@ -44,7 +44,7 @@ identifiers:
     description: "Zenodo concept DOI (resolves to latest version)"
 preferred-citation:
   type: article
-  title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 128 regions"
+  title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 233 regions"
   authors:
     - family-names: Collins
       given-names: Simon

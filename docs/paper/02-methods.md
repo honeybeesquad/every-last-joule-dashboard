@@ -42,7 +42,7 @@ Paulo, Mato Grosso, Goiás, Paraná, Rio Grande do Sul — and a catch-all
 NE-other bucket); per-utility area for Japan (10 TSO control areas:
 Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai, Chubu, TEPCO
 Power Grid, Hokuriku, Okinawa); and national grid for countries
-without public sub-national data. Total: 230 regions. Stable
+without public sub-national data. Total: 233 regions. Stable
 kebab-case IDs defined in `src/lib/regions.ts`.
 
 **Time resolution.** Hourly UTC. Finer-cadence upstream feeds
@@ -192,13 +192,14 @@ regions emit nothing).
 | T2 flare | Flare region, flat 24/7 base-load | ±20% (presentational split from T2; same envelope) |
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
 
-The tier distribution at submission: **102 T1a, 4 T1b, 1 T1c, 2
-T2-annual-calibrated, 4 T2-flare, 117 T3** (total 230). The four
-T1b zones are Italy-Sardinia, Italy-North-Zone, the Netherlands,
-and the Baltics — each pairing a bidding-zone live feed against
-either a national-anchor zone-share or a domestic stat-agency
-rate. The single T1c zone is Switzerland (Swissgrid live feed
-with the Czech CEPS rate as a neighbouring proxy). The two T2
+The tier distribution at submission: **106 T1a, 6 T1b, 1 T1c, 2
+T2-annual-calibrated, 4 T2-flare, 114 T3** (total 233). The six
+T1b zones are Italy-Sardinia, Italy-North-Zone, Italy-Sicily,
+the Netherlands, the Baltics, and Colombia (XM API) — each
+pairing a live feed against either a national-anchor zone-share,
+a modelled-share rate, or a domestic stat-agency anchor. The
+single T1c zone is Switzerland (Swissgrid live feed with the
+Czech CEPS rate as a neighbouring proxy). The two T2
 regions are Austria (APG provisional anchor, flat-base proxy)
 and Russia Murmansk wind (SO UPS dispatch-limit estimate, flat).
 The four T2-flare regions are the Permian, West Siberia, South

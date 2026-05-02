@@ -145,21 +145,22 @@ The v1 recalibration roadmap is five concrete items listed in
 ## 4.5 Tier coverage visualisation (Figure 4)
 
 Figure 4 answers the single-glance question "where is the dataset
-strong and where is it weak?" at geographic scale. Each of the 230
+strong and where is it weak?" at geographic scale. Each of the 233
 regions renders as a tier-coloured dot:
 
-- **T1a-live-tso (102 regions, teal).** Live hourly feed + own-
+- **T1a-live-tso (106 regions, teal).** Live hourly feed + own-
   jurisdiction calibration rate. Dense over North America, Europe,
   the Nordics, Australia (AEMO five states), Brazil (eleven ONS
-  states), Norway (NO1–NO5), and the UK, plus AEMO WEM (WA-SWIS)
-  and ten Japan utilities (Kyushu, Tohoku, Chugoku, Shikoku,
-  Hokkaido, Kansai, Chubu, TEPCO, Hokuriku, Okinawa). The
-  EIA + ENTSO-E + AEMO + ONS quartet is the dataset's
-  strongest spine.
-- **T1b-live-domestic-anchored (4 regions, teal).** Italy-Sardinia,
-  Italy-North-Zone, Netherlands, Baltics — bidding-zone live feeds
-  paired with a domestic-stat-agency or modelled-share rate; ±50%
-  empirical envelope.
+  states), Norway (NO1–NO5), and the UK, plus AEMO WEM (WA-SWIS),
+  ten Japan utilities (Kyushu, Tohoku, Chugoku, Shikoku,
+  Hokkaido, Kansai, Chubu, TEPCO, Hokuriku, Okinawa), and six
+  India state SLDCs (Rajasthan, Gujarat, Tamil Nadu, Karnataka,
+  Andhra Pradesh, Maharashtra). The EIA + ENTSO-E + AEMO + ONS
+  quartet is the dataset's strongest spine.
+- **T1b-live-domestic-anchored (6 regions, teal).** Italy-Sardinia,
+  Italy-North-Zone, Italy-Sicily, Netherlands, Baltics, Colombia
+  (XM API) — live feeds paired with a domestic-stat-agency,
+  modelled-share, or national-anchor rate; ±50% empirical envelope.
 - **T1c-live-neighbour-anchored (1 region, teal).** Switzerland —
   Swissgrid live feed against the Czech CEPS rate as a neighbouring
   proxy; ±35.5% empirical envelope.
@@ -168,7 +169,7 @@ regions renders as a tier-coloured dot:
   published annual without diurnal modelling.
 - **T2 flare (4 regions, brown square).** Permian, West Siberia,
   South Iraq, East Saudi — correctly flat 24/7 baseload.
-- **T3-modelled (117 regions, terracotta).** Static annual anchors
+- **T3-modelled (114 regions, terracotta).** Static annual anchors
   (Ember, IRENA, regulator reports) combined with a typical diurnal
   or monthly-seasonal shape. Covers Ireland (Republic + Northern,
   EirGrid reachability probe scaled to the SONI/EirGrid 2024
@@ -224,8 +225,8 @@ rate-recalibrations that may promote T2 regions into the top tier.
 
 ## 4.8 Current-snapshot validation (Figure 1)
 
-Figure 1 is the geographic opening shot. 107 of 230 regions have
-a current peak-GW reading; the other 123 are static regions
+Figure 1 is the geographic opening shot. 113 of 233 regions have
+a current peak-GW reading; the other 120 are static regions
 without a live fetch yet. Dot area scales with √peakGW so a 10 GW
 hotspot is roughly 3× the visible area of a 1 GW region. The
 top-8 regions by peak GW at render time are labelled; the
@@ -235,8 +236,8 @@ Piauí) dominates the current picture, followed by the US MISO
 footprint, Vietnam, Germany, and north India. The specific
 GW values are snapshot-dependent and refresh each dashboard build.
 
-The 123-region gap between `src/lib/regions.ts` (230) and the
-snapshot-count (107) is reported honestly on the figure: those
+The 120-region gap between `src/lib/regions.ts` (233) and the
+snapshot-count (113) is reported honestly on the figure: those
 regions appear at minimum-size so the map shows full geographic
 coverage without overclaiming live data.
 
