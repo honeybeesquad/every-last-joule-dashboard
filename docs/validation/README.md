@@ -1,6 +1,6 @@
 # Validation index
 
-Last generated: 2026-04-30
+Last generated: 2026-05-02
 
 | Region | Tier | Kind | Backfill years | Validation doc |
 |---|---|---|---|---|
@@ -68,6 +68,25 @@ Last generated: 2026-04-30
 | Switzerland | live-neighbour-anchored | solar | 7 | [switzerland](./switzerland.md) |
 | Atacama | live | solar | 0 | [atacama](./atacama.md) |
 | Chile Wind | live | wind | 0 | [chile-wind](./chile-wind.md) |
+| Anhui | static | solar | 0 | [china-anhui](./china-anhui.md) |
+| Beijing | static | solar | 0 | [china-beijing](./china-beijing.md) |
+| Chongqing | static | mixed | 0 | [china-chongqing](./china-chongqing.md) |
+| Fujian | static | mixed | 0 | [china-fujian](./china-fujian.md) |
+| Guangdong | static | mixed | 0 | [china-guangdong](./china-guangdong.md) |
+| Guizhou | static | mixed | 0 | [china-guizhou](./china-guizhou.md) |
+| Hainan | static | solar | 0 | [china-hainan](./china-hainan.md) |
+| Henan | static | solar | 0 | [china-henan](./china-henan.md) |
+| Hubei | static | mixed | 0 | [china-hubei](./china-hubei.md) |
+| Hunan | static | mixed | 0 | [china-hunan](./china-hunan.md) |
+| Jiangsu | static | mixed | 0 | [china-jiangsu](./china-jiangsu.md) |
+| Jiangxi | static | solar | 0 | [china-jiangxi](./china-jiangxi.md) |
+| Liaoning | static | wind | 0 | [china-liaoning](./china-liaoning.md) |
+| Shaanxi | static | solar | 0 | [china-shaanxi](./china-shaanxi.md) |
+| Shandong | static | solar | 0 | [china-shandong](./china-shandong.md) |
+| Shanghai | static | solar | 0 | [china-shanghai](./china-shanghai.md) |
+| Shanxi | static | mixed | 0 | [china-shanxi](./china-shanxi.md) |
+| Tianjin | static | mixed | 0 | [china-tianjin](./china-tianjin.md) |
+| Zhejiang | static | mixed | 0 | [china-zhejiang](./china-zhejiang.md) |
 | Gansu | static | mixed | 0 | [gansu](./gansu.md) |
 | Inner Mongolia | static | wind | 0 | [inner-mongolia](./inner-mongolia.md) |
 | Ningxia | static | mixed | 0 | [ningxia](./ningxia.md) |
