@@ -61,18 +61,21 @@ DEFAULT_OUT_DIR = REPO_ROOT / "docs" / "figures"
 
 # Must stay in sync with scripts/validation/figure4_coverage_map.py
 # and scripts/build_annual_rollup.py
-STATIC_T3_REGIONS = {
-    "sichuan", "xinjiang", "iceland", "ukraine",
-    "hawaii-oahu", "hawaii-maui", "hawaii-island",
+# Only these two statics have a flat shape and route to T2-annual-calibrated;
+# all other statics use a diurnal/seasonal/mixed shape → T3-modelled.
+STATIC_FLAT_REGIONS = {
+    "austria", "russia-murmansk-wind",
 }
 
+# tier values: "live" (T1a), "live-domestic-anchored" (T1b),
+# "live-neighbour-anchored" (T1c), "static" (T2/T3), "flare" (T2-flare).
 REGION_RE = re.compile(
     r'\{\s*id:\s*"(?P<id>[a-z0-9-]+)",'
     r'\s*name:\s*"(?P<name>[^"]+)",'
     r'\s*country:\s*"(?P<country>[^"]+)",'
     r'\s*lat:\s*(?P<lat>-?[\d.]+),'
     r'\s*lon:\s*(?P<lon>-?[\d.]+),'
-    r'\s*tier:\s*"(?P<tier>live|static|flare)"'
+    r'\s*tier:\s*"(?P<tier>live-domestic-anchored|live-neighbour-anchored|live|static|flare)"'
     r'.*?\}',
     re.DOTALL,
 )
@@ -93,13 +96,15 @@ TIER_LABEL = {
 
 
 def derive_tier(region_id: str, region_tier: str) -> str:
-    if region_tier == "live":
+    if region_tier in ("live", "live-domestic-anchored", "live-neighbour-anchored"):
         return "T1-live-TSO"
     if region_tier == "flare":
         return "flare"
     if region_tier == "static":
-        return "T3-modelled" if region_id in STATIC_T3_REGIONS else "T2-annual-calibrated"
-    return "T2-annual-calibrated"
+        if region_id in STATIC_FLAT_REGIONS:
+            return "T2-annual-calibrated"
+        return "T3-modelled"
+    return "T3-modelled"
 
 
 def load_regions() -> list[dict]:
