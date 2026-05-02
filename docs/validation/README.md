@@ -126,7 +126,16 @@ Last generated: 2026-04-30
 | Italy South | live | mixed | 0 | [italy-south](./italy-south.md) |
 | Jamaica | static | solar | 0 | [jamaica](./jamaica.md) |
 | Jordan | static | solar | 0 | [jordan](./jordan.md) |
-| Japan | live | solar | 0 | [japan](./japan.md) |
+| Chubu (Japan) | live | solar | 0 | [japan-chubu](./japan-chubu.md) |
+| Chugoku (Japan) | live | solar | 0 | [japan-chugoku](./japan-chugoku.md) |
+| Hokkaido (Japan) | live | solar | 0 | [japan-hokkaido](./japan-hokkaido.md) |
+| Hokuriku (Japan) | live | solar | 0 | [japan-hokuriku](./japan-hokuriku.md) |
+| Kansai (Japan) | live | solar | 0 | [japan-kansai](./japan-kansai.md) |
+| Kyushu (Japan) | live | solar | 0 | [japan-kyushu](./japan-kyushu.md) |
+| Okinawa (Japan) | live | solar | 0 | [japan-okinawa](./japan-okinawa.md) |
+| Shikoku (Japan) | live | solar | 0 | [japan-shikoku](./japan-shikoku.md) |
+| TEPCO (Japan) | live | solar | 0 | [japan-tepco](./japan-tepco.md) |
+| Tohoku (Japan) | live | solar | 0 | [japan-tohoku](./japan-tohoku.md) |
 | Kazakhstan | static | wind | 0 | [kazakhstan](./kazakhstan.md) |
 | Kenya | static | hydro | 0 | [kenya](./kenya.md) |
 | Jeju (S. Korea) | static | wind | 0 | [jeju](./jeju.md) |
