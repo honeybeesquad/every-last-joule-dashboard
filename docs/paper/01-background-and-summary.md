@@ -12,7 +12,7 @@ The global renewable build-out now curtails tens of terawatt-hours of
 clean electricity per year. Where, when, and how much that curtailed
 energy amounts to has not been synthesised across transmission-system
 operators at hourly resolution in a single open dataset. This work
-fills that gap across 128 regions spanning every inhabited continent.
+fills that gap across 230 regions spanning every inhabited continent.
 
 ## Why this dataset exists (200 words)
 
@@ -44,17 +44,18 @@ regions where gas flaring is the dominant "wasted-energy" source.
 
 ## What the dataset contains (150 words)
 
-- **176 regions.** 71 in `T1a-live-tso` (own-jurisdiction
+- **230 regions.** 102 in `T1a-live-tso` (own-jurisdiction
   rate; ENTSO-E and EIA with ERCOT and CAISO sub-zones; AEMO
   per-state; Elexon; ONS Brazil; RTE; Energinet; Elia; IESO;
   AESO; EMI New Zealand; EPİAŞ Turkey; CEN Chile; ADME Uruguay; Nord Pool;
-  Kyushu Electric for Japan); 4 in `T1b-live-domestic-anchored`
-  (live feed + domestic-stat-agency rate: Italy-Sardinia,
-  Italy-North-Zone, Netherlands, Baltics); 1 in
-  `T1c-live-neighbour-anchored` (Switzerland on the Czech CEPS
-  rate); 2 in `T2-annual-calibrated` (Austria APG, Russia
+  10 Japan utilities — Kyushu, Tohoku, Chugoku, Shikoku,
+  Hokkaido, Kansai, Chubu, TEPCO, Hokuriku, Okinawa); 4 in
+  `T1b-live-domestic-anchored` (live feed + domestic-stat-agency
+  rate: Italy-Sardinia, Italy-North-Zone, Netherlands, Baltics);
+  1 in `T1c-live-neighbour-anchored` (Switzerland on the Czech
+  CEPS rate); 2 in `T2-annual-calibrated` (Austria APG, Russia
   Murmansk); 4 flare regions (Permian, West Siberia, South Iraq,
-  East Saudi); 94 in `T3-modelled` (annual anchor + typical
+  East Saudi); 117 in `T3-modelled` (annual anchor + typical
   shape).
 - **Hourly resolution** for every live-feed region; hourly
   reconstruction backfilled to 2020-01-01 where upstream archives
@@ -72,7 +73,7 @@ The dataset is organised on two orthogonal axes (full taxonomy:
 
 | | `published` | `documented-gap` | `out-of-scope` |
 |---|---|---|---|
-| **`curtailment-renewable`** | 172 regions: live ENTSO-E/EIA/AEMO/Elexon/etc.; T2 calibrated; T3 modelled. | Mexico CENACE, parts of SE Asia, Iran solar… (see `docs/known-limitations.md`) | Antarctica, Vatican, Greenland (~all baseload thermal/diesel) |
+| **`curtailment-renewable`** | 226 regions: live ENTSO-E/EIA/AEMO/Elexon/etc.; T2 calibrated; T3 modelled. | Mexico CENACE, parts of SE Asia, Iran solar… (see `docs/known-limitations.md`) | Antarctica, Vatican, Greenland (~all baseload thermal/diesel) |
 | **`flare-associated-gas`** | 4 regions: Permian, West Siberia, South Iraq, East Saudi. | Iran flaring (no GGFR-equivalent disaggregation). | Small flares < 1 Bcm/yr |
 
 Three aspects set this work apart:

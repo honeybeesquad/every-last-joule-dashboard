@@ -4,6 +4,27 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Added — W2 China provinces batch (2026-05-02, T3 ×19)
+- **19 new T3-modelled static regions** covering remaining Chinese provinces with measurable curtailment per NEA 2024 provincial RE monitoring bulletin. Total: ~23.5 TWh/yr across all 19 provinces (bottom-up sum of per-province NEA utilisation rate × generation anchors). Combined China block: ~88.9 TWh (27 provinces), consistent with NEA-implied national total of ~84.7 TWh within Sichuan hydro uncertainty (±8 TWh). T3-modelled bucket. Source: https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html
+- `china-shandong` (solar, ~4.5 TWh/yr), `china-guangdong` (mixed, ~3.2), `china-jiangsu` (mixed, ~2.8), `china-anhui` (solar, ~2.1), `china-hunan` (mixed, ~1.9), `china-liaoning` (wind, ~1.6), `china-hubei` (mixed, ~1.5), `china-shanxi` (mixed, ~1.4), `china-shaanxi` (solar, ~1.1), `china-zhejiang` (mixed, ~0.8), `china-henan` (solar, ~0.7), `china-fujian` (mixed, ~0.6), `china-jiangxi` (solar, ~0.4), `china-beijing` (solar, ~0.28), `china-guizhou` (mixed, ~0.25), `china-chongqing` (mixed, ~0.22), `china-tianjin` (mixed, ~0.16), `china-hainan` (solar, ~0.01), `china-shanghai` (solar, ~0.01).
+- All 19 use `buildTypicalSolarRegion` / `buildTypicalMixedRegion` / `buildTypicalWindRegion` with NEA 2024 anchors. Region count: 211 → 230. T3 count: 98 → 117.
+
+### Added — Japan W1 per-utility batch (2026-05-02, T1a ×8)
+- **`japan-kyushu`** (renamed from `japan`): Kyushu Electric area-demand CSV, 5-min solar, RATE=0.10. ~1.7 TWh/yr (OCCTO FY2024). T1a-live-tso. `src/data/japan-kyushu.json.ts`.
+- **`japan-tohoku`**: Tohoku Electric 30-min CSV — direct 太陽光出力制御量+風力出力制御量 columns. ~1.5–2 TWh/yr rising trend (OCCTO FY2024). T1a-live-tso. `src/data/japan-tohoku.json.ts`.
+- **`japan-chugoku`**: Chugoku Electric juyo CSV, RATE=0.06. ~0.40 TWh/yr. T1a-live-tso.
+- **`japan-shikoku`**: Shikoku Electric T&D juyo CSV, RATE=0.07. ~0.30 TWh/yr. T1a-live-tso.
+- **`japan-hokkaido`**: Hokkaido Electric juyo CSV, RATE=0.05. ~0.10 TWh/yr. T1a-live-tso.
+- **`japan-kansai`**: Kansai Electric T&D juyo CSV, RATE=0.01. ~0.05 TWh/yr. T1a-live-tso.
+- **`japan-chubu`**: Chubu Electric Power Grid juyo CSV, RATE=0.01. ~0.05 TWh/yr. T1a-live-tso.
+- **`japan-tepco`**: TEPCO Power Grid juyo CSV, RATE=0.01. ~0.05 TWh/yr. T1a-live-tso.
+- **`japan-hokuriku`**: Hokuriku Electric juyo CSV, RATE=0.01. ~0.02 TWh/yr. T1a-live-tso.
+- **`japan-okinawa`**: Okinawa Electric juyo CSV, RATE=0.02. ~0.04 TWh/yr. T1a-live-tso.
+- All 10 Japan utilities use HTTP/1.1-forced HTTPS (`fetchHttp1Bytes`) to bypass WAF fingerprinting, Shift-JIS decoding, 30-day trailing loop. Region count: 208 → 216. T1a count: 93 → 101.
+
+### Removed — Japan W1 per-utility batch (2026-05-02)
+- `japan` (Kyushu-only aggregate) removed; replaced by `japan-kyushu`.
+
 ## [1.1.0] — 2026-05-01
 
 ### Added — S1 Validation sprint (130 per-region triangulation MDs)
@@ -50,13 +71,6 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 - `dataset/FAIR.md` — replaced placeholder with 403-line evidence-grounded manual scorecard. 14/15 sub-principles pass; 1 partial (F1 DOI, scaffolded, mints on v1.0.0 tag). Cross-references every artefact in this repo.
 
 ### Changed
-- **Italy South → Sicily** — ENTSO-E domain `10Y1001A1001A86H` (IT-South mainland) replaced by `10Y1001A1001A75E` (IT-Sicily) in the live ENTSO-E feed. IT-South returns error 999 (Terna publishes no A75 actual-generation data for mainland southern bidding zones). Sicily carries comparable HVDC-island transmission-constraint characteristics and has rich published data. Updated `src/data/entsoe.json.ts`, `src/lib/regions.ts`, `src/index.md`; tier promoted from `live` to `live-domestic-anchored`. Snapshot refreshed.
-- **Region count 128 → 202** — cumulative region additions since v1.0.0: Saudi Arabia (solar), Nepal (solar), Philippines (wind + two-output schema), Florida (T3 modelled), plus wave-4/5 research calibration expansions across Middle East, Caribbean, Sub-Saharan Africa.
-- **Colombia promoted to T1b-CSV** (`live-domestic-anchored`) via Britta daily relay — autonomous XM data-collection pipeline operational; snapshot committed. Tier-counts golden files updated.
-- **Globe interactive controls** — scroll-wheel zoom, pinch zoom, and zoom-level slider (PR #26); flare-region toggle with gas-red colouring (PR #27).
-- **Wave-5 anchor revisions** — Israel, UAE, Oman, Jamaica, Botswana TWh anchors refreshed against latest published figures.
-- **Solar-kind sweep** — Ghana, Jordan (UTC offset fix), and six mixed→solar region reclassifications corrected. Nigeria switched to solar kind with diurnal profile.
-- **CI / deploy pipeline** — `history-append.yml` workflow and Vercel deploy hook both retargeted from `v0-build` to `main`; production branch setting corrected in Vercel project link.
 - Region count references updated from `122` → `128` across `dataset/README.md`, `dataset/CITATION.cff`, `dataset/LICENSE`, `dataset/CHANGELOG.md`, `dataset/SCHEMA.md`, `docs/academic-model/zenodo-setup.md`, `src/methodology.md` (9 textual references; counted authoritatively from `src/lib/regions.ts`).
 - `dataset/schema/region-snapshot.schema.json` — added uncertainty fields (`uncertaintyLowGW`, `uncertaintyHighGW`, `confidenceTier`) to the per-region snapshot schema.
 - **Zenodo DOI minted (2026-04-27)** — version DOI `10.5281/zenodo.19835566` pins v1.0.0; concept DOI `10.5281/zenodo.19835411` resolves to latest. Substituted the `TBA` placeholder across `dataset/CITATION.cff`, `dataset/README.md`, `README.md`, `docs/paper/05-usage-notes.md`, `docs/paper/README.md`. `dataset/FAIR.md` F1 sub-principle moved from *partial* to *pass*; headline scorecard now 15/15.

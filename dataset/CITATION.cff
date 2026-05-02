@@ -2,11 +2,11 @@ cff-version: 1.2.0
 message: "If you use this dataset in academic work, please cite it as below."
 type: dataset
 title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring"
-version: 1.1.0
-date-released: 2026-05-01
+version: 1.0.0
+date-released: 2026-04-28
 abstract: >-
   A versioned, reproducible synthesis dataset of hourly renewable-electricity
-  curtailment and associated-gas flaring, covering 202 regions across six
+  curtailment and associated-gas flaring, covering 128 regions across six
   continents. Built by combining live feeds from transmission system operators
   and energy regulators (ENTSO-E, EIA, AEMO, Elexon, ONS, and others) with
   published annual calibration anchors (IRENA, Ember, GGFR). Each region's
@@ -36,9 +36,6 @@ license-url: "https://creativecommons.org/licenses/by/4.0/"
 repository-code: "https://github.com/honeybeesquad/every-last-joule-dashboard"
 url: "https://everylastjoule.com"
 identifiers:
-  - type: doi
-    value: "10.5281/zenodo.19932977"
-    description: "Zenodo archival DOI (versioned, v1.1.0)"
   - type: doi
     value: "10.5281/zenodo.19835566"
     description: "Zenodo archival DOI (versioned, v1.0.0)"

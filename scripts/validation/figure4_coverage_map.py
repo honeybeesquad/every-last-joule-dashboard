@@ -53,13 +53,15 @@ STATIC_FLAT_REGIONS = {
 }
 
 # Region row regex — captures id, tier, lat, lon plus peakGW if present.
+# tier values: "live" (T1a), "live-domestic-anchored" (T1b),
+# "live-neighbour-anchored" (T1c), "static" (T2/T3), "flare" (T2-flare).
 REGION_RE = re.compile(
     r'\{\s*id:\s*"(?P<id>[a-z0-9-]+)",'
     r'\s*name:\s*"(?P<name>[^"]+)",'
     r'\s*country:\s*"(?P<country>[^"]+)",'
     r'\s*lat:\s*(?P<lat>-?[\d.]+),'
     r'\s*lon:\s*(?P<lon>-?[\d.]+),'
-    r'\s*tier:\s*"(?P<tier>live|static|flare)"'
+    r'\s*tier:\s*"(?P<tier>live-domestic-anchored|live-neighbour-anchored|live|static|flare)"'
     r'.*?\}',
     re.DOTALL,
 )
@@ -80,7 +82,7 @@ TIER_LABEL = {
 
 
 def derive_tier(region_id: str, region_tier: str) -> str:
-    if region_tier == "live":
+    if region_tier in ("live", "live-domestic-anchored", "live-neighbour-anchored"):
         return "T1-live-TSO"
     if region_tier == "flare":
         return "flare"

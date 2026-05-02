@@ -39,9 +39,11 @@ totals via Nord Pool); sub-state constraint region for Brazil (five
 Northeast states — Ceará, Rio Grande do Norte, Bahia, Piauí,
 Pernambuco — plus six South/Centre-South states — Minas Gerais, São
 Paulo, Mato Grosso, Goiás, Paraná, Rio Grande do Sul — and a catch-all
-NE-other bucket); and national grid for countries without public
-sub-national data. Total: 128 regions. Stable kebab-case IDs defined
-in `src/lib/regions.ts`.
+NE-other bucket); per-utility area for Japan (10 TSO control areas:
+Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai, Chubu, TEPCO
+Power Grid, Hokuriku, Okinawa); and national grid for countries
+without public sub-national data. Total: 230 regions. Stable
+kebab-case IDs defined in `src/lib/regions.ts`.
 
 **Time resolution.** Hourly UTC. Finer-cadence upstream feeds
 (ENTSO-E 15 min, Elexon BMRS 30 min) are averaged to hourly.
@@ -70,6 +72,7 @@ in `src/lib/regions.ts`.
 | EMI New Zealand (Electricity Authority) | 1 | CSV download (Generation_MD dataset) |
 | EPİAŞ Turkey (Şeffaflık) | 1 | REST API, JSON real-time generation |
 | CEN Chile (Coordinador Eléctrico Nacional) | 2 (Atacama + southern wind) | Headless-Chrome XLSX parse (Cloudflare-gated) |
+| Japan utilities (10 TSO areas) | 10 regions (Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai, Chubu, TEPCO, Hokuriku, Okinawa) | HTTPS CSV, HTTP/1.1-forced (`fetchHttp1Bytes`, WAF bypass), Shift-JIS decode, 30-day trailing loop |
 
 Every loader is implemented in `src/data/<source>.json.ts` as an
 Observable Framework data loader. Every loader wraps its fetch in
@@ -183,14 +186,14 @@ regions emit nothing).
 | Tier | Criterion | Uncertainty envelope |
 |---|---|---|
 | T1a-live-tso | Live hourly feed + own-jurisdiction calibration rate (TSO/regulator) | ±15% of peakGW (fallback) or 2σ of backfill annual peakGW (when backfill ≥ 3 yrs) |
-| T1b-live-domestic-anchored | Live feed + domestic-stat-agency or modelled-share rate | ±50% of peakGW (empirical, post-B1 rerun) |
+| T1b-live-domestic-anchored | Live feed + domestic-stat-agency or modelled-share rate | ±50% of peakGW (empirical) |
 | T1c-live-neighbour-anchored | Live feed + rate extrapolated from neighbouring zone | ±35.5% of peakGW (empirical) |
 | T2-annual-calibrated | Published annual anchor, no hourly feed (incl. flat-base proxies) | ±20% of peakGW |
 | T2 flare | Flare region, flat 24/7 base-load | ±20% (presentational split from T2; same envelope) |
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
 
-The tier distribution at submission: **63 T1a, 4 T1b, 1 T1c, 2
-T2-annual-calibrated, 4 T2-flare, 54 T3** (total 128). The four
+The tier distribution at submission: **102 T1a, 4 T1b, 1 T1c, 2
+T2-annual-calibrated, 4 T2-flare, 117 T3** (total 230). The four
 T1b zones are Italy-Sardinia, Italy-North-Zone, the Netherlands,
 and the Baltics — each pairing a bidding-zone live feed against
 either a national-anchor zone-share or a domestic stat-agency
@@ -199,7 +202,7 @@ with the Czech CEPS rate as a neighbouring proxy). The two T2
 regions are Austria (APG provisional anchor, flat-base proxy)
 and Russia Murmansk wind (SO UPS dispatch-limit estimate, flat).
 The four T2-flare regions are the Permian, West Siberia, South
-Iraq, and East Saudi flare basins. The 54 T3 regions are static
+Iraq, and East Saudi flare basins. The 117 T3 regions are static
 annual anchors (Ember, IRENA, regulator reports) combined with a
 typical diurnal or monthly-seasonal shape (solar cosine, wind
 broad-overnight, hydro monthly, mixed fuel-share,
