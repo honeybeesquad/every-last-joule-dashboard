@@ -59,7 +59,8 @@ describe("regions", () => {
     // W2 China provinces (2026-05-02): 19 new T3-static loaders. 211 + 19 = 230.
     // India W2 (2026-05-02): replace india-south + india-west with india-gujarat +
     // india-tamil-nadu + india-karnataka (net +1). 230 + 1 = 231.
-    expect(REGIONS.length).toBe(231);
+    // India W3 (2026-05-02): +india-andhra-pradesh + india-maharashtra (net +2). 231 + 2 = 233.
+    expect(REGIONS.length).toBe(233);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -99,16 +100,18 @@ describe("regions", () => {
     // colombia reclassified from "live" (T1a) to "live-domestic-anchored" (T1b): T1a stays 102.
     // India W2 (2026-05-02): india-south + india-west (static) replaced by
     // india-gujarat + india-tamil-nadu + india-karnataka (T1a live). +3 T1a. Total live = 111.
+    // India W3 (2026-05-02): +india-andhra-pradesh + india-maharashtra (T1a live). +2. Total live = 113.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(111);
+    expect(liveTotal).toBe(113);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
     // colombia moved T1a→T1b: "live" 103→102; "live-domestic-anchored" 4→5.
     // India W2 added +3 T1a: india-gujarat, india-tamil-nadu, india-karnataka → live=104.
+    // India W3 added +2 T1a: india-andhra-pradesh, india-maharashtra → live=106.
     // T1b=6: baltics, italy-north-zone, italy-sardinia, netherlands, colombia, italy-sicily.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(104);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(106);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(6);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -190,6 +193,8 @@ describe("regions", () => {
       "china-guangdong", "china-jiangsu", "china-hunan", "china-hubei",
       "china-shanxi", "china-zhejiang", "china-fujian", "china-guizhou",
       "china-chongqing", "china-tianjin",
+      // India W3 (2026-05-02) — Maharashtra mixed solar+wind (MSLDC own loader, not bundled)
+      "india-maharashtra",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
