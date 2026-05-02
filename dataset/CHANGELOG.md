@@ -5,7 +5,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 ## [Unreleased]
 
 ### Added — W2 China provinces batch (2026-05-02, T3 ×19)
-- **19 new T3-modelled static regions** covering remaining Chinese provinces with measurable curtailment per NEA 2024 provincial RE monitoring bulletin. Total: ~15.6 TWh/yr across all 19 provinces. T3-modelled bucket. Source: https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html
+- **19 new T3-modelled static regions** covering remaining Chinese provinces with measurable curtailment per NEA 2024 provincial RE monitoring bulletin. Total: ~23.5 TWh/yr across all 19 provinces (bottom-up sum of per-province NEA utilisation rate × generation anchors). Combined China block: ~88.9 TWh (27 provinces), consistent with NEA-implied national total of ~84.7 TWh within Sichuan hydro uncertainty (±8 TWh). T3-modelled bucket. Source: https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html
 - `china-shandong` (solar, ~4.5 TWh/yr), `china-guangdong` (mixed, ~3.2), `china-jiangsu` (mixed, ~2.8), `china-anhui` (solar, ~2.1), `china-hunan` (mixed, ~1.9), `china-liaoning` (wind, ~1.6), `china-hubei` (mixed, ~1.5), `china-shanxi` (mixed, ~1.4), `china-shaanxi` (solar, ~1.1), `china-zhejiang` (mixed, ~0.8), `china-henan` (solar, ~0.7), `china-fujian` (mixed, ~0.6), `china-jiangxi` (solar, ~0.4), `china-beijing` (solar, ~0.28), `china-guizhou` (mixed, ~0.25), `china-chongqing` (mixed, ~0.22), `china-tianjin` (mixed, ~0.16), `china-hainan` (solar, ~0.01), `china-shanghai` (solar, ~0.01).
 - All 19 use `buildTypicalSolarRegion` / `buildTypicalMixedRegion` / `buildTypicalWindRegion` with NEA 2024 anchors. Region count: 211 → 230. T3 count: 98 → 117.
 

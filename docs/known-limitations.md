@@ -44,9 +44,11 @@ CEN also publishes daily `Resumen Ejecutivo de Operación` PDFs through the Info
 
 ### 10. China provincial regions are calibrated annual estimates, not hourly observations
 
-The eight Chinese provincial regions are part of the dataset's `T3-modelled` tier (see `docs/methodology/uncertainty.md`): a published annual anchor combined with a typical diurnal/seasonal shape, envelope ±40% of `peakGW`. They are now calibrated against NEA 2024 wind/PV utilisation rates, NEA river-basin hydro utilisation, and public provincial generation data; see `docs/methodology/china-provinces.md`.
+The 27 Chinese provincial regions in the dataset (8 calibrated provinces from phase 1 + 19 new provinces added in W2, 2026-05-02) are part of the `T3-modelled` tier (see `docs/methodology/uncertainty.md`): a published annual anchor combined with a typical diurnal/seasonal shape, envelope ±40% of `peakGW`. All provinces are calibrated against NEA 2024 wind/PV utilisation rates and public provincial generation data; see `docs/methodology/china-provinces.md`.
 
-The China block totals 65.4 TWh/year against an NEA-implied 2024 national renewable curtailment/spill total of about 84.7 TWh/year. The province-level uncertainty range is roughly 48-80 TWh/year, dominated by hydro-spill uncertainty in Sichuan, Yunnan, and Tibet/Xizang.
+**Bottom-up sum vs. national ceiling.** The province-level estimates are derived independently for each province using per-province generation data and NEA-published provincial utilisation rates — they are not allocated from a national budget. The bottom-up sum of all 27 provinces is approximately 88.9 TWh/year (65.4 TWh original 8 + 23.5 TWh W2 19), compared to the NEA-implied 2024 national total of about 84.7 TWh. The ~4 TWh apparent excess is within the uncertainty range of the Sichuan hydro estimate alone (20–36 TWh, LOW confidence), which is the largest single source of imprecision in the block. The bottom-up total is therefore consistent with the national figure once Sichuan uncertainty is taken into account. No double-counting exists: all 27 provinces are geographically non-overlapping and each derives its anchor from independent source data.
+
+The province-level uncertainty range for the full block is roughly 65–110 TWh/year, dominated by hydro-spill uncertainty in Sichuan, Yunnan, and Tibet/Xizang.
 
 Hourly shape remains synthetic. Xinjiang uses a typical solar shape even though the annual source chain includes both wind and solar. Sichuan, Yunnan, and Tibet/Xizang use hydro-seasonal profiles because the public data identifies annual or seasonal spill risk, not measured hourly curtailed output. These regions should be read as annual magnitude estimates with defensible source chains, not as measured dispatch traces.
 
