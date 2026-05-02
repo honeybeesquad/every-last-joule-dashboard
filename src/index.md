@@ -39,7 +39,11 @@ const [
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
   yunnan, tibet, indiaSouth, indiaWest, indiaEast, pakistan, iran,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
-  quebec, manitoba, saskatchewan, turkey, colombia, florida
+  quebec, manitoba, saskatchewan, turkey, colombia, florida,
+  chinaShandong, chinaGuangdong, chinaJiangsu, chinaAnhui, chinaHunan,
+  chinaLiaoning, chinaHubei, chinaShanxi, chinaShaanxi, chinaZhejiang,
+  chinaHenan, chinaFujian, chinaJiangxi, chinaBeijing, chinaGuizhou,
+  chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai
 ] = await Promise.all([
   FileAttachment("data/cbeci.json").json(),
   FileAttachment("data/ercot.json").json(),
@@ -120,7 +124,26 @@ const [
   FileAttachment("data/saskatchewan.json").json(),
   FileAttachment("data/turkey.json").json(),
   FileAttachment("data/colombia.json").json(),
-  FileAttachment("data/florida.json").json()
+  FileAttachment("data/florida.json").json(),
+  FileAttachment("data/china-shandong.json").json(),
+  FileAttachment("data/china-guangdong.json").json(),
+  FileAttachment("data/china-jiangsu.json").json(),
+  FileAttachment("data/china-anhui.json").json(),
+  FileAttachment("data/china-hunan.json").json(),
+  FileAttachment("data/china-liaoning.json").json(),
+  FileAttachment("data/china-hubei.json").json(),
+  FileAttachment("data/china-shanxi.json").json(),
+  FileAttachment("data/china-shaanxi.json").json(),
+  FileAttachment("data/china-zhejiang.json").json(),
+  FileAttachment("data/china-henan.json").json(),
+  FileAttachment("data/china-fujian.json").json(),
+  FileAttachment("data/china-jiangxi.json").json(),
+  FileAttachment("data/china-beijing.json").json(),
+  FileAttachment("data/china-guizhou.json").json(),
+  FileAttachment("data/china-chongqing.json").json(),
+  FileAttachment("data/china-tianjin.json").json(),
+  FileAttachment("data/china-hainan.json").json(),
+  FileAttachment("data/china-shanghai.json").json()
 ]);
 
 document.getElementById("app-root").innerHTML = `
@@ -357,6 +380,25 @@ const regionData = {
   // Supersedes the T3-static entry in buildAllStatics().
   colombia,
   florida,
+  "china-shandong": chinaShandong,
+  "china-guangdong": chinaGuangdong,
+  "china-jiangsu": chinaJiangsu,
+  "china-anhui": chinaAnhui,
+  "china-hunan": chinaHunan,
+  "china-liaoning": chinaLiaoning,
+  "china-hubei": chinaHubei,
+  "china-shanxi": chinaShanxi,
+  "china-shaanxi": chinaShaanxi,
+  "china-zhejiang": chinaZhejiang,
+  "china-henan": chinaHenan,
+  "china-fujian": chinaFujian,
+  "china-jiangxi": chinaJiangxi,
+  "china-beijing": chinaBeijing,
+  "china-guizhou": chinaGuizhou,
+  "china-chongqing": chinaChongqing,
+  "china-tianjin": chinaTianjin,
+  "china-hainan": chinaHainan,
+  "china-shanghai": chinaShanghai,
   ...statics,
   // Philippines: split by fuel (solar + wind). Loader returns a Record so spread here.
   // Supersedes the philippines statics entry (removed 2026-04-30).

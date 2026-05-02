@@ -56,7 +56,8 @@ describe("regions", () => {
     // Japan W1 per-utility batch (2026-05-02): rename japan → japan-kyushu (net 0) + add
     // 9 new live loaders (Chubu, Chugoku, Hokkaido, Hokuriku, Kansai, Okinawa, Shikoku,
     // TEPCO, Tohoku). 202 + 9 = 211.
-    expect(REGIONS.length).toBe(211);
+    // W2 China provinces (2026-05-02): 19 new T3-static loaders. 211 + 19 = 230.
+    expect(REGIONS.length).toBe(230);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -146,7 +147,8 @@ describe("regions", () => {
     // Colombia promoted T3-static → T1b-live (Britta relay, 2026-04-30). 99 - 1 = 98.
     // Philippines split: 1 static → 2 statics (solar+wind). 98 + 1 = 99.
     // Florida added 2026-04-30 as T3-static solar. 99 + 1 = 100.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(100);
+    // W2 China provinces (2026-05-02): 19 new T3-static regions. 100 + 19 = 119.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(119);
   });
 
   it("has 4 flare regions", () => {
@@ -173,6 +175,10 @@ describe("regions", () => {
       "gansu", "ningxia", "india-south", "india-west", "morocco",
       "taiwan", "pakistan", "manitoba", "hawaii-island",
       "austria", "cuba", "rwanda",
+      // W2 China provinces (2026-05-02) — mixed wind+solar curtailment
+      "china-guangdong", "china-jiangsu", "china-hunan", "china-hubei",
+      "china-shanxi", "china-zhejiang", "china-fujian", "china-guizhou",
+      "china-chongqing", "china-tianjin",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
