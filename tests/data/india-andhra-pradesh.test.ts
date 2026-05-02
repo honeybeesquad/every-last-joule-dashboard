@@ -1,0 +1,29 @@
+import { describe, expect, it } from "vitest";
+import { buildIndiaAndhraPradeshData } from "../../src/data/india-andhra-pradesh.json";
+
+describe("india-andhra-pradesh loader", () => {
+  it("returns a valid positive RegionData shape with T1a tier", async () => {
+    const data = await buildIndiaAndhraPradeshData();
+    expect(data.regionId).toBe("india-andhra-pradesh");
+    expect(data.profile).toHaveLength(24);
+    expect(data.latestProfile).toBeNull();
+    expect(data.totalTWh).toBeGreaterThan(0);
+    expect(data.peakGW).toBeGreaterThan(0);
+    expect(data.confidenceTier).toBe("T1a-live-tso");
+  });
+
+  it("solar profile peaks around UTC 06-07 (Andhra Pradesh ~80°E local noon)", async () => {
+    const data = await buildIndiaAndhraPradeshData();
+    const peakHour = data.profile.indexOf(Math.max(...data.profile));
+    expect(peakHour).toBeGreaterThanOrEqual(5);
+    expect(peakHour).toBeLessThanOrEqual(8);
+  });
+
+  it("uncertainty bounds reflect ±15% T1a envelope", async () => {
+    const data = await buildIndiaAndhraPradeshData();
+    expect(data.uncertaintyLowGW).toBeGreaterThan(0);
+    expect(data.uncertaintyHighGW).toBeGreaterThan(data.peakGW);
+    expect(data.uncertaintyHighGW).toBeCloseTo(data.peakGW * 1.15, 4);
+    expect(data.uncertaintyLowGW).toBeCloseTo(data.peakGW * 0.85, 4);
+  });
+});

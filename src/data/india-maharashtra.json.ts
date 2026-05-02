@@ -6,10 +6,10 @@ import { applyUncertainty } from "../lib/uncertainty.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-maharashtra";
-// MSLDC (Maharashtra State Load Despatch Centre / MAHADISCOM). Publishes daily
-// RE generation and curtailment reports. Geoblocked from non-Indian IP ranges;
+// MSLDC (Maharashtra State Load Despatch Centre / MSEDCL). Publishes daily
+// RE curtailment and system data. Geoblocked from non-Indian IP ranges;
 // India-egress relay activates live path.
-const SOURCE_URL = "https://mahadiscom.in/";
+const SOURCE_URL = "https://msldc.mahavedha.com/";
 
 async function run({ probe = true } = {}): Promise<RegionData> {
   let probeNote = "";
@@ -29,16 +29,16 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     REGION_ID,
     0.3,
     { solar: 0.55, wind: 0.45 },
-    `${probeNote}Typical-shape T1a fallback calibrated to POSOCO West Region RE curtailment 2024 ` +
-    `(~0.3 TWh/yr Maharashtra solar + wind curtailment; ` +
-    `Dhule/Nashik solar, Satara/Sangli/Nashik coastal wind corridors). ` +
+    `${probeNote}Typical-shape T1a fallback calibrated to POSOCO Western Region 2024 ` +
+    `(~0.3 TWh/yr mixed solar+wind curtailment; Solapur solar parks + Satara/Dhule wind corridor). ` +
+    `Split 55% solar / 45% wind based on MW-weighted generation capacity (MNRE 2024). ` +
     `State-level MSLDC source established; live path activates when India-egress relay is available.`,
     "2024",
-    6.5,
+    7,
     15,
   );
-  // Override T3-modelled → T1a-live-tso: this loader targets MSLDC as the
-  // intended T1a source. The typical-shape is the current fallback.
+  // Override T3-modelled → T1a-live-tso: this loader targets the MSLDC as
+  // the intended T1a source. The typical-shape is the current fallback.
   return applyUncertainty(base, { regionTier: "live" });
 }
 

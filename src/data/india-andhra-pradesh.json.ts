@@ -6,13 +6,10 @@ import { applyUncertainty } from "../lib/uncertainty.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-andhra-pradesh";
-// APTRANSCO / APSPDCL SLDC (Andhra Pradesh Transmission Corporation /
-// Southern Power Distribution Company). Publishes daily RE curtailment and
-// system operation reports. Geoblocked from non-Indian IP ranges; India-egress
-// relay activates live path. Telangana (TSLDC) curtailment is included in this
-// combined AP+Telangana anchor since both are SRLDC sub-entities and the
-// published POSOCO South Region residual cannot be cleanly split below state level.
-const SOURCE_URL = "https://aptransco.gov.in/";
+// APTRANSCO / APSLDC (Andhra Pradesh Transmission Corporation Ltd / State Load
+// Despatch Centre). Publishes daily RE curtailment data. Geoblocked from
+// non-Indian IP ranges; India-egress relay activates live path.
+const SOURCE_URL = "https://apsldc.in/";
 
 async function run({ probe = true } = {}): Promise<RegionData> {
   let probeNote = "";
@@ -20,25 +17,25 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   if (probe) {
     try {
       await fetchText(SOURCE_URL, { timeoutMs: 10000, retries: 0, headers: { "user-agent": "Mozilla/5.0" } });
-      // TODO: parse APTRANSCO SLDC daily RE curtailment report and return live data.
+      // TODO: parse APSLDC daily RE curtailment report and return live data.
       // Currently unreachable from the build environment — geoblocked outside India.
-      throw new Error("APTRANSCO SLDC live parsing not yet implemented; geoblocked from build environment");
+      throw new Error("APSLDC live parsing not yet implemented; geoblocked from build environment");
     } catch (err) {
-      probeNote = `APTRANSCO SLDC unreachable (${(err as Error).message}); `;
+      probeNote = `APSLDC unreachable (${(err as Error).message}); `;
     }
   }
 
   const base = buildTypicalSolarRegion(
     REGION_ID,
-    6.5,
+    7,
     0.4,
-    `${probeNote}Typical-shape T1a fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
-    `(~0.4 TWh/yr Andhra Pradesh + Telangana solar curtailment; ` +
-    `Ananthapuramu + Kurnool Solar Parks, AP Solar Corridor transmission bottlenecks). ` +
-    `State-level APTRANSCO SLDC source established; live path activates when India-egress relay is available.`,
+    `${probeNote}Typical-shape T1a fallback calibrated to POSOCO Southern Region 2024 ` +
+    `(~0.4 TWh/yr solar curtailment; Anantapur + Kadapa solar parks, ` +
+    `Andhra Pradesh transmission bottlenecks post-bifurcation). ` +
+    `State-level APSLDC source established; live path activates when India-egress relay is available.`,
     "2024",
   );
-  // Override T3-modelled → T1a-live-tso: this loader targets APTRANSCO SLDC as
+  // Override T3-modelled → T1a-live-tso: this loader targets the APSLDC as
   // the intended T1a source. The typical-shape is the current fallback.
   return applyUncertainty(base, { regionTier: "live" });
 }
