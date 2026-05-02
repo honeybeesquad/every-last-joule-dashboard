@@ -131,8 +131,9 @@ Last generated: 2026-05-02
 | Indonesia | static | solar | 0 | [indonesia](./indonesia.md) |
 | India East | static | solar | 0 | [india-east](./india-east.md) |
 | Rajasthan | live | solar | 0 | [india-rajasthan](./india-rajasthan.md) |
-| India South | static | mixed | 0 | [india-south](./india-south.md) |
-| India West | static | mixed | 0 | [india-west](./india-west.md) |
+| Gujarat | live | solar | 0 | [india-gujarat](./india-gujarat.md) |
+| Tamil Nadu | live | wind | 0 | [india-tamil-nadu](./india-tamil-nadu.md) |
+| Karnataka | live | solar | 0 | [india-karnataka](./india-karnataka.md) |
 | Ireland (Republic) | live | wind | 0 | [ireland-republic](./ireland-republic.md) |
 | Iran | static | solar | 0 | [iran](./iran.md) |
 | Iraq (non-flare) | static | solar | 0 | [iraq-mainland](./iraq-mainland.md) |
