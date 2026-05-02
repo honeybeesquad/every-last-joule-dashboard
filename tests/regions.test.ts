@@ -93,14 +93,17 @@ describe("regions", () => {
     // 92 + 1 = 93. Total live = 93 + 5 + 1 = 99.
     // Japan W1 per-utility batch (2026-05-02): +8 T1a live (Chubu, Chugoku, Hokkaido,
     // Hokuriku, Kansai, Okinawa, Shikoku, TEPCO). T1a: 93 + 8 = 101. Total live = 107.
+    // india-north (static) renamed to india-rajasthan (live, T1a): total live 107→108.
+    // colombia reclassified from "live" (T1a) to "live-domestic-anchored" (T1b): T1a stays 102.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(107);
+    expect(liveTotal).toBe(108);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share).
+    // colombia moved T1a→T1b: "live" 103→102; "live-domestic-anchored" 4→5.
     expect(REGIONS.filter((r) => r.tier === "live").length).toBe(102);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(5);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
 
@@ -148,7 +151,8 @@ describe("regions", () => {
     // Philippines split: 1 static → 2 statics (solar+wind). 98 + 1 = 99.
     // Florida added 2026-04-30 as T3-static solar. 99 + 1 = 100.
     // W2 China provinces (2026-05-02): 19 new T3-static regions. 100 + 19 = 119.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(119);
+    // india-north (static) renamed to india-rajasthan (live, T1a): 119 - 1 = 118.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(118);
   });
 
   it("has 4 flare regions", () => {
@@ -268,7 +272,7 @@ describe("regions", () => {
       "japan-kyushu",
       "vietnam",
       "thailand",
-      "india-north",
+      "india-rajasthan",
       "cyprus",
       "ethiopia",
     ]) {
@@ -402,15 +406,17 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "brazil-other-solar")?.name).toBe("Brazil Other ONS States Solar");
   });
 
-  it("includes Colombia as T1b-live hydro (vertimientos hidráulicos via Britta relay)", () => {
+  it("includes Colombia as T1b live-domestic-anchored hydro (vertimientos hidráulicos)", () => {
     // Colombia promoted from T3-static to T1b-CSV loader on 2026-04-30.
-    // The XM API is geoblocked outside Colombia; a Britta daily relay
-    // (cron 18:30 UTC) commits fresh CSV data to data/historical/. The
-    // colombia.json.ts loader reads the CSV and computes a trailing-365-day
-    // annualised figure. Tier is now "live" (CSV-backed, not fully static).
+    // Reclassified from T1a ("live") to T1b ("live-domestic-anchored") on
+    // 2026-05-02: the XM API is geoblocked outside Colombia, so live data
+    // reaches the loader via a committed CSV relay (Britta cron 18:30 UTC)
+    // or, when reachable, a direct POST to servapibi.xm.com.co/daily.
+    // The ENSO-cycle range (0.53–13.12 TWh/yr) exceeds the ±15% T1a envelope,
+    // making the ±50% T1b empirical envelope the honest representation.
     const col = REGIONS.find(r => r.id === "colombia");
     expect(col).toBeDefined();
-    expect(col?.tier).toBe("live");
+    expect(col?.tier).toBe("live-domestic-anchored");
     expect(col?.kind).toBe("hydro");
   });
 
