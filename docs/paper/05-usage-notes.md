@@ -59,7 +59,7 @@ Before using a region's values, check its `confidenceTier`:
 | Tier | Envelope | Treatment guidance |
 |---|---|---|
 | `T1a-live-tso` | ±15% (or 2σ where backfill ≥ 3 yrs) | Live hourly feed + own-jurisdiction calibration rate (TSO/regulator). Defensible for most analyses; see per-region validation MD for any scope mismatch. |
-| `T1b-live-domestic-anchored` | ±50% (empirical, post-B1 rerun) | Live feed + domestic-stat-agency or modelled-share rate. Italy-Sardinia, Italy-North-Zone, Netherlands, Baltics. Use with anchor-aware caveats. |
+| `T1b-live-domestic-anchored` | ±50% (empirical) | Live feed + domestic-stat-agency or modelled-share rate. Italy-Sardinia, Italy-North-Zone, Netherlands, Baltics. Use with anchor-aware caveats. |
 | `T1c-live-neighbour-anchored` | ±35.5% (empirical) | Live feed + rate extrapolated from neighbouring zone. Switzerland (Czech CEPS rate). |
 | `T2-annual-calibrated` | ±20% | Annual total is anchored; hourly shape is reconstructed from live generation × rate. Defensible for annual totals, use with caution at hour level. |
 | `T2 flare` | ±20%, flat 24/7 | Flare is continuous; the flat profile is methodologically correct, not a data gap. |
@@ -86,13 +86,13 @@ no public hourly upstream source. Explicit gaps:
   European grid carries a 1 TWh/yr T3-modelled hydro-seasonal
   fallback; Murmansk wind is a T2-annual-calibrated flat estimate;
   Central Asia is absent beyond Kazakhstan (T3 wind).
-- **Chinese provincial-level hourly.** All eight Chinese provinces
+- **Chinese provincial-level hourly.** All 27 Chinese provinces
   surface as T3-modelled — typical diurnal/seasonal shapes (solar
-  cosine for Xinjiang and Qinghai; monthly-seasonal hydro for
-  Sichuan, Tibet, Yunnan; wind broad-overnight for Inner Mongolia;
-  mixed fuel-share for Gansu, Ningxia) scaled to NEA / Ember
-  published annuals. No public hourly API exists for any Chinese
-  province.
+  cosine, wind broad-overnight, monthly-seasonal hydro, or
+  mixed fuel-share per province) scaled to NEA 2024 provincial
+  utilisation rates and published annual generation. No public
+  hourly API exists for any Chinese province; see
+  `docs/methodology/china-provinces.md`.
 
 Full documented-gap ledger: `docs/known-limitations.md`.
 
@@ -129,7 +129,7 @@ Preferred human citation:
 
 > Collins, S. (2026). Every Last Joule: an hourly synthesis of
 > renewable-electricity curtailment and associated-gas flaring
-> across 128 regions. Scientific Data.
+> across 230 regions. Scientific Data.
 > https://doi.org/10.5281/zenodo.19835566
 
 Cite the **version DOI** (not the concept DOI) when writing

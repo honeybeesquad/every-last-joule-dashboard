@@ -30,8 +30,8 @@ dominates the current picture (Minas Gerais 4.4 GW [Southeast], Bahia
 followed by the US MISO footprint (1.8
 GW), Vietnam (1.7 GW), Germany (1.6 GW), and north India (1.5 GW).
 Reference legend inside the figure shows the size-to-GW scale. Source
-data: `src/lib/regions.ts` (n=128 regions) joined to
-`data/snapshots/last-good/*.json` (98 regions with live peak GW).
+data: `src/lib/regions.ts` (n=230 regions) joined to
+`data/snapshots/last-good/*.json` (107 regions with live peak GW).
 Snapshot-dependent: the top-8 labels refresh each dashboard build.
 
 ## Figure 2
@@ -80,7 +80,7 @@ by `scripts/validation/figure3_temporal_trace.py`.
 
 **Per-region confidence tier assignment.** The same geographic base
 as Figure 1 with dot size held constant and tier colour carrying the
-full visual signal. Teal dots (n=63) are T1a-live-tso regions backed
+full visual signal. Teal dots (n=102) are T1a-live-tso regions backed
 by hourly feeds + own-jurisdiction calibration rate and the 2020–2026
 HB backfill (±15% envelope). Teal dots (n=4) are T1b-live-domestic-
 anchored regions whose live feed pairs with a domestic-stat-agency
@@ -91,11 +91,11 @@ rate (±35.5% empirical). Amber dots (n=2) are T2 annual-calibrated
 regions with a published annual anchor and a flat-shape proxy
 (Austria APG, Russia Murmansk wind; ±20%). Brown squares (n=4) are
 T2-flare regions whose correct shape is 24/7 baseload (Permian, West
-Siberia, South Iraq, East Saudi). Terracotta dots (n=54) are T3
+Siberia, South Iraq, East Saudi). Terracotta dots (n=117) are T3
 typical-profile modelled regions — static annual anchors combined
 with a typical diurnal/seasonal shape (solar cosine, wind
 broad-overnight, hydro monthly-seasonal, mixed fuel-share,
-geothermal-overnight). Total n=128 regions. The figure
+geothermal-overnight). Total n=230 regions. The figure
 is the single-glance answer to "where is the dataset strong and
 where is it weak?" — T1 coverage is dense over North America, Europe,
 the Nordics, Australia, and Brazil, while large parts of South Asia,
