@@ -1,14 +1,14 @@
 # Validation — Colombia (`colombia`)
 
-Last updated: 2026-05-02 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-02 · Sprint: India W1 + Colombia T1b · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `colombia`
 - **Country:** COL
-- **Tier:** live
+- **Tier:** live-domestic-anchored (T1b — XM SinerGox API direct live path, committed CSV relay fallback)
 - **Kind:** hydro
-- **Source:** XM SinerGox API via Britta daily relay — system-wide vertimientos hidráulicos. T1b-CSV: trailing-365-day mean from committed daily CSV (Britta cron 18:30 UTC). 5-yr baseline 7.53 TWh/yr (range 0.53–13.12 TWh/yr ENSO-driven). Bimodal hydro-seasonal shape (Apr–Jun + Oct–Nov peaks).
+- **Source:** XM SinerGox API (servapibi.xm.com.co/daily, POST MetricId=VertEner Entity=Sistema). Direct live fetch tried first; geoblocked from non-Colombian IPs so falls back to committed CSV relay (Britta cron 18:30 UTC). 5-yr baseline 7.53 TWh/yr (range 0.53–13.12 TWh/yr ENSO-driven). Bimodal hydro-seasonal shape (Apr–Jun + Oct–Nov peaks). T1b, ±50% envelope.
 - **Source URL:** [https://servapibi.xm.com.co/daily](https://servapibi.xm.com.co/daily)
 - **Loader:** [`colombia.json.ts`](../../src/data/colombia.json.ts)
 - **Structural gap:** no
@@ -39,7 +39,7 @@ The 5-year mean of 7.53 TWh/yr is held as the T3 anchor. The natural year-on-yea
 
 The Colombian SIN is hydro-dominant (~60–70% of generation in normal years). Reservoir-overflow spillage (`vertimientos hidráulicos`) is the dominant "wasted potential renewable energy" mechanism and is conceptually identical to the spillage already modelled for Iceland (5.3 TWh/yr) and Sichuan (30 TWh/yr). VRE (solar / wind) curtailment in Colombia is currently negligible (<1%) per UPME / SER Colombia analyses — most "missing" La Guajira renewable generation is structural (transmission projects delayed) rather than operational spillage.
 
-The XM SinerGox API is geoblocked outside Colombia, but is **otherwise fully open** (no auth, no rate-limit observed, structured JSON). Promotion from T3-static to T1a-live is therefore gated only on a persistent Colombian-egress relay (a small Colombian VPS, a residential proxy with Colombian PoP, or a Cloudflare Worker with country-routing). For the v1.0 dataset, the static 5-year mean is sufficient and honest. T1a promotion is a follow-up.
+The XM SinerGox API is geoblocked outside Colombia, but is **otherwise fully open** (no auth, no rate-limit observed, structured JSON, POST body only). The loader now tries the live API first; from Vercel/CI it fails and falls back to the Britta-committed CSV. When the build environment has Colombian egress (or a Colombian-PoP proxy), the live path activates transparently. Reclassified from T1a to T1b on 2026-05-02 because the ENSO-cycle range (0.53–13.12 TWh/yr) exceeds the T1a ±15% fallback envelope and the ±50% T1b empirical band is the honest representation for a hydro-dominant grid with inter-annual ENSO swings.
 
 T3-modelled, ±40% envelope. Bimodal hydro-seasonal shape (`HYDRO_SEASONAL_SHARES.colombia`) lagging the rainfall peaks by reservoir-fill cycle: peak May-Jun and Nov-Dec, dry windows Jan-Feb and Jul-Aug.
 

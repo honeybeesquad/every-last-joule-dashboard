@@ -98,7 +98,7 @@ Last generated: 2026-05-02
 | Cote d'Ivoire | static | solar | 0 | [cote-divoire](./cote-divoire.md) |
 | Cameroon | static | hydro | 0 | [cameroon](./cameroon.md) |
 | DR Congo | static | hydro | 0 | [congo-drc](./congo-drc.md) |
-| Colombia | live | hydro | 0 | [colombia](./colombia.md) |
+| Colombia | live-domestic-anchored | hydro | 0 | [colombia](./colombia.md) |
 | Cabo Verde | static | solar | 0 | [cabo-verde](./cabo-verde.md) |
 | Costa Rica | static | hydro | 0 | [costa-rica](./costa-rica.md) |
 | Cuba | static | mixed | 0 | [cuba](./cuba.md) |
@@ -130,7 +130,7 @@ Last generated: 2026-05-02
 | Hungary | live | mixed | 7 | [hungary](./hungary.md) |
 | Indonesia | static | solar | 0 | [indonesia](./indonesia.md) |
 | India East | static | solar | 0 | [india-east](./india-east.md) |
-| North India | static | solar | 0 | [india-north](./india-north.md) |
+| Rajasthan | live | solar | 0 | [india-rajasthan](./india-rajasthan.md) |
 | India South | static | mixed | 0 | [india-south](./india-south.md) |
 | India West | static | mixed | 0 | [india-west](./india-west.md) |
 | Ireland (Republic) | live | wind | 0 | [ireland-republic](./ireland-republic.md) |
