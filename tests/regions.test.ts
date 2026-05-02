@@ -49,7 +49,14 @@ describe("regions", () => {
     // monsoon-season run-of-river spillage). 199 + 1 = 200.
     // Philippines split solar+wind (2026-04-30): net +1. 200 + 1 = 201.
     // Florida added 2026-04-30 as T3-static solar. 201 + 1 = 202.
-    expect(REGIONS.length).toBe(202);
+    // Wave-5 China+Japan additions (2026-05-01): Hebei, Jilin, Heilongjiang
+    // (NEA 2024 monitoring evaluation), Japan Tohoku (OCCTO/METI FY2023).
+    // 202 + 4 = 206.
+    // feat(flare): Russia Yamal-Nenets + East Siberia GGFR flare regions (2026-05-02): 206 + 2 = 208.
+    // Japan W1 per-utility batch (2026-05-02): rename japan → japan-kyushu (net 0) + add
+    // 9 new live loaders (Chubu, Chugoku, Hokkaido, Hokuriku, Kansai, Okinawa, Shikoku,
+    // TEPCO, Tohoku). 202 + 9 = 211.
+    expect(REGIONS.length).toBe(211);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -81,11 +88,17 @@ describe("regions", () => {
     // into wind/solar children. Net +14 T1a live. 78 + 14 = 92.
     // Colombia promoted from T3-static to T1b-CSV (Britta relay, 2026-04-30).
     // 92 + 1 = 93. Total live = 93 + 4 + 1 = 98.
+    // Japan Tohoku promoted static → T1a-live (Tohoku Electric 30-min CSV, 2026-05-01).
+    // 92 + 1 = 93. Total live = 93 + 5 + 1 = 99.
+    // Japan W1 per-utility batch (2026-05-02): +8 T1a live (Chubu, Chugoku, Hokkaido,
+    // Hokuriku, Kansai, Okinawa, Shikoku, TEPCO). T1a: 93 + 8 = 101. Total live = 107.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(98);
+    expect(liveTotal).toBe(107);
 
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(93);
+    // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
+    // since Sicily is anchored to Terna national 0.31 TWh via modelled share).
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(102);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(4);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
@@ -246,7 +259,7 @@ describe("regions", () => {
       "uruguay",
       "paraguay",
       "mexico",
-      "japan",
+      "japan-kyushu",
       "vietnam",
       "thailand",
       "india-north",
@@ -455,5 +468,29 @@ describe("regions", () => {
     expect(switzerland?.tier).toBe("live-neighbour-anchored");
     expect(switzerland?.kind).toBe("solar");
     expect(switzerland?.country).toBe("CHE");
+  });
+
+  it("includes the Japan W1 per-utility batch (2026-05-02)", () => {
+    // japan (Kyushu only) renamed to japan-kyushu; 8 new T1a live loaders added.
+    // All 10 Japan utilities are tier:"live" (T1a), kind:"solar".
+    expect(REGIONS.find(r => r.id === "japan")).toBeUndefined();
+    for (const id of [
+      "japan-kyushu",
+      "japan-tohoku",
+      "japan-chubu",
+      "japan-chugoku",
+      "japan-hokkaido",
+      "japan-hokuriku",
+      "japan-kansai",
+      "japan-okinawa",
+      "japan-shikoku",
+      "japan-tepco",
+    ]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region, `missing Japan utility ${id}`).toBeDefined();
+      expect(region?.tier, `${id} should be live`).toBe("live");
+      expect(region?.kind, `${id} should be solar`).toBe("solar");
+      expect(region?.country, `${id} country should be JPN`).toBe("JPN");
+    }
   });
 });

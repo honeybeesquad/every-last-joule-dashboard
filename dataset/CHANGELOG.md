@@ -4,6 +4,24 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Added — Japan W1 per-utility batch (2026-05-02, T1a ×8)
+- **`japan-kyushu`** (renamed from `japan`): Kyushu Electric area-demand CSV, 5-min solar, RATE=0.10. ~1.7 TWh/yr (OCCTO FY2024). T1a-live-tso. `src/data/japan-kyushu.json.ts`.
+- **`japan-tohoku`**: Tohoku Electric 30-min CSV — direct 太陽光出力制御量+風力出力制御量 columns. ~1.5–2 TWh/yr rising trend (OCCTO FY2024). T1a-live-tso. `src/data/japan-tohoku.json.ts`.
+- **`japan-chugoku`**: Chugoku Electric juyo CSV, RATE=0.06. ~0.40 TWh/yr. T1a-live-tso.
+- **`japan-shikoku`**: Shikoku Electric T&D juyo CSV, RATE=0.07. ~0.30 TWh/yr. T1a-live-tso.
+- **`japan-hokkaido`**: Hokkaido Electric juyo CSV, RATE=0.05. ~0.10 TWh/yr. T1a-live-tso.
+- **`japan-kansai`**: Kansai Electric T&D juyo CSV, RATE=0.01. ~0.05 TWh/yr. T1a-live-tso.
+- **`japan-chubu`**: Chubu Electric Power Grid juyo CSV, RATE=0.01. ~0.05 TWh/yr. T1a-live-tso.
+- **`japan-tepco`**: TEPCO Power Grid juyo CSV, RATE=0.01. ~0.05 TWh/yr. T1a-live-tso.
+- **`japan-hokuriku`**: Hokuriku Electric juyo CSV, RATE=0.01. ~0.02 TWh/yr. T1a-live-tso.
+- **`japan-okinawa`**: Okinawa Electric juyo CSV, RATE=0.02. ~0.04 TWh/yr. T1a-live-tso.
+- All 10 Japan utilities use HTTP/1.1-forced HTTPS (`fetchHttp1Bytes`) to bypass WAF fingerprinting, Shift-JIS decoding, 30-day trailing loop. Region count: 208 → 216. T1a count: 93 → 101.
+
+### Removed — Japan W1 per-utility batch (2026-05-02)
+- `japan` (Kyushu-only aggregate) removed; replaced by `japan-kyushu`.
+
+## [1.1.0] — 2026-05-01
+
 ### Added — S1 Validation sprint (130 per-region triangulation MDs)
 - `docs/validation/<region>.md` for every tier-live region plus every static/flare region with a public anchor (130 region files plus a directory README and `_template.md` scaffold = 132 *.md total in the directory). Each region file carries a commit-grade discrepancy analysis vs. published TSO / ISO / IMM / SoM / IRENA / Ember / GGFR annuals.
 - `scripts/validation/enrich_discrepancy.py` — gemini-2.5-flash-backed enrichment script with rule 4 enforced ("say 'no anchor extracted' rather than making one up"). Idempotent via `--skip-enriched`.

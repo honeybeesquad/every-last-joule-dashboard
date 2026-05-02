@@ -1,5 +1,5 @@
-import { request as httpsRequest, type RequestOptions as HttpsRequestOptions } from "node:https";
 import { pathToFileURL } from "node:url";
+import { fetchHttp1Bytes } from "../lib/fetch.js";
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
@@ -23,12 +23,11 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
  *
  * Calibration: RATE = 0.10. 2024 Kyushu solar curtailment ≈ 1.7 TWh against
  * ~16 TWh solar generation (10.6%); rounded to 10% per the Phase-2.6 brief.
- * Kyushu is the bulk of OCCTO-reported nationwide curtailment, so we treat
- * its number as Japan's number for now (per-area split is a follow-up brief).
+ * OCCTO 再生可能エネルギーの出力制御の見通しに関するレポート (FY2024 edition).
  *
  * Loop: daily back 30 days for backfill.
  */
-const REGION_ID = "japan";
+const REGION_ID = "japan-kyushu";
 const RATE = 0.10;
 const BASE_URL = "https://www.kyuden.co.jp/td_power_usages/csv";
 /** 万kW → MW */
@@ -136,11 +135,10 @@ function jstDateTimeToIsoUtc(dateRaw: string, timeRaw: string): string | undefin
 }
 
 /**
- * Build a Japan RegionData payload from the merged 30-day parsed pointset.
- * Extracted for fixture-test reuse (mirror of buildFranceData / parseOntarioXml
- * patterns).
+ * Build a Kyushu RegionData payload from the merged 30-day parsed pointset.
+ * Extracted for fixture-test reuse.
  */
-export function buildJapanRegionData(points: CurtailmentPoint[], nowIso: string): RegionData {
+export function buildJapanKyushuData(points: CurtailmentPoint[], nowIso: string): RegionData {
   const lastTs = points.at(-1)?.utcTimestamp ?? nowIso;
   return {
     regionId: REGION_ID,
@@ -151,82 +149,8 @@ export function buildJapanRegionData(points: CurtailmentPoint[], nowIso: string)
     lastUpdated: lastTs,
     lastSuccessAt: lastTs,
     sourceNote:
-      "Kyushu Electric area-demand CSV hourly solar × 10% calibrated curtailment (Kyushu 2024 anchor: ~1.7 TWh/yr; bulk of OCCTO-reported Japan curtailment)",
+      "Kyushu Electric area-demand CSV hourly solar × 10% calibrated curtailment (OCCTO FY2024 Kyushu anchor: ~1.7 TWh/yr)",
   };
-}
-
-/**
- * Fetch a URL via the classic `node:https` module forcing HTTP/1.1 via ALPN.
- * The Kyushu Electric upstream is fronted by a Scutum WAF that fingerprints
- * the HTTP/2 ClientHello sent by Node's default fetch (undici) and 403s it,
- * but accepts HTTP/1.1 with a browser-style User-Agent. This helper bypasses
- * undici entirely for that single endpoint family. Returns the response body
- * as a `Uint8Array`; non-2xx is mapped to a thrown Error.
- */
-function fetchHttp1Bytes(url: string, timeoutMs: number): Promise<Uint8Array> {
-  return new Promise((resolve, reject) => {
-    const u = new URL(url);
-    // The Kyushu Electric upstream is fronted by a Scutum WAF that does
-    // both HTTP/2 ClientHello fingerprinting AND JA3-style TLS-handshake
-    // fingerprinting. Default Node fetch (undici) is rejected; raw Node
-    // https with the right TLS options is accepted. Empirically the WAF
-    // accepts TLS 1.2 + curl's CHACHA20-first cipher list + http/1.1
-    // ALPN; anything else (TLS 1.3 default, http/2 ALPN, modern cipher
-    // ordering) gets a 403. ALPNProtocols / minVersion / maxVersion /
-    // ciphers / ecdhCurve are tls.SecureContextOptions that node:https
-    // passes through; the RequestOptions TS type doesn't list them all
-    // so we widen the shape locally.
-    const opts: HttpsRequestOptions & {
-      ALPNProtocols?: string[];
-      minVersion?: string;
-      maxVersion?: string;
-      ciphers?: string;
-      ecdhCurve?: string;
-    } = {
-      hostname: u.hostname,
-      path: u.pathname + u.search,
-      method: "GET",
-      ALPNProtocols: ["http/1.1"],
-      minVersion: "TLSv1.2",
-      maxVersion: "TLSv1.2",
-      ciphers: [
-        "ECDHE-ECDSA-CHACHA20-POLY1305",
-        "ECDHE-RSA-CHACHA20-POLY1305",
-        "ECDHE-ECDSA-AES128-GCM-SHA256",
-        "ECDHE-RSA-AES128-GCM-SHA256",
-        "ECDHE-ECDSA-AES256-GCM-SHA384",
-        "ECDHE-RSA-AES256-GCM-SHA384",
-      ].join(":"),
-      ecdhCurve: "X25519:prime256v1:secp384r1",
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
-        Accept: "text/csv,*/*",
-        "Accept-Language": "en-US,en;q=0.9",
-      },
-      timeout: timeoutMs,
-    };
-    const req = httpsRequest(
-      opts,
-      (res) => {
-        if (!res.statusCode || res.statusCode < 200 || res.statusCode >= 300) {
-          res.resume();
-          reject(new Error(`HTTP ${res.statusCode ?? "?"} for ${url}`));
-          return;
-        }
-        const chunks: Buffer[] = [];
-        res.on("data", (c: Buffer) => chunks.push(c));
-        res.on("end", () => {
-          const buf = Buffer.concat(chunks);
-          resolve(new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength));
-        });
-        res.on("error", reject);
-      },
-    );
-    req.on("timeout", () => req.destroy(new Error(`timeout after ${timeoutMs}ms for ${url}`)));
-    req.on("error", reject);
-    req.end();
-  });
 }
 
 /**
@@ -302,7 +226,7 @@ const run = async (): Promise<RegionData> => {
   // Sort ascending by timestamp so latestProfile sees the freshest day last.
   allPoints.sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
 
-  return buildJapanRegionData(allPoints, now.toISOString());
+  return buildJapanKyushuData(allPoints, now.toISOString());
 };
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
@@ -315,8 +239,7 @@ if (isMain) {
   })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
-      console.error("japan loader failed", err);
+      console.error("japan-kyushu loader failed", err);
       process.exit(1);
     });
 }
-

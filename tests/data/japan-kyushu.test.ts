@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildJapanRegionData, parseKyushuCsv } from "../../src/data/japan.json";
+import { buildJapanKyushuData, parseKyushuCsv } from "../../src/data/japan-kyushu.json";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // Fixture is the upstream Shift-JIS bytes verbatim; the parser receives a
@@ -11,7 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixtureBytes = readFileSync(join(__dirname, "../fixtures/japan-kyushu-sample.csv"));
 const fixture = new TextDecoder("shift-jis").decode(fixtureBytes);
 
-describe("kyushu parser (japan loader)", () => {
+describe("kyushu parser (japan-kyushu loader)", () => {
   it("locates the 5-min solar section by the 4-column DATE,TIME header", () => {
     const { points, sampleCount } = parseKyushuCsv(fixture);
     expect(points.length).toBeGreaterThan(0);
@@ -58,10 +58,10 @@ describe("kyushu parser (japan loader)", () => {
     expect(peakMw).toBeLessThan(5000);
   });
 
-  it("buildJapanRegionData returns a valid 24-element profile shape with regionId=japan", () => {
+  it("buildJapanKyushuData returns a valid 24-element profile shape with regionId=japan-kyushu", () => {
     const { points } = parseKyushuCsv(fixture);
-    const region = buildJapanRegionData(points, new Date("2026-04-26T00:00:00Z").toISOString());
-    expect(region.regionId).toBe("japan");
+    const region = buildJapanKyushuData(points, new Date("2026-04-26T00:00:00Z").toISOString());
+    expect(region.regionId).toBe("japan-kyushu");
     expect(region.profile).toHaveLength(24);
     for (const v of region.profile) {
       expect(Number.isFinite(v)).toBe(true);
