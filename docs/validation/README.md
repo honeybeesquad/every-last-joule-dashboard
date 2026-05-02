@@ -1,6 +1,6 @@
 # Validation index
 
-Last generated: 2026-04-30
+Last generated: 2026-05-02
 
 | Region | Tier | Kind | Backfill years | Validation doc |
 |---|---|---|---|---|
@@ -68,6 +68,25 @@ Last generated: 2026-04-30
 | Switzerland | live-neighbour-anchored | solar | 7 | [switzerland](./switzerland.md) |
 | Atacama | live | solar | 0 | [atacama](./atacama.md) |
 | Chile Wind | live | wind | 0 | [chile-wind](./chile-wind.md) |
+| Anhui | static | solar | 0 | [china-anhui](./china-anhui.md) |
+| Beijing | static | solar | 0 | [china-beijing](./china-beijing.md) |
+| Chongqing | static | mixed | 0 | [china-chongqing](./china-chongqing.md) |
+| Fujian | static | mixed | 0 | [china-fujian](./china-fujian.md) |
+| Guangdong | static | mixed | 0 | [china-guangdong](./china-guangdong.md) |
+| Guizhou | static | mixed | 0 | [china-guizhou](./china-guizhou.md) |
+| Hainan | static | solar | 0 | [china-hainan](./china-hainan.md) |
+| Henan | static | solar | 0 | [china-henan](./china-henan.md) |
+| Hubei | static | mixed | 0 | [china-hubei](./china-hubei.md) |
+| Hunan | static | mixed | 0 | [china-hunan](./china-hunan.md) |
+| Jiangsu | static | mixed | 0 | [china-jiangsu](./china-jiangsu.md) |
+| Jiangxi | static | solar | 0 | [china-jiangxi](./china-jiangxi.md) |
+| Liaoning | static | wind | 0 | [china-liaoning](./china-liaoning.md) |
+| Shaanxi | static | solar | 0 | [china-shaanxi](./china-shaanxi.md) |
+| Shandong | static | solar | 0 | [china-shandong](./china-shandong.md) |
+| Shanghai | static | solar | 0 | [china-shanghai](./china-shanghai.md) |
+| Shanxi | static | mixed | 0 | [china-shanxi](./china-shanxi.md) |
+| Tianjin | static | mixed | 0 | [china-tianjin](./china-tianjin.md) |
+| Zhejiang | static | mixed | 0 | [china-zhejiang](./china-zhejiang.md) |
 | Gansu | static | mixed | 0 | [gansu](./gansu.md) |
 | Inner Mongolia | static | wind | 0 | [inner-mongolia](./inner-mongolia.md) |
 | Ningxia | static | mixed | 0 | [ningxia](./ningxia.md) |
@@ -79,7 +98,7 @@ Last generated: 2026-04-30
 | Cote d'Ivoire | static | solar | 0 | [cote-divoire](./cote-divoire.md) |
 | Cameroon | static | hydro | 0 | [cameroon](./cameroon.md) |
 | DR Congo | static | hydro | 0 | [congo-drc](./congo-drc.md) |
-| Colombia | live | hydro | 0 | [colombia](./colombia.md) |
+| Colombia | live-domestic-anchored | hydro | 0 | [colombia](./colombia.md) |
 | Cabo Verde | static | solar | 0 | [cabo-verde](./cabo-verde.md) |
 | Costa Rica | static | hydro | 0 | [costa-rica](./costa-rica.md) |
 | Cuba | static | mixed | 0 | [cuba](./cuba.md) |
@@ -111,9 +130,10 @@ Last generated: 2026-04-30
 | Hungary | live | mixed | 7 | [hungary](./hungary.md) |
 | Indonesia | static | solar | 0 | [indonesia](./indonesia.md) |
 | India East | static | solar | 0 | [india-east](./india-east.md) |
-| North India | static | solar | 0 | [india-north](./india-north.md) |
-| India South | static | mixed | 0 | [india-south](./india-south.md) |
-| India West | static | mixed | 0 | [india-west](./india-west.md) |
+| Rajasthan | live | solar | 0 | [india-rajasthan](./india-rajasthan.md) |
+| Gujarat | live | solar | 0 | [india-gujarat](./india-gujarat.md) |
+| Tamil Nadu | live | wind | 0 | [india-tamil-nadu](./india-tamil-nadu.md) |
+| Karnataka | live | solar | 0 | [india-karnataka](./india-karnataka.md) |
 | Ireland (Republic) | live | wind | 0 | [ireland-republic](./ireland-republic.md) |
 | Iran | static | solar | 0 | [iran](./iran.md) |
 | Iraq (non-flare) | static | solar | 0 | [iraq-mainland](./iraq-mainland.md) |
@@ -126,7 +146,16 @@ Last generated: 2026-04-30
 | Italy South | live | mixed | 0 | [italy-south](./italy-south.md) |
 | Jamaica | static | solar | 0 | [jamaica](./jamaica.md) |
 | Jordan | static | solar | 0 | [jordan](./jordan.md) |
-| Japan | live | solar | 0 | [japan](./japan.md) |
+| Chubu (Japan) | live | solar | 0 | [japan-chubu](./japan-chubu.md) |
+| Chugoku (Japan) | live | solar | 0 | [japan-chugoku](./japan-chugoku.md) |
+| Hokkaido (Japan) | live | solar | 0 | [japan-hokkaido](./japan-hokkaido.md) |
+| Hokuriku (Japan) | live | solar | 0 | [japan-hokuriku](./japan-hokuriku.md) |
+| Kansai (Japan) | live | solar | 0 | [japan-kansai](./japan-kansai.md) |
+| Kyushu (Japan) | live | solar | 0 | [japan-kyushu](./japan-kyushu.md) |
+| Okinawa (Japan) | live | solar | 0 | [japan-okinawa](./japan-okinawa.md) |
+| Shikoku (Japan) | live | solar | 0 | [japan-shikoku](./japan-shikoku.md) |
+| TEPCO (Japan) | live | solar | 0 | [japan-tepco](./japan-tepco.md) |
+| Tohoku (Japan) | live | solar | 0 | [japan-tohoku](./japan-tohoku.md) |
 | Kazakhstan | static | wind | 0 | [kazakhstan](./kazakhstan.md) |
 | Kenya | static | hydro | 0 | [kenya](./kenya.md) |
 | Jeju (S. Korea) | static | wind | 0 | [jeju](./jeju.md) |

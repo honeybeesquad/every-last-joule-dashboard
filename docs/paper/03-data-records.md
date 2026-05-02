@@ -13,7 +13,7 @@ URLs.
 ## 3.1 Per-region JSON snapshots
 
 **Location:** `data/snapshots/last-good/<regionId>.json`
-**Count:** 128 files, one per region, covering every entry in
+**Count:** 230 files, one per region, covering every entry in
 `src/lib/regions.ts`.
 **Format:** UTF-8 JSON, ≈ 3 KB per file, schema enforced by
 `dataset/schema/region-snapshot.schema.json` (JSON Schema Draft 2020-12).
@@ -64,7 +64,7 @@ Full field descriptions and update semantics: `dataset/SCHEMA.md`.
 
 **Location:** `data/historical/curtailment_history.parquet`
 **Format:** Apache Parquet 2.6, Snappy compression, typed columns.
-**Cadence:** one row per region per scheduled build (~128 rows / 6 h
+**Cadence:** one row per region per scheduled build (~230 rows / 6 h
 ≈ 17 MB / year), appended by `scripts/append_history.py` via
 `.github/workflows/history-append.yml`.
 **Granularity:** build-level snapshot — each row captures the

@@ -52,7 +52,14 @@ describe("regions", () => {
     // Wave-5 China+Japan additions (2026-05-01): Hebei, Jilin, Heilongjiang
     // (NEA 2024 monitoring evaluation), Japan Tohoku (OCCTO/METI FY2023).
     // 202 + 4 = 206.
-    expect(REGIONS.length).toBe(206);
+    // feat(flare): Russia Yamal-Nenets + East Siberia GGFR flare regions (2026-05-02): 206 + 2 = 208.
+    // Japan W1 per-utility batch (2026-05-02): rename japan → japan-kyushu (net 0) + add
+    // 9 new live loaders (Chubu, Chugoku, Hokkaido, Hokuriku, Kansai, Okinawa, Shikoku,
+    // TEPCO, Tohoku). 202 + 9 = 211.
+    // W2 China provinces (2026-05-02): 19 new T3-static loaders. 211 + 19 = 230.
+    // India W2 (2026-05-02): replace india-south + india-west with india-gujarat +
+    // india-tamil-nadu + india-karnataka (net +1). 230 + 1 = 231.
+    expect(REGIONS.length).toBe(231);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -84,14 +91,25 @@ describe("regions", () => {
     // into wind/solar children. Net +14 T1a live. 78 + 14 = 92.
     // Colombia promoted from T3-static to T1b-CSV (Britta relay, 2026-04-30).
     // 92 + 1 = 93. Total live = 93 + 4 + 1 = 98.
+    // Japan Tohoku promoted static → T1a-live (Tohoku Electric 30-min CSV, 2026-05-01).
+    // 92 + 1 = 93. Total live = 93 + 5 + 1 = 99.
+    // Japan W1 per-utility batch (2026-05-02): +8 T1a live (Chubu, Chugoku, Hokkaido,
+    // Hokuriku, Kansai, Okinawa, Shikoku, TEPCO). T1a: 93 + 8 = 101. Total live = 107.
+    // india-north (static) renamed to india-rajasthan (live, T1a): total live 107→108.
+    // colombia reclassified from "live" (T1a) to "live-domestic-anchored" (T1b): T1a stays 102.
+    // India W2 (2026-05-02): india-south + india-west (static) replaced by
+    // india-gujarat + india-tamil-nadu + india-karnataka (T1a live). +3 T1a. Total live = 111.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(98);
+    expect(liveTotal).toBe(111);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
-    // since Sicily is anchored to Terna national 0.31 TWh via modelled share).
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(92);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(5);
+    // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
+    // colombia moved T1a→T1b: "live" 103→102; "live-domestic-anchored" 4→5.
+    // India W2 added +3 T1a: india-gujarat, india-tamil-nadu, india-karnataka → live=104.
+    // T1b=6: baltics, italy-north-zone, italy-sardinia, netherlands, colombia, italy-sicily.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(104);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(6);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
 
@@ -138,9 +156,10 @@ describe("regions", () => {
     // Colombia promoted T3-static → T1b-live (Britta relay, 2026-04-30). 99 - 1 = 98.
     // Philippines split: 1 static → 2 statics (solar+wind). 98 + 1 = 99.
     // Florida added 2026-04-30 as T3-static solar. 99 + 1 = 100.
-    // Wave-5 (2026-05-01): Hebei, Jilin, Heilongjiang, Japan Tohoku — all T3-static.
-    // 100 + 4 = 104.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(104);
+    // W2 China provinces (2026-05-02): 19 new T3-static regions. 100 + 19 = 119.
+    // india-north renamed to india-rajasthan (live, T1a): 119 - 1 = 118.
+    // India W2 (2026-05-02): india-south + india-west promoted to T1a live: 118 - 2 = 116.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(116);
   });
 
   it("has 4 flare regions", () => {
@@ -164,9 +183,13 @@ describe("regions", () => {
       "czech-republic", "bulgaria", "gb-england-wales",
       "norway-no1", "norway-no2", "norway-no3", "norway-no4",
       "new-zealand",
-      "gansu", "ningxia", "india-south", "india-west", "morocco",
+      "gansu", "ningxia", "morocco",
       "taiwan", "pakistan", "manitoba", "hawaii-island",
       "austria", "cuba", "rwanda",
+      // W2 China provinces (2026-05-02) — mixed wind+solar curtailment
+      "china-guangdong", "china-jiangsu", "china-hunan", "china-hubei",
+      "china-shanxi", "china-zhejiang", "china-fujian", "china-guizhou",
+      "china-chongqing", "china-tianjin",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
@@ -253,10 +276,10 @@ describe("regions", () => {
       "uruguay",
       "paraguay",
       "mexico",
-      "japan",
+      "japan-kyushu",
       "vietnam",
       "thailand",
-      "india-north",
+      "india-rajasthan",
       "cyprus",
       "ethiopia",
     ]) {
@@ -335,8 +358,7 @@ describe("regions", () => {
       "ningxia",
       "yunnan",
       "tibet",
-      "india-south",
-      "india-west",
+      // india-south + india-west promoted to T1a live in India W2 (2026-05-02).
       "india-east",
       "pakistan",
       "iran",
@@ -390,15 +412,17 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "brazil-other-solar")?.name).toBe("Brazil Other ONS States Solar");
   });
 
-  it("includes Colombia as T1b-live hydro (vertimientos hidráulicos via Britta relay)", () => {
+  it("includes Colombia as T1b live-domestic-anchored hydro (vertimientos hidráulicos)", () => {
     // Colombia promoted from T3-static to T1b-CSV loader on 2026-04-30.
-    // The XM API is geoblocked outside Colombia; a Britta daily relay
-    // (cron 18:30 UTC) commits fresh CSV data to data/historical/. The
-    // colombia.json.ts loader reads the CSV and computes a trailing-365-day
-    // annualised figure. Tier is now "live" (CSV-backed, not fully static).
+    // Reclassified from T1a ("live") to T1b ("live-domestic-anchored") on
+    // 2026-05-02: the XM API is geoblocked outside Colombia, so live data
+    // reaches the loader via a committed CSV relay (Britta cron 18:30 UTC)
+    // or, when reachable, a direct POST to servapibi.xm.com.co/daily.
+    // The ENSO-cycle range (0.53–13.12 TWh/yr) exceeds the ±15% T1a envelope,
+    // making the ±50% T1b empirical envelope the honest representation.
     const col = REGIONS.find(r => r.id === "colombia");
     expect(col).toBeDefined();
-    expect(col?.tier).toBe("live");
+    expect(col?.tier).toBe("live-domestic-anchored");
     expect(col?.kind).toBe("hydro");
   });
 
@@ -462,5 +486,29 @@ describe("regions", () => {
     expect(switzerland?.tier).toBe("live-neighbour-anchored");
     expect(switzerland?.kind).toBe("solar");
     expect(switzerland?.country).toBe("CHE");
+  });
+
+  it("includes the Japan W1 per-utility batch (2026-05-02)", () => {
+    // japan (Kyushu only) renamed to japan-kyushu; 8 new T1a live loaders added.
+    // All 10 Japan utilities are tier:"live" (T1a), kind:"solar".
+    expect(REGIONS.find(r => r.id === "japan")).toBeUndefined();
+    for (const id of [
+      "japan-kyushu",
+      "japan-tohoku",
+      "japan-chubu",
+      "japan-chugoku",
+      "japan-hokkaido",
+      "japan-hokuriku",
+      "japan-kansai",
+      "japan-okinawa",
+      "japan-shikoku",
+      "japan-tepco",
+    ]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region, `missing Japan utility ${id}`).toBeDefined();
+      expect(region?.tier, `${id} should be live`).toBe("live");
+      expect(region?.kind, `${id} should be solar`).toBe("solar");
+      expect(region?.country, `${id} country should be JPN`).toBe("JPN");
+    }
   });
 });
