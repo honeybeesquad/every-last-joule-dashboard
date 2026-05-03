@@ -6,12 +6,12 @@ Last updated: 2026-05-03 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `india-maharashtra`
 - **Country:** IND
-- **Tier:** live
+- **Tier:** static
 - **Kind:** mixed
-- **Source:** MSLDC (Maharashtra State Load Despatch Centre / MSEDCL) — RE curtailment and system data at msldc.mahavedha.com. Geoblocked from non-Indian IP ranges; India-egress relay activates live path. Calibrated to POSOCO Western Region 2024 (~0.3 TWh/yr mixed solar+wind curtailment; Solapur solar + Satara/Dhule wind corridor). T1a-live-tso, ±15% fallback.
+- **Source:** MSLDC (Maharashtra State Load Despatch Centre / MSEDCL) — RE curtailment and system data at msldc.mahavedha.com. Geoblocked from non-Indian IP ranges; loader currently emits T3-modelled typical-shape calibrated to POSOCO Western Region 2024 (~0.3 TWh/yr mixed solar+wind curtailment; Solapur solar + Satara/Dhule wind corridor). Will be promoted to T1a-live-tso when the India-egress relay activates the live parse.
 - **Source URL:** [https://msldc.mahavedha.com/](https://msldc.mahavedha.com/)
 - **Loader:** [`india-maharashtra.json.ts`](../../src/data/india-maharashtra.json.ts)
-- **Structural gap:** no
+- **Structural gap:** yes
 
 ## Calibration
 

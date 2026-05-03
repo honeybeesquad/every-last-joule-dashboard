@@ -29,21 +29,23 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     REGION_ID,
     9,
     1.0,
-    `${probeNote}Typical-shape T1a fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
+    `${probeNote}Typical-shape T3-modelled fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
     `(~1.0 TWh/yr Tamil Nadu wind curtailment; India's largest wind state, ` +
     `Gulf of Mannar + Palladam-Coimbatore corridor). ` +
-    `State-level TNSLDC source established; live path activates when India-egress relay is available.`,
+    `State-level TNSLDC source established; will be promoted to T1a-live-tso when the India-egress relay activates the live parse.`,
     "2024",
   );
-  // Override T3-modelled → T1a-live-tso: this loader targets TNSLDC as the
-  // intended T1a source. The typical-shape is the current fallback.
-  return applyUncertainty(base, { regionTier: "live" });
+  // T3-modelled while the TNSLDC live path is unreachable from the build
+  // environment (geoblocked). When the India-egress relay lands and the
+  // TNSLDC parser is implemented, flip both this and the canonical
+  // src/lib/regions.ts entry back to T1a-live-tso.
+  return applyUncertainty(base, { regionTier: "static", profileKind: "wind" });
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run(), { regionTier: "live" })
+  withFallback(REGION_ID, () => run(), { regionTier: "static" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("india-tamil-nadu loader failed", err);

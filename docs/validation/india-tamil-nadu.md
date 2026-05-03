@@ -6,12 +6,12 @@ Last updated: 2026-05-03 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `india-tamil-nadu`
 - **Country:** IND
-- **Tier:** live
+- **Tier:** static
 - **Kind:** wind
-- **Source:** TNSLDC (Tamil Nadu State Load Despatch Centre / TANTRANSCO) — RE curtailment and system operation reports at tnsldc.com. Geoblocked from non-Indian IP ranges; India-egress relay activates live path. Calibrated to POSOCO South Region 2024 (~1.0 TWh/yr Tamil Nadu wind curtailment; India's largest wind state). T1a-live-tso, ±15% fallback.
+- **Source:** TNSLDC (Tamil Nadu State Load Despatch Centre / TANTRANSCO) — RE curtailment and system operation reports at tnsldc.com. Geoblocked from non-Indian IP ranges; loader currently emits T3-modelled typical-shape calibrated to POSOCO South Region 2024 (~1.0 TWh/yr wind curtailment; India's largest wind state). Will be promoted to T1a-live-tso when the India-egress relay activates the live parse.
 - **Source URL:** [https://tnsldc.com/](https://tnsldc.com/)
 - **Loader:** [`india-tamil-nadu.json.ts`](../../src/data/india-tamil-nadu.json.ts)
-- **Structural gap:** no
+- **Structural gap:** yes
 
 ## Calibration
 

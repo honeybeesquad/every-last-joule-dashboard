@@ -30,21 +30,22 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     REGION_ID,
     6.5,
     3.5,
-    `${probeNote}Typical-shape T1a fallback calibrated to Ember India 2025 report ` +
+    `${probeNote}Typical-shape T3-modelled fallback calibrated to Ember India 2025 report ` +
     `(2.3 TWh solar curtailed May-Dec 2025 → annualised ~3.5 TWh/yr, Rajasthan transmission bottlenecks). ` +
-    `State-level RRVPNL SLDC source established; live path activates when India-egress relay is available.`,
+    `State-level RRVPNL SLDC source established; will be promoted to T1a-live-tso when the India-egress relay activates the live parse.`,
     "2025",
   );
-  // Override T3-modelled → T1a-live-tso: this loader targets a state-level
-  // TSO source with own-jurisdiction anchor. The typical-shape is the current
-  // fallback, not the intended steady-state.
-  return applyUncertainty(base, { regionTier: "live" });
+  // T3-modelled while the RRVPNL SLDC live path is unreachable from the
+  // build environment (geoblocked). When the India-egress relay lands and
+  // the SLDC parser is implemented, flip both this and the canonical
+  // src/lib/regions.ts entry back to T1a-live-tso.
+  return applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run(), { regionTier: "live" })
+  withFallback(REGION_ID, () => run(), { regionTier: "static" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("india-rajasthan loader failed", err);

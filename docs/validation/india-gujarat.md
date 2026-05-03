@@ -6,12 +6,12 @@ Last updated: 2026-05-03 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `india-gujarat`
 - **Country:** IND
-- **Tier:** live
+- **Tier:** static
 - **Kind:** solar
-- **Source:** GSLDC (Gujarat State Load Despatch Centre / GETCO) — RE curtailment reports at sldc.gujarat.gov.in. Geoblocked from non-Indian IP ranges; India-egress relay activates live path. Calibrated to POSOCO/Ember India 2024 (~1.0 TWh/yr solar curtailment, Khavda-Kutch transmission bottlenecks). T1a-live-tso, ±15% fallback.
+- **Source:** GSLDC (Gujarat State Load Despatch Centre / GETCO) — RE curtailment reports at sldc.gujarat.gov.in. Geoblocked from non-Indian IP ranges; loader currently emits T3-modelled typical-shape calibrated to POSOCO/Ember India 2024 (~1.0 TWh/yr solar curtailment). Will be promoted to T1a-live-tso when the India-egress relay activates the live parse.
 - **Source URL:** [https://sldc.gujarat.gov.in/](https://sldc.gujarat.gov.in/)
 - **Loader:** [`india-gujarat.json.ts`](../../src/data/india-gujarat.json.ts)
-- **Structural gap:** no
+- **Structural gap:** yes
 
 ## Calibration
 
