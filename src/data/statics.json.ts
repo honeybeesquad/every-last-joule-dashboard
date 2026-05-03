@@ -88,9 +88,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // PV utilisation 92.2%; Huaon/NBS 2024 generation by fuel gives wind
   // 70.79 TWh and PV 38.037 TWh, implying ~8.2 TWh curtailed.
   xinjiang: { annualTWh: 8.2, kind: "solar", localSolarPeakUTC: 6.33, source: "NEA 2024 renewable monitoring evaluation + Huaon/NBS generation by fuel (Xinjiang wind/PV curtailment ~8.2 TWh; solar-shaped fallback centred on local noon UTC 06:20)", reportDate: "2024" },
-  // Phase-2.7 Russia flare + NE China wind (2026-05-03)
-  "russia-yamal":     { annualTWh: 10.0, kind: "flat", source: "GGFR 2024 Yamal-Nenets gas flaring (Gazprom/Novatek; ~2.71 bcm × 3.6925 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
-  "russia-e-siberia": { annualTWh: 9.0,  kind: "flat", source: "GGFR 2024 East Siberia oil/gas flaring (ESPO corridor + Sakhalin; ~2.44 bcm × 3.6925 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
+  // Phase-2.7 NE China wind (2026-05-03)
   "china-hebei":        { annualTWh: 2.0, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~2 TWh/yr (north China wind corridor, Zhangjiakou transmission bottleneck)", reportDate: "2025" },
   "china-heilongjiang": { annualTWh: 1.5, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~1.5 TWh/yr (northeast grid; Daqing-area wind build-out)", reportDate: "2025" },
   "china-jilin":        { annualTWh: 1.0, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~1 TWh/yr (northeast grid; Baicheng wind corridor)", reportDate: "2025" },
