@@ -16,7 +16,8 @@ describe("static regions", () => {
     // World Bank cite — moved entry from research-pool to REGIONS).
     const data = buildAllStatics();
     // philippines moved to standalone src/data/philippines.json.ts (2026-04-30): 58→57
-    expect(Object.keys(data).length).toBe(57);
+    // Phase-2.7 misc (2026-05-03): +tva, +qatar, +kuwait canonical → 57 + 3 = 60.
+    expect(Object.keys(data).length).toBe(60);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -26,8 +27,11 @@ describe("static regions", () => {
 
     const researchData = buildAllStatics({ includeCandidates: true });
     // philippines removed from statics (2026-04-30): 123→122
-    expect(Object.keys(researchData).length).toBe(122);
-    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(65);
+    // Phase-2.7 misc (2026-05-03): +tva new entry in STATIC_REGIONS → 122 + 1 = 123.
+    // (qatar and kuwait existed as candidates; now canonical — no net change to total.)
+    expect(Object.keys(researchData).length).toBe(123);
+    // qatar and kuwait moved canonical (-2 non-canonical). 65 - 2 = 63.
+    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(63);
   });
 
   it("includes all expected ids", () => {
@@ -92,6 +96,10 @@ describe("static regions", () => {
       "zambia",
       "zimbabwe",
       // philippines moved to standalone src/data/philippines.json.ts (2026-04-30)
+      // Phase-2.7 misc (2026-05-03)
+      "tva",
+      "qatar",
+      "kuwait",
     ];
     for (const id of expected) expect(data[id]).toBeDefined();
   });

@@ -218,7 +218,7 @@ No proprietary binary blobs, no closed schemas.
 **Evidence:**
 
 - **Region IDs** (kebab-case, lowercase, pattern-enforced) — a
-  controlled vocabulary of 233 values defined in `src/lib/regions.ts`
+  controlled vocabulary of 236 values defined in `src/lib/regions.ts`
   with one authoritative source of truth. Stable across versions
   (SemVer-bump required for breaking rename).
 - **Fuel types** — controlled enum `{solar, wind, hydro, geothermal,

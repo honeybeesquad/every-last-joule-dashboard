@@ -12,11 +12,24 @@ import type { RegionData } from "../lib/types.js";
  *     cited document).
  *   - IEMOP RTD exposes current-day dispatch schedules, not curtailed-energy.
  *
+ * RTD data investigation (2026-05-03):
+ *   URL pattern (public, no auth):
+ *     https://www.iemop.ph/wp-content/uploads/downloads/data/RTD/RTD_YYYYMMDDHHOO.zip
+ *   Offers (RTDOE, 6-day lag):
+ *     https://www.iemop.ph/wp-content/uploads/downloads/data/RTDOE/RTDOE_YYYYMMDDHHMM.csv
+ *   84 renewable resources (CLUZ/CVIS/CMIN) identifiable by SOL/WIN suffix.
+ *   RTD only carries SCHED_MW (dispatched); no available-capacity column.
+ *   RTDOE carries price-quantity offers but publishes with a ~6-day lag.
+ *   Regional Summaries (RTDREG) give total generation but no fuel breakdown.
+ *   Curtailment = available − dispatched; available requires a weather/CF
+ *   model not present in any public IEMOP feed. T3 is therefore correct.
+ *
  * Split into solar + wind so the dashboard renders each fuel correctly.
  * Both remain T3 until IEMOP/WESM publishes a citable curtailment rate.
  *
- * Path back to T1: a published renewable curtailment rate or a reproducible
- * derivation from explicit dispatch-vs-schedule data.
+ * Path back to T1b: integrate satellite irradiance + wind-speed CF model
+ * alongside RTD dispatch, or wait for IEMOP to publish explicit curtailment
+ * reports (analogous to ENTSO-E B19 dispatch-down).
  */
 
 const SOLAR_REGION_ID = "philippines-solar";

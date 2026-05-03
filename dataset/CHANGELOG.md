@@ -4,6 +4,15 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Added — Phase-2.7 misc T3/T2-flare static regions (2026-05-03)
+- **`qatar`** (T2-flare, flat 24/7): GGFR 2024 Qatar offshore+onshore flare composite (QatarEnergy; North Field condensate + onshore oil field flaring). 0.7 TWh/yr anchor. ±20% T2-flare envelope.
+- **`kuwait`** (T2-flare, flat 24/7): GGFR 2024 Kuwait Burgan + Wafra flare composite (KOC; Greater Burgan oil field + South Kuwait gas flaring). 0.4 TWh/yr anchor. ±20% T2-flare envelope.
+- **`tva`** (T3-modelled, solar): TVA Sustainability Report 2024 provisional 0.05 TWh/yr. SE-US solar curtailment; localSolarPeakUTC 17.5 (CST/EST straddle). At inclusion threshold; TVA JSON-API path documented for future Pattern-A promotion. ±40% T3 envelope.
+- Tier counts: T2-flare 4→6, T3 114→115, total 233→236.
+
+### Changed — Philippines RTD investigation (2026-05-03, kept at T3)
+- IEMOP RTD data confirmed publicly accessible (no auth). URL pattern: `https://www.iemop.ph/wp-content/uploads/downloads/data/RTD/RTD_YYYYMMDDHHOO.zip`. 84 renewable resources identified by SOL/WIN name suffix across CLUZ/CVIS/CMIN regions. Curtailment cannot be derived from dispatch-only data without an available-capacity model (weather/CF). Upgrade path to T1b documented in loader comment. Both `philippines-solar` and `philippines-wind` remain T3.
+
 ## [1.1.1] — 2026-05-03
 
 ### Added — India W1–W3 state-level T1a loaders (2026-05-02 → 2026-05-03, T1a ×6)

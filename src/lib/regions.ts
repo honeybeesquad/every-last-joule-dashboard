@@ -260,6 +260,7 @@ export const REGIONS: Region[] = [
   // No fetch logic — the matching `STATIC_REGIONS` entries in
   // `src/data/statics.json.ts` carry the typical-shape × annual-TWh dispatch.
   // lat/lon are capital-city coordinates unless noted otherwise.
+  { id: "tva",                name: "TVA (SE United States)", country: "USA", lat: 35.5, lon:  -86.6, tier: "static", kind: "solar", source: "TVA Sustainability Report 2024 (provisional 0.05 TWh/yr; SE-US solar curtailment; TVA JSON-API path documented for future Pattern-A promotion)", sourceUrl: "https://www.tva.com/" },
   { id: "guatemala",          name: "Guatemala",            country: "GTM", lat: 14.6, lon:  -90.5, tier: "static", kind: "solar", source: "IRENA Renewable Energy Statistics 2024 (Guatemala VRE share) + AMM Plan Operativo 2024", sourceUrl: "https://www.amm.org.gt/" },
   { id: "el-salvador",        name: "El Salvador",          country: "SLV", lat: 13.7, lon:  -89.2, tier: "static", kind: "solar", source: "IRENA Renewable Energy Statistics 2024 (El Salvador VRE share)", sourceUrl: "https://www.ut.com.sv/" },
   { id: "nicaragua",          name: "Nicaragua",            country: "NIC", lat: 12.1, lon:  -86.3, tier: "static", kind: "solar", source: "IRENA Nicaragua VRE statistics 2024 (CNDC/ENATREL weekly bulletins)", sourceUrl: "https://www.enatrel.gob.ni/" },
@@ -315,9 +316,11 @@ export const REGIONS: Region[] = [
   { id: "uganda",           name: "Uganda",            country: "UGA", lat:   0.32, lon:   32.58, tier: "static", kind: "hydro", source: "ERA Annual Performance 2024 (UETCL/UEDCL; Karuma+Isimba hydro)", sourceUrl: "https://www.uetcl.com/" },
   { id: "zambia",           name: "Zambia",            country: "ZMB", lat: -15.42, lon:   28.28, tier: "static", kind: "hydro", source: "Ember Zambia 2024 + Kariba drought (ZESCO; Kariba+Kafue; severe drought load-shed; SAPP)", sourceUrl: "https://www.zesco.co.zm/" },
   { id: "zimbabwe",         name: "Zimbabwe",          country: "ZWE", lat: -17.83, lon:   31.05, tier: "static", kind: "hydro", source: "Ember Zimbabwe 2024 + Kariba South (ZPC/ZETDC; Kariba South hydro+coal; SAPP)", sourceUrl: "https://www.zetdc.co.zw/" },
-  // Tier 3 - flare (4 regions)
+  // Tier 3 - flare (6 regions)
   { id: "permian",   name: "Permian Basin",   country: "USA",    lat:  31.9, lon: -102.5, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
   { id: "w-siberia", name: "W. Siberia",      country: "RUS",    lat:  61.0, lon:   73.0, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
   { id: "s-iraq",    name: "S. Iraq",         country: "IRQ",    lat:  30.5, lon:   47.5, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
-  { id: "e-saudi",   name: "E. Saudi Arabia", country: "SAU",    lat:  26.5, lon:   49.5, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" }
+  { id: "e-saudi",   name: "E. Saudi Arabia", country: "SAU",    lat:  26.5, lon:   49.5, tier: "flare",  kind: "flare", source: "VIIRS + GGFR", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
+  { id: "qatar",     name: "Qatar",           country: "QAT",    lat:  25.3, lon:   51.5, tier: "flare",  kind: "flare", source: "GGFR 2024 Qatar offshore+onshore flare composite (QatarEnergy)", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" },
+  { id: "kuwait",    name: "Kuwait",          country: "KWT",    lat:  29.0, lon:   47.7, tier: "flare",  kind: "flare", source: "GGFR 2024 Kuwait Burgan + Wafra flare composite (KOC)", sourceUrl: "https://www.worldbank.org/en/programs/gasflaringreduction" }
 ];
