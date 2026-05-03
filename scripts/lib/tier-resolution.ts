@@ -84,8 +84,19 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   gansu: "mixed",
   honduras: "solar",
   "india-east": "solar",
-  // india-rajasthan: promoted to live T1a (India W1, 2026-05-02); no profileKind entry needed.
-  // india-south + india-west: promoted to T1a live (India W2, 2026-05-02); no profileKind entries needed.
+  // India W1/W2/W3 state-SLDC loaders: declared `tier: "live"` from
+  // 2026-05-02 in anticipation of an India-egress relay, but the live
+  // sources are geoblocked / unparsed from the build environment so each
+  // loader currently emits T3-modelled typical-shape data. Reverted to
+  // `tier: "static"` on 2026-05-03 to make tier honesty match emitted data
+  // (Sci-Data integrity); flip back to `tier: "live"` plus remove these
+  // entries once each loader's live path is actually wired up.
+  "india-rajasthan": "solar",
+  "india-gujarat": "solar",
+  "india-karnataka": "solar",
+  "india-andhra-pradesh": "solar",
+  "india-tamil-nadu": "wind",
+  "india-maharashtra": "mixed",
   indonesia: "solar",
   "inner-mongolia": "wind",
   iran: "solar",

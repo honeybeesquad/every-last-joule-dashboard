@@ -6,12 +6,12 @@ Last updated: 2026-05-03 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `india-karnataka`
 - **Country:** IND
-- **Tier:** live
+- **Tier:** static
 - **Kind:** solar
-- **Source:** KSLDC (Karnataka State Load Despatch Centre) — real-time dashboard and curtailment PDFs at ksldc.in. Probed successfully in April 2026 coverage audit. Calibrated to POSOCO South Region 2024 (~0.5 TWh/yr Karnataka solar curtailment; Pavagada + Bidar solar parks). T1a-live-tso, ±15% fallback.
+- **Source:** KSLDC (Karnataka State Load Despatch Centre) — real-time dashboard and curtailment PDFs at ksldc.in. Probed successfully in April 2026 coverage audit; parser not yet implemented. Loader currently emits T3-modelled typical-shape calibrated to POSOCO South Region 2024 (~0.5 TWh/yr Karnataka solar curtailment). Will be promoted to T1a-live-tso when the parser ships.
 - **Source URL:** [https://ksldc.in/](https://ksldc.in/)
 - **Loader:** [`india-karnataka.json.ts`](../../src/data/india-karnataka.json.ts)
-- **Structural gap:** no
+- **Structural gap:** yes
 
 ## Calibration
 

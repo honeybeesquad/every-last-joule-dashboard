@@ -6,12 +6,12 @@ Last updated: 2026-05-03 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `india-rajasthan`
 - **Country:** IND
-- **Tier:** live
+- **Tier:** static
 - **Kind:** solar
-- **Source:** RRVPNL SLDC (Rajasthan State Load Despatch Centre) — RE curtailment downloads at sldc.rajasthan.gov.in. Geoblocked from non-Indian IP ranges; India-egress relay activates live path. Calibrated to Ember India 2025 (~3.5 TWh/yr solar curtailment, Rajasthan transmission bottlenecks). T1a-live-tso, ±15% fallback.
+- **Source:** RRVPNL SLDC (Rajasthan State Load Despatch Centre) — RE curtailment downloads at sldc.rajasthan.gov.in. Geoblocked from non-Indian IP ranges; loader currently emits T3-modelled typical-shape calibrated to Ember India 2025 (~3.5 TWh/yr solar curtailment). Will be promoted to T1a-live-tso when the India-egress relay activates the live parse.
 - **Source URL:** [https://sldc.rajasthan.gov.in/](https://sldc.rajasthan.gov.in/)
 - **Loader:** [`india-rajasthan.json.ts`](../../src/data/india-rajasthan.json.ts)
-- **Structural gap:** no
+- **Structural gap:** yes
 
 ## Calibration
 
