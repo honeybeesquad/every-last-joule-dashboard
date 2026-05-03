@@ -1,14 +1,14 @@
 # Validation — Tamil Nadu (`india-tamil-nadu`)
 
-Last updated: 2026-05-02 · Sprint: India W2 · Paper section: Technical Validation §4.2
+Last updated: 2026-05-03 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `india-tamil-nadu`
 - **Country:** IND
-- **Tier:** live (T1a — TNSLDC direct live path, geoblocked from non-Indian IPs)
+- **Tier:** live
 - **Kind:** wind
-- **Source:** TNSLDC (Tamil Nadu State Load Despatch Centre / TANTRANSCO) — RE curtailment and system operation reports at tnsldc.com. Site is geoblocked from non-Indian IP ranges; an India-egress relay will activate the live parse path. Calibrated to POSOCO South Region 2024 (~1.0 TWh/yr Tamil Nadu wind curtailment; India's largest wind state). T1a-live-tso, ±15% fallback.
+- **Source:** TNSLDC (Tamil Nadu State Load Despatch Centre / TANTRANSCO) — RE curtailment and system operation reports at tnsldc.com. Geoblocked from non-Indian IP ranges; India-egress relay activates live path. Calibrated to POSOCO South Region 2024 (~1.0 TWh/yr Tamil Nadu wind curtailment; India's largest wind state). T1a-live-tso, ±15% fallback.
 - **Source URL:** [https://tnsldc.com/](https://tnsldc.com/)
 - **Loader:** [`india-tamil-nadu.json.ts`](../../src/data/india-tamil-nadu.json.ts)
 - **Structural gap:** no
@@ -22,11 +22,11 @@ Last updated: 2026-05-02 · Sprint: India W2 · Paper section: Technical Validat
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after India-egress relay is established)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** POSOCO 2024 South Region wind+solar curtailment ~1.0 TWh (Tamil Nadu wind corridor dominant; Gulf of Mannar + Palladam-Coimbatore zones)
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —

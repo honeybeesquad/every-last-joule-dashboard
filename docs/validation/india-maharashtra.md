@@ -1,12 +1,12 @@
 # Validation — Maharashtra (`india-maharashtra`)
 
-Last updated: 2026-05-02 · Sprint: India W3 · Paper section: Technical Validation §4.2
+Last updated: 2026-05-03 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `india-maharashtra`
 - **Country:** IND
-- **Tier:** live (T1a — MSLDC direct live path)
+- **Tier:** live
 - **Kind:** mixed
 - **Source:** MSLDC (Maharashtra State Load Despatch Centre / MSEDCL) — RE curtailment and system data at msldc.mahavedha.com. Geoblocked from non-Indian IP ranges; India-egress relay activates live path. Calibrated to POSOCO Western Region 2024 (~0.3 TWh/yr mixed solar+wind curtailment; Solapur solar + Satara/Dhule wind corridor). T1a-live-tso, ±15% fallback.
 - **Source URL:** [https://msldc.mahavedha.com/](https://msldc.mahavedha.com/)
@@ -22,14 +22,14 @@ Last updated: 2026-05-02 · Sprint: India W3 · Paper section: Technical Validat
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated once MSLDC parser is complete)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** POSOCO 2024 Western Region (~0.3 TWh/yr mixed solar+wind; Solapur solar parks + Satara/Dhule wind corridor)
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** MNRE 2024 MW-weighted capacity split: 55% solar / 45% wind
+- **Other:** —
 
 ## Discrepancy analysis
 
