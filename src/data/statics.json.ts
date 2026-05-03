@@ -88,6 +88,10 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // PV utilisation 92.2%; Huaon/NBS 2024 generation by fuel gives wind
   // 70.79 TWh and PV 38.037 TWh, implying ~8.2 TWh curtailed.
   xinjiang: { annualTWh: 8.2, kind: "solar", localSolarPeakUTC: 6.33, source: "NEA 2024 renewable monitoring evaluation + Huaon/NBS generation by fuel (Xinjiang wind/PV curtailment ~8.2 TWh; solar-shaped fallback centred on local noon UTC 06:20)", reportDate: "2024" },
+  // Phase-2.7 NE China wind (2026-05-03)
+  "china-hebei":        { annualTWh: 2.0, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~2 TWh/yr (north China wind corridor, Zhangjiakou transmission bottleneck)", reportDate: "2025" },
+  "china-heilongjiang": { annualTWh: 1.5, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~1.5 TWh/yr (northeast grid; Daqing-area wind build-out)", reportDate: "2025" },
+  "china-jilin":        { annualTWh: 1.0, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~1 TWh/yr (northeast grid; Baicheng wind corridor)", reportDate: "2025" },
   iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
   // Colombia: promoted to T1b-CSV loader (src/data/colombia.json.ts).
   // The loader reads the committed daily XM API CSV (Britta relay) and
@@ -123,6 +127,8 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // Retrieved 2026-04-24:
   // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
   "e-saudi": { annualTWh: 8.1, kind: "flat", source: "World Bank GGFR 2025 individual flare sites, 2024 East Saudi bbox 2.203 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "russia-yamal":     { annualTWh: 10.0, kind: "flat", source: "GGFR 2024 Yamal-Nenets gas flaring (Gazprom/Novatek; ~2.71 bcm × 3.6925 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
+  "russia-e-siberia": { annualTWh: 9.0,  kind: "flat", source: "GGFR 2024 East Siberia oil/gas flaring (ESPO corridor + Sakhalin; ~2.44 bcm × 3.6925 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
   // v0.6 — Codex global-coverage-audit 2026-04-24. Hawaiian Electric's
   // RSWG metric separates curtailment by island; totals not yet extracted
   // from the public workbook, so TWh anchors here are conservative
@@ -215,7 +221,11 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   zambia: { annualTWh: 0.5, kind: "hydro", source: "Ember Zambia 2024 + Kariba drought (ZESCO; hydro-dependent Kariba+Kafue; severe 2024-25 drought load-shedding; SAPP member)", reportDate: "2024" },
   zimbabwe: { annualTWh: 0.3, kind: "hydro", source: "Ember Zimbabwe 2024 + Kariba South (ZPC generation, ZETDC T+D; Kariba South hydro+coal; SAPP member)", reportDate: "2024" },
   // PR #bulk-coverage (2026-04-28): 68 countries added to close global gap.
-  // --- AMERICAS (7 new) ---
+  // --- AMERICAS (8 new) ---
+  // TVA: Tennessee Valley Authority, SE United States. CST/EST straddle →
+  // localSolarPeakUTC 17.5 (average of UTC-6 and UTC-5). Flagged for
+  // Pattern-A promotion when TVA JSON-API curtailment series is wired.
+  tva: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 17.5, source: "TVA Sustainability Report 2024 (provisional 0.05 TWh/yr at inclusion threshold; SE-US solar curtailment duck-curve; TVA JSON-API path documented for future Pattern-A promotion)", reportDate: "2024" },
   bahamas: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 12.5, source: "IRENA Bahamas 2024 (BPL; solar+oil; island grids)", reportDate: "2024" },
   belize: { annualTWh: 0.02, kind: "hydro", source: "IRENA Belize 2024 (BEL); Herrera hydroelectric + Belize oil + solar", reportDate: "2024" },
   // colombia: promoted to canonical T3-static hydro-seasonal at line 103
@@ -248,7 +258,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   bahrain: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Bahrain 2024 (EWA); gas+solar; small high-Temperature grid)", reportDate: "2024" },
   georgia: { annualTWh: 0.2, kind: "hydro", source: "IRENA Georgia 2024 (GSE); hydro+solar+wind; ENTSO-E synchronisation ongoing)", reportDate: "2024" },
   jordan: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 10, source: "IRENA Jordan 2024 (NEPCO; solar+wind+gas; high VRE penetration). peakHourUtc 10: Jordan at 36°E → solar noon ≈ UTC 09:36. Previous value of 3.0 was wrong (was UTC timezone offset, not solar noon hour).", reportDate: "2025" },
-  kuwait: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Kuwait 2024 (MEW); gas+solar; growing solar)", reportDate: "2024" },
+  kuwait: { annualTWh: 0.4, kind: "flat", source: "GGFR 2024 Kuwait Burgan + Wafra flare composite (KOC; Greater Burgan oil field + South Kuwait gas flaring; flat 24/7)", reportDate: "2024" },
   kyrgyzstan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Kyrgyzstan 2024 (NEK); hydro+solar; CASA-1000 candidate)", reportDate: "2024" },
   lebanon: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Lebanon 2024 (EDL); severe crisis; diesel+solar+hydro; small grid)", reportDate: "2024" },
   palestine: { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Palestine 2024 (PEC); Israel-interconnected; solar+wind)", reportDate: "2024" },
@@ -257,7 +267,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   turkmenistan: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 4.5, source: "IRENA Turkmenistan 2024 (TDS); gas+solar; isolated grid)", reportDate: "2024" },
   uzbekistan: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 5.0, source: "IRENA Uzbekistan 2024 (UzbekEnergo); hydro+solar+gas; solar program)", reportDate: "2024" },
   yemen: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Yemen 2024 (PC); solar+diesel; war-affected small grid)", reportDate: "2024" },
-  qatar: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Qatar 2024 (Kahramaa); gas+solar; small high-T solar program)", reportDate: "2024" },
+  qatar: { annualTWh: 0.7, kind: "flat", source: "GGFR 2024 Qatar offshore+onshore flare composite (QatarEnergy; North Field condensate + onshore oil field flaring; flat 24/7)", reportDate: "2024" },
   // --- SOUTH ASIA (3 new) ---
   srilanka: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 5.5, source: "CEB Sri Lanka 450 MW solar + hydro + wind; IRENA Sri Lanka 2024", reportDate: "2024" },
   nepal: { annualTWh: 0.5, kind: "hydro-seasonal", seasonalSharesKey: "nepal", source: "World Bank Nepal Development Update 2024: 'Estimated annual renewable energy spillage exceeding 0.5 TWh (500 GWh) due to infrastructure limitations' — driven by monsoon-season run-of-river overgeneration vs transmission bottlenecks + limited India-export capacity. NEA / Department of Electricity Development confirms during FY2023/24. Same modelling treatment as Ethiopia + Iceland + Colombia (hydro spillage as wasted potential renewable energy). Gemini-3.1 research wave 4 (2026-04-30, reliability 5/5).", reportDate: "2024" },

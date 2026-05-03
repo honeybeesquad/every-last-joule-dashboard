@@ -59,7 +59,10 @@ describe("regions", () => {
     // W2 China provinces (2026-05-02): 19 new T3-static loaders. 211 + 19 = 230.
     // India W2 (2026-05-02): replace india-south + india-west with india-gujarat +
     // india-tamil-nadu + india-karnataka (net +1). 230 + 1 = 231.
-    expect(REGIONS.length).toBe(231);
+    // India W3 (2026-05-02): +india-andhra-pradesh + india-maharashtra (net +2). 231 + 2 = 233.
+    // Phase-2.7 misc (2026-05-03): +tva T3-static, +qatar T2-flare, +kuwait T2-flare. 233 + 3 = 236.
+    // Phase-2.7 Russia+China (2026-05-03): +5 regions. 236→241.
+    expect(REGIONS.length).toBe(241);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -99,16 +102,19 @@ describe("regions", () => {
     // colombia reclassified from "live" (T1a) to "live-domestic-anchored" (T1b): T1a stays 102.
     // India W2 (2026-05-02): india-south + india-west (static) replaced by
     // india-gujarat + india-tamil-nadu + india-karnataka (T1a live). +3 T1a. Total live = 111.
+    // India W3 (2026-05-02): +india-andhra-pradesh + india-maharashtra (T1a live). +2. Total live = 113.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(liveTotal).toBe(111);
+    expect(liveTotal).toBe(113);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
-    // since Sicily is anchored to Terna national 0.31 TWh via modelled share).
+    // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
     // colombia moved T1a→T1b: "live" 103→102; "live-domestic-anchored" 4→5.
-    // India W2 added +3 T1a: india-gujarat, india-tamil-nadu, india-karnataka → live=105.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(105);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(5);
+    // India W2 added +3 T1a: india-gujarat, india-tamil-nadu, india-karnataka → live=104.
+    // India W3 added +2 T1a: india-andhra-pradesh, india-maharashtra → live=106.
+    // T1b=6: baltics, italy-north-zone, italy-sardinia, netherlands, colombia, italy-sicily.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(106);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(6);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
   });
 
@@ -158,11 +164,15 @@ describe("regions", () => {
     // W2 China provinces (2026-05-02): 19 new T3-static regions. 100 + 19 = 119.
     // india-north renamed to india-rajasthan (live, T1a): 119 - 1 = 118.
     // India W2 (2026-05-02): india-south + india-west promoted to T1a live: 118 - 2 = 116.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(116);
+    // Phase-2.7 misc (2026-05-03): +tva T3-static (Qatar/Kuwait go to tier="flare", not here). 116 + 1 = 117.
+    // Phase-2.7 Russia+China (2026-05-03): +5 T3-static. 117→120.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(120);
   });
 
   it("has 4 flare regions", () => {
-    expect(REGIONS.filter(r => r.tier === "flare").length).toBe(4);
+    // Phase-2.7 misc (2026-05-03): +qatar, +kuwait → 4 + 2 = 6.
+    // Phase-2.7 Russia+China (2026-05-03): +russia-yamal, +russia-e-siberia → 6→8.
+    expect(REGIONS.filter(r => r.tier === "flare").length).toBe(8);
   });
 
   it("all flare regions have kind=flare", () => {
@@ -178,7 +188,7 @@ describe("regions", () => {
       "belgium", "iberia", "portugal", "germany", "france",
       "netherlands", "denmark-west", "denmark-east", "poland",
       "greece", "romania", "turkey", "italy-north-zone",
-      "italy-south", "italy-sardinia", "sweden-south", "hungary",
+      "italy-sicily", "italy-sardinia", "sweden-south", "hungary",
       "czech-republic", "bulgaria", "gb-england-wales",
       "norway-no1", "norway-no2", "norway-no3", "norway-no4",
       "new-zealand",
@@ -189,6 +199,8 @@ describe("regions", () => {
       "china-guangdong", "china-jiangsu", "china-hunan", "china-hubei",
       "china-shanxi", "china-zhejiang", "china-fujian", "china-guizhou",
       "china-chongqing", "china-tianjin",
+      // India W3 (2026-05-02) — Maharashtra mixed solar+wind (MSLDC own loader, not bundled)
+      "india-maharashtra",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
@@ -257,7 +269,7 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "greece")).toBeDefined();
     expect(REGIONS.find(r => r.id === "romania")).toBeDefined();
     expect(REGIONS.find(r => r.id === "italy-north-zone")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "italy-south")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "italy-sicily")).toBeDefined();
     expect(REGIONS.find(r => r.id === "italy-sardinia")).toBeDefined();
     expect(REGIONS.find(r => r.id === "belgium")).toBeDefined();
     // Denmark split in v0.6; see coverage-audit test block below.

@@ -37,7 +37,7 @@ const [
   honduras, jeju, kenya, egypt, morocco, namibia, waSwis, ntPilbara,
   indonesia, malaysia, philippines, southKorea, russiaMainland, taiwan, jordan,
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
-  yunnan, tibet, indiaGujarat, indiaTamilNadu, indiaKarnataka, indiaEast, pakistan, iran,
+  yunnan, tibet, indiaGujarat, indiaTamilNadu, indiaKarnataka, indiaAndhraPradesh, indiaMaharashtra, indiaEast, pakistan, iran,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
   quebec, manitoba, saskatchewan, turkey, colombia, florida,
   chinaShandong, chinaGuangdong, chinaJiangsu, chinaAnhui, chinaHunan,
@@ -112,6 +112,8 @@ const [
   FileAttachment("data/india-gujarat.json").json(),
   FileAttachment("data/india-tamil-nadu.json").json(),
   FileAttachment("data/india-karnataka.json").json(),
+  FileAttachment("data/india-andhra-pradesh.json").json(),
+  FileAttachment("data/india-maharashtra.json").json(),
   FileAttachment("data/india-east.json").json(),
   FileAttachment("data/pakistan.json").json(),
   FileAttachment("data/iran.json").json(),
@@ -298,9 +300,11 @@ const regionData = {
   greece: entsoe.greece,
   romania: entsoe.romania,
   turkey,
-  // Italy split into three ENTSO-E bidding zones (v1t)
+  // Italy split into three ENTSO-E bidding zones. IT-South domain
+  // (10Y1001A1001A86H) returns ENTSO-E error 999 from Terna, so Sicily
+  // (10Y1001A1001A75E) is used as the southern-IT signal in its place.
   "italy-north-zone": entsoe["italy-north-zone"],
-  "italy-south": entsoe["italy-south"],
+  "italy-sicily": entsoe["italy-sicily"],
   "italy-sardinia": entsoe["italy-sardinia"],
   "sweden-north": entsoe["sweden-north"],
   "sweden-south": entsoe["sweden-south"],
@@ -367,6 +371,8 @@ const regionData = {
   "india-gujarat": indiaGujarat,
   "india-tamil-nadu": indiaTamilNadu,
   "india-karnataka": indiaKarnataka,
+  "india-andhra-pradesh": indiaAndhraPradesh,
+  "india-maharashtra": indiaMaharashtra,
   "india-east": indiaEast,
   pakistan,
   iran,

@@ -9,8 +9,8 @@ publicly available in the repository under an MIT licence
 
 - **Repository:**
   https://github.com/honeybeesquad/every-last-joule-dashboard
-- **Tagged release:** `v1.0.0` (matches the Zenodo-archived
-  DOI).
+- **Tagged release:** `v1.1.1` (matches the Zenodo-archived
+  DOI `10.5281/zenodo.19991315`).
 - **Languages:** TypeScript (Observable Framework data
   loaders), Python 3.12+ (historical backfill, validation,
   figure rendering).

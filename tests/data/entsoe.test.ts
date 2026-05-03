@@ -94,7 +94,7 @@ describe("buildZoneData", () => {
       "greece",
       "romania",
       "italy-north-zone",  // split from italy-national; 35% of Terna 2024 national total
-      "italy-south",       // 45% of national total; high-curtailment South zone
+      "italy-sicily",      // replaces italy-south (no A75 data); transmission-constrained island
       "italy-sardinia"     // 20% of national total; island isolation
     ]));
   });
