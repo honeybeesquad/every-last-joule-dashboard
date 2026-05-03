@@ -1,14 +1,14 @@
 # Validation — Rajasthan (`india-rajasthan`)
 
-Last updated: 2026-05-02 · Sprint: India W1 · Paper section: Technical Validation §4.2
+Last updated: 2026-05-03 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `india-rajasthan`
 - **Country:** IND
-- **Tier:** live (T1a — RRVPNL SLDC; live path activates when India-egress relay is available)
+- **Tier:** live
 - **Kind:** solar
-- **Source:** RRVPNL SLDC (Rajasthan State Load Despatch Centre) RE curtailment downloads. Geoblocked from non-Indian IP ranges; current build uses typical-shape fallback at Ember 2025 anchor.
+- **Source:** RRVPNL SLDC (Rajasthan State Load Despatch Centre) — RE curtailment downloads at sldc.rajasthan.gov.in. Geoblocked from non-Indian IP ranges; India-egress relay activates live path. Calibrated to Ember India 2025 (~3.5 TWh/yr solar curtailment, Rajasthan transmission bottlenecks). T1a-live-tso, ±15% fallback.
 - **Source URL:** [https://sldc.rajasthan.gov.in/](https://sldc.rajasthan.gov.in/)
 - **Loader:** [`india-rajasthan.json.ts`](../../src/data/india-rajasthan.json.ts)
 - **Structural gap:** no
@@ -26,14 +26,14 @@ Last updated: 2026-05-02 · Sprint: India W1 · Paper section: Technical Validat
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** Rajasthan FY24-25 RE generation 57.35 BU (43.86% of 130.77 BU); solar curtailment per Ember India 2025 ~3.5 TWh/yr (transmission bottlenecks)
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
 
 ## Known limitations
 

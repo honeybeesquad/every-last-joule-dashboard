@@ -1,12 +1,12 @@
 # Validation — Andhra Pradesh (`india-andhra-pradesh`)
 
-Last updated: 2026-05-02 · Sprint: India W3 · Paper section: Technical Validation §4.2
+Last updated: 2026-05-03 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `india-andhra-pradesh`
 - **Country:** IND
-- **Tier:** live (T1a — APTRANSCO / APSLDC direct live path)
+- **Tier:** live
 - **Kind:** solar
 - **Source:** APTRANSCO / APSLDC (Andhra Pradesh Transmission Corporation Ltd / State Load Despatch Centre) — RE curtailment data at apsldc.in. Geoblocked from non-Indian IP ranges; India-egress relay activates live path. Calibrated to POSOCO Southern Region 2024 (~0.4 TWh/yr solar curtailment; Anantapur + Kadapa solar parks). T1a-live-tso, ±15% fallback.
 - **Source URL:** [https://apsldc.in/](https://apsldc.in/)
@@ -22,11 +22,11 @@ Last updated: 2026-05-02 · Sprint: India W3 · Paper section: Technical Validat
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated once APSLDC parser is complete)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** POSOCO 2024 Southern Region (~0.4 TWh/yr solar; Anantapur + Kadapa solar parks)
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
