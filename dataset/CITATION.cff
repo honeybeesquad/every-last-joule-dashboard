@@ -36,8 +36,8 @@ repository-code: "https://github.com/honeybeesquad/every-last-joule-dashboard"
 url: "https://everylastjoule.com"
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.19991315"
-    description: "Zenodo archival DOI (versioned, v1.1.1)"
+    value: "10.5281/zenodo.20000400"
+    description: "Zenodo archival DOI (versioned, v1.2.0)"
   - type: doi
     value: "10.5281/zenodo.19835411"
     description: "Zenodo concept DOI (resolves to latest version)"

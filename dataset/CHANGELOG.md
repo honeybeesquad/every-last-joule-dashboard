@@ -4,6 +4,20 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-05-03
+
+Zenodo DOI: [10.5281/zenodo.20000400](https://doi.org/10.5281/zenodo.20000400) · concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411).
+
+### Changed — India SLDC tier honesty (2026-05-03)
+- Six India state-SLDC loaders (`india-andhra-pradesh`, `india-gujarat`, `india-karnataka`, `india-maharashtra`, `india-rajasthan`, `india-tamil-nadu`) had been declared T1a-live-tso in v1.1.1 in anticipation of an India-egress relay; the live SLDC paths are not yet wired so emitted data was actually T3-modelled typical-shape. Tier and uncertainty envelope now match emitted data: T3-modelled (±40%, was ±15%). Will be promoted back to T1a-live-tso as each SLDC parser ships — tracking in [#43](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/43).
+- Net tier accounting: T1a 106 → 100, T3 118 → 124, total stays 241.
+
+### Fixed — T2-flare bucket-derivation (2026-05-03)
+- The T2-flare presentational bucket previously derived from a hardcoded `FLARE_IDS` set in `scripts/lib/tier-resolution.ts`; the four flare regions added in v1.2.0 (qatar, kuwait, russia-yamal, russia-e-siberia) silently bucketed into T2 instead of T2-flare even though their canonical `Region.tier` was correct. Bucket now keys directly off `Region.tier === "flare"` so adding a flare region is a single-table change. New invariant in `scripts/ci/check-tier-coherence.ts` asserts `tier === "flare" ⇔ bucket === "T2-flare"`.
+
+### Added — Dashboard header reads version live from Zenodo (2026-05-03)
+- New build-time loader (`src/data/zenodo-version.json.ts`) hits the Zenodo concept-DOI versions endpoint and emits `{version, doi, recordUrl}`. The dashboard header at `everylastjoule.com` now reads this and links the version to the Zenodo record. Falls back to `dataset/CITATION.cff` if the API is unreachable at build time. Auto-bumps with each release.
+
 ### Added — Russia flare + NE China wind (2026-05-03)
 - `russia-yamal` (T2-flare, flat): GGFR 2024 Yamal-Nenets, 10.0 TWh/yr.
 - `russia-e-siberia` (T2-flare, flat): GGFR 2024 East Siberia, 9.0 TWh/yr.
