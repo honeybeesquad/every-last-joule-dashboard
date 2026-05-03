@@ -580,8 +580,9 @@ main table {
   margin-left: 2px;
 }
 
-/* Specificity bump: Observable Framework's theme sets `a[href]{color:var(--theme-foreground-focus)}`
- * (specificity 0,1,1) which would otherwise win over a plain `.app-tag-version`. */
+/* Observable Framework's theme sets `a[href]{color:var(--theme-foreground-focus)}`
+ * (specificity 0,1,1). Scoping with `.app-tag` lifts our rule to (0,2,0)
+ * so the link inherits the muted tag colour instead of the framework blue. */
 .app-tag .app-tag-version {
   color: inherit;
   text-decoration: none;

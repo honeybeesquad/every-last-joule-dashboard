@@ -54,6 +54,44 @@ describe("zenodo-version loader", () => {
       };
       expect(() => parseZenodoRecord(rec)).toThrow(/no metadata.version/);
     });
+
+    it("throws when id is not a number (defends against unexpected response shape)", () => {
+      const rec = {
+        id: undefined as unknown as number,
+        doi: "10.5281/zenodo.19991315",
+        metadata: { version: "1.1.1" },
+      };
+      expect(() => parseZenodoRecord(rec)).toThrow(/numeric id/);
+    });
+
+    it("rejects a version string with HTML-injection characters", () => {
+      const rec = {
+        id: 19991315,
+        doi: "10.5281/zenodo.19991315",
+        metadata: { version: '1.1.1"><script>alert(1)</script>' },
+      };
+      expect(() => parseZenodoRecord(rec)).toThrow(/unexpected version format/);
+    });
+
+    it("rejects a recordUrl on a non-allow-listed host", () => {
+      const rec = {
+        id: 19991315,
+        doi: "10.5281/zenodo.19991315",
+        metadata: { version: "1.1.1" },
+        links: { self_html: "https://evil.example/records/19991315" },
+      };
+      expect(() => parseZenodoRecord(rec)).toThrow(/allow-listed/);
+    });
+
+    it("rejects a javascript: recordUrl", () => {
+      const rec = {
+        id: 19991315,
+        doi: "10.5281/zenodo.19991315",
+        metadata: { version: "1.1.1" },
+        links: { self_html: "javascript:alert(1)" as string },
+      };
+      expect(() => parseZenodoRecord(rec)).toThrow(/https/);
+    });
   });
 
   describe("parseCitationCff", () => {
@@ -89,6 +127,11 @@ describe("zenodo-version loader", () => {
 
     it("throws when there is no version field", () => {
       expect(() => parseCitationCff("title: foo\n")).toThrow(/version/);
+    });
+
+    it("handles CRLF line endings", () => {
+      const cff = "version: 1.2.0\r\nidentifiers:\r\n";
+      expect(parseCitationCff(cff).version).toBe("1.2.0");
     });
   });
 });

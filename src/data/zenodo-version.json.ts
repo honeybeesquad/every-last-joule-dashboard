@@ -19,6 +19,12 @@ const CONCEPT_DOI = `10.5281/zenodo.${CONCEPT_RECORD_ID}`;
 const ZENODO_VERSIONS_LATEST_URL = `https://zenodo.org/api/records/${CONCEPT_RECORD_ID}/versions/latest`;
 const CITATION_PATH = join(process.cwd(), "dataset", "CITATION.cff");
 
+// SemVer-ish: 1.2.3, 1.2.3-rc.1, 1.2.3+build.7. Locked-down to defend the
+// header (which interpolates this value into innerHTML) against a malformed
+// or hostile upstream string. Anything outside this charset → throw.
+const SAFE_VERSION = /^[0-9][0-9A-Za-z.\-+]*$/;
+const ZENODO_HOSTS = new Set(["zenodo.org", "doi.org"]);
+
 export interface ZenodoVersion {
   /** Version string without leading "v" (e.g. "1.1.1"). */
   version: string;
@@ -42,15 +48,49 @@ export function normalizeVersion(raw: string): string {
   return raw.trim().replace(/^v/i, "");
 }
 
+/**
+ * Reject anything that isn't an https URL on a known host. The header
+ * interpolates `recordUrl` into an `<a href="${...}">`, so a hostile or
+ * malformed value would be a script-injection vector via `javascript:` or
+ * an attribute-break.
+ */
+function assertSafeRecordUrl(url: string): void {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`unparseable recordUrl: ${JSON.stringify(url)}`);
+  }
+  if (parsed.protocol !== "https:") {
+    throw new Error(`recordUrl must be https, got ${parsed.protocol} (${url})`);
+  }
+  if (!ZENODO_HOSTS.has(parsed.hostname)) {
+    throw new Error(`recordUrl host not allow-listed: ${parsed.hostname} (${url})`);
+  }
+}
+
+function assertSafeVersion(version: string): void {
+  if (!SAFE_VERSION.test(version)) {
+    throw new Error(`unexpected version format: ${JSON.stringify(version)}`);
+  }
+}
+
 export function parseZenodoRecord(rec: ZenodoRecord): ZenodoVersion {
+  if (typeof rec.id !== "number") {
+    throw new Error(`Zenodo record has no numeric id (got ${typeof rec.id})`);
+  }
   const rawVersion = rec.metadata?.version;
   if (!rawVersion) {
     throw new Error(`Zenodo record ${rec.id} has no metadata.version`);
   }
+  const version = normalizeVersion(rawVersion);
+  const recordUrl = rec.links?.self_html ?? `https://zenodo.org/records/${rec.id}`;
+  assertSafeVersion(version);
+  assertSafeRecordUrl(recordUrl);
   return {
-    version: normalizeVersion(rawVersion),
+    version,
     doi: rec.doi,
-    recordUrl: rec.links?.self_html ?? `https://zenodo.org/records/${rec.id}`,
+    recordUrl,
     source: "zenodo",
   };
 }
@@ -72,16 +112,24 @@ export function parseCitationCff(text: string): ZenodoVersion {
     /-\s*type:\s*doi\s*[\r\n]+\s*value:\s*"?(10\.5281\/zenodo\.\d+)"?\s*[\r\n]+\s*description:\s*"Zenodo archival DOI/,
   );
   const doi = archivalDoiMatch?.[1] ?? CONCEPT_DOI;
+  const recordUrl = `https://doi.org/${doi}`;
+  assertSafeVersion(version);
+  assertSafeRecordUrl(recordUrl);
   return {
     version,
     doi,
-    recordUrl: `https://doi.org/${doi}`,
+    recordUrl,
     source: "citation-cff",
   };
 }
 
 async function loadFromZenodo(): Promise<ZenodoVersion> {
-  const rec = await fetchJSON<ZenodoRecord>(ZENODO_VERSIONS_LATEST_URL);
+  const rec = await fetchJSON<ZenodoRecord>(ZENODO_VERSIONS_LATEST_URL, {
+    headers: {
+      "User-Agent": "every-last-joule-build/1.0 (+https://everylastjoule.com)",
+      Accept: "application/json",
+    },
+  });
   return parseZenodoRecord(rec);
 }
 
