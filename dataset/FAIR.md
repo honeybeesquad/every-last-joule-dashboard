@@ -42,7 +42,7 @@ versioned DOI `10.5281/zenodo.19835566` (concept DOI
 **Evidence:**
 
 - `dataset/CITATION.cff` declares two DOI identifiers under `identifiers:`:
-  the **version DOI** `10.5281/zenodo.19835566` (pins to the v1.0.0 tag) and
+  the **version DOI** `10.5281/zenodo.19991315` (pins to the v1.1.1 tag) and
   the **concept DOI** `10.5281/zenodo.19835411` (resolves to the latest
   version across releases).
 - DOIs minted by Zenodo on 2026-04-27 via the GitHub-Zenodo integration
@@ -218,7 +218,7 @@ No proprietary binary blobs, no closed schemas.
 **Evidence:**
 
 - **Region IDs** (kebab-case, lowercase, pattern-enforced) — a
-  controlled vocabulary of 128 values defined in `src/lib/regions.ts`
+  controlled vocabulary of 233 values defined in `src/lib/regions.ts`
   with one authoritative source of truth. Stable across versions
   (SemVer-bump required for breaking rename).
 - **Fuel types** — controlled enum `{solar, wind, hydro, geothermal,
