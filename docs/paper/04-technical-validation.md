@@ -145,7 +145,7 @@ The v1 recalibration roadmap is five concrete items listed in
 ## 4.5 Tier coverage visualisation (Figure 4)
 
 Figure 4 answers the single-glance question "where is the dataset
-strong and where is it weak?" at geographic scale. Each of the 233
+strong and where is it weak?" at geographic scale. Each of the 241
 regions renders as a tier-coloured dot:
 
 - **T1a-live-tso (106 regions, teal).** Live hourly feed + own-
@@ -225,7 +225,7 @@ rate-recalibrations that may promote T2 regions into the top tier.
 
 ## 4.8 Current-snapshot validation (Figure 1)
 
-Figure 1 is the geographic opening shot. 113 of 233 regions have
+Figure 1 is the geographic opening shot. 113 of 241 regions have
 a current peak-GW reading; the other 120 are static regions
 without a live fetch yet. Dot area scales with √peakGW so a 10 GW
 hotspot is roughly 3× the visible area of a 1 GW region. The
@@ -236,7 +236,7 @@ Piauí) dominates the current picture, followed by the US MISO
 footprint, Vietnam, Germany, and north India. The specific
 GW values are snapshot-dependent and refresh each dashboard build.
 
-The 120-region gap between `src/lib/regions.ts` (233) and the
+The 120-region gap between `src/lib/regions.ts` (241) and the
 snapshot-count (113) is reported honestly on the figure: those
 regions appear at minimum-size so the map shows full geographic
 coverage without overclaiming live data.

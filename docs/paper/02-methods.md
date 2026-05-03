@@ -42,7 +42,7 @@ Paulo, Mato Grosso, Goiás, Paraná, Rio Grande do Sul — and a catch-all
 NE-other bucket); per-utility area for Japan (10 TSO control areas:
 Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai, Chubu, TEPCO
 Power Grid, Hokuriku, Okinawa); and national grid for countries
-without public sub-national data. Total: 233 regions. Stable
+without public sub-national data. Total: 241 regions. Stable
 kebab-case IDs defined in `src/lib/regions.ts`.
 
 **Time resolution.** Hourly UTC. Finer-cadence upstream feeds
@@ -193,7 +193,7 @@ regions emit nothing).
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
 
 The tier distribution at submission: **106 T1a, 6 T1b, 1 T1c, 2
-T2-annual-calibrated, 4 T2-flare, 114 T3** (total 233). The six
+T2-annual-calibrated, 8 T2-flare, 118 T3** (total 241). The six
 T1b zones are Italy-Sardinia, Italy-North-Zone, Italy-Sicily,
 the Netherlands, the Baltics, and Colombia (XM API) — each
 pairing a live feed against either a national-anchor zone-share,

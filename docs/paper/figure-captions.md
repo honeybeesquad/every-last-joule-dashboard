@@ -30,7 +30,7 @@ dominates the current picture (Minas Gerais 4.4 GW [Southeast], Bahia
 followed by the US MISO footprint (1.8
 GW), Vietnam (1.7 GW), Germany (1.6 GW), and north India (1.5 GW).
 Reference legend inside the figure shows the size-to-GW scale. Source
-data: `src/lib/regions.ts` (n=233 regions) joined to
+data: `src/lib/regions.ts` (n=241 regions) joined to
 `data/snapshots/last-good/*.json` (113 regions with live peak GW).
 Snapshot-dependent: the top-8 labels refresh each dashboard build.
 
@@ -95,7 +95,7 @@ Siberia, South Iraq, East Saudi). Terracotta dots (n=114) are T3
 typical-profile modelled regions — static annual anchors combined
 with a typical diurnal/seasonal shape (solar cosine, wind
 broad-overnight, hydro monthly-seasonal, mixed fuel-share,
-geothermal-overnight). Total n=233 regions. The figure
+geothermal-overnight). Total n=241 regions. The figure
 is the single-glance answer to "where is the dataset strong and
 where is it weak?" — T1 coverage is dense over North America, Europe,
 the Nordics, Australia, and Brazil, while large parts of South Asia,
