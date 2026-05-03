@@ -60,12 +60,17 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "china-tianjin": "mixed",
   "china-hainan": "solar",
   "china-shanghai": "solar",
+  // China W3 (Phase-2.7, 2026-05-03): northeast wind-corridor provinces.
+  "china-hebei": "wind",
+  "china-heilongjiang": "wind",
+  "china-jilin": "wind",
   iceland: "hydro-seasonal",
   ukraine: "solar",
   "hawaii-oahu": "solar",
   "hawaii-maui": "solar",
   "hawaii-island": "solar",
   florida: "solar",
+  tva: "solar",
   austria: "flat",
   "russia-murmansk-wind": "flat",
   // typical-shape loaders
