@@ -61,7 +61,8 @@ describe("regions", () => {
     // india-tamil-nadu + india-karnataka (net +1). 230 + 1 = 231.
     // India W3 (2026-05-02): +india-andhra-pradesh + india-maharashtra (net +2). 231 + 2 = 233.
     // Phase-2.7 misc (2026-05-03): +tva T3-static, +qatar T2-flare, +kuwait T2-flare. 233 + 3 = 236.
-    expect(REGIONS.length).toBe(236);
+    // Phase-2.7 Russia+China (2026-05-03): +5 regions. 236→241.
+    expect(REGIONS.length).toBe(241);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -164,12 +165,14 @@ describe("regions", () => {
     // india-north renamed to india-rajasthan (live, T1a): 119 - 1 = 118.
     // India W2 (2026-05-02): india-south + india-west promoted to T1a live: 118 - 2 = 116.
     // Phase-2.7 misc (2026-05-03): +tva T3-static (Qatar/Kuwait go to tier="flare", not here). 116 + 1 = 117.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(117);
+    // Phase-2.7 Russia+China (2026-05-03): +5 T3-static. 117→120.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(120);
   });
 
   it("has 4 flare regions", () => {
     // Phase-2.7 misc (2026-05-03): +qatar, +kuwait → 4 + 2 = 6.
-    expect(REGIONS.filter(r => r.tier === "flare").length).toBe(6);
+    // Phase-2.7 Russia+China (2026-05-03): +russia-yamal, +russia-e-siberia → 6→8.
+    expect(REGIONS.filter(r => r.tier === "flare").length).toBe(8);
   });
 
   it("all flare regions have kind=flare", () => {

@@ -88,6 +88,10 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // PV utilisation 92.2%; Huaon/NBS 2024 generation by fuel gives wind
   // 70.79 TWh and PV 38.037 TWh, implying ~8.2 TWh curtailed.
   xinjiang: { annualTWh: 8.2, kind: "solar", localSolarPeakUTC: 6.33, source: "NEA 2024 renewable monitoring evaluation + Huaon/NBS generation by fuel (Xinjiang wind/PV curtailment ~8.2 TWh; solar-shaped fallback centred on local noon UTC 06:20)", reportDate: "2024" },
+  // Phase-2.7 NE China wind (2026-05-03)
+  "china-hebei":        { annualTWh: 2.0, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~2 TWh/yr (north China wind corridor, Zhangjiakou transmission bottleneck)", reportDate: "2025" },
+  "china-heilongjiang": { annualTWh: 1.5, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~1.5 TWh/yr (northeast grid; Daqing-area wind build-out)", reportDate: "2025" },
+  "china-jilin":        { annualTWh: 1.0, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~1 TWh/yr (northeast grid; Baicheng wind corridor)", reportDate: "2025" },
   iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
   // Colombia: promoted to T1b-CSV loader (src/data/colombia.json.ts).
   // The loader reads the committed daily XM API CSV (Britta relay) and
@@ -123,6 +127,8 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // Retrieved 2026-04-24:
   // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
   "e-saudi": { annualTWh: 8.1, kind: "flat", source: "World Bank GGFR 2025 individual flare sites, 2024 East Saudi bbox 2.203 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "russia-yamal":     { annualTWh: 10.0, kind: "flat", source: "GGFR 2024 Yamal-Nenets gas flaring (Gazprom/Novatek; ~2.71 bcm × 3.6925 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
+  "russia-e-siberia": { annualTWh: 9.0,  kind: "flat", source: "GGFR 2024 East Siberia oil/gas flaring (ESPO corridor + Sakhalin; ~2.44 bcm × 3.6925 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
   // v0.6 — Codex global-coverage-audit 2026-04-24. Hawaiian Electric's
   // RSWG metric separates curtailment by island; totals not yet extracted
   // from the public workbook, so TWh anchors here are conservative

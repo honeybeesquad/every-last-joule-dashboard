@@ -78,7 +78,7 @@ The sections above are **first drafts** suitable for:
 Zenodo DOI history: v1.0.0 minted 2026-04-27
 (`10.5281/zenodo.19835566`), v1.1.0 minted 2026-05-01
 (`10.5281/zenodo.19932977`, stale 202-region content), v1.1.1
-minted 2026-05-03 (`10.5281/zenodo.19991315`, canonical 233-region
+minted 2026-05-03 (`10.5281/zenodo.19991315`, canonical 241-region
 state). Concept DOI `10.5281/zenodo.19835411` resolves to latest.
 Cite version DOI `10.5281/zenodo.19991315` in the paper. Any
 remaining `<id>` or "TBA" tokens are bugs to flag.

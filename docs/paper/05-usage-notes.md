@@ -129,7 +129,7 @@ Preferred human citation:
 
 > Collins, S. (2026). Every Last Joule: an hourly synthesis of
 > renewable-electricity curtailment and associated-gas flaring
-> across 233 regions. Scientific Data.
+> across 241 regions. Scientific Data.
 > https://doi.org/10.5281/zenodo.19991315
 
 Cite the **version DOI** (not the concept DOI) when writing

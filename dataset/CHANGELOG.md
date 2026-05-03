@@ -4,6 +4,14 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Added — Russia flare + NE China wind (2026-05-03)
+- `russia-yamal` (T2-flare, flat): GGFR 2024 Yamal-Nenets, 10.0 TWh/yr.
+- `russia-e-siberia` (T2-flare, flat): GGFR 2024 East Siberia, 9.0 TWh/yr.
+- `china-hebei` (T3, wind): NEA 2024, ~2 TWh/yr.
+- `china-heilongjiang` (T3, wind): NEA 2024, ~1.5 TWh/yr.
+- `china-jilin` (T3, wind): NEA 2024, ~1 TWh/yr.
+- Tier counts: T2-flare 6→8, T3 115→118, total 236→241.
+
 ### Added — Phase-2.7 misc T3/T2-flare static regions (2026-05-03)
 - **`qatar`** (T2-flare, flat 24/7): GGFR 2024 Qatar offshore+onshore flare composite (QatarEnergy; North Field condensate + onshore oil field flaring). 0.7 TWh/yr anchor. ±20% T2-flare envelope.
 - **`kuwait`** (T2-flare, flat 24/7): GGFR 2024 Kuwait Burgan + Wafra flare composite (KOC; Greater Burgan oil field + South Kuwait gas flaring). 0.4 TWh/yr anchor. ±20% T2-flare envelope.

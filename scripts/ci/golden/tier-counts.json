@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Asserts that the per-bucket population of the canonical REGIONS table matches these expected values. Update this file ONLY when intentionally adding/moving regions; the diff in PR review is the audit trail. Per-bucket definitions live in scripts/lib/tier-resolution.ts. Last touched: 2026-05-03 (Phase-2.7 misc: +qatar T2-flare, +kuwait T2-flare, +tva T3. T2-flare: 6, T3: 115, total: 236.)",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-03 (Phase-2.7 Russia+China: +russia-yamal T2-flare, +russia-e-siberia T2-flare, +china-hebei T3, +china-heilongjiang T3, +china-jilin T3.)",
   "T1a": 106,
   "T1b": 6,
   "T1c": 1,
   "T2": 2,
-  "T2-flare": 6,
-  "T3": 115,
-  "total": 236
+  "T2-flare": 8,
+  "T3": 118,
+  "total": 241
 }
