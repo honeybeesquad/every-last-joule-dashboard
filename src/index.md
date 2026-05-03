@@ -43,7 +43,8 @@ const [
   chinaShandong, chinaGuangdong, chinaJiangsu, chinaAnhui, chinaHunan,
   chinaLiaoning, chinaHubei, chinaShanxi, chinaShaanxi, chinaZhejiang,
   chinaHenan, chinaFujian, chinaJiangxi, chinaBeijing, chinaGuizhou,
-  chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai
+  chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai,
+  zenodoVersion
 ] = await Promise.all([
   FileAttachment("data/cbeci.json").json(),
   FileAttachment("data/ercot.json").json(),
@@ -146,7 +147,8 @@ const [
   FileAttachment("data/china-chongqing.json").json(),
   FileAttachment("data/china-tianjin.json").json(),
   FileAttachment("data/china-hainan.json").json(),
-  FileAttachment("data/china-shanghai.json").json()
+  FileAttachment("data/china-shanghai.json").json(),
+  FileAttachment("data/zenodo-version.json").json()
 ]);
 
 document.getElementById("app-root").innerHTML = `
@@ -155,7 +157,7 @@ document.getElementById("app-root").innerHTML = `
       <div class="app-title">
         <span class="app-mark">●</span>
         <span class="app-wordmark">Every Last Joule</span>
-        <span class="app-tag">Wasted Energy Database · v1.0.0</span>
+        <span class="app-tag">Wasted Energy Database · <a class="app-tag-version" href="${zenodoVersion.recordUrl}" target="_blank" rel="noopener">v${zenodoVersion.version}</a></span>
       </div>
       <div class="app-header-right">
         <div id="theme-toggle-mount"></div>
