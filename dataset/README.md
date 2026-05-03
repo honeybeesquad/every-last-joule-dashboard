@@ -56,7 +56,7 @@ print(snap["peakGW"], snap["sourceStatus"], snap["lastUpdated"])
 
 If you use this dataset in academic work, please cite:
 
-> Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 233 regions. _Scientific Data_ (in review). Dataset DOI: [10.5281/zenodo.19991315](https://doi.org/10.5281/zenodo.19991315).
+> Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 241 regions. _Scientific Data_ (in review). Dataset DOI: [10.5281/zenodo.19991315](https://doi.org/10.5281/zenodo.19991315).
 
 Machine-readable citation metadata in [`CITATION.cff`](CITATION.cff).
 
