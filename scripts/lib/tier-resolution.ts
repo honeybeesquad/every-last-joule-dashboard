@@ -220,13 +220,16 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
  * Region ids whose flat 24/7 profile is a *physical* base load (associated-
  * gas flaring) rather than a modelling concession, presented in Figure 4 as
  * a separate "flare" bucket.
+ *
+ * Source-of-truth: `Region.tier === "flare"` in `src/lib/regions.ts`. This
+ * derived set is exported only for consumers that can't reach the canonical
+ * REGIONS table (e.g., migration scripts working off snapshot JSON). The
+ * bucket-derivation in `resolveRegion` below uses `Region.tier` directly so
+ * adding a new flare region is a single-table change.
  */
-export const FLARE_IDS = new Set([
-  "permian",
-  "w-siberia",
-  "s-iraq",
-  "e-saudi",
-]);
+export const FLARE_IDS = new Set(
+  REGIONS.filter((r) => r.tier === "flare").map((r) => r.id),
+);
 
 export interface ResolvedRegion {
   id: string;
@@ -274,7 +277,7 @@ export function resolveRegion(r: Region): ResolvedRegion | { unresolvedReason: s
   else if (tier === "T1b-live-domestic-anchored") bucket = "T1b";
   else if (tier === "T1c-live-neighbour-anchored") bucket = "T1c";
   else if (tier === "T3-modelled") bucket = "T3";
-  else if (FLARE_IDS.has(r.id)) bucket = "T2-flare";
+  else if (r.tier === "flare") bucket = "T2-flare";
   else bucket = "T2";
   return { id: r.id, name: r.name, region: r, tier, bucket };
 }
