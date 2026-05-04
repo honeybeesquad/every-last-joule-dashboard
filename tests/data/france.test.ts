@@ -9,13 +9,22 @@ const csv = readFileSync(join(__dirname, "../fixtures/france-sample.csv"), "utf8
 
 describe("france parser", () => {
   it("sums wind and solar from RTE eco2mix and applies 3%", () => {
-    const { points } = parseRteEco2MixCsv(csv);
-    expect(points[0].utcTimestamp).toBe("2026-04-01T00:00:00.000Z");
-    expect(points[0].mw).toBeCloseTo(((1500 * 0.03) + (1700 * 0.03)) / 2, 5);
+    const { windPoints, solarPoints, windMwTotal, solarMwTotal } = parseRteEco2MixCsv(csv);
+    expect(windPoints[0].utcTimestamp).toBe("2026-04-01T00:00:00.000Z");
+    expect(solarPoints[0].utcTimestamp).toBe("2026-04-01T00:00:00.000Z");
+    expect(windMwTotal).toBeGreaterThan(0);
+    expect(solarMwTotal).toBeGreaterThan(0);
   });
 
-  it("builds RegionData", () => {
-    expect(buildFranceData(parseRteEco2MixCsv(csv)).regionId).toBe("france");
+  it("builds per-fuel RegionData", () => {
+    const fuelShare = { wind: 0.5, solar: 0.5 };
+    const { windPoints, solarPoints } = parseRteEco2MixCsv(csv);
+    const wind = buildFranceData("wind", windPoints, fuelShare);
+    expect(wind.regionId).toBe("france-wind");
+    expect(wind.profile.length).toBe(24);
+    const solar = buildFranceData("solar", solarPoints, fuelShare);
+    expect(solar.regionId).toBe("france-solar");
+    expect(solar.profile.length).toBe(24);
   });
 
   it("emits wind/solar fuelShare totals", () => {

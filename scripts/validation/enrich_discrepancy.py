@@ -53,7 +53,7 @@ TARGETS = [
     "ercot-west",
     "germany",
     "greece",
-    "iberia",
+    "spain",
     "iso-ne",
     "nyiso",
     "pjm",
@@ -90,7 +90,7 @@ TARGETS = [
 # ENTSO-E regions — get the entsoe-rates audit in context; others get just
 # the general backfill methodology.
 ENTSOE_REGIONS = {
-    "germany", "greece", "iberia", "poland", "portugal", "netherlands",
+    "germany", "greece", "spain", "poland", "portugal", "netherlands",
     "baltics", "bulgaria", "czech-republic", "hungary",
     "italy-north-zone", "italy-sardinia",
     "sweden-south", "sweden-north", "switzerland",
