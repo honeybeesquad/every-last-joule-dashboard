@@ -4,6 +4,23 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Added — Phase 2 IRENA T3 anchors (2026-05-04, T3 ×11)
+- **`albania`** (T3-static, solar): IRENA RE Statistics 2024. ~240 MW solar installed (Karavasta 140 MW + Spitalla 100 MW); wind negligible. Curtailment modelled at ~2% per regional default. Albania was previously excluded from PR #45 but is included here given measurable solar capacity.
+- **`georgia`** (T3-static, solar): IRENA RE Statistics 2024. ~100 MW solar+wind combined; ~1.8 GW hydro. Curtailment modelled at ~2% per regional default.
+- **`armenia`** (T3-static, solar): IRENA RE Statistics 2024. ~180 MW solar capacity, growing post-2020. Curtailment modelled at ~2% per regional default.
+- **`azerbaijan`** (T3-static, mixed): IRENA RE Statistics 2024. ~200 MW solar + ~200 MW wind in operation post-2023. Curtailment modelled at ~2% per regional default.
+- **`uzbekistan`** (T3-static, solar): IRENA RE Statistics 2024. ~1-2 GW utility-scale solar build-out post-2021. Curtailment modelled at ~2% per regional default.
+- **`sri-lanka`** (T3-static, mixed): IRENA RE Statistics 2024. ~450 MW solar + ~300 MW wind operational. Curtailment modelled at ~2% per regional default.
+- **`sudan`** (T3-static, solar): IRENA RE Statistics 2024. Utility solar deployed; ongoing conflict introduces data uncertainty. Curtailment modelled at ~2% per regional default.
+- **`venezuela`** (T3-static, wind): IRENA RE Statistics 2024. Paraguaná wind farm ~100 MW; grid distress limits VRE output. Curtailment modelled at ~2% per regional default.
+- **`laos`** (T3-static, solar): IRENA RE Statistics 2024. Hydro-export economy; some utility solar deployed. Curtailment modelled at ~2% per regional default.
+- **`cambodia`** (T3-static, solar): IRENA RE Statistics 2024. ~470 MW solar 2024, rapid solar growth. Curtailment modelled at ~2% per regional default.
+- **`myanmar`** (T3-static, solar): IRENA RE Statistics 2024. Some utility solar; post-coup data validity uncertainty. Curtailment modelled at ~2% per regional default.
+- **Skipped — Bhutan**: Hydro-only per IRENA RE Statistics 2024; no dispatch-driven VRE; structural hydro spill excluded per methodology.
+- **Skipped — Kyrgyzstan**: Hydro-dominant; VRE combined solar+wind <50 MW threshold per IRENA RE Statistics 2024.
+- **Skipped — Tajikistan**: Hydro-dominant; VRE combined solar+wind <50 MW threshold per IRENA RE Statistics 2024.
+- **Tier counts**: T3 124 → 135 (+11); total regions 253 → 264 (+11)
+
 ### Added — ENTSO-E Balkans + Baltics expansion (2026-05-04, T1a ×12)
 - **`serbia`** (T1a-live-tso, mixed): EMS Serbia ENTSO-E A75 feed. Regional default calibration (solar 2%, wind 3%) — no published Serbian curtailment anchor found. IRENA RE Statistics 2024 capacity anchor used for order-of-magnitude check.
 - **`bosnia-and-herzegovina`** (T1a-live-tso, hydro): JPCC Krajina A75 feed. Hydro-dominated; structural hydro spill excluded per methodology (dispatch-driven VRE curtailment negligible). Published A75 generation feed confirmed.

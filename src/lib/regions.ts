@@ -228,6 +228,29 @@ export const REGIONS: Region[] = [
   { id: "namibia",          name: "Namibia",         country: "NAM", lat: -22.0, lon:  17.0, tier: "static", kind: "solar", source: "NamPower ISB 2025", sourceUrl: "https://www.nampower.com.na/" },
   { id: "kazakhstan",       name: "Kazakhstan",      country: "KAZ", lat: 48.0, lon:   66.9, tier: "static", kind: "wind",  source: "KEGOC fallback", sourceUrl: "https://www.kegoc.kz/" },
   { id: "mongolia",         name: "Mongolia",        country: "MNG", lat: 47.0, lon:  105.0, tier: "static", kind: "wind",  source: "NPTG fallback", sourceUrl: "https://nptg.mn/" },
+  // Phase 2 IRENA T3 anchors (2026-05-04).
+  // Albania: Karavasta 140 MW + Spitalla 100 MW = ~240 MW solar; wind negligible.
+  // Georgia: ~100 MW solar+wind combined; hydro-dominant.
+  // Armenia: solar growing post-2020, ~180 MW; wind negligible.
+  // Azerbaijan: both solar and wind in operation post-2023, ~200 MW each.
+  // Uzbekistan: major utility-scale solar build-out post-2021, ~1-2 GW solar.
+  // Sri Lanka: 450 MW solar + 300 MW wind per CEB/IRENA.
+  // Sudan: utility solar deployed, ongoing conflict — data uncertainty acknowledged.
+  // Venezuela: Paraguaná wind farm legacy (~100 MW); grid distress limits VRE output.
+  // Bhutan: hydro-only, no dispatch-driven VRE; skipped per methodology.
+  // Kyrgyzstan: hydro-dominant; VRE <50 MW threshold; skipped per methodology.
+  // Tajikistan: hydro-dominant; VRE <50 MW threshold; skipped per methodology.
+  { id: "albania",           name: "Albania",          country: "ALB", lat: 41.33, lon:   19.82, tier: "static", kind: "solar",  source: "IRENA RE Statistics 2024 (~240 MW solar capacity: Karavasta 140 MW + Spitalla 100 MW); wind negligible; modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
+  { id: "georgia",           name: "Georgia",          country: "GEO", lat: 41.69, lon:   44.79, tier: "static", kind: "mixed", source: "IRENA RE Statistics 2024 (~100 MW solar+wind combined, ~1.8 GW hydro); modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
+  { id: "armenia",           name: "Armenia",          country: "ARM", lat: 40.18, lon:   44.51, tier: "static", kind: "solar", source: "IRENA RE Statistics 2024 (~180 MW solar capacity, growing post-2020); modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
+  { id: "azerbaijan",       name: "Azerbaijan",       country: "AZE", lat: 40.41, lon:   49.87, tier: "static", kind: "mixed", source: "IRENA RE Statistics 2024 (~200 MW solar + ~200 MW wind in operation post-2023); modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
+  { id: "uzbekistan",       name: "Uzbekistan",       country: "UZB", lat: 41.30, lon:   69.28, tier: "static", kind: "solar", source: "IRENA RE Statistics 2024 (~1-2 GW utility-scale solar build-out post-2021); modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
+  { id: "sri-lanka",        name: "Sri Lanka",        country: "LKA", lat:  7.87, lon:   80.77, tier: "static", kind: "mixed", source: "IRENA RE Statistics 2024 (~450 MW solar + ~300 MW wind operational); modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
+  { id: "sudan",            name: "Sudan",            country: "SDN", lat:  15.50, lon:   32.56, tier: "static", kind: "solar", source: "IRENA RE Statistics 2024 (utility solar deployed; ongoing conflict introduces data uncertainty); modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
+  { id: "venezuela",        name: "Venezuela",        country: "VEN", lat:  10.49, lon:  -66.90, tier: "static", kind: "wind",  source: "IRENA RE Statistics 2024 (Paraguaná wind farm ~100 MW; grid distress limits VRE output); modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
+  { id: "laos",             name: "Laos",             country: "LAO", lat:  17.98, lon:  102.63, tier: "static", kind: "solar", source: "IRENA RE Statistics 2024 (hydro-export economy; some utility solar deployed); modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
+  { id: "cambodia",         name: "Cambodia",         country: "KHM", lat:  11.56, lon:  104.92, tier: "static", kind: "solar", source: "IRENA RE Statistics 2024 (~470 MW solar 2024, rapid solar growth); modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
+  { id: "myanmar",          name: "Myanmar",          country: "MMR", lat:  19.75, lon:   96.10, tier: "static", kind: "solar", source: "IRENA RE Statistics 2024 (some utility solar; post-coup data validity uncertainty); modelled curtailment ~2% per regional default", sourceUrl: "https://www.irena.org/Data/Energy-Profiles" },
   { id: "honduras",         name: "Honduras",        country: "HND", lat: 15.2, lon:  -86.2, tier: "static", kind: "solar", source: "ODS Honduras fallback", sourceUrl: "https://ods.org.hn/" },
   { id: "jeju",             name: "Jeju (S. Korea)", country: "KOR", lat: 33.49, lon: 126.50, tier: "static", kind: "wind",  source: "KPX Jeju fallback", sourceUrl: "https://www.kpx.or.kr/" },
   { id: "wa-swis-solar", name: "Western Australia Solar (SWIS)", country: "AUS", lat: -28.8, lon: 114.6, tier: "live", kind: "solar", source: "AEMO WEM Facility SCADA (solar DUIDs)", sourceUrl: "https://data.wa.aemo.com.au/" },

@@ -5,8 +5,10 @@ Last generated: 2026-05-04
 | Region | Tier | Kind | Backfill years | Validation doc |
 |---|---|---|---|---|
 | Angola | static | solar | 0 | [angola](./angola.md) |
+| Albania | static | solar | 0 | [albania](./albania.md) |
 | UAE | static | solar | 0 | [uae](./uae.md) |
 | Argentina | static | wind | 0 | [argentina](./argentina.md) |
+| Armenia | static | solar | 0 | [armenia](./armenia.md) |
 | New South Wales Solar | live | solar | 0 | [aemo-nsw-solar](./aemo-nsw-solar.md) |
 | New South Wales Wind | live | wind | 0 | [aemo-nsw-wind](./aemo-nsw-wind.md) |
 | Queensland Solar | live | solar | 0 | [aemo-qld-solar](./aemo-qld-solar.md) |
@@ -21,6 +23,7 @@ Last generated: 2026-05-04
 | Western Australia Solar (SWIS) | live | solar | 0 | [wa-swis-solar](./wa-swis-solar.md) |
 | Western Australia Wind (SWIS) | live | wind | 0 | [wa-swis-wind](./wa-swis-wind.md) |
 | Austria | static | mixed | 0 | [austria](./austria.md) |
+| Azerbaijan | static | mixed | 0 | [azerbaijan](./azerbaijan.md) |
 | Belgium | live | mixed | 0 | [belgium](./belgium.md) |
 | Benin | static | solar | 0 | [benin](./benin.md) |
 | Burkina Faso | static | solar | 0 | [burkina-faso](./burkina-faso.md) |
@@ -124,6 +127,7 @@ Last generated: 2026-05-04
 | GB England+Wales | live | mixed | 0 | [gb-england-wales](./gb-england-wales.md) |
 | GB Scotland | live | wind | 0 | [gb-scotland](./gb-scotland.md) |
 | Northern Ireland | live | wind | 0 | [northern-ireland](./northern-ireland.md) |
+| Georgia | static | solar | 0 | [georgia](./georgia.md) |
 | Ghana | static | solar | 0 | [ghana](./ghana.md) |
 | Greece | live | mixed | 7 | [greece](./greece.md) |
 | Guatemala | static | solar | 0 | [guatemala](./guatemala.md) |
@@ -165,9 +169,12 @@ Last generated: 2026-05-04
 | Tohoku (Japan) | live | solar | 0 | [japan-tohoku](./japan-tohoku.md) |
 | Kazakhstan | static | wind | 0 | [kazakhstan](./kazakhstan.md) |
 | Kenya | static | hydro | 0 | [kenya](./kenya.md) |
+| Cambodia | static | solar | 0 | [cambodia](./cambodia.md) |
 | Jeju (S. Korea) | static | wind | 0 | [jeju](./jeju.md) |
 | South Korea (mainland) | static | solar | 0 | [south-korea](./south-korea.md) |
 | Kuwait | flare | flare | 0 | [kuwait](./kuwait.md) |
+| Laos | static | solar | 0 | [laos](./laos.md) |
+| Sri Lanka | static | mixed | 0 | [sri-lanka](./sri-lanka.md) |
 | Lithuania | live | wind | 0 | [lithuania](./lithuania.md) |
 | Luxembourg | live | mixed | 0 | [luxembourg](./luxembourg.md) |
 | Latvia | live | wind | 0 | [latvia](./latvia.md) |
@@ -177,6 +184,7 @@ Last generated: 2026-05-04
 | Mexico | static | solar | 0 | [mexico](./mexico.md) |
 | North Macedonia | live | mixed | 0 | [north-macedonia](./north-macedonia.md) |
 | Malta | live | solar | 0 | [malta](./malta.md) |
+| Myanmar | static | solar | 0 | [myanmar](./myanmar.md) |
 | Montenegro | live | hydro | 0 | [montenegro](./montenegro.md) |
 | Mongolia | static | wind | 0 | [mongolia](./mongolia.md) |
 | Mozambique | static | hydro | 0 | [mozambique](./mozambique.md) |
@@ -216,6 +224,7 @@ Last generated: 2026-05-04
 | Rwanda | static | mixed | 0 | [rwanda](./rwanda.md) |
 | E. Saudi Arabia | flare | flare | 0 | [e-saudi](./e-saudi.md) |
 | Saudi Arabia (solar) | static | solar | 0 | [saudi-solar](./saudi-solar.md) |
+| Sudan | static | solar | 0 | [sudan](./sudan.md) |
 | Senegal | static | solar | 0 | [senegal](./senegal.md) |
 | El Salvador | static | solar | 0 | [el-salvador](./el-salvador.md) |
 | Serbia | live | mixed | 0 | [serbia](./serbia.md) |
@@ -254,6 +263,8 @@ Last generated: 2026-05-04
 | PJM | live | mixed | 7 | [pjm](./pjm.md) |
 | SPP | live | mixed | 7 | [spp](./spp.md) |
 | TVA (SE United States) | static | solar | 0 | [tva](./tva.md) |
+| Uzbekistan | static | solar | 0 | [uzbekistan](./uzbekistan.md) |
+| Venezuela | static | wind | 0 | [venezuela](./venezuela.md) |
 | Vietnam | static | solar | 0 | [vietnam](./vietnam.md) |
 | South Africa Solar | live | solar | 0 | [south-africa-solar](./south-africa-solar.md) |
 | South Africa Wind | live | wind | 0 | [south-africa-wind](./south-africa-wind.md) |

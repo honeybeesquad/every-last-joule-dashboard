@@ -69,7 +69,10 @@ describe("regions", () => {
     // excluded — hydro-dominated per IRENA RE Statistics 2024, no
     // published A75 anchor found, and structural hydro spill excluded
     // per methodology. 241 + 12 = 253.
-    expect(REGIONS.length).toBe(253);
+    // Phase 2 IRENA T3 anchors (2026-05-04): +11 T3-static regions
+    // (albania, georgia, armenia, azerbaijan, uzbekistan, sri-lanka,
+    // sudan, venezuela, laos, cambodia, myanmar). 253 + 11 = 264.
+    expect(REGIONS.length).toBe(264);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -194,9 +197,10 @@ describe("regions", () => {
     // Phase-2.7 misc (2026-05-03): +tva T3-static (Qatar/Kuwait go to tier="flare", not here). 116 + 1 = 117.
     // Phase-2.7 Russia+China (2026-05-03): +5 T3-static. 117→120.
     // India W1/W2/W3 tier-honesty correction (2026-05-03): +6 → 126.
-    // ENTSO-E Balkans+Baltics expansion: all 13 new regions are live tier;
-    // static count unchanged. 126.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(126);
+    // Phase 2 IRENA T3 anchors (2026-05-04): +11 T3-static regions
+    // (albania, georgia, armenia, azerbaijan, uzbekistan, sri-lanka,
+    // sudan, venezuela, laos, cambodia, myanmar). 126 + 11 = 137.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(137);
   });
 
   it("has 4 flare regions", () => {
@@ -235,6 +239,9 @@ describe("regions", () => {
       // with regional-default calibration (no bundled-child split available yet)
       "serbia", "north-macedonia", "croatia", "slovakia", "slovenia",
       "luxembourg", "moldova",
+// Phase 2 IRENA T3 anchors (2026-05-04) — mixed-kind T3-static regions
+// (azerbaijan, sri-lanka — both solar+wind composite; georgia has ~100 MW solar+wind)
+      "azerbaijan", "sri-lanka", "georgia",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
