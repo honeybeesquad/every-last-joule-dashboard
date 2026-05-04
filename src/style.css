@@ -580,6 +580,22 @@ main table {
   margin-left: 2px;
 }
 
+/* Observable Framework's theme sets `a[href]{color:var(--theme-foreground-focus)}`
+ * (specificity 0,1,1). Scoping with `.app-tag` lifts our rule to (0,2,0)
+ * so the link inherits the muted tag colour instead of the framework blue. */
+.app-tag .app-tag-version {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--hairline-strong);
+  transition: color 120ms ease, border-color 120ms ease;
+}
+
+.app-tag .app-tag-version:hover,
+.app-tag .app-tag-version:focus-visible {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
 .app-methodology {
   font-size: 12px;
   letter-spacing: 0.06em;

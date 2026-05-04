@@ -1,14 +1,14 @@
 # Validation — Colombia (`colombia`)
 
-Last updated: 2026-05-02 · Sprint: India W1 + Colombia T1b · Paper section: Technical Validation §4.2
+Last updated: 2026-05-04 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `colombia`
 - **Country:** COL
-- **Tier:** live-domestic-anchored (T1b — XM SinerGox API direct live path, committed CSV relay fallback)
+- **Tier:** live-domestic-anchored
 - **Kind:** hydro
-- **Source:** XM SinerGox API (servapibi.xm.com.co/daily, POST MetricId=VertEner Entity=Sistema). Direct live fetch tried first; geoblocked from non-Colombian IPs so falls back to committed CSV relay (Britta cron 18:30 UTC). 5-yr baseline 7.53 TWh/yr (range 0.53–13.12 TWh/yr ENSO-driven). Bimodal hydro-seasonal shape (Apr–Jun + Oct–Nov peaks). T1b, ±50% envelope.
+- **Source:** XM SinerGox API (servapibi.xm.com.co/daily, POST MetricId=VertEner Entity=Sistema) — direct live path tried first; committed CSV relay fallback if geoblocked. Trailing-365-day annualised total. 5-yr baseline 7.53 TWh/yr (range 0.53–13.12 TWh/yr ENSO-driven). Bimodal hydro-seasonal shape (Apr–Jun + Oct–Nov peaks). T1b, ±50% envelope.
 - **Source URL:** [https://servapibi.xm.com.co/daily](https://servapibi.xm.com.co/daily)
 - **Loader:** [`colombia.json.ts`](../../src/data/colombia.json.ts)
 - **Structural gap:** no

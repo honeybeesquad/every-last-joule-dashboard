@@ -1,17 +1,17 @@
 # Validation — Gujarat (`india-gujarat`)
 
-Last updated: 2026-05-02 · Sprint: India W2 · Paper section: Technical Validation §4.2
+Last updated: 2026-05-04 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `india-gujarat`
 - **Country:** IND
-- **Tier:** live (T1a — GSLDC direct live path, geoblocked from non-Indian IPs)
+- **Tier:** static
 - **Kind:** solar
-- **Source:** GSLDC (Gujarat State Load Despatch Centre / GETCO) — RE curtailment and daily generation reports at sldc.gujarat.gov.in. Site is geoblocked from non-Indian IP ranges; an India-egress relay will activate the live parse path. Calibrated to POSOCO/Ember India 2024 (~1.0 TWh/yr solar curtailment, Khavda-Kutch transmission bottlenecks). T1a-live-tso, ±15% fallback.
+- **Source:** GSLDC (Gujarat State Load Despatch Centre / GETCO) — RE curtailment reports at sldc.gujarat.gov.in. Geoblocked from non-Indian IP ranges; loader currently emits T3-modelled typical-shape calibrated to POSOCO/Ember India 2024 (~1.0 TWh/yr solar curtailment). Will be promoted to T1a-live-tso when the India-egress relay activates the live parse.
 - **Source URL:** [https://sldc.gujarat.gov.in/](https://sldc.gujarat.gov.in/)
 - **Loader:** [`india-gujarat.json.ts`](../../src/data/india-gujarat.json.ts)
-- **Structural gap:** no
+- **Structural gap:** yes
 
 ## Calibration
 
@@ -22,11 +22,11 @@ Last updated: 2026-05-02 · Sprint: India W2 · Paper section: Technical Validat
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after India-egress relay is established)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** POSOCO 2024 West region RES curtailment ~1.0 TWh (Gujarat Khavda-Kutch corridor, after deducting Rajasthan component from the 1.5 TWh West-region total)
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —

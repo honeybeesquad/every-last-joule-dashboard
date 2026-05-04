@@ -4,6 +4,45 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Added — ENTSO-E Balkans + Baltics expansion (2026-05-04, T1a ×12)
+- **`serbia`** (T1a-live-tso, mixed): EMS Serbia ENTSO-E A75 feed. Regional default calibration (solar 2%, wind 3%) — no published Serbian curtailment anchor found. IRENA RE Statistics 2024 capacity anchor used for order-of-magnitude check.
+- **`bosnia-and-herzegovina`** (T1a-live-tso, hydro): JPCC Krajina A75 feed. Hydro-dominated; structural hydro spill excluded per methodology (dispatch-driven VRE curtailment negligible). Published A75 generation feed confirmed.
+- **`north-macedonia`** (T1a-live-tso, mixed): MEPSO ENTSO-E A75 feed. Regional defaults (solar 2%, wind 3%) — no published Macedonian anchor found.
+- **`montenegro`** (T1a-live-tso, hydro): CGES Montenegro A75 feed. Hydro-dominated; structural hydro spill excluded per methodology.
+- **`croatia`** (T1a-live-tso, mixed): HOPS Croatia ENTSO-E A75 feed. Regional defaults (solar 2%, wind 2.5%) — no published HOPS anchor found.
+- **`slovenia`** (T1a-live-tso, mixed): ELES Slovenia ENTSO-E A75 feed. Regional defaults (solar 2%, wind 2%) — no published ELES anchor found.
+- **`slovakia`** (T1a-live-tso, mixed): SEPS Slovakia ENTSO-E A75 feed. Regional defaults (solar 2.5%, wind 2%) — no published SEPS anchor found.
+- **`lithuania`** (T1a-live-tso, wind): Litgrid Lithuania ENTSO-E A75 feed. Wind 2.5% rate anchored to Litgrid 2024 published curtailment data.
+- **`latvia`** (T1a-live-tso, wind): AST Latvia ENTSO-E A75 feed. Wind 2.5% regional default — no published Latvian anchor found.
+- **`luxembourg`** (T1a-live-tso, mixed): Cegedel Luxembourg ENTSO-E A75 feed. Small grid (PV+wind <0.5 GW). Regional defaults (solar 2%, wind 2%) — no published anchor found.
+- **`malta`** (T1a-live-tso, solar): Enemalta ENTSO-E A75 feed. PV-dominant island grid. Solar 2% regional default — no published Maltese anchor found.
+- **`moldova`** (T1a-live-tso, mixed): Moldelectrica A75 via MEPSO protocol (cross-border coordination with UA/RO; Moldova not ENTSO-E-synchronised). Regional defaults (solar 2%, wind 3%) — no published anchor found.
+- Albania intentionally excluded: Hydro-dominated per IRENA RE Statistics 2024, no published A75 anchor found, and structural hydro spill excluded per methodology (hydro spill is not dispatch-driven VRE curtailment).
+
+### Changed — Baltics retirement, Estonia broken out (2026-05-04)
+- **`baltics` removed** (was T1b live-domestic-anchored, EIC `10YLT-1001A0008Q`): the legacy "Baltic states" region was always a Lithuania-only A75 feed labelled as a 3-country aggregate. With `lithuania` and `latvia` now broken out as proper T1a regions in this release (and using the same EIC for Lithuania), keeping `baltics` would have double-counted Lithuanian wind curtailment.
+- **`estonia` added** (T1a-live-tso, wind): Elering Estonia ENTSO-E A75 feed (EIC `10Y1001A1001A39I`). Wind 2.5% regional default — no published Estonian anchor found. Estonia's solar is dominated by behind-meter distributed PV that does not appear in A75; wind is the dispatch-curtailable component.
+
+### Tier counts (after Balkans+Baltics + estonia swap)
+- T1a 100 → 113 (+13: 12 new ENTSO-E countries + estonia replacing baltics)
+- T1b 6 → 5 (-1: baltics retired)
+- Total live unchanged delta: 107 → 119
+- Total regions: 241 → 253
+
+## [1.2.0] — 2026-05-03
+
+Zenodo DOI: [10.5281/zenodo.20000400](https://doi.org/10.5281/zenodo.20000400) · concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411).
+
+### Changed — India SLDC tier honesty (2026-05-03)
+- Six India state-SLDC loaders (`india-andhra-pradesh`, `india-gujarat`, `india-karnataka`, `india-maharashtra`, `india-rajasthan`, `india-tamil-nadu`) had been declared T1a-live-tso in v1.1.1 in anticipation of an India-egress relay; the live SLDC paths are not yet wired so emitted data was actually T3-modelled typical-shape. Tier and uncertainty envelope now match emitted data: T3-modelled (±40%, was ±15%). Will be promoted back to T1a-live-tso as each SLDC parser ships — tracking in [#43](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/43).
+- Net tier accounting: T1a 106 → 100, T3 118 → 124, total stays 241.
+
+### Fixed — T2-flare bucket-derivation (2026-05-03)
+- The T2-flare presentational bucket previously derived from a hardcoded `FLARE_IDS` set in `scripts/lib/tier-resolution.ts`; the four flare regions added in v1.2.0 (qatar, kuwait, russia-yamal, russia-e-siberia) silently bucketed into T2 instead of T2-flare even though their canonical `Region.tier` was correct. Bucket now keys directly off `Region.tier === "flare"` so adding a flare region is a single-table change. New invariant in `scripts/ci/check-tier-coherence.ts` asserts `tier === "flare" ⇔ bucket === "T2-flare"`.
+
+### Added — Dashboard header reads version live from Zenodo (2026-05-03)
+- New build-time loader (`src/data/zenodo-version.json.ts`) hits the Zenodo concept-DOI versions endpoint and emits `{version, doi, recordUrl}`. The dashboard header at `everylastjoule.com` now reads this and links the version to the Zenodo record. Falls back to `dataset/CITATION.cff` if the API is unreachable at build time. Auto-bumps with each release.
+
 ### Added — Russia flare + NE China wind (2026-05-03)
 - `russia-yamal` (T2-flare, flat): GGFR 2024 Yamal-Nenets, 10.0 TWh/yr.
 - `russia-e-siberia` (T2-flare, flat): GGFR 2024 East Siberia, 9.0 TWh/yr.

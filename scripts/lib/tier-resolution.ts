@@ -60,12 +60,17 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "china-tianjin": "mixed",
   "china-hainan": "solar",
   "china-shanghai": "solar",
+  // China W3 (Phase-2.7, 2026-05-03): northeast wind-corridor provinces.
+  "china-hebei": "wind",
+  "china-heilongjiang": "wind",
+  "china-jilin": "wind",
   iceland: "hydro-seasonal",
   ukraine: "solar",
   "hawaii-oahu": "solar",
   "hawaii-maui": "solar",
   "hawaii-island": "solar",
   florida: "solar",
+  tva: "solar",
   austria: "flat",
   "russia-murmansk-wind": "flat",
   // typical-shape loaders
@@ -79,8 +84,19 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   gansu: "mixed",
   honduras: "solar",
   "india-east": "solar",
-  // india-rajasthan: promoted to live T1a (India W1, 2026-05-02); no profileKind entry needed.
-  // india-south + india-west: promoted to T1a live (India W2, 2026-05-02); no profileKind entries needed.
+  // India W1/W2/W3 state-SLDC loaders: declared `tier: "live"` from
+  // 2026-05-02 in anticipation of an India-egress relay, but the live
+  // sources are geoblocked / unparsed from the build environment so each
+  // loader currently emits T3-modelled typical-shape data. Reverted to
+  // `tier: "static"` on 2026-05-03 to make tier honesty match emitted data
+  // (Sci-Data integrity); flip back to `tier: "live"` plus remove these
+  // entries once each loader's live path is actually wired up.
+  "india-rajasthan": "solar",
+  "india-gujarat": "solar",
+  "india-karnataka": "solar",
+  "india-andhra-pradesh": "solar",
+  "india-tamil-nadu": "wind",
+  "india-maharashtra": "mixed",
   indonesia: "solar",
   "inner-mongolia": "wind",
   iran: "solar",
@@ -215,13 +231,16 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
  * Region ids whose flat 24/7 profile is a *physical* base load (associated-
  * gas flaring) rather than a modelling concession, presented in Figure 4 as
  * a separate "flare" bucket.
+ *
+ * Source-of-truth: `Region.tier === "flare"` in `src/lib/regions.ts`. This
+ * derived set is exported only for consumers that can't reach the canonical
+ * REGIONS table (e.g., migration scripts working off snapshot JSON). The
+ * bucket-derivation in `resolveRegion` below uses `Region.tier` directly so
+ * adding a new flare region is a single-table change.
  */
-export const FLARE_IDS = new Set([
-  "permian",
-  "w-siberia",
-  "s-iraq",
-  "e-saudi",
-]);
+export const FLARE_IDS = new Set(
+  REGIONS.filter((r) => r.tier === "flare").map((r) => r.id),
+);
 
 export interface ResolvedRegion {
   id: string;
@@ -269,7 +288,7 @@ export function resolveRegion(r: Region): ResolvedRegion | { unresolvedReason: s
   else if (tier === "T1b-live-domestic-anchored") bucket = "T1b";
   else if (tier === "T1c-live-neighbour-anchored") bucket = "T1c";
   else if (tier === "T3-modelled") bucket = "T3";
-  else if (FLARE_IDS.has(r.id)) bucket = "T2-flare";
+  else if (r.tier === "flare") bucket = "T2-flare";
   else bucket = "T2";
   return { id: r.id, name: r.name, region: r, tier, bucket };
 }

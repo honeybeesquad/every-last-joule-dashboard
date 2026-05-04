@@ -1,17 +1,17 @@
 # Validation — Karnataka (`india-karnataka`)
 
-Last updated: 2026-05-02 · Sprint: India W2 · Paper section: Technical Validation §4.2
+Last updated: 2026-05-04 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `india-karnataka`
 - **Country:** IND
-- **Tier:** live (T1a — KSLDC direct live path)
+- **Tier:** static
 - **Kind:** solar
-- **Source:** KSLDC (Karnataka State Load Despatch Centre) — real-time dashboard and curtailment PDFs at ksldc.in. KSLDC was reachable (HTTP 200) from non-Indian IPs in the April 2026 coverage audit; full parser not yet implemented. Calibrated to POSOCO South Region 2024 (~0.5 TWh/yr Karnataka solar curtailment; Pavagada + Bidar solar parks). T1a-live-tso, ±15% fallback.
+- **Source:** KSLDC (Karnataka State Load Despatch Centre) — real-time dashboard and curtailment PDFs at ksldc.in. Probed successfully in April 2026 coverage audit; parser not yet implemented. Loader currently emits T3-modelled typical-shape calibrated to POSOCO South Region 2024 (~0.5 TWh/yr Karnataka solar curtailment). Will be promoted to T1a-live-tso when the parser ships.
 - **Source URL:** [https://ksldc.in/](https://ksldc.in/)
 - **Loader:** [`india-karnataka.json.ts`](../../src/data/india-karnataka.json.ts)
-- **Structural gap:** no
+- **Structural gap:** yes
 
 ## Calibration
 
@@ -22,11 +22,11 @@ Last updated: 2026-05-02 · Sprint: India W2 · Paper section: Technical Validat
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated once KSLDC parser is complete)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** POSOCO 2024 South Region residual after Tamil Nadu wind (~0.5 TWh/yr Karnataka solar; Pavagada Solar Park, Bidar)
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —

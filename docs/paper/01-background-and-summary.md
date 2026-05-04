@@ -76,7 +76,7 @@ The dataset is organised on two orthogonal axes (full taxonomy:
 
 | | `published` | `documented-gap` | `out-of-scope` |
 |---|---|---|---|
-| **`curtailment-renewable`** | 233 regions: live ENTSO-E/EIA/AEMO/Elexon/etc.; T2 calibrated; T3 modelled. | Mexico CENACE, parts of SE Asia, Iran solar… (see `docs/known-limitations.md`) | Antarctica, Vatican, Greenland (~all baseload thermal/diesel) |
+| **`curtailment-renewable`** | 241 regions: live ENTSO-E/EIA/AEMO/Elexon/etc.; T2 calibrated; T3 modelled. | Mexico CENACE, parts of SE Asia, Iran solar… (see `docs/known-limitations.md`) | Antarctica, Vatican, Greenland (~all baseload thermal/diesel) |
 | **`flare-associated-gas`** | 8 regions: Permian, West Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia. | Iran flaring (no GGFR-equivalent disaggregation). | Small flares < 1 Bcm/yr |
 
 Three aspects set this work apart:

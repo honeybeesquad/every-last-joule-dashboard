@@ -1,8 +1,8 @@
 # Every Last Joule — Curtailment & Flare Dataset
 
-**Version:** v1.1.1 · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI (this version):** [10.5281/zenodo.19991315](https://doi.org/10.5281/zenodo.19991315) · **DOI (always-latest):** [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411)
+**Version:** v1.2.0 · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI (this version):** [10.5281/zenodo.20000400](https://doi.org/10.5281/zenodo.20000400) · **DOI (always-latest):** [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411)
 
-A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 241 regions across 6 continents. Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
+A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 253 regions across 6 continents. Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
 
 ## What's in it
 
@@ -56,7 +56,7 @@ print(snap["peakGW"], snap["sourceStatus"], snap["lastUpdated"])
 
 If you use this dataset in academic work, please cite:
 
-> Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 233 regions. _Scientific Data_ (in review). Dataset DOI: [10.5281/zenodo.19991315](https://doi.org/10.5281/zenodo.19991315).
+> Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 253 regions. _Scientific Data_ (in review). Dataset DOI: [10.5281/zenodo.20000400](https://doi.org/10.5281/zenodo.20000400).
 
 Machine-readable citation metadata in [`CITATION.cff`](CITATION.cff).
 
@@ -80,7 +80,7 @@ See [`CHANGELOG.md`](CHANGELOG.md) for release history.
 
 The short version:
 - This is a **synthesis** dataset. Most regions mix live upstream feeds (ENTSO-E, EIA, AEMO NEMWeb, Elexon BMRS, ONS Brazil, and others) with published annual calibration (IRENA, Ember, GGFR, TSO annual reports).
-- The 241 regions break down by confidence tier as **113 T1-live-TSO** (106 T1a own-jurisdiction, 6 T1b domestic-anchored, 1 T1c neighbour-anchored), **2 T2-annual-calibrated** (flat-base statics on a published annual), **8 T2-flare** (24/7 baseload, methodologically correct for flare — Permian, West Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia), and **118 T3-modelled** (typical diurnal/seasonal/mixed/overnight shape scaled to a published annual anchor — Ireland (Republic and Northern), Peru, South Africa, Chinese provinces, most of South Asia, Africa, Middle East outside flare, Latin America outside Brazil/Atacama, Hawaii). Every region carries `confidenceTier` so consumers can filter by precision; see [`../docs/methodology/uncertainty.md`](../docs/methodology/uncertainty.md) and [`../docs/known-limitations.md`](../docs/known-limitations.md).
+- The 253 regions break down by confidence tier as **119 T1-live-TSO** (112 T1a own-jurisdiction, 6 T1b domestic-anchored, 1 T1c neighbour-anchored), **2 T2-annual-calibrated** (flat-base statics on a published annual), **8 T2-flare** (24/7 baseload, methodologically correct for flare — Permian, West Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia), and **124 T3-modelled** (typical diurnal/seasonal/mixed/overnight shape scaled to a published annual anchor — Ireland (Republic and Northern), Peru, South Africa, Chinese provinces, most of South Asia, Africa, Middle East outside flare, Latin America outside Brazil/Atacama, Hawaii). Every region carries `confidenceTier` so consumers can filter by precision; see [`../docs/methodology/uncertainty.md`](../docs/methodology/uncertainty.md) and [`../docs/known-limitations.md`](../docs/known-limitations.md).
 - Flare regions (Permian, West Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia) are correctly modelled as flat 24/7 base-load — flare _is_ continuous, not diurnal.
 - Some jurisdictions (Mexico CENACE, much of sub-Saharan Africa) have no public hourly source and are documented as **structural gaps** rather than filled with fiction.
 

@@ -2,14 +2,14 @@ import { describe, expect, it } from "vitest";
 import { buildIndiaGujaratData } from "../../src/data/india-gujarat.json";
 
 describe("india-gujarat loader", () => {
-  it("returns a valid positive RegionData shape with T1a tier", async () => {
+  it("returns a valid positive RegionData shape with T3-modelled tier", async () => {
     const data = await buildIndiaGujaratData();
     expect(data.regionId).toBe("india-gujarat");
     expect(data.profile).toHaveLength(24);
     expect(data.latestProfile).toBeNull();
     expect(data.totalTWh).toBeGreaterThan(0);
     expect(data.peakGW).toBeGreaterThan(0);
-    expect(data.confidenceTier).toBe("T1a-live-tso");
+    expect(data.confidenceTier).toBe("T3-modelled");
   });
 
   it("solar profile peaks around UTC 06-07 (Gujarat ~70°E local noon)", async () => {
@@ -19,11 +19,11 @@ describe("india-gujarat loader", () => {
     expect(peakHour).toBeLessThanOrEqual(8);
   });
 
-  it("uncertainty bounds reflect ±15% T1a envelope", async () => {
+  it("uncertainty bounds reflect ±40% T3 envelope", async () => {
     const data = await buildIndiaGujaratData();
     expect(data.uncertaintyLowGW).toBeGreaterThan(0);
     expect(data.uncertaintyHighGW).toBeGreaterThan(data.peakGW);
-    expect(data.uncertaintyHighGW).toBeCloseTo(data.peakGW * 1.15, 4);
-    expect(data.uncertaintyLowGW).toBeCloseTo(data.peakGW * 0.85, 4);
+    expect(data.uncertaintyHighGW).toBeCloseTo(data.peakGW * 1.40, 4);
+    expect(data.uncertaintyLowGW).toBeCloseTo(data.peakGW * 0.60, 4);
   });
 });

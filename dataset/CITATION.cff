@@ -2,19 +2,18 @@ cff-version: 1.2.0
 message: "If you use this dataset in academic work, please cite it as below."
 type: dataset
 title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring"
-version: 1.1.1
+version: 1.2.0
 date-released: 2026-05-03
 abstract: >-
   A versioned, reproducible synthesis dataset of hourly renewable-electricity
-  curtailment and associated-gas flaring, covering 233 regions across six
+  curtailment and associated-gas flaring, covering 241 regions across six
   continents. Built by combining live feeds from transmission system operators
   and energy regulators (ENTSO-E, EIA, AEMO, Elexon, ONS, and others) with
   published annual calibration anchors (IRENA, Ember, GGFR). Each region's
   provenance, calibration rate, and confidence tier are documented machine-
   readably. Published to support the "Every Last Joule" thesis that an
-  interruptible load such as Bitcoin mining can match global renewable
-  curtailment, but made fully open so the dataset is useful for any
-  renewable-integration, grid-planning, or waste-heat-economy research.
+interruptible load such as Bitcoin mining can match global renewable curtailment, but made fully open so the dataset is useful for any
+renewable-integration, grid-planning, or waste-heat-economy research.
 authors:
   - family-names: Collins
     given-names: Simon
@@ -37,14 +36,14 @@ repository-code: "https://github.com/honeybeesquad/every-last-joule-dashboard"
 url: "https://everylastjoule.com"
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.19991315"
-    description: "Zenodo archival DOI (versioned, v1.1.1)"
+    value: "10.5281/zenodo.20000400"
+    description: "Zenodo archival DOI (versioned, v1.2.0)"
   - type: doi
     value: "10.5281/zenodo.19835411"
     description: "Zenodo concept DOI (resolves to latest version)"
 preferred-citation:
   type: article
-  title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 233 regions"
+  title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 241 regions"
   authors:
     - family-names: Collins
       given-names: Simon

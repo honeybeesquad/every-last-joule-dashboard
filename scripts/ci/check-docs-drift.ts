@@ -44,6 +44,13 @@ const NON_REGION_DOCS = new Set<string>([
   // the snapshot-side mirror of this set.
   "iso-ne",
   "nyiso",
+  // Pre-rename historical docs preserved for inbound link continuity.
+  // Each was the original parent of a per-state / per-utility split.
+  "india-north",   // → split into india-rajasthan + others (India W1, 2026-05-02)
+  "india-south",   // → replaced by india-tamil-nadu + india-karnataka (India W2)
+  "india-west",    // → replaced by india-gujarat (India W2)
+  "italy-south",   // → replaced by italy-sicily (B4 Option B, 2026-04-25)
+  "japan",         // → renamed japan-kyushu, then split into 10 utilities (Japan W1)
 ]);
 
 if (!existsSync(DOCS_DIR)) {

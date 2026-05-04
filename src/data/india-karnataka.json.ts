@@ -29,19 +29,21 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     REGION_ID,
     6.5,
     0.5,
-    `${probeNote}Typical-shape T1a fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
+    `${probeNote}Typical-shape T3-modelled fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
     `(~0.5 TWh/yr Karnataka solar curtailment; Pavagada Solar Park + Bidar solar + growing wind). ` +
-    `State-level KSLDC source established; live path activates when parser is complete.`,
+    `State-level KSLDC source established; will be promoted to T1a-live-tso when the parser is complete.`,
     "2024",
   );
-  // Override T3-modelled → T1a-live-tso: KSLDC is the intended T1a source.
-  return applyUncertainty(base, { regionTier: "live" });
+  // T3-modelled while the KSLDC parser is not yet implemented. When the
+  // parser ships, flip both this and the canonical src/lib/regions.ts
+  // entry back to T1a-live-tso.
+  return applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run(), { regionTier: "live" })
+  withFallback(REGION_ID, () => run(), { regionTier: "static" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("india-karnataka loader failed", err);

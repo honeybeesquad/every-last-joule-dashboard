@@ -1,6 +1,6 @@
 # Every Last Joule
 
-Hourly renewable-electricity curtailment and associated-gas flaring across **128 regions** on six continents. Live dashboard at **[everylastjoule.com](https://everylastjoule.com)**.
+Hourly renewable-electricity curtailment and associated-gas flaring across **253 regions** on six continents. Live dashboard at **[everylastjoule.com](https://everylastjoule.com)**.
 
 This repository contains both the published dataset (the academic artefact) and the dashboard build that produces it (the engineering artefact).
 
@@ -14,7 +14,7 @@ This repository contains both the published dataset (the academic artefact) and 
 
 ## What this dataset is
 
-A versioned, reproducible synthesis of hourly curtailment series, with **per-region provenance, calibration rate, and confidence tier** on every emitted row. The 233 regions break down as **106 T1a-live-tso** (live hourly feed + own-jurisdiction calibration rate), **6 T1b-live-domestic-anchored** (Italy-Sardinia, Italy-North-Zone, Italy-Sicily, Netherlands, Baltics, Colombia — live feed + domestic-stat-agency or modelled-share rate), **1 T1c-live-neighbour-anchored** (Switzerland — Swissgrid live feed against the Czech CEPS rate), **2 T2-annual-calibrated** (flat-base statics anchored to a published annual), **4 T2-flare** (24/7 base-load, methodologically correct for flare), and **114 T3-modelled** (typical diurnal/seasonal/mixed/overnight shape scaled to a published annual anchor). Authoritative tally: `npm run tally:tiers`.
+A versioned, reproducible synthesis of hourly curtailment series, with **per-region provenance, calibration rate, and confidence tier** on every emitted row. The 253 regions break down across the T1a/T1b/T1c (live), T2 / T2-flare (annual-calibrated), and T3 (modelled) tiers — run `npm run tally:tiers` for the authoritative current breakdown and per-bucket region list.
 
 A seven-year hourly reconstruction (2020-01-01 → 2026-04-24, **2,590,195 rows × 29 regions**) is published alongside the live snapshots in [`data/historical/curtailment_backfill.parquet`](data/historical/). Methodology in [`docs/methodology/historical-backfill.md`](docs/methodology/historical-backfill.md).
 
@@ -25,7 +25,7 @@ Requires Node 20 (`nvm use`).
     npm install            # install deps
     npm run dev            # local Observable Framework preview
     npm run build          # produce a static dist/
-    npm test               # vitest unit tests (205 across 82 files)
+    npm test               # vitest unit tests
     npm run typecheck      # tsc --noEmit
     npm run validate       # validate every committed snapshot against the schema
     npm run tally:tiers    # print the canonical T1 / T2 / T2-flare / T3 tally
@@ -50,7 +50,7 @@ Live data loaders need free upstream API tokens (`ENTSOE_TOKEN`, `EIA_API_KEY`, 
 
 ## Citation
 
-> Collins, S. (2026). _Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 128 regions._ Scientific Data (in review). Dataset DOI: [10.5281/zenodo.19835566](https://doi.org/10.5281/zenodo.19835566).
+> Collins, S. (2026). _Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 241 regions._ Scientific Data (in review). Dataset DOI: [10.5281/zenodo.20000400](https://doi.org/10.5281/zenodo.20000400) (concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) resolves to latest).
 
 Machine-readable: [`dataset/CITATION.cff`](dataset/CITATION.cff).
 
