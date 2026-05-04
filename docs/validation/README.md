@@ -24,11 +24,13 @@ Last generated: 2026-05-04
 | Western Australia Wind (SWIS) | live | wind | 0 | [wa-swis-wind](./wa-swis-wind.md) |
 | Austria | static | mixed | 0 | [austria](./austria.md) |
 | Azerbaijan | static | mixed | 0 | [azerbaijan](./azerbaijan.md) |
-| Belgium | live | mixed | 0 | [belgium](./belgium.md) |
+| Belgium Solar | live | solar | 0 | [belgium-solar](./belgium-solar.md) |
+| Belgium Wind | live | wind | 0 | [belgium-wind](./belgium-wind.md) |
 | Benin | static | solar | 0 | [benin](./benin.md) |
 | Burkina Faso | static | solar | 0 | [burkina-faso](./burkina-faso.md) |
 | Bangladesh | static | solar | 0 | [bangladesh](./bangladesh.md) |
-| Bulgaria | live | mixed | 7 | [bulgaria](./bulgaria.md) |
+| Bulgaria Solar | live | solar | 0 | [bulgaria-solar](./bulgaria-solar.md) |
+| Bulgaria Wind | live | wind | 0 | [bulgaria-wind](./bulgaria-wind.md) |
 | Bosnia & Herzegovina | live | hydro | 0 | [bosnia-and-herzegovina](./bosnia-and-herzegovina.md) |
 | Bolivia | static | solar | 0 | [bolivia](./bolivia.md) |
 | Bahia Solar | live | solar | 0 | [brazil-bahia-solar](./brazil-bahia-solar.md) |
@@ -110,33 +112,42 @@ Last generated: 2026-05-04
 | Costa Rica | static | hydro | 0 | [costa-rica](./costa-rica.md) |
 | Cuba | static | mixed | 0 | [cuba](./cuba.md) |
 | Cyprus | static | solar | 0 | [cyprus](./cyprus.md) |
-| Czech Republic | live | mixed | 7 | [czech-republic](./czech-republic.md) |
-| Germany | live | mixed | 7 | [germany](./germany.md) |
-| Denmark DK2 | live | mixed | 0 | [denmark-east](./denmark-east.md) |
-| Denmark DK1 | live | mixed | 0 | [denmark-west](./denmark-west.md) |
+| Czech Republic Solar | live | solar | 0 | [czech-republic-solar](./czech-republic-solar.md) |
+| Czech Republic Wind | live | wind | 0 | [czech-republic-wind](./czech-republic-wind.md) |
+| Germany Solar | live | solar | 0 | [germany-solar](./germany-solar.md) |
+| Germany Wind | live | wind | 0 | [germany-wind](./germany-wind.md) |
+| Denmark DK2 Solar | live | solar | 0 | [denmark-east-solar](./denmark-east-solar.md) |
+| Denmark DK2 Wind | live | wind | 0 | [denmark-east-wind](./denmark-east-wind.md) |
+| Denmark DK1 Solar | live | solar | 0 | [denmark-west-solar](./denmark-west-solar.md) |
+| Denmark DK1 Wind | live | wind | 0 | [denmark-west-wind](./denmark-west-wind.md) |
 | Dominican Republic | static | solar | 0 | [dominican-republic](./dominican-republic.md) |
 | Algeria | static | solar | 0 | [algeria](./algeria.md) |
 | Ecuador | static | hydro | 0 | [ecuador](./ecuador.md) |
 | Egypt | static | solar | 0 | [egypt](./egypt.md) |
-| Iberia | live | mixed | 7 | [iberia](./iberia.md) |
+| Spain Solar | live | solar | 0 | [spain-solar](./spain-solar.md) |
+| Spain Wind | live | wind | 0 | [spain-wind](./spain-wind.md) |
 | Estonia | live | wind | 0 | [estonia](./estonia.md) |
 | Ethiopia | static | hydro | 0 | [ethiopia](./ethiopia.md) |
 | Finland | live | wind | 0 | [finland](./finland.md) |
-| France | live | mixed | 0 | [france](./france.md) |
+| France Solar | live | solar | 0 | [france-solar](./france-solar.md) |
+| France Wind | live | wind | 0 | [france-wind](./france-wind.md) |
 | Gabon | static | hydro | 0 | [gabon](./gabon.md) |
 | GB England+Wales | live | mixed | 0 | [gb-england-wales](./gb-england-wales.md) |
 | GB Scotland | live | wind | 0 | [gb-scotland](./gb-scotland.md) |
 | Northern Ireland | live | wind | 0 | [northern-ireland](./northern-ireland.md) |
-| Georgia | static | solar | 0 | [georgia](./georgia.md) |
+| Georgia | static | mixed | 0 | [georgia](./georgia.md) |
 | Ghana | static | solar | 0 | [ghana](./ghana.md) |
-| Greece | live | mixed | 7 | [greece](./greece.md) |
+| Greece Solar | live | solar | 0 | [greece-solar](./greece-solar.md) |
+| Greece Wind | live | wind | 0 | [greece-wind](./greece-wind.md) |
 | Guatemala | static | solar | 0 | [guatemala](./guatemala.md) |
 | Central America (SIEPAC) | static | solar | 0 | [guatemala-siepac](./guatemala-siepac.md) |
 | French Guiana | static | solar | 0 | [french-guiana](./french-guiana.md) |
 | Guyana | static | flare | 0 | [guyana](./guyana.md) |
 | Honduras | static | solar | 0 | [honduras](./honduras.md) |
-| Croatia | live | mixed | 0 | [croatia](./croatia.md) |
-| Hungary | live | mixed | 7 | [hungary](./hungary.md) |
+| Croatia Solar | live | solar | 0 | [croatia-solar](./croatia-solar.md) |
+| Croatia Wind | live | wind | 0 | [croatia-wind](./croatia-wind.md) |
+| Hungary Solar | live | solar | 0 | [hungary-solar](./hungary-solar.md) |
+| Hungary Wind | live | wind | 0 | [hungary-wind](./hungary-wind.md) |
 | Indonesia | static | solar | 0 | [indonesia](./indonesia.md) |
 | Andhra Pradesh | static | solar | 0 | [india-andhra-pradesh](./india-andhra-pradesh.md) |
 | India East | static | solar | 0 | [india-east](./india-east.md) |
@@ -152,9 +163,12 @@ Last generated: 2026-05-04
 | S. Iraq | flare | flare | 0 | [s-iraq](./s-iraq.md) |
 | Iceland | static | hydro | 0 | [iceland](./iceland.md) |
 | Israel | static | solar | 0 | [israel](./israel.md) |
-| Italy North | live-domestic-anchored | mixed | 7 | [italy-north-zone](./italy-north-zone.md) |
-| Sardinia | live-domestic-anchored | mixed | 7 | [italy-sardinia](./italy-sardinia.md) |
-| Sicily | live-domestic-anchored | mixed | 0 | [italy-sicily](./italy-sicily.md) |
+| Italy North Solar | live-domestic-anchored | solar | 0 | [italy-north-zone-solar](./italy-north-zone-solar.md) |
+| Italy North Wind | live-domestic-anchored | wind | 0 | [italy-north-zone-wind](./italy-north-zone-wind.md) |
+| Sardinia Solar | live-domestic-anchored | solar | 0 | [italy-sardinia-solar](./italy-sardinia-solar.md) |
+| Sardinia Wind | live-domestic-anchored | wind | 0 | [italy-sardinia-wind](./italy-sardinia-wind.md) |
+| Sicily Solar | live-domestic-anchored | solar | 0 | [italy-sicily-solar](./italy-sicily-solar.md) |
+| Sicily Wind | live-domestic-anchored | wind | 0 | [italy-sicily-wind](./italy-sicily-wind.md) |
 | Jamaica | static | solar | 0 | [jamaica](./jamaica.md) |
 | Jordan | static | solar | 0 | [jordan](./jordan.md) |
 | Chubu (Japan) | live | solar | 0 | [japan-chubu](./japan-chubu.md) |
@@ -176,13 +190,16 @@ Last generated: 2026-05-04
 | Laos | static | solar | 0 | [laos](./laos.md) |
 | Sri Lanka | static | mixed | 0 | [sri-lanka](./sri-lanka.md) |
 | Lithuania | live | wind | 0 | [lithuania](./lithuania.md) |
-| Luxembourg | live | mixed | 0 | [luxembourg](./luxembourg.md) |
+| Luxembourg Solar | live | solar | 0 | [luxembourg-solar](./luxembourg-solar.md) |
+| Luxembourg Wind | live | wind | 0 | [luxembourg-wind](./luxembourg-wind.md) |
 | Latvia | live | wind | 0 | [latvia](./latvia.md) |
 | Morocco | static | mixed | 0 | [morocco](./morocco.md) |
-| Moldova | live | mixed | 0 | [moldova](./moldova.md) |
+| Moldova Solar | live | solar | 0 | [moldova-solar](./moldova-solar.md) |
+| Moldova Wind | live | wind | 0 | [moldova-wind](./moldova-wind.md) |
 | Madagascar | static | hydro | 0 | [madagascar](./madagascar.md) |
 | Mexico | static | solar | 0 | [mexico](./mexico.md) |
-| North Macedonia | live | mixed | 0 | [north-macedonia](./north-macedonia.md) |
+| North Macedonia Solar | live | solar | 0 | [north-macedonia-solar](./north-macedonia-solar.md) |
+| North Macedonia Wind | live | wind | 0 | [north-macedonia-wind](./north-macedonia-wind.md) |
 | Malta | live | solar | 0 | [malta](./malta.md) |
 | Myanmar | static | solar | 0 | [myanmar](./myanmar.md) |
 | Montenegro | live | hydro | 0 | [montenegro](./montenegro.md) |
@@ -195,7 +212,8 @@ Last generated: 2026-05-04
 | Namibia | static | solar | 0 | [namibia](./namibia.md) |
 | Nigeria | static | solar | 0 | [nigeria](./nigeria.md) |
 | Nicaragua | static | solar | 0 | [nicaragua](./nicaragua.md) |
-| Netherlands | live-domestic-anchored | mixed | 7 | [netherlands](./netherlands.md) |
+| Netherlands Solar | live-domestic-anchored | solar | 0 | [netherlands-solar](./netherlands-solar.md) |
+| Netherlands Wind | live-domestic-anchored | wind | 0 | [netherlands-wind](./netherlands-wind.md) |
 | Norway NO1 (Oslo) | live | mixed | 7 | [norway-no1](./norway-no1.md) |
 | Norway NO2 (Kristiansand) | live | mixed | 7 | [norway-no2](./norway-no2.md) |
 | Norway NO3 (Trondheim) | live | mixed | 7 | [norway-no3](./norway-no3.md) |
@@ -211,11 +229,14 @@ Last generated: 2026-05-04
 | Peru Wind | live | wind | 0 | [peru-wind](./peru-wind.md) |
 | Philippines Solar | static | solar | 0 | [philippines-solar](./philippines-solar.md) |
 | Philippines Wind | static | wind | 0 | [philippines-wind](./philippines-wind.md) |
-| Poland | live | mixed | 7 | [poland](./poland.md) |
-| Portugal | live | mixed | 7 | [portugal](./portugal.md) |
+| Poland Solar | live | solar | 0 | [poland-solar](./poland-solar.md) |
+| Poland Wind | live | wind | 0 | [poland-wind](./poland-wind.md) |
+| Portugal Solar | live | solar | 0 | [portugal-solar](./portugal-solar.md) |
+| Portugal Wind | live | wind | 0 | [portugal-wind](./portugal-wind.md) |
 | Paraguay | static | hydro | 0 | [paraguay](./paraguay.md) |
 | Qatar | flare | flare | 0 | [qatar](./qatar.md) |
-| Romania | live | mixed | 7 | [romania](./romania.md) |
+| Romania Solar | live | solar | 0 | [romania-solar](./romania-solar.md) |
+| Romania Wind | live | wind | 0 | [romania-wind](./romania-wind.md) |
 | E. Siberia (flare) | flare | flare | 0 | [russia-e-siberia](./russia-e-siberia.md) |
 | Russia (European grid) | static | hydro | 0 | [russia-mainland](./russia-mainland.md) |
 | Russia (Murmansk) | static | wind | 0 | [russia-murmansk-wind](./russia-murmansk-wind.md) |
@@ -227,22 +248,26 @@ Last generated: 2026-05-04
 | Sudan | static | solar | 0 | [sudan](./sudan.md) |
 | Senegal | static | solar | 0 | [senegal](./senegal.md) |
 | El Salvador | static | solar | 0 | [el-salvador](./el-salvador.md) |
-| Serbia | live | mixed | 0 | [serbia](./serbia.md) |
+| Serbia Solar | live | solar | 0 | [serbia-solar](./serbia-solar.md) |
+| Serbia Wind | live | wind | 0 | [serbia-wind](./serbia-wind.md) |
 | Suriname | static | flare | 0 | [suriname](./suriname.md) |
-| Slovakia | live | mixed | 0 | [slovakia](./slovakia.md) |
-| Slovenia | live | mixed | 0 | [slovenia](./slovenia.md) |
+| Slovakia Solar | live | solar | 0 | [slovakia-solar](./slovakia-solar.md) |
+| Slovakia Wind | live | wind | 0 | [slovakia-wind](./slovakia-wind.md) |
+| Slovenia Solar | live | solar | 0 | [slovenia-solar](./slovenia-solar.md) |
+| Slovenia Wind | live | wind | 0 | [slovenia-wind](./slovenia-wind.md) |
 | Sweden North | live | wind | 7 | [sweden-north](./sweden-north.md) |
-| Sweden South | live | mixed | 7 | [sweden-south](./sweden-south.md) |
+| Sweden South Solar | live | solar | 0 | [sweden-south-solar](./sweden-south-solar.md) |
+| Sweden South Wind | live | wind | 0 | [sweden-south-wind](./sweden-south-wind.md) |
 | Eswatini | static | solar | 0 | [eswatini](./eswatini.md) |
 | Togo | static | solar | 0 | [togo](./togo.md) |
 | Thailand | static | solar | 0 | [thailand](./thailand.md) |
 | Trinidad & Tobago | static | flare | 0 | [trinidad-tobago](./trinidad-tobago.md) |
 | Tunisia | static | solar | 0 | [tunisia](./tunisia.md) |
 | Turkey | live | mixed | 0 | [turkey](./turkey.md) |
+| Turkey | live | mixed | 0 | [turkey](./turkey.md) |
 | Taiwan | static | mixed | 0 | [taiwan](./taiwan.md) |
 | Tanzania | static | hydro | 0 | [tanzania](./tanzania.md) |
 | Uganda | static | hydro | 0 | [uganda](./uganda.md) |
-| Ukraine | static | solar | 0 | [ukraine](./ukraine.md) |
 | Uruguay | live | wind | 0 | [uruguay](./uruguay.md) |
 | BPA | live | mixed | 7 | [bpa](./bpa.md) |
 | California | live | mixed | 7 | [caiso](./caiso.md) |
