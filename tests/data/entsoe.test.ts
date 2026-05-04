@@ -73,43 +73,38 @@ describe("buildZoneData", () => {
     expect(rd.sourceNote).toContain("2%");
   });
 
-  it("spain calibration at 2% produces half the totalTWh of finland at 5% for same raw points", () => {
+  it("iberia calibration at 2% produces half the totalTWh of finland at 5% for same raw points", () => {
     const points = parseEntsoeXml(xml);
-    const spain = buildZoneData("spain-wind", points, 0.02, "x");
+    const iberia = buildZoneData("iberia", points, 0.02, "x");
     const finland = buildZoneData("finland", points, 0.05, "y");
     // totalTWh scales linearly with rate
-    expect(finland.totalTWh / spain.totalTWh).toBeCloseTo(2.5, 1);
+    expect(finland.totalTWh / iberia.totalTWh).toBeCloseTo(2.5, 1);
   });
 
   it("keeps ENTSO-E only for zones without direct TSO CSV replacements", () => {
     const ids = ZONES.map((z: any) => z.id);
-    expect(ids).toEqual(expect.arrayContaining(["netherlands-wind", "netherlands-solar"]));
-    expect(ids).not.toContain("france-wind");
-    expect(ids).not.toContain("france-solar");
-    expect(ids).not.toContain("denmark-west-wind");
-    expect(ids).not.toContain("denmark-west-solar");
-    expect(ids).not.toContain("denmark-east-wind");
-    expect(ids).not.toContain("denmark-east-solar");
+    expect(ids).toEqual(expect.arrayContaining(["netherlands"]));
+    expect(ids).not.toEqual(expect.arrayContaining(["france", "denmark-west"]));
   });
 
   it("includes the v1a ENTSO-E expansion zones", () => {
     const ids = ZONES.map((z: any) => z.id);
     expect(ids).toEqual(expect.arrayContaining([
-      "poland-wind", "poland-solar",
-      "greece-wind", "greece-solar",
-      "romania-wind", "romania-solar",
-      "italy-north-zone-wind", "italy-north-zone-solar",
-      "italy-sicily-wind", "italy-sicily-solar",
-      "italy-sardinia-wind", "italy-sardinia-solar",
+      "poland",
+      "greece",
+      "romania",
+      "italy-north-zone",  // split from italy-national; 35% of Terna 2024 national total
+      "italy-sicily",      // replaces italy-south (no A75 data); transmission-constrained island
+      "italy-sardinia"     // 20% of national total; island isolation
     ]));
   });
 
   it("includes the v1f ENTSO-E expansion zones and keeps Turkey out of ENTSO-E", () => {
     const ids = ZONES.map((z: any) => z.id);
     expect(ids).toEqual(expect.arrayContaining([
-      "portugal-wind", "portugal-solar",
+      "portugal",
       "sweden-north",
-      "sweden-south-wind", "sweden-south-solar",
+      "sweden-south"
     ]));
     expect(ids).not.toEqual(expect.arrayContaining(["turkey"]));
   });

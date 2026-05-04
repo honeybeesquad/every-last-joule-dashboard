@@ -47,8 +47,6 @@ const KNOWN_AGGREGATE_IDS = new Set<string>([
   // pre-split denmark.json — canonical split is denmark-east + denmark-west
   // via entsoe.json, retained for legacy fallback in src/index.md.
   "denmark",
-  "denmark-east",
-  "denmark-west",
   // pre-split iso-ne.json — canonical split is iso-ne-maine-vermont +
   // iso-ne-rest, retained for legacy fallback.
   "iso-ne",
@@ -65,32 +63,6 @@ const KNOWN_AGGREGATE_IDS = new Set<string>([
   // spike is promoted to canonical.
   "ercot-native-west",
   "ercot-native-east",
-  // Phase 3a ENTSO-E per-fuel splits: old parent ids retained as snapshots
-  // pending loader migration. belgium → belgium-wind/solar; germany →
-  // germany-wind/solar; iberia → spain-wind/solar; portugal →
-  // portugal-wind/solar; netherlands → netherlands-wind/solar; poland →
-  // poland-wind/solar; greece → greece-wind/solar; romania →
-  // romania-wind/solar; france → france-wind/solar (has own loader);
-  // italy-north-zone → italy-north-zone-wind/solar; italy-sicily →
-  // italy-sicily-wind/solar; italy-sardinia → italy-sardinia-wind/solar;
-  // sweden-south → sweden-south-wind/solar; hungary → hungary-wind/solar;
-  // czech-republic → czech-republic-wind/solar; bulgaria → bulgaria-wind/solar.
-  "belgium",
-  "germany",
-  "iberia",
-  "portugal",
-  "netherlands",
-  "poland",
-  "greece",
-  "romania",
-  "france",
-  "italy-north-zone",
-  "italy-sicily",
-  "italy-sardinia",
-  "sweden-south",
-  "hungary",
-  "czech-republic",
-  "bulgaria",
 ]);
 
 // Legacy T1-live-TSO is an accepted alias of T1a-live-tso for pre-2026-04-25

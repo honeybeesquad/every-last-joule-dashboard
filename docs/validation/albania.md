@@ -8,7 +8,7 @@ Last updated: 2026-05-04 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** ALB
 - **Tier:** static
 - **Kind:** solar
-- **Source:** IRENA RE Statistics 2024 (~240 MW solar capacity: Karavasta 140 MW + Spitalla 100 MW); wind negligible; modelled curtailment ~2% per regional default
+- **Source:** IRENA RE Statistics 2024 (~240 MW solar capacity: Karavasta 140 MW + Spitalla 100 MW); modelled curtailment ~2% per regional default
 - **Source URL:** [https://www.irena.org/Data/Energy-Profiles](https://www.irena.org/Data/Energy-Profiles)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** yes

@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-04 (Phase 3a ENTSO-E per-fuel split + iberia→spain rename: +25 regions, 264→289. 21 T1a ENTSO-E mixed split into per-fuel (belgium-wind/solar, spain-wind/solar, portugal-wind/solar, germany-wind/solar, denmark-west-wind/solar, poland-wind/solar, greece-wind/solar, romania-wind/solar, sweden-south-wind/solar, hungary-wind/solar, czech-republic-wind/solar, bulgaria-wind/solar, serbia-wind/solar, north-macedonia-wind/solar, croatia-wind/solar, slovenia-wind/solar, slovakia-wind/solar, luxembourg-wind/solar, moldova-wind/solar). 4 T1b live-domestic-anchored split (netherlands-wind/solar, italy-north-zone-wind/solar, italy-sicily-wind/solar, italy-sardinia-wind/solar). iberia→spain (ID+name only; EIC 10YES-REE------0 unchanged). Turkey remains mixed pending EPIAS B16/B19 split. france and denmark-east have their own CSV loaders, not ZONES. Malta retained (was accidentally removed, restored). Latvia/lithuania/estonia retained from Balkans+Baltics phase.)",
-  "T1a": 134,
-  "T1b": 9,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-04 (Phase 2 IRENA T3 anchors: +11 T3-static regions: albania, georgia, armenia, azerbaijan, uzbekistan, sri-lanka, sudan, venezuela, laos, cambodia, myanmar. Skipped: bhutan (hydro-only), kyrgyzstan (VRE <50 MW threshold), tajikistan (VRE <50 MW threshold). Albania was previously excluded but now included given Karavasta/Spitalla ~240 MW solar installed capacity per IRENA RE Statistics 2024.)",
+  "T1a": 113,
+  "T1b": 5,
   "T1c": 1,
   "T2": 2,
   "T2-flare": 8,
   "T3": 135,
-  "total": 289
+  "total": 264
 }

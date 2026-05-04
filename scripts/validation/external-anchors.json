@@ -1364,7 +1364,7 @@
       "migrated_at": "2026-04-26"
     }
   },
-  "spain": {
+  "iberia": {
     "tso_annual_latest": "REE Informe del Sistema Eléctrico 2024 broad renewable curtailment: 6.8 TWh wind + 2.4 TWh PV + 1.4 TWh CSP = ~10.6 TWh/yr total. The wind+solar+CSP rates in src/data/entsoe.json.ts were calibrated to this broad figure (vertidos por restricciones técnicas + redespacho + congestión).",
     "tso_annual_twh": {
       "2024": 10.6

@@ -16,7 +16,7 @@ export "$TOKEN_LINE"
 mkdir -p scripts/backfill/logs
 
 ZONES=(
-  germany spain-wind spain-solar portugal-wind portugal-solar netherlands poland greece
+  germany iberia portugal netherlands poland greece
   romania italy-north-zone italy-south italy-sardinia
   sweden-north sweden-south hungary czech-republic
   bulgaria baltics switzerland
