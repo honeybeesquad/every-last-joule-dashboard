@@ -7,7 +7,7 @@ Last updated: 2026-05-04 · Sprint: S1 + HB integration · Paper section: Techni
 - **Region id:** `georgia`
 - **Country:** GEO
 - **Tier:** static
-- **Kind:** solar
+- **Kind:** mixed
 - **Source:** IRENA RE Statistics 2024 (~100 MW solar+wind combined, ~1.8 GW hydro); modelled curtailment ~2% per regional default
 - **Source URL:** [https://www.irena.org/Data/Energy-Profiles](https://www.irena.org/Data/Energy-Profiles)
 - **Loader:** _(no single-file loader — see multi-region source)_

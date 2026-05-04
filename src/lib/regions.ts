@@ -30,59 +30,66 @@ export const REGIONS: Region[] = [
   { id: "aemo-sa-solar",    name: "South Australia Solar", country: "AUS", lat: -32.7, lon: 138.3, tier: "live", kind: "solar", source: "AEMO NEMWeb solar SEMIDISPATCHCAP", sourceUrl: "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/" },
   { id: "aemo-tas-wind",    name: "Tasmania Wind",         country: "AUS", lat: -42.0, lon: 146.5, tier: "live", kind: "wind",  source: "AEMO NEMWeb wind SEMIDISPATCHCAP", sourceUrl: "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/" },
   { id: "aemo-tas-solar",   name: "Tasmania Solar",        country: "AUS", lat: -41.7, lon: 147.1, tier: "live", kind: "solar", source: "AEMO NEMWeb solar SEMIDISPATCHCAP", sourceUrl: "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/" },
-  { id: "belgium",          name: "Belgium",         country: "BEL", lat: 50.5, lon:    4.5, tier: "live", kind: "mixed", source: "Elia Open Data (wind+solar)", sourceUrl: "https://opendata.elia.be/" },
-  { id: "iberia",           name: "Iberia",          country: "ESP", lat: 39.5, lon:   -3.5, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "portugal",         name: "Portugal",        country: "PRT", lat: 39.5, lon:   -8.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "germany",          name: "Germany",         country: "DEU", lat: 52.5, lon:   10.5, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "finland",          name: "Finland",         country: "FIN", lat: 62.0, lon:   25.0, tier: "live", kind: "wind",  source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "france",           name: "France",          country: "FRA", lat: 46.5, lon:    2.5, tier: "live", kind: "mixed", source: "RTE eco2mix wind+solar", sourceUrl: "https://odre.opendatasoft.com/" },
-  // Netherlands rate is a TenneT BritNed/COBRA cross-border-loss share rather
-  // than a directly-published curtailment-as-fraction-of-generation; counted
-  // as T1b live-domestic-anchored per B4 Option B (locked 2026-04-25). See
-  // docs/proposals/b4-option-b-decision.md §"Post-B1 rerun (2026-04-26)".
-  { id: "netherlands",      name: "Netherlands",     country: "NLD", lat: 52.2, lon:    5.3, tier: "live-domestic-anchored", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  // Denmark split by Energinet PriceArea. DK1 (Jutland/Fyn) hosts most
-  // onshore wind and is interconnected to Germany; DK2 (Zealand) sits
-  // across the Øresund from Sweden. Energi Data Service is natively zonal;
-  // split 75/25 reflects DK1's share of combined wind+solar generation.
-  { id: "denmark-west",      name: "Denmark DK1",     country: "DNK", lat: 56.2, lon:    9.1, tier: "live", kind: "mixed", source: "Energinet wind+solar (DK1)", sourceUrl: "https://api.energidataservice.dk/" },
-  { id: "denmark-east",      name: "Denmark DK2",     country: "DNK", lat: 55.4, lon:   12.3, tier: "live", kind: "mixed", source: "Energinet wind+solar (DK2)", sourceUrl: "https://api.energidataservice.dk/" },
-  { id: "poland",           name: "Poland",          country: "POL", lat: 52.0, lon:   19.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "greece",           name: "Greece",          country: "GRC", lat: 39.0, lon:   22.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "romania",          name: "Romania",         country: "ROU", lat: 45.9, lon:   25.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "turkey",           name: "Turkey",          country: "TUR", lat: 39.0, lon:   35.0, tier: "live", kind: "mixed", source: "EPIAS Transparency dashboard wind+solar", sourceUrl: "https://seffaflik.epias.com.tr/electricity-service/v1/dashboard/realtime-generation" },
-  // italy-north-zone uses a Terna national-MSD-share rate rather than a
-  // North-zone-specific MSD figure; T1b live-domestic-anchored per B4
-  // Option B (modelled-share scope mismatch).
-  { id: "italy-north-zone", name: "Italy North",     country: "ITA", lat: 45.0, lon:   10.0, tier: "live-domestic-anchored", kind: "mixed", source: "ENTSO-E Terna (North zone)", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "italy-sicily",    name: "Sicily",          country: "ITA", lat: 37.6, lon:   14.0, tier: "live-domestic-anchored", kind: "mixed", source: "ENTSO-E Terna (Sicily)", sourceUrl: "https://transparency.entsoe.eu/" },
-  // italy-sardinia uses the Terna national MSD rate scaled to Sardinia's
-  // wind+PV share — a modelled-share split that captures the wrong scope.
-  // T1b live-domestic-anchored per B4 Option B (post-B1 P67 +87.6% residual).
-  { id: "italy-sardinia",  name: "Sardinia",        country: "ITA", lat: 40.1, lon:    9.1, tier: "live-domestic-anchored", kind: "mixed", source: "ENTSO-E Terna (Sardinia)", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "sweden-north",     name: "Sweden North",    country: "SWE", lat: 63.5, lon:   18.5, tier: "live", kind: "wind",  source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "sweden-south",     name: "Sweden South",    country: "SWE", lat: 56.0, lon:   14.0, tier: "live", kind: "mixed", source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "ukraine",          name: "Ukraine",         country: "UKR", lat: 48.38, lon: 31.17, tier: "static", kind: "solar", source: "Ember Ukraine 2024 (ENTSO-E absent post-war)", sourceUrl: "https://ember-energy.org/global-insights/ukraine-electricity-tracker/" },
-  { id: "hungary",          name: "Hungary",         country: "HUN", lat: 47.16, lon: 19.50, tier: "live", kind: "mixed", source: "ENTSO-E MAVIR", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "czech-republic",   name: "Czech Republic",  country: "CZE", lat: 49.82, lon: 15.47, tier: "live", kind: "mixed", source: "ENTSO-E CEPS", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "bulgaria",         name: "Bulgaria",        country: "BGR", lat: 42.73, lon:   25.49, tier: "live", kind: "mixed", source: "ENTSO-E ESO", sourceUrl: "https://transparency.entsoe.eu/" },
-  // Serbia — EMS A75 feed; regional default (solar 2%, wind 3%) per methodology.
-  // No published Serbian curtailment anchor found.
-  { id: "serbia",           name: "Serbia",          country: "SRB", lat: 44.00, lon:   21.00, tier: "live", kind: "mixed", source: "ENTSO-E EMS", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "belgium-wind",    name: "Belgium Wind",   country: "BEL", lat: 50.5, lon:    4.5, tier: "live", kind: "wind",  source: "Elia Open Data wind", sourceUrl: "https://opendata.elia.be/" },
+  { id: "belgium-solar",   name: "Belgium Solar",  country: "BEL", lat: 50.5, lon:    4.5, tier: "live", kind: "solar", source: "Elia Open Data solar", sourceUrl: "https://opendata.elia.be/" },
+  { id: "spain-wind",      name: "Spain Wind",     country: "ESP", lat: 39.5, lon:   -3.5, tier: "live", kind: "wind",  source: "ENTSO-E REE wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "spain-solar",     name: "Spain Solar",    country: "ESP", lat: 39.5, lon:   -3.5, tier: "live", kind: "solar", source: "ENTSO-E REE solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "portugal-wind",   name: "Portugal Wind",  country: "PRT", lat: 39.5, lon:   -8.0, tier: "live", kind: "wind",  source: "ENTSO-E REN wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "portugal-solar",  name: "Portugal Solar", country: "PRT", lat: 39.5, lon:   -8.0, tier: "live", kind: "solar", source: "ENTSO-E REN solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "germany-wind",    name: "Germany Wind",   country: "DEU", lat: 52.5, lon:   10.5, tier: "live", kind: "wind",  source: "ENTSO-E BNetzA/SMARD wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "germany-solar",   name: "Germany Solar",  country: "DEU", lat: 52.5, lon:   10.5, tier: "live", kind: "solar", source: "ENTSO-E BNetzA/SMARD solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "finland",         name: "Finland",        country: "FIN", lat: 62.0, lon:   25.0, tier: "live", kind: "wind",  source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "france-wind",     name: "France Wind",    country: "FRA", lat: 46.5, lon:    2.5, tier: "live", kind: "wind",  source: "RTE eco2mix wind", sourceUrl: "https://odre.opendatasoft.com/" },
+  { id: "france-solar",    name: "France Solar",   country: "FRA", lat: 46.5, lon:    2.5, tier: "live", kind: "solar", source: "RTE eco2mix solar", sourceUrl: "https://odre.opendatasoft.com/" },
+  { id: "netherlands-wind", name: "Netherlands Wind", country: "NLD", lat: 52.2, lon: 5.3, tier: "live-domestic-anchored", kind: "wind", source: "ENTSO-E IEEFA 2024 wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "netherlands-solar", name: "Netherlands Solar", country: "NLD", lat: 52.2, lon: 5.3, tier: "live-domestic-anchored", kind: "solar", source: "ENTSO-E IEEFA 2024 solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "denmark-west-wind", name: "Denmark DK1 Wind", country: "DNK", lat: 56.2, lon: 9.1, tier: "live", kind: "wind", source: "Energinet DK1 wind (75% share)", sourceUrl: "https://api.energidataservice.dk/" },
+  { id: "denmark-west-solar", name: "Denmark DK1 Solar", country: "DNK", lat: 56.2, lon: 9.1, tier: "live", kind: "solar", source: "Energinet DK1 solar (75% share)", sourceUrl: "https://api.energidataservice.dk/" },
+  { id: "denmark-east-wind", name: "Denmark DK2 Wind", country: "DNK", lat: 55.4, lon: 12.3, tier: "live", kind: "wind", source: "Energinet DK2 wind (25% share)", sourceUrl: "https://api.energidataservice.dk/" },
+  { id: "denmark-east-solar", name: "Denmark DK2 Solar", country: "DNK", lat: 55.4, lon: 12.3, tier: "live", kind: "solar", source: "Energinet DK2 solar (25% share)", sourceUrl: "https://api.energidataservice.dk/" },
+  { id: "poland-wind",     name: "Poland Wind",    country: "POL", lat: 52.0, lon:   19.0, tier: "live", kind: "wind",  source: "ENTSO-E URE 2024 wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "poland-solar",    name: "Poland Solar",   country: "POL", lat: 52.0, lon:   19.0, tier: "live", kind: "solar", source: "ENTSO-E URE 2024 solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "greece-wind",     name: "Greece Wind",    country: "GRC", lat: 39.0, lon:   22.0, tier: "live", kind: "wind",  source: "ENTSO-E IPTO 2024 wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "greece-solar",    name: "Greece Solar",   country: "GRC", lat: 39.0, lon:   22.0, tier: "live", kind: "solar", source: "ENTSO-E IPTO 2024 solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "romania-wind",    name: "Romania Wind",   country: "ROU", lat: 45.9, lon:   25.0, tier: "live", kind: "wind",  source: "ENTSO-E Transelectrica wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "romania-solar",   name: "Romania Solar",  country: "ROU", lat: 45.9, lon:   25.0, tier: "live", kind: "solar", source: "ENTSO-E Transelectrica solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "turkey",          name: "Turkey",         country: "TUR", lat: 39.0, lon:   35.0, tier: "live", kind: "mixed", source: "EPIAS Transparency dashboard wind+solar", sourceUrl: "https://seffaflik.epias.com.tr/electricity-service/v1/dashboard/realtime-generation" },
+  { id: "italy-north-zone-wind", name: "Italy North Wind", country: "ITA", lat: 45.0, lon: 10.0, tier: "live-domestic-anchored", kind: "wind", source: "ENTSO-E Terna North zone wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "italy-north-zone-solar", name: "Italy North Solar", country: "ITA", lat: 45.0, lon: 10.0, tier: "live-domestic-anchored", kind: "solar", source: "ENTSO-E Terna North zone solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "italy-sicily-wind", name: "Sicily Wind",   country: "ITA", lat: 37.6, lon:   14.0, tier: "live-domestic-anchored", kind: "wind", source: "ENTSO-E Terna Sicily wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "italy-sicily-solar", name: "Sicily Solar",  country: "ITA", lat: 37.6, lon:   14.0, tier: "live-domestic-anchored", kind: "solar", source: "ENTSO-E Terna Sicily solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "italy-sardinia-wind", name: "Sardinia Wind", country: "ITA", lat: 40.1, lon: 9.1, tier: "live-domestic-anchored", kind: "wind", source: "ENTSO-E Terna Sardinia wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "italy-sardinia-solar", name: "Sardinia Solar", country: "ITA", lat: 40.1, lon: 9.1, tier: "live-domestic-anchored", kind: "solar", source: "ENTSO-E Terna Sardinia solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "sweden-north",    name: "Sweden North",   country: "SWE", lat: 63.5, lon:   18.5, tier: "live", kind: "wind",  source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "sweden-south-wind", name: "Sweden South Wind", country: "SWE", lat: 56.0, lon: 14.0, tier: "live", kind: "wind", source: "ENTSO-E SE4 wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "sweden-south-solar", name: "Sweden South Solar", country: "SWE", lat: 56.0, lon: 14.0, tier: "live", kind: "solar", source: "ENTSO-E SE4 solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "ukraine",         name: "Ukraine",         country: "UKR", lat: 48.38, lon: 31.17, tier: "static", kind: "solar", source: "Ember Ukraine 2024 (ENTSO-E absent post-war)", sourceUrl: "https://ember-energy.org/global-insights/ukraine-electricity-tracker/" },
+  { id: "hungary-wind",    name: "Hungary Wind",   country: "HUN", lat: 47.16, lon: 19.50, tier: "live", kind: "wind",  source: "ENTSO-E MAVIR wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "hungary-solar",   name: "Hungary Solar",  country: "HUN", lat: 47.16, lon: 19.50, tier: "live", kind: "solar", source: "ENTSO-E MAVIR solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "czech-republic-wind", name: "Czech Republic Wind", country: "CZE", lat: 49.82, lon: 15.47, tier: "live", kind: "wind", source: "ENTSO-E CEPS wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "czech-republic-solar", name: "Czech Republic Solar", country: "CZE", lat: 49.82, lon: 15.47, tier: "live", kind: "solar", source: "ENTSO-E CEPS solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "bulgaria-wind",   name: "Bulgaria Wind",   country: "BGR", lat: 42.73, lon: 25.49, tier: "live", kind: "wind",  source: "ENTSO-E ESO wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "bulgaria-solar",  name: "Bulgaria Solar",  country: "BGR", lat: 42.73, lon: 25.49, tier: "live", kind: "solar", source: "ENTSO-E ESO solar", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "serbia-wind",     name: "Serbia Wind",     country: "SRB", lat: 44.00, lon: 21.00, tier: "live", kind: "wind",  source: "ENTSO-E EMS wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "serbia-solar",    name: "Serbia Solar",    country: "SRB", lat: 44.00, lon: 21.00, tier: "live", kind: "solar", source: "ENTSO-E EMS solar", sourceUrl: "https://transparency.entsoe.eu/" },
   // Bosnia and Herzegovina — JPCC A75 feed; hydro-dominated. Structural
   // hydro spill excluded per methodology; no VRE curtailment rate published.
   { id: "bosnia-and-herzegovina", name: "Bosnia & Herzegovina", country: "BIH", lat: 43.90, lon:   18.00, tier: "live", kind: "hydro", source: "ENTSO-E JPCC (Krajina)", sourceUrl: "https://transparency.entsoe.eu/" },
   // North Macedonia — MEPSO A75 feed; regional defaults (solar 2%, wind 3%).
-  { id: "north-macedonia",  name: "North Macedonia",  country: "MKD", lat: 41.50, lon:   22.00, tier: "live", kind: "mixed", source: "ENTSO-E MEPSO", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "north-macedonia-wind",  name: "North Macedonia Wind",  country: "MKD", lat: 41.50, lon: 22.00, tier: "live", kind: "wind",  source: "ENTSO-E MEPSO wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "north-macedonia-solar", name: "North Macedonia Solar", country: "MKD", lat: 41.50, lon: 22.00, tier: "live", kind: "solar", source: "ENTSO-E MEPSO solar", sourceUrl: "https://transparency.entsoe.eu/" },
   // Montenegro — CGES A75 feed; hydro-dominated. Structural hydro spill
   // excluded per methodology; no VRE curtailment rate published.
   { id: "montenegro",       name: "Montenegro",       country: "MNE", lat: 42.50, lon:   19.30, tier: "live", kind: "hydro", source: "ENTSO-E CGES", sourceUrl: "https://transparency.entsoe.eu/" },
-  // Croatia — HOPS A75 feed; regional defaults (solar 2%, wind 2.5%).
-  { id: "croatia",          name: "Croatia",          country: "HRV", lat: 45.10, lon:   15.50, tier: "live", kind: "mixed", source: "ENTSO-E HOPS", sourceUrl: "https://transparency.entsoe.eu/" },
+// Croatia — HOPS A75 feed; regional defaults (solar 2%, wind 2.5%).
+  { id: "croatia-wind",          name: "Croatia Wind",       country: "HRV", lat: 45.10, lon: 15.50, tier: "live", kind: "wind",  source: "ENTSO-E HOPS wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "croatia-solar",          name: "Croatia Solar",      country: "HRV", lat: 45.10, lon: 15.50, tier: "live", kind: "solar", source: "ENTSO-E HOPS solar", sourceUrl: "https://transparency.entsoe.eu/" },
   // Slovenia — ELES A75 feed; regional defaults (solar 2%, wind 2%).
-  { id: "slovenia",         name: "Slovenia",         country: "SVN", lat: 46.12, lon:   14.82, tier: "live", kind: "mixed", source: "ENTSO-E ELES", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "slovenia-wind",         name: "Slovenia Wind",      country: "SVN", lat: 46.12, lon: 14.82, tier: "live", kind: "wind",  source: "ENTSO-E ELES wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "slovenia-solar",         name: "Slovenia Solar",     country: "SVN", lat: 46.12, lon: 14.82, tier: "live", kind: "solar", source: "ENTSO-E ELES solar", sourceUrl: "https://transparency.entsoe.eu/" },
   // Slovakia — SEPS A75 feed; regional defaults (solar 2.5%, wind 2%).
-  { id: "slovakia",         name: "Slovakia",         country: "SVK", lat: 48.67, lon:   19.50, tier: "live", kind: "mixed", source: "ENTSO-E SEPS", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "slovakia-wind",         name: "Slovakia Wind",      country: "SVK", lat: 48.67, lon: 19.50, tier: "live", kind: "wind",  source: "ENTSO-E SEPS wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "slovakia-solar",         name: "Slovakia Solar",     country: "SVK", lat: 48.67, lon: 19.50, tier: "live", kind: "solar", source: "ENTSO-E SEPS solar", sourceUrl: "https://transparency.entsoe.eu/" },
   // Lithuania — Litgrid A75 feed; wind-dominant, solar negligible.
   // Wind rate anchored to Litgrid 2024 published curtailment.
   { id: "lithuania",        name: "Lithuania",        country: "LTU", lat: 55.17, lon:   23.88, tier: "live", kind: "wind", source: "ENTSO-E Litgrid", sourceUrl: "https://transparency.entsoe.eu/" },
@@ -94,12 +101,14 @@ export const REGIONS: Region[] = [
   // dominated by behind-meter distributed generation that does not appear in A75.
   { id: "estonia",          name: "Estonia",          country: "EST", lat: 58.60, lon:   25.01, tier: "live", kind: "wind", source: "ENTSO-E Elering", sourceUrl: "https://transparency.entsoe.eu/" },
   // Luxembourg — Cegedel A75 feed; small grid, PV+wind <0.5 GW. Regional defaults.
-  { id: "luxembourg",       name: "Luxembourg",       country: "LUX", lat: 49.80, lon:    6.10, tier: "live", kind: "mixed", source: "ENTSO-E Cegedel", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "luxembourg-wind",  name: "Luxembourg Wind",  country: "LUX", lat: 49.80, lon:    6.10, tier: "live", kind: "wind",  source: "ENTSO-E Cegedel wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "luxembourg-solar", name: "Luxembourg Solar", country: "LUX", lat: 49.80, lon:    6.10, tier: "live", kind: "solar", source: "ENTSO-E Cegedel solar", sourceUrl: "https://transparency.entsoe.eu/" },
   // Malta — Enemalta A75 feed; PV-dominant island grid. Solar 2% regional default.
   { id: "malta",            name: "Malta",            country: "MLT", lat: 35.94, lon:   14.40, tier: "live", kind: "solar", source: "ENTSO-E Enemalta", sourceUrl: "https://transparency.entsoe.eu/" },
   // Moldova — Moldelectrica A75 via MEPSO protocol; not ENTSO-E-synchronised.
   // Cross-border coordination with UA/RO. Regional defaults (no anchor found).
-  { id: "moldova",          name: "Moldova",          country: "MDA", lat: 47.00, lon:   28.50, tier: "live", kind: "mixed", source: "ENTSO-E Moldelectrica (MEPSO protocol)", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "moldova-wind",     name: "Moldova Wind",     country: "MDA", lat: 47.00, lon:   28.50, tier: "live", kind: "wind",  source: "ENTSO-E Moldelectrica wind (MEPSO protocol)", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "moldova-solar",    name: "Moldova Solar",    country: "MDA", lat: 47.00, lon:   28.50, tier: "live", kind: "solar", source: "ENTSO-E Moldelectrica solar (MEPSO protocol)", sourceUrl: "https://transparency.entsoe.eu/" },
   // GB split — NESO Markets Roadmap 2024 reports ~11 TWh/yr of constraint
   // actions, dominated by the Scotland-to-England export boundary. Split
   // 70/30 at consumption: Scotland carries the bulk of curtailed wind.

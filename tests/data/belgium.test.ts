@@ -14,9 +14,13 @@ describe("belgium parser", () => {
     expect(points[1].mw).toBe(1);
   });
 
-  it("builds RegionData", () => {
-    const data = buildBelgiumData(parseEliaCsv(csv));
-    expect(data.regionId).toBe("belgium");
+  it("builds per-fuel RegionData", () => {
+    const fuelShare = { wind: 0.17, solar: 0.83 };
+    const data = buildBelgiumData("wind", parseEliaCsv(csv), fuelShare);
+    expect(data.regionId).toBe("belgium-wind");
     expect(data.profile.length).toBe(24);
+    const solar = buildBelgiumData("solar", parseEliaCsv(csv), fuelShare);
+    expect(solar.regionId).toBe("belgium-solar");
+    expect(solar.profile.length).toBe(24);
   });
 });

@@ -73,7 +73,7 @@ RATE_DERIVATION: dict[str, str] = {
     # ENTSO-E zones — verified against `src/data/entsoe.json.ts`
     # 2026-04-25 by reading the ZONES array sourceNote/comment fields.
     "germany":          "own-tso",                  # BNetzA 2024
-    "iberia":           "own-tso",                  # REE Informe 2024 (Spanish TSO)
+    "spain":            "own-tso",                  # REE Informe 2024 (Spanish TSO)
     "france":           "own-tso",                  # RTE Bilan Électrique
     "netherlands":      "domestic-anchor-modelled", # IEEFA 2025 synthesis of 2024 Dutch data
     "poland":           "own-tso",                  # URE 2024 redispatch report

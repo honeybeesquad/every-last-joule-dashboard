@@ -29,7 +29,10 @@ describe("static regions", () => {
     // in STATIC_REGIONS (albania, georgia, armenia, azerbaijan, uzbekistan,
     // sri-lanka, sudan, venezuela, laos, cambodia, myanmar) from prior research-pool
     // additions. Canonical count: 72 + 11 = 83.
-    expect(Object.keys(data).length).toBe(83);
+    // Phase 3a-v2 ENTSO-E per-fuel split (2026-05-05): 4 of the above Balkans/Baltics
+    // countries moved from static to live per-fuel (bulgaria, luxembourg, moldova, croatia).
+    // Canonical count: 83 - 4 = 79.
+    expect(Object.keys(data).length).toBe(79);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -47,10 +50,11 @@ describe("static regions", () => {
     // Phase 2 IRENA T3 anchors (2026-05-04): all 11 new regions were already
     // in STATIC_REGIONS from prior research-pool additions. Since they were
     // previously non-canonical, researchData stays 128 (not 128+11).
-    // Canonical count = 72 + 11 = 83.
-    // Non-canonical = researchData - canonical = 128 - 83 = 45.
+    // Phase 3a-v2 ENTSO-E per-fuel split (2026-05-05): 4 countries moved from
+    // static to live (bulgaria, luxembourg, moldova, croatia). Canonical: 83 → 79.
+    // Non-canonical: 128 - 79 = 49.
     expect(Object.keys(researchData).length).toBe(128);
-    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(45);
+    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(49);
   });
 
   it("includes all expected ids", () => {
