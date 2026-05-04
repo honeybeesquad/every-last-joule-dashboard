@@ -225,6 +225,20 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   uganda: "mixed",
   zambia: "mixed",
   zimbabwe: "mixed",
+  // Phase 2 IRENA T3 anchors (2026-05-04): 11 new T3-static regions
+  // sourced from IRENA RE Statistics 2024 capacity anchors.
+  // All emit solar-shaped or mixed profiles; hydro → mixed per T3 routing.
+  albania: "solar",
+  georgia: "mixed",
+  armenia: "solar",
+  azerbaijan: "mixed",
+  uzbekistan: "solar",
+  "sri-lanka": "mixed",
+  sudan: "solar",
+  venezuela: "wind",
+  laos: "solar",
+  cambodia: "solar",
+  myanmar: "solar",
 };
 
 /**

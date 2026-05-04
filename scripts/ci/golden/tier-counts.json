@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-03 (India W1/W2/W3 tier-honesty correction: 6 state-SLDC loaders moved T1a→T3 because their live paths are not yet wired up — emitted data is typical-shape modelled. Flip back to T1a when each loader's live parser ships.)",
-  "T1a": 100,
-  "T1b": 6,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-04 (Phase 2 IRENA T3 anchors: +11 T3-static regions: albania, georgia, armenia, azerbaijan, uzbekistan, sri-lanka, sudan, venezuela, laos, cambodia, myanmar. Skipped: bhutan (hydro-only), kyrgyzstan (VRE <50 MW threshold), tajikistan (VRE <50 MW threshold). Albania was previously excluded but now included given Karavasta/Spitalla ~240 MW solar installed capacity per IRENA RE Statistics 2024.)",
+  "T1a": 113,
+  "T1b": 5,
   "T1c": 1,
   "T2": 2,
   "T2-flare": 8,
-  "T3": 124,
-  "total": 241
+  "T3": 135,
+  "total": 264
 }

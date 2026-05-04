@@ -247,7 +247,7 @@ export async function mountGlobe(canvas, initial) {
       if (!point) continue;
 
       const visible = 1 - dist / (Math.PI / 2);
-      const color = getFuelColor(dominantFuel(region, data));
+      const color = getFuelColor(region.kind === "flare" ? "flare" : dominantFuel(region, data));
       const weight = Math.sqrt(gw);
       const glowR = 4 + weight * 5;
       const coreR = 1.5 + weight * 0.8;
