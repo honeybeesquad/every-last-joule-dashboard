@@ -240,14 +240,15 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   andorra: { annualTWh: 0.01, kind: "hydro", source: "IRENA Andorra 2024 (FEDA); hydro+pumped storage; small high-altitude grid)", reportDate: "2024" },
   liechtenstein: { annualTWh: 0.01, kind: "hydro", source: "IRENA Liechtenstein 2024 (LFV); Alpine hydro+pumped storage; import-dependent)", reportDate: "2024" },
   malta: { annualTWh: 0.03, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Malta 2024 (ENEMalta); gas+solar; EU island state)", reportDate: "2024" },
-  moldova: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Moldova 2024 (Moldelectrica); solar+gas; ENTSO-E continental sync 2022)", reportDate: "2024" },
+  // moldova: SUPERSEDED by moldova-wind/moldova-solar (ENTSO-E live).
   // Reverted from ENTSO-E live T1a (2026-04-28): no verifiable A75 published
-  // curtailment rate found for these 6 TSOs. Returned to T3 static pending
+  // curtailment rate found for these TSOs. Returned to T3 static pending
   // actual calibration data from HOPS (croatia), SEPS (slovakia), ELES
   // (slovenia), Litgrid (lithuania), AST (latvia), ERE (albania).
-  croatia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Croatia 2024 (HOPS); solar+wind+hydro; HOPS publishes monthly wind PDF reports, not machine-readable A75; ENTSO-E A75 verification pending)", reportDate: "2024" },
-  slovakia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Slovakia 2024 (SEPS); solar+wind; SEPS dashboard has generation data but no published curtailment rate; ENTSO-E A75 verification pending)", reportDate: "2024" },
-  slovenia: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Slovenia 2024 (ELES); solar+hydro+wind; ELES publishes generation data but no published curtailment rate; ENTSO-E A75 verification pending)", reportDate: "2024" },
+  // Phase 3a (2026-05-04): croatia/slovenia/slovakia/moldova promoted to ENTSO-E
+  // per-fuel live entries (croatia-wind/solar etc.) — parent statics removed.
+  // lithuania/latvia retained as standalone T3 statics (no per-fuel split).
+  // albania retained as standalone T3 static.
   lithuania: { annualTWh: 0.2, kind: "wind", localSolarPeakUTC: 9.0, source: "IRENA Lithuania 2024 (ESO); solar+wind; BRELL ring member; ENTSO-E A75 verification pending)", reportDate: "2024" },
   latvia: { annualTWh: 0.1, kind: "hydro", source: "IRENA Latvia 2024 (AST); Augstkaigo + Ventspils nafta + solar; BRELL; ENTSO-E A75 verification pending)", reportDate: "2024" },
   albania: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Albania 2024 — Karavasta (140 MW) + Spitalla (100 MW) PV; ~240 MW total; modelled ~2% curtailment", reportDate: "2024" },

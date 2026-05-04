@@ -51,6 +51,33 @@ const NON_REGION_DOCS = new Set<string>([
   "india-west",    // → replaced by india-gujarat (India W2)
   "italy-south",   // → replaced by italy-sicily (B4 Option B, 2026-04-25)
   "japan",         // → renamed japan-kyushu, then split into 10 utilities (Japan W1)
+  // Phase 3a ENTSO-E per-fuel splits: old parent id docs preserved pending
+  // loader migration. Same set as KNOWN_AGGREGATE_IDS in check-tier-coherence.ts.
+  "belgium",
+  "germany",
+  "iberia",
+  "portugal",
+  "netherlands",
+  "poland",
+  "greece",
+  "romania",
+  "france",
+  "italy-north-zone",
+  "italy-sicily",
+  "italy-sardinia",
+  "sweden-south",
+  "hungary",
+  "czech-republic",
+  "bulgaria",
+  "denmark-east",
+  "denmark-west",
+  "croatia",
+  "slovenia",
+  "slovakia",
+  "moldova",
+  "luxembourg",
+  "north-macedonia",
+  "serbia",
 ]);
 
 if (!existsSync(DOCS_DIR)) {

@@ -29,7 +29,10 @@ describe("static regions", () => {
     // in STATIC_REGIONS (albania, georgia, armenia, azerbaijan, uzbekistan,
     // sri-lanka, sudan, venezuela, laos, cambodia, myanmar) from prior research-pool
     // additions. Canonical count: 72 + 11 = 83.
-    expect(Object.keys(data).length).toBe(83);
+    // Phase 3a (2026-05-04): croatia/slovenia/slovakia/moldova orphaned parent
+    // statics removed — their per-fuel children (croatia-wind/solar etc.) are
+    // live-tier in REGIONS and do not need static fallbacks. 83 - 4 = 79.
+    expect(Object.keys(data).length).toBe(79);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -47,9 +50,11 @@ describe("static regions", () => {
     // Phase 2 IRENA T3 anchors (2026-05-04): all 11 new regions were already
     // in STATIC_REGIONS from prior research-pool additions. Since they were
     // previously non-canonical, researchData stays 128 (not 128+11).
-    // Canonical count = 72 + 11 = 83.
-    // Non-canonical = researchData - canonical = 128 - 83 = 45.
-    expect(Object.keys(researchData).length).toBe(128);
+    // Phase 3a (2026-05-04): croatia/slovenia/slovakia/moldova orphaned parent
+    // statics removed (per-fuel children are live in REGIONS). 128 - 4 = 124.
+    // Canonical count = 79 (83 - 4 orphaned parents removed).
+    // Non-canonical = researchData - canonical = 124 - 79 = 45.
+    expect(Object.keys(researchData).length).toBe(124);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(45);
   });
 

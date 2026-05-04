@@ -1,17 +1,17 @@
-# Validation — Georgia (`georgia`)
+# Validation — Moldova Wind (`moldova-wind`)
 
 Last updated: 2026-05-04 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `georgia`
-- **Country:** GEO
-- **Tier:** static
-- **Kind:** mixed
-- **Source:** IRENA RE Statistics 2024 (~100 MW solar+wind combined, ~1.8 GW hydro); modelled curtailment ~2% per regional default
-- **Source URL:** [https://www.irena.org/Data/Energy-Profiles](https://www.irena.org/Data/Energy-Profiles)
+- **Region id:** `moldova-wind`
+- **Country:** MDA
+- **Tier:** live
+- **Kind:** wind
+- **Source:** ENTSO-E Moldelectrica wind (B19)
+- **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,12 +37,12 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_georgia_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_moldova-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

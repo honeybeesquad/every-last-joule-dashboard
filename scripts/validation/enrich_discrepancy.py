@@ -53,7 +53,7 @@ TARGETS = [
     "ercot-west",
     "germany",
     "greece",
-    "iberia",
+"spain-wind",
     "iso-ne",
     "nyiso",
     "pjm",
