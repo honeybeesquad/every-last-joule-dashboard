@@ -8,7 +8,7 @@
 
 # A measured working model, not a branding exercise
 
-<p class="methodology-deck">The world's most comprehensive open database of wasted grid-scale energy — curtailed renewables and flared gas across 253 regions — and a live working proof of the arithmetic in a forthcoming book on Bitcoin and energy. Updated every few hours, sourced exclusively from grid operators and regulators.</p>
+<p class="methodology-deck">The world's most comprehensive open database of wasted grid-scale energy — curtailed renewables and flared gas across 264 regions — and a live working proof of the arithmetic in a forthcoming book on Bitcoin and energy. Updated every few hours, sourced exclusively from grid operators and regulators.</p>
 
 </header>
 
