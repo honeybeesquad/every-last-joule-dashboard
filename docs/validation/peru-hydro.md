@@ -1,6 +1,6 @@
 # Validation — Peru Hydro (`peru-hydro`)
 
-Last updated: 2026-05-03 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-04 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 

@@ -66,10 +66,40 @@ export const REGIONS: Region[] = [
   { id: "hungary",          name: "Hungary",         country: "HUN", lat: 47.16, lon: 19.50, tier: "live", kind: "mixed", source: "ENTSO-E MAVIR", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "czech-republic",   name: "Czech Republic",  country: "CZE", lat: 49.82, lon: 15.47, tier: "live", kind: "mixed", source: "ENTSO-E CEPS", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "bulgaria",         name: "Bulgaria",        country: "BGR", lat: 42.73, lon:   25.49, tier: "live", kind: "mixed", source: "ENTSO-E ESO", sourceUrl: "https://transparency.entsoe.eu/" },
-  // baltics uses a Litgrid Estonia-share extrapolation across the three
-  // Baltic states rather than a published Baltic curtailment rate.
-  // T1b live-domestic-anchored per B4 Option B (modelled-share split).
-  { id: "baltics",          name: "Baltic states",   country: "EST", lat: 57.0,  lon: 24.0,  tier: "live-domestic-anchored", kind: "wind",  source: "ENTSO-E Litgrid", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Serbia — EMS A75 feed; regional default (solar 2%, wind 3%) per methodology.
+  // No published Serbian curtailment anchor found.
+  { id: "serbia",           name: "Serbia",          country: "SRB", lat: 44.00, lon:   21.00, tier: "live", kind: "mixed", source: "ENTSO-E EMS", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Bosnia and Herzegovina — JPCC A75 feed; hydro-dominated. Structural
+  // hydro spill excluded per methodology; no VRE curtailment rate published.
+  { id: "bosnia-and-herzegovina", name: "Bosnia & Herzegovina", country: "BIH", lat: 43.90, lon:   18.00, tier: "live", kind: "hydro", source: "ENTSO-E JPCC (Krajina)", sourceUrl: "https://transparency.entsoe.eu/" },
+  // North Macedonia — MEPSO A75 feed; regional defaults (solar 2%, wind 3%).
+  { id: "north-macedonia",  name: "North Macedonia",  country: "MKD", lat: 41.50, lon:   22.00, tier: "live", kind: "mixed", source: "ENTSO-E MEPSO", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Montenegro — CGES A75 feed; hydro-dominated. Structural hydro spill
+  // excluded per methodology; no VRE curtailment rate published.
+  { id: "montenegro",       name: "Montenegro",       country: "MNE", lat: 42.50, lon:   19.30, tier: "live", kind: "hydro", source: "ENTSO-E CGES", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Croatia — HOPS A75 feed; regional defaults (solar 2%, wind 2.5%).
+  { id: "croatia",          name: "Croatia",          country: "HRV", lat: 45.10, lon:   15.50, tier: "live", kind: "mixed", source: "ENTSO-E HOPS", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Slovenia — ELES A75 feed; regional defaults (solar 2%, wind 2%).
+  { id: "slovenia",         name: "Slovenia",         country: "SVN", lat: 46.12, lon:   14.82, tier: "live", kind: "mixed", source: "ENTSO-E ELES", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Slovakia — SEPS A75 feed; regional defaults (solar 2.5%, wind 2%).
+  { id: "slovakia",         name: "Slovakia",         country: "SVK", lat: 48.67, lon:   19.50, tier: "live", kind: "mixed", source: "ENTSO-E SEPS", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Lithuania — Litgrid A75 feed; wind-dominant, solar negligible.
+  // Wind rate anchored to Litgrid 2024 published curtailment.
+  { id: "lithuania",        name: "Lithuania",        country: "LTU", lat: 55.17, lon:   23.88, tier: "live", kind: "wind", source: "ENTSO-E Litgrid", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Latvia — AST A75 feed; wind 2.5% regional default (consistent with lithuania/estonia).
+  { id: "latvia",           name: "Latvia",           country: "LVA", lat: 56.88, lon:   24.60, tier: "live", kind: "wind", source: "ENTSO-E AST", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Estonia — Elering A75 feed; wind 2.5% regional default. Replaces legacy
+  // `baltics` T1b region (which was a Lithuania-only feed mislabelled as a
+  // Baltic aggregate). EE wind is the dispatch-curtailable component; PV is
+  // dominated by behind-meter distributed generation that does not appear in A75.
+  { id: "estonia",          name: "Estonia",          country: "EST", lat: 58.60, lon:   25.01, tier: "live", kind: "wind", source: "ENTSO-E Elering", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Luxembourg — Cegedel A75 feed; small grid, PV+wind <0.5 GW. Regional defaults.
+  { id: "luxembourg",       name: "Luxembourg",       country: "LUX", lat: 49.80, lon:    6.10, tier: "live", kind: "mixed", source: "ENTSO-E Cegedel", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Malta — Enemalta A75 feed; PV-dominant island grid. Solar 2% regional default.
+  { id: "malta",            name: "Malta",            country: "MLT", lat: 35.94, lon:   14.40, tier: "live", kind: "solar", source: "ENTSO-E Enemalta", sourceUrl: "https://transparency.entsoe.eu/" },
+  // Moldova — Moldelectrica A75 via MEPSO protocol; not ENTSO-E-synchronised.
+  // Cross-border coordination with UA/RO. Regional defaults (no anchor found).
+  { id: "moldova",          name: "Moldova",          country: "MDA", lat: 47.00, lon:   28.50, tier: "live", kind: "mixed", source: "ENTSO-E Moldelectrica (MEPSO protocol)", sourceUrl: "https://transparency.entsoe.eu/" },
   // GB split — NESO Markets Roadmap 2024 reports ~11 TWh/yr of constraint
   // actions, dominated by the Scotland-to-England export boundary. Split
   // 70/30 at consumption: Scotland carries the bulk of curtailed wind.

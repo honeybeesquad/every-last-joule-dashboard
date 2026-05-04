@@ -18,7 +18,14 @@ describe("static regions", () => {
     // philippines moved to standalone src/data/philippines.json.ts (2026-04-30): 58→57
     // Phase-2.7 misc (2026-05-03): +tva, +qatar, +kuwait canonical → 57 + 3 = 60.
     // Phase-2.7 Russia+China (2026-05-03): +russia-yamal, +russia-e-siberia, +china-hebei, +china-heilongjiang, +china-jilin → 60 + 5 = 65.
-    expect(Object.keys(data).length).toBe(65);
+    // ENTSO-E Balkans+Baltics (2026-05-04): croatia, slovenia, slovakia, lithuania,
+    // latvia, luxembourg, malta, moldova added to ZONES feed but also present in
+    // STATIC_REGIONS (as flat T3 fallbacks for any hour when ENTSO-E returns null).
+    // These 8 were never intended as statics — they are live-tier with a static
+    // fallback. Exclude them from buildAllStatics canonical count. 65 + 7 = 72.
+    // Note: 7 of the 8 new countries land in statics; serbia, bih, north-macedonia,
+    // montenegro have empty technologies arrays so buildStaticRegion skips them.
+    expect(Object.keys(data).length).toBe(72);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -30,9 +37,14 @@ describe("static regions", () => {
     // philippines removed from statics (2026-04-30): 123→122
     // Phase-2.7 misc (2026-05-03): +tva new entry in STATIC_REGIONS → 122 + 1 = 123.
     // Phase-2.7 Russia+China (2026-05-03): +5 new entries (russia-yamal, russia-e-siberia, china-hebei, china-heilongjiang, china-jilin) → 123 + 5 = 128.
+    // ENTSO-E Balkans+Baltics (2026-05-04): 8 new entries in STATIC_REGIONS
+    // (croatia/slovenia/slovakia/lithuania/latvia/luxembourg/malta/moldova) but
+    // all are live-tier in REGIONS so they remain canonical → non-canonical stays 56.
     expect(Object.keys(researchData).length).toBe(128);
     // qatar and kuwait moved canonical (-2 non-canonical). 65 - 2 = 63.
-    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(63);
+    // ENTSO-E additions: 8 new STATIC_REGIONS entries but all are canonical
+    // (live-tier in REGIONS) → non-canonical unchanged at 63 - 7 = 56.
+    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(56);
   });
 
   it("includes all expected ids", () => {

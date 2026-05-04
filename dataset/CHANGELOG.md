@@ -4,6 +4,31 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Added — ENTSO-E Balkans + Baltics expansion (2026-05-04, T1a ×12)
+- **`serbia`** (T1a-live-tso, mixed): EMS Serbia ENTSO-E A75 feed. Regional default calibration (solar 2%, wind 3%) — no published Serbian curtailment anchor found. IRENA RE Statistics 2024 capacity anchor used for order-of-magnitude check.
+- **`bosnia-and-herzegovina`** (T1a-live-tso, hydro): JPCC Krajina A75 feed. Hydro-dominated; structural hydro spill excluded per methodology (dispatch-driven VRE curtailment negligible). Published A75 generation feed confirmed.
+- **`north-macedonia`** (T1a-live-tso, mixed): MEPSO ENTSO-E A75 feed. Regional defaults (solar 2%, wind 3%) — no published Macedonian anchor found.
+- **`montenegro`** (T1a-live-tso, hydro): CGES Montenegro A75 feed. Hydro-dominated; structural hydro spill excluded per methodology.
+- **`croatia`** (T1a-live-tso, mixed): HOPS Croatia ENTSO-E A75 feed. Regional defaults (solar 2%, wind 2.5%) — no published HOPS anchor found.
+- **`slovenia`** (T1a-live-tso, mixed): ELES Slovenia ENTSO-E A75 feed. Regional defaults (solar 2%, wind 2%) — no published ELES anchor found.
+- **`slovakia`** (T1a-live-tso, mixed): SEPS Slovakia ENTSO-E A75 feed. Regional defaults (solar 2.5%, wind 2%) — no published SEPS anchor found.
+- **`lithuania`** (T1a-live-tso, wind): Litgrid Lithuania ENTSO-E A75 feed. Wind 2.5% rate anchored to Litgrid 2024 published curtailment data.
+- **`latvia`** (T1a-live-tso, wind): AST Latvia ENTSO-E A75 feed. Wind 2.5% regional default — no published Latvian anchor found.
+- **`luxembourg`** (T1a-live-tso, mixed): Cegedel Luxembourg ENTSO-E A75 feed. Small grid (PV+wind <0.5 GW). Regional defaults (solar 2%, wind 2%) — no published anchor found.
+- **`malta`** (T1a-live-tso, solar): Enemalta ENTSO-E A75 feed. PV-dominant island grid. Solar 2% regional default — no published Maltese anchor found.
+- **`moldova`** (T1a-live-tso, mixed): Moldelectrica A75 via MEPSO protocol (cross-border coordination with UA/RO; Moldova not ENTSO-E-synchronised). Regional defaults (solar 2%, wind 3%) — no published anchor found.
+- Albania intentionally excluded: Hydro-dominated per IRENA RE Statistics 2024, no published A75 anchor found, and structural hydro spill excluded per methodology (hydro spill is not dispatch-driven VRE curtailment).
+
+### Changed — Baltics retirement, Estonia broken out (2026-05-04)
+- **`baltics` removed** (was T1b live-domestic-anchored, EIC `10YLT-1001A0008Q`): the legacy "Baltic states" region was always a Lithuania-only A75 feed labelled as a 3-country aggregate. With `lithuania` and `latvia` now broken out as proper T1a regions in this release (and using the same EIC for Lithuania), keeping `baltics` would have double-counted Lithuanian wind curtailment.
+- **`estonia` added** (T1a-live-tso, wind): Elering Estonia ENTSO-E A75 feed (EIC `10Y1001A1001A39I`). Wind 2.5% regional default — no published Estonian anchor found. Estonia's solar is dominated by behind-meter distributed PV that does not appear in A75; wind is the dispatch-curtailable component.
+
+### Tier counts (after Balkans+Baltics + estonia swap)
+- T1a 100 → 113 (+13: 12 new ENTSO-E countries + estonia replacing baltics)
+- T1b 6 → 5 (-1: baltics retired)
+- Total live unchanged delta: 107 → 119
+- Total regions: 241 → 253
+
 ## [1.2.0] — 2026-05-03
 
 Zenodo DOI: [10.5281/zenodo.20000400](https://doi.org/10.5281/zenodo.20000400) · concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411).

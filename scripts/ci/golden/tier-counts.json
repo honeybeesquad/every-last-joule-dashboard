@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-03 (India W1/W2/W3 tier-honesty correction: 6 state-SLDC loaders moved T1a→T3 because their live paths are not yet wired up — emitted data is typical-shape modelled. Flip back to T1a when each loader's live parser ships.)",
-  "T1a": 100,
-  "T1b": 6,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-04 (ENTSO-E Balkans+Baltics expansion: +12 live T1a regions: serbia, bosnia-and-herzegovina, north-macedonia, montenegro, croatia, slovenia, slovakia, lithuania, latvia, luxembourg, malta, moldova. Albania skipped — hydro-dominated per IRENA RE Statistics 2024, no published A75 anchor found, structural hydro spill excluded per methodology. Baltics retirement: legacy `baltics` T1b region (10YLT — actually a Lithuania-only feed mislabelled as a Baltic aggregate) replaced by proper `estonia` T1a region (Elering 10Y1001A1001A39I); T1a +1, T1b -1, total unchanged.)",
+  "T1a": 113,
+  "T1b": 5,
   "T1c": 1,
   "T2": 2,
   "T2-flare": 8,
   "T3": 124,
-  "total": 241
+  "total": 253
 }

@@ -163,12 +163,6 @@ export const ZONES = [
     ],
     sourceNote: "ESO Bulgaria 2024 mixed wind+solar calibration.",
   },
-  {
-    id: "baltics",
-    domain: "10YLT-1001A0008Q",
-    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.025 }],
-    sourceNote: "ENTSO-E Litgrid wind-only Baltic regional proxy; solar negligible for this feed.",
-  },
   // Switzerland — Swissgrid publishes via ENTSO-E. Swiss wind is
   // negligible (<0.1 GW installed) and hydro spill does not appear in
   // A75 actual-generation data, so only the PV component is modelled
@@ -182,6 +176,120 @@ export const ZONES = [
     domain: "10YCH-SWISSGRIDZ",
     technologies: [{ psrType: "B16", fuel: "solar", rate: 0.015 }],
     sourceNote: "Swissgrid PV-only ENTSO-E feed; wind negligible and hydro spill not in A75. Models summer-midday PV oversupply only; understates total Swiss curtailment.",
+  },
+  // Balkans (8) — ENTSO-E A75 hourly generation published for all. Calibration
+  // uses conservative regional defaults (no domestic published anchor for most).
+  // Hydro-dominated systems (ALB, BIH, MNE) are excluded per methodology: hydro
+  // curtailment is structural/spill, not dispatch-driven VRE curtailment.
+  {
+    id: "serbia",
+    domain: "10YCS-SERBIATSOV",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 }, // regional default — no published anchor
+      { psrType: "B19", fuel: "wind", rate: 0.03 }, // regional default — no published anchor
+    ],
+    sourceNote: "EMS Serbia ENTSO-E A75 feed; solar+wind mixed. Regional default (solar 2%, wind 3%) — no published Serbian curtailment anchor found. IRENA RE Statistics 2024 capacity anchor used for order-of-magnitude check.",
+  },
+  {
+    id: "bosnia-and-herzegovina",
+    domain: "10YBA-JPCC-----D",
+    technologies: [], // hydro-dominated; dispatch-driven VRE curtailment negligible
+    sourceNote: "BH Krajina A75 feed; hydro-dominated system. Structural hydro spill (not dispatch-driven VRE curtailment) excluded per methodology. No published anchor.",
+  },
+  {
+    id: "north-macedonia",
+    domain: "10YMK-MEPSO----8",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 }, // regional default — no published anchor
+      { psrType: "B19", fuel: "wind", rate: 0.03 }, // regional default — no published anchor
+    ],
+    sourceNote: "MEPSO North Macedonia ENTSO-E A75 feed. Regional default (solar 2%, wind 3%) — no published Macedonian curtailment anchor found.",
+  },
+  {
+    id: "montenegro",
+    domain: "10YCS-CG-TSO---S",
+    technologies: [], // hydro-dominated; dispatch-driven VRE curtailment negligible
+    sourceNote: "CGES Montenegro A75 feed; hydro-dominated system. Structural hydro spill excluded per methodology. No published anchor.",
+  },
+  {
+    id: "croatia",
+    domain: "10YHR-HEP------M",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 }, // regional default — no published anchor
+      { psrType: "B19", fuel: "wind", rate: 0.025 }, // regional default — no published anchor
+    ],
+    sourceNote: "HOPS Croatia ENTSO-E A75 feed. Regional default (solar 2%, wind 2.5%) — no published HOPS curtailment anchor found. IRENA RE Statistics 2024 used for capacity anchor.",
+  },
+  {
+    id: "slovenia",
+    domain: "10YSI-ELES-----O",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 }, // regional default — no published anchor
+      { psrType: "B19", fuel: "wind", rate: 0.02 }, // regional default — no published anchor
+    ],
+    sourceNote: "ELES Slovenia ENTSO-E A75 feed. Regional default (solar 2%, wind 2%) — no published ELES curtailment anchor found.",
+  },
+  {
+    id: "slovakia",
+    domain: "10YSK-SEPS-----K",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.025 }, // regional default — no published anchor
+      { psrType: "B19", fuel: "wind", rate: 0.02 }, // regional default — no published anchor
+    ],
+    sourceNote: "SEPS Slovakia ENTSO-E A75 feed. Regional default (solar 2.5%, wind 2%) — no published SEPS curtailment anchor found.",
+  },
+  // Baltic states + small EU — ENTSO-E A75 hourly generation published.
+  // Moldova is not synchronised with ENTSO-E but publishes via MEPSO
+  // (former Soviet TSO; some cross-border coordination with UA/RO).
+  {
+    id: "lithuania",
+    domain: "10YLT-1001A0008Q",
+    technologies: [
+      { psrType: "B19", fuel: "wind", rate: 0.025 }, // Litgrid 2024 anchor (B4 Option B); solar negligible
+    ],
+    sourceNote: "Litgrid Lithuania ENTSO-E A75 feed. Wind 2.5% rate anchored to Litgrid published 2024 wind curtailment data (same anchor used for existing baltics aggregate). Solar negligible at Lithuanian latitude.",
+  },
+  {
+    id: "latvia",
+    domain: "10YLV-1001A00074",
+    technologies: [
+      { psrType: "B19", fuel: "wind", rate: 0.025 }, // regional default — no published anchor; consistent with lithuania/estonia
+    ],
+    sourceNote: "AST Latvia ENTSO-E A75 feed. Wind 2.5% regional default — no published Latvian curtailment anchor found.",
+  },
+  {
+    id: "estonia",
+    domain: "10Y1001A1001A39I",
+    technologies: [
+      { psrType: "B19", fuel: "wind", rate: 0.025 }, // regional default — no published anchor; consistent with lithuania/latvia
+    ],
+    sourceNote: "Elering Estonia ENTSO-E A75 feed. Wind 2.5% regional default — no published Estonian curtailment anchor found. Solar at Estonian latitude is dominated by behind-meter distributed PV (not in A75); wind is the dispatch-curtailable component.",
+  },
+  {
+    id: "luxembourg",
+    domain: "10YLU-CEGEDEL-NQ",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 }, // regional default — no published anchor
+      { psrType: "B19", fuel: "wind", rate: 0.02 }, // regional default — no published anchor
+    ],
+    sourceNote: "Cegedel Luxembourg ENTSO-E A75 feed. Small grid (PV+wind <0.5 GW installed). Regional default (solar 2%, wind 2%) — no published Luxembourg curtailment anchor found.",
+  },
+  {
+    id: "malta",
+    domain: "10Y1001A1001A93C",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 }, // regional default — no published anchor; PV-dominant island
+    ],
+    sourceNote: "ENEMalta ENTSO-E A75 feed; PV-dominant island grid. Solar 2% regional default — no published Maltese curtailment anchor found.",
+  },
+  {
+    id: "moldova",
+    domain: "10Y1001A1001A990",
+    technologies: [
+      { psrType: "B19", fuel: "wind", rate: 0.03 }, // regional default — no published anchor
+      { psrType: "B16", fuel: "solar", rate: 0.02 }, // regional default — no published anchor
+    ],
+    sourceNote: "Moldelectrica ENTSO-E A75 feed (MEPSO protocol; cross-border coordination). Moldova is not synchronised with ENTSO-E continental grid. Regional defaults used — no published Moldovan curtailment anchor found.",
   },
 ] as const;
 
