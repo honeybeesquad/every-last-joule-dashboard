@@ -314,7 +314,7 @@ const regionData = {
   hungary: entsoe.hungary,
   "czech-republic": entsoe["czech-republic"],
   bulgaria: entsoe.bulgaria,
-  baltics: entsoe.baltics,
+  estonia: entsoe.estonia,
   // Switzerland — PV-only ENTSO-E feed; understates hydro spill but
   // captures summer-midday PV oversupply on Swissgrid's corridor.
   switzerland: entsoe.switzerland,
