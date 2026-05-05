@@ -324,6 +324,12 @@ export const ZONES = [
     technologies: [{ psrType: "B16", fuel: "solar", rate: 0.02 }],
     sourceNote: "Moldelectrica ENTSO-E A75 solar: regional default ~2%.",
   },
+  {
+    id: "malta",
+    domain: "10Y1001A1001A93C",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.02 }],
+    sourceNote: "Enemalta ENTSO-E A75 solar: regional default ~2% (PV-dominant island grid).",
+  },
 ] as const;
 
 export const parseEntsoeXml = parseEntsoeXmlImpl;
