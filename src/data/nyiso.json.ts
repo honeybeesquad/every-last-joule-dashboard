@@ -6,6 +6,7 @@ const loader = buildEiaIsoRegionPerFuel({
   displayName: "NYISO",
   windRate: 0.03,
   solarRate: 0.02,
+  fallbackSplit: { wind: 0.7, solar: 0.3 },
 });
 
 export const parseNyisoRestPerFuel = loader.parsePerFuel;

@@ -146,11 +146,58 @@ const run = async (): Promise<Record<"ercot-east-wind" | "ercot-east-solar" | "e
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
+/**
+ * Stale-cache shape adapter for ERCOT. Pre-Phase-3b ercot.json has shape
+ * {"ercot-east": RegionData, "ercot-west": RegionData} (per-zone aggregate).
+ * Phase-3b consumers expect 4 per-fuel keys. Splits each zone's aggregate
+ * profile by an assumed wind/solar share until cron-bot regenerates.
+ */
+type ErcotPerFuel = Record<
+  "ercot-east-wind" | "ercot-east-solar" | "ercot-west-wind" | "ercot-west-solar",
+  RegionData
+>;
+function adaptErcotCache(cached: unknown): ErcotPerFuel {
+  if (
+    cached &&
+    typeof cached === "object" &&
+    "ercot-east-wind" in cached
+  ) {
+    return cached as ErcotPerFuel;
+  }
+  const split = { wind: 0.7, solar: 0.3 };
+  const note = " [stale-cache: aggregate split via fallback adapter]";
+  const zones = cached as Record<"ercot-east" | "ercot-west", RegionData>;
+  const splitZone = (
+    base: RegionData,
+    zoneId: "ercot-east" | "ercot-west",
+  ) => {
+    const make = (share: number, fuel: "wind" | "solar"): RegionData => ({
+      ...base,
+      regionId: `${zoneId}-${fuel}`,
+      profile: base.profile.map((g) => g * share),
+      latestProfile: base.latestProfile ? base.latestProfile.map((g) => g * share) : null,
+      peakGW: (base.peakGW ?? 0) * share,
+      totalTWh: (base.totalTWh ?? 0) * share,
+      fuelShare: split,
+      sourceNote: `${base.sourceNote ?? ""}${note}`,
+    });
+    return { wind: make(split.wind, "wind"), solar: make(split.solar, "solar") };
+  };
+  const east = splitZone(zones["ercot-east"], "ercot-east");
+  const west = splitZone(zones["ercot-west"], "ercot-west");
+  return {
+    "ercot-east-wind": east.wind,
+    "ercot-east-solar": east.solar,
+    "ercot-west-wind": west.wind,
+    "ercot-west-solar": west.solar,
+  };
+}
+
 if (isMain) {
-  withFallback<Record<"ercot-east-wind" | "ercot-east-solar" | "ercot-west-wind" | "ercot-west-solar", RegionData>>("ercot", run, {
+  withFallback<ErcotPerFuel>("ercot", run, {
     regionTier: "live" as const,
     tagLive: (r) => r,
-    tagCached: (c) => c,
+    tagCached: adaptErcotCache,
   })
     .then((data) => {
       process.stdout.write(JSON.stringify(data));

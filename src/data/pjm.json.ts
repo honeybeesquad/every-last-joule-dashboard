@@ -6,6 +6,7 @@ const loader = buildEiaIsoRegionPerFuel({
   displayName: "PJM",
   windRate: 0.02,
   solarRate: 0.025,
+  fallbackSplit: { wind: 0.5, solar: 0.5 },
 });
 
 export const parsePjm = loader.parsePerFuel;

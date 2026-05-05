@@ -25,6 +25,62 @@ export interface EiaIsoConfig {
   displayName: string;
   windRate: number;
   solarRate: number;
+  /**
+   * Default fuel share used by the stale-cache shape adapter when the
+   * EIA-fail fallback path returns a pre-Phase-3b aggregate snapshot
+   * (regionId="<iso>", flat profile). The adapter splits the aggregate
+   * profile into wind/solar children using this share so consumer lookups
+   * like `caiso["caiso-wind"]` succeed instead of returning undefined and
+   * crashing aggregateAtHour. Tuned loosely to recent observed VRE mix
+   * per RTO; only matters during the EIA-outage window before the next
+   * cron-bot regen overwrites the snapshot with real per-fuel data.
+   */
+  fallbackSplit?: { wind: number; solar: number };
+}
+
+/**
+ * Stale-cache shape adapter. Pre-Phase-3b ISO snapshots have aggregate
+ * shape ({regionId, profile, ...} as a flat RegionData with merged
+ * wind+solar curtailment). The Phase-3b loaders return per-fuel shape
+ * ({wind, solar}). On the EIA-fail fallback path withFallback hands us
+ * the on-disk shape verbatim, so without this adapter `caiso["caiso-wind"]`
+ * resolves to undefined and the dashboard crashes in regionGWAtHour
+ * (same crash class as malta and baltics — see
+ * memory/feedback_loader_wiring_pattern.md).
+ *
+ * Idempotent: passes through already-per-fuel cache contents unchanged.
+ */
+export function adaptCachedAggregateToPerFuel(
+  cached: unknown,
+  regionId: string,
+  fallbackSplit: { wind: number; solar: number },
+): { wind: RegionData; solar: RegionData } {
+  if (
+    cached &&
+    typeof cached === "object" &&
+    "wind" in cached &&
+    "solar" in cached
+  ) {
+    return cached as { wind: RegionData; solar: RegionData };
+  }
+
+  const agg = cached as RegionData;
+  const note = ` [stale-cache: aggregate split via fallback adapter — replaced on next loader regen]`;
+  const scale = (share: number, suffix: "wind" | "solar"): RegionData => ({
+    ...agg,
+    regionId: `${regionId}-${suffix}`,
+    profile: agg.profile.map((g) => g * share),
+    latestProfile: agg.latestProfile ? agg.latestProfile.map((g) => g * share) : null,
+    peakGW: (agg.peakGW ?? 0) * share,
+    totalTWh: (agg.totalTWh ?? 0) * share,
+    fuelShare: fallbackSplit,
+    sourceNote: `${agg.sourceNote ?? ""}${note}`,
+  });
+
+  return {
+    wind: scale(fallbackSplit.wind, "wind"),
+    solar: scale(fallbackSplit.solar, "solar"),
+  };
 }
 
 function mergeSum(a: CurtailmentPoint[], b: CurtailmentPoint[]): CurtailmentPoint[] {
@@ -196,6 +252,8 @@ export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
     return parsePerFuel(wind, solar);
   };
 
+  const fallbackSplit = config.fallbackSplit ?? { wind: 0.5, solar: 0.5 };
+
   const runCli = async (): Promise<void> => {
     const data = await withFallback<{ wind: RegionData; solar: RegionData }>(
       config.regionId,
@@ -203,7 +261,8 @@ export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
       {
         regionTier: "live" as const,
         tagLive: (r) => r,
-        tagCached: (c) => c,
+        tagCached: (c) =>
+          adaptCachedAggregateToPerFuel(c, config.regionId, fallbackSplit),
       },
     );
     process.stdout.write(JSON.stringify(data));

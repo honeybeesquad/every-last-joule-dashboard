@@ -6,6 +6,7 @@ const loader = buildEiaIsoRegionPerFuel({
   displayName: "MISO",
   windRate: 0.08,
   solarRate: 0.04,
+  fallbackSplit: { wind: 0.85, solar: 0.15 },
 });
 
 export const parseMiso = loader.parsePerFuel;

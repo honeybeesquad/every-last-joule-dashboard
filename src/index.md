@@ -281,31 +281,29 @@ const regionData = {
         "ercot-west-solar":  ercot["ercot-west-solar"],
       }
   ),
-  // CAISO — loader emits caiso-wind and caiso-solar directly:
-  "caiso-wind":  caiso["caiso-wind"],
-  "caiso-solar": caiso["caiso-solar"],
-  // MISO:
-  "miso-wind":  miso["miso-wind"],
-  "miso-solar": miso["miso-solar"],
-  // PJM:
-  "pjm-wind":  pjm["pjm-wind"],
-  "pjm-solar": pjm["pjm-solar"],
-  // SPP:
-  "spp-wind":  spp["spp-wind"],
-  "spp-solar": spp["spp-solar"],
-  // NYISO — zones D+E (wind-only carve-out) stays; nyiso-rest split to wind/solar:
-  // NYISO Power Trends 2024: 75% of statewide curtailment in Zones D+E.
-  "nyiso-zones-d-e": nyiso["nyiso-rest-wind"],  // zones-d-e is wind-only, derives from rest-wind
-  "nyiso-rest-wind":  nyiso["nyiso-rest-wind"],
-  "nyiso-rest-solar": nyiso["nyiso-rest-solar"],
-  // ISO-NE — Maine/Vermont (wind-only carve-out) stays; iso-ne-rest split to wind/solar:
-  // ISO-NE IMM 2024: 93% of curtailment in ME+VT.
-  "iso-ne-maine-vermont": isoNe["iso-ne-rest-wind"],  // ME/VT is wind-only, derives from rest-wind
-  "iso-ne-rest-wind":  isoNe["iso-ne-rest-wind"],
-  "iso-ne-rest-solar": isoNe["iso-ne-rest-solar"],
-  // BPA:
-  "bpa-wind":  bpa["bpa-wind"],
-  "bpa-solar": bpa["bpa-solar"],
+  // CAISO/MISO/PJM/SPP/BPA/NYISO/ISO-NE loaders return shape {wind, solar}
+  // (unlike ERCOT which returns {<zone>-<fuel>} keys). regionId is set inside
+  // the loader payload, so we just pass through the per-fuel children.
+  "caiso-wind":  caiso.wind,
+  "caiso-solar": caiso.solar,
+  "miso-wind":   miso.wind,
+  "miso-solar":  miso.solar,
+  "pjm-wind":    pjm.wind,
+  "pjm-solar":   pjm.solar,
+  "spp-wind":    spp.wind,
+  "spp-solar":   spp.solar,
+  // NYISO — zones D+E (wind-only carve-out) takes 75% of the wind component;
+  // remaining 25% stays in nyiso-rest-wind. NYISO Power Trends 2024.
+  "nyiso-zones-d-e":  splitRegion(nyiso.wind, "nyiso-zones-d-e", 0.75, "Zones D+E share (75% of NYISO wind curtailment per Power Trends 2024)"),
+  "nyiso-rest-wind":  splitRegion(nyiso.wind, "nyiso-rest-wind", 0.25, "Remainder of NYISO wind"),
+  "nyiso-rest-solar": nyiso.solar,
+  // ISO-NE — Maine/Vermont (wind-only carve-out) takes 93% of the wind
+  // component; remaining 7% stays in iso-ne-rest-wind. ISO-NE IMM 2024.
+  "iso-ne-maine-vermont": splitRegion(isoNe.wind, "iso-ne-maine-vermont", 0.93, "ME+VT share (93% of NE wind curtailment per ISO-NE IMM)"),
+  "iso-ne-rest-wind":     splitRegion(isoNe.wind, "iso-ne-rest-wind", 0.07, "Remainder of ISO-NE wind"),
+  "iso-ne-rest-solar":    isoNe.solar,
+  "bpa-wind":  bpa.wind,
+  "bpa-solar": bpa.solar,
   ...aemo,
   "belgium-wind": belgium,
   "belgium-solar": belgium,

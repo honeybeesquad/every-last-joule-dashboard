@@ -6,6 +6,7 @@ import { fetchJSON } from "../lib/fetch.js";
 import { parseDelimitedRows } from "../lib/csv.js";
 import { timeOfDayAverageGW, totalTWh30d, peakGW, latestCompleteUtcDayProfileGW } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
+import { adaptCachedAggregateToPerFuel } from "../lib/eia-iso.js";
 import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
@@ -243,7 +244,8 @@ if (isMain) {
   withFallback<{ wind: RegionData; solar: RegionData }>("caiso", run, {
     regionTier: "live" as const,
     tagLive: (r) => r,
-    tagCached: (c) => c,
+    tagCached: (c) =>
+      adaptCachedAggregateToPerFuel(c, "caiso", { wind: 0.15, solar: 0.85 }),
   })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
