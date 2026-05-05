@@ -151,7 +151,11 @@ function trailingPoints(points: CurtailmentPoint[], days = 30): CurtailmentPoint
 }
 
 function buildRegion(
-  regionId: "ireland-republic" | "northern-ireland",
+  regionId:
+    | "ireland-republic-wind"
+    | "ireland-republic-solar"
+    | "northern-ireland-wind"
+    | "northern-ireland-solar",
   allIslandPoints: CurtailmentPoint[],
   share: number,
   lastUpdated: string,

@@ -3,6 +3,7 @@ import * as topojson from "npm:topojson-client";
 import { regionGWAtHour } from "./lib/calc.js";
 import { getFuelColor, dominantFuel } from "./lib/fuel.js";
 import { readGlobeTokens, isLinearGradientToken } from "./lib/theme-tokens.js";
+import { buildPillarUnits } from "./lib/pillar-layout.js";
 
 /**
  * Open-Meteo free weather API: https://api.open-meteo.com/v1/forecast
@@ -220,21 +221,14 @@ export async function mountGlobe(canvas, initial) {
 
   window.addEventListener("themechange", refreshTokens);
 
-  /**
-   * Group regions by lat/lon so co-located wind+solar entries (e.g.
-   * caiso-wind + caiso-solar) render as a single stacked pillar.
-   * Returns an array of groups; each group is an array of regions sharing
-   * the same rounded lat/lon bucket.
-   */
-  function buildPillarGroups(regions) {
-    const map = new Map();
-    for (const region of regions) {
-      if (region.kind === "flare" && !state.showFlare) continue;
-      const key = `${region.lat.toFixed(4)},${region.lon.toFixed(4)}`;
-      if (!map.has(key)) map.set(key, []);
-      map.get(key).push(region);
-    }
-    return Array.from(map.values());
+  // Bucket co-located regions, then split multi-kind buckets into adjacent
+  // screen-x pillars 44px apart so each fuel is individually tappable
+  // (WCAG 2.5.5). Same-kind multi-region buckets stay stacked at offset 0.
+  function buildPillarUnitsForState() {
+    const filtered = state.regions.filter(
+      (region) => !(region.kind === "flare" && !state.showFlare),
+    );
+    return buildPillarUnits(filtered);
   }
 
   /**
@@ -256,26 +250,27 @@ export async function mountGlobe(canvas, initial) {
     const px = clientX - rect.left;
     const py = clientY - rect.top;
 
-    const groups = buildPillarGroups(state.regions);
-    let bestGroup = null;
+    const units = buildPillarUnitsForState();
+    let bestUnit = null;
     let bestDist2 = threshold * threshold;
-    for (const group of groups) {
-      const rep = group[0];
+    for (const unit of units) {
+      const rep = unit.regions[0];
       const dist = d3.geoDistance([rep.lon, rep.lat], centerLngLat);
       if (dist > Math.PI / 2) continue;
       const point = projection([rep.lon, rep.lat]);
       if (!point) continue;
-      const dx = point[0] - px;
+      const targetX = point[0] + unit.offsetPx;
+      const dx = targetX - px;
       const dy = point[1] - py;
       const d2 = dx * dx + dy * dy;
       if (d2 < bestDist2) {
         bestDist2 = d2;
-        bestGroup = group;
+        bestUnit = unit;
       }
     }
-    // Return single region for groups of one; group array for stacked pillars.
-    if (!bestGroup) return null;
-    return bestGroup.length === 1 ? bestGroup[0] : bestGroup;
+    // Return single region for units of one; region array for stacked pillars.
+    if (!bestUnit) return null;
+    return bestUnit.regions.length === 1 ? bestUnit.regions[0] : bestUnit.regions;
   }
 
   function resize() {
@@ -392,10 +387,11 @@ export async function mountGlobe(canvas, initial) {
     ctx.lineWidth = 0.8;
     ctx.stroke();
 
-    const pillarGroups = buildPillarGroups(state.regions);
-    for (const group of pillarGroups) {
+    const pillarUnits = buildPillarUnitsForState();
+    for (const unit of pillarUnits) {
+      const group = unit.regions;
       const rep = group[0];
-      // Compute total GW across all members of this group.
+      // Compute total GW across all members of this unit.
       const gwByRegion = group.map((r) => {
         const data = state.regionData[r.id];
         return data ? Math.max(0, regionGWAtHour(data, hour, state.mode)) : 0;
@@ -407,6 +403,12 @@ export async function mountGlobe(canvas, initial) {
       if (dist > Math.PI / 2) continue;
       const point = projection([rep.lon, rep.lat]);
       if (!point) continue;
+
+      // Anchor for this unit: original projection point shifted horizontally
+      // on screen by offsetPx so co-located wind/solar pairs render as
+      // adjacent tappable pillars 44px apart (WCAG 2.5.5).
+      const anchorX = point[0] + unit.offsetPx;
+      const anchorY = point[1];
 
       const visible = 1 - dist / (Math.PI / 2);
       const weight = Math.sqrt(totalGW);
@@ -427,10 +429,13 @@ export async function mountGlobe(canvas, initial) {
       ctx.globalAlpha = 0.45 * visible;
       ctx.fillStyle = domColor;
       ctx.beginPath();
-      ctx.arc(point[0], point[1], glowR, 0, Math.PI * 2);
+      ctx.arc(anchorX, anchorY, glowR, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
 
+      // Outward direction from globe centre is anchored at the original
+      // projection point so all offset pillars within a bucket lean the
+      // same way (parallel bars 44px apart on screen).
       let dx = point[0] - centreX;
       let dy = point[1] - centreY;
       const len = Math.sqrt(dx * dx + dy * dy);
@@ -442,9 +447,9 @@ export async function mountGlobe(canvas, initial) {
 
         if (group.length === 1) {
           // Single-fuel pillar: same gradient style as before.
-          const tipX = point[0] + dx * pillarH;
-          const tipY = point[1] + dy * pillarH;
-          const pillarGradient = ctx.createLinearGradient(point[0], point[1], tipX, tipY);
+          const tipX = anchorX + dx * pillarH;
+          const tipY = anchorY + dy * pillarH;
+          const pillarGradient = ctx.createLinearGradient(anchorX, anchorY, tipX, tipY);
           pillarGradient.addColorStop(0, `${domColor}${tokens.pillarBaseAlpha}`);
           pillarGradient.addColorStop(1, domColor);
           ctx.strokeStyle = pillarGradient;
@@ -452,7 +457,7 @@ export async function mountGlobe(canvas, initial) {
           ctx.lineCap = "round";
           ctx.globalAlpha = visible * sunDim;
           ctx.beginPath();
-          ctx.moveTo(point[0], point[1]);
+          ctx.moveTo(anchorX, anchorY);
           ctx.lineTo(tipX, tipY);
           ctx.stroke();
 
@@ -475,8 +480,8 @@ export async function mountGlobe(canvas, initial) {
           for (const seg of segments) {
             const segFrac = seg.gw / totalGW;
             const segLen = pillarH * segFrac;
-            const segStartX = point[0] + dx * segStart;
-            const segStartY = point[1] + dy * segStart;
+            const segStartX = anchorX + dx * segStart;
+            const segStartY = anchorY + dy * segStart;
             const segEndX = segStartX + dx * segLen;
             const segEndY = segStartY + dy * segLen;
             const segData = state.regionData[seg.region.id];
@@ -512,7 +517,7 @@ export async function mountGlobe(canvas, initial) {
       ctx.globalAlpha = visible;
       ctx.fillStyle = domColor;
       ctx.beginPath();
-      ctx.arc(point[0], point[1], coreR, 0, Math.PI * 2);
+      ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
       ctx.lineWidth = 0.6;
@@ -525,7 +530,7 @@ export async function mountGlobe(canvas, initial) {
         ctx.lineWidth = 2.2;
         ctx.setLineDash([]);
         ctx.beginPath();
-        ctx.arc(point[0], point[1], glowR + 5, 0, Math.PI * 2);
+        ctx.arc(anchorX, anchorY, glowR + 5, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
       }

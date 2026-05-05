@@ -25,7 +25,7 @@ export type RegionTier =
   | "flare";
 
 /** The waste modality drives colouring (teal vs orange) and narrative. */
-export type RegionKind = "solar" | "wind" | "hydro" | "mixed" | "flare";
+export type RegionKind = "solar" | "wind" | "hydro" | "geo" | "mixed" | "flare";
 
 /** Freshness state of an upstream source or fallback snapshot. */
 export type SourceStatus = "live" | "cached" | "degraded";
