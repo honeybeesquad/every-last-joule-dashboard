@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (Phase 4-C completionist Tier C: +19 T3-static microstates/small-island states.)",
-  "T1a": 152,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (per-fuel globalisation: split finland, ireland-republic, northern-ireland into wind+solar.)",
+  "T1a": 155,
   "T1b": 9,
   "T1c": 1,
   "T2": 6,
   "T2-flare": 8,
   "T3": 204,
-  "total": 380
+  "total": 383
 }

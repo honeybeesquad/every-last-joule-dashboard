@@ -1,16 +1,16 @@
-# Validation — Finland (`finland`)
+# Validation — Ireland (Republic) Wind (`ireland-republic-wind`)
 
 Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `finland`
-- **Country:** FIN
+- **Region id:** `ireland-republic-wind`
+- **Country:** IRL
 - **Tier:** live
 - **Kind:** wind
-- **Source:** ENTSO-E
-- **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Source:** EirGrid/SONI DD half-hourly workbook (ROI 58% of all-island DD)
+- **Source URL:** [https://www.eirgrid.ie/grid/system-and-renewable-data-reports](https://www.eirgrid.ie/grid/system-and-renewable-data-reports)
+- **Loader:** [`ireland.json.ts`](../../src/data/ireland.json.ts)
 - **Structural gap:** no
 
 ## Calibration
@@ -26,14 +26,14 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** Fingrid wind curtailment low single-digit TWh/yr
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** Fingrid Annual Report 2024
+- **Other:** —
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
 
 ## Known limitations
 
@@ -41,8 +41,8 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_finland_*.parquet` (0 years)
+- Loader source: [`ireland.json.ts`](../../src/data/ireland.json.ts)
+- Backfill archive: `data/historical/backfill/*_ireland-republic-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

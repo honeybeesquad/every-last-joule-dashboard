@@ -52,10 +52,16 @@ export const ZONES = [
     sourceNote: "Germany 2024 BNetzA/SMARD solar: 1.39 TWh curtailed.",
   },
   {
-    id: "finland",
+    id: "finland-wind",
     domain: "10YFI-1--------U",
     technologies: [{ psrType: "B19", fuel: "wind", rate: 0.05 }],
-    sourceNote: "Finland wind-only calibration; solar negligible at Finnish latitude.",
+    sourceNote: "Finland 2024 wind: ENTSO-E A75 FI bidding zone B19.",
+  },
+  {
+    id: "finland-solar",
+    domain: "10YFI-1--------U",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.01 }],
+    sourceNote: "Finland 2024 solar: ENTSO-E A75 FI bidding zone B16; very small at high latitude.",
   },
   {
     id: "netherlands-wind",
