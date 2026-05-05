@@ -36,6 +36,58 @@ function mergeSum(a: CurtailmentPoint[], b: CurtailmentPoint[]): CurtailmentPoin
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
 }
 
+function toPoints(raw: EIAResponse, rate: number): CurtailmentPoint[] {
+  return raw.response.data.map((r) => ({
+    utcTimestamp: `${r.period}:00:00Z`,
+    mw: Math.max(0, Number(r.value) * rate),
+  }));
+}
+
+export function parseEiaIsoRegionPerFuel(
+  config: EiaIsoConfig,
+  windRaw: EIAResponse,
+  solarRaw?: EIAResponse,
+): { wind: RegionData; solar: RegionData } {
+  const windPoints = toPoints(windRaw, config.windRate);
+  const solarPoints = toPoints(solarRaw ?? { response: { total: 0, data: [] } }, config.solarRate);
+
+  const windLast = windPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
+  const solarLast = solarPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
+
+  const windTotalMw = windPoints.reduce((s, p) => s + p.mw, 0);
+  const solarTotalMw = solarPoints.reduce((s, p) => s + p.mw, 0);
+  const denom = windTotalMw + solarTotalMw;
+  const fuelShare = denom > 0
+    ? { wind: windTotalMw / denom, solar: solarTotalMw / denom }
+    : { wind: 1, solar: 0 };
+
+  const wind: RegionData = {
+    regionId: `${config.regionId}-wind`,
+    profile: timeOfDayAverageGW(windPoints),
+    latestProfile: latestCompleteUtcDayProfileGW(windPoints),
+    totalTWh: totalTWh30d(windPoints),
+    peakGW: peakGW(windPoints),
+    lastUpdated: windLast,
+    lastSuccessAt: windLast,
+    sourceNote: `EIA ${config.respondent} wind × ${(config.windRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
+    fuelShare,
+  };
+
+  const solar: RegionData = {
+    regionId: `${config.regionId}-solar`,
+    profile: timeOfDayAverageGW(solarPoints),
+    latestProfile: latestCompleteUtcDayProfileGW(solarPoints),
+    totalTWh: totalTWh30d(solarPoints),
+    peakGW: peakGW(solarPoints),
+    lastUpdated: solarLast,
+    lastSuccessAt: solarLast,
+    sourceNote: `EIA ${config.respondent} solar × ${(config.solarRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
+    fuelShare,
+  };
+
+  return { wind, solar };
+}
+
 export function parseEiaIsoRegion(
   config: EiaIsoConfig,
   windRaw: EIAResponse,
@@ -125,4 +177,39 @@ export function buildEiaIsoRegion(config: EiaIsoConfig) {
   const isMain = (metaUrl: string) => Boolean(process.argv[1] && metaUrl === pathToFileURL(process.argv[1]).href);
 
   return { parse, run, runCli, isMain };
+}
+
+export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
+  const parsePerFuel = (windRaw: EIAResponse, solarRaw?: EIAResponse) =>
+    parseEiaIsoRegionPerFuel(config, windRaw, solarRaw);
+
+  const run = async (): Promise<{ wind: RegionData; solar: RegionData }> => {
+    const apiKey = process.env.EIA_API_KEY;
+    if (!apiKey) throw new Error("EIA_API_KEY not set");
+    const [wind, solar] = await Promise.all([
+      fetchFueltype(apiKey, config.respondent, "WND"),
+      fetchFueltype(apiKey, config.respondent, "SUN").catch((err) => {
+        console.warn(`${config.displayName} SUN fetch failed, continuing wind-only: ${(err as Error).message}`);
+        return undefined;
+      }),
+    ]);
+    return parsePerFuel(wind, solar);
+  };
+
+  const runCli = async (): Promise<void> => {
+    const data = await withFallback<{ wind: RegionData; solar: RegionData }>(
+      config.regionId,
+      run,
+      {
+        regionTier: "live" as const,
+        tagLive: (r) => r,
+        tagCached: (c) => c,
+      },
+    );
+    process.stdout.write(JSON.stringify(data));
+  };
+
+  const isMain = (metaUrl: string) => Boolean(process.argv[1] && metaUrl === pathToFileURL(process.argv[1]).href);
+
+  return { parsePerFuel, run, runCli, isMain };
 }

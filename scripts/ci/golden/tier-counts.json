@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (Phase 3a-v2 ENTSO-E per-fuel split: +25 per-fuel regions: spain-wind/solar, portugal-wind/solar, germany-wind/solar, netherlands-wind/solar, poland-wind/solar, greece-wind/solar, romania-wind/solar, sweden-south-wind/solar, hungary-wind/solar, czech-republic-wind/solar, bulgaria-wind/solar, serbia-wind/solar, north-macedonia-wind/solar, croatia-wind/solar, slovenia-wind/solar, slovakia-wind/solar, luxembourg-wind/solar, moldova-wind/solar. belgium/france/denmark per-fuel split via separate loaders. Removed legacy baltics aggregate. Net: T1a +21, T1b +4 (italy-north-zone, netherlands, italy-sicily split), total +25.)",
-  "T1a": 134,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (Phase 3b US ISO per-fuel split: +9 net regions: caiso-wind/solar, ercot-east-wind/solar, ercot-west-wind/solar, miso-wind/solar, pjm-wind/solar, spp-wind/solar, nyiso-rest-wind/solar, iso-ne-rest-wind/solar, bpa-wind/solar. Old mixed ISO IDs (caiso, ercot-east, ercot-west, miso, pjm, spp, nyiso-rest, iso-ne-rest, bpa) retired. Net: T1a +9, total +9.)",
+  "T1a": 143,
   "T1b": 9,
   "T1c": 1,
   "T2": 2,
   "T2-flare": 8,
   "T3": 135,
-  "total": 289
+  "total": 298
 }

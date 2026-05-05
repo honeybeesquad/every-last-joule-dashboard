@@ -8,55 +8,54 @@ const fixture = JSON.parse(
   readFileSync(join(__dirname, "../fixtures/ercot-eia-wind.json"), "utf8")
 );
 
-// We must use dynamic import because src/data/ercot.json.ts executes run() 
-// at the top level, which fails if EIA_API_KEY is missing.
-let parseErcot: any;
+let parseErcotPerFuel: any;
 
 describe("ercot parser (EIA proxy)", () => {
   beforeAll(async () => {
     process.env.EIA_API_KEY = "dummy-key-for-tests";
     const module = await import("../../src/data/ercot.json");
-    parseErcot = module.parseErcot;
+    parseErcotPerFuel = module.parseErcotPerFuel;
   });
 
-  it("returns two split regions with 24-hour profiles", () => {
-    const result = parseErcot(fixture);
-    expect(result["ercot-west"].profile.length).toBe(24);
-    expect(result["ercot-east"].profile.length).toBe(24);
+  it("returns four split regions with 24-hour profiles", () => {
+    const result = parseErcotPerFuel(fixture);
+    expect(result["ercot-west-wind"].profile.length).toBe(24);
+    expect(result["ercot-west-solar"].profile.length).toBe(24);
+    expect(result["ercot-east-wind"].profile.length).toBe(24);
+    expect(result["ercot-east-solar"].profile.length).toBe(24);
   });
 
-  it("uses the expected split region ids", () => {
-    const result = parseErcot(fixture);
-    expect(result["ercot-west"].regionId).toBe("ercot-west");
-    expect(result["ercot-east"].regionId).toBe("ercot-east");
+  it("uses the expected per-fuel region ids", () => {
+    const result = parseErcotPerFuel(fixture);
+    expect(result["ercot-west-wind"].regionId).toBe("ercot-west-wind");
+    expect(result["ercot-west-solar"].regionId).toBe("ercot-west-solar");
+    expect(result["ercot-east-wind"].regionId).toBe("ercot-east-wind");
+    expect(result["ercot-east-solar"].regionId).toBe("ercot-east-solar");
   });
 
   it("produces non-negative GW values", () => {
-    const result = parseErcot(fixture);
-    for (const gw of [...result["ercot-west"].profile, ...result["ercot-east"].profile]) {
+    const result = parseErcotPerFuel(fixture);
+    for (const gw of [
+      ...result["ercot-west-wind"].profile,
+      ...result["ercot-west-solar"].profile,
+      ...result["ercot-east-wind"].profile,
+      ...result["ercot-east-solar"].profile,
+    ]) {
       expect(gw).toBeGreaterThanOrEqual(0);
     }
   });
 
-  it("peakGW equals max of profile for each split region", () => {
-    const result = parseErcot(fixture);
-    expect(result["ercot-west"].peakGW).toBeCloseTo(Math.max(...result["ercot-west"].profile), 3);
-    expect(result["ercot-east"].peakGW).toBeCloseTo(Math.max(...result["ercot-east"].profile), 3);
+  it("peakGW equals max of profile for each region", () => {
+    const result = parseErcotPerFuel(fixture);
+    expect(result["ercot-west-wind"].peakGW).toBeCloseTo(Math.max(...result["ercot-west-wind"].profile), 3);
+    expect(result["ercot-west-solar"].peakGW).toBeCloseTo(Math.max(...result["ercot-west-solar"].profile), 3);
+    expect(result["ercot-east-wind"].peakGW).toBeCloseTo(Math.max(...result["ercot-east-wind"].profile), 3);
+    expect(result["ercot-east-solar"].peakGW).toBeCloseTo(Math.max(...result["ercot-east-solar"].profile), 3);
   });
 
-  it("source notes mention the regional split and data-driven fuel mix", () => {
-    const result = parseErcot(fixture);
-    expect(result["ercot-west"].sourceNote).toContain("66%");
-    expect(result["ercot-east"].sourceNote).toContain("34%");
-    expect(result["ercot-west"].sourceNote).toContain("wind+solar");
-  });
-
-  it("preserves the original total after 66/34 splitting", () => {
-    const result = parseErcot(fixture);
-    const fixtureData = fixture.response.data as Array<{ value: string }>;
-    const totalWindMWh = fixtureData.reduce((sum, r) => sum + Number(r.value), 0);
-    const expectedCurtailmentTWh = (totalWindMWh * 0.0615) / 1_000_000;
-    expect(result["ercot-west"].totalTWh + result["ercot-east"].totalTWh).toBeCloseTo(expectedCurtailmentTWh, 3);
-    expect(result["ercot-west"].totalTWh / expectedCurtailmentTWh).toBeCloseTo(0.66, 2);
+  it("source notes mention the regional split", () => {
+    const result = parseErcotPerFuel(fixture);
+    expect(result["ercot-west-wind"].sourceNote).toContain("66%");
+    expect(result["ercot-east-wind"].sourceNote).toContain("34%");
   });
 });

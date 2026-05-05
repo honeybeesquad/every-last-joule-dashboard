@@ -1,6 +1,6 @@
-import { buildEiaIsoRegion } from "../lib/eia-iso.js";
+import { buildEiaIsoRegionPerFuel } from "../lib/eia-iso.js";
 
-const loader = buildEiaIsoRegion({
+const loader = buildEiaIsoRegionPerFuel({
   regionId: "pjm",
   respondent: "PJM",
   displayName: "PJM",
@@ -8,7 +8,7 @@ const loader = buildEiaIsoRegion({
   solarRate: 0.025,
 });
 
-export const parsePjm = loader.parse;
+export const parsePjm = loader.parsePerFuel;
 
 if (loader.isMain(import.meta.url)) {
   loader.runCli().catch((err) => {

@@ -264,26 +264,48 @@ document.getElementById("app-root").innerHTML = `
 `;
 
 const regionData = {
+  // ERCOT — EIA path emits per-fuel east/west × wind/solar:
   ...(ERCOT_NATIVE_ENABLED
     ? {
-        "ercot-west": { ...ercotNative["ercot-native-west"], regionId: "ercot-west" },
-        "ercot-east": { ...ercotNative["ercot-native-east"], regionId: "ercot-east" }
+        // Native ERCOT path (legacy): map ercot-native-east/west to per-fuel keys.
+        // Note: ercot-native loader emits mixed fuel data, mapped to both wind/solar.
+        "ercot-east-wind":  { ...ercotNative["ercot-native-east"], regionId: "ercot-east-wind" },
+        "ercot-east-solar": { ...ercotNative["ercot-native-east"], regionId: "ercot-east-solar" },
+        "ercot-west-wind":  { ...ercotNative["ercot-native-west"], regionId: "ercot-west-wind" },
+        "ercot-west-solar": { ...ercotNative["ercot-native-west"], regionId: "ercot-west-solar" },
       }
-    : ercot),
-  caiso,
-  miso,
-  pjm,
-  spp,
-  // NYISO zonal split — NYISO Power Trends 2024 / Unbottling Wind
-  // attributes most 2023 wind curtailment (0.162 TWh statewide) to
-  // Zones D and E. 75/25 split approximates that geographic concentration.
-  "nyiso-zones-d-e": splitRegion(nyiso, "nyiso-zones-d-e", 0.75, "Zones D+E share of 2023 statewide wind curtailment (NYISO Power Trends 2024)"),
-  "nyiso-rest": splitRegion(nyiso, "nyiso-rest", 0.25, "Remainder of NYISO wind+solar"),
-  // ISO-NE split — IMM 2024 Annual Markets Report states 93% of 2020-2024
-  // curtailed renewable capacity in New England was in Maine and Vermont.
-  "iso-ne-maine-vermont": splitRegion(isoNe, "iso-ne-maine-vermont", 0.93, "ME+VT share (93% of 2020-2024 NE curtailment per ISO-NE IMM)"),
-  "iso-ne-rest": splitRegion(isoNe, "iso-ne-rest", 0.07, "Remainder of ISO-NE wind+solar"),
-  bpa,
+    : {
+        "ercot-east-wind":  ercot["ercot-east-wind"],
+        "ercot-east-solar":  ercot["ercot-east-solar"],
+        "ercot-west-wind":   ercot["ercot-west-wind"],
+        "ercot-west-solar":  ercot["ercot-west-solar"],
+      }
+  ),
+  // CAISO — loader emits caiso-wind and caiso-solar directly:
+  "caiso-wind":  caiso["caiso-wind"],
+  "caiso-solar": caiso["caiso-solar"],
+  // MISO:
+  "miso-wind":  miso["miso-wind"],
+  "miso-solar": miso["miso-solar"],
+  // PJM:
+  "pjm-wind":  pjm["pjm-wind"],
+  "pjm-solar": pjm["pjm-solar"],
+  // SPP:
+  "spp-wind":  spp["spp-wind"],
+  "spp-solar": spp["spp-solar"],
+  // NYISO — zones D+E (wind-only carve-out) stays; nyiso-rest split to wind/solar:
+  // NYISO Power Trends 2024: 75% of statewide curtailment in Zones D+E.
+  "nyiso-zones-d-e": nyiso["nyiso-rest-wind"],  // zones-d-e is wind-only, derives from rest-wind
+  "nyiso-rest-wind":  nyiso["nyiso-rest-wind"],
+  "nyiso-rest-solar": nyiso["nyiso-rest-solar"],
+  // ISO-NE — Maine/Vermont (wind-only carve-out) stays; iso-ne-rest split to wind/solar:
+  // ISO-NE IMM 2024: 93% of curtailment in ME+VT.
+  "iso-ne-maine-vermont": isoNe["iso-ne-rest-wind"],  // ME/VT is wind-only, derives from rest-wind
+  "iso-ne-rest-wind":  isoNe["iso-ne-rest-wind"],
+  "iso-ne-rest-solar": isoNe["iso-ne-rest-solar"],
+  // BPA:
+  "bpa-wind":  bpa["bpa-wind"],
+  "bpa-solar": bpa["bpa-solar"],
   ...aemo,
   "belgium-wind": belgium,
   "belgium-solar": belgium,
