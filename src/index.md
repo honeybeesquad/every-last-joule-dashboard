@@ -332,6 +332,23 @@ const regionData = {
   lithuania: entsoe.lithuania,
   latvia: entsoe.latvia,
   estonia: entsoe.estonia,
+  // PR #45 leftover Balkan + Baltic regions — wired per Phase 3a-v2 per-fuel split.
+  "bosnia-and-herzegovina": entsoe["bosnia-and-herzegovina"],
+  "croatia-wind": entsoe["croatia-wind"],
+  "croatia-solar": entsoe["croatia-solar"],
+  "luxembourg-wind": entsoe["luxembourg-wind"],
+  "luxembourg-solar": entsoe["luxembourg-solar"],
+  "moldova-wind": entsoe["moldova-wind"],
+  "moldova-solar": entsoe["moldova-solar"],
+  montenegro: entsoe.montenegro,
+  "north-macedonia-wind": entsoe["north-macedonia-wind"],
+  "north-macedonia-solar": entsoe["north-macedonia-solar"],
+  "serbia-wind": entsoe["serbia-wind"],
+  "serbia-solar": entsoe["serbia-solar"],
+  "slovakia-wind": entsoe["slovakia-wind"],
+  "slovakia-solar": entsoe["slovakia-solar"],
+  "slovenia-wind": entsoe["slovenia-wind"],
+  "slovenia-solar": entsoe["slovenia-solar"],
   // Switzerland — PV-only ENTSO-E feed; understates hydro spill but
   // captures summer-midday PV oversupply on Swissgrid's corridor.
   switzerland: entsoe.switzerland,
