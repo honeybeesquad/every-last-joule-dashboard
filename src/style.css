@@ -1017,6 +1017,15 @@ main table {
   color: rgba(255, 255, 255, 0.4);
 }
 
+.region-tooltip-fuel-swatch {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+
 .stat {
   display: flex;
   flex-direction: column;
