@@ -82,8 +82,25 @@ export async function mountGlobe(canvas, initial) {
   window.addEventListener("themechange", refreshTokens);
 
   /**
-   * Hit-test: given client coords, return the closest rendered hotspot region
-   * within `threshold` pixels that sits on the near hemisphere, or null.
+   * Group regions by lat/lon so co-located wind+solar entries (e.g.
+   * caiso-wind + caiso-solar) render as a single stacked pillar.
+   * Returns an array of groups; each group is an array of regions sharing
+   * the same rounded lat/lon bucket.
+   */
+  function buildPillarGroups(regions) {
+    const map = new Map();
+    for (const region of regions) {
+      if (region.kind === "flare" && !state.showFlare) continue;
+      const key = `${region.lat.toFixed(4)},${region.lon.toFixed(4)}`;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(region);
+    }
+    return Array.from(map.values());
+  }
+
+  /**
+   * Hit-test: given client coords, return the closest pillar group within
+   * `threshold` pixels on the near hemisphere, or null.
    */
   function hitTestRegion(clientX, clientY, threshold = 20) {
     const rect = canvas.getBoundingClientRect();
@@ -100,23 +117,26 @@ export async function mountGlobe(canvas, initial) {
     const px = clientX - rect.left;
     const py = clientY - rect.top;
 
-    let best = null;
+    const groups = buildPillarGroups(state.regions);
+    let bestGroup = null;
     let bestDist2 = threshold * threshold;
-    for (const region of state.regions) {
-      if (region.kind === "flare" && !state.showFlare) continue;
-      const dist = d3.geoDistance([region.lon, region.lat], centerLngLat);
-      if (dist > Math.PI / 2) continue; // far side of globe
-      const point = projection([region.lon, region.lat]);
+    for (const group of groups) {
+      const rep = group[0];
+      const dist = d3.geoDistance([rep.lon, rep.lat], centerLngLat);
+      if (dist > Math.PI / 2) continue;
+      const point = projection([rep.lon, rep.lat]);
       if (!point) continue;
       const dx = point[0] - px;
       const dy = point[1] - py;
       const d2 = dx * dx + dy * dy;
       if (d2 < bestDist2) {
         bestDist2 = d2;
-        best = region;
+        bestGroup = group;
       }
     }
-    return best;
+    // Return single region for groups of one; group array for stacked pillars.
+    if (!bestGroup) return null;
+    return bestGroup.length === 1 ? bestGroup[0] : bestGroup;
   }
 
   function resize() {
@@ -233,34 +253,40 @@ export async function mountGlobe(canvas, initial) {
     ctx.lineWidth = 0.8;
     ctx.stroke();
 
-    for (const region of state.regions) {
-      // Flare regions are renewable-dashboard-excluded: not scored in the
-      // headline, not bucketed in hotspot columns. They can be toggled
-      // visible via the flare button; hidden by default.
-      if (region.kind === "flare" && !state.showFlare) continue;
-      const data = state.regionData[region.id];
-      const gw = data ? regionGWAtHour(data, hour, state.mode) : 0;
-      if (gw <= 0.01) continue;
-      const dist = d3.geoDistance([region.lon, region.lat], center);
+    const pillarGroups = buildPillarGroups(state.regions);
+    for (const group of pillarGroups) {
+      const rep = group[0];
+      // Compute total GW across all members of this group.
+      const gwByRegion = group.map((r) => {
+        const data = state.regionData[r.id];
+        return data ? Math.max(0, regionGWAtHour(data, hour, state.mode)) : 0;
+      });
+      const totalGW = gwByRegion.reduce((s, g) => s + g, 0);
+      if (totalGW <= 0.01) continue;
+
+      const dist = d3.geoDistance([rep.lon, rep.lat], center);
       if (dist > Math.PI / 2) continue;
-      const point = projection([region.lon, region.lat]);
+      const point = projection([rep.lon, rep.lat]);
       if (!point) continue;
 
       const visible = 1 - dist / (Math.PI / 2);
-      const color = getFuelColor(region.kind === "flare" ? "flare" : dominantFuel(region, data));
-      const weight = Math.sqrt(gw);
+      const weight = Math.sqrt(totalGW);
       const glowR = 4 + weight * 5;
       const coreR = 1.5 + weight * 0.8;
       const centreX = width / 2;
       const centreY = height / 2;
-      const solarAngle = d3.geoDistance([region.lon, region.lat], [sunLng, sunLat]);
+      const solarAngle = d3.geoDistance([rep.lon, rep.lat], [sunLng, sunLat]);
       const sunlit = Math.max(0, Math.cos(solarAngle));
       const sunDim = 0.6 + 0.4 * Math.max(0, sunlit);
+
+      // Dominant color for glow + core dot.
+      const repData = state.regionData[rep.id];
+      const domColor = getFuelColor(rep.kind === "flare" ? "flare" : dominantFuel(rep, repData));
 
       ctx.save();
       ctx.filter = "blur(4px)";
       ctx.globalAlpha = 0.45 * visible;
-      ctx.fillStyle = color;
+      ctx.fillStyle = domColor;
       ctx.beginPath();
       ctx.arc(point[0], point[1], glowR, 0, Math.PI * 2);
       ctx.fill();
@@ -274,38 +300,78 @@ export async function mountGlobe(canvas, initial) {
         dy /= len;
         const pillarH = 3 + weight * 48;
         const pillarW = 3;
-        const tipX = point[0] + dx * pillarH;
-        const tipY = point[1] + dy * pillarH;
-        const pillarGradient = ctx.createLinearGradient(point[0], point[1], tipX, tipY);
-        // Base of pillar (at the hotspot) used to be 0x66 = 40% alpha, which
-        // made the lower half of every spike fade out — pillars read as too
-        // dim across all three themes. Bump to a theme-scoped --pillar-base-alpha
-        // (sunfire/eclipse 0x99 ≈ 60%, vellum 0xee ≈ 93%) so each theme tunes its
-        // own pillar boldness against its own day-side gradient. globalAlpha is
-        // pinned to 1.0 so tips render at full token brightness.
-        pillarGradient.addColorStop(0, `${color}${tokens.pillarBaseAlpha}`);
-        pillarGradient.addColorStop(1, color);
-        ctx.strokeStyle = pillarGradient;
-        ctx.lineWidth = pillarW;
-        ctx.lineCap = "round";
-        ctx.globalAlpha = 1.0 * visible * sunDim;
-        ctx.beginPath();
-        ctx.moveTo(point[0], point[1]);
-        ctx.lineTo(tipX, tipY);
-        ctx.stroke();
 
-        ctx.save();
-        ctx.filter = "blur(3px)";
-        ctx.globalAlpha = 0.5 * visible * sunDim;
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(tipX, tipY, pillarW * 1.6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
+        if (group.length === 1) {
+          // Single-fuel pillar: same gradient style as before.
+          const tipX = point[0] + dx * pillarH;
+          const tipY = point[1] + dy * pillarH;
+          const pillarGradient = ctx.createLinearGradient(point[0], point[1], tipX, tipY);
+          pillarGradient.addColorStop(0, `${domColor}${tokens.pillarBaseAlpha}`);
+          pillarGradient.addColorStop(1, domColor);
+          ctx.strokeStyle = pillarGradient;
+          ctx.lineWidth = pillarW;
+          ctx.lineCap = "round";
+          ctx.globalAlpha = visible * sunDim;
+          ctx.beginPath();
+          ctx.moveTo(point[0], point[1]);
+          ctx.lineTo(tipX, tipY);
+          ctx.stroke();
+
+          ctx.save();
+          ctx.filter = "blur(3px)";
+          ctx.globalAlpha = 0.5 * visible * sunDim;
+          ctx.fillStyle = domColor;
+          ctx.beginPath();
+          ctx.arc(tipX, tipY, pillarW * 1.6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        } else {
+          // Stacked composite pillar: draw one segment per member, proportional to GW.
+          // Sort by GW descending so the largest fuel is at the base.
+          const segments = group
+            .map((r, i) => ({ region: r, gw: gwByRegion[i] }))
+            .filter((s) => s.gw > 0)
+            .sort((a, b) => b.gw - a.gw);
+          let segStart = 0;
+          for (const seg of segments) {
+            const segFrac = seg.gw / totalGW;
+            const segLen = pillarH * segFrac;
+            const segStartX = point[0] + dx * segStart;
+            const segStartY = point[1] + dy * segStart;
+            const segEndX = segStartX + dx * segLen;
+            const segEndY = segStartY + dy * segLen;
+            const segData = state.regionData[seg.region.id];
+            const segColor = getFuelColor(seg.region.kind === "flare" ? "flare" : dominantFuel(seg.region, segData));
+            const isBase = segStart === 0;
+            const isTip = segStart + segLen >= pillarH - 0.5;
+            const grad = ctx.createLinearGradient(segStartX, segStartY, segEndX, segEndY);
+            grad.addColorStop(0, isBase ? `${segColor}${tokens.pillarBaseAlpha}` : segColor);
+            grad.addColorStop(1, segColor);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = pillarW;
+            ctx.lineCap = isTip ? "round" : "butt";
+            ctx.globalAlpha = visible * sunDim;
+            ctx.beginPath();
+            ctx.moveTo(segStartX, segStartY);
+            ctx.lineTo(segEndX, segEndY);
+            ctx.stroke();
+            if (isTip) {
+              ctx.save();
+              ctx.filter = "blur(3px)";
+              ctx.globalAlpha = 0.5 * visible * sunDim;
+              ctx.fillStyle = segColor;
+              ctx.beginPath();
+              ctx.arc(segEndX, segEndY, pillarW * 1.6, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            }
+            segStart += segLen;
+          }
+        }
       }
 
       ctx.globalAlpha = visible;
-      ctx.fillStyle = color;
+      ctx.fillStyle = domColor;
       ctx.beginPath();
       ctx.arc(point[0], point[1], coreR, 0, Math.PI * 2);
       ctx.fill();
