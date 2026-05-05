@@ -1,16 +1,16 @@
-# Validation — ISO-NE (rest) (`iso-ne-rest`)
+# Validation — BPA Wind (`bpa-wind`)
 
-Last updated: 2026-05-04 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `iso-ne-rest`
+- **Region id:** `bpa-wind`
 - **Country:** USA
 - **Tier:** live
-- **Kind:** mixed
-- **Source:** EIA ISO-NE wind+solar (ex-ME/VT)
+- **Kind:** wind
+- **Source:** EIA BPA wind
 - **Source URL:** [https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data](https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Loader:** [`bpa.json.ts`](../../src/data/bpa.json.ts)
 - **Structural gap:** no
 
 ## Calibration
@@ -22,18 +22,18 @@ Last updated: 2026-05-04 · Sprint: S1 + HB integration · Paper section: Techni
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| 2024 | — | — | 0.002 | — | — |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** ISO-NE ~0.034 TWh renewable curtailment (2024 IMM) × 7% ex-ME/VT share
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
 
 ## Known limitations
 
@@ -41,8 +41,8 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_iso-ne-rest_*.parquet` (0 years)
+- Loader source: [`bpa.json.ts`](../../src/data/bpa.json.ts)
+- Backfill archive: `data/historical/backfill/*_bpa-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
