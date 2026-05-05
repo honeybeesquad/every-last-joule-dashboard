@@ -105,7 +105,6 @@ export function buildTurkeyPerFuelData(
       lastUpdated,
       lastSuccessAt: lastUpdated,
       sourceNote: noteStr + " — wind share",
-      ...(fuelShare ? { fuelShare } : {}),
     },
     solar: {
       regionId: "turkey-solar",
@@ -116,7 +115,6 @@ export function buildTurkeyPerFuelData(
       lastUpdated,
       lastSuccessAt: lastUpdated,
       sourceNote: noteStr + " — solar share",
-      ...(fuelShare ? { fuelShare } : {}),
     },
   };
 }
@@ -127,10 +125,16 @@ export function buildTurkeyData(
   sourceNote = "EPIAS Transparency dashboard realtime-generation wind+solar",
 ): RegionData {
   const { wind, solar } = buildTurkeyPerFuelData(response, sourceNote);
-  // Return combined for backward compat
-  const { points } = parseEpiasDashboard(response);
+  // Return combined for backward compat. The aggregate (mixed) variant
+  // legitimately carries fuelShare; per-fuel variants do not (per the
+  // pillar-base / colour invariant — see tests/fuel-attribution.test.ts).
+  const { points, windMwTotal, solarMwTotal } = parseEpiasDashboard(response);
   const lastUpdated = wind.lastUpdated;
   const fuelTotal = (wind.totalTWh + solar.totalTWh);
+  const denom = windMwTotal + solarMwTotal;
+  const fuelShare = denom > 0
+    ? { wind: windMwTotal / denom, solar: solarMwTotal / denom }
+    : undefined;
   return {
     regionId: "turkey",
     profile: timeOfDayAverageGW(points),
@@ -140,7 +144,7 @@ export function buildTurkeyData(
     lastUpdated,
     lastSuccessAt: lastUpdated,
     sourceNote: wind.sourceNote ?? sourceNote,
-    fuelShare: wind.fuelShare,
+    ...(fuelShare ? { fuelShare } : {}),
   };
 }
 

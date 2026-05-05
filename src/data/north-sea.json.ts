@@ -110,7 +110,6 @@ const run = async (): Promise<{ wind: RegionData; solar: RegionData }> => {
       lastUpdated,
       lastSuccessAt: lastUpdated,
       sourceNote: noteBase + " — wind share",
-      ...(fuelShare ? { fuelShare } : {}),
     },
     solar: {
       regionId: "north-sea-solar",
@@ -121,7 +120,6 @@ const run = async (): Promise<{ wind: RegionData; solar: RegionData }> => {
       lastUpdated,
       lastSuccessAt: lastUpdated,
       sourceNote: noteBase + " — solar share",
-      ...(fuelShare ? { fuelShare } : {}),
     },
   };
 };

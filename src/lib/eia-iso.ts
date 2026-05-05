@@ -66,14 +66,17 @@ export function adaptCachedAggregateToPerFuel(
 
   const agg = cached as RegionData;
   const note = ` [stale-cache: aggregate split via fallback adapter — replaced on next loader regen]`;
+  // Strip aggregate's fuelShare (a country/zone-level mix) when scaling
+  // down to a per-fuel slice. dominantFuel must derive from region.kind,
+  // not from a shared mix that would collapse all fuels to one colour.
+  const { fuelShare: _aggFuelShare, ...aggBase } = agg;
   const scale = (share: number, suffix: "wind" | "solar"): RegionData => ({
-    ...agg,
+    ...aggBase,
     regionId: `${regionId}-${suffix}`,
     profile: agg.profile.map((g) => g * share),
     latestProfile: agg.latestProfile ? agg.latestProfile.map((g) => g * share) : null,
     peakGW: (agg.peakGW ?? 0) * share,
     totalTWh: (agg.totalTWh ?? 0) * share,
-    fuelShare: fallbackSplit,
     sourceNote: `${agg.sourceNote ?? ""}${note}`,
   });
 
@@ -126,7 +129,6 @@ export function parseEiaIsoRegionPerFuel(
     lastUpdated: windLast,
     lastSuccessAt: windLast,
     sourceNote: `EIA ${config.respondent} wind × ${(config.windRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
-    fuelShare,
   };
 
   const solar: RegionData = {
@@ -138,7 +140,6 @@ export function parseEiaIsoRegionPerFuel(
     lastUpdated: solarLast,
     lastSuccessAt: solarLast,
     sourceNote: `EIA ${config.respondent} solar × ${(config.solarRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
-    fuelShare,
   };
 
   return { wind, solar };

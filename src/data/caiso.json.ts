@@ -66,7 +66,6 @@ export function parseCaisoPerFuel(
       lastUpdated: solarLast,
       lastSuccessAt: solarLast,
       sourceNote: `EIA CISO solar × ${(SOLAR_RATE * 100).toFixed(2)}% calibrated curtailment (CAISO 2024: 3.4 TWh / 80 TWh)`,
-      fuelShare,
     },
     wind: {
       regionId: "caiso-wind",
@@ -77,7 +76,6 @@ export function parseCaisoPerFuel(
       lastUpdated: windLast,
       lastSuccessAt: windLast,
       sourceNote: `EIA CISO wind × ${(WIND_RATE * 100).toFixed(1)}% calibrated curtailment (CAISO 2024: 0.5 TWh / 12 TWh)`,
-      fuelShare,
     },
   };
 }
@@ -164,7 +162,6 @@ export function parseCaisoOasisCurtailmentCsvPerFuel(
       lastUpdated: solarLast,
       lastSuccessAt: solarLast,
       sourceNote: `CAISO OASIS SLD_REN_CURTAIL direct (observed 30d split: solar ${(fuelShare.solar * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
-      fuelShare,
     },
     wind: {
       regionId: "caiso-wind",
@@ -175,7 +172,6 @@ export function parseCaisoOasisCurtailmentCsvPerFuel(
       lastUpdated: windLast,
       lastSuccessAt: windLast,
       sourceNote: `CAISO OASIS SLD_REN_CURTAIL direct (observed 30d split: solar ${(fuelShare.solar * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
-      fuelShare,
     },
   };
 }
