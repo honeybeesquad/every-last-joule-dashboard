@@ -32,7 +32,14 @@ describe("static regions", () => {
     // Phase 3a-v2 ENTSO-E per-fuel split (2026-05-05): 4 of the above Balkans/Baltics
     // countries moved from static to live per-fuel (bulgaria, luxembourg, moldova, croatia).
     // Canonical count: 83 - 4 = 79.
-    expect(Object.keys(data).length).toBe(79);
+    // Phase 4-A completionist Tier A (2026-05-05): +17 new T3-static countries
+    // (afghanistan, bahrain, belarus-wind, belarus-solar, brunei, haiti,
+    // kyrgyzstan, lebanon, libya, mali, niger, north-korea, singapore,
+    // syria, tajikistan, turkmenistan, yemen). Canonical count: 79 + 17 = 96.
+    expect(Object.keys(data).length).toBe(96);
+    // Non-canonical stays 49 since all 17 were already in STATIC_REGIONS
+    // (only belarus-wind and belarus-solar were added to STATIC_REGIONS here;
+    // all others pre-existed in Phase 2 research-pool entries that are now canonical).
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -53,8 +60,13 @@ describe("static regions", () => {
     // Phase 3a-v2 ENTSO-E per-fuel split (2026-05-05): 4 countries moved from
     // static to live (bulgaria, luxembourg, moldova, croatia). Canonical: 83 → 79.
     // Non-canonical: 128 - 79 = 49.
-    expect(Object.keys(researchData).length).toBe(128);
-    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(49);
+    // Phase 4-A: belarus-wind + belarus-solar added to STATIC_REGIONS (+2).
+    // Research pool: 128 + 2 = 130. Non-canonical: 130 - 96 = 34.
+    // (The other 15 Phase 4-A countries were already in STATIC_REGIONS
+    // but not in REGIONS — they moved from non-canonical to canonical here,
+    // so non-canonical dropped from 49 to 34.)
+    expect(Object.keys(researchData).length).toBe(130);
+    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(34);
   });
 
   it("includes all expected ids", () => {
@@ -129,6 +141,24 @@ describe("static regions", () => {
       "china-hebei",
       "china-heilongjiang",
       "china-jilin",
+      // Phase 4-A completionist Tier A (2026-05-05)
+      "afghanistan",
+      "bahrain",
+      "belarus-wind",
+      "belarus-solar",
+      "brunei",
+      "haiti",
+      "kyrgyzstan",
+      "lebanon",
+      "libya",
+      "mali",
+      "niger",
+      "north-korea",
+      "singapore",
+      "syria",
+      "tajikistan",
+      "turkmenistan",
+      "yemen",
     ];
     for (const id of expected) expect(data[id]).toBeDefined();
   });

@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (Phase 3c per-fuel split: +20 net regions. T1a +9 live, T2 +4 calibrated, T3 +7 static.)",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (Phase 4-A completionist Tier A: +17 T3-static regions, 16 new countries.)",
   "T1a": 152,
   "T1b": 9,
   "T1c": 1,
   "T2": 6,
   "T2-flare": 8,
-  "T3": 142,
-  "total": 318
+  "T3": 159,
+  "total": 335
 }

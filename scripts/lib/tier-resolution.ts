@@ -250,6 +250,25 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   laos: "solar",
   cambodia: "solar",
   myanmar: "solar",
+  // Phase 4-A completionist Tier A (2026-05-05): 17 new T3-static countries
+  // sourced from IRENA RCS 2025. hydro → mixed per T3 routing.
+  afghanistan: "solar",
+  bahrain: "solar",
+  "belarus-wind": "wind",
+  "belarus-solar": "solar",
+  brunei: "solar",
+  haiti: "solar",
+  kyrgyzstan: "mixed",
+  lebanon: "solar",
+  libya: "solar",
+  mali: "solar",
+  niger: "solar",
+  "north-korea": "solar",
+  singapore: "solar",
+  syria: "solar",
+  tajikistan: "mixed",
+  turkmenistan: "solar",
+  yemen: "solar",
 };
 
 /**

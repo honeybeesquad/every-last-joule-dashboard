@@ -88,7 +88,9 @@ describe("regions", () => {
     // Phase 3b, 9 mixed split into 18 single-fuel = +9, so 289 + 9 = 298.
     // Phase 3c (2026-05-05): 20 mixed regions split into per-fuel entries,
     // adding 20 net new regions. 298 + 20 = 318.
-    expect(REGIONS.length).toBe(318);
+    // Phase 4-A (2026-05-05): 16 new countries as T3-static regions (17 rows,
+    // including belarus-wind + belarus-solar split). 318 + 17 = 335.
+    expect(REGIONS.length).toBe(335);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -244,7 +246,8 @@ describe("regions", () => {
     // china-guizhou, china-chongqing, pakistan → wind/solar/hydro children).
     // Net: +11 T3 static. 137 + 11 = 148. (T3: removed 9 mixed, added 20 per-fuel)
     // Wait: 9 mixed removed, 20 per-fuel added = net +11. 137 + 11 = 148.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(148);
+    // Phase 4-A (2026-05-05): +17 T3-static regions. 148 + 17 = 165.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(165);
   });
 
   it("has 4 flare regions", () => {
