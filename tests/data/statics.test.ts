@@ -43,7 +43,13 @@ describe("static regions", () => {
     // somalia, south-sudan, sao-tome, seychelles, chad, east-timor, vanuatu, samoa).
     // All 26 were already in STATIC_REGIONS from prior research-pool additions.
     // Canonical count: 96 + 26 = 122.
-    expect(Object.keys(data).length).toBe(122);
+    // Phase 4-C completionist Tier C (2026-05-05): +19 new T3-static countries
+    // (andorra, liechtenstein, monaco, san-marino, antigua-and-barbuda, bahamas,
+    // belize, dominica, grenada, st-kitts-and-nevis, st-lucia, st-vincent, kiribati,
+    // marshall-islands, micronesia, nauru, palau, tonga, tuvalu).
+    // 8 of 19 were already in STATIC_REGIONS; 11 new entries added.
+    // Canonical count: 122 + 19 = 141.
+    expect(Object.keys(data).length).toBe(141);
     // Non-canonical stays 49 since all 17 were already in STATIC_REGIONS
     // (only belarus-wind and belarus-solar were added to STATIC_REGIONS here;
     // all others pre-existed in Phase 2 research-pool entries that are now canonical).
@@ -76,8 +82,13 @@ describe("static regions", () => {
     // 5 new entries added (lesotho, maldives, solomon-islands, sao-tome, samoa).
     // Research pool: 130 + 5 = 135. Canonical: 96 + 26 = 122.
     // Non-canonical: 135 - 122 = 13.
-    expect(Object.keys(researchData).length).toBe(135);
-    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(13);
+    // Phase 4-C: 8 of 19 already in STATIC_REGIONS; 11 new entries added
+    // (monaco, san-marino, antigua-and-barbuda, st-kitts-and-nevis, st-lucia,
+    // st-vincent, marshall-islands, micronesia, nauru, palau, tuvalu).
+    // Research pool: 135 + 11 = 146. Canonical: 122 + 19 = 141.
+    // Non-canonical: 146 - 141 = 5.
+    expect(Object.keys(researchData).length).toBe(146);
+    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(5);
   });
 
   it("includes all expected ids", () => {

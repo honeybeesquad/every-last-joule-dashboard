@@ -297,6 +297,29 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "east-timor": "solar",
   vanuatu: "solar",
   samoa: "solar",
+  // Phase 4-C completionist Tier C (2026-05-05): 19 new T3-static
+  // microstates/small-island states from IRENA RCS 2025.
+  // Small hydro grids (andorra, liechtenstein, belize) use "mixed" profileKind
+  // since they emit flat 24/7 profiles, routing to T3-modelled.
+  andorra: "mixed",
+  liechtenstein: "mixed",
+  monaco: "solar",
+  "san-marino": "solar",
+  "antigua-and-barbuda": "solar",
+  bahamas: "solar",
+  belize: "mixed",
+  dominica: "solar",
+  grenada: "solar",
+  "st-kitts-and-nevis": "solar",
+  "st-lucia": "solar",
+  "st-vincent": "solar",
+  kiribati: "solar",
+  "marshall-islands": "solar",
+  micronesia: "solar",
+  nauru: "solar",
+  palau: "solar",
+  tonga: "solar",
+  tuvalu: "solar",
 };
 
 /**
