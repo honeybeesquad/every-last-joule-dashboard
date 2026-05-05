@@ -2,12 +2,13 @@ import { describe, expect, it } from "vitest";
 import { buildNingxiaData } from "../../src/data/ningxia.json";
 
 describe("ningxia loader", () => {
-  it("returns balanced mixed fallback data", async () => {
+  it("returns per-fuel fallback data with wind and solar entries", async () => {
     const data = await buildNingxiaData();
-    expect(data.regionId).toBe("ningxia");
-    expect(data.profile).toHaveLength(24);
-    expect(data.totalTWh).toBeGreaterThan(0);
-    expect(data.fuelShare?.wind).toBeCloseTo(0.5, 2);
-    expect(data.fuelShare?.solar).toBeCloseTo(0.5, 2);
+    expect(data.wind.regionId).toBe("ningxia-wind");
+    expect(data.solar.regionId).toBe("ningxia-solar");
+    expect(data.wind.profile).toHaveLength(24);
+    expect(data.solar.profile).toHaveLength(24);
+    expect(data.wind.totalTWh).toBeCloseTo((0.5 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((0.5 * 30) / 365, 5);
   });
 });

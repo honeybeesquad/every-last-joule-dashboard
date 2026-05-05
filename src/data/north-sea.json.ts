@@ -19,13 +19,16 @@ interface AGWSResponse {
 
 export interface NorthSeaParsed {
   points: CurtailmentPoint[];
+  windPoints: CurtailmentPoint[];
+  solarPoints: CurtailmentPoint[];
   windMwTotal: number;
   solarMwTotal: number;
 }
 
 /** Pure parser: combines multiple 7-day response pages into calibrated CurtailmentPoints with per-fuel totals. */
 export function parseNorthSea(pages: AGWSResponse[]): NorthSeaParsed {
-  const totals = new Map<string, number>();
+  const windTotals = new Map<string, number>();
+  const solarTotals = new Map<string, number>();
   let windMwTotal = 0;
   let solarMwTotal = 0;
   const windTypes = new Set(["Wind Onshore", "Wind Offshore"]);
@@ -39,19 +42,36 @@ export function parseNorthSea(pages: AGWSResponse[]): NorthSeaParsed {
       if (!isWind && !isSolar) continue;
       const curtailedMw = quantity * CURTAILMENT_RATE;
       const timestamp = new Date(record.startTime).toISOString();
-      totals.set(timestamp, (totals.get(timestamp) ?? 0) + curtailedMw);
-      if (isWind) windMwTotal += curtailedMw;
-      else solarMwTotal += curtailedMw;
+      if (isWind) {
+        windTotals.set(timestamp, (windTotals.get(timestamp) ?? 0) + curtailedMw);
+        windMwTotal += curtailedMw;
+      } else {
+        solarTotals.set(timestamp, (solarTotals.get(timestamp) ?? 0) + curtailedMw);
+        solarMwTotal += curtailedMw;
+      }
     }
   }
 
-  const points = Array.from(totals.entries())
+  const windPoints = Array.from(windTotals.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
-  return { points, windMwTotal, solarMwTotal };
+
+  const solarPoints = Array.from(solarTotals.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
+
+  // Combined for backward compat
+  const combined = new Map<string, number>();
+  for (const p of windPoints) combined.set(p.utcTimestamp, (combined.get(p.utcTimestamp) ?? 0) + p.mw);
+  for (const p of solarPoints) combined.set(p.utcTimestamp, (combined.get(p.utcTimestamp) ?? 0) + p.mw);
+  const points = Array.from(combined.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
+
+  return { points, windPoints, solarPoints, windMwTotal, solarMwTotal };
 }
 
-const run = async (): Promise<RegionData> => {
+const run = async (): Promise<{ wind: RegionData; solar: RegionData }> => {
   const now = new Date();
   const pages: AGWSResponse[] = [];
 
@@ -68,31 +88,76 @@ const run = async (): Promise<RegionData> => {
     pages.push(page);
   }
 
-  const { points, windMwTotal, solarMwTotal } = parseNorthSea(pages);
+  const { windPoints, solarPoints, windMwTotal, solarMwTotal } = parseNorthSea(pages);
   const denom = windMwTotal + solarMwTotal;
   const fuelShare = denom > 0
     ? { wind: windMwTotal / denom, solar: solarMwTotal / denom }
     : undefined;
+
+  const lastUpdated = (windPoints.at(-1) ?? solarPoints.at(-1))?.utcTimestamp ?? new Date().toISOString();
+
+  const noteBase = fuelShare
+    ? `Elexon BMRS AGWS × 6.9% curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
+    : "Elexon BMRS AGWS × 6.9% calibrated curtailment rate (UK 2024 actuals: 6.6 TWh / 95 TWh)";
+
   return {
-    regionId: "north-sea",
-    profile: timeOfDayAverageGW(points),
-    latestProfile: latestCompleteUtcDayProfileGW(points),
-    totalTWh: totalTWh30d(points),
-    peakGW: peakGW(points),
-    lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote: fuelShare
-      ? `Elexon BMRS AGWS wind+solar × 6.9% curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
-      : "Elexon BMRS AGWS (wind + solar) × 6.9% calibrated curtailment rate (UK 2024 actuals: 6.6 TWh / 95 TWh)",
-    ...(fuelShare ? { fuelShare } : {}),
+    wind: {
+      regionId: "north-sea-wind",
+      profile: timeOfDayAverageGW(windPoints),
+      latestProfile: latestCompleteUtcDayProfileGW(windPoints),
+      totalTWh: totalTWh30d(windPoints),
+      peakGW: peakGW(windPoints),
+      lastUpdated,
+      lastSuccessAt: lastUpdated,
+      sourceNote: noteBase + " — wind share",
+      ...(fuelShare ? { fuelShare } : {}),
+    },
+    solar: {
+      regionId: "north-sea-solar",
+      profile: timeOfDayAverageGW(solarPoints),
+      latestProfile: latestCompleteUtcDayProfileGW(solarPoints),
+      totalTWh: totalTWh30d(solarPoints),
+      peakGW: peakGW(solarPoints),
+      lastUpdated,
+      lastSuccessAt: lastUpdated,
+      sourceNote: noteBase + " — solar share",
+      ...(fuelShare ? { fuelShare } : {}),
+    },
   };
 };
 
+function adaptCachedNorthSeaToPerFuel(
+  cached: { wind: RegionData; solar: RegionData } | RegionData,
+): { wind: RegionData; solar: RegionData } {
+  if (cached && "wind" in cached && "solar" in cached) {
+    return cached as { wind: RegionData; solar: RegionData };
+  }
+  const old = cached as RegionData;
+  const windShare = old.fuelShare?.wind ?? 0.85;
+  const solarShare = old.fuelShare?.solar ?? 0.15;
+  return {
+    wind: {
+      ...old,
+      regionId: "north-sea-wind",
+      totalTWh: old.totalTWh * windShare,
+      peakGW: old.peakGW * windShare,
+      sourceNote: (old.sourceNote ?? "") + " — wind share (adapted from cached aggregate)",
+    },
+    solar: {
+      ...old,
+      regionId: "north-sea-solar",
+      totalTWh: old.totalTWh * solarShare,
+      peakGW: old.peakGW * solarShare,
+      sourceNote: (old.sourceNote ?? "") + " — solar share (adapted from cached aggregate)",
+    },
+  };
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  withFallback<RegionData>("north-sea", run, {
+  withFallback<{ wind: RegionData; solar: RegionData }>("north-sea", run, {
     regionTier: "live" as const,
-    tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
-    tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+    tagLive: (r) => r,
+    tagCached: (c) => adaptCachedNorthSeaToPerFuel(c as { wind: RegionData; solar: RegionData } | RegionData),
   })
     .then((d) => process.stdout.write(JSON.stringify(d)))
     .catch((err) => {

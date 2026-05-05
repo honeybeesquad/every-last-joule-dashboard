@@ -2,14 +2,14 @@ import { describe, expect, it } from "vitest";
 import { buildChinaHunanData } from "../../src/data/china-hunan.json";
 
 describe("china-hunan loader", () => {
-  it("returns T3 mixed fallback data", async () => {
+  it("returns per-fuel fallback data — wind/solar/hydro", async () => {
     const data = await buildChinaHunanData();
-    expect(data.regionId).toBe("china-hunan");
-    expect(data.profile).toHaveLength(24);
-    expect(data.totalTWh).toBeCloseTo((1.9 * 30) / 365, 8);
-    expect(data.confidenceTier).toBe("T3-modelled");
-    expect(data.fuelShare?.wind).toBeCloseTo(0.5, 2);
-    expect(data.fuelShare?.solar).toBeCloseTo(0.3, 2);
-    expect(data.fuelShare?.hydro).toBeCloseTo(0.2, 2);
+    expect(data.wind.regionId).toBe("china-hunan-wind");
+    expect(data.solar.regionId).toBe("china-hunan-solar");
+    expect(data.hydro.regionId).toBe("china-hunan-hydro");
+    expect(data.wind.totalTWh).toBeCloseTo((1.9 * 0.5 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((1.9 * 0.3 * 30) / 365, 5);
+    expect(data.hydro.totalTWh).toBeCloseTo((1.9 * 0.2 * 30) / 365, 5);
+    expect(data.wind.confidenceTier).toBe("T3-modelled");
   });
 });

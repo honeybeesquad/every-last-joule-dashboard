@@ -2,12 +2,13 @@ import { describe, expect, it } from "vitest";
 import { buildGansuData } from "../../src/data/gansu.json";
 
 describe("gansu loader", () => {
-  it("returns mixed fallback data", async () => {
+  it("returns per-fuel fallback data with wind and solar entries", async () => {
     const data = await buildGansuData();
-    expect(data.regionId).toBe("gansu");
-    expect(data.profile).toHaveLength(24);
-    expect(data.totalTWh).toBeGreaterThan(0);
-    expect(data.fuelShare?.wind).toBeCloseTo(0.6, 2);
-    expect(data.fuelShare?.solar).toBeCloseTo(0.4, 2);
+    expect(data.wind.regionId).toBe("gansu-wind");
+    expect(data.solar.regionId).toBe("gansu-solar");
+    expect(data.wind.profile).toHaveLength(24);
+    expect(data.solar.profile).toHaveLength(24);
+    expect(data.wind.totalTWh).toBeCloseTo((1.8 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((1.2 * 30) / 365, 5);
   });
 });
