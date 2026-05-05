@@ -340,6 +340,7 @@ const regionData = {
   "luxembourg-solar": entsoe["luxembourg-solar"],
   "moldova-wind": entsoe["moldova-wind"],
   "moldova-solar": entsoe["moldova-solar"],
+  malta: entsoe.malta,
   montenegro: entsoe.montenegro,
   "north-macedonia-wind": entsoe["north-macedonia-wind"],
   "north-macedonia-solar": entsoe["north-macedonia-solar"],
