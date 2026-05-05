@@ -12,7 +12,8 @@ The global renewable build-out now curtails tens of terawatt-hours of
 clean electricity per year. Where, when, and how much that curtailed
 energy amounts to has not been synthesised across transmission-system
 operators at hourly resolution in a single open dataset. This work
-fills that gap across 241 regions spanning every inhabited continent.
+fills that gap across 380 regions in 195 countries — every UN
+member state — spanning every inhabited continent.
 
 ## Why this dataset exists (200 words)
 
@@ -44,22 +45,28 @@ regions where gas flaring is the dominant "wasted-energy" source.
 
 ## What the dataset contains (150 words)
 
-- **241 regions.** 106 in `T1a-live-tso` (own-jurisdiction
-  rate; ENTSO-E and EIA with ERCOT and CAISO sub-zones; AEMO
-  per-state; Elexon; ONS Brazil; RTE; Energinet; Elia; IESO;
-  AESO; EMI New Zealand; EPİAŞ Turkey; CEN Chile; ADME Uruguay; Nord Pool;
-  10 Japan utilities — Kyushu, Tohoku, Chugoku, Shikoku,
-  Hokkaido, Kansai, Chubu, TEPCO, Hokuriku, Okinawa;
-  5 India state SLDCs — Rajasthan, Gujarat, Tamil Nadu, Karnataka,
-  Andhra Pradesh; Maharashtra MSLDC); 6 in
-  `T1b-live-domestic-anchored` (live feed + domestic-stat-agency
-  or modelled-share rate: Italy-Sardinia, Italy-North-Zone,
-  Italy-Sicily, Netherlands, Baltics, Colombia XM);
-  1 in `T1c-live-neighbour-anchored` (Switzerland on the Czech
-  CEPS rate);   2 in `T2-annual-calibrated` (Austria APG, Russia
-  Murmansk); 8 flare regions (Permian, West Siberia, South Iraq,
-  East Saudi Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East
-  Siberia); 118 in `T3-modelled` (annual anchor + typical shape).
+- **380 regions across 195 countries.** 152 in `T1a-live-tso`
+  (own-jurisdiction rate; ENTSO-E and EIA with ERCOT and CAISO
+  sub-zones, split per-fuel where the upstream feed exposes wind
+  and solar separately; AEMO per-state; Elexon per-fuel; ONS
+  Brazil; RTE; Energinet; Elia; IESO; AESO; EMI New Zealand
+  per-fuel; EPİAŞ Turkey per-fuel; Statnett Norway per-fuel; CEN
+  Chile; ADME Uruguay; Nord Pool; Enemalta Malta; 10 Japan
+  utilities — Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai,
+  Chubu, TEPCO, Hokuriku, Okinawa; 5 India state SLDCs —
+  Rajasthan, Gujarat, Tamil Nadu, Karnataka, Andhra Pradesh;
+  Maharashtra MSLDC); 9 in `T1b-live-domestic-anchored` (live
+  feed + domestic-stat-agency or modelled-share rate, per-fuel
+  where applicable: Italy-Sardinia wind+solar, Italy-North-Zone
+  wind+solar, Italy-Sicily wind+solar, Netherlands wind+solar,
+  Colombia XM); 1 in `T1c-live-neighbour-anchored` (Switzerland
+  on the Czech CEPS rate); 6 in `T2-annual-calibrated` (Austria
+  APG, Russia Murmansk, and four Chinese hydro provinces — Hunan,
+  Hubei, Guizhou, Chongqing); 8 flare regions (Permian, West
+  Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia
+  Yamal-Nenets, Russia East Siberia); 204 in `T3-modelled`
+  (annual anchor + typical shape — covers every remaining UN
+  member state without a public live feed).
 - **Hourly resolution** for every live-feed region; hourly
   reconstruction backfilled to 2020-01-01 where upstream archives
   support it (2.59 M rows in `curtailment_backfill.parquet`).
@@ -76,7 +83,7 @@ The dataset is organised on two orthogonal axes (full taxonomy:
 
 | | `published` | `documented-gap` | `out-of-scope` |
 |---|---|---|---|
-| **`curtailment-renewable`** | 241 regions: live ENTSO-E/EIA/AEMO/Elexon/etc.; T2 calibrated; T3 modelled. | Mexico CENACE, parts of SE Asia, Iran solar… (see `docs/known-limitations.md`) | Antarctica, Vatican, Greenland (~all baseload thermal/diesel) |
+| **`curtailment-renewable`** | 380 regions across 195 countries: live ENTSO-E/EIA/AEMO/Elexon/etc.; T2 calibrated; T3 modelled. | Mexico CENACE, parts of SE Asia, Iran solar… (see `docs/known-limitations.md`) | Antarctica, Vatican, Greenland (~all baseload thermal/diesel) |
 | **`flare-associated-gas`** | 8 regions: Permian, West Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia. | Iran flaring (no GGFR-equivalent disaggregation). | Small flares < 1 Bcm/yr |
 
 Three aspects set this work apart:
@@ -162,7 +169,8 @@ Paulo, Mato Grosso, Goiás, Paraná, Rio Grande do Sul — and a catch-all
 NE-other bucket); per-utility area for Japan (10 TSO control areas:
 Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai, Chubu, TEPCO
 Power Grid, Hokuriku, Okinawa); and national grid for countries
-without public sub-national data. Total: 241 regions. Stable
+without public sub-national data. Total: 380 regions in 195
+countries — every UN member state. Stable
 kebab-case IDs defined in `src/lib/regions.ts`.
 
 **Time resolution.** Hourly UTC. Finer-cadence upstream feeds
@@ -765,31 +773,38 @@ The v1 recalibration roadmap is five concrete items listed in
 ## 4.5 Tier coverage visualisation (Figure 4)
 
 Figure 4 answers the single-glance question "where is the dataset
-strong and where is it weak?" at geographic scale. Each of the 241
+strong and where is it weak?" at geographic scale. Each of the 380
 regions renders as a tier-coloured dot:
 
-- **T1a-live-tso (106 regions, teal).** Live hourly feed + own-
-  jurisdiction calibration rate. Dense over North America, Europe,
-  the Nordics, Australia (AEMO five states), Brazil (eleven ONS
-  states), Norway (NO1–NO5), and the UK, plus AEMO WEM (WA-SWIS),
-  ten Japan utilities (Kyushu, Tohoku, Chugoku, Shikoku,
-  Hokkaido, Kansai, Chubu, TEPCO, Hokuriku, Okinawa), and six
-  India state SLDCs (Rajasthan, Gujarat, Tamil Nadu, Karnataka,
-  Andhra Pradesh, Maharashtra). The EIA + ENTSO-E + AEMO + ONS
-  quartet is the dataset's strongest spine.
-- **T1b-live-domestic-anchored (6 regions, teal).** Italy-Sardinia,
-  Italy-North-Zone, Italy-Sicily, Netherlands, Baltics, Colombia
-  (XM API) — live feeds paired with a domestic-stat-agency,
-  modelled-share, or national-anchor rate; ±50% empirical envelope.
+- **T1a-live-tso (152 regions, teal).** Live hourly feed + own-
+  jurisdiction calibration rate, split per-fuel (wind/solar)
+  where the upstream feed exposes generation by source. Dense
+  over North America (EIA + ERCOT + CAISO sub-zones, IESO,
+  AESO), Europe (ENTSO-E zones split per-fuel; Elexon GB
+  per-fuel; RTE; Energinet; Elia; Statnett Norway per-fuel; Nord
+  Pool; Enemalta Malta), the Nordics, Australia (AEMO five
+  states + AEMO WEM/WA-SWIS), Brazil (eleven ONS states),
+  Turkey (EPİAŞ per-fuel), New Zealand (EMI per-fuel), Chile
+  (CEN), Uruguay (ADME), ten Japan utilities, and six India
+  state SLDCs. The EIA + ENTSO-E + AEMO + ONS quartet is the
+  dataset's strongest spine.
+- **T1b-live-domestic-anchored (9 regions, teal).** Italy-
+  Sardinia (wind+solar), Italy-North-Zone (wind+solar),
+  Italy-Sicily (wind+solar), Netherlands (wind+solar), and
+  Colombia (XM API) — live feeds paired with a
+  domestic-stat-agency, modelled-share, or national-anchor rate;
+  ±50% empirical envelope.
 - **T1c-live-neighbour-anchored (1 region, teal).** Switzerland —
   Swissgrid live feed against the Czech CEPS rate as a neighbouring
   proxy; ±35.5% empirical envelope.
-- **T2-annual-calibrated (2 regions, amber).** Austria APG and
-  Russia Murmansk wind — both flat-base proxies built on a
+- **T2-annual-calibrated (6 regions, amber).** Austria APG,
+  Russia Murmansk wind, and four Chinese hydro provinces (Hunan,
+  Hubei, Guizhou, Chongqing) — flat-base proxies built on a
   published annual without diurnal modelling.
-- **T2 flare (4 regions, brown square).** Permian, West Siberia,
-  South Iraq, East Saudi — correctly flat 24/7 baseload.
-- **T3-modelled (114 regions, terracotta).** Static annual anchors
+- **T2 flare (8 regions, brown square).** Permian, West Siberia,
+  South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-
+  Nenets, Russia East Siberia — correctly flat 24/7 baseload.
+- **T3-modelled (204 regions, terracotta).** Static annual anchors
   (Ember, IRENA, regulator reports) combined with a typical diurnal
   or monthly-seasonal shape. Covers Ireland (Republic + Northern,
   EirGrid reachability probe scaled to the SONI/EirGrid 2024
@@ -845,8 +860,8 @@ rate-recalibrations that may promote T2 regions into the top tier.
 
 ## 4.8 Current-snapshot validation (Figure 1)
 
-Figure 1 is the geographic opening shot. 113 of 241 regions have
-a current peak-GW reading; the other 120 are static regions
+Figure 1 is the geographic opening shot. 110 of 380 regions have
+a current peak-GW reading; the remainder are static regions
 without a live fetch yet. Dot area scales with √peakGW so a 10 GW
 hotspot is roughly 3× the visible area of a 1 GW region. The
 top-8 regions by peak GW at render time are labelled; the
@@ -908,7 +923,7 @@ import pandas as pd
 
 # Seven-year backfill — 2.59M hourly rows, 29 T1 regions
 url = ("https://raw.githubusercontent.com/honeybeesquad/"
-       "every-last-joule-dashboard/v1.1.1/"
+       "every-last-joule-dashboard/v1.2.1/"
        "data/historical/curtailment_backfill.parquet")
 df = pd.read_parquet(url)
 
@@ -940,7 +955,7 @@ result = con.execute("""
 ```python
 import json, urllib.request
 url = ("https://raw.githubusercontent.com/honeybeesquad/"
-       "every-last-joule-dashboard/v1.1.1/"
+       "every-last-joule-dashboard/v1.2.1/"
        "data/snapshots/last-good/caiso.json")
 snap = json.load(urllib.request.urlopen(url))
 print(f"CAISO peak GW: {snap['peakGW']:.2f}  "
@@ -1018,15 +1033,15 @@ reporting systematically under-captures certain behaviours:
 ## 5.5 Recommended citation
 
 Machine-readable citation metadata: `dataset/CITATION.cff`.
-Zenodo-minted version DOI for v1.1.1: `10.5281/zenodo.19991315`.
+Zenodo-minted version DOI for v1.2.1: `<DOI-TBA-v1.2.1>`.
 Concept DOI (resolves to latest version): `10.5281/zenodo.19835411`.
 
 Preferred human citation:
 
 > Collins, S. (2026). Every Last Joule: an hourly synthesis of
 > renewable-electricity curtailment and associated-gas flaring
-> across 241 regions. Scientific Data.
-> https://doi.org/10.5281/zenodo.19991315
+> across 380 regions in 195 countries. Scientific Data.
+> https://doi.org/<DOI-TBA-v1.2.1>
 
 Cite the **version DOI** (not the concept DOI) when writing
 reproducible analyses; concept DOI is appropriate when citing
@@ -1100,8 +1115,8 @@ publicly available in the repository under an MIT licence
 
 - **Repository:**
   https://github.com/honeybeesquad/every-last-joule-dashboard
-- **Tagged release:** `v1.1.1` (matches the Zenodo-archived
-  DOI `10.5281/zenodo.19991315`).
+- **Tagged release:** `v1.2.1` (matches the Zenodo-archived
+  DOI `<DOI-TBA-v1.2.1>`).
 - **Languages:** TypeScript (Observable Framework data
   loaders), Python 3.12+ (historical backfill, validation,
   figure rendering).
@@ -1141,3 +1156,152 @@ the council-finding-S3 verifiable-reproducibility surface.
 **Scheduled builds** run via GitHub Actions (`.github/workflows/`)
 on a ~6-hour cadence, appending to the rolling Parquet history
 and overwriting the per-region JSON snapshots.
+# Figure captions — Scientific Data submission
+
+These are the journal-ready captions for the five figures that
+accompany the Every Last Joule curtailment dataset Data Descriptor.
+Each caption is self-contained: a reviewer or reader who only ever
+looks at the figures should understand what they see and what source
+produced it.
+
+Typography target: Scientific Data single-column width (≈ 88 mm) for
+captions ≤ 90 words, double-column (≈ 180 mm) for longer captions.
+Every caption ends with the source-data statement required by the
+journal's reporting guidelines.
+
+---
+
+## Figure 1
+
+**Global curtailment snapshot.** Per-region dots coloured by
+confidence tier (green-teal: live-feed sub-tiers — T1a-live-tso with
+own-jurisdiction rate and ±15% uncertainty, T1b-live-domestic-anchored
+with ±50% empirical, T1c-live-neighbour-anchored with ±35.5%
+empirical; amber: T2 annual-calibrated with ±20% uncertainty; brown
+square: T2-flare regions with 24/7 baseload shape; terracotta: T3
+typical-profile modelled with ±40% uncertainty). Dot area is scaled
+to √(peak GW) from the most recent snapshot, so a 10 GW hotspot is
+roughly 3× the visible area of a 1 GW region. The top-8 regions by
+peak GW are labelled inline; Brazil's wind-and-solar cluster
+dominates the current picture (Minas Gerais 4.4 GW [Southeast], Bahia
+4.4 GW, Rio Grande do Norte 2.8 GW, Piauí 2.7 GW [all Northeast]),
+followed by the US MISO footprint (1.8
+GW), Vietnam (1.7 GW), Germany (1.6 GW), and north India (1.5 GW).
+Reference legend inside the figure shows the size-to-GW scale. Source
+data: `src/lib/regions.ts` (n=380 regions across 195 countries)
+joined to `data/snapshots/last-good/*.json` (110 regions with
+live peak GW).
+Snapshot-dependent: the top-8 labels refresh each dashboard build.
+
+## Figure 2
+
+**Backfill reconstruction vs. published TSO annual curtailment,
+2023–2024.** Scatter of the 23 region-year pairs for which a public
+TSO / ISO / IMM / SoM annual curtailed-energy figure was extractable;
+x = published anchor (TWh), y = our HB backfill reconstruction (TWh).
+Both axes are logarithmic to span the ~3 orders of magnitude between
+the smallest (iso-ne, 0.034 TWh) and largest (Germany, 23 TWh)
+anchors. Error bars show each point's ±tier-fraction uncertainty
+envelope (±15% for T1a-live-tso, ±50% for T1b-live-domestic-anchored,
+±35.5% for T1c-live-neighbour-anchored). The shaded band is the
+±15% T1a target envelope; the soft amber band is ±50% for reference.
+Point colour encodes |Δ%|: green ≤ 15% (4/23), amber ≤ 50% (7/23),
+terracotta > 50% (12/23). Median |Δ%| across all pairs is 53.4%.
+Every material discrepancy (|Δ%| > 50%) is diagnosed in the
+per-region validation documents under
+`docs/validation/<region>.md` and surveyed at the dataset level in
+`docs/methodology/validation-discrepancies.md`. Source data:
+`data/historical/figure2_validation_scatter.csv`, built by
+`scripts/validation/figure2_data.py` from
+`data/historical/per_region_annual.parquet` and
+`scripts/validation/external-anchors.json`.
+
+## Figure 3
+
+**Daily global curtailment, 2020–2026.** Stacked area of daily total
+curtailed energy (GWh/day) summed across every region with an HB
+backfill partition, split by source platform: ENTSO-E Transparency
+Platform (teal, European zones) and EIA Hourly Electric Grid Monitor
+(terracotta, US ISOs). The navy overlay is the 30-day trailing
+rolling-mean total, smoothing the weekly/weather-driven daily chatter
+so the underlying growth trend is visible. Three dashed markers
+highlight regime changes referenced in the descriptor narrative: the
+COVID demand drop (March 2020), Germany's Redispatch 2.0 accounting
+switch (October 2021), and the post-IRA / post-RePowerEU solar-build
+acceleration (January 2023). The visible uplift after 2022 is the
+paper's headline empirical finding: curtailment scales super-linearly
+with solar deployment. Archive total: 320.7 TWh across 2,306 days.
+Source data: `data/historical/curtailment_backfill.parquet` (2.59 M
+hourly rows) collapsed to `data/historical/figure3_daily_global.csv`
+by `scripts/validation/figure3_temporal_trace.py`.
+
+## Figure 4
+
+**Per-region confidence tier assignment.** The same geographic base
+as Figure 1 with dot size held constant and tier colour carrying the
+full visual signal. Teal dots (n=152) are T1a-live-tso regions backed
+by hourly feeds + own-jurisdiction calibration rate and the 2020–2026
+HB backfill (±15% envelope), split per-fuel where the upstream feed
+exposes wind and solar separately. Teal dots (n=9) are T1b-live-
+domestic-anchored regions whose live feed pairs with a domestic-
+stat-agency or modelled-share rate (Italy-Sardinia wind+solar,
+Italy-North-Zone wind+solar, Italy-Sicily wind+solar, Netherlands
+wind+solar, Colombia; ±50% empirical). One teal dot (n=1) is T1c-
+live-neighbour-anchored — Switzerland, Swissgrid live feed against
+the Czech CEPS rate (±35.5% empirical). Amber dots (n=6) are T2
+annual-calibrated regions with a published annual anchor and a
+flat-shape proxy (Austria APG, Russia Murmansk wind, and four
+Chinese hydro provinces — Hunan, Hubei, Guizhou, Chongqing; ±20%).
+Brown squares (n=8) are T2-flare regions whose correct shape is
+24/7 baseload (Permian, West Siberia, South Iraq, East Saudi
+Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia).
+Terracotta dots (n=204) are T3 typical-profile modelled regions —
+static annual anchors combined with a typical diurnal/seasonal
+shape (solar cosine, wind broad-overnight, hydro monthly-seasonal,
+mixed fuel-share, geothermal-overnight). Total n=380 regions
+across 195 countries — every UN member state. The figure
+is the single-glance answer to "where is the dataset strong and
+where is it weak?" — T1 coverage is dense over North America, Europe,
+the Nordics, Australia, and Brazil, while large parts of South Asia,
+Africa, the Middle East, and Latin America sit at T3 (modelled
+shape on a published annual). Source data: `src/lib/regions.ts`.
+Tier mapping is identical to `src/lib/uncertainty.ts::deriveTier` by
+construction; counts emitted live by `scripts/tally-tiers.ts`.
+
+## Figure 5
+
+**Top-20 regions by mean annual curtailment, 2020–2026.** Small-
+multiple facet grid of the 20 highest-curtailment regions ranked by
+mean annual TWh across the 7-year backfill window. Each panel is a
+single region's annual trace with the 2024 headline TWh labelled
+inline; Y-axis autoscales per panel so continental-scale regions
+(Germany 9.4 TWh) and small ISOs (iso-ne 0.13 TWh) are both legible.
+Rank order is from the `data/historical/per_region_annual.parquet`
+rollup: Germany, Iberia, MISO, ERCOT-West, SPP, Norway NO2,
+ERCOT-East, CAISO lead. The figure supports the concentration thesis
+in the descriptor: the top 3 regions (Germany, Iberia, MISO) alone
+account for ~51% of the combined top-20 total across the backfill
+window. The partial-year
+downturn visible at 2026 in every panel is an artefact of the
+archive end-date, not a real curtailment decline. All 20 panels render in
+the live-feed teal in v0.5 — predominantly T1a-live-tso, with
+Italy-Sardinia, Italy-North-Zone, and Switzerland sitting at T1b/T1c
+where their bidding-zone calibration provenance applies; tier-colour
+infrastructure is in place for future rate revisions that may promote
+T2 regions into the top tier. Source data: `data/historical/per_region_annual.parquet`
+(n=203 rows, 29 regions × 7 years).
+
+---
+
+## Figure / methodology cross-reference
+
+For reviewers who want to chase the sources of each figure back to
+first principles:
+
+| Figure | Methodology anchor | Validation anchor |
+|---|---|---|
+| Fig 1 | `docs/methodology/uncertainty.md` (tier bands) | `docs/validation/<region>.md` (per-region) |
+| Fig 2 | `docs/methodology/historical-backfill.md` (Y-axis reconstruction) | `docs/methodology/validation-discrepancies.md` (gap survey) |
+| Fig 3 | `docs/methodology/historical-backfill.md` §"Rate application over time" | — (pure aggregation) |
+| Fig 4 | `docs/methodology/uncertainty.md` (tier definitions) | `scripts/build_annual_rollup.py::derive_tier` (code-level truth) |
+| Fig 5 | `docs/methodology/historical-backfill.md` (annual rollup) | `docs/methodology/validation-discrepancies.md` (why rates unchanged in v0.5) |

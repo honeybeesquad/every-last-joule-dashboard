@@ -12,7 +12,7 @@ import pandas as pd
 
 # Seven-year backfill — 2.59M hourly rows, 29 T1 regions
 url = ("https://raw.githubusercontent.com/honeybeesquad/"
-       "every-last-joule-dashboard/v1.1.1/"
+       "every-last-joule-dashboard/v1.2.1/"
        "data/historical/curtailment_backfill.parquet")
 df = pd.read_parquet(url)
 
@@ -44,7 +44,7 @@ result = con.execute("""
 ```python
 import json, urllib.request
 url = ("https://raw.githubusercontent.com/honeybeesquad/"
-       "every-last-joule-dashboard/v1.1.1/"
+       "every-last-joule-dashboard/v1.2.1/"
        "data/snapshots/last-good/caiso.json")
 snap = json.load(urllib.request.urlopen(url))
 print(f"CAISO peak GW: {snap['peakGW']:.2f}  "
@@ -122,15 +122,15 @@ reporting systematically under-captures certain behaviours:
 ## 5.5 Recommended citation
 
 Machine-readable citation metadata: `dataset/CITATION.cff`.
-Zenodo-minted version DOI for v1.1.1: `10.5281/zenodo.19991315`.
+Zenodo-minted version DOI for v1.2.1: `<DOI-TBA-v1.2.1>`.
 Concept DOI (resolves to latest version): `10.5281/zenodo.19835411`.
 
 Preferred human citation:
 
 > Collins, S. (2026). Every Last Joule: an hourly synthesis of
 > renewable-electricity curtailment and associated-gas flaring
-> across 241 regions. Scientific Data.
-> https://doi.org/10.5281/zenodo.19991315
+> across 380 regions in 195 countries. Scientific Data.
+> https://doi.org/<DOI-TBA-v1.2.1>
 
 Cite the **version DOI** (not the concept DOI) when writing
 reproducible analyses; concept DOI is appropriate when citing

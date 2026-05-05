@@ -145,31 +145,38 @@ The v1 recalibration roadmap is five concrete items listed in
 ## 4.5 Tier coverage visualisation (Figure 4)
 
 Figure 4 answers the single-glance question "where is the dataset
-strong and where is it weak?" at geographic scale. Each of the 241
+strong and where is it weak?" at geographic scale. Each of the 380
 regions renders as a tier-coloured dot:
 
-- **T1a-live-tso (106 regions, teal).** Live hourly feed + own-
-  jurisdiction calibration rate. Dense over North America, Europe,
-  the Nordics, Australia (AEMO five states), Brazil (eleven ONS
-  states), Norway (NO1–NO5), and the UK, plus AEMO WEM (WA-SWIS),
-  ten Japan utilities (Kyushu, Tohoku, Chugoku, Shikoku,
-  Hokkaido, Kansai, Chubu, TEPCO, Hokuriku, Okinawa), and six
-  India state SLDCs (Rajasthan, Gujarat, Tamil Nadu, Karnataka,
-  Andhra Pradesh, Maharashtra). The EIA + ENTSO-E + AEMO + ONS
-  quartet is the dataset's strongest spine.
-- **T1b-live-domestic-anchored (6 regions, teal).** Italy-Sardinia,
-  Italy-North-Zone, Italy-Sicily, Netherlands, Baltics, Colombia
-  (XM API) — live feeds paired with a domestic-stat-agency,
-  modelled-share, or national-anchor rate; ±50% empirical envelope.
+- **T1a-live-tso (152 regions, teal).** Live hourly feed + own-
+  jurisdiction calibration rate, split per-fuel (wind/solar)
+  where the upstream feed exposes generation by source. Dense
+  over North America (EIA + ERCOT + CAISO sub-zones, IESO,
+  AESO), Europe (ENTSO-E zones split per-fuel; Elexon GB
+  per-fuel; RTE; Energinet; Elia; Statnett Norway per-fuel; Nord
+  Pool; Enemalta Malta), the Nordics, Australia (AEMO five
+  states + AEMO WEM/WA-SWIS), Brazil (eleven ONS states),
+  Turkey (EPİAŞ per-fuel), New Zealand (EMI per-fuel), Chile
+  (CEN), Uruguay (ADME), ten Japan utilities, and six India
+  state SLDCs. The EIA + ENTSO-E + AEMO + ONS quartet is the
+  dataset's strongest spine.
+- **T1b-live-domestic-anchored (9 regions, teal).** Italy-
+  Sardinia (wind+solar), Italy-North-Zone (wind+solar),
+  Italy-Sicily (wind+solar), Netherlands (wind+solar), and
+  Colombia (XM API) — live feeds paired with a
+  domestic-stat-agency, modelled-share, or national-anchor rate;
+  ±50% empirical envelope.
 - **T1c-live-neighbour-anchored (1 region, teal).** Switzerland —
   Swissgrid live feed against the Czech CEPS rate as a neighbouring
   proxy; ±35.5% empirical envelope.
-- **T2-annual-calibrated (2 regions, amber).** Austria APG and
-  Russia Murmansk wind — both flat-base proxies built on a
+- **T2-annual-calibrated (6 regions, amber).** Austria APG,
+  Russia Murmansk wind, and four Chinese hydro provinces (Hunan,
+  Hubei, Guizhou, Chongqing) — flat-base proxies built on a
   published annual without diurnal modelling.
-- **T2 flare (4 regions, brown square).** Permian, West Siberia,
-  South Iraq, East Saudi — correctly flat 24/7 baseload.
-- **T3-modelled (114 regions, terracotta).** Static annual anchors
+- **T2 flare (8 regions, brown square).** Permian, West Siberia,
+  South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-
+  Nenets, Russia East Siberia — correctly flat 24/7 baseload.
+- **T3-modelled (204 regions, terracotta).** Static annual anchors
   (Ember, IRENA, regulator reports) combined with a typical diurnal
   or monthly-seasonal shape. Covers Ireland (Republic + Northern,
   EirGrid reachability probe scaled to the SONI/EirGrid 2024
@@ -225,8 +232,8 @@ rate-recalibrations that may promote T2 regions into the top tier.
 
 ## 4.8 Current-snapshot validation (Figure 1)
 
-Figure 1 is the geographic opening shot. 113 of 241 regions have
-a current peak-GW reading; the other 120 are static regions
+Figure 1 is the geographic opening shot. 110 of 380 regions have
+a current peak-GW reading; the remainder are static regions
 without a live fetch yet. Dot area scales with √peakGW so a 10 GW
 hotspot is roughly 3× the visible area of a 1 GW region. The
 top-8 regions by peak GW at render time are labelled; the

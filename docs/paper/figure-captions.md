@@ -30,8 +30,9 @@ dominates the current picture (Minas Gerais 4.4 GW [Southeast], Bahia
 followed by the US MISO footprint (1.8
 GW), Vietnam (1.7 GW), Germany (1.6 GW), and north India (1.5 GW).
 Reference legend inside the figure shows the size-to-GW scale. Source
-data: `src/lib/regions.ts` (n=241 regions) joined to
-`data/snapshots/last-good/*.json` (113 regions with live peak GW).
+data: `src/lib/regions.ts` (n=380 regions across 195 countries)
+joined to `data/snapshots/last-good/*.json` (110 regions with
+live peak GW).
 Snapshot-dependent: the top-8 labels refresh each dashboard build.
 
 ## Figure 2
@@ -80,22 +81,27 @@ by `scripts/validation/figure3_temporal_trace.py`.
 
 **Per-region confidence tier assignment.** The same geographic base
 as Figure 1 with dot size held constant and tier colour carrying the
-full visual signal. Teal dots (n=106) are T1a-live-tso regions backed
+full visual signal. Teal dots (n=152) are T1a-live-tso regions backed
 by hourly feeds + own-jurisdiction calibration rate and the 2020–2026
-HB backfill (±15% envelope). Teal dots (n=6) are T1b-live-domestic-
-anchored regions whose live feed pairs with a domestic-stat-agency
-or modelled-share rate (Italy-Sardinia, Italy-North-Zone, Italy-Sicily,
-Netherlands, Baltics, Colombia; ±50% empirical). One teal dot (n=1) is T1c-live-neighbour-
-anchored — Switzerland, Swissgrid live feed against the Czech CEPS
-rate (±35.5% empirical). Amber dots (n=2) are T2 annual-calibrated
-regions with a published annual anchor and a flat-shape proxy
-(Austria APG, Russia Murmansk wind; ±20%). Brown squares (n=4) are
-T2-flare regions whose correct shape is 24/7 baseload (Permian, West
-Siberia, South Iraq, East Saudi). Terracotta dots (n=114) are T3
-typical-profile modelled regions — static annual anchors combined
-with a typical diurnal/seasonal shape (solar cosine, wind
-broad-overnight, hydro monthly-seasonal, mixed fuel-share,
-geothermal-overnight). Total n=241 regions. The figure
+HB backfill (±15% envelope), split per-fuel where the upstream feed
+exposes wind and solar separately. Teal dots (n=9) are T1b-live-
+domestic-anchored regions whose live feed pairs with a domestic-
+stat-agency or modelled-share rate (Italy-Sardinia wind+solar,
+Italy-North-Zone wind+solar, Italy-Sicily wind+solar, Netherlands
+wind+solar, Colombia; ±50% empirical). One teal dot (n=1) is T1c-
+live-neighbour-anchored — Switzerland, Swissgrid live feed against
+the Czech CEPS rate (±35.5% empirical). Amber dots (n=6) are T2
+annual-calibrated regions with a published annual anchor and a
+flat-shape proxy (Austria APG, Russia Murmansk wind, and four
+Chinese hydro provinces — Hunan, Hubei, Guizhou, Chongqing; ±20%).
+Brown squares (n=8) are T2-flare regions whose correct shape is
+24/7 baseload (Permian, West Siberia, South Iraq, East Saudi
+Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia).
+Terracotta dots (n=204) are T3 typical-profile modelled regions —
+static annual anchors combined with a typical diurnal/seasonal
+shape (solar cosine, wind broad-overnight, hydro monthly-seasonal,
+mixed fuel-share, geothermal-overnight). Total n=380 regions
+across 195 countries — every UN member state. The figure
 is the single-glance answer to "where is the dataset strong and
 where is it weak?" — T1 coverage is dense over North America, Europe,
 the Nordics, Australia, and Brazil, while large parts of South Asia,

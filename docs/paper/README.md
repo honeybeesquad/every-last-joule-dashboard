@@ -78,10 +78,13 @@ The sections above are **first drafts** suitable for:
 Zenodo DOI history: v1.0.0 minted 2026-04-27
 (`10.5281/zenodo.19835566`), v1.1.0 minted 2026-05-01
 (`10.5281/zenodo.19932977`, stale 202-region content), v1.1.1
-minted 2026-05-03 (`10.5281/zenodo.19991315`, canonical 241-region
-state). Concept DOI `10.5281/zenodo.19835411` resolves to latest.
-Cite version DOI `10.5281/zenodo.19991315` in the paper. Any
-remaining `<id>` or "TBA" tokens are bugs to flag.
+minted 2026-05-03 (`10.5281/zenodo.19991315`, 241-region state),
+v1.2.1 minted 2026-05-05 (`<DOI-TBA-v1.2.1>`, canonical
+380-region / 195-country state — every UN member). Concept DOI
+`10.5281/zenodo.19835411` resolves to latest. Cite version DOI
+`<DOI-TBA-v1.2.1>` in the paper. Any remaining `<id>` or "TBA"
+tokens are bugs to flag — the v1.2.1 DOI placeholder is the one
+deliberate exception until Zenodo upload completes.
 
 ## Assembly for submission
 
