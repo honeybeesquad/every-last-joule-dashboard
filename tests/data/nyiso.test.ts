@@ -20,6 +20,7 @@ describe("nyiso parser (EIA proxy)", () => {
     expect(result.solar.peakGW).toBeCloseTo(Math.max(...result.solar.profile), 3);
     expect(result.wind.totalTWh).toBeGreaterThanOrEqual(0);
     expect(result.solar.totalTWh).toBeGreaterThanOrEqual(0);
-    expect((result.wind.fuelShare?.wind ?? 0) + (result.wind.fuelShare?.solar ?? 0)).toBeCloseTo(1, 6);
+    expect(result.wind.fuelShare).toBeUndefined();
+    expect(result.solar.fuelShare).toBeUndefined();
   });
 });

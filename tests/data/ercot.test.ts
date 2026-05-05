@@ -58,4 +58,14 @@ describe("ercot parser (EIA proxy)", () => {
     expect(result["ercot-west-wind"].sourceNote).toContain("66%");
     expect(result["ercot-east-wind"].sourceNote).toContain("34%");
   });
+
+  it("does not attach a country-level fuelShare to per-fuel regions", () => {
+    // Per-fuel regions must derive colour/attribution from region.kind, not
+    // from a shared country mix — see tests/fuel-attribution.test.ts.
+    const result = parseErcotPerFuel(fixture);
+    expect(result["ercot-west-wind"].fuelShare).toBeUndefined();
+    expect(result["ercot-west-solar"].fuelShare).toBeUndefined();
+    expect(result["ercot-east-wind"].fuelShare).toBeUndefined();
+    expect(result["ercot-east-solar"].fuelShare).toBeUndefined();
+  });
 });

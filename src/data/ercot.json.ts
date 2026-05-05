@@ -72,7 +72,6 @@ export function parseErcotPerFuel(
       lastUpdated: windWestLast,
       lastSuccessAt: windWestLast,
       sourceNote: `EIA ERCO wind × ${(WIND_RATE * 100).toFixed(2)}% calibrated curtailment, illustrative 66% West/Panhandle split`,
-      fuelShare,
     },
     "ercot-west-solar": {
       regionId: "ercot-west-solar",
@@ -83,7 +82,6 @@ export function parseErcotPerFuel(
       lastUpdated: solarWestLast,
       lastSuccessAt: solarWestLast,
       sourceNote: `EIA ERCO solar × ${(SOLAR_RATE * 100).toFixed(1)}% calibrated curtailment, illustrative 66% West/Panhandle split`,
-      fuelShare,
     },
     "ercot-east-wind": {
       regionId: "ercot-east-wind",
@@ -94,7 +92,6 @@ export function parseErcotPerFuel(
       lastUpdated: windEastLast,
       lastSuccessAt: windEastLast,
       sourceNote: `EIA ERCO wind × ${(WIND_RATE * 100).toFixed(2)}% calibrated curtailment, illustrative 34% East/Central split`,
-      fuelShare,
     },
     "ercot-east-solar": {
       regionId: "ercot-east-solar",
@@ -105,7 +102,6 @@ export function parseErcotPerFuel(
       lastUpdated: solarEastLast,
       lastSuccessAt: solarEastLast,
       sourceNote: `EIA ERCO solar × ${(SOLAR_RATE * 100).toFixed(1)}% calibrated curtailment, illustrative 34% East/Central split`,
-      fuelShare,
     },
   };
 }
@@ -171,14 +167,16 @@ function adaptErcotCache(cached: unknown): ErcotPerFuel {
     base: RegionData,
     zoneId: "ercot-east" | "ercot-west",
   ) => {
+    // Strip any aggregate fuelShare from the base when scaling to a per-fuel
+    // slice — see eia-iso.ts adapter for the rationale.
+    const { fuelShare: _baseFuelShare, ...baseStripped } = base;
     const make = (share: number, fuel: "wind" | "solar"): RegionData => ({
-      ...base,
+      ...baseStripped,
       regionId: `${zoneId}-${fuel}`,
       profile: base.profile.map((g) => g * share),
       latestProfile: base.latestProfile ? base.latestProfile.map((g) => g * share) : null,
       peakGW: (base.peakGW ?? 0) * share,
       totalTWh: (base.totalTWh ?? 0) * share,
-      fuelShare: split,
       sourceNote: `${base.sourceNote ?? ""}${note}`,
     });
     return { wind: make(split.wind, "wind"), solar: make(split.solar, "solar") };

@@ -44,6 +44,14 @@ describe("caiso parser (EIA proxy)", () => {
     expect(result.wind.sourceNote).toContain("4.2");
   });
 
+  it("does not attach a country-level fuelShare to per-fuel regions", () => {
+    // Per-fuel regions must derive colour/attribution from region.kind, not
+    // from a shared country mix — see tests/fuel-attribution.test.ts.
+    const result = parseCaisoPerFuel(fixture);
+    expect(result.wind.fuelShare).toBeUndefined();
+    expect(result.solar.fuelShare).toBeUndefined();
+  });
+
   it("applies the correct per-fuel rates", () => {
     const result = parseCaisoPerFuel(fixture);
     const fixtureData = fixture.response.data as Array<{ value: string }>;
