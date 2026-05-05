@@ -92,7 +92,9 @@ describe("regions", () => {
     // including belarus-wind + belarus-solar split). 318 + 17 = 335.
     // Phase 4-B (2026-05-05): 26 new countries as T3-static regions.
     // 335 + 26 = 361.
-    expect(REGIONS.length).toBe(361);
+    // Phase 4-C (2026-05-05): 19 new microstates/small-island states as T3-static.
+    // 361 + 19 = 380.
+    expect(REGIONS.length).toBe(380);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -250,7 +252,8 @@ describe("regions", () => {
     // Wait: 9 mixed removed, 20 per-fuel added = net +11. 137 + 11 = 148.
     // Phase 4-A (2026-05-05): +17 T3-static regions. 148 + 17 = 165.
     // Phase 4-B (2026-05-05): +26 T3-static regions. 165 + 26 = 191.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(191);
+    // Phase 4-C (2026-05-05): +19 T3-static regions. 191 + 19 = 210.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(210);
   });
 
   it("has 4 flare regions", () => {

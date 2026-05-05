@@ -234,11 +234,19 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // TWh anchor with proper bimodal hydro-seasonal shape.
   dominica: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Dominica 2024 (DOMLEC; hydro+solar+geothermal)", reportDate: "2024" },
   grenada: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 12.0, source: "GRENLEC solar+oil; IRENA Grenada 2024", reportDate: "2024" },
+  // Phase 4-C: Caribbean microstates (near bahamas / dominica / grenada)
+  "antigua-and-barbuda": { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 16.1, source: "IRENA RCS 2025 / APUA (~10 MW PV + diesel; island grid)", reportDate: "2024" },
+  "st-kitts-and-nevis": { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 16.1, source: "IRENA RCS 2025 / NEVLEC/SKELEC (~5 MW PV + diesel; geothermal in development)", reportDate: "2024" },
+  "st-lucia": { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 16.1, source: "IRENA RCS 2025 / LUCELEC (~10 MW PV + diesel; island grid)", reportDate: "2024" },
+  "st-vincent": { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 16.1, source: "IRENA RCS 2025 / VINLEC (~3 MW PV + hydro + diesel)", reportDate: "2024" },
   haiti: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 12.0, source: "IRENA Haiti 2024 (EDH); severe load-shed; solar+hydro; small grid)", reportDate: "2024" },
   venezuela: { annualTWh: 0.5, kind: "wind", source: "IRENA Venezuela 2024 (CORPOELEC); Paraguaná wind farm ~100 MW; grid distress)", reportDate: "2024" },
   // --- EUROPE (9 new) ---
   andorra: { annualTWh: 0.01, kind: "hydro", source: "IRENA Andorra 2024 (FEDA); hydro+pumped storage; small high-altitude grid)", reportDate: "2024" },
   liechtenstein: { annualTWh: 0.01, kind: "hydro", source: "IRENA Liechtenstein 2024 (LFV); Alpine hydro+pumped storage; import-dependent)", reportDate: "2024" },
+  // Phase 4-C: European microstates (near andorra / liechtenstein)
+  monaco: { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 11.5, source: "IRENA RCS 2025 / Monaco (~5 MW distributed rooftop PV; effectively part of French grid)", reportDate: "2024" },
+  "san-marino": { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 11.2, source: "IRENA RCS 2025 / AASS San Marino (~25 MW solar; effectively part of Italian grid)", reportDate: "2024" },
   malta: { annualTWh: 0.03, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Malta 2024 (ENEMalta); gas+solar; EU island state)", reportDate: "2024" },
   moldova: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Moldova 2024 (Moldelectrica); solar+gas; ENTSO-E continental sync 2022)", reportDate: "2024" },
   // Reverted from ENTSO-E live T1a (2026-04-28): no verifiable A75 published
@@ -288,6 +296,12 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   tonga: { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 12.5, source: "IRENA Tonga 2024 (TPL); solar+diesel+pumped hydro; Pacific island)", reportDate: "2024" },
   "solomon-islands": { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 1.3, source: "IRENA RCS 2025 / SIEA (~5 MW PV + diesel; Pacific island grid)", reportDate: "2024" },
   samoa: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 23.5, source: "IRENA RCS 2025 / EPC Samoa (~25 MW solar + hydro; Pacific island grid)", reportDate: "2024" },
+  // Phase 4-C: Pacific microstates (near kiribati / tonga)
+  "marshall-islands": { annualTWh: 0.002, kind: "solar", localSolarPeakUTC: 0.6, source: "IRENA RCS 2025 / MEC (~5 MW PV + diesel; atoll grid)", reportDate: "2024" },
+  micronesia: { annualTWh: 0.002, kind: "solar", localSolarPeakUTC: 1.5, source: "IRENA RCS 2025 / CPUC (~3 MW PV + diesel; island grid)", reportDate: "2024" },
+  nauru: { annualTWh: 0.001, kind: "solar", localSolarPeakUTC: 0.9, source: "IRENA RCS 2025 / NUC (~1 MW PV + diesel; micro-grid)", reportDate: "2024" },
+  palau: { annualTWh: 0.002, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA RCS 2025 / PPUC (~5 MW PV + diesel; island grid)", reportDate: "2024" },
+  tuvalu: { annualTWh: 0.001, kind: "solar", localSolarPeakUTC: 0.1, source: "IRENA RCS 2025 / TEWAO (~1 MW PV + diesel; atoll micro-grid)", reportDate: "2024" },
   // --- AFRICA (23 new) ---
   burundi: { annualTWh: 0.05, kind: "hydro", source: "IRENA Burundi 2024 (REGIDECO); hydro+thermal; small grid; NELS", reportDate: "2024" },
   "central-african-republic": { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 7.0, source: "IRENA CAR 2024 (ENERCA); hydro+solar+diesel; post-conflict small grid)", reportDate: "2024" },
