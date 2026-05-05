@@ -117,7 +117,9 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   // is wind-dominant; the all-island DD is split ROI 58% / NI 42% per
   // the SONI/EirGrid 2024 annual constraint+curtailment anchor.
   "ireland-republic": "wind",
+  "ireland-republic-solar": "solar",
   "northern-ireland": "wind",
+  "northern-ireland-solar": "solar",
   israel: "solar",
   // Japan W1 per-utility loaders (2026-05-02). All live loaders; entries here
   // are fallback profileKind values used only if the live CSV is inaccessible.

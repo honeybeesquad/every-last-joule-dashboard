@@ -156,8 +156,12 @@ function buildRegion(
   share: number,
   lastUpdated: string,
   sourceNote: string,
+  solarFactor?: number,
 ): RegionData {
-  const points = allIslandPoints.map((point) => ({ ...point, mw: point.mw * share }));
+  const points = allIslandPoints.map((point) => ({
+    ...point,
+    mw: point.mw * share * (solarFactor ?? 1),
+  }));
   const base: RegionData = {
     regionId,
     profile: timeOfDayAverageGW(points),
@@ -179,12 +183,16 @@ const run = async (): Promise<Record<string, RegionData>> => {
   const points = trailingPoints(parseEirgridDispatchDownWorkbook(await response.arrayBuffer()));
   if (points.length === 0) throw new Error("EirGrid DD workbook contained no dispatch-down points");
   const lastUpdated = points.at(-1)!.utcTimestamp;
-  const note =
+  const windNote =
     `EirGrid/SONI DD half-hourly workbook (${meta.dispatchDownWorkbookUrl}); all-island dispatch-down split ROI ${Math.round(REPUBLIC_SHARE * 100)}% / NI ${Math.round(NORTHERN_IRELAND_SHARE * 100)}% per SONI/EirGrid 2024 annual renewable constraint and curtailment anchor.`;
+  const solarNote =
+    `EirGrid/SONI DD half-hourly workbook (${meta.dispatchDownWorkbookUrl}); solar curtailment estimated via domestic-share fallback (IRENA 2024: ~3% solar share of all-island VRE). Per-fuel split not available from SONI workbook; same DD-hours applied as wind.`;
 
   return {
-    "ireland-republic": buildRegion("ireland-republic", points, REPUBLIC_SHARE, lastUpdated, note),
-    "northern-ireland": buildRegion("northern-ireland", points, NORTHERN_IRELAND_SHARE, lastUpdated, note),
+    "ireland-republic-wind": buildRegion("ireland-republic-wind", points, REPUBLIC_SHARE, lastUpdated, windNote),
+    "ireland-republic-solar": buildRegion("ireland-republic-solar", points, REPUBLIC_SHARE, lastUpdated, solarNote, 0.03),
+    "northern-ireland-wind": buildRegion("northern-ireland-wind", points, NORTHERN_IRELAND_SHARE, lastUpdated, windNote),
+    "northern-ireland-solar": buildRegion("northern-ireland-solar", points, NORTHERN_IRELAND_SHARE, lastUpdated, solarNote, 0.03),
   };
 };
 

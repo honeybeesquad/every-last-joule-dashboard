@@ -1,17 +1,17 @@
-# Validation — Kiribati (`kiribati`)
+# Validation — Northern Ireland Solar (`northern-ireland-solar`)
 
 Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `kiribati`
-- **Country:** KIR
-- **Tier:** static
+- **Region id:** `northern-ireland-solar`
+- **Country:** GBR
+- **Tier:** live
 - **Kind:** solar
-- **Source:** IRENA RCS 2025 / UTT (~2 MW PV + diesel; atoll islands)
-- **Source URL:** [https://www.irena.org/Data/Downloads/IRENASTAT](https://www.irena.org/Data/Downloads/IRENASTAT)
+- **Source:** EirGrid/SONI DD half-hourly workbook (NI 42% solar share fallback)
+- **Source URL:** [https://www.eirgrid.ie/grid/system-and-renewable-data-reports](https://www.eirgrid.ie/grid/system-and-renewable-data-reports)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,12 +37,12 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-T3 static region. Annual anchor from IRENA with typical-day profile. See `docs/known-limitations.md`.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_kiribati_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_northern-ireland-solar_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

@@ -47,7 +47,8 @@ export const REGIONS: Region[] = [
   { id: "portugal-solar",  name: "Portugal Solar", country: "PRT", lat: 39.5, lon:   -8.0, tier: "live", kind: "solar", source: "ENTSO-E REN solar", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "germany-wind",    name: "Germany Wind",   country: "DEU", lat: 52.5, lon:   10.5, tier: "live", kind: "wind",  source: "ENTSO-E BNetzA/SMARD wind", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "germany-solar",   name: "Germany Solar",  country: "DEU", lat: 52.5, lon:   10.5, tier: "live", kind: "solar", source: "ENTSO-E BNetzA/SMARD solar", sourceUrl: "https://transparency.entsoe.eu/" },
-  { id: "finland",         name: "Finland",        country: "FIN", lat: 62.0, lon:   25.0, tier: "live", kind: "wind",  source: "ENTSO-E", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "finland-wind",    name: "Finland Wind",  country: "FIN", lat: 62.0, lon:   25.0, tier: "live", kind: "wind",  source: "ENTSO-E A75 FI B19 wind", sourceUrl: "https://transparency.entsoe.eu/" },
+  { id: "finland-solar",   name: "Finland Solar", country: "FIN", lat: 62.0, lon:   25.0, tier: "live", kind: "solar", source: "ENTSO-E A75 FI B16 solar", sourceUrl: "https://transparency.entsoe.eu/" },
   { id: "france-wind",     name: "France Wind",    country: "FRA", lat: 46.5, lon:    2.5, tier: "live", kind: "wind",  source: "RTE eco2mix wind", sourceUrl: "https://odre.opendatasoft.com/" },
   { id: "france-solar",    name: "France Solar",   country: "FRA", lat: 46.5, lon:    2.5, tier: "live", kind: "solar", source: "RTE eco2mix solar", sourceUrl: "https://odre.opendatasoft.com/" },
   { id: "netherlands-wind", name: "Netherlands Wind", country: "NLD", lat: 52.2, lon: 5.3, tier: "live-domestic-anchored", kind: "wind", source: "ENTSO-E IEEFA 2024 wind", sourceUrl: "https://transparency.entsoe.eu/" },
@@ -174,9 +175,12 @@ export const REGIONS: Region[] = [
   { id: "alberta-solar",    name: "Alberta Solar",   country: "CAN", lat: 51.0, lon: -113.5, tier: "live", kind: "solar", source: "AESO solar snapshot", sourceUrl: "http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet" },
   // Ireland loader emits both children from one EirGrid/SONI DD half-hourly
   // workbook fetch. The all-island half-hourly DD feed is split 58/42 using
-  // the 2024 annual ROI/NI anchor.
-  { id: "ireland-republic", name: "Ireland (Republic)",  country: "IRL", lat: 53.3, lon:   -7.8, tier: "live", kind: "wind",  source: "EirGrid/SONI DD half-hourly workbook (ROI 58% of all-island DD)", sourceUrl: "https://www.eirgrid.ie/grid/system-and-renewable-data-reports" },
-  { id: "northern-ireland", name: "Northern Ireland",    country: "GBR", lat: 54.65, lon:  -6.65, tier: "live", kind: "wind",  source: "EirGrid/SONI DD half-hourly workbook (NI 42% of all-island DD)", sourceUrl: "https://www.eirgrid.ie/grid/system-and-renewable-data-reports" },
+  // the 2024 annual ROI/NI anchor. Per-fuel split: wind uses full DD data;
+  // solar uses domestic-share fallback (IRENA 2024 ~3% solar share of all-island VRE).
+  { id: "ireland-republic-wind", name: "Ireland (Republic) Wind",  country: "IRL", lat: 53.3, lon:   -7.8, tier: "live", kind: "wind",  source: "EirGrid/SONI DD half-hourly workbook (ROI 58% of all-island DD)", sourceUrl: "https://www.eirgrid.ie/grid/system-and-renewable-data-reports" },
+  { id: "ireland-republic-solar", name: "Ireland (Republic) Solar", country: "IRL", lat: 53.3, lon:   -7.8, tier: "live", kind: "solar", source: "EirGrid/SONI DD half-hourly workbook (ROI 58% solar share fallback)", sourceUrl: "https://www.eirgrid.ie/grid/system-and-renewable-data-reports" },
+  { id: "northern-ireland-wind", name: "Northern Ireland Wind",    country: "GBR", lat: 54.65, lon:  -6.65, tier: "live", kind: "wind",  source: "EirGrid/SONI DD half-hourly workbook (NI 42% of all-island DD)", sourceUrl: "https://www.eirgrid.ie/grid/system-and-renewable-data-reports" },
+  { id: "northern-ireland-solar", name: "Northern Ireland Solar",  country: "GBR", lat: 54.65, lon:  -6.65, tier: "live", kind: "solar", source: "EirGrid/SONI DD half-hourly workbook (NI 42% solar share fallback)", sourceUrl: "https://www.eirgrid.ie/grid/system-and-renewable-data-reports" },
   { id: "peru-hydro",       name: "Peru Hydro",       country: "PER", lat: -12.5, lon: -75.0, tier: "live", kind: "hydro", source: "COES-SINAC live hydro generation × 2% curtailment calibration (vertimiento anchor ~0.8 TWh/yr)", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },
   { id: "peru-solar",       name: "Peru Solar",       country: "PER", lat: -14.0, lon: -71.5, tier: "live", kind: "solar", source: "COES-SINAC live solar generation × 2% curtailment calibration (vertimiento anchor ~0.8 TWh/yr)", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },
   { id: "peru-wind",        name: "Peru Wind",        country: "PER", lat: -17.0, lon: -72.0, tier: "live", kind: "wind",  source: "COES-SINAC live wind generation × 2% curtailment calibration (vertimiento anchor ~0.8 TWh/yr)", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion" },

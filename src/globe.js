@@ -4,6 +4,144 @@ import { regionGWAtHour } from "./lib/calc.js";
 import { getFuelColor, dominantFuel } from "./lib/fuel.js";
 import { readGlobeTokens, isLinearGradientToken } from "./lib/theme-tokens.js";
 
+/**
+ * Open-Meteo free weather API: https://api.open-meteo.com/v1/forecast
+ * Returns { temperature_2m_C, cloud_cover_% }
+ */
+async function fetchWeather(lat, lon) {
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,cloud_cover&wind_speed_unit=ms&timezone=auto`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    return {
+      temperature: json.current?.temperature_2m ?? null,
+      cloudCover: json.current?.cloud_cover ?? null,
+    };
+  } catch {
+    return { temperature: null, cloudCover: null };
+  }
+}
+
+/**
+ * Electricity Maps free tier API for real-time carbon intensity.
+ * Falls back gracefully when API key is absent or rate-limited.
+ * Returns price in $/MWh (approximated from carbon intensity bands).
+ */
+async function fetchPrice(regionId, lat, lon) {
+  try {
+    const apiKey = import.meta.env?.VITE_ELECTRICITYMAPS_API_KEY ?? "";
+    if (!apiKey) return null;
+    const url = `https://api.electricitymaps.com/v4/carbon-intensity/latest?lat=${lat}&lon=${lon}`;
+    const res = await fetch(url, { headers: { auths: apiKey } });
+    if (!res.ok) return null;
+    const json = await res.json();
+    const ci = json.carbonIntensity ?? null;
+    if (ci === null) return null;
+    if (ci < 50) return 120;
+    if (ci < 150) return 85;
+    if (ci < 300) return 65;
+    if (ci < 500) return 45;
+    return 30;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Capacity factor: actual generation / installed capacity.
+ * Uses regionData.solarCapacityMW / windCapacityMW if available,
+ * otherwise falls back to the region's tier-1 uncertainty fraction
+ * as a proxy for fleet-wide capacity factor.
+ */
+function calcCapacityFactor(region, regionData, hour) {
+  const genMW = regionGWAtHour(regionData, hour, "avg30d") * 1000;
+  const capMW =
+    region.kind === "solar" ? (regionData?.solarCapacityMW ?? 0)
+    : region.kind === "wind"  ? (regionData?.windCapacityMW ?? 0)
+    : (regionData?.solarCapacityMW ?? 0) + (regionData?.windCapacityMW ?? 0);
+  if (!capMW || capMW <= 0) {
+    const frac = regionData?.t1Fraction ?? 0.15;
+    return (frac * 100).toFixed(1) + "% (est.)";
+  }
+  const cf = (genMW / capMW) * 100;
+  return cf.toFixed(1) + "%";
+}
+
+function buildSidePanel() {
+  const panel = document.createElement("div");
+  panel.id = "globe-region-panel";
+  Object.assign(panel.style, {
+    position: "fixed",
+    top: "50%",
+    right: "16px",
+    transform: "translateY(-50%)",
+    width: "220px",
+    background: "rgba(10,12,18,0.92)",
+    border: "1px solid rgba(255,255,255,0.12)",
+    borderRadius: "12px",
+    padding: "16px",
+    color: "#e8eaed",
+    fontFamily: "system-ui, -apple-system, sans-serif",
+    fontSize: "13px",
+    lineHeight: "1.5",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+    zIndex: "1000",
+    display: "none",
+    backdropFilter: "blur(8px)",
+  });
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "×";
+  Object.assign(closeBtn.style, {
+    position: "absolute", top: "6px", right: "10px",
+    background: "none", border: "none", color: "#9aa0a6",
+    fontSize: "18px", cursor: "pointer", lineHeight: "1",
+  });
+  closeBtn.addEventListener("click", () => hidePanel());
+  panel.appendChild(closeBtn);
+  document.body.appendChild(panel);
+  return panel;
+}
+
+let _panel = null;
+function getPanel() {
+  if (!_panel) _panel = buildSidePanel();
+  return _panel;
+}
+
+function showPanel(region, weather, price, capFactor) {
+  const panel = getPanel();
+  const weatherStr = weather.temperature !== null
+    ? `${weather.temperature.toFixed(1)}°C · ${weather.cloudCover ?? "?"}% cloud`
+    : "Weather unavailable";
+  const priceStr = price !== null ? `$${price}/MWh` : "Price unavailable";
+  panel.innerHTML = `
+    <div style="font-size:15px;font-weight:600;margin-bottom:10px;padding-right:20px">${region.name ?? region.id}</div>
+    <div style="color:#9aa0a6;margin-bottom:6px">${region.id}</div>
+    <div style="margin-top:12px">
+      <div style="color:#9aa0a6;font-size:11px;margin-bottom:2px">WEATHER</div>
+      <div>${weatherStr}</div>
+    </div>
+    <div style="margin-top:10px">
+      <div style="color:#9aa0a6;font-size:11px;margin-bottom:2px">PRICE</div>
+      <div>${priceStr}</div>
+    </div>
+    <div style="margin-top:10px">
+      <div style="color:#9aa0a6;font-size:11px;margin-bottom:2px">CAPACITY FACTOR</div>
+      <div>${capFactor}</div>
+    </div>
+    <div style="margin-top:10px">
+      <div style="color:#9aa0a6;font-size:11px;margin-bottom:2px">KIND</div>
+      <div style="text-transform:uppercase">${region.kind}</div>
+    </div>
+  `;
+  panel.style.display = "block";
+}
+
+function hidePanel() {
+  getPanel().style.display = "none";
+}
+
 // Locally-vendored world atlas: previously fetched from unpkg.com, which
 // added a third-party DNS + TLS handshake (~200–400ms on cellular) to
 // every cold page load. Served from our own origin now via FileAttachment.
@@ -57,7 +195,8 @@ export async function mountGlobe(canvas, initial) {
     rotation: [-10, -15, 0],
     dragging: false,
     zoomScale: 1.0,
-    showFlare: false
+    showFlare: false,
+    selectedRegionId: null,
   };
 
   const ZOOM_MIN = 0.5;
@@ -378,6 +517,18 @@ export async function mountGlobe(canvas, initial) {
       ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
       ctx.lineWidth = 0.6;
       ctx.stroke();
+
+      if (rep.id === state.selectedRegionId) {
+        ctx.save();
+        ctx.globalAlpha = 0.9;
+        ctx.strokeStyle = "#7cb8ff";
+        ctx.lineWidth = 2.2;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.arc(point[0], point[1], glowR + 5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
     }
 
     ctx.globalAlpha = 1;
@@ -500,6 +651,28 @@ export async function mountGlobe(canvas, initial) {
     if (onRegionClick && traveled < CLICK_MAX_TRAVEL_PX && event.type === "pointerup" && !suppressNextClick) {
       const hit = hitTestRegion(event.clientX, event.clientY);
       onRegionClick(hit, { clientX: event.clientX, clientY: event.clientY });
+      const hitId = hit ? (Array.isArray(hit) ? hit[0].id : hit.id) : null;
+      if (hitId === state.selectedRegionId) {
+        state.selectedRegionId = null;
+        hidePanel();
+      } else {
+        state.selectedRegionId = hitId;
+        if (hitId) {
+          const regions = state.regions;
+          const region = regions.find(r => r.id === hitId) ?? (Array.isArray(hit) ? hit[0] : hit);
+          const rd = state.regionData[hitId];
+          Promise.all([
+            fetchWeather(region.lat, region.lon),
+            fetchPrice(hitId, region.lat, region.lon),
+          ]).then(([weather, price]) => {
+            const cf = calcCapacityFactor(region, rd ?? {}, state.utcHour);
+            showPanel(region, weather, price, cf);
+          });
+        } else {
+          hidePanel();
+        }
+      }
+      render();
     }
     suppressNextClick = false;
   }

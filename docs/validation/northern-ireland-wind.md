@@ -1,10 +1,10 @@
-# Validation — Northern Ireland (`northern-ireland`)
+# Validation — Northern Ireland Wind (`northern-ireland-wind`)
 
 Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `northern-ireland`
+- **Region id:** `northern-ireland-wind`
 - **Country:** GBR
 - **Tier:** live
 - **Kind:** wind
@@ -26,25 +26,23 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** SONI 2024 wind curtailment ~0.3 TWh
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
 
 ## Known limitations
 
-**Tier-overstatement fix (2026-04-25):** demoted from `T1-live-TSO` to `T3-modelled` together with `ireland-republic`. The EirGrid `ireland.json.ts` loader emits a single all-island typical-shape series (calibrated to the SONI/EirGrid 2024 anchor, 2.181 TWh total) which is split 58/42 into ROI/NI at consumption time. NI inherits the same probe-only treatment — there is no measured NI dispatch-down feed in the loader, and the 0.915 TWh anchor is reproduced by the calibrated shape, not measured hour-by-hour. `sourceStatus="live"` reflects probe reachability, not a measured-dispatch claim. See `docs/known-limitations.md` item 6.
-
-See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_northern-ireland_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_northern-ireland-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

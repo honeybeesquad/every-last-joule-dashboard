@@ -94,7 +94,9 @@ describe("regions", () => {
     // 335 + 26 = 361.
     // Phase 4-C (2026-05-05): 19 new microstates/small-island states as T3-static.
     // 361 + 19 = 380.
-    expect(REGIONS.length).toBe(380);
+    // Per-fuel globalisation (2026-05-05): finland, ireland-republic, northern-ireland
+    // split into wind+solar. Net +3 regions. 380 + 3 = 383.
+    expect(REGIONS.length).toBe(383);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -155,10 +157,10 @@ describe("regions", () => {
     // T1a: 143 + 9 = 152. (NZ geo adds kind:"geo" — still T1a live.)
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(152);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(155);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(162);
+    expect(liveTotal).toBe(165);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -178,10 +180,12 @@ describe("regions", () => {
     // Net: T1a 113→134, T1b 5→9.
     // Phase 3b (2026-05-05): T1a +9 (US ISO per-fuel splits). T1a 134→143.
     // Phase 3c (2026-05-05): T1a +9 (turkey, north-sea, norway×4, new-zealand). T1a 143→152.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(152);
+    // Per-fuel globalisation (2026-05-05): finland + ireland-republic + northern-ireland
+    // split into wind+solar. Net +3 T1a. live: 152→155.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(155);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(162);
+    expect(liveTotal).toBe(165);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -558,7 +562,8 @@ describe("regions", () => {
       ["iso-ne-maine-vermont", "iso-ne-rest-wind"],
       ["nyiso-zones-d-e", "nyiso-rest-wind"],
       ["gb-scotland-wind", "gb-england-wales-wind"],
-      ["ireland-republic", "northern-ireland"],
+      ["ireland-republic-wind", "ireland-republic-solar"],
+      ["northern-ireland-wind", "northern-ireland-solar"],
     ];
     for (const [a, b] of livePairs) {
       for (const id of [a, b]) {
