@@ -36,7 +36,14 @@ describe("static regions", () => {
     // (afghanistan, bahrain, belarus-wind, belarus-solar, brunei, haiti,
     // kyrgyzstan, lebanon, libya, mali, niger, north-korea, singapore,
     // syria, tajikistan, turkmenistan, yemen). Canonical count: 79 + 17 = 96.
-    expect(Object.keys(data).length).toBe(96);
+    // Phase 4-B completionist Tier B (2026-05-05): +26 new T3-static countries
+    // (burundi, bhutan, central-african-republic, congo-republic, comoros,
+    // djibouti, eritrea, fiji, gambia, guinea, guinea-bissau, equatorial-guinea,
+    // lesotho, liberia, maldives, papua-new-guinea, solomon-islands, sierra-leone,
+    // somalia, south-sudan, sao-tome, seychelles, chad, east-timor, vanuatu, samoa).
+    // All 26 were already in STATIC_REGIONS from prior research-pool additions.
+    // Canonical count: 96 + 26 = 122.
+    expect(Object.keys(data).length).toBe(122);
     // Non-canonical stays 49 since all 17 were already in STATIC_REGIONS
     // (only belarus-wind and belarus-solar were added to STATIC_REGIONS here;
     // all others pre-existed in Phase 2 research-pool entries that are now canonical).
@@ -65,8 +72,12 @@ describe("static regions", () => {
     // (The other 15 Phase 4-A countries were already in STATIC_REGIONS
     // but not in REGIONS — they moved from non-canonical to canonical here,
     // so non-canonical dropped from 49 to 34.)
-    expect(Object.keys(researchData).length).toBe(130);
-    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(34);
+    // Phase 4-B: 21 of 26 Phase 4-B countries already in STATIC_REGIONS;
+    // 5 new entries added (lesotho, maldives, solomon-islands, sao-tome, samoa).
+    // Research pool: 130 + 5 = 135. Canonical: 96 + 26 = 122.
+    // Non-canonical: 135 - 122 = 13.
+    expect(Object.keys(researchData).length).toBe(135);
+    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(13);
   });
 
   it("includes all expected ids", () => {

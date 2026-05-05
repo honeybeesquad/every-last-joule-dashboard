@@ -90,7 +90,9 @@ describe("regions", () => {
     // adding 20 net new regions. 298 + 20 = 318.
     // Phase 4-A (2026-05-05): 16 new countries as T3-static regions (17 rows,
     // including belarus-wind + belarus-solar split). 318 + 17 = 335.
-    expect(REGIONS.length).toBe(335);
+    // Phase 4-B (2026-05-05): 26 new countries as T3-static regions.
+    // 335 + 26 = 361.
+    expect(REGIONS.length).toBe(361);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -247,7 +249,8 @@ describe("regions", () => {
     // Net: +11 T3 static. 137 + 11 = 148. (T3: removed 9 mixed, added 20 per-fuel)
     // Wait: 9 mixed removed, 20 per-fuel added = net +11. 137 + 11 = 148.
     // Phase 4-A (2026-05-05): +17 T3-static regions. 148 + 17 = 165.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(165);
+    // Phase 4-B (2026-05-05): +26 T3-static regions. 165 + 26 = 191.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(191);
   });
 
   it("has 4 flare regions", () => {
@@ -275,6 +278,8 @@ describe("regions", () => {
       // Other static mixed
       "taiwan", "manitoba", "hawaii-island",
       "austria", "cuba", "rwanda",
+      // Phase 4-B T3-static mixed (completionist Tier B, IRENA RCS 2025)
+      "burundi", "equatorial-guinea",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();

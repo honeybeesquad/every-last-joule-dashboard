@@ -18,6 +18,10 @@ import { buildAllStatics } from "../../src/data/statics.json";
  * brief's row-by-row mapping. The 6 skipped audit rows (Burundi, Gambia,
  * Lesotho, Liberia, Seychelles, Sierra Leone) all carry annual_anchor_TWh <
  * 0.05 and are excluded by the brief's no-tiny-row rule.
+ *
+ * Phase 4-B (2026-05-05): These 6 countries are now added as T3-static via
+ * IRENA RCS 2025 (a more recent/authoritative source than the 2026-04-26
+ * audit), so they are moved out of SKIPPED_AUDIT_IDS and into NEW_AFRICA_IDS.
  */
 
 const NEW_AFRICA_IDS = [
@@ -26,13 +30,17 @@ const NEW_AFRICA_IDS = [
   "benin",
   "botswana",
   "burkina-faso",
+  "burundi",
   "cabo-verde",
   "cameroon",
   "congo-drc",
   "cote-divoire",
   "eswatini",
   "gabon",
+  "gambia",
   "ghana",
+  "lesotho",
+  "liberia",
   "madagascar",
   "malawi",
   "mauritania",
@@ -41,6 +49,8 @@ const NEW_AFRICA_IDS = [
   "nigeria",
   "rwanda",
   "senegal",
+  "seychelles",
+  "sierra-leone",
   "tanzania",
   "togo",
   "tunisia",
@@ -49,14 +59,7 @@ const NEW_AFRICA_IDS = [
   "zimbabwe",
 ] as const;
 
-const SKIPPED_AUDIT_IDS = [
-  "burundi",
-  "gambia",
-  "lesotho",
-  "liberia",
-  "seychelles",
-  "sierra-leone",
-] as const;
+const SKIPPED_AUDIT_IDS = [] as const;
 
 const ALLOWED_REGION_KINDS = new Set([
   "solar",
@@ -90,8 +93,8 @@ const ALLOWED_STATIC_KINDS = new Set([
 ]);
 
 describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
-  it("adds 26 new T3-static rows to REGIONS (32 audit rows minus 6 sub-threshold skips)", () => {
-    expect(NEW_AFRICA_IDS.length).toBe(26);
+  it("adds 32 new T3-static rows to REGIONS (Phase 2.7: 26 + Phase 4-B: 6 previously-skipped)", () => {
+    expect(NEW_AFRICA_IDS.length).toBe(32);
     for (const id of NEW_AFRICA_IDS) {
       const region = REGIONS.find((r) => r.id === id);
       expect(region, `missing region ${id}`).toBeDefined();
