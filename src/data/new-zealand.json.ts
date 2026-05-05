@@ -118,6 +118,12 @@ export function buildNewZealandPerFuelData(parsed: NzParsed): { wind: RegionData
   const solarPts = makePerFuelPoints(solarFrac);
   const geoPts = makePerFuelPoints(geoFrac);
 
+  // Per-fuel regions deliberately do NOT carry the country-level fuelShare:
+  // each region's totalTWh is already the per-fuel slice, and attaching the
+  // shared mix would make dominantFuel(region) collapse all three regions
+  // to whichever fuel happens to dominate the country mix (geothermal here)
+  // — the Mar 2026 "all three NZ pillars same colour" bug. The mix info
+  // remains visible in sourceNote.
   return {
     wind: {
       regionId: "new-zealand-wind",
@@ -128,7 +134,6 @@ export function buildNewZealandPerFuelData(parsed: NzParsed): { wind: RegionData
       lastUpdated,
       lastSuccessAt: lastUpdated,
       sourceNote: noteBase + " — wind share",
-      ...(fuelShare ? { fuelShare } : {}),
     },
     solar: {
       regionId: "new-zealand-solar",
@@ -139,7 +144,6 @@ export function buildNewZealandPerFuelData(parsed: NzParsed): { wind: RegionData
       lastUpdated,
       lastSuccessAt: lastUpdated,
       sourceNote: noteBase + " — solar share",
-      ...(fuelShare ? { fuelShare } : {}),
     },
     geo: {
       regionId: "new-zealand-geo",
@@ -150,7 +154,6 @@ export function buildNewZealandPerFuelData(parsed: NzParsed): { wind: RegionData
       lastUpdated,
       lastSuccessAt: lastUpdated,
       sourceNote: noteBase + " — geothermal share",
-      ...(fuelShare ? { fuelShare } : {}),
     },
   };
 }

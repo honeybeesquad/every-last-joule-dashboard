@@ -89,6 +89,9 @@ export function fuelShare(region: Region, fuel: Fuel, regionData?: RegionData): 
   if (region.kind === "solar" && fuel === "solar") return 1;
   if (region.kind === "wind"  && fuel === "wind")  return 1;
   if (region.kind === "hydro" && fuel === "hydro") return 1;
+  // Geothermal collapses into the hydro bucket for the 3-way fuel scheme:
+  // both are always-on baseload renewables, narratively grouped together.
+  if (region.kind === "geo"   && fuel === "hydro") return 1;
   return 0;
 }
 
@@ -123,5 +126,6 @@ export function dominantFuel(region: Region, regionData?: RegionData): Fuel {
   }
   if (region.kind === "wind")  return "wind";
   if (region.kind === "hydro") return "hydro";
+  if (region.kind === "geo")   return "hydro"; // geo collapses to hydro bucket
   return "solar"; // solar + any unclassified renewable default
 }
