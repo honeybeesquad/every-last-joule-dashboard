@@ -58,6 +58,15 @@ const KNOWN_AGGREGATE_IDS = new Set<string>([
   // pre-split north-sea.json — was the UK offshore aggregate before the
   // gb-england-wales / gb-scotland split landed; retained for legacy fallback.
   "north-sea",
+  // Phase 3c per-fuel north-sea snapshot emits north-sea-wind / north-sea-solar
+  // as intermediate IDs; these are split via splitRegion in index.md into the
+  // canonical gb-scotland-* / gb-england-wales-* regions. The snapshot itself
+  // is the pre-split aggregate so these IDs are not in REGIONS.
+  "north-sea-wind",
+  "north-sea-solar",
+  // Phase 3c new-zealand.json old flat snapshot — retained for legacy fallback
+  // until next live data pull regenerates the per-fuel snapshot.
+  "new-zealand",
   // Phase B2 ERCOT native-OAuth2 spike outputs (parallel to ercot-west /
   // ercot-east which are EIA-proxy). Both shapes coexist until the native
   // spike is promoted to canonical.
@@ -176,7 +185,10 @@ for (const f of files) {
 
   const records: { rid: string; rec: PerRegionRecord }[] = [];
   if (isRecordOfRegions(parsed)) {
-    for (const [rid, rec] of Object.entries(parsed as Record<string, PerRegionRecord>)) {
+    for (const [outerKey, rec] of Object.entries(parsed as Record<string, PerRegionRecord>)) {
+      // Per-fuel snapshots store {wind: {regionId: "turkey-wind", ...}, solar: {...}}.
+      // Use the inner regionId when present; fall back to the outer key for legacy formats.
+      const rid = typeof rec.regionId === "string" ? rec.regionId : outerKey;
       records.push({ rid, rec });
     }
   } else {

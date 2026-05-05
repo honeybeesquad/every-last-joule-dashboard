@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (Phase 3b US ISO per-fuel split: +9 net regions: caiso-wind/solar, ercot-east-wind/solar, ercot-west-wind/solar, miso-wind/solar, pjm-wind/solar, spp-wind/solar, nyiso-rest-wind/solar, iso-ne-rest-wind/solar, bpa-wind/solar. Old mixed ISO IDs (caiso, ercot-east, ercot-west, miso, pjm, spp, nyiso-rest, iso-ne-rest, bpa) retired. Net: T1a +9, total +9.)",
-  "T1a": 143,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (Phase 3c per-fuel split: +20 net regions. T1a +9 live, T2 +4 calibrated, T3 +7 static.)",
+  "T1a": 152,
   "T1b": 9,
   "T1c": 1,
-  "T2": 2,
+  "T2": 6,
   "T2-flare": 8,
-  "T3": 135,
-  "total": 298
+  "T3": 142,
+  "total": 318
 }
