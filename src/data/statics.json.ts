@@ -267,7 +267,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   armenia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 9.1, source: "IRENA Armenia 2024 (TSO); Metsamor nuclear + hydro + solar; WREM)", reportDate: "2024" },
   azerbaijan: { annualTWh: 0.2, kind: "mixed", localSolarPeakUTC: 8.7, source: "IRENA Azerbaijan 2024 (AZERENERGY); oil+gas+solar+wind; growing RE)", reportDate: "2024" },
   bahrain: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 8.6, source: "IRENA Bahrain 2024 (EWA); gas+solar; small high-Temperature grid)", reportDate: "2024" },
-  georgia: { annualTWh: 0.2, kind: "mixed", localSolarPeakUTC: 4.0, source: "IRENA Georgia 2024 (GSE); hydro+solar+wind; ENTSO-E synchronisation ongoing)", reportDate: "2024" },
+  georgia: { annualTWh: 0.2, kind: "mixed", localSolarPeakUTC: 8.0, source: "IRENA Georgia 2024 (GSE); hydro+solar+wind; ENTSO-E synchronisation ongoing; UTC+4 → solar noon ≈ UTC 08:00)", reportDate: "2024" },
   jordan: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 10, source: "IRENA Jordan 2024 (NEPCO; solar+wind+gas; high VRE penetration). peakHourUtc 10: Jordan at 36°E → solar noon ≈ UTC 09:36. Previous value of 3.0 was wrong (was UTC timezone offset, not solar noon hour).", reportDate: "2025" },
   kuwait: { annualTWh: 0.4, kind: "flat", source: "GGFR 2024 Kuwait Burgan + Wafra flare composite (KOC; Greater Burgan oil field + South Kuwait gas flaring; flat 24/7)", reportDate: "2024" },
   kyrgyzstan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Kyrgyzstan 2024 (NEK); hydro+solar; CASA-1000 candidate)", reportDate: "2024" },
