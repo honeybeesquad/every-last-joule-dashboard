@@ -1,13 +1,13 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalMixedRegion } from "../lib/typical-profiles.js";
+import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "gansu";
 const SOURCE_URL = "https://ember-energy.org/";
 
-async function run({ probe = true } = {}): Promise<RegionData> {
+async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: RegionData }> {
   try {
     if (probe) {
       await fetchText(SOURCE_URL, { timeoutMs: 15000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } });
@@ -15,21 +15,21 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    return buildTypicalMixedRegion(
-      REGION_ID,
-      3.0,
-      { wind: 0.6, solar: 0.4 },
-      `Typical-shape fallback: Ember GER 2025 + S&P Rising Curtailment in China 2024 / NEA feed unavailable (${(err as Error).message}); Jiuquan/Wuwei wind+solar curtailment anchored at ~3.0 TWh/yr.`,
-      "2024",
-      5,
-      15,
-    );
+    const note = `Typical-shape fallback: Ember GER 2025 + S&P Rising Curtailment in China 2024 / NEA feed unavailable (${(err as Error).message}); Jiuquan/Wuwei wind+solar curtailment anchored at ~3.0 TWh/yr.`;
+    return {
+      wind:  buildTypicalWindRegion("gansu-wind",  15, 3.0 * 0.6, note + " — wind share (60%)", "2024"),
+      solar: buildTypicalSolarRegion("gansu-solar", 5, 3.0 * 0.4, note + " — solar share (40%)", "2024"),
+    };
   }
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  withFallback(REGION_ID, () => run())
+  withFallback<{ wind: RegionData; solar: RegionData }>(REGION_ID, () => run(), {
+    regionTier: "live" as const,
+    tagLive: r => r,
+    tagCached: c => c as { wind: RegionData; solar: RegionData },
+  })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => { console.error("gansu loader failed", err); process.exit(1); });
 }
