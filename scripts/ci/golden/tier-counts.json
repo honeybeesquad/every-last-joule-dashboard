@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (Phase 4-A completionist Tier A: +17 T3-static regions, 16 new countries.)",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (Phase 4-B completionist Tier B: +26 T3-static countries.)",
   "T1a": 152,
   "T1b": 9,
   "T1c": 1,
   "T2": 6,
   "T2-flare": 8,
-  "T3": 159,
-  "total": 335
+  "T3": 185,
+  "total": 361
 }
