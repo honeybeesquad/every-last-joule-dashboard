@@ -1,34 +1,25 @@
 import type { Region } from "./types";
 
 export const REGIONS: Region[] = [
-  // Tier 1 - live sub-hourly (US ISO per-fuel split, Phase 3b)
-  { id: "caiso-wind",      name: "California Wind",  country: "USA", lat: 36.5, lon: -119.5, tier: "live", kind: "wind",  source: "CAISO OASIS / EIA wind", sourceUrl: "https://oasis.caiso.com/oasisapi" },
-  { id: "caiso-solar",      name: "California Solar", country: "USA", lat: 36.5, lon: -119.5, tier: "live", kind: "solar", source: "CAISO OASIS / EIA solar", sourceUrl: "https://oasis.caiso.com/oasisapi" },
-  { id: "ercot-west-wind",  name: "ERCOT West Wind",   country: "USA", lat: 33.5, lon: -102.0, tier: "live", kind: "wind",  source: "EIA ERCO wind", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "ercot-west-solar", name: "ERCOT West Solar",  country: "USA", lat: 33.5, lon: -102.0, tier: "live", kind: "solar", source: "EIA ERCO solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "ercot-east-wind",  name: "ERCOT East Wind",   country: "USA", lat: 31.8, lon:  -99.9, tier: "live", kind: "wind",  source: "EIA ERCO wind", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "ercot-east-solar", name: "ERCOT East Solar",  country: "USA", lat: 31.8, lon:  -99.9, tier: "live", kind: "solar", source: "EIA ERCO solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "miso-wind",       name: "MISO (Midwest) Wind", country: "USA", lat: 41.5, lon:  -93.0, tier: "live", kind: "wind",  source: "EIA MISO wind", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "miso-solar",      name: "MISO (Midwest) Solar", country: "USA", lat: 41.5, lon:  -93.0, tier: "live", kind: "solar", source: "EIA MISO solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "pjm-wind",        name: "PJM Wind",           country: "USA", lat: 40.0, lon:  -77.0, tier: "live", kind: "wind",  source: "EIA PJM wind", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "pjm-solar",       name: "PJM Solar",          country: "USA", lat: 40.0, lon:  -77.0, tier: "live", kind: "solar", source: "EIA PJM solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "spp-wind",        name: "SPP Wind",            country: "USA", lat: 38.0, lon:  -98.0, tier: "live", kind: "wind",  source: "EIA SPP wind", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "spp-solar",       name: "SPP Solar",          country: "USA", lat: 38.0, lon:  -98.0, tier: "live", kind: "solar", source: "EIA SPP solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
+  // Tier 1 - live sub-hourly
+  { id: "caiso",            name: "California",      country: "USA", lat: 36.5, lon: -119.5, tier: "live", kind: "mixed", source: "CAISO OASIS / EIA (solar+wind)", sourceUrl: "https://oasis.caiso.com/oasisapi" },
+  { id: "ercot-west",       name: "ERCOT West",      country: "USA", lat: 33.5, lon: -102.0, tier: "live", kind: "mixed", source: "EIA / ERCOT (wind+solar)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
+  { id: "ercot-east",       name: "ERCOT East",      country: "USA", lat: 31.8, lon:  -99.9, tier: "live", kind: "mixed", source: "EIA / ERCOT (wind+solar)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
+  { id: "miso",             name: "MISO (Midwest)",  country: "USA", lat: 41.5, lon:  -93.0, tier: "live", kind: "mixed", source: "EIA MISO wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
+  { id: "pjm",              name: "PJM",             country: "USA", lat: 40.0, lon:  -77.0, tier: "live", kind: "mixed", source: "EIA PJM wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
+  { id: "spp",              name: "SPP",             country: "USA", lat: 38.0, lon:  -98.0, tier: "live", kind: "mixed", source: "EIA SPP wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
   // NYISO split into zones D+E (North Country / Mohawk Valley — bulk of wind
   // curtailment per NYISO Power Trends 2024 / Unbottling Wind) vs the rest.
   // 2023 statewide wind curtailment was 0.162 TWh, concentrated in D/E.
   { id: "nyiso-zones-d-e",  name: "NYISO Zones D+E", country: "USA", lat: 43.7, lon:  -75.3, tier: "live", kind: "wind",  source: "EIA NYISO wind (Zones D+E share, ~75% of statewide curtailment)", sourceUrl: "https://www.nyiso.com/documents/20142/2223020/2024-Power-Trends.pdf" },
-  { id: "nyiso-rest-wind",  name: "NYISO (rest) Wind", country: "USA", lat: 42.8, lon:  -74.8, tier: "live", kind: "wind",  source: "EIA NYISO wind (ex-Zones D/E)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "nyiso-rest-solar", name: "NYISO (rest) Solar", country: "USA", lat: 42.8, lon:  -74.8, tier: "live", kind: "solar", source: "EIA NYISO solar (ex-Zones D/E)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
+  { id: "nyiso-rest",       name: "NYISO (rest)",    country: "USA", lat: 42.8, lon:  -74.8, tier: "live", kind: "mixed", source: "EIA NYISO wind+solar (ex-Zones D/E)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
   // ISO-NE split — ISO-NE IMM's 2024 annual markets report says 93% of
   // 2020-2024 curtailed renewable capacity in New England was in Maine and
   // Vermont (northern congestion pocket). 2024 ISO-NE renewable curtailment
   // total = 0.034 TWh, split 93/7.
   { id: "iso-ne-maine-vermont", name: "ISO-NE Maine/Vermont", country: "USA", lat: 44.7, lon: -70.6, tier: "live", kind: "wind",  source: "EIA ISO-NE wind (ME+VT share, 93% of NE curtailment per IMM)", sourceUrl: "https://www.iso-ne.com/static-assets/documents/100023/2024-annual-markets-report.pdf" },
-  { id: "iso-ne-rest-wind",  name: "ISO-NE (rest) Wind", country: "USA", lat: 42.2, lon: -71.8, tier: "live", kind: "wind",  source: "EIA ISO-NE wind (ex-ME/VT)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "iso-ne-rest-solar", name: "ISO-NE (rest) Solar", country: "USA", lat: 42.2, lon: -71.8, tier: "live", kind: "solar", source: "EIA ISO-NE solar (ex-ME/VT)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "bpa-wind",        name: "BPA Wind",            country: "USA", lat: 45.7, lon: -121.5, tier: "live", kind: "wind",  source: "EIA BPA wind", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
-  { id: "bpa-solar",       name: "BPA Solar",          country: "USA", lat: 45.7, lon: -121.5, tier: "live", kind: "solar", source: "EIA BPA solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
+  { id: "iso-ne-rest",          name: "ISO-NE (rest)",        country: "USA", lat: 42.2, lon: -71.8, tier: "live", kind: "mixed", source: "EIA ISO-NE wind+solar (ex-ME/VT)", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
+  { id: "bpa",              name: "BPA",             country: "USA", lat: 45.7, lon: -121.5, tier: "live", kind: "mixed", source: "EIA BPA wind+solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data" },
   { id: "aemo-nsw-wind",    name: "New South Wales Wind",  country: "AUS", lat: -32.5, lon: 146.2, tier: "live", kind: "wind",  source: "AEMO NEMWeb wind SEMIDISPATCHCAP", sourceUrl: "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/" },
   { id: "aemo-nsw-solar",   name: "New South Wales Solar", country: "AUS", lat: -32.2, lon: 146.8, tier: "live", kind: "solar", source: "AEMO NEMWeb solar SEMIDISPATCHCAP", sourceUrl: "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/" },
   { id: "aemo-vic-wind",    name: "Victoria Wind",         country: "AUS", lat: -37.0, lon: 144.5, tier: "live", kind: "wind",  source: "AEMO NEMWeb wind SEMIDISPATCHCAP", sourceUrl: "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/" },

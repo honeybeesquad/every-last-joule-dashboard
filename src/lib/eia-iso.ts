@@ -25,62 +25,6 @@ export interface EiaIsoConfig {
   displayName: string;
   windRate: number;
   solarRate: number;
-  /**
-   * Default fuel share used by the stale-cache shape adapter when the
-   * EIA-fail fallback path returns a pre-Phase-3b aggregate snapshot
-   * (regionId="<iso>", flat profile). The adapter splits the aggregate
-   * profile into wind/solar children using this share so consumer lookups
-   * like `caiso["caiso-wind"]` succeed instead of returning undefined and
-   * crashing aggregateAtHour. Tuned loosely to recent observed VRE mix
-   * per RTO; only matters during the EIA-outage window before the next
-   * cron-bot regen overwrites the snapshot with real per-fuel data.
-   */
-  fallbackSplit?: { wind: number; solar: number };
-}
-
-/**
- * Stale-cache shape adapter. Pre-Phase-3b ISO snapshots have aggregate
- * shape ({regionId, profile, ...} as a flat RegionData with merged
- * wind+solar curtailment). The Phase-3b loaders return per-fuel shape
- * ({wind, solar}). On the EIA-fail fallback path withFallback hands us
- * the on-disk shape verbatim, so without this adapter `caiso["caiso-wind"]`
- * resolves to undefined and the dashboard crashes in regionGWAtHour
- * (same crash class as malta and baltics — see
- * memory/feedback_loader_wiring_pattern.md).
- *
- * Idempotent: passes through already-per-fuel cache contents unchanged.
- */
-export function adaptCachedAggregateToPerFuel(
-  cached: unknown,
-  regionId: string,
-  fallbackSplit: { wind: number; solar: number },
-): { wind: RegionData; solar: RegionData } {
-  if (
-    cached &&
-    typeof cached === "object" &&
-    "wind" in cached &&
-    "solar" in cached
-  ) {
-    return cached as { wind: RegionData; solar: RegionData };
-  }
-
-  const agg = cached as RegionData;
-  const note = ` [stale-cache: aggregate split via fallback adapter — replaced on next loader regen]`;
-  const scale = (share: number, suffix: "wind" | "solar"): RegionData => ({
-    ...agg,
-    regionId: `${regionId}-${suffix}`,
-    profile: agg.profile.map((g) => g * share),
-    latestProfile: agg.latestProfile ? agg.latestProfile.map((g) => g * share) : null,
-    peakGW: (agg.peakGW ?? 0) * share,
-    totalTWh: (agg.totalTWh ?? 0) * share,
-    fuelShare: fallbackSplit,
-    sourceNote: `${agg.sourceNote ?? ""}${note}`,
-  });
-
-  return {
-    wind: scale(fallbackSplit.wind, "wind"),
-    solar: scale(fallbackSplit.solar, "solar"),
-  };
 }
 
 function mergeSum(a: CurtailmentPoint[], b: CurtailmentPoint[]): CurtailmentPoint[] {
@@ -90,58 +34,6 @@ function mergeSum(a: CurtailmentPoint[], b: CurtailmentPoint[]): CurtailmentPoin
   return Array.from(map.entries())
     .sort(([x], [y]) => x.localeCompare(y))
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
-}
-
-function toPoints(raw: EIAResponse, rate: number): CurtailmentPoint[] {
-  return raw.response.data.map((r) => ({
-    utcTimestamp: `${r.period}:00:00Z`,
-    mw: Math.max(0, Number(r.value) * rate),
-  }));
-}
-
-export function parseEiaIsoRegionPerFuel(
-  config: EiaIsoConfig,
-  windRaw: EIAResponse,
-  solarRaw?: EIAResponse,
-): { wind: RegionData; solar: RegionData } {
-  const windPoints = toPoints(windRaw, config.windRate);
-  const solarPoints = toPoints(solarRaw ?? { response: { total: 0, data: [] } }, config.solarRate);
-
-  const windLast = windPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
-  const solarLast = solarPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
-
-  const windTotalMw = windPoints.reduce((s, p) => s + p.mw, 0);
-  const solarTotalMw = solarPoints.reduce((s, p) => s + p.mw, 0);
-  const denom = windTotalMw + solarTotalMw;
-  const fuelShare = denom > 0
-    ? { wind: windTotalMw / denom, solar: solarTotalMw / denom }
-    : { wind: 1, solar: 0 };
-
-  const wind: RegionData = {
-    regionId: `${config.regionId}-wind`,
-    profile: timeOfDayAverageGW(windPoints),
-    latestProfile: latestCompleteUtcDayProfileGW(windPoints),
-    totalTWh: totalTWh30d(windPoints),
-    peakGW: peakGW(windPoints),
-    lastUpdated: windLast,
-    lastSuccessAt: windLast,
-    sourceNote: `EIA ${config.respondent} wind × ${(config.windRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
-    fuelShare,
-  };
-
-  const solar: RegionData = {
-    regionId: `${config.regionId}-solar`,
-    profile: timeOfDayAverageGW(solarPoints),
-    latestProfile: latestCompleteUtcDayProfileGW(solarPoints),
-    totalTWh: totalTWh30d(solarPoints),
-    peakGW: peakGW(solarPoints),
-    lastUpdated: solarLast,
-    lastSuccessAt: solarLast,
-    sourceNote: `EIA ${config.respondent} solar × ${(config.solarRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
-    fuelShare,
-  };
-
-  return { wind, solar };
 }
 
 export function parseEiaIsoRegion(
@@ -233,42 +125,4 @@ export function buildEiaIsoRegion(config: EiaIsoConfig) {
   const isMain = (metaUrl: string) => Boolean(process.argv[1] && metaUrl === pathToFileURL(process.argv[1]).href);
 
   return { parse, run, runCli, isMain };
-}
-
-export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
-  const parsePerFuel = (windRaw: EIAResponse, solarRaw?: EIAResponse) =>
-    parseEiaIsoRegionPerFuel(config, windRaw, solarRaw);
-
-  const run = async (): Promise<{ wind: RegionData; solar: RegionData }> => {
-    const apiKey = process.env.EIA_API_KEY;
-    if (!apiKey) throw new Error("EIA_API_KEY not set");
-    const [wind, solar] = await Promise.all([
-      fetchFueltype(apiKey, config.respondent, "WND"),
-      fetchFueltype(apiKey, config.respondent, "SUN").catch((err) => {
-        console.warn(`${config.displayName} SUN fetch failed, continuing wind-only: ${(err as Error).message}`);
-        return undefined;
-      }),
-    ]);
-    return parsePerFuel(wind, solar);
-  };
-
-  const fallbackSplit = config.fallbackSplit ?? { wind: 0.5, solar: 0.5 };
-
-  const runCli = async (): Promise<void> => {
-    const data = await withFallback<{ wind: RegionData; solar: RegionData }>(
-      config.regionId,
-      run,
-      {
-        regionTier: "live" as const,
-        tagLive: (r) => r,
-        tagCached: (c) =>
-          adaptCachedAggregateToPerFuel(c, config.regionId, fallbackSplit),
-      },
-    );
-    process.stdout.write(JSON.stringify(data));
-  };
-
-  const isMain = (metaUrl: string) => Boolean(process.argv[1] && metaUrl === pathToFileURL(process.argv[1]).href);
-
-  return { parsePerFuel, run, runCli, isMain };
 }

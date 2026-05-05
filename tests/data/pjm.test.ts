@@ -8,18 +8,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixture = JSON.parse(readFileSync(join(__dirname, "../fixtures/pjm-eia.json"), "utf8"));
 
 describe("pjm parser (EIA proxy)", () => {
-  it("returns wind and solar RegionData with 24-hour profiles", () => {
+  it("returns valid RegionData with a 24-hour profile and dynamic fuelShare", () => {
     const result = parsePjm(fixture.wind, fixture.solar);
-    expect(result.wind.regionId).toBe("pjm-wind");
-    expect(result.solar.regionId).toBe("pjm-solar");
-    expect(result.wind.profile.length).toBe(24);
-    expect(result.solar.profile.length).toBe(24);
-    expect(result.wind.profile.every((gw) => Number.isFinite(gw) && gw >= 0)).toBe(true);
-    expect(result.solar.profile.every((gw) => Number.isFinite(gw) && gw >= 0)).toBe(true);
-    expect(result.wind.peakGW).toBeCloseTo(Math.max(...result.wind.profile), 3);
-    expect(result.solar.peakGW).toBeCloseTo(Math.max(...result.solar.profile), 3);
-    expect(result.wind.totalTWh).toBeGreaterThan(0);
-    expect(result.solar.totalTWh).toBeGreaterThan(0);
-    expect((result.wind.fuelShare?.wind ?? 0) + (result.wind.fuelShare?.solar ?? 0)).toBeCloseTo(1, 6);
+    expect(result.regionId).toBe("pjm");
+    expect(result.profile.length).toBe(24);
+    expect(result.profile.every((gw) => Number.isFinite(gw) && gw >= 0)).toBe(true);
+    expect(result.peakGW).toBeCloseTo(Math.max(...result.profile), 3);
+    expect(result.totalTWh).toBeGreaterThan(0);
+    expect((result.fuelShare?.wind ?? 0) + (result.fuelShare?.solar ?? 0)).toBeCloseTo(1, 6);
   });
 });

@@ -63,21 +63,6 @@ const KNOWN_AGGREGATE_IDS = new Set<string>([
   // spike is promoted to canonical.
   "ercot-native-west",
   "ercot-native-east",
-  // US ISO aggregates pending cron-bot regen with per-fuel split (Phase 3b-v2):
-  // Old aggregate snapshots restored for resilience (EIA_API_KEY unavailable).
-  // These IDs no longer exist in regions.ts but snapshots are kept so the
-  // build degrades gracefully to stale data when live API is unavailable.
-  // cron-bot should regenerate per-fuel snapshots (caiso-wind/solar, etc.)
-  // once EIA API access is restored.
-  "caiso",
-  "ercot-east",
-  "ercot-west",
-  "miso",
-  "pjm",
-  "spp",
-  "bpa",
-  "nyiso",
-  "iso-ne",
 ]);
 
 // Legacy T1-live-TSO is an accepted alias of T1a-live-tso for pre-2026-04-25

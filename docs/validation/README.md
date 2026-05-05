@@ -1,6 +1,6 @@
 # Validation index
 
-Last generated: 2026-05-05
+Last generated: 2026-05-04
 
 | Region | Tier | Kind | Backfill years | Validation doc |
 |---|---|---|---|---|
@@ -269,33 +269,24 @@ Last generated: 2026-05-05
 | Uganda | static | hydro | 0 | [uganda](./uganda.md) |
 | Ukraine | static | solar | 0 | [ukraine](./ukraine.md) |
 | Uruguay | live | wind | 0 | [uruguay](./uruguay.md) |
-| BPA Solar | live | solar | 0 | [bpa-solar](./bpa-solar.md) |
-| BPA Wind | live | wind | 0 | [bpa-wind](./bpa-wind.md) |
-| California Solar | live | solar | 0 | [caiso-solar](./caiso-solar.md) |
-| California Wind | live | wind | 0 | [caiso-wind](./caiso-wind.md) |
-| ERCOT East Solar | live | solar | 0 | [ercot-east-solar](./ercot-east-solar.md) |
-| ERCOT East Wind | live | wind | 0 | [ercot-east-wind](./ercot-east-wind.md) |
-| ERCOT West Solar | live | solar | 0 | [ercot-west-solar](./ercot-west-solar.md) |
-| ERCOT West Wind | live | wind | 0 | [ercot-west-wind](./ercot-west-wind.md) |
+| BPA | live | mixed | 7 | [bpa](./bpa.md) |
+| California | live | mixed | 7 | [caiso](./caiso.md) |
+| ERCOT East | live | mixed | 7 | [ercot-east](./ercot-east.md) |
+| ERCOT West | live | mixed | 7 | [ercot-west](./ercot-west.md) |
 | Florida | static | solar | 0 | [florida](./florida.md) |
 | Hawaii (Big Island) | static | mixed | 0 | [hawaii-island](./hawaii-island.md) |
 | Hawaii (Maui) | static | solar | 0 | [hawaii-maui](./hawaii-maui.md) |
 | Hawaii (Oahu) | static | solar | 0 | [hawaii-oahu](./hawaii-oahu.md) |
 | ISO-NE (whole ISO) | live | mixed | 7 | [iso-ne](./iso-ne.md) |
 | ISO-NE Maine/Vermont | live | wind | 0 | [iso-ne-maine-vermont](./iso-ne-maine-vermont.md) |
-| ISO-NE (rest) Solar | live | solar | 0 | [iso-ne-rest-solar](./iso-ne-rest-solar.md) |
-| ISO-NE (rest) Wind | live | wind | 0 | [iso-ne-rest-wind](./iso-ne-rest-wind.md) |
-| MISO (Midwest) Solar | live | solar | 0 | [miso-solar](./miso-solar.md) |
-| MISO (Midwest) Wind | live | wind | 0 | [miso-wind](./miso-wind.md) |
+| ISO-NE (rest) | live | mixed | 0 | [iso-ne-rest](./iso-ne-rest.md) |
+| MISO (Midwest) | live | mixed | 7 | [miso](./miso.md) |
 | NYISO (whole ISO) | live | mixed | 7 | [nyiso](./nyiso.md) |
-| NYISO (rest) Solar | live | solar | 0 | [nyiso-rest-solar](./nyiso-rest-solar.md) |
-| NYISO (rest) Wind | live | wind | 0 | [nyiso-rest-wind](./nyiso-rest-wind.md) |
+| NYISO (rest) | live | mixed | 0 | [nyiso-rest](./nyiso-rest.md) |
 | NYISO Zones D+E | live | wind | 0 | [nyiso-zones-d-e](./nyiso-zones-d-e.md) |
 | Permian Basin | flare | flare | 0 | [permian](./permian.md) |
-| PJM Solar | live | solar | 0 | [pjm-solar](./pjm-solar.md) |
-| PJM Wind | live | wind | 0 | [pjm-wind](./pjm-wind.md) |
-| SPP Solar | live | solar | 0 | [spp-solar](./spp-solar.md) |
-| SPP Wind | live | wind | 0 | [spp-wind](./spp-wind.md) |
+| PJM | live | mixed | 7 | [pjm](./pjm.md) |
+| SPP | live | mixed | 7 | [spp](./spp.md) |
 | TVA (SE United States) | static | solar | 0 | [tva](./tva.md) |
 | Uzbekistan | static | solar | 0 | [uzbekistan](./uzbekistan.md) |
 | Venezuela | static | wind | 0 | [venezuela](./venezuela.md) |

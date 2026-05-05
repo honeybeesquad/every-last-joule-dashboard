@@ -1,16 +1,16 @@
-# Validation — SPP Wind (`spp-wind`)
+# Validation — NYISO (rest) (`nyiso-rest`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-04 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `spp-wind`
+- **Region id:** `nyiso-rest`
 - **Country:** USA
 - **Tier:** live
-- **Kind:** wind
-- **Source:** EIA SPP wind
+- **Kind:** mixed
+- **Source:** EIA NYISO wind+solar (ex-Zones D/E)
 - **Source URL:** [https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data](https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data)
-- **Loader:** [`spp.json.ts`](../../src/data/spp.json.ts)
+- **Loader:** [`nyiso.json.ts`](../../src/data/nyiso.json.ts)
 - **Structural gap:** no
 
 ## Calibration
@@ -22,18 +22,18 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
+| 2023 | — | — | 0.041 | — | — |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** —
+- **TSO annual curtailment (latest published):** NYISO statewide ~0.162 TWh wind (2023); ex-Zones-D/E ~25% share
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
 
-_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
+_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
 
 ## Known limitations
 
@@ -41,8 +41,8 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: [`spp.json.ts`](../../src/data/spp.json.ts)
-- Backfill archive: `data/historical/backfill/*_spp-wind_*.parquet` (0 years)
+- Loader source: [`nyiso.json.ts`](../../src/data/nyiso.json.ts)
+- Backfill archive: `data/historical/backfill/*_nyiso-rest_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

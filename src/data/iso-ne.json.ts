@@ -1,19 +1,18 @@
-import { buildEiaIsoRegionPerFuel } from "../lib/eia-iso.js";
+import { buildEiaIsoRegion } from "../lib/eia-iso.js";
 
-const loader = buildEiaIsoRegionPerFuel({
-  regionId: "iso-ne-rest",
+const loader = buildEiaIsoRegion({
+  regionId: "iso-ne",
   respondent: "ISNE",
   displayName: "ISO-NE",
   windRate: 0.03,
   solarRate: 0.02,
-  fallbackSplit: { wind: 0.5, solar: 0.5 },
 });
 
-export const parseIsoNeRestPerFuel = loader.parsePerFuel;
+export const parseIsoNe = loader.parse;
 
 if (loader.isMain(import.meta.url)) {
   loader.runCli().catch((err) => {
-    console.error("iso-ne-rest loader failed", err);
+    console.error("iso-ne loader failed", err);
     process.exit(1);
   });
 }

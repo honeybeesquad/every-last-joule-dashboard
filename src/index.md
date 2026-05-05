@@ -264,46 +264,26 @@ document.getElementById("app-root").innerHTML = `
 `;
 
 const regionData = {
-  // ERCOT — EIA path emits per-fuel east/west × wind/solar:
   ...(ERCOT_NATIVE_ENABLED
     ? {
-        // Native ERCOT path (legacy): map ercot-native-east/west to per-fuel keys.
-        // Note: ercot-native loader emits mixed fuel data, mapped to both wind/solar.
-        "ercot-east-wind":  { ...ercotNative["ercot-native-east"], regionId: "ercot-east-wind" },
-        "ercot-east-solar": { ...ercotNative["ercot-native-east"], regionId: "ercot-east-solar" },
-        "ercot-west-wind":  { ...ercotNative["ercot-native-west"], regionId: "ercot-west-wind" },
-        "ercot-west-solar": { ...ercotNative["ercot-native-west"], regionId: "ercot-west-solar" },
+        "ercot-west": { ...ercotNative["ercot-native-west"], regionId: "ercot-west" },
+        "ercot-east": { ...ercotNative["ercot-native-east"], regionId: "ercot-east" }
       }
-    : {
-        "ercot-east-wind":  ercot["ercot-east-wind"],
-        "ercot-east-solar":  ercot["ercot-east-solar"],
-        "ercot-west-wind":   ercot["ercot-west-wind"],
-        "ercot-west-solar":  ercot["ercot-west-solar"],
-      }
-  ),
-  // CAISO/MISO/PJM/SPP/BPA/NYISO/ISO-NE loaders return shape {wind, solar}
-  // (unlike ERCOT which returns {<zone>-<fuel>} keys). regionId is set inside
-  // the loader payload, so we just pass through the per-fuel children.
-  "caiso-wind":  caiso.wind,
-  "caiso-solar": caiso.solar,
-  "miso-wind":   miso.wind,
-  "miso-solar":  miso.solar,
-  "pjm-wind":    pjm.wind,
-  "pjm-solar":   pjm.solar,
-  "spp-wind":    spp.wind,
-  "spp-solar":   spp.solar,
-  // NYISO — zones D+E (wind-only carve-out) takes 75% of the wind component;
-  // remaining 25% stays in nyiso-rest-wind. NYISO Power Trends 2024.
-  "nyiso-zones-d-e":  splitRegion(nyiso.wind, "nyiso-zones-d-e", 0.75, "Zones D+E share (75% of NYISO wind curtailment per Power Trends 2024)"),
-  "nyiso-rest-wind":  splitRegion(nyiso.wind, "nyiso-rest-wind", 0.25, "Remainder of NYISO wind"),
-  "nyiso-rest-solar": nyiso.solar,
-  // ISO-NE — Maine/Vermont (wind-only carve-out) takes 93% of the wind
-  // component; remaining 7% stays in iso-ne-rest-wind. ISO-NE IMM 2024.
-  "iso-ne-maine-vermont": splitRegion(isoNe.wind, "iso-ne-maine-vermont", 0.93, "ME+VT share (93% of NE wind curtailment per ISO-NE IMM)"),
-  "iso-ne-rest-wind":     splitRegion(isoNe.wind, "iso-ne-rest-wind", 0.07, "Remainder of ISO-NE wind"),
-  "iso-ne-rest-solar":    isoNe.solar,
-  "bpa-wind":  bpa.wind,
-  "bpa-solar": bpa.solar,
+    : ercot),
+  caiso,
+  miso,
+  pjm,
+  spp,
+  // NYISO zonal split — NYISO Power Trends 2024 / Unbottling Wind
+  // attributes most 2023 wind curtailment (0.162 TWh statewide) to
+  // Zones D and E. 75/25 split approximates that geographic concentration.
+  "nyiso-zones-d-e": splitRegion(nyiso, "nyiso-zones-d-e", 0.75, "Zones D+E share of 2023 statewide wind curtailment (NYISO Power Trends 2024)"),
+  "nyiso-rest": splitRegion(nyiso, "nyiso-rest", 0.25, "Remainder of NYISO wind+solar"),
+  // ISO-NE split — IMM 2024 Annual Markets Report states 93% of 2020-2024
+  // curtailed renewable capacity in New England was in Maine and Vermont.
+  "iso-ne-maine-vermont": splitRegion(isoNe, "iso-ne-maine-vermont", 0.93, "ME+VT share (93% of 2020-2024 NE curtailment per ISO-NE IMM)"),
+  "iso-ne-rest": splitRegion(isoNe, "iso-ne-rest", 0.07, "Remainder of ISO-NE wind+solar"),
+  bpa,
   ...aemo,
   "belgium-wind": belgium,
   "belgium-solar": belgium,
