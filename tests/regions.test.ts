@@ -86,7 +86,9 @@ describe("regions", () => {
     // ercot-east, ercot-west, miso, pjm, spp, nyiso-rest, iso-ne-rest, bpa)
     // → 18 new per-fuel rows, net +9. 290 + 9 = 299? Wait, check: 289 before
     // Phase 3b, 9 mixed split into 18 single-fuel = +9, so 289 + 9 = 298.
-    expect(REGIONS.length).toBe(298);
+    // Phase 3c (2026-05-05): 20 mixed regions split into per-fuel entries,
+    // adding 20 net new regions. 298 + 20 = 318.
+    expect(REGIONS.length).toBe(318);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -142,12 +144,15 @@ describe("regions", () => {
     // per-fuel splits = +25 net. 119 + 25 = 144. (denmark-east pair has
     // own CSV loader, not ZONES entries, but still live in REGIONS.)
     // Phase 3b (2026-05-05): T1a +9 US ISO per-fuel splits. 144 + 9 = 153.
+    // Phase 3c (2026-05-05): T1a +9 (turkey-wind/solar, north-sea-wind/solar,
+    // norway-no1..no4 hydro+wind = 8, new-zealand-wind/solar/geo = 3 → net +9 T1a).
+    // T1a: 143 + 9 = 152. (NZ geo adds kind:"geo" — still T1a live.)
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(143);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(152);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(153);
+    expect(liveTotal).toBe(162);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -165,14 +170,12 @@ describe("regions", () => {
 // Phase 3a (2026-05-04): T1a +21 (ENTSO-E per-fuel splits),
     // T1b +4 (netherlands, italy-north-zone, italy-sicily, italy-sardinia → per-fuel).
     // Net: T1a 113→134, T1b 5→9.
-    // Phase 3b (2026-05-05): T1a +9 (US ISO per-fuel splits:
-    // caiso-wind/solar, ercot-east-wind/solar, ercot-west-wind/solar,
-    // miso-wind/solar, pjm-wind/solar, spp-wind/solar, nyiso-rest-wind/solar,
-    // iso-ne-rest-wind/solar, bpa-wind/solar). T1a 134→143.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(143);
+    // Phase 3b (2026-05-05): T1a +9 (US ISO per-fuel splits). T1a 134→143.
+    // Phase 3c (2026-05-05): T1a +9 (turkey, north-sea, norway×4, new-zealand). T1a 143→152.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(152);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(153);
+    expect(liveTotal).toBe(162);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -236,7 +239,12 @@ describe("regions", () => {
     // (albania, georgia, armenia, azerbaijan, uzbekistan, sri-lanka,
     // sudan, venezuela, laos, cambodia, myanmar). 126 + 11 = 137.
     // Phase 3a: static regions unchanged (no new T3 in this phase).
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(137);
+    // Phase 3c (2026-05-05): 11 T3 static mixed regions split into per-fuel
+    // (gansu, ningxia, china-shanxi, china-jiangsu, china-hunan, china-hubei,
+    // china-guizhou, china-chongqing, pakistan → wind/solar/hydro children).
+    // Net: +11 T3 static. 137 + 11 = 148. (T3: removed 9 mixed, added 20 per-fuel)
+    // Wait: 9 mixed removed, 20 per-fuel added = net +11. 137 + 11 = 148.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(148);
   });
 
   it("has 4 flare regions", () => {
@@ -253,28 +261,16 @@ describe("regions", () => {
 
   it("keeps remaining mixed rows explicit so no new bundled curtailment slips in", () => {
     const allowedBundledBacklog = new Set([
-      // Phase 3c targets (Turkey + ~21 T3 modeled mixed — not touched in 3b)
-      // Turkey remains mixed pending EPIAS B16/B19 per-fuel discrimination
-      "turkey",
-      // GB England+Wales (not yet split)
-      "gb-england-wales",
-      // Norway zones (hydro-dominant, not split in Phase 3a)
-      "norway-no1", "norway-no2", "norway-no3", "norway-no4",
-      // NZ (EMI mixed wind+solar+geo — not split)
-      "new-zealand",
-      // China T3-static mixed (not split in Phase 3a)
-      "gansu", "ningxia",
-      "china-guangdong", "china-jiangsu", "china-hunan", "china-hubei",
-      "china-shanxi", "china-zhejiang", "china-fujian", "china-guizhou",
-      "china-chongqing", "china-tianjin",
-      // India (static mixed — not split in Phase 3a)
+      // Phase 3c: still mixed (insufficient per-fuel sourcing)
+      "china-guangdong", "china-zhejiang", "china-fujian", "china-tianjin",
+      // India (static mixed — geoblocked)
       "india-maharashtra",
-      // Morocco (static mixed — not split in Phase 3a)
+      // Morocco (static mixed)
       "morocco",
-      // Phase 2 T3-static mixed (not split in Phase 3a)
+      // Phase 2 T3-static mixed
       "georgia", "azerbaijan", "sri-lanka",
-      // Other static mixed (not split in Phase 3a)
-      "taiwan", "pakistan", "manitoba", "hawaii-island",
+      // Other static mixed
+      "taiwan", "manitoba", "hawaii-island",
       "austria", "cuba", "rwanda",
     ]);
 
@@ -345,7 +341,10 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "south-africa-wind")).toBeDefined();
     expect(REGIONS.find(r => r.id === "poland-wind")).toBeDefined();
     expect(REGIONS.find(r => r.id === "poland-solar")).toBeDefined();
-    expect(REGIONS.find(r => r.id === "turkey")).toBeDefined();
+    // turkey split into turkey-wind + turkey-solar in Phase 3c
+    expect(REGIONS.find(r => r.id === "turkey")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "turkey-wind")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "turkey-solar")).toBeDefined();
     expect(REGIONS.find(r => r.id === "greece-wind")).toBeDefined();
     expect(REGIONS.find(r => r.id === "greece-solar")).toBeDefined();
     expect(REGIONS.find(r => r.id === "romania-wind")).toBeDefined();
@@ -360,7 +359,11 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "belgium-solar")).toBeDefined();
     // Denmark split in v0.6; see coverage-audit test block below.
     expect(REGIONS.find(r => r.id === "denmark")).toBeUndefined();
-    expect(REGIONS.find(r => r.id === "new-zealand")).toBeDefined();
+    // new-zealand split into new-zealand-wind/solar/geo in Phase 3c
+    expect(REGIONS.find(r => r.id === "new-zealand")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "new-zealand-wind")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "new-zealand-solar")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "new-zealand-geo")).toBeDefined();
     // denmark-west/denmark-east now exist as v0.6 split regions.
   });
 
@@ -457,14 +460,11 @@ describe("regions", () => {
     // now exercises their wind/solar children in the dedicated test below.
     for (const id of [
       "inner-mongolia",
-      "gansu",
       "qinghai",
-      "ningxia",
       "yunnan",
       "tibet",
       // india-south + india-west promoted to T1a live in India W2 (2026-05-02).
       "india-east",
-      "pakistan",
       "iran",
       "iraq-mainland",
       "kurdistan",
@@ -479,6 +479,13 @@ describe("regions", () => {
       expect(region).toBeDefined();
       expect(region?.tier).toBe("static");
     }
+    // Phase 3c: gansu/ningxia/pakistan split into per-fuel — originals removed
+    expect(REGIONS.find(r => r.id === "gansu")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "ningxia")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "pakistan")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "gansu-wind")?.tier).toBe("static");
+    expect(REGIONS.find(r => r.id === "ningxia-wind")?.tier).toBe("static");
+    expect(REGIONS.find(r => r.id === "pakistan-wind")?.tier).toBe("static");
   });
 
   it("Brazilian non-NE state fuel children are live (sourced from the same ONS feed as brazil-ne)", () => {
@@ -539,7 +546,7 @@ describe("regions", () => {
     const livePairs: Array<[string, string]> = [
       ["iso-ne-maine-vermont", "iso-ne-rest-wind"],
       ["nyiso-zones-d-e", "nyiso-rest-wind"],
-      ["gb-scotland", "gb-england-wales"],
+      ["gb-scotland-wind", "gb-england-wales-wind"],
       ["ireland-republic", "northern-ireland"],
     ];
     for (const [a, b] of livePairs) {
@@ -569,16 +576,22 @@ describe("regions", () => {
   });
 
   it("includes the 2026-04-24 Norway 5-zone split and Switzerland", () => {
-    // Norway split into all 5 ENTSO-E bidding zones (NO1 Oslo, NO2
-    // Kristiansand, NO3 Trondheim, NO4 Tromsø, NO5 Bergen). Prior
-    // n-norway was NO4-only and is now absent.
-    for (const id of ["norway-no1", "norway-no2", "norway-no3", "norway-no4", "norway-no5"]) {
+    // Norway split into per-fuel entries (NO1–NO4 each get hydro+wind; NO5 stays hydro).
+    // Phase 3c: norway-no1..no4 replaced by norway-no{1..4}-hydro + norway-no{1..4}-wind.
+    for (const id of [
+      "norway-no1-hydro", "norway-no1-wind",
+      "norway-no2-hydro", "norway-no2-wind",
+      "norway-no3-hydro", "norway-no3-wind",
+      "norway-no4-hydro", "norway-no4-wind",
+      "norway-no5",
+    ]) {
       const region = REGIONS.find(r => r.id === id);
       expect(region, `missing Norway zone ${id}`).toBeDefined();
       expect(region?.tier).toBe("live");
       expect(region?.country).toBe("NOR");
     }
     expect(REGIONS.find(r => r.id === "n-norway")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "norway-no1")).toBeUndefined();
 
     // Switzerland added as live ENTSO-E region (PV-only via Swissgrid).
     // CODEX-7 / B4 Option B: Switzerland is the only T1c live-neighbour-
