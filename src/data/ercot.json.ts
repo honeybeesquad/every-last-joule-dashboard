@@ -4,37 +4,8 @@ import { withFallback } from "../lib/resilient.js";
 import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
-/**
- * ERCOT (Texas) wind + solar curtailment loader - v0 proxy.
- *
- * Source: EIA Hourly Electric Grid Monitor, ERCO respondent, WND and SUN
- * fueltypes fetched in parallel and merged.
- * Endpoint docs: https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data
- *
- * Curtailment derivation: EIA does not directly publish curtailment. We apply
- * separate calibrated proxy rates to hourly wind and solar generation:
- *   wind  → 6.15 %  (ERCOT 2024: ~8 TWh wind curtailed / ~130 TWh wind gen)
- *   solar → 4.0 %   (ERCOT 2024: ~0.8 TWh solar curtailed / ~20 TWh solar gen;
- *                    rising fast with Lamesa / Roadrunner / Phoebe clusters)
- * Rates per Potomac Economics 2024 ERCOT State of the Market figures
- * and public ERCOT/EIA generation data. The West/East allocation below is
- * illustrative because no public ERCOT zonal dispatch-down series was found;
- * it preserves the book-derived 66/34 West+Panhandle split pending a native
- * ERCOT zonal curtailment feed.
- *
- * The resulting per-hour series is wind-heavy overnight (Generic Transmission
- * Constraints bind on West Texas wind) and solar-peaky mid-day in West Texas
- * transmission bottlenecks.
- *
- * Emits a dynamic fuelShare per sub-region derived from observed MW volumes so
- * hotspot bucketing reflects the real wind/solar mix, not a static kind.
- */
-
 const WIND_RATE = 0.0615;
 const SOLAR_RATE = 0.04;
-// Illustrative, derived from Gates 2024 book research: West+Panhandle
-// 5.3 TWh of about 8 TWh 2024 ERCOT curtailment. Not an ERCOT-published
-// zonal curtailment statistic; see docs/methodology/flare-ercot-brazil.md.
 const ERCOT_WEST_SHARE = 0.66;
 const ERCOT_EAST_SHARE = 0.34;
 
@@ -44,58 +15,45 @@ interface EIAResponse {
   response: {
     total: string | number;
     data: Array<{
-      period: string;     // "YYYY-MM-DDTHH" in UTC
+      period: string;
       respondent: string;
-      fueltype: string;   // "WND" | "SUN" | ...
-      value: string;      // MWh
+      fueltype: string;
+      value: string;
     }>;
   };
   warnings?: unknown;
 }
 
-function mergeSum(a: CurtailmentPoint[], b: CurtailmentPoint[]): CurtailmentPoint[] {
-  const map = new Map<string, number>();
-  for (const p of a) map.set(p.utcTimestamp, (map.get(p.utcTimestamp) ?? 0) + p.mw);
-  for (const p of b) map.set(p.utcTimestamp, (map.get(p.utcTimestamp) ?? 0) + p.mw);
-  return Array.from(map.entries())
-    .sort(([x], [y]) => x.localeCompare(y))
-    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
+function toPoints(raw: EIAResponse, rate: number): CurtailmentPoint[] {
+  return raw.response.data.map((r) => ({
+    utcTimestamp: `${r.period}:00:00Z`,
+    mw: Math.max(0, Number(r.value) * rate),
+  }));
 }
 
-function scaleRegion(
-  base: RegionData,
-  regionId: string,
+function scalePoints(
+  points: CurtailmentPoint[],
   share: number,
-  sourceNote: string,
-  fuelShare?: { wind: number; solar: number },
-): RegionData {
-  return {
-    ...base,
-    regionId,
-    profile: base.profile.map((gw) => gw * share),
-    latestProfile: base.latestProfile?.map((gw) => gw * share) ?? null,
-    totalTWh: base.totalTWh * share,
-    peakGW: base.peakGW * share,
-    sourceNote,
-    ...(fuelShare ? { fuelShare } : {}),
-  };
+): CurtailmentPoint[] {
+  return points.map((p) => ({ ...p, mw: p.mw * share }));
 }
 
-/** Pure parser: EIA JSON in (possibly multi-fueltype), split RegionData out. */
-export function parseErcot(
+export function parseErcotPerFuel(
   windRaw: EIAResponse,
   solarRaw?: EIAResponse,
-): Record<"ercot-west" | "ercot-east", RegionData> {
-  const windPoints: CurtailmentPoint[] = windRaw.response.data.map((r) => ({
-    utcTimestamp: `${r.period}:00:00Z`,
-    mw: Math.max(0, Number(r.value) * WIND_RATE),
-  }));
-  const solarPoints: CurtailmentPoint[] = (solarRaw?.response?.data ?? []).map((r) => ({
-    utcTimestamp: `${r.period}:00:00Z`,
-    mw: Math.max(0, Number(r.value) * SOLAR_RATE),
-  }));
+): Record<"ercot-east-wind" | "ercot-east-solar" | "ercot-west-wind" | "ercot-west-solar", RegionData> {
+  const windPoints = toPoints(windRaw, WIND_RATE);
+  const solarPoints = toPoints(solarRaw ?? { response: { total: 0, data: [] } }, SOLAR_RATE);
 
-  const combined = mergeSum(windPoints, solarPoints);
+  const windWestPoints = scalePoints(windPoints, ERCOT_WEST_SHARE);
+  const windEastPoints = scalePoints(windPoints, ERCOT_EAST_SHARE);
+  const solarWestPoints = scalePoints(solarPoints, ERCOT_WEST_SHARE);
+  const solarEastPoints = scalePoints(solarPoints, ERCOT_EAST_SHARE);
+
+  const windWestLast = windWestPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
+  const windEastLast = windEastPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
+  const solarWestLast = solarWestPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
+  const solarEastLast = solarEastPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
 
   const windTotalMw = windPoints.reduce((s, p) => s + p.mw, 0);
   const solarTotalMw = solarPoints.reduce((s, p) => s + p.mw, 0);
@@ -104,36 +62,51 @@ export function parseErcot(
     ? { wind: windTotalMw / denom, solar: solarTotalMw / denom }
     : { wind: 1, solar: 0 };
 
-  const lastPeriod = combined.at(-1)?.utcTimestamp ?? new Date().toISOString();
-
-  const base: RegionData = {
-    regionId: "ercot",
-    profile: timeOfDayAverageGW(combined),
-    latestProfile: latestCompleteUtcDayProfileGW(combined),
-    totalTWh: totalTWh30d(combined),
-    peakGW: peakGW(combined),
-    lastUpdated: lastPeriod,
-    lastSuccessAt: lastPeriod,
-    sourceNote: `EIA hourly wind × ${(WIND_RATE * 100).toFixed(2)}% + solar × ${(SOLAR_RATE * 100).toFixed(1)}% calibrated curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
-  };
-
-  const shareNote = `wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%`;
-
   return {
-    "ercot-west": scaleRegion(
-      base,
-      "ercot-west",
-      ERCOT_WEST_SHARE,
-      `EIA ERCO wind+solar × calibrated rates, illustrative 66% West/Panhandle book-derived split (${shareNote})`,
+    "ercot-west-wind": {
+      regionId: "ercot-west-wind",
+      profile: timeOfDayAverageGW(windWestPoints),
+      latestProfile: latestCompleteUtcDayProfileGW(windWestPoints),
+      totalTWh: totalTWh30d(windWestPoints),
+      peakGW: peakGW(windWestPoints),
+      lastUpdated: windWestLast,
+      lastSuccessAt: windWestLast,
+      sourceNote: `EIA ERCO wind × ${(WIND_RATE * 100).toFixed(2)}% calibrated curtailment, illustrative 66% West/Panhandle split`,
       fuelShare,
-    ),
-    "ercot-east": scaleRegion(
-      base,
-      "ercot-east",
-      ERCOT_EAST_SHARE,
-      `EIA ERCO wind+solar × calibrated rates, illustrative 34% East/Central book-derived split (${shareNote})`,
+    },
+    "ercot-west-solar": {
+      regionId: "ercot-west-solar",
+      profile: timeOfDayAverageGW(solarWestPoints),
+      latestProfile: latestCompleteUtcDayProfileGW(solarWestPoints),
+      totalTWh: totalTWh30d(solarWestPoints),
+      peakGW: peakGW(solarWestPoints),
+      lastUpdated: solarWestLast,
+      lastSuccessAt: solarWestLast,
+      sourceNote: `EIA ERCO solar × ${(SOLAR_RATE * 100).toFixed(1)}% calibrated curtailment, illustrative 66% West/Panhandle split`,
       fuelShare,
-    ),
+    },
+    "ercot-east-wind": {
+      regionId: "ercot-east-wind",
+      profile: timeOfDayAverageGW(windEastPoints),
+      latestProfile: latestCompleteUtcDayProfileGW(windEastPoints),
+      totalTWh: totalTWh30d(windEastPoints),
+      peakGW: peakGW(windEastPoints),
+      lastUpdated: windEastLast,
+      lastSuccessAt: windEastLast,
+      sourceNote: `EIA ERCO wind × ${(WIND_RATE * 100).toFixed(2)}% calibrated curtailment, illustrative 34% East/Central split`,
+      fuelShare,
+    },
+    "ercot-east-solar": {
+      regionId: "ercot-east-solar",
+      profile: timeOfDayAverageGW(solarEastPoints),
+      latestProfile: latestCompleteUtcDayProfileGW(solarEastPoints),
+      totalTWh: totalTWh30d(solarEastPoints),
+      peakGW: peakGW(solarEastPoints),
+      lastUpdated: solarEastLast,
+      lastSuccessAt: solarEastLast,
+      sourceNote: `EIA ERCO solar × ${(SOLAR_RATE * 100).toFixed(1)}% calibrated curtailment, illustrative 34% East/Central split`,
+      fuelShare,
+    },
   };
 }
 
@@ -158,7 +131,7 @@ async function fetchFueltype(apiKey: string, fueltype: "WND" | "SUN"): Promise<E
   return fetchJSON<EIAResponse>(`${API_BASE}?${params.toString()}`);
 }
 
-const run = async (): Promise<Record<"ercot-west" | "ercot-east", RegionData>> => {
+const run = async (): Promise<Record<"ercot-east-wind" | "ercot-east-solar" | "ercot-west-wind" | "ercot-west-solar", RegionData>> => {
   const apiKey = process.env.EIA_API_KEY;
   if (!apiKey) throw new Error("EIA_API_KEY not set");
   const [wind, solar] = await Promise.all([
@@ -168,22 +141,63 @@ const run = async (): Promise<Record<"ercot-west" | "ercot-east", RegionData>> =
       return undefined;
     }),
   ]);
-  return parseErcot(wind, solar);
+  return parseErcotPerFuel(wind, solar);
 };
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
+/**
+ * Stale-cache shape adapter for ERCOT. Pre-Phase-3b ercot.json has shape
+ * {"ercot-east": RegionData, "ercot-west": RegionData} (per-zone aggregate).
+ * Phase-3b consumers expect 4 per-fuel keys. Splits each zone's aggregate
+ * profile by an assumed wind/solar share until cron-bot regenerates.
+ */
+type ErcotPerFuel = Record<
+  "ercot-east-wind" | "ercot-east-solar" | "ercot-west-wind" | "ercot-west-solar",
+  RegionData
+>;
+function adaptErcotCache(cached: unknown): ErcotPerFuel {
+  if (
+    cached &&
+    typeof cached === "object" &&
+    "ercot-east-wind" in cached
+  ) {
+    return cached as ErcotPerFuel;
+  }
+  const split = { wind: 0.7, solar: 0.3 };
+  const note = " [stale-cache: aggregate split via fallback adapter]";
+  const zones = cached as Record<"ercot-east" | "ercot-west", RegionData>;
+  const splitZone = (
+    base: RegionData,
+    zoneId: "ercot-east" | "ercot-west",
+  ) => {
+    const make = (share: number, fuel: "wind" | "solar"): RegionData => ({
+      ...base,
+      regionId: `${zoneId}-${fuel}`,
+      profile: base.profile.map((g) => g * share),
+      latestProfile: base.latestProfile ? base.latestProfile.map((g) => g * share) : null,
+      peakGW: (base.peakGW ?? 0) * share,
+      totalTWh: (base.totalTWh ?? 0) * share,
+      fuelShare: split,
+      sourceNote: `${base.sourceNote ?? ""}${note}`,
+    });
+    return { wind: make(split.wind, "wind"), solar: make(split.solar, "solar") };
+  };
+  const east = splitZone(zones["ercot-east"], "ercot-east");
+  const west = splitZone(zones["ercot-west"], "ercot-west");
+  return {
+    "ercot-east-wind": east.wind,
+    "ercot-east-solar": east.solar,
+    "ercot-west-wind": west.wind,
+    "ercot-west-solar": west.solar,
+  };
+}
+
 if (isMain) {
-  withFallback<Record<"ercot-west" | "ercot-east", RegionData>>("ercot", run, {
+  withFallback<ErcotPerFuel>("ercot", run, {
     regionTier: "live" as const,
-    tagLive: (r) => ({
-      "ercot-west": { ...r["ercot-west"], sourceStatus: "live" as const },
-      "ercot-east": { ...r["ercot-east"], sourceStatus: "live" as const },
-    }),
-    tagCached: (c) => ({
-      "ercot-west": { ...c["ercot-west"], sourceStatus: "cached" as const },
-      "ercot-east": { ...c["ercot-east"], sourceStatus: "cached" as const },
-    }),
+    tagLive: (r) => r,
+    tagCached: adaptErcotCache,
   })
     .then((data) => {
       process.stdout.write(JSON.stringify(data));
