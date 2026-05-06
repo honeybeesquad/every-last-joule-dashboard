@@ -154,6 +154,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "ningxia-solar": "solar",
   "nt-pilbara": "solar",
   oman: "solar",
+  palestine: "solar",
   "pakistan-wind": "wind",
   "pakistan-solar": "solar",
   "philippines-solar": "solar",

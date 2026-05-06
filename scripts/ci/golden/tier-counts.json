@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-05 (per-fuel globalisation: split finland, ireland-republic, northern-ireland into wind+solar.)",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-06 (add Palestine T3 solar — 383→384 regions, 194→195 countries.)",
   "T1a": 155,
   "T1b": 9,
   "T1c": 1,
   "T2": 6,
   "T2-flare": 8,
-  "T3": 204,
-  "total": 383
+  "T3": 205,
+  "total": 384
 }

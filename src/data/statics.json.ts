@@ -272,7 +272,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   kuwait: { annualTWh: 0.4, kind: "flat", source: "GGFR 2024 Kuwait Burgan + Wafra flare composite (KOC; Greater Burgan oil field + South Kuwait gas flaring; flat 24/7)", reportDate: "2024" },
   kyrgyzstan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Kyrgyzstan 2024 (NEK); hydro+solar; CASA-1000 candidate)", reportDate: "2024" },
   lebanon: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 9.6, source: "IRENA Lebanon 2024 (EDL); severe crisis; diesel+solar+hydro; small grid)", reportDate: "2024" },
-  palestine: { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 3.0, source: "IRENA Palestine 2024 (PEC); Israel-interconnected; solar+wind)", reportDate: "2024" },
+  palestine: { annualTWh: 0.08, kind: "solar", localSolarPeakUTC: 9.7, source: "IRENA Renewable Capacity Statistics 2025 (Palestinian Energy Authority; ~120 MW installed PV, West Bank dominant; provisional 0.08 TWh/yr Pattern-D floor — no published curtailment metric; conflict context acknowledged in sourceNote)", reportDate: "2024" },
   syria: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 9.4, source: "IRENA Syria 2024 (PEO); solar+oil+diesel; war-affected)", reportDate: "2024" },
   tajikistan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Tajikistan 2024 (Barki Tojik); hydro+solar; CASA-1000)", reportDate: "2024" },
   turkmenistan: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Turkmenistan 2024 (TDS); gas+solar; isolated grid)", reportDate: "2024" },

@@ -49,10 +49,9 @@ describe("static regions", () => {
     // marshall-islands, micronesia, nauru, palau, tonga, tuvalu).
     // 8 of 19 were already in STATIC_REGIONS; 11 new entries added.
     // Canonical count: 122 + 19 = 141.
-    expect(Object.keys(data).length).toBe(141);
-    // Non-canonical stays 49 since all 17 were already in STATIC_REGIONS
-    // (only belarus-wind and belarus-solar were added to STATIC_REGIONS here;
-    // all others pre-existed in Phase 2 research-pool entries that are now canonical).
+    // Issue #62 (2026-05-06): add Palestine T3 static (already in STATIC_REGIONS,
+    // moved from non-canonical to canonical). 141 + 1 = 142.
+    expect(Object.keys(data).length).toBe(142);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -87,8 +86,10 @@ describe("static regions", () => {
     // st-vincent, marshall-islands, micronesia, nauru, palau, tuvalu).
     // Research pool: 135 + 11 = 146. Canonical: 122 + 19 = 141.
     // Non-canonical: 146 - 141 = 5.
+    // Issue #62 (2026-05-06): Palestine moved from non-canonical to canonical.
+    // Research pool unchanged at 146. Canonical: 141 + 1 = 142. Non-canonical: 4.
     expect(Object.keys(researchData).length).toBe(146);
-    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(5);
+    expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
   it("includes all expected ids", () => {
