@@ -580,12 +580,30 @@ function renderAt(hour) {
   const renewableEHs = ehsFromGW(renewableGW);
   const renewablePct = cbeci.hashrateEHps > 0 ? (renewableEHs / cbeci.hashrateEHps) * 100 : 0;
 
+  const activeUnit = unit.value ?? "MW";
+
+  // Build renewable-only regionData map (excludes flare regions)
+  const renewableRegionData = {};
+  for (const region of REGIONS.filter(isRenewable)) {
+    if (regionData[region.id]) renewableRegionData[region.id] = regionData[region.id];
+  }
+
+  const usdPerHour = activeUnit === "USD"
+    ? aggregateUsdAtHour(renewableRegionData, prices ?? {}, wrappedHour)
+    : 0;
+
   // Headline readouts: integer pct and 1-decimal GW. At 2× playback the
   // trailing hundredth-digits churn faster than the eye can read them and
   // carry no information (our calibration noise is ≫ 0.01 pp / 10 MW).
   document.getElementById("pct-readout").textContent = `${renewablePct.toFixed(0)}%`;
   document.getElementById("hashrate-readout").innerHTML = `${cbeci.hashrateEHps.toFixed(1)} <span class="stat-unit">EH/s</span>`;
-  document.getElementById("gw-readout").innerHTML = `${renewableGW.toFixed(1)} <span class="stat-unit">GW</span>`;
+  if (activeUnit === "USD") {
+    document.getElementById("gw-readout").innerHTML =
+      `${formatUsdPerHour(usdPerHour)} <span class="stat-unit">est.</span>`;
+  } else {
+    document.getElementById("gw-readout").innerHTML =
+      `${renewableGW.toFixed(1)} <span class="stat-unit">GW</span>`;
+  }
   document.getElementById("supportable-readout").innerHTML = `${renewableEHs.toFixed(1)} <span class="stat-unit">EH/s</span>`;
   document.getElementById("hotspots-title").textContent = `Active hotspots · UTC ${hh}:${mm}`;
   document.getElementById("flare-readout").textContent = `${flareGW.toFixed(0)} GW`;
@@ -599,24 +617,67 @@ function renderAt(hour) {
   // 1 decimal for values ≥ 1 GW where that granularity matters less.
   const fmtGW = (gw) => (gw >= 1 ? gw.toFixed(1) : gw.toFixed(2));
 
-  const itemHtml = (fuel) => ({ region, gw }) => `
-    <li class="hotspot-item">
-      <span class="dot dot--${fuel}"></span>
-      <span class="hotspot-name">${region.name}</span>
-      <span class="hotspot-gw num-tabular">${fmtGW(gw)} GW</span>
-    </li>
-  `;
-
   for (const fuel of FUEL_ORDER) {
-    const rows = renewableEntries
+    const allEntries = renewableEntries
       .map(({ region, gw }) => ({
         region,
         gw: gw * fuelShare(region, fuel, regionData[region.id]),
       }))
-      .filter(({ gw }) => gw > 0)
-      .sort((a, b) => b.gw - a.gw)
-      .slice(0, HOTSPOT_LIST_LIMIT);
-    document.getElementById(`hotspot-list-${fuel}`).innerHTML = rows.map(itemHtml(fuel)).join("");
+      .filter(({ gw }) => gw > 0);
+
+    if (activeUnit === "USD") {
+      // Compute USD value per region for this fuel's share
+      const withUsd = allEntries.map(({ region, gw }) => {
+        const pd = (prices ?? {})[region.id];
+        const rd = regionData[region.id];
+        let usd = 0;
+        if (pd && rd) {
+          // Build a synthetic RegionData with profile scaled by fuel share
+          const share = fuelShare(region, fuel, rd);
+          const scaledRd = { ...rd, profile: rd.profile.map(v => v * share) };
+          usd = usdValueAtHour(scaledRd, pd, wrappedHour);
+        }
+        return { region, gw, usd, hasPriceData: !!pd && pd.priceTier !== "none" };
+      });
+
+      const priced = withUsd
+        .filter(e => e.hasPriceData)
+        .sort((a, b) => b.usd - a.usd)
+        .slice(0, HOTSPOT_LIST_LIMIT);
+
+      const unpriced = withUsd
+        .filter(e => !e.hasPriceData)
+        .sort((a, b) => b.gw - a.gw);
+
+      const pricedHtml = priced.map(({ region, usd }) => `
+        <li class="hotspot-item">
+          <span class="dot dot--${fuel}"></span>
+          <span class="hotspot-name">${region.name}</span>
+          <span class="hotspot-gw num-tabular">${formatRegionUsdPerHour(usd)}</span>
+        </li>
+      `).join("");
+
+      const gapHtml = unpriced.length > 0 ? `
+        <li class="hotspot-gap-row">
+          <span class="hotspot-gap-label">+ ${unpriced.length} region${unpriced.length === 1 ? "" : "s"} without price data</span>
+          <span class="hotspot-gap-gw">${unpriced.slice(0, 3).map(e => e.region.name).join(", ")}${unpriced.length > 3 ? "…" : ""}</span>
+        </li>
+      ` : "";
+
+      document.getElementById(`hotspot-list-${fuel}`).innerHTML = pricedHtml + gapHtml;
+    } else {
+      const rows = allEntries
+        .sort((a, b) => b.gw - a.gw)
+        .slice(0, HOTSPOT_LIST_LIMIT);
+      document.getElementById(`hotspot-list-${fuel}`).innerHTML =
+        rows.map(({ region, gw }) => `
+          <li class="hotspot-item">
+            <span class="dot dot--${fuel}"></span>
+            <span class="hotspot-name">${region.name}</span>
+            <span class="hotspot-gw num-tabular">${fmtGW(gw)} GW</span>
+          </li>
+        `).join("");
+    }
   }
 }
 

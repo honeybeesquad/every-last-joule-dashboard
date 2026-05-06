@@ -1342,6 +1342,26 @@ main table {
   border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
+.hotspot-gap-row {
+  list-style: none;
+  padding: 8px 0 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+  margin-top: 6px;
+}
+
+.hotspot-gap-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+.hotspot-gap-gw {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
 .hotspot-item .dot {
   width: 8px;
   height: 8px;
