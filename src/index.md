@@ -247,7 +247,7 @@ document.getElementById("app-root").innerHTML = `
             return `
               <div class="hotspot-column">
                 <div class="hotspot-column-title">
-                  <span class="dot" style="background:${getFuelColor(fuel)};box-shadow:0 0 10px ${getFuelColor(fuel)}66;"></span>
+                  <span class="dot dot--${fuel}"></span>
                   <span>${FUEL_LABEL[fuel]}</span>
                 </div>
                 <div class="hotspot-column-subtitle">${subtitle}</div>
@@ -593,7 +593,7 @@ function renderAt(hour) {
 
   const itemHtml = (fuel) => ({ region, gw }) => `
     <li class="hotspot-item">
-      <span class="dot" style="background:${getFuelColor(fuel)};box-shadow:0 0 8px ${getFuelColor(fuel)}66;"></span>
+      <span class="dot dot--${fuel}"></span>
       <span class="hotspot-name">${region.name}</span>
       <span class="hotspot-gw num-tabular">${fmtGW(gw)} GW</span>
     </li>

@@ -783,7 +783,9 @@ main table {
   grid-template-columns: minmax(300px, 1fr) minmax(400px, 2fr) minmax(280px, 1fr);
   gap: 32px;
   align-items: center;
-  padding: 24px 0;
+  align-self: start;   /* don't stretch to fill app-shell's 1fr row — prevents
+                          the globe being pushed down to the vertical midpoint */
+  padding: 8px 0;
   position: relative;
 }
 
@@ -852,8 +854,9 @@ main table {
 #globe-canvas {
   display: block;
   width: 100%;
-  aspect-ratio: 1 / 1;   /* square — horizontal bleed handles side overflow,
-                             so no need for the tall portrait ratio anymore */
+  aspect-ratio: 1 / 1;   /* square — horizontal bleed handles side overflow */
+  max-height: 60vh;       /* caps canvas on large/wide screens so the globe
+                             doesn't push the header far from view */
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -871,6 +874,7 @@ main table {
 .globe-placeholder {
   width: 100%;
   aspect-ratio: 1 / 1;
+  max-height: 60vh;
   display: grid;
   place-items: center;
   background:
@@ -1399,6 +1403,23 @@ main table {
 .dot-orange {
   background: var(--btc-orange);
   box-shadow: 0 0 10px rgba(216,57,35,0.5);
+}
+
+/* Fuel-themed dots — resolved at paint time from CSS custom properties so
+   they always match the canvas bars regardless of which theme is active.
+   Avoids the bake-at-eval bug that occurred when inline style="background:
+   getFuelColor()" was called before non-Sunfire theme CSS had resolved. */
+.dot--solar {
+  background: var(--fuel-solar);
+  box-shadow: 0 0 9px var(--fuel-solar);
+}
+.dot--wind {
+  background: var(--fuel-wind);
+  box-shadow: 0 0 9px var(--fuel-wind);
+}
+.dot--hydro {
+  background: var(--fuel-hydro);
+  box-shadow: 0 0 9px var(--fuel-hydro);
 }
 
 .legend {
