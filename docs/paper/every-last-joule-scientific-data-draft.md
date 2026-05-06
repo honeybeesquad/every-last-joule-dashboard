@@ -12,7 +12,7 @@ The global renewable build-out now curtails tens of terawatt-hours of
 clean electricity per year. Where, when, and how much that curtailed
 energy amounts to has not been synthesised across transmission-system
 operators at hourly resolution in a single open dataset. This work
-fills that gap across 380 regions in 195 countries — every UN
+fills that gap across 384 regions in 195 countries — every UN
 member state — spanning every inhabited continent.
 
 ## Why this dataset exists (200 words)
@@ -45,7 +45,7 @@ regions where gas flaring is the dominant "wasted-energy" source.
 
 ## What the dataset contains (150 words)
 
-- **380 regions across 195 countries.** 152 in `T1a-live-tso`
+- **384 regions across 195 countries.** 155 in `T1a-live-tso`
   (own-jurisdiction rate; ENTSO-E and EIA with ERCOT and CAISO
   sub-zones, split per-fuel where the upstream feed exposes wind
   and solar separately; AEMO per-state; Elexon per-fuel; ONS
@@ -83,7 +83,7 @@ The dataset is organised on two orthogonal axes (full taxonomy:
 
 | | `published` | `documented-gap` | `out-of-scope` |
 |---|---|---|---|
-| **`curtailment-renewable`** | 380 regions across 195 countries: live ENTSO-E/EIA/AEMO/Elexon/etc.; T2 calibrated; T3 modelled. | Mexico CENACE, parts of SE Asia, Iran solar… (see `docs/known-limitations.md`) | Antarctica, Vatican, Greenland (~all baseload thermal/diesel) |
+| **`curtailment-renewable`** | 384 regions across 195 countries: live ENTSO-E/EIA/AEMO/Elexon/etc.; T2 calibrated; T3 modelled. | Mexico CENACE, parts of SE Asia, Iran solar… (see `docs/known-limitations.md`) | Antarctica, Vatican, Greenland (~all baseload thermal/diesel) |
 | **`flare-associated-gas`** | 8 regions: Permian, West Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia. | Iran flaring (no GGFR-equivalent disaggregation). | Small flares < 1 Bcm/yr |
 
 Three aspects set this work apart:
@@ -169,7 +169,7 @@ Paulo, Mato Grosso, Goiás, Paraná, Rio Grande do Sul — and a catch-all
 NE-other bucket); per-utility area for Japan (10 TSO control areas:
 Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai, Chubu, TEPCO
 Power Grid, Hokuriku, Okinawa); and national grid for countries
-without public sub-national data. Total: 380 regions in 195
+without public sub-national data. Total: 384 regions in 195
 countries — every UN member state. Stable
 kebab-case IDs defined in `src/lib/regions.ts`.
 
@@ -773,7 +773,7 @@ The v1 recalibration roadmap is five concrete items listed in
 ## 4.5 Tier coverage visualisation (Figure 4)
 
 Figure 4 answers the single-glance question "where is the dataset
-strong and where is it weak?" at geographic scale. Each of the 380
+strong and where is it weak?" at geographic scale. Each of the 384
 regions renders as a tier-coloured dot:
 
 - **T1a-live-tso (152 regions, teal).** Live hourly feed + own-
@@ -804,7 +804,7 @@ regions renders as a tier-coloured dot:
 - **T2 flare (8 regions, brown square).** Permian, West Siberia,
   South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-
   Nenets, Russia East Siberia — correctly flat 24/7 baseload.
-- **T3-modelled (204 regions, terracotta).** Static annual anchors
+- **T3-modelled (205 regions, terracotta).** Static annual anchors
   (Ember, IRENA, regulator reports) combined with a typical diurnal
   or monthly-seasonal shape. Covers Ireland (Republic + Northern,
   EirGrid reachability probe scaled to the SONI/EirGrid 2024
@@ -860,7 +860,7 @@ rate-recalibrations that may promote T2 regions into the top tier.
 
 ## 4.8 Current-snapshot validation (Figure 1)
 
-Figure 1 is the geographic opening shot. 110 of 380 regions have
+Figure 1 is the geographic opening shot. 110 of 384 regions have
 a current peak-GW reading; the remainder are static regions
 without a live fetch yet. Dot area scales with √peakGW so a 10 GW
 hotspot is roughly 3× the visible area of a 1 GW region. The
@@ -1033,15 +1033,15 @@ reporting systematically under-captures certain behaviours:
 ## 5.5 Recommended citation
 
 Machine-readable citation metadata: `dataset/CITATION.cff`.
-Zenodo-minted version DOI for v1.2.1: `<DOI-TBA-v1.2.1>`.
+Zenodo-minted version DOI for v1.2.1: `10.5281/zenodo.20045637`.
 Concept DOI (resolves to latest version): `10.5281/zenodo.19835411`.
 
 Preferred human citation:
 
 > Collins, S. (2026). Every Last Joule: an hourly synthesis of
 > renewable-electricity curtailment and associated-gas flaring
-> across 380 regions in 195 countries. Scientific Data.
-> https://doi.org/<DOI-TBA-v1.2.1>
+> across 384 regions in 195 countries. Scientific Data.
+> https://doi.org/10.5281/zenodo.20045637
 
 Cite the **version DOI** (not the concept DOI) when writing
 reproducible analyses; concept DOI is appropriate when citing
@@ -1116,7 +1116,7 @@ publicly available in the repository under an MIT licence
 - **Repository:**
   https://github.com/honeybeesquad/every-last-joule-dashboard
 - **Tagged release:** `v1.2.1` (matches the Zenodo-archived
-  DOI `<DOI-TBA-v1.2.1>`).
+  DOI `10.5281/zenodo.20045637`).
 - **Languages:** TypeScript (Observable Framework data
   loaders), Python 3.12+ (historical backfill, validation,
   figure rendering).
@@ -1188,7 +1188,7 @@ dominates the current picture (Minas Gerais 4.4 GW [Southeast], Bahia
 followed by the US MISO footprint (1.8
 GW), Vietnam (1.7 GW), Germany (1.6 GW), and north India (1.5 GW).
 Reference legend inside the figure shows the size-to-GW scale. Source
-data: `src/lib/regions.ts` (n=380 regions across 195 countries)
+data: `src/lib/regions.ts` (n=384 regions across 195 countries)
 joined to `data/snapshots/last-good/*.json` (110 regions with
 live peak GW).
 Snapshot-dependent: the top-8 labels refresh each dashboard build.
@@ -1258,7 +1258,7 @@ Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia).
 Terracotta dots (n=204) are T3 typical-profile modelled regions —
 static annual anchors combined with a typical diurnal/seasonal
 shape (solar cosine, wind broad-overnight, hydro monthly-seasonal,
-mixed fuel-share, geothermal-overnight). Total n=380 regions
+mixed fuel-share, geothermal-overnight). Total n=384 regions
 across 195 countries — every UN member state. The figure
 is the single-glance answer to "where is the dataset strong and
 where is it weak?" — T1 coverage is dense over North America, Europe,

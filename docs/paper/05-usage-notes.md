@@ -122,15 +122,15 @@ reporting systematically under-captures certain behaviours:
 ## 5.5 Recommended citation
 
 Machine-readable citation metadata: `dataset/CITATION.cff`.
-Zenodo-minted version DOI for v1.2.1: `<DOI-TBA-v1.2.1>`.
+Zenodo-minted version DOI for v1.2.1: `10.5281/zenodo.20045637`.
 Concept DOI (resolves to latest version): `10.5281/zenodo.19835411`.
 
 Preferred human citation:
 
 > Collins, S. (2026). Every Last Joule: an hourly synthesis of
 > renewable-electricity curtailment and associated-gas flaring
-> across 380 regions in 195 countries. Scientific Data.
-> https://doi.org/<DOI-TBA-v1.2.1>
+> across 384 regions in 195 countries. Scientific Data.
+> https://doi.org/10.5281/zenodo.20045637
 
 Cite the **version DOI** (not the concept DOI) when writing
 reproducible analyses; concept DOI is appropriate when citing

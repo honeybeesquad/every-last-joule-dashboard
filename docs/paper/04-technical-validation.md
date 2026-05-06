@@ -145,7 +145,7 @@ The v1 recalibration roadmap is five concrete items listed in
 ## 4.5 Tier coverage visualisation (Figure 4)
 
 Figure 4 answers the single-glance question "where is the dataset
-strong and where is it weak?" at geographic scale. Each of the 380
+strong and where is it weak?" at geographic scale. Each of the 384
 regions renders as a tier-coloured dot:
 
 - **T1a-live-tso (152 regions, teal).** Live hourly feed + own-
@@ -176,7 +176,7 @@ regions renders as a tier-coloured dot:
 - **T2 flare (8 regions, brown square).** Permian, West Siberia,
   South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-
   Nenets, Russia East Siberia — correctly flat 24/7 baseload.
-- **T3-modelled (204 regions, terracotta).** Static annual anchors
+- **T3-modelled (205 regions, terracotta).** Static annual anchors
   (Ember, IRENA, regulator reports) combined with a typical diurnal
   or monthly-seasonal shape. Covers Ireland (Republic + Northern,
   EirGrid reachability probe scaled to the SONI/EirGrid 2024
@@ -232,7 +232,7 @@ rate-recalibrations that may promote T2 regions into the top tier.
 
 ## 4.8 Current-snapshot validation (Figure 1)
 
-Figure 1 is the geographic opening shot. 110 of 380 regions have
+Figure 1 is the geographic opening shot. 110 of 384 regions have
 a current peak-GW reading; the remainder are static regions
 without a live fetch yet. Dot area scales with √peakGW so a 10 GW
 hotspot is roughly 3× the visible area of a 1 GW region. The

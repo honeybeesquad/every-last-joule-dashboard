@@ -42,7 +42,7 @@ Paulo, Mato Grosso, Goiás, Paraná, Rio Grande do Sul — and a catch-all
 NE-other bucket); per-utility area for Japan (10 TSO control areas:
 Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai, Chubu, TEPCO
 Power Grid, Hokuriku, Okinawa); and national grid for countries
-without public sub-national data. Total: 380 regions in 195
+without public sub-national data. Total: 384 regions in 195
 countries — every UN member state. Stable
 kebab-case IDs defined in `src/lib/regions.ts`.
 
