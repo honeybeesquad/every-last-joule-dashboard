@@ -690,7 +690,9 @@ main table {
 #globe-canvas {
   display: block;
   width: 100%;
-  aspect-ratio: 1;      /* square canvas — globe scales to full width, bleeds above/below */
+  aspect-ratio: 1 / 1.4;  /* taller than wide — globe centers at 50% vertically,
+                              giving 24% canvas headroom above/below the sphere
+                              so zoom and pillar tips never hit a hard edge */
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -707,7 +709,7 @@ main table {
 
 .globe-placeholder {
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 1 / 1.4;
   display: grid;
   place-items: center;
   background:
@@ -1300,7 +1302,7 @@ main table {
 
   #globe-canvas {
     aspect-ratio: auto;
-    height: 400px;
+    height: 500px;
   }
 
   /* Tighter padding on tablets and phones — desktop wastes less
