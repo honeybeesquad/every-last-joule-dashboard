@@ -1678,6 +1678,50 @@ main > h1:first-child {
   border-color: var(--amber-500);
   color: var(--amber-500);
 }
+
+/* Unit toggle (MW ↔ USD) — same pill geometry as .mode-toggle */
+.unit-toggle {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 0;
+}
+
+.unit-btn {
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, rgba(255, 248, 224, 0.5));
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.unit-btn-active {
+  background: rgba(255, 208, 90, 0.18);
+  color: var(--accent, #ffd05a);
+}
+
+.unit-btn:hover:not(.unit-btn-active) {
+  color: var(--text-primary, #fff8e0);
+}
+
+/* Headline row — flex container for pct readout + unit toggle */
+.stat-headline-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.unit-toggle-mount {
+  margin-top: 2px;
+}
+
 .ctl-utc {
   font-size: 12px;
   color: rgba(255,255,255,0.55);
