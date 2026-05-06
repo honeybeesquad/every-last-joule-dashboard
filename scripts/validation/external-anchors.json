@@ -1150,7 +1150,7 @@
   "ethiopia": {
     "tso_annual_latest": "EEP 2024 hydro-dominant, minimal curtailment"
   },
-  "finland": {
+  "finland-wind": {
     "tso_annual_latest": "Fingrid wind curtailment low single-digit TWh/yr",
     "other_anchor": "Fingrid Annual Report 2024",
     "other_anchors": [
@@ -1161,7 +1161,7 @@
     ],
     "_anchor_meta": {
       "migrated_to_v2": true,
-      "migrated_at": "2026-04-26"
+      "migrated_at": "2026-05-06"
     }
   },
   "france": {
@@ -1480,7 +1480,7 @@
     "tso_annual_latest": "MoE Iraq no public data; structural gap",
     "limitations": "Structural gap: no public hourly archive."
   },
-  "ireland-republic": {
+  "ireland-republic-wind": {
     "tso_annual_latest": "EirGrid 2024 wind constraint+curtailment ~1.5 TWh",
     "other_anchor": "EirGrid Annual Renewable Energy Report 2024",
     "tso_annual_anchors": {
@@ -1499,7 +1499,14 @@
     ],
     "_anchor_meta": {
       "migrated_to_v2": true,
-      "migrated_at": "2026-04-26"
+      "migrated_at": "2026-05-06"
+    }
+  },
+  "ireland-republic-solar": {
+    "tso_annual_latest": "EirGrid 2024 solar curtailment negligible (<0.01 TWh); no published metric",
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-05-06"
     }
   },
   "iso-ne": {
@@ -1795,7 +1802,7 @@
       "migrated_at": "2026-04-26"
     }
   },
-  "northern-ireland": {
+  "northern-ireland-wind": {
     "tso_annual_latest": "SONI 2024 wind curtailment ~0.3 TWh",
     "tso_annual_anchors": {
       "2024": {
@@ -1807,7 +1814,14 @@
     },
     "_anchor_meta": {
       "migrated_to_v2": true,
-      "migrated_at": "2026-04-26"
+      "migrated_at": "2026-05-06"
+    }
+  },
+  "northern-ireland-solar": {
+    "tso_annual_latest": "SONI 2024 solar curtailment negligible; no published metric",
+    "_anchor_meta": {
+      "migrated_to_v2": true,
+      "migrated_at": "2026-05-06"
     }
   },
   "norway-no1": {
