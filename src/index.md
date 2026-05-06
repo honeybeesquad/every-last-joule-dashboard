@@ -33,6 +33,8 @@ import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./
 import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
 import { mountGlobe } from "./globe.js";
+import { mountUnitToggle } from "./components/unit-toggle.js";
+import { aggregateUsdAtHour, countNoPriceRegions, formatUsdPerHour, formatUsdPerYear, formatRegionUsdPerHour, usdValueAtHour } from "./lib/price.js";
 
 const ERCOT_NATIVE_ENABLED = false;
 const HOTSPOT_LIST_LIMIT = 50;
@@ -40,7 +42,7 @@ const HOTSPOT_LIST_LIMIT = 50;
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 103;
+const _LOADER_FILE_COUNT = 104;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -63,6 +65,7 @@ const [
   chinaLiaoning, chinaHubei, chinaShanxi, chinaShaanxi, chinaZhejiang,
   chinaHenan, chinaFujian, chinaJiangxi, chinaBeijing, chinaGuizhou,
   chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai,
+  prices,
   zenodoVersion
 ] = await Promise.all([
   trackFile(FileAttachment("data/cbeci.json").json(),            "CBECI"),
@@ -167,6 +170,7 @@ const [
   trackFile(FileAttachment("data/china-tianjin.json").json(),    "China Tianjin"),
   trackFile(FileAttachment("data/china-hainan.json").json(),     "China Hainan"),
   trackFile(FileAttachment("data/china-shanghai.json").json(),   "China Shanghai"),
+  trackFile(FileAttachment("data/prices.json").json(),           "Price data"),
   trackFile(FileAttachment("data/zenodo-version.json").json(),   "Version metadata"),
 ]);
 
@@ -190,7 +194,10 @@ document.getElementById("app-root").innerHTML = `
     <div class="app-body">
       <section class="panel panel-left" aria-label="Headline">
         <div class="eyebrow">Sustainable hashrate · unlocked right now</div>
-        <div class="display-xl num-tabular" id="pct-readout">—%</div>
+        <div class="stat-headline-row">
+          <div class="display-xl num-tabular" id="pct-readout">—%</div>
+          <div id="unit-toggle-mount" class="unit-toggle-mount"></div>
+        </div>
         <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was wasted in the last thirty days — observed curtailed, spilled, or constrained-off across <span id="region-count">—</span> tracked regions. A measured floor, not a speculative ceiling.</p>
         <div class="stats-row">
           <div class="stat">
@@ -550,6 +557,7 @@ const now = new Date();
 const initialHour = now.getUTCHours() + now.getUTCMinutes() / 60;
 const clock = createClock(initialHour);
 const mode = typeof Mutable === "function" ? Mutable("avg30d") : { value: "avg30d" };
+const unit = typeof Mutable === "function" ? Mutable("MW") : { value: "MW" };
 
 function renderAt(hour) {
   const wrappedHour = ((hour % 24) + 24) % 24;
@@ -627,6 +635,17 @@ mountModeToggle(document.getElementById("mode-toggle"), {
     globe?.update({ utcHour: clock.hour, mode: nextMode });
   },
 });
+
+const unitToggleHost = document.getElementById("unit-toggle-mount");
+if (unitToggleHost) {
+  mountUnitToggle(unitToggleHost, {
+    initial: unit.value,
+    onChange(nextUnit) {
+      unit.value = nextUnit;
+      renderAt(clock.hour);
+    },
+  });
+}
 
 const themeToggleHost = document.getElementById("theme-toggle-mount");
 if (themeToggleHost) mountThemeToggle(themeToggleHost);
