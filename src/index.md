@@ -693,7 +693,7 @@ mountModeToggle(document.getElementById("mode-toggle"), {
     mode.value = nextMode;
     renderAt(clock.hour);
     timeline.update({ mode: nextMode });
-    globe?.update({ utcHour: clock.hour, mode: nextMode });
+    globe?.update({ utcHour: clock.hour, mode: nextMode, unitMode: unit.value, priceData: prices ?? {} });
   },
 });
 
@@ -704,6 +704,7 @@ if (unitToggleHost) {
     onChange(nextUnit) {
       unit.value = nextUnit;
       renderAt(clock.hour);
+      globe?.update({ unitMode: nextUnit, priceData: prices ?? {} });
     },
   });
 }
@@ -763,6 +764,6 @@ if (pageLoader) {
   setTimeout(() => pageLoader.remove(), 380);
 }
 
-clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value }));
+clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value, unitMode: unit.value, priceData: prices ?? {} }));
 clock.subscribe(renderAt);
 ```
