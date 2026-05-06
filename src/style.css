@@ -823,14 +823,16 @@ main table {
 
 /* Stacks canvas + placeholder in the same cell. No flex: 1 — let the square
    canvas determine its own height, overflowing the panel vertically.
-   140% width + -20% margin bleeds the canvas into both side columns so the
-   globe sphere visually runs behind the translucent panel backgrounds. */
+   Asymmetric margin: -12% left / 28% right bleed. The left column is
+   visually denser (more content) and has a slightly larger min-width
+   (300px vs 280px), so a purely symmetric split reads as off-centre.
+   Shifting the globe 8% right of panel-centre gives optical balance. */
 .globe-canvas-area {
   display: grid;
   align-items: center;
   justify-items: center;
   width: 140%;
-  margin-left: -20%;
+  margin-left: -12%;
 }
 
 .globe-canvas-area > * {
