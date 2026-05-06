@@ -639,8 +639,9 @@ main table {
   display: grid;
   grid-template-columns: minmax(300px, 1fr) minmax(400px, 2fr) minmax(280px, 1fr);
   gap: 32px;
-  align-items: stretch;
+  align-items: center;
   padding: 24px 0;
+  position: relative;
 }
 
 .panel {
@@ -651,21 +652,28 @@ main table {
 
 .panel-left {
   justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 
+/* Globe panel sits in the center column of the 3-column grid.
+   overflow: visible lets the square canvas bleed above/below its container
+   so the sphere never hits a hard rectangular crop. */
 .panel-center {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 520px;
+  justify-content: center;
   position: relative;
+  overflow: visible;
 }
 
-/* Inner grid stacks canvas + placeholder in the same cell. */
+/* Stacks canvas + placeholder in the same cell. No flex: 1 — let the square
+   canvas determine its own height, overflowing the panel vertically. */
 .globe-canvas-area {
   display: grid;
   align-items: center;
-  justify-content: center;
+  justify-items: center;
   width: 100%;
 }
 
@@ -675,13 +683,14 @@ main table {
 
 .panel-right {
   justify-content: flex-start;
+  position: relative;
+  z-index: 1;
 }
 
 #globe-canvas {
   display: block;
   width: 100%;
-  max-width: 580px;
-  aspect-ratio: 1;
+  aspect-ratio: 1;      /* square canvas — globe scales to full width, bleeds above/below */
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -698,15 +707,12 @@ main table {
 
 .globe-placeholder {
   width: 100%;
-  max-width: 580px;
   aspect-ratio: 1;
-  border-radius: 50%;
   display: grid;
   place-items: center;
   background:
     radial-gradient(circle at 50% 40%, rgba(20,175,172,0.12), rgba(20,175,172,0.04) 35%, rgba(255,255,255,0.02) 60%, transparent 75%),
     radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), rgba(0,0,0,0) 72%);
-  border: 1px solid rgba(255,255,255,0.06);
 }
 
 .globe-placeholder-label {
@@ -716,16 +722,16 @@ main table {
   color: rgba(255,255,255,0.58);
 }
 
-/* Zoom control row — sits below the globe canvas, right-aligned. */
+/* Zoom control row — sits at the bottom of the globe background layer, right-aligned. */
 .globe-zoom-controls {
   display: flex;
   align-items: center;
   gap: 8px;
   align-self: flex-end;
-  max-width: 580px;
   width: 100%;
   justify-content: flex-end;
-  padding-top: 8px;
+  padding: 8px 12px 12px;
+  z-index: 1;
 }
 
 .globe-zoom-label {
@@ -1287,8 +1293,14 @@ main table {
     order: -1;
   }
 
+  .panel-left,
+  .panel-right {
+    z-index: auto;
+  }
+
   #globe-canvas {
-    max-width: 400px;
+    aspect-ratio: auto;
+    height: 400px;
   }
 
   /* Tighter padding on tablets and phones — desktop wastes less
