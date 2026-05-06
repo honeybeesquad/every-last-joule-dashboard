@@ -81,7 +81,7 @@ async function fetchEntsoeHourlyPrices(domain: string, eurToUsd: number): Promis
   try {
     const xml = await (await fetch(url, { signal: AbortSignal.timeout(15_000) })).text();
     const priceMatches = [
-      ...xml.matchAll(/<position>(\d+)<\/position>\s*<price\.amount>([\d.]+)<\/price\.amount>/g),
+      ...xml.matchAll(/<position>(\d+)<\/position>\s*<price\.amount>(-?[\d.]+)<\/price\.amount>/g),
     ];
     if (priceMatches.length < 20) return null;
     const profile: (number | null)[] = Array(24).fill(null);
@@ -183,11 +183,11 @@ const ENTSOE_DOMAIN: Record<string, string> = {
   "denmark-east-solar":     "10YDK-2--------M",
   "france-wind":            "10YFR-RTE------C",
   "france-solar":           "10YFR-RTE------C",
-  "gb-scotland-wind":       "10Y1001A1001A59C",
-  "gb-scotland-solar":      "10Y1001A1001A59C",
-  "gb-england-wales-wind":  "10Y1001A1001A59C",
-  "gb-england-wales-solar": "10Y1001A1001A59C",
-  "north-sea-wind":         "10Y1001A1001A59C",
+  "gb-scotland-wind":       "10YGB----------A",
+  "gb-scotland-solar":      "10YGB----------A",
+  "gb-england-wales-wind":  "10YGB----------A",
+  "gb-england-wales-solar": "10YGB----------A",
+  "north-sea-wind":         "10YGB----------A",
   "norway-no1-hydro":       "10YNO-1--------2",
   "norway-no1-wind":        "10YNO-1--------2",
   "norway-no2-hydro":       "10YNO-2--------T",
@@ -210,8 +210,6 @@ const AEMO_REGION: Record<string, string> = {
   "aemo-sa-solar":  "SA1",
   "aemo-tas-wind":  "TAS1",
   "aemo-tas-solar": "TAS1",
-  "wa-swis":        "WEM",
-  "nt-pilbara":     "WEM",
 };
 
 // ── Helper: make PriceData with fallback ──────────────────────────────────────

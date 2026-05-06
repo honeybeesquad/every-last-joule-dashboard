@@ -34,7 +34,7 @@ import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
 import { mountGlobe } from "./globe.js";
 import { mountUnitToggle } from "./components/unit-toggle.js";
-import { aggregateUsdAtHour, countNoPriceRegions, formatUsdPerHour, formatUsdPerYear, formatRegionUsdPerHour, usdValueAtHour } from "./lib/price.js";
+import { aggregateUsdAtHour, formatUsdPerHour, formatRegionUsdPerHour, usdValueAtHour } from "./lib/price.js";
 
 const ERCOT_NATIVE_ENABLED = false;
 const HOTSPOT_LIST_LIMIT = 50;
@@ -725,6 +725,8 @@ globe = await mountGlobe(canvas, {
   regionData,
   utcHour: initialHour,
   mode: mode.value,
+  unitMode: unit.value ?? "MW",
+  priceData: prices ?? {},
   topologyUrl: await FileAttachment("data/countries-110m.json").url(),
   onRegionClick(region, anchor) {
     if (region) regionTooltip.show(region, anchor);

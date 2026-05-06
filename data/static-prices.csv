@@ -100,3 +100,9 @@ japan-kansai,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
 japan-chugoku,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
 japan-shikoku,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
 japan-okinawa,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
+gb-scotland-wind,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
+gb-scotland-solar,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
+gb-england-wales-wind,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
+gb-england-wales-solar,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
+wa-swis,45.2,AUD,0.65,AEMO WA Market Operator,2023,WA SWIS ~69.5 AUD/MWh x 0.65 USD/AUD
+nt-pilbara,55.0,AUD,0.65,EIA International,2023,NT Pilbara grid ~84.6 AUD/MWh x 0.65 USD/AUD
