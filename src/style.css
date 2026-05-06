@@ -797,6 +797,14 @@ main table {
   justify-content: center;
   position: relative;
   z-index: 1;
+  /* Opaque at outer edge, fades to transparent toward globe */
+  background: linear-gradient(
+    to right,
+    var(--surface-bg-3) 0%,
+    rgba(10, 7, 3, 0.92) 50%,
+    rgba(26, 18, 7, 0.40) 80%,
+    transparent 100%
+  );
 }
 
 /* Globe panel sits in the center column of the 3-column grid.
@@ -812,12 +820,15 @@ main table {
 }
 
 /* Stacks canvas + placeholder in the same cell. No flex: 1 — let the square
-   canvas determine its own height, overflowing the panel vertically. */
+   canvas determine its own height, overflowing the panel vertically.
+   140% width + -20% margin bleeds the canvas into both side columns so the
+   globe sphere visually runs behind the translucent panel backgrounds. */
 .globe-canvas-area {
   display: grid;
   align-items: center;
   justify-items: center;
-  width: 100%;
+  width: 140%;
+  margin-left: -20%;
 }
 
 .globe-canvas-area > * {
@@ -828,6 +839,14 @@ main table {
   justify-content: flex-start;
   position: relative;
   z-index: 1;
+  /* Mirror of panel-left — transparent toward globe, opaque at outer edge */
+  background: linear-gradient(
+    to left,
+    var(--surface-bg-3) 0%,
+    rgba(10, 7, 3, 0.92) 50%,
+    rgba(26, 18, 7, 0.40) 80%,
+    transparent 100%
+  );
 }
 
 #globe-canvas {
@@ -1441,6 +1460,12 @@ main table {
   .panel-left,
   .panel-right {
     z-index: auto;
+    background: none;
+  }
+
+  .globe-canvas-area {
+    width: 100%;
+    margin-left: 0;
   }
 
   #globe-canvas {
