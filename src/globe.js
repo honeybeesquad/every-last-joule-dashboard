@@ -221,14 +221,40 @@ export async function mountGlobe(canvas, initial) {
 
   window.addEventListener("themechange", refreshTokens);
 
-  // Bucket co-located regions, then split multi-kind buckets into adjacent
-  // screen-x pillars 44px apart so each fuel is individually tappable
-  // (WCAG 2.5.5). Same-kind multi-region buckets stay stacked at offset 0.
+  // --- Pillar unit cache ---
+  // buildPillarUnits allocates a new Map + sorted arrays each call.
+  // At 60fps that's GC pressure on every frame for no reason — the inputs
+  // only change when state.regions is replaced or showFlare toggles.
+  let _cachedPillarUnits = null;
+  let _cachedRegionsRef = null;
+  let _cachedShowFlare = null;
+
   function buildPillarUnitsForState() {
+    if (
+      _cachedPillarUnits !== null &&
+      _cachedRegionsRef === state.regions &&
+      _cachedShowFlare === state.showFlare
+    ) {
+      return _cachedPillarUnits;
+    }
     const filtered = state.regions.filter(
       (region) => !(region.kind === "flare" && !state.showFlare),
     );
-    return buildPillarUnits(filtered);
+    _cachedPillarUnits = buildPillarUnits(filtered);
+    _cachedRegionsRef = state.regions;
+    _cachedShowFlare = state.showFlare;
+    return _cachedPillarUnits;
+  }
+
+  // --- Pillar birth animation ---
+  // When a region rotates over the horizon into visibility it used to
+  // snap into existence. Instead we track the first visible timestamp per
+  // region and animate scale 0 → 1 over BIRTH_MS.
+  const BIRTH_MS = 350;
+  const pillarBirthTimes = new Map(); // repId → DOMHighResTimeStamp
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
   }
 
   /**
@@ -284,6 +310,7 @@ export async function mountGlobe(canvas, initial) {
   resizeObserver.observe(canvas);
 
   function render() {
+    const renderNow = performance.now();
     const width = canvas.width / dpr;
     const height = canvas.height / dpr;
     const size = Math.min(width, height);
@@ -388,6 +415,8 @@ export async function mountGlobe(canvas, initial) {
     ctx.stroke();
 
     const pillarUnits = buildPillarUnitsForState();
+    const visibleThisFrame = new Set();
+
     for (const unit of pillarUnits) {
       const group = unit.regions;
       const rep = group[0];
@@ -404,6 +433,17 @@ export async function mountGlobe(canvas, initial) {
       const point = projection([rep.lon, rep.lat]);
       if (!point) continue;
 
+      // Birth animation: first time a region crosses the horizon, scale it
+      // from 0 → 1 over BIRTH_MS so it emerges rather than snapping in.
+      const repId = rep.id;
+      visibleThisFrame.add(repId);
+      if (!pillarBirthTimes.has(repId)) {
+        pillarBirthTimes.set(repId, renderNow);
+      }
+      const birthT = easeOutCubic(
+        Math.min(1, (renderNow - pillarBirthTimes.get(repId)) / BIRTH_MS)
+      );
+
       // Anchor for this unit: original projection point shifted horizontally
       // on screen by offsetPx so co-located wind/solar pairs render as
       // adjacent tappable pillars 44px apart (WCAG 2.5.5).
@@ -412,8 +452,8 @@ export async function mountGlobe(canvas, initial) {
 
       const visible = 1 - dist / (Math.PI / 2);
       const weight = Math.sqrt(totalGW);
-      const glowR = 4 + weight * 5;
-      const coreR = 1.5 + weight * 0.8;
+      const glowR = (4 + weight * 5) * birthT;
+      const coreR = (1.5 + weight * 0.8) * birthT;
       const centreX = width / 2;
       const centreY = height / 2;
       const solarAngle = d3.geoDistance([rep.lon, rep.lat], [sunLng, sunLat]);
@@ -442,7 +482,7 @@ export async function mountGlobe(canvas, initial) {
       if (len > 0.1) {
         dx /= len;
         dy /= len;
-        const pillarH = 3 + weight * 48;
+        const pillarH = (3 + weight * 48) * birthT;
         const pillarW = 3;
 
         if (group.length === 1) {
@@ -534,6 +574,14 @@ export async function mountGlobe(canvas, initial) {
         ctx.stroke();
         ctx.restore();
       }
+    }
+
+    // Update birth-animation state for next frame.
+    // Any region that was visible last frame but not this frame has rotated
+    // back over the horizon — remove its birth time so it re-animates on
+    // the next appearance.
+    for (const id of pillarBirthTimes.keys()) {
+      if (!visibleThisFrame.has(id)) pillarBirthTimes.delete(id);
     }
 
     ctx.globalAlpha = 1;
@@ -706,16 +754,20 @@ export async function mountGlobe(canvas, initial) {
 
   resize();
 
-  // Mobile/battery optimisations:
-  // - Skip rendering when the tab is backgrounded (visibilitychange).
-  // - Throttle auto-rotation to ~30 FPS on narrow viewports. Rotating 0.06°
-  //   per 33ms looks identical to 0.03° per 16ms but halves CPU/GPU work.
-  //   On touch devices where every joule of battery counts this matters.
+  // Frame-rate strategy:
+  // - Desktop: render every rAF frame (targetFrameMs = 0). The old 16ms
+  //   guard was borderline on 60 Hz and would occasionally skip a frame,
+  //   then compensate with a double-step on the next — the "pop forward"
+  //   the user sees. At native rAF rate the step is tiny every frame.
+  // - Mobile/battery: throttle to ~30 FPS (33ms) — half the CPU/GPU work
+  //   for a rotation that looks identical to 60 FPS.
+  // - All cases: cap the delta at 50ms so a GC pause, browser scheduling
+  //   hiccup, or tab-switch recovery never produces a jarring jump.
   const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
   const mobileMQ = window.matchMedia?.("(max-width: 900px), (hover: none)");
-  let targetFrameMs = mobileMQ?.matches ? 33 : 16;
+  let targetFrameMs = mobileMQ?.matches ? 33 : 0;
   mobileMQ?.addEventListener?.("change", (e) => {
-    targetFrameMs = e.matches ? 33 : 16;
+    targetFrameMs = e.matches ? 33 : 0;
   });
 
   let rafId = null;
@@ -726,8 +778,10 @@ export async function mountGlobe(canvas, initial) {
     if (document.hidden) return; // visibilitychange will resume us
     if (now - lastFrameTs >= targetFrameMs) {
       if (!state.dragging && now >= autoResumeAt) {
-        // Scale rotation step so visual speed is frame-rate-independent.
-        const step = 0.03 * ((now - lastFrameTs) / 16);
+        // Cap delta to 50ms: prevents GC pauses / scheduling hiccups from
+        // producing a visible jump in rotation angle.
+        const dt = Math.min(now - lastFrameTs, 50);
+        const step = 0.03 * (dt / 16);
         state.rotation[0] = wrapLongitude(state.rotation[0] + step);
       }
       render();
