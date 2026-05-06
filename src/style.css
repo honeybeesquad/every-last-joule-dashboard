@@ -459,6 +459,149 @@ code, .mono {
   text-transform: uppercase;
   color: rgba(255,255,255,0.3);
   font-family: var(--font-mono, monospace);
+  margin-bottom: 20px;
+}
+
+/* ── Terminal feed ─────────────────────────────────────────── */
+.loader-terminal {
+  width: 280px;
+  background: rgba(0, 0, 0, 0.38);
+  border: 1px solid rgba(255, 248, 224, 0.09);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.loader-terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border-bottom: 1px solid rgba(255, 248, 224, 0.07);
+}
+
+.loader-terminal-dots {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.loader-terminal-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 248, 224, 0.10);
+}
+
+.loader-terminal-dots span:nth-child(1) { background: rgba(255, 248, 224, 0.13); }
+.loader-terminal-dots span:nth-child(2) { background: rgba(255, 248, 224, 0.08); }
+.loader-terminal-dots span:nth-child(3) { background: rgba(255, 248, 224, 0.05); }
+
+.loader-terminal-title {
+  font-size: 9px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(255, 248, 224, 0.20);
+  font-family: var(--font-mono, monospace);
+}
+
+/* Fixed-height viewport — shows exactly 5 rows */
+.loader-terminal-viewport {
+  height: 115px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fade masks top & bottom for depth */
+.loader-terminal-viewport::before,
+.loader-terminal-viewport::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 26px;
+  z-index: 2;
+  pointer-events: none;
+}
+.loader-terminal-viewport::before {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+}
+.loader-terminal-viewport::after {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+}
+
+/* Scrolling column — translateY'd by JS */
+.loader-terminal-scroll {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual region row — 23px tall (115 / 5) */
+.loader-t-row {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  align-items: center;
+  height: 23px;
+  padding: 0 11px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  font-family: var(--font-mono, monospace);
+  flex-shrink: 0;
+  color: rgba(255, 248, 224, 0.38);
+  text-transform: uppercase;
+}
+
+.loader-t-row.done {
+  color: rgba(255, 248, 224, 0.45);
+}
+
+.loader-t-row.active {
+  color: rgba(255, 208, 90, 0.92);
+  background: rgba(255, 208, 90, 0.04);
+}
+
+.loader-t-icon {
+  font-size: 9px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.loader-t-row.done .loader-t-icon {
+  color: #5eead4;
+}
+
+.loader-t-row.active .loader-t-icon {
+  animation: loader-blink 0.75s ease-in-out infinite;
+}
+
+@keyframes loader-blink {
+  0%, 100% { opacity: 0.25; }
+  50%       { opacity: 1; }
+}
+
+.loader-t-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Region counter below the terminal */
+.loader-counter {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 248, 224, 0.32);
+  font-family: var(--font-mono, monospace);
+}
+
+.loader-counter #loader-n {
+  color: rgba(255, 248, 224, 0.72);
+  font-weight: 600;
+}
+
+.loader-counter #loader-total {
+  color: rgba(255, 248, 224, 0.48);
 }
 
 /* Dashboard body - always dark.
