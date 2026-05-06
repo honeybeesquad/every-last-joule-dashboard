@@ -112,14 +112,12 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "iraq-mainland": "solar",
   // ireland-republic / northern-ireland: live as of 82b5496 (Phase 2.6).
   // The entries below are kept as a fallback profileKind in case the
-  // EirGrid/SONI DD-HH workbook becomes inaccessible and the loader has
-  // to be reverted to a typical-shape probe-only static. Profile shape
-  // is wind-dominant; the all-island DD is split ROI 58% / NI 42% per
+  // EirGrid/SONI DD-HH workbook wind data split ROI 58% / NI 42% per
   // the SONI/EirGrid 2024 annual constraint+curtailment anchor.
-  "ireland-republic": "wind",
-  "ireland-republic-solar": "solar",
-  "northern-ireland": "wind",
-  "northern-ireland-solar": "solar",
+  "ireland-republic-wind":   "wind",
+  "ireland-republic-solar":  "solar",
+  "northern-ireland-wind":   "wind",
+  "northern-ireland-solar":  "solar",
   israel: "solar",
   // Japan W1 per-utility loaders (2026-05-02). All live loaders; entries here
   // are fallback profileKind values used only if the live CSV is inaccessible.

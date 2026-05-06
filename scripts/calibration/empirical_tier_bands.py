@@ -90,7 +90,8 @@ RATE_DERIVATION: dict[str, str] = {
     "bulgaria":         "own-tso",                  # ESO Bulgaria 2024
     "baltics":          "regional-proxy",           # Litgrid wind-only representing EE+LV+LT
     "switzerland":      "neighbour-extrapolated",   # entsoe.json.ts:172-173 — Czech/Hungarian neighbours
-    "finland":          "own-tso",                  # Fingrid (default)
+    "finland-wind":      "own-tso",                  # Fingrid (default)
+    "finland-solar":     "own-tso",                  # Fingrid (negligible solar; own-tso placeholder)
     "norway-no1":       "own-tso",                  # Statnett NO1
     "norway-no2":       "own-tso",                  # Statnett NO2
     "norway-no3":       "own-tso",                  # Statnett NO3
