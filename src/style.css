@@ -852,9 +852,8 @@ main table {
 #globe-canvas {
   display: block;
   width: 100%;
-  aspect-ratio: 1 / 1.4;  /* taller than wide — globe centers at 50% vertically,
-                              giving 24% canvas headroom above/below the sphere
-                              so zoom and pillar tips never hit a hard edge */
+  aspect-ratio: 1 / 1;   /* square — horizontal bleed handles side overflow,
+                             so no need for the tall portrait ratio anymore */
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -871,7 +870,7 @@ main table {
 
 .globe-placeholder {
   width: 100%;
-  aspect-ratio: 1 / 1.4;
+  aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
   background:
