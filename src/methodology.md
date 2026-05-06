@@ -121,7 +121,36 @@ The following limitations are inherent to the available upstream data and should
 
 8. **30-day window boundary effects.** Months with strong mid-window transitions (e.g., monsoon onset, seasonal demand changes) produce a representative rather than current figure. The explicit "Last 24h" mode is provided for users who prefer recent-day sensitivity.
 
-## 7. References
+## 7. USD Conversion
+
+The MW ↔ USD toggle converts curtailed energy to its estimated wholesale market value at the time of production. All values are in US dollars (USD).
+
+### Live-tier regions (±10%)
+
+For regions with live day-ahead price data (ENTSO-E, EIA Open Data, AEMO), we use **true hourly multiplication**: curtailment at each UTC hour h is multiplied by the day-ahead settlement price at that same hour h, then summed across the day. This captures the price/curtailment correlation that matters in renewable-heavy markets — wind curtailed at 3am when prices are near zero has a very different value from wind curtailed at 6pm during a demand peak.
+
+**Sources:**
+- **ENTSO-E** — Day-ahead prices via the ENTSO-E Transparency Platform (`transparency.entsoe.eu`). 37 EU bidding zones. Prices in EUR/MWh, converted to USD at the ECB daily noon rate.
+- **EIA Open Data** — Day-ahead LMPs via `api.eia.gov`. 9 US ISO regions (CAISO, ERCOT, MISO, PJM, SPP, NYISO, ISO-NE, BPA, MISO). Prices natively in USD/MWh.
+- **AEMO** — Spot prices via AEMO visualisations API. 5 NEM regions (NSW, VIC, QLD, SA, TAS). Prices in AUD/MWh, converted to USD at the ECB daily noon rate.
+
+### Static-tier regions (±30%)
+
+For regions where only annual average wholesale prices are available, we use **scalar multiplication**: a single $/MWh annual average × current curtailment MW. This does not capture the price/curtailment correlation — for renewable-heavy markets where curtailment peaks during low-price periods, the resulting figure may overstate the true value.
+
+**Sources:** IEA *World Energy Prices 2024*, EIA *International Electricity Prices*, Ember *Global Electricity Review 2024*, and national regulatory reports. Prices converted to USD using IMF 2024 annual average exchange rates.
+
+### Regions without price data
+
+Approximately 200 regions have curtailment data but no citable wholesale electricity price (opaque subsidised markets, unreported grids, or regions without a functioning spot market). These regions appear as greyed pillars on the globe in USD mode and are excluded from USD totals. The global USD headline notes how many regions are excluded.
+
+### FX conversion
+
+All prices are stored in USD/MWh — conversion happens at data fetch time, not at display time:
+- Live-tier prices in EUR or AUD are converted using the ECB daily noon rate fetched at loader run time.
+- Static-tier prices in local currency are converted using IMF 2024 annual average rates, baked into the source data.
+
+## 8. References
 
 - **Brattle Group** (2024). *Quantifying Curtailment in the US ISO Markets*. Brattle Energy Policy Review.
 - **BPA** (2024). *Oversupply Management Protocol Implementation Report 2024*. Bonneville Power Administration.
@@ -157,11 +186,11 @@ The following limitations are inherent to the available upstream data and should
 - **Terna** (2024). *Rapporto Mensile sul Sistema Elettrico*. Terna S.p.A.
 - **World Bank GGFR** (2025). *Global Gas Flaring Tracker Report and individual flare-location dataset*. https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
 
-## 8. Versioning and reproducibility
+## 9. Versioning and reproducibility
 
 The dashboard source code and this methodology are versioned at https://github.com/honeybeesquad/every-last-joule-dashboard. Every loader is pure with respect to its upstream data inputs, and cached "last-known-good" snapshots are committed for each region so that any reader can reproduce the current displayed figure from a clean build with `npm install && npm run build`. Per-region annual TWh anchors, calibrated rates, fuel-mix overrides, and seasonal multipliers are all source-visible in `src/data/` and `src/lib/`.
 
-## 9. Recent corrections
+## 10. Recent corrections
 
 A peer review on 2026-04-25 surfaced a small set of corrections, landed 2026-04-26:
 
