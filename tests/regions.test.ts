@@ -96,7 +96,8 @@ describe("regions", () => {
     // 361 + 19 = 380.
     // Per-fuel globalisation (2026-05-05): finland, ireland-republic, northern-ireland
     // split into wind+solar. Net +3 regions. 380 + 3 = 383.
-    expect(REGIONS.length).toBe(383);
+    // Issue #62 (2026-05-06): add Palestine T3 static. Net +1 region. 383 + 1 = 384.
+    expect(REGIONS.length).toBe(384);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -257,7 +258,8 @@ describe("regions", () => {
     // Phase 4-A (2026-05-05): +17 T3-static regions. 148 + 17 = 165.
     // Phase 4-B (2026-05-05): +26 T3-static regions. 165 + 26 = 191.
     // Phase 4-C (2026-05-05): +19 T3-static regions. 191 + 19 = 210.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(210);
+    // Issue #62 (2026-05-06): add Palestine T3 static. 210 + 1 = 211.
+    expect(REGIONS.filter(r => r.tier === "static").length).toBe(211);
   });
 
   it("has 4 flare regions", () => {
