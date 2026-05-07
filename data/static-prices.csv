@@ -106,3 +106,8 @@ gb-england-wales-wind,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~6
 gb-england-wales-solar,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
 wa-swis,45.2,AUD,0.65,AEMO WA Market Operator,2023,WA SWIS ~69.5 AUD/MWh x 0.65 USD/AUD
 nt-pilbara,55.0,AUD,0.65,EIA International,2023,NT Pilbara grid ~84.6 AUD/MWh x 0.65 USD/AUD
+xinjiang,52.5,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,~380 CNY/MWh Xinjiang spot × 0.138 USD/CNY (depressed spot prices; coal-based pool)
+sichuan,41.4,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,~300 CNY/MWh Sichuan hydro surplus × 0.138 USD/CNY (hydro-heavy; below national benchmark)
+china-hebei,55.2,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,~400 CNY/MWh NDRC benchmark × 0.138 USD/CNY (Hebei coal-heavy; national avg applied)
+china-heilongjiang,55.2,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,~400 CNY/MWh NDRC benchmark × 0.138 USD/CNY (no public Heilongjiang-specific wholesale price)
+china-jilin,55.2,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,~400 CNY/MWh NDRC benchmark × 0.138 USD/CNY (no public Jilin-specific wholesale price)
