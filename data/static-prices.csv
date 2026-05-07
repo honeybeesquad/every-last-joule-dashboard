@@ -34,16 +34,16 @@ ningxia-wind,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,
 ningxia-solar,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,
 yunnan,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,
 tibet,6.21,CNY,0.138,IEA World Energy Prices 2024,2024,~45 CNY/MWh
-india-rajasthan,42,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX
-india-gujarat,42,INR,0.012,CERC Annual Report 2024,2024,
-india-tamil-nadu,42,INR,0.012,CERC Annual Report 2024,2024,
-india-karnataka,42,INR,0.012,CERC Annual Report 2024,2024,
-india-andhra-pradesh,42,INR,0.012,CERC Annual Report 2024,2024,
-india-maharashtra,42,INR,0.012,CERC Annual Report 2024,2024,
-india-north,42,INR,0.012,CERC Annual Report 2024,2024,
-india-south,42,INR,0.012,CERC Annual Report 2024,2024,
-india-east,42,INR,0.012,CERC Annual Report 2024,2024,
-india-west,42,INR,0.012,CERC Annual Report 2024,2024,
+india-rajasthan,3500,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX (IEX day-ahead avg 2023-24 × 0.012 = 42 USD/MWh)
+india-gujarat,3500,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX (IEX day-ahead avg 2023-24 × 0.012 = 42 USD/MWh)
+india-tamil-nadu,3500,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX (IEX day-ahead avg 2023-24 × 0.012 = 42 USD/MWh)
+india-karnataka,3500,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX (IEX day-ahead avg 2023-24 × 0.012 = 42 USD/MWh)
+india-andhra-pradesh,3500,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX (IEX day-ahead avg 2023-24 × 0.012 = 42 USD/MWh)
+india-maharashtra,3500,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX (IEX day-ahead avg 2023-24 × 0.012 = 42 USD/MWh)
+india-north,3500,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX (IEX day-ahead avg 2023-24 × 0.012 = 42 USD/MWh)
+india-south,3500,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX (IEX day-ahead avg 2023-24 × 0.012 = 42 USD/MWh)
+india-east,3500,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX (IEX day-ahead avg 2023-24 × 0.012 = 42 USD/MWh)
+india-west,3500,INR,0.012,CERC Annual Report 2024,2024,3500 INR/MWh on IEX (IEX day-ahead avg 2023-24 × 0.012 = 42 USD/MWh)
 pakistan-wind,30,USD,1.0,NEPRA State of Industry Report 2024,2024,Pakistan NEPRA avg wholesale
 pakistan-solar,30,USD,1.0,NEPRA State of Industry Report 2024,2024,
 indonesia,60,USD,1.0,IEA World Energy Prices 2024,2024,
@@ -90,16 +90,16 @@ ontario,32,CAD,0.74,IESO Annual Planning Outlook 2024 (HOEP avg),2024,~32 CAD/MW
 quebec,30,CAD,0.74,Hydro-Quebec Annual Report 2024,2024,~40 CAD/MWh
 manitoba,26,CAD,0.74,MH Annual Report 2024,2024,~35 CAD/MWh
 saskatchewan,41,CAD,0.74,SaskPower Annual Report 2024,2024,
-japan-kyushu,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,13000 JPY/MWh on JEPX
-japan-hokkaido,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
-japan-tohoku,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
-japan-tepco,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
-japan-chubu,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
-japan-hokuriku,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
-japan-kansai,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
-japan-chugoku,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
-japan-shikoku,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
-japan-okinawa,84.5,JPY,0.0065,OCCTO Annual Report 2024,2024,
+japan-kyushu,13000,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,13000 JPY/MWh JEPX day-ahead avg 2024 × 0.0065 USD/JPY ≈ 84.5 USD/MWh
+japan-hokkaido,13000,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,13000 JPY/MWh JEPX day-ahead avg 2024 × 0.0065 USD/JPY ≈ 84.5 USD/MWh
+japan-tohoku,13000,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,13000 JPY/MWh JEPX day-ahead avg 2024 × 0.0065 USD/JPY ≈ 84.5 USD/MWh
+japan-tepco,13000,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,13000 JPY/MWh JEPX day-ahead avg 2024 × 0.0065 USD/JPY ≈ 84.5 USD/MWh
+japan-chubu,13000,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,13000 JPY/MWh JEPX day-ahead avg 2024 × 0.0065 USD/JPY ≈ 84.5 USD/MWh
+japan-hokuriku,13000,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,13000 JPY/MWh JEPX day-ahead avg 2024 × 0.0065 USD/JPY ≈ 84.5 USD/MWh
+japan-kansai,13000,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,13000 JPY/MWh JEPX day-ahead avg 2024 × 0.0065 USD/JPY ≈ 84.5 USD/MWh
+japan-chugoku,13000,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,13000 JPY/MWh JEPX day-ahead avg 2024 × 0.0065 USD/JPY ≈ 84.5 USD/MWh
+japan-shikoku,13000,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,13000 JPY/MWh JEPX day-ahead avg 2024 × 0.0065 USD/JPY ≈ 84.5 USD/MWh
+japan-okinawa,13000,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,13000 JPY/MWh JEPX day-ahead avg 2024 × 0.0065 USD/JPY ≈ 84.5 USD/MWh
 gb-scotland-wind,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
 gb-scotland-solar,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
 gb-england-wales-wind,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
