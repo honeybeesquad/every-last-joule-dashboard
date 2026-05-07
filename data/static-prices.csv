@@ -66,7 +66,7 @@ israel,85,USD,1.0,IEA World Energy Prices 2024,2024,
 turkey,55,USD,1.0,IEA World Energy Prices 2024,2024,
 egypt,25,USD,1.0,IEA World Energy Prices 2024,2024,
 morocco,55,USD,1.0,IEA World Energy Prices 2024,2024,
-south-africa,60,USD,1.0,Eskom Annual Report 2024,2024,
+south-africa,1100,ZAR,0.054,NERSA MYPD5 / Eskom AFS 2024 generation primary energy cost,2024,~1100 ZAR/MWh Eskom generation cost (primary energy + operations) × 0.054 USD/ZAR ≈ 59 USD/MWh (excludes transmission/distribution to match wholesale convention)
 namibia,65,USD,1.0,IEA World Energy Prices 2024,2024,
 kenya,95,USD,1.0,EPRA Annual Report 2024,2024,
 ethiopia,20,USD,1.0,IEA World Energy Prices 2024,2024,
@@ -86,7 +86,7 @@ honduras,80,USD,1.0,IEA World Energy Prices 2024,2024,
 florida,35,USD,1.0,EIA State Electricity Profiles 2024,2024,
 british-columbia,37,CAD,0.74,BCUC Annual Report 2024,2024,~50 CAD/MWh
 alberta,37,CAD,0.74,AESO Annual Report 2024,2024,
-ontario,41,CAD,0.74,IESO Annual Report 2024,2024,~55 CAD/MWh
+ontario,32,CAD,0.74,IESO Annual Planning Outlook 2024 (HOEP avg),2024,~32 CAD/MWh HOEP 2024 annual avg × 0.74 USD/CAD ≈ 24 USD/MWh (HOEP only; Global Adjustment excluded to match wholesale convention)
 quebec,30,CAD,0.74,Hydro-Quebec Annual Report 2024,2024,~40 CAD/MWh
 manitoba,26,CAD,0.74,MH Annual Report 2024,2024,~35 CAD/MWh
 saskatchewan,41,CAD,0.74,SaskPower Annual Report 2024,2024,
