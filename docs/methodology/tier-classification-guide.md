@@ -104,6 +104,49 @@ A static region lands in T2 if and only if `profileKind === "flat"` AND the sour
 
 ---
 
+## Source provenance (orthogonal to tier)
+
+Tier classification describes how confident we are in a snapshot value *once it lands* – the number's provenance relative to a measured anchor and the quality of any live path. The schema field `sourceProvenance` is orthogonal: it records what kind of upstream link produced (or would produce) that number *before* any fallback logic kicks in. (Note: this is distinct from the existing `sourceStatus` field, which records per-fetch freshness — `live` / `cached` / `degraded` — not provenance.) Together, tier and provenance prevent the kind of mis-declaration that occurred in v1.1.1, where six India SLDC regions were labelled T1a-live-tso because loaders were wired, but the SLDC websites were geoblocked and the emitted data was a typical-shape modelled fallback. The (T1a, official-lead) pair now explicitly flags that situation at declaration time.
+
+| Provenance        | Meaning |
+|-------------------|---------|
+| verified          | Snapshot value comes from a verified upstream feed or anchor. |
+| official-lead     | Authoritative source exists and loader is wired/scaffolded, but the live path is not producing usable data (geoblocked, auth-gated, parser pending). Fallback is modelled or last-good. |
+| modelled-fallback | No verified upstream link. Snapshot is typical-shape scaled to an anchor, or extrapolated, or estimated. |
+| exclude           | Region investigated and rejected. Documented in the rejection log; not present in the canonical REGIONS list. |
+
+### Legal (tier, sourceProvenance) pairs
+
+| Tier                         | sourceProvenance   | Verdict   | Reason |
+|------------------------------|--------------------|-----------|--------|
+| T1a-live-tso                 | verified           | fine      | Live TSO feed producing verified data – the expected normal case. |
+| T1a-live-tso                 | official-lead      | RED FLAG  | Loader wired but no live data; modelled/last-good fallback is being emitted. This was the v1.1.1 India SLDC geoblock scenario. |
+| T1a-live-tso                 | modelled-fallback  | impossible, CI must reject | T1a demands a live TSO feed; a modelled-fallback contradicts the tier definition. |
+| T1b-live-domestic-anchored   | verified           | fine      | Live domestic anchor feed verified. |
+| T1b-live-domestic-anchored   | official-lead      | fine      | Loader wired, anchor refresh pending; the modelled fallback is acceptable while the lead path is not yet live. |
+| T1c-live-neighbour-anchored  | verified           | fine      | Live neighbour-anchored feed verified. |
+| T1c-live-neighbour-anchored  | official-lead      | fine      | Lead identified, loader scaffolded; anchor refresh not yet live. |
+| T2-annual-calibrated         | verified           | fine      | Annual-calibrated tier with a verified upstream anchor. |
+| T2-annual-calibrated         | official-lead      | fine      | Lead exists (scaffolded) even though the annual calibration path is still being built. |
+| T2-annual-calibrated         | modelled-fallback  | fine ONLY if the published anchor is itself measured; reject if both anchor and feed are modelled | Acceptable when the anchor comes from a measured source; if both the anchor and the shaping feed are modelled, the pair is invalid. |
+| T3-modelled                  | verified           | impossible, CI must reject | T3 explicitly means modelled; a verified upstream feed would require promotion to a higher tier. |
+| T3-modelled                  | official-lead      | fine      | Official lead identified but no live path yet; modelling is the intended behaviour. |
+| T3-modelled                  | modelled-fallback  | fine      | Canonical T3 case – wholly modelled snapshot. |
+| any-tier                     | exclude            | impossible | Regions marked exclude are not part of the canonical REGIONS list and must never appear in production data. |
+
+### Updating sourceProvenance when reality changes
+
+**official-lead → verified**
+Triggered when a parser ships and begins emitting real, usable data from the upstream source. This transition must prompt a tier-promotion review because the newly live path may satisfy the requirements of a higher tier.
+
+**verified → official-lead**
+Triggered when a previously live upstream breaks – for example, an auth-token change, a schema change, or a geoblock. The region's snapshot reverts to its declared fallback behaviour (last-good or modelled). If the break persists beyond the tier's allowed grace period, a tier-demotion review is required.
+
+**any → exclude**
+Triggered when a bad-conversion is discovered (see the bad-conversions checklist) and the region cannot be defensibly classified at any tier. The region is removed from the canonical REGIONS list and recorded only in the rejection log. Once set to exclude, the region must not reappear without a fresh investigation.
+
+---
+
 ## Data quality scoring framework
 
 For each candidate country/region, score each of the following five dimensions. A candidate for elevation must score at the required level for ALL dimensions simultaneously.

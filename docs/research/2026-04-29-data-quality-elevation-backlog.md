@@ -14,6 +14,8 @@ Changing `kind` to `flat` is not a promotion mechanism. `flat` is a profile shap
 
 Non-canonical candidate specs belong in `buildAllStatics({ includeCandidates: true })` and research docs, not the launch dashboard.
 
+**Source-provenance gate (added 2026-05-08).** A region cannot be promoted to T1a-live-tso while its `sourceProvenance` is still `official-lead`. The live path must be producing verified data first (`sourceProvenance: "verified"`), then the tier promotion follows. This is the lesson from the v1.1.1 India SLDC mis-declaration: declaring T1a while the loader was emitting modelled-fallback shapes shipped a tier badge the data did not earn. The CI check `scripts/ci/check-source-provenance-coherence.ts` enforces the legal `(tier, sourceProvenance)` matrix from [`docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).
+
 ## Immediate Implementation Queue
 
 ### 1. Chile Wind - promoted to T1a on 2026-04-29
