@@ -1,6 +1,6 @@
 # Validation — Gujarat (`india-gujarat`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-08 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** static
 - **Kind:** solar
-- **Source:** GSLDC (Gujarat State Load Despatch Centre / GETCO) — RE curtailment reports at sldc.gujarat.gov.in. Geoblocked from non-Indian IP ranges; loader currently emits T3-modelled typical-shape calibrated to POSOCO/Ember India 2024 (~1.0 TWh/yr solar curtailment). Will be promoted to T1a-live-tso when the India-egress relay activates the live parse.
+- **Source:** GSLDC (Gujarat State Load Despatch Centre / GETCO) — RE curtailment reports at sldcguj.com / sldc.gujarat.gov.in. Accessible from any IP (confirmed 2026-05-08: HTTP 200, 202 KB from NZ Starlink). Loader currently emits T3-modelled typical-shape calibrated to POSOCO/Ember India 2024 (~1.0 TWh/yr solar curtailment). Will be promoted to T1a-live-tso once the parser is implemented — no relay required.
 - **Source URL:** [https://sldc.gujarat.gov.in/](https://sldc.gujarat.gov.in/)
 - **Loader:** [`india-gujarat.json.ts`](../../src/data/india-gujarat.json.ts)
 - **Structural gap:** yes
@@ -37,7 +37,7 @@ Gujarat is India's leading solar state by installed capacity, with the Khavda Ul
 
 ## Known limitations
 
-GSLDC is geoblocked from non-Indian IP ranges (ECONNREFUSED/timeout from build environments). The loader currently falls back to a typical-shape solar profile calibrated at 1.0 TWh/yr. When an India-egress relay is established, the GSLDC daily report parser will be activated. The T1a tier designation reflects the intended source quality, not the current fallback state.
+GSLDC (`sldcguj.com`) is accessible from any IP — confirmed 2026-05-08 via egress audit (HTTP 200, 202 KB from a NZ Starlink connection). The earlier geoblocking assumption was wrong. The only blocker is parser implementation; no India-egress relay is required. The loader currently falls back to a typical-shape solar profile calibrated at 1.0 TWh/yr. See [`docs/research/2026-05-08-india-sldc-egress-audit.md`](../research/2026-05-08-india-sldc-egress-audit.md) for the full audit.
 
 ## Links
 
