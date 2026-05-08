@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use this dataset in academic work, please cite it as below."
 type: dataset
 title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring"
-version: 1.2.1
-date-released: 2026-05-08
+version: 1.2.0
+date-released: 2026-05-03
 abstract: >-
   A versioned, reproducible synthesis dataset of hourly renewable-electricity
   curtailment and associated-gas flaring, covering 241 regions across six

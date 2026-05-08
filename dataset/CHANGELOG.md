@@ -4,6 +4,12 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Added — `sourceProvenance` field (2026-05-08, schema patch)
+- **New nullable enum field on per-region snapshots** — `sourceProvenance: "verified" | "official-lead" | "modelled-fallback" | null`. Orthogonal to the existing `confidenceTier` and to the existing `sourceStatus` (per-fetch freshness) field. Records what kind of upstream link a region has, distinct from how the data flowed on the latest fetch. See [`docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`](../docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).
+- **Three worked-example annotations** — `alberta-wind` (verified), `india-rajasthan` (official-lead), `india-karnataka` (official-lead). The other ~380 regions retain `null` until a follow-up sweep PR.
+- **New CI gate** — `scripts/ci/check-source-provenance-coherence.ts` validates the legal `(confidenceTier, sourceProvenance)` matrix at declaration time. Catches the v1.1.1 India SLDC class of mis-declaration (`(T1a-live-tso, official-lead)` is a CI-rejected red flag). 16-fixture self-test (`--self-test` flag).
+- **Schema bump deferred** — this is an additive nullable field (patch bump per [SCHEMA.md](SCHEMA.md) SemVer convention). The CITATION.cff version stays at 1.2.0 until the next Zenodo upload; the bump to 1.2.1 will accompany that release rather than landing here independently.
+
 ### Added — Phase 2 IRENA T3 anchors (2026-05-04, T3 ×11)
 - **`albania`** (T3-static, solar): IRENA RE Statistics 2024. ~240 MW solar installed (Karavasta 140 MW + Spitalla 100 MW); wind negligible. Curtailment modelled at ~2% per regional default. Albania was previously excluded from PR #45 but is included here given measurable solar capacity.
 - **`georgia`** (T3-static, solar): IRENA RE Statistics 2024. ~100 MW solar+wind combined; ~1.8 GW hydro. Curtailment modelled at ~2% per regional default.

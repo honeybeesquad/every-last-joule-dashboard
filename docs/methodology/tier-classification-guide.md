@@ -128,7 +128,7 @@ Tier classification describes how confident we are in a snapshot value *once it 
 | T1c-live-neighbour-anchored  | official-lead      | fine      | Lead identified, loader scaffolded; anchor refresh not yet live. |
 | T2-annual-calibrated         | verified           | fine      | Annual-calibrated tier with a verified upstream anchor. |
 | T2-annual-calibrated         | official-lead      | fine      | Lead exists (scaffolded) even though the annual calibration path is still being built. |
-| T2-annual-calibrated         | modelled-fallback  | fine ONLY if the published anchor is itself measured; reject if both anchor and feed are modelled | Acceptable when the anchor comes from a measured source; if both the anchor and the shaping feed are modelled, the pair is invalid. |
+| T2-annual-calibrated         | modelled-fallback  | fine; review-gated condition (CI accepts unconditionally) | Acceptable when the published anchor is a measured total. The CI gate cannot inspect anchor measurement quality; whether the anchor is a measured total or a capacity-derived back-calculation (bad-conversion #2) is a human discipline check at promotion review. If both the anchor and the shaping feed are modelled, demote to T3-modelled at review time. |
 | T3-modelled                  | verified           | impossible, CI must reject | T3 explicitly means modelled; a verified upstream feed would require promotion to a higher tier. |
 | T3-modelled                  | official-lead      | fine      | Official lead identified but no live path yet; modelling is the intended behaviour. |
 | T3-modelled                  | modelled-fallback  | fine      | Canonical T3 case – wholly modelled snapshot. |

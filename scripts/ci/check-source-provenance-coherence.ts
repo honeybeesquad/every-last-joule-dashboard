@@ -60,6 +60,15 @@ const LEGAL_PAIRS = new Set<string>([
 // matrix-coherence purposes. (Existing ConfidenceTier enum doesn't include
 // "T2-flare" as a tier label — flare regions resolve to T2-annual-calibrated
 // at the tier level and only differ at the presentational bucket level.)
+//
+// The legacy "T1-live-TSO" alias (B4 Option B, see check-tier-coherence.ts)
+// is intentionally not handled here. `deriveTier` in src/lib/uncertainty.ts
+// no longer emits it; every live region resolves to T1a-live-tso at the tier
+// level, so the alias cannot reach this gate via the canonical resolveAll()
+// path. If a hand-edited snapshot ever bypasses tier resolution and surfaces
+// with the alias, the catch-all "Illegal pairing" branch flags it — which is
+// the correct outcome (the snapshot pre-dates tier-resolution uniformity and
+// should be regenerated).
 function normalizeTier(tier: ConfidenceTier): ConfidenceTier {
   return tier;
 }

@@ -63,10 +63,14 @@ export interface Region {
   source: string;          // primary data source label
   sourceUrl: string;       // canonical source URL
   /**
-   * Optional per-region declaration of upstream-link kind. Loaders propagate
-   * this into the emitted `RegionData.sourceProvenance` so the CI tier-coherence
-   * check can validate the (tier, sourceProvenance) pair at build time.
-   * Unset = legacy region; treated as null in the snapshot.
+   * Optional per-region declaration of upstream-link kind. The CI gate at
+   * `scripts/ci/check-source-provenance-coherence.ts` validates the
+   * `(confidenceTier, sourceProvenance)` pair against the legal matrix at
+   * build time, reading directly from `Region.sourceProvenance` (declaration
+   * time), not from emitted snapshots. Loader-side propagation into
+   * `RegionData.sourceProvenance` is a separate sweep PR; the snapshot field
+   * exists in the schema but is not yet populated by the loaders. Unset =
+   * legacy region; treated as null in the snapshot.
    */
   sourceProvenance?: SourceProvenance;
 }
