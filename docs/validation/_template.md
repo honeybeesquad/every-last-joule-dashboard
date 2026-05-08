@@ -9,6 +9,7 @@ Last updated: {{TODAY}} · Sprint: S1 + HB integration · Paper section: Technic
 - **Source URL:** {{SOURCE_URL}}
 - **Kind:** {{KIND}} (wind / solar / mixed / hydro / flare / geothermal)
 - **Tier:** {{TIER}} (live / cached / static)
+- **Source provenance:** {{SOURCE_PROVENANCE}} (verified / official-lead / modelled-fallback — see [tier-classification-guide.md#source-provenance-orthogonal-to-tier](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier))
 - **Fuel focus:** {{FUEL_FOCUS}}
 
 ## Calibration
