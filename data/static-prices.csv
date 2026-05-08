@@ -1,0 +1,253 @@
+regionId,priceUSDperMWh,currency,fxToUsd,priceSource,priceYear,notes
+aemo-nsw-solar,78.0,AUD,0.65,IEA World Energy Prices 2024 / AER State of the Energy Market 2023,2023,NEM NSW avg ~120 AUD/MWh × 0.65 USD/AUD (2023 avg); elevated due to energy crisis
+aemo-nsw-wind,78.0,AUD,0.65,IEA World Energy Prices 2024 / AER State of the Energy Market 2023,2023,NEM NSW avg ~120 AUD/MWh × 0.65 USD/AUD (2023 avg); elevated due to energy crisis
+aemo-qld-solar,78.0,AUD,0.65,IEA World Energy Prices 2024 / AER State of the Energy Market 2023,2023,NEM QLD avg ~120 AUD/MWh × 0.65 USD/AUD (2023 avg); elevated due to energy crisis
+aemo-qld-wind,78.0,AUD,0.65,IEA World Energy Prices 2024 / AER State of the Energy Market 2023,2023,NEM QLD avg ~120 AUD/MWh × 0.65 USD/AUD (2023 avg); elevated due to energy crisis
+aemo-sa-solar,78.0,AUD,0.65,IEA World Energy Prices 2024 / AER State of the Energy Market 2023,2023,NEM SA avg ~120 AUD/MWh × 0.65 USD/AUD (2023 avg); elevated due to energy crisis
+aemo-sa-wind,78.0,AUD,0.65,IEA World Energy Prices 2024 / AER State of the Energy Market 2023,2023,NEM SA avg ~120 AUD/MWh × 0.65 USD/AUD (2023 avg); elevated due to energy crisis
+aemo-tas-solar,78.0,AUD,0.65,IEA World Energy Prices 2024 / AER State of the Energy Market 2023,2023,NEM TAS avg ~120 AUD/MWh × 0.65 USD/AUD (2023 avg); elevated due to energy crisis
+aemo-tas-wind,78.0,AUD,0.65,IEA World Energy Prices 2024 / AER State of the Energy Market 2023,2023,NEM TAS avg ~120 AUD/MWh × 0.65 USD/AUD (2023 avg); elevated due to energy crisis
+aemo-vic-solar,78.0,AUD,0.65,IEA World Energy Prices 2024 / AER State of the Energy Market 2023,2023,NEM VIC avg ~120 AUD/MWh × 0.65 USD/AUD (2023 avg); elevated due to energy crisis
+aemo-vic-wind,78.0,AUD,0.65,IEA World Energy Prices 2024 / AER State of the Energy Market 2023,2023,NEM VIC avg ~120 AUD/MWh × 0.65 USD/AUD (2023 avg); elevated due to energy crisis
+alberta,37,CAD,0.74,AESO Annual Report 2024,2024,
+alberta-solar,55,CAD,0.74,AESO Annual Report 2023 / AESO Price Report Q4 2023,2023,Regulated rate option and merchant exposure for solar around 50-65 CAD/MWh
+alberta-wind,45,CAD,0.74,AESO Annual Report 2023 / AESO Price Report Q4 2023,2023,Wind merchant and RRO around 40-55 CAD/MWh
+argentina,40,USD,1.0,CAMMESA Annual Report 2024,2024,
+atacama,55,USD,1.0,CDEC/CEN Annual Report 2024,2024,
+austria,86.4,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,AT annual avg ~80 EUR/MWh × 1.08 USD/EUR (2023 avg)
+belgium-solar,91.8,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,BE annual avg ~85 EUR/MWh × 1.08 USD/EUR (2023 avg)
+belgium-wind,91.8,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,BE annual avg ~85 EUR/MWh × 1.08 USD/EUR (2023 avg)
+bpa-solar,47.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,BPA LMP annual avg ~$47/MWh (hydro-dominated, low-cost region)
+bpa-wind,47.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,BPA LMP annual avg ~$47/MWh (hydro-dominated, low-cost region)
+brazil-bahia-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); no public sub-regional wholesale price for Bahia
+brazil-bahia-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); no public sub-regional wholesale price for Bahia
+brazil-ce-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); NE region PLD ~87 BRL/MWh (lower hydrology); national avg applied
+brazil-ce-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); NE region PLD ~87 BRL/MWh (lower hydrology); national avg applied
+brazil-go-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); no public sub-regional wholesale price for Goias
+brazil-go-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); no public sub-regional wholesale price for Goias
+brazil-maranhao-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); no public sub-regional wholesale price for Maranhao
+brazil-maranhao-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); no public sub-regional wholesale price for Maranhao
+brazil-mg-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Minas Gerais in SE/CO zone; national avg applied
+brazil-mg-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Minas Gerais in SE/CO zone; national avg applied
+brazil-mt-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Mato Grosso in N zone; national avg applied
+brazil-mt-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Mato Grosso in N zone; national avg applied
+brazil-other-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); residual Brazil regions; national avg applied
+brazil-other-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); residual Brazil regions; national avg applied
+brazil-paraiba-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); no public sub-regional wholesale price for Paraiba
+brazil-paraiba-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); no public sub-regional wholesale price for Paraiba
+brazil-pernambuco-solar,65,BRL,0.2,CCEE Brazil / EPE Annual Report 2023,2023, Northeast region solar PPA around 180-220 BRL/MWh at 0.20 USD/BRL
+brazil-pernambuco-wind,55,BRL,0.2,CCEE Brazil / EPE Annual Report 2023,2023,Northeast region wind PPA around 150-180 BRL/MWh at 0.20 USD/BRL
+brazil-piaui-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); no public sub-regional wholesale price for Piaui
+brazil-piaui-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); no public sub-regional wholesale price for Piaui
+brazil-pr-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Parana in S zone; national avg applied
+brazil-pr-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Parana in S zone; national avg applied
+brazil-rn-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Rio Grande do Norte; national avg applied
+brazil-rn-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Rio Grande do Norte; national avg applied
+brazil-rs-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Rio Grande do Sul in S zone; national avg applied
+brazil-rs-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Rio Grande do Sul in S zone; national avg applied
+brazil-sp-solar,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Sao Paulo in SE/CO zone; national avg applied
+brazil-sp-wind,48.0,BRL,0.20,IEA World Energy Prices 2024 / CCEE PLD annual avg,2023,240 BRL/MWh national wholesale avg × 0.20 USD/BRL (2023 IMF avg); Sao Paulo in SE/CO zone; national avg applied
+british-columbia,37,CAD,0.74,BCUC Annual Report 2024,2024,~50 CAD/MWh
+bulgaria-solar,68,EUR,1.08,ESO Bulgaria / ENTSO-E 2023,2023,Market price range 55-80 EUR/MWh
+bulgaria-wind,58,EUR,1.08,ESO Bulgaria / ENTSO-E 2023,2023,Wind price around 50-70 EUR/MWh
+caiso-solar,73.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,CAISO LMP annual avg ~$73/MWh; higher gas costs in CA constrained zone
+caiso-wind,73.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,CAISO LMP annual avg ~$73/MWh; higher gas costs in CA constrained zone
+chile-wind,55,USD,1.0,CDEC/CEN Annual Report 2024,2024,
+china-anhui,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-beijing,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-chongqing-hydro,52,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-chongqing-solar,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-fujian,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-guangdong,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-guizhou-hydro,52,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,Hydro-rich province ~378 CNY/MWh NDRC benchmark at 0.138 USD/CNY
+china-guizhou-solar,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh NDRC benchmark at 0.138 USD/CNY
+china-hainan,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-hebei,55.2,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh NDRC benchmark × 0.138 USD/CNY
+china-heilongjiang,55.2,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh NDRC benchmark × 0.138 USD/CNY; national avg applied
+china-henan,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-hubei-hydro,52,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-hubei-solar,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-hubei-wind,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-hunan-hydro,52,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-hunan-solar,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-hunan-wind,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-jiangsu-solar,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-jiangsu-wind,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-jiangxi,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-jilin,55.2,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh NDRC benchmark × 0.138 USD/CNY; national avg applied
+china-liaoning,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh NDRC benchmark at 0.138 USD/CNY
+china-shaanxi,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-shandong,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-shanghai,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh NDRC benchmark at 0.138 USD/CNY
+china-shanxi-solar,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh NDRC benchmark at 0.138 USD/CNY
+china-shanxi-wind,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh NDRC benchmark at 0.138 USD/CNY
+china-tianjin,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh benchmark at 0.138 USD/CNY
+china-zhejiang,55,CNY,0.138,NDRC 2023 / IEA China Energy Outlook 2023,2023,400 CNY/MWh NDRC benchmark at 0.138 USD/CNY
+colombia,55,USD,1.0,XM Annual Report 2024,2024,
+croatia-solar,72,EUR,1.08,HEP / HROTE 2023 / ENTSO-E,2023,Market price for solar around 60-85 EUR/MWh
+croatia-wind,62,EUR,1.08,HEP / HROTE 2023 / ENTSO-E,2023,Wind market price around 55-75 EUR/MWh
+cyprus,115,EUR,1.08,EAC / Cyprus Energy Regulator 2023,2023,Isolated island system with diesel backup and solar; average 100-130 EUR/MWh
+czech-republic-solar,102.6,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,CZ annual avg ~95 EUR/MWh × 1.08 USD/EUR (2023 avg)
+czech-republic-wind,102.6,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,CZ annual avg ~95 EUR/MWh × 1.08 USD/EUR (2023 avg)
+denmark-east-solar,86.4,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,DK annual avg ~80 EUR/MWh × 1.08 USD/EUR (2023 avg); national avg applied to east zone
+denmark-east-wind,86.4,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,DK annual avg ~80 EUR/MWh × 1.08 USD/EUR (2023 avg); national avg applied to east zone
+denmark-west-solar,86.4,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,DK annual avg ~80 EUR/MWh × 1.08 USD/EUR (2023 avg); national avg applied to west zone
+denmark-west-wind,86.4,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,DK annual avg ~80 EUR/MWh × 1.08 USD/EUR (2023 avg); national avg applied to west zone
+egypt,25,USD,1.0,IEA World Energy Prices 2024,2024,
+ercot-east-solar,56.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,ERCOT LMP annual avg ~$56/MWh
+ercot-east-wind,56.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,ERCOT LMP annual avg ~$56/MWh
+ercot-west-solar,56.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,ERCOT LMP annual avg ~$56/MWh
+ercot-west-wind,56.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,ERCOT LMP annual avg ~$56/MWh
+estonia,68,EUR,1.08,Elering / Nord Pool Estonia 2023 / ENTSO-E,2023,Day-ahead price around 60-80 EUR/MWh
+ethiopia,20,USD,1.0,IEA World Energy Prices 2024,2024,
+finland-solar,75.6,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,FI annual avg ~70 EUR/MWh × 1.08 USD/EUR (2023 avg)
+finland-wind,75.6,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,FI annual avg ~70 EUR/MWh × 1.08 USD/EUR (2023 avg)
+florida,35,USD,1.0,EIA State Electricity Profiles 2024,2024,
+france-solar,86.4,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,FR annual avg ~80 EUR/MWh × 1.08 USD/EUR (2023 avg); nuclear restarts lowered prices
+france-wind,86.4,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,FR annual avg ~80 EUR/MWh × 1.08 USD/EUR (2023 avg); nuclear restarts lowered prices
+gansu-solar,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,
+gansu-wind,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,
+gb-england-wales-solar,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
+gb-england-wales-wind,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
+gb-scotland-solar,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
+gb-scotland-wind,82.6,GBP,1.27,IEA World Energy Prices,2023,UK wholesale ~65 GBP/MWh x 1.27 USD/GBP
+germany-solar,97.2,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,DE annual avg ~90 EUR/MWh × 1.08 USD/EUR (2023 avg)
+germany-wind,97.2,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,DE annual avg ~90 EUR/MWh × 1.08 USD/EUR (2023 avg)
+greece-solar,70,EUR,1.08,IPTO / ADMIE Annual Report 2023 / ENTSO-E,2023,Competitive market solar PPA around 60-80 EUR/MWh
+greece-wind,60,EUR,1.08,IPTO / ADMIE Annual Report 2023 / ENTSO-E,2023,Onshore wind PPA around 50-70 EUR/MWh
+hawaii-island,120.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,Hawaii Island avg ~$120/MWh (islanded grid, diesel dependent)
+hawaii-maui,115.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,Hawaii Maui avg ~$115/MWh (islanded grid, diesel dependent)
+hawaii-oahu,102.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,Hawaii Oahu avg ~$102/MWh (islanded grid, diesel dependent)
+honduras,80,USD,1.0,IEA World Energy Prices 2024,2024,
+hungary-solar,75,EUR,1.08,Hungarian Energy Exchange / HUPX 2023 / ENTSO-E,2023,Solar market price around 60-90 EUR/MWh
+hungary-wind,65,EUR,1.08,Hungarian Energy Exchange / HUPX 2023 / ENTSO-E,2023,Wind market price around 50-80 EUR/MWh
+iceland,70,USD,1.0,HS Orka / Landsvirkjun Annual Report 2023,2023,Hydro and geothermal based grid average around 60-80 USD/MWh
+india-andhra-pradesh,42.00,INR,0.012,CERC Annual Report 2024,2024,IEX day-ahead avg 2023-24 ~3500 INR/MWh ~ 42 USD/MWh at 0.012 USD/INR (CERC Annual Report 2024)
+india-east,42.00,INR,0.012,CERC Annual Report 2024,2024,IEX day-ahead avg 2023-24 ~3500 INR/MWh ~ 42 USD/MWh at 0.012 USD/INR (CERC Annual Report 2024)
+india-gujarat,42.00,INR,0.012,CERC Annual Report 2024,2024,IEX day-ahead avg 2023-24 ~3500 INR/MWh ~ 42 USD/MWh at 0.012 USD/INR (CERC Annual Report 2024)
+india-karnataka,42.00,INR,0.012,CERC Annual Report 2024,2024,IEX day-ahead avg 2023-24 ~3500 INR/MWh ~ 42 USD/MWh at 0.012 USD/INR (CERC Annual Report 2024)
+india-maharashtra,42.00,INR,0.012,CERC Annual Report 2024,2024,IEX day-ahead avg 2023-24 ~3500 INR/MWh ~ 42 USD/MWh at 0.012 USD/INR (CERC Annual Report 2024)
+india-north,42.00,INR,0.012,CERC Annual Report 2024,2024,IEX day-ahead avg 2023-24 ~3500 INR/MWh ~ 42 USD/MWh at 0.012 USD/INR (CERC Annual Report 2024)
+india-rajasthan,42.00,INR,0.012,CERC Annual Report 2024,2024,IEX day-ahead avg 2023-24 ~3500 INR/MWh ~ 42 USD/MWh at 0.012 USD/INR (CERC Annual Report 2024)
+india-south,42.00,INR,0.012,CERC Annual Report 2024,2024,IEX day-ahead avg 2023-24 ~3500 INR/MWh ~ 42 USD/MWh at 0.012 USD/INR (CERC Annual Report 2024)
+india-tamil-nadu,42.00,INR,0.012,CERC Annual Report 2024,2024,IEX day-ahead avg 2023-24 ~3500 INR/MWh ~ 42 USD/MWh at 0.012 USD/INR (CERC Annual Report 2024)
+india-west,42.00,INR,0.012,CERC Annual Report 2024,2024,IEX day-ahead avg 2023-24 ~3500 INR/MWh ~ 42 USD/MWh at 0.012 USD/INR (CERC Annual Report 2024)
+indonesia,60,USD,1.0,IEA World Energy Prices 2024,2024,
+inner-mongolia,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,Curtailment-heavy grid ~50 CNY/MWh
+iran,12,USD,1.0,IEA World Energy Prices 2024,2024,Heavily subsidised
+iraq-mainland,15,USD,1.0,IEA World Energy Prices 2024,2024,
+iso-ne-maine-vermont,92.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,ISO-NE LMP annual avg ~$92/MWh (highest US ISO; constrained geography)
+iso-ne-rest-solar,92.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,ISO-NE LMP annual avg ~$92/MWh
+iso-ne-rest-wind,92.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,ISO-NE LMP annual avg ~$92/MWh
+israel,85,USD,1.0,IEA World Energy Prices 2024,2024,
+italy-north-zone-solar,91.8,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,IT annual avg ~85 EUR/MWh × 1.08 USD/EUR (2023 avg); national avg applied to north zone
+italy-north-zone-wind,91.8,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,IT annual avg ~85 EUR/MWh × 1.08 USD/EUR (2023 avg); national avg applied to north zone
+italy-sardinia-solar,91.8,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,IT annual avg ~85 EUR/MWh × 1.08 USD/EUR (2023 avg); national avg applied to Sardinia
+italy-sardinia-wind,91.8,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,IT annual avg ~85 EUR/MWh × 1.08 USD/EUR (2023 avg); national avg applied to Sardinia
+italy-sicily-solar,91.8,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,IT annual avg ~85 EUR/MWh × 1.08 USD/EUR (2023 avg); national avg applied to Sicily
+italy-sicily-wind,91.8,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,IT annual avg ~85 EUR/MWh × 1.08 USD/EUR (2023 avg); national avg applied to Sicily
+jamaica,130,USD,1.0,JPS Annual Report 2023 / OUR Jamaica,2023,Heavy fuel oil dependency; average around 120-140 USD/MWh
+japan-chubu,84.50,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,JEPX day-ahead avg 2024 ~13000 JPY/MWh ~ 84.5 USD/MWh at 0.0065 USD/JPY (OCCTO Annual Report 2024)
+japan-chugoku,84.50,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,JEPX day-ahead avg 2024 ~13000 JPY/MWh ~ 84.5 USD/MWh at 0.0065 USD/JPY (OCCTO Annual Report 2024)
+japan-hokkaido,84.50,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,JEPX day-ahead avg 2024 ~13000 JPY/MWh ~ 84.5 USD/MWh at 0.0065 USD/JPY (OCCTO Annual Report 2024)
+japan-hokuriku,84.50,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,JEPX day-ahead avg 2024 ~13000 JPY/MWh ~ 84.5 USD/MWh at 0.0065 USD/JPY (OCCTO Annual Report 2024)
+japan-kansai,84.50,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,JEPX day-ahead avg 2024 ~13000 JPY/MWh ~ 84.5 USD/MWh at 0.0065 USD/JPY (OCCTO Annual Report 2024)
+japan-kyushu,84.50,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,JEPX day-ahead avg 2024 ~13000 JPY/MWh ~ 84.5 USD/MWh at 0.0065 USD/JPY (OCCTO Annual Report 2024)
+japan-okinawa,84.50,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,JEPX day-ahead avg 2024 ~13000 JPY/MWh ~ 84.5 USD/MWh at 0.0065 USD/JPY (OCCTO Annual Report 2024)
+japan-shikoku,84.50,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,JEPX day-ahead avg 2024 ~13000 JPY/MWh ~ 84.5 USD/MWh at 0.0065 USD/JPY (OCCTO Annual Report 2024)
+japan-tepco,84.50,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,JEPX day-ahead avg 2024 ~13000 JPY/MWh ~ 84.5 USD/MWh at 0.0065 USD/JPY (OCCTO Annual Report 2024)
+japan-tohoku,84.50,JPY,0.0065,OCCTO Annual Report 2024 / JEPX 2024,2024,JEPX day-ahead avg 2024 ~13000 JPY/MWh ~ 84.5 USD/MWh at 0.0065 USD/JPY (OCCTO Annual Report 2024)
+jordan,85,USD,1.0,IEA World Energy Prices 2024,2024,
+kazakhstan,30,USD,1.0,IEA World Energy Prices 2024,2024,
+kenya,95,USD,1.0,EPRA Annual Report 2024,2024,
+kurdistan,15,USD,1.0,IEA World Energy Prices 2024,2024,
+latvia,65,EUR,1.08,AST / Nord Pool Latvia 2023 / ENTSO-E,2023,Average around 60-75 EUR/MWh
+lithuania,70,EUR,1.08,LITGRID / Nord Pool Lithuania 2023 / ENTSO-E,2023,Average around 65-80 EUR/MWh
+malaysia,55,USD,1.0,IEA World Energy Prices 2024,2024,
+malta,105,EUR,1.08,Enemalta / Malta Energy Regulator 2023,2023,Small isolated island grid with high costs; average 95-115 EUR/MWh
+manitoba,26,CAD,0.74,MH Annual Report 2024,2024,~35 CAD/MWh
+mexico,45,USD,1.0,CENACE Annual Report 2024,2024,
+miso-solar,56.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,MISO LMP annual avg ~$56/MWh
+miso-wind,56.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,MISO LMP annual avg ~$56/MWh
+mongolia,45,USD,1.0,IEA World Energy Prices 2024,2024,
+morocco,55,USD,1.0,IEA World Energy Prices 2024,2024,
+namibia,65,USD,1.0,IEA World Energy Prices 2024,2024,
+netherlands-solar,97.2,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,NL annual avg ~90 EUR/MWh × 1.08 USD/EUR (2023 avg)
+netherlands-wind,97.2,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,NL annual avg ~90 EUR/MWh × 1.08 USD/EUR (2023 avg)
+new-zealand-geo,39,NZD,0.60,Electricity Authority EMI 2024,2024,
+new-zealand-solar,39,NZD,0.60,Electricity Authority EMI 2024,2024,
+new-zealand-wind,39,NZD,0.60,Electricity Authority EMI 2024,2024,~65 NZD/MWh
+ningxia-solar,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,
+ningxia-wind,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,
+northern-ireland-solar,85,GBP,1.27,SONI / Utility Regulator NI 2023,2023,All-island market price for solar around 75-95 GBP/MWh
+northern-ireland-wind,75,GBP,1.27,SONI / Utility Regulator NI 2023,2023,All-island market price for wind around 65-85 GBP/MWh
+norway-no1-hydro,57.1,EUR,1.08,Nord Pool / IEA World Energy Prices 2024,2023,NO1 annual avg ~52.9 EUR/MWh × 1.08 USD/EUR (2023 avg); zonal wholesale price
+norway-no1-wind,57.1,EUR,1.08,Nord Pool / IEA World Energy Prices 2024,2023,NO1 annual avg ~52.9 EUR/MWh × 1.08 USD/EUR (2023 avg); zonal wholesale price
+norway-no2-hydro,57.1,EUR,1.08,Nord Pool / IEA World Energy Prices 2024,2023,NO2 annual avg ~52.9 EUR/MWh × 1.08 USD/EUR (2023 avg); zonal wholesale price
+norway-no2-wind,57.1,EUR,1.08,Nord Pool / IEA World Energy Prices 2024,2023,NO2 annual avg ~52.9 EUR/MWh × 1.08 USD/EUR (2023 avg); zonal wholesale price
+norway-no3-hydro,57.1,EUR,1.08,Nord Pool / IEA World Energy Prices 2024,2023,NO3 annual avg ~52.9 EUR/MWh × 1.08 USD/EUR (2023 avg); zonal wholesale price
+norway-no3-wind,57.1,EUR,1.08,Nord Pool / IEA World Energy Prices 2024,2023,NO3 annual avg ~52.9 EUR/MWh × 1.08 USD/EUR (2023 avg); zonal wholesale price
+norway-no4-hydro,57.1,EUR,1.08,Nord Pool / IEA World Energy Prices 2024,2023,NO4 annual avg ~52.9 EUR/MWh × 1.08 USD/EUR (2023 avg); zonal wholesale price
+norway-no4-wind,57.1,EUR,1.08,Nord Pool / IEA World Energy Prices 2024,2023,NO4 annual avg ~52.9 EUR/MWh × 1.08 USD/EUR (2023 avg); zonal wholesale price
+norway-no5,57.1,EUR,1.08,Nord Pool / IEA World Energy Prices 2024,2023,NO5 annual avg ~52.9 EUR/MWh × 1.08 USD/EUR (2023 avg); zonal wholesale price
+nt-pilbara,55.0,AUD,0.65,EIA International,2023,NT Pilbara grid ~84.6 AUD/MWh x 0.65 USD/AUD
+nyiso-rest-solar,82.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,NYISO LMP annual avg ~$82/MWh
+nyiso-rest-wind,82.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,NYISO LMP annual avg ~$82/MWh
+nyiso-zones-d-e,82.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,NYISO LMP annual avg ~$82/MWh (high due to NYC congestion)
+oman,35,USD,1.0,IEA World Energy Prices 2024,2024,
+ontario,23.68,CAD,0.74,IESO Annual Planning Outlook 2024 (HOEP avg),2024,IESO HOEP 2024 annual avg ~32 CAD/MWh ~ 23.68 USD/MWh at 0.74 USD/CAD (HOEP only; Global Adjustment excluded to match wholesale convention)
+ontario-solar,90,CAD,0.74,IESO Annual Report 2023 / Ontario Energy Board,2023,HOEP and contract average around 80-100 CAD/MWh
+ontario-wind,65,CAD,0.74,IESO Annual Report 2023 / Ontario Energy Board,2023,HOEP and contract average around 60-75 CAD/MWh
+pakistan-solar,30,USD,1.0,NEPRA State of Industry Report 2024,2024,
+pakistan-wind,30,USD,1.0,NEPRA State of Industry Report 2024,2024,Pakistan NEPRA avg wholesale
+paraguay,25,USD,1.0,ANDE Annual Report 2024,2024,
+permian,50.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,Permian basin avg ~$50/MWh (W. Texas gas hub)
+peru,55,USD,1.0,COES Annual Report 2024,2024,
+peru-hydro,40,PEN,0.27,COES SINAC Annual Report 2023 / IRENA 2024,2023,COES wholesale spot average around 150-160 PEN/MWh at 0.27 USD/PEN
+peru-solar,55,PEN,0.27,COES SINAC Annual Report 2023 / IRENA 2024,2023,Solar projects with COES connection around 180-200 PEN/MWh at 0.27 USD/PEN
+peru-wind,48,PEN,0.27,COES SINAC Annual Report 2023 / IRENA 2024,2023,Wind projects COES connection around 160-190 PEN/MWh at 0.27 USD/PEN
+philippines,110,USD,1.0,IEA World Energy Prices 2024,2024,
+pjm-solar,66.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,PJM LMP annual avg ~$66/MWh
+pjm-wind,66.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,PJM LMP annual avg ~$66/MWh
+poland-solar,97.2,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,PL annual avg ~90 EUR/MWh × 1.08 USD/EUR (2023 avg); coal-heavy
+poland-wind,97.2,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,PL annual avg ~90 EUR/MWh × 1.08 USD/EUR (2023 avg); coal-heavy
+portugal-solar,81.0,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,PT annual avg ~75 EUR/MWh × 1.08 USD/EUR (2023 avg)
+portugal-wind,81.0,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,PT annual avg ~75 EUR/MWh × 1.08 USD/EUR (2023 avg)
+qinghai,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,
+quebec,30,CAD,0.74,Hydro-Quebec Annual Report 2024,2024,~40 CAD/MWh
+romania-solar,70,EUR,1.08,OPCOM / ANRE Annual Report 2023 / ENTSO-E,2023,Day-ahead market solar around 60-85 EUR/MWh
+romania-wind,60,EUR,1.08,OPCOM / ANRE Annual Report 2023 / ENTSO-E,2023,Wind around 50-70 EUR/MWh
+russia-mainland,25,USD,1.0,IEA World Energy Prices 2024,2024,
+saskatchewan,41,CAD,0.74,SaskPower Annual Report 2024,2024,
+saudi-solar,25,USD,1.0,MEIM / PPA benchmark 2024,2024,Saudi PPA tariff benchmark
+sichuan,41.4,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,300 CNY/MWh Sichuan hydro surplus × 0.138 USD/CNY; hydropower-heavy spot depressed
+singapore,140,USD,1.0,EMA Singapore Energy Statistics 2023,2023,Gas-fired system with high prices; average 130-150 USD/MWh
+slovakia-solar,75,EUR,1.08,SEPS / OKTE 2023 / ENTSO-E,2023,Solar PPA around 65-85 EUR/MWh
+slovakia-wind,65,EUR,1.08,SEPS / OKTE 2023 / ENTSO-E,2023,Wind PPA around 55-75 EUR/MWh
+slovenia-solar,70,EUR,1.08,SONCE / ENTSO-E 2023,2023,Market price around 60-80 EUR/MWh
+slovenia-wind,60,EUR,1.08,SONCE / ENTSO-E 2023,2023,Wind around 55-70 EUR/MWh
+south-africa,59.40,ZAR,0.054,NERSA MYPD5 / Eskom AFS 2024 generation primary energy cost,2024,Eskom generation cost (primary energy + operations) ~1100 ZAR/MWh ~ 59.4 USD/MWh at 0.054 USD/ZAR (excludes transmission/distribution to match wholesale convention)
+south-africa-solar,120,ZAR,0.054,Eskom / NERSA Annual Report 2023,2023,Average around 2200-2400 ZAR/MWh at 0.054 USD/ZAR
+south-africa-wind,115,ZAR,0.054,Eskom / NERSA Annual Report 2023,2023,Average around 2100-2300 ZAR/MWh at 0.054 USD/ZAR
+south-korea,90,USD,1.0,KPX Annual Report 2024,2024,
+spain-solar,81.0,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,ES annual avg ~75 EUR/MWh × 1.08 USD/EUR (2023 avg)
+spain-wind,81.0,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,ES annual avg ~75 EUR/MWh × 1.08 USD/EUR (2023 avg)
+spp-solar,52.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,SPP LMP annual avg ~$52/MWh
+spp-wind,52.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,SPP LMP annual avg ~$52/MWh
+sweden-north,70.2,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,SE annual avg ~65 EUR/MWh × 1.08 USD/EUR (2023 avg); hydro-rich north
+sweden-south-solar,70.2,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,SE annual avg ~65 EUR/MWh × 1.08 USD/EUR (2023 avg); hydro-rich south
+sweden-south-wind,70.2,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,SE annual avg ~65 EUR/MWh × 1.08 USD/EUR (2023 avg); hydro-rich south
+switzerland,81.0,EUR,1.08,IEA World Energy Prices 2024 / Ember European Wholesale Price Data,2023,CH annual avg ~75 EUR/MWh × 1.08 USD/EUR (2023 avg)
+taiwan,70,USD,1.0,IEA World Energy Prices 2024,2024,
+thailand,65,USD,1.0,IEA World Energy Prices 2024,2024,
+tibet,6.21,CNY,0.138,IEA World Energy Prices 2024,2024,~45 CNY/MWh
+turkey,55,USD,1.0,IEA World Energy Prices 2024,2024,
+turkey-solar,60,TRY,0.038,EPİAŞ / TEDAS Annual Report 2023,2023,Solar average around 1600-1800 TRY/MWh at 0.038 USD/TRY
+turkey-wind,50,TRY,0.038,EPİAŞ / TEDAS Annual Report 2023,2023,Wind average around 1300-1500 TRY/MWh at 0.038 USD/TRY
+tva,63.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,TVA LMP annual avg ~$63/MWh
+uae,30,USD,1.0,MEIM / PPA benchmark 2024,2024,
+uruguay,80,USD,1.0,IEA World Energy Prices 2024,2024,
+vietnam,55,USD,1.0,IEA World Energy Prices 2024,2024,
+wa-swis,45.2,AUD,0.65,AEMO WA Market Operator,2023,WA SWIS ~69.5 AUD/MWh x 0.65 USD/AUD
+xinjiang,52.5,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,380 CNY/MWh Xinjiang spot × 0.138 USD/CNY; depressed coal-based spot price
+yunnan,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,

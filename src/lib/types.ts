@@ -175,6 +175,24 @@ export interface RegionData {
   generationTotalTWh?: number;
 }
 
+/**
+ * Price data for one region, emitted by the prices loader.
+ * All monetary values are in USD/MWh or USD total.
+ * priceTier drives rendering and display confidence.
+ */
+export interface PriceData {
+  regionId: string;
+  priceTier: "live" | "static" | "none";
+  /** T2/T3: single annual average price in USD/MWh. */
+  priceUSD?: number;
+  /** T1: 24-element array of USD/MWh, index = UTC hour 0..23. */
+  priceProfileUSD?: number[];
+  /** Human-readable source description for methodology display. */
+  priceSource?: string;
+  /** ISO 8601 timestamp when this price data was last fetched/computed. */
+  priceLastUpdated?: string;
+}
+
 /** Network consumption and hashrate reference from Cambridge CBECI. */
 export interface CBECIData {
   hashrateEHps: number;           // current network hashrate
@@ -208,4 +226,5 @@ export interface DashboardData {
   cbeci: CBECIData;
   anchor: GlobalAnchor;
   generatedAt: string;           // build timestamp
+  priceData?: Record<string, PriceData>;  // keyed by regionId
 }
