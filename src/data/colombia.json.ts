@@ -15,8 +15,15 @@ const CSV_PATH = join(__dirname, "../../data/historical/colombia-vertimientos-da
 
 interface CsvRow { date: string; gwh: number; }
 
-// XM SinerGox API response shape for Entity=Sistema daily metrics.
-interface XmDailyItem { Date: string; Values: Record<string, number>; }
+// XM SinerGox API response shape for Entity=Sistema daily metrics. The
+// /daily endpoint returns each day's value(s) as a `DailyEntities` array
+// of {Id, Value} pairs. `Value` is a string-encoded number in **kWh**;
+// the loader converts to GWh on the way through. (The earlier shape
+// `Values: Record<string, number>` documented here was wrong against
+// the live API — confirmed empirically via Britta-relay fetch on
+// 2026-05-08, see PR notes.)
+interface XmDailyEntity { Id: string; Value: string | number; }
+interface XmDailyItem { Date: string; DailyEntities?: XmDailyEntity[] }
 interface XmResponse { Items?: XmDailyItem[]; }
 
 function parseCSV(text: string): CsvRow[] {
@@ -38,31 +45,57 @@ function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
+// Convert a single XM `DailyEntities` row to a CsvRow. XM publishes Value as
+// a string in **kWh**; we convert to GWh.
+function xmRowToCsv(it: XmDailyItem): CsvRow | null {
+  const date = it.Date?.slice(0, 10) ?? "";
+  if (!date) return null;
+  const sistema = (it.DailyEntities ?? []).find(e => e.Id === "Sistema");
+  if (!sistema) return null;
+  const kwh = typeof sistema.Value === "string" ? parseFloat(sistema.Value) : sistema.Value;
+  if (!isFinite(kwh) || kwh < 0) return null;
+  return { date, gwh: kwh / 1_000_000 };
+}
+
 async function fetchXmLast365Days(): Promise<{ annualTWh: number; latestDate: string; nDays: number }> {
+  // XM's /daily endpoint rejects requests spanning more than ~30 days with
+  // HTTP 400. Fetch in 12 contiguous 30-day chunks and merge.
   const end = new Date();
-  const start = new Date(end.getTime() - 365 * 24 * 3600 * 1000);
-  const body = JSON.stringify({
-    MetricId: "VertEner",
-    StartDate: isoDate(start),
-    EndDate: isoDate(end),
-    Entity: "Sistema",
-  });
-  const resp = await fetchJSON<XmResponse>(XM_API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body,
-    timeoutMs: 15000,
-    retries: 1,
-  });
-  const items = resp?.Items ?? [];
-  const rows: CsvRow[] = items
-    .map(it => ({ date: it.Date?.slice(0, 10) ?? "", gwh: it.Values?.["Sistema"] ?? NaN }))
-    .filter(r => r.date && !isNaN(r.gwh) && r.gwh >= 0)
-    .sort((a, b) => a.date.localeCompare(b.date));
-  if (rows.length === 0) throw new Error("XM API returned no valid VertEner rows");
-  const sumGwh = rows.reduce((s, r) => s + r.gwh, 0);
-  const annualTWh = (sumGwh * (365 / rows.length)) / 1000;
-  return { annualTWh, latestDate: rows[rows.length - 1].date, nDays: rows.length };
+  const all: CsvRow[] = [];
+  const seen = new Set<string>();
+  for (let chunkOffsetDays = 0; chunkOffsetDays < 365; chunkOffsetDays += 30) {
+    const chunkEnd = new Date(end.getTime() - chunkOffsetDays * 24 * 3600 * 1000);
+    const chunkStart = new Date(chunkEnd.getTime() - 30 * 24 * 3600 * 1000);
+    const body = JSON.stringify({
+      MetricId: "VertEner",
+      StartDate: isoDate(chunkStart),
+      EndDate: isoDate(chunkEnd),
+      Entity: "Sistema",
+    });
+    let resp: XmResponse | undefined;
+    try {
+      resp = await fetchJSON<XmResponse>(XM_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+        timeoutMs: 15000,
+        retries: 1,
+      });
+    } catch {
+      continue;
+    }
+    for (const item of resp?.Items ?? []) {
+      const row = xmRowToCsv(item);
+      if (!row || seen.has(row.date)) continue;
+      seen.add(row.date);
+      all.push(row);
+    }
+  }
+  if (all.length === 0) throw new Error("XM API returned no valid VertEner rows");
+  all.sort((a, b) => a.date.localeCompare(b.date));
+  const sumGwh = all.reduce((s, r) => s + r.gwh, 0);
+  const annualTWh = (sumGwh * (365 / all.length)) / 1000;
+  return { annualTWh, latestDate: all[all.length - 1].date, nDays: all.length };
 }
 
 function readCsvRelay(): { annualTWh: number; latestDate: string; nRows: number } {
