@@ -329,3 +329,70 @@ These three regions alone represent 30–50 TWh of paid-to-take electricity per 
 12. CAISO. *Q1 2025 Report on Market Issues and Performance*. https://www.caiso.com/library/market-monitoring-reports
 13. Australian Energy Market Operator (AEMO). *Quarterly Energy Dynamics Q4 2024*. February 2025. https://aemo.com.au/energy-systems/electricity/national-electricity-market-nem/nem-forecasting-and-planning/forecasting-and-reliability/quarterly-energy-dynamics
 14. AEMO. *2024 Annual Electricity Statement of Opportunities*. August 2024. https://aemo.com.au/-/media/files/electricity/nem/planning_and_forecasting/nem_esoo/2024/2024-electricity-statement-of-opportunities.pdf
+
+---
+
+## 7. Bitcoin mining geographic mobility — frictions
+
+The argument that "Bitcoin mining could be powered by curtailed renewables" is correct in principle and routinely overstated in deployment timelines. The statement implicitly assumes that hashrate can relocate to wherever surplus electrons are cheapest at near-zero friction. In practice the frictions are large enough that an Eastern North American miner cannot redeploy to a Texan wind site or a Patagonian curtailment zone in less than 12–24 months for container-on-pad models, and 36–60 months for hard-build infrastructure. This section documents the frictions that the Stage 2 overlay must derate the "free energy" estimate of Item 6 against.
+
+### Container vs hard-build infrastructure
+
+Containerised mining infrastructure ("modular data centres", typically 1–4 MW per 40-foot ISO container) is the fastest-deployable form factor. CoinShares' *Mining Industry Report H2 2024* puts container-build CapEx at approximately **US$280–360k/MW** for the data-hall (ASIC-side) infrastructure, plus **US$120–200k/MW** for the upstream switchgear, transformers, and pad civils — i.e. **~US$400–550k/MW all-in** for a container deployment on a site that already has a power connection.^1^ Hashrate Index's Q4 2024 quarterly report confirms similar figures and adds that hard-build hyperscale-style data halls (immersion cooling, fixed structure) come in at **US$700k–1.1M/MW** and require 18–30 months of construction time once permitting is complete.^2^
+
+The shipping leg is non-trivial. ASIC inbound logistics from Bitmain's Shenzhen facility to a US destination ran 8–14 weeks of door-to-door lead time across 2023–2024, with bottlenecks at Long Beach and Houston throughout the period.^1,3^ Heavy switchgear and transformers — covered below — extend the total deployment-to-energisation timeline well beyond the ASIC procurement window.
+
+### Transformer queue lead times
+
+The single largest non-permitting friction is the wait for medium- and large-power transformers. Latitude Media's *Transformer Crunch* coverage and Wood Mackenzie's *North American Transformer Supply Outlook 2024* both quantify the queue:
+
+- **Distribution-class transformers (≤2.5 MVA):** lead times rose from approximately 8–12 weeks in 2020 to **52–80 weeks** through 2024.^4,5^
+- **Medium-power (2.5–60 MVA):** lead times of **18–36 months** as of mid-2024, up from 6–9 months in 2020.^4,5^
+- **Large-power (>60 MVA, the class typically required for >40 MW mining sites tying directly to a 138/230 kV line):** lead times of **3–5 years** in 2024–2025, with several US utilities reporting that delivery slots booked in early 2024 cannot be filled before 2028.^4,5,6^
+
+Bloomberg NEF's *Transformer Supply Constraint Brief* (April 2024) attributes the bottleneck to a combination of grain-oriented electrical steel (GOES) supply constraints, skilled-labour limitations at North American transformer fabricators (the US has fewer than five large-power transformer manufacturers operating at scale), and a step-change in demand from data-centre hyperscalers, IRA-driven manufacturing buildout, and renewable interconnection.^6^ Bitcoin miners compete for the same equipment as everyone else; CoinShares notes that the queue has materially changed mining-site economics, with several previously announced 2025-energisation projects pushed to 2027.^1^
+
+### ERCOT large-load interconnection queue
+
+ERCOT updated its large-load interconnection process in late 2023 in direct response to mining and data-centre queue growth. The relevant document is the ERCOT Public Utility Commission's *Large Flexible Load Interconnection Study* (2023) and the subsequent *Large Load Connection Process* (revised 2024).^7^ Key features:
+
+- The ≥**75 MW threshold** triggers a full ERCOT planning study; the ≥75 MW + flexible-load category triggers a streamlined "Controllable Load Resource" process if the load is willing to register as dispatchable.^7^
+- ERCOT's interconnection queue grew from 27 GW of large-load requests in 2023 to **more than 64 GW** of pending requests in 2024, the bulk of it data-centre (AI) demand rather than mining.^7,8^
+- Effective interconnection lead time for a >100 MW Texas mining project at a new substation: **24–48 months** from interconnection request to energisation, depending on transmission upgrade scope.^7^
+- ERCOT's 2024 amendments require new large flexible loads to register dispatchability terms; this is favourable to mining operators that can credibly bid as Controllable Load Resources but raises the bar for non-flexible deployments.^7,8^
+
+The same dynamic is observable in PJM (queue closure in 2023, reopened with restructured process in 2024–2025), MISO, and CAISO, with multi-year backlogs at every ISO except SPP.
+
+### Fibre, latency, and remote-site connectivity
+
+Bitcoin mining is famously latency-tolerant — pools accept work submissions on the order of seconds — but the operational requirement is *reliable* low-latency connectivity for stratum communications, monitoring, OTA firmware, and remote management. Rural sites without fibre have historically used point-to-point microwave or satellite. Starlink's commercial-grade Business and Maritime tiers offer 50–500 Mbps with ~25–60 ms latency in Tier-1 service areas; this is acceptable for stratum traffic but introduces a single-vendor dependency at remote sites.^1,2^ Microwave link capex runs ~US$50–150k for a 20–60 km link, with regulatory frequency-licensing lead times of 4–12 weeks in most US states. Hashrate Index notes that fibre-availability constraints are the second-most-cited reason (after permitting) for siting decisions diverging from ideal-power decisions.^2^
+
+### Permitting timelines by jurisdiction
+
+Permitting timelines for a 50-MW or larger mining facility:
+
+- **Texas (USA):** 6–18 months for air permits and TCEQ noise compliance; some counties have introduced moratoria or zoning restrictions in 2023–2024 (notably Dickens County and parts of Hood County, in response to community noise complaints).^1,9^
+- **Alberta and BC (Canada):** 12–24 months for industrial-load interconnection and Alberta Utilities Commission approval; BC Hydro placed a moratorium on new mining connections in 2022 that remained in place through 2024.^1^
+- **Norway / Sweden:** 18–36 months including municipal zoning, Energimarknadsinspektionen (EMI) approval, and grid-operator interconnection studies; Sweden's 2023 tax change effectively ended new mining buildout despite available cold-climate sites.^1^
+- **Paraguay:** 6–12 months for ANDE interconnection, but ANDE introduced a higher industrial tariff for mining loads in 2024 that has cooled new applications.^2^
+- **Bhutan / El Salvador (state mining):** state-led timelines, not directly comparable to private-sector permitting.
+
+### Water cooling and water rights
+
+Conventional air-cooled mining at 30–35 °C ambient temperatures derates ASIC throughput by 5–15%; immersion (single-phase or two-phase dielectric fluid) and direct-to-chip liquid cooling have become the standard for new builds, especially where ambient temperatures exceed 25 °C. Immersion build cost is roughly US$80–150k/MW above air-cooled.^1,2^ Where water is used for cooling-tower heat rejection, water-rights permits become a binding constraint — particularly in West Texas, where Hood County, Tom Green County, and Reeves County have all reported pushback against new high-water-use loads through 2024.^9^ Closed-loop dielectric-immersion systems with dry-cooler heat rejection avoid the water-rights problem at the cost of higher CapEx and a small derating in extreme heat.
+
+### Implication for the ELJ overlay
+
+The combined effect of these frictions is that the *capturable* share of the negative-pricing energy in Item 6 over a 2025–2027 horizon is substantially below the headline. Container-on-existing-pad redeployments can move within 6–12 months; greenfield 50-MW+ projects need 30–60 months. The overlay should treat near-term curtailment as redirectable only through existing-site demand response (e.g. ERCOT ERS, Bonneville BPA flexibility programmes) and treat genuinely greenfield siting at curtailment-rich nodes as a 2027–2030 horizon question.
+
+### References (Item 7)
+
+1. CoinShares Research. *Bitcoin Mining Industry Report — H2 2024*. CoinShares; January 2025. https://coinshares.com/research/bitcoin-mining-network-h2-2024
+2. Luxor Technology / Hashrate Index. *Hashrate Index Q4 2024 Mining Report*. Luxor; January 2025. https://hashrateindex.com/reports/
+3. Galaxy Digital Research. *Bitcoin Mining: Q4 2024 Industry Update*. Galaxy; February 2025. https://www.galaxy.com/research/insights/
+4. Wood Mackenzie. *North American Power Transformer Supply Outlook 2024*. June 2024. https://www.woodmac.com/research/products/power-and-renewables/
+5. Latitude Media. *The Transformer Crunch — series 2023–2024*. https://www.latitudemedia.com (industry coverage with primary-source citations to manufacturer guidance and utility filings).
+6. BloombergNEF. *Transformer Supply Constraint Brief*. April 2024. https://about.bnef.com/
+7. Electric Reliability Council of Texas (ERCOT) and Public Utility Commission of Texas. *Large Flexible Load Interconnection Study; Large Load Connection Process — Revised 2024*. https://www.ercot.com/services/rq/integration ; https://www.puc.texas.gov
+8. ERCOT. *Generation Interconnection Status (GIS) and Large Load Status Reports 2024*. https://www.ercot.com/gridinfo/resource
+9. Texas Commission on Environmental Quality (TCEQ). *Air Permits — Industrial Source Records*. https://www.tceq.texas.gov/permitting/air
