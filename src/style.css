@@ -1143,7 +1143,7 @@ main table {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 .region-tooltip-source a {
-  color: var(--teal-400, #3fc1be);
+  color: var(--brand);
   text-decoration: none;
 }
 .region-tooltip-source a:hover {
@@ -1160,7 +1160,7 @@ main table {
   font-size: 11px;
 }
 .region-tooltip-footer a {
-  color: var(--teal-400, #3fc1be);
+  color: var(--brand);
   text-decoration: none;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1458,7 +1458,7 @@ main table {
 }
 
 .app-footer .caption a {
-  color: var(--teal-400, #3fc1be);
+  color: var(--brand);
   text-decoration: none;
 }
 .app-footer .caption a:hover { text-decoration: underline; }
