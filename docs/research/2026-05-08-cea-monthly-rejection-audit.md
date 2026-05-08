@@ -55,7 +55,9 @@ Tangentially, secondary sources do discuss CEA-published curtailment figures —
 
 ## Decision
 
-**Rejected.** The CEA monthly executive summary cannot be used as a curtailment anchor in the dashboard. The bad-conversions checklist (item 1: *DSM / deviation values used as curtailment*) is satisfied — `yes` on the question "is this source publishing deviation/DSM rather than curtailment?" — and that "yes" blocks further use of the source.
+**Rejected as a forward-looking anchor.** The current CEA monthly executive summary cannot be used as a curtailment anchor for the dashboard. The bad-conversions checklist item 1 decision question — *"Does the source publish a column or table explicitly labelled 'curtailment', 'constrained-off', 'dispatch-down', 'reduction', or jurisdiction-equivalent — and not 'deviation', 'DSM', 'imbalance', or 'settlement'?"* — answers **no** for the three sampled 2024–2025 reports. A "no" on that decision question is the failure case; it blocks further use of the source.
+
+The historical Dec 2019 / Dec 2021 PDFs cited in earlier informal verification could not be located at any URL pattern tried, so the historical claim that those reports contained curtailment tables cannot be confirmed or refuted in this audit. The rejection therefore applies to the source as a *current and forward-looking* monthly anchor; it does not retroactively invalidate the historical claim, which simply remains unverifiable here.
 
 This audit is itself a worked example of the discipline layer functioning as designed:
 
