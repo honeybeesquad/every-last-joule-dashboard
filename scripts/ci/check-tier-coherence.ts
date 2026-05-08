@@ -87,6 +87,9 @@ const KNOWN_AGGREGATE_IDS = new Set<string>([
   "bpa",
   "nyiso",
   "iso-ne",
+  // turkey.json per-fuel aggregate — split via splitRegion in index.md into
+  // turkey-wind + turkey-solar; the aggregate snapshot is not in REGIONS.
+  "turkey",
 ]);
 
 // Legacy T1-live-TSO is an accepted alias of T1a-live-tso for pre-2026-04-25
