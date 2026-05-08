@@ -4,9 +4,14 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Changed — `sourceProvenance` sweep complete + CI gate enforced (2026-05-08)
+- **All 384 regions in `src/lib/regions.ts` now declare `sourceProvenance` explicitly.** Distribution: 172 `verified` (most live-tier regions plus the 8 GGFR flare regions), 7 `official-lead` (the 6 India SLDCs plus Colombia — all loaders-wired-but-emitting-fallback cases that the gate is designed to flag), 205 `modelled-fallback` (T3 regions with typical-shape profiles scaled to published anchors).
+- **CI gate flipped from warn-on-undefined to fail-on-undefined.** `scripts/ci/check-source-provenance-coherence.ts` previously emitted a warning when a region lacked `sourceProvenance`; now treats it as a violation and exits 1. New regions cannot land without an explicit declaration. Self-test fixture for `(T1a-live-tso, undefined)` updated to assert `violation` rather than `ok-warn`.
+- **JSDoc on `Region.sourceProvenance` updated** to document the post-sweep contract: the field is type-optional for ergonomics but the CI gate is the enforcement layer.
+
 ### Added — `sourceProvenance` field (2026-05-08, schema patch)
 - **New nullable enum field on per-region snapshots** — `sourceProvenance: "verified" | "official-lead" | "modelled-fallback" | null`. Orthogonal to the existing `confidenceTier` and to the existing `sourceStatus` (per-fetch freshness) field. Records what kind of upstream link a region has, distinct from how the data flowed on the latest fetch. See [`docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`](../docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).
-- **Three worked-example annotations** — `alberta-wind` (verified), `india-rajasthan` (official-lead), `india-karnataka` (official-lead). The other ~380 regions retain `null` until a follow-up sweep PR.
+- **Three worked-example annotations** (subsequently expanded to all 384 — see entry above) — `alberta-wind` (verified), `india-rajasthan` (official-lead), `india-karnataka` (official-lead).
 - **New CI gate** — `scripts/ci/check-source-provenance-coherence.ts` validates the legal `(confidenceTier, sourceProvenance)` matrix at declaration time. Catches the v1.1.1 India SLDC class of mis-declaration (`(T1a-live-tso, official-lead)` is a CI-rejected red flag). 16-fixture self-test (`--self-test` flag).
 - **Schema bump deferred** — this is an additive nullable field (patch bump per [SCHEMA.md](SCHEMA.md) SemVer convention). The CITATION.cff version stays at 1.2.0 until the next Zenodo upload; the bump to 1.2.1 will accompany that release rather than landing here independently.
 

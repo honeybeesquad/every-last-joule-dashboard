@@ -63,14 +63,18 @@ export interface Region {
   source: string;          // primary data source label
   sourceUrl: string;       // canonical source URL
   /**
-   * Optional per-region declaration of upstream-link kind. The CI gate at
+   * Per-region declaration of upstream-link kind. The CI gate at
    * `scripts/ci/check-source-provenance-coherence.ts` validates the
    * `(confidenceTier, sourceProvenance)` pair against the legal matrix at
    * build time, reading directly from `Region.sourceProvenance` (declaration
-   * time), not from emitted snapshots. Loader-side propagation into
-   * `RegionData.sourceProvenance` is a separate sweep PR; the snapshot field
-   * exists in the schema but is not yet populated by the loaders. Unset =
-   * legacy region; treated as null in the snapshot.
+   * time), not from emitted snapshots. As of the 2026-05-08 sweep, every
+   * region in `regions.ts` declares this field explicitly and the gate
+   * fails the build if any new region addition omits it. The TypeScript
+   * type is still optional (`?`) to keep the field syntactically convenient
+   * for hand-editing; the CI gate is the enforcement layer. Loader-side
+   * propagation into `RegionData.sourceProvenance` is a separate sweep PR;
+   * the snapshot field exists in the schema but is not yet populated by
+   * the loaders.
    */
   sourceProvenance?: SourceProvenance;
 }

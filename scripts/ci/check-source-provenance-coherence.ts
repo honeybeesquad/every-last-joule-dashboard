@@ -82,10 +82,19 @@ export function validatePair(
   provenance: Provenance,
 ): ValidationResult {
   if (provenance === undefined) {
+    // After the source-provenance sweep landed (2026-05-08), every Region
+    // in src/lib/regions.ts must declare sourceProvenance explicitly. A
+    // missing declaration on a new region addition is a real gap, not a
+    // legacy artifact. The gate flipped from "ok-warn" to "violation" at
+    // sweep-completion time so future contributors cannot silently add
+    // regions without thinking about provenance.
     return {
-      kind: "ok-warn",
+      kind: "violation",
+      severity: "impossible",
       reason:
-        "sourceProvenance not declared; cannot verify tier-provenance coherence (legacy region pending sweep).",
+        "sourceProvenance is not declared. Every Region must set sourceProvenance " +
+        'to one of "verified" | "official-lead" | "modelled-fallback". See ' +
+        "docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier.",
     };
   }
 
@@ -265,7 +274,13 @@ function runSelfTest(): void {
     "modelled-fallback",
     "ok",
   );
-  check("T1a-live-tso + undefined                        => ok-warn (legacy)", "T1a-live-tso", undefined, "ok-warn");
+  check(
+    "T1a-live-tso + undefined                        => violation (post-sweep enforcement)",
+    "T1a-live-tso",
+    undefined,
+    "violation",
+    { severity: "impossible" },
+  );
 
   // Additional sanity checks across the full matrix.
 
