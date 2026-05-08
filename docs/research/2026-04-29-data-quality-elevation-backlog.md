@@ -108,6 +108,14 @@ No new T2 upgrades are currently confirmed by the stricter audit. These are rese
 | `morocco` | ANRE generation totals are not curtailment totals; the current estimate is calculated. |
 | non-Kyushu Japan utilities | juyo CSVs are mostly demand/supply only; no fuel generation or curtailment field. |
 
+## Rejected sources (source-level investigations)
+
+Sources that were investigated as candidate anchors and rejected before any loader, region, or CHANGELOG entry was shipped. Each rejection has a dedicated audit document with reproducible evidence.
+
+| Source | Date | Why rejected | Audit |
+|---|---|---|---|
+| CEA *Executive Summary on Power Sector* (monthly) — proposed as India national anchor | 2026-05-08 | Three sampled 2024–2025 reports contain zero matches for "curtailment" or jurisdiction-equivalent. The only adjacent content is the Deviation Settlement Mechanism (DSM) table — exactly bad-conversion #1. The Dec 2019 / Dec 2021 reports cited in earlier informal verification could not be located at any historical URL pattern; the documented monthly anchor for India national curtailment does not exist in the form proposed. | [`2026-05-08-cea-monthly-rejection-audit.md`](2026-05-08-cea-monthly-rejection-audit.md) |
+
 ## Guardrails Added In This Pass
 
 - Dashboard data now asserts exact key parity between `regionData` and canonical `REGIONS`.
