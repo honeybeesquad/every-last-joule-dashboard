@@ -7,6 +7,7 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 - **Region id:** `india-rajasthan`
 - **Country:** IND
 - **Tier:** static
+- **Source provenance:** `official-lead` — RRVPNL SLDC publishes RE curtailment downloads but the URL is geoblocked from non-Indian IPs, so the loader currently emits a typical-shape T3 fallback calibrated to the Ember 2025 anchor. The loader is scaffolded; promotion to `verified` (and tier promotion to T1a-live-tso) is gated on the India-egress relay. The (`tier=live`, `sourceProvenance=official-lead`) pair is the v1.1.1 red flag this field exists to surface — `tier=static` is the honest state until the relay activates. (See [tier-classification-guide.md#source-provenance-orthogonal-to-tier](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).)
 - **Kind:** solar
 - **Source:** RRVPNL SLDC (Rajasthan State Load Despatch Centre) — RE curtailment downloads at sldc.rajasthan.gov.in. Geoblocked from non-Indian IP ranges; loader currently emits T3-modelled typical-shape calibrated to Ember India 2025 (~3.5 TWh/yr solar curtailment). Will be promoted to T1a-live-tso when the India-egress relay activates the live parse.
 - **Source URL:** [https://sldc.rajasthan.gov.in/](https://sldc.rajasthan.gov.in/)

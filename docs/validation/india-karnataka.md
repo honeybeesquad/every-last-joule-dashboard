@@ -7,6 +7,7 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 - **Region id:** `india-karnataka`
 - **Country:** IND
 - **Tier:** static
+- **Source provenance:** `official-lead` — KSLDC publishes a live dashboard and curtailment PDFs (and is *not* geoblocked, unlike other Indian SLDCs), but the parser is not yet implemented. The energy-denominator gap on the older instruction PDFs is the load-bearing reason for `official-lead` rather than `verified`: an instruction percentage is not energy without a paired generation total — see bad-conversions checklist item 3. Until the parser ships AND the energy denominator is resolved, the loader emits a typical-shape T3 fallback. (See [tier-classification-guide.md#source-provenance-orthogonal-to-tier](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).)
 - **Kind:** solar
 - **Source:** KSLDC (Karnataka State Load Despatch Centre) — real-time dashboard and curtailment PDFs at ksldc.in. Probed successfully in April 2026 coverage audit; parser not yet implemented. Loader currently emits T3-modelled typical-shape calibrated to POSOCO South Region 2024 (~0.5 TWh/yr Karnataka solar curtailment). Will be promoted to T1a-live-tso when the parser ships.
 - **Source URL:** [https://ksldc.in/](https://ksldc.in/)

@@ -64,7 +64,12 @@
     "sourceStatus": {
       "type": ["string", "null"],
       "enum": ["live", "cached", "degraded", null],
-      "description": "Whether the last fetch was fresh (live), a recent withFallback snapshot (cached), or a stale withFallback snapshot beyond the configured staleness threshold (degraded)."
+      "description": "Per-fetch freshness. Whether the last fetch was fresh (live), a recent withFallback snapshot (cached), or a stale withFallback snapshot beyond the configured staleness threshold (degraded). Distinct from sourceProvenance, which records what kind of upstream link the region has."
+    },
+    "sourceProvenance": {
+      "type": ["string", "null"],
+      "enum": ["verified", "official-lead", "modelled-fallback", null],
+      "description": "Per-region declaration of the upstream link kind, orthogonal to confidenceTier. verified = snapshot value comes from a verified upstream feed or anchor. official-lead = authoritative source exists and loader is wired/scaffolded but the live path is not producing usable data (geoblocked, auth-gated, parser pending). modelled-fallback = no verified upstream link; snapshot is typical-shape scaled to an anchor or otherwise estimated. The 'exclude' status never appears in snapshots; excluded regions are not emitted. Nullable while backfill ramps. See docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier."
     },
     "fuelShare": {
       "type": "object",

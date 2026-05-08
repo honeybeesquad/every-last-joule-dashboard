@@ -30,6 +30,27 @@ export type RegionKind = "solar" | "wind" | "hydro" | "geo" | "mixed" | "flare";
 /** Freshness state of an upstream source or fallback snapshot. */
 export type SourceStatus = "live" | "cached" | "degraded";
 
+/**
+ * Source provenance — orthogonal to RegionTier. Records what kind of upstream
+ * link the region has, distinct from per-fetch freshness (`SourceStatus`) and
+ * from confidence tier (`Region.tier` / `RegionData.confidenceTier`).
+ *
+ *   "verified"          snapshot value comes from a verified upstream feed
+ *                       or anchor.
+ *   "official-lead"     authoritative source exists and loader is wired or
+ *                       scaffolded, but the live path is not producing usable
+ *                       data (geoblocked, auth-gated, parser pending). The
+ *                       emitted snapshot falls back to modelled or last-good.
+ *   "modelled-fallback" no verified upstream link. Snapshot is a typical-shape
+ *                       profile scaled to an anchor, or otherwise estimated.
+ *
+ * The "exclude" state from the methodology doc is intentionally NOT here: it
+ * means the region is not in the canonical REGIONS list at all and therefore
+ * never appears in `RegionData`. See
+ * `docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`.
+ */
+export type SourceProvenance = "verified" | "official-lead" | "modelled-fallback";
+
 /** Canonical region definition. Immutable; does not change per build. */
 export interface Region {
   id: string;              // kebab-case stable id
@@ -41,6 +62,17 @@ export interface Region {
   kind: RegionKind;
   source: string;          // primary data source label
   sourceUrl: string;       // canonical source URL
+  /**
+   * Optional per-region declaration of upstream-link kind. The CI gate at
+   * `scripts/ci/check-source-provenance-coherence.ts` validates the
+   * `(confidenceTier, sourceProvenance)` pair against the legal matrix at
+   * build time, reading directly from `Region.sourceProvenance` (declaration
+   * time), not from emitted snapshots. Loader-side propagation into
+   * `RegionData.sourceProvenance` is a separate sweep PR; the snapshot field
+   * exists in the schema but is not yet populated by the loaders. Unset =
+   * legacy region; treated as null in the snapshot.
+   */
+  sourceProvenance?: SourceProvenance;
 }
 
 /** A single instantaneous observation from a grid API. */
@@ -64,8 +96,18 @@ export interface RegionData {
    * Indicates whether the current payload came from a live fetch,
    * a recent fallback snapshot, or a stale fallback snapshot.
    * Surfaced in the methodology page so readers can see freshness.
+   * Distinct from `sourceProvenance`, which records the kind of
+   * upstream link the region has (provenance, not freshness).
    */
   sourceStatus?: SourceStatus;
+  /**
+   * Per-region declaration of upstream-link kind, propagated from
+   * the canonical Region declaration. Orthogonal to `confidenceTier`.
+   * The `(confidenceTier, sourceProvenance)` pair is validated at build
+   * time by `scripts/ci/check-source-provenance-coherence.ts`.
+   * See `docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`.
+   */
+  sourceProvenance?: SourceProvenance;
   /**
    * Data-driven fuel-mix override. If present, this takes precedence over the
    * region's canonical `kind` for bucketing in hotspot columns and timeline

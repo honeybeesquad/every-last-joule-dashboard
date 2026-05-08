@@ -7,6 +7,7 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 - **Region id:** `alberta-wind`
 - **Country:** CAN
 - **Tier:** live
+- **Source provenance:** `verified` — AESO publishes the live wind snapshot AND the calibrated 5% curtailment rate; both are own-jurisdiction feeds, no fallback shape involved. (See [tier-classification-guide.md#source-provenance-orthogonal-to-tier](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).)
 - **Kind:** wind
 - **Source:** AESO wind snapshot
 - **Source URL:** [http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet](http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet)

@@ -14,6 +14,8 @@ Changing `kind` to `flat` is not a promotion mechanism. `flat` is a profile shap
 
 Non-canonical candidate specs belong in `buildAllStatics({ includeCandidates: true })` and research docs, not the launch dashboard.
 
+**Source-provenance gate (added 2026-05-08).** A region cannot be promoted to T1a-live-tso while its `sourceProvenance` is still `official-lead`. The live path must be producing verified data first (`sourceProvenance: "verified"`), then the tier promotion follows. This is the lesson from the v1.1.1 India SLDC mis-declaration: declaring T1a while the loader was emitting modelled-fallback shapes shipped a tier badge the data did not earn. The CI check `scripts/ci/check-source-provenance-coherence.ts` enforces the legal `(tier, sourceProvenance)` matrix from [`docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).
+
 **Bad-conversions checklist gate (added 2026-05-08).** Before any promotion decision, work through the bad-conversions checklist in [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject). A region cannot be promoted past T3-modelled while any item evaluates to "yes". The checklist is the demotion filter for procedural failures, parallel to the per-tier "What this does NOT accept" lists. Each item corresponds to a real production bug or research-only blocker; "yes" on item 1 (DSM/deviation), 2 (capacity-MW), 3 (instruction-%), 4 (blank-as-zero), or 5 (modelled-as-verified) blocks promotion until resolved.
 
 ## Immediate Implementation Queue
@@ -111,6 +113,14 @@ The `Bad-conversion #` column cites the relevant item from the [bad-conversions 
 | `kenya` | Geothermal venting is not the same as grid curtailment, and no explicit curtailed-energy total was found. | 2 |
 | `morocco` | ANRE generation totals are not curtailment totals; the current estimate is calculated. | 2 |
 | non-Kyushu Japan utilities | juyo CSVs are mostly demand/supply only; no fuel generation or curtailment field. | — |
+
+## Rejected sources (source-level investigations)
+
+Sources that were investigated as candidate anchors and rejected before any loader, region, or CHANGELOG entry was shipped. Each rejection has a dedicated audit document with reproducible evidence.
+
+| Source | Date | Why rejected | Audit |
+|---|---|---|---|
+| CEA *Executive Summary on Power Sector* (monthly) — proposed as India national anchor | 2026-05-08 | Rejected as a current/forward-looking anchor. Three sampled 2024–2025 reports contain zero matches for "curtailment" or jurisdiction-equivalent — only Deviation Settlement Mechanism (DSM) tables, exactly bad-conversion #1. The Dec 2019 / Dec 2021 reports cited in earlier informal verification could not be located at any historical URL pattern, so the historical claim that those reports contained curtailment tables cannot be confirmed or refuted; the rejection applies to current usage, not to the historical artefacts themselves. | [`2026-05-08-cea-monthly-rejection-audit.md`](2026-05-08-cea-monthly-rejection-audit.md) |
 
 ## Guardrails Added In This Pass
 
