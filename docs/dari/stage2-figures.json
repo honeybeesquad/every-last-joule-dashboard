@@ -1,0 +1,319 @@
+{
+  "generated": "2026-05-08T04:38:09.849Z",
+  "methodology": {
+    "live_regions_source": "data/snapshots/last-good/*.json — 30-day totalTWh × (365/30) to annualise",
+    "static_regions_source": "src/data/statics.json.ts — annualTWh direct",
+    "bitcoin_primary_source": "WooCharts ESG tracker — 197.6 TWh/yr, 2024-07-27 data point",
+    "bitcoin_crosscheck_source": "CBECI cbeci.json snapshot — 133.5 TWh/yr, 2026-05-04",
+    "emissions_intensity_source": "WooCharts — 249.5 g CO₂e/kWh network-level, 2024-07-27",
+    "global_grid_source": "Ember Global Electricity Review 2025 — 473 g CO₂e/kWh",
+    "flare_intensity_note": "40 g CO₂e/kWh (CH4→CO2 via combustion; vs ~1000 g if vented as methane)"
+  },
+  "bucket_totals_annual_twh": {
+    "T1a_live_tso": 162.82418763672524,
+    "T1b_live_domestic": 21.61438998215904,
+    "T1c_live_neighbour": 0.11447236421735997,
+    "T1_all_verified": 184.55304998310163,
+    "T2_annual_calibrated": 1.7169999999999999,
+    "T2_flare": 154.2,
+    "T3_modelled": 123.58739999999982,
+    "verified_plus_flare": 338.7530499831016,
+    "full_envelope_excl_T3": 340.4700499831016,
+    "grand_total_all_tiers": 464.05744998310144
+  },
+  "F1_hero_stat": {
+    "woocharts_primary": {
+      "bitcoin_twh": 197.6,
+      "verified_curtailment_twh": 184.55304998310163,
+      "flare_twh": 154.2,
+      "verified_plus_flare_twh": 338.7530499831016,
+      "pct_of_bitcoin_verified_only": 93.39729250156965,
+      "pct_of_bitcoin_verified_plus_flare": 171.4337297485332,
+      "pct_of_bitcoin_full_envelope": 172.3026568740393,
+      "pct_of_bitcoin_all_modelled": 234.84688764326998
+    },
+    "cbeci_crosscheck": {
+      "bitcoin_twh": 133.5,
+      "pct_of_bitcoin_verified_plus_flare": 253.74760298359672,
+      "pct_of_bitcoin_all_modelled": 347.6085767663681
+    }
+  },
+  "F4_bitcoin_vs_wasted": {
+    "bitcoin_twh_woocharts": 197.6,
+    "bitcoin_twh_cbeci": 133.5,
+    "t1a_twh": 162.82418763672524,
+    "t1b_twh": 21.61438998215904,
+    "t1c_twh": 0.11447236421735997,
+    "t2_flare_twh": 154.2,
+    "t2_non_flare_twh": 1.7169999999999999,
+    "t3_modelled_twh": 123.58739999999982,
+    "verified_curtailment_twh": 184.55304998310163,
+    "verified_plus_flare_twh": 338.7530499831016,
+    "total_all_tiers_twh": 464.05744998310144
+  },
+  "F6_revenue_foregone": {
+    "total_revenue_foregone_usd_billion": 16.17433298410862,
+    "top15": [
+      {
+        "id": "brazil-bahia-wind",
+        "name": "Bahia Wind",
+        "bucket": "T1a",
+        "annualTWh": 24.639752378500003,
+        "priceUSDperMWh": 48,
+        "revenueUSDmillion": 1182.708114168
+      },
+      {
+        "id": "colombia",
+        "name": "Colombia",
+        "bucket": "T1b",
+        "annualTWh": 20.3337966384,
+        "priceUSDperMWh": 55,
+        "revenueUSDmillion": 1118.358815112
+      },
+      {
+        "id": "brazil-mg-solar",
+        "name": "Minas Gerais Solar",
+        "bucket": "T1a",
+        "annualTWh": 23.250750499499997,
+        "priceUSDperMWh": 48,
+        "revenueUSDmillion": 1116.0360239759998
+      },
+      {
+        "id": "permian",
+        "name": "Permian Basin",
+        "bucket": "T2-flare",
+        "annualTWh": 20.599999999999998,
+        "priceUSDperMWh": 50,
+        "revenueUSDmillion": 1030
+      },
+      {
+        "id": "sichuan",
+        "name": "Sichuan",
+        "bucket": "T3",
+        "annualTWh": 18.240000000000006,
+        "priceUSDperMWh": 41.4,
+        "revenueUSDmillion": 755.1360000000002
+      },
+      {
+        "id": "brazil-rn-wind",
+        "name": "Rio Grande do Norte Wind",
+        "bucket": "T1a",
+        "annualTWh": 15.180225985166663,
+        "priceUSDperMWh": 48,
+        "revenueUSDmillion": 728.6508472879998
+      },
+      {
+        "id": "germany-wind",
+        "name": "Germany Wind",
+        "bucket": "T1a",
+        "annualTWh": 5.8396016586963055,
+        "priceUSDperMWh": 97.2,
+        "revenueUSDmillion": 567.6092812252809
+      },
+      {
+        "id": "brazil-piaui-wind",
+        "name": "Piaui Wind",
+        "bucket": "T1a",
+        "annualTWh": 11.690874846499995,
+        "priceUSDperMWh": 48,
+        "revenueUSDmillion": 561.1619926319997
+      },
+      {
+        "id": "xinjiang",
+        "name": "Xinjiang",
+        "bucket": "T3",
+        "annualTWh": 8.199999999999998,
+        "priceUSDperMWh": 52.5,
+        "revenueUSDmillion": 430.4999999999999
+      },
+      {
+        "id": "iceland",
+        "name": "Iceland",
+        "bucket": "T3",
+        "annualTWh": 4.875999999999999,
+        "priceUSDperMWh": 70,
+        "revenueUSDmillion": 341.3199999999999
+      },
+      {
+        "id": "spain-wind",
+        "name": "Spain Wind",
+        "bucket": "T1a",
+        "annualTWh": 4.164552058333332,
+        "priceUSDperMWh": 81,
+        "revenueUSDmillion": 337.32871672499994
+      },
+      {
+        "id": "brazil-bahia-solar",
+        "name": "Bahia Solar",
+        "bucket": "T1a",
+        "annualTWh": 6.898676866833325,
+        "priceUSDperMWh": 48,
+        "revenueUSDmillion": 331.1364896079996
+      },
+      {
+        "id": "brazil-rn-solar",
+        "name": "Rio Grande do Norte Solar",
+        "bucket": "T1a",
+        "annualTWh": 6.355518322833332,
+        "priceUSDperMWh": 48,
+        "revenueUSDmillion": 305.0648794959999
+      },
+      {
+        "id": "spain-solar",
+        "name": "Spain Solar",
+        "bucket": "T1a",
+        "annualTWh": 3.703885679999993,
+        "priceUSDperMWh": 81,
+        "revenueUSDmillion": 300.0147400799994
+      },
+      {
+        "id": "germany-solar",
+        "name": "Germany Solar",
+        "bucket": "T1a",
+        "annualTWh": 2.753258625726291,
+        "priceUSDperMWh": 97.2,
+        "revenueUSDmillion": 267.6167384205955
+      }
+    ],
+    "all_priced_regions": 186
+  },
+  "F7_carbon_counterfactual": {
+    "bitcoin_actual_MtCO2e": 49.3012,
+    "bitcoin_actual_intensity_gCO2_per_kWh": 249.5,
+    "global_grid_average_gCO2_per_kWh": 473,
+    "curtailment_fed_scenario": {
+      "description": "Bitcoin demand met by verified curtailment+flare first, then global grid",
+      "curtailment_twh": 338.7530499831016,
+      "remaining_grid_twh": 0,
+      "total_MtCO2e": 6.168,
+      "pct_reduction_vs_actual": 87.48914833716015
+    },
+    "all_curtailment_scenario": {
+      "description": "Bitcoin entirely from verified curtailed RE + flare gas (capped at Bitcoin TWh)",
+      "total_MtCO2e": 0.5218780006759346,
+      "pct_reduction_vs_actual": 98.94144969965045
+    }
+  },
+  "F3_top20_regions": [
+    {
+      "id": "s-iraq",
+      "name": "S. Iraq",
+      "bucket": "T2-flare",
+      "annualTWh": 62.99999999999999
+    },
+    {
+      "id": "w-siberia",
+      "name": "W. Siberia",
+      "bucket": "T2-flare",
+      "annualTWh": 42.4
+    },
+    {
+      "id": "brazil-bahia-wind",
+      "name": "Bahia Wind",
+      "bucket": "T1a",
+      "annualTWh": 24.639752378500003
+    },
+    {
+      "id": "brazil-mg-solar",
+      "name": "Minas Gerais Solar",
+      "bucket": "T1a",
+      "annualTWh": 23.250750499499997
+    },
+    {
+      "id": "permian",
+      "name": "Permian Basin",
+      "bucket": "T2-flare",
+      "annualTWh": 20.599999999999998
+    },
+    {
+      "id": "colombia",
+      "name": "Colombia",
+      "bucket": "T1b",
+      "annualTWh": 20.3337966384
+    },
+    {
+      "id": "sichuan",
+      "name": "Sichuan",
+      "bucket": "T3",
+      "annualTWh": 18.240000000000006
+    },
+    {
+      "id": "brazil-rn-wind",
+      "name": "Rio Grande do Norte Wind",
+      "bucket": "T1a",
+      "annualTWh": 15.180225985166663
+    },
+    {
+      "id": "brazil-piaui-wind",
+      "name": "Piaui Wind",
+      "bucket": "T1a",
+      "annualTWh": 11.690874846499995
+    },
+    {
+      "id": "russia-yamal",
+      "name": "Yamal (flare)",
+      "bucket": "T2-flare",
+      "annualTWh": 9.999999999999998
+    },
+    {
+      "id": "russia-e-siberia",
+      "name": "E. Siberia (flare)",
+      "bucket": "T2-flare",
+      "annualTWh": 8.999999999999998
+    },
+    {
+      "id": "paraguay",
+      "name": "Paraguay",
+      "bucket": "T3",
+      "annualTWh": 8.96
+    },
+    {
+      "id": "xinjiang",
+      "name": "Xinjiang",
+      "bucket": "T3",
+      "annualTWh": 8.199999999999998
+    },
+    {
+      "id": "e-saudi",
+      "name": "E. Saudi Arabia",
+      "bucket": "T2-flare",
+      "annualTWh": 8.099999999999998
+    },
+    {
+      "id": "brazil-bahia-solar",
+      "name": "Bahia Solar",
+      "bucket": "T1a",
+      "annualTWh": 6.898676866833325
+    },
+    {
+      "id": "brazil-rn-solar",
+      "name": "Rio Grande do Norte Solar",
+      "bucket": "T1a",
+      "annualTWh": 6.355518322833332
+    },
+    {
+      "id": "germany-wind",
+      "name": "Germany Wind",
+      "bucket": "T1a",
+      "annualTWh": 5.8396016586963055
+    },
+    {
+      "id": "brazil-piaui-solar",
+      "name": "Piaui Solar",
+      "bucket": "T1a",
+      "annualTWh": 5.540703796
+    },
+    {
+      "id": "yunnan",
+      "name": "Yunnan",
+      "bucket": "T3",
+      "annualTWh": 5.520000000000001
+    },
+    {
+      "id": "brazil-ce-solar",
+      "name": "Ceara Solar",
+      "bucket": "T1a",
+      "annualTWh": 5.468687823833334
+    }
+  ]
+}
