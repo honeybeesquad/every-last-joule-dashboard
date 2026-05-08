@@ -57,4 +57,4 @@ See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-rej
 | 2 | Capacity-at-risk MW used as curtailed energy MWh | no | The published 5% rate is calibrated against AESO operational disclosure (not back-calculated from installed capacity × CF × assumed rate). |
 | 3 | Instruction percentage without a generation denominator | no | The 5% rate is paired with the live AESO wind-supply MW feed at every emission, giving a defined energy denominator. |
 | 4 | Blank or dash treated as zero | no | The loader treats AESO fetch failures via `withFallback` (last-good or stale-fallback), not by coercing missing values to zero. |
-| 5 | Modelled fallback labelled as verified measurement | no | Hourly trace is sourced from the live AESO supply snapshot; only the 5% rate is calibration-derived. The validation doc states the rate provenance explicitly.
+| 5 | Modelled fallback labelled as verified measurement | no | Hourly trace is sourced from the live AESO supply snapshot; only the 5% rate is calibration-derived. The validation doc states the rate provenance explicitly. |

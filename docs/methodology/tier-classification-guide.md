@@ -9,7 +9,7 @@
 
 ## Bad conversions you must reject
 
-A region cannot be promoted past T3-modelled unless every item in this checklist evaluates to "no" for the candidate source. The checklist is the demotion filter for procedural failures, parallel to the per-tier "What this does NOT accept" lists in the section below. Each of the five items below corresponds to either a past production bug or a current research-only blocker.
+A region cannot be promoted from T3-modelled to T2-annual-calibrated, T1c, T1b, or T1a unless every item in this checklist evaluates to "no" for the candidate source. The checklist is a review-time discipline gate (not currently CI-enforced — `scripts/ci/check-validation-doc-bad-conversions.ts` reports a baseline citation tally; enforcement is a follow-up sprint). It functions as the demotion filter for procedural failures, parallel to the per-tier "What this does NOT accept" lists in the section below. Each of the five items below corresponds to either a past production bug or a current research-only blocker.
 
 ### 1. DSM / deviation values used as curtailment
 
