@@ -8,7 +8,11 @@ snapshots (current state, overwritten on each build), a rolling
 Parquet history (one row per region per build, appended), and a
 seven-year Parquet backfill (one row per region per hour). All are
 distributed together at the Zenodo DOI and mirrored on GitHub raw
-URLs.
+URLs. Per-column types, units, nullability, and update semantics
+for every artefact below are documented in
+[`dataset/SCHEMA.md`](../../dataset/SCHEMA.md); §3 here gives only
+the locations, sizes, cadences, and cross-references reviewers need
+to navigate the records.
 
 ## 3.1 Per-region JSON snapshots
 
@@ -20,45 +24,18 @@ URLs.
 **Cadence:** overwritten on each scheduled build (~every 6 hours
 per GitHub Actions cron).
 
-### Record schema
+Field-by-field description and an example record live in
+`dataset/SCHEMA.md` § "Per-region JSON snapshot". The
+`confidenceTier` enum is one of `T1a-live-tso`,
+`T1b-live-domestic-anchored`, `T1c-live-neighbour-anchored`,
+`T2-annual-calibrated`, `T2-flare`, or `T3-modelled` (legacy
+`T1-live-TSO` is retained as an alias for pre-2026-04-25
+snapshots).
 
-| Field | Type | Description |
-|---|---|---|
-| `regionId` | `string` | Stable kebab-case ID matching `src/lib/regions.ts`. |
-| `profile` | `number[24]` | 30-day trailing average curtailment in GW per UTC hour. Index 0 = 00:00–01:00 UTC. |
-| `latestProfile` | `number[24]` | Single-day latest snapshot in GW per UTC hour. |
-| `totalTWh` | `number` | 30-day trailing total curtailment in TWh. |
-| `peakGW` | `number` | 30-day trailing peak hourly GW. |
-| `lastUpdated` | `string` | Calibration-anchor date — `YYYY`, `YYYY-Q#`, or ISO-8601 timestamp. |
-| `lastSuccessAt` | `string` | ISO-8601 UTC timestamp when the snapshot was last successfully refreshed. |
-| `sourceNote` | `string` | Human-readable provenance (source, window, calibration rate). |
-| `sourceStatus` | `"live" \| "cached" \| "degraded" \| null` | Fresh fetch (`live`), recent last-good (`cached`), or stale last-good beyond threshold (`degraded`). |
-| `fuelShare` | `Record<string, number>` | Fuel split of curtailed energy, fractions 0–1, keys ⊂ `{solar, wind, hydro, geothermal, flare}`. |
-| `uncertaintyLowGW` | `number` | Lower bound of the confidence envelope on `peakGW`. |
-| `uncertaintyHighGW` | `number` | Upper bound of the confidence envelope on `peakGW`. |
-| `confidenceTier` | `string` | One of `T1a-live-tso`, `T1b-live-domestic-anchored`, `T1c-live-neighbour-anchored`, `T2-annual-calibrated`, `T2-flare`, `T3-modelled`. The legacy value `T1-live-TSO` is retained as an alias of `T1a-live-tso` for pre-2026-04-25 snapshots. |
-
-### Example record
-
-```json
-{
-  "regionId": "caiso",
-  "profile": [0.671, 0.590, 0.304, 0.140, ...],
-  "latestProfile": [0.82, 0.71, 0.35, 0.18, ...],
-  "totalTWh": 0.2699,
-  "peakGW": 0.729,
-  "lastUpdated": "2026-04-23T14:15:00Z",
-  "lastSuccessAt": "2026-04-23T14:18:21Z",
-  "sourceNote": "EIA CISO solar curtailment 2026-03-25 → 2026-04-23",
-  "sourceStatus": "live",
-  "fuelShare": {"solar": 0.88, "wind": 0.12},
-  "uncertaintyLowGW": 0.620,
-  "uncertaintyHighGW": 0.838,
-  "confidenceTier": "T1a-live-tso"
-}
-```
-
-Full field descriptions and update semantics: `dataset/SCHEMA.md`.
+Six loaders (`aemo`, `brazil-ne`, `entsoe`, `ercot`,
+`ercot-native`, `norway`) emit a single JSON file containing a
+`Record<regionId, RegionData>` rather than a single record; each
+value matches the per-region schema above.
 
 ## 3.2 Rolling Parquet history
 
@@ -70,21 +47,8 @@ Full field descriptions and update semantics: `dataset/SCHEMA.md`.
 **Granularity:** build-level snapshot — each row captures the
 30-day trailing aggregate at the moment the row was written.
 
-### Schema
-
-| Column | Type | Description |
-|---|---|---|
-| `build_timestamp` | `string` (ISO-8601 UTC) | Time the row was written. |
-| `region_id` | `string` | Matches `regionId` in the JSON snapshot. |
-| `peak_gw` | `float32` | 30-day trailing peak hourly GW at build time. |
-| `total_twh_30d` | `float32` | 30-day trailing total curtailment in TWh. |
-| `source_status` | `string` | `"live"`, `"cached"`, `"degraded"`, or null. |
-| `last_updated` | `string` | Calibration-anchor date. |
-| `last_success_at` | `string` | ISO-8601 UTC timestamp when the snapshot was last successfully refreshed. |
-| `profile_h00` … `profile_h23` | `float32` × 24 | Hourly profile. |
-| `uncertainty_low_gw` | `float32` | Lower bound on `peak_gw`. |
-| `uncertainty_high_gw` | `float32` | Upper bound on `peak_gw`. |
-| `confidence_tier` | `string` | Tier label. |
+Column list and types in `dataset/SCHEMA.md` § "Parquet rolling
+history".
 
 ## 3.3 Seven-year Parquet backfill
 
@@ -100,24 +64,12 @@ multi-year upstream archives are not backfilled).
 (e.g. `eia_caiso_2024.parquet`, `entsoe_germany_2023.parquet`)
 for per-year consumption without a full-file read.
 
-### Schema
-
-| Column | Type | Description |
-|---|---|---|
-| `observation_timestamp` | `string` (ISO-8601 UTC) | Start of the hour the value covers. |
-| `region_id` | `string` | Stable region ID, matches the JSON snapshot. |
-| `curtailment_gw` | `float32` | Reconstructed hourly curtailment in GW. |
-| `fuel` | `string` | `"wind"`, `"solar"`, `"hydro"`, `"geothermal"`, or `"flare"` — the technology the curtailed energy came from. |
-| `source` | `string` | Provenance slug: `"entsoe"`, `"eia"`, `"nord-pool"`, …. |
-| `rate_applied` | `float32` | Calibration rate used to convert raw generation into curtailment (`0.0` when the source publishes curtailment directly). |
-| `rate_source` | `string` | Human-readable provenance of the rate. |
-
+Column list in `dataset/SCHEMA.md` § "Parquet hourly backfill".
 Confidence-tier and uncertainty columns are deliberately *not* on
 this file — the per-tier envelope is calibrated against annual
 aggregates and lives on the annual rollup (§3.4). Consumers who
 need to attach uncertainty to an hourly slice join the rollup on
-`region_id`. Full schema, including the rationale for that split,
-is in `dataset/SCHEMA.md` § "Parquet hourly backfill".
+`region_id`.
 
 The backfill is the source of truth for Figures 2, 3, and 5. Figure
 4 is independent (tier-assignment only, no hourly data). Figure 1
@@ -132,22 +84,9 @@ uses the latest snapshot, not the backfill.
 scatter (Figure 2). This is the file that carries the calibrated
 uncertainty envelope; the hourly backfill (§3.3) does not.
 
-### Schema
-
-| Column | Type | Description |
-|---|---|---|
-| `region_id` | `string` | Stable region ID. |
-| `year` | `int16` | Calendar year. |
-| `source` | `string` | First non-null `source` value within the (region, year) partition. |
-| `n_hourly_rows` | `int32` | Non-null hours observed for this region in this year (full year = 8,760, leap year = 8,784). |
-| `annual_twh` | `float32` | Σ `curtailment_gw` × 1h ÷ 1000 across the year. |
-| `peak_gw` | `float32` | Max hourly `curtailment_gw` across the year. |
-| `confidence_tier` | `string` | One of `T1a-live-tso`, `T1b-live-domestic-anchored`, `T1c-live-neighbour-anchored`, `T2-annual-calibrated`, `T2-flare`, or `T3-modelled` (legacy `T1-live-TSO` is an alias of T1a-live-tso for pre-2026-04-25 snapshots). |
-| `tier_fraction` | `float32` | Per-tier envelope half-width (0.15 T1a / 0.50 T1b / 0.355 T1c / 0.20 T2 / 0.40 T3). |
-| `uncertainty_low_gw` | `float32` | `peak_gw × (1 − tier_fraction)`, clamped to ≥ 0. |
-| `uncertainty_high_gw` | `float32` | `peak_gw × (1 + tier_fraction)`. |
-| `uncertainty_low_twh` | `float32` | `annual_twh × (1 − tier_fraction)`, clamped to ≥ 0. |
-| `uncertainty_high_twh` | `float32` | `annual_twh × (1 + tier_fraction)`. |
+Column list in `dataset/SCHEMA.md` § "Parquet annual rollup",
+including `tier_fraction` (0.15 T1a / 0.50 T1b / 0.355 T1c / 0.20
+T2 / 0.40 T3) and the four `uncertainty_*` bounds derived from it.
 
 ## 3.5 Validation scatter CSV
 
