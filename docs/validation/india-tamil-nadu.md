@@ -1,6 +1,6 @@
 # Validation — Tamil Nadu (`india-tamil-nadu`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-08 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** static
 - **Kind:** wind
-- **Source:** TNSLDC (Tamil Nadu State Load Despatch Centre / TANTRANSCO) — RE curtailment and system operation reports at tnsldc.com. Geoblocked from non-Indian IP ranges; loader currently emits T3-modelled typical-shape calibrated to POSOCO South Region 2024 (~1.0 TWh/yr wind curtailment; India's largest wind state). Will be promoted to T1a-live-tso when the India-egress relay activates the live parse.
+- **Source:** TNSLDC (Tamil Nadu State Load Despatch Centre / TANTRANSCO) — RE curtailment and system operation reports at tnebnet.org. Accessible via HTTP from any IP (confirmed 2026-05-08: HTTP 200, 38 KB from NZ Starlink). HTTPS returns 404 — TLS misconfiguration on the server, not a geoblock; parser must use HTTP. Loader currently emits T3-modelled typical-shape calibrated to POSOCO South Region 2024 (~1.0 TWh/yr wind curtailment; India's largest wind state). Will be promoted to T1a-live-tso once the parser is implemented — no relay required.
 - **Source URL:** [https://tnsldc.com/](https://tnsldc.com/)
 - **Loader:** [`india-tamil-nadu.json.ts`](../../src/data/india-tamil-nadu.json.ts)
 - **Structural gap:** yes
@@ -37,7 +37,7 @@ Tamil Nadu has India's highest installed wind capacity (~10 GW as of 2024) and i
 
 ## Known limitations
 
-TNSLDC is geoblocked from non-Indian IP ranges. The loader currently falls back to a typical-shape wind profile calibrated at 1.0 TWh/yr. When an India-egress relay is established, the TNSLDC daily curtailment report parser will be activated. The T1a tier designation reflects the intended source quality, not the current fallback state.
+TNSLDC (`tnebnet.org`) is accessible from any IP via HTTP — confirmed 2026-05-08 via egress audit (HTTP 200, 38 KB from a NZ Starlink connection). HTTPS returns 404 due to a server-side TLS misconfiguration; the parser must target `http://www.tnebnet.org/` explicitly. The earlier geoblocking assumption was wrong. The only blocker is parser implementation; no India-egress relay is required. The loader currently falls back to a typical-shape wind profile calibrated at 1.0 TWh/yr. See [`docs/research/2026-05-08-india-sldc-egress-audit.md`](../research/2026-05-08-india-sldc-egress-audit.md) for the full audit.
 
 ## Links
 
