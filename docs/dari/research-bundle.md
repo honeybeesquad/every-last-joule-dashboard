@@ -172,3 +172,62 @@ For Bitcoin miners to monetise waste energy, a curtailment payment regime must e
 7. National Development and Reform Commission. "Renewable Energy Utilization Guarantee Mechanism." 2017. [English summary in IEA Renewable Energy Policy Database.]
 
 8. National Energy Administration (China). "Renewable Energy Installation and Utilization Data." Annual publications 2022–2024. http://www.nea.gov.cn
+
+---
+
+## 5. Flare gas, methane, and the GWP arithmetic
+
+A central claim in the flare-mining literature is that diverting associated petroleum gas from the flare stack into a reciprocating engine that drives Bitcoin miners is *climate-positive on net*: the methane that would otherwise leak from an imperfect flare (or be vented outright when the flare pilot fails) is combusted with higher reliability inside an enclosed engine, and the resulting CO₂ is many tens of times less radiatively forcing than the methane it displaces. Whether the claim survives scrutiny depends on three numerical inputs: the methane global-warming potential (GWP) value used, the assumed combustion efficiency of the displaced flare, and the additionality test applied to the project. We walk through each in turn.
+
+### Methane GWP — what AR6 actually says
+
+The IPCC's Sixth Assessment Report (AR6, Working Group I, 2021) updated fossil-methane GWP values to reflect carbon-cycle feedbacks and radiative-efficiency revisions. For *fossil* CH₄ (the relevant case for vented or flared associated gas):
+
+- **GWP-100 = 29.8 ± 11** (down from AR5's 30, up from AR4's 25 — the popularly cited "25×" figure is two assessment cycles out of date).^1^
+- **GWP-20 = 82.5 ± 25.8**.^1^
+
+For non-fossil (biogenic) CH₄ the AR6 values are 27.0 (GWP-100) and 79.7 (GWP-20).^1^ The ELJ paper's flare-mining arithmetic should default to the fossil values for venting from oil and gas infrastructure. Stage 1B uses **GWP-100 = 29.8** as the headline figure, with GWP-20 = 82.5 reserved for the "near-term climate stress" sensitivity panel; this matches the convention adopted by the IEA Methane Tracker and the World Bank GGFR.^2,3^
+
+### Field-measured flare combustion efficiency
+
+The destruction-and-removal efficiency (DRE) of a properly operating flare is conventionally assumed to be 98%, which is the figure embedded in EPA AP-42 Section 13.5 and most national inventories. Field measurements of the past five years have consistently fallen below this assumption:
+
+- Plant et al. (2022) used aircraft-based remote sensing across three major US producing basins (Permian, Bakken, Eagle Ford) and measured an effective combustion efficiency of **91.1% ± 6.7%**, with roughly 5% of flares unlit and an additional fraction operating at sub-90% DRE.^4^ The paper estimates that this single correction increases methane emissions from US oil-and-gas flaring by a factor of approximately five over EPA inventory assumptions.
+- Gvakharia et al. (2017) found similar order-of-magnitude underperformance in earlier Bakken aircraft surveys.^5^
+- The Environmental Defense Fund's MethaneAIR airborne campaign (peer-reviewed releases through 2024) and MethaneSAT (launched March 2024, public data release ramping through 2025) both confirm that flare DRE in Permian operations sits in the 91–95% range, not the assumed 98%.^6^
+
+The IEA Methane Tracker 2025, drawing on these sources, now models a global-average flare DRE of **92%**, with significant unlit-flare events contributing the bulk of the gap.^2^ The World Bank Global Gas Flaring Reduction (GGFR) Tracker 2024 reports global flared volume at ~148 billion m³ in 2023, the highest level since 2019, and explicitly cautions that emissions inventories built on a 98% DRE understate the methane share.^3^
+
+### The capture-and-burn climate arithmetic
+
+Consider a 1,000 m³/day stream of associated gas (≈75% CH₄ by volume; density ~0.717 kg/m³ for pure CH₄):
+
+- **Vented (DRE = 0):** 1,000 × 0.75 × 0.717 = ~538 kg CH₄/day vented. At GWP-100 = 29.8, that is **16,029 kg CO₂e/day**.
+- **Flared at field DRE = 92%:** 8% of methane survives = ~43 kg CH₄/day vented (≈1,281 kg CO₂e); plus 92% combusted to CO₂ ≈ 1,361 kg CO₂/day. **Total ≈ 2,642 kg CO₂e/day** — a six-fold reduction versus venting.
+- **Captured to mining engine at engine DRE ≥ 99% (typical for tightly tuned reciprocating units):** 1% slip = ~5 kg CH₄/day (≈160 kg CO₂e); 99% combusted ≈ 1,464 kg CO₂/day. **Total ≈ 1,624 kg CO₂e/day** — a further ~38% reduction versus the field-flared case, plus ~3 MWh/day of usable electrical work that displaces a marginal grid kWh elsewhere.
+
+The engine-versus-flare delta is real but modest. The bulk of the climate benefit attributable to flare-mining comes from *avoided venting* (the 6× step), not from burning gas in an engine instead of in a flare stack (the additional ~38% step). In other words: if a flare is operating well, putting a Bitcoin miner downstream of it improves the climate balance only slightly. The leverage is in the cases where the flare is unlit, malfunctioning, or sub-economic, and the alternative is venting.
+
+### The additionality question
+
+The "less bad than venting" framing is only correct if the alternative *was* venting. Most flare-mining projects are deployed at sites that already had a working flare; the miner simply substitutes a better DRE for a slightly worse one. The marginal climate benefit then scales with the gap between the two DREs (a few percent), not the gap between flaring and venting (orders of magnitude). The honest counterfactuals are:
+
+1. **Sub-economic stripper wells with intermittent flaring** — the operator runs the flare when it is lit but vents when ignition fails or when wind extinguishes the pilot. Mining the gas with auto-ignition reciprocating engines materially closes the venting tail. This is the case where flare-mining is most defensible.
+2. **Stranded gas at remote pads with no flare permit and no pipeline** — gas would be vented (with a partial flare or with no flare at all). Mining is unambiguously additional and the venting-displacement arithmetic above applies.
+3. **Routine flaring at a permitted, well-maintained flare** — the marginal benefit is small; mining mostly displaces a flare that would have run anyway, plus adds a usable electrical output.
+4. **Avoided drilling** — when mining revenue makes a marginal well economic that would otherwise have been shut in, the project is climate-negative on a full lifecycle basis. ELJ should flag this case as a known counter-factor and recommend that operator disclosures distinguish "captured otherwise-vented gas" from "made marginal gas economic."
+
+The IEA Methane Tracker 2025 flags that ~40% of global flared volume in 2023 was associated gas at sites with no pipeline access — a population for which categories 1 and 2 above are plausible and categories 3 and 4 less so.^2^ The World Bank GGFR Tracker indicates that the top seven flaring countries (Russia, Iran, Iraq, USA, Venezuela, Algeria, Nigeria) account for ~65% of global flaring; only the USA has measurable flare-mining penetration, and within the USA the Permian and Bakken account for the bulk of flare-mining capacity.^3^
+
+### What ELJ should claim
+
+The defensible claim is bounded: flare-mining is *climate-improving versus venting* (large delta, well-supported by AR6 GWP and field DRE measurements); *modestly climate-improving versus a working flare* (small delta, dependent on engine vs flare DRE); and *climate-negative if it makes uneconomic wells economic.* Stage 1B's overlay computation should pair every flare-mining MW with an explicit DRE-counterfactual assumption, not a global headline figure.
+
+### References (Item 5)
+
+1. Forster P, Storelvmo T, Armour K, et al. The Earth's Energy Budget, Climate Feedbacks, and Climate Sensitivity. In: Masson-Delmotte V, Zhai P, Pirani A, et al., eds. *Climate Change 2021: The Physical Science Basis. Contribution of Working Group I to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change*. Cambridge: Cambridge University Press; 2021. Chapter 7, Table 7.15. https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-7/
+2. International Energy Agency. *Global Methane Tracker 2025*. Paris: IEA; January 2025. https://www.iea.org/reports/global-methane-tracker-2025
+3. World Bank. *Global Gas Flaring Tracker Report 2024*. Washington DC: World Bank Global Gas Flaring Reduction Partnership (GGFR); 2024. https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-and-methane-reduction-partnership-gffmr/publications
+4. Plant G, Kort EA, Brandt AR, et al. Inefficient and unlit natural gas flares both emit large quantities of methane. *Science*. 2022;377(6614):1566–1571. doi:10.1126/science.abq0385
+5. Gvakharia A, Kort EA, Brandt A, et al. Methane, Black Carbon, and Ethane Emissions from Natural Gas Flares in the Bakken Shale, Williston Basin, North Dakota. *Environmental Science & Technology*. 2017;51(9):5317–5325. doi:10.1021/acs.est.6b05183
+6. Environmental Defense Fund. *MethaneAIR airborne campaign — Permian Basin survey results*. 2024. https://www.methanesat.org/methaneair/ ; *MethaneSAT initial data products*. 2024–2025. https://www.methanesat.org/data
