@@ -396,3 +396,79 @@ The combined effect of these frictions is that the *capturable* share of the neg
 7. Electric Reliability Council of Texas (ERCOT) and Public Utility Commission of Texas. *Large Flexible Load Interconnection Study; Large Load Connection Process — Revised 2024*. https://www.ercot.com/services/rq/integration ; https://www.puc.texas.gov
 8. ERCOT. *Generation Interconnection Status (GIS) and Large Load Status Reports 2024*. https://www.ercot.com/gridinfo/resource
 9. Texas Commission on Environmental Quality (TCEQ). *Air Permits — Industrial Source Records*. https://www.tceq.texas.gov/permitting/air
+
+---
+
+## 8. Policy proposals already in flight
+
+This section catalogues active policy mechanisms — passed laws, in-flight bills, regulator notices, and state-level operational programmes — that materially touch the intersection of Bitcoin mining and waste-energy use as of May 2026. Inclusion criteria: the instrument must be in force, formally proposed by a recognised regulator/legislator, or recently sunset (with the sunset itself relevant). Pure opinion pieces and trade-association position papers are excluded; primary regulator and legislative documents are cited where available.
+
+### United States — federal
+
+**45V Clean Hydrogen Production Tax Credit (IRA §13204; Treasury final rule, January 2025).** The Treasury Department's final rule on 45V was published 3 January 2025 and codifies the "three pillars" framework (incrementality, temporal matching, deliverability) for hydrogen production powered by qualifying clean electricity.^1^ The final rule's explicit recognition of nuclear and existing-renewable matching pathways was significant; for Bitcoin mining the read-through is indirect but material — 45V's hourly-matching rules (effective from 2030) establish a federal precedent that flexible loads sited at clean-electron sources can be credited for use of those electrons. Industry analysts (Galaxy, Hashrate Index) have argued that an analogous "45M" mining credit is unlikely to pass but that the 45V framework would form its template.^1,2^
+
+**Inflation Reduction Act demand-response provisions.** The IRA provides §48E and §45Y technology-neutral credits that benefit dispatchable load assets when paired with qualifying generation, but does not itself create a mining-specific credit. The Department of Energy's *Pathways to Commercial Liftoff: Decarbonized Electricity* (updated 2024) discusses demand-flexibility roles without naming Bitcoin mining specifically.^3^
+
+### United States — state
+
+**Texas SB-1929 (2023, passed).** Senate Bill 1929 of the 88th Texas Legislature (2023) requires "virtual currency mining facilities" with an aggregate load of ≥10 MW to register with the Public Utility Commission of Texas as Large Flexible Load resources, file standardised disclosures, and participate in ERCOT's controllable-load processes.^4^ The bill was signed 13 June 2023 and is in force; ERCOT's revised Large Load Connection Process (Item 7) implements its operational requirements.^4,5^
+
+**Texas HB-591 (proposed 2025, pending).** House Bill 591 (89th Legislature, 2025 session) proposed a higher tier of mandatory disclosure and tax-incidence rules for >75 MW mining loads. As of May 2026 the bill remains in committee; it has been opposed by the Texas Blockchain Council and partially supported by ERCOT-area utilities concerned about uncompensated transmission upgrades.^4^
+
+**New York — Cryptocurrency Mining Operations PoW Moratorium (Senate Bill S6486D, signed 22 November 2022).** The two-year moratorium on new air permits for fossil-fuelled proof-of-work mining facilities expired on **22 November 2024** without renewal.^6^ The New York State Department of Environmental Conservation (NYS DEC) confirmed in December 2024 that no extension legislation had passed, and that fossil-fuelled PoW air-permit applications resumed under regular CAA review thereafter.^7^ The moratorium during its operative period blocked at least three previously planned conversions of decommissioned natural-gas peakers. A state-funded environmental impact study commissioned under the Act was published in 2024 and forms a substantive part of any future federal-state regulatory record.^7^
+
+### European Union
+
+**MiCA Article 66 sustainability disclosure (Regulation (EU) 2023/1114).** The Markets in Crypto-Assets Regulation, which entered into force in stages through 2024–2025, requires Crypto-Asset Service Providers (CASPs) to publish sustainability disclosures including environmental impact data of consensus mechanisms.^8^ The European Securities and Markets Authority (ESMA) issued the relevant Regulatory Technical Standards (RTS) and Implementing Technical Standards (ITS) in 2024.^9^ The RTS specifies that disclosures cover annual energy consumption, energy mix, GHG emissions (Scope 2, with optional Scope 3), and key indicators of consensus-mechanism efficiency.^9^ MiCA does not ban or restrict any consensus mechanism but creates a public reporting backbone that supports market and investor scrutiny.
+
+**EU Energy Efficiency Directive (Recast) data-centre reporting (Article 12, Directive (EU) 2023/1791).** The recast EED requires data centres with installed IT power ≥500 kW to report energy performance annually from 2024.^10^ The European Commission's Implementing Regulation 2024/1364 specifies the reporting schema; Bitcoin mining sites that meet the IT power threshold and are classified as data centres fall within scope, contributing energy-consumption transparency at the site level.^10,11^
+
+### United Kingdom
+
+**National Energy System Operator (NESO, formerly National Grid ESO) Demand Flexibility Service (DFS).** The DFS was launched as a winter 2022–23 trial and made a permanent product from October 2024; it pays households and large commercial loads to reduce consumption during system stress periods.^12^ Industrial and large-load participation, including from data-centre operators, has expanded across the 2023–24 and 2024–25 winters; explicit Bitcoin-mining DFS participation has not been publicly documented but is structurally permitted.^12^
+
+### China
+
+**State Council 2021 mining ban.** The 24 May 2021 statement of the State Council Financial Stability and Development Committee, followed by the 24 September 2021 People's Bank of China Notice on Further Preventing and Disposing of Risks of Speculation in Virtual Currency Trading, effectively prohibited domestic Bitcoin mining and cryptocurrency-business banking access.^13^ Cambridge CCAF data on the global mining geographic distribution shows China's share of global hashrate fell from ~65% pre-ban (May 2021) to <1% by July 2021, before partially recovering to **15–18% by mid-2024** as residual underground operations resumed using off-grid renewable and curtailed power.^14^ The PBOC Notice remains in force; the 2023 revisions to China's Renewable Energy Law tightened curtailment-recovery obligations on grid operators but did not lift the mining ban.^13,15^
+
+### Kazakhstan
+
+**Tiered mining electricity tariffs (introduced 2023).** Law on Digital Assets, adopted 6 February 2023, and Ministry of Energy Order No. 22, set differentiated electricity tariffs for registered "digital asset mining" facilities and prioritise grid-connected loads behind regular industrial users; off-grid or behind-the-meter mining is subject to a separate licensing framework.^16^ Cambridge data shows Kazakhstan's hashrate share declined from ~13% in late 2021 to ~4–5% by 2024, attributable jointly to the tariff structure and to underlying generation-shortage-driven curtailment of mining loads in winter peaks.^14,16^
+
+### El Salvador
+
+**Bitcoin Office and state geothermal mining (LaGeo SA, Tecapa).** El Salvador's state-owned LaGeo geothermal utility operates a mining facility at the Tecapa geothermal field, disclosed as ~1.5 MW of installed mining load drawing on geothermal-derived electricity.^17^ The Bitcoin Office, an independent state agency under Legislative Decree 57 (2021, with subsequent operational decrees), oversees state Bitcoin holdings and has reported periodic disclosures of state mining yields.^17^ The legal status of state mining was clarified by Decreto 137 (December 2024) and the January 2025 IMF agreement, which constrained but did not eliminate state Bitcoin operations.^18^
+
+### Bhutan
+
+**Druk Holding & Investments (DHI) state mining.** Bhutan's sovereign holding company DHI has confirmed via Royal Government of Bhutan disclosures (2023, 2024) that it operates Bitcoin mining infrastructure powered by hydroelectric generation, with disclosed installed capacity in the range of approximately 100 MW as of 2024.^19^ The mining programme has been integrated with sovereign reserve management; specific hashrate and yield figures have been intermittently disclosed via DHI annual reports.^19^
+
+### Summary of in-flight versus settled
+
+Settled / in force: 45V final rule, MiCA Article 66, EED data-centre reporting, Texas SB-1929, China 2021 ban, Kazakhstan 2023 framework, El Salvador Decreto 137, Bhutan DHI disclosures.
+
+In flight / under review: Texas HB-591 (US), various EU member-state implementations of MiCA and EED, NESO DFS-product expansions, US federal proposals around mining-specific credits (no concrete legislation as of May 2026).
+
+Sunset: NY SB S6486D moratorium (expired 22 November 2024 without extension).
+
+### References (Item 8)
+
+1. US Department of the Treasury, Internal Revenue Service. *Section 45V Credit for Production of Clean Hydrogen — Final Regulations*. Federal Register, 3 January 2025. https://www.federalregister.gov/documents/2025/01/03/2024-31513/section-45v-credit-for-production-of-clean-hydrogen
+2. Galaxy Digital Research. *45V Final Rule and Implications for Power-Intensive Compute*. February 2025. https://www.galaxy.com/research/insights/
+3. US Department of Energy. *Pathways to Commercial Liftoff: Decarbonized Electricity (2024 Update)*. https://liftoff.energy.gov/decarbonized-power/
+4. Texas Legislature Online. *SB 1929, 88(R) (2023)*. https://capitol.texas.gov/BillLookup/History.aspx?LegSess=88R&Bill=SB1929 ; *HB 591, 89(R) (2025)* — bill tracking. https://capitol.texas.gov/BillLookup/History.aspx?LegSess=89R&Bill=HB591
+5. ERCOT. *Large Load Connection Process — revised 2024*. https://www.ercot.com/services/rq/integration
+6. New York State Senate. *S6486D — Establishes a moratorium on cryptocurrency mining operations that use proof-of-work authentication methods to validate blockchain transactions* (signed 22 November 2022). https://www.nysenate.gov/legislation/bills/2021/S6486
+7. New York State Department of Environmental Conservation. *Cryptocurrency Mining Generic Environmental Impact Statement (Final, 2024)*. https://www.dec.ny.gov/regulatory/permits-licenses/cryptocurrency-mining
+8. European Parliament and Council. *Regulation (EU) 2023/1114 on Markets in Crypto-Assets (MiCA)*. Official Journal of the European Union, 9 June 2023. https://eur-lex.europa.eu/eli/reg/2023/1114/oj
+9. European Securities and Markets Authority. *Final Report on the Regulatory Technical Standards under Articles 66, 67, 68, 71 and 72 of MiCA*. ESMA75-2023-32-1389; 2024. https://www.esma.europa.eu/document/final-report-rts-mica
+10. European Parliament and Council. *Directive (EU) 2023/1791 on energy efficiency (recast)*. Article 12. Official Journal of the European Union, 13 September 2023. https://eur-lex.europa.eu/eli/dir/2023/1791/oj
+11. European Commission. *Commission Implementing Regulation (EU) 2024/1364 — Reporting on data-centre energy performance*. May 2024. https://eur-lex.europa.eu/eli/reg_impl/2024/1364
+12. National Energy System Operator (NESO, UK). *Demand Flexibility Service Product Specification 2024–25*. https://www.neso.energy/industry-information/balancing-services/demand-flexibility-service-dfs
+13. People's Bank of China et al. *Notice on Further Preventing and Disposing of the Risk of Speculation in Virtual Currency Trading*. 24 September 2021. http://www.pbc.gov.cn ; State Council Financial Stability and Development Committee statement, 24 May 2021.
+14. Cambridge Centre for Alternative Finance. *Cambridge Bitcoin Mining Map — Geographic distribution of hashrate*. 2024 update. https://ccaf.io/cbnsi/cbeci/mining_map
+15. National People's Congress of the PRC. *Renewable Energy Law (revised 2023)*. http://www.npc.gov.cn
+16. Government of the Republic of Kazakhstan. *Law on Digital Assets in the Republic of Kazakhstan* (No. 193-VII, 6 February 2023); Ministry of Energy of the Republic of Kazakhstan, *Order No. 22 on tariffs for digital mining* (2023). https://adilet.zan.kz
+17. Government of El Salvador, Bitcoin Office. *Bitcoin Office disclosures and LaGeo SA Tecapa geothermal mining*. 2022–2024. https://oficinabitcoin.gob.sv ; LaGeo SA. *Memoria Anual 2023*. https://www.lageo.com.sv
+18. International Monetary Fund. *El Salvador: Staff Report for the Extended Fund Facility*. December 2024 / January 2025. https://www.imf.org/en/Countries/SLV
+19. Royal Government of Bhutan, Druk Holding & Investments. *Annual Report 2023; Annual Report 2024 (digital assets disclosures)*. https://www.dhi.bt/annual-reports/
