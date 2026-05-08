@@ -46,3 +46,17 @@ The KSLDC live parser is not yet implemented (though the site is accessible). Th
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
+
+## Bad-conversions check
+
+See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject) for the full checklist. **Karnataka is the load-bearing positive example for item 3 — it is the working negative control showing the checklist correctly blocking a promotion.**
+
+| # | Item | Verdict | Reason |
+|---|------|---------|--------|
+| 1 | DSM / deviation values used as curtailment | no | The KSLDC source publishes plant-level dispatch instructions and curtailment PDFs, not deviation tables. The current 0.5 TWh fallback anchor is calibrated to POSOCO South Region 2024, an explicit curtailment figure. |
+| 2 | Capacity-at-risk MW used as curtailed energy MWh | no | The 0.5 TWh anchor is the South Region residual after allocating Tamil Nadu wind, both measured-energy figures. Not a `capacity × CF × rate` back-calculation. |
+| 3 | **Instruction percentage without a generation denominator** | **YES** | This is **why the region stays `official-lead` and is not promoted to T1a-live-tso.** KSLDC's older instruction PDFs report the dispatch-down as a percentage of plant nameplate or schedule, with no paired generation total in the same publication. A percentage is dimensionless and cannot be converted to MWh without the matching generation MWh from the same operator covering the same window. Until either (a) the parser ships AND ingests the missing generation denominator, or (b) the operator starts publishing absolute MWh curtailed alongside the instruction percentage, Karnataka cannot be promoted. The bad-conversions checklist is doing exactly what it is meant to do — blocking a promotion that the data does not support. |
+| 4 | Blank or dash treated as zero | no | Loader uses `withFallback` for missing data, not zero-coercion. |
+| 5 | Modelled fallback labelled as verified measurement | no | Tier is T3-modelled with `sourceProvenance: "official-lead"`; the validation doc states explicitly that the hourly shape is synthetic. The (T1a, official-lead) red flag does not apply because the tier has not been over-claimed.
+
+This row is the canonical demonstration that a "yes" on the checklist correctly blocks a promotion. If a future contributor argues for promoting Karnataka without resolving item 3 first, this section is the source-of-truth rebuttal.

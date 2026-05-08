@@ -46,3 +46,15 @@ The RRVPNL SLDC website (`sldc.rajasthan.gov.in`, `rrvpnl.org`) is unreachable f
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
+
+## Bad-conversions check
+
+See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject) for the full checklist.
+
+| # | Item | Verdict | Reason |
+|---|------|---------|--------|
+| 1 | DSM / deviation values used as curtailment | no | The fallback shape derives from the Ember India 2025 Rajasthan curtailment anchor (~3.5 TWh/yr), not from a deviation/DSM table. Once the live SLDC path activates, RRVPNL's RE-curtailment downloads are the explicit curtailment series — distinct from CEA's deviation table. |
+| 2 | Capacity-at-risk MW used as curtailed energy MWh | no | The 3.5 TWh/yr anchor is Ember's published figure, not a `capacity × CF × rate` back-calculation. |
+| 3 | Instruction percentage without a generation denominator | no | The Ember anchor is a measured energy total in TWh; no percentage-without-denominator coercion is involved. |
+| 4 | Blank or dash treated as zero | no | The loader uses `withFallback` to serve the typical-shape fallback when the live RRVPNL path is unreachable, not coerce missing values to zero. |
+| 5 | Modelled fallback labelled as verified measurement | no | Tier is currently T3-modelled (since v1.2.0 demotion); the validation doc and CHANGELOG state explicitly that the hourly shape is synthetic and only the annual anchor is sourced. The (T1a, official-lead) red flag does not apply at the current static tier. |

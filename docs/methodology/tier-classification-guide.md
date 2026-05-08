@@ -7,6 +7,72 @@
 
 ---
 
+## Bad conversions you must reject
+
+A region cannot be promoted past T3-modelled unless every item in this checklist evaluates to "no" for the candidate source. The checklist is the demotion filter for procedural failures, parallel to the per-tier "What this does NOT accept" lists in the section below. Each of the five items below corresponds to either a past production bug or a current research-only blocker.
+
+### 1. DSM / deviation values used as curtailment
+
+**Failure pattern:** Treating a deviation, deviation-settlement, or DSM (demand-side management) MWh value as if it were a curtailed-energy MWh value.
+
+**Why it's wrong:** Deviation is the gap between scheduled and actual generation, signed (over- and under-delivery both contribute). Curtailment is dispatch-down energy, unsigned, specifically the energy the operator instructed not to be produced. A deviation table can include scheduling errors, forced outages, and weather mispredictions that are not curtailment. The MWh column has the same units; the semantics differ.
+
+**Real example:** CEA India monthly reports include a deviation table for every month and a curtailment table only when the system reported curtailment events. January 2025 has the deviation table, no curtailment table. Using the deviation total as curtailment would inflate the India anchor by an unknown factor and pollute the regional totals.
+
+**What to do instead:** Use only the explicit curtailment table when it exists. When only the deviation table is published, the region for that month has no usable curtailment number; report it as null in the loader pipeline rather than substituting deviation. Do not coerce.
+
+**Decision question:** Does the source publish a column or table explicitly labelled "curtailment", "constrained-off", "dispatch-down", "reduction", or jurisdiction-equivalent — and not "deviation", "DSM", "imbalance", or "settlement"?
+
+### 2. Capacity-at-risk MW used as curtailed energy MWh
+
+**Failure pattern:** Multiplying installed capacity (MW) by capacity factor and assumed curtailment rate to produce a "curtailment" MWh figure.
+
+**Why it's wrong:** This is a capacity calculation with three layers of assumption (CF, rate, fleet composition) and zero measured curtailment data. The output looks like an annual MWh anchor but is functionally a guess scaled by published capacity. A region whose only "curtailment" number is `capacity × CF × rate` has no measured curtailment evidence; it has only an upper-bound capacity-implied estimate.
+
+**Real example:** Several IRENA-derived T3 anchors and the rejected Jordan / Kenya / Morocco entries from the 2026-04-29 elevation backlog. Any T2 promotion candidate whose annual MWh figure is back-calculated from installed capacity falls here.
+
+**What to do instead:** Demand a measured energy total from the operator or a measured estimate from a satellite or independent monitor (TSO annual report, Ember country report, GGFR satellite, IEA WEO, equivalent). If only capacity is available, the region stays T3-modelled.
+
+**Decision question:** Is the cited annual MWh / TWh figure a measured total reported by the source, or a number we computed by multiplying capacity by assumed factors?
+
+### 3. Instruction percentage without a generation denominator
+
+**Failure pattern:** Treating "renewable instructions reduced by X%" or "X% of plants curtailed at peak" as an energy figure.
+
+**Why it's wrong:** A percentage is dimensionless. Converting it to MWh requires a paired generation total covering the same time window — the denominator. Without that denominator, the percentage carries no energy information; it can describe a tiny absolute or a large absolute equally well.
+
+**Real example:** Karnataka KSLDC publishes plant-level dispatch-instruction PDFs that report the instructed reduction as a percentage of nameplate or schedule. The corresponding generation total is not in the PDF and is not published in a machine-readable form for older events. The instruction is a real signal but not, by itself, an energy total.
+
+**What to do instead:** Either source the matching generation total from the same operator for the same window and compute MWh = generation × percentage with the math shown in the validation doc, or keep the region as official-lead and do not publish an energy figure derived from the percentage alone.
+
+**Decision question:** If the source cites a percentage, do we have the matching generation MWh from the same operator covering the same window?
+
+### 4. Blank or dash treated as zero
+
+**Failure pattern:** A loader coerces empty cells, "-", "n/a", "NR", or "*" in a published table to numeric zero.
+
+**Why it's wrong:** "Not reported" and "zero" are different observations. Coercing them to the same value silently understates curtailment in regions where reporting is incomplete and inflates the apparent global completeness of the dataset. The bug compounds across years and regions because the missing-as-zero coercion is invisible at every individual row.
+
+**Real example:** Several upstream curtailment PDFs (especially Indian SLDC and earlier ENTSO-E A75 extracts) use blank cells in the curtailment column to mean "the operator did not file a curtailment number this period". A coerce-to-zero loader treats those silently as zero curtailment.
+
+**What to do instead:** Distinguish missing values from zero in the loader. Surface "missing" as null in the snapshot pipeline, never as 0. The withFallback machinery should treat a null-heavy month as a freshness signal, not as evidence of low curtailment.
+
+**Decision question:** Does the loader explicitly distinguish null (missing) from 0 (zero curtailment reported), and is that distinction preserved through to the snapshot?
+
+### 5. Modelled fallback labelled as verified measurement
+
+**Failure pattern:** A typical-shape profile scaled to a published anchor is declared T1a-live-tso or otherwise tagged "verified" because the annual anchor is sourced.
+
+**Why it's wrong:** The hourly shape is synthetic. The annual scalar is published. The resulting hourly snapshot is neither a measured trace nor a defensible anchor — it is a modelled hourly profile constrained to integrate to a published total. A consumer who reads the hourly trace is not getting measured data; the validation doc and source-status must reflect that.
+
+**Real example:** The v1.1.1 India SLDC declarations: six regions declared T1a-live-tso because the loader was wired and the Ember anchor was published, while the geoblock meant the emitted hourly trace was a typical solar shape. v1.2.0 had to demote them to T3-modelled. The exact sequence is documented in dataset/CHANGELOG.md.
+
+**What to do instead:** A typical-shape profile scaled to a published anchor is T2-annual-calibrated at best (if the anchor is independently measured) and T3-modelled otherwise. The corresponding sourceProvenance is modelled-fallback, not verified. The validation doc must state explicitly that the hourly shape is synthetic.
+
+**Decision question:** Does the hourly trace in the snapshot come from a measured or instructed-dispatch hourly source for this region — or is it a typical-shape profile constrained to a published annual anchor?
+
+---
+
 ## Tier definitions (authoritative)
 
 These are the canonical definitions. Any classification decision must satisfy the conditions in the **"What this requires"** column for the claimed tier. The **"What this does NOT accept"** column is the demotion filter — if any item in that column applies, the candidate cannot be placed in that tier without first obtaining the missing evidence.

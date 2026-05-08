@@ -1,0 +1,1969 @@
+{
+  "totalValidationDocs": 391,
+  "docsCitingBadConversionCheck": 3,
+  "docsNotCiting": 388,
+  "pctCited": 0.77,
+  "perDocCitations": [
+    {
+      "file": "aemo-nsw-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-nsw-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-qld-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-qld-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-sa-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-sa-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-tas-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-tas-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-vic-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-vic-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "afghanistan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "albania.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "alberta-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "alberta-wind.md",
+      "cited": true,
+      "matchedPatterns": [
+        "bad[\\s-]conversions?\\s+check"
+      ]
+    },
+    {
+      "file": "algeria.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "andorra.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "angola.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "antigua-and-barbuda.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "argentina.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "armenia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "atacama.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "austria.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "azerbaijan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "bahamas.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "bahrain.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "bangladesh.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "barbados.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "belarus-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "belarus-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "belgium-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "belgium-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "belize.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "benin.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "bhutan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "bolivia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "bosnia-and-herzegovina.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "botswana.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "bpa-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "bpa-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-bahia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-bahia-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-ce-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-ce-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-go-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-go-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-maranhao-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-maranhao-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-mg-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-mg-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-mt-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-mt-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-other-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-other-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-paraiba-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-paraiba-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-pernambuco-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-pernambuco-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-piaui-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-piaui-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-pr-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-pr-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-rn-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-rn-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-rs-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-rs-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-sp-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brazil-sp-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "british-columbia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "brunei.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "bulgaria-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "bulgaria-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "burkina-faso.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "burundi.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "cabo-verde.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "caiso-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "caiso-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "cambodia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "cameroon.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "central-african-republic.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "chad.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "chile-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-anhui.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-beijing.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-chongqing-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-chongqing-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-fujian.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-guangdong.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-guizhou-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-guizhou-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-hainan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-hebei.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-heilongjiang.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-henan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-hubei-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-hubei-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-hubei-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-hunan-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-hunan-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-hunan-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-jiangsu-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-jiangsu-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-jiangxi.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-jilin.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-liaoning.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shaanxi.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shandong.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shanghai.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shanxi-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shanxi-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-tianjin.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-zhejiang.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "colombia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "comoros.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "congo-drc.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "congo-republic.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "costa-rica.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "cote-divoire.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "croatia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "croatia-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "cuba.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "cyprus.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "czech-republic-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "czech-republic-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "denmark-east-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "denmark-east-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "denmark-west-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "denmark-west-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "djibouti.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "dominica.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "dominican-republic.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "e-saudi.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "east-timor.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ecuador.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "egypt.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "el-salvador.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "equatorial-guinea.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ercot-east-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ercot-east-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ercot-west-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ercot-west-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "eritrea.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "estonia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "eswatini.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ethiopia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "fiji.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "finland-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "finland-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "florida.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "france-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "france-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "french-guiana.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "gabon.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "gambia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "gansu-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "gansu-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "gb-england-wales-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "gb-england-wales-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "gb-scotland-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "gb-scotland-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "georgia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "germany-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "germany-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ghana.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "greece-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "greece-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "grenada.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "guatemala-siepac.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "guatemala.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "guinea-bissau.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "guinea.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "guyana.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "haiti.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "hawaii-island.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "hawaii-maui.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "hawaii-oahu.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "honduras.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "hungary-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "hungary-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "iceland.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-andhra-pradesh.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-east.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-gujarat.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-karnataka.md",
+      "cited": true,
+      "matchedPatterns": [
+        "bad[\\s-]conversions?\\s+check"
+      ]
+    },
+    {
+      "file": "india-maharashtra.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-north.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-rajasthan.md",
+      "cited": true,
+      "matchedPatterns": [
+        "bad[\\s-]conversions?\\s+check"
+      ]
+    },
+    {
+      "file": "india-south.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-tamil-nadu.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-west.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "indonesia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "inner-mongolia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "iran.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "iraq-mainland.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ireland-republic-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ireland-republic-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "iso-ne-maine-vermont.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "iso-ne-rest-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "iso-ne-rest-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "iso-ne.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "israel.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-north-zone-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-north-zone-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-sardinia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-sardinia-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-sicily-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-sicily-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-south.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "jamaica.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-chubu.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-chugoku.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-hokkaido.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-hokuriku.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-kansai.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-kyushu.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-okinawa.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-shikoku.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-tepco.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-tohoku.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "jeju.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "jordan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "kazakhstan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "kenya.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "kiribati.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "kurdistan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "kuwait.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "kyrgyzstan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "laos.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "latvia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "lebanon.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "lesotho.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "liberia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "libya.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "liechtenstein.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "lithuania.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "luxembourg-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "luxembourg-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "madagascar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "malawi.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "malaysia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "maldives.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "mali.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "malta.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "manitoba.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "marshall-islands.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "mauritania.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "mauritius.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "mexico.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "micronesia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "miso-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "miso-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "moldova-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "moldova-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "monaco.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "mongolia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "montenegro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "morocco.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "mozambique.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "myanmar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "namibia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "nauru.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "nepal.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "netherlands-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "netherlands-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "new-zealand-geo.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "new-zealand-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "new-zealand-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "nicaragua.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "niger.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "nigeria.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ningxia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ningxia-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "north-korea.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "north-macedonia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "north-macedonia-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "northern-ireland-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "northern-ireland-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "norway-no1-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "norway-no1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "norway-no2-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "norway-no2-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "norway-no3-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "norway-no3-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "norway-no4-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "norway-no4-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "norway-no5.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "nt-pilbara.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "nyiso-rest-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "nyiso-rest-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "nyiso-zones-d-e.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "nyiso.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "oman.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ontario-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ontario-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "pakistan-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "pakistan-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "palau.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "palestine.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "panama.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "papua-new-guinea.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "paraguay.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "permian.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "peru-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "peru-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "peru-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "philippines-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "philippines-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "pjm-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "pjm-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "poland-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "poland-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "portugal-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "portugal-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "qatar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "qinghai.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "quebec.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "romania-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "romania-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "russia-e-siberia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "russia-mainland.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "russia-murmansk-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "russia-yamal.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "rwanda.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "s-iraq.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "samoa.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "san-marino.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "sao-tome.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "saskatchewan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "saudi-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "senegal.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "serbia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "serbia-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "seychelles.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "sichuan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "sierra-leone.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "singapore.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "slovakia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "slovakia-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "slovenia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "slovenia-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solomon-islands.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "somalia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "south-africa-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "south-africa-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "south-korea.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "south-sudan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "spain-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "spain-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "spp-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "spp-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "sri-lanka.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "st-kitts-and-nevis.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "st-lucia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "st-vincent.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "sudan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "suriname.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "sweden-north.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "sweden-south-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "sweden-south-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "switzerland.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "syria.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "taiwan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "tajikistan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "tanzania.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "thailand.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "tibet.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "togo.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "tonga.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "trinidad-tobago.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "tunisia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "turkey-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "turkey-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "turkmenistan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "tuvalu.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "tva.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "uae.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "uganda.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ukraine.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "uruguay.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "uzbekistan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "vanuatu.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "venezuela.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "vietnam.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "w-siberia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "wa-swis-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "wa-swis-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "xinjiang.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "yemen.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "yunnan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "zambia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "zimbabwe.md",
+      "cited": false,
+      "matchedPatterns": []
+    }
+  ]
+}
