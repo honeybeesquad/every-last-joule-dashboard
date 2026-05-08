@@ -1,5 +1,5 @@
 import { regionGWAtHour } from "../lib/calc.js";
-import { getFuelColor, FUEL_LABEL, dominantFuel } from "../lib/fuel.js";
+import { getFuelColor, FUEL_LABEL, dominantFuel, getRegionFuelColor } from "../lib/fuel.js";
 
 /**
  * Floating detail card anchored to a globe click. Shows region identity,
@@ -33,8 +33,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
   }
 
   function colorFor(region) {
-    if (region.kind === "flare") return getFuelColor("flare");
-    return getFuelColor(dominantFuel(region, regionData[region.id]));
+    return getRegionFuelColor(region, regionData[region.id]);
   }
 
   function fuelLabel(region) {
