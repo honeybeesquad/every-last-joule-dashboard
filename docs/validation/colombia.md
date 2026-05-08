@@ -1,16 +1,18 @@
 # Validation — Colombia (`colombia`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-08 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `colombia`
 - **Country:** COL
 - **Tier:** live-domestic-anchored
+- **Source provenance:** `verified` (since 2026-05-08) — XM SinerGox is the upstream source. Direct fetch is geoblocked from production (Vercel) but works from any Colombian-egress runner; the Britta-side relay (`scripts/relay/colombia-xm-fetch.py`, run through the `elj-co` WireGuard tunnel) refreshes `data/historical/colombia-vertimientos-daily.csv`, which the loader reads as the production source-of-truth. The data is upstream-XM-measured; the relay is just the transport.
 - **Kind:** hydro
-- **Source:** XM SinerGox API (servapibi.xm.com.co/daily, POST MetricId=VertEner Entity=Sistema) — direct live path tried first; committed CSV relay fallback if geoblocked. Trailing-365-day annualised total. 5-yr baseline 7.53 TWh/yr (range 0.53–13.12 TWh/yr ENSO-driven). Bimodal hydro-seasonal shape (Apr–Jun + Oct–Nov peaks). T1b, ±50% envelope.
+- **Source:** XM SinerGox API (servapibi.xm.com.co/daily, POST MetricId=VertEner Entity=Sistema). Direct live path tried first from any Colombian-egress runner; committed CSV at `data/historical/colombia-vertimientos-daily.csv` is the production source-of-truth, refreshed by Britta via the elj-co WireGuard tunnel. Trailing-365-day annualised total. 5-yr baseline 7.53 TWh/yr (range 0.53–13.12 TWh/yr ENSO-driven). Bimodal hydro-seasonal shape (Apr–Jun + Oct–Nov peaks). T1b, ±50% envelope.
 - **Source URL:** [https://servapibi.xm.com.co/daily](https://servapibi.xm.com.co/daily)
 - **Loader:** [`colombia.json.ts`](../../src/data/colombia.json.ts)
+- **Relay script:** [`scripts/relay/colombia-xm-fetch.py`](../../scripts/relay/colombia-xm-fetch.py) — idempotent, runs in 30-day chunks (XM rejects larger windows), kWh→GWh conversion, dry-run flag.
 - **Structural gap:** no
 
 ## Calibration
@@ -39,7 +41,9 @@ The 5-year mean of 7.53 TWh/yr is held as the T3 anchor. The natural year-on-yea
 
 The Colombian SIN is hydro-dominant (~60–70% of generation in normal years). Reservoir-overflow spillage (`vertimientos hidráulicos`) is the dominant "wasted potential renewable energy" mechanism and is conceptually identical to the spillage already modelled for Iceland (5.3 TWh/yr) and Sichuan (30 TWh/yr). VRE (solar / wind) curtailment in Colombia is currently negligible (<1%) per UPME / SER Colombia analyses — most "missing" La Guajira renewable generation is structural (transmission projects delayed) rather than operational spillage.
 
-The XM SinerGox API is geoblocked outside Colombia, but is **otherwise fully open** (no auth, no rate-limit observed, structured JSON, POST body only). The loader now tries the live API first; from Vercel/CI it fails and falls back to the Britta-committed CSV. When the build environment has Colombian egress (or a Colombian-PoP proxy), the live path activates transparently. Reclassified from T1a to T1b on 2026-05-02 because the ENSO-cycle range (0.53–13.12 TWh/yr) exceeds the T1a ±15% fallback envelope and the ±50% T1b empirical band is the honest representation for a hydro-dominant grid with inter-annual ENSO swings.
+The XM SinerGox API is geoblocked outside Colombia, but is **otherwise fully open** (no auth, no rate-limit observed, structured JSON, POST body only). The loader tries the live API first; from Vercel/CI it fails and falls back to the Britta-committed CSV. When the build environment has Colombian egress (e.g. Britta with `elj-co` WireGuard up), the live path activates transparently. Reclassified from T1a to T1b on 2026-05-02 because the ENSO-cycle range (0.53–13.12 TWh/yr) exceeds the T1a ±15% fallback envelope and the ±50% T1b empirical band is the honest representation for a hydro-dominant grid with inter-annual ENSO swings.
+
+The 2026-05-08 PR fixed two bugs in the loader's live path that had previously made it always fail-and-fallback (independent of geoblock): (1) the `XmDailyItem` interface assumed an `Values: Record<string, number>` field, but the actual API response uses `DailyEntities: Array<{Id, Value}>` with `Value` as a kWh string; (2) the loader requested all 365 days in a single call, but the API rejects windows >30 days with HTTP 400. The live path now uses 30-day chunks and parses `DailyEntities` correctly. From Britta with `elj-co` up, both the live API path and the relay-CSV path are now usable; production continues to read from the CSV (the relay's output) as the source-of-truth.
 
 T3-modelled, ±40% envelope. Bimodal hydro-seasonal shape (`HYDRO_SEASONAL_SHARES.colombia`) lagging the rainfall peaks by reservoir-fill cycle: peak May-Jun and Nov-Dec, dry windows Jan-Feb and Jul-Aug.
 
