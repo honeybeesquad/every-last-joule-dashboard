@@ -1,7 +1,7 @@
 import * as d3 from "npm:d3";
 import * as topojson from "npm:topojson-client";
 import { regionGWAtHour } from "./lib/calc.js";
-import { getFuelColor, dominantFuel } from "./lib/fuel.js";
+import { getRegionFuelColor } from "./lib/fuel.js";
 import { readGlobeTokens, isLinearGradientToken } from "./lib/theme-tokens.js";
 import { buildPillarUnits } from "./lib/pillar-layout.js";
 
@@ -193,6 +193,8 @@ export async function mountGlobe(canvas, initial) {
     regionData: initial.regionData,
     utcHour: initial.utcHour,
     mode: initial.mode ?? "avg30d",
+    unitMode: initial.unitMode ?? "MW",
+    priceData: initial.priceData ?? {},
     rotation: [-10, -15, 0],
     dragging: false,
     zoomScale: 1.0,
@@ -462,11 +464,16 @@ export async function mountGlobe(canvas, initial) {
 
       // Dominant color for glow + core dot.
       const repData = state.regionData[rep.id];
-      const domColor = getFuelColor(rep.kind === "flare" ? "flare" : dominantFuel(rep, repData));
+      const domColor = getRegionFuelColor(rep, repData);
+
+      // USD mode: grey out regions without price data at 30% opacity.
+      const isPriceless = state.unitMode === "USD" &&
+        (!state.priceData[rep.id] || state.priceData[rep.id].priceTier === "none");
+      const pillarAlpha = isPriceless ? 0.30 : 1;
 
       ctx.save();
       ctx.filter = "blur(4px)";
-      ctx.globalAlpha = 0.45 * visible;
+      ctx.globalAlpha = pillarAlpha * 0.45 * visible;
       ctx.fillStyle = domColor;
       ctx.beginPath();
       ctx.arc(anchorX, anchorY, glowR, 0, Math.PI * 2);
@@ -495,7 +502,7 @@ export async function mountGlobe(canvas, initial) {
           ctx.strokeStyle = pillarGradient;
           ctx.lineWidth = pillarW;
           ctx.lineCap = "round";
-          ctx.globalAlpha = visible * sunDim;
+          ctx.globalAlpha = pillarAlpha * visible * sunDim;
           ctx.beginPath();
           ctx.moveTo(anchorX, anchorY);
           ctx.lineTo(tipX, tipY);
@@ -503,7 +510,7 @@ export async function mountGlobe(canvas, initial) {
 
           ctx.save();
           ctx.filter = "blur(3px)";
-          ctx.globalAlpha = 0.5 * visible * sunDim;
+          ctx.globalAlpha = pillarAlpha * 0.5 * visible * sunDim;
           ctx.fillStyle = domColor;
           ctx.beginPath();
           ctx.arc(tipX, tipY, pillarW * 1.6, 0, Math.PI * 2);
@@ -525,7 +532,7 @@ export async function mountGlobe(canvas, initial) {
             const segEndX = segStartX + dx * segLen;
             const segEndY = segStartY + dy * segLen;
             const segData = state.regionData[seg.region.id];
-            const segColor = getFuelColor(seg.region.kind === "flare" ? "flare" : dominantFuel(seg.region, segData));
+            const segColor = getRegionFuelColor(seg.region, segData);
             const isBase = segStart === 0;
             const isTip = segStart + segLen >= pillarH - 0.5;
             const grad = ctx.createLinearGradient(segStartX, segStartY, segEndX, segEndY);
@@ -534,7 +541,7 @@ export async function mountGlobe(canvas, initial) {
             ctx.strokeStyle = grad;
             ctx.lineWidth = pillarW;
             ctx.lineCap = isTip ? "round" : "butt";
-            ctx.globalAlpha = visible * sunDim;
+            ctx.globalAlpha = pillarAlpha * visible * sunDim;
             ctx.beginPath();
             ctx.moveTo(segStartX, segStartY);
             ctx.lineTo(segEndX, segEndY);
@@ -542,7 +549,7 @@ export async function mountGlobe(canvas, initial) {
             if (isTip) {
               ctx.save();
               ctx.filter = "blur(3px)";
-              ctx.globalAlpha = 0.5 * visible * sunDim;
+              ctx.globalAlpha = pillarAlpha * 0.5 * visible * sunDim;
               ctx.fillStyle = segColor;
               ctx.beginPath();
               ctx.arc(segEndX, segEndY, pillarW * 1.6, 0, Math.PI * 2);
@@ -554,7 +561,7 @@ export async function mountGlobe(canvas, initial) {
         }
       }
 
-      ctx.globalAlpha = visible;
+      ctx.globalAlpha = pillarAlpha * visible;
       ctx.fillStyle = domColor;
       ctx.beginPath();
       ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);
@@ -565,7 +572,7 @@ export async function mountGlobe(canvas, initial) {
 
       if (rep.id === state.selectedRegionId) {
         ctx.save();
-        ctx.globalAlpha = 0.9;
+        ctx.globalAlpha = pillarAlpha * 0.9;
         ctx.strokeStyle = "#7cb8ff";
         ctx.lineWidth = 2.2;
         ctx.setLineDash([]);

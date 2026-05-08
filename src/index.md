@@ -33,6 +33,8 @@ import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./
 import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
 import { mountGlobe } from "./globe.js";
+import { mountUnitToggle } from "./components/unit-toggle.js";
+import { aggregateUsdAtHour, formatUsdPerHour, formatRegionUsdPerHour, usdValueAtHour } from "./lib/price.js";
 
 const ERCOT_NATIVE_ENABLED = false;
 const HOTSPOT_LIST_LIMIT = 50;
@@ -40,7 +42,7 @@ const HOTSPOT_LIST_LIMIT = 50;
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 103;
+const _LOADER_FILE_COUNT = 104;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -63,6 +65,7 @@ const [
   chinaLiaoning, chinaHubei, chinaShanxi, chinaShaanxi, chinaZhejiang,
   chinaHenan, chinaFujian, chinaJiangxi, chinaBeijing, chinaGuizhou,
   chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai,
+  prices,
   zenodoVersion
 ] = await Promise.all([
   trackFile(FileAttachment("data/cbeci.json").json(),            "CBECI"),
@@ -167,6 +170,7 @@ const [
   trackFile(FileAttachment("data/china-tianjin.json").json(),    "China Tianjin"),
   trackFile(FileAttachment("data/china-hainan.json").json(),     "China Hainan"),
   trackFile(FileAttachment("data/china-shanghai.json").json(),   "China Shanghai"),
+  trackFile(FileAttachment("data/prices.json").json(),           "Price data"),
   trackFile(FileAttachment("data/zenodo-version.json").json(),   "Version metadata"),
 ]);
 
@@ -190,7 +194,10 @@ document.getElementById("app-root").innerHTML = `
     <div class="app-body">
       <section class="panel panel-left" aria-label="Headline">
         <div class="eyebrow">Sustainable hashrate · unlocked right now</div>
-        <div class="display-xl num-tabular" id="pct-readout">—%</div>
+        <div class="stat-headline-row">
+          <div class="display-xl num-tabular" id="pct-readout">—%</div>
+          <div id="unit-toggle-mount" class="unit-toggle-mount"></div>
+        </div>
         <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was wasted in the last thirty days — observed curtailed, spilled, or constrained-off across <span id="region-count">—</span> tracked regions. A measured floor, not a speculative ceiling.</p>
         <div class="stats-row">
           <div class="stat">
@@ -550,6 +557,7 @@ const now = new Date();
 const initialHour = now.getUTCHours() + now.getUTCMinutes() / 60;
 const clock = createClock(initialHour);
 const mode = typeof Mutable === "function" ? Mutable("avg30d") : { value: "avg30d" };
+const unit = typeof Mutable === "function" ? Mutable("MW") : { value: "MW" };
 
 function renderAt(hour) {
   const wrappedHour = ((hour % 24) + 24) % 24;
@@ -572,12 +580,30 @@ function renderAt(hour) {
   const renewableEHs = ehsFromGW(renewableGW);
   const renewablePct = cbeci.hashrateEHps > 0 ? (renewableEHs / cbeci.hashrateEHps) * 100 : 0;
 
+  const activeUnit = unit.value ?? "MW";
+
+  // Build renewable-only regionData map (excludes flare regions)
+  const renewableRegionData = {};
+  for (const region of REGIONS.filter(isRenewable)) {
+    if (regionData[region.id]) renewableRegionData[region.id] = regionData[region.id];
+  }
+
+  const usdPerHour = activeUnit === "USD"
+    ? aggregateUsdAtHour(renewableRegionData, prices ?? {}, wrappedHour)
+    : 0;
+
   // Headline readouts: integer pct and 1-decimal GW. At 2× playback the
   // trailing hundredth-digits churn faster than the eye can read them and
   // carry no information (our calibration noise is ≫ 0.01 pp / 10 MW).
   document.getElementById("pct-readout").textContent = `${renewablePct.toFixed(0)}%`;
   document.getElementById("hashrate-readout").innerHTML = `${cbeci.hashrateEHps.toFixed(1)} <span class="stat-unit">EH/s</span>`;
-  document.getElementById("gw-readout").innerHTML = `${renewableGW.toFixed(1)} <span class="stat-unit">GW</span>`;
+  if (activeUnit === "USD") {
+    document.getElementById("gw-readout").innerHTML =
+      `${formatUsdPerHour(usdPerHour)} <span class="stat-unit">est.</span>`;
+  } else {
+    document.getElementById("gw-readout").innerHTML =
+      `${renewableGW.toFixed(1)} <span class="stat-unit">GW</span>`;
+  }
   document.getElementById("supportable-readout").innerHTML = `${renewableEHs.toFixed(1)} <span class="stat-unit">EH/s</span>`;
   document.getElementById("hotspots-title").textContent = `Active hotspots · UTC ${hh}:${mm}`;
   document.getElementById("flare-readout").textContent = `${flareGW.toFixed(0)} GW`;
@@ -591,24 +617,67 @@ function renderAt(hour) {
   // 1 decimal for values ≥ 1 GW where that granularity matters less.
   const fmtGW = (gw) => (gw >= 1 ? gw.toFixed(1) : gw.toFixed(2));
 
-  const itemHtml = (fuel) => ({ region, gw }) => `
-    <li class="hotspot-item">
-      <span class="dot dot--${fuel}"></span>
-      <span class="hotspot-name">${region.name}</span>
-      <span class="hotspot-gw num-tabular">${fmtGW(gw)} GW</span>
-    </li>
-  `;
-
   for (const fuel of FUEL_ORDER) {
-    const rows = renewableEntries
+    const allEntries = renewableEntries
       .map(({ region, gw }) => ({
         region,
         gw: gw * fuelShare(region, fuel, regionData[region.id]),
       }))
-      .filter(({ gw }) => gw > 0)
-      .sort((a, b) => b.gw - a.gw)
-      .slice(0, HOTSPOT_LIST_LIMIT);
-    document.getElementById(`hotspot-list-${fuel}`).innerHTML = rows.map(itemHtml(fuel)).join("");
+      .filter(({ gw }) => gw > 0);
+
+    if (activeUnit === "USD") {
+      // Compute USD value per region for this fuel's share
+      const withUsd = allEntries.map(({ region, gw }) => {
+        const pd = (prices ?? {})[region.id];
+        const rd = regionData[region.id];
+        let usd = 0;
+        if (pd && rd) {
+          // Build a synthetic RegionData with profile scaled by fuel share
+          const share = fuelShare(region, fuel, rd);
+          const scaledRd = { ...rd, profile: rd.profile.map(v => v * share) };
+          usd = usdValueAtHour(scaledRd, pd, wrappedHour);
+        }
+        return { region, gw, usd, hasPriceData: !!pd && pd.priceTier !== "none" };
+      });
+
+      const priced = withUsd
+        .filter(e => e.hasPriceData)
+        .sort((a, b) => b.usd - a.usd)
+        .slice(0, HOTSPOT_LIST_LIMIT);
+
+      const unpriced = withUsd
+        .filter(e => !e.hasPriceData)
+        .sort((a, b) => b.gw - a.gw);
+
+      const pricedHtml = priced.map(({ region, usd }) => `
+        <li class="hotspot-item">
+          <span class="dot dot--${fuel}"></span>
+          <span class="hotspot-name">${region.name}</span>
+          <span class="hotspot-gw num-tabular">${formatRegionUsdPerHour(usd)}</span>
+        </li>
+      `).join("");
+
+      const gapHtml = unpriced.length > 0 ? `
+        <li class="hotspot-gap-row">
+          <span class="hotspot-gap-label">+ ${unpriced.length} region${unpriced.length === 1 ? "" : "s"} without price data</span>
+          <span class="hotspot-gap-gw">${unpriced.slice(0, 3).map(e => e.region.name).join(", ")}${unpriced.length > 3 ? "…" : ""}</span>
+        </li>
+      ` : "";
+
+      document.getElementById(`hotspot-list-${fuel}`).innerHTML = pricedHtml + gapHtml;
+    } else {
+      const rows = allEntries
+        .sort((a, b) => b.gw - a.gw)
+        .slice(0, HOTSPOT_LIST_LIMIT);
+      document.getElementById(`hotspot-list-${fuel}`).innerHTML =
+        rows.map(({ region, gw }) => `
+          <li class="hotspot-item">
+            <span class="dot dot--${fuel}"></span>
+            <span class="hotspot-name">${region.name}</span>
+            <span class="hotspot-gw num-tabular">${fmtGW(gw)} GW</span>
+          </li>
+        `).join("");
+    }
   }
 }
 
@@ -624,9 +693,21 @@ mountModeToggle(document.getElementById("mode-toggle"), {
     mode.value = nextMode;
     renderAt(clock.hour);
     timeline.update({ mode: nextMode });
-    globe?.update({ utcHour: clock.hour, mode: nextMode });
+    globe?.update({ utcHour: clock.hour, mode: nextMode, unitMode: unit.value, priceData: prices ?? {} });
   },
 });
+
+const unitToggleHost = document.getElementById("unit-toggle-mount");
+if (unitToggleHost) {
+  mountUnitToggle(unitToggleHost, {
+    initial: unit.value,
+    onChange(nextUnit) {
+      unit.value = nextUnit;
+      renderAt(clock.hour);
+      globe?.update({ unitMode: nextUnit, priceData: prices ?? {} });
+    },
+  });
+}
 
 const themeToggleHost = document.getElementById("theme-toggle-mount");
 if (themeToggleHost) mountThemeToggle(themeToggleHost);
@@ -644,6 +725,8 @@ globe = await mountGlobe(canvas, {
   regionData,
   utcHour: initialHour,
   mode: mode.value,
+  unitMode: unit.value ?? "MW",
+  priceData: prices ?? {},
   topologyUrl: await FileAttachment("data/countries-110m.json").url(),
   onRegionClick(region, anchor) {
     if (region) regionTooltip.show(region, anchor);
@@ -683,6 +766,6 @@ if (pageLoader) {
   setTimeout(() => pageLoader.remove(), 380);
 }
 
-clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value }));
+clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value, unitMode: unit.value, priceData: prices ?? {} }));
 clock.subscribe(renderAt);
 ```

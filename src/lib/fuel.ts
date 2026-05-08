@@ -46,6 +46,24 @@ export function getFuelColor(fuel: Fuel | "flare"): string {
 }
 
 /**
+ * Region-aware pillar/swatch colour resolver. Centralises the
+ * `kind === "flare" → flare token, else dominantFuel` routing so individual
+ * call sites (globe canvas, tooltip, future legend strips) cannot regress
+ * the flare → solar-yellow class of bug.
+ *
+ * Background: `dominantFuel` returns `Fuel` (solar | wind | hydro). For a
+ * `kind: "flare"` region with no `fuelShare` it falls through to the
+ * `return "solar"` default — meaning any caller that forgets the
+ * `kind === "flare"` short-circuit silently paints flare pillars yellow
+ * (issue #44). Callers should prefer this function over composing the
+ * guard themselves.
+ */
+export function getRegionFuelColor(region: Region, regionData?: RegionData): string {
+  if (region.kind === "flare") return getFuelColor("flare");
+  return getFuelColor(dominantFuel(region, regionData));
+}
+
+/**
  * Empirical curtailment split for `kind: "mixed"` regions, derived from
  * published generation-mix data for 2024. Values must sum to ≤ 1.0.
  *
