@@ -16,6 +16,8 @@ Non-canonical candidate specs belong in `buildAllStatics({ includeCandidates: tr
 
 **Source-provenance gate (added 2026-05-08).** A region cannot be promoted to T1a-live-tso while its `sourceProvenance` is still `official-lead`. The live path must be producing verified data first (`sourceProvenance: "verified"`), then the tier promotion follows. This is the lesson from the v1.1.1 India SLDC mis-declaration: declaring T1a while the loader was emitting modelled-fallback shapes shipped a tier badge the data did not earn. The CI check `scripts/ci/check-source-provenance-coherence.ts` enforces the legal `(tier, sourceProvenance)` matrix from [`docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).
 
+**Bad-conversions checklist gate (added 2026-05-08).** Before any promotion decision, work through the bad-conversions checklist in [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject). A region cannot be promoted past T3-modelled while any item evaluates to "yes". The checklist is the demotion filter for procedural failures, parallel to the per-tier "What this does NOT accept" lists. Each item corresponds to a real production bug or research-only blocker; "yes" on item 1 (DSM/deviation), 2 (capacity-MW), 3 (instruction-%), 4 (blank-as-zero), or 5 (modelled-as-verified) blocks promotion until resolved.
+
 ## Immediate Implementation Queue
 
 ### 1. Chile Wind - promoted to T1a on 2026-04-29
@@ -101,14 +103,16 @@ No new T2 upgrades are currently confirmed by the stricter audit. These are rese
 
 ## Rejected Or Demoted For Now
 
-| Region | Why it stays T3 |
-|---|---|
-| `jordan` | No explicit NEPCO/EMRC curtailment TWh found; current value is capacity-derived. |
-| `guatemala` | AMM is a promising source, but no explicit public curtailment figure or stable machine-readable live path has been confirmed. |
-| `austria` | APG public materials found so far are qualitative; ENTSO-E A75 extraction remains future work. |
-| `kenya` | Geothermal venting is not the same as grid curtailment, and no explicit curtailed-energy total was found. |
-| `morocco` | ANRE generation totals are not curtailment totals; the current estimate is calculated. |
-| non-Kyushu Japan utilities | juyo CSVs are mostly demand/supply only; no fuel generation or curtailment field. |
+The `Bad-conversion #` column cites the relevant item from the [bad-conversions checklist](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject); blank means the rejection does not fit any of the five named items (typically "no figure published" rather than a specific conversion failure).
+
+| Region | Why it stays T3 | Bad-conversion # |
+|---|---|---|
+| `jordan` | No explicit NEPCO/EMRC curtailment TWh found; current value is capacity-derived. | 2 |
+| `guatemala` | AMM is a promising source, but no explicit public curtailment figure or stable machine-readable live path has been confirmed. | — |
+| `austria` | APG public materials found so far are qualitative; ENTSO-E A75 extraction remains future work. | — |
+| `kenya` | Geothermal venting is not the same as grid curtailment, and no explicit curtailed-energy total was found. | 2 |
+| `morocco` | ANRE generation totals are not curtailment totals; the current estimate is calculated. | 2 |
+| non-Kyushu Japan utilities | juyo CSVs are mostly demand/supply only; no fuel generation or curtailment field. | — |
 
 ## Rejected sources (source-level investigations)
 
