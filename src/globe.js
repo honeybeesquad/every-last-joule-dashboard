@@ -1,7 +1,7 @@
 import * as d3 from "npm:d3";
 import * as topojson from "npm:topojson-client";
 import { regionGWAtHour } from "./lib/calc.js";
-import { getFuelColor, dominantFuel } from "./lib/fuel.js";
+import { getRegionFuelColor } from "./lib/fuel.js";
 import { readGlobeTokens, isLinearGradientToken } from "./lib/theme-tokens.js";
 import { buildPillarUnits } from "./lib/pillar-layout.js";
 
@@ -462,7 +462,7 @@ export async function mountGlobe(canvas, initial) {
 
       // Dominant color for glow + core dot.
       const repData = state.regionData[rep.id];
-      const domColor = getFuelColor(rep.kind === "flare" ? "flare" : dominantFuel(rep, repData));
+      const domColor = getRegionFuelColor(rep, repData);
 
       ctx.save();
       ctx.filter = "blur(4px)";
@@ -525,7 +525,7 @@ export async function mountGlobe(canvas, initial) {
             const segEndX = segStartX + dx * segLen;
             const segEndY = segStartY + dy * segLen;
             const segData = state.regionData[seg.region.id];
-            const segColor = getFuelColor(seg.region.kind === "flare" ? "flare" : dominantFuel(seg.region, segData));
+            const segColor = getRegionFuelColor(seg.region, segData);
             const isBase = segStart === 0;
             const isTip = segStart + segLen >= pillarH - 0.5;
             const grad = ctx.createLinearGradient(segStartX, segStartY, segEndX, segEndY);
