@@ -251,3 +251,117 @@ vietnam,55,USD,1.0,IEA World Energy Prices 2024,2024,
 wa-swis,45.2,AUD,0.65,AEMO WA Market Operator,2023,WA SWIS ~69.5 AUD/MWh x 0.65 USD/AUD
 xinjiang,52.5,CNY,0.138,NDRC 电力中长期交易基准价 2023 / IEA China Energy Outlook 2023,2023,380 CNY/MWh Xinjiang spot × 0.138 USD/CNY; depressed coal-based spot price
 yunnan,6.90,CNY,0.138,IEA World Energy Prices 2024,2024,
+
+angola,29.6,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to angola
+benin,37.2,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to benin
+botswana,25.4,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to botswana
+burkina-faso,45.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to burkina-faso
+burundi,50.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to burundi
+cabo-verde,35.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to cabo-verde
+cameroon,30.2,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to cameroon
+central-african-republic,55.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to central-african-republic
+chad,40.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to chad
+comoros,60.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to comoros
+congo-drc,32.1,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to congo-drc
+congo-republic,28.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to congo-republic
+cote-divoire,38.5,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to cote-divoire
+djibouti,45.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to djibouti
+equatorial-guinea,35.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to equatorial-guinea
+eritrea,55.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to eritrea
+eswatini,30.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to eswatini
+gabon,35.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to gabon
+gambia,40.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to gambia
+ghana,28.9,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to ghana
+guinea,42.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to guinea
+guinea-bissau,50.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to guinea-bissau
+lesotho,35.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to lesotho
+liberia,55.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to liberia
+madagascar,35.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to madagascar
+malawi,40.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to malawi
+mali,45.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to mali
+mauritania,30.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to mauritania
+mauritius,22.5,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to mauritius
+mozambique,27.3,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to mozambique
+niger,38.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to niger
+nigeria,33.5,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to nigeria
+rwanda,30.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to rwanda
+sao-tome,50.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to sao-tome
+senegal,32.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to senegal
+seychelles,35.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to seychelles
+sierra-leone,45.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to sierra-leone
+somalia,60.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to somalia
+south-sudan,70.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to south-sudan
+sudan,35.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to sudan
+tanzania,29.8,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to tanzania
+togo,38.5,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to togo
+uganda,32.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to uganda
+zambia,28.5,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to zambia
+zimbabwe,26.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to zimbabwe
+afghanistan,50.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to afghanistan
+algeria,18.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to algeria
+bahrain,30.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to bahrain
+e-saudi,20.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to e-saudi
+kuwait,25.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to kuwait
+lebanon,40.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to lebanon
+libya,25.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to libya
+palestine,60.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to palestine
+qatar,20.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to qatar
+s-iraq,35.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to s-iraq
+syria,50.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to syria
+tunisia,28.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to tunisia
+yemen,55.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to yemen
+armenia,25.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to armenia
+azerbaijan,15.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to azerbaijan
+georgia,20.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to georgia
+kyrgyzstan,12.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to kyrgyzstan
+tajikistan,15.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to tajikistan
+turkmenistan,10.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to turkmenistan
+uzbekistan,20.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to uzbekistan
+bangladesh,32.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to bangladesh
+bhutan,25.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to bhutan
+sri-lanka,23.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to sri-lanka
+nepal,24.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to nepal
+myanmar,30.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to myanmar
+cambodia,35.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to cambodia
+brunei,42.3,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Brunei"
+papua-new-guinea,55.2,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Papua New Guinea"
+bolivia,40.5,USD,1.0,"EIA International",2022,"national avg for Bolivia"
+costa-rica,75.3,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Costa Rica"
+dominican-republic,95.0,USD,1.0,"EIA International",2022,"national avg for Dominican Republic"
+ecuador,62.8,USD,1.0,"EIA International",2022,"national avg for Ecuador"
+el-salvador,85.4,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for El Salvador"
+french-guiana,110.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for French Guiana (France)"
+guatemala,70.2,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Guatemala"
+guatemala-siepac,70.2,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg applied to Guatemala-SIEPAC"
+nicaragua,88.5,USD,1.0,"EIA International",2022,"national avg for Nicaragua"
+panama,82.1,USD,1.0,"EIA International",2022,"national avg for Panama"
+trinidad-tobago,45.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Trinidad and Tobago"
+albania,55.0,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Albania"
+belarus-solar,40.8,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Belarus applied to solar"
+belarus-wind,40.8,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Belarus applied to wind"
+ireland-republic-solar,85.6,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Ireland applied to solar"
+ireland-republic-wind,85.6,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Ireland applied to wind"
+jeju,120.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for South Korea applied to Jeju"
+liechtenstein,70.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Switzerland applied to Liechtenstein"
+luxembourg-solar,65.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Luxembourg applied to solar"
+luxembourg-wind,65.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Luxembourg applied to wind"
+moldova-solar,58.2,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Moldova applied to solar"
+moldova-wind,58.2,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Moldova applied to wind"
+monaco,70.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for France applied to Monaco"
+montenegro,55.0,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Montenegro"
+north-macedonia-solar,52.0,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for North Macedonia applied to solar"
+north-macedonia-wind,52.0,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for North Macedonia applied to wind"
+russia-e-siberia,38.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Russia applied to East Siberia"
+russia-murmansk-wind,38.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Russia applied to Murmansk wind"
+russia-yamal,38.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Russia applied to Yamal"
+san-marino,75.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Italy applied to San Marino"
+serbia-solar,48.5,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Serbia applied to solar"
+serbia-wind,48.5,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Serbia applied to wind"
+ukraine,50.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Ukraine"
+w-siberia,38.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Russia applied to West Siberia"
+wa-swis-solar,45.2,AUD,0.65,AEMO WA Market Operator,2023,national avg applied to wa-swis-solar
+wa-swis-wind,45.2,AUD,0.65,AEMO WA Market Operator,2023,national avg applied to wa-swis-wind
+laos,55.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Laos"
+philippines-solar,85.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Philippines applied to solar"
+philippines-wind,85.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Philippines applied to wind"
+bosnia-and-herzegovina,50.0,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Bosnia and Herzegovina"
