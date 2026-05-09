@@ -463,10 +463,9 @@ export async function mountGlobe(canvas, initial) {
       const repData = state.regionData[rep.id];
       const domColor = getRegionFuelColor(rep, repData);
 
-      // USD mode: grey out regions without price data at 30% opacity.
-      const isPriceless = state.unitMode === "USD" &&
-        (!state.priceData[rep.id] || state.priceData[rep.id].priceTier === "none");
-      const pillarAlpha = isPriceless ? 0.30 : 1;
+      // USD mode removed: all regions rendered at full opacity.
+      const isPriceless = false;
+      const pillarAlpha = 1;
 
       ctx.save();
       ctx.filter = "blur(4px)";
