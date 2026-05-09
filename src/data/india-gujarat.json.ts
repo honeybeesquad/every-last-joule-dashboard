@@ -1,43 +1,41 @@
-import { pathToFileURL } from "url";
-import { fetchText } from "../lib/fetch.js";
+import { pathToFileURL, fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
+import { readStateCsvTotal, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-gujarat";
-// Gujarat State Load Despatch Centre (GSLDC / GETCO). Publishes daily RE
-// generation and curtailment reports. Site is geoblocked from non-Indian IP
-// ranges; a future India-egress relay will make this live path operational.
-const SOURCE_URL = "https://sldc.gujarat.gov.in/";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const CSV_PATH = join(__dirname, "../../data/historical/india-gujarat-gen-daily.csv");
+const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 
-async function run({ probe = true } = {}): Promise<RegionData> {
-  let probeNote = "";
+async function run(): Promise<RegionData> {
+  const csv = readStateCsvTotal(CSV_PATH, 365);
 
-  if (probe) {
-    try {
-      await fetchText(SOURCE_URL, { timeoutMs: 10000, retries: 0, headers: { "user-agent": "Mozilla/5.0" } });
-      // TODO: parse GSLDC daily RE curtailment report and return live data.
-      // Currently unreachable from the build environment — geoblocked outside India.
-      throw new Error("GSLDC live parsing not yet implemented; geoblocked from build environment");
-    } catch (err) {
-      probeNote = `GSLDC unreachable (${(err as Error).message}); `;
-    }
+  if (csv !== null) {
+    const curtailedTWh = computeCurtailedEnergy(csv.solarTWh, CURTAILMENT.rate);
+    const base = buildTypicalSolarRegion(
+      REGION_ID,
+      6.5,
+      curtailedTWh,
+      `CEA gen-re.cea.gov.in daily Excel, State-Wise sheet (${csv.nRows}-day CSV; trailing-365-day solar ${csv.solarTWh.toFixed(2)} TWh). ` +
+      `Annual curtailed energy = CEA generation × Ember India 2024 rate ${(CURTAILMENT.rate * 100).toFixed(0)}% / (1 − rate) = ${curtailedTWh.toFixed(2)} TWh. ` +
+      `Hourly shape is synthetic. Only the generation denominator is from a primary official source.`,
+      new Date().getFullYear().toString(),
+    );
+    return { ...base, sourceProvenance: "official-lead" };
   }
 
+  // No CSV yet — T3 modelled fallback
   const base = buildTypicalSolarRegion(
     REGION_ID,
     6.5,
     1.0,
-    `${probeNote}Typical-shape T3-modelled fallback calibrated to POSOCO/Ember India 2024 ` +
-    `(~1.0 TWh/yr solar curtailment, Gujarat Khavda-Kutch transmission bottlenecks). ` +
-    `State-level GSLDC source established; will be promoted to T1a-live-tso when the India-egress relay activates the live parse.`,
+    `No CEA CSV present; T3-modelled fallback calibrated to POSOCO/Ember India 2024 (~1.0 TWh/yr solar curtailment, Gujarat Khavda-Kutch transmission bottlenecks).`,
     "2024",
   );
-  // T3-modelled while the GSLDC live path is unreachable from the build
-  // environment (geoblocked). When the India-egress relay lands and the
-  // GSLDC parser is implemented, flip both this and the canonical
-  // src/lib/regions.ts entry back to T1a-live-tso.
   return applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
 }
 
@@ -52,4 +50,4 @@ if (isMain) {
     });
 }
 
-export const buildIndiaGujaratData = () => run({ probe: false });
+export const buildIndiaGujaratData = () => run();

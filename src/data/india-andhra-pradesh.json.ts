@@ -1,44 +1,41 @@
-import { pathToFileURL } from "url";
-import { fetchText } from "../lib/fetch.js";
+import { pathToFileURL, fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
+import { readStateCsvTotal, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-andhra-pradesh";
-// APTRANSCO / APSLDC (Andhra Pradesh Transmission Corporation Ltd / State Load
-// Despatch Centre). Publishes daily RE curtailment data. Geoblocked from
-// non-Indian IP ranges; India-egress relay activates live path.
-const SOURCE_URL = "https://apsldc.in/";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const CSV_PATH = join(__dirname, "../../data/historical/india-andhra-pradesh-gen-daily.csv");
+const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 
-async function run({ probe = true } = {}): Promise<RegionData> {
-  let probeNote = "";
+async function run(): Promise<RegionData> {
+  const csv = readStateCsvTotal(CSV_PATH, 365);
 
-  if (probe) {
-    try {
-      await fetchText(SOURCE_URL, { timeoutMs: 10000, retries: 0, headers: { "user-agent": "Mozilla/5.0" } });
-      // TODO: parse APSLDC daily RE curtailment report and return live data.
-      // Currently unreachable from the build environment — geoblocked outside India.
-      throw new Error("APSLDC live parsing not yet implemented; geoblocked from build environment");
-    } catch (err) {
-      probeNote = `APSLDC unreachable (${(err as Error).message}); `;
-    }
+  if (csv !== null) {
+    const curtailedTWh = computeCurtailedEnergy(csv.solarTWh, CURTAILMENT.rate);
+    const base = buildTypicalSolarRegion(
+      REGION_ID,
+      7,
+      curtailedTWh,
+      `CEA gen-re.cea.gov.in daily Excel, State-Wise sheet (${csv.nRows}-day CSV; trailing-365-day solar ${csv.solarTWh.toFixed(2)} TWh). ` +
+      `Annual curtailed energy = CEA generation × Ember India 2024 rate ${(CURTAILMENT.rate * 100).toFixed(0)}% / (1 − rate) = ${curtailedTWh.toFixed(2)} TWh. ` +
+      `Hourly shape is synthetic. Only the generation denominator is from a primary official source.`,
+      new Date().getFullYear().toString(),
+    );
+    return { ...base, sourceProvenance: "official-lead" };
   }
 
+  // No CSV yet — T3 modelled fallback
   const base = buildTypicalSolarRegion(
     REGION_ID,
     7,
     0.4,
-    `${probeNote}Typical-shape T3-modelled fallback calibrated to POSOCO Southern Region 2024 ` +
-    `(~0.4 TWh/yr solar curtailment; Anantapur + Kadapa solar parks, ` +
-    `Andhra Pradesh transmission bottlenecks post-bifurcation). ` +
-    `State-level APSLDC source established; will be promoted to T1a-live-tso when the India-egress relay activates the live parse.`,
+    `No CEA CSV present; T3-modelled fallback calibrated to POSOCO Southern Region 2024 (~0.4 TWh/yr solar curtailment, Anantapur + Kadapa solar parks).`,
     "2024",
   );
-  // T3-modelled while the APSLDC live path is unreachable from the build
-  // environment (geoblocked). When the India-egress relay lands and the
-  // APSLDC parser is implemented, flip both this and the canonical
-  // src/lib/regions.ts entry back to T1a-live-tso.
   return applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
 }
 
@@ -53,4 +50,4 @@ if (isMain) {
     });
 }
 
-export const buildIndiaAndhraPradeshData = () => run({ probe: false });
+export const buildIndiaAndhraPradeshData = () => run();

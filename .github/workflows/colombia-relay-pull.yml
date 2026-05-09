@@ -1,10 +1,11 @@
-name: Colombia relay pull
+name: Relay pull (Colombia + India)
 
-# Pulls the latest colombia-vertimientos-daily.csv from the private
-# every-last-joule-data-relay repo (written by Britta cron) and commits it
-# into data/historical/ so the Colombia loader always reads fresh data.
+# Pulls daily CSVs from the private every-last-joule-data-relay repo
+# (written by Britta cron) and commits them into data/historical/.
 #
-# Runs ~19:15 UTC daily — 45 min after Britta's push window (18:30–19:00 UTC).
+# Colombia: runs ~19:15 UTC daily (45 min after Britta's 18:30 UTC push window).
+# India:    gen-re.cea.gov.in daily Excel; Britta fetches at 06:30 UTC; GA runs
+#           after Colombia pull to pick up both in one build.
 # Also triggerable manually.
 
 on:
@@ -28,35 +29,49 @@ jobs:
           git config user.name  "elj-relay-bot"
           git config user.email "bot@everylastjoule.com"
 
-      - name: Fetch latest CSV from relay repo
+      - name: Fetch latest CSVs from relay repo
         env:
           RELAY_DEPLOY_KEY: ${{ secrets.RELAY_DEPLOY_KEY }}
         run: |
-          # Write the deploy key to a temp file
           install -m 600 /dev/null /tmp/relay_deploy_key
           echo "$RELAY_DEPLOY_KEY" > /tmp/relay_deploy_key
 
-          # Clone relay repo (shallow — we only need the latest CSV)
           GIT_SSH_COMMAND="ssh -i /tmp/relay_deploy_key -o StrictHostKeyChecking=no" \
             git clone --depth=1 \
               git@github.com:honeybeesquad/every-last-joule-data-relay.git \
               /tmp/relay
 
-          # Copy CSV into the dashboard repo
+          rm /tmp/relay_deploy_key
+
+          # Colombia
           cp /tmp/relay/colombia-vertimientos-daily.csv \
              data/historical/colombia-vertimientos-daily.csv
 
-          # Clean up key
-          rm /tmp/relay_deploy_key
+          # India (copy only if present in relay repo)
+          for state in rajasthan gujarat tamil-nadu andhra-pradesh maharashtra; do
+            src="/tmp/relay/india-${state}-gen-daily.csv"
+            dst="data/historical/india-${state}-gen-daily.csv"
+            if [ -f "$src" ]; then
+              cp "$src" "$dst"
+            fi
+          done
 
       - name: Commit if changed
         run: |
-          if git diff --quiet data/historical/colombia-vertimientos-daily.csv; then
+          git add data/historical/colombia-vertimientos-daily.csv \
+                  data/historical/india-rajasthan-gen-daily.csv \
+                  data/historical/india-gujarat-gen-daily.csv \
+                  data/historical/india-tamil-nadu-gen-daily.csv \
+                  data/historical/india-andhra-pradesh-gen-daily.csv \
+                  data/historical/india-maharashtra-gen-daily.csv \
+                  2>/dev/null || true
+
+          if git diff --cached --quiet; then
             echo "No new rows — nothing to commit."
           else
-            ROWS=$(wc -l < data/historical/colombia-vertimientos-daily.csv)
-            git add data/historical/colombia-vertimientos-daily.csv
-            git commit -m "chore(data): pull Colombia relay CSV (${ROWS} rows) [skip ci]"
+            ROWS_CO=$(wc -l < data/historical/colombia-vertimientos-daily.csv)
+            ROWS_IN=$(wc -l < data/historical/india-rajasthan-gen-daily.csv 2>/dev/null || echo "?")
+            git commit -m "chore(data): pull relay CSVs — Colombia ${ROWS_CO} rows, India ${ROWS_IN} rows [skip ci]"
             git push origin main
-            echo "Committed and pushed updated CSV."
+            echo "Committed and pushed."
           fi
