@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Every Last Joule: Bitcoin and the World's Wasted Energy — da-ri.org</title>
+  <meta name="description" content="The world discards 338.8 TWh/yr of verified wasted energy — 171% of Bitcoin's appetite. A systematic global accounting by Dr Simon Collins.">
+  <meta name="author" content="Dr Simon Collins">
+  <meta property="og:title" content="Every Last Joule: Bitcoin and the World's Wasted Energy">
+  <meta property="og:description" content="The world discards 338.8 TWh/yr of verified wasted energy — 171% of Bitcoin's appetite.">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    :root {
+      --navy:       #1A2340;
+      --teal:       #00B8C8;
+      --teal-mid:   #4DC9D6;
+      --teal-pale:  #E6F9FB;
+      --amber:      #F5A623;
+      --amber-pale: #FEF7E8;
+      --white:      #FFFFFF;
+      --off-white:  #F7F7F4;
+      --rule:       #E2E2DC;
+      --mid-gray:   #6B7280;
+      --text:       #18181B;
+      --t3-gray:    #8899AA;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+      font-size: 1rem;
+      line-height: 1.78;
+      color: var(--text);
+      background: var(--white);
+    }
+
+    sup a.ref {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.63rem;
+      font-weight: 600;
+      color: var(--teal);
+      text-decoration: none;
+      padding: 0 1px;
+    }
+    sup a.ref:hover { color: var(--navy); text-decoration: underline; }
+
+    /* ── Site header ── */
+    .site-header {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--navy);
+      color: rgba(255,255,255,0.85);
+      padding: 0.65rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      letter-spacing: 0.03em;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .wordmark {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .wordmark span { color: var(--teal); }
+    .site-header nav a {
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      margin-left: 1.5rem;
+      transition: color 0.15s;
+    }
+    .site-header nav a:hover { color: var(--teal); }
+
+    /* ── Paper wrap ── */
+    .paper-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 5rem;
+    }
+
+    /* ── Title block ── */
+    .paper-kicker {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.9rem;
+    }
+    h1.paper-title {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 2.15rem;
+      line-height: 1.22;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 1.2rem;
+    }
+    .paper-byline {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: var(--mid-gray);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      padding: 0.7rem 0;
+      margin-bottom: 3rem;
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .paper-byline strong { color: var(--text); font-weight: 600; }
+
+    /* ── Sections ── */
+    .paper-section { margin-bottom: 3rem; }
+
+    h2.section-head {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.2rem;
+      margin-top: 3rem;
+    }
+    h3.section-title {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.32rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 1.4rem;
+      line-height: 1.3;
+    }
+    .paper-section p,
+    .paper-section-cont p { margin-bottom: 1.2rem; }
+    .paper-section p:last-child,
+    .paper-section-cont p:last-child { margin-bottom: 0; }
+
+    /* ── Pull quote ── */
+    .pull-quote {
+      border-left: 4px solid var(--teal);
+      margin: 2.5rem 0;
+      padding: 1rem 1.5rem;
+      background: var(--teal-pale);
+      border-radius: 0 6px 6px 0;
+    }
+    .pull-quote p {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.12rem;
+      font-style: italic;
+      color: var(--navy);
+      margin: 0;
+      line-height: 1.65;
+    }
+
+    /* ── Stat cards ── */
+    .stat-row {
+      display: flex;
+      gap: 1rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      flex: 1;
+      min-width: 160px;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 1.2rem 1.3rem;
+      background: var(--off-white);
+    }
+    .stat-num {
+      font-family: 'Inter', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .stat-num.teal  { color: var(--teal); }
+    .stat-num.amber { color: var(--amber); }
+    .stat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      color: var(--mid-gray);
+      line-height: 1.4;
+    }
+
+    /* ── Globe embed ── */
+    .globe-embed {
+      margin: 2.5rem -2rem;
+      background: var(--off-white);
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+    .globe-embed iframe {
+      display: block;
+      width: 100%;
+      height: 520px;
+      border: none;
+    }
+    .fig-caption {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      color: var(--mid-gray);
+      padding: 0.6rem 2rem 0.8rem;
+      border-top: 1px solid var(--rule);
+    }
+    .fig-caption strong { color: var(--text); }
+    .fig-caption a { color: var(--teal); }
+
+    /* ── Chart containers ── */
+    .chart-wrap {
+      margin: 2rem 0;
+      background: var(--off-white);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 1.4rem 1.4rem 1rem;
+    }
+    .chart-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 1.1rem;
+    }
+    .chart-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.68rem;
+      color: var(--mid-gray);
+      margin-top: 0.6rem;
+      line-height: 1.5;
+    }
+
+    /* ── Hashrate widget ── */
+    .widget-hashrate {
+      background: var(--navy);
+      color: #fff;
+      border-radius: 10px;
+      padding: 1.8rem 2rem;
+      margin: 2.5rem 0;
+      font-family: 'Inter', sans-serif;
+    }
+    .wh-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.7rem;
+    }
+    .wh-time-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.4rem;
+      flex-wrap: wrap;
+    }
+    .wh-time-display {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    .wh-utc-label {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.45);
+      margin-right: 0.15rem;
+    }
+    .live-btn {
+      background: transparent;
+      border: 1px solid rgba(0,184,200,0.45);
+      color: var(--teal);
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: background 0.2s, border-color 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .live-btn.active {
+      background: rgba(0,184,200,0.18);
+      border-color: var(--teal);
+    }
+    .live-btn:hover { background: rgba(0,184,200,0.28); }
+
+    .hour-slider {
+      width: 100%;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      margin-bottom: 0.4rem;
+      cursor: pointer;
+      outline: none;
+    }
+    .hour-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--teal);
+      cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(0,184,200,0.25);
+    }
+    .hour-slider::-moz-range-thumb {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--teal);
+      border: none;
+      cursor: pointer;
+    }
+    .wh-tick-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.6rem;
+      color: rgba(255,255,255,0.28);
+      margin-bottom: 1.4rem;
+    }
+
+    .wh-bars { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.4rem; }
+    .wh-bar-row { display: flex; align-items: center; gap: 0.9rem; }
+    .wh-bar-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      width: 130px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .wh-bar-track {
+      flex: 1;
+      height: 30px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .wh-fill {
+      height: 100%;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding: 0 0.7rem;
+      transition: width 0.35s ease;
+    }
+    .waste-fill  { background: linear-gradient(90deg, var(--teal), #00D4E8); min-width: 70px; }
+    .bitcoin-fill { background: rgba(255,255,255,0.22); width: 43.4%; }
+    .wh-fill-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.92);
+      white-space: nowrap;
+    }
+
+    .wh-ratio {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1rem;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.6);
+    }
+    .ratio-num {
+      display: block;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--amber);
+      line-height: 1.1;
+      margin-bottom: 0.2rem;
+    }
+
+    /* ── Map ── */
+    .map-wrap {
+      margin: 2.5rem -2rem;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+    #curtailment-map {
+      height: 420px;
+      width: 100%;
+      background: #f0f0eb;
+    }
+    .map-legend {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      background: var(--white);
+      border-top: 1px solid var(--rule);
+      padding: 0.65rem 2rem;
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--mid-gray);
+    }
+    .ldot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      margin-right: 3px;
+      vertical-align: middle;
+    }
+    .map-caption {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.68rem;
+      color: var(--mid-gray);
+      padding: 0.35rem 2rem 0.65rem;
+    }
+
+    /* ── Closing & references ── */
+    .paper-close {
+      border-top: 1px solid var(--rule);
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+    }
+    .paper-close p {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      color: var(--mid-gray);
+      margin-bottom: 0.4rem;
+    }
+    .paper-close a { color: var(--teal); }
+
+    .references-section {
+      border-top: 2px solid var(--navy);
+      padding-top: 2rem;
+      margin-top: 3.5rem;
+    }
+    .references-section h2 {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 1.2rem;
+    }
+    .references-section ol {
+      padding-left: 1.6rem;
+    }
+    .references-section li {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: var(--mid-gray);
+      margin-bottom: 0.75rem;
+      padding-left: 0.3rem;
+    }
+    .references-section a { color: var(--teal); word-break: break-all; }
+
+    /* ── Site footer ── */
+    .site-footer {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+    }
+    .site-footer a { color: rgba(255,255,255,0.65); }
+
+    /* ── Responsive ── */
+    @media (max-width: 620px) {
+      html { font-size: 16px; }
+      .paper-wrap { padding: 2rem 1.2rem 4rem; }
+      h1.paper-title { font-size: 1.65rem; }
+      .globe-embed, .map-wrap { margin-left: -1.2rem; margin-right: -1.2rem; }
+      .globe-embed iframe { height: 350px; }
+      #curtailment-map { height: 300px; }
+      .wh-bar-label { width: 90px; font-size: 0.65rem; }
+      .stat-num { font-size: 1.55rem; }
+      .site-header nav { display: none; }
+    }
+
+    /* ── Print ── */
+    @media print {
+      .site-header, .site-footer, .live-btn { display: none !important; }
+      .globe-embed, .map-wrap { display: none !important; }
+      .widget-hashrate {
+        background: var(--off-white) !important;
+        color: var(--navy) !important;
+        break-inside: avoid;
+        border: 1px solid var(--rule);
+      }
+      .wh-title, .ratio-num { color: var(--teal) !important; }
+      .wh-fill-label, .wh-ratio, .wh-bar-label { color: var(--navy) !important; }
+      .wh-bar-track { background: rgba(0,0,0,0.06) !important; }
+      .waste-fill { background: var(--teal) !important; }
+      .bitcoin-fill { background: rgba(26,35,64,0.15) !important; }
+      .chart-wrap { break-inside: avoid; }
+      .paper-section { break-inside: avoid; }
+      a[href]::after { content: " (" attr(href) ")"; font-size: 0.7em; color: #999; }
+      sup a.ref::after { content: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ══ Header ══ -->
+<header class="site-header">
+  <a href="https://da-ri.org" class="wordmark">da<span>-</span>ri</a>
+  <nav>
+    <a href="https://everylastjoule.com" target="_blank" rel="noopener">Live dashboard</a>
+    <a href="https://doi.org/10.5281/zenodo.20045637" target="_blank" rel="noopener">Dataset</a>
+    <a href="mailto:simon@collins.nu">Contact</a>
+  </nav>
+</header>
+
+<main>
+<div class="paper-wrap">
+
+  <!-- Title -->
+  <div class="paper-kicker">Analysis · Energy &amp; Digital Assets</div>
+  <h1 class="paper-title">Every Last Joule: Bitcoin and the World's Wasted Energy</h1>
+  <div class="paper-byline">
+    <span><strong>Dr Simon Collins</strong></span>
+    <span>da-ri.org</span>
+    <span>9 May 2026</span>
+    <span style="color:#9CA3AF">Draft — for review before publication</span>
+  </div>
+
+  <!-- ══ §1 ══ -->
+  <section class="paper-section" id="s1">
+    <h2 class="section-head">§1</h2>
+    <h3 class="section-title">The accusation and the counter-claim</h3>
+
+    <p>Bitcoin's energy consumption has become one of the defining environmental criticisms of the digital age. Academics, journalists, and regulators have argued - with varying degrees of alarm - that the network uses too much electricity, that this electricity should serve more productive purposes, and that the associated carbon emissions are unacceptable. The criticism has shaped policy. New York imposed a two-year moratorium on new fossil-fuel mining operations in 2022. Sweden called for an EU-wide ban on proof-of-work mining the same year. The European Union's Markets in Crypto-Assets Regulation now mandates energy disclosure, with the implicit assumption that transparency will drive a political response.<sup><a href="#ref-14" class="ref">14</a></sup> The narrative is entrenched: Bitcoin, in this telling, is a wasteful competitor for scarce clean electrons at precisely the moment the world needs to electrify everything.</p>
+
+    <p>The counter-argument also has a long history. Mining advocates, a smaller number of independent researchers, and operators such as Crusoe Energy have argued that Bitcoin is not a competitor for scarce electricity but a natural buyer for electricity that has no other customer. The logic is structural. Bitcoin mining hardware is modular - a standard shipping container holds one to ten megawatts of compute capacity. It is interruptible within seconds, faster than any other large industrial load. It has no geographic preference beyond the cheapest power and a functioning internet connection. And it generates revenue continuously, twenty-four hours a day, three hundred and sixty-five days a year. A miner can go where no other industrial customer can follow: to the wind farm whose turbines are idled by transmission congestion, to the hydro dam whose spillway is running, to the oil well whose associated gas is flared because no pipeline exists to deliver it to market.</p>
+
+    <p>The problem with the counter-argument has been the evidence. It has been made with anecdotes - a flare-mitigation operation in the Permian Basin, a hydro-spillage arrangement in Sichuan - not with systematic, global, primary-source accounting. Without a dataset that quantifies how much wasted energy actually exists, where it is concentrated, and how it compares to Bitcoin's own consumption, the argument remained an assertion, vulnerable to the retort that the anecdotes prove nothing about scale. This paper provides that accounting. The finding: the world discards more energy than Bitcoin uses, in the exact form Bitcoin is accused of consuming too much of. The accusation of excess rests on a peculiar inversion of the actual waste problem.</p>
+  </section>
+
+  <!-- ══ §2 ══ -->
+  <section class="paper-section" id="s2">
+    <h2 class="section-head">§2</h2>
+    <h3 class="section-title">How much energy the world wastes</h3>
+
+    <p>The Every Last Joule project spent eighteen months assembling a dataset covering 384 regions across 195 countries. The methodology drew from three source tiers. Tier 1 - 164 regions - relies on live transmission-system operator API feeds from ENTSO-E in Europe, ERCOT in Texas, CAISO and MISO in the United States, ONS in Brazil, OCCTO in Japan, and AEMO in Australia.<sup><a href="#ref-1" class="ref">1</a></sup> These sources publish hourly or sub-hourly curtailment data - volumes of renewable generation that grid operators deliberately reduced because transmission capacity or demand was insufficient to absorb them. The data is independently verifiable by anyone with an internet connection.</p>
+
+    <p>Tier 2 adds eight satellite-verified flare-gas regions from the World Bank's Global Gas Flaring Reduction programme, calibrated against infrared satellite measurements of flare volumes and converted to electrical equivalents using standard heat-rate assumptions.<sup><a href="#ref-2" class="ref">2</a></sup> Tier 3 provides model-based estimates at ±40% uncertainty for global directional coverage, drawn from calibrated national statistics from IRENA, Ember, and China's National Energy Administration.<sup><a href="#ref-1" class="ref">1</a></sup> The headline finding rests entirely on tiers 1 and 2 - verified sources that can be audited.</p>
+
+    <p>The finding: the world generates 338.8 terawatt-hours per year of verified wasted energy - electricity or its direct electrical equivalent that reaches no paying customer.<sup><a href="#ref-3" class="ref">3</a></sup> That is larger than the annual electricity consumption of Argentina. The foregone revenue, calculated across 186 regions with available wholesale price data, is $16.2 billion per year.<sup><a href="#ref-3" class="ref">3</a></sup> The full dataset is archived at Zenodo (DOI 10.5281/zenodo.20045637) and rendered interactively at everylastjoule.com.<sup><a href="#ref-3" class="ref">3</a>,<a href="#ref-4" class="ref">4</a></sup></p>
+
+    <p>A note on scope: 338.8 TWh is a floor, not a ceiling. It excludes self-curtailment - generators who choose not to bid into the market at all when prices fall below their short-run marginal cost - which multiple analyses of CAISO and ERCOT data suggest may exceed formal dispatch curtailment in volume. The verified number is what the primary sources can see. The actual figure is higher.</p>
+  </section>
+
+  <!-- Globe -->
+  <div class="globe-embed">
+    <iframe
+      src="https://everylastjoule.com"
+      title="Every Last Joule — global wasted energy interactive dashboard"
+      allow="fullscreen"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+    <div class="fig-caption">
+      <strong>Figure 1.</strong> Every Last Joule interactive dashboard — 384 regions, 195 countries. Live TSO data updated continuously.
+      Circles represent annual curtailment volume; amber = flare gas, teal = curtailed renewable generation.
+      <a href="https://everylastjoule.com" target="_blank" rel="noopener">Open full dashboard ↗</a>
+    </div>
+  </div>
+
+  <!-- ══ §3 ══ -->
+  <section class="paper-section" id="s3">
+    <h2 class="section-head">§3</h2>
+    <h3 class="section-title">The absurdity, stated plainly</h3>
+
+    <p>Bitcoin's annual electricity consumption, as tracked by the WooCharts ESG tracker - the most comprehensive source, combining the Cambridge Bitcoin Electricity Consumption Index's IP-geolocation methodology with bottom-up site survey data for off-grid and behind-the-meter capacity - is 197.6 TWh per year.<sup><a href="#ref-5" class="ref">5</a></sup></p>
+
+    <p>The world's verified curtailed renewables alone - Tier 1 live sources, the highest-confidence data in the dataset - total 184.5 TWh per year.<sup><a href="#ref-3" class="ref">3</a></sup> That is 93.4% of Bitcoin's annual consumption, from renewable sources that have no other buyer. These are electrons generated by wind turbines and solar panels that were deliberately reduced to zero because the grid could not take them. They are not a hypothetical surplus. They are a measured, recorded, grid-operator-curtailed quantity.</p>
+
+    <p>Add the eight verified flare-gas regions from Tier 2 - satellite-verified volumes of natural gas burned at wellheads because no pipeline or storage exists to capture it - and the total reaches 338.8 TWh per year, or 171.4% of Bitcoin's annual consumption.<sup><a href="#ref-2" class="ref">2</a>,<a href="#ref-3" class="ref">3</a></sup> The world discards seventy-one percent more energy than Bitcoin uses, in the form of the exact resource - electricity and its direct precursors - that Bitcoin is accused of consuming too much of.</p>
+  </section>
+
+  <!-- Key stats -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-num teal">338.8</div>
+      <div class="stat-label">TWh/yr wasted — verified Tier 1 + Tier 2 sources</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">197.6</div>
+      <div class="stat-label">TWh/yr Bitcoin network consumption (WooCharts)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num amber">171%</div>
+      <div class="stat-label">Wasted energy as % of Bitcoin's full appetite</div>
+    </div>
+  </div>
+
+  <!-- Comparison chart -->
+  <div class="chart-wrap">
+    <div class="chart-title">Wasted energy vs Bitcoin — annual TWh</div>
+    <canvas id="comparisonChart"></canvas>
+    <div class="chart-sub">Sources: ELJ dataset v1.2.1 (T1 curtailment = live TSO data; T2 = satellite-verified flare gas); WooCharts ESG tracker (Bitcoin). T3 modelled estimates excluded from wasted totals.</div>
+  </div>
+
+  <!-- Hashrate widget -->
+  <div class="widget-hashrate">
+    <div class="wh-title">Sustainable hashrate — unlocked right now</div>
+    <div class="wh-time-row">
+      <div class="wh-time-display">
+        <span class="wh-utc-label">UTC</span><span id="timeDisplay">—:—</span>
+      </div>
+      <button id="liveBtn" class="live-btn active" onclick="setLive()">● Live</button>
+    </div>
+
+    <input type="range" id="hourSlider" min="0" max="23" step="1" value="12" class="hour-slider">
+    <div class="wh-tick-row">
+      <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span>
+    </div>
+
+    <div class="wh-bars">
+      <div class="wh-bar-row">
+        <div class="wh-bar-label">Wasted power now</div>
+        <div class="wh-bar-track">
+          <div id="wasteBarFill" class="wh-fill waste-fill" style="width:80%">
+            <span id="wasteGW" class="wh-fill-label">— GW</span>
+          </div>
+        </div>
+      </div>
+      <div class="wh-bar-row">
+        <div class="wh-bar-label">Bitcoin's appetite</div>
+        <div class="wh-bar-track">
+          <div class="wh-fill bitcoin-fill">
+            <span class="wh-fill-label">22.6 GW</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wh-ratio">
+      <span id="ratioNum" class="ratio-num">—%</span>
+      of Bitcoin's full network appetite is available in wasted energy at this hour
+    </div>
+  </div>
+
+  <div class="paper-section-cont" id="s3-cont">
+    <p>This deserves plain statement. The narrative that Bitcoin's energy use represents a net addition to global electricity demand is difficult to sustain in the face of this accounting. The electricity Bitcoin uses exists in the system regardless of whether Bitcoin mines it or not. The question is whether it reaches a customer or a drain. Those 184.5 TWh of curtailed renewables are lost entirely. They heat nothing, power nothing, charge nothing. They are subtracted from the global energy system as a pure deadweight loss. If Bitcoin absorbed a fraction of that curtailment, net global electricity consumption would be unchanged; the electrons would simply be redirected from a resistor bank to a mining rig. The accusation of excess rests on ignoring the curtailment.</p>
+
+    <p>This does not mean Bitcoin is currently running on wasted energy. In aggregate, it mostly is not. The WooCharts composite intensity - 249.5 grams of CO₂ equivalent per kilowatt-hour - implies a mix dominated by conventional grid power, with small pockets of renewables and flare mitigation.<sup><a href="#ref-5" class="ref">5</a></sup> The point is that the resource is there, at a scale that exceeds Bitcoin's entire appetite, and that the dominant policy narrative has proceeded as if it were not. Again: 338.8 TWh is a verified floor. Actual global waste is higher. The case does not require the modelled Tier 3 estimates. The verified numbers alone make it.</p>
+  </div>
+
+  <!-- ══ §4 ══ -->
+  <section class="paper-section" id="s4">
+    <h2 class="section-head">§4</h2>
+    <h3 class="section-title">Could Bitcoin actually be the customer?</h3>
+
+    <p>The question moves from arithmetic to economics. Wasted energy exists at the right scale. Can Bitcoin mining be a commercially viable buyer for it?</p>
+
+    <p>The answer is yes, with conditions. The conditions are about pricing and institutions, not physics or engineering.</p>
+
+    <p>What makes Bitcoin mining structurally suited to curtailment is a combination of properties that no other large industrial load matches. The hardware is modular, rated at one to ten megawatts per standard shipping container, deployable at existing grid connection points without new transmission infrastructure. The load is interruptible within seconds - faster than demand response programmes assume possible - because miners convert electricity to heat and computation, not to chemical or mechanical processes that require thermal inertia or rotational stability. Mining has no geographic preference beyond power cost and internet connectivity, which means it can locate at transmission-constrained nodes where curtailment concentrates. And it generates revenue continuously, twenty-four hours a day, which suits both baseload curtailment - hydro spill, flare gas - and predictable midday solar surplus equally well.</p>
+
+    <p>The pricing condition is straightforward. Bitcoin mining at a curtailment site is economically viable when the effective electricity price reflects the zero-opportunity-cost of power that would otherwise be wasted. In markets where curtailment creates sustained negative or near-zero wholesale prices - ERCOT's West Texas hub, Germany's north-south transmission corridor, Brazil's Northeast wind corridor - the economics already work.<sup><a href="#ref-6" class="ref">6</a></sup> In markets where curtailment is real but pricing mechanisms do not pass the discount through to potential buyers, the economics stall. A wind farm in Finland may be curtailed thirty percent of winter hours, but if the market design settles at the zonal rather than nodal price, the curtailment signal is invisible to a potential mining load. The price the miner would pay remains the daytime market price, not the negative price that reflects actual system conditions. This is not a physics problem. It is a market design problem - which is, in its way, a more tractable one.</p>
+
+    <p>The operational precedents exist at commercial scale. MARA Holdings operates at Garden City in ERCOT, where curtailment is structural. Riot Platforms at Rockdale and Corsicana has registered over 700 megawatts of demand-response capacity with ERCOT, capable of shedding load within seconds when grid conditions require it.<sup><a href="#ref-7" class="ref">7</a></sup> Crusoe Energy's Permian Basin flare-to-compute operations, before their 2024 pivot toward AI inference workloads, demonstrated that modular gas-to-compute units could be deployed at single-well sites with no other electricity buyer within fifty kilometres. These are commercial operations that illustrate the viability of the model. What they do not demonstrate is deployment at a scale proportionate to the opportunity - which, given that the opportunity has been publicly quantified for the first time in this paper, is perhaps understandable as a chicken-and-egg problem, though less understandable for an industry that has been asserting its stranded-energy credentials for the better part of a decade without measuring them.</p>
+  </section>
+
+  <!-- Hotspots map -->
+  <div class="map-wrap">
+    <div id="curtailment-map"></div>
+    <div class="map-legend">
+      <span><span class="ldot" style="background:#00B8C8"></span>Curtailed renewable (T1)</span>
+      <span><span class="ldot" style="background:#4DC9D6; border:1px solid #00B8C8"></span>Domestic curtailment (T1b)</span>
+      <span><span class="ldot" style="background:#F5A623"></span>Flare gas (T2)</span>
+      <span><span class="ldot" style="background:#8899AA"></span>Modelled (T3)</span>
+      <span><span class="ldot" style="background:#1A2340; border-radius:2px"></span>Active mining operation</span>
+    </div>
+    <div class="map-caption">Figure 2. Top curtailment and flare-gas sites (circles sized by annual TWh) with known commercial mining operations (▲). Data: ELJ dataset v1.2.1.</div>
+  </div>
+
+  <div class="paper-section-cont" id="s4-revenue">
+    <p>The $16.2 billion per year in foregone revenue we have documented represents real losses - projects financed on the assumption that the grid would take their power, then curtailed by transmission constraints or market design failures.<sup><a href="#ref-3" class="ref">3</a></sup> A wind developer whose turbine is curtailed loses the difference between their contracted price and zero. Bitcoin mining as a captive buyer at curtailment-hour pricing converts that loss into a revenue stream. The top five curtailment sites alone - Bahia wind in Brazil at $1.18 billion per year in foregone revenue, Colombia's hydro-heavy system at $1.12 billion, Minas Gerais solar in Brazil at $1.12 billion, the Permian Basin flare-gas complex at $1.03 billion, and Sichuan's hydro spillage at $755 million - represent over $5 billion per year in revenue that generators are currently losing and miners are not capturing.<sup><a href="#ref-3" class="ref">3</a></sup></p>
+  </div>
+
+  <!-- Revenue chart -->
+  <div class="chart-wrap">
+    <div class="chart-title">Top 15 sites by revenue foregone — USD million per year</div>
+    <canvas id="revenueChart"></canvas>
+    <div class="chart-sub">Source: ELJ dataset v1.2.1 — 186 regions with available wholesale price data. Colours by tier: teal = T1 live TSO, amber = T2 flare gas, grey = T3 modelled.</div>
+  </div>
+
+  <div class="paper-section-cont" id="s4-carbon">
+    <p>The carbon arithmetic follows directly. If Bitcoin's entire network ran on today's wasted energy - curtailed renewables at effectively zero grams of CO₂ equivalent per kilowatt-hour marginal intensity, and flare gas at roughly forty grams per kilowatt-hour post-combustion versus 740 grams if vented as methane on a GWP100 basis - total network emissions would fall from 49.3 million tonnes of CO₂ equivalent per year to 6.2 million.<sup><a href="#ref-8" class="ref">8</a>,<a href="#ref-9" class="ref">9</a>,<a href="#ref-10" class="ref">10</a></sup> An 87.5% reduction. Bitcoin's current network, at 249.5 g CO₂e/kWh, already sits at 53% of the global grid average of 473.<sup><a href="#ref-5" class="ref">5</a>,<a href="#ref-1" class="ref">1</a></sup> A curtailment-first network would be a fraction of that fraction - comparable in emissions to a small European country, not a global environmental problem.</p>
+
+    <p>As long as this is presented as arithmetic, the case holds. However, "could" is not "will." Geographic mobility timelines range from eighteen months for container redeployment to sixty months for new greenfield builds in regulated interconnection queues. The market mechanism to connect a curtailment site with a willing mining buyer at the right price does not yet exist at scale outside ERCOT. These are institutional gaps. The physics is settled.</p>
+  </div>
+
+  <!-- ══ §5 ══ -->
+  <section class="paper-section" id="s5">
+    <h2 class="section-head">§5</h2>
+    <h3 class="section-title">What AI changes</h3>
+
+    <p>AI data centres are the largest new electricity load in decades, and they are already outbidding Bitcoin miners for the same electrons. The International Energy Agency projects AI-related data centre demand to reach 945 terawatt-hours by 2030 - roughly Japan's current annual consumption.<sup><a href="#ref-11" class="ref">11</a></sup> That demand is being signed into twenty-year power purchase agreements for firm, reliable, low-carbon electricity at prices Bitcoin miners cannot match. The hyperscalers - Microsoft, Google, Amazon, Meta - negotiate directly with wind and solar developers at scale, committing to off-take agreements that underwrite new renewable capacity. A Bitcoin miner cannot compete for those contracts on any of the relevant terms: price, reliability, or political economy. Data centres arrive in a jurisdiction with job commitments and tax revenue; Bitcoin mining facilities do not.</p>
+
+    <p>The conclusion that AI represents an existential threat to Bitcoin mining's access to clean electricity is therefore understandable but mistaken. It cedes the wrong battlefield. Curtailment is the one electricity market AI cannot easily enter. AI workloads need reliable, predictable power with known availability - the opposite of curtailment's defining characteristics. Curtailment is spiky in volume, unpredictable in timing, geographically stranded in places the transmission grid does not reach well enough to export power to load centres. A hyperscaler cannot build a data centre at a wind farm in Bahia curtailed four hundred hours per year when no reliable power exists for the remaining 8,360. The uptime requirement for tier-four data centres - typically 99.99% - is incompatible with a resource available for perhaps sixty percent of hours. Near-zero prices do not compensate for that.</p>
+
+    <p>These are precisely the properties Bitcoin mining absorbs without penalty. A mining container runs when power is available, shuts down when it is not, and resumes without degradation. The revenue model is continuously generative regardless of intermittency. As AI occupies the baseload renewable PPAs that mining currently competes for, it pushes mining toward the residual: structurally cheap, intermittently available power that nobody with a reliability requirement will touch. Curtailment is that residual. The competitive pressure from AI is not an existential threat to Bitcoin mining - it is a forcing function toward the structural niche mining is best suited to fill.</p>
+
+    <p>Aluminium smelters followed the same logic a century ago. They located in the Pacific Northwest because the Columbia River's spring melt produced more hydroelectric power than the region could use. They ran when the water was high and curtailed when it was not. They paid prices that reflected the surplus value of otherwise-wasted water. Bitcoin mining in curtailment markets is the same industrial logic adapted to a digital commodity - a load that values electrons at their marginal cost of production, not their long-run average cost, because the load can be deferred without economic penalty.</p>
+
+    <p>In a world where AI has taken the baseload, curtailment is Bitcoin's natural and defensible home. The arithmetic is reassuring: 184.5 terawatt-hours of verified curtailment, against a 197.6 terawatt-hour network appetite. The resource exists at roughly the right scale. The question is whether the institutional mechanisms exist to connect them.</p>
+  </section>
+
+  <!-- ══ §6 ══ -->
+  <section class="paper-section" id="s6">
+    <h2 class="section-head">§6</h2>
+    <h3 class="section-title">What needs to change</h3>
+
+    <p>The gap between the wasted energy and the buyer is not a physics problem. The electrons exist, the hardware exists, the revenue model works at curtailment-hour prices. It is not an economics problem in any fundamental sense - the price at which a miner would buy and a generator would sell is bounded below by zero and above by the average grid price, a range that contains many mutually agreeable transaction points. It is an information and regulatory problem. Four changes would close it.</p>
+
+    <p>The first is standardised curtailment reporting. ENTSO-E's Transparency Platform has published hourly curtailment by fuel type and cause code under the A75 dataset designation since 2015. No equivalent global standard exists. The IEA and IRENA should jointly require that grid operators above a threshold size publish hourly curtailment volumes, fuel type, and cause code in a machine-readable, open-access format. Every major transmission system operator already records this data internally for balancing settlement. The cost is publishing what they already know. The benefit is a transparent global market in wasted energy that potential buyers - miners, electrolysers, thermal storage operators, and flexibility aggregators - can price and plan against.</p>
+
+    <p>The second is a curtailment-credit mechanism for flexible loads. The US Treasury's Section 45V Clean Hydrogen Tax Credit final rule, published in January 2025, established that industrial loads drawing on curtailed clean electricity can receive credit for the carbon intensity of those electrons on an hourly-matching basis.<sup><a href="#ref-12" class="ref">12</a></sup> This is the correct regulatory logic: a load that runs on power that would otherwise be wasted should not be penalised for the carbon intensity of the marginal grid unit at the time of consumption. A comparable mechanism for Bitcoin mining loads - or a new specific instrument - would change the investment calculus for curtailment-site builds. Texas Senate Bill 1929, enacted in 2023, is the operational template at state level.<sup><a href="#ref-13" class="ref">13</a></sup> A federal mechanism that applies the 45V logic to interruptible computing loads is the missing incentive layer.</p>
+
+    <p>The third is constructive use of MiCA's energy-disclosure framework. MiCA Article 66 requires EU-registered crypto-asset service providers to disclose energy consumption and fuel mix from 2024.<sup><a href="#ref-14" class="ref">14</a></sup> A credible, auditable record of curtailment-origin electricity share is what ESG-motivated institutional investors need to differentiate mining on coal from mining on curtailed solar. The European Securities and Markets Authority should issue guidance requiring that MiCA disclosures include a standardised curtailment-origin metric. Voluntary adoption beyond the EU, led by publicly traded mining firms that benefit most from the differentiation, would accelerate the signal.</p>
+
+    <p>The fourth is an end to negative-price-hour opacity. Several major European transmission system operators do not publish hours per year in which wholesale prices go negative at their interconnection nodes, nor associated curtailment volumes by fuel type. This information exists - TSOs collect it for internal balancing settlement. Publishing it in quarterly tables, at each interconnection node, would substantially reduce the information asymmetry that currently requires expensive private data subscriptions to identify curtailment-rich locations. The cost to grid operators is negligible. The value to the market for flexible loads is substantial.</p>
+
+    <p>The evidence exists: 338.8 verified terawatt-hours of wasted energy per year, documented across 384 regions, published in an open dataset with live updates. The buyer exists: a 197.6 terawatt-hour-per-year network designed for precisely the intermittency and price sensitivity that curtailment requires. The industrial logic is sound, tested at commercial scale in multiple markets. As such, the institutional gap is the only element of this problem that remains genuinely unsolved - and institutional gaps are the most tractable.</p>
+  </section>
+
+  <!-- Closing pull quote -->
+  <div class="pull-quote">
+    <p>The world is throwing away 338.8 terawatt-hours per year of perfectly good electricity. Bitcoin is the buyer standing at the door. The only missing piece is a system that lets them transact.</p>
+  </div>
+
+  <!-- Paper close -->
+  <div class="paper-close">
+    <p>The full dataset is archived at Zenodo (<a href="https://doi.org/10.5281/zenodo.20045637" target="_blank" rel="noopener">DOI 10.5281/zenodo.20045637</a>) and rendered interactively at <a href="https://everylastjoule.com" target="_blank" rel="noopener">everylastjoule.com</a>.</p>
+    <p>For correspondence: <a href="mailto:simon@collins.nu">simon@collins.nu</a></p>
+  </div>
+
+  <!-- ══ References ══ -->
+  <section class="references-section" id="references">
+    <h2>References</h2>
+    <ol>
+      <li id="ref-1">Ember. <em>Global Electricity Review 2025</em>. London: Ember; 2025. <a href="https://ember-energy.org/latest-insights/global-electricity-review-2025/" target="_blank" rel="noopener">https://ember-energy.org/latest-insights/global-electricity-review-2025/</a></li>
+      <li id="ref-2">World Bank Group / GGFR. <em>Global Gas Flaring Tracker Report 2024</em>. Washington DC: World Bank; 2024. <a href="https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data" target="_blank" rel="noopener">https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data</a></li>
+      <li id="ref-3">Collins S et al. <em>Every Last Joule — Global Curtailed and Flared Energy Dataset v1.2.1</em>. Zenodo; 2026. <a href="https://doi.org/10.5281/zenodo.20045637" target="_blank" rel="noopener">https://doi.org/10.5281/zenodo.20045637</a></li>
+      <li id="ref-4">Collins S. <em>Every Last Joule Dashboard</em>. 2026. <a href="https://everylastjoule.com" target="_blank" rel="noopener">https://everylastjoule.com</a></li>
+      <li id="ref-5">WooCharts. <em>Bitcoin Network Emissions Intensity</em>. 2026. <a href="https://woocharts.com/esg-bitcoin-mining-emissions-intensity/" target="_blank" rel="noopener">https://woocharts.com/esg-bitcoin-mining-emissions-intensity/</a> (data trace dated 2024-07-27, accessed 2026-05-07).</li>
+      <li id="ref-6">ERCOT. <em>Settlement Point Price Historical Data</em>. 2024. <a href="https://www.ercot.com/mktinfo/prices" target="_blank" rel="noopener">https://www.ercot.com/mktinfo/prices</a></li>
+      <li id="ref-7">ERCOT. <em>Large Load Connection Process — revised 2024</em>. <a href="https://www.ercot.com/services/rq/integration" target="_blank" rel="noopener">https://www.ercot.com/services/rq/integration</a></li>
+      <li id="ref-8">WooCharts. <em>Bitcoin Network Total Emissions</em>. 2026. <a href="https://woocharts.com/esg-bitcoin-mining-total-emissions/" target="_blank" rel="noopener">https://woocharts.com/esg-bitcoin-mining-total-emissions/</a> (accessed 2026-05-07).</li>
+      <li id="ref-9">WooCharts. <em>Bitcoin Network Emissions Mitigated</em>. 2026. <a href="https://woocharts.com/esg-bitcoin-emissions-mitigated/" target="_blank" rel="noopener">https://woocharts.com/esg-bitcoin-emissions-mitigated/</a> (accessed 2026-05-07).</li>
+      <li id="ref-10">IPCC. <em>Climate Change 2021 — The Physical Science Basis</em>. Chapter 7, Table 7.SM.7 (GWP100 fossil CH₄ = 27.9). Cambridge: Cambridge University Press; 2021. <a href="https://www.ipcc.ch/report/ar6/wg1/" target="_blank" rel="noopener">https://www.ipcc.ch/report/ar6/wg1/</a></li>
+      <li id="ref-11">International Energy Agency. <em>Electricity 2025 — Analysis and Forecast to 2027</em>. Paris: IEA; 2025. <a href="https://www.iea.org/reports/electricity-2025" target="_blank" rel="noopener">https://www.iea.org/reports/electricity-2025</a></li>
+      <li id="ref-12">US Department of the Treasury, Internal Revenue Service. <em>Section 45V Credit for Production of Clean Hydrogen — Final Regulations</em>. Federal Register, 3 January 2025. <a href="https://www.federalregister.gov/documents/2025/01/03/2024-31513/section-45v-credit-for-production-of-clean-hydrogen" target="_blank" rel="noopener">https://www.federalregister.gov/documents/2025/01/03/2024-31513/...</a></li>
+      <li id="ref-13">Texas Legislature. <em>SB 1929, 88th Legislature (2023)</em>. <a href="https://capitol.texas.gov/BillLookup/History.aspx?LegSess=88R&Bill=SB1929" target="_blank" rel="noopener">https://capitol.texas.gov/BillLookup/History.aspx?LegSess=88R&amp;Bill=SB1929</a></li>
+      <li id="ref-14">European Parliament and Council. <em>Regulation (EU) 2023/1114 on Markets in Crypto-Assets (MiCA)</em>. Official Journal of the European Union, 9 June 2023. <a href="https://eur-lex.europa.eu/eli/reg/2023/1114/oj" target="_blank" rel="noopener">https://eur-lex.europa.eu/eli/reg/2023/1114/oj</a></li>
+    </ol>
+  </section>
+
+</div><!-- /.paper-wrap -->
+</main>
+
+<footer class="site-footer">
+  © 2026 Simon Collins · <a href="https://da-ri.org">da-ri.org</a> ·
+  Dataset: <a href="https://doi.org/10.5281/zenodo.20045637">Zenodo DOI 10.5281/zenodo.20045637</a>
+</footer>
+
+<!-- ══════════════════════════ SCRIPTS ══════════════════════════ -->
+<script>
+/* ── Constants ── */
+const AVG_CURTAIL_GW = 338.753 / 8.76;  // 38.674 GW average (338.8 TWh/yr ÷ 8760 h)
+const BITCOIN_GW     = 197.6   / 8.76;  // 22.557 GW average
+const SCALE_MAX_GW   = 52;              // visual ceiling for the bar widget
+
+function curtailMultiplier(hour) {
+  // Peaks at noon UTC (solar surplus peak), troughs at midnight
+  return 1 + 0.25 * Math.sin(2 * Math.PI * (hour - 6) / 24);
+}
+function curtailGWatHour(hour) {
+  return AVG_CURTAIL_GW * curtailMultiplier(hour);
+}
+
+/* ── Hashrate widget ── */
+let liveMode  = true;
+let liveTimer = null;
+
+const slider       = document.getElementById('hourSlider');
+const timeDisplay  = document.getElementById('timeDisplay');
+const wasteBarFill = document.getElementById('wasteBarFill');
+const wasteGWEl    = document.getElementById('wasteGW');
+const ratioNumEl   = document.getElementById('ratioNum');
+const liveBtn      = document.getElementById('liveBtn');
+
+function utcHour() { return new Date().getUTCHours(); }
+function utcHHMM() {
+  const d = new Date();
+  return String(d.getUTCHours()).padStart(2,'0') + ':' + String(d.getUTCMinutes()).padStart(2,'0');
+}
+
+function updateWidget(hour, showMinutes) {
+  const gw    = curtailGWatHour(hour);
+  const ratio = (gw / BITCOIN_GW * 100).toFixed(1);
+  const pct   = Math.min((gw / SCALE_MAX_GW) * 100, 100).toFixed(1);
+
+  timeDisplay.textContent  = showMinutes ? utcHHMM() : String(hour).padStart(2,'0') + ':00';
+  wasteBarFill.style.width = pct + '%';
+  wasteGWEl.textContent    = gw.toFixed(1) + ' GW';
+  ratioNumEl.textContent   = ratio + '%';
+}
+
+function setLive() {
+  liveMode = true;
+  liveBtn.classList.add('active');
+  const h = utcHour();
+  slider.value = h;
+  updateWidget(h, true);
+  clearInterval(liveTimer);
+  liveTimer = setInterval(() => {
+    if (!liveMode) return;
+    const h2 = utcHour();
+    slider.value = h2;
+    updateWidget(h2, true);
+  }, 60000);
+}
+
+slider.addEventListener('input', () => {
+  liveMode = false;
+  liveBtn.classList.remove('active');
+  updateWidget(parseInt(slider.value, 10), false);
+});
+
+setLive();
+
+/* ── Chart 1: wasted energy vs Bitcoin ── */
+(function() {
+  const ctx = document.getElementById('comparisonChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [
+        'Curtailed renewables (T1 — live TSO)',
+        'Flared gas (T2 — satellite)',
+        'Total wasted: T1 + T2 (verified)',
+        'Bitcoin network'
+      ],
+      datasets: [{
+        data: [184.5, 154.2, 338.8, 197.6],
+        backgroundColor: [
+          'rgba(0,184,200,0.82)',
+          'rgba(245,166,35,0.82)',
+          'rgba(0,184,200,0.15)',
+          'rgba(26,35,64,0.85)'
+        ],
+        borderColor:  ['#00B8C8','#F5A623','#00B8C8','#1A2340'],
+        borderWidth:  [0, 0, 2, 0],
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (c) => '  ' + c.raw.toFixed(1) + ' TWh/yr'
+          }
+        }
+      },
+      scales: {
+        x: {
+          max: 380,
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          ticks: {
+            font: { family: "'Inter', sans-serif", size: 11 },
+            callback: (v) => v + ' TWh'
+          }
+        },
+        y: {
+          grid: { display: false },
+          ticks: {
+            font: { family: "'Inter', sans-serif", size: 11 },
+            color: '#374151'
+          }
+        }
+      }
+    }
+  });
+})();
+
+/* ── Chart 2: revenue foregone top 15 ── */
+(function() {
+  // Listed in chart order (reversed so top is at top in horizontal bar)
+  const raw = [
+    { name: 'Bahia Wind',         rev: 1182.7, b: 'T1a' },
+    { name: 'Colombia',           rev: 1118.4, b: 'T1b' },
+    { name: 'MG Solar',           rev: 1116.0, b: 'T1a' },
+    { name: 'Permian Basin',      rev: 1030.0, b: 'T2'  },
+    { name: 'Sichuan',            rev:  755.1, b: 'T3'  },
+    { name: 'RN Wind',            rev:  728.7, b: 'T1a' },
+    { name: 'Germany Wind',       rev:  567.6, b: 'T1a' },
+    { name: 'Piauí Wind',         rev:  561.2, b: 'T1a' },
+    { name: 'Xinjiang',           rev:  430.5, b: 'T3'  },
+    { name: 'Iceland',            rev:  341.3, b: 'T3'  },
+    { name: 'Spain Wind',         rev:  337.3, b: 'T1a' },
+    { name: 'Bahia Solar',        rev:  331.1, b: 'T1a' },
+    { name: 'RN Solar',           rev:  305.1, b: 'T1a' },
+    { name: 'Spain Solar',        rev:  300.0, b: 'T1a' },
+    { name: 'Germany Solar',      rev:  267.6, b: 'T1a' },
+  ].reverse();
+
+  const colour = (b) => ({
+    T1a: 'rgba(0,184,200,0.82)',
+    T1b: 'rgba(77,201,214,0.82)',
+    T2:  'rgba(245,166,35,0.82)',
+    T3:  'rgba(136,153,170,0.75)',
+  }[b] || '#ccc');
+
+  const ctx = document.getElementById('revenueChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: raw.map(s => s.name),
+      datasets: [{
+        data:            raw.map(s => s.rev),
+        backgroundColor: raw.map(s => colour(s.b)),
+        borderRadius: 3,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (c) => '  $' + c.raw.toFixed(0) + 'M/yr foregone'
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          ticks: {
+            font: { family: "'Inter', sans-serif", size: 11 },
+            callback: (v) => '$' + (v/1000).toFixed(1) + 'B'
+          }
+        },
+        y: {
+          grid: { display: false },
+          ticks: {
+            font: { family: "'Inter', sans-serif", size: 10.5 },
+            color: '#374151'
+          }
+        }
+      }
+    }
+  });
+})();
+
+/* ── Leaflet map ── */
+(function() {
+  const map = L.map('curtailment-map', {
+    center: [22, 12],
+    zoom: 2,
+    scrollWheelZoom: false,
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 18
+  }).addTo(map);
+
+  const regions = [
+    // T1a — verified TSO renewable curtailment
+    { name:'Bahia Wind',        lat:-12.5, lng:-42.0, twh:24.6,  b:'T1a' },
+    { name:'MG Solar',          lat:-19.5, lng:-44.5, twh:23.3,  b:'T1a' },
+    { name:'RN Wind',           lat: -5.8, lng:-36.5, twh:15.2,  b:'T1a' },
+    { name:'Piauí Wind',        lat: -7.2, lng:-41.8, twh:11.7,  b:'T1a' },
+    { name:'Bahia Solar',       lat:-13.5, lng:-41.5, twh: 6.9,  b:'T1a' },
+    { name:'RN Solar',          lat: -5.4, lng:-37.0, twh: 6.4,  b:'T1a' },
+    { name:'Germany Wind',      lat: 53.5, lng:  9.5, twh: 5.8,  b:'T1a' },
+    { name:'Piauí Solar',       lat: -7.8, lng:-42.5, twh: 5.5,  b:'T1a' },
+    { name:'Ceará Solar',       lat: -5.2, lng:-39.5, twh: 5.5,  b:'T1a' },
+    { name:'Spain Wind',        lat: 41.8, lng: -1.5, twh: 4.2,  b:'T1a' },
+    { name:'Spain Solar',       lat: 38.5, lng: -4.0, twh: 3.7,  b:'T1a' },
+    { name:'Germany Solar',     lat: 48.5, lng: 11.0, twh: 2.8,  b:'T1a' },
+    // T1b — domestic curtailment
+    { name:'Colombia',          lat:  4.7, lng:-74.1, twh:20.3,  b:'T1b' },
+    // T2 — satellite-verified flare gas
+    { name:'S. Iraq',           lat: 30.5, lng: 47.5, twh:63.0,  b:'T2' },
+    { name:'W. Siberia',        lat: 62.0, lng: 73.0, twh:42.4,  b:'T2' },
+    { name:'Permian Basin',     lat: 31.8, lng:-102.5,twh:20.6,  b:'T2' },
+    { name:'Yamal',             lat: 68.0, lng: 69.0, twh:10.0,  b:'T2' },
+    { name:'E. Siberia',        lat: 63.0, lng:107.0, twh: 9.0,  b:'T2' },
+    { name:'E. Saudi Arabia',   lat: 26.0, lng: 49.5, twh: 8.1,  b:'T2' },
+    // T3 — modelled estimates
+    { name:'Sichuan',           lat: 30.0, lng:102.0, twh:18.2,  b:'T3' },
+    { name:'Paraguay',          lat:-23.0, lng:-58.0, twh: 8.96, b:'T3' },
+    { name:'Xinjiang',          lat: 41.5, lng: 86.0, twh: 8.2,  b:'T3' },
+    { name:'Yunnan',            lat: 25.0, lng:101.0, twh: 5.5,  b:'T3' },
+    { name:'Iceland',           lat: 64.9, lng:-18.1, twh: 4.9,  b:'T3' },
+  ];
+
+  const style = {
+    T1a: { color:'#009EB0', fill:'rgba(0,184,200,0.5)'   },
+    T1b: { color:'#009EB0', fill:'rgba(77,201,214,0.5)'  },
+    T2:  { color:'#C77D00', fill:'rgba(245,166,35,0.52)' },
+    T3:  { color:'#6B7E8E', fill:'rgba(136,153,170,0.42)'},
+  };
+  const tierLabel = { T1a:'Tier 1 — verified TSO', T1b:'Tier 1 — domestic', T2:'Tier 2 — flare gas', T3:'Tier 3 — modelled' };
+
+  regions.forEach(r => {
+    const s   = style[r.b] || style.T3;
+    const rad = Math.max(Math.sqrt(r.twh) * 5, 6);
+    const tip = `<b style="font-family:Inter,sans-serif">${r.name}</b>
+      <br><span style="font-size:0.85em">${r.twh.toFixed(1)} TWh/yr wasted</span>
+      <br><span style="font-size:0.8em;color:${s.color}">${tierLabel[r.b]}</span>`;
+    L.circleMarker([r.lat, r.lng], {
+      radius:      rad,
+      color:       s.color,
+      weight:      1.5,
+      fillColor:   s.fill,
+      fillOpacity: 1,
+    }).bindTooltip(tip).addTo(map);
+  });
+
+  // Operational mining locations
+  const miners = [
+    { name:'MARA — Garden City TX',   lat: 31.86, lng:-101.47, note:'ERCOT structural curtailment zone' },
+    { name:'Riot — Rockdale TX',       lat: 30.66, lng: -97.01, note:'700+ MW demand-response capacity'  },
+    { name:'Riot — Corsicana TX',      lat: 32.09, lng: -96.47, note:'Corsicana facility'               },
+    { name:'Crusoe Energy — Permian',  lat: 31.50, lng:-103.10, note:'Flare-to-compute (pre-2024 pivot)' },
+  ];
+
+  const minerIcon = L.divIcon({
+    className: '',
+    html: `<div style="width:13px;height:13px;border-radius:2px;background:#1A2340;
+      border:2px solid rgba(255,255,255,0.85);box-shadow:0 1px 3px rgba(0,0,0,0.4);
+      display:flex;align-items:center;justify-content:center;
+      font-size:8px;color:white;line-height:1;font-weight:700">▲</div>`,
+    iconSize:   [13,13],
+    iconAnchor: [6, 6],
+  });
+
+  miners.forEach(m => {
+    L.marker([m.lat, m.lng], { icon: minerIcon })
+      .bindTooltip(`<b style="font-family:Inter,sans-serif">${m.name}</b><br><span style="font-size:0.82em">${m.note}</span>`)
+      .addTo(map);
+  });
+})();
+</script>
+
+</body>
+</html>
