@@ -341,7 +341,7 @@ const regionData = {
   "portugal-solar": entsoe["portugal-solar"],
   "finland-wind": entsoe["finland-wind"],
   "finland-solar": entsoe["finland-solar"],
-  france,
+  ...france,
   "netherlands-wind": entsoe["netherlands-wind"],
   "netherlands-solar": entsoe["netherlands-solar"],
   // Denmark split by Energinet PriceArea. DK1 (Jutland/Fyn) hosts most

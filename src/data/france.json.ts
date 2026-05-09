@@ -60,7 +60,6 @@ export function buildFranceData(
     lastSuccessAt: hourly.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote:
       `RTE eco2mix ${fuel} × 3% curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
-    fuelShare,
   };
 }
 
