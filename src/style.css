@@ -1219,6 +1219,12 @@ main table {
   font-weight: 400;
 }
 
+.stat-secondary {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 400;
+}
+
 .hotspot-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;

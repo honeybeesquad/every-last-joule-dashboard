@@ -17,7 +17,7 @@ export function usdValueAtHour(
   pd: PriceData,
   utcHour: number,
 ): number {
-  if (pd.priceTier === "none") return 0;
+  if (pd.priceTier === "none" || !Array.isArray(rd?.profile)) return 0;
 
   const h = ((Math.floor(utcHour) % 24) + 24) % 24;
   const mw = (rd.profile[h] ?? 0) * 1000; // GW → MW
@@ -104,4 +104,35 @@ export function formatRegionUsdPerHour(usdPerHour: number): string {
   if (usdPerHour >= 1e6) return `$${(usdPerHour / 1e6).toFixed(1)}M/h`;
   if (usdPerHour >= 1e3) return `$${(usdPerHour / 1e3).toFixed(0)}K/h`;
   return `$${usdPerHour.toFixed(0)}/h`;
+}
+
+/**
+ * BTC that could be mined per hour if curtailed energy were used for mining.
+ * Accounts for the dilution effect of adding hashrate to the network.
+ */
+export function btcMinedPerHour(
+  curtailedEHs: number,
+  networkEHs: number,
+  blockReward: number = 3.125,
+  blocksPerHour: number = 6,
+): number {
+  if (networkEHs <= 0 || curtailedEHs <= 0) return 0;
+  const totalHashrate = networkEHs + curtailedEHs;
+  return (curtailedEHs / totalHashrate) * blockReward * blocksPerHour;
+}
+
+/** Format a BTC amount: "1.42 BTC" or "0.083 BTC". */
+export function formatBtc(btc: number): string {
+  if (btc >= 10) return `${btc.toFixed(1)}`;
+  if (btc >= 1) return `${btc.toFixed(2)}`;
+  return `${btc.toFixed(3)}`;
+}
+
+/** Format a compact USD value without /h: "$104,800", "$1.2M", "$3.7B". */
+export function formatUsdCompact(usd: number): string {
+  if (usd >= 1e12) return `$${(usd / 1e12).toFixed(1)}T`;
+  if (usd >= 1e9)  return `$${(usd / 1e9).toFixed(1)}B`;
+  if (usd >= 1e6)  return `$${(usd / 1e6).toFixed(1)}M`;
+  if (usd >= 1e3)  return `$${Math.round(usd).toLocaleString("en-US")}`;
+  return `$${usd.toFixed(0)}`;
 }

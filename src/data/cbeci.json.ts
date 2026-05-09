@@ -16,8 +16,10 @@ import type { CBECIData } from "../lib/types.js";
  * average, and our dashboard's primary ASIC reference).
  */
 
-const ENDPOINT = "https://mempool.space/api/v1/mining/hashrate/24h";
+const HASHRATE_ENDPOINT = "https://mempool.space/api/v1/mining/hashrate/24h";
+const PRICE_ENDPOINT = "https://mempool.space/api/v1/prices";
 const ASIC_JPER_TH = 16;
+const BLOCK_REWARD = 3.125;
 
 interface MempoolHashrateResponse {
   currentHashrate: number;   // hashes per second
@@ -26,27 +28,32 @@ interface MempoolHashrateResponse {
   difficulty?: unknown[];
 }
 
-export function parseHashrate(raw: MempoolHashrateResponse): CBECIData {
+interface MempoolPriceResponse {
+  USD: number;
+  EUR?: number;
+  GBP?: number;
+  [key: string]: number | undefined;
+}
+
+export function parseHashrate(raw: MempoolHashrateResponse, btcSpotUSD: number): CBECIData {
   const hashesPerSecond = raw.currentHashrate;
   const hashrateEHps = hashesPerSecond / 1e18;
 
-  // Annualised consumption at 16 J/TH:
-  //   power_W      = hashrate_TH/s * eff_J/TH
-  //   energy_TWh/y = power_W * 8760 h / 1e12
-  //   equivalently: TWh/y = hashrate_EH/s * 1e6 * eff_J/TH * 8760 / 1e12
   const hashrateTHps = hashrateEHps * 1e6;
   const powerW = hashrateTHps * ASIC_JPER_TH;
   const annualisedConsumptionTWh = (powerW * 8760) / 1e12;
 
-  // Mempool returns no explicit timestamp for currentHashrate; use now.
   const lastUpdated = new Date().toISOString();
 
-  return { hashrateEHps, annualisedConsumptionTWh, lastUpdated };
+  return { hashrateEHps, annualisedConsumptionTWh, btcSpotUSD, blockReward: BLOCK_REWARD, lastUpdated };
 }
 
 const run = async (): Promise<CBECIData> => {
-  const raw = await fetchJSON<MempoolHashrateResponse>(ENDPOINT);
-  return parseHashrate(raw);
+  const [raw, priceRaw] = await Promise.all([
+    fetchJSON<MempoolHashrateResponse>(HASHRATE_ENDPOINT),
+    fetchJSON<MempoolPriceResponse>(PRICE_ENDPOINT).catch(() => ({ USD: 0 })),
+  ]);
+  return parseHashrate(raw, priceRaw.USD ?? 0);
 };
 
 withFallback<CBECIData>("cbeci", run, {

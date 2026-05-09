@@ -34,7 +34,7 @@ import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
 import { mountGlobe } from "./globe.js";
 import { mountUnitToggle } from "./components/unit-toggle.js";
-import { aggregateUsdAtHour, formatUsdPerHour, formatRegionUsdPerHour, usdValueAtHour } from "./lib/price.js";
+import { aggregateUsdAtHour, formatUsdPerHour, formatRegionUsdPerHour, usdValueAtHour, btcMinedPerHour, formatBtc, formatUsdCompact } from "./lib/price.js";
 
 const ERCOT_NATIVE_ENABLED = false;
 const HOTSPOT_LIST_LIMIT = 50;
@@ -201,15 +201,15 @@ document.getElementById("app-root").innerHTML = `
         <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was wasted in the last thirty days — observed curtailed, spilled, or constrained-off across <span id="region-count">—</span> tracked regions. A measured floor, not a speculative ceiling.</p>
         <div class="stats-row">
           <div class="stat">
-            <div class="eyebrow micro">Bitcoin network hashrate</div>
+            <div class="eyebrow micro" id="hashrate-label">Bitcoin network hashrate</div>
             <div class="num-tabular stat-value" id="hashrate-readout">—</div>
           </div>
           <div class="stat">
-            <div class="eyebrow micro">Curtailed this hour</div>
+            <div class="eyebrow micro" id="gw-label">Curtailed this hour</div>
             <div class="num-tabular stat-value" id="gw-readout">—</div>
           </div>
           <div class="stat">
-            <div class="eyebrow micro">Hashrate this could support</div>
+            <div class="eyebrow micro" id="supportable-label">Hashrate this could support</div>
             <div class="num-tabular stat-value" id="supportable-readout">—</div>
           </div>
         </div>
@@ -557,7 +557,7 @@ const now = new Date();
 const initialHour = now.getUTCHours() + now.getUTCMinutes() / 60;
 const clock = createClock(initialHour);
 const mode = typeof Mutable === "function" ? Mutable("avg30d") : { value: "avg30d" };
-const unit = typeof Mutable === "function" ? Mutable("MW") : { value: "MW" };
+const unit = { value: "MW" };
 
 function renderAt(hour) {
   const wrappedHour = ((hour % 24) + 24) % 24;
@@ -592,21 +592,48 @@ function renderAt(hour) {
     ? aggregateUsdAtHour(renewableRegionData, prices ?? {}, wrappedHour)
     : 0;
 
-  // Headline readouts: integer pct and 1-decimal GW. At 2× playback the
-  // trailing hundredth-digits churn faster than the eye can read them and
-  // carry no information (our calibration noise is ≫ 0.01 pp / 10 MW).
   document.getElementById("pct-readout").textContent = `${renewablePct.toFixed(0)}%`;
-  document.getElementById("hashrate-readout").innerHTML = `${cbeci.hashrateEHps.toFixed(1)} <span class="stat-unit">EH/s</span>`;
+  document.getElementById("hotspots-title").textContent = `Active hotspots · UTC ${hh}:${mm}`;
+
   if (activeUnit === "USD") {
+    const btcPerHour = btcMinedPerHour(renewableEHs, cbeci.hashrateEHps, cbeci.blockReward ?? 3.125);
+    const miningUsdPerHour = btcPerHour * (cbeci.btcSpotUSD ?? 0);
+
+    document.getElementById("hashrate-label").textContent = "Bitcoin spot price";
+    document.getElementById("hashrate-readout").innerHTML =
+      `${formatUsdCompact(cbeci.btcSpotUSD ?? 0)}`;
+
+    document.getElementById("gw-label").textContent = "Wasted this hour";
     document.getElementById("gw-readout").innerHTML =
-      `${formatUsdPerHour(usdPerHour)} <span class="stat-unit">est.</span>`;
+      `${formatUsdPerHour(usdPerHour)} <span class="stat-unit">wholesale</span>`;
+
+    document.getElementById("supportable-label").textContent = "Could mine";
+    document.getElementById("supportable-readout").innerHTML =
+      `${formatBtc(btcPerHour)} <span class="stat-unit">₿/h</span> <span class="stat-secondary">(${formatUsdCompact(miningUsdPerHour)})</span>`;
+
+    // Flare in USD
+    const flareUsdPerHour = aggregateUsdAtHour(
+      Object.fromEntries(REGIONS.filter(r => r.kind === "flare").map(r => [r.id, regionData[r.id]]).filter(([, v]) => v)),
+      prices ?? {},
+      wrappedHour,
+    );
+    document.getElementById("flare-readout").textContent =
+      flareUsdPerHour > 0 ? `${formatUsdPerHour(flareUsdPerHour)}` : `${flareGW.toFixed(0)} GW`;
   } else {
+    document.getElementById("hashrate-label").textContent = "Bitcoin network hashrate";
+    document.getElementById("hashrate-readout").innerHTML =
+      `${cbeci.hashrateEHps.toFixed(1)} <span class="stat-unit">EH/s</span>`;
+
+    document.getElementById("gw-label").textContent = "Curtailed this hour";
     document.getElementById("gw-readout").innerHTML =
       `${renewableGW.toFixed(1)} <span class="stat-unit">GW</span>`;
+
+    document.getElementById("supportable-label").textContent = "Hashrate this could support";
+    document.getElementById("supportable-readout").innerHTML =
+      `${renewableEHs.toFixed(1)} <span class="stat-unit">EH/s</span>`;
+
+    document.getElementById("flare-readout").textContent = `${flareGW.toFixed(0)} GW`;
   }
-  document.getElementById("supportable-readout").innerHTML = `${renewableEHs.toFixed(1)} <span class="stat-unit">EH/s</span>`;
-  document.getElementById("hotspots-title").textContent = `Active hotspots · UTC ${hh}:${mm}`;
-  document.getElementById("flare-readout").textContent = `${flareGW.toFixed(0)} GW`;
 
   const renewableEntries = REGIONS
     .filter(isRenewable)
@@ -634,7 +661,7 @@ function renderAt(hour) {
         if (pd && rd) {
           // Build a synthetic RegionData with profile scaled by fuel share
           const share = fuelShare(region, fuel, rd);
-          const scaledRd = { ...rd, profile: rd.profile.map(v => v * share) };
+          const scaledRd = { ...rd, profile: (rd.profile ?? []).map(v => v * share) };
           usd = usdValueAtHour(scaledRd, pd, wrappedHour);
         }
         return { region, gw, usd, hasPriceData: !!pd && pd.priceTier !== "none" };

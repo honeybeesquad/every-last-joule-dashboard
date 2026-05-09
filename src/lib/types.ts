@@ -197,6 +197,8 @@ export interface PriceData {
 export interface CBECIData {
   hashrateEHps: number;           // current network hashrate
   annualisedConsumptionTWh: number; // current network consumption
+  btcSpotUSD: number;              // current BTC/USD spot price
+  blockReward: number;             // current block subsidy (BTC)
   lastUpdated: string;             // ISO 8601
   lastSuccessAt?: string;           // ISO 8601 UTC when this snapshot was last refreshed successfully
   sourceStatus?: SourceStatus;

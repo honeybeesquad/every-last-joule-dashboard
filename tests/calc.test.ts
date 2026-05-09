@@ -5,6 +5,8 @@ import type { RegionData, CBECIData } from "../src/lib/types";
 const cbeci: CBECIData = {
   hashrateEHps: 1000,
   annualisedConsumptionTWh: 138,
+  btcSpotUSD: 105000,
+  blockReward: 3.125,
   lastUpdated: "2026-04-22T00:00:00Z",
   lastSuccessAt: "2026-04-22T00:00:00Z"
 };
