@@ -1,7 +1,7 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-05-08 by Claude (discipline-layer sprint shipped: PRs #69-#75 merged)
-**Active branch:** `main` @ `a0a7198` (Vercel production branch; auto-deploys to everylastjoule.com)
+**Last verified against git:** 2026-05-09 by Claude (nav + USD toggle cleanup shipped)
+**Active branch:** `main` @ `e9d86a7` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
 > **For AI sessions:** read this file before drafting plans, brainstorming, or creating worktrees. Plans in `~/.claude/plans/` and `docs/superpowers/plans/` may be SHIPPED — check this file before treating any plan as live work.
@@ -14,7 +14,7 @@
 - 384 regions across 195 countries (every UN member + Taiwan + Palestine)
 - Tally golden as of 2026-05-08: T1a=155, T1b=9, T1c=1, T2=6, T2-flare=8, T3=205
 - Live at **everylastjoule.com** — Vercel auto-deploys from `main`
-- Dashboard banner: **"WASTED ENERGY DATABASE · V1.2.0"**
+- Dashboard banner: **"WASTED ENERGY DATABASE · V1.2.1"**
 
 **Discipline layer (sprint shipped 2026-05-08, PRs #69-#75):**
 - **PR #69** — `sourceProvenance` enum field + CI gate scaffolding (`feat/source-status-enum`)
@@ -25,6 +25,10 @@
 - **PR #74** — India SLDC egress audit: 3/6 SLDCs open to any IP, 3/6 geoblocked (`docs/india-sldc-egress-audit`)
 - **PR #75** — cleared two pre-existing tier-coherence failures; `ci:gates` fully green (`fix/tier-coherence-colombia-turkey`)
 
+**Nav + USD cleanup (shipped 2026-05-09, commit e9d86a7):**
+- Paper link added to dashboard nav (was missing despite page existing since PR #83)
+- USD toggle hidden from dashboard UI; pricing data layer (price.ts, fx.ts) retained for future use
+
 **Visual system + theme system + brand:** as previously shipped (Sunfire/Vellum/Eclipse themes, sun-aligned terminator + pillars, scrubbable timeline, mode toggle, tooltips, mobile perf, self-hosted fonts, theme-tokens runtime reader, no-FOUC boot script, themechange repaints). Defaults to 0.5× playback.
 
 **Paper + DOI:**
@@ -33,14 +37,13 @@
 
 ## What's NOT shipped / open PRs
 
-- **PR #68** — `feat/usd-toggle` — MW ↔ USD toggle. 495 tests passing. Needs rebase + CSV expansion before it can ship.
+None. PR #68 (USD toggle) superseded by e9d86a7 — toggle hidden, data layer retained.
 
 ## Known follow-ups
 
 - **Issue #43** — India SLDC live parsers. Needs Mullvad (or equivalent) with a genuine India PoP before the 3 geoblocked SLDCs from PR #74 can be wired live.
 - **Issue #44** — flare regions render as solar-yellow when the flare-gas toggle is on.
 - Safari new-tab theme-persistence quirk (Bug 3 from earlier Phase 7 work — still needs Tab B/C reload reproduction).
-- Eclipse theme retune — Simon noted "a bit garish."
 
 ## Plans archive
 
