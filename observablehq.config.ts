@@ -44,6 +44,7 @@ export default {
   pages: [
     { name: "Dashboard", path: "/" },
     { name: "Methodology", path: "/methodology" },
+    { name: "Paper", path: "/paper" },
     { name: "About", path: "/about" }
   ],
   // The framework's default viewport meta uses `maximum-scale=1` which
