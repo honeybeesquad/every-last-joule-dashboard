@@ -1,48 +1,55 @@
 # Validation — Maharashtra (`india-maharashtra`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-09 · Sprint: India gen-re anchor
 
 ## Source
 
 - **Region id:** `india-maharashtra`
 - **Country:** IND
 - **Tier:** static
-- **Kind:** mixed
-- **Source:** MSLDC (Maharashtra State Load Despatch Centre / MSEDCL) — RE curtailment and system data at msldc.mahavedha.com. Geoblocked from non-Indian IP ranges; loader currently emits T3-modelled typical-shape calibrated to POSOCO Western Region 2024 (~0.3 TWh/yr mixed solar+wind curtailment; Solapur solar + Satara/Dhule wind corridor). Will be promoted to T1a-live-tso when the India-egress relay activates the live parse.
-- **Source URL:** [https://msldc.mahavedha.com/](https://msldc.mahavedha.com/)
+- **Methodology note:** T2-annual-calibrated (generation denominator from CEA official source; curtailment rate modelled from Ember India 2024). Tier bucket stays T3 until tier-resolution.ts gains a T2-static path.
+- **Source provenance:** `official-lead` — generation denominator from CEA official daily Excel; curtailment rate modelled from Ember India 2024
+- **Kind:** mixed (solar + wind)
+- **Source:** CEA Renewable Project Monitoring Division — daily generation Excel, State-Wise sheet (`gen-re.cea.gov.in`)
+- **Source URL:** [https://gen-re.cea.gov.in/reports](https://gen-re.cea.gov.in/reports)
+- **Excel URL pattern:** `https://gen-re.cea.gov.in/public/uploads/dailyReport/excel/Report-YYYY-MM-DD.xlsx`
 - **Loader:** [`india-maharashtra.json.ts`](../../src/data/india-maharashtra.json.ts)
-- **Structural gap:** yes
+- **CSV:** `data/historical/india-maharashtra-gen-daily.csv` — committed, refreshed daily by britta
 
 ## Calibration
 
-- **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a — no backfill
-
-## Multi-year backfill annual totals
-
-| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
-|---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
+- **Generation source:** CEA gen-re.cea.gov.in daily Excel, State-Wise sheet, Wind Energy + Solar Energy (MU) columns combined
+- **Curtailment rate:** ~2% combined — Ember India 2024 state-level estimate
+- **Formula:** `annual_curtailed_TWh = annual_generation_TWh × 0.02 / (1 − 0.02)`
+- **Ember convention:** rate expressed as fraction of potential (curtailed / (generated + curtailed))
+- **Solar/wind split:** derived from actual CEA CSV ratios; fallback 55% solar / 45% wind (MNRE 2024 capacity-weighted)
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** —
-- **Ember annual:** —
-- **IRENA annual:** —
-- **Other:** —
+- **CEA annual generation (trailing 365 days from CSV):** populated after bootstrap run
+- **Ember curtailment rate:** ~2% combined (Ember India 2024)
+- **Ember estimated curtailment:** ~0.3 TWh/yr
+- **Fallback anchor (no CSV):** 0.3 TWh/yr mixed (POSOCO Western Region 2024, unchanged)
 
-## Discrepancy analysis
+## Bad-conversions check
 
-Maharashtra has ~20 GW of renewable capacity with a significant wind legacy (Satara, Dhule, Osmanabad districts) and fast-growing solar (Solapur). Curtailment arises from the Konkan transmission corridor and Western Region inter-state constraints. The 0.3 TWh anchor is conservative relative to capacity, reflecting Maharashtra's relatively better grid integration compared to Rajasthan and Gujarat. The 55/45 solar/wind split is based on MNRE 2024 installed capacity weighting. A direct MSLDC data pull will refine both the total and the mix once the parser is built.
+| # | Item | Verdict | Reason |
+|---|------|---------|--------|
+| 1 | DSM / deviation values used as curtailment | no | Ember curtailment rate applied to CEA generation; neither figure is a deviation/scheduling settlement |
+| 2 | Capacity-at-risk MW used as curtailed energy MWh | no | CEA data is MU (= GWh, energy), not MW (capacity) |
+| 3 | Instruction percentage without a generation denominator | no | Ember rate applied to actual combined generation TWh from CEA; denominator is explicit and official |
+| 4 | Blank or dash treated as zero | no | Missing daily rows use `withFallback` to prior anchor; absent dates are not zeroed |
+| 5 | Modelled fallback labelled as verified measurement | partial | `sourceNote` explicitly states: "Annual curtailed energy is derived from CEA official generation data (denominator) × Ember India 2024 state curtailment rate (modelled). Hourly shape is synthetic. Only the generation denominator is from a primary official source." |
 
 ## Known limitations
 
-The MSLDC live parser is not yet implemented. The site is geoblocked from non-Indian IP addresses, so the live path requires an India-egress relay to activate. The loader currently falls back to a typical-shape mixed profile (55% solar + 45% wind) calibrated at 0.3 TWh/yr with solar peak centred at UTC 07 and wind baseline spread across all hours.
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
 
 ## Links
 
-- Loader source: [`india-maharashtra.json.ts`](../../src/data/india-maharashtra.json.ts)
-- Backfill archive: `data/historical/backfill/*_india-maharashtra_*.parquet` (0 years)
-- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
-- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
-- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
+- Loader: [`india-maharashtra.json.ts`](../../src/data/india-maharashtra.json.ts)
+- Bootstrap script: [`scripts/bootstrap-india-gen-re.py`](../../scripts/bootstrap-india-gen-re.py)
+- Britta fetcher: `~/code/elj-relay/fetchers/india-gen-re.sh`

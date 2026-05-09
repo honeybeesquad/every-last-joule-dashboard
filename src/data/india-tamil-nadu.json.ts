@@ -1,44 +1,41 @@
-import { pathToFileURL } from "url";
-import { fetchText } from "../lib/fetch.js";
+import { pathToFileURL, fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalWindRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
+import { readStateCsvTotal, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-tamil-nadu";
-// Tamil Nadu State Load Despatch Centre (TNSLDC / TANTRANSCO). Publishes
-// daily RE curtailment and system operation reports. Geoblocked from
-// non-Indian IP ranges; India-egress relay activates live path.
-const SOURCE_URL = "https://tnsldc.com/";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const CSV_PATH = join(__dirname, "../../data/historical/india-tamil-nadu-gen-daily.csv");
+const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 
-async function run({ probe = true } = {}): Promise<RegionData> {
-  let probeNote = "";
+async function run(): Promise<RegionData> {
+  const csv = readStateCsvTotal(CSV_PATH, 365);
 
-  if (probe) {
-    try {
-      await fetchText(SOURCE_URL, { timeoutMs: 10000, retries: 0, headers: { "user-agent": "Mozilla/5.0" } });
-      // TODO: parse TNSLDC daily RE curtailment report and return live data.
-      // Currently unreachable from the build environment — geoblocked outside India.
-      throw new Error("TNSLDC live parsing not yet implemented; geoblocked from build environment");
-    } catch (err) {
-      probeNote = `TNSLDC unreachable (${(err as Error).message}); `;
-    }
+  if (csv !== null) {
+    const curtailedTWh = computeCurtailedEnergy(csv.windTWh, CURTAILMENT.rate);
+    const base = buildTypicalWindRegion(
+      REGION_ID,
+      9,
+      curtailedTWh,
+      `CEA gen-re.cea.gov.in daily Excel, State-Wise sheet (${csv.nRows}-day CSV; trailing-365-day wind ${csv.windTWh.toFixed(2)} TWh). ` +
+      `Annual curtailed energy = CEA generation × Ember India 2024 rate ${(CURTAILMENT.rate * 100).toFixed(0)}% / (1 − rate) = ${curtailedTWh.toFixed(2)} TWh. ` +
+      `Hourly shape is synthetic. Only the generation denominator is from a primary official source.`,
+      new Date().getFullYear().toString(),
+    );
+    return { ...base, sourceProvenance: "official-lead" };
   }
 
+  // No CSV yet — T3 modelled fallback
   const base = buildTypicalWindRegion(
     REGION_ID,
     9,
     1.0,
-    `${probeNote}Typical-shape T3-modelled fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
-    `(~1.0 TWh/yr Tamil Nadu wind curtailment; India's largest wind state, ` +
-    `Gulf of Mannar + Palladam-Coimbatore corridor). ` +
-    `State-level TNSLDC source established; will be promoted to T1a-live-tso when the India-egress relay activates the live parse.`,
+    `No CEA CSV present; T3-modelled fallback calibrated to POSOCO South Region 2024 (~1.0 TWh/yr wind curtailment, Gulf of Mannar + Palladam-Coimbatore corridor).`,
     "2024",
   );
-  // T3-modelled while the TNSLDC live path is unreachable from the build
-  // environment (geoblocked). When the India-egress relay lands and the
-  // TNSLDC parser is implemented, flip both this and the canonical
-  // src/lib/regions.ts entry back to T1a-live-tso.
   return applyUncertainty(base, { regionTier: "static", profileKind: "wind" });
 }
 
@@ -53,4 +50,4 @@ if (isMain) {
     });
 }
 
-export const buildIndiaTamilNaduData = () => run({ probe: false });
+export const buildIndiaTamilNaduData = () => run();

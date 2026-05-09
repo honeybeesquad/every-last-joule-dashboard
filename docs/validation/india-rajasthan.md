@@ -1,61 +1,55 @@
 # Validation — Rajasthan (`india-rajasthan`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-09 · Sprint: India gen-re anchor
 
 ## Source
 
 - **Region id:** `india-rajasthan`
 - **Country:** IND
 - **Tier:** static
-- **Source provenance:** `official-lead` — RRVPNL SLDC publishes RE curtailment downloads but the URL is geoblocked from non-Indian IPs, so the loader currently emits a typical-shape T3 fallback calibrated to the Ember 2025 anchor. The loader is scaffolded; promotion to `verified` (and tier promotion to T1a-live-tso) is gated on the India-egress relay. The (`tier=live`, `sourceProvenance=official-lead`) pair is the v1.1.1 red flag this field exists to surface — `tier=static` is the honest state until the relay activates. (See [tier-classification-guide.md#source-provenance-orthogonal-to-tier](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).)
+- **Methodology note:** T2-annual-calibrated (generation denominator from CEA official source; curtailment rate modelled from Ember India 2024). Tier bucket stays T3 until tier-resolution.ts gains a T2-static path.
+- **Source provenance:** `official-lead` — generation denominator from CEA official daily Excel; curtailment rate modelled from Ember India 2024
 - **Kind:** solar
-- **Source:** RRVPNL SLDC (Rajasthan State Load Despatch Centre) — RE curtailment downloads at sldc.rajasthan.gov.in. Geoblocked from non-Indian IP ranges; loader currently emits T3-modelled typical-shape calibrated to Ember India 2025 (~3.5 TWh/yr solar curtailment). Will be promoted to T1a-live-tso when the India-egress relay activates the live parse.
-- **Source URL:** [https://sldc.rajasthan.gov.in/](https://sldc.rajasthan.gov.in/)
+- **Source:** CEA Renewable Project Monitoring Division — daily generation Excel, State-Wise sheet (`gen-re.cea.gov.in`)
+- **Source URL:** [https://gen-re.cea.gov.in/reports](https://gen-re.cea.gov.in/reports)
+- **Excel URL pattern:** `https://gen-re.cea.gov.in/public/uploads/dailyReport/excel/Report-YYYY-MM-DD.xlsx`
 - **Loader:** [`india-rajasthan.json.ts`](../../src/data/india-rajasthan.json.ts)
-- **Structural gap:** yes
+- **CSV:** `data/historical/india-rajasthan-gen-daily.csv` — committed, refreshed daily by britta
 
 ## Calibration
 
-- **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a — no backfill
-
-## Multi-year backfill annual totals
-
-| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
-|---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
+- **Generation source:** CEA gen-re.cea.gov.in daily Excel, State-Wise sheet, Solar Energy (MU) column
+- **Curtailment rate:** ~6% solar — Ember India 2024 state-level estimate
+- **Formula:** `annual_curtailed_TWh = annual_generation_TWh × 0.06 / (1 − 0.06)`
+- **Ember convention:** rate expressed as fraction of potential (curtailed / (generated + curtailed))
+- **Curtailment rate source:** Ember India 2024 state-level estimates
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** —
-- **Ember annual:** —
-- **IRENA annual:** —
-- **Other:** —
-
-## Discrepancy analysis
-
-_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
-
-## Known limitations
-
-The RRVPNL SLDC website (`sldc.rajasthan.gov.in`, `rrvpnl.org`) is unreachable from non-Indian IP ranges (ECONNREFUSED / timeout from the build environment). The live path is therefore inactive until an India-egress relay is established. Current data is a typical solar shape calibrated to the Ember India 2025 Rajasthan anchor (3.5 TWh/yr). The region was renamed from `india-rajasthan` — the previous name implied NRLDC northern-region coverage but the calibration was Rajasthan-specific. Rajasthan holds India's largest solar capacity additions (7.09 GW in 2024) and is the dominant driver of northern-India solar curtailment.
-
-## Links
-
-- Loader source: [`india-rajasthan.json.ts`](../../src/data/india-rajasthan.json.ts)
-- Backfill archive: `data/historical/backfill/*_india-rajasthan_*.parquet` (0 years)
-- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
-- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
-- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
+- **CEA annual generation (trailing 365 days from CSV):** populated after bootstrap run
+- **Ember curtailment rate:** ~6% solar (Ember India 2024)
+- **Ember estimated curtailment:** ~3.5 TWh/yr
+- **Fallback anchor (no CSV):** 3.5 TWh/yr solar (Ember India 2025, unchanged)
 
 ## Bad-conversions check
 
-See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject) for the full checklist.
-
 | # | Item | Verdict | Reason |
 |---|------|---------|--------|
-| 1 | DSM / deviation values used as curtailment | no | The fallback shape derives from the Ember India 2025 Rajasthan curtailment anchor (~3.5 TWh/yr), not from a deviation/DSM table. Once the live SLDC path activates, RRVPNL's RE-curtailment downloads are the explicit curtailment series — distinct from CEA's deviation table. |
-| 2 | Capacity-at-risk MW used as curtailed energy MWh | no | The 3.5 TWh/yr anchor is Ember's published figure, not a `capacity × CF × rate` back-calculation. |
-| 3 | Instruction percentage without a generation denominator | no | The Ember anchor is a measured energy total in TWh; no percentage-without-denominator coercion is involved. |
-| 4 | Blank or dash treated as zero | no | The loader uses `withFallback` to serve the typical-shape fallback when the live RRVPNL path is unreachable, not coerce missing values to zero. |
-| 5 | Modelled fallback labelled as verified measurement | no | Tier is currently T3-modelled (since v1.2.0 demotion); the validation doc and CHANGELOG state explicitly that the hourly shape is synthetic and only the annual anchor is sourced. The (T1a, official-lead) red flag does not apply at the current static tier. |
+| 1 | DSM / deviation values used as curtailment | no | Ember curtailment rate applied to CEA generation; neither figure is a deviation/scheduling settlement |
+| 2 | Capacity-at-risk MW used as curtailed energy MWh | no | CEA data is MU (= GWh, energy), not MW (capacity) |
+| 3 | Instruction percentage without a generation denominator | no | Ember rate applied to actual generation TWh from CEA; denominator is explicit and official |
+| 4 | Blank or dash treated as zero | no | Missing daily rows use `withFallback` to prior anchor; CSV rows with no report date are simply absent, not zeroed |
+| 5 | Modelled fallback labelled as verified measurement | partial | `sourceNote` explicitly states: "Annual curtailed energy is derived from CEA official generation data (denominator) × Ember India 2024 state curtailment rate (modelled). Hourly shape is synthetic. Only the generation denominator is from a primary official source." |
+
+## Known limitations
+
+- Curtailment rate (6%) is Ember's national/regional estimate applied uniformly to Rajasthan; actual rate varies by season (summer peak curtailment) and grid conditions
+- Hourly shape remains synthetic (typical solar profile centred on 06:30 UTC)
+- The RRVPNL SLDC source (`sldc.rajasthan.gov.in`) remains geoblocked from non-Indian IPs; T1a promotion is still gated on an Indian residential IP relay
+
+## Links
+
+- Loader: [`india-rajasthan.json.ts`](../../src/data/india-rajasthan.json.ts)
+- Bootstrap script: [`scripts/bootstrap-india-gen-re.py`](../../scripts/bootstrap-india-gen-re.py)
+- Britta fetcher: `~/code/elj-relay/fetchers/india-gen-re.sh`
+- Methodology: [`docs/methodology/tier-classification-guide.md`](../methodology/tier-classification-guide.md)

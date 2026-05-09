@@ -1,46 +1,48 @@
-import { pathToFileURL } from "url";
-import { fetchText } from "../lib/fetch.js";
+import { pathToFileURL, fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalMixedRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
+import { readStateCsvTotal, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-maharashtra";
-// MSLDC (Maharashtra State Load Despatch Centre / MSEDCL). Publishes daily
-// RE curtailment and system data. Geoblocked from non-Indian IP ranges;
-// India-egress relay activates live path.
-const SOURCE_URL = "https://msldc.mahavedha.com/";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const CSV_PATH = join(__dirname, "../../data/historical/india-maharashtra-gen-daily.csv");
+const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 
-async function run({ probe = true } = {}): Promise<RegionData> {
-  let probeNote = "";
+async function run(): Promise<RegionData> {
+  const csv = readStateCsvTotal(CSV_PATH, 365);
 
-  if (probe) {
-    try {
-      await fetchText(SOURCE_URL, { timeoutMs: 10000, retries: 0, headers: { "user-agent": "Mozilla/5.0" } });
-      // TODO: parse MSLDC daily RE curtailment report and return live data.
-      // Currently unreachable from the build environment — geoblocked outside India.
-      throw new Error("MSLDC live parsing not yet implemented; geoblocked from build environment");
-    } catch (err) {
-      probeNote = `MSLDC unreachable (${(err as Error).message}); `;
-    }
+  if (csv !== null) {
+    const combinedTWh = csv.solarTWh + csv.windTWh;
+    const curtailedTWh = computeCurtailedEnergy(combinedTWh, CURTAILMENT.rate);
+    const solarShare = combinedTWh > 0 ? csv.solarTWh / combinedTWh : 0.55;
+    const windShare  = combinedTWh > 0 ? csv.windTWh  / combinedTWh : 0.45;
+    const base = buildTypicalMixedRegion(
+      REGION_ID,
+      curtailedTWh,
+      { solar: solarShare, wind: windShare },
+      `CEA gen-re.cea.gov.in daily Excel, State-Wise sheet (${csv.nRows}-day CSV; trailing-365-day solar ${csv.solarTWh.toFixed(2)} TWh + wind ${csv.windTWh.toFixed(2)} TWh). ` +
+      `Annual curtailed energy = CEA generation × Ember India 2024 rate ${(CURTAILMENT.rate * 100).toFixed(0)}% / (1 − rate) = ${curtailedTWh.toFixed(2)} TWh. ` +
+      `Hourly shape is synthetic. Only the generation denominator is from a primary official source.`,
+      new Date().getFullYear().toString(),
+      7,
+      15,
+    );
+    return { ...base, sourceProvenance: "official-lead" };
   }
 
+  // No CSV yet — T3 modelled fallback
   const base = buildTypicalMixedRegion(
     REGION_ID,
     0.3,
     { solar: 0.55, wind: 0.45 },
-    `${probeNote}Typical-shape T3-modelled fallback calibrated to POSOCO Western Region 2024 ` +
-    `(~0.3 TWh/yr mixed solar+wind curtailment; Solapur solar parks + Satara/Dhule wind corridor). ` +
-    `Split 55% solar / 45% wind based on MW-weighted generation capacity (MNRE 2024). ` +
-    `State-level MSLDC source established; will be promoted to T1a-live-tso when the India-egress relay activates the live parse.`,
+    `No CEA CSV present; T3-modelled fallback calibrated to POSOCO Western Region 2024 (~0.3 TWh/yr mixed solar+wind curtailment, Solapur + Satara/Dhule corridor).`,
     "2024",
     7,
     15,
   );
-  // T3-modelled while the MSLDC live path is unreachable from the build
-  // environment (geoblocked). When the India-egress relay lands and the
-  // MSLDC parser is implemented, flip both this and the canonical
-  // src/lib/regions.ts entry back to T1a-live-tso.
   return applyUncertainty(base, { regionTier: "static", profileKind: "mixed" });
 }
 
@@ -55,4 +57,4 @@ if (isMain) {
     });
 }
 
-export const buildIndiaMaharashtraData = () => run({ probe: false });
+export const buildIndiaMaharashtraData = () => run();
