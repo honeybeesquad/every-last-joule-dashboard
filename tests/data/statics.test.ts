@@ -196,7 +196,7 @@ describe("static regions", () => {
   it("never emits flat 24h profiles for static rows classified as solar", () => {
     const data = buildAllStatics();
     const solarIds = REGIONS
-      .filter((region) => region.tier === "static" && region.kind === "solar" && data[region.id])
+      .filter((region) => region.tier === "estimated" && region.kind === "solar" && data[region.id])
       .map((region) => region.id);
 
     // albania uses kind:"flat" in statics.json.ts (small 0.05 TWh anchor,

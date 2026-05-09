@@ -98,7 +98,7 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     for (const id of NEW_AFRICA_IDS) {
       const region = REGIONS.find((r) => r.id === id);
       expect(region, `missing region ${id}`).toBeDefined();
-      expect(region!.tier).toBe("static");
+      expect(region!.tier).toBe("estimated");
       expect(
         ALLOWED_REGION_KINDS.has(region!.kind),
         `region ${id} has unexpected kind ${region!.kind}`,
@@ -234,7 +234,7 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     for (const id of ["egypt", "ethiopia", "kenya", "morocco", "namibia"]) {
       const matches = REGIONS.filter((r) => r.id === id);
       expect(matches.length, `${id} should appear exactly once`).toBe(1);
-      expect(matches[0].tier, `${id} should still be tier=static`).toBe("static");
+      expect(matches[0].tier, `${id} should still be tier=static`).toBe("estimated");
     }
   });
 

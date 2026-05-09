@@ -29,7 +29,7 @@ async function run(): Promise<RegionData> {
       7,
       15,
     );
-    return { ...base, regionTier: "live" as const, sourceProvenance: "verified" };
+    return { ...base, confidenceTier: "T1a-live-tso" as const, sourceProvenance: "verified" };
   }
 
   const csv = readStateCsvTotal(CSV_PATH, 365);
@@ -63,13 +63,13 @@ async function run(): Promise<RegionData> {
     7,
     15,
   );
-  return applyUncertainty(base, { regionTier: "static", profileKind: "mixed" });
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run(), { regionTier: "static" })
+  withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("india-maharashtra loader failed", err);

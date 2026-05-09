@@ -6,7 +6,7 @@ describe("bahamas static region", () => {
     const r = REGIONS.find((r) => r.id === "bahamas");
     expect(r).toBeDefined();
     expect(r!.country).toBe("BHS");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("solar");
   });
 });

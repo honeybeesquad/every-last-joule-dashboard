@@ -6,7 +6,7 @@ describe("bahrain static region", () => {
     const r = REGIONS.find((r) => r.id === "bahrain");
     expect(r).toBeDefined();
     expect(r!.country).toBe("BHR");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("solar");
   });
 });

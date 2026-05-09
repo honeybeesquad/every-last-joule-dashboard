@@ -6,7 +6,7 @@ describe("belarus-wind static region", () => {
     const r = REGIONS.find((r) => r.id === "belarus-wind");
     expect(r).toBeDefined();
     expect(r!.country).toBe("BLR");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("wind");
   });
 });
@@ -17,7 +17,7 @@ describe("belarus-solar static region", () => {
     const r = REGIONS.find((r) => r.id === "belarus-solar");
     expect(r).toBeDefined();
     expect(r!.country).toBe("BLR");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("solar");
   });
 });

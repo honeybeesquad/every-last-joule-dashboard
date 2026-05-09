@@ -191,7 +191,7 @@ export function buildTypicalHydroSeasonalRegion(
     lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote: `${sourceNote} — current 30-day seasonal factor ${factor.toFixed(2)}×`,
   };
-  return applyUncertainty(base, { regionTier: "static", profileKind: "hydro-seasonal" });
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: "hydro-seasonal" });
 }
 
 export function buildTypicalSolarRegion(
@@ -213,7 +213,7 @@ export function buildTypicalSolarRegion(
     lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote,
   };
-  return applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: "solar" });
 }
 
 export function buildTypicalWindRegion(
@@ -235,7 +235,7 @@ export function buildTypicalWindRegion(
     lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote,
   };
-  return applyUncertainty(base, { regionTier: "static", profileKind: "wind" });
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: "wind" });
 }
 
 export function buildTypicalHydroRegion(
@@ -256,8 +256,7 @@ export function buildTypicalHydroRegion(
     lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote,
   };
-  // Flat hydro: no shape modelled, routes to T2-annual-calibrated.
-  return applyUncertainty(base, { regionTier: "static", profileKind: "flat" });
+  return applyUncertainty(base, { regionTier: "anchored", profileKind: "flat" });
 }
 
 export function buildTypicalMixedRegion(
@@ -285,7 +284,7 @@ export function buildTypicalMixedRegion(
     sourceNote,
     fuelShare,
   };
-  return applyUncertainty(base, { regionTier: "static", profileKind: "mixed" });
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });
 }
 
 /**
@@ -341,5 +340,5 @@ export function buildGeothermalOvernightRegion(
     lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote: `${sourceNote} — overnight venting (UTC ${peakUtcHour - halfWidthHours}-${peakUtcHour + halfWidthHours}), seasonal factor ${factor.toFixed(2)}×`,
   };
-  return applyUncertainty(base, { regionTier: "static", profileKind: "overnight" });
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: "overnight" });
 }

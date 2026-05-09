@@ -27,8 +27,8 @@ import type { RegionData } from "../src/lib/types.js";
 // ---------------------------------------------------------------------------
 //
 // "live"  → regionTier="live", no profileKind (T1-live-TSO)
-// "flare" → regionTier="flare", no profileKind (T2-annual-calibrated)
-// otherwise → regionTier="static" + the named profileKind
+// "anchored" → regionTier="anchored", no profileKind (T2-annual-calibrated)
+// otherwise → regionTier="estimated" + the named profileKind
 //
 // Multi-region loaders (aemo, brazil-ne, entsoe, ercot, ercot-native, norway)
 // emit Record<regionId, RegionData>; every sub-region inherits the loader's
@@ -39,8 +39,8 @@ import type { RegionData } from "../src/lib/types.js";
 type ProfileKind = NonNullable<TierInputs["profileKind"]>;
 type LoaderClass =
   | { tier: "live" }
-  | { tier: "flare" }
-  | { tier: "static"; profileKind: ProfileKind };
+  | { tier: "anchored" }
+  | { tier: "estimated"; profileKind: ProfileKind };
 
 const LOADER_CLASS: Record<string, LoaderClass> = {
   // Live loaders — regionTier="live"
@@ -75,61 +75,61 @@ const LOADER_CLASS: Record<string, LoaderClass> = {
   "chile-wind":   { tier: "live" },
 
   // Static loaders → buildTypicalXxx → profileKind
-  argentina:        { tier: "static", profileKind: "wind" },
-  bangladesh:       { tier: "static", profileKind: "solar" },
-  "british-columbia":{tier: "static", profileKind: "hydro-seasonal" },
-  cyprus:           { tier: "static", profileKind: "solar" },
-  egypt:            { tier: "static", profileKind: "solar" },
-  ethiopia:         { tier: "static", profileKind: "hydro-seasonal" },
-  gansu:            { tier: "static", profileKind: "mixed" },
-  honduras:         { tier: "static", profileKind: "solar" },
-  "india-east":     { tier: "static", profileKind: "solar" },
-  "india-north":    { tier: "static", profileKind: "solar" },
-  "india-south":    { tier: "static", profileKind: "mixed" },
-  "india-west":     { tier: "static", profileKind: "mixed" },
-  indonesia:        { tier: "static", profileKind: "solar" },
-  "inner-mongolia": { tier: "static", profileKind: "wind" },
-  iran:             { tier: "static", profileKind: "solar" },
-  "iraq-mainland":  { tier: "static", profileKind: "solar" },
-  israel:           { tier: "static", profileKind: "solar" },
+  argentina:        { tier: "estimated", profileKind: "wind" },
+  bangladesh:       { tier: "estimated", profileKind: "solar" },
+  "british-columbia":{tier: "estimated", profileKind: "hydro-seasonal" },
+  cyprus:           { tier: "estimated", profileKind: "solar" },
+  egypt:            { tier: "estimated", profileKind: "solar" },
+  ethiopia:         { tier: "estimated", profileKind: "hydro-seasonal" },
+  gansu:            { tier: "estimated", profileKind: "mixed" },
+  honduras:         { tier: "estimated", profileKind: "solar" },
+  "india-east":     { tier: "estimated", profileKind: "solar" },
+  "india-north":    { tier: "estimated", profileKind: "solar" },
+  "india-south":    { tier: "estimated", profileKind: "mixed" },
+  "india-west":     { tier: "estimated", profileKind: "mixed" },
+  indonesia:        { tier: "estimated", profileKind: "solar" },
+  "inner-mongolia": { tier: "estimated", profileKind: "wind" },
+  iran:             { tier: "estimated", profileKind: "solar" },
+  "iraq-mainland":  { tier: "estimated", profileKind: "solar" },
+  israel:           { tier: "estimated", profileKind: "solar" },
   // japan: promoted live in Phase-2.6 (2026-04-26); see live block above.
-  jeju:             { tier: "static", profileKind: "wind" },
-  jordan:           { tier: "static", profileKind: "solar" },
-  kazakhstan:       { tier: "static", profileKind: "wind" },
-  kenya:            { tier: "static", profileKind: "overnight" },
-  kurdistan:        { tier: "static", profileKind: "solar" },
-  malaysia:         { tier: "static", profileKind: "solar" },
-  manitoba:         { tier: "static", profileKind: "mixed" },
-  mexico:           { tier: "static", profileKind: "solar" },
-  mongolia:         { tier: "static", profileKind: "wind" },
-  morocco:          { tier: "static", profileKind: "wind" },
-  namibia:          { tier: "static", profileKind: "solar" },
-  ningxia:          { tier: "static", profileKind: "mixed" },
-  "nt-pilbara":     { tier: "static", profileKind: "solar" },
-  oman:             { tier: "static", profileKind: "solar" },
-  pakistan:         { tier: "static", profileKind: "mixed" },
-  paraguay:         { tier: "static", profileKind: "hydro-seasonal" },
-  qinghai:          { tier: "static", profileKind: "solar" },
-  quebec:           { tier: "static", profileKind: "hydro-seasonal" },
-  "russia-mainland":{ tier: "static", profileKind: "hydro-seasonal" },
-  saskatchewan:     { tier: "static", profileKind: "wind" },
-  "saudi-solar":    { tier: "static", profileKind: "solar" },
-  "south-korea":    { tier: "static", profileKind: "solar" },
-  taiwan:           { tier: "static", profileKind: "solar" },
-  thailand:         { tier: "static", profileKind: "solar" },
-  tibet:            { tier: "static", profileKind: "hydro-seasonal" },
-  uae:              { tier: "static", profileKind: "solar" },
-  vietnam:          { tier: "static", profileKind: "solar" },
+  jeju:             { tier: "estimated", profileKind: "wind" },
+  jordan:           { tier: "estimated", profileKind: "solar" },
+  kazakhstan:       { tier: "estimated", profileKind: "wind" },
+  kenya:            { tier: "estimated", profileKind: "overnight" },
+  kurdistan:        { tier: "estimated", profileKind: "solar" },
+  malaysia:         { tier: "estimated", profileKind: "solar" },
+  manitoba:         { tier: "estimated", profileKind: "mixed" },
+  mexico:           { tier: "estimated", profileKind: "solar" },
+  mongolia:         { tier: "estimated", profileKind: "wind" },
+  morocco:          { tier: "estimated", profileKind: "wind" },
+  namibia:          { tier: "estimated", profileKind: "solar" },
+  ningxia:          { tier: "estimated", profileKind: "mixed" },
+  "nt-pilbara":     { tier: "estimated", profileKind: "solar" },
+  oman:             { tier: "estimated", profileKind: "solar" },
+  pakistan:         { tier: "estimated", profileKind: "mixed" },
+  paraguay:         { tier: "estimated", profileKind: "hydro-seasonal" },
+  qinghai:          { tier: "estimated", profileKind: "solar" },
+  quebec:           { tier: "estimated", profileKind: "hydro-seasonal" },
+  "russia-mainland":{ tier: "estimated", profileKind: "hydro-seasonal" },
+  saskatchewan:     { tier: "estimated", profileKind: "wind" },
+  "saudi-solar":    { tier: "estimated", profileKind: "solar" },
+  "south-korea":    { tier: "estimated", profileKind: "solar" },
+  taiwan:           { tier: "estimated", profileKind: "solar" },
+  thailand:         { tier: "estimated", profileKind: "solar" },
+  tibet:            { tier: "estimated", profileKind: "hydro-seasonal" },
+  uae:              { tier: "estimated", profileKind: "solar" },
+  vietnam:          { tier: "estimated", profileKind: "solar" },
   // wa-swis: promoted live in Phase-2.6 (2026-04-26); see live block above.
-  yunnan:           { tier: "static", profileKind: "hydro-seasonal" },
+  yunnan:           { tier: "estimated", profileKind: "hydro-seasonal" },
 
   // Orphan snapshot — `ukraine.json` predates the move into statics.json.ts.
   // Still read by index.md's regionData merge, so must carry tier metadata.
   // Kind: solar, matching STATIC_REGIONS.ukraine in statics.json.ts.
-  ukraine:          { tier: "static", profileKind: "solar" },
+  ukraine:          { tier: "estimated", profileKind: "solar" },
 
   // Bitcoin hashrate — not a region, skip.
-  cbeci:            { tier: "static", profileKind: "flat" }, // unused; isRegionData() guards
+  cbeci:            { tier: "estimated", profileKind: "flat" }, // unused; isRegionData() guards
 };
 
 /**
@@ -142,7 +142,7 @@ const STATICS_PROFILE_KIND: Record<string, ProfileKind> = {
   xinjiang:               "solar",
   iceland:                "hydro-seasonal",
   ukraine:                "solar",
-  permian:                "flat", // flare; routes to T2-annual-calibrated
+  permian:                "flat", // flare kind; anchored tier → T2-annual-calibrated
   "w-siberia":            "flat",
   "s-iraq":               "flat",
   "e-saudi":              "flat",
@@ -154,9 +154,8 @@ const STATICS_PROFILE_KIND: Record<string, ProfileKind> = {
 };
 
 /**
- * For the 4 flare regions inside statics.json, prefer the `flare` regionTier
- * label rather than `static`. `deriveTier` produces the same output
- * (T2-annual-calibrated) but the input metadata is more accurate.
+ * The 4 flare regions inside statics.json use `anchored` regionTier
+ * (GGFR satellite-observed annual data).
  */
 const FLARE_IDS = new Set(["permian", "w-siberia", "s-iraq", "e-saudi"]);
 
@@ -191,9 +190,9 @@ function tierInputsFor(loaderId: string, regionId: string): TierInputs | null {
   if (loaderId === "statics") {
     const kind = STATICS_PROFILE_KIND[regionId];
     if (!kind) return null;
-    if (FLARE_IDS.has(regionId)) return { regionTier: "flare" };
-    if (kind === "flat") return { regionTier: "static", profileKind: "flat" };
-    return { regionTier: "static", profileKind: kind };
+    if (FLARE_IDS.has(regionId)) return { regionTier: "anchored" };
+    if (kind === "flat") return { regionTier: "anchored", profileKind: "flat" };
+    return { regionTier: "estimated", profileKind: kind };
   }
   const cls = LOADER_CLASS[loaderId];
   if (!cls) return null;
@@ -202,8 +201,8 @@ function tierInputsFor(loaderId: string, regionId: string): TierInputs | null {
     if (override) return { regionTier: override };
     return { regionTier: "live" };
   }
-  if (cls.tier === "flare") return { regionTier: "flare" };
-  return { regionTier: "static", profileKind: cls.profileKind };
+  if (cls.tier === "anchored") return { regionTier: "anchored" };
+  return { regionTier: "estimated", profileKind: cls.profileKind };
 }
 
 function enrichValue(loaderId: string, value: unknown): { changed: boolean; out: unknown } {

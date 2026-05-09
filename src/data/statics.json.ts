@@ -12,24 +12,9 @@ import { REGIONS } from "../lib/regions.js";
 import { pathToFileURL } from "url";
 
 /**
- * StaticSpec profile kinds. Drives both the diurnal-profile builder selected in
- * `buildStaticRegion` and the confidence-tier routing in `applyUncertainty`:
- *   "flat"           → T2-annual-calibrated (24/7 base load, e.g. flare or
- *                      load-shed annual anchor with no hourly signature)
- *   "solar"          → T3-modelled (Gaussian peak around `localSolarPeakUTC`)
- *   "wind"           → T3-modelled (gentle diurnal bias, peak around
- *                      `localSolarPeakUTC` per the windProfile shape)
- *   "hydro"          → T3-modelled (flat 24/7 profile because hydro spill is
- *                      monthly-seasonal, not hourly; collapses to "mixed"
- *                      inside `applyUncertainty` since the deriveTier enum
- *                      doesn't distinguish them — both produce a flat shape
- *                      under a ±40% T3 envelope)
- *   "mixed"          → T3-modelled (flat 24/7 shape but ±40% T3 envelope —
- *                      used where the underlying anchor is genuinely
- *                      indeterminate-fuel-mix, e.g. composite operator
- *                      annuals or offshore flare anchors lifted onto a
- *                      country grid)
- *   "hydro-seasonal" → T3-modelled (monthly shares × flat diurnal)
+ * StaticSpec profile kinds. Drives the diurnal-profile builder selected in
+ * `buildStaticRegion`. Tier routing is determined by the region's canonical
+ * `tier` field in regions.ts (anchored → T2, estimated → T3).
  */
 type ProfileKind = "flat" | "solar" | "wind" | "hydro" | "mixed" | "hydro-seasonal";
 
@@ -354,13 +339,9 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
     scaledTotalTWh = spec.annualTWh * (30 / 365) * factor;
     sourceNote = `${spec.source} — current 30-day seasonal factor ${factor.toFixed(2)}×`;
   } else {
-    // "flat" (T2), "hydro" (T3) and "mixed" (T3) all emit a flat 24/7 profile
-    // here. The shape is identical; the tier-routing distinction lives in the
-    // `profileKind` passed to `applyUncertainty` below ("flat" → T2,
-    // "hydro"/"mixed" → T3 because we explicitly acknowledge the shape is
-    // modelled-flat rather than physically-flat-flare). The "hydro" kind
-    // collapses to "mixed" inside applyUncertainty since the deriveTier enum
-    // doesn't distinguish them.
+    // "flat", "hydro" and "mixed" all emit a flat 24/7 profile here. The tier
+    // is determined by the region's canonical tier in regions.ts (anchored →
+    // T2, estimated → T3), not the profile shape.
     const flatGW = (spec.annualTWh * 1000) / 8760;
     profile = Array(24).fill(flatGW);
   }
@@ -374,20 +355,13 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
     lastSuccessAt: coerceLastSuccessAt(spec.reportDate),
     sourceNote,
   };
-  // S2 uncertainty: tier derived from static-region kind.
-  //   "flat"                              → T2-annual-calibrated (flare or flat-base static, ±20%)
-  //   "solar"/"wind"/"mixed"/"hydro"/     → T3-modelled (typical shape or
-  //   "hydro-seasonal"                       modelled-flat scaled to annual, ±40%)
-  // No backfill variance is available for statics, so the tier-default fraction applies.
-  // The `deriveTier` enum doesn't currently distinguish "hydro" from "mixed"
-  // (both are flat-with-T3-envelope); collapse here so the uncertainty engine
-  // doesn't need a parallel kind axis. The provenance of the choice is
-  // surfaced in `regions.ts` Region.kind and the `sourceNote` text.
+  const region = REGIONS.find((r) => r.id === id);
+  const regionTier = region?.tier ?? "estimated";
   const profileKind: "flat" | "solar" | "wind" | "mixed" | "hydro-seasonal" =
     spec.kind === "hydro" ? "mixed" : (spec.kind ?? "flat");
   return applyUncertainty(
     base,
-    { regionTier: "static", profileKind },
+    { regionTier, profileKind },
   );
 }
 

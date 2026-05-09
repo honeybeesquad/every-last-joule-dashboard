@@ -6,7 +6,7 @@ describe("north-korea static region", () => {
     const r = REGIONS.find((r) => r.id === "north-korea");
     expect(r).toBeDefined();
     expect(r!.country).toBe("PRK");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("solar");
   });
 });

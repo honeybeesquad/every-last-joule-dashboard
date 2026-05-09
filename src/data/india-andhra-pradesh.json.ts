@@ -25,7 +25,7 @@ async function run(): Promise<RegionData> {
       `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
       new Date().getFullYear().toString(),
     );
-    return { ...base, regionTier: "live" as const, sourceProvenance: "verified" };
+    return { ...base, confidenceTier: "T1a-live-tso" as const, sourceProvenance: "verified" };
   }
 
   const csv = readStateCsvTotal(CSV_PATH, 365);
@@ -52,13 +52,13 @@ async function run(): Promise<RegionData> {
     `No CEA CSV present; T3-modelled fallback calibrated to POSOCO Southern Region 2024 (~0.4 TWh/yr solar curtailment, Anantapur + Kadapa solar parks).`,
     "2024",
   );
-  return applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: "solar" });
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run(), { regionTier: "static" })
+  withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("india-andhra-pradesh loader failed", err);

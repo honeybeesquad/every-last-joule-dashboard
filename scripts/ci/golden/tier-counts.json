@@ -1,5 +1,5 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-06 (add Palestine T3 solar — 383→384 regions, 194→195 countries.)",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-09 (tier taxonomy refactor: static→estimated, flare→anchored — bucket counts unchanged.)",
   "T1a": 155,
   "T1b": 9,
   "T1c": 1,

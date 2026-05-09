@@ -23,7 +23,7 @@ async function run(): Promise<RegionData> {
       `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
       new Date().getFullYear().toString(),
     );
-    return { ...base, regionTier: "live" as const, sourceProvenance: "verified" };
+    return { ...base, confidenceTier: "T1a-live-tso" as const, sourceProvenance: "verified" };
   }
 
   const base = buildTypicalSolarRegion(
@@ -35,13 +35,13 @@ async function run(): Promise<RegionData> {
     `Will be promoted to T1a-live-tso when the KSLDC fetcher accumulates ≥30 daily rows.`,
     "2024",
   );
-  return applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: "solar" });
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run(), { regionTier: "static" })
+  withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("india-karnataka loader failed", err);

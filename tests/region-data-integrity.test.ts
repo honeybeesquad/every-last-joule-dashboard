@@ -4,7 +4,7 @@ import type { Region, RegionData } from "../src/lib/types";
 
 const regions: Region[] = [
   { id: "alpha", name: "Alpha", country: "AAA", lat: 0, lon: 0, tier: "live", kind: "solar", source: "test", sourceUrl: "https://example.com/a" },
-  { id: "beta", name: "Beta", country: "BBB", lat: 1, lon: 1, tier: "static", kind: "wind", source: "test", sourceUrl: "https://example.com/b" },
+  { id: "beta", name: "Beta", country: "BBB", lat: 1, lon: 1, tier: "estimated", kind: "wind", source: "test", sourceUrl: "https://example.com/b" },
 ];
 
 function data(regionId: string): RegionData {

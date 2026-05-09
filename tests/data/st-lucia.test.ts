@@ -6,7 +6,7 @@ describe("st-lucia static region", () => {
     const r = REGIONS.find((r) => r.id === "st-lucia");
     expect(r).toBeDefined();
     expect(r!.country).toBe("LCA");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("solar");
   });
 });

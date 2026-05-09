@@ -6,7 +6,7 @@ describe("tonga static region", () => {
     const r = REGIONS.find((r) => r.id === "tonga");
     expect(r).toBeDefined();
     expect(r!.country).toBe("TON");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("solar");
   });
 });
