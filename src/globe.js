@@ -311,6 +311,28 @@ export async function mountGlobe(canvas, initial) {
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(canvas);
 
+  // Position the canvas-area absolute within .app-body so it spans precisely
+  // from the header's bottom border to the timeline's top border, and across
+  // the full content width. Uses direct style props (not CSS vars) because
+  // position:absolute offsets are in the containing block's coordinate space.
+  function syncGlobeRect() {
+    if (window.innerWidth <= 900) return; // mobile: CSS flow handles it
+    const header     = document.querySelector(".app-header");
+    const timeline   = document.querySelector(".app-timeline");
+    const appBody    = document.querySelector(".app-body");
+    const canvasArea = canvas.closest(".globe-canvas-area");
+    if (!header || !timeline || !appBody || !canvasArea) return;
+    const bodyRect     = appBody.getBoundingClientRect();
+    const headerBottom = header.getBoundingClientRect().bottom;
+    const timelineTop  = timeline.getBoundingClientRect().top;
+    const top    = Math.round(headerBottom - bodyRect.top);
+    const height = Math.max(200, Math.round(timelineTop - headerBottom));
+    canvasArea.style.top    = top    + "px";
+    canvasArea.style.height = height + "px";
+  }
+  syncGlobeRect();
+  window.addEventListener("resize", syncGlobeRect);
+
   function render() {
     const renderNow = performance.now();
     const width = canvas.width / dpr;
@@ -827,6 +849,7 @@ export async function mountGlobe(canvas, initial) {
     destroy() {
       stopLoop();
       window.removeEventListener("themechange", refreshTokens);
+      window.removeEventListener("resize", syncGlobeRect);
       document.removeEventListener("visibilitychange", onVisibility);
       resizeObserver.disconnect();
       canvas.removeEventListener("wheel", onWheel);
