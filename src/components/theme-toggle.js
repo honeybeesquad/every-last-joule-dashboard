@@ -12,12 +12,11 @@
  *
  * Returns a cleanup function that removes the rendered DOM.
  */
-const VALID_THEMES = ["sunfire", "vellum", "eclipse"];
+const VALID_THEMES = ["sunfire", "deepcurrent"];
 
 const DEFAULT_LABELS = {
-  sunfire: "Sunfire",
-  vellum:  "Vellum",
-  eclipse: "Eclipse",
+  sunfire:     "Sunfire",
+  deepcurrent: "Deep Current",
 };
 
 export function mountThemeToggle(host, opts = {}) {

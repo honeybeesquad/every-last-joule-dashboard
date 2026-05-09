@@ -30,13 +30,6 @@
 @font-face { font-family: "Inter";           src: url("/fonts/Inter-Medium.woff2")         format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
 @font-face { font-family: "Inter";           src: url("/fonts/Inter-Bold.woff2")           format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
 
-@font-face { font-family: "Spectral";        src: url("/fonts/Spectral-Regular.woff2")     format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Spectral";        src: url("/fonts/Spectral-Medium.woff2")      format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Spectral";        src: url("/fonts/Spectral-Bold.woff2")        format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-
-@font-face { font-family: "Frank Ruhl Libre";src: url("/fonts/FrankRuhlLibre-Bold.woff2")  format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Frank Ruhl Libre";src: url("/fonts/FrankRuhlLibre-Black.woff2") format("woff2"); font-weight: 900; font-style: normal; font-display: swap; }
-
 @font-face { font-family: "IBM Plex Sans";   src: url("/fonts/IBMPlexSans-Regular.woff2")  format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "IBM Plex Sans";   src: url("/fonts/IBMPlexSans-Medium.woff2")   format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
 @font-face { font-family: "IBM Plex Sans";   src: url("/fonts/IBMPlexSans-Bold.woff2")     format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
@@ -186,100 +179,52 @@
   --display-weight-base:   600;
 }
 
-:root[data-theme="vellum"] {
-  --brand:               #ece4d2;
-  --brand-strong:        #b3a684;
-  --brand-subtle:        rgba(236, 228, 210, 0.10);
-  --brand-on:            #1a1814;
+:root[data-theme="deepcurrent"] {
+  --brand:               #64d8ff;
+  --brand-strong:        #38b0d8;
+  --brand-subtle:        rgba(100, 216, 255, 0.10);
+  --brand-on:            #061018;
 
-  --surface-bg-1:        #221f1a;
-  --surface-bg-2:        #15130f;
-  --surface-bg-3:        #0c0b09;
-  --surface-raised:      #1c1a16;
-  --hairline:            rgba(236, 228, 210, 0.08);
-  --hairline-strong:     rgba(236, 228, 210, 0.18);
+  --surface-bg-1:        #0a1828;
+  --surface-bg-2:        #060f1a;
+  --surface-bg-3:        #030810;
+  --surface-raised:      #0d1e30;
+  --hairline:            rgba(180, 220, 255, 0.08);
+  --hairline-strong:     rgba(180, 220, 255, 0.16);
 
-  --ink:                 #ece4d2;
-  --ink-muted:           rgba(236, 228, 210, 0.65);
-  --ink-soft:            rgba(236, 228, 210, 0.40);
+  --ink:                 #e0f0ff;
+  --ink-muted:           rgba(224, 240, 255, 0.65);
+  --ink-soft:            rgba(224, 240, 255, 0.40);
 
-  --data-renewable:      #4f8cff;
-  --data-renewable-tip:  #b8cdff;
+  --data-renewable:      #64d8ff;
+  --data-renewable-tip:  #b0ecff;
   --data-flare:          #d83923;
   --data-flare-tip:      #ff7048;
 
-  --fuel-solar:          #ece4d2;
-  --fuel-wind:           #4f8cff;
-  --fuel-hydro:          #5ab0a0;
+  --fuel-solar:          #ffb845;
+  --fuel-wind:           #64d8ff;
+  --fuel-hydro:          #b4a0f0;
 
-  --globe-dot-day:       #f8f1dc;
-  --globe-dot-night:     #a89a76;
-  --globe-border:        rgba(236, 228, 210, 0.30);
-  --day-gradient-1:      rgba(236, 228, 210, 0.40);
-  --day-gradient-2:      rgba(179, 166, 132, 0.20);
+  --globe-dot-day:       #e0f0ff;
+  --globe-dot-night:     #4080a0;
+  --globe-border:        rgba(100, 216, 255, 0.35);
+  --day-gradient-1:      rgba(100, 216, 255, 0.45);
+  --day-gradient-2:      rgba(56, 176, 216, 0.20);
   --day-gradient-3:      rgba(0, 0, 0, 0);
-  --night-overlay:       rgba(20, 18, 14, 0.40);
-  --pillar-base-alpha:   ee;   /* parchment day-side needs bolder pillars; ~93% */
+  --night-overlay:       rgba(3, 8, 16, 0.45);
+  --pillar-base-alpha:   99;
 
-  --success:             #4f8cff;
+  --success:             #5eead4;
   --warning:             #ffb84d;
-  --danger:              #d64545;
+  --danger:              #f87171;
   --info:                var(--data-renewable);
 
-  --font-display:        "Spectral", Georgia, "Times New Roman", serif;
-  --font-body:           "Spectral", Georgia, "Times New Roman", serif;
-  --font-mono:           "IBM Plex Mono", ui-monospace, monospace;
+  --font-display:        "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-body:           "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --font-sans:           var(--font-body);
   --display-weight-strong: 700;
   --display-weight-base:   500;
-}
-
-:root[data-theme="eclipse"] {
-  --brand:               #fafafa;
-  --brand-strong:        #d4d4d4;
-  --brand-subtle:        rgba(250, 250, 250, 0.08);
-  --brand-on:            #050505;
-
-  --surface-bg-1:        #0d0d0d;
-  --surface-bg-2:        #050505;
-  --surface-bg-3:        #020202;
-  --surface-raised:      #111111;
-  --hairline:            rgba(250, 250, 250, 0.08);
-  --hairline-strong:     rgba(250, 250, 250, 0.18);
-
-  --ink:                 #fafafa;
-  --ink-muted:           rgba(250, 250, 250, 0.65);
-  --ink-soft:            rgba(250, 250, 250, 0.38);
-
-  --data-renewable:      #ec4899;
-  --data-renewable-tip:  #fbcfe8;
-  --data-flare:          #d83923;
-  --data-flare-tip:      #ff7048;
-
-  --fuel-solar:          #fafafa;
-  --fuel-wind:           #ec4899;
-  --fuel-hydro:          #f0abfc;
-
-  --globe-dot-day:       #ffffff;
-  --globe-dot-night:     #888888;
-  --globe-border:        rgba(250, 250, 250, 0.30);
-  --day-gradient-1:      rgba(250, 250, 250, 0.40);
-  --day-gradient-2:      rgba(212, 212, 212, 0.18);
-  --day-gradient-3:      rgba(0, 0, 0, 0);
-  --night-overlay:       linear-gradient(135deg, rgba(40, 30, 20, 0.30) 0%, rgba(15, 10, 5, 0.55) 100%);
-  --pillar-base-alpha:   99;   /* B&W magazine; 0x99 ≈ 60% */
-
-  --success:             #ec4899;
-  --warning:             #ffb84d;
-  --danger:              #ff6b6b;
-  --info:                var(--data-renewable);
-
-  --font-display:        "Frank Ruhl Libre", Georgia, "Times New Roman", serif;
-  --font-body:           "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --font-mono:           "IBM Plex Mono", ui-monospace, monospace;
-  --font-sans:           var(--font-body);
-  --display-weight-strong: 900;
-  --display-weight-base:   700;
 }
 
 /* Fallback: if no boot script runs (SSR-rendered intermediate, e.g. Observable's

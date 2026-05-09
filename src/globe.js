@@ -365,11 +365,8 @@ export async function mountGlobe(canvas, initial) {
     ctx.beginPath();
     path(d3.geoCircle().center([antiSolarLng, -sunLat]).radius(90)());
     if (isLinearGradientToken(tokens.nightOverlay)) {
-      // Eclipse uses a CSS linear-gradient(135deg, …) which canvas
-      // can't consume as a fillStyle string; reproduce it as a canvas
-      // gradient spanning the bounding box of the screen.
-      // NB: stops here must mirror --night-overlay in :root[data-theme="eclipse"]
-      // (in src/style.css). If you change one, change both.
+      // A theme may use a CSS linear-gradient() for --night-overlay,
+      // which canvas can't consume as a fillStyle; reproduce it here.
       const w = canvas.width / dpr;
       const h = canvas.height / dpr;
       const cosA = Math.cos((135 * Math.PI) / 180);
