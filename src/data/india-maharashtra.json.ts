@@ -3,15 +3,35 @@ import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalMixedRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
-import { readStateCsvTotal, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
+import { readStateCsvTotal, readStateSldcCurtailment, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-maharashtra";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CSV_PATH = join(__dirname, "../../data/historical/india-maharashtra-gen-daily.csv");
+const CSV_SLDC_PATH = join(__dirname, "../../data/historical/india-maharashtra-sldc-curtailed-daily.csv");
 const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 
 async function run(): Promise<RegionData> {
+  const sldc = readStateSldcCurtailment(CSV_SLDC_PATH, 90);
+  if (sldc !== null) {
+    const curtailedTWh = sldc.solarCurtailedTWh + sldc.windCurtailedTWh;
+    const solarShare = curtailedTWh > 0 ? sldc.solarCurtailedTWh / curtailedTWh : 0.55;
+    const windShare  = curtailedTWh > 0 ? sldc.windCurtailedTWh  / curtailedTWh : 0.45;
+    const base = buildTypicalMixedRegion(
+      REGION_ID,
+      curtailedTWh,
+      { solar: solarShare, wind: windShare },
+      `MSLDC (Maharashtra State Load Despatch Centre) direct curtailment — ${sldc.nRows}-day CSV, ` +
+      `trailing-90-day solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh + wind ${sldc.windCurtailedTWh.toFixed(2)} TWh curtailed. ` +
+      `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
+      new Date().getFullYear().toString(),
+      7,
+      15,
+    );
+    return { ...base, regionTier: "live" as const, sourceProvenance: "verified" };
+  }
+
   const csv = readStateCsvTotal(CSV_PATH, 365);
 
   if (csv !== null) {

@@ -3,15 +3,31 @@ import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
-import { readStateCsvTotal, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
+import { readStateCsvTotal, readStateSldcCurtailment, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-andhra-pradesh";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CSV_PATH = join(__dirname, "../../data/historical/india-andhra-pradesh-gen-daily.csv");
+const CSV_SLDC_PATH = join(__dirname, "../../data/historical/india-andhra-pradesh-sldc-curtailed-daily.csv");
 const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 
 async function run(): Promise<RegionData> {
+  const sldc = readStateSldcCurtailment(CSV_SLDC_PATH, 90);
+  if (sldc !== null) {
+    const curtailedTWh = sldc.solarCurtailedTWh + sldc.windCurtailedTWh;
+    const base = buildTypicalSolarRegion(
+      REGION_ID,
+      7,
+      curtailedTWh,
+      `APSLDC (Andhra Pradesh State Load Despatch Centre) direct curtailment — ${sldc.nRows}-day CSV, ` +
+      `trailing-90-day solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh + wind ${sldc.windCurtailedTWh.toFixed(2)} TWh curtailed. ` +
+      `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
+      new Date().getFullYear().toString(),
+    );
+    return { ...base, regionTier: "live" as const, sourceProvenance: "verified" };
+  }
+
   const csv = readStateCsvTotal(CSV_PATH, 365);
 
   if (csv !== null) {

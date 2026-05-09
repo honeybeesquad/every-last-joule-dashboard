@@ -3,15 +3,31 @@ import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalWindRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
-import { readStateCsvTotal, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
+import { readStateCsvTotal, readStateSldcCurtailment, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-tamil-nadu";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CSV_PATH = join(__dirname, "../../data/historical/india-tamil-nadu-gen-daily.csv");
+const CSV_SLDC_PATH = join(__dirname, "../../data/historical/india-tamil-nadu-sldc-curtailed-daily.csv");
 const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 
 async function run(): Promise<RegionData> {
+  const sldc = readStateSldcCurtailment(CSV_SLDC_PATH, 90);
+  if (sldc !== null) {
+    const curtailedTWh = sldc.windCurtailedTWh + sldc.solarCurtailedTWh;
+    const base = buildTypicalWindRegion(
+      REGION_ID,
+      9,
+      curtailedTWh,
+      `TNSLDC (Tamil Nadu State Load Despatch Centre) direct curtailment — ${sldc.nRows}-day CSV, ` +
+      `trailing-90-day wind ${sldc.windCurtailedTWh.toFixed(2)} TWh + solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh curtailed. ` +
+      `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
+      new Date().getFullYear().toString(),
+    );
+    return { ...base, regionTier: "live" as const, sourceProvenance: "verified" };
+  }
+
   const csv = readStateCsvTotal(CSV_PATH, 365);
 
   if (csv !== null) {
