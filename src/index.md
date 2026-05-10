@@ -32,16 +32,16 @@ import { REGIONS } from "./lib/regions.js";
 import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./lib/fuel.js";
 import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
+import { assertCanonicalRegionData } from "./lib/region-data-integrity.js";
 import { mountGlobe } from "./globe.js";
 import { aggregateUsdAtHour, formatUsdPerHour, formatRegionUsdPerHour, usdValueAtHour, btcMinedPerHour, formatBtc, formatUsdCompact } from "./lib/price.js";
 
-const ERCOT_NATIVE_ENABLED = false;
 const HOTSPOT_LIST_LIMIT = 50;
 
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 104;
+const _LOADER_FILE_COUNT = 103;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -49,7 +49,7 @@ initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 // network latency before first paint. HTTP/2 multiplexes these easily;
 // on a typical connection this drops to ~300–600ms for the lot.
 const [
-  cbeci, ercot, ercotNative, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
+  cbeci, ercot, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
   entsoe, aemo, belgium, france, denmark, newZealand, norway, atacama,
   chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
   ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
@@ -69,7 +69,6 @@ const [
 ] = await Promise.all([
   trackFile(FileAttachment("data/cbeci.json").json(),            "CBECI"),
   trackFile(FileAttachment("data/ercot.json").json(),            "ERCOT"),
-  trackFile(FileAttachment("data/ercot-native.json").json(),     "ERCOT (native)"),
   trackFile(FileAttachment("data/caiso.json").json(),            "California ISO"),
   trackFile(FileAttachment("data/miso.json").json(),             "MISO Midwest"),
   trackFile(FileAttachment("data/pjm.json").json(),              "PJM"),
@@ -290,22 +289,10 @@ document.getElementById("app-root").innerHTML = `
 
 const regionData = {
   // ERCOT — EIA path emits per-fuel east/west × wind/solar:
-  ...(ERCOT_NATIVE_ENABLED
-    ? {
-        // Native ERCOT path (legacy): map ercot-native-east/west to per-fuel keys.
-        // Note: ercot-native loader emits mixed fuel data, mapped to both wind/solar.
-        "ercot-east-wind":  { ...ercotNative["ercot-native-east"], regionId: "ercot-east-wind" },
-        "ercot-east-solar": { ...ercotNative["ercot-native-east"], regionId: "ercot-east-solar" },
-        "ercot-west-wind":  { ...ercotNative["ercot-native-west"], regionId: "ercot-west-wind" },
-        "ercot-west-solar": { ...ercotNative["ercot-native-west"], regionId: "ercot-west-solar" },
-      }
-    : {
-        "ercot-east-wind":  ercot["ercot-east-wind"],
-        "ercot-east-solar":  ercot["ercot-east-solar"],
-        "ercot-west-wind":   ercot["ercot-west-wind"],
-        "ercot-west-solar":  ercot["ercot-west-solar"],
-      }
-  ),
+  "ercot-east-wind":  ercot["ercot-east-wind"],
+  "ercot-east-solar":  ercot["ercot-east-solar"],
+  "ercot-west-wind":   ercot["ercot-west-wind"],
+  "ercot-west-solar":  ercot["ercot-west-solar"],
   // CAISO/MISO/PJM/SPP/BPA/NYISO/ISO-NE loaders return shape {wind, solar}
   // (unlike ERCOT which returns {<zone>-<fuel>} keys). regionId is set inside
   // the loader payload, so we just pass through the per-fuel children.
@@ -330,8 +317,7 @@ const regionData = {
   "bpa-wind":  bpa.wind,
   "bpa-solar": bpa.solar,
   ...aemo,
-  "belgium-wind": belgium,
-  "belgium-solar": belgium,
+  ...belgium,
   "germany-wind": entsoe["germany-wind"],
   "germany-solar": entsoe["germany-solar"],
   "spain-wind": entsoe["spain-wind"],
@@ -414,8 +400,8 @@ const regionData = {
   ...ontario,
   ...alberta,
   ...ireland,
-  peru,
-  "south-africa": southAfrica,
+  ...peru,
+  ...southAfrica,
   "new-zealand-wind":  newZealand.wind,
   "new-zealand-solar": newZealand.solar,
   "new-zealand-geo":   newZealand.geo,
@@ -438,7 +424,7 @@ const regionData = {
   egypt,
   morocco,
   namibia,
-  "wa-swis": waSwis,
+  ...waSwis,
   "nt-pilbara": ntPilbara,
   indonesia,
   malaysia,
@@ -511,6 +497,12 @@ const regionData = {
   // Supersedes the philippines statics entry (removed 2026-04-30).
   ...philippines
 };
+
+// Throw loudly at page load if any canonical region is missing or has a
+// malformed value (e.g. multi-region loader's whole Record wired into a
+// single key — Belgium-shape bug class). Better to fail visibly than
+// render silent zero-GW pillars.
+assertCanonicalRegionData(regionData, REGIONS);
 
 // S2 uncertainty: defensive fallback. Every loader is now responsible for
 // setting confidenceTier + uncertaintyLow/HighGW upstream — typical-shape
