@@ -1,17 +1,17 @@
 # Validation — Kyrgyzstan (`kyrgyzstan`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `kyrgyzstan`
 - **Country:** KGZ
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** hydro
 - **Source:** IRENA RCS 2025 / NEK (hydro-dominant; VRE <50 MW; modelled hydro spillage)
 - **Source URL:** [https://www.irena.org/Data/Downloads/IRENASTAT](https://www.irena.org/Data/Downloads/IRENASTAT)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

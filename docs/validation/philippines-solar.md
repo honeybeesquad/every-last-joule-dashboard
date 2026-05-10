@@ -1,17 +1,17 @@
 # Validation — Philippines Solar (`philippines-solar`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `philippines-solar`
 - **Country:** PHL
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** IRENA Philippines RE Statistics 2024 anchor; IEMOP RTD endpoint exposes current-day dispatch schedules, not curtailed-energy. The 2% rate previously applied was an invented placeholder with no published source. Held at T3 until IEMOP/WESM publishes a citable curtailment rate.
 - **Source URL:** [https://www.iemop.ph/market-data/rtd-prices-and-schedules/](https://www.iemop.ph/market-data/rtd-prices-and-schedules/)
 - **Loader:** [`philippines.json.ts`](../../src/data/philippines.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

@@ -1,17 +1,17 @@
 # Validation — San Marino (`san-marino`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `san-marino`
 - **Country:** SMR
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** IRENA RCS 2025 / AASS (~25 MW solar; part of Italian grid)
 - **Source URL:** [https://www.irena.org/Data/Downloads/IRENASTAT](https://www.irena.org/Data/Downloads/IRENASTAT)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

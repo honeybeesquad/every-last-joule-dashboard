@@ -1,17 +1,17 @@
 # Validation — Marshall Islands (`marshall-islands`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `marshall-islands`
 - **Country:** MHL
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** IRENA RCS 2025 / MEC (~5 MW PV + diesel; atoll grid)
 - **Source URL:** [https://www.irena.org/Data/Downloads/IRENASTAT](https://www.irena.org/Data/Downloads/IRENASTAT)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

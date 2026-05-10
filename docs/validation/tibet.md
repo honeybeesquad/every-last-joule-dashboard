@@ -1,17 +1,17 @@
 # Validation — Tibet (Xizang) (`tibet`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `tibet`
 - **Country:** CHN
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** hydro
 - **Source:** NEA 2024 / Huaon-NBS generation
 - **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
 - **Loader:** [`tibet.json.ts`](../../src/data/tibet.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

@@ -1,17 +1,17 @@
 # Validation — Taiwan (`taiwan`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `taiwan`
 - **Country:** TWN
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** mixed
-- **Source:** TAIPOWER + TREC + IRENA 2024 anchor. Live promotion attempt 2026-04-29 reverted: TAIPOWER `genary.json` exposes current-unit output and instantaneous renewable percentages, not a 30-day public curtailment archive or single published curtailment rate. Held at T3 pending the archive/rate chain.
-- **Source URL:** [https://www.taipower.com.tw/d006/loadGraph/loadGraph/genshx_.html](https://www.taipower.com.tw/d006/loadGraph/loadGraph/genshx_.html)
+- **Source:** TAIPOWER 2023 Sustainability Report: ~0.3 TWh/yr curtailment anchor (2023 actual). Live promotion attempted 2026-04-29, reverted: TAIPOWER genary.json exposes instantaneous unit output, no curtailment archive or daily CSV. MOEA/TAIPOWER publish annual aggregate in PDF only. T1 not achievable until a daily machine-readable endpoint is published.
+- **Source URL:** [https://www.taipower.com.tw/en/](https://www.taipower.com.tw/en/)
 - **Loader:** [`taiwan.json.ts`](../../src/data/taiwan.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

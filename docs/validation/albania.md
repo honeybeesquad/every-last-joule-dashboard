@@ -1,17 +1,17 @@
 # Validation — Albania (`albania`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `albania`
 - **Country:** ALB
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** IRENA RE Statistics 2024 (~240 MW solar capacity: Karavasta 140 MW + Spitalla 100 MW); wind negligible; modelled curtailment ~2% per regional default
 - **Source URL:** [https://www.irena.org/Data/Energy-Profiles](https://www.irena.org/Data/Energy-Profiles)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

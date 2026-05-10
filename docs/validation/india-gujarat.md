@@ -6,7 +6,7 @@ Last updated: 2026-05-09 · Sprint: India gen-re anchor
 
 - **Region id:** `india-gujarat`
 - **Country:** IND
-- **Tier:** static
+- **Tier:** estimated
 - **Methodology note:** T2-annual-calibrated (generation denominator from CEA official source; curtailment rate modelled from Ember India 2024). Tier bucket stays T3 until tier-resolution.ts gains a T2-static path.
 - **Source provenance:** `official-lead` — generation denominator from CEA official daily Excel; curtailment rate modelled from Ember India 2024
 - **Kind:** solar

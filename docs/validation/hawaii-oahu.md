@@ -1,17 +1,17 @@
 # Validation — Hawaii (Oahu) (`hawaii-oahu`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `hawaii-oahu`
 - **Country:** USA
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
-- **Source:** Hawaiian Electric RSWG monthly reports (Oahu: ~30% renewable share 2024, provisional)
-- **Source URL:** [https://www.hawaiianelectric.com/about-us/performance-scorecards-and-metrics/renewable-energy](https://www.hawaiianelectric.com/about-us/performance-scorecards-and-metrics/renewable-energy)
+- **Source:** Hawaiian Electric historical curtailment XLSX 2026-05-09: Oahu 2024 = 25.2 GWh curtailed from curtailable renewables (curtailment rate ~3.5% of curtailable). Annual file only — no daily/monthly programmatic feed. T1 not achievable.
+- **Source URL:** [https://www.hawaiianelectric.com/documents/about_us/key_performance_metrics/historical/historical_03_curtailment.xlsx](https://www.hawaiianelectric.com/documents/about_us/key_performance_metrics/historical/historical_03_curtailment.xlsx)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

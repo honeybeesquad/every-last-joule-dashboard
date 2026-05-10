@@ -1,17 +1,17 @@
 # Validation — Florida (`florida`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `florida`
 - **Country:** USA
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** EIA FLA solar generation exists, but no published curtailment rate from FRCC/FPL. 0.5 TWh/yr provisional anchor — requires FRCC market monitor or FPL IRP 2024 published curtailment figure to move to T1.
 - **Source URL:** [https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data](https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data)
 - **Loader:** [`florida.json.ts`](../../src/data/florida.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

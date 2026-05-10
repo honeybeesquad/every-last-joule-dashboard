@@ -1,17 +1,17 @@
 # Validation — Singapore (`singapore`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `singapore`
 - **Country:** SGP
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** IRENA RCS 2025 / EMA TES 2024 (~700 MW rooftop+utility PV)
 - **Source URL:** [https://www.irena.org/Data/Downloads/IRENASTAT](https://www.irena.org/Data/Downloads/IRENASTAT)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
