@@ -1,0 +1,51 @@
+{
+  "$comment": "Per-region polygon overrides for the pillar-base-inside-country containment test. Used when a region's island sits outside its country's 110m-simplified polygon. Each feature's `id` matches a region.id from src/lib/regions.ts. Geometry is a simple bounding box around the island. Outer rings are wound clockwise (lon/lat order) per d3-geo's convention for spherical polygons; with CCW the polygon represents its complement (everything except the box) and the containment check inverts.",
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "japan-okinawa",
+      "properties": { "name": "Okinawa main island bounding box" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [127.50, 26.00],
+          [127.50, 27.00],
+          [128.50, 27.00],
+          [128.50, 26.00],
+          [127.50, 26.00]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "jeju",
+      "properties": { "name": "Jeju island bounding box" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [126.00, 33.00],
+          [126.00, 33.70],
+          [127.00, 33.70],
+          [127.00, 33.00],
+          [126.00, 33.00]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "vanuatu",
+      "properties": { "name": "Vanuatu archipelago bounding box" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [166.00, -20.50],
+          [166.00, -13.00],
+          [170.50, -13.00],
+          [170.50, -20.50],
+          [166.00, -20.50]
+        ]]
+      }
+    }
+  ]
+}
