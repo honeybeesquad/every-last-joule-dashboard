@@ -1,7 +1,7 @@
 # STATUS — single source of truth for "where is the project right now"
 
 **Last verified against git:** 2026-05-09 by Claude (nav + USD toggle cleanup shipped)
-**Active branch:** `main` @ `e9d86a7` (Vercel production branch; auto-deploys to everylastjoule.com)
+**Active branch:** `main` @ `7402404` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
 > **For AI sessions:** read this file before drafting plans, brainstorming, or creating worktrees. Plans in `~/.claude/plans/` and `docs/superpowers/plans/` may be SHIPPED — check this file before treating any plan as live work.
