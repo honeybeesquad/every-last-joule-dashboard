@@ -1,17 +1,17 @@
 # Validation — Mexico (`mexico`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `mexico`
 - **Country:** MEX
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** SENER PRODESEN 2024-2038 + CRE confiabilidad reports — ~1.2 TWh/yr solar+wind curtailment from northern-grid transmission saturation (Sonora/Chihuahua/Coahuila/Oaxaca). Excludes hydro vertimientos. Gemini-3.1 research wave 2 (2026-04-30).
 - **Source URL:** [https://www.gob.mx/sener/documentos/programa-de-desarrollo-del-sistema-electrico-nacional-2024-2038](https://www.gob.mx/sener/documentos/programa-de-desarrollo-del-sistema-electrico-nacional-2024-2038)
 - **Loader:** [`mexico.json.ts`](../../src/data/mexico.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

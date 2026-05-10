@@ -4,8 +4,9 @@
  *
  * Each region's peakGW carries a ±uncertainty envelope and a confidence tier
  * label. The tier is derived deterministically from the loader's Region.tier
- * (live / live-domestic-anchored / live-neighbour-anchored / static / flare)
- * and — for statics — the profile shape emitted by `src/data/statics.json.ts`.
+ * (live / live-domestic-anchored / live-neighbour-anchored / anchored /
+ * estimated). Content type (flare, solar, wind, etc.) is orthogonal — it
+ * lives in Region.kind and does not affect tier derivation.
  *
  * Tier definitions (also surfaced in `docs/methodology/uncertainty.md` and
  * `docs/proposals/b4-option-b-decision.md`):
@@ -84,28 +85,13 @@ export interface TierInputs {
     | "live"
     | "live-domestic-anchored"
     | "live-neighbour-anchored"
-    | "static"
-    | "flare";
+    | "anchored"
+    | "estimated";
   /**
    * Profile-shape kind emitted by the typical-profile builders and the
-   * hand-curated statics loader.
-   *
-   *   "flat"            no diurnal or seasonal shape modelled — regions
-   *                     using `buildTypicalHydroRegion` (flat annual
-   *                     average) or flare base load. Routes to T2.
-   *   "solar"           diurnal cos-shape centred on local solar noon —
-   *                     `buildTypicalSolarRegion`. Routes to T3.
-   *   "wind"            weak diurnal shape — `buildTypicalWindRegion`.
-   *                     Routes to T3 because the shape is modelled not
-   *                     measured.
-   *   "mixed"           sum of solar+wind+hydro shapes per fuelShare —
-   *                     `buildTypicalMixedRegion`. Routes to T3.
-   *   "hydro-seasonal"  monthly share array × flat diurnal —
-   *                     `buildTypicalHydroSeasonalRegion`. Routes to T3.
-   *   "overnight"       geothermal steam-venting window —
-   *                     `buildGeothermalOvernightRegion`. Routes to T3.
-   *
-   * For live regions leave undefined.
+   * hand-curated statics loader. No longer used for tier derivation (the
+   * tier is determined solely by `regionTier`), but retained for loaders
+   * that thread it through to rendering or profile-shape selection.
    */
   profileKind?:
     | "flat"
@@ -125,44 +111,25 @@ export interface TierInputs {
 /**
  * Deterministic tier derivation.
  *
- *   live                                        → T1a-live-tso
- *   live-domestic-anchored                      → T1b-live-domestic-anchored
- *   live-neighbour-anchored                     → T1c-live-neighbour-anchored
- *   flare                                       → T2-annual-calibrated
- *                                                 (GGFR annual is direct observation)
- *   static + flat (or undefined profileKind)    → T2-annual-calibrated
- *                                                 (Ember/IRENA annual, flat base load)
- *   static + solar | wind | mixed               → T3-modelled
- *                                                 (diurnal shape modelled, scaled to annual)
- *   static + hydro-seasonal                     → T3-modelled
- *                                                 (monthly shape modelled, scaled to annual)
- *   static + overnight                          → T3-modelled
- *                                                 (venting-window shape modelled)
+ *   live                    → T1a-live-tso
+ *   live-domestic-anchored  → T1b-live-domestic-anchored
+ *   live-neighbour-anchored → T1c-live-neighbour-anchored
+ *   anchored                → T2-annual-calibrated
+ *   estimated               → T3-modelled
  *
- * The function throws on unknown combinations rather than silently assigning
+ * The function throws on unknown regionTier rather than silently assigning
  * a tier; this is defensive — the set of tiers is small and every region
  * must resolve to exactly one.
  */
 export function deriveTier(inputs: TierInputs): ConfidenceTier {
-  const { regionTier, profileKind } = inputs;
+  const { regionTier } = inputs;
   if (regionTier === "live") return "T1a-live-tso";
   if (regionTier === "live-domestic-anchored") return "T1b-live-domestic-anchored";
   if (regionTier === "live-neighbour-anchored") return "T1c-live-neighbour-anchored";
-  if (regionTier === "flare") return "T2-annual-calibrated";
-  if (regionTier === "static") {
-    if (profileKind === "flat" || profileKind == null) return "T2-annual-calibrated";
-    if (
-      profileKind === "solar" ||
-      profileKind === "wind" ||
-      profileKind === "mixed" ||
-      profileKind === "hydro-seasonal" ||
-      profileKind === "overnight"
-    ) {
-      return "T3-modelled";
-    }
-  }
+  if (regionTier === "anchored") return "T2-annual-calibrated";
+  if (regionTier === "estimated") return "T3-modelled";
   throw new Error(
-    `deriveTier: cannot resolve tier for regionTier=${regionTier} profileKind=${profileKind}`,
+    `deriveTier: cannot resolve tier for regionTier=${regionTier}`,
   );
 }
 

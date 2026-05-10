@@ -1,6 +1,6 @@
 # Validation — Finland Wind (`finland-wind`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -26,14 +26,14 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** —
+- **TSO annual curtailment (latest published):** Fingrid wind curtailment low single-digit TWh/yr
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** —
+- **Other:** Fingrid Annual Report 2024
 
 ## Discrepancy analysis
 
-_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
+_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
 
 ## Known limitations
 

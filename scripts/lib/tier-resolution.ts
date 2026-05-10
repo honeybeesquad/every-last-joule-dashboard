@@ -10,12 +10,12 @@
  *
  * The resolution rules mirror `src/lib/uncertainty.ts::deriveTier` but are
  * lifted out so that tooling can resolve a tier without instantiating a
- * loader. The static-region `profileKind` table is curated here because the
- * canonical `REGIONS` table only carries `tier`, not the loader's profile
- * shape — when a static region's loader changes shape (e.g., flat → mixed),
- * the entry here must be updated. The `unresolved` list surfaces any
- * region that has been added to REGIONS without a profileKind so the gap
- * is loud, not silent.
+ * loader. The estimated-region `profileKind` table is curated here because
+ * the canonical `REGIONS` table only carries `tier`, not the loader's profile
+ * shape — when an estimated region's loader changes shape (e.g., solar →
+ * mixed), the entry here must be updated. The `unresolved` list surfaces any
+ * estimated region that has been added to REGIONS without a profileKind so
+ * the gap is loud, not silent.
  */
 
 import { REGIONS } from "../../src/lib/regions.js";
@@ -32,8 +32,8 @@ export type ProfileKind = NonNullable<TierInputs["profileKind"]>;
 export type Bucket = "T1a" | "T1b" | "T1c" | "T2-flare" | "T2" | "T3";
 
 /**
- * Per-region static profileKind. For static regions only; live and flare
- * regions don't need this. Mirrors the buildTypicalXxx call inside each
+ * Per-region profileKind. For estimated (and anchored non-live) regions only;
+ * live regions don't need this. Mirrors the buildTypicalXxx call inside each
  * loader, plus the per-spec kind in `src/data/statics.json.ts`.
  */
 export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
@@ -97,7 +97,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   // 2026-05-02 in anticipation of an India-egress relay, but the live
   // sources are geoblocked / unparsed from the build environment so each
   // loader currently emits T3-modelled typical-shape data. Reverted to
-  // `tier: "static"` on 2026-05-03 to make tier honesty match emitted data
+  // `tier: "estimated"` on 2026-05-03 to make tier honesty match emitted data
   // (Sci-Data integrity); flip back to `tier: "live"` plus remove these
   // entries once each loader's live path is actually wired up.
   "india-rajasthan": "solar",
@@ -328,14 +328,12 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
  * gas flaring) rather than a modelling concession, presented in Figure 4 as
  * a separate "flare" bucket.
  *
- * Source-of-truth: `Region.tier === "flare"` in `src/lib/regions.ts`. This
- * derived set is exported only for consumers that can't reach the canonical
- * REGIONS table (e.g., migration scripts working off snapshot JSON). The
- * bucket-derivation in `resolveRegion` below uses `Region.tier` directly so
+ * Source-of-truth: `Region.kind === "flare"` in `src/lib/regions.ts`. The
+ * bucket-derivation in `resolveRegion` below uses `Region.kind` directly so
  * adding a new flare region is a single-table change.
  */
 export const FLARE_IDS = new Set(
-  REGIONS.filter((r) => r.tier === "flare").map((r) => r.id),
+  REGIONS.filter((r) => r.kind === "flare").map((r) => r.id),
 );
 
 export interface ResolvedRegion {
@@ -353,38 +351,29 @@ export interface ResolutionResult {
 
 /**
  * Resolve a single region to its canonical confidence tier + presentational
- * bucket. Returns null if the region cannot be resolved (e.g., static region
- * missing a STATIC_PROFILE_KIND entry).
+ * bucket.
  */
 export function resolveRegion(r: Region): ResolvedRegion | { unresolvedReason: string } {
-  let inputs: TierInputs;
-  if (r.tier === "live") {
-    inputs = { regionTier: "live" };
-  } else if (r.tier === "live-domestic-anchored") {
-    inputs = { regionTier: "live-domestic-anchored" };
-  } else if (r.tier === "live-neighbour-anchored") {
-    inputs = { regionTier: "live-neighbour-anchored" };
-  } else if (r.tier === "flare") {
-    inputs = { regionTier: "flare" };
-  } else if (r.tier === "static") {
+  const inputs: TierInputs = { regionTier: r.tier };
+
+  if (r.tier === "estimated") {
     const kind = STATIC_PROFILE_KIND[r.id];
     if (!kind) {
       return {
         unresolvedReason:
-          "static region missing entry in STATIC_PROFILE_KIND — add a row in scripts/lib/tier-resolution.ts",
+          "estimated region missing entry in STATIC_PROFILE_KIND — add a row in scripts/lib/tier-resolution.ts",
       };
     }
-    inputs = { regionTier: "static", profileKind: kind };
-  } else {
-    return { unresolvedReason: `unknown Region.tier value: ${String(r.tier)}` };
+    inputs.profileKind = kind;
   }
+
   const tier = deriveTier(inputs);
   let bucket: Bucket;
   if (tier === "T1a-live-tso" || tier === "T1-live-TSO") bucket = "T1a";
   else if (tier === "T1b-live-domestic-anchored") bucket = "T1b";
   else if (tier === "T1c-live-neighbour-anchored") bucket = "T1c";
   else if (tier === "T3-modelled") bucket = "T3";
-  else if (r.tier === "flare") bucket = "T2-flare";
+  else if (r.kind === "flare") bucket = "T2-flare";
   else bucket = "T2";
   return { id: r.id, name: r.name, region: r, tier, bucket };
 }

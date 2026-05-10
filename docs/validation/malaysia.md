@@ -1,17 +1,17 @@
 # Validation — Malaysia (`malaysia`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `malaysia`
 - **Country:** MYS
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** IRENA Malaysia 2024 + Suruhanjaya Tenaga (ST) 2024 anchor (~0.15 TWh/yr provisional). Gemini-3.1 research wave 2026-04-29: SEDA / ST policy classifies systemic renewable curtailment as a 'rising risk' for Peninsular Malaysia but reports current operations as stable; no published annual curtailment TWh figure exists yet. Live promotion attempt reverted (GSO real-time solar feed is generation-only, not curtailment). Held at T3 pending publication of a real curtailment figure.
 - **Source URL:** [https://www.gso.org.my/](https://www.gso.org.my/)
 - **Loader:** [`malaysia.json.ts`](../../src/data/malaysia.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

@@ -1,8 +1,8 @@
 {
   "totalValidationDocs": 391,
-  "docsCitingBadConversionCheck": 3,
-  "docsNotCiting": 388,
-  "pctCited": 0.77,
+  "docsCitingBadConversionCheck": 7,
+  "docsNotCiting": 384,
+  "pctCited": 1.79,
   "perDocCitations": [
     {
       "file": "aemo-nsw-solar.md",
@@ -903,8 +903,10 @@
     },
     {
       "file": "india-andhra-pradesh.md",
-      "cited": false,
-      "matchedPatterns": []
+      "cited": true,
+      "matchedPatterns": [
+        "bad[\\s-]conversions?\\s+check"
+      ]
     },
     {
       "file": "india-east.md",
@@ -913,8 +915,10 @@
     },
     {
       "file": "india-gujarat.md",
-      "cited": false,
-      "matchedPatterns": []
+      "cited": true,
+      "matchedPatterns": [
+        "bad[\\s-]conversions?\\s+check"
+      ]
     },
     {
       "file": "india-karnataka.md",
@@ -925,8 +929,10 @@
     },
     {
       "file": "india-maharashtra.md",
-      "cited": false,
-      "matchedPatterns": []
+      "cited": true,
+      "matchedPatterns": [
+        "bad[\\s-]conversions?\\s+check"
+      ]
     },
     {
       "file": "india-north.md",
@@ -947,8 +953,10 @@
     },
     {
       "file": "india-tamil-nadu.md",
-      "cited": false,
-      "matchedPatterns": []
+      "cited": true,
+      "matchedPatterns": [
+        "bad[\\s-]conversions?\\s+check"
+      ]
     },
     {
       "file": "india-west.md",

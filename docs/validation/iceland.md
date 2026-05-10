@@ -1,17 +1,17 @@
 # Validation — Iceland (`iceland`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `iceland`
 - **Country:** ISL
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** hydro
 - **Source:** Published
 - **Source URL:** [https://orkustofnun.is/](https://orkustofnun.is/)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

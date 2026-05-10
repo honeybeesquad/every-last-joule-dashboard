@@ -1,17 +1,17 @@
 # Validation — Russia (Murmansk) (`russia-murmansk-wind`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `russia-murmansk-wind`
 - **Country:** RUS
-- **Tier:** static
+- **Tier:** anchored
 - **Kind:** wind
 - **Source:** SO UPS 2024 monthly DPM VIE reports (Kola Peninsula wind dispatch limits)
 - **Source URL:** [https://www.so-ups.ru/functioning/markets/surveys/renewable/2024/](https://www.so-ups.ru/functioning/markets/surveys/renewable/2024/)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

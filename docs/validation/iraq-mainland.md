@@ -1,17 +1,17 @@
 # Validation — Iraq (non-flare) (`iraq-mainland`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `iraq-mainland`
 - **Country:** IRQ
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** Ministry of Electricity fallback
 - **Source URL:** [https://moelc.gov.iq/](https://moelc.gov.iq/)
 - **Loader:** [`iraq-mainland.json.ts`](../../src/data/iraq-mainland.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

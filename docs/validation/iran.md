@@ -1,17 +1,17 @@
 # Validation — Iran (`iran`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `iran`
 - **Country:** IRN
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** TAVANIR fallback
 - **Source URL:** [https://www.tavanir.org.ir/](https://www.tavanir.org.ir/)
 - **Loader:** [`iran.json.ts`](../../src/data/iran.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

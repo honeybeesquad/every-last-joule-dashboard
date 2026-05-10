@@ -1,17 +1,17 @@
 # Validation — Nepal (`nepal`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `nepal`
 - **Country:** NPL
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** hydro
 - **Source:** World Bank Nepal Development Update 2024 — estimated >0.5 TWh/yr renewable energy spillage from monsoon-season run-of-river overgeneration vs transmission bottlenecks and limited India-export capacity. NEA confirms during FY2023/24. Same modelling treatment as Ethiopia/Iceland/Colombia hydro spillage. Himalayan summer-monsoon shape (peak Jul-Sep). Gemini-3.1 research wave 4 (2026-04-30, reliability 5/5).
 - **Source URL:** [https://www.worldbank.org/en/country/nepal/publication/nepal-development-update](https://www.worldbank.org/en/country/nepal/publication/nepal-development-update)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

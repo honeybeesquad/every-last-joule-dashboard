@@ -1,18 +1,16 @@
 # Validation — Colombia (`colombia`)
 
-Last updated: 2026-05-08 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `colombia`
 - **Country:** COL
 - **Tier:** live-domestic-anchored
-- **Source provenance:** `verified` (since 2026-05-08) — XM SinerGox is the upstream source. Direct fetch is geoblocked from production (Vercel) but works from any Colombian-egress runner; the Britta-side relay (`scripts/relay/colombia-xm-fetch.py`, run through the `elj-co` WireGuard tunnel) refreshes `data/historical/colombia-vertimientos-daily.csv`, which the loader reads as the production source-of-truth. The data is upstream-XM-measured; the relay is just the transport.
 - **Kind:** hydro
-- **Source:** XM SinerGox API (servapibi.xm.com.co/daily, POST MetricId=VertEner Entity=Sistema). Direct live path tried first from any Colombian-egress runner; committed CSV at `data/historical/colombia-vertimientos-daily.csv` is the production source-of-truth, refreshed by Britta via the elj-co WireGuard tunnel. Trailing-365-day annualised total. 5-yr baseline 7.53 TWh/yr (range 0.53–13.12 TWh/yr ENSO-driven). Bimodal hydro-seasonal shape (Apr–Jun + Oct–Nov peaks). T1b, ±50% envelope.
+- **Source:** XM SinerGox API (servapibi.xm.com.co/daily, POST MetricId=VertEner Entity=Sistema). Direct live path tried first from any Colombian-egress runner; committed CSV at data/historical/colombia-vertimientos-daily.csv is the production source-of-truth, refreshed by Britta via the elj-co WireGuard tunnel (Colombian egress). Trailing-365-day annualised total. 5-yr baseline 7.53 TWh/yr (range 0.53–13.12 TWh/yr ENSO-driven). Bimodal hydro-seasonal shape (Apr–Jun + Oct–Nov peaks). T1b, ±50% envelope.
 - **Source URL:** [https://servapibi.xm.com.co/daily](https://servapibi.xm.com.co/daily)
 - **Loader:** [`colombia.json.ts`](../../src/data/colombia.json.ts)
-- **Relay script:** [`scripts/relay/colombia-xm-fetch.py`](../../scripts/relay/colombia-xm-fetch.py) — idempotent, runs in 30-day chunks (XM rejects larger windows), kWh→GWh conversion, dry-run flag.
 - **Structural gap:** no
 
 ## Calibration

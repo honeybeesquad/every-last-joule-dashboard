@@ -71,3 +71,50 @@ export function readStateCsvTotal(
 export function computeCurtailedEnergy(generationTWh: number, rate: number): number {
   return generationTWh * rate / (1 - rate);
 }
+
+interface SldcCurtailmentRow { date: string; windCurtailedGwh: number; solarCurtailedGwh: number; }
+
+function parseSldcCsv(text: string): SldcCurtailmentRow[] {
+  const lines = text.trim().split("\n");
+  if (lines.length < 2) return [];
+  const header = lines[0].split(",");
+  const dateIdx  = header.indexOf("date");
+  const windIdx  = header.indexOf("wind_curtailed_gwh");
+  const solarIdx = header.indexOf("solar_curtailed_gwh");
+  if (dateIdx < 0 || windIdx < 0 || solarIdx < 0) return [];
+  return lines.slice(1).map(line => {
+    const cols = line.split(",");
+    return {
+      date:              cols[dateIdx]?.trim() ?? "",
+      windCurtailedGwh:  parseFloat(cols[windIdx])  || 0,
+      solarCurtailedGwh: parseFloat(cols[solarIdx]) || 0,
+    };
+  }).filter(r => r.date.length > 0);
+}
+
+/**
+ * Read SLDC curtailment CSV and sum trailing-N-day curtailed energy.
+ * Returns null if the file is missing or has fewer than 30 rows.
+ * When non-null, the caller should emit regionTier: "live" and sourceProvenance: "verified".
+ */
+export function readStateSldcCurtailment(
+  csvPath: string,
+  days = 90,
+): { windCurtailedTWh: number; solarCurtailedTWh: number; nRows: number; latestDate: string } | null {
+  let text: string;
+  try {
+    text = readFileSync(csvPath, "utf-8");
+  } catch {
+    return null;
+  }
+  const rows = parseSldcCsv(text);
+  rows.sort((a, b) => a.date.localeCompare(b.date));
+  if (rows.length < 30) return null;
+  const tail = rows.slice(-days);
+  return {
+    windCurtailedTWh:  tail.reduce((s, r) => s + r.windCurtailedGwh,  0) / 1000,
+    solarCurtailedTWh: tail.reduce((s, r) => s + r.solarCurtailedGwh, 0) / 1000,
+    nRows:      rows.length,
+    latestDate: rows[rows.length - 1].date,
+  };
+}

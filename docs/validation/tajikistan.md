@@ -1,17 +1,17 @@
 # Validation — Tajikistan (`tajikistan`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `tajikistan`
 - **Country:** TJK
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** hydro
 - **Source:** IRENA RCS 2025 / Barki Tojik (hydro-dominant; modelled spillage; CASA-1000)
 - **Source URL:** [https://www.irena.org/Data/Downloads/IRENASTAT](https://www.irena.org/Data/Downloads/IRENASTAT)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

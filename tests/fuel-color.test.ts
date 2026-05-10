@@ -62,7 +62,7 @@ describe("getRegionFuelColor — flare regions never resolve to the solar colour
     country: "ZZZ",
     lat: 0,
     lon: 0,
-    tier: "flare",
+    tier: "anchored",
     kind: "flare",
     source: "",
     sourceUrl: "",

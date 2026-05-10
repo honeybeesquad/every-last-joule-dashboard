@@ -6,7 +6,7 @@ describe("libya static region", () => {
     const r = REGIONS.find((r) => r.id === "libya");
     expect(r).toBeDefined();
     expect(r!.country).toBe("LBY");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("solar");
   });
 });

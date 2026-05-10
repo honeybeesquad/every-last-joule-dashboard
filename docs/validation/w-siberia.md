@@ -1,12 +1,12 @@
 # Validation — W. Siberia (`w-siberia`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `w-siberia`
 - **Country:** RUS
-- **Tier:** flare
+- **Tier:** anchored
 - **Kind:** flare
 - **Source:** VIIRS + GGFR
 - **Source URL:** [https://www.worldbank.org/en/programs/gasflaringreduction](https://www.worldbank.org/en/programs/gasflaringreduction)

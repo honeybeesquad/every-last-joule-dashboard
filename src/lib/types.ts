@@ -1,5 +1,5 @@
 /**
- * Canonical region tier determines rendering and cadence treatment.
+ * Canonical region tier — purely a data-quality / accessibility measure.
  *
  * The three live sub-tiers reflect rate-derivation provenance (B4 Option B,
  * locked 2026-04-25 in `docs/proposals/b4-option-b-decision.md`):
@@ -12,17 +12,20 @@
  *   "live-neighbour-anchored"    — TSO publishes hourly + rate is
  *                                  extrapolated from a neighbouring zone
  *                                  (T1c, ±35.5% empirical)
+ *   "anchored"                   — published annual/monthly total from a
+ *                                  TSO, regulator, or satellite programme
+ *                                  (GGFR); no live feed (T2, ±20%)
+ *   "estimated"                  — modelled profile scaled to a capacity-
+ *                                  based or literature anchor (T3, ±40%)
  *
- * For rendering, all three live sub-tiers behave identically. The
- * distinction is surfaced in the methodology page and the §2.5 / §5.2
- * paper tier table only.
+ * Content type (wind, solar, flare, etc.) is orthogonal — use `RegionKind`.
  */
 export type RegionTier =
   | "live"
   | "live-domestic-anchored"
   | "live-neighbour-anchored"
-  | "static"
-  | "flare";
+  | "anchored"
+  | "estimated";
 
 /** The waste modality drives colouring (teal vs orange) and narrative. */
 export type RegionKind = "solar" | "wind" | "hydro" | "geo" | "mixed" | "flare";

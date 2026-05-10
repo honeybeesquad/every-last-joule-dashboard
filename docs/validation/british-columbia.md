@@ -1,17 +1,17 @@
 # Validation — British Columbia (`british-columbia`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `british-columbia`
 - **Country:** CAN
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** hydro
 - **Source:** BC Hydro fallback
 - **Source URL:** [https://www.bchydro.com/](https://www.bchydro.com/)
 - **Loader:** [`british-columbia.json.ts`](../../src/data/british-columbia.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

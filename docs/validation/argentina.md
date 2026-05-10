@@ -1,17 +1,17 @@
 # Validation — Argentina (`argentina`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `argentina`
 - **Country:** ARG
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** wind
-- **Source:** CAMMESA / IRENA fallback
-- **Source URL:** [https://cammesaweb.cammesa.com/](https://cammesaweb.cammesa.com/)
+- **Source:** CAMMESA api.cammesa.com assessed 2026-05-09: public REST API exists but only exposes marginal cost and demand data. Curtailment/restricciones endpoints are restricted to registered market participants (Agentes) — no unauthenticated path. No public annual curtailment figure found in CAMMESA web or ENRE reports. IRENA/Ember LatAm estimate ~0.5–1 TWh/yr Patagonian wind; synthetic anchor retained. T1 blocked: agent-registered API only.
+- **Source URL:** [https://api.cammesa.com/](https://api.cammesa.com/)
 - **Loader:** [`argentina.json.ts`](../../src/data/argentina.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

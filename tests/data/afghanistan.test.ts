@@ -6,7 +6,7 @@ describe("afghanistan static region", () => {
     const r = REGIONS.find((r) => r.id === "afghanistan");
     expect(r).toBeDefined();
     expect(r!.country).toBe("AFG");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("solar");
   });
 });

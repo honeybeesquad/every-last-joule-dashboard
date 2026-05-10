@@ -243,7 +243,7 @@ describe("regions", () => {
     // W2 China provinces (2026-05-02): 19 new T3-static regions. 100 + 19 = 119.
     // india-north renamed to india-rajasthan (live, T1a): 119 - 1 = 118.
     // India W2 (2026-05-02): india-south + india-west promoted to T1a live: 118 - 2 = 116.
-    // Phase-2.7 misc (2026-05-03): +tva T3-static (Qatar/Kuwait go to tier="flare", not here). 116 + 1 = 117.
+    // Phase-2.7 misc (2026-05-03): +tva T3-estimated (Qatar/Kuwait go to tier="anchored"). 116 + 1 = 117.
     // Phase-2.7 Russia+China (2026-05-03): +5 T3-static. 117→120.
     // India W1/W2/W3 tier-honesty correction (2026-05-03): +6 → 126.
     // Phase 2 IRENA T3 anchors (2026-05-04): +11 T3-static regions
@@ -259,18 +259,16 @@ describe("regions", () => {
     // Phase 4-B (2026-05-05): +26 T3-static regions. 165 + 26 = 191.
     // Phase 4-C (2026-05-05): +19 T3-static regions. 191 + 19 = 210.
     // Issue #62 (2026-05-06): add Palestine T3 static. 210 + 1 = 211.
-    expect(REGIONS.filter(r => r.tier === "static").length).toBe(211);
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(205);
   });
 
-  it("has 4 flare regions", () => {
-    // Phase-2.7 misc (2026-05-03): +qatar, +kuwait → 4 + 2 = 6.
-    // Phase-2.7 Russia+China (2026-05-03): +russia-yamal, +russia-e-siberia → 6→8.
-    expect(REGIONS.filter(r => r.tier === "flare").length).toBe(8);
+  it("has 14 anchored regions (8 flare + 6 flat-profile)", () => {
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(14);
   });
 
-  it("all flare regions have kind=flare", () => {
-    for (const r of REGIONS.filter(x => x.tier === "flare")) {
-      expect(r.kind).toBe("flare");
+  it("all flare-kind regions with anchored tier are GGFR-verified", () => {
+    for (const r of REGIONS.filter(x => x.kind === "flare" && x.tier === "anchored")) {
+      expect(r.sourceProvenance).toBe("verified");
     }
   });
 
@@ -441,7 +439,7 @@ describe("regions", () => {
     ]) {
       expect(REGIONS.find(r => r.id === id)).toBeDefined();
     }
-    expect(REGIONS.find(r => r.id === "e-saudi")?.tier).toBe("flare");
+    expect(REGIONS.find(r => r.id === "e-saudi")?.tier).toBe("anchored");
   });
 
   it("includes the v1m Africa curtailment research expansion", () => {
@@ -494,15 +492,15 @@ describe("regions", () => {
     ]) {
       const region = REGIONS.find(r => r.id === id);
       expect(region).toBeDefined();
-      expect(region?.tier).toBe("static");
+      expect(region?.tier).toBe("estimated");
     }
     // Phase 3c: gansu/ningxia/pakistan split into per-fuel — originals removed
     expect(REGIONS.find(r => r.id === "gansu")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "ningxia")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "pakistan")).toBeUndefined();
-    expect(REGIONS.find(r => r.id === "gansu-wind")?.tier).toBe("static");
-    expect(REGIONS.find(r => r.id === "ningxia-wind")?.tier).toBe("static");
-    expect(REGIONS.find(r => r.id === "pakistan-wind")?.tier).toBe("static");
+    expect(REGIONS.find(r => r.id === "gansu-wind")?.tier).toBe("estimated");
+    expect(REGIONS.find(r => r.id === "ningxia-wind")?.tier).toBe("estimated");
+    expect(REGIONS.find(r => r.id === "pakistan-wind")?.tier).toBe("estimated");
   });
 
   it("Brazilian non-NE state fuel children are live (sourced from the same ONS feed as brazil-ne)", () => {
@@ -575,11 +573,16 @@ describe("regions", () => {
       }
     }
 
-    // 5 new statics — Hawaii 3-island system, Austria, Russia Murmansk wind.
-    for (const id of ["hawaii-oahu", "hawaii-maui", "hawaii-island", "austria", "russia-murmansk-wind"]) {
+    // 5 new non-live regions — Hawaii 3-island system (estimated), Austria + Russia Murmansk wind (anchored).
+    for (const id of ["hawaii-oahu", "hawaii-maui", "hawaii-island"]) {
       const region = REGIONS.find(r => r.id === id);
-      expect(region, `missing static region ${id}`).toBeDefined();
-      expect(region?.tier).toBe("static");
+      expect(region, `missing estimated region ${id}`).toBeDefined();
+      expect(region?.tier).toBe("estimated");
+    }
+    for (const id of ["austria", "russia-murmansk-wind"]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region, `missing anchored region ${id}`).toBeDefined();
+      expect(region?.tier).toBe("anchored");
     }
 
     // Former aggregate ids must now be absent.

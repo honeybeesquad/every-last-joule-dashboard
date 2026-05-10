@@ -1,17 +1,17 @@
 # Validation — Belarus Wind (`belarus-wind`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `belarus-wind`
 - **Country:** BLR
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** wind
 - **Source:** IRENA RCS 2025 / Belenergo (~160 MW wind)
 - **Source URL:** [https://www.irena.org/Data/Downloads/IRENASTAT](https://www.irena.org/Data/Downloads/IRENASTAT)
 - **Loader:** _(no single-file loader — see multi-region source)_
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

@@ -6,7 +6,7 @@ describe("singapore static region", () => {
     const r = REGIONS.find((r) => r.id === "singapore");
     expect(r).toBeDefined();
     expect(r!.country).toBe("SGP");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("solar");
   });
 });

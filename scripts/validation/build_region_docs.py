@@ -40,7 +40,7 @@ REGION_LINE_RE = re.compile(
     r'\s*country:\s*"(?P<country>[^"]+)",\s*lat:\s*(?P<lat>-?\d+(?:\.\d+)?),'
     r'\s*lon:\s*(?P<lon>-?\d+(?:\.\d+)?),\s*tier:\s*"(?P<tier>[^"]+)",'
     r'\s*kind:\s*"(?P<kind>[^"]+)",\s*source:\s*"(?P<source>(?:[^"\\]|\\.)*)",'
-    r'\s*sourceUrl:\s*"(?P<source_url>[^"]+)"\s*\}',
+    r'\s*sourceUrl:\s*"(?P<source_url>[^"]+)"[^}]*\}',
     re.DOTALL,
 )
 

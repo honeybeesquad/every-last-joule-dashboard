@@ -1,49 +1,47 @@
-import { pathToFileURL } from "url";
-import { fetchText } from "../lib/fetch.js";
+import { pathToFileURL, fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
+import { readStateSldcCurtailment } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-karnataka";
-// Karnataka State Load Despatch Centre (KSLDC). Publishes real-time dashboard
-// and curtailment PDFs. KSLDC was reachable from non-Indian IPs in the
-// 2026-04-26 coverage audit; India-egress relay will also activate live parse.
-const SOURCE_URL = "https://ksldc.in/";
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const CSV_SLDC_PATH = join(__dirname, "../../data/historical/india-karnataka-sldc-curtailed-daily.csv");
 
-async function run({ probe = true } = {}): Promise<RegionData> {
-  let probeNote = "";
-
-  if (probe) {
-    try {
-      await fetchText(SOURCE_URL, { timeoutMs: 10000, retries: 0, headers: { "user-agent": "Mozilla/5.0" } });
-      // TODO: parse KSLDC curtailment PDF/dashboard and return live data.
-      // KSLDC was probed successfully in April 2026; full parser not yet built.
-      throw new Error("KSLDC live parsing not yet implemented");
-    } catch (err) {
-      probeNote = `KSLDC unreachable (${(err as Error).message}); `;
-    }
+async function run(): Promise<RegionData> {
+  const sldc = readStateSldcCurtailment(CSV_SLDC_PATH, 90);
+  if (sldc !== null) {
+    const curtailedTWh = sldc.solarCurtailedTWh + sldc.windCurtailedTWh;
+    const base = buildTypicalSolarRegion(
+      REGION_ID,
+      6.5,
+      curtailedTWh,
+      `KSLDC (Karnataka State Load Despatch Centre) direct curtailment — ${sldc.nRows}-day CSV, ` +
+      `trailing-90-day solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh + wind ${sldc.windCurtailedTWh.toFixed(2)} TWh curtailed. ` +
+      `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
+      new Date().getFullYear().toString(),
+    );
+    return { ...base, confidenceTier: "T1a-live-tso" as const, sourceProvenance: "verified" };
   }
 
   const base = buildTypicalSolarRegion(
     REGION_ID,
     6.5,
     0.5,
-    `${probeNote}Typical-shape T3-modelled fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
+    `No KSLDC curtailment CSV yet; T3-modelled fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
     `(~0.5 TWh/yr Karnataka solar curtailment; Pavagada Solar Park + Bidar solar + growing wind). ` +
-    `State-level KSLDC source established; will be promoted to T1a-live-tso when the parser is complete.`,
+    `Will be promoted to T1a-live-tso when the KSLDC fetcher accumulates ≥30 daily rows.`,
     "2024",
   );
-  // T3-modelled while the KSLDC parser is not yet implemented. When the
-  // parser ships, flip both this and the canonical src/lib/regions.ts
-  // entry back to T1a-live-tso.
-  return applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: "solar" });
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run(), { regionTier: "static" })
+  withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("india-karnataka loader failed", err);
@@ -51,4 +49,4 @@ if (isMain) {
     });
 }
 
-export const buildIndiaKarnatakaData = () => run({ probe: false });
+export const buildIndiaKarnatakaData = () => run();

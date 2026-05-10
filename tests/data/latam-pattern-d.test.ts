@@ -67,7 +67,7 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     for (const id of NEW_LATAM_IDS) {
       const region = REGIONS.find((r) => r.id === id);
       expect(region, `missing region ${id}`).toBeDefined();
-      expect(region!.tier).toBe("static");
+      expect(region!.tier).toBe("estimated");
       expect(ALLOWED_REGION_KINDS.has(region!.kind), `region ${id} has unexpected kind ${region!.kind}`).toBe(true);
     }
   });

@@ -135,27 +135,20 @@ if (unresolved.length) {
   process.exit(2);
 }
 
-// Flare-bucket invariant: every region with `Region.tier === "flare"` must
-// resolve to the T2-flare bucket, and every region in the T2-flare bucket
-// must have `Region.tier === "flare"`.
+// Flare-bucket invariant: every region with `Region.kind === "flare"` and
+// `Region.tier === "anchored"` must resolve to the T2-flare bucket, and
+// every region in the T2-flare bucket must have `Region.kind === "flare"`.
 //
-// The original failure mode was a hardcoded FLARE_IDS set in tier-resolution.ts
-// that drifted behind regions.ts when new flare regions were added (qatar,
-// kuwait, russia-yamal, russia-e-siberia were silently misbucketed into T2).
-// The bucket-derivation logic now keys off Region.tier; this gate makes sure
-// the two stay aligned even if someone re-introduces an id-set lookup.
-//
-// Note: this checks Region.tier, not Region.kind. A handful of regions
-// (trinidad-tobago, guyana, suriname) are intentionally `kind: "flare"` +
-// `tier: "static"` — offshore-flare anchors lifted onto country-level
+// Regions with `kind: "flare"` but `tier: "estimated"` (trinidad-tobago,
+// guyana, suriname) are offshore-flare anchors lifted onto country-level
 // modelled coverage; they belong in T3, not T2-flare.
 const bucketMismatches: string[] = [];
 for (const r of resolved) {
-  const tieredFlare = r.region.tier === "flare";
+  const isAnchoredFlare = r.region.kind === "flare" && r.region.tier === "anchored";
   const inFlareBucket = r.bucket === "T2-flare";
-  if (tieredFlare !== inFlareBucket) {
+  if (isAnchoredFlare !== inFlareBucket) {
     bucketMismatches.push(
-      `${r.id}: tier="${r.region.tier}" but bucket="${r.bucket}" — flare-bucket invariant violated`,
+      `${r.id}: kind="${r.region.kind}" tier="${r.region.tier}" but bucket="${r.bucket}" — flare-bucket invariant violated`,
     );
   }
 }

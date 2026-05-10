@@ -25,30 +25,12 @@ describe("uncertainty.deriveTier", () => {
     );
   });
 
-  it("maps flare → T2-annual-calibrated", () => {
-    expect(deriveTier({ regionTier: "flare" })).toBe("T2-annual-calibrated");
+  it("maps anchored → T2-annual-calibrated", () => {
+    expect(deriveTier({ regionTier: "anchored" })).toBe("T2-annual-calibrated");
   });
 
-  it("maps static + flat → T2-annual-calibrated", () => {
-    expect(
-      deriveTier({ regionTier: "static", profileKind: "flat" }),
-    ).toBe("T2-annual-calibrated");
-  });
-
-  it("maps static + solar → T3-modelled", () => {
-    expect(
-      deriveTier({ regionTier: "static", profileKind: "solar" }),
-    ).toBe("T3-modelled");
-  });
-
-  it("maps static + hydro-seasonal → T3-modelled", () => {
-    expect(
-      deriveTier({ regionTier: "static", profileKind: "hydro-seasonal" }),
-    ).toBe("T3-modelled");
-  });
-
-  it("maps static (no kind specified) → T2 (treated as flat)", () => {
-    expect(deriveTier({ regionTier: "static" })).toBe("T2-annual-calibrated");
+  it("maps estimated → T3-modelled", () => {
+    expect(deriveTier({ regionTier: "estimated" })).toBe("T3-modelled");
   });
 });
 
@@ -160,7 +142,7 @@ describe("uncertainty.applyUncertainty", () => {
   };
 
   it("enriches a RegionData with tier + bounds", () => {
-    const out = applyUncertainty(base, { regionTier: "static", profileKind: "solar" });
+    const out = applyUncertainty(base, { regionTier: "estimated" });
     expect(out.confidenceTier).toBe("T3-modelled");
     expect(out.uncertaintyLowGW).toBeCloseTo(1.2, 5); // 2 * 0.6
     expect(out.uncertaintyHighGW).toBeCloseTo(2.8, 5); // 2 * 1.4
@@ -169,7 +151,7 @@ describe("uncertainty.applyUncertainty", () => {
   });
 
   it("preserves all original fields", () => {
-    const out = applyUncertainty(base, { regionTier: "static", profileKind: "flat" });
+    const out = applyUncertainty(base, { regionTier: "anchored" });
     expect(out.regionId).toBe("test-region");
     expect(out.peakGW).toBe(2);
     expect(out.totalTWh).toBe(4.5);

@@ -1,17 +1,17 @@
 # Validation — UAE (`uae`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `uae`
 - **Country:** ARE
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** DEWA/EWEC fallback
 - **Source URL:** [https://www.dewa.gov.ae/](https://www.dewa.gov.ae/)
 - **Loader:** [`uae.json.ts`](../../src/data/uae.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

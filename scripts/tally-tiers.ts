@@ -6,8 +6,9 @@
  *   - `Region.tier === "live"`                     → T1a-live-tso
  *   - `Region.tier === "live-domestic-anchored"`   → T1b-live-domestic-anchored
  *   - `Region.tier === "live-neighbour-anchored"`  → T1c-live-neighbour-anchored
- *   - `Region.tier === "flare"`                    → T2 flare (presented separately)
- *   - `Region.tier === "static"`:
+ *   - `Region.tier === "anchored"` + `kind === "flare"` → T2 flare (presented separately)
+ *   - `Region.tier === "anchored"` (non-flare)     → T2 annual-calibrated
+ *   - `Region.tier === "estimated"`:
  *       * Look up the loader / static spec to get profileKind
  *       * Pass through deriveTier
  *

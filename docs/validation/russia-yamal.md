@@ -1,12 +1,12 @@
 # Validation — Yamal (flare) (`russia-yamal`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `russia-yamal`
 - **Country:** RUS
-- **Tier:** flare
+- **Tier:** anchored
 - **Kind:** flare
 - **Source:** GGFR 2024 Yamal-Nenets gas flaring (Gazprom/Novatek)
 - **Source URL:** [https://www.worldbank.org/en/programs/gasflaringreduction](https://www.worldbank.org/en/programs/gasflaringreduction)

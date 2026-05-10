@@ -6,7 +6,7 @@ describe("belize static region", () => {
     const r = REGIONS.find((r) => r.id === "belize");
     expect(r).toBeDefined();
     expect(r!.country).toBe("BLZ");
-    expect(r!.tier).toBe("static");
+    expect(r!.tier).toBe("estimated");
     expect(r!.kind).toBe("hydro");
   });
 });

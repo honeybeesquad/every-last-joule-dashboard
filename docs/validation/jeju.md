@@ -1,17 +1,17 @@
 # Validation — Jeju (S. Korea) (`jeju`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `jeju`
 - **Country:** KOR
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** wind
-- **Source:** KPX Jeju fallback
-- **Source URL:** [https://www.kpx.or.kr/](https://www.kpx.or.kr/)
+- **Source:** KPX EPSIS KNRE assessed 2026-05-09: epsis.kpx.or.kr/epsisnew/selectKnreMain.do publishes renewable utilisation rate (신재생이용률) but requires an interactive SVG map click to set region code before data loads — server returns empty gridData without it. Session-dependent AJAX endpoint (selectKnreUtilRtoGridAjax.ajax POST) confirmed browser-only. No open API key path found. T1 blocked: interactive map required, not programmatically accessible.
+- **Source URL:** [https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do](https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do)
 - **Loader:** [`jeju.json.ts`](../../src/data/jeju.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

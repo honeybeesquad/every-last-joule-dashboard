@@ -1,17 +1,17 @@
 # Validation — Russia (European grid) (`russia-mainland`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `russia-mainland`
 - **Country:** RUS
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** hydro
 - **Source:** SO UES fallback
 - **Source URL:** [https://www.so-ups.ru/](https://www.so-ups.ru/)
 - **Loader:** [`russia-mainland.json.ts`](../../src/data/russia-mainland.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 

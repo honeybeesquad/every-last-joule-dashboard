@@ -1,17 +1,17 @@
 # Validation — Vietnam (`vietnam`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `vietnam`
 - **Country:** VNM
-- **Tier:** static
+- **Tier:** estimated
 - **Kind:** solar
-- **Source:** EVN fallback
-- **Source URL:** [https://www.evn.com.vn/](https://www.evn.com.vn/)
+- **Source:** EVN/NLDC assessed 2026-05-09: NLDC (nldc.evn.vn) publishes daily dispatch reports as PDF only; no machine-readable CSV/JSON endpoint found. EVN open data portal does not expose curtailment data. EREA and World Bank USAID SAVE project cite 20–35% curtailment rates in Central/South-Central provinces 2023 (~2+ TWh/yr estimated), but only as PDF reports. T1 blocked: PDF-only, no programmatic endpoint.
+- **Source URL:** [https://nldc.evn.vn/](https://nldc.evn.vn/)
 - **Loader:** [`vietnam.json.ts`](../../src/data/vietnam.json.ts)
-- **Structural gap:** yes
+- **Structural gap:** no
 
 ## Calibration
 
@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-Region is a **structural gap**: no public hourly archive available, so backfill is not possible. Current live snapshot is populated from an annual anchor (Ember / IRENA / GGFR) and scaled by a typical-day profile where applicable. See `docs/known-limitations.md` for the full structural-gap list.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
