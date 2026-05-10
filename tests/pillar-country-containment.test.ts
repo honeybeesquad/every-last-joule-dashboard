@@ -290,17 +290,10 @@ type SkippedCase = { id: string; country: string; reason: string };
 //   `it.skip` until we either switch to higher-resolution topology or add
 //   per-region polygon overrides for these cases.
 //
-//   COORDINATE_BUG_TODOS — regions whose (lon, lat) places them in the wrong
-//   country at any reasonable polygon resolution. Real bugs in regions.ts.
-//   Marked `it.todo` so they appear in the test report as outstanding work.
 const ARCHIPELAGO_ISLAND_REGIONS = new Set<string>([
   "japan-okinawa",  // Okinawa island, not mainland Japan
   "jeju",           // Jeju island, not mainland Korea
   "vanuatu",        // archipelago dropped in 110m simplification
-]);
-const COORDINATE_BUG_TODOS = new Set<string>([
-  "guinea",            // (lon=-15.73, lat=11.75) sits in Atlantic, not Guinea
-  "guatemala-siepac",  // (lon=-86.0) is inside Honduras, not Guatemala
 ]);
 
 const testCases: TestCase[] = [];
@@ -345,18 +338,6 @@ for (const region of REGIONS) {
     continue;
   }
 
-  if (COORDINATE_BUG_TODOS.has(region.id)) {
-    // Real coordinate bug — exclude from the active sweep so CI stays green.
-    // Surfaced via `it.todo` calls below so the bugs remain visible in test
-    // output until coords are fixed in regions.ts.
-    skippedCases.push({
-      id: region.id,
-      country: region.country,
-      reason: "coordinate bug — see `it.todo` below; fix in regions.ts",
-    });
-    continue;
-  }
-
   testCases.push({ id: region.id, country: region.country, lon: region.lon, lat: region.lat });
 }
 
@@ -390,9 +371,4 @@ describe("pillar-country-containment", () => {
       ).toBe(true);
     },
   );
-
-  // Known-bug forcing functions: surface in the test report without breaking CI.
-  for (const id of COORDINATE_BUG_TODOS) {
-    it.todo(`fix coordinates: ${id} (lon, lat) places it in the wrong country`);
-  }
 });
