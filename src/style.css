@@ -1469,7 +1469,7 @@ main table {
     background: none;
     mask-image: none;
     -webkit-mask-image: none;
-    padding: 0;
+    padding: 0 0 0 16px;
   }
 
   .globe-canvas-area {
