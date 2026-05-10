@@ -6,23 +6,26 @@ import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
 /**
- * Japan — TEPCO Power Grid (東京電力パワーグリッド) area-demand CSV → live curtailment proxy.
+ * Japan — TEPCO Power Grid (東京電力パワーグリッド) area-demand CSV → curtailment proxy.
  *
- * Endpoint: https://www.tepco.co.jp/forecast/html/images/juyo-d-j.csv (live, current-day only)
+ * Endpoint investigation 2026-05-10:
+ *   - juyo-d-j.csv: HTTP 404 (filename changed).
+ *   - juyo-d1-j.csv: live (HTTP 200) but demand/forecast only — no 太陽光 solar column.
+ *   - Solar data IS available in monthly eria_jukyu_YYYYMM_03.csv (30-min, columns
+ *     太陽光発電実績 + 太陽光出力制御量 in MW). URL:
+ *     https://www.tepco.co.jp/forecast/html/images/eria_jukyu_YYYYMM_03.csv
+ *   - The monthly CSV is a viable replacement source but requires a new URL scheme
+ *     (YYYYMM-keyed, not YYYYMMDD) and a different parser (30-min intervals, MW units,
+ *     multi-column generation mix). That rewrite is deferred.
  *
- * Status: The TEPCO endpoint is fronted by a WAF that blocks automated CSV fetches
- * (returns 403/HTML even with HTTP/1.1 ALPN and browser User-Agent). Direct curl
- * inspection on 2026-05-02 confirmed the endpoint returns an HTML error page.
- * This loader falls back to buildTypicalSolarRegion. When the upstream becomes
- * accessible, replace the fallback with the RATE-based live fetch.
+ * Status: T1 BLOCKED pending loader migration to monthly area CSV. Downgraded to
+ * tier "estimated". Loader emits typical-shape from buildTypicalSolarRegion.
  *
- * Expected CSV structure (when accessible): Shift-JIS, multi-section, 5-min intervals,
- * 4-column header: DATE,TIME,当日実績(５分間隔値)(万kW),太陽光発電実績(５分間隔値)(万kW)
+ * Future: Migrate to eria_jukyu_YYYYMM_03.csv, parse 太陽光発電実績 column (MW, 30-min),
+ * and use 太陽光出力制御量 directly rather than the RATE proxy approach.
+ * The parseTepcoCsv / buildTepcoRegionData helpers are retained for future use.
  *
- * Calibration: RATE = 0.01. OCCTO FY2024 TEPCO area curtailment ≈ 0.05 TWh/yr
- * against ~5 TWh/yr solar generation (~1%). Reference: OCCTO 再生可能エネルギーの
- * 出力制御の見通しに関するレポート (FY2024 edition).
- *
+ * Calibration: OCCTO FY2024 TEPCO area curtailment ≈ 0.05 TWh/yr.
  * Solar peak UTC: 03:00 (noon JST = 03:00 UTC for lon ~139.7°E)
  */
 const REGION_ID = "japan-tepco";
@@ -162,7 +165,7 @@ const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv
 
 if (isMain) {
   withFallback<RegionData>(REGION_ID, run, {
-    regionTier: "live" as const,
+    regionTier: "estimated" as const,
     tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
     tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
   })

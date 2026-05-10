@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-09 (tier taxonomy refactor: static→estimated, flare→anchored — bucket counts unchanged.)",
-  "T1a": 155,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-10 (japan-chubu, japan-tepco, japan-hokkaido downgraded live→estimated: denki-yoho.chuden.jp dead/no solar col; tepco juyo-d-j.csv renamed to juyo-d1-j.csv + no solar col; hepco juyo_01 col[3] is all-renewables MW not solar 万kW — T1a −3, T3 +3).",
+  "T1a": 152,
   "T1b": 9,
   "T1c": 1,
   "T2": 6,
   "T2-flare": 8,
-  "T3": 205,
+  "T3": 208,
   "total": 384
 }

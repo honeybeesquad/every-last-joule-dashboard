@@ -6,7 +6,7 @@ Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `japan-hokkaido`
 - **Country:** JPN
-- **Tier:** live
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** Hokkaido Electric juyo CSV (5-min solar) × 5% calibrated curtailment (OCCTO FY2024 Hokkaido anchor: ~0.10 TWh/yr)
 - **Source URL:** [https://denkiyoho.hepco.co.jp/](https://denkiyoho.hepco.co.jp/)

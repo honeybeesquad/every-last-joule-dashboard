@@ -156,12 +156,15 @@ describe("regions", () => {
     // Phase 3c (2026-05-05): T1a +9 (turkey-wind/solar, north-sea-wind/solar,
     // norway-no1..no4 hydro+wind = 8, new-zealand-wind/solar/geo = 3 → net +9 T1a).
     // T1a: 143 + 9 = 152. (NZ geo adds kind:"geo" — still T1a live.)
+    // Per-fuel globalisation (2026-05-05): finland + ireland-republic + northern-ireland
+    // split into wind+solar. Net +3 T1a. live: 152→155.
+    // 2026-05-10: japan-chubu/tepco/hokkaido downgraded live→estimated. T1a: 155→152. Total: 165→162.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(155);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(152);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(165);
+    expect(liveTotal).toBe(162);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -183,10 +186,11 @@ describe("regions", () => {
     // Phase 3c (2026-05-05): T1a +9 (turkey, north-sea, norway×4, new-zealand). T1a 143→152.
     // Per-fuel globalisation (2026-05-05): finland + ireland-republic + northern-ireland
     // split into wind+solar. Net +3 T1a. live: 152→155.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(155);
+    // 2026-05-10: japan-chubu/tepco/hokkaido downgraded. T1a: 155→152. Total live: 165→162.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(152);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(165);
+    expect(liveTotal).toBe(162);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -259,7 +263,8 @@ describe("regions", () => {
     // Phase 4-B (2026-05-05): +26 T3-static regions. 165 + 26 = 191.
     // Phase 4-C (2026-05-05): +19 T3-static regions. 191 + 19 = 210.
     // Issue #62 (2026-05-06): add Palestine T3 static. 210 + 1 = 211.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(205);
+    // 2026-05-10: japan-chubu/tepco/hokkaido downgraded live→estimated. +3. 205→208.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(208);
   });
 
   it("has 14 anchored regions (8 flare + 6 flat-profile)", () => {
@@ -627,23 +632,34 @@ describe("regions", () => {
 
   it("includes the Japan W1 per-utility batch (2026-05-02)", () => {
     // japan (Kyushu only) renamed to japan-kyushu; 8 new T1a live loaders added.
-    // All 10 Japan utilities are tier:"live" (T1a), kind:"solar".
+    // Originally all 10 were tier:"live" (T1a); chubu/hokkaido/tepco downgraded to
+    // "estimated" on 2026-05-10 (upstream endpoint issues — see loader comments).
     expect(REGIONS.find(r => r.id === "japan")).toBeUndefined();
+    // 7 utilities still tier:"live" (T1a)
     for (const id of [
       "japan-kyushu",
       "japan-tohoku",
-      "japan-chubu",
       "japan-chugoku",
-      "japan-hokkaido",
       "japan-hokuriku",
       "japan-kansai",
       "japan-okinawa",
       "japan-shikoku",
-      "japan-tepco",
     ]) {
       const region = REGIONS.find(r => r.id === id);
       expect(region, `missing Japan utility ${id}`).toBeDefined();
       expect(region?.tier, `${id} should be live`).toBe("live");
+      expect(region?.kind, `${id} should be solar`).toBe("solar");
+      expect(region?.country, `${id} country should be JPN`).toBe("JPN");
+    }
+    // 3 utilities downgraded to tier:"estimated" (T3) on 2026-05-10
+    for (const id of [
+      "japan-chubu",
+      "japan-hokkaido",
+      "japan-tepco",
+    ]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region, `missing Japan utility ${id}`).toBeDefined();
+      expect(region?.tier, `${id} should be estimated (downgraded 2026-05-10)`).toBe("estimated");
       expect(region?.kind, `${id} should be solar`).toBe("solar");
       expect(region?.country, `${id} country should be JPN`).toBe("JPN");
     }
