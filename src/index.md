@@ -32,6 +32,7 @@ import { REGIONS } from "./lib/regions.js";
 import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./lib/fuel.js";
 import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
+import { assertCanonicalRegionData } from "./lib/region-data-integrity.js";
 import { mountGlobe } from "./globe.js";
 import { aggregateUsdAtHour, formatUsdPerHour, formatRegionUsdPerHour, usdValueAtHour, btcMinedPerHour, formatBtc, formatUsdCompact } from "./lib/price.js";
 
@@ -496,6 +497,12 @@ const regionData = {
   // Supersedes the philippines statics entry (removed 2026-04-30).
   ...philippines
 };
+
+// Throw loudly at page load if any canonical region is missing or has a
+// malformed value (e.g. multi-region loader's whole Record wired into a
+// single key — Belgium-shape bug class). Better to fail visibly than
+// render silent zero-GW pillars.
+assertCanonicalRegionData(regionData, REGIONS);
 
 // S2 uncertainty: defensive fallback. Every loader is now responsible for
 // setting confidenceTier + uncertaintyLow/HighGW upstream — typical-shape
