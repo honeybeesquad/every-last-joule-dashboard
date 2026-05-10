@@ -746,6 +746,7 @@ main table {
   justify-content: center;
   position: relative;
   z-index: 1;
+  padding: 80px 0;
   /* Opaque at outer edge, fades to transparent toward globe */
   background: linear-gradient(
     to right,
@@ -754,6 +755,9 @@ main table {
     rgba(26, 18, 7, 0.40) 80%,
     transparent 100%
   );
+  /* Soften the top and bottom edges of the dark background */
+  mask-image: linear-gradient(to bottom, transparent, black 80px, black calc(100% - 80px), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 80px, black calc(100% - 80px), transparent);
 }
 
 /* Globe panel sits in the center column of the 3-column grid.
@@ -790,6 +794,7 @@ main table {
   justify-content: flex-start;
   position: relative;
   z-index: 1;
+  padding: 80px 0;
   /* Mirror of panel-left — transparent toward globe, opaque at outer edge */
   background: linear-gradient(
     to left,
@@ -798,6 +803,9 @@ main table {
     rgba(26, 18, 7, 0.40) 80%,
     transparent 100%
   );
+  /* Soften the top and bottom edges of the dark background */
+  mask-image: linear-gradient(to bottom, transparent, black 80px, black calc(100% - 80px), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 80px, black calc(100% - 80px), transparent);
 }
 
 #globe-canvas {
@@ -1459,6 +1467,9 @@ main table {
   .panel-right {
     z-index: auto;
     background: none;
+    mask-image: none;
+    -webkit-mask-image: none;
+    padding: 0;
   }
 
   .globe-canvas-area {
