@@ -746,7 +746,7 @@ main table {
   justify-content: center;
   position: relative;
   z-index: 1;
-  padding: 80px 0;
+  padding: 80px 0 80px 16px;
   /* Opaque at outer edge, fades to transparent toward globe */
   background: linear-gradient(
     to right,
@@ -794,7 +794,7 @@ main table {
   justify-content: flex-start;
   position: relative;
   z-index: 1;
-  padding: 80px 0;
+  padding: 80px 16px 80px 0;
   /* Mirror of panel-left — transparent toward globe, opaque at outer edge */
   background: linear-gradient(
     to left,
