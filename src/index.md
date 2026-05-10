@@ -34,14 +34,13 @@ import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
 import { assertCanonicalRegionData } from "./lib/region-data-integrity.js";
 import { mountGlobe } from "./globe.js";
-import { aggregateUsdAtHour, formatUsdPerHour, formatRegionUsdPerHour, usdValueAtHour, btcMinedPerHour, formatBtc, formatUsdCompact } from "./lib/price.js";
 
 const HOTSPOT_LIST_LIMIT = 50;
 
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 112;
+const _LOADER_FILE_COUNT = 111;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -66,7 +65,6 @@ const [
   chinaLiaoning, chinaHubei, chinaShanxi, chinaShaanxi, chinaZhejiang,
   chinaHenan, chinaFujian, chinaJiangxi, chinaBeijing, chinaGuizhou,
   chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai,
-  prices,
   zenodoVersion
 ] = await Promise.all([
   trackFile(FileAttachment("data/cbeci.json").json(),            "CBECI"),
@@ -179,7 +177,6 @@ const [
   trackFile(FileAttachment("data/china-tianjin.json").json(),    "China Tianjin"),
   trackFile(FileAttachment("data/china-hainan.json").json(),     "China Hainan"),
   trackFile(FileAttachment("data/china-shanghai.json").json(),   "China Shanghai"),
-  trackFile(FileAttachment("data/prices.json").json(),           "Price data"),
   trackFile(FileAttachment("data/zenodo-version.json").json(),   "Version metadata"),
 ]);
 
@@ -651,7 +648,7 @@ mountModeToggle(document.getElementById("mode-toggle"), {
     mode.value = nextMode;
     renderAt(clock.hour);
     timeline.update({ mode: nextMode });
-    globe?.update({ utcHour: clock.hour, mode: nextMode, unitMode: "MW", priceData: prices ?? {} });
+    globe?.update({ utcHour: clock.hour, mode: nextMode, unitMode: "MW" });
   },
 });
 
@@ -672,7 +669,6 @@ globe = await mountGlobe(canvas, {
   utcHour: initialHour,
   mode: mode.value,
   unitMode: "MW",
-  priceData: prices ?? {},
   topologyUrl: await FileAttachment("data/countries-110m.json").url(),
   onRegionClick(region, anchor) {
     if (region) regionTooltip.show(region, anchor);
@@ -712,6 +708,6 @@ if (pageLoader) {
   setTimeout(() => pageLoader.remove(), 380);
 }
 
-clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value, unitMode: "MW", priceData: prices ?? {} }));
+clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value, unitMode: "MW" }));
 clock.subscribe(renderAt);
 ```

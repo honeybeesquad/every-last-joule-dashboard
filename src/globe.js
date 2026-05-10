@@ -194,7 +194,6 @@ export async function mountGlobe(canvas, initial) {
     utcHour: initial.utcHour,
     mode: initial.mode ?? "avg30d",
     unitMode: initial.unitMode ?? "MW",
-    priceData: initial.priceData ?? {},
     rotation: [-10, -15, 0],
     dragging: false,
     zoomScale: 1.0,
