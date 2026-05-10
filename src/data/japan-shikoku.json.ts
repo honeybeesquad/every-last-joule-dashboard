@@ -8,14 +8,11 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 /**
  * Japan — Shikoku Electric Power T&D (四国電力送配電) area-demand CSV → live curtailment proxy.
  *
- * Endpoint (live): https://www.yonden.co.jp/nw/denkiyoho/juyo_shikoku.csv
- * Endpoint (archive): https://www.yonden.co.jp/nw/denkiyoho/csv/juyo_08_YYYYMMDD.csv
+ * Endpoint (daily): https://www.yonden.co.jp/nw/denkiyoho/juyo_08_YYYYMMDD.csv
+ * Only today's file is served; yesterday's returns 404. The /csv/ subdirectory
+ * and the static juyo_shikoku.csv alias were retired as of 2026-05.
  *
- * Status: Both URLs returned 404 on 2026-05-02. Yonden T&D may have restructured
- * their CSV publication path. This loader falls back to buildTypicalSolarRegion.
- * When the URL is verified/updated, replace the fallback with the RATE-based live fetch.
- *
- * Expected CSV structure (when accessible): Shift-JIS, multi-section, 5-min intervals,
+ * CSV structure: Shift-JIS, multi-section, 5-min intervals,
  * 4-column header: DATE,TIME,当日実績(５分間隔値)(万kW),太陽光発電実績(５分間隔値)(万kW)
  *
  * Calibration: RATE = 0.07. OCCTO FY2024 Shikoku area curtailment ≈ 0.30 TWh/yr
@@ -26,13 +23,22 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
  */
 const REGION_ID = "japan-shikoku";
 const RATE = 0.07;
-const LIVE_URL = "https://www.yonden.co.jp/nw/denkiyoho/juyo_shikoku.csv";
 /** 万kW → MW */
 const TENK_KW_TO_MW = 10;
 /** Japan Standard Time offset from UTC, hours */
 const JST_OFFSET_HOURS = 9;
 /** 5-minute interval expressed as a fraction of an hour */
 const INTERVAL_HOURS = 5 / 60;
+
+/** Build the daily CSV URL for a given UTC Date (JST = UTC+9, same calendar date used by Yonden). */
+function yondenDailyUrl(date: Date): string {
+  // Yonden publishes under JST date; advance by 9 h to get the correct JST calendar date.
+  const jst = new Date(date.getTime() + JST_OFFSET_HOURS * 3600 * 1000);
+  const yyyy = jst.getUTCFullYear();
+  const mm = String(jst.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(jst.getUTCDate()).padStart(2, "0");
+  return `https://www.yonden.co.jp/nw/denkiyoho/juyo_08_${yyyy}${mm}${dd}.csv`;
+}
 
 export interface ShikokuParsed {
   points: CurtailmentPoint[];
@@ -133,9 +139,10 @@ export function buildShikokuRegionData(points: CurtailmentPoint[], nowIso: strin
 const run = async (): Promise<RegionData> => {
   const now = new Date();
 
-  // Try live fetch; fall back to typical-shape if URL is inaccessible.
+  // Try today's date-stamped CSV (Yonden only serves the current day's file).
+  const todayUrl = yondenDailyUrl(now);
   try {
-    const buf = await fetchHttp1Bytes(LIVE_URL, 30000);
+    const buf = await fetchHttp1Bytes(todayUrl, 30000);
     const decoded = new TextDecoder("shift-jis").decode(buf);
     const parsed = parseShikokuCsv(decoded);
     if (parsed.points.length > 0) {
@@ -143,7 +150,7 @@ const run = async (): Promise<RegionData> => {
       return buildShikokuRegionData(parsed.points, now.toISOString());
     }
   } catch (err) {
-    console.warn(`shikoku live fetch failed: ${(err as Error).message} — using typical-shape fallback`);
+    console.warn(`shikoku daily fetch failed (${todayUrl}): ${(err as Error).message} — using typical-shape fallback`);
   }
 
   // Fallback: typical solar shape anchored to OCCTO FY2024 estimate.
@@ -152,7 +159,7 @@ const run = async (): Promise<RegionData> => {
     REGION_ID,
     3, // peakHourUtc
     0.30,
-    "Shikoku Electric T&D (四国電力送配電) — live CSV URL not accessible (2026-05-02 404); typical solar shape × OCCTO FY2024 Shikoku anchor ~0.30 TWh/yr",
+    "Shikoku Electric T&D (四国電力送配電) — daily CSV not accessible; typical solar shape × OCCTO FY2024 Shikoku anchor ~0.30 TWh/yr",
     "2024",
   );
 };

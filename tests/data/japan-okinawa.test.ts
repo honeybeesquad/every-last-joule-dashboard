@@ -5,22 +5,22 @@ import { fileURLToPath } from "node:url";
 import { buildOkinawaRegionData, parseOkinawaCsv } from "../../src/data/japan-okinawa.json";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-// Fixture is a minimal synthetic Shift-JIS CSV with the correct multi-section format.
-// The live endpoint returned 404 on 2026-05-02; this validates the parser logic.
+// Fixture is a synthetic Shift-JIS monthly CSV in the new 22-column format.
+// Mirrors the restructured Okiden endpoint (eria_jukyu_YYYYMM_10.csv) introduced 2026-05.
 const fixtureBytes = readFileSync(join(__dirname, "../fixtures/japan-okinawa-sample.csv"));
 const fixture = new TextDecoder("shift-jis").decode(fixtureBytes);
 
 describe("okinawa parser (japan-okinawa loader)", () => {
-  it("locates the 5-min solar section by the 4-column DATE,TIME header", () => {
+  it("locates the 22-column header by エリア需要 / 太陽光発電実績 signature", () => {
     const { points, sampleCount } = parseOkinawaCsv(fixture);
     expect(points.length).toBeGreaterThan(0);
     expect(sampleCount).toBe(points.length);
   });
 
-  it("emits points with intervalHours=5/60", () => {
+  it("emits points with intervalHours=0.5 (30-minute intervals)", () => {
     const { points } = parseOkinawaCsv(fixture);
     for (const p of points) {
-      expect(p.intervalHours).toBeCloseTo(5 / 60, 6);
+      expect(p.intervalHours).toBeCloseTo(0.5, 6);
     }
   });
 
@@ -32,11 +32,24 @@ describe("okinawa parser (japan-okinawa loader)", () => {
     expect(firstUtcHour).toBe(15);
   });
 
-  it("applies the 2% calibration rate to the 万kW solar column", () => {
-    const { points, solarMwSum } = parseOkinawaCsv(fixture);
-    expect(solarMwSum).toBeGreaterThanOrEqual(0);
-    const curtailmentMwSum = points.reduce((s, p) => s + p.mw, 0);
-    expect(curtailmentMwSum).toBeCloseTo(solarMwSum * 0.02, 4);
+  it("reads solar curtailment directly from column 14 (no rate multiplication)", () => {
+    const { points, solarCurtMwSum } = parseOkinawaCsv(fixture);
+    expect(solarCurtMwSum).toBeGreaterThan(0);
+    // The fixture has non-zero curtailment only during daytime rows.
+    // Curtailment MW values come straight from col 14 — no × rate.
+    const firstDayPoint = points.find((p) => {
+      const h = new Date(p.utcTimestamp).getUTCHours();
+      // JST 6:00 = UTC 21:00; JST 9:00 = UTC 0:00 next day
+      return h === 21 || h === 0;
+    });
+    expect(firstDayPoint).toBeDefined();
+    expect(firstDayPoint!.mw).toBeGreaterThan(0);
+  });
+
+  it("sums solar and wind curtailment into each point's mw", () => {
+    const { points, solarCurtMwSum, windCurtMwSum } = parseOkinawaCsv(fixture);
+    const totalMwSum = points.reduce((s, p) => s + p.mw, 0);
+    expect(totalMwSum).toBeCloseTo(solarCurtMwSum + windCurtMwSum, 4);
   });
 
   it("produces non-negative curtailment MW values", () => {

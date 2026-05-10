@@ -243,8 +243,8 @@ Piauí) dominates the current picture, followed by the US MISO
 footprint, Vietnam, Germany, and north India. The specific
 GW values are snapshot-dependent and refresh each dashboard build.
 
-The 120-region gap between `src/lib/regions.ts` (241) and the
-snapshot-count (113) is reported honestly on the figure: those
+The 274-region gap between `src/lib/regions.ts` (384) and the
+snapshot-count (110) is reported honestly on the figure: those
 regions appear at minimum-size so the map shows full geographic
 coverage without overclaiming live data.
 

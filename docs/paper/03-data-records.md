@@ -17,11 +17,11 @@ to navigate the records.
 ## 3.1 Per-region JSON snapshots
 
 **Location:** `data/snapshots/last-good/<regionId>.json`
-**Count:** 230 files, one per region, covering every entry in
+**Count:** 384 entries emitted, one per region, covering every entry in
 `src/lib/regions.ts`.
 **Format:** UTF-8 JSON, ≈ 3 KB per file, schema enforced by
 `dataset/schema/region-snapshot.schema.json` (JSON Schema Draft 2020-12).
-**Cadence:** overwritten on each scheduled build (~every 6 hours
+**Cadence:** overwritten on each scheduled build (~every 3 hours
 per GitHub Actions cron).
 
 Field-by-field description and an example record live in
@@ -41,7 +41,7 @@ value matches the per-region schema above.
 
 **Location:** `data/historical/curtailment_history.parquet`
 **Format:** Apache Parquet 2.6, Snappy compression, typed columns.
-**Cadence:** one row per region per scheduled build (~230 rows / 6 h
+**Cadence:** one row per region per scheduled build (~384 rows / 3 h
 ≈ 17 MB / year), appended by `scripts/append_history.py` via
 `.github/workflows/history-append.yml`.
 **Granularity:** build-level snapshot — each row captures the

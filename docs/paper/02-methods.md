@@ -193,18 +193,21 @@ regions emit nothing).
 | T2 flare | Flare region, flat 24/7 base-load | ±20% (presentational split from T2; same envelope) |
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
 
-The tier distribution at submission: **106 T1a, 6 T1b, 1 T1c, 2
-T2-annual-calibrated, 8 T2-flare, 118 T3** (total 241). The six
-T1b zones are Italy-Sardinia, Italy-North-Zone, Italy-Sicily,
-the Netherlands, the Baltics, and Colombia (XM API) — each
-pairing a live feed against either a national-anchor zone-share,
-a modelled-share rate, or a domestic stat-agency anchor. The
-single T1c zone is Switzerland (Swissgrid live feed with the
-Czech CEPS rate as a neighbouring proxy). The two T2
-regions are Austria (APG provisional anchor, flat-base proxy)
-and Russia Murmansk wind (SO UPS dispatch-limit estimate, flat).
-The four T2-flare regions are the Permian, West Siberia, South
-Iraq, and East Saudi flare basins. The 117 T3 regions are static
+The tier distribution at submission: **155 T1a, 9 T1b, 1 T1c, 6
+T2-annual-calibrated, 8 T2-flare, 205 T3** (total 384). The nine
+T1b zones are Italy-Sardinia (wind+solar), Italy-North-Zone
+(wind+solar), Italy-Sicily (wind+solar), Netherlands (wind+solar),
+and Colombia (XM API) — each pairing a live feed against either a
+national-anchor zone-share, a modelled-share rate, or a domestic
+stat-agency anchor. The single T1c zone is Switzerland (Swissgrid
+live feed with the Czech CEPS rate as a neighbouring proxy). The
+six T2 regions are Austria (APG provisional anchor, flat-base
+proxy), Russia Murmansk wind (SO UPS dispatch-limit estimate,
+flat), and four Chinese hydro provinces (Hunan, Hubei, Guizhou,
+Chongqing). The eight T2-flare regions are the Permian, West
+Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia
+Yamal-Nenets, and Russia East Siberia. The 205 T3 regions are
+static
 annual anchors (Ember, IRENA, regulator reports) combined with a
 typical diurnal or monthly-seasonal shape (solar cosine, wind
 broad-overnight, hydro monthly, mixed fuel-share,
