@@ -18,6 +18,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -175,6 +176,192 @@ def build_annual_table(
             f"{format_number(tsotwh)} | {delta} | {source} |"
         )
     return "\n".join(lines) + "\n"
+
+
+# ---------------------------------------------------------------------------
+# Manual-block preservation
+# ---------------------------------------------------------------------------
+# Authors can wrap arbitrary content in explicit markers anywhere in a
+# validation doc.  The script extracts those blocks before regenerating,
+# then re-injects them after.
+#
+# Marker syntax (each marker must be on its own line):
+#
+#   <!-- BEGIN MANUAL -->
+#   …content the regen must not touch…
+#   <!-- END MANUAL -->
+#
+# Placement strategy: (A) "anchor by preceding ## section heading".
+# Each manual block is associated with the nearest ## heading above it in
+# the existing doc (or the sentinel "__TOP__" if no heading precedes it).
+# After regen, the script appends the manual block immediately after all
+# regen-emitted content for that heading's section (i.e. just before the
+# next ## heading or end-of-file).  This is the most robust strategy
+# because section headings are stable across minor content changes — only
+# a heading rename can break placement, and the spec's fallback (append at
+# end with WARNING comment + stderr log) handles that gracefully.
+
+_MANUAL_BEGIN = "<!-- BEGIN MANUAL -->"
+_MANUAL_END = "<!-- END MANUAL -->"
+_UNPLACED_WARNING = "<!-- WARNING: regen could not place this block -->"
+
+
+def _extract_manual_blocks(text: str) -> list[tuple[str, str]]:
+    """Parse all <!-- BEGIN MANUAL --> … <!-- END MANUAL --> blocks.
+
+    Returns a list of (anchor_heading, block_text) pairs where
+    anchor_heading is the nearest ## heading above the BEGIN marker, or
+    "__TOP__" if the block appears before any ## heading.
+
+    Malformed input (unclosed BEGIN, or nested BEGIN inside an open block)
+    is handled defensively:
+      - A BEGIN with no matching END is skipped (the partial block is
+        discarded) and a warning is printed to stderr.
+      - A BEGIN inside an already-open block is treated as a warning; the
+        outer block is closed at that point and a new block starts.
+    """
+    lines = text.splitlines(keepends=True)
+    blocks: list[tuple[str, str]] = []
+
+    current_heading = "__TOP__"
+    block_start_line: int | None = None
+    block_lines: list[str] = []
+    block_heading: str = "__TOP__"
+    # Track the heading at the time of the most recently seen BEGIN marker.
+
+    for lineno, line in enumerate(lines, start=1):
+        stripped = line.strip()
+
+        if stripped.startswith("## ") and block_start_line is None:
+            # Update current heading only when NOT inside an open block.
+            current_heading = stripped
+
+        if stripped == _MANUAL_BEGIN:
+            if block_start_line is not None:
+                # Nested BEGIN — close the outer block defensively.
+                print(
+                    f"  warn: nested {_MANUAL_BEGIN!r} at line {lineno}; "
+                    f"closing outer block started at line {block_start_line}",
+                    file=sys.stderr,
+                )
+                blocks.append((block_heading, "".join(block_lines)))
+                block_lines = []
+            block_start_line = lineno
+            block_heading = current_heading
+            # Don't include the BEGIN marker itself in the preserved content.
+            continue
+
+        if stripped == _MANUAL_END:
+            if block_start_line is None:
+                print(
+                    f"  warn: stray {_MANUAL_END!r} at line {lineno} (no open block) — ignored",
+                    file=sys.stderr,
+                )
+                continue
+            blocks.append((block_heading, "".join(block_lines)))
+            block_start_line = None
+            block_lines = []
+            # Don't include the END marker itself in the preserved content.
+            continue
+
+        if block_start_line is not None:
+            block_lines.append(line)
+
+    if block_start_line is not None:
+        print(
+            f"  warn: unclosed {_MANUAL_BEGIN!r} starting at line {block_start_line} — block discarded",
+            file=sys.stderr,
+        )
+
+    return blocks
+
+
+def _inject_manual_blocks(doc: str, blocks: list[tuple[str, str]], region_id: str) -> str:
+    """Re-inject manual blocks into a freshly-generated doc.
+
+    Strategy (A): for each block, find the section in the new doc whose
+    ## heading matches the block's anchor heading, then append the block
+    (wrapped in BEGIN/END markers) at the end of that section — i.e. just
+    before the next ## heading or end-of-file.
+
+    If a block's anchor heading no longer exists in the new doc, it is
+    appended at the very end of the doc with a <!-- WARNING: … --> comment,
+    and a message is printed to stderr.
+    """
+    if not blocks:
+        return doc
+
+    # Build a map from heading → list of blocks (preserving order for
+    # multiple blocks under the same heading).
+    by_heading: dict[str, list[str]] = defaultdict(list)
+    for heading, block_text in blocks:
+        by_heading[heading].append(block_text)
+
+    lines = doc.splitlines(keepends=True)
+    out: list[str] = []
+    unplaced: list[str] = []
+
+    # Mark which headings we've already injected (first-match wins for
+    # multi-block-under-same-heading; we inject them all at once).
+    injected: set[str] = set()
+
+    # "__TOP__" blocks go at the very beginning, before the first line.
+    top_blocks = by_heading.pop("__TOP__", [])
+    if top_blocks:
+        injected.add("__TOP__")
+        for b in top_blocks:
+            out.append(_MANUAL_BEGIN + "\n")
+            out.append(b if b.endswith("\n") else b + "\n")
+            out.append(_MANUAL_END + "\n")
+
+    # Walk through lines; when we're about to emit a new ## heading,
+    # first flush the pending injection for the heading we're leaving.
+    pending_heading: str | None = None
+
+    def _flush_pending() -> None:
+        """Inject blocks for pending_heading, if any, before moving on."""
+        if pending_heading is None or pending_heading in injected:
+            return
+        if pending_heading not in by_heading:
+            return
+        injected.add(pending_heading)
+        blist = by_heading[pending_heading]
+        out.append("\n")
+        for b in blist:
+            out.append(_MANUAL_BEGIN + "\n")
+            out.append(b if b.endswith("\n") else b + "\n")
+            out.append(_MANUAL_END + "\n")
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("## "):
+            _flush_pending()
+            pending_heading = stripped
+        out.append(line)
+
+    # Flush the last section.
+    _flush_pending()
+
+    # Any block whose anchor heading wasn't found in the new doc.
+    for heading, blist in by_heading.items():
+        if heading not in injected:
+            print(
+                f"  warn [{region_id}]: section {heading!r} no longer exists in "
+                f"regenerated doc; manual block(s) appended at end of file.",
+                file=sys.stderr,
+            )
+            for b in blist:
+                unplaced.append(b)
+
+    if unplaced:
+        out.append("\n")
+        for b in unplaced:
+            out.append(_UNPLACED_WARNING + "\n")
+            out.append(_MANUAL_BEGIN + "\n")
+            out.append(b if b.endswith("\n") else b + "\n")
+            out.append(_MANUAL_END + "\n")
+
+    return "".join(out)
 
 
 _PLACEHOLDER_MARKERS = (
@@ -355,6 +542,39 @@ Last updated: {TODAY} · Sprint: S1 + HB integration · Paper section: Technical
     return doc
 
 
+def build_region_doc_with_manual_blocks(
+    region: dict,
+    anchors: dict[str, dict],
+    out_path: Path,
+) -> str:
+    """Generate a region doc, preserving any <!-- BEGIN MANUAL --> blocks
+    from the existing file at out_path.
+
+    This is the public entry-point used by main().  It:
+      1. Reads and parses manual blocks from the existing doc (if any).
+      2. Calls build_region_doc() to produce fresh content.
+      3. Re-injects the manual blocks using strategy (A): anchor by the
+         nearest ## heading above each block in the old doc.
+    """
+    manual_blocks: list[tuple[str, str]] = []
+    if out_path.exists():
+        try:
+            existing_text = out_path.read_text(encoding="utf-8")
+            manual_blocks = _extract_manual_blocks(existing_text)
+        except Exception as exc:
+            print(
+                f"  warn: could not read {out_path.name} for manual-block extraction: {exc}",
+                file=sys.stderr,
+            )
+
+    fresh_doc = build_region_doc(region, anchors)
+
+    if not manual_blocks:
+        return fresh_doc
+
+    return _inject_manual_blocks(fresh_doc, manual_blocks, region["id"])
+
+
 def main() -> int:
     VALIDATION_DIR.mkdir(parents=True, exist_ok=True)
     regions = parse_regions_ts()
@@ -378,8 +598,8 @@ def main() -> int:
 
     written = 0
     for r in regions:
-        doc = build_region_doc(r, anchors)
         out = VALIDATION_DIR / f"{r['id']}.md"
+        doc = build_region_doc_with_manual_blocks(r, anchors, out)
         out.write_text(doc, encoding="utf-8")
         written += 1
     # Build an index
