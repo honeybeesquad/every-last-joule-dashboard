@@ -22,21 +22,20 @@ describe("mountThemeToggle", () => {
     localStorage.clear();
   });
 
-  it("renders three chips with sunfire active", () => {
+  it("renders two chips with sunfire active", () => {
     cleanup = mountThemeToggle(host);
     const buttons = host.querySelectorAll("button[data-theme]");
-    expect(buttons.length).toBe(3);
+    expect(buttons.length).toBe(2);
     expect(buttons[0].getAttribute("data-theme")).toBe("sunfire");
     expect(buttons[0].getAttribute("aria-checked")).toBe("true");
     expect(buttons[1].getAttribute("aria-checked")).toBe("false");
-    expect(buttons[2].getAttribute("aria-checked")).toBe("false");
   });
 
   it("reads the current theme from documentElement on mount", () => {
-    document.documentElement.setAttribute("data-theme", "eclipse");
+    document.documentElement.setAttribute("data-theme", "deepcurrent");
     cleanup = mountThemeToggle(host);
-    const eclipseBtn = host.querySelector('button[data-theme="eclipse"]')!;
-    expect(eclipseBtn.getAttribute("aria-checked")).toBe("true");
+    const deepcurrentBtn = host.querySelector('button[data-theme="deepcurrent"]')!;
+    expect(deepcurrentBtn.getAttribute("aria-checked")).toBe("true");
   });
 
   it("clicking a chip updates documentElement, localStorage, aria, and dispatches themechange", () => {
@@ -46,14 +45,14 @@ describe("mountThemeToggle", () => {
       events.push((e as CustomEvent).detail.theme);
     });
 
-    const vellumBtn = host.querySelector('button[data-theme="vellum"]') as HTMLButtonElement;
-    vellumBtn.click();
+    const deepcurrentBtn = host.querySelector('button[data-theme="deepcurrent"]') as HTMLButtonElement;
+    deepcurrentBtn.click();
 
-    expect(document.documentElement.getAttribute("data-theme")).toBe("vellum");
-    expect(localStorage.getItem("elj-theme")).toBe("vellum");
-    expect(vellumBtn.getAttribute("aria-checked")).toBe("true");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("deepcurrent");
+    expect(localStorage.getItem("elj-theme")).toBe("deepcurrent");
+    expect(deepcurrentBtn.getAttribute("aria-checked")).toBe("true");
     expect(host.querySelector('button[data-theme="sunfire"]')!.getAttribute("aria-checked")).toBe("false");
-    expect(events).toEqual(["vellum"]);
+    expect(events).toEqual(["deepcurrent"]);
   });
 
   it("clicking the already-active chip is a no-op (no extra events)", () => {
@@ -70,15 +69,15 @@ describe("mountThemeToggle", () => {
     const sunfireBtn = host.querySelector('button[data-theme="sunfire"]') as HTMLButtonElement;
     sunfireBtn.focus();
     sunfireBtn.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
-    expect(document.documentElement.getAttribute("data-theme")).toBe("vellum");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("deepcurrent");
   });
 
-  it("ArrowLeft from sunfire wraps around to eclipse", () => {
+  it("ArrowLeft from sunfire wraps around to deepcurrent", () => {
     cleanup = mountThemeToggle(host);
     const sunfireBtn = host.querySelector('button[data-theme="sunfire"]') as HTMLButtonElement;
     sunfireBtn.focus();
     sunfireBtn.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
-    expect(document.documentElement.getAttribute("data-theme")).toBe("eclipse");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("deepcurrent");
   });
 
   it("returns a cleanup function that removes the rendered DOM", () => {
