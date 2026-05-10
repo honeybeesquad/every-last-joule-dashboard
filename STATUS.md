@@ -1,7 +1,7 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-05-10 by Claude (audit-fixes sprint shipped, tier refactor landed)
-**Active branch:** `main` @ `88b4315` (Vercel production branch; auto-deploys to everylastjoule.com)
+**Last verified against git:** 2026-05-10 by Claude (audit-fixes sprint + follow-up sprint shipped, tier refactor landed)
+**Active branch:** `main` @ `a935a69` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
 > **For AI sessions:** read this file before drafting plans, brainstorming, or creating worktrees. Plans in `~/.claude/plans/` and `docs/superpowers/plans/` may be SHIPPED — check this file before treating any plan as live work.
@@ -12,7 +12,7 @@
 
 **Coverage — full world:**
 - 384 regions across 195 countries (every UN member + Taiwan + Palestine)
-- Tally golden as of 2026-05-08: T1a=155, T1b=9, T1c=1, T2=6, T2-flare=8, T3=205
+- Tally golden as of 2026-05-10: T1a=152, T1b=9, T1c=1, T2=6, T2-flare=8, T3=208 (Japan chubu/tepco/hokkaido downgraded from T1a→T3 in PR #90 after upstream investigation; total still 384)
 - Live at **everylastjoule.com** — Vercel auto-deploys from `main`
 - Dashboard banner: **"WASTED ENERGY DATABASE · V1.2.1"**
 
@@ -42,6 +42,12 @@
 - **PR #87** — dead code purge: build-time price/fx data layer fully removed; orphan loaders (`japan.json.ts`, `india-{north,south,west}.json.ts`), unit-toggle.js, caiso-oasis fixture, dead unit-toggle CSS rules; cosmetic sweep — region-count drift fixed across README / observablehq.config / dataset/README / about.md / tests/regions.test.ts.
 - **PR #88** — tier-taxonomy refactor (described in section above) + India SLDC scaffolding (`readStateSldcCurtailment` helper + CSV ingestion path on 6 India state loaders, opportunistic, no-op until SLDC CSVs land); `build_region_docs.py` regex fixed to tolerate `sourceProvenance` field; 387 validation docs regenerated, 7 cited docs (alberta-wind + 6 India SLDC) hand-preserved.
 
+**Audit follow-up sprint (shipped 2026-05-10, PRs #89-#92):**
+- **PR #89** — corrected coordinates for `guinea` (was in Atlantic ~50km west of Guinea-Bissau, looked like a copy-paste from the adjacent row) and `guatemala-siepac` (was inside Honduras east of Tegucigalpa). Pillar test grew from 351 active + 2 todo → 353 active passing.
+- **PR #90** — Japan upstream investigation: `chubu` (denki-yoho.chuden.jp dead, migrated site has no solar CSV), `tepco` (filename rename `juyo-d-j.csv` → `juyo-d1-j.csv` but new file is demand-only; viable monthly CSV exists at `eria_jukyu_YYYYMM_03.csv` with direct `太陽光出力制御量` column — non-trivial loader rewrite for future), `hokkaido` (loader was parsing all-renewables MW as solar 万kW = 10× overcount + wrong fuel attribution). All three downgraded `tier: "live"` → `"estimated"`. Tally-golden updated. Future work documented in loader JSDocs.
+- **PR #91** — pillar-polygon override mechanism. Added `tests/fixtures/region-polygon-overrides.geo.json` mapping region.id → custom GeoJSON polygon. Used for `japan-okinawa`, `jeju`, `vanuatu` whose islands are excluded from countries-110m.json. Test sweep grew from 353 → 356 active passing. No regions remain in the archipelago skip-list.
+- **PR #92** — `build_region_docs.py` manual-block markers. `<!-- BEGIN MANUAL --> ... <!-- END MANUAL -->` blocks survive regeneration via section-heading anchoring. 19 new tests. Demonstrated on `india-rajasthan.md` (bad-conversion citation block survives byte-identical across regen). Wraps follow-ups: 6 other cited docs not yet wrapped.
+
 **Visual system + theme system + brand:** as previously shipped (Sunfire/Vellum/Eclipse themes, sun-aligned terminator + pillars, scrubbable timeline, mode toggle, tooltips, mobile perf, self-hosted fonts, theme-tokens runtime reader, no-FOUC boot script, themechange repaints). Defaults to 0.5× playback.
 
 **Paper + DOI:**
@@ -50,17 +56,21 @@
 
 ## What's NOT shipped / open PRs
 
-None. PRs #84-#88 all merged 2026-05-10. PR #68 (USD toggle) is fully superseded — data layer deleted in PR #87.
+None. 9 PRs merged 2026-05-10 (#84-#92). PR #68 (USD toggle) is fully superseded — data layer deleted in PR #87.
 
 ## Known follow-ups
 
-**From the 2026-05-10 audit-fixes sprint:**
-- **Pillar-coord bugs (2 real)** — `guinea` (-15.73, 11.75 sits in Atlantic), `guatemala-siepac` (-86.0 is in Honduras). Marked `it.todo` in `tests/pillar-country-containment.test.ts`. One-line fix per region in `regions.ts` once the right coords are decided.
-- **Pillar-coord island artifacts (3)** — `japan-okinawa`, `jeju`, `vanuatu` skipped because the 110m country polygon doesn't include their islands. Either switch to higher-res topology or add per-region polygon overrides.
-- **Japan upstream availability** — `japan-chubu` (DNS ENOTFOUND on `denki-yoho.chuden.jp`), `japan-tepco` (HTTP 404), `japan-hokkaido` (date-keyed CSV 404). These render via `withFallback` cached snapshots. Investigate whether endpoints have moved (Chubu DNS especially), or downgrade `tier: "live"` if permanently unreachable.
-- **`build_region_docs.py` should preserve manual edits** — currently overwrites whole files on regen, blowing away author-added content like bad-conversion-checklist citations. Add `<!-- BEGIN MANUAL -->` / `<!-- END MANUAL -->` markers the regen leaves alone. The 7 hand-preserved cited docs (alberta-wind + 6 India SLDC) are evidence of this fragility.
+**Closed by the 2026-05-10 follow-up sprint:**
+- ✅ Pillar-coord bugs (guinea, guatemala-siepac) — PR #89
+- ✅ Island-polygon artifacts (japan-okinawa, jeju, vanuatu) — PR #91 (override polygons)
+- ✅ Japan upstream availability — PR #90 (3 tier downgrades + investigation)
+- ✅ `build_region_docs.py` manual-block markers — PR #92
+
+**Still outstanding:**
+- **Wrap the other 6 cited docs in manual-block markers** — `alberta-wind.md` and `india-{andhra-pradesh,gujarat,karnataka,maharashtra,tamil-nadu}.md`. PR #92 demonstrated the mechanism on `india-rajasthan.md` only. Mechanical sweep, ~10 minutes of work.
 - **End-to-end loader-output integrity test** — deferred to Phase 5 of the audit-fix plan. Needs the wiring logic factored out of `src/index.md`'s inline Observable cell into a callable `loaders.ts` module, then a test that exercises the full loader → wiring → `regionData` chain.
 - **`mountGlobe` split** — 862-line single function holding rendering, projection, drag/zoom, panel, weather/price threading. Worth a refactor pass, separate brainstorming.
+- **TEPCO monthly CSV migration** (loader rewrite) — would restore TEPCO from `tier: "estimated"` to `T1a-live-tso`. The viable file `eria_jukyu_YYYYMM_03.csv` has a direct `太陽光出力制御量` (solar curtailment) column — better data quality than the abandoned 5-min path. YYYYMM URL scheme + 30-min intervals + multi-column parse needed.
 
 **Pre-existing:**
 - **Issue #43** — India SLDC live parsers. Needs Mullvad (or equivalent) with a genuine India PoP before the 3 geoblocked SLDCs from PR #74 can be wired live. Note: the SLDC ingestion path now exists (PR #88), it just has no data to ingest yet.
