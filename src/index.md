@@ -337,12 +337,22 @@ const regionData = {
   ...france,
   "netherlands-wind": entsoe["netherlands-wind"],
   "netherlands-solar": entsoe["netherlands-solar"],
-  // Denmark split by Energinet PriceArea. DK1 (Jutland/Fyn) hosts most
-  // onshore wind and interconnects with Germany; DK2 (Zealand) is across
-  // Øresund from Sweden. 75/25 approximates DK1's share of combined
-  // wind+solar generation.
-  "denmark-west": splitRegion(denmark, "denmark-west", 0.75, "DK1 (Jutland/Fyn) share of Energinet wind+solar"),
-  "denmark-east": splitRegion(denmark, "denmark-east", 0.25, "DK2 (Zealand) share of Energinet wind+solar"),
+  // Denmark split by Energinet PriceArea × fuel. DK1 (Jutland/Fyn) hosts
+  // most onshore wind and interconnects with Germany; DK2 (Zealand) is
+  // across Øresund from Sweden. Zone share: 75% DK1 / 25% DK2 of combined
+  // wind+solar generation. Fuel share: observed 30-day split from the
+  // loader's fuelShare field (falls back to 70/30 wind/solar for first
+  // boot before any data has loaded).
+  ...(() => {
+    const wShare = denmark.fuelShare?.wind ?? 0.7;
+    const sShare = denmark.fuelShare?.solar ?? 0.3;
+    return {
+      "denmark-west-wind":  splitRegion(denmark, "denmark-west-wind",  0.75 * wShare, "DK1 wind: 75% zone × observed wind fuel-share"),
+      "denmark-west-solar": splitRegion(denmark, "denmark-west-solar", 0.75 * sShare, "DK1 solar: 75% zone × observed solar fuel-share"),
+      "denmark-east-wind":  splitRegion(denmark, "denmark-east-wind",  0.25 * wShare, "DK2 wind: 25% zone × observed wind fuel-share"),
+      "denmark-east-solar": splitRegion(denmark, "denmark-east-solar", 0.25 * sShare, "DK2 solar: 25% zone × observed solar fuel-share"),
+    };
+  })(),
   "poland-wind": entsoe["poland-wind"],
   "poland-solar": entsoe["poland-solar"],
   "greece-wind": entsoe["greece-wind"],
