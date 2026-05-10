@@ -35,13 +35,12 @@ import { splitRegion } from "./lib/split-region.js";
 import { mountGlobe } from "./globe.js";
 import { aggregateUsdAtHour, formatUsdPerHour, formatRegionUsdPerHour, usdValueAtHour, btcMinedPerHour, formatBtc, formatUsdCompact } from "./lib/price.js";
 
-const ERCOT_NATIVE_ENABLED = false;
 const HOTSPOT_LIST_LIMIT = 50;
 
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 104;
+const _LOADER_FILE_COUNT = 103;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -49,7 +48,7 @@ initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 // network latency before first paint. HTTP/2 multiplexes these easily;
 // on a typical connection this drops to ~300–600ms for the lot.
 const [
-  cbeci, ercot, ercotNative, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
+  cbeci, ercot, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
   entsoe, aemo, belgium, france, denmark, newZealand, norway, atacama,
   chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
   ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
@@ -69,7 +68,6 @@ const [
 ] = await Promise.all([
   trackFile(FileAttachment("data/cbeci.json").json(),            "CBECI"),
   trackFile(FileAttachment("data/ercot.json").json(),            "ERCOT"),
-  trackFile(FileAttachment("data/ercot-native.json").json(),     "ERCOT (native)"),
   trackFile(FileAttachment("data/caiso.json").json(),            "California ISO"),
   trackFile(FileAttachment("data/miso.json").json(),             "MISO Midwest"),
   trackFile(FileAttachment("data/pjm.json").json(),              "PJM"),
@@ -290,22 +288,10 @@ document.getElementById("app-root").innerHTML = `
 
 const regionData = {
   // ERCOT — EIA path emits per-fuel east/west × wind/solar:
-  ...(ERCOT_NATIVE_ENABLED
-    ? {
-        // Native ERCOT path (legacy): map ercot-native-east/west to per-fuel keys.
-        // Note: ercot-native loader emits mixed fuel data, mapped to both wind/solar.
-        "ercot-east-wind":  { ...ercotNative["ercot-native-east"], regionId: "ercot-east-wind" },
-        "ercot-east-solar": { ...ercotNative["ercot-native-east"], regionId: "ercot-east-solar" },
-        "ercot-west-wind":  { ...ercotNative["ercot-native-west"], regionId: "ercot-west-wind" },
-        "ercot-west-solar": { ...ercotNative["ercot-native-west"], regionId: "ercot-west-solar" },
-      }
-    : {
-        "ercot-east-wind":  ercot["ercot-east-wind"],
-        "ercot-east-solar":  ercot["ercot-east-solar"],
-        "ercot-west-wind":   ercot["ercot-west-wind"],
-        "ercot-west-solar":  ercot["ercot-west-solar"],
-      }
-  ),
+  "ercot-east-wind":  ercot["ercot-east-wind"],
+  "ercot-east-solar":  ercot["ercot-east-solar"],
+  "ercot-west-wind":   ercot["ercot-west-wind"],
+  "ercot-west-solar":  ercot["ercot-west-solar"],
   // CAISO/MISO/PJM/SPP/BPA/NYISO/ISO-NE loaders return shape {wind, solar}
   // (unlike ERCOT which returns {<zone>-<fuel>} keys). regionId is set inside
   // the loader payload, so we just pass through the per-fuel children.
