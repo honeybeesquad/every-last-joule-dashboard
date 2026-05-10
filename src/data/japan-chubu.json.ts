@@ -6,22 +6,22 @@ import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
 /**
- * Japan — Chubu Electric Power Grid (中部電力パワーグリッド) area-demand CSV → live curtailment proxy.
+ * Japan — Chubu Electric Power Grid (中部電力パワーグリッド) area-demand CSV → curtailment proxy.
  *
- * Endpoint: https://denki-yoho.chuden.jp/denki_yoho_content_data/juyo_cepco003.csv (live)
+ * Endpoint investigation 2026-05-10:
+ *   - denki-yoho.chuden.jp: ECONNREFUSED (domain fully dead).
+ *   - Operator migrated to powergrid.chuden.co.jp.
+ *   - powergrid.chuden.co.jp/denki_yoho_content_data/juyo_cepco003.csv: live (HTTP 200)
+ *     but the CSV has no 太陽光 solar column — only demand/forecast columns.
+ *   - No solar-specific CSV endpoint found anywhere on powergrid.chuden.co.jp.
  *
- * Status: The Chubu endpoint hostname `denki-yoho.chuden.jp` failed DNS resolution
- * on 2026-05-02. The domain may have been restructured. This loader falls back to
- * buildTypicalSolarRegion. When the URL is verified/updated, replace the fallback
- * with the RATE-based live fetch.
+ * Status: T1 BLOCKED — no solar CSV available. Downgraded to tier "estimated".
+ * Loader permanently emits typical-shape from buildTypicalSolarRegion.
  *
- * Expected CSV structure (when accessible): Shift-JIS, multi-section, 5-min intervals,
- * 4-column header: DATE,TIME,当日実績(５分間隔値)(万kW),太陽光発電実績(５分間隔値)(万kW)
+ * Future: If Chubu publishes a solar-output CSV, restore the live fetch here.
+ * The parseChubuCsv / buildChubuRegionData helpers are retained for that eventuality.
  *
- * Calibration: RATE = 0.01. OCCTO FY2024 Chubu area curtailment ≈ 0.05 TWh/yr
- * against ~5 TWh/yr solar generation (~1%). Reference: OCCTO 再生可能エネルギーの
- * 出力制御の見通しに関するレポート (FY2024 edition).
- *
+ * Calibration: OCCTO FY2024 Chubu area curtailment ≈ 0.05 TWh/yr.
  * Solar peak UTC: 03:00 (noon JST = 03:00 UTC for lon ~136.9°E)
  */
 const REGION_ID = "japan-chubu";
@@ -161,7 +161,7 @@ const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv
 
 if (isMain) {
   withFallback<RegionData>(REGION_ID, run, {
-    regionTier: "live" as const,
+    regionTier: "estimated" as const,
     tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
     tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
   })

@@ -6,7 +6,7 @@ Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `japan-chubu`
 - **Country:** JPN
-- **Tier:** live
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** Chubu Electric Power Grid juyo CSV × 1% calibrated curtailment (OCCTO FY2024 Chubu anchor: ~0.05 TWh/yr)
 - **Source URL:** [https://denki-yoho.chuden.jp/](https://denki-yoho.chuden.jp/)

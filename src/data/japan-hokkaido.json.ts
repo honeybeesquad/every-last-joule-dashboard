@@ -1,29 +1,32 @@
 import { pathToFileURL } from "node:url";
 import { fetchHttp1Bytes } from "../lib/fetch.js";
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
+import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
 /**
- * Japan — Hokkaido Electric Power (北海道電力) area-demand CSV → live curtailment proxy.
+ * Japan — Hokkaido Electric Power (北海道電力) area-demand CSV → curtailment proxy.
  *
- * Endpoint: https://denkiyoho.hepco.co.jp/area/data/juyo_01_YYYYMMDD.csv
+ * Endpoint investigation 2026-05-10:
+ *   - juyo_01_YYYYMMDD.csv: live (HTTP 200, confirmed 2026-05-10).
+ *   - HOWEVER: the 4-column 5-min section header is:
+ *       DATE,TIME,電力需要(5分間隔値)(MW),再生可能エネルギー出力(5分間隔値)(MW)
+ *     Column[3] is 再生可能エネルギー出力 (all-renewables output) in MW — NOT
+ *     太陽光発電実績 (solar-only) in 万kW as the loader assumed.
+ *   - The TENK_KW_TO_MW × 10 multiplier therefore over-counts by 10×, and the
+ *     value conflates wind + solar + other renewables.
+ *   - No solar-specific 5-min CSV found on denkiyoho.hepco.co.jp.
+ *     Historical ZIP archives at area_jukyu_download.html may contain solar columns
+ *     but are quarterly ZIPs and not suitable for daily live fetch.
  *
- * CSV structure: Shift-JIS encoding, multi-section layout with blank-line
- * separators. The 5-minute-interval solar section has a 4-column header:
- *   DATE,TIME,当日実績(５分間隔値)(万kW),太陽光発電実績(５分間隔値)(万kW)
- * (DATE, TIME JST, area load, solar generation — all in 万kW = 10 MW units)
+ * Status: T1 BLOCKED — solar column absent from live CSV, wrong units. Downgraded
+ * to tier "estimated". Loader emits typical-shape from buildTypicalSolarRegion.
+ * The fetchHokkaidoDay / parseHokkaidoCsv / buildHokkaidoRegionData helpers are
+ * retained pending a future fix if a solar-specific endpoint is found.
  *
- * Encoding: Shift-JIS
- * Units: 万kW (× 10 = MW)
- * Interval: 5 minutes
- *
- * Calibration: RATE = 0.05. OCCTO FY2024 Hokkaido area curtailment ≈ 0.10 TWh/yr
- * against ~2 TWh/yr solar generation (~5%). Reference: OCCTO 再生可能エネルギーの
- * 出力制御の見通しに関するレポート (FY2024 edition, verified 2026-05-02).
- *
- * Fetch strategy: HTTP/1.1-forced HTTPS via fetchHttp1Bytes (WAF bypass).
- * Loop: daily back 30 days.
+ * Calibration: OCCTO FY2024 Hokkaido area curtailment ≈ 0.10 TWh/yr.
+ * Solar peak UTC: 03:00 (noon JST = 03:00 UTC for lon ~141.4°E)
  */
 const REGION_ID = "japan-hokkaido";
 const RATE = 0.05;
@@ -182,7 +185,16 @@ const run = async (): Promise<RegionData> => {
 
   const allPoints = parsedDays.flatMap((p) => p.points);
   if (allPoints.length === 0) {
-    throw new Error("Hokkaido Electric returned no usable solar generation rows for the trailing 30 days");
+    // juyo_01 CSV col[3] is all-renewables MW, not solar 万kW — no usable solar data.
+    // Fall through to typical-shape below.
+    console.warn("hokkaido: no usable solar rows from juyo_01 CSV — using typical-shape fallback");
+    return buildTypicalSolarRegion(
+      REGION_ID,
+      3, // peakHourUtc (noon JST = 03:00 UTC)
+      0.10,
+      "Hokkaido Electric Power (北海道電力) — juyo_01 CSV col[3] is 再生可能エネルギー出力 (all-renewables MW), not solar 万kW; no solar-specific endpoint found (2026-05-10). Typical solar shape × OCCTO FY2024 Hokkaido anchor ~0.10 TWh/yr.",
+      "2024",
+    );
   }
   allPoints.sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
 
@@ -193,7 +205,7 @@ const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv
 
 if (isMain) {
   withFallback<RegionData>(REGION_ID, run, {
-    regionTier: "live" as const,
+    regionTier: "estimated" as const,
     tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
     tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
   })

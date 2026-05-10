@@ -6,7 +6,7 @@ Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `japan-tepco`
 - **Country:** JPN
-- **Tier:** live
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** TEPCO Power Grid juyo CSV × 1% calibrated curtailment (OCCTO FY2024 TEPCO anchor: ~0.05 TWh/yr)
 - **Source URL:** [https://www.tepco.co.jp/forecast/](https://www.tepco.co.jp/forecast/)
