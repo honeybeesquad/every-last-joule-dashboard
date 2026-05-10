@@ -41,7 +41,7 @@ const HOTSPOT_LIST_LIMIT = 50;
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 103;
+const _LOADER_FILE_COUNT = 112;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -53,7 +53,9 @@ const [
   entsoe, aemo, belgium, france, denmark, newZealand, norway, atacama,
   chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
   ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
-  japanKyushu, vietnam, thailand, indiaRajasthan, cyprus, ethiopia, kazakhstan,
+  japanChubu, japanChugoku, japanHokkaido, japanHokuriku, japanKansai,
+  japanKyushu, japanOkinawa, japanShikoku, japanTepco, japanTohoku,
+  vietnam, thailand, indiaRajasthan, cyprus, ethiopia, kazakhstan,
   honduras, jeju, kenya, egypt, morocco, namibia, waSwis, ntPilbara,
   indonesia, malaysia, philippines, southKorea, russiaMainland, taiwan, jordan,
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
@@ -98,7 +100,16 @@ const [
   trackFile(FileAttachment("data/uruguay.json").json(),          "Uruguay"),
   trackFile(FileAttachment("data/paraguay.json").json(),         "Paraguay"),
   trackFile(FileAttachment("data/mexico.json").json(),           "Mexico"),
+  trackFile(FileAttachment("data/japan-chubu.json").json(),      "Japan Chubu"),
+  trackFile(FileAttachment("data/japan-chugoku.json").json(),    "Japan Chugoku"),
+  trackFile(FileAttachment("data/japan-hokkaido.json").json(),   "Japan Hokkaido"),
+  trackFile(FileAttachment("data/japan-hokuriku.json").json(),   "Japan Hokuriku"),
+  trackFile(FileAttachment("data/japan-kansai.json").json(),     "Japan Kansai"),
   trackFile(FileAttachment("data/japan-kyushu.json").json(),     "Japan Kyushu"),
+  trackFile(FileAttachment("data/japan-okinawa.json").json(),    "Japan Okinawa"),
+  trackFile(FileAttachment("data/japan-shikoku.json").json(),    "Japan Shikoku"),
+  trackFile(FileAttachment("data/japan-tepco.json").json(),      "Japan TEPCO"),
+  trackFile(FileAttachment("data/japan-tohoku.json").json(),     "Japan Tohoku"),
   trackFile(FileAttachment("data/vietnam.json").json(),          "Vietnam"),
   trackFile(FileAttachment("data/thailand.json").json(),         "Thailand"),
   trackFile(FileAttachment("data/india-rajasthan.json").json(),  "India Rajasthan"),
@@ -411,7 +422,16 @@ const regionData = {
   uruguay,
   paraguay,
   mexico,
-  "japan-kyushu": japanKyushu,
+  "japan-chubu":    japanChubu,
+  "japan-chugoku":  japanChugoku,
+  "japan-hokkaido": japanHokkaido,
+  "japan-hokuriku": japanHokuriku,
+  "japan-kansai":   japanKansai,
+  "japan-kyushu":   japanKyushu,
+  "japan-okinawa":  japanOkinawa,
+  "japan-shikoku":  japanShikoku,
+  "japan-tepco":    japanTepco,
+  "japan-tohoku":   japanTohoku,
   vietnam,
   thailand,
   "india-rajasthan": indiaRajasthan,
