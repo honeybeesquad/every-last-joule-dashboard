@@ -249,6 +249,30 @@ for (const feature of featureCollection.features) {
 }
 
 // ---------------------------------------------------------------------------
+// Per-region polygon overrides
+//
+// countries-110m.json drops some islands from their parent-country polygon
+// (Okinawa from JPN, Jeju from KOR, Vanuatu from its own archipelago bounds).
+// Overrides supply a region-specific GeoJSON polygon used in place of the
+// country polygon for the containment check. Coordinates are simple bounding
+// boxes around the island — accuracy beyond "point falls inside box" is not
+// needed for this invariant test.
+// ---------------------------------------------------------------------------
+
+const overridesPath = join(__dirname, "fixtures/region-polygon-overrides.geo.json");
+const overridesCollection = JSON.parse(readFileSync(overridesPath, "utf-8")) as FeatureCollection<
+  Geometry,
+  GeoJsonProperties
+>;
+const regionIdToOverride = new Map<string, Feature<Geometry, GeoJsonProperties>>();
+for (const feature of overridesCollection.features) {
+  const id = feature.id as string | undefined;
+  if (id != null) {
+    regionIdToOverride.set(String(id), feature);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Tolerance: 0.5°
 //
 // We check the exact point AND the four cardinal neighbours at ±0.5°. This
@@ -278,23 +302,14 @@ function isContainedWithTolerance(
 // Build test cases, separating skipped entries
 // ---------------------------------------------------------------------------
 
-type TestCase = { id: string; country: string; lon: number; lat: number };
+type TestCase = {
+  id: string;
+  country: string;
+  lon: number;
+  lat: number;
+  feature: Feature<Geometry, GeoJsonProperties>;
+};
 type SkippedCase = { id: string; country: string; reason: string };
-
-// Known-failing regions from the initial sweep (2026-05-10). Two categories:
-//
-//   ARCHIPELAGO_ISLAND_REGIONS — main-country code points to a polygon that
-//   excludes the actual island (Okinawa is in Japan, but JPN's 110m polygon
-//   is mainland-only; same for Jeju in Korea, Vanuatu's archipelago). The
-//   coordinates are correct; the polygon is the wrong granularity. Marked
-//   `it.skip` until we either switch to higher-resolution topology or add
-//   per-region polygon overrides for these cases.
-//
-const ARCHIPELAGO_ISLAND_REGIONS = new Set<string>([
-  "japan-okinawa",  // Okinawa island, not mainland Japan
-  "jeju",           // Jeju island, not mainland Korea
-  "vanuatu",        // archipelago dropped in 110m simplification
-]);
 
 const testCases: TestCase[] = [];
 const skippedCases: SkippedCase[] = [];
@@ -326,19 +341,17 @@ for (const region of REGIONS) {
     continue;
   }
 
-  if (ARCHIPELAGO_ISLAND_REGIONS.has(region.id)) {
-    // Region's island isn't part of its main-country polygon at 110m resolution.
-    // Coords are correct; polygon granularity is wrong. Skip until higher-res
-    // topology or per-region polygon override is wired in.
-    skippedCases.push({
-      id: region.id,
-      country: region.country,
-      reason: "island region — main-country polygon at 110m excludes this island",
-    });
-    continue;
-  }
+  // Override polygon takes precedence over the country polygon for regions
+  // whose island sits outside the 110m country boundary.
+  const featureToCheck = regionIdToOverride.get(region.id) ?? feature;
 
-  testCases.push({ id: region.id, country: region.country, lon: region.lon, lat: region.lat });
+  testCases.push({
+    id: region.id,
+    country: region.country,
+    lon: region.lon,
+    lat: region.lat,
+    feature: featureToCheck,
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -360,9 +373,7 @@ describe("pillar-country-containment", () => {
 
   it.each(testCases)(
     "region $id ($country) at (lon=$lon, lat=$lat) is inside its country polygon",
-    ({ id, country, lon, lat }) => {
-      const numericId = ISO3_TO_NUMERIC[country]!;
-      const feature = numericToFeature.get(numericId)!;
+    ({ id, country, lon, lat, feature }) => {
       const contained = isContainedWithTolerance(feature, lon, lat);
       expect(
         contained,
