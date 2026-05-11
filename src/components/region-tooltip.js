@@ -339,7 +339,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
         <div class="region-tooltip-stats">
           <div class="region-tooltip-stat"><span>Now (UTC)</span><span class="num-tabular" data-now>${nowGW.toFixed(2)} GW</span></div>
           <div class="region-tooltip-stat"><span>24h peak</span><span class="num-tabular">${peakGW.toFixed(2)} GW</span></div>
-          <div class="region-tooltip-stat"><span>30d total</span><span class="num-tabular">${totalTWh.toFixed(2)} TWh</span></div>
+          <div class="region-tooltip-stat" title="Trailing 30-day cumulative energy"><span>30d total</span><span class="num-tabular">${totalTWh.toFixed(2)} TWh</span></div>
         </div>
         <canvas class="region-tooltip-sparkline" width="240" height="48" aria-label="24-hour curtailment profile"></canvas>
         <div class="region-tooltip-footer">
@@ -371,7 +371,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
         <div class="region-tooltip-stats">
           <div class="region-tooltip-stat"><span>Now (UTC)</span><span class="num-tabular" data-now>${nowGW.toFixed(2)} GW</span></div>
           <div class="region-tooltip-stat"><span>24h peak</span><span class="num-tabular">${peakGW.toFixed(2)} GW</span></div>
-          <div class="region-tooltip-stat"><span>30d total</span><span class="num-tabular">${totalTWh.toFixed(2)} TWh</span></div>
+          <div class="region-tooltip-stat" title="Trailing 30-day cumulative energy"><span>30d total</span><span class="num-tabular">${totalTWh.toFixed(2)} TWh</span></div>
         </div>
         <canvas class="region-tooltip-sparkline" width="240" height="48" aria-label="24-hour curtailment profile"></canvas>
         <div class="region-tooltip-footer">

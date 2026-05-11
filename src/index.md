@@ -204,7 +204,7 @@ document.getElementById("app-root").innerHTML = `
         <div class="stat-headline-row">
           <div class="display-xl num-tabular" id="pct-readout">—%</div>
         </div>
-        <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was wasted in the last thirty days — observed curtailed, spilled, or constrained-off across <span id="region-count">—</span> tracked regions. A measured floor, not a speculative ceiling.</p>
+        <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was wasted on an average day — observed curtailed, spilled, or constrained-off across <span id="region-count">—</span> tracked regions. This is a measured floor, not a speculative ceiling.</p>
         <div class="stats-row">
           <div class="stat">
             <div class="eyebrow micro" id="hashrate-label">Bitcoin network hashrate</div>
