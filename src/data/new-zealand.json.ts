@@ -5,7 +5,10 @@ import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d 
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
-const BASE_URL = "https://www.emi.ea.govt.nz/Wholesale/Datasets/Generation/Generation_MD";
+// EMI retired anonymous FTP/HTTP downloads at emi.ea.govt.nz; bulk CSVs are
+// now served from the Azure Blob Storage publicdata container. See:
+//   https://forum.emi.ea.govt.nz/thread/new-access-arrangements-to-emi-datasets-retirement-of-anonymous-ftp/
+const BASE_URL = "https://emidatasets.blob.core.windows.net/publicdata/Datasets/Wholesale/Generation/Generation_MD";
 const CURTAILMENT_RATE = 0.013;
 const FUEL_CODES = new Set(["Wind", "Solar", "Geo", "WIND", "SOLAR", "GEO"]);
 
@@ -187,12 +190,20 @@ function monthKey(date: Date): string {
 
 const run = async (): Promise<{ wind: RegionData; solar: RegionData; geo: RegionData }> => {
   const now = new Date();
-  const months = [new Date(now), new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1))];
+  // EMI Generation_MD CSVs are published with a ~1–1.5 month lag, so the
+  // current and previous calendar months are usually 404. Look back five
+  // months so we reliably catch the two most-recent published files.
+  const LOOKBACK = 5;
+  const months = Array.from({ length: LOOKBACK }, (_, i) =>
+    new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1)),
+  );
   const allPoints: CurtailmentPoint[] = [];
   let windMwTotal = 0;
   let solarMwTotal = 0;
   let geoMwTotal = 0;
+  let monthsFetched = 0;
   for (const date of months) {
+    if (monthsFetched >= 2) break;  // two months of data is enough for 30d window
     const key = monthKey(date);
     try {
       const parsed = parseEmiGenerationCsv(await fetchText(`${BASE_URL}/${key}_Generation_MD.csv`, { timeoutMs: 60000, retries: 1 }));
@@ -200,6 +211,7 @@ const run = async (): Promise<{ wind: RegionData; solar: RegionData; geo: Region
       windMwTotal += parsed.windMwTotal;
       solarMwTotal += parsed.solarMwTotal;
       geoMwTotal += parsed.geoMwTotal;
+      monthsFetched++;
     } catch (err) {
       console.warn(`nz emi month skipped ${key}: ${(err as Error).message}`);
     }

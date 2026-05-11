@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "observable preview",
+    "prebuild": "rm -rf src/.observablehq/cache",
     "build": "observable build",
     "deploy": "observable deploy",
     "test": "vitest run",

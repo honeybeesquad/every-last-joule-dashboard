@@ -23,8 +23,23 @@ export function parseRteEco2MixCsv(csv: string): FranceFuelCurtailment {
   for (const row of parseDelimitedRows(csv, ";")) {
     const ts = row.date_heure;
     if (!ts) continue;
-    const wind = Number(row.eolien_terrestre || 0) + Number(row.eolien_offshore || 0);
-    const solar = Number(row.solaire || 0);
+    // RTE eco2mix-national-tr ships rows for every half-hour of the calendar
+    // day, including future-dated rows where the fuel columns are still empty
+    // strings (data not yet reported). `Number("")` is 0, which the Finite-
+    // check below treats as valid — so those rows used to leak into the 30-day
+    // window as 0-curtailment points, polluting `latestProfile` and pushing
+    // `lastUpdated` into the future. Drop the row outright when *all* fuel
+    // columns are blank/missing.
+    const eolTerR = row.eolien_terrestre;
+    const eolOffR = row.eolien_offshore;
+    const solarR = row.solaire;
+    const allBlank =
+      (eolTerR == null || eolTerR === "") &&
+      (eolOffR == null || eolOffR === "") &&
+      (solarR == null || solarR === "");
+    if (allBlank) continue;
+    const wind = Number(eolTerR || 0) + Number(eolOffR || 0);
+    const solar = Number(solarR || 0);
     if (!Number.isFinite(wind) && !Number.isFinite(solar)) continue;
     const utcTimestamp = new Date(ts).toISOString();
     const windCurt = Math.max(0, wind) * CURTAILMENT_RATE;

@@ -32,4 +32,14 @@ describe("france parser", () => {
     expect(windMwTotal).toBeGreaterThan(0);
     expect(solarMwTotal).toBeGreaterThan(0);
   });
+
+  it("skips rows where every fuel column is blank (future/forecast rows)", () => {
+    // RTE eco2mix-tr returns rows for every half-hour of the day; rows that
+    // haven't been reported yet carry empty fuel columns. They must NOT be
+    // accumulated as 0-curtailment points (Regression: future-dated zeros
+    // were polluting latestProfile and pushing lastUpdated into the future).
+    const { windPoints, solarPoints } = parseRteEco2MixCsv(csv);
+    expect(windPoints.some((p) => p.utcTimestamp.startsWith("2026-04-01T23"))).toBe(false);
+    expect(solarPoints.some((p) => p.utcTimestamp.startsWith("2026-04-01T23"))).toBe(false);
+  });
 });
