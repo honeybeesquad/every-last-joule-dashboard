@@ -6,14 +6,17 @@
   "framework": null,
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/particle",
+      "destination": "/particle/",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/particle/:path*",
       "destination": "https://every-last-particle.vercel.app/particle/:path*"
-    },
-    {
-      "source": "/particle",
-      "destination": "https://every-last-particle.vercel.app/particle"
     }
   ]
 }
