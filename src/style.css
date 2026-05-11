@@ -1139,6 +1139,12 @@ main table {
   font-size: 10.5px;
   white-space: nowrap;
 }
+.region-tooltip-freshness-modeled,
+.region-tooltip-freshness-anchored {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 10.5px;
+  white-space: nowrap;
+}
 
 .region-tooltip-note {
   margin-top: 4px;

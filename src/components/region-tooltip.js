@@ -248,11 +248,48 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     if (ageSec < 60) return `${Math.floor(ageSec)}s ago`;
     if (ageSec < 3600) return `${Math.floor(ageSec / 60)}m ago`;
     if (ageSec < 86400) return `${Math.floor(ageSec / 3600)}h ago`;
-    if (ageSec < 86400 * 7) return `${Math.floor(ageSec / 86400)}d ago`;
     return `${Math.floor(ageSec / 86400)}d ago`;
   }
 
-  function freshnessBadge(data) {
+  // Vintage label for non-live tiers. Prefers the YYYY-like prefix of
+  // `lastUpdated` (e.g. "2024", "2024-Q1", or an ISO string) so the badge
+  // tells the reader the data year without misrepresenting it as a fresh fetch.
+  function vintageLabel(data) {
+    const raw = data?.lastUpdated;
+    if (typeof raw === "string" && raw.length >= 4) {
+      const yearMatch = raw.match(/^(\d{4})/);
+      if (yearMatch) return yearMatch[1];
+    }
+    return null;
+  }
+
+  // Tier-aware freshness badge.
+  //   live / live-*-anchored → live/cached/degraded · Xs/m/h/d ago (real fetch state)
+  //   anchored               → "anchored · YYYY" or "anchored baseload"  (T2)
+  //   estimated              → "modeled · YYYY" or just "modeled"        (T3)
+  // T2/T3 regions don't run live fetches, so "lastSuccessAt 2024-01-01"
+  // is the data vintage — surfacing "861d ago" misleads the reader into
+  // thinking the live feed is broken. See PR for context.
+  function freshnessBadge(region, data) {
+    if (!region) return "";
+    const tier = region.tier;
+    const isLiveTier = tier === "live" || tier === "live-domestic-anchored" || tier === "live-neighbour-anchored";
+
+    if (!isLiveTier) {
+      // T2-anchored or T3-estimated: render a non-misleading "modeled" badge.
+      const kind = tier === "anchored" ? "anchored" : "modeled";
+      const klass = `region-tooltip-freshness-${kind}`;
+      const vintage = vintageLabel(data);
+      // Flare regions are 24/7 baseloads with no vintage column; label them so.
+      const labelText = region.kind === "flare"
+        ? "anchored · 24/7 baseload"
+        : vintage
+          ? `${kind} · ${vintage}`
+          : kind;
+      const titleAttr = `tier=${tier}; lastUpdated=${data?.lastUpdated ?? "?"}`;
+      return `<span class="${klass}" title="${titleAttr}">◆ ${labelText}</span>`;
+    }
+
     if (!data) return "";
     const status = data.sourceStatus === "degraded"
       ? "degraded"
@@ -289,7 +326,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
         })
         .join(" · ");
       const anyData = currentGroup.find((r) => regionData[r.id]);
-      const badge = anyData ? freshnessBadge(regionData[anyData.id]) : "";
+      const badge = anyData ? freshnessBadge(anyData, regionData[anyData.id]) : freshnessBadge(rep, null);
 
       el.innerHTML = `
         <button class="region-tooltip-close" aria-label="Close">&times;</button>
@@ -339,7 +376,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
         <canvas class="region-tooltip-sparkline" width="240" height="48" aria-label="24-hour curtailment profile"></canvas>
         <div class="region-tooltip-footer">
           ${region.sourceUrl ? `<a href="${region.sourceUrl}" target="_blank" rel="noopener noreferrer">${region.source}</a>` : `<span>${region.source ?? ""}</span>`}
-          ${freshnessBadge(data)}
+          ${freshnessBadge(region, data)}
         </div>
         ${sourceNote ? `<div class="region-tooltip-note" title="${sourceNote.replace(/"/g, "&quot;")}">${sourceNote.length > 110 ? sourceNote.slice(0, 108) + "…" : sourceNote}</div>` : ""}
       `;
