@@ -101,11 +101,13 @@ export const REGIONS: Region[] = [
   // Slovakia — SEPS A75 feed; regional defaults (solar 2.5%, wind 2%).
   { id: "slovakia-wind",         name: "Slovakia Wind",      country: "SVK", lat: 48.3, lon: 17.5, tier: "live", kind: "wind",  source: "ENTSO-E SEPS wind", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
   { id: "slovakia-solar",         name: "Slovakia Solar",     country: "SVK", lat: 48.7, lon: 21, tier: "live", kind: "solar", source: "ENTSO-E SEPS solar", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
-  // Lithuania — Litgrid A75 feed; wind-dominant, solar negligible.
-  // Wind rate anchored to Litgrid 2024 published curtailment.
-  { id: "lithuania",        name: "Lithuania",        country: "LTU", lat: 55.17, lon:   23.88, tier: "live", kind: "wind", source: "ENTSO-E Litgrid", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
-  // Latvia — AST A75 feed; wind 2.5% regional default (consistent with lithuania/estonia).
-  { id: "latvia",           name: "Latvia",           country: "LVA", lat: 56.88, lon:   24.60, tier: "live", kind: "wind", source: "ENTSO-E AST", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
+  // Lithuania — reverted live→estimated 2026-04-28 (per statics.json.ts comment:
+  // no verifiable A75 published curtailment rate). Production data comes from the
+  // IRENA 2024 anchor in statics.json.ts; tier/source updated so the tooltip badge
+  // matches reality instead of claiming live.
+  { id: "lithuania",        name: "Lithuania",        country: "LTU", lat: 55.17, lon:   23.88, tier: "estimated", kind: "wind", source: "IRENA 2024 (Litgrid; ENTSO-E A75 verification pending)", sourceUrl: "https://www.irena.org/publications/2024/Mar/Renewable-capacity-statistics-2024", sourceProvenance: "modelled-fallback" },
+  // Latvia — same revert; AST publishes no A75 curtailment rate.
+  { id: "latvia",           name: "Latvia",           country: "LVA", lat: 56.88, lon:   24.60, tier: "estimated", kind: "wind", source: "IRENA 2024 (AST; ENTSO-E A75 verification pending)", sourceUrl: "https://www.irena.org/publications/2024/Mar/Renewable-capacity-statistics-2024", sourceProvenance: "modelled-fallback" },
   // Estonia — Elering A75 feed; wind 2.5% regional default. Replaces legacy
   // `baltics` T1b region (which was a Lithuania-only feed mislabelled as a
   // Baltic aggregate). EE wind is the dispatch-curtailable component; PV is
@@ -114,8 +116,10 @@ export const REGIONS: Region[] = [
   // Luxembourg — Cegedel A75 feed; small grid, PV+wind <0.5 GW. Regional defaults.
   { id: "luxembourg-wind",  name: "Luxembourg Wind",  country: "LUX", lat: 49.95, lon:    5.95, tier: "live", kind: "wind",  source: "ENTSO-E Cegedel wind", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
   { id: "luxembourg-solar", name: "Luxembourg Solar", country: "LUX", lat: 49.55, lon:    6.15, tier: "live", kind: "solar", source: "ENTSO-E Cegedel solar", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
-  // Malta — Enemalta A75 feed; PV-dominant island grid. Solar 2% regional default.
-  { id: "malta",            name: "Malta",            country: "MLT", lat: 35.94, lon:   14.40, tier: "live", kind: "solar", source: "ENTSO-E Enemalta", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
+  // Malta — reverted live→estimated 2026-04-28; Enemalta A75 generation rows
+  // exist but the loader returns peakGW=0 (no curtailment reported via A75).
+  // Production data flows from IRENA 2024 anchor in statics.json.ts.
+  { id: "malta",            name: "Malta",            country: "MLT", lat: 35.94, lon:   14.40, tier: "estimated", kind: "solar", source: "IRENA 2024 (Enemalta; ENTSO-E A75 reports zero curtailment)", sourceUrl: "https://www.irena.org/publications/2024/Mar/Renewable-capacity-statistics-2024", sourceProvenance: "modelled-fallback" },
   // Moldova — Moldelectrica A75 via MEPSO protocol; not ENTSO-E-synchronised.
   // Cross-border coordination with UA/RO. Regional defaults (no anchor found).
   { id: "moldova-wind",     name: "Moldova Wind",     country: "MDA", lat: 47.5, lon:   28.5, tier: "live", kind: "wind",  source: "ENTSO-E Moldelectrica wind (MEPSO protocol)", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },

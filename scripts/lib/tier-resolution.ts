@@ -237,6 +237,12 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   uganda: "mixed",
   zambia: "mixed",
   zimbabwe: "mixed",
+  // Lithuania/Latvia/Malta reverted live→estimated 2026-05-11: ENTSO-E A75 produces
+  // no usable curtailment rate for any of them. Production data flows via the
+  // IRENA 2024 anchor in statics.json.ts, so register their profileKind here.
+  lithuania: "wind",
+  latvia: "wind",
+  malta: "solar",
   // Phase 2 IRENA T3 anchors (2026-05-04): 11 new T3-static regions
   // sourced from IRENA RE Statistics 2024 capacity anchors.
   // All emit solar-shaped or mixed profiles; hydro → mixed per T3 routing.

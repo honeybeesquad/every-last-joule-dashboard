@@ -4,6 +4,7 @@ Last updated: 2026-05-09 · Sprint: India gen-re anchor
 
 ## Source
 
+<!-- BEGIN MANUAL -->
 - **Region id:** `india-tamil-nadu`
 - **Country:** IND
 - **Tier:** estimated
@@ -15,23 +16,29 @@ Last updated: 2026-05-09 · Sprint: India gen-re anchor
 - **Excel URL pattern:** `https://gen-re.cea.gov.in/public/uploads/dailyReport/excel/Report-YYYY-MM-DD.xlsx`
 - **Loader:** [`india-tamil-nadu.json.ts`](../../src/data/india-tamil-nadu.json.ts)
 - **CSV:** `data/historical/india-tamil-nadu-gen-daily.csv` — committed, refreshed daily by britta
+<!-- END MANUAL -->
 
 ## Calibration
 
+<!-- BEGIN MANUAL -->
 - **Generation source:** CEA gen-re.cea.gov.in daily Excel, State-Wise sheet, Wind Energy (MU) column
 - **Curtailment rate:** ~5% wind — Ember India 2024 state-level estimate
 - **Formula:** `annual_curtailed_TWh = annual_generation_TWh × 0.05 / (1 − 0.05)`
 - **Ember convention:** rate expressed as fraction of potential (curtailed / (generated + curtailed))
+<!-- END MANUAL -->
 
 ## Published anchors
 
+<!-- BEGIN MANUAL -->
 - **CEA annual generation (trailing 365 days from CSV):** populated after bootstrap run
 - **Ember curtailment rate:** ~5% wind (Ember India 2024)
 - **Ember estimated curtailment:** ~1.0 TWh/yr
 - **Fallback anchor (no CSV):** 1.0 TWh/yr wind (POSOCO South Region 2024, unchanged)
+<!-- END MANUAL -->
 
 ## Bad-conversions check
 
+<!-- BEGIN MANUAL -->
 | # | Item | Verdict | Reason |
 |---|------|---------|--------|
 | 1 | DSM / deviation values used as curtailment | no | Ember curtailment rate applied to CEA generation; neither figure is a deviation/scheduling settlement |
@@ -39,15 +46,20 @@ Last updated: 2026-05-09 · Sprint: India gen-re anchor
 | 3 | Instruction percentage without a generation denominator | no | Ember rate applied to actual wind generation TWh from CEA; denominator is explicit and official |
 | 4 | Blank or dash treated as zero | no | Missing daily rows use `withFallback` to prior anchor; absent dates are not zeroed |
 | 5 | Modelled fallback labelled as verified measurement | partial | `sourceNote` explicitly states: "Annual curtailed energy is derived from CEA official generation data (denominator) × Ember India 2024 state curtailment rate (modelled). Hourly shape is synthetic. Only the generation denominator is from a primary official source." |
+<!-- END MANUAL -->
 
 ## Known limitations
 
+<!-- BEGIN MANUAL -->
 - Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
 - Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
 - The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
 
 ## Links
 
+<!-- BEGIN MANUAL -->
 - Loader: [`india-tamil-nadu.json.ts`](../../src/data/india-tamil-nadu.json.ts)
 - Bootstrap script: [`scripts/bootstrap-india-gen-re.py`](../../scripts/bootstrap-india-gen-re.py)
 - Britta fetcher: `~/code/elj-relay/fetchers/india-gen-re.sh`
+<!-- END MANUAL -->

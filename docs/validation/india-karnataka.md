@@ -4,6 +4,7 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Source
 
+<!-- BEGIN MANUAL -->
 - **Region id:** `india-karnataka`
 - **Country:** IND
 - **Tier:** estimated
@@ -13,43 +14,57 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 - **Source URL:** [https://ksldc.in/](https://ksldc.in/)
 - **Loader:** [`india-karnataka.json.ts`](../../src/data/india-karnataka.json.ts)
 - **Structural gap:** yes
+<!-- END MANUAL -->
 
 ## Calibration
 
+<!-- BEGIN MANUAL -->
 - **Rate source documented in:** `docs/methodology/` (see links below)
 - **Uniform across backfill years:** n/a — no backfill
+<!-- END MANUAL -->
 
 ## Multi-year backfill annual totals
 
+<!-- BEGIN MANUAL -->
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
 | _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
+<!-- END MANUAL -->
 
 ## Published anchors
 
+<!-- BEGIN MANUAL -->
 - **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
+<!-- END MANUAL -->
 
 ## Discrepancy analysis
 
+<!-- BEGIN MANUAL -->
 Karnataka has ~15 GW of renewable capacity (predominantly solar, with significant wind) and is one of South India's largest RE states. The KSLDC publishes curtailment data on its public dashboard, making it the most directly accessible Indian SLDC in the April 2026 probe (all others returned ECONNREFUSED or timeouts). The 0.5 TWh anchor is derived as the South Region residual after allocating 1.0 TWh to Tamil Nadu wind; a direct KSLDC data pull is expected to refine this once the parser is built.
+<!-- END MANUAL -->
 
 ## Known limitations
 
+<!-- BEGIN MANUAL -->
 The KSLDC live parser is not yet implemented (though the site is accessible). The loader currently falls back to a typical-shape solar profile calibrated at 0.5 TWh/yr. Unlike the other Indian state SLDCs, KSLDC does not appear to be geoblocked from non-Indian IPs, so the live path should activate as soon as the parser is built without requiring an India-egress relay.
+<!-- END MANUAL -->
 
 ## Links
 
+<!-- BEGIN MANUAL -->
 - Loader source: [`india-karnataka.json.ts`](../../src/data/india-karnataka.json.ts)
 - Backfill archive: `data/historical/backfill/*_india-karnataka_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
+<!-- END MANUAL -->
 
 ## Bad-conversions check
 
+<!-- BEGIN MANUAL -->
 See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject) for the full checklist. **Karnataka is the load-bearing positive example for item 3 — it is the working negative control showing the checklist correctly blocking a promotion.**
 
 | # | Item | Verdict | Reason |
@@ -61,3 +76,4 @@ See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-rej
 | 5 | Modelled fallback labelled as verified measurement | no | Tier is T3-modelled with `sourceProvenance: "official-lead"`; the validation doc states explicitly that the hourly shape is synthetic. The (T1a, official-lead) red flag does not apply because the tier has not been over-claimed. |
 
 This row is the canonical demonstration that a "yes" on the checklist correctly blocks a promotion. If a future contributor argues for promoting Karnataka without resolving item 3 first, this section is the source-of-truth rebuttal.
+<!-- END MANUAL -->

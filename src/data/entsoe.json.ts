@@ -282,22 +282,11 @@ export const ZONES = [
     technologies: [{ psrType: "B16", fuel: "solar", rate: 0.025 }],
     sourceNote: "SEPS Slovakia ENTSO-E A75 solar: regional default ~2.5%.",
   },
-  {
-    id: "lithuania",
-    domain: "10YLT-1001A0008Q",
-    technologies: [
-      { psrType: "B19", fuel: "wind", rate: 0.025 },
-    ],
-    sourceNote: "Litgrid Lithuania ENTSO-E A75 feed. Wind 2.5% rate anchored to Litgrid published 2024 wind curtailment.",
-  },
-  {
-    id: "latvia",
-    domain: "10YLV-1001A00074",
-    technologies: [
-      { psrType: "B19", fuel: "wind", rate: 0.025 },
-    ],
-    sourceNote: "AST Latvia ENTSO-E A75 feed. Wind 2.5% regional default.",
-  },
+  // Lithuania + Latvia were here until 2026-05-11. Removed because Litgrid/AST
+  // publish no verifiable A75 curtailment rate; the loader was producing values
+  // but they were always clobbered by the statics.json.ts IRENA 2024 anchor in
+  // index.md (`...statics` spread runs after the explicit ENTSO-E wiring). Now
+  // tier="estimated" in regions.ts and flowing purely from statics.
   {
     id: "estonia",
     domain: "10Y1001A1001A39I",
@@ -330,12 +319,8 @@ export const ZONES = [
     technologies: [{ psrType: "B16", fuel: "solar", rate: 0.02 }],
     sourceNote: "Moldelectrica ENTSO-E A75 solar: regional default ~2%.",
   },
-  {
-    id: "malta",
-    domain: "10Y1001A1001A93C",
-    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.02 }],
-    sourceNote: "Enemalta ENTSO-E A75 solar: regional default ~2% (PV-dominant island grid).",
-  },
+  // Malta was here until 2026-05-11. Enemalta's A75 feed returns zero curtailment
+  // (the loader produced peakGW=0); reverted to estimated and flowing from statics.
 ] as const;
 
 export const parseEntsoeXml = parseEntsoeXmlImpl;
