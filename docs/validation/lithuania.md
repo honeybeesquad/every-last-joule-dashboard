@@ -1,15 +1,15 @@
 # Validation — Lithuania (`lithuania`)
 
-Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-11 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `lithuania`
 - **Country:** LTU
-- **Tier:** live
+- **Tier:** estimated
 - **Kind:** wind
-- **Source:** ENTSO-E Litgrid
-- **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
+- **Source:** IRENA 2024 (Litgrid; ENTSO-E A75 verification pending)
+- **Source URL:** [https://www.irena.org/publications/2024/Mar/Renewable-capacity-statistics-2024](https://www.irena.org/publications/2024/Mar/Renewable-capacity-statistics-2024)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 

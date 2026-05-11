@@ -1,15 +1,15 @@
 # Validation — Malta (`malta`)
 
-Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-05-11 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `malta`
 - **Country:** MLT
-- **Tier:** live
+- **Tier:** estimated
 - **Kind:** solar
-- **Source:** ENTSO-E Enemalta
-- **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
+- **Source:** IRENA 2024 (Enemalta; ENTSO-E A75 reports zero curtailment)
+- **Source URL:** [https://www.irena.org/publications/2024/Mar/Renewable-capacity-statistics-2024](https://www.irena.org/publications/2024/Mar/Renewable-capacity-statistics-2024)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 

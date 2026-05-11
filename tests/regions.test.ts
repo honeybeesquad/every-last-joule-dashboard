@@ -159,12 +159,14 @@ describe("regions", () => {
     // Per-fuel globalisation (2026-05-05): finland + ireland-republic + northern-ireland
     // split into wind+solar. Net +3 T1a. live: 152→155.
     // 2026-05-10: japan-chubu/tepco/hokkaido downgraded live→estimated. T1a: 155→152. Total: 165→162.
+    // 2026-05-11: malta/lithuania/latvia reverted live→estimated (no verifiable A75
+    // curtailment; production data was already flowing from IRENA statics). T1a: 152→149.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(152);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(162);
+    expect(liveTotal).toBe(159);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -187,10 +189,11 @@ describe("regions", () => {
     // Per-fuel globalisation (2026-05-05): finland + ireland-republic + northern-ireland
     // split into wind+solar. Net +3 T1a. live: 152→155.
     // 2026-05-10: japan-chubu/tepco/hokkaido downgraded. T1a: 155→152. Total live: 165→162.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(152);
+    // 2026-05-11: malta/lithuania/latvia reverted. T1a: 152→149. Total: 162→159.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(162);
+    expect(liveTotal).toBe(159);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -264,7 +267,8 @@ describe("regions", () => {
     // Phase 4-C (2026-05-05): +19 T3-static regions. 191 + 19 = 210.
     // Issue #62 (2026-05-06): add Palestine T3 static. 210 + 1 = 211.
     // 2026-05-10: japan-chubu/tepco/hokkaido downgraded live→estimated. +3. 205→208.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(208);
+    // 2026-05-11: malta/lithuania/latvia reverted live→estimated. +3. 208→211.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(211);
   });
 
   it("has 14 anchored regions (8 flare + 6 flat-profile)", () => {

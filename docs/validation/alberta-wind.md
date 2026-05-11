@@ -7,12 +7,15 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 - **Region id:** `alberta-wind`
 - **Country:** CAN
 - **Tier:** live
-- **Source provenance:** `verified` — AESO publishes the live wind snapshot AND the calibrated 5% curtailment rate; both are own-jurisdiction feeds, no fallback shape involved. (See [tier-classification-guide.md#source-provenance-orthogonal-to-tier](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).)
 - **Kind:** wind
 - **Source:** AESO wind snapshot
 - **Source URL:** [http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet](http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet)
 - **Loader:** [`alberta.json.ts`](../../src/data/alberta.json.ts)
 - **Structural gap:** no
+
+<!-- BEGIN MANUAL -->
+- **Source provenance:** `verified` — AESO publishes the live wind snapshot AND the calibrated 5% curtailment rate; both are own-jurisdiction feeds, no fallback shape involved. (See [tier-classification-guide.md#source-provenance-orthogonal-to-tier](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).)
+<!-- END MANUAL -->
 
 ## Calibration
 
@@ -50,6 +53,7 @@ AESO CSD is a current-supply snapshot rather than a historical curtailment feed.
 
 ## Bad-conversions check
 
+<!-- BEGIN MANUAL -->
 See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject) for the full checklist.
 
 | # | Item | Verdict | Reason |
@@ -59,3 +63,4 @@ See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-rej
 | 3 | Instruction percentage without a generation denominator | no | The 5% rate is paired with the live AESO wind-supply MW feed at every emission, giving a defined energy denominator. |
 | 4 | Blank or dash treated as zero | no | The loader treats AESO fetch failures via `withFallback` (last-good or stale-fallback), not by coercing missing values to zero. |
 | 5 | Modelled fallback labelled as verified measurement | no | Hourly trace is sourced from the live AESO supply snapshot; only the 5% rate is calibration-derived. The validation doc states the rate provenance explicitly. |
+<!-- END MANUAL -->

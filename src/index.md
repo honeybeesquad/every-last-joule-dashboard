@@ -380,8 +380,7 @@ const regionData = {
   "czech-republic-solar": entsoe["czech-republic-solar"],
   "bulgaria-wind": entsoe["bulgaria-wind"],
   "bulgaria-solar": entsoe["bulgaria-solar"],
-  lithuania: entsoe.lithuania,
-  latvia: entsoe.latvia,
+  // lithuania + latvia reverted live→estimated 2026-05-11; flow from `...statics`.
   estonia: entsoe.estonia,
   // PR #45 leftover Balkan + Baltic regions — wired per Phase 3a-v2 per-fuel split.
   "bosnia-and-herzegovina": entsoe["bosnia-and-herzegovina"],
@@ -391,7 +390,7 @@ const regionData = {
   "luxembourg-solar": entsoe["luxembourg-solar"],
   "moldova-wind": entsoe["moldova-wind"],
   "moldova-solar": entsoe["moldova-solar"],
-  malta: entsoe.malta,
+  // malta reverted live→estimated 2026-05-11; flows from `...statics`.
   montenegro: entsoe.montenegro,
   "north-macedonia-wind": entsoe["north-macedonia-wind"],
   "north-macedonia-solar": entsoe["north-macedonia-solar"],
