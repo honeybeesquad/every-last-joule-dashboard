@@ -483,7 +483,11 @@ export async function mountGlobe(canvas, initial) {
   let autoResumeAt = 0;
   const DRAG_SENSITIVITY = 0.55;
   const AUTO_RESUME_DELAY_MS = 2500;
-  const CLICK_MAX_TRAVEL_PX = 5; // pointer travel threshold below which we treat as click, not drag
+  // Pointer travel threshold below which we treat the gesture as a click,
+  // not a drag. 5px was below typical finger wobble on capacitive touch
+  // (~8–12px), so mobile taps mis-registered as tiny drags and pillar
+  // selection felt broken. 10px is above wobble, below intentional drag.
+  const CLICK_MAX_TRAVEL_PX = 10;
 
   // Pinch-to-zoom: track all active pointers; switch to pinch mode at 2+.
   const pointerPositions = new Map(); // pointerId → [clientX, clientY]

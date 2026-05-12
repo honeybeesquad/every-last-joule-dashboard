@@ -120,14 +120,16 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
       for (let i = 0; i < 24; i++) baseline[i] += (m.profile[i] ?? 0);
     }
 
-    // Current-hour dot on top of the stack.
+    // Current-hour dot on top of the stack, coloured by the dominant
+    // fuel band (sorted[0] is the largest band). Previously hardcoded to
+    // flare-orange, which painted a wind-stack tooltip with an orange dot.
     const hourNow = ((clock.hour % 24) + 24) % 24;
     const cx = pad + (hourNow / 23) * plotW;
     const interpIdx = Math.floor(hourNow) % 24;
     const t = hourNow - Math.floor(hourNow);
     const interpGW = (combined[interpIdx] ?? 0) * (1 - t) + (combined[(interpIdx + 1) % 24] ?? 0) * t;
     const cy = pad + plotH - (interpGW / maxG) * plotH;
-    ctx.fillStyle = getFuelColor("flare");
+    ctx.fillStyle = sorted[0]?.color ?? getFuelColor("flare");
     ctx.beginPath();
     ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
     ctx.fill();
@@ -180,14 +182,16 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
       else ctx.lineTo(x, y);
     }
     ctx.stroke();
-    // Current-hour dot
+    // Current-hour dot, coloured by the region's own fuel rather than the
+    // hardcoded flare orange that previously painted (e.g.) a wind region's
+    // dot orange on a teal sparkline.
     const hourNow = ((clock.hour % 24) + 24) % 24;
     const cx = pad + (hourNow / 23) * plotW;
     const interpIdx = Math.floor(hourNow) % 24;
     const t = hourNow - Math.floor(hourNow);
     const interpGW = (profile[interpIdx] ?? 0) * (1 - t) + (profile[(interpIdx + 1) % 24] ?? 0) * t;
     const cy = pad + plotH - (interpGW / maxG) * plotH;
-    ctx.fillStyle = getFuelColor("flare");
+    ctx.fillStyle = color;
     ctx.beginPath();
     ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
     ctx.fill();

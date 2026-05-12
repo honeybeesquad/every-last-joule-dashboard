@@ -203,25 +203,25 @@ document.getElementById("app-root").innerHTML = `
       <section class="panel panel-left" aria-label="Headline">
         <div class="eyebrow">Sustainable hashrate · unlocked right now</div>
         <div class="stat-headline-row">
-          <div class="display-xl num-tabular" id="pct-readout">—%</div>
+          <div class="display-xl num-tabular" id="pct-readout" aria-live="polite" aria-atomic="true">—%</div>
         </div>
-        <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was wasted on an average day — observed curtailed, spilled, or constrained-off across <span id="region-count">—</span> tracked regions. This is a measured floor, not a speculative ceiling.</p>
+        <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was wasted on an average day — observed curtailed, spilled, or constrained-off across <span id="region-count" aria-live="polite" aria-atomic="true">—</span> tracked regions. This is a measured floor, not a speculative ceiling.</p>
         <div class="stats-row">
           <div class="stat">
             <div class="eyebrow micro" id="hashrate-label">Bitcoin network hashrate</div>
-            <div class="num-tabular stat-value" id="hashrate-readout">—</div>
+            <div class="num-tabular stat-value" id="hashrate-readout" aria-live="polite" aria-atomic="true">—</div>
           </div>
           <div class="stat">
             <div class="eyebrow micro" id="gw-label">Curtailed this hour</div>
-            <div class="num-tabular stat-value" id="gw-readout">—</div>
+            <div class="num-tabular stat-value" id="gw-readout" aria-live="polite" aria-atomic="true">—</div>
           </div>
           <div class="stat">
             <div class="eyebrow micro" id="supportable-label">Hashrate this could support</div>
-            <div class="num-tabular stat-value" id="supportable-readout">—</div>
+            <div class="num-tabular stat-value" id="supportable-readout" aria-live="polite" aria-atomic="true">—</div>
           </div>
         </div>
         <div class="flare-footnote-row">
-          <p class="flare-footnote" id="flare-footnote">Plus <span id="flare-readout">—</span> of continuous flared-gas waste in four oil basins — a 24/7 base load, physically separate from the dispatch-down story above and excluded from the headline ratio.</p>
+          <p class="flare-footnote" id="flare-footnote">Plus <span id="flare-readout" aria-live="polite" aria-atomic="true">—</span> of continuous flared-gas waste in four oil basins — a 24/7 base load, physically separate from the dispatch-down story above and excluded from the headline ratio.</p>
           <div class="flare-toggle-wrap" id="flare-toggle-wrap" hidden>
             <button class="flare-toggle-btn" id="globe-flare-toggle"
                     role="switch" aria-checked="false"
