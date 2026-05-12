@@ -510,16 +510,16 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
 }
 
 /* ---------- Hotspots panel (right) ---------- */
-.panel-right .eyebrow { margin-bottom: 18px; }
+.panel-right .eyebrow { margin-bottom: 14px; }
 
 .hotspot-columns {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
 }
-.hotspot-columns-three { /* keep for layout-toggle compatibility */ }
+.hotspot-columns-three { /* always stacked vertically in the sidebar */ }
 
-.hotspot-column { display: flex; flex-direction: column; }
+.hotspot-column { display: flex; flex-direction: column; min-width: 0; }
 .hotspot-column-title {
   display: flex;
   align-items: center;
@@ -533,7 +533,7 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
 .hotspot-column-subtitle {
   margin-top: 2px;
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--dim);
@@ -541,32 +541,71 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
 
 .hotspot-list {
   list-style: none;
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
+  gap: 0;
+  max-height: 240px;
+  min-height: 80px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Thin scrollbar — Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-soft) transparent;
+}
+/* Thin scrollbar — WebKit */
+.hotspot-list::-webkit-scrollbar { width: 4px; }
+.hotspot-list::-webkit-scrollbar-track { background: transparent; }
+.hotspot-list::-webkit-scrollbar-thumb { background: var(--line-soft); border-radius: 2px; }
+.hotspot-list::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+.hotspot-list:empty::after {
+  content: "—";
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 0;
 }
 .hotspot-item {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 16px;
-  align-items: baseline;
-  padding: 9px 0;
-  border-top: 1px solid var(--line);
-  font-size: 13px;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
   line-height: 1.3;
   color: var(--text);
   cursor: pointer;
   transition: padding var(--dur-fast) ease, color var(--dur-fast) ease;
 }
-.hotspot-item:first-child { border-top: 0; }
-.hotspot-item:hover { padding-left: 6px; color: var(--text); }
-.hotspot-name { color: var(--text); }
+.hotspot-item:last-child { border-bottom: 0; }
+.hotspot-item:hover { padding-left: 4px; color: var(--text); }
+.hotspot-item .dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+}
+.hotspot-name {
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .hotspot-gw {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Wider viewports: let each list grow taller; narrow viewports: stay tight */
+@media (min-width: 1180px) {
+  .hotspot-list { max-height: min(calc(100vh - 420px), 560px); }
+}
+@media (max-width: 700px) {
+  .hotspot-list { max-height: 220px; }
 }
 
 /* Fuel dots */
@@ -1150,12 +1189,20 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
 }
 
 /* =========================================================================
-   RESPONSIVE — collapse panels under 1024px
+   RESPONSIVE
    ========================================================================= */
-@media (max-width: 1180px) {
-  .app-body { grid-template-columns: 320px minmax(0, 1fr) 320px; }
+/* Slightly narrower side panels on mid-desktop / split-screen browsers */
+@media (max-width: 1280px) {
+  .app-body { grid-template-columns: 340px minmax(0, 1fr) 340px; }
+  .panel { padding: 28px 24px; }
 }
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
+  .app-body { grid-template-columns: 300px minmax(0, 1fr) 300px; }
+  .panel { padding: 24px 18px; }
+  .display-xl { font-size: clamp(64px, 9vw, 110px); }
+}
+/* Collapse to single column on tablets and split-screen narrow windows */
+@media (max-width: 900px) {
   .app-body {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
@@ -1165,10 +1212,26 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
     border-left: 0;
     border-bottom: 1px solid var(--line);
   }
-  .panel-center { min-height: 480px; }
-  .globe-canvas-area { min-height: 480px; }
+  .panel-center {
+    min-height: 520px;
+    border-bottom: 1px solid var(--line);
+  }
+  .globe-canvas-area { min-height: 520px; }
+  /* In single-column mode the right panel has full width — arrange the 3
+     fuel buckets side-by-side rather than stacked, so the page doesn't
+     become a scroll-tower. */
+  .hotspot-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .hotspot-list { max-height: 280px; }
 }
-@media (max-width: 720px) {
+@media (max-width: 700px) {
+  .hotspot-columns {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
   .app-header { padding: 0 20px; gap: 12px; }
   .app-tag { display: none; }
   .app-nav { gap: 14px; }
