@@ -1,7 +1,7 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-05-10 by Claude (audit-fixes sprint + follow-up sprint shipped, tier refactor landed)
-**Active branch:** `main` @ `a935a69` (Vercel production branch; auto-deploys to everylastjoule.com)
+**Last verified against git:** 2026-05-12 by Claude (launch-prep sprint shipped — silent-zero guards, Hokkaido dead-code purge, missing CSS token)
+**Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
 > **For AI sessions:** read this file before drafting plans, brainstorming, or creating worktrees. Plans in `~/.claude/plans/` and `docs/superpowers/plans/` may be SHIPPED — check this file before treating any plan as live work.
@@ -12,9 +12,9 @@
 
 **Coverage — full world:**
 - 384 regions across 195 countries (every UN member + Taiwan + Palestine)
-- Tally golden as of 2026-05-10: T1a=152, T1b=9, T1c=1, T2=6, T2-flare=8, T3=208 (Japan chubu/tepco/hokkaido downgraded from T1a→T3 in PR #90 after upstream investigation; total still 384)
+- Tally golden as of 2026-05-11: T1a=149, T1b=9, T1c=1, T2=6, T2-flare=8, T3=211 (Japan chubu/tepco/hokkaido downgraded from T1a→T3 in PR #90; malta/lithuania/latvia reverted live→estimated 2026-05-11 to match production data flow; total still 384)
 - Live at **everylastjoule.com** — Vercel auto-deploys from `main`
-- Dashboard banner: **"WASTED ENERGY DATABASE · V1.3.0"**
+- Dashboard banner: **"Wasted Energy Database · v1.3.1"** (pulled from Zenodo version metadata)
 
 **Tier taxonomy (refactored in PR #88, 2026-05-10):**
 - `kind` (content type): wind, solar, hydro, mixed, geo, flare — orthogonal to tier
@@ -42,13 +42,18 @@
 - **PR #87** — dead code purge: build-time price/fx data layer fully removed; orphan loaders (`japan.json.ts`, `india-{north,south,west}.json.ts`), unit-toggle.js, caiso-oasis fixture, dead unit-toggle CSS rules; cosmetic sweep — region-count drift fixed across README / observablehq.config / dataset/README / about.md / tests/regions.test.ts.
 - **PR #88** — tier-taxonomy refactor (described in section above) + India SLDC scaffolding (`readStateSldcCurtailment` helper + CSV ingestion path on 6 India state loaders, opportunistic, no-op until SLDC CSVs land); `build_region_docs.py` regex fixed to tolerate `sourceProvenance` field; 387 validation docs regenerated, 7 cited docs (alberta-wind + 6 India SLDC) hand-preserved.
 
+**Launch-prep sprint (shipped 2026-05-12, three commits on `main`):**
+- **`fix(ui)`** — defined missing `--amber-500` CSS token so the active mode toggle button renders with its intended border and foreground colour (committee review UI-1).
+- **`fix(loaders)`** — silent-zero guards for ENTSO-E (`fetchEntsoeZone` throws if every technology returns zero points) and AEMO (`parseAemoDispatchCsv` throws on missing `I,DISPATCH,UNIT_SOLUTION,` header; `run()` throws if 30 days of NEMWEB CSVs produce zero curtailment across all states). Snapshot validator gains a non-zero invariant for T1a/T1b/T1c regions with a seeded `KNOWN_ZERO_LIVE_ALLOWLIST` for 16 currently-known-legitimate zeros (committee review DATA-1, DATA-2, DATA-3).
+- **`fix(hokkaido)`** — removed the dead `juyo_01` parse path (column[3] is all-renewables MW, not solar 万kW; the previous decode over-counted 10× and mis-attributed mixed fuel to solar). Loader now always returns `buildTypicalSolarRegion` against the OCCTO FY2024 anchor with a sourceNote that names the actual upstream column (committee review DATA-4).
+
 **Audit follow-up sprint (shipped 2026-05-10, PRs #89-#92):**
 - **PR #89** — corrected coordinates for `guinea` (was in Atlantic ~50km west of Guinea-Bissau, looked like a copy-paste from the adjacent row) and `guatemala-siepac` (was inside Honduras east of Tegucigalpa). Pillar test grew from 351 active + 2 todo → 353 active passing.
 - **PR #90** — Japan upstream investigation: `chubu` (denki-yoho.chuden.jp dead, migrated site has no solar CSV), `tepco` (filename rename `juyo-d-j.csv` → `juyo-d1-j.csv` but new file is demand-only; viable monthly CSV exists at `eria_jukyu_YYYYMM_03.csv` with direct `太陽光出力制御量` column — non-trivial loader rewrite for future), `hokkaido` (loader was parsing all-renewables MW as solar 万kW = 10× overcount + wrong fuel attribution). All three downgraded `tier: "live"` → `"estimated"`. Tally-golden updated. Future work documented in loader JSDocs.
 - **PR #91** — pillar-polygon override mechanism. Added `tests/fixtures/region-polygon-overrides.geo.json` mapping region.id → custom GeoJSON polygon. Used for `japan-okinawa`, `jeju`, `vanuatu` whose islands are excluded from countries-110m.json. Test sweep grew from 353 → 356 active passing. No regions remain in the archipelago skip-list.
 - **PR #92** — `build_region_docs.py` manual-block markers. `<!-- BEGIN MANUAL --> ... <!-- END MANUAL -->` blocks survive regeneration via section-heading anchoring. 19 new tests. Demonstrated on `india-rajasthan.md` (bad-conversion citation block survives byte-identical across regen). Wraps follow-ups: 6 other cited docs not yet wrapped.
 
-**Visual system + theme system + brand:** as previously shipped (Sunfire/Vellum/Eclipse themes, sun-aligned terminator + pillars, scrubbable timeline, mode toggle, tooltips, mobile perf, self-hosted fonts, theme-tokens runtime reader, no-FOUC boot script, themechange repaints). Defaults to 0.5× playback.
+**Visual system + theme system + brand:** as previously shipped (Sunfire + Deepcurrent themes, sun-aligned terminator + pillars, scrubbable timeline, mode toggle, tooltips, mobile perf, self-hosted fonts, theme-tokens runtime reader, no-FOUC boot script, themechange repaints). Defaults to 0.5× playback.
 
 **Paper + DOI:**
 - Paper drafts ready at `docs/paper/01-06-*.md`
@@ -72,11 +77,14 @@ None. 9 PRs merged 2026-05-10 (#84-#92). PR #68 (USD toggle) is fully superseded
 - **`mountGlobe` split** — 862-line single function holding rendering, projection, drag/zoom, panel, weather/price threading. Worth a refactor pass, separate brainstorming.
 - **TEPCO monthly CSV migration** (loader rewrite) — would restore TEPCO from `tier: "estimated"` to `T1a-live-tso`. The viable file `eria_jukyu_YYYYMM_03.csv` has a direct `太陽光出力制御量` (solar curtailment) column — better data quality than the abandoned 5-min path. YYYYMM URL scheme + 30-min intervals + multi-column parse needed.
 
+**Closed by the 2026-05-12 launch-prep sprint:**
+- ✅ **Issue #44** — flare regions render as solar-yellow when the flare-gas toggle is on. Verified fixed in `src/lib/fuel.ts::getRegionFuelColor` (the `region.kind === "flare"` short-circuit returns the flare token before the `dominantFuel` fall-through can paint it yellow).
+- ✅ Stale "Sunfire/Vellum/Eclipse" theme references in `src/lib/fuel.ts` and `src/lib/theme-tokens.ts` corrected — shipped themes are Sunfire and Deepcurrent. (Vellum and Eclipse were never shipped.)
+- ✅ Duplicate `iso-ne` / `nyiso` entries removed from `KNOWN_AGGREGATE_IDS` in `scripts/ci/check-tier-coherence.ts`.
+
 **Pre-existing:**
 - **Issue #43** — India SLDC live parsers. Needs Mullvad (or equivalent) with a genuine India PoP before the 3 geoblocked SLDCs from PR #74 can be wired live. Note: the SLDC ingestion path now exists (PR #88), it just has no data to ingest yet.
-- **Issue #44** — flare regions render as solar-yellow when the flare-gas toggle is on.
 - Safari new-tab theme-persistence quirk (Bug 3 from earlier Phase 7 work — still needs Tab B/C reload reproduction).
-- `dataset/README.md:83` — stale tier breakdown narrative (still references old `T1-live-TSO` / `T2-flare` 264-region totals; needs an author pass on the narrative numbers, not a numeric sub).
 
 ## Plans archive
 

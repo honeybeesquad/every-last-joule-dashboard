@@ -85,8 +85,8 @@ const KNOWN_AGGREGATE_IDS = new Set<string>([
   "pjm",
   "spp",
   "bpa",
-  "nyiso",
-  "iso-ne",
+  // (nyiso and iso-ne already declared above as pre-split aggregates;
+  //  the Phase 3b-v2 batch reuses the same ids so no duplicate needed.)
   // turkey.json per-fuel aggregate — split via splitRegion in index.md into
   // turkey-wind + turkey-solar; the aggregate snapshot is not in REGIONS.
   "turkey",

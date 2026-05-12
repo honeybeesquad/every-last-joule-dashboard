@@ -17,7 +17,7 @@ export const FUEL_LABEL: Record<Fuel, string> = {
 
 /**
  * Per-fuel colour tokens. Themed at runtime via CSS custom properties so
- * that switching themes (Sunfire / Vellum / Eclipse) re-colours every
+ * that switching themes (Sunfire / Deepcurrent) re-colours every
  * canvas-painted surface. Flare colour is locked across themes (BTC orange,
  * a data-meaning convention).
  */

@@ -32,7 +32,8 @@ export function sanitisePillarAlpha(raw: unknown, fallback: string = "99"): stri
 
 /** Tokens needed by `globe.js`. Strings as they appear in CSS — caller
  *  decides whether to use directly (rgba), parse (hex), or treat as a
- *  linear-gradient sentinel (Eclipse `--night-overlay`). */
+ *  linear-gradient sentinel (some themes ship `--night-overlay` as a
+ *  gradient rather than a flat rgba). */
 export interface GlobeTokens {
   /** "r,g,b" tuple parsed from --globe-dot-day. */
   dotDayRGB: string;
@@ -51,8 +52,8 @@ export interface GlobeTokens {
   /** Hex for the sphere base fill (--surface-bg-2 is a sensible source). */
   spherebaseHex: string;
   /** 2-char hex pair appended to fuel hex for the pillar-gradient base
-   *  stop. Theme-scoped so Vellum's parchment day-side can use a bolder
-   *  base than Sunfire/Eclipse. */
+   *  stop. Theme-scoped so the light-mode day-side can use a bolder
+   *  base than the dark themes if a future theme demands it. */
   pillarBaseAlpha: string;
 }
 
@@ -73,7 +74,8 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
   };
 }
 
-/** True if the night-overlay token is a CSS gradient descriptor (Eclipse). */
+/** True if the night-overlay token is a CSS gradient descriptor rather
+ *  than a flat rgba(...) string. */
 export function isLinearGradientToken(value: string): boolean {
   return /^linear-gradient\s*\(/i.test(value.trim());
 }
