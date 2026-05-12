@@ -61,7 +61,8 @@
     "confidenceTier": "T1a-live-tso",
     "uncertaintyLowGW": 0.08829140697499994,
     "uncertaintyHighGW": 0.11945308002499992,
-    "sourceStatus": "live"
+    "sourceStatus": "live",
+    "sourceProvenance": "verified"
   },
   "ireland-republic-solar": {
     "regionId": "ireland-republic-solar",
@@ -128,7 +129,8 @@
     "sourceStatus": "live",
     "fuelShare": {
       "solar": 1
-    }
+    },
+    "sourceProvenance": "verified"
   },
   "northern-ireland-wind": {
     "regionId": "northern-ireland-wind",
@@ -192,7 +194,8 @@
     "confidenceTier": "T1a-live-tso",
     "uncertaintyLowGW": 0.06393515677499997,
     "uncertaintyHighGW": 0.08650050622499997,
-    "sourceStatus": "live"
+    "sourceStatus": "live",
+    "sourceProvenance": "verified"
   },
   "northern-ireland-solar": {
     "regionId": "northern-ireland-solar",
@@ -259,6 +262,7 @@
     "sourceStatus": "live",
     "fuelShare": {
       "solar": 1
-    }
+    },
+    "sourceProvenance": "verified"
   }
 }

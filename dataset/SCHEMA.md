@@ -12,18 +12,18 @@ One file per region. Overwritten on each scheduled build. Historical values acce
 
 | Field | Type | Description | Nullable |
 |---|---|---|---|
-| `regionId` | `string` | Stable ID matching `src/lib/regions.ts`. Kebab-case. E.g. `caiso`, `ercot-west`, `brazil-ne-ceara`. | No |
+| `regionId` | `string` | Stable ID matching `src/lib/regions.ts`. Kebab-case. E.g. `caiso-wind`, `ercot-west-wind`, `brazil-ceara-wind`. | No |
 | `profile` | `number[24]` | 30-day trailing **average** curtailment in GW per UTC hour. Index 0 = 00:00–01:00 UTC. | No |
-| `latestProfile` | `number[24]` | Single-day latest snapshot in GW per UTC hour. For intraday dashboards. | No |
+| `latestProfile` | `number[24] \| null` | Single-day latest snapshot in GW per UTC hour. Null when the loader cannot pin a complete recent UTC day. | No |
 | `totalTWh` | `number` | 30-day trailing total curtailment in TWh (sum of `profile` × 24 × 30). | No |
 | `peakGW` | `number` | 30-day trailing peak hourly GW. | No |
 | `lastUpdated` | `string` | Calibration-anchor date. Format varies by source: `YYYY` (annual anchor), `YYYY-Q#` (quarterly), or ISO-8601 (live). | No |
 | `lastSuccessAt` | `string` | ISO-8601 UTC timestamp when the snapshot was last successfully refreshed. | No |
-| `sourceNote` | `string` | Human-readable provenance. E.g. `"ENTSO-E Transparency B19 dispatch-down 2026-01 → 2026-04 · rate 0.04"`. | No |
+| `sourceNote` | `string` | Optional human-readable provenance. E.g. `"ENTSO-E Transparency B19 dispatch-down 2026-01 → 2026-04 · rate 0.04"`. | Yes |
 | `sourceStatus` | `"live" \| "cached" \| "degraded" \| null` | Per-fetch freshness. `live` = fresh fetch succeeded; `cached` = recent `withFallback` last-good; `degraded` = stale last-good beyond the configured threshold. Null only for purely static regions. Distinct from `sourceProvenance` below — that records what kind of upstream link exists, not whether the latest fetch succeeded. | Yes |
-| `sourceProvenance` | `"verified" \| "official-lead" \| "modelled-fallback" \| null` | Per-region declaration of upstream-link kind, orthogonal to `confidenceTier`. `verified` = snapshot value comes from a verified upstream feed or anchor. `official-lead` = authoritative source exists and loader is wired/scaffolded but live path is not producing usable data (geoblocked, auth-gated, parser pending); fallback shape is emitted. `modelled-fallback` = no verified upstream link; snapshot is typical-shape scaled to an anchor or otherwise estimated. The `exclude` state from the methodology doc never appears in snapshots — excluded regions are not in the canonical REGIONS list. The `(confidenceTier, sourceProvenance)` pair is validated at build time by `scripts/ci/check-source-provenance-coherence.ts`. See [`docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`](../docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier). Nullable on legacy snapshots that pre-date this field. | Yes |
-| `fuelShare` | `Record<string, number>` | Fuel-type split of the curtailed energy, fractions 0–1, keys in `{solar, wind, hydro, geothermal, flare}`. May be empty for flare-only regions. | No (may be `{}`) |
-| `confidenceTier` | `string` | One of `"T1-live-TSO"`, `"T2-annual-calibrated"`, `"T3-modelled"`. Derived deterministically by `src/lib/uncertainty.ts::deriveTier`. See `docs/methodology/uncertainty.md`. | Yes (legacy snapshots may pre-date S2 enrichment) |
+| `sourceProvenance` | `"verified" \| "official-lead" \| "modelled-fallback"` | Required per-region declaration of upstream-link kind, orthogonal to `confidenceTier`. `verified` = snapshot value comes from a verified upstream feed or anchor. `official-lead` = authoritative source exists and loader is wired/scaffolded but live path is not producing usable data (geoblocked, auth-gated, parser pending); fallback shape is emitted. `modelled-fallback` = no verified upstream link; snapshot is typical-shape scaled to an anchor or otherwise estimated. The `exclude` state from the methodology doc never appears in snapshots — excluded regions are not in the canonical REGIONS list. The `(confidenceTier, sourceProvenance)` pair is validated at build time by `scripts/ci/check-source-provenance-coherence.ts`. See [`docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`](../docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier). | No |
+| `fuelShare` | `Record<string, number>` | Optional fuel-type split of the curtailed energy, fractions 0–1, keys in `{solar, wind, hydro, geothermal, flare}`. | Yes |
+| `confidenceTier` | `string` | One of `"T1-live-TSO"` (legacy alias), `"T1a-live-tso"`, `"T1b-live-domestic-anchored"`, `"T1c-live-neighbour-anchored"`, `"T2-annual-calibrated"`, `"T3-modelled"`, or `"T4-structural-gap"`. Derived deterministically by `src/lib/uncertainty.ts::deriveTier`. See `docs/methodology/uncertainty.md`. | Yes (legacy snapshots may pre-date S2 enrichment) |
 | `uncertaintyLowGW` | `number` | Lower bound of the per-tier envelope on `peakGW`. `max(0, peakGW − δ)`. | Yes |
 | `uncertaintyHighGW` | `number` | Upper bound of the per-tier envelope on `peakGW`. `peakGW + δ`. | Yes |
 
@@ -31,16 +31,18 @@ One file per region. Overwritten on each scheduled build. Historical values acce
 
 ```json
 {
-  "regionId": "caiso",
+  "regionId": "caiso-wind",
   "profile": [0.671, 0.590, 0.304, 0.140, ...24 values],
   "latestProfile": [0.82, 0.71, 0.35, 0.18, ...24 values],
   "totalTWh": 0.2699,
   "peakGW": 0.729,
   "lastUpdated": "2026-04-23T14:15:00Z",
-  "sourceNote": "EIA CISO solar curtailment 2026-03-25 → 2026-04-23",
+  "lastSuccessAt": "2026-04-23T14:20:00Z",
+  "sourceNote": "EIA CISO wind curtailment 2026-03-25 → 2026-04-23",
   "sourceStatus": "live",
+  "sourceProvenance": "verified",
   "fuelShare": {"solar": 0.88, "wind": 0.12},
-  "confidenceTier": "T1-live-TSO",
+  "confidenceTier": "T1a-live-tso",
   "uncertaintyLowGW": 0.620,
   "uncertaintyHighGW": 0.838
 }
@@ -73,14 +75,14 @@ Compression: Snappy. Format: Parquet 2.6. Typical size: ~100 bytes per row × 38
 | `source_status` | `string` | `"live"`, `"cached"`, `"degraded"`, or null. |
 | `last_updated` | `string` | Calibration-anchor date. |
 | `last_success_at` | `string` | ISO-8601 UTC timestamp when the snapshot was last successfully refreshed. |
-| `confidence_tier` | `string` | `"T1-live-TSO"`, `"T2-annual-calibrated"`, or `"T3-modelled"`. (`"T4-structural-gap"` is reserved in the enum but never emitted — structural-gap regions do not appear in the dataset at all.) |
+| `confidence_tier` | `string` | `"T1-live-TSO"` (legacy alias), `"T1a-live-tso"`, `"T1b-live-domestic-anchored"`, `"T1c-live-neighbour-anchored"`, `"T2-annual-calibrated"`, `"T3-modelled"`, or `"T4-structural-gap"` (`T4` is reserved in the enum but never emitted — structural-gap regions do not appear in the dataset at all). |
 | `uncertainty_low_gw` | `float32` | Lower bound of the per-tier envelope on `peak_gw` (`max(0, peak_gw − δ)`). |
 | `uncertainty_high_gw` | `float32` | Upper bound of the per-tier envelope on `peak_gw` (`peak_gw + δ`). |
 | `profile_h00` … `profile_h23` | `float32` × 24 | Average curtailment in GW per UTC hour, matching JSON `profile`. |
 
 The three confidence-tier columns were added by the S2 uncertainty sprint (2026-04-24). Rows written before that date carry null values in those columns; `pyarrow.concat_tables(promote_options="default")` fills them on the next append, so the committed Parquet may contain a mix of pre-S2 and post-S2 rows depending on when it was last refreshed.
 
-The confidence tier is derived deterministically from `Region.tier` plus the loader's profile kind by `src/lib/uncertainty.ts::deriveTier`. The envelope half-width δ is per-tier (2σ from backfill where available, otherwise ±15% / ±20% / ±40% of `peak_gw`). Full methodology in `docs/methodology/uncertainty.md`.
+The confidence tier is derived deterministically from `Region.tier` by `src/lib/uncertainty.ts::deriveTier`. The envelope half-width δ is per-tier (2σ from backfill where available for T1a, otherwise ±15% / ±50% / ±35.5% / ±20% / ±40% of `peak_gw` for T1a/T1b/T1c/T2/T3). Full methodology in `docs/methodology/uncertainty.md`.
 
 ### Example query
 
@@ -133,14 +135,14 @@ Current size: **203 rows × 12 columns** (29 regions × 7 years).
 | `n_hourly_rows` | `int32` | Non-null hours observed for this region in this year. A full year is 8,760 (8,784 in a leap year). |
 | `annual_twh` | `float32` | Σ `curtailment_gw` × 1h ÷ 1000 across the year. |
 | `peak_gw` | `float32` | Max hourly `curtailment_gw` across the year. |
-| `confidence_tier` | `string` | `"T1-live-TSO"`, `"T2-annual-calibrated"`, or `"T3-modelled"` per `src/lib/uncertainty.ts::deriveTier`. |
-| `tier_fraction` | `float32` | Per-tier envelope half-width (`0.15` / `0.20` / `0.40`). |
+| `confidence_tier` | `string` | `"T1a-live-tso"`, `"T1b-live-domestic-anchored"`, `"T1c-live-neighbour-anchored"`, `"T2-annual-calibrated"`, or `"T3-modelled"` per `src/lib/uncertainty.ts::deriveTier`; `"T1-live-TSO"` may appear only in older rollups. |
+| `tier_fraction` | `float32` | Per-tier envelope half-width (`0.15`, `0.50`, `0.355`, `0.20`, or `0.40`). |
 | `uncertainty_low_gw` | `float32` | `peak_gw × (1 − tier_fraction)`, clamped to ≥ 0. |
 | `uncertainty_high_gw` | `float32` | `peak_gw × (1 + tier_fraction)`. |
 | `uncertainty_low_twh` | `float32` | `annual_twh × (1 − tier_fraction)`, clamped to ≥ 0. |
 | `uncertainty_high_twh` | `float32` | `annual_twh × (1 + tier_fraction)`. |
 
-Once the historical backfill stabilises across ≥3 years, the T1 envelope should be replaced by 2σ of observed annual peakGW; until then it is the ±15% default. Full methodology in `docs/methodology/uncertainty.md`.
+Once the historical backfill stabilises across ≥3 years, the T1a envelope should be replaced by 2σ of observed annual peakGW where the cohort matches the same dispatch-down series; T1b/T1c retain their empirical fractional envelopes. Full methodology in `docs/methodology/uncertainty.md`.
 
 ## Schema versioning
 

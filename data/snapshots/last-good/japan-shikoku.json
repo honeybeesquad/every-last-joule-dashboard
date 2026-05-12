@@ -31,9 +31,10 @@
   "peakGW": 0.12955519934804094,
   "lastUpdated": "2024",
   "lastSuccessAt": "2026-05-02T03:39:16.931Z",
-  "sourceNote": "Shikoku Electric T&D (\u56db\u56fd\u96fb\u529b\u9001\u914d\u96fb) \u2014 live CSV URL not accessible (2026-05-02 404); typical solar shape \u00d7 OCCTO FY2024 Shikoku anchor ~0.30 TWh/yr",
+  "sourceNote": "Shikoku Electric T&D (四国電力送配電) — live CSV URL not accessible (2026-05-02 404); typical solar shape × OCCTO FY2024 Shikoku anchor ~0.30 TWh/yr",
   "confidenceTier": "T1a-live-tso",
   "uncertaintyLowGW": 0.07773311960882456,
   "uncertaintyHighGW": 0.18137727908725731,
-  "sourceStatus": "live"
+  "sourceStatus": "live",
+  "sourceProvenance": "verified"
 }

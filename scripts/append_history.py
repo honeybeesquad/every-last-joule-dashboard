@@ -15,8 +15,10 @@ total_twh_30d       float32 current 30-day curtailment TWh
 source_status       str     "live" | "cached" | "degraded" | null
 last_updated        str     calibration date (YYYY, YYYY-Q#, or ISO)
 last_success_at     str     ISO-8601 UTC of last successful snapshot refresh
-confidence_tier     str     "T1-live-TSO" | "T2-annual-calibrated" |
-                            "T3-modelled" | "T4-structural-gap" | null
+confidence_tier     str     "T1a-live-tso" | "T1b-live-domestic-anchored" |
+                            "T1c-live-neighbour-anchored" |
+                            "T2-annual-calibrated" | "T3-modelled" |
+                            "T4-structural-gap" | null
                             (see src/lib/uncertainty.ts + docs/methodology/uncertainty.md)
 uncertainty_low_gw  float32 lower bound on peak_gw (GW). Clamped to 0.
 uncertainty_high_gw float32 upper bound on peak_gw (GW). Always ≥ peak_gw.
@@ -63,17 +65,28 @@ SKIP_IDS = {"cbeci", "anchor"}
 # Fraction ± applied to peakGW when an observed std is unavailable.
 TIER_DEFAULT_FRACTION: dict[str, float] = {
     "T1-live-TSO":          0.15,
+    "T1a-live-tso":         0.15,
+    "T1b-live-domestic-anchored": 0.50,
+    "T1c-live-neighbour-anchored": 0.355,
     "T2-annual-calibrated": 0.20,
     "T3-modelled":          0.40,
     "T4-structural-gap":    0.00,
 }
 
+REGION_TIER_TO_CONFIDENCE_TIER: dict[str, str] = {
+    "live": "T1a-live-tso",
+    "live-domestic-anchored": "T1b-live-domestic-anchored",
+    "live-neighbour-anchored": "T1c-live-neighbour-anchored",
+    "anchored": "T2-annual-calibrated",
+    "estimated": "T3-modelled",
+}
+
 REGIONS_TS = REPO_ROOT / "src" / "lib" / "regions.ts"
 # Pattern matches rows like:
-#   { id: "caiso", name: "California", ... tier: "live", kind: "mixed", ... }
-#   { id: "permian", ... tier: "flare", ...
+#   { id: "caiso-wind", name: "California Wind", ... tier: "live", ... }
+#   { id: "netherlands-wind", ... tier: "live-domestic-anchored", ... }
 _REGION_ROW_RE = re.compile(
-    r'id:\s*"(?P<id>[a-z0-9-]+)".*?tier:\s*"(?P<tier>live|static|flare)"',
+    r'id:\s*"(?P<id>[a-z0-9-]+)".*?tier:\s*"(?P<tier>live|live-domestic-anchored|live-neighbour-anchored|anchored|estimated)"',
     re.DOTALL,
 )
 
@@ -98,7 +111,7 @@ _REGIONS_CACHE: dict[str, str] | None = None
 
 
 def region_tier(region_id: str) -> str | None:
-    """Look up a region's canonical tier ('live' / 'static' / 'flare')."""
+    """Look up a region's canonical tier from src/lib/types.ts::RegionTier."""
     global _REGIONS_CACHE
     if _REGIONS_CACHE is None:
         _REGIONS_CACHE = _load_regions_manifest()
@@ -111,25 +124,17 @@ def derive_fallback_uncertainty(
     """When a snapshot predates per-loader applyUncertainty wiring, fall back
     to tier-default bounds derived from the regions.ts manifest.
 
-    live → T1-live-TSO (±15% fallback; 2σ would need backfill std).
-    flare → T2-annual-calibrated (±20%).
-    static → T2-annual-calibrated (±20%, unless profile kind is known to be
-             solar/hydro-seasonal — but the manifest doesn't encode that at
-             this layer, so we cannot upgrade to T3 here. Statics are the
-             canonical source for profileKind and they emit confidenceTier
-             themselves, so this function only fires for pre-S2 statics and
-             we prefer to under-label than mis-label).
+    live                       → T1a-live-tso (±15% fallback).
+    live-domestic-anchored     → T1b-live-domestic-anchored (±50%).
+    live-neighbour-anchored    → T1c-live-neighbour-anchored (±35.5%).
+    anchored                   → T2-annual-calibrated (±20%).
+    estimated                  → T3-modelled (±40%).
     """
     tier_key = region_tier(region_id)
     if tier_key is None or not peak_gw or peak_gw <= 0:
         return None, None, None
-    if tier_key == "live":
-        tier = "T1-live-TSO"
-    elif tier_key == "flare":
-        tier = "T2-annual-calibrated"
-    elif tier_key == "static":
-        tier = "T2-annual-calibrated"
-    else:
+    tier = REGION_TIER_TO_CONFIDENCE_TIER.get(tier_key)
+    if tier is None:
         return None, None, None
     frac = TIER_DEFAULT_FRACTION[tier]
     delta = frac * peak_gw

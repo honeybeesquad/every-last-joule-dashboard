@@ -1,6 +1,6 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-05-12 by Claude (launch-prep sprint shipped — silent-zero guards, Hokkaido dead-code purge, missing CSS token)
+**Last verified against git:** 2026-05-13 by Codex (launch-readiness branch prepared against `main`)
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
@@ -20,7 +20,7 @@
 - `kind` (content type): wind, solar, hydro, mixed, geo, flare — orthogonal to tier
 - `tier` (data quality): live, live-domestic-anchored, live-neighbour-anchored, anchored, estimated
 - `sourceProvenance` (source status): verified, official-lead, modelled-fallback
-- Old `tier: "static"` → `tier: "estimated"`; old `tier: "flare"` → `tier: "anchored"` with `kind: "flare"` carrying the energy-source signal.
+- Legacy static/flare tier labels are retired. `tier` now carries only data quality (`estimated` / `anchored`), while `kind: "flare"` carries the energy-source signal.
 
 **Discipline layer (sprint shipped 2026-05-08, PRs #69-#75):**
 - **PR #69** — `sourceProvenance` enum field + CI gate scaffolding (`feat/source-status-enum`)
@@ -31,9 +31,9 @@
 - **PR #74** — India SLDC egress audit: 3/6 SLDCs open to any IP, 3/6 geoblocked (`docs/india-sldc-egress-audit`)
 - **PR #75** — cleared two pre-existing tier-coherence failures; `ci:gates` fully green (`fix/tier-coherence-colombia-turkey`)
 
-**Nav + USD cleanup (shipped 2026-05-09, commit e9d86a7):**
+**Nav + pricing-layer cleanup (shipped 2026-05-09, commit e9d86a7):**
 - Paper link added to dashboard nav (was missing despite page existing since PR #83)
-- USD toggle hidden from dashboard UI; pricing data layer (price.ts, fx.ts) retained for future use → **layer fully deleted in PR #87 (2026-05-10)**
+- Deprecated price-toggle UI hidden from dashboard; pricing data layer (`price.ts`, `fx.ts`) retained briefly for future use → **layer fully deleted in PR #87 (2026-05-10)**
 
 **Audit-fixes sprint (shipped 2026-05-10, PRs #84-#88):**
 - **PR #84** — loader-wiring blockers: Belgium/Peru/SA/WA-SWIS spread fixes; runtime `assertCanonicalRegionData` now invoked at page load (catches Belgium-shape bug class loudly); strengthened integrity check verifies 24-elem profile, not just key presence; dead `ercot-native` fetch removed.
@@ -57,11 +57,11 @@
 
 **Paper + DOI:**
 - Paper drafts ready at `docs/paper/01-06-*.md`
-- v1.3.0 release pass (post-2026-05-12): version DOI pending Zenodo mint on tag push
+- v1.3.1 dataset metadata points at version DOI `10.5281/zenodo.20136284` and always-latest DOI `10.5281/zenodo.19835411`.
 
 ## What's NOT shipped / open PRs
 
-None. 9 PRs merged 2026-05-10 (#84-#92). PR #68 (USD toggle) is fully superseded — data layer deleted in PR #87.
+None. 9 PRs merged 2026-05-10 (#84-#92). PR #68 is fully superseded — pricing data layer deleted in PR #87.
 
 ## Known follow-ups
 

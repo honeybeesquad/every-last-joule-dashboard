@@ -193,6 +193,17 @@ describe("static regions", () => {
     }
   });
 
+  it("stamps sourceProvenance on every static region output", () => {
+    const data = buildAllStatics();
+    const allowed = new Set(["verified", "official-lead", "modelled-fallback"]);
+
+    for (const r of Object.values(data)) {
+      expect(allowed.has(r.sourceProvenance ?? "")).toBe(true);
+    }
+    expect(data.permian.sourceProvenance).toBe("verified");
+    expect(data.xinjiang.sourceProvenance).toBe("modelled-fallback");
+  });
+
   it("never emits flat 24h profiles for static rows classified as solar", () => {
     const data = buildAllStatics();
     const solarIds = REGIONS
