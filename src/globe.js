@@ -381,7 +381,10 @@ export async function mountGlobe(canvas, initial) {
           ctx.strokeStyle = pillarGradient;
           ctx.lineWidth = pillarW;
           ctx.lineCap = "round";
-          ctx.globalAlpha = pillarAlpha * visible * sunDim;
+          // Pillars read solid against the lime-lit globe. Day/night still
+          // dim them via sunDim, but the limb-fade (visible) is dropped here
+          // — soft glows below still use it.
+          ctx.globalAlpha = pillarAlpha * sunDim;
           ctx.beginPath();
           ctx.moveTo(anchorX, anchorY);
           ctx.lineTo(tipX, tipY);
@@ -420,7 +423,7 @@ export async function mountGlobe(canvas, initial) {
             ctx.strokeStyle = grad;
             ctx.lineWidth = pillarW;
             ctx.lineCap = isTip ? "round" : "butt";
-            ctx.globalAlpha = pillarAlpha * visible * sunDim;
+            ctx.globalAlpha = pillarAlpha * sunDim;
             ctx.beginPath();
             ctx.moveTo(segStartX, segStartY);
             ctx.lineTo(segEndX, segEndY);
@@ -440,7 +443,7 @@ export async function mountGlobe(canvas, initial) {
         }
       }
 
-      ctx.globalAlpha = pillarAlpha * visible;
+      ctx.globalAlpha = pillarAlpha;
       ctx.fillStyle = domColor;
       ctx.beginPath();
       ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);
