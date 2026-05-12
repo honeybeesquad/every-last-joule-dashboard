@@ -51,12 +51,12 @@
   --fuel-wind:          var(--cool);
   --fuel-hydro:         var(--text);
 
-  /* globe — see globe.js for which keys it actually reads */
+  /* globe — Lime-lit grid (concept B) — globe IS the accent moment */
   --globe-dot-day:    var(--text);
   --globe-dot-night:  rgba(242, 242, 240, 0.32);
-  --globe-border:     rgba(212, 255, 58, 0.30);
-  --day-gradient-1:   rgba(212, 255, 58, 0.20);
-  --day-gradient-2:   rgba(212, 255, 58, 0.08);
+  --globe-border:     rgba(212, 255, 58, 0.62);
+  --day-gradient-1:   rgba(212, 255, 58, 0.45);
+  --day-gradient-2:   rgba(212, 255, 58, 0.20);
   --day-gradient-3:   rgba(0, 0, 0, 0);
   --night-overlay:    rgba(0, 0, 0, 0.55);
   --pillar-base-alpha: 99;
