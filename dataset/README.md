@@ -1,6 +1,6 @@
 # Every Last Joule — Curtailment & Flare Dataset
 
-**Version:** v1.3.0 · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI (this version):** [10.5281/zenodo.20135933](https://doi.org/10.5281/zenodo.20135933) · **DOI (always-latest):** [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411)
+**Version:** v1.3.1 · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI (this version):** _pending Zenodo mint on tag push (pinned post-mint)_ · **DOI (always-latest):** [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411)
 
 A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 384 regions across 6 continents. Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
 

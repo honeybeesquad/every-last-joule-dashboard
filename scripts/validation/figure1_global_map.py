@@ -67,15 +67,24 @@ STATIC_FLAT_REGIONS = {
     "austria", "russia-murmansk-wind",
 }
 
-# tier values: "live" (T1a), "live-domestic-anchored" (T1b),
-# "live-neighbour-anchored" (T1c), "static" (T2/T3), "flare" (T2-flare).
+# Region row regex. PR #88 (2026-05-10) renamed static→estimated and
+# flare→anchored, with `kind` carrying the energy-source signal. Current
+# tier vocabulary:
+#   "live"                    → T1a-live-tso
+#   "live-domestic-anchored"  → T1b
+#   "live-neighbour-anchored" → T1c
+#   "anchored" + kind=="flare" → T2-flare (24/7 baseload)
+#   "anchored" + kind!="flare" → T2-annual-calibrated (flat-anchor proxies)
+#   "estimated"               → T3-modelled (typical-shape × annual anchor)
+# Legacy "static"/"flare" retained in the alternation as a backstop.
 REGION_RE = re.compile(
     r'\{\s*id:\s*"(?P<id>[a-z0-9-]+)",'
     r'\s*name:\s*"(?P<name>[^"]+)",'
     r'\s*country:\s*"(?P<country>[^"]+)",'
     r'\s*lat:\s*(?P<lat>-?[\d.]+),'
     r'\s*lon:\s*(?P<lon>-?[\d.]+),'
-    r'\s*tier:\s*"(?P<tier>live-domestic-anchored|live-neighbour-anchored|live|static|flare)"'
+    r'\s*tier:\s*"(?P<tier>live-domestic-anchored|live-neighbour-anchored|live|anchored|estimated|static|flare)"'
+    r',\s*kind:\s*"(?P<kind>[a-z]+)"'
     r'.*?\}',
     re.DOTALL,
 )
@@ -95,9 +104,16 @@ TIER_LABEL = {
 }
 
 
-def derive_tier(region_id: str, region_tier: str) -> str:
+def derive_tier(region_id: str, region_tier: str, region_kind: str) -> str:
     if region_tier in ("live", "live-domestic-anchored", "live-neighbour-anchored"):
         return "T1-live-TSO"
+    if region_tier == "anchored":
+        if region_kind == "flare":
+            return "flare"
+        return "T2-annual-calibrated"
+    if region_tier == "estimated":
+        return "T3-modelled"
+    # Legacy fallbacks (pre-PR #88).
     if region_tier == "flare":
         return "flare"
     if region_tier == "static":
@@ -118,7 +134,8 @@ def load_regions() -> list[dict]:
             "country": m.group("country"),
             "lat": float(m.group("lat")),
             "lon": float(m.group("lon")),
-            "tier": derive_tier(rid, m.group("tier")),
+            "kind": m.group("kind"),
+            "tier": derive_tier(rid, m.group("tier"), m.group("kind")),
         })
     return out
 

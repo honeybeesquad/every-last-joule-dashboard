@@ -40,8 +40,10 @@ Northeast states — Ceará, Rio Grande do Norte, Bahia, Piauí,
 Pernambuco — plus six South/Centre-South states — Minas Gerais, São
 Paulo, Mato Grosso, Goiás, Paraná, Rio Grande do Sul — and a catch-all
 NE-other bucket); per-utility area for Japan (10 TSO control areas:
-Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai, Chubu, TEPCO
-Power Grid, Hokuriku, Okinawa); and national grid for countries
+Kyushu, Tohoku, Chugoku, Shikoku, Kansai, Hokuriku, Okinawa
+live; Chubu, TEPCO Power Grid, Hokkaido emitting typical-shape
+estimate after the 2026-05-10 upstream audit found dead, renamed,
+or mis-parsed endpoints); and national grid for countries
 without public sub-national data. Total: 384 regions in 195
 countries — every UN member state. Stable
 kebab-case IDs defined in `src/lib/regions.ts`.
@@ -73,7 +75,7 @@ kebab-case IDs defined in `src/lib/regions.ts`.
 | EMI New Zealand (Electricity Authority) | 1 | CSV download (Generation_MD dataset) |
 | EPİAŞ Turkey (Şeffaflık) | 1 | REST API, JSON real-time generation |
 | CEN Chile (Coordinador Eléctrico Nacional) | 2 (Atacama + southern wind) | Headless-Chrome XLSX parse (Cloudflare-gated) |
-| Japan utilities (10 TSO areas) | 10 regions (Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai, Chubu, TEPCO, Hokuriku, Okinawa) | HTTPS CSV, HTTP/1.1-forced (`fetchHttp1Bytes`, WAF bypass), Shift-JIS decode, 30-day trailing loop |
+| Japan utilities (10 TSO areas) | 10 regions; 7 live (Kyushu, Tohoku, Chugoku, Shikoku, Kansai, Hokuriku, Okinawa), 3 emitting typical-shape estimate after the 2026-05-10 audit (Chubu — dead endpoint; TEPCO — CSV renamed to demand-only; Hokkaido — parser overcounted 10×) | HTTPS CSV, HTTP/1.1-forced (`fetchHttp1Bytes`, WAF bypass), Shift-JIS decode, 30-day trailing loop |
 
 Every loader is implemented in `src/data/<source>.json.ts` as an
 Observable Framework data loader. Every loader wraps its fetch in

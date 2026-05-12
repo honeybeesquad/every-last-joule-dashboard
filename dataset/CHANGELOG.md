@@ -2,6 +2,19 @@
 
 All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.1] — 2026-05-12
+
+Pre-launch verification hotfix. v1.3.0 shipped with the figure-rendering scripts (`scripts/validation/figure1_global_map.py`, `figure4_coverage_map.py`) still using the pre-PR-#88 tier-vocabulary regex (`live|static|flare`), which silently skipped every `tier: "anchored"` or `tier: "estimated"` row after the 2026-05-10 refactor renamed the buckets. Result: Figure 4 showed only 159 T1 regions instead of 384, and Figure 1 showed 0 T2/T3 dots. Caught during the launch verification pass.
+
+### Fixed
+- **`scripts/validation/figure1_global_map.py` and `figure4_coverage_map.py`** — regex now matches the full post-PR-#88 alternation (`live | live-domestic-anchored | live-neighbour-anchored | anchored | estimated`) plus legacy `static | flare` as a backstop. Captures `kind` (orthogonal to tier) and routes `tier: "anchored"` to T2-flare when `kind == "flare"` or T2-annual-calibrated otherwise. Both figures regenerated; Figure 4 now correctly shows T1=159, T2=6, T2-flare=8, T3=211 (total 384).
+
+### Changed — paper accuracy
+- **`docs/paper/01-background-and-summary.md`, `docs/paper/02-methods.md`, `docs/paper/every-last-joule-scientific-data-draft.md`** — Japan utility list updated. The paper now identifies which seven utilities currently produce live data (Kyushu, Tohoku, Chugoku, Shikoku, Kansai, Hokuriku, Okinawa) and which three (Chubu — dead `denki-yoho.chuden.jp` endpoint; TEPCO — `juyo-d-j.csv` renamed to demand-only `juyo-d1-j.csv`; Hokkaido — parser overcounting 10×) emit typical-shape estimate after the 2026-05-10 upstream audit (PR #90). Matches the canonical tier-counts golden file.
+
+### Notes
+- v1.3.0 Zenodo deposit (`10.5281/zenodo.20135933`) retains the broken figures; v1.3.1 mints a corrected deposit. Concept DOI `10.5281/zenodo.19835411` resolves to v1.3.1 going forward.
+
 ## [1.3.0] — 2026-05-12
 
 Zenodo DOI: pending mint on tag push (concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to latest). v1.3.0 bundles the discipline-layer sprint (sourceProvenance + CI gate), the v1.2.1 IRENA/Balkans expansion (which was never propagated into CITATION.cff), the audit-fixes sprint (PRs #84–#92), the audit follow-up + India SLDC retier (PRs #88, #95–#96), and the post-redesign accuracy keepers (solar-physics night mask, italic Joule wordmark, PR #96 M/L/L revert).
