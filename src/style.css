@@ -59,7 +59,7 @@
   --day-gradient-2:   rgba(212, 255, 58, 0.20);
   --day-gradient-3:   rgba(0, 0, 0, 0);
   --night-overlay:    rgba(0, 0, 0, 0.55);
-  --pillar-base-alpha: 99;
+  --pillar-base-alpha: ff;
 
   /* state */
   --success: var(--accent);
