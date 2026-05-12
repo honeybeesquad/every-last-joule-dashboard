@@ -69,6 +69,12 @@
   --ls-normal: 0;
   --ls-caps: 0.12em;
 
+  /* ============ ACCENT (theme-invariant) ============ */
+  /* Bitcoin-orange accent used by .mode-btn-active border/text and the
+     rgba(247,147,26,…) background on the same element. Single source of
+     truth so the active mode toggle renders correctly. */
+  --amber-500: #f7931a;
+
   /* ============ SPACING ============ */
   --space-0: 0;
   --space-1: 4px;
