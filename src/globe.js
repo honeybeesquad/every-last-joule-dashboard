@@ -368,7 +368,11 @@ export async function mountGlobe(canvas, initial) {
       if (len > 0.1) {
         dx /= len;
         dy /= len;
-        const pillarH = (3 + weight * 48) * birthT;
+        // Pillar height: base + sqrt(GW) * coefficient, scaled by birth
+        // animation. The trailing 1.2 multiplier extends every bar 20%
+        // for the Lime-lit globe — they read more pronounced against the
+        // brighter sphere without changing the relative GW ranking.
+        const pillarH = (3 + weight * 48) * birthT * 1.2;
         const pillarW = 3;
 
         if (group.length === 1) {
