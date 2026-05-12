@@ -961,7 +961,7 @@ import pandas as pd
 
 # Seven-year backfill — 2.59M hourly rows, 29 T1 regions
 url = ("https://raw.githubusercontent.com/honeybeesquad/"
-       "every-last-joule-dashboard/v1.3.0/"
+       "every-last-joule-dashboard/v1.3.1/"
        "data/historical/curtailment_backfill.parquet")
 df = pd.read_parquet(url)
 
@@ -993,7 +993,7 @@ result = con.execute("""
 ```python
 import json, urllib.request
 url = ("https://raw.githubusercontent.com/honeybeesquad/"
-       "every-last-joule-dashboard/v1.3.0/"
+       "every-last-joule-dashboard/v1.3.1/"
        "data/snapshots/last-good/caiso.json")
 snap = json.load(urllib.request.urlopen(url))
 print(f"CAISO peak GW: {snap['peakGW']:.2f}  "
@@ -1071,7 +1071,7 @@ reporting systematically under-captures certain behaviours:
 ## 5.5 Recommended citation
 
 Machine-readable citation metadata: `dataset/CITATION.cff`.
-Zenodo-minted version DOI for v1.3.0: `10.5281/zenodo.20135933`.
+Zenodo-minted version DOI for v1.3.1: `10.5281/zenodo.20136284`.
 Concept DOI (resolves to latest version): `10.5281/zenodo.19835411`.
 
 Preferred human citation:
@@ -1079,7 +1079,7 @@ Preferred human citation:
 > Collins, S. (2026). Every Last Joule: an hourly synthesis of
 > renewable-electricity curtailment and associated-gas flaring
 > across 384 regions in 195 countries. Scientific Data.
-> https://doi.org/10.5281/zenodo.20135933
+> https://doi.org/10.5281/zenodo.20136284
 
 Cite the **version DOI** (not the concept DOI) when writing
 reproducible analyses; concept DOI is appropriate when citing
@@ -1153,8 +1153,8 @@ publicly available in the repository under an MIT licence
 
 - **Repository:**
   https://github.com/honeybeesquad/every-last-joule-dashboard
-- **Tagged release:** `v1.3.0` (matches the Zenodo-archived
-  DOI `10.5281/zenodo.20135933`).
+- **Tagged release:** `v1.3.1` (matches the Zenodo-archived
+  DOI `10.5281/zenodo.20136284`).
 - **Languages:** TypeScript (Observable Framework data
   loaders), Python 3.12+ (historical backfill, validation,
   figure rendering).

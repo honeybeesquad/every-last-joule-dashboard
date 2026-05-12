@@ -59,7 +59,7 @@ Add the eight verified flare-gas regions from Tier 2 — satellite-verified volu
 | Curtailed renewables as % of Bitcoin | 93.4% |
 | Verified foregone revenue | $16.2 billion/yr |
 
-> *Chart note: A comparison chart of wasted energy categories versus Bitcoin network consumption is available in the full interactive version at [everylastjoule.com](https://everylastjoule.com). Sources: ELJ dataset v1.3.0 (T1 curtailment = live TSO data; T2 = satellite-verified flare gas); WooCharts ESG tracker (Bitcoin). T3 modelled estimates excluded from wasted totals.*
+> *Chart note: A comparison chart of wasted energy categories versus Bitcoin network consumption is available in the full interactive version at [everylastjoule.com](https://everylastjoule.com). Sources: ELJ dataset v1.3.1 (T1 curtailment = live TSO data; T2 = satellite-verified flare gas); WooCharts ESG tracker (Bitcoin). T3 modelled estimates excluded from wasted totals.*
 
 This deserves plain statement. The narrative that Bitcoin's energy use represents a net addition to global electricity demand is difficult to sustain in the face of this accounting. The electricity Bitcoin uses exists in the system regardless of whether Bitcoin mines it or not. The question is whether it reaches a customer or a drain. Those 184.5 TWh of curtailed renewables are lost entirely. They heat nothing, power nothing, charge nothing. They are subtracted from the global energy system as a pure deadweight loss. If Bitcoin absorbed a fraction of that curtailment, net global electricity consumption would be unchanged; the electrons would simply be redirected from a resistor bank to a mining rig. The accusation of excess rests on ignoring the curtailment.
 
@@ -77,7 +77,7 @@ The pricing condition is straightforward. Bitcoin mining at a curtailment site i
 
 The operational precedents exist at commercial scale. MARA Holdings operates at Garden City in ERCOT, where curtailment is structural. Riot Platforms at Rockdale and Corsicana has registered over 700 megawatts of demand-response capacity with ERCOT, capable of shedding load within seconds when grid conditions require it.[^7] Crusoe Energy's Permian Basin flare-to-compute operations, before their 2024 pivot toward AI inference workloads, demonstrated that modular gas-to-compute units could be deployed at single-well sites with no other electricity buyer within fifty kilometres. These are commercial operations that illustrate the viability of the model. What they do not demonstrate is deployment at a scale proportionate to the opportunity — which, given that the opportunity has been publicly quantified for the first time in this paper, is perhaps understandable as a chicken-and-egg problem, though less understandable for an industry that has been asserting its stranded-energy credentials for the better part of a decade without measuring them.
 
-> *Figure 2: Top curtailment and flare-gas sites (circles sized by annual TWh) with known commercial mining operations. Data: ELJ dataset v1.3.0. See the interactive map at [everylastjoule.com](https://everylastjoule.com).*
+> *Figure 2: Top curtailment and flare-gas sites (circles sized by annual TWh) with known commercial mining operations. Data: ELJ dataset v1.3.1. See the interactive map at [everylastjoule.com](https://everylastjoule.com).*
 
 The $16.2 billion per year in foregone revenue we have documented represents real losses — projects financed on the assumption that the grid would take their power, then curtailed by transmission constraints or market design failures.[^3] A wind developer whose turbine is curtailed loses the difference between their contracted price and zero. Bitcoin mining as a captive buyer at curtailment-hour pricing converts that loss into a revenue stream. The top five curtailment sites alone — Bahia wind in Brazil at $1.18 billion per year in foregone revenue, Colombia's hydro-heavy system at $1.12 billion, Minas Gerais solar in Brazil at $1.12 billion, the Permian Basin flare-gas complex at $1.03 billion, and Sichuan's hydro spillage at $755 million — represent over $5 billion per year in revenue that generators are currently losing and miners are not capturing.[^3]
 
@@ -153,7 +153,7 @@ The full dataset is archived at Zenodo ([DOI 10.5281/zenodo.19835411](https://do
 
 2. World Bank Group / GGFR. *Global Gas Flaring Tracker Report 2024*. Washington DC: World Bank; 2024. https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data [^2]
 
-3. Collins S et al. *Every Last Joule — Global Curtailed and Flared Energy Dataset v1.3.0*. Zenodo; 2026. https://doi.org/10.5281/zenodo.19835411 [^3]
+3. Collins S et al. *Every Last Joule — Global Curtailed and Flared Energy Dataset v1.3.1*. Zenodo; 2026. https://doi.org/10.5281/zenodo.19835411 [^3]
 
 4. Collins S. *Every Last Joule Dashboard*. 2026. https://everylastjoule.com [^4]
 
