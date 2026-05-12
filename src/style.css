@@ -206,7 +206,7 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  height: var(--nav-h);
+  height: 72px;
   padding: 0 var(--gutter);
   background: rgba(10, 10, 10, 0.82);
   backdrop-filter: blur(12px);
@@ -217,28 +217,34 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
 .app-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   min-width: 0;
 }
 
-.app-mark {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
-  animation: live-pulse 1.8s ease-in-out infinite;
-  display: inline-block;
+.app-logo {
+  width: 26px;
+  height: 32px;
+  color: var(--text);
+  flex-shrink: 0;
+  display: block;
 }
 @keyframes live-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
 .app-wordmark {
   font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 15.5px;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.035em;
   color: var(--text);
   white-space: nowrap;
+  line-height: 1;
+}
+.app-wordmark-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: -0.02em;
 }
 
 .app-tag {
@@ -247,7 +253,9 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--dim);
-  margin-left: 4px;
+  margin-left: 6px;
+  padding-left: 14px;
+  border-left: 1px solid var(--line);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -284,27 +292,57 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
 .app-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
 
 /* ---------- App body — three-panel grid ---------- */
+/* .app-body is position: relative so the globe canvas-area (absolute,
+   set by syncGlobeRect() in globe.js) can span its full width and sit
+   visually BEHIND the side panels. The side panels then layer on top
+   with z-index:1 and gradient backgrounds that fade transparent toward
+   the centre, so the globe shows through behind their content. */
 .app-body {
   display: grid;
   grid-template-columns: 380px minmax(0, 1fr) 380px;
   gap: 0;
   min-height: 0;
+  position: relative;
   border-bottom: 1px solid var(--line);
 }
 
 .panel {
   padding: 32px 28px;
   min-width: 0;
-  background: var(--ink);
 }
-.panel-left  { border-right: 1px solid var(--line); }
-.panel-right { border-left:  1px solid var(--line); }
+.panel-left {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(
+    to right,
+    var(--ink) 0%,
+    var(--ink) 55%,
+    rgba(10, 10, 10, 0.88) 78%,
+    rgba(10, 10, 10, 0.40) 92%,
+    transparent 100%
+  );
+  /* Soften top and bottom edges where the gradient meets header/timeline */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 64px, black calc(100% - 64px), transparent);
+          mask-image: linear-gradient(to bottom, transparent, black 64px, black calc(100% - 64px), transparent);
+}
+.panel-right {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(
+    to left,
+    var(--ink) 0%,
+    var(--ink) 55%,
+    rgba(10, 10, 10, 0.88) 78%,
+    rgba(10, 10, 10, 0.40) 92%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 64px, black calc(100% - 64px), transparent);
+          mask-image: linear-gradient(to bottom, transparent, black 64px, black calc(100% - 64px), transparent);
+}
 .panel-center {
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
+  background: transparent;
+  overflow: visible;
 }
 
 /* ---------- Headline panel (left) ---------- */
@@ -427,30 +465,43 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
   color: var(--muted);
 }
 
-/* ---------- Globe panel (center) ---------- */
+/* ---------- Globe panel (center) ----------
+   The globe-canvas-area sits absolute within .app-body (position: relative)
+   so it spans from the header's bottom border to the timeline's top border
+   across the FULL app-body width — visually behind both side panels. Its
+   top/height are set in globe.js syncGlobeRect() each layout pass. */
 .globe-canvas-area {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 540px;
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: center;
+  justify-items: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  pointer-events: none; /* side-panel content layers above and receives events */
+}
+.globe-canvas-area > * {
+  grid-area: 1 / 1;
 }
 #globe-canvas {
   display: block;
   width: 100%;
   height: 100%;
-  max-height: 760px;
+  pointer-events: all; /* the canvas itself is interactive */
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
+#globe-canvas.is-dragging { cursor: grabbing; }
+#globe-canvas[hidden] { visibility: hidden; }
 .globe-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ink);
-  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  pointer-events: none;
 }
 .globe-placeholder-label {
   font-family: var(--font-mono);
@@ -465,6 +516,7 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
   right: 20px;
   bottom: 20px;
   z-index: 4;
+  pointer-events: auto;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1214,7 +1266,9 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
   .panel { padding: 24px 18px; }
   .display-xl { font-size: clamp(64px, 9vw, 110px); }
 }
-/* Collapse to single column on tablets and split-screen narrow windows */
+/* Collapse to single column on tablets and split-screen narrow windows.
+   syncGlobeRect() in globe.js bails out at <=900px, so we put the globe
+   back in CSS flow with an explicit height. */
 @media (max-width: 900px) {
   .app-body {
     grid-template-columns: 1fr;
@@ -1224,12 +1278,22 @@ body:has(.app-shell) > #observablehq-center > #observablehq-main > h1:first-chil
     border-right: 0;
     border-left: 0;
     border-bottom: 1px solid var(--line);
+    background: var(--ink); /* no gradient needed when stacked */
+    -webkit-mask-image: none;
+            mask-image: none;
   }
   .panel-center {
     min-height: 520px;
     border-bottom: 1px solid var(--line);
+    background: var(--ink);
   }
-  .globe-canvas-area { min-height: 520px; }
+  .globe-canvas-area {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 520px;
+    top: auto !important;
+  }
 }
 @media (max-width: 700px) {
   .app-header { padding: 0 20px; gap: 12px; }

@@ -190,8 +190,13 @@ document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
     <header class="app-header">
       <div class="app-title">
-        <span class="app-mark">●</span>
-        <span class="app-wordmark">Every Last Joule</span>
+        <svg class="app-logo" viewBox="0 0 100 120" aria-hidden="true">
+          <line x1="22" y1="14" x2="86" y2="14" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
+          <line x1="68" y1="14" x2="68" y2="86" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
+          <path d="M 68 86 Q 68 106 48 106 Q 28 106 28 86" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
+          <line x1="14" y1="58" x2="94" y2="58" stroke="#D4FF3A" stroke-width="7.7" stroke-linecap="square" />
+        </svg>
+        <span class="app-wordmark">Every Last <span class="app-wordmark-accent">Joule</span></span>
         <span class="app-tag">Wasted Energy Database · <a class="app-tag-version" href="${zenodoVersion.recordUrl}" target="_blank" rel="noopener">v${zenodoVersion.version}</a></span>
       </div>
       <div class="app-header-right">
