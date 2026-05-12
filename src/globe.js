@@ -368,11 +368,7 @@ export async function mountGlobe(canvas, initial) {
       if (len > 0.1) {
         dx /= len;
         dy /= len;
-        // Pillar height: base + sqrt(GW) * coefficient, scaled by birth
-        // animation. The trailing 1.2 multiplier extends every bar 20%
-        // for the Lime-lit globe — they read more pronounced against the
-        // brighter sphere without changing the relative GW ranking.
-        const pillarH = (3 + weight * 48) * birthT * 1.2;
+        const pillarH = (3 + weight * 48) * birthT;
         const pillarW = 3;
 
         if (group.length === 1) {
@@ -385,10 +381,7 @@ export async function mountGlobe(canvas, initial) {
           ctx.strokeStyle = pillarGradient;
           ctx.lineWidth = pillarW;
           ctx.lineCap = "round";
-          // Pillars read solid against the lime-lit globe. Day/night still
-          // dim them via sunDim, but the limb-fade (visible) is dropped here
-          // — soft glows below still use it.
-          ctx.globalAlpha = pillarAlpha * sunDim;
+          ctx.globalAlpha = pillarAlpha * visible * sunDim;
           ctx.beginPath();
           ctx.moveTo(anchorX, anchorY);
           ctx.lineTo(tipX, tipY);
@@ -427,7 +420,7 @@ export async function mountGlobe(canvas, initial) {
             ctx.strokeStyle = grad;
             ctx.lineWidth = pillarW;
             ctx.lineCap = isTip ? "round" : "butt";
-            ctx.globalAlpha = pillarAlpha * sunDim;
+            ctx.globalAlpha = pillarAlpha * visible * sunDim;
             ctx.beginPath();
             ctx.moveTo(segStartX, segStartY);
             ctx.lineTo(segEndX, segEndY);
@@ -447,7 +440,7 @@ export async function mountGlobe(canvas, initial) {
         }
       }
 
-      ctx.globalAlpha = pillarAlpha;
+      ctx.globalAlpha = pillarAlpha * visible;
       ctx.fillStyle = domColor;
       ctx.beginPath();
       ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);

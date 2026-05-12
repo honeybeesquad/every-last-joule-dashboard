@@ -2,14 +2,8 @@
 
 <div id="page-loader" role="status" aria-label="Loading dashboard data">
   <div class="loader-topbar"><div class="loader-topbar-fill"></div></div>
-  <svg class="loader-logo" viewBox="0 0 100 120" aria-hidden="true">
-    <line x1="22" y1="14" x2="86" y2="14" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
-    <line x1="68" y1="14" x2="68" y2="86" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
-    <path d="M 68 86 Q 68 106 48 106 Q 28 106 28 86" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
-    <line x1="14" y1="58" x2="94" y2="58" stroke="#D4FF3A" stroke-width="7.7" stroke-linecap="square" />
-  </svg>
-  <div class="loader-center-text">Every Last <span class="accent-word">Joule</span></div>
-  <div class="loader-eyebrow">Wasted Energy Database · live from grid operators</div>
+  <div class="loader-center-mark">●</div>
+  <div class="loader-center-text">Every Last Joule</div>
   <div class="loader-terminal">
     <div class="loader-terminal-bar">
       <div class="loader-terminal-dots"><span></span><span></span><span></span></div>
@@ -39,7 +33,6 @@ import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./
 import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
 import { assertCanonicalRegionData } from "./lib/region-data-integrity.js";
-import { maskSolarNight } from "./lib/solar-mask.js";
 import { mountGlobe } from "./globe.js";
 
 const HOTSPOT_LIST_LIMIT = 50;
@@ -191,13 +184,8 @@ document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
     <header class="app-header">
       <div class="app-title">
-        <svg class="app-logo" viewBox="0 0 100 120" aria-hidden="true">
-          <line x1="22" y1="14" x2="86" y2="14" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
-          <line x1="68" y1="14" x2="68" y2="86" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
-          <path d="M 68 86 Q 68 106 48 106 Q 28 106 28 86" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
-          <line x1="14" y1="58" x2="94" y2="58" stroke="#D4FF3A" stroke-width="7.7" stroke-linecap="square" />
-        </svg>
-        <span class="app-wordmark">Every Last <span class="app-wordmark-accent">Joule</span></span>
+        <span class="app-mark">●</span>
+        <span class="app-wordmark">Every Last Joule</span>
         <span class="app-tag">Wasted Energy Database · <a class="app-tag-version" href="${zenodoVersion.recordUrl}" target="_blank" rel="noopener">v${zenodoVersion.version}</a></span>
       </div>
       <div class="app-header-right">
@@ -541,23 +529,6 @@ const regionData = {
 // single key — Belgium-shape bug class). Better to fail visibly than
 // render silent zero-GW pillars.
 assertCanonicalRegionData(regionData, REGIONS);
-
-// Solar-physics correction: zero out hours where the sun is below the horizon
-// for any region of kind:solar. Several grid-operator feeds (CAISO, PJM, MISO,
-// SPP, NYISO, ERCOT, BPA) report a non-zero "solar" floor at local night —
-// most likely battery discharge mis-categorised as solar in the EIA fuel-type
-// breakdown. Whatever the cause, solar curtailment outside daylight is
-// physically impossible, so the dashboard refuses to show it.
-for (const region of REGIONS) {
-  if (region.kind !== "solar") continue;
-  const data = regionData[region.id];
-  if (!data?.profile) continue;
-  data.profile = maskSolarNight(data.profile, region.lon);
-  if (Array.isArray(data.latestProfile)) {
-    data.latestProfile = maskSolarNight(data.latestProfile, region.lon);
-  }
-  data.peakGW = Math.max(...data.profile);
-}
 
 // S2 uncertainty: defensive fallback. Every loader is now responsible for
 // setting confidenceTier + uncertaintyLow/HighGW upstream — typical-shape
