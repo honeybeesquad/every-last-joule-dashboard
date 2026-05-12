@@ -56,7 +56,7 @@ Hourly shape remains synthetic. Xinjiang uses a typical solar shape even though 
 
 Permian, W. Siberia, S. Iraq, and E. Saudi sit in the dataset's flare bucket — a presentational subdivision of `T2-annual-calibrated` shown separately on Figure 4 (the coverage map) so readers can visually distinguish flat 24/7 base-load heat from dispatch-down curtailment. The envelope model is the same ±20% of `peakGW`; `confidenceTier` returns the single label `T2-annual-calibrated` for both the flare bucket and the small handful of static-flat regions, with the split being purely a label for the figure. See `docs/methodology/uncertainty.md`.
 
-Flare's flatness is methodologically correct: upstream oil production doesn't stop overnight, so the heat output is 24/7 base load. Their flat shape is the truth, not an absence of hourly data. On the dashboard surface, flare regions are excluded from the hotspot pillar globe (they are not dispatch-down events) and instead surface in the "flared-gas waste" footnote in bitcoin orange (`#f7931a`); renewable curtailment renders in teal.
+Flare's flatness is methodologically correct: upstream oil production doesn't stop overnight, so the heat output is 24/7 base load. Their flat shape is the truth, not an absence of hourly data. On the dashboard surface, flare regions are excluded from the hotspot pillar globe (they are not dispatch-down events) and instead surface in the "flared-gas waste" footnote in bitcoin orange (`#f7931a`); renewable curtailment renders in the active theme's brand colour (`--brand`: saffron `#ffd05a` on Sunfire, cyan `#64d8ff` on Deepcurrent).
 
 ### 11a. Brazil NE clustering uses ONS state codes, not plant-ID prefixes
 

@@ -60,7 +60,7 @@ Location: `data/historical/curtailment_history.parquet`
 
 One row per region per successful scheduled build. Appended by `scripts/append_history.py` via `.github/workflows/history-append.yml` (daily at 02:00 UTC plus on every successful refresh).
 
-Compression: Snappy. Format: Parquet 2.6. Typical size: ~100 bytes per row × 241 regions × ~4 builds/day ≈ **35 MB / year**.
+Compression: Snappy. Format: Parquet 2.6. Typical size: ~100 bytes per row × 384 regions × ~4 builds/day ≈ **35 MB / year**.
 
 ### Columns
 

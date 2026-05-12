@@ -98,8 +98,8 @@
   --shadow-sm: 0 2px 6px rgba(11, 12, 13, 0.06);
   --shadow-md: 0 8px 20px rgba(11, 12, 13, 0.08);
   --shadow-lg: 0 20px 40px rgba(11, 12, 13, 0.10);
-  --shadow-teal: 0 10px 30px rgba(20, 175, 172, 0.25);
-  --shadow-focus: 0 0 0 3px rgba(20, 175, 172, 0.35);
+  --shadow-brand: 0 10px 30px rgba(var(--brand-rgb), 0.25);
+  --shadow-focus: 0 0 0 3px rgba(var(--brand-rgb), 0.35);
 
   /* ============ MOTION ============ */
   --dur-fast: 120ms;
@@ -128,6 +128,7 @@
   --brand:               #ffd05a;
   --brand-strong:        #e6a020;
   --brand-subtle:        rgba(255, 208, 90, 0.10);
+  --brand-rgb:           255, 208, 90;
   --brand-on:            #150e08;
 
   /* surfaces */
@@ -183,6 +184,7 @@
   --brand:               #64d8ff;
   --brand-strong:        #38b0d8;
   --brand-subtle:        rgba(100, 216, 255, 0.10);
+  --brand-rgb:           100, 216, 255;
   --brand-on:            #061018;
 
   --surface-bg-1:        #0a1828;
@@ -240,17 +242,10 @@ html:not([data-theme]) body {
   color: #fff8e0;
 }
 
-/* Backwards-compatibility aliases for any chrome rule that still references the
-   removed Stacked palette tokens. Any rule using these will compile against the
-   active theme's brand/ink. Remove once we have grepped the file clean.
-   TODO(task-6): Non-chrome rules (data panels, globe, chart elements) still use
-   --teal-*, --white, rgba(20,175,172,…) — migrate those rules before removing
-   this block. See grep output at lines ~667, 683, 721, 774, 803, 821, 838, 879,
-   1024, 1054, 1067-68, 1110, 1243-45, 1259, 1288-90, 1345, 1350, 1373, 1383,
-   1412-14, 1424, 1440, 1445, 1451-52, 1525-26. */
+/* Backwards-compatibility aliases for legacy palette tokens still referenced
+   by non-chrome rules (data panels, globe, chart elements). Aliases route to
+   the active theme's brand/ink so they compile correctly in both themes. */
 :root {
-  --teal-500:  var(--brand);
-  --teal-600:  var(--brand-strong);
   --slate-800: var(--surface-bg-1);
   --white:     var(--ink);
   --btc-orange: var(--data-flare);
@@ -553,7 +548,7 @@ code, .mono {
    Target html as well as body so mobile overscroll shows dark chrome, not the
    white fallback that the Stacked base sheet applies to html.
    Gradient stops are intentionally darker than --slate-800 (#161718) for depth;
-   the start (#0f1517) is teal-shifted for cool chrome feel. */
+   the start (#0f1517) is brand-shifted for cool chrome feel. */
 html,
 body {
   background: radial-gradient(ellipse at 50% 40%, var(--surface-bg-1) 0%, var(--surface-bg-2) 60%, var(--surface-bg-3) 100%);
@@ -846,7 +841,7 @@ main table {
   display: grid;
   place-items: center;
   background:
-    radial-gradient(circle at 50% 40%, rgba(20,175,172,0.12), rgba(20,175,172,0.04) 35%, rgba(255,255,255,0.02) 60%, transparent 75%),
+    radial-gradient(circle at 50% 40%, rgba(var(--brand-rgb),0.12), rgba(var(--brand-rgb),0.04) 35%, rgba(255,255,255,0.02) 60%, transparent 75%),
     radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), rgba(0,0,0,0) 72%);
 }
 
@@ -1013,7 +1008,7 @@ main table {
   background: rgba(16, 22, 26, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(20, 175, 172, 0.12) inset;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(var(--brand-rgb), 0.12) inset;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: rgba(255, 255, 255, 0.88);
@@ -1397,9 +1392,9 @@ main table {
   flex-shrink: 0;
 }
 
-.dot-teal {
-  background: var(--teal-500);
-  box-shadow: 0 0 10px rgba(20,175,172,0.5);
+.dot-brand {
+  background: var(--brand);
+  box-shadow: 0 0 10px rgba(var(--brand-rgb),0.5);
 }
 
 .dot-orange {
@@ -1621,7 +1616,7 @@ main > h1:first-child {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--teal-500);
+  background: var(--brand);
   border: 1px solid rgba(255,255,255,0.1);
   color: var(--slate-800);
   cursor: pointer;
@@ -1666,9 +1661,9 @@ main > h1:first-child {
   font-family: inherit;
 }
 .ctl-speed-chip.is-active {
-  background: rgba(20,175,172,0.2);
-  border-color: var(--teal-500);
-  color: var(--teal-500);
+  background: rgba(var(--brand-rgb),0.2);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .mode-toggle {
   display: inline-flex;
@@ -1732,12 +1727,12 @@ main > h1:first-child {
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(20,175,172,0.85);
+  color: rgba(var(--brand-rgb),0.85);
   text-decoration: none;
   transition: color 0.15s;
 }
 .page-back-nav a:hover {
-  color: rgba(20,175,172,1);
+  color: rgba(var(--brand-rgb),1);
 }
 
 .methodology-doc {
@@ -1799,9 +1794,9 @@ main > h1:first-child {
   transition: background 140ms, color 140ms, border-color 140ms;
 }
 .methodology-doc .methodology-toc a:hover {
-  background: rgba(20,175,172,0.08);
+  background: rgba(var(--brand-rgb),0.08);
   color: var(--white);
-  border-color: rgba(20,175,172,0.35);
+  border-color: rgba(var(--brand-rgb),0.35);
 }
 
 .methodology-doc h2 {
@@ -1832,14 +1827,14 @@ main > h1:first-child {
 }
 
 .methodology-doc a {
-  color: var(--teal-400, #3fc1be);
+  color: var(--brand, #ffd05a);
   text-decoration: none;
   border-bottom: 1px solid rgba(63,193,190,0.35);
   transition: border-color 140ms, color 140ms;
 }
 .methodology-doc a:hover {
   color: var(--white);
-  border-bottom-color: var(--teal-400, #3fc1be);
+  border-bottom-color: var(--brand, #ffd05a);
 }
 
 .methodology-doc ul,
@@ -1912,8 +1907,8 @@ main > h1:first-child {
 .methodology-doc .methodology-callout {
   padding: 20px 24px;
   margin: 20px 0 28px;
-  border-left: 3px solid var(--teal-500);
-  background: rgba(20,175,172,0.04);
+  border-left: 3px solid var(--brand);
+  background: rgba(var(--brand-rgb),0.04);
   border-radius: 0 6px 6px 0;
 }
 .methodology-doc .methodology-callout p:last-child {

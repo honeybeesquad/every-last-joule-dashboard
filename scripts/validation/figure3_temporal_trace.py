@@ -142,7 +142,7 @@ def plot(series: dict[str, dict[str, float]], out_dir: Path) -> None:
 
     # Stacked area by source
     palette = {
-        "entsoe": "#2a9d8f",
+        "entsoe": "#38b0d8",
         "eia":    "#e76f51",
     }
     default_colour = "#e9c46a"

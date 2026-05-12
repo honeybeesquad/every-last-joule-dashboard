@@ -12,7 +12,7 @@ What the figure shows
 ---------------------
 A world map with one dot per region. Each dot is:
 - **Coloured** by confidence tier (same palette as Figure 4):
-  T1-live-TSO (teal), T2-annual-calibrated (amber), T3-modelled
+  T1-live-TSO (cyan), T2-annual-calibrated (amber), T3-modelled
   (terracotta), flare (brown square).
 - **Sized** by current peak GW (√-scaled so that a 10 GW pillar
   doesn't obliterate a 0.1 GW one, but the hotspot ranking is still
@@ -81,7 +81,7 @@ REGION_RE = re.compile(
 )
 
 TIER_COLOUR = {
-    "T1-live-TSO":          "#2a9d8f",
+    "T1-live-TSO":          "#38b0d8",
     "T2-annual-calibrated": "#e9c46a",
     "T3-modelled":          "#e76f51",
     "flare":                "#8a6e3f",

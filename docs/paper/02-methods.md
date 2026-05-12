@@ -106,9 +106,12 @@ dispatch-derived hourly values from their respective live sources.
 ERCOT-West and ERCOT-East are reconstructed from EIA's BA-level feed
 in the v0.5 build (66/34 proportional split keyed to ERCOT IMM
 2024 wind-zone curtailment shares). A direct ERCOT B2C OAuth2 path
-(`src/data/ercot-native.json.ts`) is wired in as a fallback for
-deployments where the EIA proxy is unavailable; both routes resolve
-to the same two region IDs.
+(`src/data/ercot-native.json.ts`) exists as an inactive probe gated
+behind `ERCOT_NATIVE_ENABLED = false` in `src/index.md`; it carries
+cached seed data and a working OAuth2 flow but was never verified
+end-to-end from a deploy environment with US egress, so the dashboard
+uses the EIA proxy as the production source. Re-activation tracked in
+`docs/data-source-log.md`.
 
 Upstream authentication requirements are documented in the
 repository root `README.md` (`ENTSOE_TOKEN`, `EIA_API_KEY`,
@@ -194,7 +197,7 @@ regions emit nothing).
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
 
 The tier distribution at submission: **155 T1a, 9 T1b, 1 T1c, 6
-T2-annual-calibrated, 8 T2-flare, 205 T3** (total 384). The nine
+T2-annual-calibrated, 8 T2-flare, 211 T3** (total 384). The nine
 T1b zones are Italy-Sardinia (wind+solar), Italy-North-Zone
 (wind+solar), Italy-Sicily (wind+solar), Netherlands (wind+solar),
 and Colombia (XM API) — each pairing a live feed against either a
@@ -206,7 +209,7 @@ proxy), Russia Murmansk wind (SO UPS dispatch-limit estimate,
 flat), and four Chinese hydro provinces (Hunan, Hubei, Guizhou,
 Chongqing). The eight T2-flare regions are the Permian, West
 Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia
-Yamal-Nenets, and Russia East Siberia. The 205 T3 regions are
+Yamal-Nenets, and Russia East Siberia. The 211 T3 regions are
 static
 annual anchors (Ember, IRENA, regulator reports) combined with a
 typical diurnal or monthly-seasonal shape (solar cosine, wind

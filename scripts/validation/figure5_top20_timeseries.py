@@ -24,7 +24,7 @@ account for over half of the global annual curtailment even though
 the dataset covers 29 live regions plus 99 static ones.
 
 Tier colouring is applied per panel:
-- T1-live-TSO: teal line
+- T1-live-TSO: cyan line
 - T2-annual-calibrated: amber
 - T3-modelled: terracotta
 - flare: brown
@@ -54,7 +54,7 @@ ROLLUP = REPO_ROOT / "data" / "historical" / "per_region_annual.parquet"
 DEFAULT_OUT_DIR = REPO_ROOT / "docs" / "figures"
 
 TIER_COLOUR = {
-    "T1-live-TSO":          "#2a9d8f",
+    "T1-live-TSO":          "#38b0d8",
     "T2-annual-calibrated": "#e9c46a",
     "T3-modelled":          "#e76f51",
     "flare":                "#8a6e3f",

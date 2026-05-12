@@ -67,7 +67,7 @@ REGION_RE = re.compile(
 )
 
 TIER_COLOUR = {
-    "T1-live-TSO":          "#2a9d8f",  # teal
+    "T1-live-TSO":          "#38b0d8",  # cyan (Deepcurrent brand-strong)
     "T2-annual-calibrated": "#e9c46a",  # amber
     "T3-modelled":          "#e76f51",  # terracotta
     "flare":                "#8a6e3f",  # brown (distinct from T2)
@@ -149,7 +149,7 @@ def plot(regions: list[dict], out_dir: Path) -> None:
     for r in regions:
         by_tier.setdefault(r["tier"], []).append(r)
 
-    # Plot order: amber + red first so teal sits on top (T1 is the paper
+    # Plot order: amber + red first so cyan sits on top (T1 is the paper
     # headline claim); flare gets its own marker.
     order = ["T3-modelled", "T2-annual-calibrated", "flare", "T1-live-TSO"]
 

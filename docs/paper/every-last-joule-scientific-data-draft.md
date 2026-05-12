@@ -64,17 +64,16 @@ regions where gas flaring is the dominant "wasted-energy" source.
 
 ## What the dataset contains (150 words)
 
-- **384 regions across 195 countries.** 155 in `T1a-live-tso`
+- **384 regions across 195 countries.** 149 in `T1a-live-tso`
   (own-jurisdiction rate; ENTSO-E and EIA with ERCOT and CAISO
   sub-zones, split per-fuel where the upstream feed exposes wind
   and solar separately; AEMO per-state; Elexon per-fuel; ONS
   Brazil; RTE; Energinet; Elia; IESO; AESO; EMI New Zealand
   per-fuel; EPİAŞ Turkey per-fuel; Statnett Norway per-fuel; CEN
-  Chile; ADME Uruguay; Nord Pool; Enemalta Malta; 10 Japan
-  utilities — Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai,
-  Chubu, TEPCO, Hokuriku, Okinawa; 5 India state SLDCs —
-  Rajasthan, Gujarat, Tamil Nadu, Karnataka, Andhra Pradesh;
-  Maharashtra MSLDC); 9 in `T1b-live-domestic-anchored` (live
+  Chile; ADME Uruguay; Nord Pool; 7 Japan utilities — Kyushu,
+  Tohoku, Chugoku, Shikoku, Kansai, Hokuriku, Okinawa; 6 India
+  state SLDCs — Rajasthan, Gujarat, Tamil Nadu, Karnataka,
+  Andhra Pradesh, Maharashtra MSLDC); 9 in `T1b-live-domestic-anchored` (live
   feed + domestic-stat-agency or modelled-share rate, per-fuel
   where applicable: Italy-Sardinia wind+solar, Italy-North-Zone
   wind+solar, Italy-Sicily wind+solar, Netherlands wind+solar,
@@ -264,9 +263,12 @@ dispatch-derived hourly values from their respective live sources.
 ERCOT-West and ERCOT-East are reconstructed from EIA's BA-level feed
 in the v0.5 build (66/34 proportional split keyed to ERCOT IMM
 2024 wind-zone curtailment shares). A direct ERCOT B2C OAuth2 path
-(`src/data/ercot-native.json.ts`) is wired in as a fallback for
-deployments where the EIA proxy is unavailable; both routes resolve
-to the same two region IDs.
+(`src/data/ercot-native.json.ts`) exists as an inactive probe gated
+behind `ERCOT_NATIVE_ENABLED = false` in `src/index.md`; it carries
+cached seed data and a working OAuth2 flow but was never verified
+end-to-end from a deploy environment with US egress, so the dashboard
+uses the EIA proxy as the production source. Re-activation tracked in
+`docs/data-source-log.md`.
 
 Upstream authentication requirements are documented in the
 repository root `README.md` (`ENTSOE_TOKEN`, `EIA_API_KEY`,
@@ -352,7 +354,7 @@ regions emit nothing).
 | T3-modelled | Static annual + typical diurnal/seasonal shape | ±40% of peakGW |
 
 The tier distribution at submission: **155 T1a, 9 T1b, 1 T1c, 6
-T2-annual-calibrated, 8 T2-flare, 205 T3** (total 384). The nine
+T2-annual-calibrated, 8 T2-flare, 211 T3** (total 384). The nine
 T1b zones are Italy-Sardinia (wind+solar), Italy-North-Zone
 (wind+solar), Italy-Sicily (wind+solar), Netherlands (wind+solar),
 and Colombia (XM API) — each pairing a live feed against either a
@@ -364,7 +366,7 @@ proxy), Russia Murmansk wind (SO UPS dispatch-limit estimate,
 flat), and four Chinese hydro provinces (Hunan, Hubei, Guizhou,
 Chongqing). The eight T2-flare regions are the Permian, West
 Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia
-Yamal-Nenets, and Russia East Siberia. The 205 T3 regions are
+Yamal-Nenets, and Russia East Siberia. The 211 T3 regions are
 static
 annual anchors (Ember, IRENA, regulator reports) combined with a
 typical diurnal or monthly-seasonal shape (solar cosine, wind
@@ -810,25 +812,25 @@ Figure 4 answers the single-glance question "where is the dataset
 strong and where is it weak?" at geographic scale. Each of the 384
 regions renders as a tier-coloured dot:
 
-- **T1a-live-tso (152 regions, teal).** Live hourly feed + own-
+- **T1a-live-tso (149 regions, cyan).** Live hourly feed + own-
   jurisdiction calibration rate, split per-fuel (wind/solar)
   where the upstream feed exposes generation by source. Dense
   over North America (EIA + ERCOT + CAISO sub-zones, IESO,
   AESO), Europe (ENTSO-E zones split per-fuel; Elexon GB
   per-fuel; RTE; Energinet; Elia; Statnett Norway per-fuel; Nord
-  Pool; Enemalta Malta), the Nordics, Australia (AEMO five
+  Pool), the Nordics, Australia (AEMO five
   states + AEMO WEM/WA-SWIS), Brazil (eleven ONS states),
   Turkey (EPİAŞ per-fuel), New Zealand (EMI per-fuel), Chile
-  (CEN), Uruguay (ADME), ten Japan utilities, and six India
+  (CEN), Uruguay (ADME), seven Japan utilities, and six India
   state SLDCs. The EIA + ENTSO-E + AEMO + ONS quartet is the
   dataset's strongest spine.
-- **T1b-live-domestic-anchored (9 regions, teal).** Italy-
+- **T1b-live-domestic-anchored (9 regions, cyan).** Italy-
   Sardinia (wind+solar), Italy-North-Zone (wind+solar),
   Italy-Sicily (wind+solar), Netherlands (wind+solar), and
   Colombia (XM API) — live feeds paired with a
   domestic-stat-agency, modelled-share, or national-anchor rate;
   ±50% empirical envelope.
-- **T1c-live-neighbour-anchored (1 region, teal).** Switzerland —
+- **T1c-live-neighbour-anchored (1 region, cyan).** Switzerland —
   Swissgrid live feed against the Czech CEPS rate as a neighbouring
   proxy; ±35.5% empirical envelope.
 - **T2-annual-calibrated (6 regions, amber).** Austria APG,
@@ -838,7 +840,7 @@ regions renders as a tier-coloured dot:
 - **T2 flare (8 regions, brown square).** Permian, West Siberia,
   South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-
   Nenets, Russia East Siberia — correctly flat 24/7 baseload.
-- **T3-modelled (205 regions, terracotta).** Static annual anchors
+- **T3-modelled (211 regions, terracotta).** Static annual anchors
   (Ember, IRENA, regulator reports) combined with a typical diurnal
   or monthly-seasonal shape. Covers Ireland (Republic + Northern,
   EirGrid reachability probe scaled to the SONI/EirGrid 2024
@@ -886,7 +888,7 @@ across 2020–2026 and plots the top 20 as a 4×5 facet grid. The
 narrative payoff — the paper's "curtailment is concentrated"
 thesis — is visible in the data: the top 3 regions (Germany,
 Iberia, MISO) account for ~51% of the combined top-20 total.
-Every panel is a live-feed sub-tier in v0.5 (teal) — predominantly
+Every panel is a live-feed sub-tier in v0.5 (cyan) — predominantly
 T1a-live-tso, with Italy-Sardinia, Italy-North-Zone, and Switzerland
 sitting at T1b/T1c where their bidding-zone calibration provenance
 applies. Tier-colour infrastructure is in place for v1
@@ -957,7 +959,7 @@ import pandas as pd
 
 # Seven-year backfill — 2.59M hourly rows, 29 T1 regions
 url = ("https://raw.githubusercontent.com/honeybeesquad/"
-       "every-last-joule-dashboard/v1.2.1/"
+       "every-last-joule-dashboard/v1.3.0/"
        "data/historical/curtailment_backfill.parquet")
 df = pd.read_parquet(url)
 
@@ -989,7 +991,7 @@ result = con.execute("""
 ```python
 import json, urllib.request
 url = ("https://raw.githubusercontent.com/honeybeesquad/"
-       "every-last-joule-dashboard/v1.2.1/"
+       "every-last-joule-dashboard/v1.3.0/"
        "data/snapshots/last-good/caiso.json")
 snap = json.load(urllib.request.urlopen(url))
 print(f"CAISO peak GW: {snap['peakGW']:.2f}  "
@@ -1067,7 +1069,7 @@ reporting systematically under-captures certain behaviours:
 ## 5.5 Recommended citation
 
 Machine-readable citation metadata: `dataset/CITATION.cff`.
-Zenodo-minted version DOI for v1.2.1: `10.5281/zenodo.20045637`.
+Zenodo-minted version DOI for v1.3.0: `10.5281/zenodo.PENDING-v1.3.0` (pinned on Zenodo mint by release Phase 7).
 Concept DOI (resolves to latest version): `10.5281/zenodo.19835411`.
 
 Preferred human citation:
@@ -1075,7 +1077,7 @@ Preferred human citation:
 > Collins, S. (2026). Every Last Joule: an hourly synthesis of
 > renewable-electricity curtailment and associated-gas flaring
 > across 384 regions in 195 countries. Scientific Data.
-> https://doi.org/10.5281/zenodo.20045637
+> <v1.3.0 version DOI — pinned post-mint>
 
 Cite the **version DOI** (not the concept DOI) when writing
 reproducible analyses; concept DOI is appropriate when citing
@@ -1149,8 +1151,8 @@ publicly available in the repository under an MIT licence
 
 - **Repository:**
   https://github.com/honeybeesquad/every-last-joule-dashboard
-- **Tagged release:** `v1.2.1` (matches the Zenodo-archived
-  DOI `10.5281/zenodo.20045637`).
+- **Tagged release:** `v1.3.0` (matches the Zenodo-archived
+  DOI `10.5281/zenodo.PENDING-v1.3.0` (pinned on Zenodo mint by release Phase 7)).
 - **Languages:** TypeScript (Observable Framework data
   loaders), Python 3.12+ (historical backfill, validation,
   figure rendering).
@@ -1208,7 +1210,7 @@ journal's reporting guidelines.
 ## Figure 1
 
 **Global curtailment snapshot.** Per-region dots coloured by
-confidence tier (green-teal: live-feed sub-tiers — T1a-live-tso with
+confidence tier (cyan: live-feed sub-tiers — T1a-live-tso with
 own-jurisdiction rate and ±15% uncertainty, T1b-live-domestic-anchored
 with ±50% empirical, T1c-live-neighbour-anchored with ±35.5%
 empirical; amber: T2 annual-calibrated with ±20% uncertainty; brown
@@ -1255,7 +1257,7 @@ per-region validation documents under
 **Daily global curtailment, 2020–2026.** Stacked area of daily total
 curtailed energy (GWh/day) summed across every region with an HB
 backfill partition, split by source platform: ENTSO-E Transparency
-Platform (teal, European zones) and EIA Hourly Electric Grid Monitor
+Platform (cyan, European zones) and EIA Hourly Electric Grid Monitor
 (terracotta, US ISOs). The navy overlay is the 30-day trailing
 rolling-mean total, smoothing the weekly/weather-driven daily chatter
 so the underlying growth trend is visible. Three dashed markers
@@ -1273,14 +1275,14 @@ by `scripts/validation/figure3_temporal_trace.py`.
 
 **Per-region confidence tier assignment.** The same geographic base
 as Figure 1 with dot size held constant and tier colour carrying the
-full visual signal. Teal dots (n=152) are T1a-live-tso regions backed
+full visual signal. Cyan dots (n=149) are T1a-live-tso regions backed
 by hourly feeds + own-jurisdiction calibration rate and the 2020–2026
 HB backfill (±15% envelope), split per-fuel where the upstream feed
-exposes wind and solar separately. Teal dots (n=9) are T1b-live-
+exposes wind and solar separately. Cyan dots (n=9) are T1b-live-
 domestic-anchored regions whose live feed pairs with a domestic-
 stat-agency or modelled-share rate (Italy-Sardinia wind+solar,
 Italy-North-Zone wind+solar, Italy-Sicily wind+solar, Netherlands
-wind+solar, Colombia; ±50% empirical). One teal dot (n=1) is T1c-
+wind+solar, Colombia; ±50% empirical). One cyan dot (n=1) is T1c-
 live-neighbour-anchored — Switzerland, Swissgrid live feed against
 the Czech CEPS rate (±35.5% empirical). Amber dots (n=6) are T2
 annual-calibrated regions with a published annual anchor and a
@@ -1289,7 +1291,7 @@ Chinese hydro provinces — Hunan, Hubei, Guizhou, Chongqing; ±20%).
 Brown squares (n=8) are T2-flare regions whose correct shape is
 24/7 baseload (Permian, West Siberia, South Iraq, East Saudi
 Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia).
-Terracotta dots (n=204) are T3 typical-profile modelled regions —
+Terracotta dots (n=211) are T3 typical-profile modelled regions —
 static annual anchors combined with a typical diurnal/seasonal
 shape (solar cosine, wind broad-overnight, hydro monthly-seasonal,
 mixed fuel-share, geothermal-overnight). Total n=384 regions
@@ -1318,7 +1320,7 @@ account for ~51% of the combined top-20 total across the backfill
 window. The partial-year
 downturn visible at 2026 in every panel is an artefact of the
 archive end-date, not a real curtailment decline. All 20 panels render in
-the live-feed teal in v0.5 — predominantly T1a-live-tso, with
+the live-feed cyan in v0.5 — predominantly T1a-live-tso, with
 Italy-Sardinia, Italy-North-Zone, and Switzerland sitting at T1b/T1c
 where their bidding-zone calibration provenance applies; tier-colour
 infrastructure is in place for future rate revisions that may promote

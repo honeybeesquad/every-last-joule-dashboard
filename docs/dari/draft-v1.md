@@ -27,7 +27,7 @@ The Every Last Joule dataset^28^ covers 384 distinct geographic regions across 1
 
 **T2 non-flare** (annual-calibrated): 6 regions with reliable annual anchors but no live hourly feed, including four Chinese provincial hydro-spillage estimates from NEA provincial RE monitoring bulletins.
 
-**T3** (modelled): 205 regions with estimated anchors at ±40% uncertainty, drawn from IRENA Country Statistics, Ember national reports, and operator annual reports where no machine-readable feed exists.
+**T3** (modelled): 211 regions with estimated anchors at ±40% uncertainty, drawn from IRENA Country Statistics, Ember national reports, and operator annual reports where no machine-readable feed exists.
 
 The dataset includes a `sourceProvenance` flag on every region classifying whether the anchor is live-verified, satellite-verified, or modelled-fallback. A full methodology document and the Zenodo-hosted dataset card are available at the dashboard.^28,29^
 
@@ -115,7 +115,7 @@ The dataset, the dashboard, and the computation behind this paper are fully open
 
 The **Every Last Joule dashboard** at everylastjoule.com renders the full 384-region dataset as a live spinning globe, updated continuously from live TSO feeds during market hours. The MW ↔ USD toggle shows both curtailment volume and foregone revenue simultaneously. The methodology pages document every source, conversion factor, and uncertainty range for every region.
 
-The **dataset** is archived at Zenodo under DOI 10.5281/zenodo.20045637.^28^ Version 1.2.1 is the current release. A companion **Scientific Data** data descriptor — currently in submission — provides a peer-reviewed methods account, including the confidence-tier derivation, the static-anchor calibration methodology, and the tier-coherence validation suite.
+The **dataset** is archived at Zenodo under DOI 10.5281/zenodo.19835411.^28^ Version 1.2.1 is the current release. A companion **Scientific Data** data descriptor — currently in submission — provides a peer-reviewed methods account, including the confidence-tier derivation, the static-anchor calibration methodology, and the tier-coherence validation suite.
 
 The **next version** of the dataset (v1.3, target Q3 2026) will extend live coverage to India's six State Load Dispatch Centres currently reachable from in-region relays, and will add a formal provenance trail for each T3-modelled anchor sufficient for citation in academic contexts.
 
@@ -152,5 +152,5 @@ Requests for regional-level data extracts, collaboration on curtailment-site ass
 25. Cambridge Centre for Alternative Finance. *Cambridge Bitcoin Mining Map — geographic distribution of hashrate, 2024 update*. https://ccaf.io/cbnsi/cbeci/mining_map
 26. New York State Senate. *S6486D — Establishes a moratorium on cryptocurrency mining operations using proof-of-work authentication methods* (signed 22 November 2022; expired 22 November 2024). https://www.nysenate.gov/legislation/bills/2021/S6486
 27. National Energy System Operator (NESO, UK). *Demand Flexibility Service Product Specification 2024–25*. https://www.neso.energy/industry-information/balancing-services/demand-flexibility-service-dfs
-28. Collins S et al. *Every Last Joule — Global Curtailed and Flared Energy Dataset v1.2.1*. Zenodo; 2026. https://doi.org/10.5281/zenodo.20045637
+28. Collins S et al. *Every Last Joule — Global Curtailed and Flared Energy Dataset v1.3.0*. Zenodo; 2026. https://doi.org/10.5281/zenodo.19835411
 29. Collins S. *Every Last Joule Dashboard*. 2026. https://everylastjoule.com

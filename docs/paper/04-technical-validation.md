@@ -148,25 +148,25 @@ Figure 4 answers the single-glance question "where is the dataset
 strong and where is it weak?" at geographic scale. Each of the 384
 regions renders as a tier-coloured dot:
 
-- **T1a-live-tso (152 regions, teal).** Live hourly feed + own-
+- **T1a-live-tso (149 regions, cyan).** Live hourly feed + own-
   jurisdiction calibration rate, split per-fuel (wind/solar)
   where the upstream feed exposes generation by source. Dense
   over North America (EIA + ERCOT + CAISO sub-zones, IESO,
   AESO), Europe (ENTSO-E zones split per-fuel; Elexon GB
   per-fuel; RTE; Energinet; Elia; Statnett Norway per-fuel; Nord
-  Pool; Enemalta Malta), the Nordics, Australia (AEMO five
+  Pool), the Nordics, Australia (AEMO five
   states + AEMO WEM/WA-SWIS), Brazil (eleven ONS states),
   Turkey (EPİAŞ per-fuel), New Zealand (EMI per-fuel), Chile
-  (CEN), Uruguay (ADME), ten Japan utilities, and six India
+  (CEN), Uruguay (ADME), seven Japan utilities, and six India
   state SLDCs. The EIA + ENTSO-E + AEMO + ONS quartet is the
   dataset's strongest spine.
-- **T1b-live-domestic-anchored (9 regions, teal).** Italy-
+- **T1b-live-domestic-anchored (9 regions, cyan).** Italy-
   Sardinia (wind+solar), Italy-North-Zone (wind+solar),
   Italy-Sicily (wind+solar), Netherlands (wind+solar), and
   Colombia (XM API) — live feeds paired with a
   domestic-stat-agency, modelled-share, or national-anchor rate;
   ±50% empirical envelope.
-- **T1c-live-neighbour-anchored (1 region, teal).** Switzerland —
+- **T1c-live-neighbour-anchored (1 region, cyan).** Switzerland —
   Swissgrid live feed against the Czech CEPS rate as a neighbouring
   proxy; ±35.5% empirical envelope.
 - **T2-annual-calibrated (6 regions, amber).** Austria APG,
@@ -176,7 +176,7 @@ regions renders as a tier-coloured dot:
 - **T2 flare (8 regions, brown square).** Permian, West Siberia,
   South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-
   Nenets, Russia East Siberia — correctly flat 24/7 baseload.
-- **T3-modelled (205 regions, terracotta).** Static annual anchors
+- **T3-modelled (211 regions, terracotta).** Static annual anchors
   (Ember, IRENA, regulator reports) combined with a typical diurnal
   or monthly-seasonal shape. Covers Ireland (Republic + Northern,
   EirGrid reachability probe scaled to the SONI/EirGrid 2024
@@ -224,7 +224,7 @@ across 2020–2026 and plots the top 20 as a 4×5 facet grid. The
 narrative payoff — the paper's "curtailment is concentrated"
 thesis — is visible in the data: the top 3 regions (Germany,
 Iberia, MISO) account for ~51% of the combined top-20 total.
-Every panel is a live-feed sub-tier in v0.5 (teal) — predominantly
+Every panel is a live-feed sub-tier in v0.5 (cyan) — predominantly
 T1a-live-tso, with Italy-Sardinia, Italy-North-Zone, and Switzerland
 sitting at T1b/T1c where their bidding-zone calibration provenance
 applies. Tier-colour infrastructure is in place for v1

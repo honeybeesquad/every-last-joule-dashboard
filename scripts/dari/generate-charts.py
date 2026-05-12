@@ -36,8 +36,8 @@ f7       = data['F7_carbon_counterfactual']
 # ---------------------------------------------------------------------------
 WHITE    = '#FFFFFF'
 NAVY     = '#1A2340'
-TEAL     = '#00B8C8'
-TEAL_D   = '#0097A7'   # T1b / T1c
+CYAN     = '#38b0d8'
+CYAN_D   = '#1d6fa3'   # T1b / T1c
 AMBER    = '#F5A623'
 MID_GREY = '#8A9BB0'
 LT_GREY  = '#C5CDD8'
@@ -87,7 +87,7 @@ def chart_f1():
 
     labels  = ['Verified curtailment +\nflare (338.8 TWh)', 'Bitcoin annual\nenergy (197.6 TWh)']
     values  = [waste_twh, bitcoin_twh]
-    colours = [TEAL, NAVY]
+    colours = [CYAN, NAVY]
 
     fig, ax = plt.subplots(figsize=(10, 5))
     bars = ax.barh(labels, values, color=colours, height=0.45, zorder=3)
@@ -123,9 +123,9 @@ def chart_f1():
 # F3 — Top 20 wasted-energy regions
 # ===========================================================================
 BUCKET_COLOUR = {
-    'T1a':     TEAL,
-    'T1b':     TEAL_D,
-    'T1c':     TEAL_D,
+    'T1a':     CYAN,
+    'T1b':     CYAN_D,
+    'T1c':     CYAN_D,
     'T2-flare': AMBER,
     'T2':      MID_GREY,
     'T3':      LT_GREY,
@@ -153,8 +153,8 @@ def chart_f3():
 
     # Legend
     legend_items = [
-        mpatches.Patch(color=TEAL,    label='T1a — Live TSO verified'),
-        mpatches.Patch(color=TEAL_D,  label='T1b/c — Live domestic / neighbour'),
+        mpatches.Patch(color=CYAN,    label='T1a — Live TSO verified'),
+        mpatches.Patch(color=CYAN_D,  label='T1b/c — Live domestic / neighbour'),
         mpatches.Patch(color=AMBER,   label='T2-flare — Calibrated flare gas'),
         mpatches.Patch(color=MID_GREY, label='T2 — Calibrated estimate'),
         mpatches.Patch(color=LT_GREY,  label='T3 — Modelled'),
@@ -179,8 +179,8 @@ def chart_f4():
     total_twh   = 464.1  # per spec
 
     segments = [
-        ('T1a (162.8 TWh)',  162.8,  TEAL),
-        ('T1b (21.6 TWh)',    21.6,  TEAL_D),
+        ('T1a (162.8 TWh)',  162.8,  CYAN),
+        ('T1b (21.6 TWh)',    21.6,  CYAN_D),
         ('T2-flare (154.2 TWh)', 154.2, AMBER),
         ('T2 (1.7 TWh)',       1.7,  MID_GREY),
         ('T3 (123.6 TWh)',   123.6,  LT_GREY),
@@ -252,7 +252,7 @@ def chart_f6():
         return f'${x:.0f}M'
 
     fig, ax = plt.subplots(figsize=(12, 7))
-    bars = ax.barh(names, values, color=TEAL, height=0.6, zorder=3)
+    bars = ax.barh(names, values, color=CYAN, height=0.6, zorder=3)
 
     for bar, val in zip(bars, values):
         ax.text(bar.get_width() + 5, bar.get_y() + bar.get_height() / 2,
@@ -315,7 +315,7 @@ def chart_f7():
            label='Actual Bitcoin emissions')
 
     # Bar 2: Stacked scenario
-    ax.bar(x[1], re_component, width=bar_w, color=TEAL, zorder=3,
+    ax.bar(x[1], re_component, width=bar_w, color=CYAN, zorder=3,
            label='Verified RE curtailment (~0)')
     ax.bar(x[1], flare_component, width=bar_w, bottom=re_component,
            color=AMBER, zorder=3, label='Flare gas component')

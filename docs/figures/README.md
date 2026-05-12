@@ -93,7 +93,7 @@ lat, lon, tier)` rows and `derive_tier()` — whose logic mirrors
 `src/lib/uncertainty.ts::deriveTier` and `scripts/tally-tiers.ts`
 exactly — maps each region to one of four confidence tiers:
 
-- **T1-live-TSO (±15%, teal)** — 62 regions with live ENTSO-E / EIA /
+- **T1-live-TSO (±15%, cyan)** — 162 regions with live ENTSO-E / EIA /
   TSO hourly feeds plus, where available, the 2020–2026 historical
   backfill reconstruction.
 - **T2-annual-calibrated (±20%, amber)** — 2 flat-base statics with a
@@ -162,7 +162,7 @@ partial-year artefact — the backfill window ends at the date the
 archive was merged, so 2026 carries only partial-year totals.
 
 Tier colouring is applied per panel; in v0.5 all 20 top regions are
-T1-live-TSO, so all lines render in teal. The dispatch infrastructure
+T1-live-TSO, so all lines render in cyan. The dispatch infrastructure
 for T2/T3 colouring is in place so any v1 rate-recalibration that
 promotes new regions into the top 20 (see
 `docs/methodology/validation-discrepancies.md`) renders correctly

@@ -14,7 +14,7 @@
 - 384 regions across 195 countries (every UN member + Taiwan + Palestine)
 - Tally golden as of 2026-05-10: T1a=152, T1b=9, T1c=1, T2=6, T2-flare=8, T3=208 (Japan chubu/tepco/hokkaido downgraded from T1a→T3 in PR #90 after upstream investigation; total still 384)
 - Live at **everylastjoule.com** — Vercel auto-deploys from `main`
-- Dashboard banner: **"WASTED ENERGY DATABASE · V1.2.1"**
+- Dashboard banner: **"WASTED ENERGY DATABASE · V1.3.0"**
 
 **Tier taxonomy (refactored in PR #88, 2026-05-10):**
 - `kind` (content type): wind, solar, hydro, mixed, geo, flare — orthogonal to tier
@@ -52,7 +52,7 @@
 
 **Paper + DOI:**
 - Paper drafts ready at `docs/paper/01-06-*.md`
-- v1.2.1 Zenodo DOI minted: `10.5281/zenodo.20045637`
+- v1.3.0 release pass (post-2026-05-12): version DOI pending Zenodo mint on tag push
 
 ## What's NOT shipped / open PRs
 

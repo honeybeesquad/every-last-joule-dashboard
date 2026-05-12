@@ -27,7 +27,7 @@ export type RegionTier =
   | "anchored"
   | "estimated";
 
-/** The waste modality drives colouring (teal vs orange) and narrative. */
+/** The waste modality drives colouring (brand vs flare-orange) and narrative. */
 export type RegionKind = "solar" | "wind" | "hydro" | "geo" | "mixed" | "flare";
 
 /** Freshness state of an upstream source or fallback snapshot. */

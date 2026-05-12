@@ -64,17 +64,16 @@ regions where gas flaring is the dominant "wasted-energy" source.
 
 ## What the dataset contains (150 words)
 
-- **384 regions across 195 countries.** 155 in `T1a-live-tso`
+- **384 regions across 195 countries.** 149 in `T1a-live-tso`
   (own-jurisdiction rate; ENTSO-E and EIA with ERCOT and CAISO
   sub-zones, split per-fuel where the upstream feed exposes wind
   and solar separately; AEMO per-state; Elexon per-fuel; ONS
   Brazil; RTE; Energinet; Elia; IESO; AESO; EMI New Zealand
   per-fuel; EPİAŞ Turkey per-fuel; Statnett Norway per-fuel; CEN
-  Chile; ADME Uruguay; Nord Pool; Enemalta Malta; 10 Japan
-  utilities — Kyushu, Tohoku, Chugoku, Shikoku, Hokkaido, Kansai,
-  Chubu, TEPCO, Hokuriku, Okinawa; 5 India state SLDCs —
-  Rajasthan, Gujarat, Tamil Nadu, Karnataka, Andhra Pradesh;
-  Maharashtra MSLDC); 9 in `T1b-live-domestic-anchored` (live
+  Chile; ADME Uruguay; Nord Pool; 7 Japan utilities — Kyushu,
+  Tohoku, Chugoku, Shikoku, Kansai, Hokuriku, Okinawa; 6 India
+  state SLDCs — Rajasthan, Gujarat, Tamil Nadu, Karnataka,
+  Andhra Pradesh, Maharashtra MSLDC); 9 in `T1b-live-domestic-anchored` (live
   feed + domestic-stat-agency or modelled-share rate, per-fuel
   where applicable: Italy-Sardinia wind+solar, Italy-North-Zone
   wind+solar, Italy-Sicily wind+solar, Netherlands wind+solar,
@@ -83,7 +82,7 @@ regions where gas flaring is the dominant "wasted-energy" source.
   APG, Russia Murmansk, and four Chinese hydro provinces — Hunan,
   Hubei, Guizhou, Chongqing); 8 flare regions (Permian, West
   Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia
-  Yamal-Nenets, Russia East Siberia); 205 in `T3-modelled`
+  Yamal-Nenets, Russia East Siberia); 211 in `T3-modelled`
   (annual anchor + typical shape — covers every remaining UN
   member state without a public live feed).
 - **Hourly resolution** for every live-feed region; hourly

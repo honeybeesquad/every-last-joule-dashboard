@@ -66,7 +66,7 @@ def classify_delta(abs_pct: float) -> str:
 
 
 COLOURS = {
-    "within":   "#2a9d8f",  # teal
+    "within":   "#38b0d8",  # cyan (Deepcurrent brand-strong)
     "moderate": "#e9c46a",  # amber
     "material": "#e76f51",  # terracotta
 }
@@ -113,7 +113,7 @@ def plot(rows: list[dict], out_dir: Path) -> None:
     ax.fill_between(ref,
                     ref * (1 - TIER_FRACTION),
                     ref * (1 + TIER_FRACTION),
-                    color="#2a9d8f",
+                    color="#38b0d8",
                     alpha=0.10,
                     zorder=0,
                     label=f"±{int(TIER_FRACTION * 100)}% tier envelope")
@@ -165,7 +165,7 @@ def plot(rows: list[dict], out_dir: Path) -> None:
     legend_handles = [
         Line2D([0], [0], color="#333333", linewidth=1.0,
                label="y = x (perfect agreement)"),
-        Patch(facecolor="#2a9d8f", alpha=0.15, edgecolor="none",
+        Patch(facecolor="#38b0d8", alpha=0.15, edgecolor="none",
               label=f"±{int(TIER_FRACTION * 100)}% T1 tier envelope"),
         Line2D([0], [0], marker="o", color="w",
                markerfacecolor=COLOURS["within"],

@@ -2,7 +2,49 @@
 
 All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Adheres to [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.3.0] — 2026-05-12
+
+Zenodo DOI: pending mint on tag push (concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to latest). v1.3.0 bundles the discipline-layer sprint (sourceProvenance + CI gate), the v1.2.1 IRENA/Balkans expansion (which was never propagated into CITATION.cff), the audit-fixes sprint (PRs #84–#92), the audit follow-up + India SLDC retier (PRs #88, #95–#96), and the post-redesign accuracy keepers (solar-physics night mask, italic Joule wordmark, PR #96 M/L/L revert).
+
+### Pre-launch teal purge (2026-05-12)
+- **Tier-1 colour swap in figures + paper text.** Static figure-rendering palette migrated from teal `#2a9d8f` to cyan `#38b0d8` (Deepcurrent brand-strong), distinct from amber/terracotta/brown and legible on white print. Applied across `scripts/validation/figure{1..5}_*.py` and `scripts/dari/generate-charts.py`. All five Scientific Data figures and five DARI charts regenerated.
+- **Paper prose rewrites.** Every "teal" descriptor in `docs/paper/01-06-*.md`, `docs/paper/figure-captions.md`, `docs/paper/every-last-joule-scientific-data-draft.md`, `docs/known-limitations.md`, and `docs/figures/README.md` rewritten to match the rendered cyan or the live theme's brand colour (`--brand`: saffron `#ffd05a` on Sunfire, cyan `#64d8ff` on Deepcurrent).
+- **Style-system clean-up.** `src/style.css` legacy `--teal-{400,500,600}` aliases removed; chrome rules migrated to `var(--brand)` / `var(--brand-strong)` semantic tokens; literal `rgba(20, 175, 172, …)` references migrated to `rgba(var(--brand-rgb), …)`. New `--brand-rgb` token added to both Sunfire and Deepcurrent theme blocks. `--shadow-teal` renamed to `--shadow-brand`; `.dot-teal` class renamed to `.dot-brand`.
+- **DARI page palette swap.** `docs/dari/paper.html` `--teal*` palette renamed to `--accent*` and re-tinted to cyan (`#38b0d8` / `#66cfee` / `#E6F4FB`) to stay theme-coherent. Class name `.stat-num.teal` renamed to `.stat-num.accent`.
+
+### Changed — Region tier accounting (post-1.2.0)
+- **`T1a` 152 → 149.** PR #96 (2026-05-11) reverted Malta / Lithuania / Latvia from `tier: "live"` to `tier: "estimated"` after ENTSO-E A75 verification showed no published curtailment rate for those three bidding zones; emitted runtime data was already routing through the IRENA-anchored statics fallback. Loader-declared "live" was a forward-looking hope, not the observed flow.
+- **`T1a` net Japan downgrade.** PR #90 demoted `japan-chubu`, `japan-tepco`, `japan-hokkaido` to `tier: "estimated"` after the upstream investigation found `chubu` had a dead `denki-yoho.chuden.jp` endpoint, `tepco` had renamed `juyo-d-j.csv → juyo-d1-j.csv` to a demand-only file, and `hokkaido` was parsing all-renewables MW as solar-only at a 10× overcount. Future-work TEPCO monthly-CSV migration documented in the loader JSDocs.
+- **Final tally:** T1a 149 · T1b 9 · T1c 1 · T2 6 · T2-flare 8 · T3 211 · total 384. Golden file at `scripts/ci/golden/tier-counts.json` is canonical; `npx tsx scripts/tally-tiers.ts` emits live counts from `src/lib/regions.ts`.
+
+### Added — Solar-physics night mask (2026-05-12, accuracy correction)
+- **New helper `src/lib/solar-mask.ts`.** Zeroes out any UTC hour where the sun is below the horizon for that region's longitude. Applied post-load in `src/index.md` to every region of `kind: "solar"`. Fixes a class of accuracy bug where grid-operator solar feeds (CAISO, PJM, MISO, SPP, NYISO, ERCOT, BPA) report ~0.10 GW of "solar curtailment" at local midnight — most likely battery discharge mis-categorised as solar in the EIA fuel-type breakdown.
+- **Approximate model.** `offsetHours = lon / 15` (no DST), fixed 06:00–19:00 local daylight window. Good for ±45° lat regions; high-lat winter would need a seasonal sunrise/sunset model. `peakGW` is recomputed from the masked profile. Limitations documented inline in the helper's JSDoc.
+
+### Added — Italic "Joule" wordmark accent (2026-05-12)
+- **Sticky-header wordmark.** `<span class="app-wordmark-accent">Joule</span>` in Fraunces italic (already loaded for both themes), picks up `--brand` so it tints saffron on Sunfire and cyan on Deepcurrent automatically. Rescued from the reverted Ledger redesign — survives because it sits cleanly on the existing theme system without requiring the Ledger palette.
+
+### Audit-fixes sprint (2026-05-10, PRs #84–#92)
+- **PR #84 — `fix/loader-wiring-blockers`.** Belgium / Peru / South Africa / WA-SWIS spread fixes. Runtime `assertCanonicalRegionData(regionData, REGIONS)` wired into `src/index.md` — turns silent loader-key mismatches into loud page-hangs. Strengthened integrity check verifies 24-element profile, not just key presence. Dead `ercot-native` fetch removed.
+- **PR #85 — `feat/japan-regional-wiring`.** 9 Japan regional loaders wired into the dashboard (chubu, chugoku, hokkaido, hokuriku, kansai, okinawa, shikoku, tepco, tohoku — previously declared `tier: "live"` but never fetched).
+- **PR #86 — `test/loader-and-pillar-invariants`.** Pillar-base-inside-country sweep test for all 384 regions (351 pass, 32 skipped for 110m-omitted islands, 2 `it.todo` for known-bug coords).
+- **PR #87 — `chore/dead-code-purge`.** Build-time price/fx data layer fully removed; orphan loaders (`japan.json.ts`, `india-{north,south,west}.json.ts`), `unit-toggle.js`, `caiso-oasis` fixture, dead unit-toggle CSS rules. Region-count drift fixed across README / observablehq.config / dataset/README / about.md / tests/regions.test.ts.
+- **PR #88 — `refactor/tier-taxonomy-india-sldc`.** `static→estimated`, `flare→anchored`; `kind` orthogonal to `tier`. India SLDC scaffolding (`readStateSldcCurtailment` helper + CSV ingestion path, opportunistic, no-op until SLDC CSVs land). `build_region_docs.py` regex fixed to tolerate `sourceProvenance` field. 387 validation docs regenerated, 7 cited docs (alberta-wind + 6 India SLDC) hand-preserved.
+- **PR #89 — `fix/pillar-coords-guinea-guatemala`.** Corrected coordinates for `guinea` (was in the Atlantic ~50 km west of Guinea-Bissau, looked like a copy-paste from the adjacent row) and `guatemala-siepac` (was inside Honduras east of Tegucigalpa). Pillar test grew from 351 active + 2 todo → 353 active passing.
+- **PR #90 — `fix/japan-upstream`.** Japan upstream investigation outcome described above.
+- **PR #91 — `test/island-polygon-overrides`.** Pillar-polygon override mechanism. `tests/fixtures/region-polygon-overrides.geo.json` maps `region.id` → custom GeoJSON polygon. Used for `japan-okinawa`, `jeju`, `vanuatu` whose islands are excluded from `countries-110m.json`. Test sweep grew from 353 → 356 active passing.
+- **PR #92 — `feat/build_region_docs_markers`.** `<!-- BEGIN MANUAL --> ... <!-- END MANUAL -->` blocks survive regeneration via section-heading anchoring. 19 new tests. Wraps follow-ups: 6 cited docs not yet wrapped (tracked in backlog).
+
+### Audit-follow-up sprint (2026-05-11, PRs #93–#96)
+- **PR #93 — `fix/denmark-splitregion-keys`.** Denmark 4-key wiring (zone × fuel) fixed; latent bug since PR #48.
+- **PR #94 — `fix/lost-work-recovery`.** Methodology counts, teal→yellow eyebrow, side-panel removal, theme-toggle labels (cosmetic).
+- **PR #95 — `fix/live-data-and-france`.** Four converging data-flow fixes: (a) tier-aware tooltip badge — T2/T3 regions render `modeled · YYYY` / `anchored · YYYY` / `anchored · 24/7 baseload` instead of misleading `live · 861d ago`; (b) France `parseRteEco2MixCsv` skips blank-fuel forecast rows (fixes future-dated `lastUpdated`); (c) NZ EMI loader migrated to `emidatasets.blob.core.windows.net/publicdata/...` with 5-month lookback for publish-lag; (d) `prebuild: rm -rf src/.observablehq/cache` defeats Vercel build-cache + Observable Framework's `useStale:true`.
+- **PR #96 — `fix(launch)/mll-tier-revert`.** Malta / Lithuania / Latvia reverted live → estimated (described in tier-accounting section above).
+
+[1.2.1] — 2026-05-05
+-----
+
+Note: v1.2.1 was minted to Zenodo as `10.5281/zenodo.20045637` on 2026-05-05 with the post-IRENA/Balkans state, but `CITATION.cff` and `dataset/README.md` were not bumped from 1.2.0 in the same pass. The audit-sprint work that landed afterwards (PRs #84–#92) plus the discipline-layer sweep below all roll forward into v1.3.0 above.
 
 ### Changed — `sourceProvenance` sweep complete + CI gate enforced (2026-05-08)
 - **All 384 regions in `src/lib/regions.ts` now declare `sourceProvenance` explicitly.** Distribution: 172 `verified` (most live-tier regions plus the 8 GGFR flare regions), 7 `official-lead` (the 6 India SLDCs plus Colombia — all loaders-wired-but-emitting-fallback cases that the gate is designed to flag), 205 `modelled-fallback` (T3 regions with typical-shape profiles scaled to published anchors).

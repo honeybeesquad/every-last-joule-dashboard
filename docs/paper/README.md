@@ -79,11 +79,11 @@ Zenodo DOI history: v1.0.0 minted 2026-04-27
 (`10.5281/zenodo.19835566`), v1.1.0 minted 2026-05-01
 (`10.5281/zenodo.19932977`, stale 202-region content), v1.1.1
 minted 2026-05-03 (`10.5281/zenodo.19991315`, 241-region state),
-v1.2.1 minted 2026-05-05 (`10.5281/zenodo.20045637`, canonical
+v1.3.0 release pass 2026-05-12 (DOI pinned by Phase 7 of the release).
 380-region / 195-country state — every UN member). Concept DOI
 `10.5281/zenodo.19835411` resolves to latest. Cite version DOI
-`10.5281/zenodo.20045637` in the paper. Any remaining `<id>` or "TBA"
-tokens are bugs to flag — the v1.2.1 DOI placeholder is the one
+`<v1.3.0 version DOI>` placeholder in the paper. Any remaining `<id>` or "TBA"
+tokens are bugs to flag — the v1.3.0 DOI placeholder is the one
 deliberate exception until Zenodo upload completes.
 
 ## Assembly for submission
