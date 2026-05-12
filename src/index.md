@@ -39,6 +39,7 @@ import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./
 import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
 import { assertCanonicalRegionData } from "./lib/region-data-integrity.js";
+import { maskSolarNight } from "./lib/solar-mask.js";
 import { mountGlobe } from "./globe.js";
 
 const HOTSPOT_LIST_LIMIT = 50;
@@ -540,6 +541,23 @@ const regionData = {
 // single key — Belgium-shape bug class). Better to fail visibly than
 // render silent zero-GW pillars.
 assertCanonicalRegionData(regionData, REGIONS);
+
+// Solar-physics correction: zero out hours where the sun is below the horizon
+// for any region of kind:solar. Several grid-operator feeds (CAISO, PJM, MISO,
+// SPP, NYISO, ERCOT, BPA) report a non-zero "solar" floor at local night —
+// most likely battery discharge mis-categorised as solar in the EIA fuel-type
+// breakdown. Whatever the cause, solar curtailment outside daylight is
+// physically impossible, so the dashboard refuses to show it.
+for (const region of REGIONS) {
+  if (region.kind !== "solar") continue;
+  const data = regionData[region.id];
+  if (!data?.profile) continue;
+  data.profile = maskSolarNight(data.profile, region.lon);
+  if (Array.isArray(data.latestProfile)) {
+    data.latestProfile = maskSolarNight(data.latestProfile, region.lon);
+  }
+  data.peakGW = Math.max(...data.profile);
+}
 
 // S2 uncertainty: defensive fallback. Every loader is now responsible for
 // setting confidenceTier + uncertaintyLow/HighGW upstream — typical-shape
