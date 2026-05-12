@@ -42,7 +42,7 @@ versioned DOI `10.5281/zenodo.19835566` (concept DOI
 **Evidence:**
 
 - `dataset/CITATION.cff` declares two DOI identifiers under `identifiers:`:
-  the **version DOI** (pins to the current tag — placeholder for v1.3.0 until Zenodo mints on tag push) and
+  the **version DOI** `10.5281/zenodo.20135933` (pins to the v1.3.0 tag) and
   the **concept DOI** `10.5281/zenodo.19835411` (resolves to the latest
   version across releases).
 - DOIs minted by Zenodo on 2026-04-27 via the GitHub-Zenodo integration

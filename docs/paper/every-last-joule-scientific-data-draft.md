@@ -1069,7 +1069,7 @@ reporting systematically under-captures certain behaviours:
 ## 5.5 Recommended citation
 
 Machine-readable citation metadata: `dataset/CITATION.cff`.
-Zenodo-minted version DOI for v1.3.0: `10.5281/zenodo.PENDING-v1.3.0` (pinned on Zenodo mint by release Phase 7).
+Zenodo-minted version DOI for v1.3.0: `10.5281/zenodo.20135933`.
 Concept DOI (resolves to latest version): `10.5281/zenodo.19835411`.
 
 Preferred human citation:
@@ -1077,7 +1077,7 @@ Preferred human citation:
 > Collins, S. (2026). Every Last Joule: an hourly synthesis of
 > renewable-electricity curtailment and associated-gas flaring
 > across 384 regions in 195 countries. Scientific Data.
-> <v1.3.0 version DOI — pinned post-mint>
+> https://doi.org/10.5281/zenodo.20135933
 
 Cite the **version DOI** (not the concept DOI) when writing
 reproducible analyses; concept DOI is appropriate when citing
@@ -1152,7 +1152,7 @@ publicly available in the repository under an MIT licence
 - **Repository:**
   https://github.com/honeybeesquad/every-last-joule-dashboard
 - **Tagged release:** `v1.3.0` (matches the Zenodo-archived
-  DOI `10.5281/zenodo.PENDING-v1.3.0` (pinned on Zenodo mint by release Phase 7)).
+  DOI `10.5281/zenodo.20135933`).
 - **Languages:** TypeScript (Observable Framework data
   loaders), Python 3.12+ (historical backfill, validation,
   figure rendering).
