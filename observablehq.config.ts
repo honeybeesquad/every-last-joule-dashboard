@@ -51,12 +51,11 @@ export default {
   // disables pinch-zoom — bad for accessibility and mobile readability.
   // We emit our own viewport tag later in the head to override it.
   //
-  // The inline boot script must appear before style.css (which contains the
-  // [data-theme] rules) to prevent a flash of unstyled/wrong-theme content.
-  // Observable Framework hoists front-matter scripts in src/index.md to
-  // after stylesheets, so the head config is the only place we can
-  // guarantee script-before-CSS ordering.
-  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<script>(function(){try{var t=localStorage.getItem("elj-theme");if(t!=="sunfire"&&t!=="deepcurrent")t="sunfire";document.documentElement.setAttribute("data-theme",t);}catch(e){document.documentElement.setAttribute("data-theme","sunfire");}}());</script><link rel="stylesheet" href="./style.css">`,
+  // Ledger redesign: single dark theme. The data-theme boot script that
+  // previously selected Sunfire/Deepcurrent is gone — style.css owns the
+  // look outright. Google Fonts (Inter Tight / Newsreader / Geist Mono)
+  // load before style.css so first paint already has the right faces.
+  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="./style.css">`,
   theme: "dark",
   footer: "",
   toc: false,
