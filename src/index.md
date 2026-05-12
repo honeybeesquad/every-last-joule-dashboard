@@ -186,7 +186,7 @@ document.getElementById("app-root").innerHTML = `
     <header class="app-header">
       <div class="app-title">
         <span class="app-mark">●</span>
-        <span class="app-wordmark">Every Last Joule</span>
+        <span class="app-wordmark">Every Last <span class="app-wordmark-accent">Joule</span></span>
         <span class="app-tag">Wasted Energy Database · <a class="app-tag-version" href="${zenodoVersion.recordUrl}" target="_blank" rel="noopener">v${zenodoVersion.version}</a></span>
       </div>
       <div class="app-header-right">

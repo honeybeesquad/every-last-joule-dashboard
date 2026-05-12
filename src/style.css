@@ -659,6 +659,19 @@ main table {
   color: var(--ink);
 }
 
+/* Editorial italic accent on the wordmark — carried over from the Ledger
+   redesign because Simon liked it. Uses Fraunces (already loaded for both
+   Sunfire and Deepcurrent themes) and picks up --brand so it tints yellow
+   on Sunfire and blue on Deepcurrent. */
+.app-wordmark-accent {
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--brand);
+  letter-spacing: -0.005em;
+  margin-left: 1px;
+}
+
 .app-tag {
   font-size: 11px;
   font-weight: 700;
