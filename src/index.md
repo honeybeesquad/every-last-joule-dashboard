@@ -2,8 +2,14 @@
 
 <div id="page-loader" role="status" aria-label="Loading dashboard data">
   <div class="loader-topbar"><div class="loader-topbar-fill"></div></div>
-  <div class="loader-center-mark">●</div>
-  <div class="loader-center-text">Every Last Joule</div>
+  <svg class="loader-logo" viewBox="0 0 100 120" aria-hidden="true">
+    <line x1="22" y1="14" x2="86" y2="14" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
+    <line x1="68" y1="14" x2="68" y2="86" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
+    <path d="M 68 86 Q 68 106 48 106 Q 28 106 28 86" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="square" />
+    <line x1="14" y1="58" x2="94" y2="58" stroke="#D4FF3A" stroke-width="7.7" stroke-linecap="square" />
+  </svg>
+  <div class="loader-center-text">Every Last <span class="accent-word">Joule</span></div>
+  <div class="loader-eyebrow">Wasted Energy Database · live from grid operators</div>
   <div class="loader-terminal">
     <div class="loader-terminal-bar">
       <div class="loader-terminal-dots"><span></span><span></span><span></span></div>
