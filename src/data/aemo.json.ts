@@ -69,6 +69,7 @@ export function parseAemoDispatchCsv(csv: string): AemoParsed {
   const windMwh = emptyAemoMap<number>(() => 0);
   const solarMwh = emptyAemoMap<number>(() => 0);
   let headers: string[] = [];
+  let sawDataRow = false;
   const lines = csv.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
 
   for (const line of lines) {
@@ -77,6 +78,7 @@ export function parseAemoDispatchCsv(csv: string): AemoParsed {
       continue;
     }
     if (!line.startsWith("D,DISPATCH,UNIT_SOLUTION,")) continue;
+    sawDataRow = true;
     if (!headers.length) continue;
 
     const cells = line.split(",");
@@ -117,6 +119,16 @@ export function parseAemoDispatchCsv(csv: string): AemoParsed {
       solarBucket.set(utcTimestamp, (solarBucket.get(utcTimestamp) ?? 0) + curtailedMw);
       solarMwh[regionId] += curtailedMw;
     }
+  }
+
+  // Silent-zero guard: a CSV with `D,DISPATCH,UNIT_SOLUTION,` rows but no
+  // matching `I,DISPATCH,UNIT_SOLUTION,` header means AEMO changed the
+  // file format. We were about to silently drop every row; throw so the
+  // loader falls back to last-good cache and the failure is visible.
+  if (sawDataRow && !headers.length) {
+    throw new Error(
+      "AEMO CSV: data rows present but no I,DISPATCH,UNIT_SOLUTION, header line found — upstream format may have changed.",
+    );
   }
 
   const pointsFrom = (source: Map<AemoStateId, Map<string, number>>) => Object.fromEntries(
@@ -181,6 +193,19 @@ const run = async (): Promise<Record<AemoRegionId, RegionData>> => {
       windPoints[stateId].push(...parsed.windPoints[stateId]);
       solarPoints[stateId].push(...parsed.solarPoints[stateId]);
     }
+  }
+
+  // Silent-zero guard at the loader level: if 30 days of dispatch CSVs
+  // produced zero curtailment points across every state and fuel, the
+  // upstream is almost certainly broken (Australia curtails wind/solar
+  // somewhere on the NEM most days). Throw so withFallback degrades to
+  // the last-good snapshot rather than emitting flat-zero pillars.
+  const totalWindPoints = Object.values(windPoints).reduce((sum, arr) => sum + arr.length, 0);
+  const totalSolarPoints = Object.values(solarPoints).reduce((sum, arr) => sum + arr.length, 0);
+  if (totalWindPoints === 0 && totalSolarPoints === 0) {
+    throw new Error(
+      "AEMO: 30 days of NEMWEB dispatch CSVs produced zero curtailment points across all states — upstream outage or format change. Falling back to last-good snapshot.",
+    );
   }
 
   const out = {} as Record<AemoRegionId, RegionData>;

@@ -66,6 +66,55 @@ const TIER_ENUM = new Set([
   "T3-modelled",
   "T4-structural-gap"
 ]);
+// Tiers that derive their pillar from a live upstream feed. If one of
+// these emits an all-zero profile the snapshot looks structurally valid
+// but the dashboard renders a flat pillar — a class of silent failure
+// the loaders are supposed to throw on (see ENTSO-E + AEMO guards in
+// src/lib/entsoe.ts and src/data/aemo.json.ts). This validator is the
+// belt to those braces.
+const LIVE_TIER_SET: ReadonlySet<unknown> = new Set([
+  "T1-live-TSO",
+  "T1a-live-tso",
+  "T1b-live-domestic-anchored",
+  "T1c-live-neighbour-anchored",
+]);
+
+// Regions that legitimately produce all-zero T1a profiles in the rolling
+// 30-day window — small grids or sub-state allocations with installed
+// capacity that either curtails rarely or contributes a near-zero slice
+// after fuelShare splitting. Each entry is "suspected legitimate, not
+// yet investigated"; a follow-up audit should confirm and either
+// downgrade the tier (if the upstream is structurally non-T1a) or
+// remove the exemption (if real curtailment is being silently dropped).
+//
+// Adding to this list must be a deliberate action — the whole point of
+// the all-zero check is to surface silent failure for everything not
+// already on it. Seeded 2026-05-12 from the committee code review
+// (DATA-3); see docs/ops/committee-code-review-2026-05-12.md.
+const KNOWN_ZERO_LIVE_ALLOWLIST: ReadonlySet<string> = new Set([
+  // AEMO: Tasmania has ~0 GW utility solar; SEMIDISPATCHCAP almost never fires there.
+  "aemo-tas-solar",
+  // Brazil ONS sub-state allocations: smaller states / "other" buckets
+  // contribute near-zero after fuelShare splitting from the regional feed.
+  "brazil-maranhao-solar",
+  "brazil-mg-wind",
+  "brazil-sp-wind",
+  "brazil-mt-wind",
+  "brazil-mt-solar",
+  "brazil-go-wind",
+  "brazil-pr-wind",
+  "brazil-pr-solar",
+  "brazil-rs-solar",
+  "brazil-other-solar",
+  // ENTSO-E small Balkan zones: limited renewable installed base; A75
+  // curtailment series legitimately runs at zero for the window.
+  "serbia-solar",
+  "bosnia-and-herzegovina",
+  "north-macedonia-solar",
+  "montenegro",
+  // Uruguay ADME: very small grid; renewable curtailment frequently zero.
+  "uruguay",
+]);
 const STATUS_ENUM: ReadonlySet<unknown> = new Set(["live", "cached", "degraded", null]);
 
 function isNonNegNumber(x: unknown): x is number {
@@ -142,6 +191,24 @@ function validate(obj: unknown, ctx: string): string[] {
   if ("confidenceTier" in r && r.confidenceTier !== undefined) {
     if (!TIER_ENUM.has(r.confidenceTier as string)) {
       errs.push(`confidenceTier = ${JSON.stringify(r.confidenceTier)} not in tier enum`);
+    }
+
+    // Non-zero invariant: live-tier snapshots must carry at least one
+    // positive value in profile or latestProfile. An all-zero profile
+    // for a region claiming a live TSO source signals silent upstream
+    // failure (parser drift, expired token, schema change). T2/T3/T4
+    // are exempt — a modelled region can legitimately have a zero
+    // typical-day if it had no curtailment in the underlying window.
+    // Regions known to legitimately produce zero in the current
+    // 30-day window are explicitly allow-listed above.
+    if (LIVE_TIER_SET.has(r.confidenceTier) && !KNOWN_ZERO_LIVE_ALLOWLIST.has(r.regionId)) {
+      const anyPositive = (arr: unknown): boolean =>
+        Array.isArray(arr) && arr.some((v) => typeof v === "number" && Number.isFinite(v) && v > 0);
+      if (!anyPositive(r.profile) && !anyPositive(r.latestProfile)) {
+        errs.push(
+          `live-tier (${r.confidenceTier}) but profile and latestProfile are all-zero — likely silent upstream failure (add to KNOWN_ZERO_LIVE_ALLOWLIST in scripts/validate-snapshots.ts if this is a known-legitimate zero)`,
+        );
+      }
     }
   }
   if ("uncertaintyLowGW" in r && r.uncertaintyLowGW !== undefined) {

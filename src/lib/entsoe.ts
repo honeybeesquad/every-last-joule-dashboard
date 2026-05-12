@@ -198,6 +198,18 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
     }))
     .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
 
+  // Silent-zero guard: if every technology in this zone returned zero
+  // usable points, the loader was about to emit a 24-zero profile that
+  // would pass the snapshot validator but render as a flat pillar in
+  // production. Throw so withFallback degrades to the last-good cache
+  // instead. Common causes: expired ENTSOE_API_TOKEN, ENTSO-E outage,
+  // upstream schema change.
+  if (points.length === 0) {
+    throw new Error(
+      `ENTSO-E ${zone.id}: all technologies returned zero points (likely token revoked, outage, or schema change). Falling back to last-good snapshot.`,
+    );
+  }
+
   const denom = Object.values(fuelTotals).reduce((sum, value) => sum + (value ?? 0), 0);
   const fuelShare = denom > 0
     ? Object.fromEntries(
