@@ -75,6 +75,7 @@ export function buildDenmarkData(parsed: EnerginetParsed): RegionData {
     sourceNote: fuelShare
       ? `Energinet wind+solar × 4% curtailment proxy (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
       : "Energinet ProductionConsumptionSettlement wind+solar × 4% calibrated curtailment rate",
+    sourceProvenance: "verified",
     ...(fuelShare ? { fuelShare } : {}),
   };
 }
