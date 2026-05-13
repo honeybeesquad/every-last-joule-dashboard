@@ -1,6 +1,6 @@
-# Known limitations (v0)
+# Known limitations (v1.3.1)
 
-Every dashboard of this kind is bounded by the quality of its upstream data and the honesty of its author. v0 carries these specific limitations, listed so they are not hidden:
+Every dashboard of this kind is bounded by the quality of its upstream data and the honesty of its author. v1.3.1 carries these specific limitations, listed so they are not hidden:
 
 ### 1. Self-curtailment is invisible
 
@@ -8,29 +8,29 @@ Market-data curtailment captures system-operator dispatch-down instructions, but
 
 ### 2. Geographic gaps
 
-v1f closes several visible gaps by adding Japan, North India, Ethiopia, Southeast Asia, Latin America, Cyprus, Portugal, and Sweden. Coverage is still not a strict global total: much of Africa, the Middle East, Central Asia, and smaller island grids remain absent unless a renewable curtailment/spill proxy is documented.
+Coverage is broad but still not a strict global total: low-dispatch-data regions remain estimated unless a renewable-curtailment or spill proxy is documented, and structural gaps are documented rather than filled with uncited numbers.
 
 ### 3. ASIC efficiency divergence
 
-Cambridge’s 2025 CBECI estimate implies a fleet average around 16 J/TH, while CoinMetrics’ field-weighted estimate is materially looser at about 28.5 J/TH. v0 uses 16 J/TH for the primary readout because it is the closest fit to the academic benchmark being cross-checked, but the methodology page keeps the wider range visible because the disagreement is real and load-bearing.
+Cambridge’s 2025 CBECI estimate implies a fleet average around 16 J/TH, while CoinMetrics’ field-weighted estimate is materially looser at about 28.5 J/TH. The dashboard uses 16 J/TH for the primary readout because it is the closest fit to the academic benchmark being cross-checked, but the methodology page keeps the wider range visible because the disagreement is real and load-bearing.
 
 ### 4. Flare estimation uncertainty
 
-VIIRS-derived and GGFR-derived flare estimates do not line up perfectly, and basin-level divergence can be significant. v0 uses GGFR annual individual flare-location totals as the base, converts them to electrical-equivalent output at 35% generator efficiency, and labels the flare contribution as an annualised estimate rather than a live observation. A 2026-04-24 audit applies a +/-20% interpretation band and updates only regions outside that band; see `docs/methodology/flare-ercot-brazil.md#flare`.
+VIIRS-derived and GGFR-derived flare estimates do not line up perfectly, and basin-level divergence can be significant. The dataset uses GGFR annual individual flare-location totals as the base, converts them to electrical-equivalent output at 35% generator efficiency, and labels the flare contribution as an annualised estimate rather than a live observation. A 2026-04-24 audit applies a +/-20% interpretation band and updates only regions outside that band; see `docs/methodology/flare-ercot-brazil.md#flare`.
 
 ### 5. 30-day time-of-day averaging smooths anomalies
 
-A specific day’s curtailment can deviate sharply from the profile shown on the dashboard, particularly during weather events, outages, or acute transmission constraints. That smoothing is intentional in v0 because the aim is to show the recurring daily pattern rather than overfit to yesterday’s noise; a latest-24-hour mode belongs in a later release.
+A specific day’s curtailment can deviate sharply from the 30-day profile shown on the dashboard, particularly during weather events, outages, or acute transmission constraints. That smoothing is intentional because the default view shows the recurring daily pattern rather than overfitting to yesterday’s noise. The Last 24h mode is available where the upstream loader can recover a complete recent UTC day; regions without a reliable daily curve fall back to the 30-day profile for display continuity.
 
 ### 6. Direct-measured coverage remains partial
 
-Brazil NE and Atacama now report native curtailment/reduction data through public files. Several other live renewable regions still estimate curtailment by applying calibrated 2024 rates to observed generation, which preserves shape usefully but remains one step removed from a native curtailment series.
+Brazil NE and Atacama report native curtailment/reduction data through public files. Several other renewable regions still estimate curtailment by applying calibrated annual rates to observed generation, which preserves hourly shape usefully but remains one step removed from a native dispatch-down series.
 
-A narrower subset — CAMMESA Argentina, COES SINAC Peru, ESKOM South Africa, and EirGrid Ireland (split 58/42 into `ireland-republic` and `northern-ireland` at consumption time) — does not even derive curtailment from observed hourly generation: the loader only probes the public endpoint for reachability and freshness, then emits a calibrated typical-shape profile scaled to a published annual anchor (Patagonia wind ~0.5 TWh/yr; Peru bimodal hydro-seasonal ~0.8 TWh/yr; South Africa wind+solar ~4.4 TWh/yr per SAREM 2025 / Eskom MTSAO Oct 2025; Ireland all-island wind ~2.18 TWh/yr per SONI/EirGrid 2024 Annual Renewable Constraint and Curtailment Report). All four are now classified `T3-modelled` (`tier: "static"` in `regions.ts`, ±40% envelope) — the 2026-04-25 tier-overstatement fix demoted Peru, South Africa (batch 1) and the Ireland split pair (batch 2) from `T1-live-TSO` to match the typical-shape reality. The `sourceStatus` field still surfaces "live" when the upstream probe succeeds (i.e. the dashboard can confirm the source is reachable), but that is a freshness signal, not a measured-dispatch claim.
+Regions that only have a published annual anchor and a typical-shape profile are classified `T3-modelled` (`tier: "estimated"` in `regions.ts`, ±40% envelope). Regions with annual anchors but no modelled shape layer are `T2-annual-calibrated` (`tier: "anchored"`). The `sourceStatus` field is only a freshness signal (`live`, `cached`, or `degraded`); it is not a claim that the value is direct-measured curtailment. Use `confidenceTier` and `sourceProvenance` for source-quality filtering.
 
 ### 7. Network consumption anchor
 
-CBECI remains the canonical academic benchmark for Bitcoin electricity consumption, but its API is recaptcha-gated and not usable from the server-side loader. v0 therefore uses mempool.space’s 24-hour-average hashrate and derives annualised consumption at 16 J/TH, with quarterly cross-checks against Cambridge’s published dashboard value.
+CBECI remains the canonical academic benchmark for Bitcoin electricity consumption, but its API is recaptcha-gated and not usable from the server-side loader. The dashboard therefore uses mempool.space’s 24-hour-average hashrate and derives annualised consumption at 16 J/TH, with quarterly cross-checks against Cambridge’s published dashboard value.
 
 ### 8. ERCOT remains on the EIA proxy after the B2 native attempt
 

@@ -40,9 +40,9 @@ name: CI
 
 on:
   push:
-    branches: [v0-build, main]
+    branches: [main]
   pull_request:
-    branches: [v0-build, main]
+    branches: [main]
   workflow_dispatch: {}
 
 jobs:

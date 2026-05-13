@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { withFallback } from "../src/lib/resilient";
 import type { RegionData } from "../src/lib/types";
@@ -8,7 +8,9 @@ const CACHE_DIR = join(process.cwd(), "data", "snapshots", "last-good");
 
 describe("withFallback", () => {
   const testCacheName = "test-region";
+  const canonicalCacheName = "caiso-wind";
   const cachePath = join(CACHE_DIR, `${testCacheName}.json`);
+  const canonicalCachePath = join(CACHE_DIR, `${canonicalCacheName}.json`);
   const now = new Date("2026-04-25T12:00:00.000Z");
 
   function cachedRegion(lastSuccessAt: string): RegionData {
@@ -26,6 +28,7 @@ describe("withFallback", () => {
 
   beforeEach(() => {
     if (existsSync(cachePath)) rmSync(cachePath);
+    if (existsSync(canonicalCachePath)) rmSync(canonicalCachePath);
   });
 
   it("returns the live result when fetchFn succeeds", async () => {
@@ -47,6 +50,17 @@ describe("withFallback", () => {
     expect(result).toHaveProperty("lastSuccessAt", now.toISOString());
   });
 
+  it("stamps sourceProvenance on canonical live region results before caching", async () => {
+    const result = await withFallback<RegionData>(
+      canonicalCacheName,
+      async () => ({ ...cachedRegion(now.toISOString()), regionId: canonicalCacheName }),
+      { now: () => now },
+    );
+
+    expect(result.sourceProvenance).toBe("verified");
+    expect(JSON.parse(readFileSync(canonicalCachePath, "utf-8")).sourceProvenance).toBe("verified");
+  });
+
   it("marks a fresh cache fallback as cached", async () => {
     mkdirSync(CACHE_DIR, { recursive: true });
     writeFileSync(cachePath, JSON.stringify(cachedRegion("2026-04-25T06:00:00.000Z")));
@@ -64,6 +78,28 @@ describe("withFallback", () => {
 
     expect(result.sourceStatus).toBe("cached");
     expect(result.lastSuccessAt).toBe("2026-04-25T06:00:00.000Z");
+  });
+
+  it("stamps sourceProvenance on canonical cached fallback results", async () => {
+    mkdirSync(CACHE_DIR, { recursive: true });
+    writeFileSync(
+      canonicalCachePath,
+      JSON.stringify({ ...cachedRegion("2026-04-25T06:00:00.000Z"), regionId: canonicalCacheName }),
+    );
+
+    const result = await withFallback<RegionData>(
+      canonicalCacheName,
+      async () => {
+        throw new Error("upstream 500");
+      },
+      {
+        tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+        now: () => now,
+      },
+    );
+
+    expect(result.sourceStatus).toBe("cached");
+    expect(result.sourceProvenance).toBe("verified");
   });
 
   it("marks a stale cache fallback as degraded", async () => {

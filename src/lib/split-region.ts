@@ -1,4 +1,5 @@
 import { computeBounds } from "./uncertainty.js";
+import { sourceProvenanceForRegion } from "./source-provenance.js";
 import type { RegionData } from "./types.js";
 
 /**
@@ -26,6 +27,7 @@ export function splitRegion(
   return {
     ...source,
     regionId: newId,
+    sourceProvenance: sourceProvenanceForRegion(newId) ?? source.sourceProvenance,
     profile: scaleArr(source.profile),
     latestProfile: scaleNullableArr(source.latestProfile),
     totalTWh: (source.totalTWh ?? 0) * ratio,

@@ -9,6 +9,7 @@ import {
 import { applyUncertainty } from "../lib/uncertainty.js";
 import { coerceLastSuccessAt } from "../lib/freshness.js";
 import { REGIONS } from "../lib/regions.js";
+import { stampRegionSourceProvenance } from "../lib/source-provenance.js";
 import { pathToFileURL } from "url";
 
 /**
@@ -359,9 +360,11 @@ export function buildStaticRegion(id: string, spec: StaticSpec, now: Date = new 
   const regionTier = region?.tier ?? "estimated";
   const profileKind: "flat" | "solar" | "wind" | "mixed" | "hydro-seasonal" =
     spec.kind === "hydro" ? "mixed" : (spec.kind ?? "flat");
-  return applyUncertainty(
-    base,
-    { regionTier, profileKind },
+  return stampRegionSourceProvenance(
+    applyUncertainty(
+      base,
+      { regionTier, profileKind },
+    ),
   );
 }
 

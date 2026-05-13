@@ -31,9 +31,10 @@
   "peakGW": 0.017274026579738793,
   "lastUpdated": "2024",
   "lastSuccessAt": "2026-05-02T03:39:18.385Z",
-  "sourceNote": "Okinawa Electric Power (\u6c96\u7e04\u96fb\u529b) \u2014 live CSV URL not accessible (2026-05-02 404); typical solar shape \u00d7 OCCTO FY2024 Okinawa anchor ~0.04 TWh/yr",
+  "sourceNote": "Okinawa Electric Power (沖縄電力) — live CSV URL not accessible (2026-05-02 404); typical solar shape × OCCTO FY2024 Okinawa anchor ~0.04 TWh/yr",
   "confidenceTier": "T1a-live-tso",
   "uncertaintyLowGW": 0.010364415947843274,
   "uncertaintyHighGW": 0.02418363721163431,
-  "sourceStatus": "live"
+  "sourceStatus": "live",
+  "sourceProvenance": "verified"
 }

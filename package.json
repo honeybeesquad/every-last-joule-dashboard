@@ -1,6 +1,6 @@
 {
   "name": "every-last-joule-dashboard",
-  "version": "1.2.1",
+  "version": "1.3.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "validate": "tsx scripts/validate-snapshots.ts",
+    "snapshot:stamp-provenance": "tsx scripts/migrate-snapshot-provenance.ts",
     "tally:tiers": "tsx scripts/tally-tiers.ts",
     "ci:tier-coherence": "tsx scripts/ci/check-tier-coherence.ts",
     "ci:source-provenance-coherence": "tsx scripts/ci/check-source-provenance-coherence.ts",

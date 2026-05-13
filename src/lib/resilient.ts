@@ -3,6 +3,7 @@ import { join } from "node:path";
 import type { RegionData, RegionTier, SourceStatus } from "./types.js";
 import { REGIONS } from "./regions.js";
 import { applyUncertainty } from "./uncertainty.js";
+import { stampSourceProvenance } from "./source-provenance.js";
 
 export const DEFAULT_STALENESS_THRESHOLD_HOURS = 24;
 
@@ -204,6 +205,7 @@ export async function withFallback<T>(
     let tagged = opts.tagLive ? opts.tagLive(fresh) : fresh;
     if (opts.regionTier) tagged = enrichWithTier(tagged, opts.regionTier);
     tagged = stampLive(tagged, now.toISOString());
+    tagged = stampSourceProvenance(tagged);
 
     try {
       mkdirSync(cacheDir, { recursive: true });
@@ -229,6 +231,7 @@ export async function withFallback<T>(
     let tagged = opts.tagCached ? opts.tagCached(cached) : cached;
     if (opts.regionTier) tagged = enrichWithTier(tagged, opts.regionTier);
     tagged = stampCached(tagged, now, stalenessThresholdHours);
+    tagged = stampSourceProvenance(tagged);
     return tagged;
   }
 }

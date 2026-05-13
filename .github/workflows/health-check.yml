@@ -1,8 +1,8 @@
 name: Dashboard health check
 
 # Runs every 6 hours on a schedule offset from the data-refresh cron.  Fetches
-# the live dashboard's emitted region JSONs, counts cached-fallback regions
-# and zero-output regions, and opens a GitHub Issue when degradation crosses
+# the live dashboard's emitted region JSONs, counts freshness-degraded regions
+# and zero-output live-tier regions, and opens a GitHub Issue when degradation crosses
 # a threshold.  Zero cost: checks run against the public Vercel deployment,
 # no local build required.
 #
@@ -40,57 +40,122 @@ jobs:
         id: inspect
         run: |
           set -euo pipefail
-          cached=0
-          zero=0
-          live=0
-          total=0
-          degraded_list=""
-          zero_list=""
+          python3 <<'PY'
+          import json
+          import os
+          import urllib.request
 
-          while read -r path; do
-            [ -z "$path" ] && continue
-            total=$((total + 1))
-            url="https://everylastjoule.com/_file/$path"
-            json=$(curl -sS --max-time 20 "$url" || echo "{}")
-            # Skip aggregate files (cbeci, anchor) — they aren't regional payloads
-            if [[ "$path" == *"cbeci"* ]] || [[ "$path" == *"anchor"* ]]; then continue; fi
+          BASE = "https://everylastjoule.com/_file/"
+          LIVE_TIERS = {
+              "T1-live-TSO",
+              "T1a-live-tso",
+              "T1b-live-domestic-anchored",
+              "T1c-live-neighbour-anchored",
+          }
+          KNOWN_ZERO_LIVE_ALLOWLIST = {
+              "aemo-tas-solar",
+              "brazil-maranhao-solar",
+              "brazil-mg-wind",
+              "brazil-sp-wind",
+              "brazil-mt-wind",
+              "brazil-mt-solar",
+              "brazil-go-wind",
+              "brazil-pr-wind",
+              "brazil-pr-solar",
+              "brazil-rs-solar",
+              "brazil-other-solar",
+              "serbia-solar",
+              "bosnia-and-herzegovina",
+              "north-macedonia-solar",
+              "montenegro",
+              "uruguay",
+              "italy-north-zone-wind",
+              "czech-republic-wind",
+              "slovenia-wind",
+              "slovakia-wind",
+              "moldova-wind",
+              "nyiso-rest-solar",
+          }
 
-            # sourceStatus "cached" means withFallback served last-good instead of a fresh fetch
-            if echo "$json" | grep -q '"sourceStatus":"cached"'; then
-              cached=$((cached + 1))
-              region_id=$(basename "$path" | cut -d. -f1)
-              degraded_list="${degraded_list}- ${region_id} (cached)\n"
-            else
-              live=$((live + 1))
-            fi
+          def is_region_record(value):
+              return (
+                  isinstance(value, dict)
+                  and isinstance(value.get("regionId"), str)
+                  and isinstance(value.get("profile"), list)
+              )
 
-            # Peak GW near zero on a region we expect output from — flag it
-            peak=$(echo "$json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(max(d.get('profile',[0]) or [0]))" 2>/dev/null || echo "0")
-            if python3 -c "exit(0 if float('$peak') < 0.001 else 1)"; then
-              zero=$((zero + 1))
-              region_id=$(basename "$path" | cut -d. -f1)
-              # multi-region loaders (entsoe, aemo, brazil-ne) hold multiple regions; a zero at top-level is fine for those.
-              if ! echo "$path" | grep -qE "^data/(entsoe|aemo|brazil-ne|ercot|ercot-native)\."; then
-                zero_list="${zero_list}- ${region_id} (peak GW ~0)\n"
-              fi
-            fi
-          done < /tmp/manifest.txt
+          def region_records(payload):
+              if is_region_record(payload):
+                  return [payload]
+              if isinstance(payload, dict):
+                  return [value for value in payload.values() if is_region_record(value)]
+              return []
 
-          echo "total=$total" >> $GITHUB_OUTPUT
-          echo "cached=$cached" >> $GITHUB_OUTPUT
-          echo "live=$live" >> $GITHUB_OUTPUT
-          echo "zero=$zero" >> $GITHUB_OUTPUT
-          echo "degraded<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$degraded_list" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "zeros<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$zero_list" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          def max_positive_value(record):
+              values = []
+              for key in ("profile", "latestProfile"):
+                  arr = record.get(key)
+                  if isinstance(arr, list):
+                      values.extend(v for v in arr if isinstance(v, (int, float)))
+              return max(values, default=0)
 
-          echo "::notice::checked $total regions: live=$live cached=$cached zero-peak=$zero"
+          def write_output(name, value):
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+                  fh.write(f"{name}={value}\n")
+
+          def write_multiline(name, value):
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+                  fh.write(f"{name}<<EOF\n{value}\nEOF\n")
+
+          total = 0
+          live = 0
+          freshness = 0
+          zero = 0
+          degraded_list = []
+          zero_list = []
+
+          with open("/tmp/manifest.txt", encoding="utf-8") as fh:
+              paths = [line.strip() for line in fh if line.strip()]
+
+          for path in paths:
+              try:
+                  with urllib.request.urlopen(BASE + path, timeout=20) as response:
+                      payload = json.loads(response.read().decode("utf-8"))
+              except Exception as exc:
+                  print(f"::warning::failed to fetch {path}: {exc}")
+                  continue
+
+              for record in region_records(payload):
+                  total += 1
+                  region_id = record["regionId"]
+                  status = record.get("sourceStatus") or "live"
+                  if status in {"cached", "degraded"}:
+                      freshness += 1
+                      degraded_list.append(f"- {region_id} ({status})")
+                  else:
+                      live += 1
+
+                  tier = record.get("confidenceTier")
+                  if (
+                      tier in LIVE_TIERS
+                      and region_id not in KNOWN_ZERO_LIVE_ALLOWLIST
+                      and max_positive_value(record) < 0.001
+                  ):
+                      zero += 1
+                      zero_list.append(f"- {region_id} ({tier}, peak GW ~0)")
+
+          write_output("total", total)
+          write_output("freshness", freshness)
+          write_output("live", live)
+          write_output("zero", zero)
+          write_multiline("degraded", "\n".join(degraded_list))
+          write_multiline("zeros", "\n".join(zero_list))
+
+          print(f"::notice::checked {total} region records: fresh={live} freshness-degraded={freshness} zero-peak={zero}")
+          PY
 
       - name: Ensure auto-health label exists
-        if: steps.inspect.outputs.cached >= '10' || steps.inspect.outputs.zero >= '5'
+        if: fromJSON(steps.inspect.outputs.freshness) >= 10 || fromJSON(steps.inspect.outputs.zero) >= 5
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -101,27 +166,27 @@ jobs:
             2>/dev/null || true
 
       - name: Open GitHub Issue if degradation exceeds threshold
-        if: steps.inspect.outputs.cached >= '10' || steps.inspect.outputs.zero >= '5'
+        if: fromJSON(steps.inspect.outputs.freshness) >= 10 || fromJSON(steps.inspect.outputs.zero) >= 5
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CACHED: ${{ steps.inspect.outputs.cached }}
+          FRESHNESS: ${{ steps.inspect.outputs.freshness }}
           ZERO: ${{ steps.inspect.outputs.zero }}
           TOTAL: ${{ steps.inspect.outputs.total }}
           LIVE: ${{ steps.inspect.outputs.live }}
           DEGRADED_LIST: ${{ steps.inspect.outputs.degraded }}
           ZERO_LIST: ${{ steps.inspect.outputs.zeros }}
         run: |
-          title="[health] Dashboard degraded: ${CACHED} cached, ${ZERO} zero-peak (of ${TOTAL})"
+          title="[health] Dashboard degraded: ${FRESHNESS} freshness-degraded, ${ZERO} zero-peak (of ${TOTAL})"
           body=$(cat <<EOF
           Automated health-check run at $(date -u +"%Y-%m-%dT%H:%M:%SZ") flagged degradation on the live dashboard.
 
           **Summary:**
           - Total regions checked: ${TOTAL}
-          - Live (fresh fetch): ${LIVE}
-          - Cached fallback: ${CACHED}
+          - Fresh region records: ${LIVE}
+          - Freshness-degraded records (cached or degraded): ${FRESHNESS}
           - Zero-peak output: ${ZERO}
 
-          **Cached fallback regions (withFallback served last-good):**
+          **Freshness-degraded regions (withFallback served last-good):**
 
           ${DEGRADED_LIST}
 
@@ -137,7 +202,7 @@ jobs:
 
           **Action:** review failing loader logs in the most recent Vercel deployment, then patch the relevant \`src/data/<region>.json.ts\`. Automated self-repair is future work; manual review is the current expectation for these alerts.
 
-          This issue will be auto-closed when a subsequent health-check run shows cached < 10 and zero < 5.
+          This issue will be auto-closed when a subsequent health-check run shows freshness-degraded < 10 and zero < 5.
           EOF
           )
 
@@ -152,11 +217,11 @@ jobs:
           fi
 
       - name: Auto-close stale health issues when healthy
-        if: steps.inspect.outputs.cached < '10' && steps.inspect.outputs.zero < '5'
+        if: fromJSON(steps.inspect.outputs.freshness) < 10 && fromJSON(steps.inspect.outputs.zero) < 5
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           open=$(gh issue list --label "auto-health" --state open --json number --jq '.[].number')
           for n in $open; do
-            gh issue close "$n" --comment "Auto-closed: health metrics back within threshold (cached < 10, zero < 5)."
+            gh issue close "$n" --comment "Auto-closed: health metrics back within threshold (freshness-degraded < 10, zero < 5)."
           done

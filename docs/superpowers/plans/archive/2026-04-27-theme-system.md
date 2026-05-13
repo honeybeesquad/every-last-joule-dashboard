@@ -1,3 +1,5 @@
+> **STATUS: SHIPPED / ARCHIVED.** The theme system is already live. This file remains only as historical planning context.
+
 # Theme System Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

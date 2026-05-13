@@ -11,10 +11,11 @@ This annual rollup is the analysis-ready view:
 
   - one row per (region_id, year)
   - annual TWh, peak GW, year-over-year hourly-row count
-  - confidence tier per region (T1/T2/T3) derived from the regions.ts
+  - confidence tier per region (T1a/T1b/T1c/T2/T3) derived from the regions.ts
     manifest — see `src/lib/uncertainty.ts::deriveTier`
   - symmetric uncertainty envelope on the peak GW, applied at the tier's
-    default fraction (T1 ±15%, T2 ±20%, T3 ±40%). Once the HB backfill is
+    default fraction (T1a ±15%, T1b ±50%, T1c ±35.5%, T2 ±20%, T3 ±40%).
+    Once the HB backfill is
     stable across ≥3 years, the T1 envelope should be replaced by 2σ of
     observed annual peakGW (TODO when backfill stabilises).
   - same envelope fraction applied to annual TWh so downstream consumers
@@ -32,12 +33,14 @@ source               str       "eia" | "entsoe" | ... (first non-null)
 n_hourly_rows        int32     non-null hours in the partition for this year
 annual_twh           float32   ∑ curtailment_gw × 1h / 1000
 peak_gw              float32   max hourly curtailment_gw across the year
-confidence_tier      str       "T1-live-TSO" | "T2-annual-calibrated" | "T3-modelled"
+confidence_tier      str       "T1a-live-tso" | "T1b-live-domestic-anchored" |
+                                "T1c-live-neighbour-anchored" |
+                                "T2-annual-calibrated" | "T3-modelled"
 uncertainty_low_gw   float32   peak_gw × (1 - tier_fraction), clamped to ≥ 0
 uncertainty_high_gw  float32   peak_gw × (1 + tier_fraction)
 uncertainty_low_twh  float32   annual_twh × (1 - tier_fraction), clamped to ≥ 0
 uncertainty_high_twh float32   annual_twh × (1 + tier_fraction)
-tier_fraction        float32   fractional half-width applied (0.15 / 0.20 / 0.40)
+tier_fraction        float32   fractional half-width applied
 
 Run
 ---
@@ -65,7 +68,7 @@ DEFAULT_OUT = REPO_ROOT / "data" / "historical" / "per_region_annual.parquet"
 
 REGIONS_TS = REPO_ROOT / "src" / "lib" / "regions.ts"
 _REGION_ROW_RE = re.compile(
-    r'id:\s*"(?P<id>[a-z0-9-]+)".*?tier:\s*"(?P<tier>live|static|flare)"',
+    r'id:\s*"(?P<id>[a-z0-9-]+)".*?tier:\s*"(?P<tier>live|live-domestic-anchored|live-neighbour-anchored|anchored|estimated)"',
     re.DOTALL,
 )
 
@@ -74,21 +77,20 @@ _REGION_ROW_RE = re.compile(
 # consistency claim.
 TIER_DEFAULT_FRACTION: dict[str, float] = {
     "T1-live-TSO":          0.15,
+    "T1a-live-tso":         0.15,
+    "T1b-live-domestic-anchored": 0.50,
+    "T1c-live-neighbour-anchored": 0.355,
     "T2-annual-calibrated": 0.20,
     "T3-modelled":          0.40,
     "T4-structural-gap":    0.00,
 }
 
-# Static regions whose profile is genuinely flat (annual anchor without
-# diurnal modelling) — these map to T2-annual-calibrated. Every other
-# static region routes to T3-modelled because its hourly shape is modelled
-# (solar cosine / wind broad-overnight / hydro monthly-seasonal / mixed
-# fuel-share / overnight venting) rather than measured. Mirrors
-# `src/lib/uncertainty.ts::deriveTier` and `scripts/tally-tiers.ts::
-# STATIC_PROFILE_KIND` exactly.
-STATIC_FLAT_REGIONS: set[str] = {
-    "austria",
-    "russia-murmansk-wind",
+REGION_TIER_TO_CONFIDENCE_TIER: dict[str, str] = {
+    "live": "T1a-live-tso",
+    "live-domestic-anchored": "T1b-live-domestic-anchored",
+    "live-neighbour-anchored": "T1c-live-neighbour-anchored",
+    "anchored": "T2-annual-calibrated",
+    "estimated": "T3-modelled",
 }
 
 # Whole-ISO aggregate region ids that exist in the backfill archive but
@@ -96,17 +98,17 @@ STATIC_FLAT_REGIONS: set[str] = {
 # (e.g. `nyiso-zones-d-e` + `nyiso-rest`) because that is the right
 # granularity for the globe; the backfill stays at the EIA feed's
 # natural whole-ISO unit because that matches the published TSO annual
-# anchors used for paper validation. Treat these as T1-live-TSO — the
+# anchors used for paper validation. Treat these as T1a-live-tso — the
 # backfill rows come from the same live EIA hourly feed as the split
 # dashboard regions.
 BACKFILL_AGGREGATE_TIERS: dict[str, str] = {
-    "nyiso":  "T1-live-TSO",
-    "iso-ne": "T1-live-TSO",
+    "nyiso":  "T1a-live-tso",
+    "iso-ne": "T1a-live-tso",
 }
 
 
 def load_regions_manifest() -> dict[str, str]:
-    """Parse regions.ts -> {region_id: 'live'|'static'|'flare'}."""
+    """Parse regions.ts -> {region_id: RegionTier}."""
     text = REGIONS_TS.read_text()
     out: dict[str, str] = {}
     for m in _REGION_ROW_RE.finditer(text):
@@ -118,14 +120,8 @@ def derive_tier(region_id: str, region_tier: str | None) -> str | None:
     """Same rules as src/lib/uncertainty.ts::deriveTier, plus a hard-coded
     override for whole-ISO backfill aggregates that the dashboard ships
     as split sub-regions (see BACKFILL_AGGREGATE_TIERS)."""
-    if region_tier == "live":
-        return "T1-live-TSO"
-    if region_tier == "flare":
-        return "T2-annual-calibrated"
-    if region_tier == "static":
-        if region_id in STATIC_FLAT_REGIONS:
-            return "T2-annual-calibrated"
-        return "T3-modelled"
+    if region_tier in REGION_TIER_TO_CONFIDENCE_TIER:
+        return REGION_TIER_TO_CONFIDENCE_TIER[region_tier]
     # Not in regions.ts — check the whole-ISO aggregate override.
     if region_id in BACKFILL_AGGREGATE_TIERS:
         return BACKFILL_AGGREGATE_TIERS[region_id]

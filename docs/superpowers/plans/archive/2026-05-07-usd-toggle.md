@@ -1,3 +1,5 @@
+> **STATUS: STALE / ARCHIVED.** The USD toggle plan was superseded and the price/fx layer was deleted before launch. Do not implement tasks from this file without a new spec.
+
 # USD Toggle Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

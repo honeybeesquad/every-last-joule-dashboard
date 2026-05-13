@@ -31,4 +31,20 @@ describe("splitRegion", () => {
     expect(child1.uncertaintyHighGW).not.toBeCloseTo(6.9, 12);
     expect(child2.uncertaintyHighGW).not.toBeCloseTo(4.6, 12);
   });
+
+  it("uses canonical child provenance when available and otherwise preserves parent provenance", () => {
+    const parent: RegionData = {
+      regionId: "parent",
+      profile: new Array(24).fill(10),
+      latestProfile: new Array(24).fill(10),
+      totalTWh: 30,
+      peakGW: 10,
+      lastUpdated: "2026-04-25T00:00:00.000Z",
+      lastSuccessAt: "2026-04-25T00:00:00.000Z",
+      sourceProvenance: "modelled-fallback",
+    };
+
+    expect(splitRegion(parent, "nyiso-zones-d-e", 0.6, "60% split").sourceProvenance).toBe("verified");
+    expect(splitRegion(parent, "child-1", 0.4, "40% split").sourceProvenance).toBe("modelled-fallback");
+  });
 });

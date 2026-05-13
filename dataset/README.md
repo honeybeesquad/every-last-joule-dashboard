@@ -27,7 +27,7 @@ A versioned, reproducible synthesis dataset of hourly renewable-electricity curt
 import pandas as pd
 df = pd.read_parquet(
     "https://raw.githubusercontent.com/honeybeesquad/"
-    "every-last-joule-dashboard/v0-build/data/historical/"
+    "every-last-joule-dashboard/main/data/historical/"
     "curtailment_history.parquet"
 )
 df.query("region_id == 'caiso'").plot(x="build_timestamp", y="peak_gw")
@@ -47,7 +47,7 @@ ORDER BY mean_twh DESC;
 
 ```python
 import json, urllib.request
-url = "https://raw.githubusercontent.com/honeybeesquad/every-last-joule-dashboard/v0-build/data/snapshots/last-good/caiso.json"
+url = "https://raw.githubusercontent.com/honeybeesquad/every-last-joule-dashboard/main/data/snapshots/last-good/caiso-wind.json"
 snap = json.load(urllib.request.urlopen(url))
 print(snap["peakGW"], snap["sourceStatus"], snap["lastUpdated"])
 ```

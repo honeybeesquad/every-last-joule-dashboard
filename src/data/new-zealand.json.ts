@@ -217,6 +217,9 @@ const run = async (): Promise<{ wind: RegionData; solar: RegionData; geo: Region
     }
   }
   if (!allPoints.length) throw new Error("NZ EMI returned no usable Generation_MD rows");
+  if (solarMwTotal === 0) throw new Error("NZ EMI returned no solar generation points");
+  if (windMwTotal === 0) throw new Error("NZ EMI returned no wind generation points");
+  if (geoMwTotal === 0) throw new Error("NZ EMI returned no geothermal generation points");
   return buildNewZealandPerFuelData({ points: allPoints, windMwTotal, solarMwTotal, geoMwTotal });
 };
 

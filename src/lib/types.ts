@@ -69,15 +69,11 @@ export interface Region {
    * Per-region declaration of upstream-link kind. The CI gate at
    * `scripts/ci/check-source-provenance-coherence.ts` validates the
    * `(confidenceTier, sourceProvenance)` pair against the legal matrix at
-   * build time, reading directly from `Region.sourceProvenance` (declaration
-   * time), not from emitted snapshots. As of the 2026-05-08 sweep, every
-   * region in `regions.ts` declares this field explicitly and the gate
-   * fails the build if any new region addition omits it. The TypeScript
-   * type is still optional (`?`) to keep the field syntactically convenient
-   * for hand-editing; the CI gate is the enforcement layer. Loader-side
-   * propagation into `RegionData.sourceProvenance` is a separate sweep PR;
-   * the snapshot field exists in the schema but is not yet populated by
-   * the loaders.
+   * build time. As of the 2026-05-08 sweep, every region in `regions.ts`
+   * declares this field explicitly and the gate fails the build if any new
+   * region addition omits it. The TypeScript type is still optional (`?`) to
+   * keep hand-edits compact; the CI gate and snapshot validator are the
+   * enforcement layers.
    */
   sourceProvenance?: SourceProvenance;
 }
@@ -108,10 +104,11 @@ export interface RegionData {
    */
   sourceStatus?: SourceStatus;
   /**
-   * Per-region declaration of upstream-link kind, propagated from
-   * the canonical Region declaration. Orthogonal to `confidenceTier`.
-   * The `(confidenceTier, sourceProvenance)` pair is validated at build
-   * time by `scripts/ci/check-source-provenance-coherence.ts`.
+   * Per-region declaration of upstream-link kind, stamped from the canonical
+   * Region declaration at loader emission boundaries unless a loader sets an
+   * explicit value. Orthogonal to `confidenceTier`. Required in committed
+   * snapshot records by `dataset/schema/region-snapshot.schema.json` and
+   * `scripts/validate-snapshots.ts`.
    * See `docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`.
    */
   sourceProvenance?: SourceProvenance;
