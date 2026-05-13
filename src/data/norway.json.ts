@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { withFallback } from "../lib/resilient.js";
 import type { RegionData } from "../lib/types.js";
 import { buildZoneData, parseEntsoeXml } from "../lib/entsoe.js";
@@ -62,10 +64,23 @@ async function buildZone(spec: ZoneSpec): Promise<Record<string, RegionData>> {
 
   if (spec.hydroOnly) {
     // NO5: single hydro entry only
+    if (hydro.length === 0) {
+      throw new Error(`Norway ${spec.id}: ENTSO-E returned no hydro data`);
+    }
     const hydroTotalMw = hydro.reduce((s, p) => s + p.mw, 0);
     const note = `${spec.label} × ${(spec.rate * 100).toFixed(1)}% rate`;
     const base = buildZoneData(spec.id, hydro, spec.rate, note);
     return { [spec.id]: base };
+  }
+
+  if (hydro.length === 0 && wind.length === 0) {
+    throw new Error(`Norway ${spec.id}: ENTSO-E returned no hydro or wind data`);
+  }
+  if (hydro.length === 0) {
+    throw new Error(`Norway ${spec.id}: ENTSO-E returned no hydro data`);
+  }
+  if (wind.length === 0) {
+    throw new Error(`Norway ${spec.id}: ENTSO-E returned no wind data`);
   }
 
   const hydroTotalMw = hydro.reduce((s, p) => s + p.mw, 0);
@@ -89,9 +104,37 @@ async function buildZone(spec: ZoneSpec): Promise<Record<string, RegionData>> {
 }
 
 export async function buildNorwayData(): Promise<Record<string, RegionData>> {
-  const results = await Promise.all(ZONES.map(buildZone));
+  const cachePath = join(process.cwd(), "data", "snapshots", "last-good", "norway.json");
+  let previous: Record<string, RegionData> = {};
+  try {
+    previous = JSON.parse(readFileSync(cachePath, "utf-8")) as Record<string, RegionData>;
+  } catch { /* no previous cache */ }
+
   const out: Record<string, RegionData> = {};
-  for (const zoneResult of results) Object.assign(out, zoneResult);
+  let anySuccess = false;
+
+  for (const spec of ZONES) {
+    try {
+      const zoneResult = await buildZone(spec);
+      Object.assign(out, zoneResult);
+      anySuccess = true;
+    } catch (err) {
+      console.warn(`Norway zone ${spec.id} failed: ${(err as Error).message}`);
+      const keys = spec.hydroOnly ? [spec.id] : [`${spec.id}-hydro`, `${spec.id}-wind`];
+      for (const key of keys) {
+        if (previous[key]) {
+          out[key] = previous[key];
+        } else {
+          throw new Error(`Norway zone ${spec.id} failed and no cached data for ${key}`);
+        }
+      }
+    }
+  }
+
+  if (!anySuccess) {
+    throw new Error("All Norway zones failed");
+  }
+
   return out;
 }
 
@@ -125,20 +168,11 @@ function migrateCached(
   cached: Record<string, RegionData> | RegionData,
 ): Record<string, RegionData> {
   if (cached && typeof cached === "object" && "regionId" in cached) {
-    // Legacy single RegionData (n-norway era)
-    const old = cached as RegionData;
-    const ts = old.lastUpdated ?? new Date().toISOString();
-    return {
-      "norway-no1-hydro": placeholderZone("norway-no1-hydro", ts),
-      "norway-no1-wind": placeholderZone("norway-no1-wind", ts),
-      "norway-no2-hydro": placeholderZone("norway-no2-hydro", ts),
-      "norway-no2-wind": placeholderZone("norway-no2-wind", ts),
-      "norway-no3-hydro": placeholderZone("norway-no3-hydro", ts),
-      "norway-no3-wind": placeholderZone("norway-no3-wind", ts),
-      "norway-no4-hydro": placeholderZone("norway-no4-hydro", ts),
-      "norway-no4-wind": placeholderZone("norway-no4-wind", ts),
-      "norway-no5": placeholderZone("norway-no5", ts),
-    };
+    // Legacy single RegionData (n-norway era) — no longer supported; snapshot
+    // must be regenerated to the per-fuel format.
+    throw new Error(
+      "Legacy n-norway snapshot no longer supported; regenerate with: npx tsx src/data/norway.json.ts",
+    );
   }
   const old = cached as Record<string, RegionData>;
   // Phase 3b shape had norway-no1..no5 — check if already per-fuel
@@ -154,8 +188,9 @@ function migrateCached(
       out[`${zone}-hydro`] = { ...prev, regionId: `${zone}-hydro`, totalTWh: prev.totalTWh * hydroShare, peakGW: prev.peakGW * hydroShare };
       out[`${zone}-wind`] = { ...prev, regionId: `${zone}-wind`, totalTWh: prev.totalTWh * windShare, peakGW: prev.peakGW * windShare };
     } else {
-      out[`${zone}-hydro`] = placeholderZone(`${zone}-hydro`, ts);
-      out[`${zone}-wind`] = placeholderZone(`${zone}-wind`, ts);
+      throw new Error(
+        `Norway cached snapshot missing ${zone}; regenerate with: npx tsx src/data/norway.json.ts`,
+      );
     }
   }
   out["norway-no5"] = old["norway-no5"] ?? placeholderZone("norway-no5", ts);

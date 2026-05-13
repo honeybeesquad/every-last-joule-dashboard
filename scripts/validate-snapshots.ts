@@ -116,6 +116,21 @@ const KNOWN_ZERO_LIVE_ALLOWLIST: ReadonlySet<string> = new Set([
   "montenegro",
   // Uruguay ADME: very small grid; renewable curtailment frequently zero.
   "uruguay",
+  // ENTSO-E small-grid wind zones where the A75 curtailment signal is
+  // structurally below the 1 MW (0.001 GW) threshold — either because
+  // installed wind capacity is tiny (Slovenia, Slovakia, Moldova) or
+  // because the calibration rate is an acknowledged placeholder
+  // (Italy North 0.3%, Czech Republic 1%). These are legitimate near-zero
+  // live-tier records, not silent parser failures.
+  "italy-north-zone-wind",
+  "czech-republic-wind",
+  "slovenia-wind",
+  "slovakia-wind",
+  "moldova-wind",
+  // EIA NYIS: solar generation is aggregated into "other" in the EIA
+  // dataset for respondent NYIS, so the SUN fuel-type feed returns all-zero
+  // values. This is a known data limitation, not a silent parser failure.
+  "nyiso-rest-solar",
 ]);
 const STATUS_ENUM: ReadonlySet<unknown> = new Set(["live", "cached", "degraded", null]);
 const SOURCE_PROVENANCE_ENUM: ReadonlySet<unknown> = new Set([

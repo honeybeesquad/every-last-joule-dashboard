@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { withFallback } from "../lib/resilient.js";
 import type { RegionData } from "../lib/types.js";
 import {
@@ -327,9 +329,48 @@ export const parseEntsoeXml = parseEntsoeXmlImpl;
 export const buildZoneData = buildZoneDataImpl;
 
 const run = async (): Promise<Record<string, RegionData>> => {
-  const results = await Promise.all(ZONES.map(fetchEntsoeZone));
+  const cachePath = join(process.cwd(), "data", "snapshots", "last-good", "entsoe.json");
+  let previous: Record<string, RegionData> = {};
+  try {
+    previous = JSON.parse(readFileSync(cachePath, "utf-8")) as Record<string, RegionData>;
+  } catch { /* no previous cache */ }
+
   const out: Record<string, RegionData> = {};
-  for (let i = 0; i < ZONES.length; i++) out[ZONES[i].id] = results[i];
+  let anySuccess = false;
+
+  for (const zone of ZONES) {
+    try {
+      if (zone.technologies.length === 0) {
+        // Zones where structural spill is excluded per methodology.
+        // Preserve previous cache if available; otherwise emit honest zero.
+        out[zone.id] = previous[zone.id] ?? {
+          regionId: zone.id,
+          profile: Array(24).fill(0),
+          latestProfile: null,
+          totalTWh: 0,
+          peakGW: 0,
+          lastUpdated: new Date().toISOString(),
+          lastSuccessAt: new Date().toISOString(),
+          sourceNote: zone.sourceNote,
+        };
+        continue;
+      }
+      out[zone.id] = await fetchEntsoeZone(zone);
+      anySuccess = true;
+    } catch (err) {
+      console.warn(`ENTSO-E zone ${zone.id} failed: ${(err as Error).message}`);
+      if (previous[zone.id]) {
+        out[zone.id] = previous[zone.id];
+      } else {
+        throw new Error(`ENTSO-E zone ${zone.id} failed and no cached data available`);
+      }
+    }
+  }
+
+  if (!anySuccess) {
+    throw new Error("All ENTSO-E zones failed");
+  }
+
   return out;
 };
 

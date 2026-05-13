@@ -115,6 +115,11 @@ export function parseEiaIsoRegionPerFuel(
 
   const windTotalMw = windPoints.reduce((s, p) => s + p.mw, 0);
   const solarTotalMw = solarPoints.reduce((s, p) => s + p.mw, 0);
+  if (solarPoints.length > 0 && solarTotalMw === 0) {
+    throw new Error(
+      `EIA ${config.respondent} solar data contains ${solarPoints.length} points but all values are zero`,
+    );
+  }
   const denom = windTotalMw + solarTotalMw;
   const fuelShare = denom > 0
     ? { wind: windTotalMw / denom, solar: solarTotalMw / denom }
@@ -245,10 +250,7 @@ export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
     if (!apiKey) throw new Error("EIA_API_KEY not set");
     const [wind, solar] = await Promise.all([
       fetchFueltype(apiKey, config.respondent, "WND"),
-      fetchFueltype(apiKey, config.respondent, "SUN").catch((err) => {
-        console.warn(`${config.displayName} SUN fetch failed, continuing wind-only: ${(err as Error).message}`);
-        return undefined;
-      }),
+      fetchFueltype(apiKey, config.respondent, "SUN"),
     ]);
     return parsePerFuel(wind, solar);
   };

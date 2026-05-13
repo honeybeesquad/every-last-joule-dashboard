@@ -69,6 +69,12 @@ jobs:
               "north-macedonia-solar",
               "montenegro",
               "uruguay",
+              "italy-north-zone-wind",
+              "czech-republic-wind",
+              "slovenia-wind",
+              "slovakia-wind",
+              "moldova-wind",
+              "nyiso-rest-solar",
           }
 
           def is_region_record(value):

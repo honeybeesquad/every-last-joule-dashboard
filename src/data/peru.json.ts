@@ -151,6 +151,9 @@ const run = async (): Promise<Record<string, RegionData>> => {
   if (hydroPoints.length === 0 && solarPoints.length === 0 && windPoints.length === 0) {
     throw new Error("COES generation endpoint returned no renewable points");
   }
+  if (solarPoints.length === 0) {
+    throw new Error("COES generation endpoint returned no solar points");
+  }
 
   const allPoints = [...hydroPoints, ...solarPoints, ...windPoints];
   const lastUpdated = allPoints

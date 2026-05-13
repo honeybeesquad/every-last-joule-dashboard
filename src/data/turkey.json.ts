@@ -83,6 +83,7 @@ export function buildTurkeyPerFuelData(
 ): { wind: RegionData; solar: RegionData } {
   const { windPoints, solarPoints, windMwTotal, solarMwTotal } = parseEpiasDashboard(response);
   if (windPoints.length === 0 && solarPoints.length === 0) throw new Error("EPIAS dashboard returned no wind/solar generation points");
+  if (solarPoints.length === 0) throw new Error("EPIAS dashboard returned no solar generation points");
 
   const fuelTotal = windMwTotal + solarMwTotal;
   const fuelShare = fuelTotal > 0
