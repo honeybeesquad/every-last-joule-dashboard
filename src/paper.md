@@ -79,7 +79,53 @@ The operational precedents exist at commercial scale. MARA Holdings operates at 
 
 > *Figure 2: Top curtailment and flare-gas sites (circles sized by annual TWh) with known commercial mining operations. Data: ELJ dataset v1.3.1. See the interactive map at [everylastjoule.com](https://everylastjoule.com).*
 
-The $16.2 billion per year in foregone revenue we have documented represents real losses — projects financed on the assumption that the grid would take their power, then curtailed by transmission constraints or market design failures.[^3] A wind developer whose turbine is curtailed loses the difference between their contracted price and zero. Bitcoin mining as a captive buyer at curtailment-hour pricing converts that loss into a revenue stream. The top five curtailment sites alone — Bahia wind in Brazil at $1.18 billion per year in foregone revenue, Colombia's hydro-heavy system at $1.12 billion, Minas Gerais solar in Brazil at $1.12 billion, the Permian Basin flare-gas basins at $1.03 billion, and Rio Grande do Norte wind in Brazil at $729 million — represent over $5 billion per year in revenue that generators are currently losing and miners are not capturing. (We exclude Sichuan from this top-five despite a higher modelled revenue figure of $755 million, because its T3-modelled tier sits outside the verified accounting framing of §3.)[^3]
+The $16.2 billion per year in foregone revenue we have documented represents real losses — projects financed on the assumption that the grid would take their power, then curtailed by transmission constraints or market design failures.[^3] A wind developer whose turbine is curtailed loses the difference between their contracted price and zero. Bitcoin mining as a captive buyer at curtailment-hour pricing converts that loss into a revenue stream. The top five verified wasted-energy hotspots alone tell that story plainly — Southern Iraq's Basra, Rumaila, and Majnoon flare basins at $2.21 billion per year in foregone revenue, Western Siberia's Khanty-Mansi and Yamal flare fields at $1.61 billion, Brazil's Bahia wind corridor at $1.18 billion, Colombia's hydro-heavy national system at $1.12 billion, and Brazil's Minas Gerais solar at $1.12 billion — represent over $7.2 billion per year in revenue that generators are currently losing and miners are not capturing. The flare basins lead the ranking because their entire output is wasted by definition: the gas is burned at the wellhead because no pipeline exists to deliver it to a buyer.[^3]
+
+**Top 5 verified hotspots, by fuel:**
+
+*Flare gas (T2-flare basins):*
+
+| Site | TWh/yr | Revenue/yr |
+|---|---:|---:|
+| Southern Iraq (Basra/Rumaila/Majnoon) | 63.0 | $2,205M |
+| Western Siberia (Khanty-Mansi/Yamal AO) | 42.4 | $1,611M |
+| Permian Basin (USA) | 20.6 | $1,030M |
+| Yamal (Russia) | 10.0 | $380M |
+| Eastern Siberia (Russia) | 9.0 | $342M |
+
+*Wind (T1a — live TSO):*
+
+| Site | TWh/yr | Revenue/yr |
+|---|---:|---:|
+| Bahia Wind (Brazil) | 24.6 | $1,182.7M |
+| Rio Grande do Norte Wind (Brazil) | 15.2 | $728.7M |
+| Piauí Wind (Brazil) | 11.7 | $561.2M |
+| Germany Wind | 5.6 | $541.7M |
+| MISO Midwest Wind (USA) | 8.7 | $488.0M |
+
+*Solar (T1a — live TSO):*
+
+| Site | TWh/yr | Revenue/yr |
+|---|---:|---:|
+| Minas Gerais Solar (Brazil) | 23.3 | $1,116.0M |
+| Bahia Solar (Brazil) | 6.9 | $331.1M |
+| Rio Grande do Norte Solar (Brazil) | 6.4 | $305.1M |
+| Spain Solar | 3.7 | $302.9M |
+| Germany Solar | 2.8 | $269.0M |
+
+*Hydro (T1a + T1b):*
+
+| Site | TWh/yr | Revenue/yr |
+|---|---:|---:|
+| Colombia (system-wide vertimientos, T1b) | 20.3 | $1,118.4M |
+| Norway NO2 Hydro (Kristiansand) | 2.9 | $166.4M |
+| Norway NO4 Hydro (Tromsø) | 1.0 | $54.6M |
+| Peru Hydro | 0.8 | $30.9M |
+| Norway NO3 Hydro (Trondheim) | 0.5 | $25.6M |
+
+*Hydro is genuinely thin in the verified dataset: Colombia dominates by ~6×, with the rest tail-heavy on Norwegian sub-basins. Sichuan and Iceland would lead this list at $755M and $341M respectively but sit in T3-modelled, excluded from §3's verified framing.*
+
+*Source: ELJ dataset v1.3.1 last-good snapshots (2026-05-13/14), ranked by foregone revenue (annual TWh × wholesale price from `data/static-prices.csv`; IEA / EIA / ENTSO-E / CCEE 2023–24 averages, FX-converted to USD). Verified = T1a + T1b + T1c + T2-flare; T3-modelled regions excluded. Flare revenue uses a synthetic gas-equivalent price ($20–50/MWh delivered-electric basis) rather than a market clearing LMP — interpret as opportunity cost, not market price.*
 
 **Top 15 curtailment sites by foregone revenue:**
 
