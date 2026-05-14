@@ -33,6 +33,7 @@ pager: false
        text and the page surround use the da-ri.org Sunfire-paper palette so
        this iframe blends into the consuming document. */
     --embed-bg: #F7F7F4;
+    --embed-globe-bg: #0a0f24;
     --embed-fg: #1A2340;
     --embed-fg-muted: #6B7280;
     --embed-rule: #E2E2DC;
@@ -80,6 +81,9 @@ pager: false
     width: 100%;
     aspect-ratio: 16 / 10;
     min-height: 360px;
+    background: var(--embed-globe-bg);
+    border-radius: 6px;
+    overflow: hidden;
   }
 
   #embed-globe-canvas {
