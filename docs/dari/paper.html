@@ -249,6 +249,106 @@
       line-height: 1.5;
     }
 
+    /* ── Per-fuel hotspot tables ── */
+    .subhead {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin: 2.2rem 0 1rem;
+    }
+    .fuel-table-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 720px) {
+      .fuel-table-grid { grid-template-columns: 1fr; }
+    }
+    .fuel-table {
+      background: var(--off-white);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 0.95rem 1rem 0.85rem;
+    }
+    .fuel-table-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 0.55rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .fuel-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(26, 35, 64, 0.12);
+    }
+    .fuel-table table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.74rem;
+      color: var(--text);
+    }
+    .fuel-table thead th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--mid-gray);
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.35rem 0.4rem 0.4rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .fuel-table thead th:nth-child(2),
+    .fuel-table thead th:nth-child(3),
+    .fuel-table tbody td:nth-child(2),
+    .fuel-table tbody td:nth-child(3) {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .fuel-table tbody td {
+      padding: 0.4rem 0.4rem;
+      border-bottom: 1px solid rgba(226, 226, 220, 0.5);
+      line-height: 1.35;
+    }
+    .fuel-table tbody tr:last-child td { border-bottom: none; }
+    .fuel-table .muted {
+      color: var(--mid-gray);
+      font-weight: 400;
+    }
+    .fuel-table-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.66rem;
+      color: var(--mid-gray);
+      margin-top: 0.7rem;
+      line-height: 1.45;
+      font-style: italic;
+    }
+    .fuel-table-caption {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.66rem;
+      color: var(--mid-gray);
+      line-height: 1.5;
+      margin: 0.6rem 0 1.6rem;
+    }
+    .fuel-table-caption code {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 0.92em;
+      color: var(--navy);
+    }
+
     /* ── Hashrate widget ── */
     .widget-hashrate {
       background: var(--navy);
@@ -696,7 +796,72 @@
   </div>
 
   <div class="paper-section-cont" id="s4-revenue">
-    <p>The $16.2 billion per year in foregone revenue we have documented represents real losses - projects financed on the assumption that the grid would take their power, then curtailed by transmission constraints or market design failures.<sup><a href="#ref-3" class="ref">3</a></sup> A wind developer whose turbine is curtailed loses the difference between their contracted price and zero. Bitcoin mining as a captive buyer at curtailment-hour pricing converts that loss into a revenue stream. The top five curtailment sites alone - Bahia wind in Brazil at $1.18 billion per year in foregone revenue, Colombia's hydro-heavy system at $1.12 billion, Minas Gerais solar in Brazil at $1.12 billion, the Permian Basin flare-gas basins at $1.03 billion, and Rio Grande do Norte wind in Brazil at $729 million - represent over $5 billion per year in revenue that generators are currently losing and miners are not capturing. (We exclude Sichuan from this top-five despite a higher modelled revenue figure of $755 million, because its T3-modelled tier sits outside the verified accounting framing of §3.)<sup><a href="#ref-3" class="ref">3</a></sup></p>
+    <p>The $16.2 billion per year in foregone revenue we have documented represents real losses - projects financed on the assumption that the grid would take their power, then curtailed by transmission constraints or market design failures.<sup><a href="#ref-3" class="ref">3</a></sup> A wind developer whose turbine is curtailed loses the difference between their contracted price and zero. Bitcoin mining as a captive buyer at curtailment-hour pricing converts that loss into a revenue stream. The top five verified wasted-energy hotspots alone tell that story plainly - Southern Iraq's Basra, Rumaila, and Majnoon flare basins at $2.21 billion per year in foregone revenue, Western Siberia's Khanty-Mansi and Yamal flare fields at $1.61 billion, Brazil's Bahia wind corridor at $1.18 billion, Colombia's hydro-heavy national system at $1.12 billion, and Brazil's Minas Gerais solar at $1.12 billion - represent over $7.2 billion per year in revenue that generators are currently losing and miners are not capturing. The flare basins lead the ranking because their entire output is wasted by definition: the gas is burned at the wellhead because no pipeline exists to deliver it to a buyer.<sup><a href="#ref-3" class="ref">3</a></sup></p>
+
+    <h4 class="subhead">Top 5 verified hotspots, by fuel</h4>
+
+    <div class="fuel-table-grid">
+
+      <div class="fuel-table">
+        <div class="fuel-table-title"><span class="fuel-dot" style="background:#F5A623"></span>Flare gas (T2-flare basins)</div>
+        <table>
+          <thead><tr><th>Site</th><th>TWh/yr</th><th>Revenue/yr</th></tr></thead>
+          <tbody>
+            <tr><td>Southern Iraq <span class="muted">(Basra/Rumaila/Majnoon)</span></td><td>63.0</td><td>$2,205M</td></tr>
+            <tr><td>Western Siberia <span class="muted">(Khanty-Mansi/Yamal AO)</span></td><td>42.4</td><td>$1,611M</td></tr>
+            <tr><td>Permian Basin <span class="muted">(USA)</span></td><td>20.6</td><td>$1,030M</td></tr>
+            <tr><td>Yamal <span class="muted">(Russia)</span></td><td>10.0</td><td>$380M</td></tr>
+            <tr><td>Eastern Siberia <span class="muted">(Russia)</span></td><td>9.0</td><td>$342M</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="fuel-table">
+        <div class="fuel-table-title"><span class="fuel-dot" style="background:#38b0d8"></span>Wind (T1a — live TSO)</div>
+        <table>
+          <thead><tr><th>Site</th><th>TWh/yr</th><th>Revenue/yr</th></tr></thead>
+          <tbody>
+            <tr><td>Bahia Wind <span class="muted">(Brazil)</span></td><td>24.6</td><td>$1,182.7M</td></tr>
+            <tr><td>Rio Grande do Norte Wind <span class="muted">(Brazil)</span></td><td>15.2</td><td>$728.7M</td></tr>
+            <tr><td>Piauí Wind <span class="muted">(Brazil)</span></td><td>11.7</td><td>$561.2M</td></tr>
+            <tr><td>Germany Wind</td><td>5.6</td><td>$541.7M</td></tr>
+            <tr><td>MISO Midwest Wind <span class="muted">(USA)</span></td><td>8.7</td><td>$488.0M</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="fuel-table">
+        <div class="fuel-table-title"><span class="fuel-dot" style="background:#FFD05A"></span>Solar (T1a — live TSO)</div>
+        <table>
+          <thead><tr><th>Site</th><th>TWh/yr</th><th>Revenue/yr</th></tr></thead>
+          <tbody>
+            <tr><td>Minas Gerais Solar <span class="muted">(Brazil)</span></td><td>23.3</td><td>$1,116.0M</td></tr>
+            <tr><td>Bahia Solar <span class="muted">(Brazil)</span></td><td>6.9</td><td>$331.1M</td></tr>
+            <tr><td>Rio Grande do Norte Solar <span class="muted">(Brazil)</span></td><td>6.4</td><td>$305.1M</td></tr>
+            <tr><td>Spain Solar</td><td>3.7</td><td>$302.9M</td></tr>
+            <tr><td>Germany Solar</td><td>2.8</td><td>$269.0M</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="fuel-table">
+        <div class="fuel-table-title"><span class="fuel-dot" style="background:#B8CDFF"></span>Hydro (T1a + T1b)</div>
+        <table>
+          <thead><tr><th>Site</th><th>TWh/yr</th><th>Revenue/yr</th></tr></thead>
+          <tbody>
+            <tr><td>Colombia <span class="muted">(system-wide vertimientos, T1b)</span></td><td>20.3</td><td>$1,118.4M</td></tr>
+            <tr><td>Norway NO2 Hydro <span class="muted">(Kristiansand)</span></td><td>2.9</td><td>$166.4M</td></tr>
+            <tr><td>Norway NO4 Hydro <span class="muted">(Tromsø)</span></td><td>1.0</td><td>$54.6M</td></tr>
+            <tr><td>Peru Hydro</td><td>0.8</td><td>$30.9M</td></tr>
+            <tr><td>Norway NO3 Hydro <span class="muted">(Trondheim)</span></td><td>0.5</td><td>$25.6M</td></tr>
+          </tbody>
+        </table>
+        <p class="fuel-table-note">Hydro is genuinely thin in the verified dataset: Colombia dominates by ~6×, with the rest tail-heavy on Norwegian sub-basins. Sichuan and Iceland would lead this list at $755M and $341M respectively but sit in T3-modelled, excluded from §3's verified framing.</p>
+      </div>
+
+    </div>
+
+    <p class="fuel-table-caption">Source: ELJ dataset v1.3.1 last-good snapshots (2026-05-13/14), ranked by foregone revenue (annual TWh × wholesale price from <code>data/static-prices.csv</code>; IEA / EIA / ENTSO-E / CCEE 2023–24 averages, FX-converted to USD). Verified = T1a + T1b + T1c + T2-flare; T3-modelled regions excluded. Flare revenue uses a synthetic gas-equivalent price ($20–50/MWh delivered-electric basis) rather than a market clearing LMP — interpret as opportunity cost, not market price.</p>
   </div>
 
   <!-- Revenue chart -->
