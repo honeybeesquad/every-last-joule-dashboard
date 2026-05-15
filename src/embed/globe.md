@@ -21,7 +21,7 @@ pager: false
       </ul>
       <p class="embed-readout">
         <strong id="embed-pct">—%</strong>
-        <span>of Bitcoin network powered by renewables right now</span>
+        <span>of Bitcoin network powered by curtailed renewables right now</span>
       </p>
     </div>
   </div>
