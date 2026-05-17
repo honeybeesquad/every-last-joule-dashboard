@@ -73,10 +73,11 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, Curta
 
   const headers = lines[0].split(";");
   const timestampIndex = headers.indexOf("din_instante");
-  const curtailedIndex = headers.indexOf("val_geracaolimitada");
+  const limitedIndex = headers.indexOf("val_geracaolimitada");
+  const referenceIndex = headers.indexOf("val_geracaoreferencia");
   const stateIndex = headers.indexOf("id_estado");
 
-  if (timestampIndex === -1 || curtailedIndex === -1 || stateIndex === -1) {
+  if (timestampIndex === -1 || limitedIndex === -1 || referenceIndex === -1 || stateIndex === -1) {
     throw new Error("ONS CSV missing required columns");
   }
 
@@ -92,9 +93,19 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, Curta
     const state = cells[stateIndex]?.trim().toUpperCase();
     const regionId = STATE_TO_REGION[state] ?? "brazil-other";
 
-    const curtailedRaw = cells[curtailedIndex]?.trim() ?? "";
-    const curtailedMw = curtailedRaw === "" ? 0 : Number(curtailedRaw);
-    if (!Number.isFinite(curtailedMw)) continue;
+    // val_geracaolimitada is the generation cap ONS imposed (what the plant was allowed to generate).
+    // Empty means no constraint was active — skip the row entirely.
+    const limitedRaw = cells[limitedIndex]?.trim() ?? "";
+    if (limitedRaw === "") continue;
+    const limitedMw = Number(limitedRaw);
+    if (!Number.isFinite(limitedMw)) continue;
+
+    // val_geracaoreferencia is what the plant would have generated without the constraint.
+    // Curtailment = reference − cap (clamped to zero for any floating-point underflow).
+    const referenceRaw = cells[referenceIndex]?.trim() ?? "";
+    const referenceMw = referenceRaw === "" ? 0 : Number(referenceRaw);
+    if (!Number.isFinite(referenceMw)) continue;
+    const curtailedMw = Math.max(0, referenceMw - limitedMw);
 
     const match = localTimestamp.match(
       /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/
@@ -114,7 +125,7 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, Curta
 
     let bucket = totals.get(regionId);
     if (!bucket) totals.set(regionId, (bucket = new Map<string, number>()));
-    bucket.set(utcTimestamp, (bucket.get(utcTimestamp) ?? 0) + Math.max(0, curtailedMw));
+    bucket.set(utcTimestamp, (bucket.get(utcTimestamp) ?? 0) + curtailedMw);
   }
 
   for (const regionId of Object.keys(empty) as BrazilStateId[]) {
