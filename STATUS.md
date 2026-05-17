@@ -1,6 +1,6 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-05-13 by Codex (launch-readiness branch prepared against `main`)
+**Last verified against git:** 2026-05-17
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
@@ -58,6 +58,11 @@
 **Paper + DOI:**
 - Paper drafts ready at `docs/paper/01-06-*.md`
 - v1.3.1 dataset metadata points at version DOI `10.5281/zenodo.20136284` and always-latest DOI `10.5281/zenodo.19835411`.
+
+**Brazil ONS curtailment fix (shipped 2026-05-17, commit eabf8e5):**
+- `val_geracaolimitada` was being summed as the curtailment amount; it is the generation *cap* (what ONS allowed the plant to generate). Correct formula is `max(0, val_geracaoreferencia − val_geracaolimitada)`. Rows with empty `val_geracaolimitada` are unconstrained and now skipped.
+- Effect: states with many fully-curtailed events (Maranhão, Ceará) were undercounted; states with large partial caps (Piauí 5×, RN/BA/PB/PE ~2×) were overcounted. Snapshot regenerated from live ONS data.
+- Audited all other loaders: no other loader has this class of bug (AEMO uses `unconstrained−cleared`; EirGrid/Chile/Colombia use direct curtailment columns; all others use calibrated `generation × rate`).
 
 ## What's NOT shipped / open PRs
 
