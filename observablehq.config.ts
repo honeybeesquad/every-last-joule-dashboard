@@ -56,7 +56,7 @@ export default {
   // Observable Framework hoists front-matter scripts in src/index.md to
   // after stylesheets, so the head config is the only place we can
   // guarantee script-before-CSS ordering.
-  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<script>(function(){try{var t=localStorage.getItem("elj-theme");if(t!=="sunfire"&&t!=="deepcurrent")t="sunfire";document.documentElement.setAttribute("data-theme",t);}catch(e){document.documentElement.setAttribute("data-theme","sunfire");}}());</script><link rel="stylesheet" href="./style.css"><script defer src="/_vercel/insights/script.js"></script>`,
+  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<script>(function(){try{var t=localStorage.getItem("elj-theme");if(t!=="sunfire"&&t!=="deepcurrent")t="sunfire";document.documentElement.setAttribute("data-theme",t);}catch(e){document.documentElement.setAttribute("data-theme","sunfire");}}());</script><link rel="stylesheet" href="./style.css"><script>(function(){var s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);})();</script>`,
   theme: "dark",
   footer: "",
   toc: false,
