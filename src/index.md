@@ -20,6 +20,7 @@
 <div id="app-root"></div>
 
 ```js
+import { initAnalytics } from "./components/analytics.js";
 import { initLoaderProgress, trackFile } from "./components/loader-progress.js";
 import { createClock } from "./components/clock.js";
 import { mountControls } from "./components/controls.js";
@@ -35,6 +36,9 @@ import { splitRegion } from "./lib/split-region.js";
 import { assertCanonicalRegionData } from "./lib/region-data-integrity.js";
 import { maskSolarNight } from "./lib/solar-mask.js";
 import { mountGlobe } from "./globe.js";
+
+// Initialize Vercel Web Analytics
+initAnalytics();
 
 const HOTSPOT_LIST_LIMIT = 50;
 
