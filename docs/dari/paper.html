@@ -249,6 +249,35 @@
       line-height: 1.5;
     }
 
+    /* ── Hero pixel-grid figure (Figure 2) ── */
+    .hero-figure {
+      margin: 2.4rem 0 1.6rem;
+      padding: 1.4rem 1.4rem 1.2rem;
+      background: var(--off-white);
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+    }
+    .hero-figure img {
+      display: block;
+      width: 100%;
+      max-width: 540px;
+      height: auto;
+      margin: 0 auto;
+    }
+    .hero-figure figcaption {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.74rem;
+      color: var(--mid-gray);
+      line-height: 1.55;
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--rule);
+    }
+    .hero-figure figcaption strong {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
     /* ── Per-fuel hotspot tables ── */
     .subhead {
       font-family: 'Inter', sans-serif;
@@ -713,6 +742,12 @@
     </div>
   </div>
 
+  <!-- Hero figure: wasted vs Bitcoin, to scale -->
+  <figure class="hero-figure">
+    <img src="charts/wasted-to-scale.svg" alt="Pixel grid where each square represents one terawatt-hour of annual electricity. The wasted-energy block of 338.8 TWh per year (184.5 TWh curtailed renewables in cyan, 154.2 TWh flared gas in amber) is visibly larger than the Bitcoin-network block of 197.6 TWh per year." />
+    <figcaption><strong>Figure 2. To scale.</strong> Each square represents one terawatt-hour of annual electricity — enough to power roughly 90,000 US households for a year. The world's verified wasted energy (top, 338.8 TWh/yr) is geometrically larger than the entire Bitcoin network's annual consumption (bottom, 197.6 TWh/yr) — by a margin equal to Belgium's national electricity demand. Data: ELJ dataset v1.3.1 (verified T1 + T2-flare); WooCharts ESG tracker (Bitcoin).</figcaption>
+  </figure>
+
   <!-- Comparison chart -->
   <div class="chart-wrap">
     <div class="chart-title">Wasted energy vs Bitcoin — annual TWh</div>
@@ -792,7 +827,7 @@
       <span><span class="ldot" style="background:#8899AA"></span>Modelled (T3)</span>
       <span><span class="ldot" style="background:#1A2340; border-radius:2px"></span>Active mining operation</span>
     </div>
-    <div class="map-caption">Figure 2. Top curtailment and flare-gas sites (circles sized by annual TWh) with known commercial mining operations (▲). Data: ELJ dataset v1.3.1.</div>
+    <div class="map-caption">Figure 3. Top curtailment and flare-gas sites (circles sized by annual TWh) with known commercial mining operations (▲). Data: ELJ dataset v1.3.1.</div>
   </div>
 
   <div class="paper-section-cont" id="s4-revenue">
