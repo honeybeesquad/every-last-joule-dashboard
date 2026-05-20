@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Every Last Joule: Bitcoin and the World's Wasted Energy — da-ri.org</title>
-  <meta name="description" content="The world discards 338.8 TWh/yr of verified wasted energy — 171% of Bitcoin's appetite. A systematic global accounting by Dr Simon Collins.">
+  <meta name="description" content="The world discards 293.7 TWh/yr of verified wasted energy — 149% of Bitcoin's appetite. A systematic global accounting by Dr Simon Collins.">
   <meta name="author" content="Dr Simon Collins">
   <meta property="og:title" content="Every Last Joule: Bitcoin and the World's Wasted Energy">
-  <meta property="og:description" content="The world discards 338.8 TWh/yr of verified wasted energy — 171% of Bitcoin's appetite.">
+  <meta property="og:description" content="The world discards 293.7 TWh/yr of verified wasted energy — 149% of Bitcoin's appetite.">
   <meta property="og:type" content="article">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -662,9 +662,9 @@
 
     <p>This is the first open dataset to track renewable-energy curtailment across every country. The resulting database is approximately thirty times broader in geographic scope than the IEA's curtailment tracking, the most authoritative existing source. Forty-one percent of its regions are backed by live grid-operator feeds refreshed every three hours; every region carries a published uncertainty envelope and a source citation traceable to a specific grid operator or regulator. The numbers are a conservative lower bound: self-curtailment by asset owners - generators who throttle output privately during negative-price hours without reporting it to the system operator - is excluded entirely, and multiple analyses of CAISO and European markets suggest it may equal or exceed formal dispatch curtailment in volume.</p>
 
-    <p>The finding: the world generates 338.8 terawatt-hours per year of verified wasted energy - electricity or its direct electrical equivalent that reaches no paying customer.<sup><a href="#ref-3" class="ref">3</a></sup> That is larger than the annual electricity consumption of Argentina. The foregone revenue, calculated across 186 regions with available wholesale price data, is $16.2 billion per year.<sup><a href="#ref-3" class="ref">3</a></sup> The full dataset is archived at Zenodo (DOI 10.5281/zenodo.19835411) and rendered interactively at everylastjoule.com.<sup><a href="#ref-3" class="ref">3</a>,<a href="#ref-4" class="ref">4</a></sup></p>
+    <p>The finding: the world generates 293.7 terawatt-hours per year of verified wasted energy - electricity or its direct electrical equivalent that reaches no paying customer.<sup><a href="#ref-3" class="ref">3</a></sup> That is larger than the annual electricity consumption of Argentina. The foregone revenue, calculated across 118 verified regions with available wholesale price data, is $14.3 billion per year.<sup><a href="#ref-3" class="ref">3</a></sup> The full dataset is archived at Zenodo (DOI 10.5281/zenodo.19835411) and rendered interactively at everylastjoule.com.<sup><a href="#ref-3" class="ref">3</a>,<a href="#ref-4" class="ref">4</a></sup></p>
 
-    <p>A note on scope: 338.8 TWh is a floor, not a ceiling. It excludes self-curtailment - generators who choose not to bid into the market at all when prices fall below their short-run marginal cost - which multiple analyses of CAISO and ERCOT data suggest may exceed formal dispatch curtailment in volume. The verified number is what the primary sources can see. The actual figure is higher.</p>
+    <p>A note on scope: 293.7 TWh is a floor, not a ceiling. It excludes self-curtailment - generators who choose not to bid into the market at all when prices fall below their short-run marginal cost - which multiple analyses of CAISO and ERCOT data suggest may exceed formal dispatch curtailment in volume. The verified number is what the primary sources can see. The actual figure is higher.</p>
   </section>
 
   <!-- Globe -->
@@ -680,7 +680,7 @@
       <strong>Figure 1.</strong> Curtailed renewable generation across 384 regions in 195 countries, live from grid-operator feeds.
       Pillar height shows wasted power right now; colour shows the source — solar, wind, or hydro.
       The headline number reports the share of the Bitcoin network's current hashrate that today's curtailment alone could power — an instantaneous reading that varies hour by hour.
-      The annual average across the verified Tier 1 dataset is 93.4% (see §3).
+      The annual average across the verified Tier 1 dataset is 70% (see §3).
       <a href="https://everylastjoule.com" target="_blank" rel="noopener">Open full dashboard ↗</a>
     </div>
   </div>
@@ -692,15 +692,17 @@
 
     <p>Bitcoin's annual electricity consumption, as tracked by the WooCharts ESG tracker - the most comprehensive source, combining the Cambridge Bitcoin Electricity Consumption Index's IP-geolocation methodology with bottom-up site survey data for off-grid and behind-the-meter capacity - is 197.6 TWh per year.<sup><a href="#ref-5" class="ref">5</a></sup></p>
 
-    <p>The world's verified curtailed renewables alone - Tier 1 live sources, the highest-confidence data in the dataset - total 184.5 TWh per year.<sup><a href="#ref-3" class="ref">3</a></sup> That is 93.4% of Bitcoin's annual consumption, from renewable sources that have no other buyer. These are electrons generated by wind turbines and solar panels that were deliberately reduced to zero because the grid could not take them. They are not a hypothetical surplus. They are a measured, recorded, grid-operator-curtailed quantity.</p>
+    <p>The world's verified wasted energy - live transmission-system-operator curtailment data combined with satellite-verified flare-gas basins - totals 293.7 TWh per year.<sup><a href="#ref-2" class="ref">2</a>,<a href="#ref-3" class="ref">3</a></sup> That is 149% of Bitcoin's annual consumption. The world discards nearly half again as much electricity-or-direct-electrical-equivalent as Bitcoin uses, from sources that have no other buyer. These are not hypothetical surpluses or modelled projections; they are measured, recorded, grid-operator-curtailed and satellite-quantified quantities.</p>
 
-    <p>Add the eight verified T2-flare basins - satellite-verified volumes of natural gas burned at wellheads because no pipeline or storage exists to capture it - and the total reaches 338.8 TWh per year, or 171.4% of Bitcoin's annual consumption.<sup><a href="#ref-2" class="ref">2</a>,<a href="#ref-3" class="ref">3</a></sup> The world discards seventy-one percent more energy than Bitcoin uses, in the form of the exact resource - electricity and its direct precursors - that Bitcoin is accused of consuming too much of.</p>
+    <p>The verified total is dominated by flare gas. Of the 293.7 TWh, 154.8 TWh (53%) is natural gas burned at oil wellheads because no pipeline exists to capture it - concentrated across the Persian Gulf, Western Siberia, and the Permian Basin. The remaining 138.9 TWh (47%) is curtailed renewable electricity - wind turbines and solar panels that grid operators deliberately reduced to zero because transmission capacity or demand could not absorb them. Verified curtailed renewables alone, without invoking any flare-gas data, total 70% of Bitcoin's annual consumption from electrons that heat nothing, power nothing, and reach no customer.</p>
+
+    <p><strong>Where the waste is.</strong> The 293.7 TWh is geographically concentrated. Four countries - Iraq, Brazil, Russia, and Colombia - account for 71% of the verified total. Adding the United States' Permian Basin brings the figure to 78%. The remaining ~250 regions in the dataset contribute the other 22% in long-tail aggregate. This is not a dilution of the finding; it is its sharpest form. The waste sits where one would expect - at oil-and-gas concentration in the Gulf and Russia, at transmission-constrained renewable buildouts in Brazil and Colombia, at the Permian flare complex in West Texas. A customer for that wasted energy would deploy where it is, not where it isn't, which is precisely what Bitcoin mining's modularity allows.</p>
   </section>
 
   <!-- Key stats -->
   <div class="stat-row">
     <div class="stat-card">
-      <div class="stat-num accent">338.8</div>
+      <div class="stat-num accent">293.7</div>
       <div class="stat-label">TWh/yr wasted — verified live TSO + flare-gas basins (T1 + T2-flare)</div>
     </div>
     <div class="stat-card">
@@ -708,7 +710,7 @@
       <div class="stat-label">TWh/yr Bitcoin network consumption (WooCharts)</div>
     </div>
     <div class="stat-card">
-      <div class="stat-num amber">171%</div>
+      <div class="stat-num amber">149%</div>
       <div class="stat-label">Wasted energy as % of Bitcoin's full appetite</div>
     </div>
   </div>
@@ -717,7 +719,7 @@
   <div class="chart-wrap">
     <div class="chart-title">Wasted energy vs Bitcoin — annual TWh</div>
     <canvas id="comparisonChart"></canvas>
-    <div class="chart-sub">Sources: ELJ dataset v1.3.1 (T1 curtailment = live TSO data; T2-flare = satellite-verified flare gas); WooCharts ESG tracker (Bitcoin). T3 modelled estimates and the small T2 annual-calibrated bucket excluded from wasted totals.</div>
+    <div class="chart-sub">Sources: ELJ dataset v1.3.2 (T1 curtailment = live TSO data; T2-flare = satellite-verified flare gas); WooCharts ESG tracker (Bitcoin). T3 modelled estimates and the small T2 annual-calibrated bucket excluded from wasted totals.</div>
   </div>
 
   <!-- Hashrate widget -->
@@ -761,9 +763,9 @@
   </div>
 
   <div class="paper-section-cont" id="s3-cont">
-    <p>This deserves plain statement. The narrative that Bitcoin's energy use represents a net addition to global electricity demand is difficult to sustain in the face of this accounting. The electricity Bitcoin uses exists in the system regardless of whether Bitcoin mines it or not. The question is whether it reaches a customer or a drain. Those 184.5 TWh of curtailed renewables are lost entirely. They heat nothing, power nothing, charge nothing. They are subtracted from the global energy system as a pure deadweight loss. If Bitcoin absorbed a fraction of that curtailment, net global electricity consumption would be unchanged; the electrons would simply be redirected from a resistor bank to a mining rig. The accusation of excess rests on ignoring the curtailment.</p>
+    <p>This deserves plain statement. The narrative that Bitcoin's energy use represents a net addition to global electricity demand is difficult to sustain in the face of this accounting. The electricity Bitcoin uses exists in the system regardless of whether Bitcoin mines it or not. The question is whether it reaches a customer or a drain. Those 138.9 TWh of curtailed renewables, plus the 154.8 TWh of flared gas, are lost entirely. They heat nothing, power nothing, charge nothing. They are subtracted from the global energy system as a pure deadweight loss. If Bitcoin absorbed a fraction of that waste, net global electricity consumption would be unchanged; the electrons would simply be redirected from a resistor bank or a flare stack to a mining rig. The accusation of excess rests on ignoring the curtailment.</p>
 
-    <p>This does not mean Bitcoin is currently running on wasted energy. In aggregate, it mostly is not. The WooCharts composite intensity - 249.5 grams of CO₂ equivalent per kilowatt-hour - implies a mix dominated by conventional grid power, with small pockets of renewables and flare mitigation.<sup><a href="#ref-5" class="ref">5</a></sup> The point is that the resource is there, at a scale that exceeds Bitcoin's entire appetite, and that the dominant policy narrative has proceeded as if it were not. Again: 338.8 TWh is a verified floor. Actual global waste is higher. The case does not require the modelled Tier 3 estimates. The verified numbers alone make it.</p>
+    <p>This does not mean Bitcoin is currently running on wasted energy. In aggregate, it mostly is not. The WooCharts composite intensity - 249.5 grams of CO₂ equivalent per kilowatt-hour - implies a mix dominated by conventional grid power, with small pockets of renewables and flare mitigation.<sup><a href="#ref-5" class="ref">5</a></sup> The point is that the resource is there, at a scale that exceeds Bitcoin's entire appetite, and that the dominant policy narrative has proceeded as if it were not. Again: 293.7 TWh is a verified floor. Actual global waste is higher. The case does not require the modelled Tier 3 estimates. The verified numbers alone make it.</p>
   </div>
 
   <!-- ══ §4 ══ -->
@@ -792,11 +794,11 @@
       <span><span class="ldot" style="background:#8899AA"></span>Modelled (T3)</span>
       <span><span class="ldot" style="background:#1A2340; border-radius:2px"></span>Active mining operation</span>
     </div>
-    <div class="map-caption">Figure 2. Top curtailment and flare-gas sites (circles sized by annual TWh) with known commercial mining operations (▲). Data: ELJ dataset v1.3.1.</div>
+    <div class="map-caption">Figure 2. Top curtailment and flare-gas sites (circles sized by annual TWh) with known commercial mining operations (▲). Data: ELJ dataset v1.3.2.</div>
   </div>
 
   <div class="paper-section-cont" id="s4-revenue">
-    <p>The $16.2 billion per year in foregone revenue we have documented represents real losses - projects financed on the assumption that the grid would take their power, then curtailed by transmission constraints or market design failures.<sup><a href="#ref-3" class="ref">3</a></sup> A wind developer whose turbine is curtailed loses the difference between their contracted price and zero. Bitcoin mining as a captive buyer at curtailment-hour pricing converts that loss into a revenue stream. The top five verified wasted-energy hotspots alone tell that story plainly - Southern Iraq's Basra, Rumaila, and Majnoon flare basins at $2.21 billion per year in foregone revenue, Western Siberia's Khanty-Mansi and Yamal flare fields at $1.61 billion, Brazil's Bahia wind corridor at $1.18 billion, Colombia's hydro-heavy national system at $1.12 billion, and Brazil's Minas Gerais solar at $1.12 billion - represent over $7.2 billion per year in revenue that generators are currently losing and miners are not capturing. The flare basins lead the ranking because their entire output is wasted by definition: the gas is burned at the wellhead because no pipeline exists to deliver it to a buyer.<sup><a href="#ref-3" class="ref">3</a></sup></p>
+    <p>The $14.3 billion per year in foregone revenue we have documented represents real losses - projects financed on the assumption that the grid would take their power, then curtailed by transmission constraints or market design failures.<sup><a href="#ref-3" class="ref">3</a></sup> A wind developer whose turbine is curtailed loses the difference between their contracted price and zero. Bitcoin mining as a captive buyer at curtailment-hour pricing converts that loss into a revenue stream. The top five verified wasted-energy hotspots alone tell that story plainly - Southern Iraq's Basra, Rumaila, and Majnoon flare basins at $2.21 billion per year in foregone revenue, Western Siberia's Khanty-Mansi and Yamal flare fields at $1.61 billion, Colombia's hydro-heavy national system at $1.25 billion, the Permian Basin flare complex at $1.03 billion, and Brazil's Bahia wind corridor at $861 million - represent nearly $7.0 billion per year in revenue that generators are currently losing and miners are not capturing. Three of the top five are flare basins; their entire output is wasted by definition, the gas burned at the wellhead because no pipeline exists to deliver it to a buyer.<sup><a href="#ref-3" class="ref">3</a></sup></p>
 
     <h4 class="subhead">Top 5 verified hotspots, by fuel</h4>
 
@@ -821,11 +823,11 @@
         <table>
           <thead><tr><th>Site</th><th>TWh/yr</th><th>Revenue/yr</th></tr></thead>
           <tbody>
-            <tr><td>Bahia Wind <span class="muted">(Brazil)</span></td><td>24.6</td><td>$1,182.7M</td></tr>
-            <tr><td>Rio Grande do Norte Wind <span class="muted">(Brazil)</span></td><td>15.2</td><td>$728.7M</td></tr>
-            <tr><td>Piauí Wind <span class="muted">(Brazil)</span></td><td>11.7</td><td>$561.2M</td></tr>
-            <tr><td>Germany Wind</td><td>5.6</td><td>$541.7M</td></tr>
-            <tr><td>MISO Midwest Wind <span class="muted">(USA)</span></td><td>8.7</td><td>$488.0M</td></tr>
+            <tr><td>Bahia Wind <span class="muted">(Brazil)</span></td><td>17.9</td><td>$861M</td></tr>
+            <tr><td>Germany Wind</td><td>5.6</td><td>$541M</td></tr>
+            <tr><td>Rio Grande do Norte Wind <span class="muted">(Brazil)</span></td><td>10.4</td><td>$500M</td></tr>
+            <tr><td>MISO Midwest Wind <span class="muted">(USA)</span></td><td>8.7</td><td>$488M</td></tr>
+            <tr><td>Piauí Wind <span class="muted">(Brazil)</span></td><td>4.9</td><td>$234M</td></tr>
           </tbody>
         </table>
       </div>
@@ -835,11 +837,11 @@
         <table>
           <thead><tr><th>Site</th><th>TWh/yr</th><th>Revenue/yr</th></tr></thead>
           <tbody>
-            <tr><td>Minas Gerais Solar <span class="muted">(Brazil)</span></td><td>23.3</td><td>$1,116.0M</td></tr>
-            <tr><td>Bahia Solar <span class="muted">(Brazil)</span></td><td>6.9</td><td>$331.1M</td></tr>
-            <tr><td>Rio Grande do Norte Solar <span class="muted">(Brazil)</span></td><td>6.4</td><td>$305.1M</td></tr>
-            <tr><td>Spain Solar</td><td>3.7</td><td>$302.9M</td></tr>
-            <tr><td>Germany Solar</td><td>2.8</td><td>$269.0M</td></tr>
+            <tr><td>Minas Gerais Solar <span class="muted">(Brazil)</span></td><td>9.3</td><td>$447M</td></tr>
+            <tr><td>Spain Solar</td><td>3.7</td><td>$303M</td></tr>
+            <tr><td>Germany Solar</td><td>2.8</td><td>$269M</td></tr>
+            <tr><td>Bahia Solar <span class="muted">(Brazil)</span></td><td>5.2</td><td>$250M</td></tr>
+            <tr><td>Rio Grande do Norte Solar <span class="muted">(Brazil)</span></td><td>1.9</td><td>$90M</td></tr>
           </tbody>
         </table>
       </div>
@@ -849,26 +851,26 @@
         <table>
           <thead><tr><th>Site</th><th>TWh/yr</th><th>Revenue/yr</th></tr></thead>
           <tbody>
-            <tr><td>Colombia <span class="muted">(system-wide vertimientos, T1b)</span></td><td>20.3</td><td>$1,118.4M</td></tr>
-            <tr><td>Norway NO2 Hydro <span class="muted">(Kristiansand)</span></td><td>2.9</td><td>$166.4M</td></tr>
-            <tr><td>Norway NO4 Hydro <span class="muted">(Tromsø)</span></td><td>1.0</td><td>$54.6M</td></tr>
-            <tr><td>Peru Hydro</td><td>0.8</td><td>$30.9M</td></tr>
-            <tr><td>Norway NO3 Hydro <span class="muted">(Trondheim)</span></td><td>0.5</td><td>$25.6M</td></tr>
+            <tr><td>Colombia <span class="muted">(system-wide vertimientos, T1b)</span></td><td>22.7</td><td>$1,250M</td></tr>
+            <tr><td>Norway NO2 Hydro <span class="muted">(Kristiansand)</span></td><td>2.9</td><td>$166M</td></tr>
+            <tr><td>Norway NO4 Hydro <span class="muted">(Tromsø)</span></td><td>1.0</td><td>$55M</td></tr>
+            <tr><td>Peru Hydro</td><td>0.8</td><td>$31M</td></tr>
+            <tr><td>Norway NO3 Hydro <span class="muted">(Trondheim)</span></td><td>0.5</td><td>$26M</td></tr>
           </tbody>
         </table>
-        <p class="fuel-table-note">Hydro is genuinely thin in the verified dataset: Colombia dominates by ~6×, with the rest tail-heavy on Norwegian sub-basins. Sichuan and Iceland would lead this list at $755M and $341M respectively but sit in T3-modelled, excluded from §3's verified framing.</p>
+        <p class="fuel-table-note">Hydro is genuinely thin in the verified dataset: Colombia dominates by ~7×, with the rest tail-heavy on Norwegian sub-basins. Sichuan and Iceland would lead this list at $1,242M and $341M respectively but sit in T3-modelled, excluded from §3's verified framing.</p>
       </div>
 
     </div>
 
-    <p class="fuel-table-caption">Source: ELJ dataset v1.3.1 last-good snapshots (2026-05-13/14), ranked by foregone revenue (annual TWh × wholesale price from <code>data/static-prices.csv</code>; IEA / EIA / ENTSO-E / CCEE 2023–24 averages, FX-converted to USD). Verified = T1a + T1b + T1c + T2-flare; T3-modelled regions excluded. Flare revenue uses a synthetic gas-equivalent price ($20–50/MWh delivered-electric basis) rather than a market clearing LMP — interpret as opportunity cost, not market price.</p>
+    <p class="fuel-table-caption">Source: ELJ dataset v1.3.2 last-good snapshots (2026-05-20), ranked by foregone revenue (annual TWh × wholesale price from <code>data/static-prices.csv</code>; IEA / EIA / ENTSO-E / CCEE 2023–24 averages, FX-converted to USD). Verified = T1a + T1b + T1c + T2-flare; T3-modelled regions excluded. Flare revenue uses a synthetic gas-equivalent price ($20–50/MWh delivered-electric basis) rather than a market clearing LMP — interpret as opportunity cost, not market price. Brazil rows reflect the May 2026 ONS curtailment-formula correction (commit <code>eabf8e5</code>), which reduced previously reported Bahia/RN/Piauí/MG curtailment by 25–60% after a <code>val_geracaolimitada</code> sign-convention error was identified.</p>
   </div>
 
   <!-- Revenue chart -->
   <div class="chart-wrap">
     <div class="chart-title">Top 15 sites by revenue foregone — USD million per year</div>
     <canvas id="revenueChart"></canvas>
-    <div class="chart-sub">Source: ELJ dataset v1.3.1 — 186 regions with available wholesale price data. Colours by tier: cyan = T1 live TSO, amber = T2-flare satellite, grey = T3 modelled.</div>
+    <div class="chart-sub">Source: ELJ dataset v1.3.2 — 118 verified regions with available wholesale price data (T1a + T1b + T1c + T2-flare). Colours by tier: cyan = T1 live TSO, amber = T2-flare satellite, grey = T3 modelled.</div>
   </div>
 
   <div class="paper-section-cont" id="s4-carbon">
@@ -890,7 +892,7 @@
 
     <p>Aluminium smelters followed the same logic a century ago. They located in the Pacific Northwest because the Columbia River's spring melt produced more hydroelectric power than the region could use. They ran when the water was high and curtailed when it was not. They paid prices that reflected the surplus value of otherwise-wasted water. Bitcoin mining in curtailment markets is the same industrial logic adapted to a digital commodity - a load that values electrons at their marginal cost of production, not their long-run average cost, because the load can be deferred without economic penalty.</p>
 
-    <p>In a world where AI has taken the baseload, curtailment is Bitcoin's natural and defensible home. The arithmetic is reassuring: 184.5 terawatt-hours of verified curtailment, against a 197.6 terawatt-hour network appetite. The resource exists at roughly the right scale. The question is whether the institutional mechanisms exist to connect them.</p>
+    <p>In a world where AI has taken the baseload, curtailment is Bitcoin's natural and defensible home. The arithmetic is reassuring: 293.7 terawatt-hours of verified waste (138.9 from renewable curtailment, 154.8 from flare gas), against a 197.6 terawatt-hour network appetite. The resource exists at roughly one-and-a-half times the right scale. The question is whether the institutional mechanisms exist to connect them.</p>
   </section>
 
   <!-- ══ §6 ══ -->
@@ -908,12 +910,12 @@
 
     <p>The fourth is an end to negative-price-hour opacity. Several major European transmission system operators do not publish hours per year in which wholesale prices go negative at their interconnection nodes, nor associated curtailment volumes by fuel type. This information exists - TSOs collect it for internal balancing settlement. Publishing it in quarterly tables, at each interconnection node, would substantially reduce the information asymmetry that currently requires expensive private data subscriptions to identify curtailment-rich locations. The cost to grid operators is negligible. The value to the market for flexible loads is substantial.</p>
 
-    <p>The evidence exists: 338.8 verified terawatt-hours of wasted energy per year, documented across 384 regions, published in an open dataset with live updates. The buyer exists: a 197.6 terawatt-hour-per-year network designed for precisely the intermittency and price sensitivity that curtailment requires. The industrial logic is sound, tested at commercial scale in multiple markets. As such, the institutional gap is the only element of this problem that remains genuinely unsolved - and institutional gaps are the most tractable.</p>
+    <p>The evidence exists: 293.7 verified terawatt-hours of wasted energy per year, documented across 384 regions, published in an open dataset with live updates. The buyer exists: a 197.6 terawatt-hour-per-year network designed for precisely the intermittency and price sensitivity that curtailment requires. The industrial logic is sound, tested at commercial scale in multiple markets. As such, the institutional gap is the only element of this problem that remains genuinely unsolved - and institutional gaps are the most tractable.</p>
   </section>
 
   <!-- Closing pull quote -->
   <div class="pull-quote">
-    <p>The world is throwing away 338.8 terawatt-hours per year of perfectly good electricity. Bitcoin is the buyer standing at the door. The only missing piece is a system that lets them transact.</p>
+    <p>The world is throwing away 293.7 terawatt-hours per year of perfectly good electricity. Bitcoin is the buyer standing at the door. The only missing piece is a system that lets them transact.</p>
   </div>
 
   <!-- Paper close -->
@@ -954,7 +956,7 @@
 <!-- ══════════════════════════ SCRIPTS ══════════════════════════ -->
 <script>
 /* ── Constants ── */
-const AVG_CURTAIL_GW = 338.753 / 8.76;  // 38.674 GW average (338.8 TWh/yr ÷ 8760 h)
+const AVG_CURTAIL_GW = 293.7 / 8.76;  // 33.527 GW average (293.7 TWh/yr ÷ 8760 h)
 const BITCOIN_GW     = 197.6   / 8.76;  // 22.557 GW average
 const SCALE_MAX_GW   = 52;              // visual ceiling for the bar widget
 
@@ -1030,7 +1032,7 @@ setLive();
         'Bitcoin network'
       ],
       datasets: [{
-        data: [184.5, 154.2, 338.8, 197.6],
+        data: [138.9, 154.8, 293.7, 197.6],
         backgroundColor: [
           'rgba(0,184,200,0.82)',
           'rgba(245,166,35,0.82)',
@@ -1079,21 +1081,21 @@ setLive();
 (function() {
   // Listed in chart order (reversed so top is at top in horizontal bar)
   const raw = [
-    { name: 'Bahia Wind',         rev: 1182.7, b: 'T1a' },
-    { name: 'Colombia',           rev: 1118.4, b: 'T1b' },
-    { name: 'MG Solar',           rev: 1116.0, b: 'T1a' },
+    { name: 'S. Iraq flare',      rev: 2205.0, b: 'T2'  },
+    { name: 'W. Siberia flare',   rev: 1611.0, b: 'T2'  },
+    { name: 'Colombia',           rev: 1250.0, b: 'T1b' },
     { name: 'Permian Basin',      rev: 1030.0, b: 'T2'  },
-    { name: 'Sichuan',            rev:  755.1, b: 'T3'  },
-    { name: 'RN Wind',            rev:  728.7, b: 'T1a' },
-    { name: 'Germany Wind',       rev:  567.6, b: 'T1a' },
-    { name: 'Piauí Wind',         rev:  561.2, b: 'T1a' },
-    { name: 'Xinjiang',           rev:  430.5, b: 'T3'  },
-    { name: 'Iceland',            rev:  341.3, b: 'T3'  },
-    { name: 'Spain Wind',         rev:  337.3, b: 'T1a' },
-    { name: 'Bahia Solar',        rev:  331.1, b: 'T1a' },
-    { name: 'RN Solar',           rev:  305.1, b: 'T1a' },
-    { name: 'Spain Solar',        rev:  300.0, b: 'T1a' },
-    { name: 'Germany Solar',      rev:  267.6, b: 'T1a' },
+    { name: 'Bahia Wind',         rev:  861.0, b: 'T1a' },
+    { name: 'Germany Wind',       rev:  541.0, b: 'T1a' },
+    { name: 'RN Wind',            rev:  500.0, b: 'T1a' },
+    { name: 'MISO Midwest Wind',  rev:  488.0, b: 'T1a' },
+    { name: 'MG Solar',           rev:  447.0, b: 'T1a' },
+    { name: 'Yamal flare',        rev:  380.0, b: 'T2'  },
+    { name: 'E. Siberia flare',   rev:  342.0, b: 'T2'  },
+    { name: 'Spain Solar',        rev:  303.0, b: 'T1a' },
+    { name: 'Germany Solar',      rev:  269.0, b: 'T1a' },
+    { name: 'Bahia Solar',        rev:  250.0, b: 'T1a' },
+    { name: 'Piauí Wind',         rev:  234.0, b: 'T1a' },
   ].reverse();
 
   const colour = (b) => ({
@@ -1162,20 +1164,18 @@ setLive();
 
   const regions = [
     // T1a — verified TSO renewable curtailment
-    { name:'Bahia Wind',        lat:-12.5, lng:-42.0, twh:24.6,  b:'T1a' },
-    { name:'MG Solar',          lat:-19.5, lng:-44.5, twh:23.3,  b:'T1a' },
-    { name:'RN Wind',           lat: -5.8, lng:-36.5, twh:15.2,  b:'T1a' },
-    { name:'Piauí Wind',        lat: -7.2, lng:-41.8, twh:11.7,  b:'T1a' },
-    { name:'Bahia Solar',       lat:-13.5, lng:-41.5, twh: 6.9,  b:'T1a' },
-    { name:'RN Solar',          lat: -5.4, lng:-37.0, twh: 6.4,  b:'T1a' },
-    { name:'Germany Wind',      lat: 53.5, lng:  9.5, twh: 5.8,  b:'T1a' },
-    { name:'Piauí Solar',       lat: -7.8, lng:-42.5, twh: 5.5,  b:'T1a' },
-    { name:'Ceará Solar',       lat: -5.2, lng:-39.5, twh: 5.5,  b:'T1a' },
-    { name:'Spain Wind',        lat: 41.8, lng: -1.5, twh: 4.2,  b:'T1a' },
+    { name:'Bahia Wind',        lat:-12.5, lng:-42.0, twh:17.9,  b:'T1a' },
+    { name:'MG Solar',          lat:-19.5, lng:-44.5, twh: 9.3,  b:'T1a' },
+    { name:'RN Wind',           lat: -5.8, lng:-36.5, twh:10.4,  b:'T1a' },
+    { name:'Piauí Wind',        lat: -7.2, lng:-41.8, twh: 4.9,  b:'T1a' },
+    { name:'Bahia Solar',       lat:-13.5, lng:-41.5, twh: 5.2,  b:'T1a' },
+    { name:'RN Solar',          lat: -5.4, lng:-37.0, twh: 1.9,  b:'T1a' },
+    { name:'MISO Midwest Wind', lat: 43.5, lng:-93.0, twh: 8.7,  b:'T1a' },
+    { name:'Germany Wind',      lat: 53.5, lng:  9.5, twh: 5.6,  b:'T1a' },
     { name:'Spain Solar',       lat: 38.5, lng: -4.0, twh: 3.7,  b:'T1a' },
     { name:'Germany Solar',     lat: 48.5, lng: 11.0, twh: 2.8,  b:'T1a' },
     // T1b — domestic curtailment
-    { name:'Colombia',          lat:  4.7, lng:-74.1, twh:20.3,  b:'T1b' },
+    { name:'Colombia',          lat:  4.7, lng:-74.1, twh:22.7,  b:'T1b' },
     // T2-flare — satellite-verified flare gas
     { name:'S. Iraq',           lat: 30.5, lng: 47.5, twh:63.0,  b:'T2' },
     { name:'W. Siberia',        lat: 62.0, lng: 73.0, twh:42.4,  b:'T2' },
