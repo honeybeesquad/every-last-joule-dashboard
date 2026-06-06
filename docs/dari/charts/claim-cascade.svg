@@ -1,0 +1,278 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 920" role="img" aria-labelledby="title desc" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif">
+  <title id="title">Two evidence bases: the Bitcoin-energy policy edifice vs the wasted-energy counter-claim</title>
+  <desc id="desc">A two-column argument tree comparing the evidentiary foundation of the dominant "Bitcoin is environmentally unacceptable" policy narrative (left, drawn in muted grey-blue) against the foundation of this paper's counter-claim that Bitcoin can absorb already-wasted electricity (right, drawn in Sunfire cyan and amber). The left column reduces to six foundational sources, several of them formally contested or non-peer-reviewed, supporting three derived claims and three policy actions. The right column rests on 158 live transmission-system-operator feeds and 8 satellite-verified flare-gas basins (166 primary measurements in total) covering 385 regions in 195 countries.</desc>
+
+  <!-- Background frame -->
+  <rect x="0" y="0" width="1080" height="920" fill="#FFFFFF"/>
+
+  <!-- LEFT column -->
+  <path d="M114.33333333333333,218 C114.33333333333333,202.0 114.33333333333333,202.0 114.33333333333333,186" fill="none" stroke="#8899AA" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+  <path d="M427.66666666666663,218 C427.66666666666663,202.0 114.33333333333333,202.0 114.33333333333333,186" fill="none" stroke="#8899AA" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+  <path d="M114.33333333333333,218 C114.33333333333333,202.0 271.0,202.0 271.0,186" fill="none" stroke="#8899AA" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+  <path d="M271.0,218 C271.0,202.0 271.0,202.0 271.0,186" fill="none" stroke="#8899AA" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+  <path d="M114.33333333333333,218 C114.33333333333333,202.0 427.66666666666663,202.0 427.66666666666663,186" fill="none" stroke="#8899AA" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+  <path d="M427.66666666666663,218 C427.66666666666663,202.0 427.66666666666663,202.0 427.66666666666663,186" fill="none" stroke="#8899AA" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+  <path d="M365.0,370.0 C365.0,353.0 114.33333333333333,353.0 114.33333333333333,336" fill="none" stroke="#8899AA" stroke-width="2.6" stroke-linecap="round" opacity="0.55"/>
+  <path d="M365.0,486.0 C365.0,411.0 114.33333333333333,411.0 114.33333333333333,336" fill="none" stroke="#8899AA" stroke-width="2.0" stroke-linecap="round" opacity="0.55"/>
+  <path d="M365.0,544.0 C365.0,440.0 114.33333333333333,440.0 114.33333333333333,336" fill="none" stroke="#8899AA" stroke-width="2.0" stroke-linecap="round" opacity="0.55"/>
+  <path d="M365.0,660.0 C365.0,498.0 114.33333333333333,498.0 114.33333333333333,336" fill="none" stroke="#8899AA" stroke-width="1.1" stroke-linecap="round" opacity="0.55"/>
+  <path d="M365.0,428.0 C365.0,382.0 271.0,382.0 271.0,336" fill="none" stroke="#8899AA" stroke-width="2.6" stroke-linecap="round" opacity="0.55"/>
+  <path d="M365.0,602.0 C365.0,469.0 271.0,469.0 271.0,336" fill="none" stroke="#8899AA" stroke-width="1.1" stroke-linecap="round" opacity="0.55"/>
+  <path d="M365.0,370.0 C365.0,353.0 271.0,353.0 271.0,336" fill="none" stroke="#8899AA" stroke-width="2.6" stroke-linecap="round" opacity="0.55"/>
+  <path d="M365.0,428.0 C365.0,382.0 427.66666666666663,382.0 427.66666666666663,336" fill="none" stroke="#8899AA" stroke-width="2.6" stroke-linecap="round" opacity="0.55"/>
+  <path d="M365.0,602.0 C365.0,469.0 427.66666666666663,469.0 427.66666666666663,336" fill="none" stroke="#8899AA" stroke-width="1.1" stroke-linecap="round" opacity="0.55"/>
+  <path d="M365.0,660.0 C365.0,498.0 427.66666666666663,498.0 427.66666666666663,336" fill="none" stroke="#8899AA" stroke-width="1.1" stroke-linecap="round" opacity="0.55"/>
+  <rect x="28" y="22" width="494" height="56" rx="8" fill="#C8D2DD" opacity="0.4"/>
+  <text font-size="13" font-weight="700" fill="#5C6B7E" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="275.0" y="44.0">THE POLICY EDIFICE</tspan></text>
+  <text font-size="11" font-weight="400" fill="#5C6B7E" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="275.0" y="62.0">What the world has concluded about Bitcoin energy</tspan></text>
+  <rect x="40.0" y="86" width="148.66666666666666" height="100" rx="7" fill="#F7F7F4" stroke="#8899AA" stroke-width="1.2"/>
+  <text font-size="11" font-weight="600" fill="#5C6B7E" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="114.33333333333333" y="128.0">NY S6486D moratorium</tspan><tspan x="114.33333333333333" y="141.2">(2022, expired 2024)</tspan></text>
+  <rect x="196.66666666666666" y="86" width="148.66666666666666" height="100" rx="7" fill="#F7F7F4" stroke="#8899AA" stroke-width="1.2"/>
+  <text font-size="11" font-weight="600" fill="#5C6B7E" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="271.0" y="128.0">EU MiCA Art. 66</tspan><tspan x="271.0" y="141.2">disclosure (2024–25)</tspan></text>
+  <rect x="353.3333333333333" y="86" width="148.66666666666666" height="100" rx="7" fill="#F7F7F4" stroke="#8899AA" stroke-width="1.2"/>
+  <text font-size="11" font-weight="600" fill="#5C6B7E" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="427.66666666666663" y="128.0">China 2021 mining ban</tspan><tspan x="427.66666666666663" y="141.2">+ Kazakhstan 2023 framework</tspan></text>
+  <rect x="40.0" y="218" width="148.66666666666666" height="118" rx="7" fill="#FFFFFF" stroke="#8899AA" stroke-width="1.2"/>
+  <text font-size="11" font-weight="500" fill="#5C6B7E" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="114.33333333333333" y="271.0">Bitcoin emissions </tspan><tspan x="114.33333333333333" y="284.2">threaten 2°C compliance</tspan></text>
+  <rect x="196.66666666666666" y="218" width="148.66666666666666" height="118" rx="7" fill="#FFFFFF" stroke="#8899AA" stroke-width="1.2"/>
+  <text font-size="11" font-weight="500" fill="#5C6B7E" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="271.0" y="271.0">Bitcoin uses "too much" </tspan><tspan x="271.0" y="284.2">electricity for what it does</tspan></text>
+  <rect x="353.3333333333333" y="218" width="148.66666666666666" height="118" rx="7" fill="#FFFFFF" stroke="#8899AA" stroke-width="1.2"/>
+  <text font-size="11" font-weight="500" fill="#5C6B7E" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="427.66666666666663" y="271.0">Bitcoin displaces </tspan><tspan x="427.66666666666663" y="284.2">productive grid load</tspan></text>
+  <rect x="40" y="370.0" width="470" height="54.0" rx="5" fill="#FBF3F1" stroke="#B8473D" stroke-width="1.0"/>
+  <text x="52" y="388.0" font-size="12" font-weight="700" fill="#5C6B7E" font-family="Inter, system-ui, sans-serif">Mora et al. 2018</text>
+  <text x="52" y="403.0" font-size="10" fill="#6B7280" font-family="Inter, system-ui, sans-serif">Nature Climate Change · Scenario extrapolation</text>
+  <rect x="350" y="378.0" width="70" height="20" rx="3" fill="#C8D2DD" opacity="0.7"/>
+  <text x="385.0" y="392.0" font-size="10" font-weight="600" fill="#5C6B7E" text-anchor="middle" font-family="Inter, system-ui, sans-serif">~1,000 cites</text>
+  <rect x="333" y="378.0" width="165" height="20" rx="3" fill="#B8473D"/>
+  <text x="415.5" y="392.0" font-size="9" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.04em" font-family="Inter, system-ui, sans-serif">CONTESTED · 3 published rebuttals</text>
+  <rect x="40" y="428.0" width="470" height="54.0" rx="5" fill="#F4F1EC" stroke="#8899AA" stroke-width="1.0"/>
+  <text x="52" y="446.0" font-size="12" font-weight="700" fill="#5C6B7E" font-family="Inter, system-ui, sans-serif">de Vries 2018</text>
+  <text x="52" y="461.0" font-size="10" fill="#6B7280" font-family="Inter, system-ui, sans-serif">Joule (commentary) · Single-author equilibrium model</text>
+  <rect x="350" y="436.0" width="70" height="20" rx="3" fill="#C8D2DD" opacity="0.7"/>
+  <text x="385.0" y="450.0" font-size="10" font-weight="600" fill="#5C6B7E" text-anchor="middle" font-family="Inter, system-ui, sans-serif">~900 cites</text>
+  <rect x="333" y="436.0" width="165" height="20" rx="3" fill="#D69947"/>
+  <text x="415.5" y="450.0" font-size="9" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.04em" font-family="Inter, system-ui, sans-serif">COMMENTARY · drives Digiconomist BECI</text>
+  <rect x="40" y="486.0" width="470" height="54.0" rx="5" fill="#F7F7F4" stroke="#8899AA" stroke-width="1.0"/>
+  <text x="52" y="504.0" font-size="12" font-weight="700" fill="#5C6B7E" font-family="Inter, system-ui, sans-serif">Stoll et al. 2019</text>
+  <text x="52" y="519.0" font-size="10" fill="#6B7280" font-family="Inter, system-ui, sans-serif">Joule · Bottom-up hardware-mix model</text>
+  <rect x="350" y="494.0" width="70" height="20" rx="3" fill="#C8D2DD" opacity="0.7"/>
+  <text x="385.0" y="508.0" font-size="10" font-weight="600" fill="#5C6B7E" text-anchor="middle" font-family="Inter, system-ui, sans-serif">~800 cites</text>
+  <rect x="40" y="544.0" width="470" height="54.0" rx="5" fill="#F7F7F4" stroke="#8899AA" stroke-width="1.0"/>
+  <text x="52" y="562.0" font-size="12" font-weight="700" fill="#5C6B7E" font-family="Inter, system-ui, sans-serif">Krause &amp; Tolaymat 2018</text>
+  <text x="52" y="577.0" font-size="10" fill="#6B7280" font-family="Inter, system-ui, sans-serif">Nature Sustainability · Energy-per-dollar ratio</text>
+  <rect x="350" y="552.0" width="70" height="20" rx="3" fill="#C8D2DD" opacity="0.7"/>
+  <text x="385.0" y="566.0" font-size="10" font-weight="600" fill="#5C6B7E" text-anchor="middle" font-family="Inter, system-ui, sans-serif">~800 cites</text>
+  <rect x="40" y="602.0" width="470" height="54.0" rx="5" fill="#F4F1EC" stroke="#8899AA" stroke-width="1.0"/>
+  <text x="52" y="620.0" font-size="12" font-weight="700" fill="#5C6B7E" font-family="Inter, system-ui, sans-serif">Cambridge CBECI</text>
+  <text x="52" y="635.0" font-size="10" fill="#6B7280" font-family="Inter, system-ui, sans-serif">CCAF institutional model · Top-down hardware basket</text>
+  <rect x="333" y="610.0" width="165" height="20" rx="3" fill="#D69947"/>
+  <text x="415.5" y="624.0" font-size="9" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.04em" font-family="Inter, system-ui, sans-serif">NOT PEER REVIEWED · revised 2023</text>
+  <rect x="40" y="660.0" width="470" height="54.0" rx="5" fill="#F4F1EC" stroke="#8899AA" stroke-width="1.0"/>
+  <text x="52" y="678.0" font-size="12" font-weight="700" fill="#5C6B7E" font-family="Inter, system-ui, sans-serif">Truby 2018</text>
+  <text x="52" y="693.0" font-size="10" fill="#6B7280" font-family="Inter, system-ui, sans-serif">Energy Research &amp; Social Science · Legal-policy review of others</text>
+  <rect x="350" y="668.0" width="70" height="20" rx="3" fill="#C8D2DD" opacity="0.7"/>
+  <text x="385.0" y="682.0" font-size="10" font-weight="600" fill="#5C6B7E" text-anchor="middle" font-family="Inter, system-ui, sans-serif">~450 cites</text>
+  <rect x="333" y="668.0" width="165" height="20" rx="3" fill="#D69947"/>
+  <text x="415.5" y="682.0" font-size="9" font-weight="700" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.04em" font-family="Inter, system-ui, sans-serif">DERIVATIVE · no primary measurement</text>
+
+  <!-- RIGHT column -->
+  <path d="M644.3333333333334,370 C644.3333333333334,353.0 644.3333333333334,353.0 644.3333333333334,336" fill="none" stroke="#38b0d8" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
+  <path d="M801.0,370 C801.0,353.0 801.0,353.0 801.0,336" fill="none" stroke="#38b0d8" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
+  <path d="M957.6666666666666,370 C957.6666666666666,353.0 957.6666666666666,353.0 957.6666666666666,336" fill="none" stroke="#38b0d8" stroke-width="4.5" stroke-linecap="round" opacity="0.85"/>
+  <path d="M644.3333333333334,218 C644.3333333333334,202.0 805.0,202.0 805.0,186" fill="none" stroke="#38b0d8" stroke-width="4.5" stroke-linecap="round" opacity="0.55"/>
+  <path d="M801.0,218 C801.0,202.0 805.0,202.0 805.0,186" fill="none" stroke="#38b0d8" stroke-width="4.5" stroke-linecap="round" opacity="0.55"/>
+  <path d="M957.6666666666666,218 C957.6666666666666,202.0 805.0,202.0 805.0,186" fill="none" stroke="#38b0d8" stroke-width="4.5" stroke-linecap="round" opacity="0.55"/>
+  <rect x="558" y="22" width="494" height="56" rx="8" fill="#38b0d8" opacity="0.10"/>
+  <text font-size="13" font-weight="700" fill="#38b0d8" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="805.0" y="44.0">THIS PAPER'S COUNTER</tspan></text>
+  <text font-size="11" font-weight="400" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="805.0" y="62.0">What 166 primary measurements support</tspan></text>
+  <rect x="570" y="86" width="470" height="100" rx="8" fill="#1A2340" stroke="#1A2340" stroke-width="0"/>
+  <text font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="805.0" y="120.0">Bitcoin can absorb 293.7 TWh/yr </tspan><tspan x="805.0" y="136.9">of electricity already wasted, </tspan><tspan x="805.0" y="153.8">at zero marginal grid impact.</tspan></text>
+  <rect x="570.0" y="218" width="148.66666666666666" height="118" rx="7" fill="#FFFFFF" stroke="#38b0d8" stroke-width="1.6"/>
+  <text font-size="11" font-weight="500" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="644.3333333333334" y="263.0">Verified wasted electricity </tspan><tspan x="644.3333333333334" y="277.85">exceeds Bitcoin's appetite </tspan><tspan x="644.3333333333334" y="292.7">by 49% (293.7 vs 197.6 TWh/yr)</tspan></text>
+  <rect x="726.6666666666666" y="218" width="148.66666666666666" height="118" rx="7" fill="#FFFFFF" stroke="#38b0d8" stroke-width="1.6"/>
+  <text font-size="11" font-weight="500" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="801.0" y="263.0">Top five hotspots alone </tspan><tspan x="801.0" y="277.85">= $7.0 B/yr in foregone </tspan><tspan x="801.0" y="292.7">revenue across 4 fuels</tspan></text>
+  <rect x="883.3333333333333" y="218" width="148.66666666666666" height="118" rx="7" fill="#FFFFFF" stroke="#38b0d8" stroke-width="1.6"/>
+  <text font-size="11" font-weight="500" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="957.6666666666666" y="263.0">Bitcoin's interruptibility profile </tspan><tspan x="957.6666666666666" y="277.85">uniquely matches the diurnal </tspan><tspan x="957.6666666666666" y="292.7">shape of curtailment supply</tspan></text>
+  <rect x="570" y="370" width="470" height="348" rx="8" fill="#F7F7F4" stroke="#38b0d8" stroke-width="1.6" stroke-opacity="0.6"/>
+  <text x="582" y="392" font-size="11" font-weight="700" fill="#38b0d8" letter-spacing="0.06em" font-family="Inter, system-ui, sans-serif">PRIMARY EVIDENCE BASE</text>
+  <rect x="594.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="611.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="628.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="645.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="662.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="679.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="696.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="713.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="730.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="747.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="764.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="781.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="798.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="815.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="832.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="849.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="866.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="883.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="900.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="917.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="934.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="951.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="968.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="985.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="1002.5" y="414" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="594.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="611.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="628.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="645.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="662.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="679.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="696.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="713.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="730.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="747.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="764.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="781.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="798.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="815.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="832.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="849.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="866.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="883.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="900.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="917.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="934.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="951.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="968.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="985.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="1002.5" y="431" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="594.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="611.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="628.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="645.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="662.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="679.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="696.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="713.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="730.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="747.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="764.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="781.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="798.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="815.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="832.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="849.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="866.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="883.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="900.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="917.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="934.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="951.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="968.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="985.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="1002.5" y="448" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="594.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="611.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="628.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="645.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="662.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="679.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="696.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="713.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="730.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="747.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="764.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="781.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="798.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="815.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="832.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="849.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="866.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="883.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="900.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="917.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="934.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="951.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="968.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="985.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="1002.5" y="465" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="594.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="611.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="628.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="645.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="662.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="679.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="696.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="713.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="730.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="747.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="764.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="781.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="798.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="815.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="832.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="849.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="866.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="883.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="900.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="917.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="934.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="951.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="968.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="985.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="1002.5" y="482" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="594.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="611.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="628.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="645.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="662.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="679.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="696.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="713.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="730.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="747.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="764.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="781.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="798.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="815.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="832.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="849.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="866.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="883.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="900.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="917.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="934.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="951.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="968.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="985.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="1002.5" y="499" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="594.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="611.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="628.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="645.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="662.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="679.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="696.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="713.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="730.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
+  <rect x="747.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
+  <rect x="764.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
+  <rect x="781.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
+  <rect x="798.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
+  <rect x="815.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
+  <rect x="832.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
+  <rect x="849.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
+  <text x="582" y="551" font-size="11" fill="#1A2340" font-family="Inter, system-ui, sans-serif"><tspan fill="#38b0d8" font-weight="700">■</tspan> 158 live TSO feeds &#183; refreshed every 3h<tspan dx="18" fill="#F5A623" font-weight="700">■</tspan> 8 satellite-verified flare basins (continuous)</text>
+  <text x="582" y="569" font-size="11" fill="#6B7280" font-family="Inter, system-ui, sans-serif">Spanning 385 regions in 195 countries &#183; 41% backed by live grid-operator feeds &#183; 118 regions audited for foregone revenue</text>
+
+  <!-- Bottom contrast band -->
+  <rect x="28" y="748" width="494" height="88" rx="8" fill="#C8D2DD" opacity="0.35"/>
+  <text x="46" y="774" font-size="11" font-weight="700" fill="#5C6B7E" letter-spacing="0.08em" font-family="Inter, system-ui, sans-serif">FOUNDATIONS, LEFT</text>
+  <text x="46" y="798" font-size="14" font-weight="700" fill="#5C6B7E" font-family="Inter, system-ui, sans-serif">6 papers · ~12 countries’ grid data · IEA paywall</text>
+  <text x="46" y="818" font-size="11" fill="#5C6B7E" font-family="Inter, system-ui, sans-serif">Modelled estimates, single-author commentary, derivative reviews</text>
+  <rect x="558" y="748" width="494" height="88" rx="8" fill="#38b0d8" opacity="0.12"/>
+  <text x="576" y="774" font-size="11" font-weight="700" fill="#38b0d8" letter-spacing="0.08em" font-family="Inter, system-ui, sans-serif">FOUNDATIONS, RIGHT</text>
+  <text x="576" y="798" font-size="14" font-weight="700" fill="#1A2340" font-family="Inter, system-ui, sans-serif">166 primary measurements · 385 regions · open dataset</text>
+  <text x="576" y="818" font-size="11" fill="#1A2340" font-family="Inter, system-ui, sans-serif">Live TSO feeds (3h cadence) + satellite-verified flare basins, all auditable upstream</text>
+
+  <!-- Footer rule -->
+  <line x1="28" y1="908" x2="1052" y2="908" stroke="#E2E2DC" stroke-width="1"/>
+</svg>
