@@ -21,7 +21,7 @@ tiers each, reading top-down. Edge thickness encodes evidence strength.
 
 A bottom contrast band makes the asymmetry explicit:
     LEFT  : 6 foundational sources · ~12 countries' grid data tracked
-    RIGHT : 166 primary measurements · 384 regions · 41% live coverage
+    RIGHT : 166 primary measurements · 385 regions · 41% live coverage
 
 Data lives in this file; re-run after a paper-time refresh of the
 verified totals or the citation counts.
@@ -139,8 +139,8 @@ RIGHT_EVIDENCE = {
     "live_tso_count":       158,   # T1a+T1b+T1c verified live feeds (148+9+1, post serbia/nmk demotion PR #119)
     "flare_basin_count":    8,     # T2-flare satellite-verified basins
     "priced_regions":       118,   # regions with revenue audit (v1.3.2 — post-Brazil-fix re-count, PR #109)
-    "total_regions":        384,   # matches paper prose; paper-wide 384→385 (NZ-hydro) is a separate follow-up
-    "live_pct":             41,    # rounded from 158/384
+    "total_regions":        385,   # 385 = 384 + new-zealand-hydro (2026-05-24)
+    "live_pct":             41,    # rounded from 158/385
     "refresh_cadence_hrs":  3,
 }
 
@@ -618,7 +618,7 @@ def render_band(col_x_left: float, col_x_right: float) -> str:
         f'<text x="{col_x_right + 18}" y="{BAND_Y + 50}" '
         f'font-size="14" font-weight="700" fill="{C_NAVY}" '
         f'font-family="Inter, system-ui, sans-serif">'
-        f'166 primary measurements · 384 regions · open dataset'
+        f'166 primary measurements · 385 regions · open dataset'
         f'</text>'
     )
     parts.append(
@@ -647,7 +647,7 @@ def svg() -> str:
 
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {SVG_W} {SVG_H}" role="img" aria-labelledby="title desc" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif">
   <title id="title">Two evidence bases: the Bitcoin-energy policy edifice vs the wasted-energy counter-claim</title>
-  <desc id="desc">A two-column argument tree comparing the evidentiary foundation of the dominant "Bitcoin is environmentally unacceptable" policy narrative (left, drawn in muted grey-blue) against the foundation of this paper's counter-claim that Bitcoin can absorb already-wasted electricity (right, drawn in Sunfire cyan and amber). The left column reduces to six foundational sources, several of them formally contested or non-peer-reviewed, supporting three derived claims and three policy actions. The right column rests on 158 live transmission-system-operator feeds and 8 satellite-verified flare-gas basins (166 primary measurements in total) covering 384 regions in 195 countries.</desc>
+  <desc id="desc">A two-column argument tree comparing the evidentiary foundation of the dominant "Bitcoin is environmentally unacceptable" policy narrative (left, drawn in muted grey-blue) against the foundation of this paper's counter-claim that Bitcoin can absorb already-wasted electricity (right, drawn in Sunfire cyan and amber). The left column reduces to six foundational sources, several of them formally contested or non-peer-reviewed, supporting three derived claims and three policy actions. The right column rests on 158 live transmission-system-operator feeds and 8 satellite-verified flare-gas basins (166 primary measurements in total) covering 385 regions in 195 countries.</desc>
 
   <!-- Background frame -->
   <rect x="0" y="0" width="{SVG_W}" height="{SVG_H}" fill="{C_WHITE}"/>

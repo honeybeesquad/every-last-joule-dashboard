@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 920" role="img" aria-labelledby="title desc" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif">
   <title id="title">Two evidence bases: the Bitcoin-energy policy edifice vs the wasted-energy counter-claim</title>
-  <desc id="desc">A two-column argument tree comparing the evidentiary foundation of the dominant "Bitcoin is environmentally unacceptable" policy narrative (left, drawn in muted grey-blue) against the foundation of this paper's counter-claim that Bitcoin can absorb already-wasted electricity (right, drawn in Sunfire cyan and amber). The left column reduces to six foundational sources, several of them formally contested or non-peer-reviewed, supporting three derived claims and three policy actions. The right column rests on 158 live transmission-system-operator feeds and 8 satellite-verified flare-gas basins (166 primary measurements in total) covering 384 regions in 195 countries.</desc>
+  <desc id="desc">A two-column argument tree comparing the evidentiary foundation of the dominant "Bitcoin is environmentally unacceptable" policy narrative (left, drawn in muted grey-blue) against the foundation of this paper's counter-claim that Bitcoin can absorb already-wasted electricity (right, drawn in Sunfire cyan and amber). The left column reduces to six foundational sources, several of them formally contested or non-peer-reviewed, supporting three derived claims and three policy actions. The right column rests on 158 live transmission-system-operator feeds and 8 satellite-verified flare-gas basins (166 primary measurements in total) covering 385 regions in 195 countries.</desc>
 
   <!-- Background frame -->
   <rect x="0" y="0" width="1080" height="920" fill="#FFFFFF"/>
@@ -261,7 +261,7 @@
   <rect x="832.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
   <rect x="849.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
   <text x="582" y="551" font-size="11" fill="#1A2340" font-family="Inter, system-ui, sans-serif"><tspan fill="#38b0d8" font-weight="700">■</tspan> 158 live TSO feeds &#183; refreshed every 3h<tspan dx="18" fill="#F5A623" font-weight="700">■</tspan> 8 satellite-verified flare basins (continuous)</text>
-  <text x="582" y="569" font-size="11" fill="#6B7280" font-family="Inter, system-ui, sans-serif">Spanning 384 regions in 195 countries &#183; 41% backed by live grid-operator feeds &#183; 118 regions audited for foregone revenue</text>
+  <text x="582" y="569" font-size="11" fill="#6B7280" font-family="Inter, system-ui, sans-serif">Spanning 385 regions in 195 countries &#183; 41% backed by live grid-operator feeds &#183; 118 regions audited for foregone revenue</text>
 
   <!-- Bottom contrast band -->
   <rect x="28" y="748" width="494" height="88" rx="8" fill="#C8D2DD" opacity="0.35"/>
@@ -270,7 +270,7 @@
   <text x="46" y="818" font-size="11" fill="#5C6B7E" font-family="Inter, system-ui, sans-serif">Modelled estimates, single-author commentary, derivative reviews</text>
   <rect x="558" y="748" width="494" height="88" rx="8" fill="#38b0d8" opacity="0.12"/>
   <text x="576" y="774" font-size="11" font-weight="700" fill="#38b0d8" letter-spacing="0.08em" font-family="Inter, system-ui, sans-serif">FOUNDATIONS, RIGHT</text>
-  <text x="576" y="798" font-size="14" font-weight="700" fill="#1A2340" font-family="Inter, system-ui, sans-serif">166 primary measurements · 384 regions · open dataset</text>
+  <text x="576" y="798" font-size="14" font-weight="700" fill="#1A2340" font-family="Inter, system-ui, sans-serif">166 primary measurements · 385 regions · open dataset</text>
   <text x="576" y="818" font-size="11" fill="#1A2340" font-family="Inter, system-ui, sans-serif">Live TSO feeds (3h cadence) + satellite-verified flare basins, all auditable upstream</text>
 
   <!-- Footer rule -->
