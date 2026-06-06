@@ -53,7 +53,8 @@ describe("static regions", () => {
     // moved from non-canonical to canonical). 141 + 1 = 142.
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated,
     // added to STATIC_REGIONS as canonical anchors. 142 + 2 = 144.
-    expect(Object.keys(data).length).toBe(144);
+    // 2026-06-07: norway-no5 reverted live→estimated, added to STATIC_REGIONS. 144 + 1 = 145.
+    expect(Object.keys(data).length).toBe(145);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -92,7 +93,8 @@ describe("static regions", () => {
     // Research pool unchanged at 146. Canonical: 141 + 1 = 142. Non-canonical: 4.
     // 2026-06-06: serbia-solar + north-macedonia-solar added to pool as canonical.
     // Research pool: 146 + 2 = 148. Canonical: 142 + 2 = 144. Non-canonical: 4.
-    expect(Object.keys(researchData).length).toBe(148);
+    // 2026-06-07: norway-no5 added to pool as canonical. Research pool: 148 + 1 = 149. Canonical: 144 + 1 = 145. Non-canonical: 4.
+    expect(Object.keys(researchData).length).toBe(149);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 

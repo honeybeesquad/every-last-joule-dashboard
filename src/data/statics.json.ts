@@ -79,6 +79,12 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   "china-heilongjiang": { annualTWh: 1.5, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~1.5 TWh/yr (northeast grid; Daqing-area wind build-out)", reportDate: "2025" },
   "china-jilin":        { annualTWh: 1.0, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~1 TWh/yr (northeast grid; Baicheng wind corridor)", reportDate: "2025" },
   iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
+  // norway-no5 reverted live→estimated 2026-06-07: Statnett does not publish
+  // per-zone A75 data for the NO5 bidding zone (all psrTypes return code 999
+  // going back 12+ months). 0.11 TWh/yr from existing synthetic snapshot
+  // (2.5% rate × NO1-scaled profile); Iceland seasonal shares are the best
+  // available Nordic spring-snowmelt proxy.
+  "norway-no5": { annualTWh: 0.11, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Statnett/NVE 2024 (NO5 Bergen/West reservoir hydro; spring-spill curtailment only; ENTSO-E A75 not submitted for this bidding zone; 0.11 TWh/yr anchored to existing synthetic profile; Iceland hydro-seasonal shares as Nordic snowmelt proxy)", reportDate: "2024" },
   // Colombia: promoted to T1b-CSV loader (src/data/colombia.json.ts).
   // The loader reads the committed daily XM API CSV (Britta relay) and
   // computes a trailing-365-day annualised TWh figure. Removed from statics

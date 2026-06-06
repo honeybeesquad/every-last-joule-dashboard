@@ -164,12 +164,13 @@ describe("regions", () => {
     // curtailment; production data was already flowing from IRENA statics). T1a: 152→149.
     // 2026-05-24: new-zealand-hydro added (T1a, kind:hydro). T1a: 149→150. Total: 384→385.
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. T1a: 150→148. Total: 160→158.
+    // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). T1a: 148→147. Total: 158→157.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(148);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(147);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(158);
+    expect(liveTotal).toBe(157);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -195,10 +196,11 @@ describe("regions", () => {
     // 2026-05-11: malta/lithuania/latvia reverted. T1a: 152→149. Total: 162→159.
     // 2026-05-24: new-zealand-hydro added T1a. T1a: 149→150. Total: 159→160.
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. T1a: 150→148. Total: 160→158.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(148);
+    // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). T1a: 148→147. Total: 158→157.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(147);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(158);
+    expect(liveTotal).toBe(157);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -274,7 +276,8 @@ describe("regions", () => {
     // 2026-05-10: japan-chubu/tepco/hokkaido downgraded live→estimated. +3. 205→208.
     // 2026-05-11: malta/lithuania/latvia reverted live→estimated. +3. 208→211.
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. +2. 211→213.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(213);
+    // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). +1. 213→214.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(214);
   });
 
   it("has 14 anchored regions (8 flare + 6 flat-profile)", () => {
@@ -614,18 +617,23 @@ describe("regions", () => {
   it("includes the 2026-04-24 Norway 5-zone split and Switzerland", () => {
     // Norway split into per-fuel entries (NO1–NO4 each get hydro+wind; NO5 stays hydro).
     // Phase 3c: norway-no1..no4 replaced by norway-no{1..4}-hydro + norway-no{1..4}-wind.
+    // 2026-06-07: norway-no5 reverted to estimated (Statnett does not publish A75 for this zone).
     for (const id of [
       "norway-no1-hydro", "norway-no1-wind",
       "norway-no2-hydro", "norway-no2-wind",
       "norway-no3-hydro", "norway-no3-wind",
       "norway-no4-hydro", "norway-no4-wind",
-      "norway-no5",
     ]) {
       const region = REGIONS.find(r => r.id === id);
       expect(region, `missing Norway zone ${id}`).toBeDefined();
       expect(region?.tier).toBe("live");
       expect(region?.country).toBe("NOR");
     }
+    // NO5 is now estimated (ENTSO-E A75 never submitted by Statnett for this zone)
+    const no5 = REGIONS.find(r => r.id === "norway-no5");
+    expect(no5, "missing norway-no5").toBeDefined();
+    expect(no5?.tier).toBe("estimated");
+    expect(no5?.country).toBe("NOR");
     expect(REGIONS.find(r => r.id === "n-norway")).toBeUndefined();
     expect(REGIONS.find(r => r.id === "norway-no1")).toBeUndefined();
 
