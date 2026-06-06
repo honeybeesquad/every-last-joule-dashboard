@@ -15,13 +15,13 @@ tiers each, reading top-down. Edge thickness encodes evidence strength.
   RIGHT column — this paper's counter-claim:
     Tier 1 (top)    : The CONCLUSION it permits
     Tier 2 (middle) : The headline derived CLAIMS
-    Tier 3 (bottom) : EVIDENCE base — 159 + 8 primary measurements,
+    Tier 3 (bottom) : EVIDENCE base — 158 + 8 primary measurements,
                        drawn as a dense dot grid that visually
                        outweighs the 6 sparse left-side nodes.
 
 A bottom contrast band makes the asymmetry explicit:
     LEFT  : 6 foundational sources · ~12 countries' grid data tracked
-    RIGHT : 167 primary measurements · 384 regions · 41% live coverage
+    RIGHT : 166 primary measurements · 384 regions · 41% live coverage
 
 Data lives in this file; re-run after a paper-time refresh of the
 verified totals or the citation counts.
@@ -136,22 +136,22 @@ LEFT_POLICIES = [
 # bottom. Each entry becomes either a labelled marker (large items) or
 # a population of cells (small items aggregated into a grid).
 RIGHT_EVIDENCE = {
-    "live_tso_count":       159,   # T1a+T1b+T1c verified live feeds
+    "live_tso_count":       158,   # T1a+T1b+T1c verified live feeds (148+9+1, post serbia/nmk demotion PR #119)
     "flare_basin_count":    8,     # T2-flare satellite-verified basins
-    "priced_regions":       186,   # regions with revenue audit
-    "total_regions":        384,
-    "live_pct":             41,    # rounded from 159/384
+    "priced_regions":       118,   # regions with revenue audit (v1.3.2 — post-Brazil-fix re-count, PR #109)
+    "total_regions":        384,   # matches paper prose; paper-wide 384→385 (NZ-hydro) is a separate follow-up
+    "live_pct":             41,    # rounded from 158/384
     "refresh_cadence_hrs":  3,
 }
 
 RIGHT_CLAIMS = [
     {
         "id":    "claim-scale",
-        "label": "Verified wasted electricity \nexceeds Bitcoin's appetite \nby 71% (338.8 vs 197.6 TWh/yr)",
+        "label": "Verified wasted electricity \nexceeds Bitcoin's appetite \nby 49% (293.7 vs 197.6 TWh/yr)",
     },
     {
         "id":    "claim-revenue",
-        "label": "Top five hotspots alone \n= $7.2 B/yr in foregone \nrevenue across 4 fuels",
+        "label": "Top five hotspots alone \n= $7.0 B/yr in foregone \nrevenue across 4 fuels",
     },
     {
         "id":    "claim-fit",
@@ -160,7 +160,7 @@ RIGHT_CLAIMS = [
 ]
 
 RIGHT_CONCLUSION = {
-    "label": "Bitcoin can absorb 338.8 TWh/yr \nof electricity already wasted, \nat zero marginal grid impact.",
+    "label": "Bitcoin can absorb 293.7 TWh/yr \nof electricity already wasted, \nat zero marginal grid impact.",
 }
 
 # ────────────────────────────────────────────────────────────────────
@@ -448,7 +448,7 @@ def render_right(col_x: float) -> str:
         font_size=13, weight=700, fill=C_ACCENT
     ))
     parts.append(multiline(
-        "What 167 primary measurements support",
+        "What 166 primary measurements support",
         col_x + COL_W / 2, HEADER_TOP + 40,
         font_size=11, fill=C_NAVY
     ))
@@ -500,11 +500,11 @@ def render_right(col_x: float) -> str:
         f'font-family="Inter, system-ui, sans-serif">PRIMARY EVIDENCE BASE</text>'
     )
 
-    # 159 cyan cells in a grid + 8 amber cells appended
+    # 158 cyan cells in a grid + 8 amber cells appended
     n_cyan = RIGHT_EVIDENCE["live_tso_count"]
     n_amber = RIGHT_EVIDENCE["flare_basin_count"]
-    n_total = n_cyan + n_amber       # 167
-    cols = 25                         # gives ~7 rows for 167 cells
+    n_total = n_cyan + n_amber       # 166
+    cols = 25                         # gives ~7 rows for 166 cells
     cell = 13
     gap = 4
     pitch = cell + gap
@@ -618,7 +618,7 @@ def render_band(col_x_left: float, col_x_right: float) -> str:
         f'<text x="{col_x_right + 18}" y="{BAND_Y + 50}" '
         f'font-size="14" font-weight="700" fill="{C_NAVY}" '
         f'font-family="Inter, system-ui, sans-serif">'
-        f'167 primary measurements · 384 regions · open dataset'
+        f'166 primary measurements · 384 regions · open dataset'
         f'</text>'
     )
     parts.append(
@@ -647,7 +647,7 @@ def svg() -> str:
 
     return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {SVG_W} {SVG_H}" role="img" aria-labelledby="title desc" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif">
   <title id="title">Two evidence bases: the Bitcoin-energy policy edifice vs the wasted-energy counter-claim</title>
-  <desc id="desc">A two-column argument tree comparing the evidentiary foundation of the dominant "Bitcoin is environmentally unacceptable" policy narrative (left, drawn in muted grey-blue) against the foundation of this paper's counter-claim that Bitcoin can absorb already-wasted electricity (right, drawn in Sunfire cyan and amber). The left column reduces to six foundational sources, several of them formally contested or non-peer-reviewed, supporting three derived claims and three policy actions. The right column rests on 159 live transmission-system-operator feeds and 8 satellite-verified flare-gas basins (167 primary measurements in total) covering 384 regions in 195 countries.</desc>
+  <desc id="desc">A two-column argument tree comparing the evidentiary foundation of the dominant "Bitcoin is environmentally unacceptable" policy narrative (left, drawn in muted grey-blue) against the foundation of this paper's counter-claim that Bitcoin can absorb already-wasted electricity (right, drawn in Sunfire cyan and amber). The left column reduces to six foundational sources, several of them formally contested or non-peer-reviewed, supporting three derived claims and three policy actions. The right column rests on 158 live transmission-system-operator feeds and 8 satellite-verified flare-gas basins (166 primary measurements in total) covering 384 regions in 195 countries.</desc>
 
   <!-- Background frame -->
   <rect x="0" y="0" width="{SVG_W}" height="{SVG_H}" fill="{C_WHITE}"/>

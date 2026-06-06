@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 920" role="img" aria-labelledby="title desc" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif">
   <title id="title">Two evidence bases: the Bitcoin-energy policy edifice vs the wasted-energy counter-claim</title>
-  <desc id="desc">A two-column argument tree comparing the evidentiary foundation of the dominant "Bitcoin is environmentally unacceptable" policy narrative (left, drawn in muted grey-blue) against the foundation of this paper's counter-claim that Bitcoin can absorb already-wasted electricity (right, drawn in Sunfire cyan and amber). The left column reduces to six foundational sources, several of them formally contested or non-peer-reviewed, supporting three derived claims and three policy actions. The right column rests on 159 live transmission-system-operator feeds and 8 satellite-verified flare-gas basins (167 primary measurements in total) covering 384 regions in 195 countries.</desc>
+  <desc id="desc">A two-column argument tree comparing the evidentiary foundation of the dominant "Bitcoin is environmentally unacceptable" policy narrative (left, drawn in muted grey-blue) against the foundation of this paper's counter-claim that Bitcoin can absorb already-wasted electricity (right, drawn in Sunfire cyan and amber). The left column reduces to six foundational sources, several of them formally contested or non-peer-reviewed, supporting three derived claims and three policy actions. The right column rests on 158 live transmission-system-operator feeds and 8 satellite-verified flare-gas basins (166 primary measurements in total) covering 384 regions in 195 countries.</desc>
 
   <!-- Background frame -->
   <rect x="0" y="0" width="1080" height="920" fill="#FFFFFF"/>
@@ -83,13 +83,13 @@
   <path d="M957.6666666666666,218 C957.6666666666666,202.0 805.0,202.0 805.0,186" fill="none" stroke="#38b0d8" stroke-width="4.5" stroke-linecap="round" opacity="0.55"/>
   <rect x="558" y="22" width="494" height="56" rx="8" fill="#38b0d8" opacity="0.10"/>
   <text font-size="13" font-weight="700" fill="#38b0d8" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="805.0" y="44.0">THIS PAPER'S COUNTER</tspan></text>
-  <text font-size="11" font-weight="400" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="805.0" y="62.0">What 167 primary measurements support</tspan></text>
+  <text font-size="11" font-weight="400" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="805.0" y="62.0">What 166 primary measurements support</tspan></text>
   <rect x="570" y="86" width="470" height="100" rx="8" fill="#1A2340" stroke="#1A2340" stroke-width="0"/>
-  <text font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="805.0" y="120.0">Bitcoin can absorb 338.8 TWh/yr </tspan><tspan x="805.0" y="136.9">of electricity already wasted, </tspan><tspan x="805.0" y="153.8">at zero marginal grid impact.</tspan></text>
+  <text font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="805.0" y="120.0">Bitcoin can absorb 293.7 TWh/yr </tspan><tspan x="805.0" y="136.9">of electricity already wasted, </tspan><tspan x="805.0" y="153.8">at zero marginal grid impact.</tspan></text>
   <rect x="570.0" y="218" width="148.66666666666666" height="118" rx="7" fill="#FFFFFF" stroke="#38b0d8" stroke-width="1.6"/>
-  <text font-size="11" font-weight="500" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="644.3333333333334" y="263.0">Verified wasted electricity </tspan><tspan x="644.3333333333334" y="277.85">exceeds Bitcoin's appetite </tspan><tspan x="644.3333333333334" y="292.7">by 71% (338.8 vs 197.6 TWh/yr)</tspan></text>
+  <text font-size="11" font-weight="500" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="644.3333333333334" y="263.0">Verified wasted electricity </tspan><tspan x="644.3333333333334" y="277.85">exceeds Bitcoin's appetite </tspan><tspan x="644.3333333333334" y="292.7">by 49% (293.7 vs 197.6 TWh/yr)</tspan></text>
   <rect x="726.6666666666666" y="218" width="148.66666666666666" height="118" rx="7" fill="#FFFFFF" stroke="#38b0d8" stroke-width="1.6"/>
-  <text font-size="11" font-weight="500" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="801.0" y="263.0">Top five hotspots alone </tspan><tspan x="801.0" y="277.85">= $7.2 B/yr in foregone </tspan><tspan x="801.0" y="292.7">revenue across 4 fuels</tspan></text>
+  <text font-size="11" font-weight="500" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="801.0" y="263.0">Top five hotspots alone </tspan><tspan x="801.0" y="277.85">= $7.0 B/yr in foregone </tspan><tspan x="801.0" y="292.7">revenue across 4 fuels</tspan></text>
   <rect x="883.3333333333333" y="218" width="148.66666666666666" height="118" rx="7" fill="#FFFFFF" stroke="#38b0d8" stroke-width="1.6"/>
   <text font-size="11" font-weight="500" fill="#1A2340" text-anchor="middle" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif"><tspan x="957.6666666666666" y="263.0">Bitcoin's interruptibility profile </tspan><tspan x="957.6666666666666" y="277.85">uniquely matches the diurnal </tspan><tspan x="957.6666666666666" y="292.7">shape of curtailment supply</tspan></text>
   <rect x="570" y="370" width="470" height="348" rx="8" fill="#F7F7F4" stroke="#38b0d8" stroke-width="1.6" stroke-opacity="0.6"/>
@@ -252,7 +252,7 @@
   <rect x="679.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
   <rect x="696.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
   <rect x="713.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
-  <rect x="730.5" y="516" width="13" height="13" rx="2" fill="#38b0d8"/>
+  <rect x="730.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
   <rect x="747.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
   <rect x="764.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
   <rect x="781.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
@@ -260,9 +260,8 @@
   <rect x="815.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
   <rect x="832.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
   <rect x="849.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
-  <rect x="866.5" y="516" width="13" height="13" rx="2" fill="#F5A623"/>
-  <text x="582" y="551" font-size="11" fill="#1A2340" font-family="Inter, system-ui, sans-serif"><tspan fill="#38b0d8" font-weight="700">■</tspan> 159 live TSO feeds &#183; refreshed every 3h<tspan dx="18" fill="#F5A623" font-weight="700">■</tspan> 8 satellite-verified flare basins (continuous)</text>
-  <text x="582" y="569" font-size="11" fill="#6B7280" font-family="Inter, system-ui, sans-serif">Spanning 384 regions in 195 countries &#183; 41% backed by live grid-operator feeds &#183; 186 regions audited for foregone revenue</text>
+  <text x="582" y="551" font-size="11" fill="#1A2340" font-family="Inter, system-ui, sans-serif"><tspan fill="#38b0d8" font-weight="700">■</tspan> 158 live TSO feeds &#183; refreshed every 3h<tspan dx="18" fill="#F5A623" font-weight="700">■</tspan> 8 satellite-verified flare basins (continuous)</text>
+  <text x="582" y="569" font-size="11" fill="#6B7280" font-family="Inter, system-ui, sans-serif">Spanning 384 regions in 195 countries &#183; 41% backed by live grid-operator feeds &#183; 118 regions audited for foregone revenue</text>
 
   <!-- Bottom contrast band -->
   <rect x="28" y="748" width="494" height="88" rx="8" fill="#C8D2DD" opacity="0.35"/>
@@ -271,7 +270,7 @@
   <text x="46" y="818" font-size="11" fill="#5C6B7E" font-family="Inter, system-ui, sans-serif">Modelled estimates, single-author commentary, derivative reviews</text>
   <rect x="558" y="748" width="494" height="88" rx="8" fill="#38b0d8" opacity="0.12"/>
   <text x="576" y="774" font-size="11" font-weight="700" fill="#38b0d8" letter-spacing="0.08em" font-family="Inter, system-ui, sans-serif">FOUNDATIONS, RIGHT</text>
-  <text x="576" y="798" font-size="14" font-weight="700" fill="#1A2340" font-family="Inter, system-ui, sans-serif">167 primary measurements · 384 regions · open dataset</text>
+  <text x="576" y="798" font-size="14" font-weight="700" fill="#1A2340" font-family="Inter, system-ui, sans-serif">166 primary measurements · 384 regions · open dataset</text>
   <text x="576" y="818" font-size="11" fill="#1A2340" font-family="Inter, system-ui, sans-serif">Live TSO feeds (3h cadence) + satellite-verified flare basins, all auditable upstream</text>
 
   <!-- Footer rule -->
