@@ -33,7 +33,11 @@ const ZONES: readonly ZoneSpec[] = [
   { id: "norway-no2", domain: "10YNO-2--------T", rate: 0.08,  label: "NO2 Kristiansand / South-West hydro+offshore wind (NorNed/NordLink/North Sea Link cable zone, export-constrained)" },
   { id: "norway-no3", domain: "10YNO-3--------J", rate: 0.04,  label: "NO3 Trondheim / Central hydro+onshore wind" },
   { id: "norway-no4", domain: "10YNO-4--------9", rate: 0.06,  label: "NO4 Tromsø / North hydro+wind (export-constrained; unchanged from pre-split calibration)" },
-  { id: "norway-no5", domain: "10YNO-5--------8", rate: 0.025, label: "NO5 Bergen / West reservoir hydro (spring-spill curtailment only)", hydroOnly: true },
+  // NO5 (Bergen/West reservoir hydro) removed 2026-06-07: Statnett does not
+  // publish per-zone A75 data for this bidding zone — all psrTypes (B11, B12,
+  // B13…B19) return code 999 going back 12+ months. Region downgraded to
+  // tier:"estimated" and served from statics.json.ts with a hydro-seasonal
+  // Iceland-proxy shape. NO1–NO4 continue to report normally.
 ];
 
 async function fetchSeries(domain: string, psrType: string) {
@@ -232,7 +236,10 @@ function migrateCached(
       );
     }
   }
-  out["norway-no5"] = old["norway-no5"] ?? placeholderZone("norway-no5", ts);
+  // norway-no5 no longer emitted by this loader (moved to statics 2026-06-07);
+  // carry forward if present in old snapshot so existing consumers don't break
+  // until the statics spread takes effect, but don't create a placeholder entry.
+  if (old["norway-no5"]) out["norway-no5"] = old["norway-no5"];
   return out;
 }
 

@@ -243,6 +243,9 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   lithuania: "wind",
   latvia: "wind",
   malta: "solar",
+  // norway-no5 reverted live→estimated 2026-06-07: Statnett not reporting to
+  // ENTSO-E A75 for this bidding zone. Uses hydro-seasonal Iceland-proxy shape.
+  "norway-no5": "hydro-seasonal",
   // serbia/north-macedonia solar reverted live→estimated 2026-06-06 (PR #119):
   // ENTSO-E A75 B16 feed unreliable (non-EU Energy Community TSOs). Anchored
   // to IRENA RCS 2025 statics; both emit solar-shaped profiles.

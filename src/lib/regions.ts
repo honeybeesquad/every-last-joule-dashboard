@@ -170,7 +170,10 @@ export const REGIONS: Region[] = [
   { id: "norway-no3-wind",  name: "Norway NO3 Wind (Trondheim)",     country: "NOR", lat: 63.5, lon:  9.5, tier: "live", kind: "wind",  source: "ENTSO-E NO3 onshore wind", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
   { id: "norway-no4-hydro", name: "Norway NO4 Hydro (Tromsø)",       country: "NOR", lat: 67, lon:  14.5, tier: "live", kind: "hydro", source: "ENTSO-E NO4 hydro (export-constrained north)", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
   { id: "norway-no4-wind",  name: "Norway NO4 Wind (Tromsø)",        country: "NOR", lat: 70, lon:  23, tier: "live", kind: "wind",  source: "ENTSO-E NO4 wind (export-constrained north; former n-norway)", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
-  { id: "norway-no5",       name: "Norway NO5 (Bergen)",             country: "NOR", lat: 60.4, lon:   5.3, tier: "live", kind: "hydro", source: "ENTSO-E NO5 reservoir hydro (spring-spill only)", sourceUrl: "https://transparency.entsoe.eu/", sourceProvenance: "verified" },
+  // norway-no5 reverted live→estimated 2026-06-07: Statnett does not publish
+  // per-zone A75 data for NO5 on ENTSO-E (all psrTypes return code 999 back
+  // 12+ months). The profile was always synthetic (NO1 hydro scaled ×0.3).
+  { id: "norway-no5",       name: "Norway NO5 (Bergen)",             country: "NOR", lat: 60.4, lon:   5.3, tier: "estimated", kind: "hydro", source: "Statnett/NVE 2024 (NO5 Bergen/West reservoir hydro; spring-spill only; ENTSO-E A75 not submitted for this zone; profile modelled — Iceland hydro-seasonal shares as Nordic snowmelt proxy)", sourceUrl: "https://www.nve.no/energibruk-og-klimagasser/energibruk/vann-vind-og-sol-kraftproduksjon/vannkraft/", sourceProvenance: "modelled-fallback" },
   // Switzerland — PV-only ENTSO-E feed via Swissgrid. Hydro spill is
   // not captured in A75 data, so this understates total Swiss
   // curtailment but captures the fastest-growing summer-midday PV

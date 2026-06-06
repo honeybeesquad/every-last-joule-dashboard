@@ -6,9 +6,9 @@ Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Techni
 
 - **Region id:** `norway-no5`
 - **Country:** NOR
-- **Tier:** live
+- **Tier:** estimated
 - **Kind:** hydro
-- **Source:** ENTSO-E NO5 reservoir hydro (spring-spill only)
+- **Source:** Statnett/NVE 2024 (NO5 Bergen/West reservoir hydro; spring-spill only; ENTSO-E A75 not submitted for this bidding zone)
 - **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
 - **Loader:** [`norway.json.ts`](../../src/data/norway.json.ts)
 - **Structural gap:** no
