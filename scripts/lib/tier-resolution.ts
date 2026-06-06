@@ -243,6 +243,11 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   lithuania: "wind",
   latvia: "wind",
   malta: "solar",
+  // serbia/north-macedonia solar reverted live→estimated 2026-06-06 (PR #119):
+  // ENTSO-E A75 B16 feed unreliable (non-EU Energy Community TSOs). Anchored
+  // to IRENA RCS 2025 statics; both emit solar-shaped profiles.
+  "serbia-solar": "solar",
+  "north-macedonia-solar": "solar",
   // Phase 2 IRENA T3 anchors (2026-05-04): 11 new T3-static regions
   // sourced from IRENA RE Statistics 2024 capacity anchors.
   // All emit solar-shaped or mixed profiles; hydro → mixed per T3 routing.

@@ -6,7 +6,7 @@ Last updated: 2026-06-06 · Reverted live→estimated (ENTSO-E A75 B16 unreliabl
 
 - **Region id:** `serbia-solar`
 - **Country:** SRB
-- **Tier:** estimated (reverted from live 2026-06-06)
+- **Tier:** estimated
 - **Kind:** solar
 - **Source:** IRENA RCS 2025 (modelled-fallback anchor)
 - **Source URL:** [https://www.irena.org/Publications/2025/Mar/Renewable-capacity-statistics-2025](https://www.irena.org/Publications/2025/Mar/Renewable-capacity-statistics-2025)
