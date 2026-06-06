@@ -1,15 +1,15 @@
 # Validation — Chubu (Japan) (`japan-chubu`)
 
-Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `japan-chubu`
 - **Country:** JPN
-- **Tier:** estimated
+- **Tier:** live
 - **Kind:** solar
-- **Source:** Chubu Electric Power Grid juyo CSV × 1% calibrated curtailment (OCCTO FY2024 Chubu anchor: ~0.05 TWh/yr)
-- **Source URL:** [https://denki-yoho.chuden.jp/](https://denki-yoho.chuden.jp/)
+- **Source:** Chubu Electric Power Grid area supply/demand CSV (eria_jukyu_YYYYMM_04.csv) — direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min).
+- **Source URL:** [https://powergrid.chuden.co.jp/denkiyoho/eriajukyu_data/](https://powergrid.chuden.co.jp/denkiyoho/eriajukyu_data/)
 - **Loader:** [`japan-chubu.json.ts`](../../src/data/japan-chubu.json.ts)
 - **Structural gap:** no
 

@@ -1,6 +1,6 @@
 # Validation — Norway NO5 (Bergen) (`norway-no5`)
 
-Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** NOR
 - **Tier:** estimated
 - **Kind:** hydro
-- **Source:** Statnett/NVE 2024 (NO5 Bergen/West reservoir hydro; spring-spill only; ENTSO-E A75 not submitted for this bidding zone)
-- **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
+- **Source:** Statnett/NVE 2024 (NO5 Bergen/West reservoir hydro; spring-spill only; ENTSO-E A75 not submitted for this zone; profile modelled — Iceland hydro-seasonal shares as Nordic snowmelt proxy)
+- **Source URL:** [https://www.nve.no/energibruk-og-klimagasser/energibruk/vann-vind-og-sol-kraftproduksjon/vannkraft/](https://www.nve.no/energibruk-og-klimagasser/energibruk/vann-vind-og-sol-kraftproduksjon/vannkraft/)
 - **Loader:** [`norway.json.ts`](../../src/data/norway.json.ts)
 - **Structural gap:** no
 

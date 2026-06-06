@@ -1,15 +1,15 @@
 # Validation — Hokkaido (Japan) (`japan-hokkaido`)
 
-Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `japan-hokkaido`
 - **Country:** JPN
-- **Tier:** estimated
+- **Tier:** live
 - **Kind:** solar
-- **Source:** Hokkaido Electric juyo CSV (5-min solar) × 5% calibrated curtailment (OCCTO FY2024 Hokkaido anchor: ~0.10 TWh/yr)
-- **Source URL:** [https://denkiyoho.hepco.co.jp/](https://denkiyoho.hepco.co.jp/)
+- **Source:** Hokkaido Electric Power Network area supply/demand CSV (eria_jukyu_YYYYMM_01.csv) — direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min).
+- **Source URL:** [https://www.hepco.co.jp/network/con_service/public_document/supply_demand_results/index.html](https://www.hepco.co.jp/network/con_service/public_document/supply_demand_results/index.html)
 - **Loader:** [`japan-hokkaido.json.ts`](../../src/data/japan-hokkaido.json.ts)
 - **Structural gap:** no
 

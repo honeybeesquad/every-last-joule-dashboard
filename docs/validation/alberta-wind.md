@@ -1,6 +1,6 @@
 # Validation — Alberta Wind (`alberta-wind`)
 
-Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -13,10 +13,10 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 - **Loader:** [`alberta.json.ts`](../../src/data/alberta.json.ts)
 - **Structural gap:** no
 
+
 <!-- BEGIN MANUAL -->
 - **Source provenance:** `verified` — AESO publishes the live wind snapshot AND the calibrated 5% curtailment rate; both are own-jurisdiction feeds, no fallback shape involved. (See [tier-classification-guide.md#source-provenance-orthogonal-to-tier](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).)
 <!-- END MANUAL -->
-
 ## Calibration
 
 - **Rate source documented in:** `docs/methodology/` (see links below)
@@ -51,8 +51,7 @@ AESO CSD is a current-supply snapshot rather than a historical curtailment feed.
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
 
-## Bad-conversions check
-
+<!-- WARNING: regen could not place this block -->
 <!-- BEGIN MANUAL -->
 See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject) for the full checklist.
 

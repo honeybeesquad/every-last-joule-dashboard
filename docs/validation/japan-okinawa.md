@@ -1,6 +1,6 @@
 # Validation — Okinawa (Japan) (`japan-okinawa`)
 
-Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** JPN
 - **Tier:** live
 - **Kind:** solar
-- **Source:** Okinawa Electric juyo CSV × 2% calibrated curtailment (OCCTO FY2024 Okinawa anchor: ~0.04 TWh/yr)
-- **Source URL:** [https://www.okiden.co.jp/](https://www.okiden.co.jp/)
+- **Source:** Okinawa Electric area supply/demand CSV (eria_jukyu_YYYYMM_10.csv) — direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min).
+- **Source URL:** [https://www.okiden.co.jp/business-support/service/supply-and-demand/csv/](https://www.okiden.co.jp/business-support/service/supply-and-demand/csv/)
 - **Loader:** [`japan-okinawa.json.ts`](../../src/data/japan-okinawa.json.ts)
 - **Structural gap:** no
 
