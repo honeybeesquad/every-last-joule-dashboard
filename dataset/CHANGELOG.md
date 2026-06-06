@@ -2,6 +2,25 @@
 
 All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.2] — 2026-06-07
+
+Data-accuracy release. Corrects a Brazil curtailment-formula bug that overstated the global total, repairs four upstream loader failures discovered from production build logs, and reconciles every numeric claim in the paper against the corrected snapshots. Region count grows by one (385).
+
+### Fixed
+- **Brazil ONS curtailment formula** (commit `eabf8e5`, 2026-05-17) — `val_geracaolimitada` was summed as the curtailment amount, but it is the generation *cap* (what ONS allowed the plant to produce). Correct formula is `max(0, val_geracaoreferencia − val_geracaolimitada)`; rows with empty `val_geracaolimitada` are unconstrained and now skipped. States with many fully-curtailed events (Maranhão, Ceará) had been undercounted; states with large partial caps (Piauí ~5×, RN/BA/PB/PE ~2×) overcounted. All other loaders audited — no other loader shares this bug class.
+- **Norway NO5 hydro** (PR #119) — loader queried only ENTSO-E B12 (run-of-river); NO5 Bergen/West reservoir hydro is reported under B11. `fetchHydroSeries()` now queries B11 + B12 and merges, restoring ~6 weeks of stalled live data.
+- **NYISO solar data-gap** (PR #119) — EIA's NYIS SUN feed returned all-zero rows for ~24 days, degrading both fuels to a stale snapshot. The loader now keeps wind live and synthesises solar from the wind profile × fallback split when an all-zero gap is detected.
+- **`sourceStatus` accuracy** (PR #119) — multi-region loaders (ENTSO-E, Norway) that fell back to cached data for individual zones no longer mislabel those zones as `live`; per-zone fallbacks stamp staleness-aware `cached`/`degraded`.
+
+### Changed — coverage / tiers
+- **385 regions** (was 384) — `new-zealand-hydro` added 2026-05-24 (T1a, EMI nodal-price signal).
+- **serbia-solar + north-macedonia-solar reverted live → estimated** (PR #119) — ENTSO-E A75 B16 (solar) feed ceased ~2026-05-13. Root cause is structural: EMS Serbia and MEPSO North Macedonia are non-EU Energy Community TSOs not bound by EU Reg 543/2013 (the EnC Secretariat flagged North Macedonia transparency as "well below required levels"). Both re-anchored to IRENA RCS 2025 statics (Serbia 0.007 TWh/yr; NMK 0.02 TWh/yr — a noted underestimate given NMK's 833 MW→1.2 GW build-out). The wind feeds (B19) remain live.
+- **Tier tally** (counted from `src/lib/regions.ts`): T1a=148, T1b=9, T1c=1, T2=6, T2-flare=8, T3=213 (total 385).
+
+### Changed — paper / figures
+- **Numbers refreshed against corrected snapshots** (PR #109): verified wasted total 338.8 → **293.7 TWh/yr**; T1 curtailed renewables 184.5 → **138.9 TWh** (−25%, Brazil-driven); wasted/Bitcoin 171% → **149%**; curtailed-alone/Bitcoin 93.4% → **70%**; foregone revenue $16.2B → **$14.3B**; priced verified regions 186 → **118**. §3 reframed flare-led (53% flare / 47% curtailed renewables).
+- **New Figure 1 "two evidence bases" claim-cascade** (PR #108) — argument-tree contrasting the six-source policy edifice against 166 primary measurements (158 live feeds + 8 flare basins). Globe + map renumbered to Figures 2/3.
+
 ## [1.3.1] — 2026-05-12
 
 Pre-launch verification hotfix. v1.3.0 shipped with the figure-rendering scripts (`scripts/validation/figure1_global_map.py`, `figure4_coverage_map.py`) still using the pre-PR-#88 tier-vocabulary regex (`live|static|flare`), which silently skipped every `tier: "anchored"` or `tier: "estimated"` row after the 2026-05-10 refactor renamed the buckets. Result: Figure 4 showed only 159 T1 regions instead of 384, and Figure 1 showed 0 T2/T3 dots. Caught during the launch verification pass.

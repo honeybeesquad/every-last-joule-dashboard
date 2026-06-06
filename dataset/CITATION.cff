@@ -2,11 +2,11 @@ cff-version: 1.2.0
 message: "If you use this dataset in academic work, please cite it as below."
 type: dataset
 title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring"
-version: 1.3.1
-date-released: 2026-05-12
+version: 1.3.2
+date-released: 2026-06-07
 abstract: >-
   A versioned, reproducible synthesis dataset of hourly renewable-electricity
-  curtailment and associated-gas flaring, covering 384 regions across six
+  curtailment and associated-gas flaring, covering 385 regions across six
   continents. Built by combining live feeds from transmission system operators
   and energy regulators (ENTSO-E, EIA, AEMO, Elexon, ONS, and others) with
   published annual calibration anchors (IRENA, Ember, GGFR). Each region's
@@ -38,13 +38,13 @@ url: "https://everylastjoule.com"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.20136284"
-    description: "Zenodo archival DOI (versioned, v1.3.1 — minted 2026-05-12)"
+    description: "Zenodo archival DOI (versioned, v1.3.1 — minted 2026-05-12; v1.3.2 version DOI updated post-mint)"
   - type: doi
     value: "10.5281/zenodo.19835411"
     description: "Zenodo concept DOI (resolves to latest version)"
 preferred-citation:
   type: article
-  title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 384 regions"
+  title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 385 regions"
   authors:
     - family-names: Collins
       given-names: Simon

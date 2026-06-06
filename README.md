@@ -1,6 +1,6 @@
 # Every Last Joule
 
-Hourly renewable-electricity curtailment and associated-gas flaring across **384 regions** on six continents. Live dashboard at **[everylastjoule.com](https://everylastjoule.com)**.
+Hourly renewable-electricity curtailment and associated-gas flaring across **385 regions** on six continents. Live dashboard at **[everylastjoule.com](https://everylastjoule.com)**.
 
 This repository contains both the published dataset (the academic artefact) and the dashboard build that produces it (the engineering artefact).
 
@@ -14,7 +14,7 @@ This repository contains both the published dataset (the academic artefact) and 
 
 ## What this dataset is
 
-A versioned, reproducible synthesis of hourly curtailment series, with **per-region provenance, calibration rate, and confidence tier** on every emitted row. The 384 regions break down across the T1a/T1b/T1c (live), T2 / T2-flare (annual-calibrated), and T3 (modelled) tiers — run `npm run tally:tiers` for the authoritative current breakdown and per-bucket region list.
+A versioned, reproducible synthesis of hourly curtailment series, with **per-region provenance, calibration rate, and confidence tier** on every emitted row. The 385 regions break down across the T1a/T1b/T1c (live), T2 / T2-flare (annual-calibrated), and T3 (modelled) tiers — run `npm run tally:tiers` for the authoritative current breakdown and per-bucket region list.
 
 A seven-year hourly reconstruction (2020-01-01 → 2026-04-24, **2,590,195 rows × 29 regions**) is published alongside the live snapshots in [`data/historical/curtailment_backfill.parquet`](data/historical/). Methodology in [`docs/methodology/historical-backfill.md`](docs/methodology/historical-backfill.md).
 
@@ -50,7 +50,7 @@ Live data loaders need free upstream API tokens (`ENTSOE_TOKEN`, `EIA_API_KEY`, 
 
 ## Citation
 
-> Collins, S. (2026). _Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 384 regions._ Scientific Data (in review). Dataset version: v1.3.1; Zenodo version DOI [10.5281/zenodo.20136284](https://doi.org/10.5281/zenodo.20136284); concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to latest.
+> Collins, S. (2026). _Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 385 regions._ Scientific Data (in review). Dataset version: v1.3.2; Zenodo concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to latest (v1.3.2 version DOI minted on release).
 
 Machine-readable: [`dataset/CITATION.cff`](dataset/CITATION.cff).
 
