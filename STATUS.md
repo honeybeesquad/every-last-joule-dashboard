@@ -1,6 +1,6 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-05-17
+**Last verified against git:** 2026-06-06
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
@@ -11,10 +11,10 @@
 ## What's shipped on `main`
 
 **Coverage — full world:**
-- 384 regions across 195 countries (every UN member + Taiwan + Palestine)
-- Tally golden as of 2026-05-11: T1a=149, T1b=9, T1c=1, T2=6, T2-flare=8, T3=211 (Japan chubu/tepco/hokkaido downgraded from T1a→T3 in PR #90; malta/lithuania/latvia reverted live→estimated 2026-05-11 to match production data flow; total still 384)
+- 385 regions across 195 countries (every UN member + Taiwan + Palestine)
+- **Tally golden as of 2026-06-06: T1a=148, T1b=9, T1c=1, T2=6, T2-flare=8, T3=213 (total 385).** Counted directly from `src/lib/regions.ts` (tier field: live=148, live-domestic-anchored=9, live-neighbour-anchored=1, anchored=14 [8 flare + 6 flat], estimated=213). Locked by `tests/regions.test.ts`. Drift since the 2026-05-11 golden (T1a=149/T3=211/total=384): new-zealand-hydro added 2026-05-24 (T1a +1, total 384→385); serbia-solar + north-macedonia-solar reverted live→estimated 2026-06-06 (T1a −2, T3 +2). See PR #119.
 - Live at **everylastjoule.com** — Vercel auto-deploys from `main`
-- Dashboard banner: **"Wasted Energy Database · v1.3.1"** (pulled from Zenodo version metadata)
+- Dashboard banner: **"Wasted Energy Database · v1.3.1"** (pulled live from Zenodo version metadata; no v1.3.2 deposit minted yet — see version-skew note below)
 
 **Tier taxonomy (refactored in PR #88, 2026-05-10):**
 - `kind` (content type): wind, solar, hydro, mixed, geo, flare — orthogonal to tier
@@ -64,9 +64,27 @@
 - Effect: states with many fully-curtailed events (Maranhão, Ceará) were undercounted; states with large partial caps (Piauí 5×, RN/BA/PB/PE ~2×) were overcounted. Snapshot regenerated from live ONS data.
 - Audited all other loaders: no other loader has this class of bug (AEMO uses `unconstrained−cleared`; EirGrid/Chile/Colombia use direct curtailment columns; all others use calibrated `generation × rate`).
 
+**Loader-resilience sprint (shipped 2026-06-06, PR #119):**
+Diagnosed from persistent Vercel build-log errors (all builds since ~2026-05-13 silently falling back to stale snapshots).
+- **Norway NO5 hydro** — `fetchHydroSeries()` now queries both B11 (Water Reservoir) and B12 (Run-of-river) and merges. ENTSO-E reclassified NO5 Bergen/West reservoir hydro from B12; the B12-only query had returned zero for ~6 weeks. NO5 live again.
+- **NYISO solar all-zeros** — EIA's NYIS SUN feed returns rows but all-zero values (upstream data-gap, ~24 days). `buildEiaIsoRegionPerFuel.run()` now detects this and keeps wind fresh while synthesising solar from the wind profile × fallbackSplit (`synthesizeSolarFromWind`), instead of degrading both fuels to a stale snapshot.
+- **`sourceStatus` accuracy** — `stampLive()` (resilient.ts) now preserves `cached`/`degraded` status set by per-zone internal fallbacks; ENTSO-E + Norway per-zone catch blocks stamp staleness-aware status. Stale sub-regions no longer masquerade as `live`.
+- **serbia-solar + north-macedonia-solar reverted live→estimated** — ENTSO-E A75 B16 feed ceased ~2026-05-13. Root cause is structural, not transient: EMS Serbia and MEPSO North Macedonia are non-EU **Energy Community** TSOs; EU Reg 543/2013 does not bind them (EnC Secretariat IR 2023 flagged NMK transparency "well below required levels", 543/2013 not transposed). Both removed from `entsoe.json.ts` ZONES; re-anchored to IRENA RCS 2025 in `statics.json.ts` (Serbia 0.007 TWh/yr; NMK 0.02 TWh/yr — flagged underestimate given NMK 833 MW→1.2 GW growth). `regions.ts` tier→estimated, provenance→modelled-fallback. Validation docs rewritten. (serbia-wind / north-macedonia-wind stay live — B19 reporting is compliant.)
+
+**Paper v1.3.2 numbers refresh (shipped 2026-06-06, PR #109):**
+- Every numeric claim in `src/paper.md` + `docs/dari/paper.html` re-derived against current snapshots after the Brazil ONS formula fix (eabf8e5). Six claims drifted >5%: total verified waste 338.8→**293.7 TWh**, T1 curtailed renewables 184.5→**138.9 TWh** (−25%, Brazil-driven), wasted/Bitcoin 171%→**149%**, curtailed-alone/Bitcoin 93.4%→**70%**, foregone revenue $16.2B→**$14.3B**, priced regions 186→**118 verified**.
+- §3 reframed (editorial Option B): leads with flare-dominant verified total (293.7 TWh = 149% of Bitcoin); 53% flare / 47% curtailed renewables. Bitcoin denominator kept at WooCharts 197.6 per paper's stated anchor.
+- **Version skew:** paper prose is now on "v1.3.2 numbers" but no v1.3.2 dataset has been minted to Zenodo — the dataset DOI / dashboard banner remain v1.3.1. `.zenodo.json` description also still says "384 regions" (now 385). Reconcile at the next Zenodo deposit.
+
 ## What's NOT shipped / open PRs
 
-None. 9 PRs merged 2026-05-10 (#84-#92). PR #68 is fully superseded — pricing data layer deleted in PR #87.
+**Merged since the 2026-05-12 launch sprint:** #95, #96 (M/L/L revert), #98–#104 (data-freshness, embed-globe figure work, paper accuracy/top-5 passes), #119 (loader-resilience, above), #109 (paper v1.3.2 numbers, above). Analytics shipped directly to main (commits 36a602e / 7dcf2e8 / 6ce4c7e) via dynamic-inject, **not** via a component file.
+
+**Open PRs (2026-06-06):**
+- **#108** `feat/paper-claim-cascade-hero` — "two evidence bases" Figure 1 (claim-cascade SVG). **BLOCKED:** the committed `docs/dari/charts/claim-cascade.svg` hardcodes pre-Brazil-fix numbers (`338.8 TWh`, `exceeds by 71%`) which now contradict the merged #109 prose (293.7 TWh / +49%). The live-feed count baked into the figure is also likely stale after the serbia/nmk demotion. Fix: rerun `scripts/charts/build-claim-cascade.py` with current totals, recommit the SVG, then merge. No conflicts with main.
+- **#105** `vercel/install-and-configure-vercel-w-78z92s` (DRAFT) — Vercel bot's analytics-via-`src/components/analytics.js` approach. **Redundant:** analytics already shipped to main via a different mechanism (dynamic inject). Recommend closing.
+
+PR #68 is fully superseded — pricing data layer deleted in PR #87.
 
 ## Known follow-ups
 
@@ -77,6 +95,9 @@ None. 9 PRs merged 2026-05-10 (#84-#92). PR #68 is fully superseded — pricing 
 - ✅ `build_region_docs.py` manual-block markers — PR #92
 
 **Still outstanding:**
+- **Regenerate the #108 claim-cascade SVG** — blocks PR #108. Rerun `scripts/charts/build-claim-cascade.py` with current numbers (293.7 TWh total, 149% of Bitcoin, current live-feed count post serbia/nmk demotion) and recommit `docs/dari/charts/claim-cascade.svg`. See open-PRs section.
+- **Recalibrate north-macedonia-solar anchor** — current 0.02 TWh/yr static (IRENA RCS 2025, 833 MW end-2024 basis) is a known underestimate; NMK hit ~1.2 GW by end-2025 with solar already moving power-exchange prices. Revisit if a machine-readable MEPSO/exchange curtailment source appears. (serbia-solar 0.007 TWh/yr is fine — curtailment genuinely negligible at 241–318 MW per USEA 2022.)
+- **Close PR #105** — redundant analytics implementation (feature already live on main). User's call.
 - **Wrap the other 6 cited docs in manual-block markers** — `alberta-wind.md` and `india-{andhra-pradesh,gujarat,karnataka,maharashtra,tamil-nadu}.md`. PR #92 demonstrated the mechanism on `india-rajasthan.md` only. Mechanical sweep, ~10 minutes of work.
 - **End-to-end loader-output integrity test** — deferred to Phase 5 of the audit-fix plan. Needs the wiring logic factored out of `src/index.md`'s inline Observable cell into a callable `loaders.ts` module, then a test that exercises the full loader → wiring → `regionData` chain.
 - **`mountGlobe` split** — 862-line single function holding rendering, projection, drag/zoom, panel, weather/price threading. Worth a refactor pass, separate brainstorming.
