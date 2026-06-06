@@ -119,11 +119,11 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "northern-ireland-wind":   "wind",
   "northern-ireland-solar":  "solar",
   israel: "solar",
-  // Japan W1 per-utility loaders (2026-05-02). All live loaders; entries here
-  // are fallback profileKind values used only if the live CSV is inaccessible.
-  "japan-chubu": "solar",
+  // Japan W1 per-utility loaders (2026-05-02). Entries here are fallback
+  // profileKind values for live loaders only if the live CSV is inaccessible.
+  // japan-chubu: promoted estimated→live 2026-06-07 (eria_jukyu area CSV).
+  // japan-hokkaido: promoted estimated→live 2026-06-07 (eria_jukyu area CSV).
   "japan-chugoku": "solar",
-  "japan-hokkaido": "solar",
   "japan-hokuriku": "solar",
   "japan-kansai": "solar",
   // japan-kyushu: live as of CODEX-PHASE26-J (2026-04-26), renamed from
@@ -135,7 +135,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "japan-kyushu": "solar",
   "japan-okinawa": "solar",
   "japan-shikoku": "solar",
-  "japan-tepco": "solar",
+  // japan-tepco: promoted estimated→live 2026-06-07 (eria_jukyu area CSV).
   jeju: "wind",
   jordan: "solar",
   kazakhstan: "wind",

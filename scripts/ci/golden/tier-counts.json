@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-07 (norway-no5 reverted live→estimated — Statnett does not publish A75 for this zone; T1a −1, T3 +1). Prior: 2026-06-07 v1.3.2 (new-zealand-hydro +1, serbia/nmk solar −2 T1a +2 T3).",
-  "T1a": 147,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-07 (japan-tepco/chubu/hokkaido promoted estimated→live via direct eria_jukyu area CSVs; T1a +3, T3 −3). Prior: 2026-06-07 (norway-no5 reverted live→estimated).",
+  "T1a": 150,
   "T1b": 9,
   "T1c": 1,
   "T2": 6,
   "T2-flare": 8,
-  "T3": 214,
+  "T3": 211,
   "total": 385
 }
