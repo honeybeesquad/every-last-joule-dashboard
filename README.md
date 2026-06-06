@@ -50,7 +50,7 @@ Live data loaders need free upstream API tokens (`ENTSOE_TOKEN`, `EIA_API_KEY`, 
 
 ## Citation
 
-> Collins, S. (2026). _Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 385 regions._ Scientific Data (in review). Dataset version: v1.3.2; Zenodo concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to latest (v1.3.2 version DOI minted on release).
+> Collins, S. (2026). _Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 385 regions._ Scientific Data (in review). Dataset version: v1.3.2; Zenodo version DOI [10.5281/zenodo.20570864](https://doi.org/10.5281/zenodo.20570864); concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to latest.
 
 Machine-readable: [`dataset/CITATION.cff`](dataset/CITATION.cff).
 
