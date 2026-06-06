@@ -245,6 +245,12 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   lithuania: { annualTWh: 0.2, kind: "wind", localSolarPeakUTC: 9.0, source: "IRENA Lithuania 2024 (ESO); solar+wind; BRELL ring member; ENTSO-E A75 verification pending)", reportDate: "2024" },
   latvia: { annualTWh: 0.1, kind: "hydro", source: "IRENA Latvia 2024 (AST); Augstkaigo + Ventspils nafta + solar; BRELL; ENTSO-E A75 verification pending)", reportDate: "2024" },
   albania: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Albania 2024 — Karavasta (140 MW) + Spitalla (100 MW) PV; ~240 MW total; modelled ~2% curtailment", reportDate: "2024" },
+  // Serbia and North Macedonia: reverted live→estimated 2026-06-06.
+  // ENTSO-E A75 B16 feed unreliable — both are non-EU Energy Community TSOs;
+  // EU Reg 543/2013 does not bind them. NMK transparency flagged as "well below
+  // required levels" by EnC Secretariat (IR 2023).
+  "serbia-solar": { annualTWh: 0.007, kind: "solar", localSolarPeakUTC: 10.5, source: "pv-magazine / IRENA RCS 2025 (EMS Serbia; 241 MW solar end-2024 → 318 MW end-2025; ~0.12 TWh/yr generation; USEA 2022 study: curtailment negligible at current capacity; ENTSO-E A75 B16 non-compliant as non-EU Energy Community TSO; modelled 2% rate)", reportDate: "2025" },
+  "north-macedonia-solar": { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 10.5, source: "IRENA RCS 2025 / pv-magazine 2026 (MEPSO; 833 MW solar end-2024 → 1.2 GW end-2025; solar already driving power exchange prices; EnC Secretariat IR 2023: transparency below required levels, 543/2013 not transposed; modelled 2% curtailment — will understate as capacity grows)", reportDate: "2025" },
   // Phase 4-A: belarus split into wind + solar (IRENA 2024: ~160 MW wind Grodno/Minsk + ~90 MW solar)
   "belarus-wind": { annualTWh: 0.05, kind: "wind", localSolarPeakUTC: 10.1, source: "IRENA RCS 2025 / Belenergo annual report (~160 MW wind, Grodno + Minsk corridors)", reportDate: "2024" },
   "belarus-solar": { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 10.1, source: "IRENA RCS 2025 / Belenergo annual report (~90 MW solar, growing residential + utility PV)", reportDate: "2024" },

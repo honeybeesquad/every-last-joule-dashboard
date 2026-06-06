@@ -97,7 +97,8 @@ describe("regions", () => {
     // Per-fuel globalisation (2026-05-05): finland, ireland-republic, northern-ireland
     // split into wind+solar. Net +3 regions. 380 + 3 = 383.
     // Issue #62 (2026-05-06): add Palestine T3 static. Net +1 region. 383 + 1 = 384.
-    expect(REGIONS.length).toBe(384);
+    // 2026-05-24: new-zealand-hydro added (T1a). 384 + 1 = 385.
+    expect(REGIONS.length).toBe(385);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -161,12 +162,14 @@ describe("regions", () => {
     // 2026-05-10: japan-chubu/tepco/hokkaido downgraded live→estimated. T1a: 155→152. Total: 165→162.
     // 2026-05-11: malta/lithuania/latvia reverted live→estimated (no verifiable A75
     // curtailment; production data was already flowing from IRENA statics). T1a: 152→149.
+    // 2026-05-24: new-zealand-hydro added (T1a, kind:hydro). T1a: 149→150. Total: 384→385.
+    // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. T1a: 150→148. Total: 160→158.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(148);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(159);
+    expect(liveTotal).toBe(158);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -190,10 +193,12 @@ describe("regions", () => {
     // split into wind+solar. Net +3 T1a. live: 152→155.
     // 2026-05-10: japan-chubu/tepco/hokkaido downgraded. T1a: 155→152. Total live: 165→162.
     // 2026-05-11: malta/lithuania/latvia reverted. T1a: 152→149. Total: 162→159.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
+    // 2026-05-24: new-zealand-hydro added T1a. T1a: 149→150. Total: 159→160.
+    // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. T1a: 150→148. Total: 160→158.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(148);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(159);
+    expect(liveTotal).toBe(158);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -268,7 +273,8 @@ describe("regions", () => {
     // Issue #62 (2026-05-06): add Palestine T3 static. 210 + 1 = 211.
     // 2026-05-10: japan-chubu/tepco/hokkaido downgraded live→estimated. +3. 205→208.
     // 2026-05-11: malta/lithuania/latvia reverted live→estimated. +3. 208→211.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(211);
+    // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. +2. 211→213.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(213);
   });
 
   it("has 14 anchored regions (8 flare + 6 flat-profile)", () => {

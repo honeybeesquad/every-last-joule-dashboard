@@ -51,7 +51,9 @@ describe("static regions", () => {
     // Canonical count: 122 + 19 = 141.
     // Issue #62 (2026-05-06): add Palestine T3 static (already in STATIC_REGIONS,
     // moved from non-canonical to canonical). 141 + 1 = 142.
-    expect(Object.keys(data).length).toBe(142);
+    // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated,
+    // added to STATIC_REGIONS as canonical anchors. 142 + 2 = 144.
+    expect(Object.keys(data).length).toBe(144);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -88,7 +90,9 @@ describe("static regions", () => {
     // Non-canonical: 146 - 141 = 5.
     // Issue #62 (2026-05-06): Palestine moved from non-canonical to canonical.
     // Research pool unchanged at 146. Canonical: 141 + 1 = 142. Non-canonical: 4.
-    expect(Object.keys(researchData).length).toBe(146);
+    // 2026-06-06: serbia-solar + north-macedonia-solar added to pool as canonical.
+    // Research pool: 146 + 2 = 148. Canonical: 142 + 2 = 144. Non-canonical: 4.
+    expect(Object.keys(researchData).length).toBe(148);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
