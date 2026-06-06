@@ -56,9 +56,35 @@ async function fetchSeries(domain: string, psrType: string) {
   return parseEntsoeXml(await fetchText(`${API}?${params.toString()}`));
 }
 
+// Query both B11 (Water Reservoir) and B12 (Run-of-river) and merge. ENTSO-E
+// classifies Norwegian hydro inconsistently across zones and over time: NO5
+// (Bergen / West reservoir) is labelled as reservoir hydro but has historically
+// appeared under B12 and later under B11. Fetching both avoids a silent zero
+// when the TSO switches classification.
+async function fetchHydroSeries(domain: string): Promise<ReturnType<typeof parseEntsoeXml>> {
+  const [b11, b12] = await Promise.all([
+    fetchSeries(domain, "B11"),
+    fetchSeries(domain, "B12"),
+  ]);
+  if (b11.length === 0) return b12;
+  if (b12.length === 0) return b11;
+  // Both have data — merge by summing MW at each timestamp.
+  const map = new Map<string, { mw: number; intervalHours?: number }>();
+  for (const p of [...b11, ...b12]) {
+    const existing = map.get(p.utcTimestamp);
+    map.set(p.utcTimestamp, {
+      mw: (existing?.mw ?? 0) + p.mw,
+      intervalHours: p.intervalHours ?? existing?.intervalHours,
+    });
+  }
+  return Array.from(map.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([utcTimestamp, { mw, intervalHours }]) => ({ utcTimestamp, mw, intervalHours }));
+}
+
 async function buildZone(spec: ZoneSpec): Promise<Record<string, RegionData>> {
   const [hydro, wind] = await Promise.all([
-    fetchSeries(spec.domain, "B12"),
+    fetchHydroSeries(spec.domain),
     spec.hydroOnly ? Promise.resolve([]) : fetchSeries(spec.domain, "B19"),
   ]);
 
@@ -123,7 +149,12 @@ export async function buildNorwayData(): Promise<Record<string, RegionData>> {
       const keys = spec.hydroOnly ? [spec.id] : [`${spec.id}-hydro`, `${spec.id}-wind`];
       for (const key of keys) {
         if (previous[key]) {
-          out[key] = previous[key];
+          const prev = previous[key];
+          const lastSuccessAt = prev.lastSuccessAt ?? prev.lastUpdated ?? "";
+          const ageHours = lastSuccessAt
+            ? (Date.now() - new Date(lastSuccessAt).getTime()) / 3_600_000
+            : Infinity;
+          out[key] = { ...prev, sourceStatus: ageHours > 24 ? "degraded" : "cached" };
         } else {
           throw new Error(`Norway zone ${spec.id} failed and no cached data for ${key}`);
         }
@@ -143,7 +174,15 @@ function tagMulti(
   status: "live" | "cached",
 ): Record<string, RegionData> {
   const tagged: Record<string, RegionData> = {};
-  for (const [k, v] of Object.entries(r)) tagged[k] = { ...v, sourceStatus: status };
+  for (const [k, v] of Object.entries(r)) {
+    // Preserve "cached"/"degraded" stamped by per-zone fallback inside buildNorwayData.
+    tagged[k] = {
+      ...v,
+      sourceStatus: (v.sourceStatus === "cached" || v.sourceStatus === "degraded")
+        ? v.sourceStatus
+        : status,
+    };
+  }
   return tagged;
 }
 

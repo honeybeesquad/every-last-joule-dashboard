@@ -218,12 +218,9 @@ export const ZONES = [
     technologies: [{ psrType: "B19", fuel: "wind", rate: 0.03 }],
     sourceNote: "EMS Serbia ENTSO-E A75 wind: regional default ~3%.",
   },
-  {
-    id: "serbia-solar",
-    domain: "10YCS-SERBIATSOV",
-    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.02 }],
-    sourceNote: "EMS Serbia ENTSO-E A75 solar: regional default ~2%.",
-  },
+  // serbia-solar removed 2026-06-06: ENTSO-E A75 B16 feed ceased ~2026-05-13.
+  // EMS Serbia is a non-EU Energy Community TSO; EU Reg 543/2013 does not bind
+  // it and reporting is voluntary. Reverted to estimated anchor in statics.json.ts.
   {
     id: "bosnia-and-herzegovina",
     domain: "10YBA-JPCC-----D",
@@ -236,12 +233,12 @@ export const ZONES = [
     technologies: [{ psrType: "B19", fuel: "wind", rate: 0.03 }],
     sourceNote: "MEPSO North Macedonia: regional default ~3% wind.",
   },
-  {
-    id: "north-macedonia-solar",
-    domain: "10YMK-MEPSO----8",
-    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.02 }],
-    sourceNote: "MEPSO North Macedonia: regional default ~2% solar.",
-  },
+  // north-macedonia-solar removed 2026-06-06: ENTSO-E A75 B16 feed ceased ~2026-05-13.
+  // MEPSO is a non-EU Energy Community TSO; EnC Secretariat 2023 report found
+  // transparency "well below required levels" with 543/2013 not transposed into
+  // national law. Reverted to estimated anchor in statics.json.ts. Note: NMK solar
+  // capacity grew to 833 MW (end-2024) → 1.2 GW (end-2025); curtailment is real
+  // and growing but no machine-readable live source is available.
   {
     id: "montenegro",
     domain: "10YCS-CG-TSO---S",
@@ -360,7 +357,15 @@ const run = async (): Promise<Record<string, RegionData>> => {
     } catch (err) {
       console.warn(`ENTSO-E zone ${zone.id} failed: ${(err as Error).message}`);
       if (previous[zone.id]) {
-        out[zone.id] = previous[zone.id];
+        const prev = previous[zone.id];
+        const lastSuccessAt = prev.lastSuccessAt ?? prev.lastUpdated ?? "";
+        const ageHours = lastSuccessAt
+          ? (Date.now() - new Date(lastSuccessAt).getTime()) / 3_600_000
+          : Infinity;
+        out[zone.id] = {
+          ...prev,
+          sourceStatus: ageHours > 24 ? "degraded" : "cached",
+        };
       } else {
         throw new Error(`ENTSO-E zone ${zone.id} failed and no cached data available`);
       }
@@ -381,7 +386,16 @@ if (isMain) {
     regionTier: "live" as const,
     tagLive: (r) => {
       const tagged: Record<string, RegionData> = {};
-      for (const [k, v] of Object.entries(r)) tagged[k] = { ...v, sourceStatus: "live" };
+      for (const [k, v] of Object.entries(r)) {
+        // Preserve "cached"/"degraded" stamped by per-zone fallback in run();
+        // only promote truly-live zones to "live".
+        tagged[k] = {
+          ...v,
+          sourceStatus: (v.sourceStatus === "cached" || v.sourceStatus === "degraded")
+            ? v.sourceStatus
+            : "live",
+        };
+      }
       return tagged;
     },
     tagCached: (c) => {

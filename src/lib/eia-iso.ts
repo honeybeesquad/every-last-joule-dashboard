@@ -241,6 +241,48 @@ export function buildEiaIsoRegion(config: EiaIsoConfig) {
   return { parse, run, runCli, isMain };
 }
 
+// When EIA returns data points that are all zero (e.g. a data-pipeline stall
+// or null-fill on the SUN respondent), we keep wind fresh and synthesise solar
+// from the wind profile scaled by the fallback split rather than degrading both
+// fuels to a stale snapshot. The shape is wrong (wind ≠ solar diurnal pattern)
+// but it is far less misleading than showing weeks-old data as live.
+function synthesizeSolarFromWind(
+  windRaw: EIAResponse,
+  config: EiaIsoConfig,
+  split: { wind: number; solar: number },
+): { wind: RegionData; solar: RegionData } {
+  const windPoints = toPoints(windRaw, config.windRate);
+  const solarScale = split.wind > 0 ? split.solar / split.wind : 1;
+  const solarPoints = windPoints.map((p) => ({ ...p, mw: p.mw * solarScale }));
+  const windLast = windPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
+  const windTotalMw = windPoints.reduce((s, p) => s + p.mw, 0);
+  const solarTotalMw = solarPoints.reduce((s, p) => s + p.mw, 0);
+  const denom = windTotalMw + solarTotalMw;
+  const fuelShare = denom > 0 ? { wind: windTotalMw / denom, solar: solarTotalMw / denom } : { wind: 1, solar: 0 };
+  return {
+    wind: {
+      regionId: `${config.regionId}-wind`,
+      profile: timeOfDayAverageGW(windPoints),
+      latestProfile: latestCompleteUtcDayProfileGW(windPoints),
+      totalTWh: totalTWh30d(windPoints),
+      peakGW: peakGW(windPoints),
+      lastUpdated: windLast,
+      lastSuccessAt: windLast,
+      sourceNote: `EIA ${config.respondent} wind × ${(config.windRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
+    },
+    solar: {
+      regionId: `${config.regionId}-solar`,
+      profile: timeOfDayAverageGW(solarPoints),
+      latestProfile: latestCompleteUtcDayProfileGW(solarPoints),
+      totalTWh: totalTWh30d(solarPoints),
+      peakGW: peakGW(solarPoints),
+      lastUpdated: windLast,
+      lastSuccessAt: windLast,
+      sourceNote: `EIA ${config.respondent} solar × ${(config.solarRate * 100).toFixed(1)}% calibrated curtailment — synthesized from wind profile via ${(split.solar * 100).toFixed(0)}% fallback split (EIA solar data gap)`,
+    },
+  };
+}
+
 export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
   const parsePerFuel = (windRaw: EIAResponse, solarRaw?: EIAResponse) =>
     parseEiaIsoRegionPerFuel(config, windRaw, solarRaw);
@@ -248,11 +290,25 @@ export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
   const run = async (): Promise<{ wind: RegionData; solar: RegionData }> => {
     const apiKey = process.env.EIA_API_KEY;
     if (!apiKey) throw new Error("EIA_API_KEY not set");
-    const [wind, solar] = await Promise.all([
+    const [windRaw, solarRaw] = await Promise.all([
       fetchFueltype(apiKey, config.respondent, "WND"),
       fetchFueltype(apiKey, config.respondent, "SUN"),
     ]);
-    return parsePerFuel(wind, solar);
+
+    // Detect EIA data gap: API returned rows but every value is zero/null.
+    // Don't fall back to a stale snapshot — keep wind fresh and synthesise solar.
+    const solarGap = solarRaw.response.data.length > 0 &&
+      solarRaw.response.data.every((r) => !Number(r.value));
+    if (solarGap) {
+      const split = config.fallbackSplit ?? { wind: 0.5, solar: 0.5 };
+      console.warn(
+        `[${config.regionId}] EIA ${config.respondent} solar returned ${solarRaw.response.data.length} all-zero points; ` +
+        `synthesizing solar from wind profile via ${(split.solar * 100).toFixed(0)}% fallback split`,
+      );
+      return synthesizeSolarFromWind(windRaw, config, split);
+    }
+
+    return parsePerFuel(windRaw, solarRaw);
   };
 
   const fallbackSplit = config.fallbackSplit ?? { wind: 0.5, solar: 0.5 };
