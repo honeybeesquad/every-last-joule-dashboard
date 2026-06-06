@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-05-11 (malta/lithuania/latvia reverted live→estimated to match production data flow — IRENA 2024 anchor wins via `...statics` spread in index.md; no verifiable A75 curtailment rate. T1a −3, T3 +3). Prior: 2026-05-10 (japan-chubu/tepco/hokkaido downgraded live→estimated).",
-  "T1a": 149,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-07 (v1.3.2: new-zealand-hydro added 2026-05-24 → T1a +1, total +1; serbia-solar + north-macedonia-solar reverted live→estimated in PR #119 → T1a −2, T3 +2. Net vs prior: T1a 149→148, T3 211→213, total 384→385). Prior: 2026-05-11 (malta/lithuania/latvia reverted live→estimated).",
+  "T1a": 148,
   "T1b": 9,
   "T1c": 1,
   "T2": 6,
   "T2-flare": 8,
-  "T3": 211,
-  "total": 384
+  "T3": 213,
+  "total": 385
 }
