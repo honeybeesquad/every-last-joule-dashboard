@@ -167,11 +167,19 @@ function mapSnapshotLike<T>(
 }
 
 function stampLive<T>(value: T, nowIso: string): T {
-  return mapSnapshotLike(value, (record) => ({
-    ...record,
-    sourceStatus: "live",
-    lastSuccessAt: nowIso,
-  }));
+  return mapSnapshotLike(value, (record) => {
+    // Preserve "cached"/"degraded" status that a multi-region run() set
+    // internally for zones that fell back to their own cached data. Overwriting
+    // those with "live" would misrepresent stale sub-regions as live.
+    if (record.sourceStatus === "cached" || record.sourceStatus === "degraded") {
+      return record;
+    }
+    return {
+      ...record,
+      sourceStatus: "live",
+      lastSuccessAt: nowIso,
+    };
+  });
 }
 
 function stampCached<T>(value: T, now: Date, thresholdHours: number): T {
