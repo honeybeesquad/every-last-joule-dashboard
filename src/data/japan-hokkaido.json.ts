@@ -1,48 +1,39 @@
 import { pathToFileURL } from "node:url";
-import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { runJapanAreaLoader, type JapanAreaConfig } from "../lib/japan-area-csv.js";
 import { withFallback } from "../lib/resilient.js";
 import type { RegionData } from "../lib/types.js";
 
 /**
- * Japan — Hokkaido Electric Power (北海道電力) curtailment.
+ * Japan — Hokkaido Electric Power Network (北海道電力ネットワーク), area code 01.
  *
- * Status: T3 / estimated — typical-shape only.
+ * Direct measured curtailment from the monthly area supply/demand CSV:
+ *   https://www.hepco.co.jp/network/con_service/public_document/supply_demand_results/csv/eria_jukyu_YYYYMM_01.csv
  *
- * History: a previous version of this loader read column[3] of the
- * `juyo_01_YYYYMMDD.csv` 5-min section as "solar 万kW" and applied a
- * ×10 万kW→MW multiplier. The 2026-05-10 endpoint investigation
- * established that column[3] is actually 再生可能エネルギー出力
- * (all-renewables output, already in MW) — a mixed-fuel signal, not
- * solar — and that no solar-specific 5-min CSV is published by
- * denkiyoho.hepco.co.jp. The historical decode therefore produced
- * mixed-fuel data 10× larger than reality, attributed to solar.
- *
- * The parser + helper were removed on 2026-05-12 rather than "fixed",
- * because no parameter substitution recovers solar curtailment from
- * an all-renewables signal — attribution, not units, is the failure.
- * If a solar-specific Hokkaido feed emerges in future, write a new
- * loader against that schema; do not resurrect the juyo_01 path.
- *
- * Calibration anchor for the typical-shape fallback: OCCTO FY2024
- * Hokkaido area curtailment ≈ 0.10 TWh/yr. Solar peak UTC: 03:00
- * (noon JST = 03:00 UTC for lon ~141.4°E).
+ * Encoding: Shift-JIS. 22-column layout, 30-min intervals, MW. Standalone
+ * monthly CSVs from 2024-04 on. Replaces the all-renewables juyo_01 misread
+ * (PR #90) — this feed has a solar-specific 太陽光出力制御量 column. Wind is a
+ * non-trivial minority here (~16% in May 2026) but still solar-dominant, so
+ * kind stays "solar"; the split is recorded in fuelShare. Promoted
+ * estimated→live 2026-06-07.
  */
-const REGION_ID = "japan-hokkaido";
+const CONFIG: JapanAreaConfig = {
+  regionId: "japan-hokkaido",
+  areaCode: "01",
+  baseUrl: "https://www.hepco.co.jp/network/con_service/public_document/supply_demand_results/csv",
+  cadence: "monthly",
+  dateFormat: "slash",
+};
+const SOURCE_NOTE =
+  "Hokkaido Electric Power Network (北海道電力ネットワーク) area supply/demand CSV (eria_jukyu_YYYYMM_01.csv) — " +
+  "direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min, Shift-JIS).";
 
-const run = async (): Promise<RegionData> =>
-  buildTypicalSolarRegion(
-    REGION_ID,
-    3, // peakHourUtc (noon JST = 03:00 UTC)
-    0.10,
-    "Hokkaido Electric Power (北海道電力) — no solar-specific live feed published (denkiyoho.hepco.co.jp juyo_01 column[3] is all-renewables MW, not solar; verified 2026-05-10). Typical solar shape × OCCTO FY2024 Hokkaido anchor ~0.10 TWh/yr.",
-    "2024",
-  );
+const run = async (): Promise<RegionData> => runJapanAreaLoader(CONFIG, SOURCE_NOTE);
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback<RegionData>(REGION_ID, run, {
-    regionTier: "estimated" as const,
+  withFallback<RegionData>("japan-hokkaido", run, {
+    regionTier: "live" as const,
     tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
     tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
   })
