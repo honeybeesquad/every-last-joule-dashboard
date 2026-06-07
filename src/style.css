@@ -74,6 +74,10 @@
      rgba(247,147,26,…) background on the same element. Single source of
      truth so the active mode toggle renders correctly. */
   --amber-500: #f7931a;
+  /* Stale-feed (degraded) alarm ring on globe pillars + the legend swatch.
+     Amber reads as "caution" against both dark themes; inherits to both
+     since it lives in the base :root. */
+  --quality-warning: var(--amber-500);
 
   /* ============ SPACING ============ */
   --space-0: 0;
@@ -2004,4 +2008,42 @@ main > h1:first-child {
 
 @media (max-width: 640px) {
   .theme-toggle button { padding: 5px 9px; }
+}
+
+/* ============ GLOBE QUALITY LEGEND ============ */
+.globe-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 3;
+  font-size: 12px;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface-bg-2) 82%, transparent);
+  border: 1px solid var(--globe-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  max-width: 220px;
+  backdrop-filter: blur(3px);
+}
+.globe-legend-summary {
+  cursor: pointer;
+  list-style: none;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+.globe-legend-summary::-webkit-details-marker { display: none; }
+.globe-legend-body { margin-top: 6px; display: grid; gap: 4px; }
+.globe-legend-row { display: flex; align-items: center; gap: 7px; }
+.globe-legend-caption { margin-top: 4px; color: var(--ink-soft); font-size: 11px; }
+.ql-dot {
+  display: inline-block; width: 12px; height: 12px; border-radius: 50%;
+  flex: 0 0 auto; box-sizing: border-box;
+}
+.ql-measured { background: var(--ink); }
+.ql-anchored { background: var(--ink); box-shadow: 0 0 0 2px var(--surface-bg-2), 0 0 0 3px var(--ink); }
+.ql-estimated { background: transparent; border: 1.5px solid var(--ink); }
+.ql-degraded { background: transparent; border: 1.5px dashed var(--quality-warning); }
+
+@media (max-width: 900px) {
+  .globe-legend { left: 8px; bottom: 8px; font-size: 11px; max-width: 60vw; }
 }

@@ -239,6 +239,16 @@ document.getElementById("app-root").innerHTML = `
             <span class="globe-placeholder-label">Computing land mask…</span>
           </div>
           <canvas id="globe-canvas" role="img" aria-label="Rotating globe showing active waste-energy hotspots"></canvas>
+          <details class="globe-legend" id="globe-legend" aria-label="Legend: data quality and freshness">
+            <summary class="globe-legend-summary">ⓘ Legend</summary>
+            <div class="globe-legend-body">
+              <div class="globe-legend-row"><span class="ql-dot ql-measured" aria-hidden="true"></span>Measured (live feed)</div>
+              <div class="globe-legend-row"><span class="ql-dot ql-anchored" aria-hidden="true"></span>Anchored (published annual)</div>
+              <div class="globe-legend-row"><span class="ql-dot ql-estimated" aria-hidden="true"></span>Estimated (modelled)</div>
+              <div class="globe-legend-row"><span class="ql-dot ql-degraded" aria-hidden="true"></span>Stale feed (&gt;24h)</div>
+              <div class="globe-legend-caption">Brighter pillar = higher confidence</div>
+            </div>
+          </details>
         </div>
         <div class="globe-zoom-controls" id="globe-zoom-controls" hidden>
           <span class="globe-zoom-label">Zoom</span>
@@ -705,6 +715,10 @@ globe = await mountGlobe(canvas, {
 });
 canvas.hidden = false;
 document.getElementById("globe-placeholder")?.remove();
+
+// Legend: open by default on desktop, collapsed (tap-to-expand) on mobile.
+const globeLegend = document.getElementById("globe-legend");
+if (globeLegend) globeLegend.open = !window.matchMedia("(max-width: 900px)").matches;
 
 // Wire up zoom slider now that the globe is live.
 const zoomControls = document.getElementById("globe-zoom-controls");
