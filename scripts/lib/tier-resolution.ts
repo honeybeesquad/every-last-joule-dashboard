@@ -119,23 +119,8 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "northern-ireland-wind":   "wind",
   "northern-ireland-solar":  "solar",
   israel: "solar",
-  // Japan W1 per-utility loaders (2026-05-02). Entries here are fallback
-  // profileKind values for live loaders only if the live CSV is inaccessible.
-  // japan-chubu: promoted estimated→live 2026-06-07 (eria_jukyu area CSV).
-  // japan-hokkaido: promoted estimated→live 2026-06-07 (eria_jukyu area CSV).
-  "japan-chugoku": "solar",
-  "japan-hokuriku": "solar",
-  "japan-kansai": "solar",
-  // japan-kyushu: live as of CODEX-PHASE26-J (2026-04-26), renamed from
-  // `japan` in W1 (2026-05-02). Loader fetches the Kyushu Electric T&D
-  // `td_power_usages` daily area-demand CSV (Shift-JIS, 5-min solar
-  // generation column) and applies a 10% calibration rate against the
-  // OCCTO FY2024 Kyushu anchor ~1.7 TWh/yr. The solar entry here is the
-  // fallback profileKind if Kyushu Electric's CSV becomes inaccessible.
-  "japan-kyushu": "solar",
-  "japan-okinawa": "solar",
-  "japan-shikoku": "solar",
-  // japan-tepco: promoted estimated→live 2026-06-07 (eria_jukyu area CSV).
+  // All 10 Japan area loaders are live (T1a) reading direct eria_jukyu area
+  // CSVs as of Phase 2 (2026-06-07). No STATIC_PROFILE_KIND entries needed.
   jeju: "wind",
   jordan: "solar",
   kazakhstan: "wind",
