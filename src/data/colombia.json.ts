@@ -5,6 +5,7 @@ import { fetchJSON } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalHydroSeasonalRegion, HYDRO_SEASONAL_SHARES } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
+import { relayFreshness, RELAY_STALENESS_THRESHOLD_DAYS } from "../lib/freshness.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "colombia";
@@ -98,8 +99,8 @@ async function fetchXmLast365Days(): Promise<{ annualTWh: number; latestDate: st
   return { annualTWh, latestDate: all[all.length - 1].date, nDays: all.length };
 }
 
-function readCsvRelay(): { annualTWh: number; latestDate: string; nRows: number } {
-  const raw = readFileSync(CSV_PATH, "utf-8");
+function readCsvRelay(csvPath = CSV_PATH): { annualTWh: number; latestDate: string; nRows: number } {
+  const raw = readFileSync(csvPath, "utf-8");
   const rows = parseCSV(raw);
   rows.sort((a, b) => a.date.localeCompare(b.date));
   const tail = rows.slice(-365);
@@ -108,8 +109,13 @@ function readCsvRelay(): { annualTWh: number; latestDate: string; nRows: number 
   return { annualTWh, latestDate: rows[rows.length - 1]?.date ?? "unknown", nRows: rows.length };
 }
 
-async function run({ probe = true } = {}): Promise<RegionData> {
+async function run({
+  probe = true,
+  now = new Date(),
+  csvPath = CSV_PATH,
+}: { probe?: boolean; now?: Date; csvPath?: string } = {}): Promise<RegionData> {
   let annualTWh: number;
+  let latestDate: string;
   let sourceDetail: string;
 
   if (probe) {
@@ -118,18 +124,21 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       // from Vercel/CI build environments and fall through to the CSV relay.
       const live = await fetchXmLast365Days();
       annualTWh = live.annualTWh;
+      latestDate = live.latestDate;
       sourceDetail = `XM SinerGox API live (${live.nDays} days, latest: ${live.latestDate})`;
     } catch (liveErr) {
       console.error(`[colombia] XM live fetch failed (${(liveErr as Error).message}); falling back to CSV relay`);
       // Secondary: committed CSV updated by Britta cron at 18:30 UTC.
-      const csv = readCsvRelay();
+      const csv = readCsvRelay(csvPath);
       annualTWh = csv.annualTWh;
+      latestDate = csv.latestDate;
       sourceDetail = `CSV relay fallback (${csv.nRows}-day committed CSV, latest: ${csv.latestDate})`;
     }
   } else {
     // Test path: skip live API, read CSV directly for deterministic results.
-    const csv = readCsvRelay();
+    const csv = readCsvRelay(csvPath);
     annualTWh = csv.annualTWh;
+    latestDate = csv.latestDate;
     sourceDetail = `CSV relay (${csv.nRows}-day committed CSV, latest: ${csv.latestDate})`;
   }
 
@@ -145,7 +154,23 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   );
   // Override T3-modelled → T1b: this loader is set up as a direct live source
   // (XM API primary, CSV relay fallback) rather than a purely static model.
-  return applyUncertainty(base, { regionTier: "live-domestic-anchored" });
+  const result = applyUncertainty(base, { regionTier: "live-domestic-anchored" });
+
+  // Relay-CSV freshness self-stamp: if the newest committed CSV row is older
+  // than the staleness threshold, mark this region degraded so the globe
+  // shows the amber ring. stampLive() in withFallback preserves pre-set
+  // "degraded" status, so this stamp survives to the deployed JSON.
+  const status = relayFreshness(latestDate, now, RELAY_STALENESS_THRESHOLD_DAYS);
+  if (status === "degraded") {
+    result.sourceStatus = "degraded";
+    // lastSuccessAt records when fresh data was last seen in the relay CSV.
+    // Use the newest row date as an ISO string (UTC midnight).
+    result.lastSuccessAt = latestDate
+      ? new Date(latestDate).toISOString()
+      : result.lastSuccessAt;
+  }
+
+  return result;
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
@@ -160,3 +185,7 @@ if (isMain) {
 }
 
 export const buildColombiaData = () => run({ probe: false });
+
+/** Test seam: run the Colombia loader with deterministic now and/or a fixture CSV path. */
+export const runColombia = (opts: { probe?: boolean; now?: Date; csvPath?: string } = {}) =>
+  run(opts);

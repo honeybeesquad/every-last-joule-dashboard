@@ -1,5 +1,15 @@
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { describe, expect, it } from "vitest";
-import { buildColombiaData } from "../../src/data/colombia.json";
+import { buildColombiaData, runColombia } from "../../src/data/colombia.json";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const FIXTURES = join(__dirname, "../fixtures");
+const STALE_FIXTURE = join(FIXTURES, "colombia-vertimientos-stale.csv");
+const FRESH_FIXTURE = join(FIXTURES, "colombia-vertimientos-fresh.csv");
+
+// Fixed now for deterministic relay-freshness tests: 2026-06-07T12:00:00Z
+const TEST_NOW = new Date("2026-06-07T12:00:00Z");
 
 describe("colombia loader", () => {
   it("returns a valid positive RegionData shape with T1b tier", async () => {
@@ -31,5 +41,25 @@ describe("colombia loader", () => {
     expect(data.uncertaintyLowGW).toBeGreaterThanOrEqual(0);
     expect(data.uncertaintyHighGW).toBeGreaterThan(data.peakGW);
     expect(data.uncertaintyHighGW).toBeCloseTo(data.peakGW * 1.5, 4);
+  });
+});
+
+describe("colombia loader — relay freshness self-stamp", () => {
+  it("sets sourceStatus='degraded' and lastSuccessAt=<newest row date> when the CSV is stale", async () => {
+    // Stale fixture newest row: 2026-05-02. Fixed now: 2026-06-07T12:00:00Z → 36 days > 4-day threshold.
+    const data = await runColombia({ probe: false, now: TEST_NOW, csvPath: STALE_FIXTURE });
+    expect(data.sourceStatus).toBe("degraded");
+    // lastSuccessAt should be an ISO string derived from the newest row date (2026-05-02)
+    expect(data.lastSuccessAt).toBeDefined();
+    expect(data.lastSuccessAt).toMatch(/^2026-05-02/);
+  });
+
+  it("does not pre-set sourceStatus='degraded' when the CSV is fresh", async () => {
+    // Fresh fixture newest row: 2026-06-05. Fixed now: 2026-06-07T12:00:00Z → 2 days < 4-day threshold.
+    const data = await runColombia({ probe: false, now: TEST_NOW, csvPath: FRESH_FIXTURE });
+    // The loader should NOT stamp degraded — sourceStatus is left unset or 'live'
+    // (stampLive in withFallback will stamp it 'live' in production; here we check the loader itself
+    // does not interfere with a fresh relay).
+    expect(data.sourceStatus).not.toBe("degraded");
   });
 });
