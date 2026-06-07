@@ -55,6 +55,8 @@ export interface GlobeTokens {
    *  stop. Theme-scoped so the light-mode day-side can use a bolder
    *  base than the dark themes if a future theme demands it. */
   pillarBaseAlpha: string;
+  /** Hex/colour for the degraded-feed amber warning ring (--quality-warning). */
+  qualityWarning: string;
 }
 
 /** Read all globe-relevant tokens off the document element in one pass. */
@@ -71,6 +73,7 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
     nightOverlay: get("--night-overlay")    || "rgba(20,14,5,0.42)",
     spherebaseHex: get("--surface-bg-2")    || "#1a1207",
     pillarBaseAlpha: sanitisePillarAlpha(get("--pillar-base-alpha"), "99"),
+    qualityWarning: get("--quality-warning") || "#f7931a",
   };
 }
 

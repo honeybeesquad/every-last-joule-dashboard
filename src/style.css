@@ -74,6 +74,10 @@
      rgba(247,147,26,…) background on the same element. Single source of
      truth so the active mode toggle renders correctly. */
   --amber-500: #f7931a;
+  /* Stale-feed (degraded) alarm ring on globe pillars + the legend swatch.
+     Amber reads as "caution" against both dark themes; inherits to both
+     since it lives in the base :root. */
+  --quality-warning: var(--amber-500);
 
   /* ============ SPACING ============ */
   --space-0: 0;
