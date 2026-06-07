@@ -12,7 +12,7 @@
 
 **Coverage — full world:**
 - 385 regions across 195 countries (every UN member + Taiwan + Palestine)
-- **Tally golden as of 2026-06-06: T1a=148, T1b=9, T1c=1, T2=6, T2-flare=8, T3=213 (total 385).** Counted directly from `src/lib/regions.ts` (tier field: live=148, live-domestic-anchored=9, live-neighbour-anchored=1, anchored=14 [8 flare + 6 flat], estimated=213). Locked by `tests/regions.test.ts`. Drift since the 2026-05-11 golden (T1a=149/T3=211/total=384): new-zealand-hydro added 2026-05-24 (T1a +1, total 384→385); serbia-solar + north-macedonia-solar reverted live→estimated 2026-06-06 (T1a −2, T3 +2). See PR #119.
+- **Tally golden as of 2026-06-07: T1a=150, T1b=9, T1c=1, T2=6, T2-flare=8, T3=211 (total 385).** Counted directly from `src/lib/regions.ts`. Locked by `tests/regions.test.ts`. Drift since the 2026-05-11 golden (T1a=149/T3=211/total=384): new-zealand-hydro added 2026-05-24 (T1a +1); serbia-solar + north-macedonia-solar reverted live→estimated 2026-06-06 (T1a −2, T3 +2); norway-no5 reverted live→estimated 2026-06-07 (T1a −1, T3 +1, PR #125); japan-tepco/chubu/hokkaido promoted estimated→live 2026-06-07 (T1a +3, T3 −3, PR below).
 - Live at **everylastjoule.com** — Vercel auto-deploys from `main`
 - Dashboard banner: **"Wasted Energy Database · v1.3.2"** (pulled live from Zenodo version metadata; v1.3.2 minted 2026-06-07, version DOI `10.5281/zenodo.20570864`)
 
@@ -71,6 +71,9 @@ Diagnosed from persistent Vercel build-log errors (all builds since ~2026-05-13 
 - **`sourceStatus` accuracy** — `stampLive()` (resilient.ts) now preserves `cached`/`degraded` status set by per-zone internal fallbacks; ENTSO-E + Norway per-zone catch blocks stamp staleness-aware status. Stale sub-regions no longer masquerade as `live`.
 - **serbia-solar + north-macedonia-solar reverted live→estimated** — ENTSO-E A75 B16 feed ceased ~2026-05-13. Root cause is structural, not transient: EMS Serbia and MEPSO North Macedonia are non-EU **Energy Community** TSOs; EU Reg 543/2013 does not bind them (EnC Secretariat IR 2023 flagged NMK transparency "well below required levels", 543/2013 not transposed). Both removed from `entsoe.json.ts` ZONES; re-anchored to IRENA RCS 2025 in `statics.json.ts` (Serbia 0.007 TWh/yr; NMK 0.02 TWh/yr — flagged underestimate given NMK 833 MW→1.2 GW growth). `regions.ts` tier→estimated, provenance→modelled-fallback. Validation docs rewritten. (serbia-wind / north-macedonia-wind stay live — B19 reporting is compliant.)
 
+**Japan area-CSV direct curtailment — Phase 1 (in review, feat/japan-area-csv-direct):**
+- TEPCO (area 03), Chubu (04), Hokkaido (01) promoted `estimated`→`live` (T1a) via a shared `src/lib/japan-area-csv.ts` parser reading the operators' monthly `eria_jukyu_YYYYMM_NN.csv` direct `太陽光出力制御量+風力出力制御量` columns. Tally golden T1a 147→150, T3 214→211. Okinawa `source` string corrected (already direct since 2026-05). Phase 2 (migrate the 5 remaining rate-proxies) tracked in spec `docs/superpowers/specs/2026-06-07-japan-area-csv-direct-curtailment-design.md`. TEPCO peak 0.53 GW (vs 0.05 TWh/yr prior modelled anchor).
+
 **Paper v1.3.2 numbers refresh (shipped 2026-06-06, PR #109):**
 - Every numeric claim in `src/paper.md` + `docs/dari/paper.html` re-derived against current snapshots after the Brazil ONS formula fix (eabf8e5). Six claims drifted >5%: total verified waste 338.8→**293.7 TWh**, T1 curtailed renewables 184.5→**138.9 TWh** (−25%, Brazil-driven), wasted/Bitcoin 171%→**149%**, curtailed-alone/Bitcoin 93.4%→**70%**, foregone revenue $16.2B→**$14.3B**, priced regions 186→**118 verified**.
 - §3 reframed (editorial Option B): leads with flare-dominant verified total (293.7 TWh = 149% of Bitcoin); 53% flare / 47% curtailed renewables. Bitcoin denominator kept at WooCharts 197.6 per paper's stated anchor.
@@ -78,12 +81,13 @@ Diagnosed from persistent Vercel build-log errors (all builds since ~2026-05-13 
 
 ## What's NOT shipped / open PRs
 
-**None open.** Everything from the 2026-06-06/07 session is merged or closed:
+**None open** (except the Japan Phase 1 PR currently in review). Everything from the 2026-06-06/07 session is merged or closed:
 - **#119** loader-resilience (Norway NO5 B11+B12, NYISO solar-gap, sourceStatus, serbia/nmk demotion) — merged.
 - **#109** paper v1.3.2 numbers refresh — merged.
 - **#120** STATUS refresh — merged.
 - **#108** claim-cascade Figure 1 — merged (SVG regenerated to v1.3.2 numbers / 385 regions before merge).
 - **#121** v1.3.2 version bump + CHANGELOG — merged; tag `v1.3.2` + GitHub release published → Zenodo minted version DOI `10.5281/zenodo.20570864` (2026-06-07).
+- **#125** fix(loaders): norway-no5 live→estimated (Statnett not reporting A75) — merged.
 - **#105** Vercel-bot analytics draft — closed (redundant; analytics already on main via dynamic-inject, commits 36a602e / 7dcf2e8 / 6ce4c7e).
 
 Also cleaned this session: 16 merged remote branches + 4 session branches deleted; 3 snapshot-only stashes dropped (6 source-bearing stashes left for review). PR #68 remains superseded (pricing layer deleted in PR #87).

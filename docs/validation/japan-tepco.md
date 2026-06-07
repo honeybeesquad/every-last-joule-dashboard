@@ -1,15 +1,15 @@
 # Validation — TEPCO (Japan) (`japan-tepco`)
 
-Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `japan-tepco`
 - **Country:** JPN
-- **Tier:** estimated
+- **Tier:** live
 - **Kind:** solar
-- **Source:** TEPCO Power Grid juyo CSV × 1% calibrated curtailment (OCCTO FY2024 TEPCO anchor: ~0.05 TWh/yr)
-- **Source URL:** [https://www.tepco.co.jp/forecast/](https://www.tepco.co.jp/forecast/)
+- **Source:** TEPCO Power Grid area supply/demand CSV (eria_jukyu_YYYYMM_03.csv) — direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min, UTF-8).
+- **Source URL:** [https://www.tepco.co.jp/forecast/html/area_jukyu-j.html](https://www.tepco.co.jp/forecast/html/area_jukyu-j.html)
 - **Loader:** [`japan-tepco.json.ts`](../../src/data/japan-tepco.json.ts)
 - **Structural gap:** no
 

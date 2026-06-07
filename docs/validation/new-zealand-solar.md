@@ -1,6 +1,6 @@
 # Validation — New Zealand Solar (`new-zealand-solar`)
 
-Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-05-10 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** NZL
 - **Tier:** live
 - **Kind:** solar
-- **Source:** EMI solar generation
-- **Source URL:** [https://www.emi.ea.govt.nz/Wholesale/Datasets/Generation/Generation_MD](https://www.emi.ea.govt.nz/Wholesale/Datasets/Generation/Generation_MD)
+- **Source:** EMI DispatchNodalPricesAndVolumes ≤$0/MWh nodal price signal
+- **Source URL:** [https://emidatasets.blob.core.windows.net/publicdata/Datasets/Wholesale/DispatchAndPricing/NodalPricesAndVolumes](https://emidatasets.blob.core.windows.net/publicdata/Datasets/Wholesale/DispatchAndPricing/NodalPricesAndVolumes)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 

@@ -1,6 +1,6 @@
 # Validation — North Macedonia Solar (`north-macedonia-solar`)
 
-Last updated: 2026-06-06 · Reverted live→estimated (ENTSO-E A75 B16 unreliable) · Paper section: Technical Validation §4.2
+Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,41 +8,32 @@ Last updated: 2026-06-06 · Reverted live→estimated (ENTSO-E A75 B16 unreliabl
 - **Country:** MKD
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** IRENA RCS 2025 / pv-magazine 2026 (modelled-fallback anchor)
+- **Source:** IRENA RCS 2025 / pv-magazine 2026 (MEPSO; 833 MW solar end-2024 → 1.2 GW end-2025; EnC Secretariat: transparency below required levels)
 - **Source URL:** [https://www.irena.org/Publications/2025/Mar/Renewable-capacity-statistics-2025](https://www.irena.org/Publications/2025/Mar/Renewable-capacity-statistics-2025)
-- **Loader:** `statics.json.ts` anchor (was `entsoe.json.ts` ZONES)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
-
-## Revert rationale
-
-ENTSO-E A75 B16 (solar PV) data for MEPSO North Macedonia ceased returning usable data around 2026-05-13. Investigation showed this is structural:
-
-- North Macedonia is a non-EU **Energy Community Contracting Party**, not an EU member state.
-- EU Regulation 543/2013 **does not legally bind** non-EU Energy Community TSOs.
-- The Energy Community Secretariat Annual Implementation Report 2023 explicitly found: *"Transparency is well below the level required in North Macedonia"* and *"Reporting obligations have not been transposed in legislation."*
-- North Macedonia-wind (B19) continues to work with better compliance; solar (B16) lapsed.
-
-**Note on scale:** North Macedonia's solar capacity is growing rapidly — 833 MW installed by end-2024 (65% annual growth), ~1.2 GW by end-2025. Solar generation is already influencing day-ahead power exchange prices. The 0.02 TWh/yr anchor will understate actual curtailment as the grid continues to absorb this capacity.
 
 ## Calibration
 
-- **Installed capacity:** 833 MW end-2024; ~1,200 MW end-2025 (source: IRENA RCS 2025, pv-magazine Feb 2026)
-- **Annual generation (modelled):** ~1.1 TWh/yr at 1,300 FLH (2,400–2,600 sunshine hours/yr)
-- **Curtailment rate:** 2% (regional default; curtailment is real given solar driving power exchange prices but no published rate available)
-- **Annual curtailment anchor:** 0.02 TWh/yr (likely understates as capacity grows)
-- **localSolarPeakUTC:** 10.5 (North Macedonia ~21.5°E; solar noon ≈ UTC 10:30)
+- **Rate source documented in:** `docs/methodology/` (see links below)
+- **Uniform across backfill years:** n/a — no backfill
 
 ## Multi-year backfill annual totals
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill — modelled anchor only)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** — (not published)
-- **IRENA annual:** ~0.02 TWh modelled (IRENA RCS 2025 capacity basis)
-- **Other:** pv-magazine — North Macedonia adds 210 MW of solar in 2025 (Feb 2026); Balkan Green Energy News — solar production driving prices on North Macedonia power exchange (2024)
+- **TSO annual curtailment (latest published):** —
+- **Ember annual:** —
+- **IRENA annual:** —
+- **Other:** —
+
+## Discrepancy analysis
+
+_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
 
 ## Known limitations
 
@@ -50,7 +41,7 @@ MEPSO B16 reporting is non-compliant per the Energy Community Secretariat (IR 20
 
 ## Links
 
-- Loader source: `src/data/statics.json.ts` (anchor key: `"north-macedonia-solar"`)
+- Loader source: _(no single-file loader — see multi-region source)_
 - Backfill archive: `data/historical/backfill/*_north-macedonia-solar_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

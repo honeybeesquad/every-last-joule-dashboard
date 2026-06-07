@@ -1,6 +1,6 @@
 # Validation index
 
-Last generated: 2026-05-10
+Last generated: 2026-06-06
 
 | Region | Tier | Kind | Backfill years | Validation doc |
 |---|---|---|---|---|
@@ -238,10 +238,10 @@ Last generated: 2026-05-10
 | Liechtenstein | estimated | hydro | 0 | [liechtenstein](./liechtenstein.md) |
 | Sri Lanka | estimated | mixed | 0 | [sri-lanka](./sri-lanka.md) |
 | Lesotho | estimated | hydro | 0 | [lesotho](./lesotho.md) |
-| Lithuania | live | wind | 0 | [lithuania](./lithuania.md) |
+| Lithuania | estimated | wind | 0 | [lithuania](./lithuania.md) |
 | Luxembourg Solar | live | solar | 0 | [luxembourg-solar](./luxembourg-solar.md) |
 | Luxembourg Wind | live | wind | 0 | [luxembourg-wind](./luxembourg-wind.md) |
-| Latvia | live | wind | 0 | [latvia](./latvia.md) |
+| Latvia | estimated | wind | 0 | [latvia](./latvia.md) |
 | Morocco | estimated | mixed | 0 | [morocco](./morocco.md) |
 | Monaco | estimated | solar | 0 | [monaco](./monaco.md) |
 | Moldova Solar | live | solar | 0 | [moldova-solar](./moldova-solar.md) |
@@ -250,10 +250,10 @@ Last generated: 2026-05-10
 | Maldives | estimated | solar | 0 | [maldives](./maldives.md) |
 | Mexico | estimated | solar | 0 | [mexico](./mexico.md) |
 | Marshall Islands | estimated | solar | 0 | [marshall-islands](./marshall-islands.md) |
-| North Macedonia Solar | live | solar | 0 | [north-macedonia-solar](./north-macedonia-solar.md) |
+| North Macedonia Solar | estimated | solar | 0 | [north-macedonia-solar](./north-macedonia-solar.md) |
 | North Macedonia Wind | live | wind | 0 | [north-macedonia-wind](./north-macedonia-wind.md) |
 | Mali | estimated | solar | 0 | [mali](./mali.md) |
-| Malta | live | solar | 0 | [malta](./malta.md) |
+| Malta | estimated | solar | 0 | [malta](./malta.md) |
 | Myanmar | estimated | solar | 0 | [myanmar](./myanmar.md) |
 | Montenegro | live | hydro | 0 | [montenegro](./montenegro.md) |
 | Mongolia | estimated | wind | 0 | [mongolia](./mongolia.md) |
@@ -276,10 +276,11 @@ Last generated: 2026-05-10
 | Norway NO3 Wind (Trondheim) | live | wind | 0 | [norway-no3-wind](./norway-no3-wind.md) |
 | Norway NO4 Hydro (Tromsø) | live | hydro | 0 | [norway-no4-hydro](./norway-no4-hydro.md) |
 | Norway NO4 Wind (Tromsø) | live | wind | 0 | [norway-no4-wind](./norway-no4-wind.md) |
-| Norway NO5 (Bergen) | live | hydro | 0 | [norway-no5](./norway-no5.md) |
+| Norway NO5 (Bergen) | estimated | hydro | 0 | [norway-no5](./norway-no5.md) |
 | Nepal | estimated | hydro | 0 | [nepal](./nepal.md) |
 | Nauru | estimated | solar | 0 | [nauru](./nauru.md) |
 | New Zealand Geo | live | geo | 0 | [new-zealand-geo](./new-zealand-geo.md) |
+| New Zealand Hydro | live | hydro | 0 | [new-zealand-hydro](./new-zealand-hydro.md) |
 | New Zealand Solar | live | solar | 0 | [new-zealand-solar](./new-zealand-solar.md) |
 | New Zealand Wind | live | wind | 0 | [new-zealand-wind](./new-zealand-wind.md) |
 | Oman | estimated | solar | 0 | [oman](./oman.md) |
@@ -319,7 +320,7 @@ Last generated: 2026-05-10
 | El Salvador | estimated | solar | 0 | [el-salvador](./el-salvador.md) |
 | San Marino | estimated | solar | 0 | [san-marino](./san-marino.md) |
 | Somalia | estimated | solar | 0 | [somalia](./somalia.md) |
-| Serbia Solar | live | solar | 0 | [serbia-solar](./serbia-solar.md) |
+| Serbia Solar | estimated | solar | 0 | [serbia-solar](./serbia-solar.md) |
 | Serbia Wind | live | wind | 0 | [serbia-wind](./serbia-wind.md) |
 | South Sudan | estimated | solar | 0 | [south-sudan](./south-sudan.md) |
 | São Tomé & Príncipe | estimated | solar | 0 | [sao-tome](./sao-tome.md) |
