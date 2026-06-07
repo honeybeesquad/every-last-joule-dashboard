@@ -76,6 +76,36 @@ No proprietary data. No manual post-processing. The loaders in `src/data/*.json.
 
 See [`CHANGELOG.md`](CHANGELOG.md) for release history.
 
+## Querying version history
+
+`data/historical/version-history.csv` records each region's headline numbers across every dataset release. One row per region per version; sorted by version then region_id.
+
+Example DuckDB query — how did Brazil Bahia wind curtailment change across releases?
+
+```sql
+SELECT version, region_id, total_twh, confidence_tier
+FROM 'data/historical/version-history.csv'
+WHERE region_id = 'brazil-bahia-wind'
+ORDER BY version;
+```
+
+To compare all regions between two versions:
+
+```sql
+SELECT a.region_id,
+       a.total_twh AS twh_v132,
+       b.total_twh AS twh_v131,
+       round(a.total_twh - b.total_twh, 4) AS delta
+FROM 'data/historical/version-history.csv' a
+JOIN 'data/historical/version-history.csv' b
+  ON a.region_id = b.region_id
+ AND a.version = '1.3.2'
+ AND b.version = '1.3.1'
+ORDER BY abs(delta) DESC;
+```
+
+Regenerate for a new release: `npm run version-history` (run after version bump, alongside the Zenodo mint).
+
 ## Scope and limitations
 
 The short version:
