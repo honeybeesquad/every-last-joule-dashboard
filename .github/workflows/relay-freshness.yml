@@ -1,0 +1,164 @@
+name: Relay CSV freshness check
+
+# Checks that the committed relay CSVs (written by Britta cron) are fresh.
+# Runs daily at 20:00 UTC — 45 minutes after colombia-relay-pull.yml (19:15 UTC)
+# so a same-day pull has had time to land.  Also triggerable manually.
+#
+# When any CSV's newest row is older than RELAY_STALENESS_THRESHOLD_DAYS (4 days),
+# opens or updates a deduplicated GitHub issue labelled "auto-relay-stale".
+# Auto-closes the issue when all relay CSVs are fresh again.
+#
+# To add more relay CSVs: append their paths to RELAY_CSV_PATHS below.
+
+on:
+  schedule:
+    - cron: "0 20 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check relay CSV freshness
+        id: freshness
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          import csv
+          import os
+          import sys
+          from datetime import datetime, timezone, timedelta
+
+          # ---------------------------------------------------------------------------
+          # Configuration — add more relay CSV paths here as new relays come online.
+          # ---------------------------------------------------------------------------
+          RELAY_CSV_PATHS = [
+              "data/historical/colombia-vertimientos-daily.csv",
+          ]
+          RELAY_STALENESS_THRESHOLD_DAYS = 4
+          # ---------------------------------------------------------------------------
+
+          def write_output(name, value):
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+                  fh.write(f"{name}={value}\n")
+
+          def write_multiline(name, value):
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+                  fh.write(f"{name}<<EOF\n{value}\nEOF\n")
+
+          now = datetime.now(timezone.utc)
+          stale_items = []
+          all_fresh = True
+
+          for csv_path in RELAY_CSV_PATHS:
+              if not os.path.exists(csv_path):
+                  print(f"::warning::{csv_path} not found — treating as stale")
+                  stale_items.append(f"- {csv_path}: file not found")
+                  all_fresh = False
+                  continue
+
+              max_date = None
+              try:
+                  with open(csv_path, newline="", encoding="utf-8") as fh:
+                      reader = csv.DictReader(fh)
+                      for row in reader:
+                          d = row.get("date", "").strip()
+                          if not d:
+                              continue
+                          try:
+                              parsed = datetime.fromisoformat(d).replace(tzinfo=timezone.utc)
+                          except ValueError:
+                              continue
+                          if max_date is None or parsed > max_date:
+                              max_date = parsed
+              except Exception as exc:
+                  print(f"::warning::failed to parse {csv_path}: {exc}")
+                  stale_items.append(f"- {csv_path}: parse error ({exc})")
+                  all_fresh = False
+                  continue
+
+              if max_date is None:
+                  print(f"::warning::{csv_path} has no parseable date rows — treating as stale")
+                  stale_items.append(f"- {csv_path}: no parseable dates")
+                  all_fresh = False
+                  continue
+
+              age_days = (now - max_date).total_seconds() / 86400
+              if age_days > RELAY_STALENESS_THRESHOLD_DAYS:
+                  all_fresh = False
+                  stale_items.append(
+                      f"- {csv_path}: newest row {max_date.date().isoformat()} "
+                      f"({age_days:.1f} days old, threshold {RELAY_STALENESS_THRESHOLD_DAYS} days)"
+                  )
+                  print(f"::warning::{csv_path} is stale: {max_date.date().isoformat()} ({age_days:.1f} days old)")
+              else:
+                  print(f"::notice::{csv_path} is fresh: {max_date.date().isoformat()} ({age_days:.1f} days old)")
+
+          write_output("all_fresh", "true" if all_fresh else "false")
+          write_multiline("stale_list", "\n".join(stale_items))
+          write_output("stale_count", str(len(stale_items)))
+          PY
+
+      - name: Ensure auto-relay-stale label exists
+        if: steps.freshness.outputs.all_fresh == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create auto-relay-stale \
+            --color "e4e669" \
+            --description "Auto-generated relay CSV staleness alert" \
+            2>/dev/null || true
+
+      - name: Open or update staleness issue
+        if: steps.freshness.outputs.all_fresh == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STALE_LIST: ${{ steps.freshness.outputs.stale_list }}
+          STALE_COUNT: ${{ steps.freshness.outputs.stale_count }}
+        run: |
+          title="[relay] ${STALE_COUNT} relay CSV(s) stale — Britta cron may be down"
+          body=$(cat <<EOF
+          Automated relay-freshness check run at $(date -u +"%Y-%m-%dT%H:%M:%SZ") found stale relay CSV(s).
+
+          **Stale CSVs (newest row older than 4 days):**
+
+          ${STALE_LIST}
+
+          **Likely causes:**
+          1. Britta Mac asleep / offline — wake it and verify the \`elj-co\` WireGuard tunnel is up
+          2. XM API auth change — check Britta cron logs for authentication errors
+          3. WireGuard tunnel down — reconnect with \`wg-quick up elj-co\` on Britta
+          4. SSH key for the relay repo revoked — check \`RELAY_DEPLOY_KEY\` secret in this repo
+
+          **How to verify:** SSH to Britta and run the relay script manually. The committed CSV at \`data/historical/colombia-vertimientos-daily.csv\` should update within minutes.
+
+          **Dashboard impact:** the Colombia region will self-report \`sourceStatus: "degraded"\` on the next Vercel build (amber ring on the globe pillar), as wired in \`src/data/colombia.json.ts\`.
+
+          This issue will be auto-closed when a subsequent check finds all relay CSVs fresh again.
+          EOF
+          )
+
+          existing=$(gh issue list --label "auto-relay-stale" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            echo "Updating existing auto-relay-stale issue #$existing"
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body" --label "auto-relay-stale"
+          fi
+
+      - name: Auto-close stale relay issues when all CSVs are fresh
+        if: steps.freshness.outputs.all_fresh == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          open=$(gh issue list --label "auto-relay-stale" --state open --json number --jq '.[].number')
+          for n in $open; do
+            gh issue close "$n" --comment "Auto-closed: all relay CSVs are fresh again (newest row within 4-day threshold)."
+          done
