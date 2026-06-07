@@ -18,8 +18,8 @@ The brainstorm chose "let the recon decide." Colombia runs a **single national s
 
 ## 3. Egress (confirmed working; from memory + commit `33fcf39`)
 
-- **Host:** `ssh britta` (a Mac). **Never** connect the WireGuard tunnel on the local machine — it kills the session. Drive everything over SSH on Britta.
-- **Tunnel:** `sudo /opt/homebrew/bin/wg-quick up elj-co` (split-tunnel: `179.1/16, 190.90/16, 191.97/16`; passwordless sudo on Britta). Down + cleanup when done.
+- **Host:** `abed.lan` — the always-on Colombian-egress host (its own `elj-co` WireGuard peer), provisioned per `docs/ops/abed-egress-setup.md`. The recon runs from there, proving the production host in the same session. (Britta's Mac cron is the legacy v1 path, retired once abed.lan is live.) **Never** connect the WireGuard tunnel on the local machine — it kills the session. Drive everything over SSH on abed.lan.
+- **Tunnel:** `sudo wg-quick up elj-co` (split-tunnel: `179.1/16, 190.90/16, 191.97/16`). Down + cleanup when the recon session ends; only the production service keeps it persistently up.
 - **DNS gap:** no `DNS=` in the config; resolve via `dig +short @8.8.8.8 servapibi.xm.com.co` → e.g. `191.97.49.119`, then `curl --resolve servapibi.xm.com.co:443:<ip> …` per request. Do **not** edit `/etc/hosts`.
 - **API:** `POST /Lists {"MetricId":"ListadoMetricas"}` = catalog; `POST /daily|/hourly {MetricId, Entity, StartDate, EndDate}` in **≤31-day** windows (larger → HTTP 400). `Value` is kWh.
 - Reference: `scripts/relay/colombia-xm-fetch.py` (hydro `VertEner`).
