@@ -12,7 +12,7 @@ const BASE_URL = "https://emidatasets.blob.core.windows.net/publicdata/Datasets/
 const CURTAILMENT_RATE = 0.013;
 const FUEL_CODES = new Set(["Wind", "Solar", "Geo", "WIND", "SOLAR", "GEO"]);
 
-function nzTradingPeriodUtc(tradingDate: string, tp: number): string | null {
+export function nzTradingPeriodUtc(tradingDate: string, tp: number): string | null {
   const match = tradingDate.match(/^(\d{4})-(\d{2})-(\d{2})$/) ?? tradingDate.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   if (!match) return null;
   const y = match[1].length === 4 ? Number(match[1]) : Number(match[3]);

@@ -327,6 +327,7 @@ Scientific Data-accepted, and SPDX-registered.
 - The build pipeline is deterministic: same upstream response + same
   tag → byte-identical dataset. Reproducibility is a first-class
   requirement, not an afterthought.
+- `data/historical/version-history.csv` — append-only table of headline values (totalTWh, peakGW, confidenceTier, sourceProvenance) per region per dataset version, enabling auditable inspection of how estimates evolved across releases (e.g. the Brazil ONS formula correction at v1.3.2).
 
 ### R1.3 — (Meta)data meet domain-relevant community standards
 

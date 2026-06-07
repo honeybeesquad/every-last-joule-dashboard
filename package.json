@@ -12,6 +12,7 @@
     "build": "observable build",
     "deploy": "observable deploy",
     "test": "vitest run",
+    "version-history": "tsx scripts/build-version-history.ts",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "validate": "tsx scripts/validate-snapshots.ts",
