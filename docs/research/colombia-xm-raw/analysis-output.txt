@@ -1,0 +1,168 @@
+============================================================================================================
+SECTION 1 — Per-plant SOLAR curtailment  (curtail = max(0, GeneIdea - Gene); 3 sampled months: May+Feb+Nov 2026/25)
+============================================================================================================
+code  plant                     state        peak     gen    curt  curt%  cHrs  cHrs/yr matHrs/yr  avgMW
+                                               MW     GWh     GWh        (3mo)    (est)     (est)   curt
+------------------------------------------------------------------------------------------------------------
+4YCF  SHANGRI LA                OPERACION     148    87.4    0.59   0.8%   243      997        86   18.1
+3HF5  FUNDACION                 OPERACION     100    57.8    0.53   1.0%   261     1070       103   17.9
+GYPO  GUAYEPO                   OPERACION     348   180.3    0.43   0.3%   240      984        29   48.7
+TPUY  PARQUE SOLAR TEPUY        OPERACION      83    48.9    0.18   0.4%   280     1148        16   19.5
+GYP3  GUAYEPO III               OPERACION     180   110.9    0.17   0.2%    58      238        16   37.5
+3DDT  LATAM SOLAR LA LOMA       OPERACION     142    87.0    0.16   0.2%   206      845        25   18.1
+EPFV  EL PASO                   OPERACION      68    41.7    0.15   0.4%   212      869        41    8.0
+MATA  LA MATA                   OPERACION      80    39.8    0.13   0.4%   271     1111         4   16.7
+3INX  CARACOLI I                OPERACION      41    23.5    0.11   0.5%   221      906         8    2.3
+3IQA  SUNNORTE                  OPERACION      30    14.0    0.08   0.6%   287     1177         0    0.0
+3IRX  PORTON DEL SOL            OPERACION      96    48.6    0.07   0.2%   203      833         4   12.5
+3IZ6  PARQUE SOLAR LA UNION     OPERACION     100    51.3    0.06   0.1%   258     1058         4    7.2
+2VJS  CELSIA SOLAR BOLIVAR      PRUEBAS         5     2.1    0.00   0.0%     0        0         0    0.0
+2ZHY  AUTOG CELSIA SOLAR ESPINA PRUEBAS        10     3.2    0.00   0.0%     0        0         0    0.0
+2ZP9  TRINA-VATIA BSLI          PRUEBAS        19     9.2    0.00   0.0%     0        0         0    0.0
+3A44  PLANTA SOLAR BAYUNCA I    PRUEBAS         3     1.4    0.00   0.0%     0        0         0    0.0
+3B4L  GRANJA SOLAR BELMONTE     PRUEBAS         5     1.8    0.00   0.0%     0        0         0    0.0
+3BZB  CELSIA SOLAR LA PAILA     PRUEBAS         8     1.4    0.00   0.0%     0        0         0    0.0
+3C3Z  LA SIERPE                 PRUEBAS        20    10.5    0.00   0.0%     0        0         0    0.0
+3CSH  GY SOLAR AURORA           PRUEBAS         9     4.2    0.00   0.0%     0        0         0    0.0
+3DSO  HELIOS I                  PRUEBAS        15     5.7    0.00   0.0%     0        0         0    0.0
+3E7C  AUTOG CELSIA SOLAR LEVAPA PRUEBAS         6     1.4    0.00   0.0%     0        0         0    0.0
+3EBN  GR PARQUE SOLAR TUCANES   PRUEBAS        10     5.4    0.00   0.0%     0        0         0    0.0
+3EDL  BOSQUES SOLARES DE LOS LL OPERACION      18     9.2    0.00   0.0%     0        0         0    0.0
+3EFY  BOSQUES SOLARES DE LOS LL OPERACION      20    10.2    0.00   0.0%     0        0         0    0.0
+3ENE  SINCE                     PRUEBAS        19     9.7    0.00   0.0%     0        0         0    0.0
+3EV1  LOS CABALLEROS            PRUEBAS        10     4.4    0.00   0.0%     0        0         0    0.0
+3EV3  LA MEDINA                 PRUEBAS        10     4.6    0.00   0.0%     0        0         0    0.0
+3EXB  CERRITOS                  PRUEBAS        10     5.2    0.00   0.0%     0        0         0    0.0
+3FCF  GRANJA SOLAR LANCEROS     PRUEBAS        10     5.2    0.00   0.0%     0        0         0    0.0
+3GJQ  TERMOTASAJERO DOS SOLAR   PRUEBAS         4     1.5    0.00   0.0%     0        0         0    0.0
+3GPZ  MONTELIBANO               PRUEBAS        10     4.5    0.00   0.0%     0        0         0    0.0
+3GRD  GRANJA SOLAR SAN FELIPE   PRUEBAS        10     5.4    0.00   0.0%     0        0         0    0.0
+3GSF  AUTOG BUGA I GRASAS       PRUEBAS         4     1.1    0.00   0.0%     0        0         0    0.0
+3GVI  GRANJA SOLAR FLANDES      PRUEBAS        20    11.1    0.00   0.0%     0        0         0    0.0
+3GVK  CELSIA SOLAR DULIMA       PRUEBAS        20    11.0    0.00   0.0%     0        0         0    0.0
+3GVM  CELSIA SOLAR YUMA         PRUEBAS        10     5.1    0.00   0.0%     0        0         0    0.0
+3HBN  TIERRA LINDA              PRUEBAS        10     4.8    0.00   0.0%     0        0         0    0.0
+3HBP  LA TOLUA                  PRUEBAS        20     9.7    0.00   0.0%     0        0         0    0.0
+3HF7  CELSIA SOLAR LA VICTORIA  PRUEBAS        20    10.3    0.00   0.0%     0        0         0    0.0
+3HF9  CELSIA SOLAR LA VICTORIA  PRUEBAS        20    10.3    0.00   0.0%     0        0         0    0.0
+3HLD  LOS GIRASOLES             PRUEBAS        10     5.1    0.00   0.0%     0        0         0    0.0
+3HS9  AUTOG BUGA I SOLLA        PRUEBAS         6     1.3    0.00   0.0%     0        0         0    0.0
+3HWM  PETALO DEL MAGDALENA      PRUEBAS        10     5.6    0.00   0.0%     0        0         0    0.0
+3J1J  PARQUE SOLAR HONDA I      PRUEBAS        10     4.9    0.00   0.0%     0        0         0    0.0
+3J2B  SOLAR PLANETA RICA        OPERACION      20     9.2    0.00   0.0%     0        0         0    0.0
+3J2H  PETALO DE CORDOBA II      PRUEBAS         9     4.3    0.00   0.0%     0        0         0    0.0
+3J4D  CAIMAN CIENAGUERO         PRUEBAS        10     6.7    0.00   0.0%     0        0         0    0.0
+3J4R  PARQUE SOLAR DINAMARCA    PRUEBAS        10     5.0    0.00   0.0%     0        0         0    0.0
+3J4T  PARQUE SOLAR VERSALLES    PRUEBAS        10     4.8    0.00   0.0%     0        0         0    0.0
+3J4V  PARQUE SOLAR LA MENA      PRUEBAS        10     5.3    0.00   0.0%     0        0         0    0.0
+3J83  GUAMO                     PRUEBAS         9     4.3    0.00   0.0%     0        0         0    0.0
+3J85  NUMBANA                   PRUEBAS        10     5.0    0.00   0.0%     0        0         0    0.0
+3K6T  SOLAR ALEJANDRIA          PRUEBAS        10     4.6    0.00   0.0%     0        0         0    0.0
+3K8C  BSB 503                   OPERACION      20     9.1    0.00   0.0%     0        0         0    0.0
+3K8E  BSB 504                   OPERACION      20     9.2    0.00   0.0%     0        0         0    0.0
+3KJK  SOL Y CIELO I             PRUEBAS         9     3.8    0.00   0.0%     0        0         0    0.0
+3LLY  PARQUE SOLAR HONDA II     PRUEBAS        10     4.5    0.00   0.0%     0        0         0    0.0
+3LMH  JEQUES                    PRUEBAS        10     4.8    0.00   0.0%     0        0         0    0.0
+3LMJ  CELSIA SOLAR BUGALAGRANDE PRUEBAS        10     4.7    0.00   0.0%     0        0         0    0.0
+3MS2  CELSIA SOLAR PUERTO TEJAD OPERACION      18     6.1    0.00   0.0%     0        0         0    0.0
+3NLG  ROVIRA                    PRUEBAS         3     1.6    0.00   0.0%     0        0         0    0.0
+3NLZ  SOLAR OLD T               PRUEBAS        10     5.4    0.00   0.0%     0        0         0    0.0
+3PWF  AUTOG SOLAR PALMIRA II BE OPERACION       6     1.2    0.00   0.0%     0        0         0    0.0
+3PXC  BSB 501                   OPERACION      20     9.0    0.00   0.0%     0        0         0    0.0
+3PXE  BSB 500                   OPERACION      19     8.9    0.00   0.0%     0        0         0    0.0
+3PXF  BSB 502                   OPERACION      20     9.0    0.00   0.0%     0        0         0    0.0
+3PXH  CENTRO SOLAR              PRUEBAS        10     4.5    0.00   0.0%     0        0         0    0.0
+3PXJ  BUENAVISTA                PRUEBAS         7     4.1    0.00   0.0%     0        0         0    0.0
+3QCI  CONDOR                    PRUEBAS        10     5.1    0.00   0.0%     0        0         0    0.0
+3RGX  JUMI                      PRUEBAS        10     6.1    0.00   0.0%     0        0         0    0.0
+4QPJ  SOL DEL MAR II            PRUEBAS        10     5.1    0.00   0.0%     0        0         0    0.0
+4RGG  PARQUE SOLAR BARANOA      OPERACION      20    10.1    0.00   0.0%     0        0         0    0.0
+4SO4  ROKRA                     PRUEBAS        10     4.8    0.00   0.0%     0        0         0    0.0
+4SO6  LA MARTINA                PRUEBAS        11     5.7    0.00   0.0%     0        0         0    0.0
+4UZM  SOLAR PALMASECA I         PRUEBAS        13     5.6    0.00   0.0%     0        0         0    0.0
+4UZO  SOLAR PALMASECA II        PRUEBAS        11     4.4    0.00   0.0%     0        0         0    0.0
+4VYM  AUTOG MOLINOS SANTA MARTA OPERACION       3     1.0    0.00   0.0%     0        0         0    0.0
+4XQ2  PARQUE SOLAR INTI I       PRUEBAS        10     4.1    0.00   0.0%     0        0         0    0.0
+4YKB  SOLAR PN I                PRUEBAS        10     5.8    0.00   0.0%     0        0         0    0.0
+4YL8  PETALO DEL NORTE DE SANTA PRUEBAS        20     9.9    0.00   0.0%     0        0         0    0.0
+4Z8H  ZAMBRANO II               PRUEBAS        15     4.8    0.00   0.0%     0        0         0    0.0
+4Z9Q  SOLAR ARDOBELA I          OPERACION      10     4.7    0.00   0.0%     0        0         0    0.0
+4Z9S  SOLAR ARDOBELA II         OPERACION      10     4.6    0.00   0.0%     0        0         0    0.0
+5AXC  VALLEDUPAR II             PRUEBAS        20     7.4    0.00   0.0%     0        0         0    0.0
+5AXE  VALLEDUPAR I              PRUEBAS        20     7.7    0.00   0.0%     0        0         0    0.0
+5AXG  VALLEDUPAR III            PRUEBAS        20     3.7    0.00   0.0%     0        0         0    0.0
+5DWA  CELSIA SOLAR ESCOBAL IV   PRUEBAS        20     5.7    0.00   0.0%     0        0         0    0.0
+5E3N  CELSIA SOLAR ESCOBAL V    PRUEBAS        20     6.0    0.00   0.0%     0        0         0    0.0
+5EER  CELSIA SOLAR ESCOBAL III  PRUEBAS        19     3.4    0.00   0.0%     0        0         0    0.0
+5EES  CELSIA SOLAR ESCOBAL II   PRUEBAS        19     3.4    0.00   0.0%     0        0         0    0.0
+5F43  ALMA II                   OPERACION      10     4.4    0.00   0.0%     0        0         0    0.0
+5F46  EL TAMARINDO I            PRUEBAS        10     3.3    0.00   0.0%     0        0         0    0.0
+5F47  EL TAMARINDO II           PRUEBAS        10     3.7    0.00   0.0%     0        0         0    0.0
+5G3O  CELSIA SOLAR ESCOBAL I    PRUEBAS        18     5.2    0.00   0.0%     0        0         0    0.0
+5G3S  PARQUE SOLAR BUGAMBILES   OPERACION      10     3.8    0.00   0.0%     0        0         0    0.0
+5G3T  PARQUE SOLAR NISPEROS     OPERACION      20     7.4    0.00   0.0%     0        0         0    0.0
+5G3U  SOL DE ZAWADY             PRUEBAS        10     4.1    0.00   0.0%     0        0         0    0.0
+5IME  PARQUE SOLAR SABANA       PRUEBAS        10     1.6    0.00   0.0%     0        0         0    0.0
+5J8K  PARQUE SOLAR HATO GRANDE  PRUEBAS        10     1.6    0.00   0.0%     0        0         0    0.0
+5JDL  PARQUE SOLAR EL JARDIN    PRUEBAS         8     2.0    0.00   0.0%     0        0         0    0.0
+ATLP  ATLANTICO                 PRUEBAS       166    25.1    0.00   0.0%     0        0         0    0.0
+PORO  PARQUE SOLAR PUERTA DE OR PRUEBAS       301   108.5    0.00   0.0%     0        0         0    0.0
+PSUA  PARQUE SOLAR URRA         PRUEBAS        16     2.1    0.00   0.0%     0        0         0    0.0
+TR2G  TRINA-VATIA BSLII         PRUEBAS        19     9.1    0.00   0.0%     0        0         0    0.0
+TR3G  TRINA-VATIA BSLIII        PRUEBAS        19     9.5    0.00   0.0%     0        0         0    0.0
+
+============================================================================================================
+SECTION 2 — System-wide SOLAR curtailment by month + annualised (vs ~0.4 TWh/yr PISYS ground truth)
+============================================================================================================
+  may (31d): solar curtailment     1.54 GWh  | solar gen-ideal     587.1 GWh | curt  0.3%  -> annualised    18.2 GWh/yr (0.0182 TWh/yr)
+  feb (28d): solar curtailment     0.37 GWh  | solar gen-ideal     454.1 GWh | curt  0.1%  -> annualised     4.9 GWh/yr (0.0049 TWh/yr)
+  nov (30d): solar curtailment     0.73 GWh  | solar gen-ideal     355.7 GWh | curt  0.2%  -> annualised     8.9 GWh/yr (0.0089 TWh/yr)
+  3-month blended annualised SOLAR curtailment: 10.8 GWh/yr (0.0108 TWh/yr)  [PISYS all-cause restriction ground truth ~0.4 TWh/yr]
+
+============================================================================================================
+SECTION 3 — National spot price (PrecBolsNaci) duration vs USD/MWh thresholds  (FX 4000 COP/USD)
+============================================================================================================
+  may:  744 hrs | mean  505.2 COP/kWh ($126.3/MWh) | <$10: 0.0%  <$15: 0.0%  <$30: 0.1%  
+  feb:  672 hrs | mean  124.4 COP/kWh ($ 31.1/MWh) | <$10: 0.0%  <$15: 0.0%  <$30:49.6%  
+  nov:  720 hrs | mean  219.0 COP/kWh ($ 54.7/MWh) | <$10: 0.0%  <$15: 0.0%  <$30:19.4%  
+  ALL 2136 hrs: mean 288.9 COP/kWh ($72.2/MWh), min 97.9 ($24.5), max 1126.2 ($281.5)
+    national spot < $10/MWh (40 COP/kWh): 0/2136 hrs = 0.0%  -> ~0 hrs/yr
+    national spot < $15/MWh (60 COP/kWh): 0/2136 hrs = 0.0%  -> ~0 hrs/yr
+    national spot < $30/MWh (120 COP/kWh): 474/2136 hrs = 22.2%  -> ~1943 hrs/yr
+
+============================================================================================================
+SECTION 4 — SOLAR offer prices PrecOferDesp (are utility solar plants price-takers?)
+============================================================================================================
+  may: 12 solar resources offering
+    3IRX  PORTON DEL SOL              median offer    76.66 COP/kWh  ($ 19.16/MWh)
+    3IQA  SUNNORTE                    median offer    76.66 COP/kWh  ($ 19.16/MWh)
+    3IZ6  PARQUE SOLAR LA UNION       median offer    78.00 COP/kWh  ($ 19.50/MWh)
+    MATA  LA MATA                     median offer    78.00 COP/kWh  ($ 19.50/MWh)
+    3INX  CARACOLI I                  median offer    81.00 COP/kWh  ($ 20.25/MWh)
+    4YCF  SHANGRI LA                  median offer    81.97 COP/kWh  ($ 20.49/MWh)
+    TPUY  PARQUE SOLAR TEPUY          median offer    84.28 COP/kWh  ($ 21.07/MWh)
+    3HF5  FUNDACION                   median offer    86.25 COP/kWh  ($ 21.56/MWh)
+    GYPO  GUAYEPO                     median offer    86.25 COP/kWh  ($ 21.56/MWh)
+    GYP3  GUAYEPO III                 median offer    86.25 COP/kWh  ($ 21.56/MWh)
+    3DDT  LATAM SOLAR LA LOMA         median offer    88.17 COP/kWh  ($ 22.04/MWh)
+    EPFV  EL PASO                     median offer    88.17 COP/kWh  ($ 22.04/MWh)
+
+============================================================================================================
+SECTION 5 — RecoNegEner (reconciliation neg. energy = out-of-merit/security, a locational-value signal), May
+============================================================================================================
+  68 resources with reconciliation-neg energy in May; top 15 by MWh:
+    SOG1  SOGAMOSO                   HIDRAULICA    126791.0 MWh
+    CHVR  CHIVOR                     HIDRAULICA    108987.2 MWh
+    SNCR  SAN CARLOS                 HIDRAULICA     97909.0 MWh
+    GVIO  GUAVIO                     HIDRAULICA     64457.2 MWh
+    LTSJ  LA TASAJERA                HIDRAULICA     52381.9 MWh
+    GTPE  GUATAPE                    HIDRAULICA     48716.4 MWh
+    PGUG  PAGUA                      HIDRAULICA     47811.2 MWh
+    PRC3  PORCE III                  HIDRAULICA     47195.2 MWh
+    PRC2  PORCE II                   HIDRAULICA     36081.5 MWh
+    ALBG  ALBAN                      HIDRAULICA     33048.9 MWh
+    JAGS  JAGUAS                     HIDRAULICA     28628.6 MWh
+    QUI1  EL QUIMBO                  HIDRAULICA     11392.9 MWh
+    PLYS  PLAYAS                     HIDRAULICA     10775.6 MWh
+    CHBG  BETANIA                    HIDRAULICA     10230.4 MWh
+    HMLG  MIEL I                     HIDRAULICA      9447.9 MWh
