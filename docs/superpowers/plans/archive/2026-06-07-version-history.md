@@ -1,5 +1,7 @@
 # Version History Implementation Plan
 
+> **STATUS: SHIPPED** — merged to main as PR #129, 2026-06-07.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build an append-only `data/historical/version-history.csv` (one row per region per dataset version) generated deterministically from committed snapshots, with a TypeScript builder script and a matching npm run alias.
