@@ -1,0 +1,50 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Colombia undervalued-power map</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+ html,body{margin:0;height:100%;font:13px/1.4 system-ui,sans-serif}
+ #map{height:100%}
+ .legend{background:#fff;padding:10px 12px;border-radius:6px;box-shadow:0 1px 6px rgba(0,0,0,.3);max-width:230px}
+ .legend h4{margin:0 0 6px;font-size:13px}
+ .legend .row{display:flex;align-items:center;gap:6px;margin:2px 0}
+ .dot{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid #555}
+ .pop b{font-size:14px}.pop table{border-collapse:collapse;margin-top:4px}.pop td{padding:1px 6px 1px 0}
+</style></head><body><div id="map"></div><script>
+var P = [{"code": "GYPO", "name": "GUAYEPO I", "fuel": "solar", "dept": "Atlantico", "mun": "Ponedera", "lat": 10.6151, "lon": -74.8249, "cap": 370.0, "live": true, "gen": 180.3, "curt": 0.43, "curtpct": 0.24, "mathrs": 29, "offer": 21.8, "conf": "high", "state": "OPERACION"}, {"code": "GYP3", "name": "GUAYEPO III", "fuel": "solar", "dept": "Atlantico", "mun": "Ponedera", "lat": 10.643, "lon": -74.7534, "cap": 200.0, "live": true, "gen": 110.9, "curt": 0.17, "curtpct": 0.15, "mathrs": 16, "offer": 21.6, "conf": "med", "state": "OPERACION"}, {"code": "ATLP", "name": "ATLANTICO (Sabanalarga)", "fuel": "solar", "dept": "Atlantico", "mun": "Sabanalarga", "lat": 10.6539, "lon": -74.9391, "cap": 199.5, "live": false, "gen": 25.1, "curt": 0.0, "curtpct": 0.0, "mathrs": 0, "offer": null, "conf": "high", "state": "PRUEBAS"}, {"code": "EPFV", "name": "EL PASO", "fuel": "solar", "dept": "Cesar", "mun": "El Paso", "lat": 9.7835, "lon": -73.7224, "cap": 68.0, "live": true, "gen": 41.7, "curt": 0.15, "curtpct": 0.35, "mathrs": 41, "offer": 21.9, "conf": "high", "state": "OPERACION"}, {"code": "3HF5", "name": "FUNDACION", "fuel": "solar", "dept": "Magdalena", "mun": "Fundacion", "lat": 10.4812, "lon": -74.2263, "cap": 100.0, "live": true, "gen": 57.8, "curt": 0.53, "curtpct": 0.91, "mathrs": 103, "offer": 21.8, "conf": "high", "state": "OPERACION"}, {"code": "3DDT", "name": "LA LOMA (LATAM SOLAR)", "fuel": "solar", "dept": "Cesar", "mun": "El Paso/La Loma", "lat": 9.6001, "lon": -73.6382, "cap": 150.0, "live": true, "gen": 87.0, "curt": 0.16, "curtpct": 0.18, "mathrs": 25, "offer": 21.9, "conf": "high", "state": "OPERACION"}, {"code": "MATA", "name": "LA MATA", "fuel": "solar", "dept": "Cesar", "mun": "La Gloria (La Mata)", "lat": 8.5863, "lon": -73.6126, "cap": 80.0, "live": true, "gen": 39.8, "curt": 0.13, "curtpct": 0.32, "mathrs": 4, "offer": 20.8, "conf": "high", "state": "OPERACION"}, {"code": "3INX", "name": "CARACOLI I", "fuel": "solar", "dept": "Atlantico", "mun": "Malambo", "lat": 10.8403, "lon": -74.8339, "cap": 50.0, "live": true, "gen": 23.5, "curt": 0.11, "curtpct": 0.48, "mathrs": 8, "offer": 20.2, "conf": "high", "state": "OPERACION"}, {"code": "PORO", "name": "PUERTA DE ORO", "fuel": "solar", "dept": "Cundinamarca", "mun": "Guaduas/Chaguani", "lat": 5.0675, "lon": -74.5951, "cap": 300.0, "live": false, "gen": 108.5, "curt": 0.0, "curtpct": 0.0, "mathrs": 0, "offer": null, "conf": "med", "state": "PRUEBAS"}, {"code": "TPUY", "name": "TEPUY", "fuel": "solar", "dept": "Caldas", "mun": "La Dorada", "lat": 5.3883, "lon": -74.7241, "cap": 83.0, "live": true, "gen": 48.9, "curt": 0.18, "curtpct": 0.36, "mathrs": 16, "offer": 21.5, "conf": "med", "state": "OPERACION"}, {"code": "4YCF", "name": "SHANGRI LA", "fuel": "solar", "dept": "Tolima", "mun": "Ibague", "lat": 4.4389, "lon": -75.2322, "cap": 160.0, "live": true, "gen": 87.4, "curt": 0.59, "curtpct": 0.67, "mathrs": 86, "offer": 21.3, "conf": "med", "state": "OPERACION"}, {"code": "3IQA", "name": "SUNNORTE", "fuel": "solar", "dept": "Norte de Santander", "mun": "Ocana", "lat": 8.2247, "lon": -73.3233, "cap": 35.0, "live": true, "gen": 14.0, "curt": 0.08, "curtpct": 0.56, "mathrs": 0, "offer": 20.0, "conf": "high", "state": "OPERACION"}, {"code": "3IRX", "name": "PORTON DEL SOL", "fuel": "solar", "dept": "Caldas", "mun": "La Dorada (Guaranicito)", "lat": 5.3883, "lon": -74.7241, "cap": 102.0, "live": true, "gen": 48.6, "curt": 0.07, "curtpct": 0.14, "mathrs": 4, "offer": 20.0, "conf": "med", "state": "OPERACION"}, {"code": "3IZ6", "name": "LA UNION", "fuel": "solar", "dept": "Cordoba", "mun": "Monteria/San Carlos", "lat": 8.75, "lon": -75.65, "cap": 144.0, "live": true, "gen": 51.3, "curt": 0.06, "curtpct": 0.11, "mathrs": 4, "offer": 20.8, "conf": "med", "state": "OPERACION"}, {"code": "PSUA", "name": "URRA", "fuel": "solar", "dept": "Cordoba", "mun": "Tierralta", "lat": 8.0148, "lon": -76.2087, "cap": 20.0, "live": false, "gen": 2.1, "curt": 0.0, "curtpct": 0.0, "mathrs": 0, "offer": null, "conf": "med", "state": "PRUEBAS"}, {"code": "PRMA", "name": "LA PRIMAVERA", "fuel": "solar", "dept": "Caqueta", "mun": "El Doncello", "lat": 1.6794, "lon": -75.2839, "cap": 67.8, "live": false, "gen": 0.0, "curt": 0.0, "curtpct": 0.0, "mathrs": 0, "offer": null, "conf": "med", "state": "PRUEBAS"}, {"code": "EBAL", "name": "ESCOBAL VI", "fuel": "solar", "dept": "Tolima", "mun": "Alvarado", "lat": 4.3883, "lon": -75.066, "cap": 99.0, "live": false, "gen": 0.0, "curt": 0.0, "curtpct": 0.0, "mathrs": 0, "offer": null, "conf": "high", "state": "PRUEBAS"}, {"code": "APLU", "name": "APOTOLORRU (JK2)", "fuel": "wind", "dept": "La Guajira", "mun": "Uribia", "lat": 12.2074, "lon": -72.0926, "cap": 75.0, "live": false, "gen": 0.0, "curt": 0.0, "curtpct": 0.0, "mathrs": 0, "offer": null, "conf": "high", "state": "PRUEBAS"}, {"code": "CELE", "name": "CASA ELECTRICA (JK1)", "fuel": "wind", "dept": "La Guajira", "mun": "Uribia", "lat": 12.1802, "lon": -72.04, "cap": 180.0, "live": false, "gen": 0.0, "curt": 0.0, "curtpct": 0.0, "mathrs": 0, "offer": null, "conf": "high", "state": "PRUEBAS"}, {"code": "APHA", "name": "PARQUE ALPHA", "fuel": "wind", "dept": "La Guajira", "mun": "Maicao", "lat": 11.3804, "lon": -72.2256, "cap": 212.0, "live": false, "gen": 0.0, "curt": 0.0, "curtpct": 0.0, "mathrs": 0, "offer": null, "conf": "med", "state": "PRUEBAS"}, {"code": "BETA", "name": "PARQUE BETA", "fuel": "wind", "dept": "La Guajira", "mun": "Maicao", "lat": 11.5841, "lon": -72.1332, "cap": 280.0, "live": false, "gen": 0.0, "curt": 0.0, "curtpct": 0.0, "mathrs": 0, "offer": null, "conf": "high", "state": "PRUEBAS"}];
+var map = L.map('map').setView([7.5,-74.2], 6);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+  {attribution:'&copy; OpenStreetMap &copy; CARTO', maxZoom:19}).addTo(map);
+function color(p){
+  if(!p.live) return '#9aa0a6';                       // pipeline / no data
+  if(p.offer==null) return '#9aa0a6';
+  if(p.offer<20) return '#1a9850';                    // cheapest offer
+  if(p.offer<22) return '#66bd63';
+  return '#d9ef8b';
+}
+function rad(p){ return Math.max(5, Math.sqrt(p.cap)*1.7); }   // area ~ capacity
+P.forEach(function(p){
+  var m = L.circleMarker([p.lat,p.lon],{radius:rad(p),color:'#333',weight:1,
+    fillColor:color(p),fillOpacity:p.live?0.85:0.5,dashArray:p.conf==='high'?null:'3'});
+  var t='<div class="pop"><b>'+p.name+'</b> <span style="color:#666">('+p.code+', '+p.fuel+')</span>'
+    +'<table>'
+    +'<tr><td>Location</td><td>'+p.mun+', '+p.dept+'</td></tr>'
+    +'<tr><td>Capacity</td><td>'+p.cap+' MWac</td></tr>'
+    +'<tr><td>Status</td><td>'+p.state+(p.live?' (live)':' (pipeline)')+'</td></tr>';
+  if(p.live){ t+='<tr><td>Offer price</td><td><b>'+(p.offer!=null?'$'+p.offer+'/MWh':'—')+'</b></td></tr>'
+    +'<tr><td>Gen (3mo)</td><td>'+p.gen+' GWh</td></tr>'
+    +'<tr><td>Curtailment</td><td>'+p.curt+' GWh ('+p.curtpct+'%)</td></tr>'
+    +'<tr><td>Material curt h/yr</td><td>'+p.mathrs+'</td></tr>'; }
+  t+='<tr><td>Coord conf.</td><td>'+p.conf+'</td></tr></table></div>';
+  m.bindPopup(t); m.addTo(map);
+});
+var lg=L.control({position:'bottomright'}); lg.onAdd=function(){
+  var d=L.DomUtil.create('div','legend');
+  d.innerHTML='<h4>Utility solar/wind &middot; offer $/MWh</h4>'
+   +'<div class="row"><span class="dot" style="background:#1a9850"></span>live &lt;$20/MWh</div>'
+   +'<div class="row"><span class="dot" style="background:#66bd63"></span>live $20&ndash;22/MWh</div>'
+   +'<div class="row"><span class="dot" style="background:#d9ef8b"></span>live &gt;$22/MWh</div>'
+   +'<div class="row"><span class="dot" style="background:#9aa0a6"></span>pipeline (PRUEBAS)</div>'
+   +'<div style="margin-top:6px;color:#555">size &prop; capacity &middot; dashed = approx. location</div>';
+  return d;}; lg.addTo(map);
+</script></body></html>

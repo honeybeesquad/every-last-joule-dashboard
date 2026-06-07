@@ -1,0 +1,22 @@
+code,name,fuel,state,live,department,municipality,lat,lon,capacity_mwac,peak_mw,gen_gwh,curt_gwh,curt_pct,mat_hrs_yr,offer_usd,coord_confidence,coord_basis,source_url
+GYPO,GUAYEPO I,solar,OPERACION,True,Atlantico,Ponedera,10.6151,-74.8249,370,348.2496,180.3383,0.4284,0.237,28.7079,21.787,high,GEM.wiki exact (UPME/SIEL),https://www.gem.wiki/Guayepo_PV_Solar_Park
+GYP3,GUAYEPO III,solar,OPERACION,True,Atlantico,Ponedera,10.6430,-74.7534,200,180.0,110.8841,0.1684,0.1516,16.4045,21.5633,med,GEM.wiki approximate (SIEL),https://www.gem.wiki/Guayepo_III_solar_farm
+ATLP,ATLANTICO (Sabanalarga),solar,PRUEBAS,False,Atlantico,Sabanalarga,10.6539,-74.9391,199.5,166.2889,25.1456,0.0,0.0,0.0,,high,GEM.wiki exact (Google Maps + SIEL),https://www.gem.wiki/Atlantico_Sabanalarga_Solar_PV_Park
+EPFV,EL PASO,solar,OPERACION,True,Cesar,El Paso,9.7835,-73.7224,68,68.0,41.7205,0.1452,0.3469,41.0112,21.9065,high,GEM.wiki exact (Google Maps + SIEL),https://www.gem.wiki/El_Paso_PV_Solar_Park
+3HF5,FUNDACION,solar,OPERACION,True,Magdalena,Fundacion,10.4812,-74.2263,100,100.0,57.8352,0.5324,0.9121,102.5281,21.787,high,GEM.wiki exact (UPME/SIEL),https://www.gem.wiki/Fundacion_(Latamsolar)_solar_farm
+3DDT,LA LOMA (LATAM SOLAR),solar,OPERACION,True,Cesar,El Paso/La Loma,9.6001,-73.6382,150,142.2298,87.0258,0.1605,0.184,24.6067,21.906,high,GEM.wiki exact (UPME/SIEL),https://www.gem.wiki/La_Loma_Solar_Park
+MATA,LA MATA,solar,OPERACION,True,Cesar,La Gloria (La Mata),8.5863,-73.6126,80,79.99,39.7721,0.1258,0.3154,4.1011,20.75,high,GEM.wiki exact (Google Maps + SIEL),https://www.gem.wiki/La_Mata_solar_farm_(Colombia)
+3INX,CARACOLI I,solar,OPERACION,True,Atlantico,Malambo,10.8403,-74.8339,50,41.0,23.5205,0.1123,0.4752,8.2022,20.25,high,GEM.wiki exact (UPME/SIEL/CNO),https://www.gem.wiki/Caracoli_Solar_Plant
+PORO,PUERTA DE ORO,solar,PRUEBAS,False,Cundinamarca,Guaduas/Chaguani,5.0675,-74.5951,300,300.9075,108.4613,0.0,0.0,0.0,,med,GEM.wiki approximate (SIEL),https://www.gem.wiki/Puerta_De_Oro_Solar_Project
+TPUY,TEPUY,solar,OPERACION,True,Caldas,La Dorada,5.3883,-74.7241,83,83.0,48.8638,0.1762,0.3593,16.4045,21.5335,med,La Dorada area (coincident w/ Porton del Sol; exact GEM not separately verified),https://www.gem.wiki/Tepuy_solar_farm
+4YCF,SHANGRI LA,solar,OPERACION,True,Tolima,Ibague,4.4389,-75.2322,160,148.0,87.3869,0.5919,0.6727,86.1236,21.25,med,Ibague municipality centroid (GEM placeholder 4.0999/-72.9088 discarded),https://www.gem.wiki/Shangrila_PV_Solar_Park
+3IQA,SUNNORTE,solar,OPERACION,True,Norte de Santander,Ocana,8.2247,-73.3233,35,30.0,13.9899,0.0793,0.5636,0.0,19.9552,high,GEM.wiki exact (UPME/SIEL),https://www.gem.wiki/Sunnorte_Solar_Plant
+3IRX,PORTON DEL SOL,solar,OPERACION,True,Caldas,La Dorada (Guaranicito),5.3883,-74.7241,102,96.0,48.5844,0.0686,0.1409,4.1011,19.955,med,near La Dorada (exact GEM not retrieved),https://www.gem.wiki/Porton_Del_Sol_PV_Solar_Park
+3IZ6,LA UNION,solar,OPERACION,True,Cordoba,Monteria/San Carlos,8.7500,-75.6500,144,99.86,51.2647,0.0565,0.11,4.1011,20.75,med,municipality area (Monteria/San Carlos),https://www.gem.wiki/La_Union_Solar_Park
+PSUA,URRA,solar,PRUEBAS,False,Cordoba,Tierralta,8.0148,-76.2087,20,15.5732,2.1386,0.0,0.0,0.0,,med,adjacent Urra I hydro/substation (GEM placeholder discarded),https://www.gem.wiki/Urra_Solar_Park
+PRMA,LA PRIMAVERA,solar,PRUEBAS,False,Caqueta,El Doncello,1.6794,-75.2839,67.8,0.0,0.0,0.0,0.0,0.0,,med,GEM.wiki approximate (SIEL),https://www.gem.wiki/La_Primavera_solar_farm
+EBAL,ESCOBAL VI,solar,PRUEBAS,False,Tolima,Alvarado,4.3883,-75.0660,99,0.0,0.0,0.0,0.0,0.0,,high,GEM.wiki exact (Celsia),https://www.gem.wiki/Escobal_solar_farm
+APLU,APOTOLORRU (JK2),wind,PRUEBAS,False,La Guajira,Uribia,12.2074,-72.0926,75,0.0,0.0,0.0,0.0,0.0,,high,GEM.wiki exact (Corpoguajira Res 0466/2019; AES),https://www.gem.wiki/JK2_wind_farm
+CELE,CASA ELECTRICA (JK1),wind,PRUEBAS,False,La Guajira,Uribia,12.1802,-72.0400,180,0.0,0.0,0.0,0.0,0.0,,high,GEM.wiki exact (Corpoguajira Res 2367/2016; AES),https://www.gem.wiki/JK1_wind_farm
+APHA,PARQUE ALPHA,wind,PRUEBAS,False,La Guajira,Maicao,11.3804,-72.2256,212,0.0,0.0,0.0,0.0,0.0,,med,GEM.wiki approximate (EDPR; shelved),https://www.gem.wiki/Alpha_wind_farm
+BETA,PARQUE BETA,wind,PRUEBAS,False,La Guajira,Maicao,11.5841,-72.1332,280,0.0,0.0,0.0,0.0,0.0,,high,GEM.wiki exact (UPME/SIEL; EDPR; shelved),https://www.gem.wiki/Beta_wind_farm

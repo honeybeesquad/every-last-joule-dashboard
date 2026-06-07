@@ -21,13 +21,17 @@ regenerable from Britta).
   **$24.5/MWh**, mean $72). Spot **< $30/MWh ≈ 22% of hours (~1,900 h/yr)** — *below* the
   2,900 h target and wildly seasonal (Feb 50% of hours vs May 0.1%).
 - **Curtailment (≈free energy) is real but small and shallow today:** ~0.3% of utility-solar
-  output, **~11–18 GWh/yr system-wide**, concentrated in the Caribbean cluster. **No plant has
+  output, **~11–18 GWh/yr system-wide**, across both the Caribbean cluster and interior plants. **No plant has
   anywhere near 2,900 h/yr of *material* curtailment** (max ≈100 h/yr material; ≈1,000–1,150 h/yr
   if you count trivial sub-5% trims).
-- **Opportunity geography is unambiguous: the Caribbean — Cesar / Atlántico / Magdalena / Bolívar**
-  (XM *Área Caribe / GCM*). Every large solar plant and all the (currently light) curtailment sits there.
-- **Honest bottom line:** today the achievable number is **~$19–22/MWh utility solar in the
-  Caribbean**, not $10–15. The sub-$15 / 2,900-hour dream is **not visible in current market data**;
+- **Opportunity geography — corrected after geolocation (§9).** The live fleet splits between a
+  **Caribbean cluster** (GUAYEPO I/III, ATLÁNTICO, CARACOLÍ in Atlántico; EL PASO, LA LOMA, LA MATA in
+  Cesar; FUNDACIÓN in Magdalena) **and interior plants** (TEPUY, PORTÓN DEL SOL in Caldas; SHANGRI LA,
+  ESCOBAL VI in Tolima; PUERTA DE ORO in Cundinamarca; SUNNORTE in N. Santander; LA UNIÓN, URRÁ in
+  Córdoba; LA PRIMAVERA in Caquetá). The two most-curtailed sampled plants are **SHANGRI LA (Tolima)**
+  and **FUNDACIÓN (Magdalena)** — *not* Caribbean-exclusive. Wind is pre-operational (`FUTURA-*`, La Guajira).
+- **Honest bottom line:** today the achievable number is **~$19–22/MWh utility solar** (Caribbean +
+  interior clusters), not $10–15. The sub-$15 / 2,900-hour dream is **not visible in current market data**;
   it would require capturing curtailed energy behind-the-meter, and that curtailment is small now
   but **structurally growing** as a large pipeline energises into a constrained corridor. The
   geo-blocked-data moat lets us watch that build-up plant-by-plant before public-data users can.
@@ -117,11 +121,14 @@ which submit no offer and get no `GeneIdea`, so they're invisible to the price/c
 | 4YCF | SHANGRI LA | 148 | 87.4 | 0.59 | 0.8% | 997 | 86 | 18.1 |
 | 3HF5 | FUNDACION | 100 | 57.8 | 0.53 | 1.0% | 1070 | 103 | 17.9 |
 
-All in **Cesar/Atlántico/Magdalena/Bolívar**. The pattern is **frequent shallow trimming**, not
-deep spilling: even the worst plant (FUNDACION) shows ~103 h/yr of material curtailment, an order
-of magnitude short of 2,900. Big plants in `PRUEBAS` (PUERTA DE ORO 301 MW, ATLANTICO 166 MW,
-the TRINA-VATIA / VALLEDUPAR / ESCOBAL units) are not yet curtailment-visible but are queued into
-the same corridor.
+**Split across regions, not Caribbean-only** (geolocation §9): GUAYEPO I/III, EL PASO, LA MATA,
+FUNDACIÓN are Caribbean (Atlántico/Cesar/Magdalena), but **TEPUY is in Caldas and the most-curtailed
+plant, SHANGRI LA, is in Tolima** — both interior. The pattern is **frequent shallow trimming**, not
+deep spilling: even the worst plant (FUNDACION) shows ~103 h/yr of material curtailment, an order of
+magnitude short of 2,900. **Caveat:** SHANGRI LA (COD Oct-2025) and GUAYEPO III (COD Feb-2026) were
+commissioned mid-sample, so part of their measured "curtailment" is likely commissioning ramp, not
+market curtailment. Big `PRUEBAS` plants (PUERTA DE ORO 300 MW, ATLÁNTICO/Sabanalarga 200 MW) are not
+yet curtailment-visible.
 
 System-wide solar curtailment: **0.1–0.3%/month, ~11–18 GWh/yr annualised** — two orders of
 magnitude below the ~0.4 TWh/yr PISYS all-cause restriction figure (most of which is hydro security
@@ -174,7 +181,29 @@ generation; see §6 reconciliation, dominated by SOGAMOSO/CHIVOR/SAN CARLOS).
 
 ## 8. Non-goals / not done here
 
-No production loader, no dashboard region, no siting commitment, no external coordinate crosswalk
-built yet (identified as the next concrete task). Single-year sample only — it validates the *method*
-and gives a first cut; the real 2,900-hour numbers need the full multi-year pull (and ideally a
-La Niña year). The tunnel was up only for tight harvest windows and is down.
+No production loader, no dashboard region, no siting commitment. Single-year sample only — it validates
+the *method* and gives a first cut; the real 2,900-hour numbers need the full multi-year pull (and
+ideally a La Niña year). The tunnel was up only for tight harvest windows and is down.
+
+## 9. Geolocation crosswalk + opportunity map (added 2026-06-07, post-recon)
+
+The XM registry carries no coordinates, so the 21 centrally-dispatched VRE plants were geolocated
+against Global Energy Monitor + UPME/SIEL, with per-plant lat/lon, confidence, and source recorded.
+
+- `docs/research/colombia-xm-raw/plant-crosswalk.csv` — code → dept/municipality/lat/lon/capacity/confidence/source.
+- `docs/research/colombia-xm-raw/opportunity.py` + `opportunity-table.csv` — crosswalk **joined to the
+  recon metrics** (offer $/MWh, curtailment GWh, material-curtailment h/yr, generation), ranked.
+- `docs/research/colombia-xm-opportunity-map.html` — interactive Leaflet map; markers sized by capacity,
+  coloured by offer $/MWh; dashed outline = approximate (med-confidence) location.
+
+**Correction to §0/§4:** this geolocation **falsified the earlier "all curtailment is in the Caribbean"
+claim**. 9 of the 12 live plants — and the top two by sampled curtailment (SHANGRI LA / Tolima,
+FUNDACIÓN / Magdalena) — are split between the Caribbean *Área Caribe* and interior Magdalena-valley/Andean
+sites (Caldas, Tolima, Córdoba, N. Santander, Caquetá).
+
+**Coordinate confidence:** *high* (GEM-exact) for GUAYEPO I, EL PASO, FUNDACIÓN, LA LOMA, LA MATA,
+CARACOLÍ, SUNNORTE, ESCOBAL, and the AES La Guajira wind (Apotolorru/Casa Eléctrica/Beta); *med*
+(municipality/near-site) for SHANGRI LA, PORTÓN DEL SOL, TEPUY, LA UNIÓN, URRÁ, GUAYEPO III, PUERTA DE
+ORO, ALPHA. **Verify the med rows against XM PARATEC before any siting decision.** Two owner corrections
+surfaced: ALPHA/BETA are EDPR (shelved), not AES; PUERTA DE ORO is in Cundinamarca (interior), despite
+its Barranquilla-nickname name.
