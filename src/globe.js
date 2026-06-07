@@ -4,6 +4,7 @@ import { regionGWAtHour } from "./lib/calc.js";
 import { getRegionFuelColor } from "./lib/fuel.js";
 import { readGlobeTokens, isLinearGradientToken } from "./lib/theme-tokens.js";
 import { buildPillarUnits } from "./lib/pillar-layout.js";
+import { qualityBucket, qualityOpacity, dotStyleFor } from "./lib/region-quality.js";
 
 // Locally-vendored world atlas: previously fetched from unpkg.com, which
 // added a third-party DNS + TLS handshake (~200–400ms on cellular) to
@@ -346,9 +347,14 @@ export async function mountGlobe(canvas, initial) {
       const repData = state.regionData[rep.id];
       const domColor = getRegionFuelColor(rep, repData);
 
-      // USD mode removed: all regions rendered at full opacity.
-      const isPriceless = false;
-      const pillarAlpha = 1;
+      // Data-quality opacity: measured brightest → estimated dimmest.
+      // A degraded (stale >24h) live feed dims to estimated level; the amber
+      // dot-ring (drawn below) is the actual freshness alarm. Fuel hue on the
+      // pillar body is preserved in every state.
+      const repBucket = qualityBucket(rep, repData);
+      const repDegraded = repData?.sourceStatus === "degraded";
+      const repDotStyle = dotStyleFor(repBucket, repData?.sourceStatus);
+      const pillarAlpha = qualityOpacity(repDegraded ? "estimated" : repBucket);
 
       ctx.save();
       ctx.filter = "blur(4px)";
@@ -412,6 +418,9 @@ export async function mountGlobe(canvas, initial) {
             const segEndY = segStartY + dy * segLen;
             const segData = state.regionData[seg.region.id];
             const segColor = getRegionFuelColor(seg.region, segData);
+            const segBucket = qualityBucket(seg.region, segData);
+            const segDegraded = segData?.sourceStatus === "degraded";
+            const segAlpha = qualityOpacity(segDegraded ? "estimated" : segBucket);
             const isBase = segStart === 0;
             const isTip = segStart + segLen >= pillarH - 0.5;
             const grad = ctx.createLinearGradient(segStartX, segStartY, segEndX, segEndY);
@@ -420,7 +429,7 @@ export async function mountGlobe(canvas, initial) {
             ctx.strokeStyle = grad;
             ctx.lineWidth = pillarW;
             ctx.lineCap = isTip ? "round" : "butt";
-            ctx.globalAlpha = pillarAlpha * visible * sunDim;
+            ctx.globalAlpha = segAlpha * visible * sunDim;
             ctx.beginPath();
             ctx.moveTo(segStartX, segStartY);
             ctx.lineTo(segEndX, segEndY);
@@ -428,7 +437,7 @@ export async function mountGlobe(canvas, initial) {
             if (isTip) {
               ctx.save();
               ctx.filter = "blur(3px)";
-              ctx.globalAlpha = pillarAlpha * 0.5 * visible * sunDim;
+              ctx.globalAlpha = segAlpha * 0.5 * visible * sunDim;
               ctx.fillStyle = segColor;
               ctx.beginPath();
               ctx.arc(segEndX, segEndY, pillarW * 1.6, 0, Math.PI * 2);
@@ -441,13 +450,41 @@ export async function mountGlobe(canvas, initial) {
       }
 
       ctx.globalAlpha = pillarAlpha * visible;
-      ctx.fillStyle = domColor;
-      ctx.beginPath();
-      ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
-      ctx.lineWidth = 0.6;
-      ctx.stroke();
+      if (repDotStyle === "hollow") {
+        // Estimated: outline ring only, no fill — reads as "not measured".
+        ctx.strokeStyle = domColor;
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+        ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        // Measured / anchored / degraded: filled core in fuel hue.
+        ctx.fillStyle = domColor;
+        ctx.beginPath();
+        ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+        if (repDotStyle === "ringed") {
+          // Anchored: thin concentric ring around the filled core.
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.7)";
+          ctx.lineWidth = 0.6;
+          ctx.beginPath();
+          ctx.arc(anchorX, anchorY, coreR + 2, 0, Math.PI * 2);
+          ctx.stroke();
+        } else if (repDotStyle === "degraded") {
+          // Stale live feed: amber dashed warning ring (the freshness alarm).
+          ctx.save();
+          ctx.strokeStyle = tokens.qualityWarning;
+          ctx.lineWidth = 1.2;
+          ctx.setLineDash([2, 2]);
+          ctx.beginPath();
+          ctx.arc(anchorX, anchorY, coreR + 2.5, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
 
       if (rep.id === state.selectedRegionId) {
         ctx.save();
