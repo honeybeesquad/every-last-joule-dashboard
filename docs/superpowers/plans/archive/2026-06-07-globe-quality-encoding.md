@@ -1,5 +1,7 @@
 # Globe data-quality + freshness encoding — Implementation Plan
 
+> **STATUS: SHIPPED** — merged to main as PR #128, 2026-06-07.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Encode each region's data-quality bucket (measured / anchored / estimated) and a stale-feed alarm onto the globe's pillars, with a decodable legend — using data already present on `regionData` (`confidenceTier`, `sourceStatus`).

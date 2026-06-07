@@ -1,6 +1,6 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-06-07
+**Last verified against git:** 2026-06-07 (updated after PRs #128/#129)
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
@@ -15,6 +15,17 @@
 - **Tally golden as of 2026-06-07: T1a=150, T1b=9, T1c=1, T2=6, T2-flare=8, T3=211 (total 385).** Counted directly from `src/lib/regions.ts`. Locked by `tests/regions.test.ts`. Drift since the 2026-05-11 golden (T1a=149/T3=211/total=384): new-zealand-hydro added 2026-05-24 (T1a +1); serbia-solar + north-macedonia-solar reverted live→estimated 2026-06-06 (T1a −2, T3 +2); norway-no5 reverted live→estimated 2026-06-07 (T1a −1, T3 +1, PR #125); japan-tepco/chubu/hokkaido promoted estimated→live 2026-06-07 (T1a +3, T3 −3, PR below).
 - Live at **everylastjoule.com** — Vercel auto-deploys from `main`
 - Dashboard banner: **"Wasted Energy Database · v1.3.2"** (pulled live from Zenodo version metadata; v1.3.2 minted 2026-06-07, version DOI `10.5281/zenodo.20570864`)
+
+**Globe data-quality encoding (PR #128, 2026-06-07):**
+- Pillar opacity encodes data-quality bucket: measured 1.0 / anchored 0.8 / estimated 0.62 — fuel hue preserved
+- Base dot: solid (measured) / ringed (anchored) / hollow (estimated) / amber dashed ring (degraded >24h stale feed)
+- Theme-aware HTML legend (bottom-left, collapsible on mobile). New helpers: `src/lib/region-quality.ts`, `--quality-warning` CSS token
+- Also ships: `new-zealand-hydro` loader (EMI nodal pricing, T1a-live-tso) — resolves pre-existing `assertCanonicalRegionData` failure
+
+**Per-version dataset history (PR #129, 2026-06-07):**
+- `data/historical/version-history.csv` — 1,437 rows across 8 releases (v1.0.0→v1.3.2), one row per region per version
+- `scripts/build-version-history.ts` — default mode (working-tree) + `--backfill` (git tag iteration); `npm run version-history`
+- Brazil ONS formula drop (v1.3.2) now auditable in the CSV. DuckDB query examples in `dataset/README.md`; R1.2 note in `dataset/FAIR.md`
 
 **Tier taxonomy (refactored in PR #88, 2026-05-10):**
 - `kind` (content type): wind, solar, hydro, mixed, geo, flare — orthogonal to tier
