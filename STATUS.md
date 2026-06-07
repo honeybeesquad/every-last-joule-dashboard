@@ -1,6 +1,6 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-06-07 (updated after PRs #128/#129)
+**Last verified against git:** 2026-06-08 (updated after PRs #128–#132)
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
@@ -26,6 +26,16 @@
 - `data/historical/version-history.csv` — 1,437 rows across 8 releases (v1.0.0→v1.3.2), one row per region per version
 - `scripts/build-version-history.ts` — default mode (working-tree) + `--backfill` (git tag iteration); `npm run version-history`
 - Brazil ONS formula drop (v1.3.2) now auditable in the CSV. DuckDB query examples in `dataset/README.md`; R1.2 note in `dataset/FAIR.md`
+
+**Relay resilience (PR #131, 2026-06-07):**
+- `relayFreshness()` + `RELAY_STALENESS_THRESHOLD_DAYS=4` in `src/lib/freshness.ts`; relay-CSV-fed regions (Colombia hydro) self-stamp `sourceStatus: "degraded"` when the newest CSV row ages past 4 days → lights the amber ring instead of silently serving stale data.
+- New `.github/workflows/relay-freshness.yml` watches the committed relay CSVs and opens an issue when one goes stale at the source.
+
+**Colombia plant-level data-spine (PR #132, 2026-06-08) — the geo-blocked-data moat, operationalised:**
+- **Recon complete + validated** (`docs/research/2026-06-07-colombia-xm-plant-level-findings.md`): XM exposes per-`Recurso` offer price (`PrecOferDesp`, COP/kWh), curtailment (`GeneIdea−Gene`, `RecoNegEner`), classification + capacity. **No geolocation in XM** → external geocode join needed. **Honest verdict: the <$15/MWh, ≥2900hr target is NOT in today's data** (spot floor ~$24.5/MWh; max ~103 material curtailment hrs/yr/plant); today's floor is ~$19–22/MWh Caribbean solar — but curtailment is structurally growing. Value = monitoring the build-up via the moat.
+- **Egress:** `abed.local` (always-on Ubuntu) carries the Colombian tunnel (cloned from Britta + `PersistentKeepalive=25`). Runbook `docs/ops/abed-egress-setup.md`; access `[[abed-egress-host]]`.
+- **Capture service running:** `scripts/relay/abed-xm-capture.py` → daily `elj-capture.timer` (09:17 UTC) → Parquet lake `~/elj-capture/lake/<metric>/<YYYY-MM>.parquet`, DuckDB-queryable. Runbook `docs/ops/abed-capture-service.md`.
+- **Next steps + open decisions:** `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md` (the handoff). Britta's hydro cron still runs (shared tunnel identity — retiring it is a follow-up).
 
 **Tier taxonomy (refactored in PR #88, 2026-05-10):**
 - `kind` (content type): wind, solar, hydro, mixed, geo, flare — orthogonal to tier
@@ -95,7 +105,7 @@ Diagnosed from persistent Vercel build-log errors (all builds since ~2026-05-13 
 
 ## What's NOT shipped / open PRs
 
-**None open** (except the Japan Phase 1 PR currently in review). Everything from the 2026-06-06/07 session is merged or closed:
+**None open.** The 2026-06-07/08 session merged **#128 #129 #130 #131 #132** (globe encoding · version-history · housekeeping · relay-resilience · Colombia data-spine). Forward work for the data-spine is captured in `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md` (handoff). Earlier 2026-06-06/07 session merges/closures:
 - **#119** loader-resilience (Norway NO5 B11+B12, NYISO solar-gap, sourceStatus, serbia/nmk demotion) — merged.
 - **#109** paper v1.3.2 numbers refresh — merged.
 - **#120** STATUS refresh — merged.
@@ -115,6 +125,7 @@ Also cleaned this session: 16 merged remote branches + 4 session branches delete
 - ✅ `build_region_docs.py` manual-block markers — PR #92
 
 **Still outstanding:**
+- **Colombia data-spine — next steps + open decisions:** see the handoff `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md`. Tracks: (A) hardening — backfill history, weekly prev-month refresh, retire Britta, object-storage sync; (B) siting — coordinate crosswalk, pick curtailment signal, write Spec 3; (C) trivial batch — flare expansion, bad-conversions gate (needs 80%/100% decision), EIA fixture test. **Security: rotate the abed login password** (exposed in the 2026-06-07 transcript; SSH is key-based so it won't lock the agent out).
 - **Recalibrate north-macedonia-solar anchor** — current 0.02 TWh/yr static (IRENA RCS 2025, 833 MW end-2024 basis) is a known underestimate; NMK hit ~1.2 GW by end-2025 with solar already moving power-exchange prices. Revisit if a machine-readable MEPSO/exchange curtailment source appears. (serbia-solar 0.007 TWh/yr is fine — curtailment genuinely negligible at 241–318 MW per USEA 2022.)
 - **6 source-bearing stashes** left undropped (`stash@{0}`–`{5}`: WIP on main eia-iso/turkey, dead-code-purge, japan-regional-wiring, india-sldc-t1a, dari-research-bundle, paper-post-council-edits). Review and drop/apply when convenient.
 - **Wrap the other 6 cited docs in manual-block markers** — `alberta-wind.md` and `india-{andhra-pradesh,gujarat,karnataka,maharashtra,tamil-nadu}.md`. PR #92 demonstrated the mechanism on `india-rajasthan.md` only. Mechanical sweep, ~10 minutes of work.
