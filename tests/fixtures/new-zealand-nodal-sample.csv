@@ -1,0 +1,9 @@
+PointOfConnectionCode,TradingPeriodNumber,DollarsPerMegawattHour,GenerationMegawatts,LoadMegawatts
+BEN2201,1,-5.00,200,0
+BEN2201,2,-2.50,180,0
+BEN2201,3,10.00,150,0
+BEN2202,1,-5.00,100,0
+TKU2201,1,-1.00,80,0
+TKU2201,2,5.00,60,0
+WAI2201,1,-0.50,50,0
+XYZ9999,1,-5.00,999,0

@@ -41,7 +41,7 @@ const HOTSPOT_LIST_LIMIT = 50;
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 111;
+const _LOADER_FILE_COUNT = 112;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -50,7 +50,7 @@ initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 // on a typical connection this drops to ~300–600ms for the lot.
 const [
   cbeci, ercot, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
-  entsoe, aemo, belgium, france, denmark, newZealand, norway, atacama,
+  entsoe, aemo, belgium, france, denmark, newZealand, newZealandHydro, norway, atacama,
   chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
   ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
   japanChubu, japanChugoku, japanHokkaido, japanHokuriku, japanKansai,
@@ -82,8 +82,9 @@ const [
   trackFile(FileAttachment("data/belgium.json").json(),          "Belgium"),
   trackFile(FileAttachment("data/france.json").json(),           "France"),
   trackFile(FileAttachment("data/denmark.json").json(),          "Denmark"),
-  trackFile(FileAttachment("data/new-zealand.json").json(),      "New Zealand"),
-  trackFile(FileAttachment("data/norway.json").json(),           "Norway"),
+  trackFile(FileAttachment("data/new-zealand.json").json(),        "New Zealand"),
+  trackFile(FileAttachment("data/new-zealand-hydro.json").json(), "NZ Hydro"),
+  trackFile(FileAttachment("data/norway.json").json(),            "Norway"),
   trackFile(FileAttachment("data/atacama-chile.json").json(),    "Atacama Chile"),
   trackFile(FileAttachment("data/chile-wind.json").json(),       "Chile Wind"),
   trackFile(FileAttachment("data/statics.json").json(),          "Static regions"),
@@ -423,6 +424,7 @@ const regionData = {
   "new-zealand-wind":  newZealand.wind,
   "new-zealand-solar": newZealand.solar,
   "new-zealand-geo":   newZealand.geo,
+  "new-zealand-hydro": newZealandHydro,
   atacama,
   "chile-wind": chileWind,
   argentina,
