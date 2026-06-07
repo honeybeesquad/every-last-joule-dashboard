@@ -1,6 +1,6 @@
 # Validation — Shikoku (Japan) (`japan-shikoku`)
 
-Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** JPN
 - **Tier:** live
 - **Kind:** solar
-- **Source:** Shikoku Electric T&D juyo CSV × 7% calibrated curtailment (OCCTO FY2024 Shikoku anchor: ~0.30 TWh/yr)
-- **Source URL:** [https://www.yonden.co.jp/nw/](https://www.yonden.co.jp/nw/)
+- **Source:** Shikoku Electric Power T&D area supply/demand CSV (eria_jukyu_YYYYMM_08.csv) — direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min).
+- **Source URL:** [https://www.yonden.co.jp/nw/supply_demand/data_download.html](https://www.yonden.co.jp/nw/supply_demand/data_download.html)
 - **Loader:** [`japan-shikoku.json.ts`](../../src/data/japan-shikoku.json.ts)
 - **Structural gap:** no
 

@@ -1,6 +1,6 @@
 # Validation — Kansai (Japan) (`japan-kansai`)
 
-Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** JPN
 - **Tier:** live
 - **Kind:** solar
-- **Source:** Kansai Electric T&D juyo CSV (5-min solar, live) × 1% calibrated curtailment (OCCTO FY2024 Kansai anchor: ~0.05 TWh/yr)
-- **Source URL:** [https://www.kansai-td.co.jp/](https://www.kansai-td.co.jp/)
+- **Source:** Kansai Transmission and Distribution area supply/demand CSV (eria_jukyu_YYYYMM_06.csv) — direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min).
+- **Source URL:** [https://www.kansai-td.co.jp/interchange/denkiyoho/area-performance/](https://www.kansai-td.co.jp/interchange/denkiyoho/area-performance/)
 - **Loader:** [`japan-kansai.json.ts`](../../src/data/japan-kansai.json.ts)
 - **Structural gap:** no
 

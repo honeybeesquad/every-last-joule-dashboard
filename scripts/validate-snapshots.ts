@@ -131,6 +131,10 @@ const KNOWN_ZERO_LIVE_ALLOWLIST: ReadonlySet<string> = new Set([
   // dataset for respondent NYIS, so the SUN fuel-type feed returns all-zero
   // values. This is a known data limitation, not a silent parser failure.
   "nyiso-rest-solar",
+  // Okinawa Electric: very small island grid (~170 MW solar); renewable
+  // curtailment is minimal and frequently zero across the 30-day window.
+  // Confirmed legitimate by 2026-06-07 live fetch (0.0000 GW peak).
+  "japan-okinawa",
 ]);
 const STATUS_ENUM: ReadonlySet<unknown> = new Set(["live", "cached", "degraded", null]);
 const SOURCE_PROVENANCE_ENUM: ReadonlySet<unknown> = new Set([

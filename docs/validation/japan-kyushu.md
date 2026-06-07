@@ -1,6 +1,6 @@
 # Validation — Kyushu (Japan) (`japan-kyushu`)
 
-Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** JPN
 - **Tier:** live
 - **Kind:** solar
-- **Source:** Kyushu Electric area-demand CSV (5-min solar) × 10% calibrated curtailment (OCCTO FY2024 Kyushu anchor: ~1.7 TWh/yr)
-- **Source URL:** [https://www.kyuden.co.jp/td_power_usages/pc.html](https://www.kyuden.co.jp/td_power_usages/pc.html)
+- **Source:** Kyushu Electric Power T&D area supply/demand CSV (eria_jukyu_YYYYMM_09.csv) — direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min, quoted fields + YYYYMMDD dates).
+- **Source URL:** [https://www.kyuden.co.jp/td_area_jukyu/jukyu.html](https://www.kyuden.co.jp/td_area_jukyu/jukyu.html)
 - **Loader:** [`japan-kyushu.json.ts`](../../src/data/japan-kyushu.json.ts)
 - **Structural gap:** no
 

@@ -1,6 +1,6 @@
 # Validation — Tamil Nadu (`india-tamil-nadu`)
 
-Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -77,6 +77,18 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 - Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
 - The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
 <!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
 ## Links
 
 - Loader source: [`india-tamil-nadu.json.ts`](../../src/data/india-tamil-nadu.json.ts)
@@ -90,8 +102,6 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 - Bootstrap script: [`scripts/bootstrap-india-gen-re.py`](../../scripts/bootstrap-india-gen-re.py)
 - Britta fetcher: `~/code/elj-relay/fetchers/india-gen-re.sh`
 <!-- END MANUAL -->
-
-<!-- WARNING: regen could not place this block -->
 <!-- BEGIN MANUAL -->
 | # | Item | Verdict | Reason |
 |---|------|---------|--------|

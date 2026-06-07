@@ -1,6 +1,6 @@
 # Validation — Gujarat (`india-gujarat`)
 
-Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -77,6 +77,18 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 - Hourly shape remains synthetic (typical solar profile)
 - The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
 <!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
 ## Links
 
 - Loader source: [`india-gujarat.json.ts`](../../src/data/india-gujarat.json.ts)
@@ -90,8 +102,6 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 - Bootstrap script: [`scripts/bootstrap-india-gen-re.py`](../../scripts/bootstrap-india-gen-re.py)
 - Britta fetcher: `~/code/elj-relay/fetchers/india-gen-re.sh`
 <!-- END MANUAL -->
-
-<!-- WARNING: regen could not place this block -->
 <!-- BEGIN MANUAL -->
 | # | Item | Verdict | Reason |
 |---|------|---------|--------|
