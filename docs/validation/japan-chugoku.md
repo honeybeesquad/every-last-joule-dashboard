@@ -1,6 +1,6 @@
 # Validation — Chugoku (Japan) (`japan-chugoku`)
 
-Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** JPN
 - **Tier:** live
 - **Kind:** solar
-- **Source:** Chugoku Electric juyo CSV (5-min solar) × 6% calibrated curtailment (OCCTO FY2024 Chugoku anchor: ~0.40 TWh/yr)
+- **Source:** Chugoku Electric Power Network area supply/demand CSV (eria_jukyu_YYYYMM_07.csv) — direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min).
 - **Source URL:** [https://www.energia.co.jp/nw/jukyuu/sys/](https://www.energia.co.jp/nw/jukyuu/sys/)
 - **Loader:** [`japan-chugoku.json.ts`](../../src/data/japan-chugoku.json.ts)
 - **Structural gap:** no

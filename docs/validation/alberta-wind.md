@@ -1,6 +1,6 @@
 # Validation — Alberta Wind (`alberta-wind`)
 
-Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -51,7 +51,6 @@ AESO CSD is a current-supply snapshot rather than a historical curtailment feed.
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
 
-<!-- WARNING: regen could not place this block -->
 <!-- BEGIN MANUAL -->
 See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject) for the full checklist.
 

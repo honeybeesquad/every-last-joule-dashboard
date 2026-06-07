@@ -1,6 +1,6 @@
 # Validation — Hokuriku (Japan) (`japan-hokuriku`)
 
-Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** JPN
 - **Tier:** live
 - **Kind:** solar
-- **Source:** Hokuriku Electric juyo CSV (5-min solar) × 1% calibrated curtailment (OCCTO FY2024 Hokuriku anchor: ~0.02 TWh/yr)
-- **Source URL:** [https://www.rikuden.co.jp/nw/denki-yoho/](https://www.rikuden.co.jp/nw/denki-yoho/)
+- **Source:** Hokuriku Electric Power T&D area supply/demand CSV (eria_jukyu_YYYYMM_05.csv) — direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min).
+- **Source URL:** [https://www.rikuden.co.jp/nw/denki-yoho/results_jyukyu.html](https://www.rikuden.co.jp/nw/denki-yoho/results_jyukyu.html)
 - **Loader:** [`japan-hokuriku.json.ts`](../../src/data/japan-hokuriku.json.ts)
 - **Structural gap:** no
 

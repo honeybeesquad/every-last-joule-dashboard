@@ -1,6 +1,6 @@
 # Validation — South Africa Wind (`south-africa-wind`)
 
-Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 

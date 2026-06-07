@@ -1,6 +1,6 @@
 # Validation — Karnataka (`india-karnataka`)
 
-Last updated: 2026-06-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -71,6 +71,14 @@ Karnataka has ~15 GW of renewable capacity (predominantly solar, with significan
 <!-- BEGIN MANUAL -->
 Karnataka has ~15 GW of renewable capacity (predominantly solar, with significant wind) and is one of South India's largest RE states. The KSLDC publishes curtailment data on its public dashboard, making it the most directly accessible Indian SLDC in the April 2026 probe (all others returned ECONNREFUSED or timeouts). The 0.5 TWh anchor is derived as the South Region residual after allocating 1.0 TWh to Tamil Nadu wind; a direct KSLDC data pull is expected to refine this once the parser is built.
 <!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+Karnataka has ~15 GW of renewable capacity (predominantly solar, with significant wind) and is one of South India's largest RE states. The KSLDC publishes curtailment data on its public dashboard, making it the most directly accessible Indian SLDC in the April 2026 probe (all others returned ECONNREFUSED or timeouts). The 0.5 TWh anchor is derived as the South Region residual after allocating 1.0 TWh to Tamil Nadu wind; a direct KSLDC data pull is expected to refine this once the parser is built.
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+Karnataka has ~15 GW of renewable capacity (predominantly solar, with significant wind) and is one of South India's largest RE states. The KSLDC publishes curtailment data on its public dashboard, making it the most directly accessible Indian SLDC in the April 2026 probe (all others returned ECONNREFUSED or timeouts). The 0.5 TWh anchor is derived as the South Region residual after allocating 1.0 TWh to Tamil Nadu wind; a direct KSLDC data pull is expected to refine this once the parser is built.
+<!-- END MANUAL -->
 ## Known limitations
 
 <!-- BEGIN MANUAL -->
@@ -78,6 +86,14 @@ The KSLDC live parser is not yet implemented (though the site is accessible). Th
 <!-- END MANUAL -->
 
 
+<!-- BEGIN MANUAL -->
+The KSLDC live parser is not yet implemented (though the site is accessible). The loader currently falls back to a typical-shape solar profile calibrated at 0.5 TWh/yr. Unlike the other Indian state SLDCs, KSLDC does not appear to be geoblocked from non-Indian IPs, so the live path should activate as soon as the parser is built without requiring an India-egress relay.
+<!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+The KSLDC live parser is not yet implemented (though the site is accessible). The loader currently falls back to a typical-shape solar profile calibrated at 0.5 TWh/yr. Unlike the other Indian state SLDCs, KSLDC does not appear to be geoblocked from non-Indian IPs, so the live path should activate as soon as the parser is built without requiring an India-egress relay.
+<!-- END MANUAL -->
 <!-- BEGIN MANUAL -->
 The KSLDC live parser is not yet implemented (though the site is accessible). The loader currently falls back to a typical-shape solar profile calibrated at 0.5 TWh/yr. Unlike the other Indian state SLDCs, KSLDC does not appear to be geoblocked from non-Indian IPs, so the live path should activate as soon as the parser is built without requiring an India-egress relay.
 <!-- END MANUAL -->
@@ -96,8 +112,6 @@ The KSLDC live parser is not yet implemented (though the site is accessible). Th
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
 <!-- END MANUAL -->
-
-<!-- WARNING: regen could not place this block -->
 <!-- BEGIN MANUAL -->
 See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject) for the full checklist. **Karnataka is the load-bearing positive example for item 3 — it is the working negative control showing the checklist correctly blocking a promotion.**
 
