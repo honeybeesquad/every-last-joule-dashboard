@@ -1,0 +1,194 @@
+MetricId	Entity	Type	MaxDays	MetricUnits	MetricName
+AporCaudal	Rio	DailyEntities	31	m3/s	Aportes Caudal por Rio
+AporCaudalMediHist	Rio	DailyEntities	31	m3/s	Aportes Media Histórica Caudal por Rio
+AporEner	Rio	DailyEntities	31	kWh	Aportes  Energía por Rio
+AporEner	Sistema	DailyEntities	31	kWh	Aportes  Energía por Sistema
+AporEnerMediHist	Rio	DailyEntities	31	kWh	Aportes Media Histórica Energía por Rio
+AporEnerMediHist	Sistema	DailyEntities	31	kWh	Aportes Media Histórica Energía por Sistema
+CEE	Sistema	MonthlyEntities	731	COP/kWh	CEE por Sistema
+CERE	Sistema	MonthlyEntities	731	COP/kWh	CERE por Sistema
+CapEfecNeta	Recurso	DailyEntities	31	kW	Capacidad Efectiva Neta por Recurso
+CapaUtilDiarEner	Embalse	DailyEntities	31	kWh	Capacidad Útil Energía por Embalse
+CapaUtilDiarEner	Sistema	DailyEntities	31	kWh	Capacidad Útil Energía por Sistema
+CapaUtilDiarMasa	Embalse	DailyEntities	31	m3	Capacidad Útil Volumen por Embalse
+CapaUtilDiarMasa	Sistema	DailyEntities	31	m3	Capacidad Útil Volumen por Sistema
+CargMaxTPrima	Sistema	MonthlyEntities	731	COP/kWh	Cargo Máximo T Prima por Sistema
+CargMedTPrima	Sistema	MonthlyEntities	731	COP/kWh	Cargo Media T Prima por Sistema
+CargMinTPrima	Sistema	MonthlyEntities	731	COP/kWh	Cargo Mínimo T Prima por Sistema
+CargoUsoSTN	Sistema	MonthlyEntities	731	COP	Cargos por Uso STN por Sistema
+CargoUsoSTR	Sistema	MonthlyEntities	731	COP	Cargos por Uso STR por Sistema
+ComContRespEner	Recurso	DailyEntities	31	COP	Compras Contrato Respaldo por Recurso
+ComContRespEner	Sistema	DailyEntities	31	COP	Compras Contrato Respaldo por Sistema
+CompBolsNaciEner	Agente	HourlyEntities	31	kWh	Compras Bolsa Nacional Energía por Agente
+CompBolsNaciEner	Sistema	HourlyEntities	31	kWh	Compras Bolsa Nacional Energía por Sistema
+CompBolsaIntEner	Agente	HourlyEntities	31	kWh	Compras Bolsa Internacional Energía por Agente
+CompBolsaIntEner	Sistema	HourlyEntities	31	kWh	Compras Bolsa Internacional Energía por Sistema
+CompBolsaIntMoneda	Agente	HourlyEntities	31	COP	Compras Bolsa Internacional Moneda por Agente
+CompBolsaIntMoneda	Sistema	HourlyEntities	31	COP	Compras Bolsa Internacional Moneda por Sistema
+CompBolsaNacMoneda	Sistema	HourlyEntities	31	COP	Compras Bolsa Nacional Moneda por Sistema
+CompBolsaTIEEner	Agente	HourlyEntities	31	kWh	Compras Bolsa TIE Energía por Agente
+CompBolsaTIEEner	Sistema	HourlyEntities	31	kWh	Compras Bolsa TIE Energía por Sistema
+CompBolsaTIEMoneda	Agente	HourlyEntities	31	COP	Compras Bolsa TIE Moneda por Agente
+CompBolsaTIEMoneda	Sistema	HourlyEntities	31	COP	Compras Bolsa TIE Moneda por Sistema
+CompContEner	Agente	HourlyEntities	31	kWh	Compras en Contrato Energía por Agente
+CompContEner	Sistema	HourlyEntities	31	kWh	Compras en Contrato Energía por Sistema
+CompContEnerNoReg	Agente	HourlyEntities	31	kWh	Compras en Contrato Energía Mercado No Regulado por Agente
+CompContEnerNoReg	Sistema	HourlyEntities	31	kWh	Compras en Contrato Energía  Mercado No Regulado por Sistema
+CompContEnerReg	Agente	HourlyEntities	31	kWh	Compras en Contrato Energía Mercado Regulado por Agente
+CompContEnerReg	Sistema	HourlyEntities	31	kWh	Compras en Contrato Energía Mercado Regulado por Sistema
+CompContEnerSICEP	Agente	HourlyEntities	31	kWh	Compras en Contrato Energía en SICEP por Agente
+CompContEnerSICEP	Sistema	HourlyEntities	31	kWh	Compras en Contrato Energía en SICEP por Sistema
+CompContMoneda	Sistema	HourlyEntities	31	COP	Compras en Contrato Moneda por Sistema
+CompNetArranPara	Sistema	DailyEntities	31	COP	Compras Netas Arranque y Parada por Sistema
+ConsCombAprox	RecursoComb	HourlyEntities	31	MBTU	Consumo Combustible Aproximado para el Factor de Emisión por RecursoComb
+ConsCombustibleMBTU	Combustible	HourlyEntities	31	MBTU	Consumo Combustible MBTU
+ConsCombustibleMBTU	Recurso	HourlyEntities	31	MBTU	Consumo Combustible MBTU por Recurso
+CostMargDesp	Sistema	HourlyEntities	31	COP/kWh	Costo Marginal Despacho Programado por Sistema
+CostRecNeg	Area	HourlyEntities	31	COP/kWh	Costo Unitario Reconciliacion Negativa por Area
+CostRecNeg	SubArea	HourlyEntities	31	COP/kWh	Costo Unitario Reconciliacion Negativa por SubArea
+CostRecPos	Area	HourlyEntities	31	COP/kWh	Costo Unitario Reconciliacion Positiva por Area
+CostRecPos	SubArea	HourlyEntities	31	COP/kWh	Costo Unitario Reconciliacion Positiva por SubArea
+DDVContratada	Recurso	DailyEntities	31	kWh	DDV Contratada por Recurso
+DeltaInt	Sistema	DailyEntities	31	COP/kWh	Delta Incremento Internacional por Sistema
+DeltaNal	Sistema	DailyEntities	31	COP/kWh	Delta Incremento Nacional por Sistema
+DemaCome	Agente	HourlyEntities	31	kWh	Demanda Comercial por Agente
+DemaCome	MercadoComercializacion	HourlyEntities	31	kWh	Demanda Comercial por MercadoComercializacion
+DemaCome	Sistema	HourlyEntities	31	kWh	Demanda Comercial por Sistema
+DemaComeNoReg	Agente	HourlyEntities	31	kWh	Demanda Comercial Mercado No Regulado por Agente
+DemaComeNoReg	CIIU	HourlyEntities	31	kWh	Demanda Comercial por CIIU
+DemaComeNoReg	Sistema	HourlyEntities	31	kWh	Demanda Comercial Mercado No Regulado por Sistema
+DemaComeReg	Agente	HourlyEntities	31	kWh	Demanda Comercial Mercado Regulado por Agente
+DemaComeReg	Sistema	HourlyEntities	31	kWh	Demanda Comercial Mercado Regulado por Sistema
+DemaMaxPot	Sistema	DailyEntities	31	kW	Demanda Máxima de Potencia por Sistema
+DemaNoAtenNoProg	Area	DailyEntities	31	kWh	Demanda No Atendida No Programada por Area
+DemaNoAtenNoProg	Subarea	DailyEntities	31	kWh	Demanda No Atendida No Programada por Subarea
+DemaNoAtenProg	Area	DailyEntities	31	kWh	Demanda No Atendida Programada por Area
+DemaNoAtenProg	Subarea	DailyEntities	31	kWh	Demanda No Atendida Programada por Subarea
+DemaOR	Agente	HourlyEntities	31	kWh	Demanda por OR por Agente
+DemaReal	Agente	HourlyEntities	31	kWh	Demanda Real por Agente
+DemaReal	Sistema	HourlyEntities	31	kWh	Demanda Real por Sistema
+DemaRealNoReg	Agente	HourlyEntities	31	kWh	Demanda Real No Regulada Agente
+DemaRealNoReg	Sistema	HourlyEntities	31	kWh	Demanda Real No Regulada Sistema
+DemaRealReg	Agente	HourlyEntities	31	kWh	Demanda Real Regulada Agente
+DemaRealReg	Sistema	HourlyEntities	31	kWh	Demanda Real Regulada Sistema
+DemaSIN	Sistema	DailyEntities	31	kWh	Demanda Energia SIN por Sistema
+DescMasa	Embalse	DailyEntities	31	m3	Descargas por Embalse
+DesvEner	Recurso	HourlyEntities	31	kWh	Desviaciones Energía por Recurso
+DesvGenVariableDesp	Recurso	HourlyEntities	31	kWh	Desviación generación variable despacho
+DesvGenVariableRedesp	Recurso	HourlyEntities	31	kWh	Desviación generación variable redespacho
+DesvMoneda	Recurso	HourlyEntities	31	COP	Desviaciones Moneda por Recurso
+DesvMoneda	Sistema	HourlyEntities	31	COP	Desviaciones Moneda por Sistema
+DispoCome	Recurso	HourlyEntities	31	kW	Disponibilidad Comercial por Recurso
+DispoDeclarada	Recurso	HourlyEntities	31	kWh	Disponibilidad Declarada por Recurso
+DispoReal	Recurso	HourlyEntities	31	kW	Disponibilidad Real por Recurso
+ENFICC	Recurso	DailyEntities	31	kWh	Energía en Firme Cargo por Confiabilidad - ENFICC por Recurso
+ENFICC	Sistema	DailyEntities	31	kWh	Energía en Firme Cargo por Confiabilidad - ENFICC por Sistema
+EjecGarantRestr	Sistema	HourlyEntities	31	COP	Ejecución de Garantías por Sistema
+EmisionesCH4	RecursoComb	HourlyEntities	31	TonCH4	Emisiones de CH4 por RecursoComb
+EmisionesCO2	RecursoComb	HourlyEntities	31	TonCO2	Emisiones de CO2 por RecursoComb
+EmisionesCO2Eq	Recurso	HourlyEntities	31	gCO2e/kWh	Emisiones de CO2 Eq por Recurso
+EmisionesN2O	RecursoComb	HourlyEntities	31	TonN2O	Emisiones de N2O por RecursoComb
+EscDemUPMEAlto	Sistema	MonthlyEntities	731	kWh	Demanda de Energia Proyectada UPME Escenario Alto por Sistema
+EscDemUPMEBajo	Sistema	MonthlyEntities	731	kWh	Demanda de Energia Proyectada UPME Escenario Bajo por Sistema
+EscDemUPMEMedio	Sistema	MonthlyEntities	731	kWh	Demanda de Energia Proyectada UPME Escenario Medio por Sistema
+ExcedenteAGPE	Agente	HourlyEntities	31	kWh	Compras Excedentes AGPE por Agente
+ExpoEner	Enlace	HourlyEntities	31	kWh	Exportaciones Energía
+ExpoEner	Sistema	HourlyEntities	31	kWh	Exportaciones Energía por Sistema
+ExpoMoneda	Enlace	HourlyEntities	31	COP	Exportaciones Moneda
+ExpoMoneda	Sistema	HourlyEntities	31	COP	Exportaciones Moneda por Sistema
+ExportMonedaUSD	Sistema	HourlyEntities	31	COP	Exportaciones Moneda USD por Sistema
+FAER	Sistema	MonthlyEntities	731	COP	FAER Moneda por Sistema
+FAZNI	Sistema	DailyEntities	31	COP	FAZNI Moneda por Sistema
+Gene	Recurso	HourlyEntities	31	kWh	Generación por Recurso
+Gene	Sistema	HourlyEntities	31	kWh	Generación por Sistema
+GeneFueraMerito	Recurso	HourlyEntities	31	kWh	Generación Fuera de Mérito por Recurso
+GeneIdea	Recurso	HourlyEntities	31	kWh	Generación Ideal por Recurso
+GeneIdea	Sistema	HourlyEntities	31	kWh	Generación Ideal por Sistema
+GeneProgDesp	Recurso	HourlyEntities	31	kWh	Generación Programada por Recurso
+GeneProgRedesp	Recurso	HourlyEntities	31	kWh	Generación Programada Redespacho por Recurso
+GeneSeguridad	Recurso	HourlyEntities	31	kWh	Generación de Seguridad por Recurso
+ImpoEner	Enlace	HourlyEntities	31	kWh	Importaciones Energía
+ImpoEner	Sistema	HourlyEntities	31	kWh	Importaciones Energía por Sistema
+ImpoMoneda	Enlace	HourlyEntities	31	COP	Importaciones Moneda
+ImportMonedaCOP	Sistema	HourlyEntities	31	COP	Importaciones Moneda COP por Sistema
+ImportMonedaUSD	Sistema	HourlyEntities	31	COP	Importaciones Moneda USD por Sistema
+IndRecMargina	Recurso	HourlyEntities	31	#	Indicador Recurso Margina por Recurso
+IrrGlobal	Recurso	DailyEntities	31	W/m2	Irradiación Global por Recurso
+IrrPanel	Recurso	DailyEntities	31	W/m2	Irradiación Panel por Recurso
+ListadoAGPE	Agente	ListsEntities	731	kW	Listado Autogeneradores a Pequeña Escala por Agente
+ListadoAgentes	Sistema	ListsEntities	731		Listado de agentes con atributos por Sistema
+ListadoEmbalses	Sistema	ListsEntities	731		Listado de embalses por Sistema
+ListadoMetricas	Sistema	ListsEntities	731		Listado de Métricas por Sistema
+ListadoRecursos	Agente	ListsEntities	731		plantas y unidades que tiene asociadas un agente por Agente
+ListadoRecursos	Sistema	ListsEntities	731		Listado Recursos con atributos por Sistema
+ListadoRios	Sistema	ListsEntities	731		Listado de rios por Sistema
+MC	Sistema	MonthlyEntities	731	COP/kWh	MC por Sistema
+MaxPrecOferNal	Sistema	HourlyEntities	31	COP/kWh	Máximo Precio de Oferta Nacional por Sistema
+ObligEnerFirme	Recurso	DailyEntities	31	kWh	Obligación de Energía en Firme - OEF por Recurso
+PPPrecBolsNaci	Sistema	DailyEntities	31	COP/kWh	Precio Bolsa Nacional Ponderado por Sistema
+PRONE	Sistema	MonthlyEntities	731	COP	PRONE por Sistema
+PerdidasEner	Agente	HourlyEntities	31	kWh	Perdidas de Energía Agente
+PerdidasEner	Sistema	HourlyEntities	31	kWh	Perdidas de Energía por Sistema
+PerdidasEnerNoReg	Agente	HourlyEntities	31	kWh	Perdidas de Energía No Regulada Agente
+PerdidasEnerNoReg	Sistema	HourlyEntities	31	kWh	Perdidas de Energía No Regulada Sistema
+PerdidasEnerReg	Agente	HourlyEntities	31	kWh	Perdidas de Energía Regulada Agente
+PerdidasEnerReg	Sistema	HourlyEntities	31	kWh	Perdidas de Energía Regulada Sistema
+PorcApor	Rio	DailyEntities	31	%	Aportes % por Rio
+PorcApor	Sistema	DailyEntities	31	%	Aportes % por Sistema
+PorcVoluUtilDiar	Embalse	DailyEntities	31	%	Volumen Útil  diario % por Embalse
+PorcVoluUtilDiar	Sistema	DailyEntities	31	%	Volumen Útil  diario % por Sistema
+PrecBolsNaci	Sistema	HourlyEntities	31	COP/kWh	Precio Bolsa Nacional por Sistema
+PrecBolsNaciTX1	Sistema	HourlyEntities	31	COP/kWh	Precio Bolsa Promedio Aritmético TX1 por Sistema
+PrecCargConf	Recurso	DailyEntities	31	USD/kWh	Precio Cargo por Confiabilidad por Recurso
+PrecEsca	Sistema	DailyEntities	31	COP/kWh	Precio Escasez por Sistema
+PrecEscaAct	Sistema	DailyEntities	31	COP/kWh	Precio Escasez Activación por Sistema
+PrecEscaInf	Sistema	DailyEntities	31	COP/kWh	Precio Escasez Inferior
+PrecEscaMarg	Sistema	DailyEntities	31	COP/kWh	Precio Marginal Escasez por Sistema
+PrecEscaPon	Sistema	DailyEntities	31	COP/kWh	Precio Escasez Ponderado por Sistema
+PrecEscaSup	Sistema	DailyEntities	31	COP/kWh	Precio Escasez Superior
+PrecFAZNI	Sistema	MonthlyEntities	731	COP/kWh	FAZNI Precio por Sistema
+PrecOferDesp	Recurso	HourlyEntities	31	COP/kWh	Precio de Oferta de Despacho por Recurso
+PrecOferIdeal	Recurso	DailyEntities	31	COP/kWh	Precio de Oferta Ideal por Recurso
+PrecPromCont	Sistema	DailyEntities	31	COP/kWh	Precio Promedio Contrato por Sistema
+PrecPromContNoRegu	Sistema	HourlyEntities	31	COP/kWh	Precio Promedio Contratos No Regulados por Sistema
+PrecPromContRegu	Sistema	HourlyEntities	31	COP/kWh	Precio Promedio Contratos Regulados por Sistema
+PrecTransBolsa	Sistema	HourlyEntities	31	COP/kWh	Precio Transaccion Bolsa
+RecoNegEner	Recurso	HourlyEntities	31	kWh	Reconciliación Negativa Energía por Recurso
+RecoNegMoneda	Recurso	HourlyEntities	31	COP	Reconciliación Negativa Moneda por Recurso
+RecoPosEner	Recurso	HourlyEntities	31	kWh	Reconciliación Positiva Energía por Recurso
+RecoPosMoneda	Recurso	HourlyEntities	31	COP	Reconciliación Positiva Moneda por Recurso
+RemuRealIndiv	Sistema	DailyEntities	31	COP	Remuneración Real Individual Diaria - RRID por Sistema
+RentasCongestRestr	Sistema	HourlyEntities	31	COP	Rentas de Congestion para Cubrir Restricciones por Sistema
+RespComerAGC	Sistema	HourlyEntities	31	COP	Responsabilidad Comercial AGC por Sistema
+RestAliv	Sistema	HourlyEntities	31	COP	Restricciones Aliviadas por Sistema
+RestSinAliv	Sistema	HourlyEntities	31	COP	Restricciones sin Alivios por Sistema
+SnTIEFueraMerito	Sistema	HourlyEntities	31	COP	Saldo Neto TIE Fuera Merito por Sistema
+SnTIEMerito	Sistema	HourlyEntities	31	COP	Saldo Neto TIE Merito por Sistema
+TempAmbSolar	Recurso	DailyEntities	31	°C	Temperatura Ambiente Solar por Recurso
+TempPanel	Recurso	DailyEntities	31		Temperatura Panel por Recurso
+VentBolsNaciEner	Agente	HourlyEntities	31	kWh	Ventas Bolsa Nacional Energía por Agente
+VentBolsNaciEner	Sistema	HourlyEntities	31	kWh	Ventas Bolsa Nacional Energía por Sistema
+VentBolsaIntEner	Agente	HourlyEntities	31	kWh	Ventas Bolsa Internacional Energía por Agente
+VentBolsaIntEner	Sistema	HourlyEntities	31	kWh	Ventas Bolsa Internacional Energía por Sistema
+VentBolsaIntMoneda	Agente	HourlyEntities	31	COP	Ventas Bolsa Internacional Moneda por Agente
+VentBolsaIntMoneda	Sistema	HourlyEntities	31	COP	Ventas Bolsa Internacional Moneda por Sistema
+VentBolsaTIEEner	Agente	HourlyEntities	31	kWh	Ventas Bolsa TIE Energía por Agente
+VentBolsaTIEEner	Sistema	HourlyEntities	31	kWh	Ventas Bolsa TIE Energía por Sistema
+VentBolsaTIEMoneda	Agente	HourlyEntities	31	COP	Ventas Bolsa TIE Moneda por Agente
+VentBolsaTIEMoneda	Sistema	HourlyEntities	31	COP	Ventas Bolsa TIE Moneda por Sistema
+VentContEner	Agente	HourlyEntities	31	kWh	Ventas en Contrato Energía por Agente
+VentContEner	Sistema	HourlyEntities	31	kWh	Ventas en Contrato Energía por Sistema
+VentContEnerSICEP	Agente	HourlyEntities	31	kWh	Ventas en Contrato Energía del SICEP por Agente
+VentContEnerSICEP	Sistema	HourlyEntities	31	kWh	Ventas en Contrato Energía del SICEP por Sistema
+VentContRespEner	Recurso	DailyEntities	31	COP	Ventas Contrato Respaldo por Recurso
+VentContRespEner	Sistema	DailyEntities	31	COP	Ventas Contrato Respaldo por Sistema
+VentaBolsNaciMoneda	Sistema	HourlyEntities	31	COP	Ventas Bolsa Nacional Moneda por Sistema
+VertEner	Embalse	DailyEntities	31	kWh	Vertimientos Energía por Embalse
+VertEner	Sistema	DailyEntities	31	kWh	Vertimientos Energía por Sistema
+VertMasa	Embalse	DailyEntities	31	m3	Vertimientos Volumen por Embalse
+VolTurbMasa	Embalse	DailyEntities	31	m3	Volumen Turbinado por Embalse
+VolTurbMasa	Sistema	DailyEntities	31	m3	Volumen Turbinado por Sistema
+VoluUtilDiarEner	Embalse	DailyEntities	31	kWh	Volumen Útil diario Energía por Embalse
+VoluUtilDiarEner	Sistema	DailyEntities	31	kWh	Volumen Útil diario Energía por Sistema
+VoluUtilDiarMasa	Embalse	DailyEntities	31	m3	Volumen Útil diario por Embalse
+factorEmisionCO2e	Sistema	HourlyEntities	31	gCO2e/kWh	Emisiones de CO2 Eq/kWh por Sistema

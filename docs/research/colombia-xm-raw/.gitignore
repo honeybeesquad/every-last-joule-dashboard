@@ -1,0 +1,6 @@
+# Bulk hourly harvest — regenerable from XM via the Britta relay (analyze.py).
+# Committed instead: catalog, registry, price series, reconciliation sample,
+# the analysis script, and its output.
+gene_*.json
+geneidea_*.json
+ofer_*.json
