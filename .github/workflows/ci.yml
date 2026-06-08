@@ -40,7 +40,11 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    # `main` for normal CI; `automation/**` so the scheduled-committer bot
+    # branches get a `verify` check on the branch-push SHA. That makes the
+    # required check deterministic for their auto-merge PRs even when the
+    # `pull_request: opened` event races the branch push and drops its run.
+    branches: [main, "automation/**"]
   pull_request:
     branches: [main]
   workflow_dispatch: {}

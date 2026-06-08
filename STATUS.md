@@ -1,6 +1,6 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-06-08 (updated after PRs #128–#132)
+**Last verified against git:** 2026-06-09 (CI automation fix in flight; previously after PRs #128–#132)
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
@@ -105,7 +105,9 @@ Diagnosed from persistent Vercel build-log errors (all builds since ~2026-05-13 
 
 ## What's NOT shipped / open PRs
 
-**None open.** The 2026-06-07/08 session merged **#128 #129 #130 #131 #132** (globe encoding · version-history · housekeeping · relay-resilience · Colombia data-spine). Forward work for the data-spine is captured in `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md` (handoff). Earlier 2026-06-06/07 session merges/closures:
+**1 open — CI automation fix (`ci/automation-pr-auto-merge`, 2026-06-09).** The two scheduled committers — `Historical snapshot append` and `Relay pull (Colombia + India)` — were failing on *every* run: `main`'s required `verify` status check rejects direct bot pushes (`GH006 … Required status check "verify" is expected`), and relay-pull additionally lacked `contents: write` (403). Both workflows now commit to a bot branch, open a PR, and `--auto --squash` merge once `verify` is green; `[skip ci]` dropped from the relay commit so `verify` actually runs. `ci.yml` also triggers on `push: automation/**` so the bot's branch-push deterministically produces the `verify` check — the `pull_request: opened` event can race the push-then-create and silently drop its run (observed on PR #135). **Requires repo secret `AUTOMATION_TOKEN`** (a fine-grained PAT or GitHub App token with Contents+PR write) — the default `GITHUB_TOKEN` deliberately cannot trigger `verify`, so without it the PRs open but never merge. `allow_auto_merge` enabled at the repo level 2026-06-09. Unrelated failing workflows in the screenshot (`Deploy`, `Portal Monitor + Data Update`) belong to the separate `every-last-particle` repo.
+
+The 2026-06-07/08 session merged **#128 #129 #130 #131 #132** (globe encoding · version-history · housekeeping · relay-resilience · Colombia data-spine). Forward work for the data-spine is captured in `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md` (handoff). Earlier 2026-06-06/07 session merges/closures:
 - **#119** loader-resilience (Norway NO5 B11+B12, NYISO solar-gap, sourceStatus, serbia/nmk demotion) — merged.
 - **#109** paper v1.3.2 numbers refresh — merged.
 - **#120** STATUS refresh — merged.
