@@ -7,6 +7,13 @@ name: Relay pull (Colombia + India)
 # India:    gen-re.cea.gov.in daily Excel; Britta fetches at 06:30 UTC; GA runs
 #           after Colombia pull to pick up both in one build.
 # Also triggerable manually.
+#
+# `main` is a protected branch with a required `verify` status check, so this
+# workflow does NOT push to main directly.  It opens a PR from a bot branch and
+# enables auto-merge, landing the CSVs once `verify` is green.  The push/PR uses
+# AUTOMATION_TOKEN (a PAT or GitHub App token), because GitHub will not trigger
+# `verify` for events raised by the default GITHUB_TOKEN.  RELAY_DEPLOY_KEY is a
+# separate read-only deploy key used only to clone the private relay repo.
 
 on:
   schedule:
@@ -17,17 +24,16 @@ jobs:
   pull-relay:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout dashboard repo
         uses: actions/checkout@v4
         with:
           ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Configure git identity
-        run: |
-          git config user.name  "elj-relay-bot"
-          git config user.email "bot@everylastjoule.com"
+          # PAT / App token so the resulting PR triggers the `verify` check.
+          token: ${{ secrets.AUTOMATION_TOKEN }}
 
       - name: Fetch latest CSVs from relay repo
         env:
@@ -56,8 +62,13 @@ jobs:
             fi
           done
 
-      - name: Commit if changed
+      - name: Open / refresh auto-merge PR
+        env:
+          GH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
         run: |
+          set -euo pipefail
+          BRANCH="automation/relay-pull"
+
           git add data/historical/colombia-vertimientos-daily.csv \
                   data/historical/india-rajasthan-gen-daily.csv \
                   data/historical/india-gujarat-gen-daily.csv \
@@ -68,10 +79,23 @@ jobs:
 
           if git diff --cached --quiet; then
             echo "No new rows — nothing to commit."
-          else
-            ROWS_CO=$(wc -l < data/historical/colombia-vertimientos-daily.csv)
-            ROWS_IN=$(wc -l < data/historical/india-rajasthan-gen-daily.csv 2>/dev/null || echo "?")
-            git commit -m "chore(data): pull relay CSVs — Colombia ${ROWS_CO} rows, India ${ROWS_IN} rows [skip ci]"
-            git push origin main
-            echo "Committed and pushed."
+            exit 0
           fi
+
+          ROWS_CO="$(wc -l < data/historical/colombia-vertimientos-daily.csv | tr -d ' ')"
+          ROWS_IN="$(wc -l < data/historical/india-rajasthan-gen-daily.csv 2>/dev/null | tr -d ' ' || echo '?')"
+
+          git config user.name  "elj-relay-bot"
+          git config user.email "bot@everylastjoule.com"
+
+          git switch -C "$BRANCH"
+          git commit -m "chore(data): pull relay CSVs — Colombia ${ROWS_CO} rows, India ${ROWS_IN} rows"
+          git push --force origin "$BRANCH"
+
+          state="$(gh pr view "$BRANCH" --json state -q .state 2>/dev/null || echo NONE)"
+          if [ "$state" != "OPEN" ]; then
+            gh pr create --base main --head "$BRANCH" \
+              --title "chore(data): pull relay CSVs (Colombia + India)" \
+              --body "Automated daily relay CSV pull. Auto-merges once \`verify\` passes."
+          fi
+          gh pr merge "$BRANCH" --auto --squash
