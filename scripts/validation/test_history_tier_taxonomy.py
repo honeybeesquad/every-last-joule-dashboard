@@ -25,7 +25,7 @@ export const REGIONS = [
   { id: "live-a", tier: "live", kind: "wind" },
   { id: "domestic-a", tier: "live-domestic-anchored", kind: "solar" },
   { id: "neighbour-a", tier: "live-neighbour-anchored", kind: "wind" },
-  { id: "anchored-a", tier: "anchored", kind: "flare" },
+  { id: "anchored-a", tier: "anchored", kind: "hydro" },
   { id: "estimated-a", tier: "estimated", kind: "solar" },
 ];
 """

@@ -6,11 +6,9 @@ const SAMPLES_PER_HOUR = 4; // 96 samples across 24h for smooth area curves
 
 /**
  * Mount a stacked-area timeline canvas showing curtailed renewable energy
- * split into four fuel buckets (solar / wind / hydro / other) across a
- * 24-hour cycle. Flared gas is deliberately excluded — it is continuous
- * base-load and would flatten the diurnal peakiness. Draws a movable
- * marker at the clock's current hour; scrubs on pointer interaction;
- * loops cleanly at UTC 24.
+ * split into three fuel buckets (solar / wind / hydro) across a 24-hour
+ * cycle. Draws a movable marker at the clock's current hour; scrubs on
+ * pointer interaction; loops cleanly at UTC 24.
  */
 export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -26,14 +24,13 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
   }));
 
   function seriesAt(hour) {
-    // Array of 4 GW values: [solar, wind, hydro, other].
-    const bucket = [0, 0, 0, 0];
+    const bucket = [0, 0, 0];
     for (const { id, shares } of shareTable) {
       const d = regionData[id];
       if (!d) continue;
       const gw = regionGWAtHour(d, hour, mode);
       if (gw <= 0) continue;
-      for (let i = 0; i < 4; i += 1) {
+      for (let i = 0; i < FUEL_ORDER.length; i += 1) {
         if (shares[i] > 0) bucket[i] += gw * shares[i];
       }
     }
@@ -42,14 +39,13 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
 
   function buildSamples() {
     const n = 24 * SAMPLES_PER_HOUR;
-    // 4 series × n samples.
-    const series = [new Array(n), new Array(n), new Array(n), new Array(n)];
+    const series = FUEL_ORDER.map(() => new Array(n));
     let maxTotal = 1;
     for (let i = 0; i < n; i += 1) {
       const hour = i / SAMPLES_PER_HOUR;
       const bucket = seriesAt(hour);
       let total = 0;
-      for (let f = 0; f < 4; f += 1) {
+      for (let f = 0; f < FUEL_ORDER.length; f += 1) {
         series[f][i] = bucket[f];
         total += bucket[f];
       }
@@ -136,16 +132,16 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     // --- Current-hour marker (uses interpolated total at the fractional hour) ---
     const hourNow = ((clock.hour % 24) + 24) % 24;
     const bucketNow = seriesAt(hourNow);
-    const totalNow = bucketNow[0] + bucketNow[1] + bucketNow[2] + bucketNow[3];
+    const totalNow = bucketNow.reduce((sum, gw) => sum + gw, 0);
     const cx = xAt(hourNow, plotW);
     const cy = yForGW(totalNow);
-    ctx.strokeStyle = getFuelColor("flare");
+    ctx.strokeStyle = getFuelColor("solar");
     ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.moveTo(cx, PAD);
     ctx.lineTo(cx, h - PAD);
     ctx.stroke();
-    ctx.fillStyle = getFuelColor("flare");
+    ctx.fillStyle = getFuelColor("solar");
     ctx.beginPath();
     ctx.arc(cx, cy, 4.5, 0, Math.PI * 2);
     ctx.fill();

@@ -27,7 +27,6 @@ Tier colouring is applied per panel:
 - T1-live-TSO: cyan line
 - T2-annual-calibrated: amber
 - T3-modelled: terracotta
-- flare: brown
 
 (In v0.5 all top-20 regions happen to be T1; the colouring
 infrastructure is kept so new high-curtailment regions promoted from
@@ -57,7 +56,6 @@ TIER_COLOUR = {
     "T1-live-TSO":          "#38b0d8",
     "T2-annual-calibrated": "#e9c46a",
     "T3-modelled":          "#e76f51",
-    "flare":                "#8a6e3f",
 }
 
 # Number of ranked regions to facet.
@@ -180,10 +178,8 @@ def plot(ranked: list[dict], out_dir: Path) -> None:
                label="T2 annual-calibrated"),
         Line2D([0], [0], color=TIER_COLOUR["T3-modelled"], linewidth=2,
                label="T3 modelled"),
-        Line2D([0], [0], color=TIER_COLOUR["flare"], linewidth=2,
-               label="T2 flare (24/7 baseload)"),
     ]
-    fig.legend(handles=legend_handles, loc="lower center", ncol=4,
+    fig.legend(handles=legend_handles, loc="lower center", ncol=3,
                fontsize=9, framealpha=0.95,
                bbox_to_anchor=(0.5, -0.01))
 

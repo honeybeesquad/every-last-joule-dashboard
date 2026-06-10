@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-No public hourly archive accessible post-2022. SO UES (`so-ups.ru`) public pages do not expose unauthenticated hourly hydro-spill data, and Western sanctions plus reciprocal Russian access restrictions have foreclosed the previously available API endpoints. The loader emits a hydro-seasonal shape (`HYDRO_SEASONAL_SHARES["russia-mainland"]`) scaled to a ~1 TWh/yr anchor for European Russia hydro spill (primarily Volga / Kama cascades during spring melt). T3-modelled, ±40% envelope; see `docs/known-limitations.md` item 14 ("Russia (European grid) uses 1 TWh/yr seasonal hydro spill"). W. Siberia remains a separate flare region (Item 11) and is not reclassified here.
+No public hourly archive accessible post-2022. SO UES (`so-ups.ru`) public pages do not expose unauthenticated hourly hydro-spill data, and Western sanctions plus reciprocal Russian access restrictions have foreclosed the previously available API endpoints. The loader emits a hydro-seasonal shape (`HYDRO_SEASONAL_SHARES["russia-mainland"]`) scaled to a ~1 TWh/yr anchor for European Russia hydro spill (primarily Volga / Kama cascades during spring melt). T3-modelled, ±40% envelope; see `docs/known-limitations.md` for the broader structural-gap caveat.
 
 ## Links
 

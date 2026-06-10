@@ -28,8 +28,8 @@ import {
 
 export type ProfileKind = NonNullable<TierInputs["profileKind"]>;
 
-/** Presentational bucket — separates flare from non-flare T2 for Figure 4. */
-export type Bucket = "T1a" | "T1b" | "T1c" | "T2-flare" | "T2" | "T3";
+/** Presentational tier bucket used by tally and CI gates. */
+export type Bucket = "T1a" | "T1b" | "T1c" | "T2" | "T3";
 
 /**
  * Per-region profileKind. For estimated (and anchored non-live) regions only;
@@ -176,20 +176,9 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   cuba: "mixed",
   "dominican-republic": "solar",
   jamaica: "solar",
-  // Trinidad & Tobago's anchor is GGFR offshore flare lifted onto the
-  // T&TEC grid for coverage continuity. Flat 24/7 profile via the
-  // "mixed" profile kind so the ±40% T3 envelope correctly reflects
-  // the modelling uncertainty (rather than the ±20% T2-flare envelope
-  // we use for the directly-observed Permian / W-Siberia / S-Iraq /
-  // E-Saudi flare bboxes).
-  "trinidad-tobago": "mixed",
   barbados: "solar",
   bolivia: "solar",
   ecuador: "mixed",
-  // Guyana / Suriname offshore flare anchors lifted onto the country
-  // grid for coverage; same modelling-flat treatment as Trinidad.
-  guyana: "mixed",
-  suriname: "mixed",
   "french-guiana": "solar",
   // Phase-2.7 Pattern-D — Africa bulk-add (2026-04-27).
   // 26 net-new T3-modelled statics. Map value mirrors the StaticSpec.kind
@@ -322,19 +311,6 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   tuvalu: "solar",
 };
 
-/**
- * Region ids whose flat 24/7 profile is a *physical* base load (associated-
- * gas flaring) rather than a modelling concession, presented in Figure 4 as
- * a separate "flare" bucket.
- *
- * Source-of-truth: `Region.kind === "flare"` in `src/lib/regions.ts`. The
- * bucket-derivation in `resolveRegion` below uses `Region.kind` directly so
- * adding a new flare region is a single-table change.
- */
-export const FLARE_IDS = new Set(
-  REGIONS.filter((r) => r.kind === "flare").map((r) => r.id),
-);
-
 export interface ResolvedRegion {
   id: string;
   name: string;
@@ -372,7 +348,6 @@ export function resolveRegion(r: Region): ResolvedRegion | { unresolvedReason: s
   else if (tier === "T1b-live-domestic-anchored") bucket = "T1b";
   else if (tier === "T1c-live-neighbour-anchored") bucket = "T1c";
   else if (tier === "T3-modelled") bucket = "T3";
-  else if (r.kind === "flare") bucket = "T2-flare";
   else bucket = "T2";
   return { id: r.id, name: r.name, region: r, tier, bucket };
 }
@@ -405,7 +380,6 @@ export function countByBucket(resolved: ResolvedRegion[]): Record<Bucket, number
     T1b: 0,
     T1c: 0,
     T2: 0,
-    "T2-flare": 0,
     T3: 0,
   };
   for (const r of resolved) counts[r.bucket]++;

@@ -1,10 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-10 (peru-solar moved T1a→T1b after COES EDI anchoring + daylight-only live generation shape). Prior: 2026-06-07 (japan-tepco/chubu/hokkaido promoted estimated→live via direct eria_jukyu area CSVs; T1a +3, T3 −3).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-10 (removed gas-waste records from canonical regions and tier presentation). Prior: 2026-06-10 (peru-solar moved T1a→T1b after COES EDI anchoring + daylight-only live generation shape).",
   "T1a": 149,
   "T1b": 10,
   "T1c": 1,
   "T2": 6,
-  "T2-flare": 8,
-  "T3": 211,
-  "total": 385
+  "T3": 208,
+  "total": 374
 }

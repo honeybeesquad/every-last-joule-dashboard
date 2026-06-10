@@ -13,12 +13,11 @@
  *                                  extrapolated from a neighbouring zone
  *                                  (T1c, ±35.5% empirical)
  *   "anchored"                   — published annual/monthly total from a
- *                                  TSO, regulator, or satellite programme
- *                                  (GGFR); no live feed (T2, ±20%)
+ *                                  TSO or regulator; no live feed (T2, ±20%)
  *   "estimated"                  — modelled profile scaled to a capacity-
  *                                  based or literature anchor (T3, ±40%)
  *
- * Content type (wind, solar, flare, etc.) is orthogonal — use `RegionKind`.
+ * Content type (wind, solar, hydro, etc.) is orthogonal — use `RegionKind`.
  */
 export type RegionTier =
   | "live"
@@ -27,8 +26,8 @@ export type RegionTier =
   | "anchored"
   | "estimated";
 
-/** The waste modality drives colouring (brand vs flare-orange) and narrative. */
-export type RegionKind = "solar" | "wind" | "hydro" | "geo" | "mixed" | "flare";
+/** The waste modality drives fuel bucketing, colouring, and narrative. */
+export type RegionKind = "solar" | "wind" | "hydro" | "geo" | "mixed";
 
 /** Freshness state of an upstream source or fallback snapshot. */
 export type SourceStatus = "live" | "cached" | "degraded";

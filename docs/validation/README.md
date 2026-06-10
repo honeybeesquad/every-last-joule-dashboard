@@ -180,7 +180,6 @@ Last generated: 2026-06-07
 | Guatemala | estimated | solar | 0 | [guatemala](./guatemala.md) |
 | Central America (SIEPAC) | estimated | solar | 0 | [guatemala-siepac](./guatemala-siepac.md) |
 | French Guiana | estimated | solar | 0 | [french-guiana](./french-guiana.md) |
-| Guyana | estimated | flare | 0 | [guyana](./guyana.md) |
 | Honduras | estimated | solar | 0 | [honduras](./honduras.md) |
 | Croatia Solar | live | solar | 0 | [croatia-solar](./croatia-solar.md) |
 | Croatia Wind | live | wind | 0 | [croatia-wind](./croatia-wind.md) |
@@ -198,9 +197,8 @@ Last generated: 2026-06-07
 | Ireland (Republic) Solar | live | solar | 0 | [ireland-republic-solar](./ireland-republic-solar.md) |
 | Ireland (Republic) Wind | live | wind | 0 | [ireland-republic-wind](./ireland-republic-wind.md) |
 | Iran | estimated | solar | 0 | [iran](./iran.md) |
-| Iraq (non-flare) | estimated | solar | 0 | [iraq-mainland](./iraq-mainland.md) |
+| Iraq (mainland) | estimated | solar | 0 | [iraq-mainland](./iraq-mainland.md) |
 | Kurdistan (KRG) | estimated | solar | 0 | [kurdistan](./kurdistan.md) |
-| S. Iraq | anchored | flare | 0 | [s-iraq](./s-iraq.md) |
 | Iceland | estimated | hydro | 0 | [iceland](./iceland.md) |
 | Israel | estimated | solar | 0 | [israel](./israel.md) |
 | Italy North Solar | live-domestic-anchored | solar | 0 | [italy-north-zone-solar](./italy-north-zone-solar.md) |
@@ -229,7 +227,6 @@ Last generated: 2026-06-07
 | St Kitts & Nevis | estimated | solar | 0 | [st-kitts-and-nevis](./st-kitts-and-nevis.md) |
 | Jeju (S. Korea) | estimated | wind | 0 | [jeju](./jeju.md) |
 | South Korea (mainland) | estimated | solar | 0 | [south-korea](./south-korea.md) |
-| Kuwait | anchored | flare | 0 | [kuwait](./kuwait.md) |
 | Laos | estimated | solar | 0 | [laos](./laos.md) |
 | Lebanon | estimated | solar | 0 | [lebanon](./lebanon.md) |
 | Liberia | estimated | hydro | 0 | [liberia](./liberia.md) |
@@ -301,16 +298,11 @@ Last generated: 2026-06-07
 | Portugal Wind | live | wind | 0 | [portugal-wind](./portugal-wind.md) |
 | Paraguay | estimated | hydro | 0 | [paraguay](./paraguay.md) |
 | Palestine | estimated | solar | 0 | [palestine](./palestine.md) |
-| Qatar | anchored | flare | 0 | [qatar](./qatar.md) |
 | Romania Solar | live | solar | 0 | [romania-solar](./romania-solar.md) |
 | Romania Wind | live | wind | 0 | [romania-wind](./romania-wind.md) |
-| E. Siberia (flare) | anchored | flare | 0 | [russia-e-siberia](./russia-e-siberia.md) |
 | Russia (European grid) | estimated | hydro | 0 | [russia-mainland](./russia-mainland.md) |
 | Russia (Murmansk) | anchored | wind | 0 | [russia-murmansk-wind](./russia-murmansk-wind.md) |
-| Yamal (flare) | anchored | flare | 0 | [russia-yamal](./russia-yamal.md) |
-| W. Siberia | anchored | flare | 0 | [w-siberia](./w-siberia.md) |
 | Rwanda | estimated | mixed | 0 | [rwanda](./rwanda.md) |
-| E. Saudi Arabia | anchored | flare | 0 | [e-saudi](./e-saudi.md) |
 | Saudi Arabia (solar) | estimated | solar | 0 | [saudi-solar](./saudi-solar.md) |
 | Sudan | estimated | solar | 0 | [sudan](./sudan.md) |
 | Senegal | estimated | solar | 0 | [senegal](./senegal.md) |
@@ -324,7 +316,6 @@ Last generated: 2026-06-07
 | Serbia Wind | live | wind | 0 | [serbia-wind](./serbia-wind.md) |
 | South Sudan | estimated | solar | 0 | [south-sudan](./south-sudan.md) |
 | São Tomé & Príncipe | estimated | solar | 0 | [sao-tome](./sao-tome.md) |
-| Suriname | estimated | flare | 0 | [suriname](./suriname.md) |
 | Slovakia Solar | live | solar | 0 | [slovakia-solar](./slovakia-solar.md) |
 | Slovakia Wind | live | wind | 0 | [slovakia-wind](./slovakia-wind.md) |
 | Slovenia Solar | live | solar | 0 | [slovenia-solar](./slovenia-solar.md) |
@@ -342,7 +333,6 @@ Last generated: 2026-06-07
 | Turkmenistan | estimated | solar | 0 | [turkmenistan](./turkmenistan.md) |
 | Timor-Leste | estimated | solar | 0 | [east-timor](./east-timor.md) |
 | Tonga | estimated | solar | 0 | [tonga](./tonga.md) |
-| Trinidad & Tobago | estimated | flare | 0 | [trinidad-tobago](./trinidad-tobago.md) |
 | Tunisia | estimated | solar | 0 | [tunisia](./tunisia.md) |
 | Turkey (solar) | live | solar | 0 | [turkey-solar](./turkey-solar.md) |
 | Turkey (wind) | live | wind | 0 | [turkey-wind](./turkey-wind.md) |
@@ -374,7 +364,6 @@ Last generated: 2026-06-07
 | NYISO (rest) Solar | live | solar | 0 | [nyiso-rest-solar](./nyiso-rest-solar.md) |
 | NYISO (rest) Wind | live | wind | 0 | [nyiso-rest-wind](./nyiso-rest-wind.md) |
 | NYISO Zones D+E | live | wind | 0 | [nyiso-zones-d-e](./nyiso-zones-d-e.md) |
-| Permian Basin | anchored | flare | 0 | [permian](./permian.md) |
 | PJM Solar | live | solar | 0 | [pjm-solar](./pjm-solar.md) |
 | PJM Wind | live | wind | 0 | [pjm-wind](./pjm-wind.md) |
 | SPP Solar | live | solar | 0 | [spp-solar](./spp-solar.md) |

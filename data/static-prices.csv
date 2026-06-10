@@ -201,7 +201,6 @@ ontario-wind,65,CAD,0.74,IESO Annual Report 2023 / Ontario Energy Board,2023,HOE
 pakistan-solar,30,USD,1.0,NEPRA State of Industry Report 2024,2024,
 pakistan-wind,30,USD,1.0,NEPRA State of Industry Report 2024,2024,Pakistan NEPRA avg wholesale
 paraguay,25,USD,1.0,ANDE Annual Report 2024,2024,
-permian,50.0,USD,1.0,EIA Electric Power Monthly Table 5.6.A,2023,Permian basin avg ~$50/MWh (W. Texas gas hub)
 peru,55,USD,1.0,COES Annual Report 2024,2024,
 peru-hydro,40,PEN,0.27,COES SINAC Annual Report 2023 / IRENA 2024,2023,COES wholesale spot average around 150-160 PEN/MWh at 0.27 USD/PEN
 peru-solar,55,PEN,0.27,COES SINAC Annual Report 2023 / IRENA 2024,2023,Solar projects with COES connection around 180-200 PEN/MWh at 0.27 USD/PEN
@@ -300,13 +299,9 @@ zimbabwe,26.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied t
 afghanistan,50.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to afghanistan
 algeria,18.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to algeria
 bahrain,30.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to bahrain
-e-saudi,20.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to e-saudi
-kuwait,25.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to kuwait
 lebanon,40.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to lebanon
 libya,25.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to libya
 palestine,60.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to palestine
-qatar,20.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to qatar
-s-iraq,35.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to s-iraq
 syria,50.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to syria
 tunisia,28.0,USD,1.0,"IEA World Energy Prices 2024",2024,national avg applied to tunisia
 yemen,55.0,USD,1.0,"Ember Global Electricity Review 2024",2023,national avg applied to yemen
@@ -335,7 +330,6 @@ guatemala,70.2,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg
 guatemala-siepac,70.2,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg applied to Guatemala-SIEPAC"
 nicaragua,88.5,USD,1.0,"EIA International",2022,"national avg for Nicaragua"
 panama,82.1,USD,1.0,"EIA International",2022,"national avg for Panama"
-trinidad-tobago,45.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Trinidad and Tobago"
 albania,55.0,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Albania"
 belarus-solar,40.8,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Belarus applied to solar"
 belarus-wind,40.8,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Belarus applied to wind"
@@ -351,14 +345,11 @@ monaco,70.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for France
 montenegro,55.0,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Montenegro"
 north-macedonia-solar,52.0,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for North Macedonia applied to solar"
 north-macedonia-wind,52.0,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for North Macedonia applied to wind"
-russia-e-siberia,38.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Russia applied to East Siberia"
 russia-murmansk-wind,38.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Russia applied to Murmansk wind"
-russia-yamal,38.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Russia applied to Yamal"
 san-marino,75.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Italy applied to San Marino"
 serbia-solar,48.5,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Serbia applied to solar"
 serbia-wind,48.5,USD,1.0,"Ember Global Electricity Review 2024",2023,"national avg for Serbia applied to wind"
 ukraine,50.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Ukraine"
-w-siberia,38.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Russia applied to West Siberia"
 wa-swis-solar,45.2,AUD,0.65,AEMO WA Market Operator,2023,national avg applied to wa-swis-solar
 wa-swis-wind,45.2,AUD,0.65,AEMO WA Market Operator,2023,national avg applied to wa-swis-wind
 laos,55.0,USD,1.0,"IEA World Energy Prices 2024",2023,"national avg for Laos"

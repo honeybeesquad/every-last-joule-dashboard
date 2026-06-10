@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-No public hourly archive. The anchor here is unusual and worth flagging: SO UPS publishes monthly DPM VIE renewable-integration reports for 2024 (`so-ups.ru/functioning/markets/surveys/renewable/2024/`) that document specific Kola Peninsula wind dispatch limit events — 84 MW capped in September, 77 MW capped in November — totalling roughly 0.07 TWh/yr equivalent annualised. The loader emits a flat 24/7 shape (kind: "flat" in `statics.json.ts`) because the underlying constraint is a transmission-export limit, not a diurnal pattern. T3-modelled, ±40% envelope. This is the only Russia-specific renewable curtailment number that survives the post-2022 access restrictions in document form, so it carries through as a small but anchored estimate distinct from `russia-mainland` (hydro spill) and `w-siberia` (flare).
+No public hourly archive. The anchor here is unusual and worth flagging: SO UPS publishes monthly DPM VIE renewable-integration reports for 2024 (`so-ups.ru/functioning/markets/surveys/renewable/2024/`) that document specific Kola Peninsula wind dispatch limit events — 84 MW capped in September, 77 MW capped in November — totalling roughly 0.07 TWh/yr equivalent annualised. The loader emits a flat 24/7 shape (kind: "flat" in `statics.json.ts`) because the underlying constraint is a transmission-export limit, not a diurnal pattern. T3-modelled, ±40% envelope. This is the only Russia-specific renewable curtailment number that survives the post-2022 access restrictions in document form, so it carries through as a small but anchored estimate distinct from `russia-mainland` hydro spill.
 
 ## Links
 

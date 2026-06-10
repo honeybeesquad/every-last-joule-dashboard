@@ -19,7 +19,6 @@ const KIND_ORDER: Record<string, number> = {
   hydro: 2,
   geo: 3,
   mixed: 4,
-  flare: 5,
 };
 
 export interface PillarRegion {

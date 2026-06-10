@@ -8,7 +8,7 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** GAB
 - **Tier:** estimated
 - **Kind:** hydro
-- **Source:** IRENA Gabon 2024 (SEEG; hydro+gas; flaring relevant)
+- **Source:** IRENA Gabon 2024 (SEEG; hydro+gas)
 - **Source URL:** [https://www.seeg-gabon.com/](https://www.seeg-gabon.com/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

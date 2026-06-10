@@ -1,62 +1,6 @@
-# Flare, ERCOT, and Brazil NE Methodology Notes
+# ERCOT and Brazil NE Methodology Notes
 
 Retrieval date for all URLs in this note: 2026-04-24.
-
-## Flare
-
-### Before State
-
-| Region id | Display region | Lat | Lon | Prior annual TWh_e | Prior steady GW |
-|---|---:|---:|---:|---:|---:|
-| `permian` | Permian Basin | 31.9 | -102.5 | 44.0 | 5.02 |
-| `w-siberia` | West Siberia | 61.0 | 73.0 | 92.0 | 10.50 |
-| `s-iraq` | South Iraq | 30.5 | 47.5 | 63.0 | 7.19 |
-| `e-saudi` | East Saudi Arabia | 26.5 | 49.5 | 37.0 | 4.22 |
-
-### After State
-
-| Region id | 2024 flare volume used | Annual TWh_e | Steady GW | Code decision |
-|---|---:|---:|---:|---|
-| `permian` | 5.575 bcm | 20.6 | 2.35 | Changed; prior value exceeded the entire 2024 US GGFR country total. |
-| `w-siberia` | 11.479 bcm | 42.4 | 4.84 | Changed; latest individual-site West Siberia bbox is >20% below prior value. |
-| `s-iraq` | 14.233 bcm cross-check | 63.0 retained | 7.19 | Unchanged; latest bbox is within the 20% update threshold against the prior 17 bcm basis. |
-| `e-saudi` | 2.203 bcm | 8.1 | 0.92 | Changed; Saudi Arabia's 2024 country total is only 2.459 bcm. |
-
-Conversion: `bcm * 10.55 TWh_th/bcm * 35% = bcm * 3.6925 TWh_e/bcm`. The 10.55 TWh_th/bcm factor is equivalent to about 38 MJ/m3 HHV, inside the standard 35-40 MJ/m3 natural-gas range; 35% is a conservative reciprocating-engine electrical efficiency.
-
-Uncertainty: use +/-20% for dashboard interpretation. GGFR/World Bank and Payne Institute estimates are VIIRS-derived, calibrated against reported country-level data, and the methodology paper reports a 0.85 calibration correlation. This is enough to justify a 20% update threshold, not enough to make basin values look more precise than one decimal TWh.
-
-### Citation Chain
-
-Primary volume source is the World Bank/GFMR 2025 Global Gas Flaring Tracker data page and its "2012-2024 Flare Volume Estimates by Individual Flare Location" workbook. The dataset attributes flare gas volumes to NOAA, the Payne Institute / Colorado School of Mines, and World Bank/GFMR. Bounding boxes used for the region sums:
-
-| Region | Bounding box used on 2024 individual-site rows | Top fields in the selected rows |
-|---|---|---|
-| Permian | United States, 28.5-34.5N, 106.5-100.0W | Spraberry, Phantom, Platang |
-| West Siberia | Russia, 55.0-67.5N, 60.0-85.0E | Urengoiskoye, Russkoye, Priobskoye North |
-| South Iraq | Iraq, 29.0-33.5N, 43.0-49.5E | Rumaila, West Qurna, Zubair, Buzurgan |
-| East Saudi | Saudi Arabia, 24.0-29.0N, 47.0-51.5E | Ghawar, Jafurah, Wafra, Marjan |
-
-Cross-checks:
-
-- SkyTruth's flaring map is based on VIIRS Nightfire from the Payne Institute and explicitly cross-references Russia and Middle East hotspots. It is useful as a spatial activity cross-check, but SkyTruth says its license does not permit redistribution of the underlying data, so it is not used for volumes.
-- Payne Institute / EOG publishes annual gas-flared volume downloads through 2024 and credits the VIIRS Nightfire gas-flare methodology papers; this independently confirms the same underlying measurement chain used by GGFR.
-- IEA Global Methane Tracker 2025 says flaring remains a leading MENA methane source while Saudi Arabia, Qatar, and UAE perform better than the global upstream methane-intensity average. This supports reducing `e-saudi` relative to the old 10 bcm assumption.
-
-### Limitations
-
-These are annualized satellite estimates, not live gas-meter readings. Basin boxes are transparent approximations around the dashboard region markers; exact basin boundaries would require a licensed upstream-field GIS layer. Flare remains excluded from the renewable-curtailment headline because it is continuous 24/7 waste heat, not dispatch-down electricity.
-
-### URLs
-
-- World Bank/GFMR Global Flaring Data: https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
-- World Bank/GFMR 2025 report PDF: https://thedocs.worldbank.org/en/doc/bd2432bbb0e514986f382f61b14b2608-0400072025/original/Global-Gas-Flaring-Tracker-Report-July-2025.pdf
-- World Bank/GFMR individual flare-location workbook: https://thedocs.worldbank.org/en/doc/bd2432bbb0e514986f382f61b14b2608-0400072025/related/2012-2024-Flare-Volume-Estimates-by-individual-Flare-Location.xlsx
-- World Bank flare-volume methodology: https://documents1.worldbank.org/curated/en/757441622577804574/pdf/World-Bank-s-Global-Gas-Flaring-Reduction-Partnership-Gas-Flaring-Estimates-Methodology-for-Determining-the-Gas-Flare-Volumes-from-Satellite-Data.pdf
-- Payne Institute / EOG VIIRS Nightfire: https://eogdata.mines.edu/products/vnf/
-- Payne Institute / EOG annual gas flare analysis: https://eogdata.mines.edu/products/index.html/global_gas_flare.html
-- SkyTruth flaring map notes: https://skytruth.org/flaring/
-- IEA Global Methane Tracker 2025, regional insights: https://www.iea.org/reports/global-methane-tracker-2025/regional-insights
 
 ## ERCOT
 

@@ -6,7 +6,7 @@ automated re-check via [F-UJI](https://www.f-uji.net/) scheduled immediately
 after the Zenodo DOI is minted (v1.0.0 tag push, S0 completion).
 
 This document is the manual FAIR (Findable, Accessible, Interoperable,
-Reusable) self-assessment for the Every Last Joule curtailment-and-flare
+Reusable) self-assessment for the Every Last Joule curtailment
 dataset, as required by the Scientific Data reporting standard. It grades
 each of the 15 FAIR sub-principles against the actual artefacts committed
 to this repository, not against intent.
@@ -73,7 +73,7 @@ versioned DOI `10.5281/zenodo.19835566` (concept DOI
 - `dataset/CHANGELOG.md` — Keep-a-Changelog-format version history, SemVer
   compliant.
 - `docs/methodology/*.md` — per-source audit trails
-  (`entsoe-rates.md`, `china-provinces.md`, `flare-ercot-brazil.md`,
+  (`entsoe-rates.md`, `china-provinces.md`, `ercot-brazil.md`,
   `historical-backfill.md`, `uncertainty.md`, `validation-discrepancies.md`).
 - `docs/validation/<region>.md` — 130 per-region validation documents
   (plus a directory README and `_template.md`) each covering
@@ -221,8 +221,8 @@ No proprietary binary blobs, no closed schemas.
   controlled vocabulary of 384 values defined in `src/lib/regions.ts`
   with one authoritative source of truth. Stable across versions
   (SemVer-bump required for breaking rename).
-- **Fuel types** — controlled enum `{solar, wind, hydro, geothermal,
-  flare}` enforced by JSON Schema `propertyNames.enum` in
+- **Fuel types** — controlled enum `{solar, wind, hydro, geothermal}`
+  enforced by JSON Schema `propertyNames.enum` in
   `region-snapshot.schema.json`. Maps directly onto the ENTSO-E PsrType
   A75/B16/B19 classifications used by our loaders.
 - **Confidence tier** — controlled enum `{T1-live-TSO, T2-annual-calibrated,
@@ -249,8 +249,8 @@ No proprietary binary blobs, no closed schemas.
   This is a qualified reference back to the ENTSO-E Transparency
   Platform's own published time series.
 - `docs/methodology/*.md` documents cross-reference external anchors:
-  IRENA Renewable Energy Statistics, Ember State-of-the-Grid, GGFR
-  Global Gas Flaring Tracker, and individual TSO annual reports.
+  IRENA Renewable Energy Statistics, Ember State-of-the-Grid, and
+  individual TSO annual reports.
 - `docs/validation/<region>.md` links each per-region reconstruction to
   at least one public TSO / ISO / IMM / SoM annual figure, with
   explicit URL and quoted value. Gaps where no citable anchor exists

@@ -3,7 +3,7 @@ import { buildStaticRegion, buildAllStatics } from "../../src/data/statics.json"
 import { REGIONS } from "../../src/lib/regions";
 
 describe("static regions", () => {
-  it("emits only the 58 canonical static/flare regions by default", () => {
+  it("emits only the canonical static regions by default", () => {
     // v0.6 global-coverage-audit added: hawaii-oahu/maui/island, austria, russia-murmansk-wind.
     // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27): +16 T3-static
     // rows for Caribbean + Central American + small South American grids.
@@ -16,8 +16,8 @@ describe("static regions", () => {
     // World Bank cite — moved entry from research-pool to REGIONS).
     const data = buildAllStatics();
     // philippines moved to standalone src/data/philippines.json.ts (2026-04-30): 58→57
-    // Phase-2.7 misc (2026-05-03): +tva, +qatar, +kuwait canonical → 57 + 3 = 60.
-    // Phase-2.7 Russia+China (2026-05-03): +russia-yamal, +russia-e-siberia, +china-hebei, +china-heilongjiang, +china-jilin → 60 + 5 = 65.
+    // Phase-2.7 misc (2026-05-03): +tva canonical.
+    // Phase-2.7 Russia+China (2026-05-03): +china-hebei, +china-heilongjiang, +china-jilin.
     // ENTSO-E Balkans+Baltics (2026-05-04): croatia, slovenia, slovakia, lithuania,
     // latvia, luxembourg, malta, moldova added to ZONES feed but also present in
     // STATIC_REGIONS (as flat T3 fallbacks for any hour when ENTSO-E returns null).
@@ -54,7 +54,8 @@ describe("static regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated,
     // added to STATIC_REGIONS as canonical anchors. 142 + 2 = 144.
     // 2026-06-07: norway-no5 reverted live→estimated, added to STATIC_REGIONS. 144 + 1 = 145.
-    expect(Object.keys(data).length).toBe(145);
+    // 2026-06-10: gas-waste records removed from canonical statics. 145 - 11 = 134.
+    expect(Object.keys(data).length).toBe(134);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -65,7 +66,7 @@ describe("static regions", () => {
     const researchData = buildAllStatics({ includeCandidates: true });
     // philippines removed from statics (2026-04-30): 123→122
     // Phase-2.7 misc (2026-05-03): +tva new entry in STATIC_REGIONS → 122 + 1 = 123.
-    // Phase-2.7 Russia+China (2026-05-03): +5 new entries (russia-yamal, russia-e-siberia, china-hebei, china-heilongjiang, china-jilin) → 123 + 5 = 128.
+    // Phase-2.7 Russia+China (2026-05-03): +china-hebei, china-heilongjiang, china-jilin.
     // ENTSO-E Balkans+Baltics (2026-05-04): 8 new entries in STATIC_REGIONS
     // (croatia/slovenia/slovakia/lithuania/latvia/luxembourg/malta/moldova) but
     // all are live-tier in REGIONS so they remain canonical → non-canonical stays 56.
@@ -94,7 +95,8 @@ describe("static regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar added to pool as canonical.
     // Research pool: 146 + 2 = 148. Canonical: 142 + 2 = 144. Non-canonical: 4.
     // 2026-06-07: norway-no5 added to pool as canonical. Research pool: 148 + 1 = 149. Canonical: 144 + 1 = 145. Non-canonical: 4.
-    expect(Object.keys(researchData).length).toBe(149);
+    // 2026-06-10: gas-waste records removed from the research pool. 149 - 11 = 138.
+    expect(Object.keys(researchData).length).toBe(138);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
@@ -104,10 +106,6 @@ describe("static regions", () => {
       "sichuan",
       "xinjiang",
       "iceland",
-      "permian",
-      "w-siberia",
-      "s-iraq",
-      "e-saudi",
       "ukraine",
       "hawaii-oahu",
       "hawaii-maui",
@@ -124,12 +122,9 @@ describe("static regions", () => {
       "cuba",
       "dominican-republic",
       "jamaica",
-      "trinidad-tobago",
       "barbados",
       "bolivia",
       "ecuador",
-      "guyana",
-      "suriname",
       "french-guiana",
       // Colombia removed: promoted to T1b-CSV loader (src/data/colombia.json.ts).
       // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27).
@@ -162,11 +157,7 @@ describe("static regions", () => {
       // philippines moved to standalone src/data/philippines.json.ts (2026-04-30)
       // Phase-2.7 misc (2026-05-03)
       "tva",
-      "qatar",
-      "kuwait",
       // Phase-2.7 Russia+China (2026-05-03)
-      "russia-yamal",
-      "russia-e-siberia",
       "china-hebei",
       "china-heilongjiang",
       "china-jilin",
@@ -206,7 +197,6 @@ describe("static regions", () => {
     for (const r of Object.values(data)) {
       expect(allowed.has(r.sourceProvenance ?? "")).toBe(true);
     }
-    expect(data.permian.sourceProvenance).toBe("verified");
     expect(data.xinjiang.sourceProvenance).toBe("modelled-fallback");
   });
 
@@ -233,11 +223,10 @@ describe("static regions", () => {
     }
   });
 
-  it("hydro and flare regions have a flat 24h shape (seasonality lives at monthly scale, not diurnal)", () => {
+  it("hydro-seasonal regions have a flat 24h shape (seasonality lives at monthly scale, not diurnal)", () => {
     const data = buildAllStatics();
     // Sichuan + Iceland: seasonal-scaled but constant within any 24h.
-    // Permian/W.Siberia/S.Iraq/E.Saudi: flare 24/7 base load.
-    const flatIds = ["sichuan", "iceland", "permian", "w-siberia", "s-iraq", "e-saudi"];
+    const flatIds = ["sichuan", "iceland"];
     for (const id of flatIds) {
       const first = data[id].profile[0];
       for (const v of data[id].profile) expect(v).toBe(first);
@@ -267,11 +256,6 @@ describe("static regions", () => {
     // accidentally equal the old flat baseline — but allow equality in case a
     // test runs exactly on a month-boundary where the 30-day blend averages to 1.
     expect(data.sichuan.profile[0]).toBeLessThanOrEqual(flatGW * 3);
-  });
-
-  it("permian at 20.6 TWh/yr yields ~2.35 GW flat (flare electrical-equivalent)", () => {
-    const data = buildAllStatics();
-    expect(data.permian.profile[0]).toBeCloseTo((20.6 * 1000) / 8760, 2);
   });
 
   it("totalTWh for hydro-seasonal regions is pro-rata × seasonal factor", () => {

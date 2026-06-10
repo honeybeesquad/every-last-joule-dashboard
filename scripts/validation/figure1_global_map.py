@@ -13,7 +13,7 @@ What the figure shows
 A world map with one dot per region. Each dot is:
 - **Coloured** by confidence tier (same palette as Figure 4):
   T1-live-TSO (cyan), T2-annual-calibrated (amber), T3-modelled
-  (terracotta), flare (brown square).
+  (terracotta).
 - **Sized** by current peak GW (√-scaled so that a 10 GW pillar
   doesn't obliterate a 0.1 GW one, but the hotspot ranking is still
   legible).
@@ -68,22 +68,21 @@ STATIC_FLAT_REGIONS = {
 }
 
 # Region row regex. PR #88 (2026-05-10) renamed static→estimated and
-# flare→anchored, with `kind` carrying the energy-source signal. Current
+# flat annual anchors to anchored. Current
 # tier vocabulary:
 #   "live"                    → T1a-live-tso
 #   "live-domestic-anchored"  → T1b
 #   "live-neighbour-anchored" → T1c
-#   "anchored" + kind=="flare" → T2-flare (24/7 baseload)
-#   "anchored" + kind!="flare" → T2-annual-calibrated (flat-anchor proxies)
+#   "anchored"                → T2-annual-calibrated (flat-anchor proxies)
 #   "estimated"               → T3-modelled (typical-shape × annual anchor)
-# Legacy "static"/"flare" retained in the alternation as a backstop.
+# Legacy "static" retained in the alternation as a backstop.
 REGION_RE = re.compile(
     r'\{\s*id:\s*"(?P<id>[a-z0-9-]+)",'
     r'\s*name:\s*"(?P<name>[^"]+)",'
     r'\s*country:\s*"(?P<country>[^"]+)",'
     r'\s*lat:\s*(?P<lat>-?[\d.]+),'
     r'\s*lon:\s*(?P<lon>-?[\d.]+),'
-    r'\s*tier:\s*"(?P<tier>live-domestic-anchored|live-neighbour-anchored|live|anchored|estimated|static|flare)"'
+    r'\s*tier:\s*"(?P<tier>live-domestic-anchored|live-neighbour-anchored|live|anchored|estimated|static)"'
     r',\s*kind:\s*"(?P<kind>[a-z]+)"'
     r'.*?\}',
     re.DOTALL,
@@ -93,14 +92,12 @@ TIER_COLOUR = {
     "T1-live-TSO":          "#38b0d8",
     "T2-annual-calibrated": "#e9c46a",
     "T3-modelled":          "#e76f51",
-    "flare":                "#8a6e3f",
 }
 
 TIER_LABEL = {
     "T1-live-TSO":          "T1 live TSO feed",
     "T2-annual-calibrated": "T2 annual-calibrated",
     "T3-modelled":          "T3 modelled typical profile",
-    "flare":                "T2 flare (24/7 baseload)",
 }
 
 
@@ -108,14 +105,10 @@ def derive_tier(region_id: str, region_tier: str, region_kind: str) -> str:
     if region_tier in ("live", "live-domestic-anchored", "live-neighbour-anchored"):
         return "T1-live-TSO"
     if region_tier == "anchored":
-        if region_kind == "flare":
-            return "flare"
         return "T2-annual-calibrated"
     if region_tier == "estimated":
         return "T3-modelled"
-    # Legacy fallbacks (pre-PR #88).
-    if region_tier == "flare":
-        return "flare"
+    # Legacy fallback (pre-PR #88).
     if region_tier == "static":
         if region_id in STATIC_FLAT_REGIONS:
             return "T2-annual-calibrated"
@@ -211,7 +204,7 @@ def plot(regions: list[dict], peak_gws: dict[str, float], out_dir: Path) -> None
         r_aug = dict(r, peak_gw=peak, marker_size=size_from_peak(peak))
         by_tier.setdefault(r["tier"], []).append(r_aug)
 
-    order = ["T3-modelled", "T2-annual-calibrated", "flare", "T1-live-TSO"]
+    order = ["T3-modelled", "T2-annual-calibrated", "T1-live-TSO"]
     for tier in order:
         group = by_tier.get(tier, [])
         if not group:
@@ -219,7 +212,7 @@ def plot(regions: list[dict], peak_gws: dict[str, float], out_dir: Path) -> None
         xs = [r["lon"] for r in group]
         ys = [r["lat"] for r in group]
         sizes = [r["marker_size"] for r in group]
-        marker = "s" if tier == "flare" else "o"
+        marker = "o"
         ax.scatter(
             xs, ys,
             s=sizes,
@@ -276,10 +269,6 @@ def plot(regions: list[dict], peak_gws: dict[str, float], out_dir: Path) -> None
                markerfacecolor=TIER_COLOUR["T2-annual-calibrated"],
                markeredgecolor="#222", markersize=9,
                label=TIER_LABEL["T2-annual-calibrated"]),
-        Line2D([0], [0], marker="s", color="w",
-               markerfacecolor=TIER_COLOUR["flare"],
-               markeredgecolor="#222", markersize=8,
-               label=TIER_LABEL["flare"]),
         Line2D([0], [0], marker="o", color="w",
                markerfacecolor=TIER_COLOUR["T3-modelled"],
                markeredgecolor="#222", markersize=9,

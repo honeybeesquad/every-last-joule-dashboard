@@ -8,7 +8,7 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** NGA
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** Ember Nigeria 2024 + TCN 2024 (solar curtailment; Niger Delta flare ~7 TWh-eq/yr is a separate flat-baseload signal)
+- **Source:** Ember Nigeria 2024 + TCN 2024 (solar curtailment / grid-stress anchor)
 - **Source URL:** [https://www.tcn.org.ng/](https://www.tcn.org.ng/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

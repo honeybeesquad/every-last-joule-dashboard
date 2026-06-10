@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 384 canonical regions", () => {
+  it("has 374 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -13,8 +13,8 @@ describe("regions", () => {
     // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27): +16 T3-static
     // rows for Caribbean + Central American + small South American grids
     // (guatemala, el-salvador, nicaragua, costa-rica, panama, guatemala-siepac,
-    // cuba, dominican-republic, jamaica, trinidad-tobago, barbados, bolivia,
-    // ecuador, guyana, suriname, french-guiana). 128 + 16 = 144.
+    // cuba, dominican-republic, jamaica, barbados, bolivia, ecuador,
+    // french-guiana). 128 + 13 = 141.
     // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27): +26 T3-static rows
     // sourced from `data/coverage-audit/2026-04-26-africa.csv` introduce-as-T3
     // subset (32 rows, 6 sub-0.05 TWh skipped). 144 + 26 = 170.
@@ -52,7 +52,7 @@ describe("regions", () => {
     // Wave-5 China+Japan additions (2026-05-01): Hebei, Jilin, Heilongjiang
     // (NEA 2024 monitoring evaluation), Japan Tohoku (OCCTO/METI FY2023).
     // 202 + 4 = 206.
-    // feat(flare): Russia Yamal-Nenets + East Siberia GGFR flare regions (2026-05-02): 206 + 2 = 208.
+    // Russia Yamal-Nenets + East Siberia were later removed with the gas records.
     // Japan W1 per-utility batch (2026-05-02): rename japan → japan-kyushu (net 0) + add
     // 9 new live loaders (Chubu, Chugoku, Hokkaido, Hokuriku, Kansai, Okinawa, Shikoku,
     // TEPCO, Tohoku). 202 + 9 = 211.
@@ -60,7 +60,7 @@ describe("regions", () => {
     // India W2 (2026-05-02): replace india-south + india-west with india-gujarat +
     // india-tamil-nadu + india-karnataka (net +1). 230 + 1 = 231.
     // India W3 (2026-05-02): +india-andhra-pradesh + india-maharashtra (net +2). 231 + 2 = 233.
-    // Phase-2.7 misc (2026-05-03): +tva T3-static, +qatar T2-flare, +kuwait T2-flare. 233 + 3 = 236.
+    // Phase-2.7 misc (2026-05-03): +tva T3-static. Gas records were later removed.
     // Phase-2.7 Russia+China (2026-05-03): +5 regions. 236→241.
 // ENTSO-E Balkans + Baltics expansion (2026-05-04): +12 T1a live
     // (serbia, north-macedonia, croatia, slovenia, slovakia, lithuania,
@@ -98,7 +98,8 @@ describe("regions", () => {
     // split into wind+solar. Net +3 regions. 380 + 3 = 383.
     // Issue #62 (2026-05-06): add Palestine T3 static. Net +1 region. 383 + 1 = 384.
     // 2026-05-24: new-zealand-hydro added (T1a). 384 + 1 = 385.
-    expect(REGIONS.length).toBe(385);
+    // 2026-06-10: gas-waste records removed. 385 - 11 = 374.
+    expect(REGIONS.length).toBe(374);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -285,17 +286,22 @@ describe("regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. +2. 211→213.
     // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). +1. 213→214.
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. -3. 214→211.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(211);
+    // 2026-06-10: remove three modelled offshore gas-waste records.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(208);
   });
 
-  it("has 14 anchored regions (8 flare + 6 flat-profile)", () => {
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(14);
+  it("has 6 anchored regions", () => {
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(6);
   });
 
-  it("all flare-kind regions with anchored tier are GGFR-verified", () => {
-    for (const r of REGIONS.filter(x => x.kind === "flare" && x.tier === "anchored")) {
-      expect(r.sourceProvenance).toBe("verified");
-    }
+  it("limits source kinds to renewable-curtailment families", () => {
+    expect([...new Set(REGIONS.map((region) => region.kind))].sort()).toEqual([
+      "geo",
+      "hydro",
+      "mixed",
+      "solar",
+      "wind",
+    ]);
   });
 
   it("keeps remaining mixed rows explicit so no new bundled curtailment slips in", () => {
@@ -465,7 +471,6 @@ describe("regions", () => {
     ]) {
       expect(REGIONS.find(r => r.id === id)).toBeDefined();
     }
-    expect(REGIONS.find(r => r.id === "e-saudi")?.tier).toBe("anchored");
   });
 
   it("includes the v1m Africa curtailment research expansion", () => {

@@ -142,22 +142,12 @@ const STATICS_PROFILE_KIND: Record<string, ProfileKind> = {
   xinjiang:               "solar",
   iceland:                "hydro-seasonal",
   ukraine:                "solar",
-  permian:                "flat", // flare kind; anchored tier → T2-annual-calibrated
-  "w-siberia":            "flat",
-  "s-iraq":               "flat",
-  "e-saudi":              "flat",
   "hawaii-oahu":          "solar",
   "hawaii-maui":          "solar",
   "hawaii-island":        "solar",
   austria:                "flat",
   "russia-murmansk-wind": "flat",
 };
-
-/**
- * The 4 flare regions inside statics.json use `anchored` regionTier
- * (GGFR satellite-observed annual data).
- */
-const FLARE_IDS = new Set(["permian", "w-siberia", "s-iraq", "e-saudi"]);
 
 function isRegionData(value: unknown): value is RegionData {
   return (
@@ -190,7 +180,6 @@ function tierInputsFor(loaderId: string, regionId: string): TierInputs | null {
   if (loaderId === "statics") {
     const kind = STATICS_PROFILE_KIND[regionId];
     if (!kind) return null;
-    if (FLARE_IDS.has(regionId)) return { regionTier: "anchored" };
     if (kind === "flat") return { regionTier: "anchored", profileKind: "flat" };
     return { regionTier: "estimated", profileKind: kind };
   }

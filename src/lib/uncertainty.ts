@@ -5,7 +5,7 @@
  * Each region's peakGW carries a ±uncertainty envelope and a confidence tier
  * label. The tier is derived deterministically from the loader's Region.tier
  * (live / live-domestic-anchored / live-neighbour-anchored / anchored /
- * estimated). Content type (flare, solar, wind, etc.) is orthogonal — it
+ * estimated). Content type (solar, wind, hydro, etc.) is orthogonal — it
  * lives in Region.kind and does not affect tier derivation.
  *
  * Tier definitions (also surfaced in `docs/methodology/uncertainty.md` and
@@ -33,7 +33,7 @@
  *                                snapshots; equivalent to T1a-live-tso for
  *                                envelope sizing
  *   T2-annual-calibrated         static anchored to a published annual total
- *                                (flare / GGFR, Ember, IRENA), no shape
+ *                                (Ember, IRENA, TSO annual), no shape
  *                                modelling — bounds: ±20 % of peakGW
  *   T3-modelled                  static with typical-shape profile (solar /
  *                                hydro-seasonal) scaled to an annual anchor

@@ -11,8 +11,8 @@
 ## What's shipped on `main`
 
 **Coverage — full world:**
-- 385 regions across 195 countries (every UN member + Taiwan + Palestine)
-- **Tally golden as of 2026-06-10: T1a=149, T1b=10, T1c=1, T2=6, T2-flare=8, T3=211 (total 385).** Counted directly from `src/lib/regions.ts`. Locked by `tests/regions.test.ts`. Drift since the 2026-05-11 golden (T1a=149/T3=211/total=384): new-zealand-hydro added 2026-05-24 (T1a +1); serbia-solar + north-macedonia-solar reverted live→estimated 2026-06-06 (T1a −2, T3 +2); norway-no5 reverted live→estimated 2026-06-07 (T1a −1, T3 +1, PR #125); japan-tepco/chubu/hokkaido promoted estimated→live 2026-06-07 (T1a +3, T3 −3, PR below); peru-solar moved T1a→T1b 2026-06-10 after COES EDI anchoring and daylight-only live generation shaping.
+- 374 renewable-curtailment regions across six continents
+- **Tally golden as of 2026-06-10: T1a=149, T1b=10, T1c=1, T2=6, T3=208 (total 374).** Counted directly from `src/lib/regions.ts`. Locked by `tests/regions.test.ts`. Drift since the 2026-05-11 golden (T1a=149/T3=211/total=384): new-zealand-hydro added 2026-05-24 (T1a +1); serbia-solar + north-macedonia-solar reverted live→estimated 2026-06-06 (T1a −2, T3 +2); norway-no5 reverted live→estimated 2026-06-07 (T1a −1, T3 +1, PR #125); japan-tepco/chubu/hokkaido promoted estimated→live 2026-06-07 (T1a +3, T3 −3, PR below); peru-solar moved T1a→T1b 2026-06-10 after COES EDI anchoring and daylight-only live generation shaping; gas-waste records removed 2026-06-10 (T2 −8, T3 −3).
 - Live at **everylastjoule.com** — Vercel auto-deploys from `main`
 - Dashboard banner: **"Wasted Energy Database · v1.3.2"** (pulled live from Zenodo version metadata; v1.3.2 minted 2026-06-07, version DOI `10.5281/zenodo.20570864`)
 
@@ -38,10 +38,10 @@
 - **Next steps + open decisions:** `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md` (the handoff). Britta's hydro cron still runs (shared tunnel identity — retiring it is a follow-up).
 
 **Tier taxonomy (refactored in PR #88, 2026-05-10):**
-- `kind` (content type): wind, solar, hydro, mixed, geo, flare — orthogonal to tier
+- `kind` (content type): wind, solar, hydro, mixed, geo — orthogonal to tier
 - `tier` (data quality): live, live-domestic-anchored, live-neighbour-anchored, anchored, estimated
 - `sourceProvenance` (source status): verified, official-lead, modelled-fallback
-- Legacy static/flare tier labels are retired. `tier` now carries only data quality (`estimated` / `anchored`), while `kind: "flare"` carries the energy-source signal.
+- Legacy static tier labels are retired. `tier` now carries only data quality (`estimated` / `anchored`).
 
 **Discipline layer (sprint shipped 2026-05-08, PRs #69-#75):**
 - **PR #69** — `sourceProvenance` enum field + CI gate scaffolding (`feat/source-status-enum`)
@@ -100,7 +100,7 @@ Diagnosed from persistent Vercel build-log errors (all builds since ~2026-05-13 
 
 **Paper v1.3.2 numbers refresh (shipped 2026-06-06, PR #109):**
 - Every numeric claim in `src/paper.md` + `docs/dari/paper.html` re-derived against current snapshots after the Brazil ONS formula fix (eabf8e5). Six claims drifted >5%: total verified waste 338.8→**293.7 TWh**, T1 curtailed renewables 184.5→**138.9 TWh** (−25%, Brazil-driven), wasted/Bitcoin 171%→**149%**, curtailed-alone/Bitcoin 93.4%→**70%**, foregone revenue $16.2B→**$14.3B**, priced regions 186→**118 verified**.
-- §3 reframed (editorial Option B): leads with flare-dominant verified total (293.7 TWh = 149% of Bitcoin); 53% flare / 47% curtailed renewables. Bitcoin denominator kept at WooCharts 197.6 per paper's stated anchor.
+- §3 reframed (editorial Option B): current public dashboard is renewable-curtailment-only; historical gas-waste framing is no longer part of the product surface.
 - **Version skew resolved (2026-06-07):** v1.3.2 minted to Zenodo (version DOI `10.5281/zenodo.20570864`) via PR #121 + GitHub release `v1.3.2`. All metadata (`package.json`, `CITATION.cff`, `.zenodo.json`, `README`s, `FAIR.md`, CHANGELOG) now consistent at v1.3.2 / 385 regions. Paper cites the always-latest concept DOI, which now resolves to v1.3.2.
 
 ## What's NOT shipped / open PRs
@@ -127,7 +127,7 @@ Also cleaned this session: 16 merged remote branches + 4 session branches delete
 - ✅ `build_region_docs.py` manual-block markers — PR #92
 
 **Still outstanding:**
-- **Colombia data-spine — next steps + open decisions:** see the handoff `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md`. Tracks: (A) hardening — backfill history, weekly prev-month refresh, retire Britta, object-storage sync; (B) siting — coordinate crosswalk, pick curtailment signal, write Spec 3; (C) trivial batch — flare expansion, bad-conversions gate (needs 80%/100% decision), EIA fixture test. **Security: rotate the abed login password** (exposed in the 2026-06-07 transcript; SSH is key-based so it won't lock the agent out).
+- **Colombia data-spine — next steps + open decisions:** see the handoff `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md`. Tracks: (A) hardening — backfill history, weekly prev-month refresh, retire Britta, object-storage sync; (B) siting — coordinate crosswalk, pick curtailment signal, write Spec 3; (C) trivial batch — bad-conversions gate (needs 80%/100% decision), EIA fixture test. **Security: rotate the abed login password** (exposed in the 2026-06-07 transcript; SSH is key-based so it won't lock the agent out).
 - **Recalibrate north-macedonia-solar anchor** — current 0.02 TWh/yr static (IRENA RCS 2025, 833 MW end-2024 basis) is a known underestimate; NMK hit ~1.2 GW by end-2025 with solar already moving power-exchange prices. Revisit if a machine-readable MEPSO/exchange curtailment source appears. (serbia-solar 0.007 TWh/yr is fine — curtailment genuinely negligible at 241–318 MW per USEA 2022.)
 - **6 source-bearing stashes** left undropped (`stash@{0}`–`{5}`: WIP on main eia-iso/turkey, dead-code-purge, japan-regional-wiring, india-sldc-t1a, dari-research-bundle, paper-post-council-edits). Review and drop/apply when convenient.
 - **Wrap the other 6 cited docs in manual-block markers** — `alberta-wind.md` and `india-{andhra-pradesh,gujarat,karnataka,maharashtra,tamil-nadu}.md`. PR #92 demonstrated the mechanism on `india-rajasthan.md` only. Mechanical sweep, ~10 minutes of work.
@@ -136,7 +136,6 @@ Also cleaned this session: 16 merged remote branches + 4 session branches delete
 - **TEPCO monthly CSV migration** (loader rewrite) — would restore TEPCO from `tier: "estimated"` to `T1a-live-tso`. The viable file `eria_jukyu_YYYYMM_03.csv` has a direct `太陽光出力制御量` (solar curtailment) column — better data quality than the abandoned 5-min path. YYYYMM URL scheme + 30-min intervals + multi-column parse needed.
 
 **Closed by the 2026-05-12 launch-prep sprint:**
-- ✅ **Issue #44** — flare regions render as solar-yellow when the flare-gas toggle is on. Verified fixed in `src/lib/fuel.ts::getRegionFuelColor` (the `region.kind === "flare"` short-circuit returns the flare token before the `dominantFuel` fall-through can paint it yellow).
 - ✅ Stale "Sunfire/Vellum/Eclipse" theme references in `src/lib/fuel.ts` and `src/lib/theme-tokens.ts` corrected — shipped themes are Sunfire and Deepcurrent. (Vellum and Eclipse were never shipped.)
 - ✅ Duplicate `iso-ne` / `nyiso` entries removed from `KNOWN_AGGREGATE_IDS` in `scripts/ci/check-tier-coherence.ts`.
 

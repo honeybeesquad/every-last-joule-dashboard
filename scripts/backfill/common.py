@@ -18,7 +18,7 @@ Schema (one row per region per UTC hour):
   observation_timestamp  str     ISO-8601 UTC of the hour start (sortable)
   region_id              str     matches RegionData.regionId
   curtailment_gw         float32 hourly curtailment in GW
-  fuel                   str     "wind" | "solar" | "hydro" | "geothermal" | "flare"
+  fuel                   str     "wind" | "solar" | "hydro" | "geothermal"
   source                 str     provenance slug ("entsoe", "eia", "aemo", etc.)
   rate_applied           float32 calibration rate used (0.0 for direct-observation sources)
   rate_source            str     human-readable provenance of the rate

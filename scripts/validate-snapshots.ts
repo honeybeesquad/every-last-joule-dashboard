@@ -54,7 +54,7 @@ const REQUIRED = [
   "sourceProvenance"
 ] as const;
 
-const FUEL_KEYS = new Set(["solar", "wind", "hydro", "geothermal", "flare"]);
+const FUEL_KEYS = new Set(["solar", "wind", "hydro", "geothermal"]);
 const TIER_ENUM = new Set([
   // Legacy alias retained for backward compatibility on pre-2026-04-25
   // snapshots (treated as T1a for envelope sizing). New emissions use the

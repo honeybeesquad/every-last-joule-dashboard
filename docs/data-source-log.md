@@ -126,36 +126,6 @@ At ~1000 EH/s this yields ~140 TWh/yr, within ~2% of CBECI's ~138 TWh/yr reporte
 
 ---
 
-## Flare regions (World Bank GGFR / VIIRS Nightfire)
-
-**Feed used:** World Bank/GFMR Global Flaring Data, specifically the 2025 Global Gas Flaring Tracker and the 2012-2024 individual flare-location workbook.
-
-**Attribution chain:** NOAA VIIRS observations -> Payne Institute / Colorado School of Mines VIIRS Nightfire processing -> World Bank/GFMR annual flare-location and economy datasets.
-
-**2026-04-24 audit outcome:** three static annual anchors changed because the latest 2024 individual-site sums differed from the previous dashboard values by more than 20%.
-
-- `permian`: 5.575 bcm in the Permian bbox -> 20.6 TWh_e/yr, replacing 44.0.
-- `w-siberia`: 11.479 bcm in the West Siberia bbox -> 42.4 TWh_e/yr, replacing 92.0.
-- `s-iraq`: 14.233 bcm in the South Iraq bbox -> cross-check 52.6 TWh_e/yr, but the code remains 63.0 because this is within the +/-20% update threshold against the prior ~17 bcm basis.
-- `e-saudi`: 2.203 bcm in the East Saudi bbox -> 8.1 TWh_e/yr, replacing 37.0. The old 10 bcm basis exceeded Saudi Arabia's entire 2024 country total of 2.459 bcm.
-
-**Conversion:** `1 bcm * 10.55 TWh_th/bcm * 35% = 3.6925 TWh_e/bcm`. The 10.55 TWh_th/bcm heat-content assumption is roughly 38 MJ/m3 HHV.
-
-**Uncertainty:** interpret each basin estimate with a +/-20% band. SkyTruth and Payne Institute provide spatial/measurement-chain cross-checks; SkyTruth does not redistribute its underlying map data, so it is not used as a numeric source. IEA Global Methane Tracker 2025 is used only as a qualitative cross-check for MENA/Russia methane and flaring context, not as a basin volume source.
-
-**Methodology note:** see `docs/methodology/flare-ercot-brazil.md#flare`.
-
-Sources:
-
-- `https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data`
-- `https://thedocs.worldbank.org/en/doc/bd2432bbb0e514986f382f61b14b2608-0400072025/original/Global-Gas-Flaring-Tracker-Report-July-2025.pdf`
-- `https://thedocs.worldbank.org/en/doc/bd2432bbb0e514986f382f61b14b2608-0400072025/related/2012-2024-Flare-Volume-Estimates-by-individual-Flare-Location.xlsx`
-- `https://eogdata.mines.edu/products/index.html/global_gas_flare.html`
-- `https://skytruth.org/flaring/`
-- `https://www.iea.org/reports/global-methane-tracker-2025/regional-insights`
-
----
-
 ## ERCOT (intended native API) / EIA (used as proxy for v0)
 
 **Intended:** ERCOT Public API via developer portal (`apiexplorer.ercot.com`), which publishes 5-minute wind output and separately reports dispatch-down curtailment.
@@ -203,7 +173,7 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 
 **v0.5 B1 split:** the single ERCOT series is emitted as two regions using a 66/34 West/East proportional split, matching the book's 2024 West+Panhandle share of ERCOT curtailment (5.3 TWh of ~8 TWh).
 
-**2026-04-24 defensibility audit:** no authoritative public ERCOT zonal curtailment allocation was found. Potomac Economics' 2024 State of the Market Report publishes ERCOT-wide wind and solar production/estimated curtailment, and ERCOT public pages publish current wind/solar generation, HSL/forecast/resource-potential concepts, aggregate HDL/LDL, and renewable capacity by zone. Those sources do not publish a citable 2024 West/East dispatched-down-energy split. The 66/34 split therefore remains in code only as an illustrative, book-derived allocation; it is now labelled as such in `src/data/ercot.json.ts` and `docs/methodology/flare-ercot-brazil.md#ercot`.
+**2026-04-24 defensibility audit:** no authoritative public ERCOT zonal curtailment allocation was found. Potomac Economics' 2024 State of the Market Report publishes ERCOT-wide wind and solar production/estimated curtailment, and ERCOT public pages publish current wind/solar generation, HSL/forecast/resource-potential concepts, aggregate HDL/LDL, and renewable capacity by zone. Those sources do not publish a citable 2024 West/East dispatched-down-energy split. The 66/34 split therefore remains in code only as an illustrative, book-derived allocation; it is now labelled as such in `src/data/ercot.json.ts` and `docs/methodology/ercot-brazil.md#ercot`.
 
 **v0.5 upgrade path:**
 
@@ -368,7 +338,7 @@ March 2026 ONS constrained-off rows observed the following member counts in the 
 
 ONS `capacidade-geracao` was used as the installed-capacity cross-check by state because the direct ANEEL SIGA open-data CSV endpoint timed out from this NZ worktree. The ANEEL SIGA page remains the authoritative public reference for capacity by "Resumo Estadual" and "Usinas e Agentes de Geracao"; the ONS capacity table carries the ANEEL `ceg` field and is sufficient to validate state correspondence for this loader.
 
-This remains a direct curtailment feed, not a calibrated proxy. See `docs/methodology/flare-ercot-brazil.md#brazil-ne` for the citation chain and unresolved direct-SIGA download limitation.
+This remains a direct curtailment feed, not a calibrated proxy. See `docs/methodology/ercot-brazil.md#brazil-ne` for the citation chain and unresolved direct-SIGA download limitation.
 
 ---
 
@@ -468,7 +438,7 @@ These regions intentionally use typical-shape fallback profiles after one-day li
 
 ## v1k fallback expansion regions (used)
 
-These 12 regions close Australia non-NEM, South/Southeast Asia, East Asia, Russia non-flare, and Middle East coverage gaps. All loaders wrap in `withFallback`; live probes are attempted by the executable loaders, while unit tests use deterministic typical-profile exports. No stable unauthenticated machine-readable hourly curtailment feed was integrated in the v1k time-box.
+These 12 regions close Australia non-NEM, South/Southeast Asia, East Asia, Russia, and Middle East coverage gaps. All loaders wrap in `withFallback`; live probes are attempted by the executable loaders, while unit tests use deterministic typical-profile exports. No stable unauthenticated machine-readable hourly curtailment feed was integrated in the v1k time-box.
 
 - Western Australia (SWIS): probed `https://data.wa.aemo.com.au/public/market-data/wem/` (404 from this environment), `https://aemo.com.au/energy-systems/electricity/wholesale-electricity-market-wem/data-wem/data-dashboard-wem` (Cloudflare 403), and `https://data.wa.aemo.com.au/` (market-data shell only). Fallback: solar-shaped SWIS profile peaking UTC 04:00, 0.4 TWh/yr, fuelShare solar 70% / wind 30%.
 - NT & Pilbara: probed Horizon Power public site; Pilbara captive mining networks expose no public hourly curtailment. Fallback: solar profile peaking UTC 04:00, 0.2 TWh/yr.
@@ -478,7 +448,7 @@ These 12 regions close Australia non-NEM, South/Southeast Asia, East Asia, Russi
 - Russia (European grid): probed SO UES; sanctions/language/access constraints and no unauthenticated hourly hydro-spill feed. Fallback: seasonal hydro profile using Volga/western Russia NH spring-summer shares, 1 TWh/yr.
 - Taiwan: probed Taipower generation-status page, data.gov.tw search, and T-REC. Taipower exposes live generation HTML, data.gov.tw exposes a portal shell, and T-REC is certificate metadata, not curtailment. Fallback: mixed offshore-wind + solar profile, 0.6 TWh/yr, fuelShare wind 67% / solar 33%.
 - Jordan: probed NEPCO public site; annual/report-level curtailment references only. Fallback: mixed wind + solar profile, 0.35 TWh/yr, fuelShare wind 70% / solar 30%, calibrated to the 17% wind-curtailment headline.
-- Saudi Arabia (solar): probed SEC/ECRA public path; no hourly solar curtailment endpoint integrated. This is separate from the `e-saudi` flare region. Fallback: solar profile peaking UTC 09:00, 0.3 TWh/yr.
+- Saudi Arabia (solar): probed SEC/ECRA public path; no hourly solar curtailment endpoint integrated. Fallback: solar profile peaking UTC 09:00, 0.3 TWh/yr.
 - UAE: probed DEWA/EWEC public path; no hourly solar curtailment endpoint integrated. Fallback: solar profile peaking UTC 08:00, 0.2 TWh/yr.
 - Oman: probed OPWP/Nama public path; annual-report level data only. Fallback: solar profile peaking UTC 08:00, 0.1 TWh/yr.
 - Israel: probed Noga/IEC public path; no hourly solar curtailment endpoint integrated. Fallback: Negev solar profile peaking UTC 10:00, 0.15 TWh/yr.

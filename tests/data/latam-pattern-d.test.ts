@@ -5,7 +5,7 @@ import { buildAllStatics } from "../../src/data/statics.json";
 /**
  * Phase-2.7 Pattern-D — Latin-America bulk-add coverage test.
  *
- * Asserts that all sixteen new T3-modelled static regions sourced from
+ * Asserts that the thirteen current T3-modelled static regions sourced from
  * `data/coverage-audit/2026-04-26-latin-america.csv` (the
  * `recommended_action: introduce-as-T3` subset) are present in both the
  * canonical `REGIONS` table and the `STATIC_REGIONS` map exposed by
@@ -27,12 +27,9 @@ const NEW_LATAM_IDS = [
   "cuba",
   "dominican-republic",
   "jamaica",
-  "trinidad-tobago",
   "barbados",
   "bolivia",
   "ecuador",
-  "guyana",
-  "suriname",
   "french-guiana",
 ] as const;
 
@@ -41,7 +38,6 @@ const ALLOWED_REGION_KINDS = new Set([
   "wind",
   "hydro",
   "mixed",
-  "flare",
 ]);
 
 const ALLOWED_STATIC_KINDS = new Set([
@@ -63,7 +59,7 @@ const LATAM_BBOX = {
 } as const;
 
 describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
-  it("adds 16 new T3-static rows to REGIONS", () => {
+  it("adds 13 new T3-static rows to REGIONS", () => {
     for (const id of NEW_LATAM_IDS) {
       const region = REGIONS.find((r) => r.id === id);
       expect(region, `missing region ${id}`).toBeDefined();
@@ -129,8 +125,8 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     }
   });
 
-  it("aggregate annual anchor across the 16 new rows is ~2.7 TWh per the audit", () => {
-    // 0.4+0.2+0.1+0.3+0.2+0.1+0.1+0.5+0.003+0.3+0.05+0.1+0.05+0.2+0.05+0.05 ≈ 2.703 TWh.
+  it("aggregate annual anchor across the 13 current rows is ~2.15 TWh per the audit", () => {
+    // 0.4+0.2+0.1+0.3+0.2+0.1+0.1+0.5+0.003+0.05+0.1+0.05+0.05 ≈ 2.153 TWh.
     // Jamaica revised 0.2→0.003 in Wave-5 calibration (2026-04-30): IEA/IDB 2024 found
     // ≤3 GWh/yr actual curtailment (vs implausible 40% curtailment rate at 0.2 TWh).
     // Sum the totalTWh × 365/30 to recover the annual anchor.
@@ -139,8 +135,8 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     for (const id of NEW_LATAM_IDS) {
       annualSum += statics[id].totalTWh * (365 / 30);
     }
-    expect(annualSum).toBeGreaterThan(2.6);
-    expect(annualSum).toBeLessThan(2.8);
+    expect(annualSum).toBeGreaterThan(2.0);
+    expect(annualSum).toBeLessThan(2.3);
   });
 
   it("all new region ids are kebab-case and unique within REGIONS", () => {
@@ -175,7 +171,7 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     // Sanity: the StaticSpec kind enum (flat/solar/wind/mixed/hydro-seasonal)
     // is the union we accept; we don't have direct access to STATIC_REGIONS
     // here (it's not exported), so we trust that buildAllStatics succeeded
-    // for all 16 ids above and assert the enum locally for documentation.
+    // for all 13 ids above and assert the enum locally for documentation.
     for (const k of ["flat", "solar", "wind", "mixed", "hydro-seasonal"]) {
       expect(ALLOWED_STATIC_KINDS.has(k)).toBe(true);
     }

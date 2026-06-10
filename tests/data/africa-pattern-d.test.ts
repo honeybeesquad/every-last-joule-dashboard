@@ -66,7 +66,6 @@ const ALLOWED_REGION_KINDS = new Set([
   "wind",
   "hydro",
   "mixed",
-  "flare",
 ]);
 
 // Rough African bbox per the brief:
@@ -187,10 +186,9 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
   it("aggregate annual anchor across the 26 new rows is ~5.2 TWh per the audit", () => {
     // 0.4+0.2+0.05+0.05+0.1+0.05+0.1+0.5+0.1+0.05+0.05+0.2+0.05+0.05+0.1+
     // 0.05+0.3+0.5+0.05+0.3+0.5+0.05+0.4+0.2+0.5+0.3 = 5.2 TWh.
-    // Nigeria revised 7.0→0.5 TWh in Wave-5 (2026-04-30): the 7 TWh composite
-    // was dominated by Niger Delta gas flaring (flat 24/7 baseload, a separate
-    // signal). The 0.5 TWh anchor now covers solar curtailment only (TCN
-    // frequency-instability daytime solar tripping).
+    // Nigeria revised 7.0→0.5 TWh in Wave-5 (2026-04-30). The 0.5 TWh anchor
+    // covers solar curtailment only (TCN frequency-instability daytime solar
+    // tripping).
     // Sum the totalTWh × 365/30 to recover the annual anchor (note: hydro-
     // seasonal entries carry a seasonal factor so this approximation is
     // ±20% — none of the Africa batch uses hydro-seasonal, so the sum is
@@ -212,12 +210,9 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     }
   });
 
-  it("Nigeria row is kind: solar and cites Ember + TCN (Wave-5 revised from mixed/GGFR)", () => {
-    // Nigeria was kind:"mixed" with a 7 TWh gas-flare composite anchor.
-    // Wave-5 (2026-04-30) split the signal: solar curtailment = 0.5 TWh/yr
-    // with a diurnal solar profile (peakHourUtc 11, Nigeria at 8.5°E).
-    // The Niger Delta flare component is noted in the source but is a separate
-    // flat-baseload signal not captured in this T3-static entry.
+  it("Nigeria row is kind: solar and cites Ember + TCN", () => {
+    // Wave-5 (2026-04-30) set solar curtailment = 0.5 TWh/yr with a
+    // diurnal solar profile (peakHourUtc 11, Nigeria at 8.5°E).
     const nigeria = REGIONS.find((r) => r.id === "nigeria");
     expect(nigeria).toBeDefined();
     expect(nigeria?.kind).toBe("solar");

@@ -4,7 +4,7 @@ Last updated: 2026-04-25 · Owner: Claude · Paper sections: §2.4 Calibration a
 
 ## What an anchor is
 
-For every region in the dataset, the calibration rate (T1/T2) or annual scaling factor (T3) is grounded in a numeric value published by an authoritative external party — the regional TSO, a statistical agency like Ember or IRENA, or a satellite-derived dataset like the World Bank's Global Gas Flaring Reduction (GGFR) tracker. That published number is the **anchor**.
+For every region in the dataset, the calibration rate (T1/T2) or annual scaling factor (T3) is grounded in a numeric value published by an authoritative external party — the regional TSO, a statistical agency like Ember or IRENA, or another regulator/operator source. That published number is the **anchor**.
 
 The anchor is what a reviewer would compare our backfill rollup against. If the dataset says Spain curtailed 9 TWh in 2024 and the anchor says 10.6 TWh, the dataset's claim is +14% relative to the anchor. The Δ% per region-year is a primary technical-validation metric (Figure 2; §4.2 of the paper).
 
@@ -12,7 +12,7 @@ Anchors are stored in `scripts/validation/external-anchors.json`. The schema is 
 
 ## Source classes
 
-We use four classes of external anchor, in roughly descending order of how directly they speak to "TSO-published curtailment":
+We use three classes of external anchor, in roughly descending order of how directly they speak to "TSO-published curtailment":
 
 ### 1. TSO-published official totals (preferred for T1)
 
@@ -44,18 +44,7 @@ Where a TSO does not publish curtailment directly, we fall back to a second-part
 
 These give an anchor for T3 modelled regions where the upstream TSO is silent. Ember's "wind+solar curtailment fraction" is the most cited; the v2 `_provenance.method` is `"inferred"` because Ember derives it from observed-vs-expected generation, not from a dispatch register.
 
-### 3. Satellite-derived datasets (used for flare regions)
-
-The four flare regions (`permian`, `w-siberia`, `s-iraq`, `e-saudi`) use the World Bank's Global Gas Flaring Reduction (GGFR) Bcm/yr volumes derived from VIIRS infrared radiometry. Conversion to TWh-equivalent uses the Lower Heating Value of natural gas (~10.5 kWh/Nm³ ≈ 10.5 GWh/Bcm × 0.85 capacity-factor proxy ≈ 9 TWh equivalent per Bcm, then halved for power-equivalent at 50% combined-cycle thermal efficiency to give ~3 TWh-electric/Bcm, but the dataset publishes the raw thermal value at 9 TWh-thermal/Bcm and labels it as such — see `docs/methodology/flare-ercot-brazil.md` §3 for the conversion derivation).
-
-GGFR `_provenance` entries:
-- `title`: "World Bank Global Gas Flaring Reduction (GGFR) Annual Tracker — Year YYYY"
-- `publisher`: "World Bank"
-- `source_url`: `https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data`
-- `method`: "derived" (satellite estimate, not direct measurement)
-- `notes`: documents the VIIRS-attribution uncertainty (~±20% per GGFR's own stated precision).
-
-### 4. Ad-hoc (regulator filings, news reports — last resort)
+### 3. Ad-hoc (regulator filings, news reports — last resort)
 
 Where none of the above three classes yield a defensible number, we cite a regulator filing, a news report, or a single academic paper. These are the weakest anchors and are flagged with `method: "estimated"` in the v2 schema. Examples:
 
@@ -124,16 +113,6 @@ The following are well-known sources we already cite across the codebase. Gemini
       "retrieved_at": "2026-04-24",
       "retrieved_by": "claude",
       "notes": "Country-level VRE generation; curtailment fraction inferred from observed-vs-expected."
-    },
-    "ggfr-2024-flaring": {
-      "title": "World Bank Global Gas Flaring Reduction Tracker — 2024",
-      "publisher": "World Bank",
-      "publication_date": "2025-06-30",
-      "source_url": "https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data",
-      "release_id": "GGFR-2024",
-      "retrieved_at": "2026-04-22",
-      "retrieved_by": "claude",
-      "notes": "VIIRS-derived Bcm/yr per region; ±20% stated precision."
     },
     "ons-2024-restricao": {
       "title": "ONS Restrição de Operação de Usinas Eólicas e Solares — 2024",

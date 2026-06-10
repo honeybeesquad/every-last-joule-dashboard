@@ -519,12 +519,15 @@ for (const region of REGIONS) {
 }
 
 // Defensive uncertainty back-fill — mirrors src/index.md.
-const KIND_TO_PROFILE = { wind: "wind", solar: "solar", mixed: "mixed", hydro: "hydro-seasonal", flare: "flat" };
+const KIND_TO_PROFILE = { wind: "wind", solar: "solar", mixed: "mixed", hydro: "hydro-seasonal", geo: "overnight" };
 for (const region of REGIONS) {
   const d = regionData[region.id];
   if (!d) continue;
   if (d.confidenceTier) continue;
-  const profileKind = region.tier === "static" ? KIND_TO_PROFILE[region.kind] : undefined;
+  const profileKind =
+    region.tier === "estimated" || region.tier === "anchored"
+      ? KIND_TO_PROFILE[region.kind]
+      : undefined;
   regionData[region.id] = applyUncertainty(d, { regionTier: region.tier, profileKind });
 }
 
@@ -532,14 +535,12 @@ const now = new Date();
 const initialHour = now.getUTCHours() + now.getUTCMinutes() / 60;
 
 // Renewable-only Bitcoin % at the current UTC hour. Identical formula to
-// src/index.md — flare basins are excluded from the headline because they
-// represent continuous 24/7 base-load, not curtailment.
+// src/index.md.
 function computeRenewablePct(utcHour) {
   const wrappedHour = ((utcHour % 24) + 24) % 24;
   const result = aggregateAtHour(regionData, cbeci, wrappedHour, "avg30d");
   let renewableGW = 0;
   for (const region of REGIONS) {
-    if (region.kind === "flare") continue;
     renewableGW += result.perRegionGW[region.id] ?? 0;
   }
   const renewableEHs = ehsFromGW(renewableGW);

@@ -17,8 +17,7 @@ coloured by the confidence tier the paper assigns that region:
 
 Dot size encodes the region's peak GW (order-of-magnitude scale so a
 gigantic curtailment region and a boutique island don't plot at the
-same radius). Flare regions are shown with a distinct marker glyph so
-reviewers can see where flat 24/7 flare-stack regions sit on the map.
+same radius).
 
 Tier mapping logic mirrors `scripts/build_annual_rollup.py::derive_tier`
 so the paper figure and the rollup stay consistent.
@@ -53,15 +52,14 @@ STATIC_FLAT_REGIONS = {
 }
 
 # Region row regex. PR #88 (2026-05-10) tier-taxonomy refactor renamed
-# `static` → `estimated` and `flare` → `anchored` with `kind` carrying the
-# energy-source signal. Legacy `static`/`flare` kept in the alternation as a
+# `static` → `estimated` and flat annual anchors → `anchored`.
+# Legacy `static` is kept in the alternation as a
 # backstop in case any region predates the refactor.
 # Current canonical tier values:
 #   "live"                    → T1a-live-tso
 #   "live-domestic-anchored"  → T1b
 #   "live-neighbour-anchored" → T1c
-#   "anchored" + kind=="flare" → T2-flare (24/7 baseload)
-#   "anchored" + kind!="flare" → T2-annual-calibrated (flat-anchor proxies)
+#   "anchored"                → T2-annual-calibrated (flat-anchor proxies)
 #   "estimated"               → T3-modelled (typical-shape × annual anchor)
 REGION_RE = re.compile(
     r'\{\s*id:\s*"(?P<id>[a-z0-9-]+)",'
@@ -69,7 +67,7 @@ REGION_RE = re.compile(
     r'\s*country:\s*"(?P<country>[^"]+)",'
     r'\s*lat:\s*(?P<lat>-?[\d.]+),'
     r'\s*lon:\s*(?P<lon>-?[\d.]+),'
-    r'\s*tier:\s*"(?P<tier>live-domestic-anchored|live-neighbour-anchored|live|anchored|estimated|static|flare)"'
+    r'\s*tier:\s*"(?P<tier>live-domestic-anchored|live-neighbour-anchored|live|anchored|estimated|static)"'
     r',\s*kind:\s*"(?P<kind>[a-z]+)"'
     r'.*?\}',
     re.DOTALL,
@@ -79,14 +77,12 @@ TIER_COLOUR = {
     "T1-live-TSO":          "#38b0d8",  # cyan (Deepcurrent brand-strong)
     "T2-annual-calibrated": "#e9c46a",  # amber
     "T3-modelled":          "#e76f51",  # terracotta
-    "flare":                "#8a6e3f",  # brown (distinct from T2)
 }
 
 TIER_LABEL = {
     "T1-live-TSO":          "T1 live TSO feed (±15%)",
     "T2-annual-calibrated": "T2 annual-calibrated (±20%)",
     "T3-modelled":          "T3 modelled typical profile (±40%)",
-    "flare":                "T2 flare (24/7 baseload, ±20%)",
 }
 
 
@@ -94,19 +90,10 @@ def derive_tier(region_id: str, region_tier: str, region_kind: str) -> str:
     if region_tier in ("live", "live-domestic-anchored", "live-neighbour-anchored"):
         return "T1-live-TSO"
     if region_tier == "anchored":
-        # Post-PR #88: tier="anchored" replaces both old static-flat-anchor
-        # and old flare. The `kind` field disambiguates: kind=="flare" routes
-        # to the T2-flare bucket (24/7 baseload); everything else routes to
-        # T2-annual-calibrated (austria, russia-murmansk-wind, + 4 China
-        # provincial hydro flat-anchors).
-        if region_kind == "flare":
-            return "flare"
         return "T2-annual-calibrated"
     if region_tier == "estimated":
         return "T3-modelled"
-    # Legacy fallbacks (pre-PR #88).
-    if region_tier == "flare":
-        return "flare"
+    # Legacy fallback (pre-PR #88).
     if region_tier == "static":
         if region_id in STATIC_FLAT_REGIONS:
             return "T2-annual-calibrated"
@@ -166,9 +153,8 @@ def plot(regions: list[dict], out_dir: Path) -> None:
     for r in regions:
         by_tier.setdefault(r["tier"], []).append(r)
 
-    # Plot order: amber + red first so cyan sits on top (T1 is the paper
-    # headline claim); flare gets its own marker.
-    order = ["T3-modelled", "T2-annual-calibrated", "flare", "T1-live-TSO"]
+    # Plot order: amber + red first so cyan sits on top.
+    order = ["T3-modelled", "T2-annual-calibrated", "T1-live-TSO"]
 
     for tier in order:
         group = by_tier.get(tier, [])
@@ -176,10 +162,7 @@ def plot(regions: list[dict], out_dir: Path) -> None:
             continue
         xs = [r["lon"] for r in group]
         ys = [r["lat"] for r in group]
-        if tier == "flare":
-            marker, size = "s", 32  # square
-        else:
-            marker, size = "o", 48
+        marker, size = "o", 48
         ax.scatter(
             xs, ys,
             s=size,
@@ -211,7 +194,6 @@ def plot(regions: list[dict], out_dir: Path) -> None:
     summary = (
         f"T1 live TSO:          {counts.get('T1-live-TSO', 0):>3d}\n"
         f"T2 annual calibrated: {counts.get('T2-annual-calibrated', 0):>3d}\n"
-        f"T2 flare (24/7):      {counts.get('flare', 0):>3d}\n"
         f"T3 modelled:          {counts.get('T3-modelled', 0):>3d}\n"
         f"total:                {len(regions):>3d}"
     )

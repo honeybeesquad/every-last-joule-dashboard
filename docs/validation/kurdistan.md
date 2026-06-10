@@ -37,7 +37,7 @@ _No backfill and no TSO anchor. Region relies solely on the live snapshot; nothi
 
 ## Known limitations
 
-No public hourly archive. The KRG Ministry of Electricity (`gov.krd/moel-en/`) public pages do not expose hourly solar curtailment data. The loader emits a typical solar shape (peak UTC 7) scaled to a nominal ~0.05 TWh/yr anchor — the smallest tracked anchor in the dataset, reflecting an early-stage solar deployment in the Kurdistan Region of Iraq. T3-modelled, ±40% envelope. The region is included for geographic completeness across Iraqi sub-regions (kurdistan / iraq-mainland / s-iraq flare) rather than because of dispatch-down volume; reviewers should treat it as a placeholder pending a public KRG generation/curtailment series.
+No public hourly archive. The KRG Ministry of Electricity (`gov.krd/moel-en/`) public pages do not expose hourly solar curtailment data. The loader emits a typical solar shape (peak UTC 7) scaled to a nominal ~0.05 TWh/yr anchor — the smallest tracked anchor in the dataset, reflecting an early-stage solar deployment in the Kurdistan Region of Iraq. T3-modelled, ±40% envelope. The region is included for geographic completeness across Iraqi sub-regions rather than because of dispatch-down volume; reviewers should treat it as a placeholder pending a public KRG generation/curtailment series.
 
 ## Links
 

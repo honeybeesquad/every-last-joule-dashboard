@@ -31,7 +31,7 @@ A region cannot be promoted from T3-modelled to T2-annual-calibrated, T1c, T1b, 
 
 **Real example:** Several IRENA-derived T3 anchors and the rejected Jordan / Kenya / Morocco entries from the 2026-04-29 elevation backlog. Any T2 promotion candidate whose annual MWh figure is back-calculated from installed capacity falls here.
 
-**What to do instead:** Demand a measured energy total from the operator or a measured estimate from a satellite or independent monitor (TSO annual report, Ember country report, GGFR satellite, IEA WEO, equivalent). If only capacity is available, the region stays T3-modelled.
+**What to do instead:** Demand a measured energy total from the operator or an independent monitor (TSO annual report, Ember country report, IEA WEO, equivalent). If only capacity is available, the region stays T3-modelled.
 
 **Decision question:** Is the cited annual MWh / TWh figure a measured total reported by the source, or a number we computed by multiplying capacity by assumed factors?
 
@@ -134,11 +134,11 @@ These are the canonical definitions. Any classification decision must satisfy th
 
 ### T2-annual-calibrated
 
-**Condition:** `Region.tier === "flare"` OR (`Region.tier === "static"` AND `profileKind === "flat"`).
+**Condition:** `Region.tier === "anchored"` AND `profileKind === "flat"`.
 
 **What this requires (ALL must be satisfied):**
 1. An explicit, named, dated document that states an annual curtailment total for a specific region
-2. The document is from one of: TSO annual report, Ember country report, GGFR satellite data, IEA WEO, ACER decision, or equivalent authoritative source
+2. The document is from one of: TSO annual report, Ember country report, IEA WEO, ACER decision, or equivalent authoritative source
 3. The annual figure is a measured or independently estimated total — not a capacity-based calculation (installed capacity × capacity factor × curtailment rate)
 
 **What this does NOT accept:**
@@ -156,14 +156,14 @@ A static region lands in T2 if and only if `profileKind === "flat"` AND the sour
 
 ### T3-modelled
 
-**Condition:** `Region.tier === "static"` AND `profileKind ∈ { "solar", "wind", "mixed", "hydro", "hydro-seasonal" }`.
+**Condition:** `Region.tier === "estimated"` AND `profileKind ∈ { "solar", "wind", "mixed", "hydro", "hydro-seasonal" }`.
 
 **What this requires (ALL must be satisfied):**
 1. An annual anchor exists (from any source, including IRENA capacity-based estimates)
 2. A typical diurnal/seasonal/fuel-mix profile is applied to represent the hourly shape
 
 **What this does NOT accept:**
-- A flat profile with no shape — that is T2 or flare
+- A flat profile with no shape — that is T2
 - A live hourly feed — that is T1a/T1b/T1c
 
 **Envelope:** ±40% of peakGW.
@@ -412,7 +412,7 @@ The audit was conducted against this guide. Each candidate country was assessed 
 
 1. **Source authority is not the same as data specificity.** A TSO may publish data without publishing a curtailment rate. T1a requires both — the feed and the rate from the same jurisdiction.
 
-2. **IRENA estimates are not T2-qualifying.** IRENA publishes installed capacity and generation. Curtailment is derived, not measured. A derived figure requires assumptions. T2 requires a published total — Ember's annual country review, a TSO's annual report, GGFR's satellite data.
+2. **IRENA estimates are not T2-qualifying.** IRENA publishes installed capacity and generation. Curtailment is derived, not measured. A derived figure requires assumptions. T2 requires a published total — Ember's annual country review, a TSO's annual report, or an equivalent operator/regulator publication.
 
 3. **"Kind: flat" is not a T2 upgrade.** Changing `profileKind` from `"solar"` to `"flat"` in `statics.json.ts` narrows the uncertainty band from ±40% to ±20% but adds no new data. This is a mislabel, not an improvement. It is acceptable only when the annual figure already comes from a qualifying published source.
 

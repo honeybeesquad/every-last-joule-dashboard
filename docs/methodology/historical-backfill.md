@@ -32,9 +32,8 @@ The live dashboard presents a 30-day trailing view. The dashboard history (appen
 These regions have no public hourly archive. They remain on static calibration in the live dashboard and carry no backfill rows. They are documented as **structural gaps** in `docs/known-limitations.md`:
 
 - Chinese provinces (Gansu, Xinjiang, Inner Mongolia, Qinghai, Ningxia, Tibet, Sichuan, Yunnan) — only Ember annual
-- Flare regions (Permian, West Siberia, South Iraq, East Saudi) — GGFR annual, 24/7 base-load so hourly backfill is meaningless by definition
 - Atacama Chile — Cloudflare-gated; contingent on Playwright spike
-- Saudi non-flare, Iran, most Middle East — no public source
+- Saudi Arabia, Iran, most Middle East — no public source
 - Iceland — Orkustofnun annual only
 - Mexico CENACE — redirects to error page
 
