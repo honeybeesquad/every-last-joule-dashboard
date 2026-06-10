@@ -133,9 +133,62 @@ def test_validate_rejects_notes_over_200_chars():
     assert any("notes" in e and "200" in e for e in errors)
 
 
-def test_column_order_has_17_entries():
-    assert len(schema.COLUMN_ORDER) == 17
-    # Spot-check known column names exist in expected positions.
-    assert schema.COLUMN_ORDER[0] == "country"
-    assert schema.COLUMN_ORDER[11] == "annual_anchor_TWh"
-    assert schema.COLUMN_ORDER[15] == "priority_score"
+def test_column_order_has_20_entries():
+    assert len(schema.COLUMN_ORDER) == 20
+    assert schema.COLUMN_ORDER[-3:] == [
+        "parent_region_id", "granularity_available", "expected_new_regions",
+    ]
+
+
+# --- v2: granularity-split scoring (spec: no already-modelled penalty) ---
+
+def test_priority_score_split_row_plant_json_api():
+    # 4 TWh × 1.0 (plant) × 1.0 (JSON-API) = 4.0; penalty must NOT apply
+    # even though region_id_in_project is set.
+    row = make_row(
+        annual_anchor_TWh=4.0,
+        region_id_in_project="brazil-ne",
+        parent_region_id="brazil-ne",
+        granularity_available="plant",
+        data_format="JSON-API",
+    )
+    assert schema.priority_score(row) == 4.0
+
+
+def test_priority_score_split_row_fuel_split_csv():
+    # 4 TWh × 0.7 (fuel-split) × 0.9 (CSV-download) = 2.52
+    row = make_row(
+        annual_anchor_TWh=4.0,
+        parent_region_id="japan-kyushu",
+        granularity_available="fuel-split",
+        data_format="CSV-download",
+    )
+    assert schema.priority_score(row) == 2.52
+
+
+def test_priority_score_gap_rows_unchanged_by_v2_fields():
+    # Default v2 fields (empty parent) must reproduce the v1 formula exactly.
+    row = make_row(annual_anchor_TWh=4.0, region_id_in_project="", data_format="JSON-API")
+    assert schema.priority_score(row) == 4.0
+
+
+# --- v2: validation rules ---
+
+def test_validate_catches_bad_granularity_enum():
+    row = make_row(granularity_available="county")
+    assert any("granularity_available" in e for e in schema.validate_row(row, 2))
+
+
+def test_validate_rejects_bad_parent_region_id_pattern():
+    row = make_row(parent_region_id="Bad_ID", granularity_available="state")
+    assert any("parent_region_id" in e for e in schema.validate_row(row, 2))
+
+
+def test_validate_rejects_negative_expected_new_regions():
+    row = make_row(expected_new_regions=-1)
+    assert any("expected_new_regions" in e for e in schema.validate_row(row, 2))
+
+
+def test_validate_rejects_split_row_with_granularity_none():
+    row = make_row(parent_region_id="brazil-ne", granularity_available="none")
+    assert any("granularity_available" in e for e in schema.validate_row(row, 2))

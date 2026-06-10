@@ -6,6 +6,7 @@ lint_coverage_audit.py and merge_coverage_audit.py.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 # --- Controlled vocabularies (spec §1, §3.2, §3.4) -----------------
@@ -40,6 +41,21 @@ RECOMMENDED_TIER_LANDING_ENUM: set[str] = {
 
 LOADER_PATTERN_HINT_ENUM: set[str] = {
     "Pattern-A", "Pattern-B", "Pattern-C", "Pattern-D", "not-applicable",
+}
+
+# --- v2 (2026-06-10 granularity-and-gaps survey) --------------------
+
+GRANULARITY_ENUM: set[str] = {
+    "plant", "state", "bidding-zone", "fuel-split", "none",
+}
+
+# Data-quality gain weighting for split rows (design doc §Schema v2).
+GRANULARITY_WEIGHTS: dict[str, float] = {
+    "plant": 1.0,
+    "state": 0.9,
+    "bidding-zone": 0.8,
+    "fuel-split": 0.7,
+    "none": 0.0,
 }
 
 # --- Priority-score weights (spec §4.5) ----------------------------
@@ -78,6 +94,11 @@ COLUMN_ORDER: list[str] = [
     "loader_pattern_hint",
     "priority_score",
     "notes",
+    # v2 (2026-06-10): granularity lens. Appended after notes so v1 column
+    # positions stay stable; v1 files are migrated by appending "", "none", "0".
+    "parent_region_id",
+    "granularity_available",
+    "expected_new_regions",
 ]
 
 NOTES_MAX_CHARS = 200
@@ -103,20 +124,34 @@ class Row:
     loader_pattern_hint: str
     priority_score: float
     notes: str
+    # v2: empty parent_region_id = gap row (v1 semantics); non-empty = split row.
+    parent_region_id: str = ""
+    granularity_available: str = "none"
+    expected_new_regions: int = 0
 
 
 def priority_score(row: Row) -> float:
-    """Spec §4.5:
+    """Spec §4.5 for gap rows; design-doc v2 for split rows:
 
-        score = (anchor_TWh × tier_uplift_weight × format_accessibility_weight)
-                - already_modelled_penalty
+        gap row   (parent_region_id empty):
+            score = (anchor_TWh × tier_uplift_weight × format_weight)
+                    - already_modelled_penalty
+        split row (parent_region_id set):
+            score = anchor_TWh × granularity_weight × format_weight
+            (no penalty — the penalty exists to deprioritise re-covering
+            modelled regions, not to discourage measured splits)
     """
     anchor_twh = row.annual_anchor_TWh
     if anchor_twh <= 0:
         return 0.0
 
-    tier_uplift_weight = 0.6 if row.region_id_in_project else 1.0
     fmt_weight = FORMAT_WEIGHTS.get(row.data_format, 0.0)
+
+    if row.parent_region_id:
+        gran_weight = GRANULARITY_WEIGHTS.get(row.granularity_available, 0.0)
+        return anchor_twh * gran_weight * fmt_weight
+
+    tier_uplift_weight = 0.6 if row.region_id_in_project else 1.0
     base = anchor_twh * tier_uplift_weight * fmt_weight
     penalty = 0.5 * anchor_twh if row.region_id_in_project else 0.0
     return base - penalty
@@ -166,6 +201,20 @@ def validate_row(row: Row, line_no: int) -> list[str]:
     if row.recommended_action in {"introduce-as-T1", "promote-to-T1"} and row.available_anchor in {"none", ""}:
         errors.append(
             f"line {line_no}: recommended_action={row.recommended_action} requires non-'none' available_anchor"
+        )
+
+    check_enum("granularity_available", row.granularity_available, GRANULARITY_ENUM)
+    if row.parent_region_id and not re.match(r"^[a-z0-9][a-z0-9-]*$", row.parent_region_id):
+        errors.append(
+            f"line {line_no}: parent_region_id={row.parent_region_id!r} violates kebab-case pattern"
+        )
+    if row.expected_new_regions < 0:
+        errors.append(
+            f"line {line_no}: expected_new_regions={row.expected_new_regions} is negative"
+        )
+    if row.parent_region_id and row.granularity_available == "none":
+        errors.append(
+            f"line {line_no}: split row (parent_region_id set) requires granularity_available != 'none'"
         )
 
     return errors
