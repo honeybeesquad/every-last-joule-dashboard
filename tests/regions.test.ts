@@ -167,10 +167,13 @@ describe("regions", () => {
     // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). T1a: 148→147. Total: 158→157.
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live
     // (direct eria_jukyu area CSVs). T1a: 147→150; estimated: 214→211.
+    // 2026-06-10: peru-solar moved T1a→T1b after replacing the bad
+    // overnight-flat COES fuel curve with COES daily solar generation shaped
+    // by the official EDI curtailment reports. T1a: 150→149; T1b: 9→10.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(150);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(10);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
     expect(liveTotal).toBe(160);
 
@@ -200,8 +203,9 @@ describe("regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. T1a: 150→148. Total: 160→158.
     // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). T1a: 148→147. Total: 158→157.
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. T1a: 147→150. Total: 157→160.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(150);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(9);
+    // 2026-06-10: peru-solar T1a→T1b. T1a: 150→149; T1b: 9→10.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(10);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
     expect(liveTotal).toBe(160);
   });
