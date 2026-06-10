@@ -1,15 +1,15 @@
 # Validation — Peru Solar (`peru-solar`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-10 · Sprint: Peru Solar EDI integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `peru-solar`
 - **Country:** PER
-- **Tier:** live
+- **Tier:** live-domestic-anchored
 - **Kind:** solar
-- **Source:** COES-SINAC live solar generation × 2% curtailment calibration (vertimiento anchor ~0.8 TWh/yr)
-- **Source URL:** [https://www.coes.org.pe/Portal/portalinformacion/generacion](https://www.coes.org.pe/Portal/portalinformacion/generacion)
+- **Source:** COES RER Energía Dejada de Inyectar reports + COES live daily solar generation by company × 2% curtailment calibration
+- **Source URL:** [https://www.coes.org.pe/Portal/PostOperacion/Informes/MagEnergiaDejadaInyectar](https://www.coes.org.pe/Portal/PostOperacion/Informes/MagEnergiaDejadaInyectar)
 - **Loader:** [`peru.json.ts`](../../src/data/peru.json.ts)
 - **Structural gap:** no
 
@@ -29,15 +29,15 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** —
+- **Other:** COES EDI reports show southern solar EDI rows, including `C.S. REPARTICION` at 71.63 MWh approved in February 2026 and `C.S. MAJES SOLAR` at 3.904 MWh approved in November 2025.
 
 ## Discrepancy analysis
 
-_No backfill and no child-level TSO anchor. Region relies on the live COES generation-by-fuel shape and the aggregate vertimiento calibration._
+_No backfill and no continuous dispatch-down telemetry. Region now uses the official COES EDI reports as the direct curtailment evidence/anchor and the COES generation dashboard only for the live daily solar magnitude._
 
 ## Known limitations
 
-The COES loader emits a calibrated generation proxy rather than direct dispatch-down telemetry. `sourceStatus="live"` means the COES generation endpoint was reachable and returned recent solar observations; the 2% curtailment multiplier and aggregate annual anchor remain the limiting assumptions.
+The COES EDI source is published as monthly PDFs, so the live loader does not scrape those reports for an hourly series. It uses COES daily solar generation by company and distributes the calibrated curtailed MWh over a daylight-only southern Peru solar profile. `sourceStatus="live"` means the COES generation endpoint was reachable and returned recent daily solar totals; the 2% curtailment multiplier and EDI/report anchor remain the limiting assumptions.
 
 ## Links
 

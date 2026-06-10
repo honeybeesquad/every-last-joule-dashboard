@@ -14,10 +14,14 @@ import { pathToFileURL } from "url";
 const COES_URL = "https://www.coes.org.pe/Portal/portalinformacion/Generacion";
 const CURTAILMENT_RATE = 0.02;
 const HALF_HOUR = 0.5;
+const PERU_UTC_OFFSET_HOURS = -5;
 
 interface CoesDatum { Nombre: string; Valor: number }
 interface CoesSeries { Name: string; Data: CoesDatum[] }
-interface CoesResponse { GraficoTipoCombustible?: { Series?: CoesSeries[] } }
+interface CoesResponse {
+  GraficoPorEmpresa?: { SeriesAdicional?: CoesSeries[] };
+  GraficoTipoCombustible?: { Series?: CoesSeries[] };
+}
 
 function formatCoesDate(date: Date): string {
   return `${String(date.getUTCDate()).padStart(2, "0")}/${String(date.getUTCMonth() + 1).padStart(2, "0")}/${date.getUTCFullYear()}`;
@@ -30,15 +34,83 @@ function parseCoesTimestamp(value: string): string | null {
   return new Date(Date.UTC(Number(y), Number(m) - 1, Number(d), Number(h) + 5, Number(min), 0)).toISOString();
 }
 
+function parseCoesLocalDate(value: string): { y: number; m: number; d: number } | null {
+  const match = value.match(/^(\d{4})\/(\d{2})\/(\d{2})/);
+  if (!match) return null;
+  const [, y, m, d] = match;
+  return { y: Number(y), m: Number(m), d: Number(d) };
+}
+
+function inferLocalDate(raw: CoesResponse): { y: number; m: number; d: number } | null {
+  const series = raw.GraficoTipoCombustible?.Series ?? [];
+  for (const entry of series) {
+    for (const pt of entry.Data ?? []) {
+      const parsed = parseCoesLocalDate(pt.Nombre);
+      if (parsed) return parsed;
+    }
+  }
+  return null;
+}
+
+function localSolarWeights(): number[] {
+  const shape = Array.from({ length: 24 }, (_, localHour) => {
+    const center = localHour + 0.5;
+    const daylight = Math.cos(((center - 12.5) / 12) * Math.PI);
+    return daylight <= 1e-12 ? 0 : daylight ** 1.8;
+  });
+  const sum = shape.reduce((a, b) => a + b, 0);
+  return shape.map((value) => value / sum);
+}
+
+const SOLAR_WEIGHTS = localSolarWeights();
+
+function localHourToUtcIso(localDate: { y: number; m: number; d: number }, localHour: number): string {
+  return new Date(Date.UTC(
+    localDate.y,
+    localDate.m - 1,
+    localDate.d,
+    localHour - PERU_UTC_OFFSET_HOURS,
+    0,
+    0,
+  )).toISOString();
+}
+
+export function parseDailySolarGenerationMwh(raw: CoesResponse): number {
+  const companySeries = raw.GraficoPorEmpresa?.SeriesAdicional ?? [];
+  let total = 0;
+  for (const entry of companySeries) {
+    for (const pt of entry.Data ?? []) {
+      if (!/^SOLAR$/i.test(pt.Nombre.trim())) continue;
+      const val = Math.max(0, Number(pt.Valor));
+      if (Number.isFinite(val)) total += val;
+    }
+  }
+  return total;
+}
+
+function solarCurtailmentPointsFromDailyMwh(
+  localDate: { y: number; m: number; d: number },
+  generationMwh: number,
+): CurtailmentPoint[] {
+  const curtailedMwh = generationMwh * CURTAILMENT_RATE;
+  return SOLAR_WEIGHTS.map((weight, localHour) => ({
+    utcTimestamp: localHourToUtcIso(localDate, localHour),
+    mw: curtailedMwh * weight,
+    intervalHours: 1,
+  }));
+}
+
 export interface PeruParsed {
   hydroPoints: CurtailmentPoint[];
   solarPoints: CurtailmentPoint[];
   windPoints: CurtailmentPoint[];
 }
 
-export function parseCoesGeneration(raw: CoesResponse): PeruParsed {
+export function parseCoesGeneration(
+  raw: CoesResponse,
+  localDate: { y: number; m: number; d: number } | null = inferLocalDate(raw),
+): PeruParsed {
   const hydroPoints: CurtailmentPoint[] = [];
-  const solarPoints: CurtailmentPoint[] = [];
   const windPoints: CurtailmentPoint[] = [];
   const series = raw.GraficoTipoCombustible?.Series ?? [];
   for (const entry of series) {
@@ -50,13 +122,15 @@ export function parseCoesGeneration(raw: CoesResponse): PeruParsed {
       const curtailed = val * CURTAILMENT_RATE;
       if (/H[ÍI]DRICO/i.test(entry.Name)) {
         hydroPoints.push({ utcTimestamp: utc, mw: curtailed, intervalHours: HALF_HOUR });
-      } else if (/SOLAR/i.test(entry.Name)) {
-        solarPoints.push({ utcTimestamp: utc, mw: curtailed, intervalHours: HALF_HOUR });
       } else if (/E[ÓO]LICA/i.test(entry.Name)) {
         windPoints.push({ utcTimestamp: utc, mw: curtailed, intervalHours: HALF_HOUR });
       }
     }
   }
+  const dailySolarMwh = parseDailySolarGenerationMwh(raw);
+  const solarPoints = localDate && dailySolarMwh > 0
+    ? solarCurtailmentPointsFromDailyMwh(localDate, dailySolarMwh)
+    : [];
   return { hydroPoints, solarPoints, windPoints };
 }
 
@@ -74,10 +148,14 @@ function buildRegion(
     peakGW: peakGW(points),
     lastUpdated,
     lastSuccessAt: lastUpdated,
-    sourceNote: `COES SINAC generation-by-fuel endpoint; ${fuel} half-hourly × ${CURTAILMENT_RATE * 100}% curtailment calibration (derived from ~0.8 TWh/yr published vertimiento anchor); fuel type: ${fuel}`,
+    sourceNote: fuel === "solar"
+      ? `COES RER Energía Dejada de Inyectar reports document southern solar curtailment (Repartición 71.63 MWh approved Feb 2026; Majes Solar 3.904 MWh approved Nov 2025). Live magnitude uses COES daily solar generation by company distributed over a daylight-only southern Peru solar profile × ${CURTAILMENT_RATE * 100}% calibration; fuel type: ${fuel}`
+      : `COES SINAC generation-by-fuel endpoint; ${fuel} half-hourly × ${CURTAILMENT_RATE * 100}% curtailment calibration (derived from ~0.8 TWh/yr published vertimiento anchor); fuel type: ${fuel}`,
     fuelShare: { [fuel]: 1 },
   };
-  return applyUncertainty(base, { regionTier: "live" });
+  return applyUncertainty(base, {
+    regionTier: fuel === "solar" ? "live-domestic-anchored" : "live",
+  });
 }
 
 function isRegionData(value: unknown): value is RegionData {
@@ -106,6 +184,12 @@ function normalizeCachedPeru(cached: unknown): Record<string, RegionData> {
 
 const run = async (): Promise<Record<string, RegionData>> => {
   const now = new Date();
+  const peruNow = new Date(now.getTime() + PERU_UTC_OFFSET_HOURS * 60 * 60 * 1000);
+  const latestCompleteLocalDay = new Date(Date.UTC(
+    peruNow.getUTCFullYear(),
+    peruNow.getUTCMonth(),
+    peruNow.getUTCDate() - 1,
+  ));
   const hydroPoints: CurtailmentPoint[] = [];
   const solarPoints: CurtailmentPoint[] = [];
   const windPoints: CurtailmentPoint[] = [];
@@ -123,28 +207,22 @@ const run = async (): Promise<Record<string, RegionData>> => {
       timeoutMs: 25000,
       retries: 0,
     });
-    const series = raw.GraficoTipoCombustible?.Series ?? [];
-    for (const entry of series) {
-      const pts = entry.Data ?? [];
-      for (const pt of pts) {
-        const utc = parseCoesTimestamp(pt.Nombre);
-        if (!utc) continue;
-        const val = Math.max(0, Number(pt.Valor));
-        if (!Number.isFinite(val)) continue;
-        const curtailed = val * CURTAILMENT_RATE;
-        if (/H[ÍI]DRICO/i.test(entry.Name)) {
-          hydroPoints.push({ utcTimestamp: utc, mw: curtailed, intervalHours: HALF_HOUR });
-        } else if (/SOLAR/i.test(entry.Name)) {
-          solarPoints.push({ utcTimestamp: utc, mw: curtailed, intervalHours: HALF_HOUR });
-        } else if (/E[ÓO]LICA/i.test(entry.Name)) {
-          windPoints.push({ utcTimestamp: utc, mw: curtailed, intervalHours: HALF_HOUR });
-        }
-      }
-    }
+    const parsed = parseCoesGeneration(raw, {
+      y: date.getUTCFullYear(),
+      m: date.getUTCMonth() + 1,
+      d: date.getUTCDate(),
+    });
+    hydroPoints.push(...parsed.hydroPoints);
+    solarPoints.push(...parsed.solarPoints);
+    windPoints.push(...parsed.windPoints);
   };
 
   for (let day = 29; day >= 0; day--) {
-    const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - day));
+    const date = new Date(Date.UTC(
+      latestCompleteLocalDay.getUTCFullYear(),
+      latestCompleteLocalDay.getUTCMonth(),
+      latestCompleteLocalDay.getUTCDate() - day,
+    ));
     try { await fetchDay(date); } catch { /* individual days may publish late */ }
   }
 

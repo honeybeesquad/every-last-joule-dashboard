@@ -288,7 +288,7 @@ Last generated: 2026-06-07
 | Pakistan Wind | estimated | wind | 0 | [pakistan-wind](./pakistan-wind.md) |
 | Panama | estimated | solar | 0 | [panama](./panama.md) |
 | Peru Hydro | live | hydro | 0 | [peru-hydro](./peru-hydro.md) |
-| Peru Solar | live | solar | 0 | [peru-solar](./peru-solar.md) |
+| Peru Solar | live-domestic-anchored | solar | 0 | [peru-solar](./peru-solar.md) |
 | Peru Wind | live | wind | 0 | [peru-wind](./peru-wind.md) |
 | Philippines Solar | estimated | solar | 0 | [philippines-solar](./philippines-solar.md) |
 | Philippines Wind | estimated | wind | 0 | [philippines-wind](./philippines-wind.md) |
