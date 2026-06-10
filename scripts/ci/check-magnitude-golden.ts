@@ -36,7 +36,10 @@ const GOLDEN_PATH = join(
   "magnitude-baseline.json",
 );
 
-// Mirrors LIVE_TIER_SET in scripts/validate-snapshots.ts.
+// Mirrors LIVE_TIER_SET in scripts/validate-snapshots.ts. If a new live
+// tier string is ever added, both copies must be updated — there is no
+// shared module because snapshot-reading scripts resolve tiers from the
+// snapshot records, not from regions.ts.
 const LIVE_TIERS = new Set([
   "T1-live-TSO",
   "T1a-live-tso",
@@ -86,6 +89,10 @@ function extractRecords(parsed: unknown): SnapshotRecord[] {
 }
 
 function readActuals(): Record<string, number> {
+  if (!existsSync(SNAP_DIR)) {
+    console.error(`snapshot directory not found: ${SNAP_DIR}`);
+    process.exit(2);
+  }
   const actual: Record<string, number> = {};
   for (const f of readdirSync(SNAP_DIR).filter((f) => f.endsWith(".json"))) {
     let parsed: unknown;
@@ -96,6 +103,15 @@ function readActuals(): Record<string, number> {
     }
     for (const rec of extractRecords(parsed)) {
       if (rec.confidenceTier && LIVE_TIERS.has(rec.confidenceTier)) {
+        // iso-ne-rest-* and nyiso-rest-* ride in two snapshot files each with
+        // identical values today; warn loudly if they ever diverge so the gate
+        // isn't silently comparing against whichever file sorts last.
+        if (rec.regionId in actual && actual[rec.regionId] !== rec.totalTWh) {
+          console.warn(
+            `WARN ${rec.regionId}: duplicate snapshot records disagree ` +
+              `(${actual[rec.regionId]} vs ${rec.totalTWh}); using the latter`,
+          );
+        }
         actual[rec.regionId] = rec.totalTWh;
       }
     }
@@ -150,6 +166,7 @@ function selfTest(): void {
     { name: "5x undercount flagged (Brazil class)", baseline: { x: 1 }, actual: { x: 0.2 }, expectFailures: 1 },
     { name: "1.5x seasonal swing passes", baseline: { x: 1 }, actual: { x: 1.5 }, expectFailures: 0 },
     { name: "exactly 4x boundary passes", baseline: { x: 1 }, actual: { x: 4 }, expectFailures: 0 },
+    { name: "exactly 1/4x lower boundary passes", baseline: { x: 1 }, actual: { x: 0.25 }, expectFailures: 0 },
     { name: "both below MIN_TWH skipped", baseline: { x: 0.001 }, actual: { x: 0.004 }, expectFailures: 0 },
     { name: "tiny baseline, material actual flagged", baseline: { x: 0.001 }, actual: { x: 0.5 }, expectFailures: 1 },
     { name: "new region flagged", baseline: {}, actual: { y: 1 }, expectFailures: 1 },
