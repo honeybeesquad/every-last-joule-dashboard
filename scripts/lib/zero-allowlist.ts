@@ -15,7 +15,7 @@ export interface ZeroAllowlistEntry {
   regionId: string;
   /** ISO date the exemption was added. */
   addedDate: string;
-  /** ISO date after which validation fails until re-confirmed. Inclusive. */
+  /** ISO date on or after which validation fails until re-confirmed. */
   reviewBy: string;
   /** Why the zero is believed legitimate. */
   note: string;
@@ -173,7 +173,13 @@ export function zeroAllowlistIds(): ReadonlySet<string> {
 
 /** Entries whose reviewBy date has passed (inclusive of the date itself). */
 export function expiredZeroAllowlistEntries(now: Date): ZeroAllowlistEntry[] {
-  return ZERO_ALLOWLIST.filter(
-    (e) => new Date(`${e.reviewBy}T00:00:00Z`).getTime() <= now.getTime(),
-  );
+  return ZERO_ALLOWLIST.filter((e) => {
+    const t = new Date(`${e.reviewBy}T00:00:00Z`).getTime();
+    if (!Number.isFinite(t)) {
+      throw new Error(
+        `zero-allowlist: invalid reviewBy "${e.reviewBy}" on "${e.regionId}"`,
+      );
+    }
+    return t <= now.getTime();
+  });
 }

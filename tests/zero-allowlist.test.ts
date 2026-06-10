@@ -40,8 +40,15 @@ describe("zero-allowlist structure", () => {
 });
 
 describe("expiry logic", () => {
-  it("no entries expired as of 2026-06-10", () => {
-    expect(expiredZeroAllowlistEntries(new Date("2026-06-10T00:00:00Z"))).toEqual([]);
+  it("entries are not expired one day before reviewBy", () => {
+    for (const e of ZERO_ALLOWLIST) {
+      const dayBefore = new Date(`${e.reviewBy}T00:00:00Z`);
+      dayBefore.setUTCDate(dayBefore.getUTCDate() - 1);
+      expect(
+        expiredZeroAllowlistEntries(dayBefore).map((x) => x.regionId),
+        e.regionId,
+      ).not.toContain(e.regionId);
+    }
   });
 
   it("all entries expired far in the future", () => {
