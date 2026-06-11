@@ -67,7 +67,7 @@ def lint_file(path: Path) -> tuple[int, list[str]]:
                     notes=row_dict["notes"],
                     parent_region_id=row_dict["parent_region_id"],
                     granularity_available=row_dict["granularity_available"],
-                    expected_new_regions=int(row_dict["expected_new_regions"] or 0),
+                    expected_new_regions=int(float(row_dict["expected_new_regions"] or 0)),
                 )
             except ValueError as exc:
                 errors.append(f"{path}:line {line_no}: failed to coerce types: {exc}")

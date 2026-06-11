@@ -135,6 +135,9 @@ def test_validate_rejects_notes_over_200_chars():
 
 def test_column_order_has_20_entries():
     assert len(schema.COLUMN_ORDER) == 20
+    assert schema.COLUMN_ORDER[0] == "country"
+    assert schema.COLUMN_ORDER[11] == "annual_anchor_TWh"
+    assert schema.COLUMN_ORDER[15] == "priority_score"
     assert schema.COLUMN_ORDER[-3:] == [
         "parent_region_id", "granularity_available", "expected_new_regions",
     ]
@@ -163,7 +166,7 @@ def test_priority_score_split_row_fuel_split_csv():
         granularity_available="fuel-split",
         data_format="CSV-download",
     )
-    assert schema.priority_score(row) == 2.52
+    assert abs(schema.priority_score(row) - 2.52) < 1e-9
 
 
 def test_priority_score_gap_rows_unchanged_by_v2_fields():

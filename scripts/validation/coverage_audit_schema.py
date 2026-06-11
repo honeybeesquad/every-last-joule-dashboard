@@ -204,7 +204,7 @@ def validate_row(row: Row, line_no: int) -> list[str]:
         )
 
     check_enum("granularity_available", row.granularity_available, GRANULARITY_ENUM)
-    if row.parent_region_id and not re.match(r"^[a-z0-9][a-z0-9-]*$", row.parent_region_id):
+    if row.parent_region_id and not re.match(r"^[a-z0-9]+(-[a-z0-9]+)*$", row.parent_region_id):
         errors.append(
             f"line {line_no}: parent_region_id={row.parent_region_id!r} violates kebab-case pattern"
         )

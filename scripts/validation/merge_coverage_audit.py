@@ -67,7 +67,7 @@ def dict_to_row(d: dict[str, str]) -> schema.Row:
         notes=d["notes"],
         parent_region_id=d.get("parent_region_id", ""),
         granularity_available=d.get("granularity_available", "none"),
-        expected_new_regions=int(d.get("expected_new_regions") or 0),
+        expected_new_regions=int(float(d.get("expected_new_regions") or 0)),
     )
 
 
