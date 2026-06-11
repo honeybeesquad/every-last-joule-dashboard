@@ -25,7 +25,7 @@
     "ci:docs-drift": "tsx scripts/ci/check-docs-drift.ts",
     "ci:bad-conversions-stub": "tsx scripts/ci/check-validation-doc-bad-conversions.ts",
     "ci:gates": "npm run ci:tier-coherence && npm run ci:source-provenance-coherence && npm run ci:source-provenance-self-test && npm run ci:tally-golden && npm run ci:docs-drift && npm run ci:bad-conversions-stub",
-    "lint:coverage-audit": "python3 scripts/validation/lint_coverage_audit.py data/coverage-audit/2026-04-26-world.csv",
+    "lint:coverage-audit": "python3 scripts/validation/lint_coverage_audit.py data/coverage-audit/2026-04-26-world.csv data/coverage-audit/2026-06-10-granularity-and-gaps.csv",
     "test:coverage-audit": "python3 -m pytest scripts/validation/test_coverage_audit_schema.py scripts/validation/test_lint_coverage_audit.py scripts/validation/test_merge_coverage_audit.py -v",
     "data:refresh": "observable build",
     "snapshot": "tsx scripts/write-snapshot.ts",

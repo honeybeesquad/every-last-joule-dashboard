@@ -195,3 +195,29 @@ def test_validate_rejects_negative_expected_new_regions():
 def test_validate_rejects_split_row_with_granularity_none():
     row = make_row(parent_region_id="brazil-ne", granularity_available="none")
     assert any("granularity_available" in e for e in schema.validate_row(row, 2))
+
+
+def test_v1_world_csv_scores_are_byte_stable_under_v2():
+    """Every committed priority_score in the migrated 2026-04-26 file must be
+    reproduced exactly by the v2 formula (spec: v1 scores byte-stable)."""
+    import csv
+    csv_path = Path(__file__).parents[2] / "data" / "coverage-audit" / "2026-04-26-world.csv"
+    with csv_path.open(newline="") as f:
+        for d in csv.DictReader(f):
+            row = schema.Row(
+                country=d["country"], subdivision=d["subdivision"],
+                operator_name=d["operator_name"], operator_url=d["operator_url"],
+                region_id_in_project=d["region_id_in_project"], current_tier=d["current_tier"],
+                phenomenon=d["phenomenon"], coverage_status=d["coverage_status"],
+                data_format=d["data_format"], probe_result=d["probe_result"],
+                available_anchor=d["available_anchor"],
+                annual_anchor_TWh=float(d["annual_anchor_TWh"] or 0),
+                recommended_action=d["recommended_action"],
+                recommended_tier_landing=d["recommended_tier_landing"],
+                loader_pattern_hint=d["loader_pattern_hint"],
+                priority_score=float(d["priority_score"] or 0), notes=d["notes"],
+                parent_region_id=d["parent_region_id"],
+                granularity_available=d["granularity_available"],
+                expected_new_regions=int(d["expected_new_regions"] or 0),
+            )
+            assert f"{schema.priority_score(row):.4f}" == d["priority_score"], d["operator_name"]
