@@ -105,7 +105,7 @@ Diagnosed from persistent Vercel build-log errors (all builds since ~2026-05-13 
 
 ## What's NOT shipped / open PRs
 
-**Open: Granularity & gaps survey — coverage-audit v2 (PR #TBD, branch `feat/granularity-gaps-survey`, 2026-06-10).**
+**Open: Granularity & gaps survey — coverage-audit v2 (PR #163, branch `feat/granularity-gaps-survey`, 2026-06-10).**
 - Schema v2 (`scripts/validation/coverage_audit_schema.py`): +`parent_region_id`/`granularity_available`/`expected_new_regions`, split-row scoring branch (no already-modelled penalty); v1 world CSV migrated to 20 cols, scores byte-stable (regression-tested). 35 pytest green.
 - `data/coverage-audit/2026-06-10-granularity-and-gaps.csv` — 143 candidates (32 split / 111 gap) across 10 research lanes, lint-clean; top-15 cold-verified **15/15 confirmed, 0 downgraded**. Standout: the World Bank GGFR per-site flare XLSX carries a populated `Field Name` column → `s-iraq`/`e-saudi` can split into named oilfields (~15 new flare regions); 9 EIA-930 US BAs are unwired-but-open; the dominant gap mode is TLS/egress decay, not secrecy.
 - Synthesis + ranked top-20 split/gap backlog: `docs/research/2026-06-10-granularity-and-gaps.md`. Implementation PRs to follow, top-ranked first; each split PR walks the 5-file tier checklist + magnitude `--update`.
