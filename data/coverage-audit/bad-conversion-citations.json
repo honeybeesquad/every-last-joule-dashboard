@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 433,
+  "totalValidationDocs": 438,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 426,
-  "pctCited": 1.62,
+  "docsNotCiting": 431,
+  "pctCited": 1.6,
   "perDocCitations": [
     {
       "file": "aemo-nsw-solar.md",
@@ -103,6 +103,11 @@
     },
     {
       "file": "armenia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "atacama-hydro.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -612,6 +617,16 @@
       "matchedPatterns": []
     },
     {
+      "file": "colombia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "colombia-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "colombia.md",
       "cited": false,
       "matchedPatterns": []
@@ -698,6 +713,11 @@
     },
     {
       "file": "dominica.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "dominican-republic-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -2095,6 +2115,11 @@
     },
     {
       "file": "uganda.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ukraine-wind.md",
       "cited": false,
       "matchedPatterns": []
     },

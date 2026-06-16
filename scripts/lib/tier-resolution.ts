@@ -83,6 +83,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "china-jilin-solar": "solar",
   iceland: "hydro-seasonal",
   ukraine: "solar",
+  "ukraine-wind": "wind",
   "hawaii-oahu": "solar",
   "hawaii-maui": "solar",
   "hawaii-island": "solar",
@@ -94,7 +95,10 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   argentina: "wind",
   bangladesh: "solar",
   "british-columbia": "hydro-seasonal",
+  "atacama-hydro": "hydro-seasonal",
   colombia: "hydro-seasonal",
+  "colombia-wind": "wind",
+  "colombia-solar": "solar",
   cyprus: "solar",
   egypt: "solar",
   ethiopia: "hydro-seasonal",
@@ -190,6 +194,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   // composite); flat profile, T3 envelope.
   cuba: "mixed",
   "dominican-republic": "solar",
+  "dominican-republic-wind": "wind",
   jamaica: "solar",
   // Trinidad & Tobago's anchor is GGFR offshore flare lifted onto the
   // T&TEC grid for coverage continuity. Flat 24/7 profile via the

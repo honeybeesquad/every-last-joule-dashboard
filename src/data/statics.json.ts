@@ -92,7 +92,7 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // (southern steppes: Nikopol, Zaporizhzhia, Kherson), ~40% wind (southern coast).
   // Anchor sourced from Ember Ukraine 2024 report (pre-war capacity adjusted for
   // infrastructure damage, 1.1-1.4 TWh/yr curtailment plausible).
-  ukraine: { annualTWh: 1.2, kind: "solar", localSolarPeakUTC: 9, source: "Ember Ukraine 2024 (ENTSO-E Ukrenergo data absent post-war; solar-dominant typical shape at 60/40 solar/wind, peaking ~UTC 09)", reportDate: "2024" },
+  ukraine: { annualTWh: 0.7, kind: "solar", localSolarPeakUTC: 9, source: "Ember Ukraine 2024 (ENTSO-E Ukrenergo data absent post-war; solar 60% of ~1.2 TWh/yr total curtailment → 0.7 TWh/yr; wind in ukraine-wind region)", reportDate: "2024" },
   // World Bank/GFMR 2025 individual flare-location dataset, 2024 rows,
   // Permian bbox 28.5-34.5N, 106.5-100.0W: 5.575 bcm × 3.6925 TWh_e/bcm.
   // Retrieved 2026-04-24:
@@ -157,7 +157,10 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   panama: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 17.0, source: "Secretaria Nacional de Energia 2024 (solar+wind ~10% of mix; ETESA/CND publish Informe de Operacion daily as PDF; provisional 0.2 TWh/yr Pattern-D static)", reportDate: "2024" },
   "guatemala-siepac": { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 18.0, source: "IRENA Central America Interconnect 2024 (SIEPAC corridor; EOR Ente Operador Regional publishes monthly Informe de Operacion Regional as PDF; provisional 0.1 TWh/yr Pattern-D static for the regional interconnect)", reportDate: "2024" },
   cuba: { annualTWh: 0.1, kind: "mixed", source: "Cuba UNE 2022-24 grid restoration + Ember Cuba Electricity Review 2024 (provisional 0.1 TWh/yr reflects post-Hurricane-Ian grid stress, not normal operation; mixed-fuel flat profile; Pattern-D static — do not over-claim a steady-state anchor)", reportDate: "2024" },
-  "dominican-republic": { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Dominican Republic 2024 + OC (Organismo Coordinador del SENI) Reportes de Operacion 2024 (wind+solar ~10% of generation; some curtailment reported in PDF reports; provisional 0.5 TWh/yr Pattern-D static)", reportDate: "2024" },
+  "dominican-republic": { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Dominican Republic 2024 + OC (Organismo Coordinador del SENI) Reportes de Operacion 2024 (wind+solar ~10% of generation; some curtailment reported in PDF reports; provisional 0.5 TWh/yr Pattern-D static). Solar component of DR curtailment.", reportDate: "2024" },
+  // Dominican Republic wind — 448 MW installed (Pueblo Viejo, Los Cocos, Monte Plata);
+  // estimated 0.3 TWh/yr from IRENA 2024 capacity + typical wind profile.
+  "dominican-republic-wind": { annualTWh: 0.3, kind: "wind", localSolarPeakUTC: 16.0, source: "IRENA Dominican Republic 2024 (448 MW wind capacity; OC does not publish per-fuel curtailment; estimated 0.3 TWh/yr from capacity + typical wind profile)", reportDate: "2024" },
   jamaica: { annualTWh: 0.003, kind: "solar", localSolarPeakUTC: 17.0, source: "IEA / IDB 2024 (Wigton wind + Content solar; JPS vertically integrated; ~1–3 GWh/yr solar curtailment, low confidence; previous 0.2 TWh anchor was implausible at ~40% curtailment rate for small island; Wave-5 revised 2026-04-30)", reportDate: "2025" },
   "trinidad-tobago": { annualTWh: 0.3, kind: "mixed", source: "GGFR 2024 Trinidad offshore flares ~1 BCM (anchor is upstream offshore flare lifted onto T&TEC grid for coverage; power side has minimal VRE; flat 24/7 profile with mixed-fuel flag; provisional 0.3 TWh/yr-electrical-equivalent Pattern-D static)", reportDate: "2024" },
   barbados: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Barbados Renewables 2024 (rooftop PV penetration; BLPC investor-owned via Emera; FRCS Caribbean reports occasional inverter trips; provisional 0.05 TWh/yr Pattern-D static at inclusion threshold)", reportDate: "2024" },
@@ -323,6 +326,19 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   "north-korea": { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.5, source: "IRENA North Korea 2024 (KEPA); isolated grid; no public data; Pattern-D T3 static", reportDate: "2024" },
   laos: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 7.0, source: "IRENA Laos 2024 (EDL); hydro-export economy; some utility solar deployed)", reportDate: "2024" },
   "east-timor": { annualTWh: 0.02, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Timor-Leste 2024 (EDTL); solar+diesel; small island grid", reportDate: "2024" },
+  // Chile hydro spill — CEN 2024 report: ~0.8 TWh/yr hydraulic reducciones.
+  // Central/south reservoir systems (Maule, Biobío, Los Lagos). Hydro-seasonal
+  // profile with Jun-Sep snowmelt peak. See typical-profiles.ts for shares.
+  "atacama-hydro": { annualTWh: 0.8, kind: "hydro-seasonal", seasonalSharesKey: "atacama-hydro", source: "CEN Chile 2024 annual report (reducciones hidráulicas ~0.8 TWh/yr; central/south reservoir spill; Maule/Biobío/Los Lagos systems; hydro-seasonal shape with Jun-Sep snowmelt peak)", reportDate: "2024" },
+  // Colombia wind — La Guajira wind corridor; XM provides system-wide
+  // vertimientos only, not per-technology. Estimated 1.5 TWh/yr.
+  "colombia-wind": { annualTWh: 1.5, kind: "wind", localSolarPeakUTC: 17.0, source: "XM SinerGox system-wide vertimientos split; La Guajira wind corridor ~1.5 TWh/yr estimated from IRENA 2024 capacity + Ember 2024 wind curtailment share (no per-technology breakdown from XM)", reportDate: "2024" },
+  // Colombia solar — growing utility PV in La Guajira + NE departments.
+  // XM provides system-wide vertimientos only. Estimated 0.8 TWh/yr.
+  "colombia-solar": { annualTWh: 0.8, kind: "solar", localSolarPeakUTC: 17.0, source: "XM SinerGox system-wide vertimientos split; growing La Guajira + NE utility PV ~0.8 TWh/yr estimated from IRENA 2024 capacity + Ember 2024 solar curtailment share", reportDate: "2024" },
+  // Ukraine wind — Ember 2024: ~40% wind / 60% solar split. Wind on
+  // southern coast (Odesa, Mykolaiv). Estimated 0.5 TWh/yr.
+  "ukraine-wind": { annualTWh: 0.5, kind: "wind", localSolarPeakUTC: 9.0, source: "Ember Ukraine 2024 (ENTSO-E absent post-war; ~40% wind / 60% solar split of ~1.2 TWh/yr total → 0.5 TWh/yr wind; southern coast wind corridor)", reportDate: "2024" },
 };
 
 /** Pure builder: spec in, RegionData out. Exported for tests. */
