@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 384 canonical regions", () => {
+  it("has 403 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -98,7 +98,8 @@ describe("regions", () => {
     // split into wind+solar. Net +3 regions. 380 + 3 = 383.
     // Issue #62 (2026-05-06): add Palestine T3 static. Net +1 region. 383 + 1 = 384.
     // 2026-05-24: new-zealand-hydro added (T1a). 384 + 1 = 385.
-    expect(REGIONS.length).toBe(385);
+    // 2026-06-17: EIA-930 9 second-tier US BAs added as 18 T2 regions (granularity survey). 385 + 18 = 403.
+    expect(REGIONS.length).toBe(403);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -288,8 +289,8 @@ describe("regions", () => {
     expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(211);
   });
 
-  it("has 14 anchored regions (8 flare + 6 flat-profile)", () => {
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(14);
+  it("has 32 anchored regions (8 flare + 6 flat-profile + 18 EIA-930 US BAs)", () => {
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(32);
   });
 
   it("all flare-kind regions with anchored tier are GGFR-verified", () => {
