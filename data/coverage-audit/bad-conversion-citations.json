@@ -1,7 +1,7 @@
 {
-  "totalValidationDocs": 391,
+  "totalValidationDocs": 392,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 384,
+  "docsNotCiting": 385,
   "pctCited": 1.79,
   "perDocCitations": [
     {
@@ -1340,6 +1340,11 @@
     },
     {
       "file": "new-zealand-geo.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "new-zealand-hydro.md",
       "cited": false,
       "matchedPatterns": []
     },
