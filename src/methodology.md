@@ -8,7 +8,7 @@
 
 # How the dashboard's numbers are built
 
-<p class="methodology-deck">A public working model. This page documents the data sources, tiers, calibration, and limitations behind every figure shown on the dashboard — so any claim can be traced to a specific public publication from a grid operator or regulator.</p>
+<p class="methodology-deck">How the numbers are built. Every figure on the dashboard traces to a specific public publication from a grid operator or regulator — this page documents the sources, tiers, calibration, and limits of each.</p>
 
 </header>
 
