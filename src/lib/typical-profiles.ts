@@ -136,6 +136,11 @@ export const HYDRO_SEASONAL_SHARES = {
   // in Jun 2025). July is coolest/lowest-demand month; June is outlier low
   // per EPRA 2025 report.
   kenya:    [0.07, 0.05, 0.05, 0.05, 0.07, 0.01, 0.18, 0.15, 0.12, 0.10, 0.09, 0.06],
+  // Chile central/south hydro spill — Andean snowmelt + winter rainfall
+  // concentrated in Jun-Sep. CEN 2024 report: ~0.8 TWh/yr hydraulic
+  // reducciones. Northern Atacama is solar-dominant; hydro spill comes from
+  // central/south reservoir systems (Maule, Biobío, Los Lagos).
+  "atacama-hydro": [0.02, 0.02, 0.03, 0.05, 0.08, 0.15, 0.20, 0.20, 0.15, 0.06, 0.02, 0.02],
 } as const satisfies Record<string, MonthlyShares>;
 
 /**

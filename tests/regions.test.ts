@@ -98,7 +98,7 @@ describe("regions", () => {
     // split into wind+solar. Net +3 regions. 380 + 3 = 383.
     // Issue #62 (2026-05-06): add Palestine T3 static. Net +1 region. 383 + 1 = 384.
     // 2026-05-24: new-zealand-hydro added (T1a). 384 + 1 = 385.
-    expect(REGIONS.length).toBe(385);
+    expect(REGIONS.length).toBe(390);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -285,7 +285,7 @@ describe("regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. +2. 211→213.
     // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). +1. 213→214.
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. -3. 214→211.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(211);
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(216);
   });
 
   it("has 14 anchored regions (8 flare + 6 flat-profile)", () => {
@@ -681,5 +681,49 @@ describe("regions", () => {
       expect(region?.kind, `${id} should be solar`).toBe("solar");
       expect(region?.country, `${id} country should be JPN`).toBe("JPN");
     }
+  });
+
+  it("includes the expansion-push new regions (Chile hydro, Colombia wind+solar, DR wind, Ukraine wind)", () => {
+    // Chile hydro spill — CEN 2024 report: ~0.8 TWh/yr hydraulic reducciones
+    const chileHydro = REGIONS.find(r => r.id === "atacama-hydro");
+    expect(chileHydro).toBeDefined();
+    expect(chileHydro?.tier).toBe("estimated");
+    expect(chileHydro?.kind).toBe("hydro");
+    expect(chileHydro?.country).toBe("CHL");
+
+    // Colombia wind — La Guajira corridor; estimated from XM system-wide vertimientos
+    const colWind = REGIONS.find(r => r.id === "colombia-wind");
+    expect(colWind).toBeDefined();
+    expect(colWind?.tier).toBe("estimated");
+    expect(colWind?.kind).toBe("wind");
+    expect(colWind?.country).toBe("COL");
+
+    // Colombia solar — growing utility PV; estimated from XM system-wide vertimientos
+    const colSolar = REGIONS.find(r => r.id === "colombia-solar");
+    expect(colSolar).toBeDefined();
+    expect(colSolar?.tier).toBe("estimated");
+    expect(colSolar?.kind).toBe("solar");
+    expect(colSolar?.country).toBe("COL");
+
+    // Dominican Republic wind — 448 MW installed; estimated 0.3 TWh/yr
+    const drWind = REGIONS.find(r => r.id === "dominican-republic-wind");
+    expect(drWind).toBeDefined();
+    expect(drWind?.tier).toBe("estimated");
+    expect(drWind?.kind).toBe("wind");
+    expect(drWind?.country).toBe("DOM");
+
+    // Ukraine wind — Ember 2024: ~40% wind / 60% solar split; estimated 0.5 TWh/yr
+    const ukrWind = REGIONS.find(r => r.id === "ukraine-wind");
+    expect(ukrWind).toBeDefined();
+    expect(ukrWind?.tier).toBe("estimated");
+    expect(ukrWind?.kind).toBe("wind");
+    expect(ukrWind?.country).toBe("UKR");
+
+    // Existing regions still present
+    expect(REGIONS.find(r => r.id === "atacama")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "chile-wind")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "colombia")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "dominican-republic")).toBeDefined();
+    expect(REGIONS.find(r => r.id === "ukraine")).toBeDefined();
   });
 });
