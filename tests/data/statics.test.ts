@@ -102,7 +102,7 @@ describe("static regions", () => {
     const data = buildAllStatics();
     const expected = [
       "sichuan",
-      "xinjiang",
+      // xinjiang moved to src/data/xinjiang.json.ts (fuel-split loader, 2026-06-16)
       "iceland",
       "permian",
       "w-siberia",
@@ -167,9 +167,7 @@ describe("static regions", () => {
       // Phase-2.7 Russia+China (2026-05-03)
       "russia-yamal",
       "russia-e-siberia",
-      "china-hebei",
-      "china-heilongjiang",
-      "china-jilin",
+      // china-hebei / china-heilongjiang / china-jilin moved to split loaders (2026-06-16)
       // Phase 4-A completionist Tier A (2026-05-05)
       "afghanistan",
       "bahrain",
@@ -219,7 +217,7 @@ describe("static regions", () => {
     // albania uses kind:"flat" in statics.json.ts (small 0.05 TWh anchor,
     // below the typical solar-shape threshold), so it does not appear in
     // the solarIds list and is excluded from this test.
-    expect(solarIds).toContain("xinjiang");
+    // xinjiang moved to split loader; use algeria and togo as canonical solar anchors
     expect(solarIds).toContain("algeria");
     expect(solarIds).toContain("togo");
 

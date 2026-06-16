@@ -41,7 +41,7 @@ const HOTSPOT_LIST_LIMIT = 50;
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 112;
+const _LOADER_FILE_COUNT = 118;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -60,12 +60,14 @@ const [
   indonesia, malaysia, philippines, southKorea, russiaMainland, taiwan, jordan,
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
   yunnan, tibet, indiaGujarat, indiaTamilNadu, indiaKarnataka, indiaAndhraPradesh, indiaMaharashtra, indiaEast, pakistan, iran,
+  indiaMadhyaPradesh, indiaTelangana, indiaUttarPradesh, indiaPunjab, indiaOdisha, indiaChhattisgarh,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
   quebec, manitoba, saskatchewan, turkey, colombia, florida,
   chinaShandong, chinaGuangdong, chinaJiangsu, chinaAnhui, chinaHunan,
   chinaLiaoning, chinaHubei, chinaShanxi, chinaShaanxi, chinaZhejiang,
   chinaHenan, chinaFujian, chinaJiangxi, chinaBeijing, chinaGuizhou,
   chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai,
+  chinaHebei, chinaHeilongjiang, chinaJilin, xinjiang,
   zenodoVersion
 ] = await Promise.all([
   trackFile(FileAttachment("data/cbeci.json").json(),            "CBECI"),
@@ -147,6 +149,12 @@ const [
   trackFile(FileAttachment("data/india-andhra-pradesh.json").json(), "India Andhra Pradesh"),
   trackFile(FileAttachment("data/india-maharashtra.json").json(),"India Maharashtra"),
   trackFile(FileAttachment("data/india-east.json").json(),       "India East"),
+  trackFile(FileAttachment("data/india-madhya-pradesh.json").json(), "India Madhya Pradesh"),
+  trackFile(FileAttachment("data/india-telangana.json").json(),  "India Telangana"),
+  trackFile(FileAttachment("data/india-uttar-pradesh.json").json(), "India Uttar Pradesh"),
+  trackFile(FileAttachment("data/india-punjab.json").json(),     "India Punjab"),
+  trackFile(FileAttachment("data/india-odisha.json").json(),     "India Odisha"),
+  trackFile(FileAttachment("data/india-chhattisgarh.json").json(), "India Chhattisgarh"),
   trackFile(FileAttachment("data/pakistan.json").json(),         "Pakistan"),
   trackFile(FileAttachment("data/iran.json").json(),             "Iran"),
   trackFile(FileAttachment("data/iraq-mainland.json").json(),    "Iraq"),
@@ -179,6 +187,10 @@ const [
   trackFile(FileAttachment("data/china-tianjin.json").json(),    "China Tianjin"),
   trackFile(FileAttachment("data/china-hainan.json").json(),     "China Hainan"),
   trackFile(FileAttachment("data/china-shanghai.json").json(),   "China Shanghai"),
+  trackFile(FileAttachment("data/china-hebei.json").json(),      "China Hebei"),
+  trackFile(FileAttachment("data/china-heilongjiang.json").json(), "China Heilongjiang"),
+  trackFile(FileAttachment("data/china-jilin.json").json(),      "China Jilin"),
+  trackFile(FileAttachment("data/xinjiang.json").json(),         "Xinjiang"),
   trackFile(FileAttachment("data/zenodo-version.json").json(),   "Version metadata"),
 ]);
 
@@ -489,6 +501,12 @@ const regionData = {
   "india-andhra-pradesh": indiaAndhraPradesh,
   "india-maharashtra": indiaMaharashtra,
   "india-east": indiaEast,
+  "india-madhya-pradesh": indiaMadhyaPradesh,
+  "india-telangana": indiaTelangana,
+  "india-uttar-pradesh": indiaUttarPradesh,
+  "india-punjab": indiaPunjab,
+  "india-odisha": indiaOdisha,
+  "india-chhattisgarh": indiaChhattisgarh,
   "pakistan-wind":  pakistan.wind,
   "pakistan-solar": pakistan.solar,
   iran,
@@ -504,23 +522,28 @@ const regionData = {
   // Supersedes the T3-static entry in buildAllStatics().
   colombia,
   florida,
-  "china-shandong": chinaShandong,
+  "china-shandong-wind":  chinaShandong.wind,
+  "china-shandong-solar": chinaShandong.solar,
   "china-guangdong": chinaGuangdong,
   "china-jiangsu-wind":  chinaJiangsu.wind,
   "china-jiangsu-solar": chinaJiangsu.solar,
-  "china-anhui": chinaAnhui,
+  "china-anhui-wind":  chinaAnhui.wind,
+  "china-anhui-solar": chinaAnhui.solar,
   "china-hunan-wind":  chinaHunan.wind,
   "china-hunan-solar": chinaHunan.solar,
   "china-hunan-hydro": chinaHunan.hydro,
-  "china-liaoning": chinaLiaoning,
+  "china-liaoning-wind":  chinaLiaoning.wind,
+  "china-liaoning-solar": chinaLiaoning.solar,
   "china-hubei-wind":  chinaHubei.wind,
   "china-hubei-solar": chinaHubei.solar,
   "china-hubei-hydro": chinaHubei.hydro,
   "china-shanxi-wind":  chinaShanxi.wind,
   "china-shanxi-solar": chinaShanxi.solar,
-  "china-shaanxi": chinaShaanxi,
+  "china-shaanxi-wind":  chinaShaanxi.wind,
+  "china-shaanxi-solar": chinaShaanxi.solar,
   "china-zhejiang": chinaZhejiang,
-  "china-henan": chinaHenan,
+  "china-henan-wind":  chinaHenan.wind,
+  "china-henan-solar": chinaHenan.solar,
   "china-fujian": chinaFujian,
   "china-jiangxi": chinaJiangxi,
   "china-beijing": chinaBeijing,
@@ -531,6 +554,14 @@ const regionData = {
   "china-tianjin": chinaTianjin,
   "china-hainan": chinaHainan,
   "china-shanghai": chinaShanghai,
+  "china-hebei-wind":  chinaHebei.wind,
+  "china-hebei-solar": chinaHebei.solar,
+  "china-heilongjiang-wind":  chinaHeilongjiang.wind,
+  "china-heilongjiang-solar": chinaHeilongjiang.solar,
+  "china-jilin-wind":  chinaJilin.wind,
+  "china-jilin-solar": chinaJilin.solar,
+  "xinjiang-wind":  xinjiang.wind,
+  "xinjiang-solar": xinjiang.solar,
   ...statics,
   // Philippines: split by fuel (solar + wind). Loader returns a Record so spread here.
   // Supersedes the philippines statics entry (removed 2026-04-30).

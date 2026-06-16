@@ -4,7 +4,7 @@ import { withFallback } from "../lib/resilient.js";
 import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import type { RegionData } from "../lib/types.js";
 
-const REGION_ID = "china-liaoning";
+const REGION_ID = "china-heilongjiang";
 const SOURCE_URL = "https://ember-energy.org/";
 
 async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: RegionData }> {
@@ -15,10 +15,10 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback: ${(err as Error).message}; Liaoning mixed wind+solar curtailment ~2.1 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
+    const note = `Typical-shape fallback: ${(err as Error).message}; Heilongjiang mixed wind+solar curtailment ~1.8 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
     return {
-      wind:  buildTypicalWindRegion("china-liaoning-wind",  15, 1.6, note + " — wind share (~1.6 TWh/yr, northeast grid transmission constraint)", "2024"),
-      solar: buildTypicalSolarRegion("china-liaoning-solar", 4, 0.5, note + " — solar share (~0.5 TWh/yr, growing PV fleet in southern Liaoning)", "2024"),
+      wind:  buildTypicalWindRegion("china-heilongjiang-wind",  15, 1.5, note + " — wind share (~1.5 TWh/yr, northeast grid; Daqing-area wind build-out)", "2025"),
+      solar: buildTypicalSolarRegion("china-heilongjiang-solar", 4, 0.3, note + " — solar share (~0.3 TWh/yr, growing PV in Harbin/southern corridor)", "2025"),
     };
   }
 }
@@ -31,7 +31,7 @@ if (isMain) {
     tagCached: c => c as { wind: RegionData; solar: RegionData },
   })
     .then((data) => process.stdout.write(JSON.stringify(data)))
-    .catch((err) => { console.error("china-liaoning loader failed", err); process.exit(1); });
+    .catch((err) => { console.error("china-heilongjiang loader failed", err); process.exit(1); });
 }
 
-export const buildChinaLiaoningData = () => run({ probe: false });
+export const buildChinaHeilongjiangData = () => run({ probe: false });

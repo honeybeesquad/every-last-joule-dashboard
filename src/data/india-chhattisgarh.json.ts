@@ -6,10 +6,10 @@ import { applyUncertainty } from "../lib/uncertainty.js";
 import { readStateCsvTotal, readStateSldcCurtailment, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
-const REGION_ID = "india-karnataka";
+const REGION_ID = "india-chhattisgarh";
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const CSV_PATH = join(__dirname, "../../data/historical/india-karnataka-gen-daily.csv");
-const CSV_SLDC_PATH = join(__dirname, "../../data/historical/india-karnataka-sldc-curtailed-daily.csv");
+const CSV_PATH = join(__dirname, "../../data/historical/india-chhattisgarh-gen-daily.csv");
+const CSV_SLDC_PATH = join(__dirname, "../../data/historical/india-chhattisgarh-sldc-curtailed-daily.csv");
 const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 
 async function run(): Promise<RegionData> {
@@ -20,7 +20,7 @@ async function run(): Promise<RegionData> {
       REGION_ID,
       6.5,
       curtailedTWh,
-      `KSLDC (Karnataka State Load Despatch Centre) direct curtailment — ${sldc.nRows}-day CSV, ` +
+      `CSLDC (Chhattisgarh State Load Despatch Centre) direct curtailment — ${sldc.nRows}-day CSV, ` +
       `trailing-90-day solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh + wind ${sldc.windCurtailedTWh.toFixed(2)} TWh curtailed. ` +
       `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
       new Date().getFullYear().toString(),
@@ -48,10 +48,9 @@ async function run(): Promise<RegionData> {
   const base = buildTypicalSolarRegion(
     REGION_ID,
     6.5,
-    0.5,
-    `No CEA CSV present; T3-modelled fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
-    `(~0.5 TWh/yr Karnataka solar curtailment; Pavagada Solar Park + Bidar solar + growing wind). ` +
-    `Will be promoted to T1a-live-tso when the KSLDC fetcher accumulates ≥30 daily rows.`,
+    0.08,
+    `No CEA CSV present; T3-modelled fallback calibrated to Ember India 2024 (~0.08 TWh/yr solar curtailment, Chhattisgarh emerging solar). ` +
+    `Will be promoted to T1a-live-tso when CEA CSV accumulates ≥30 daily rows.`,
     "2024",
   );
   return applyUncertainty(base, { regionTier: "estimated", profileKind: "solar" });
@@ -63,9 +62,9 @@ if (isMain) {
   withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
-      console.error("india-karnataka loader failed", err);
+      console.error("india-chhattisgarh loader failed", err);
       process.exit(1);
     });
 }
 
-export const buildIndiaKarnatakaData = () => run();
+export const buildIndiaChhattisgarhData = () => run();
