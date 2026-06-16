@@ -41,7 +41,7 @@ Loader pattern:
 The calibration rate is a per-loader constant. It is documented in the loader's `sourceNote` and traces to a specific published number in `scripts/validation/external-anchors.json`.
 
 Reference loaders:
-- `src/data/peru.json.ts` — COES SINAC `GraficoTipoCombustible` POST endpoint. Live HÍDRICO + SOLAR + EÓLICA half-hourly generation × **2%** rate. The 2% is anchored to the ~0.8 TWh/yr published vertimiento (water-spill) figure for the Peruvian grid.
+- `src/data/peru.json.ts` — COES SINAC `GraficoTipoCombustible` POST endpoint for hydro + wind, and COES daily company generation totals for solar. Peru Solar uses COES RER Energía Dejada de Inyectar reports as the direct southern-solar curtailment evidence, then distributes daily solar generation × **2%** over a daylight-only southern Peru solar profile. The public EDI reports include `C.S. REPARTICION` 71.63 MWh approved in February 2026 and `C.S. MAJES SOLAR` 3.904 MWh approved in November 2025. Because the EDI source is monthly-PDF anchored rather than an hourly dispatch-down feed, `peru-solar` is classified as `live-domestic-anchored`; `peru-hydro` and `peru-wind` retain the prior generation-by-fuel path.
 - `src/data/south-africa.json.ts` — Eskom Data Portal `Total_Hourly_Generation.csv`. Live wind + PV + CSP + other-RE × **12%** rate. The 12% is anchored to the SAREM 2025 / Eskom MTSAO October 2025 4,363 GWh renewable-curtailment figure.
 
 ## When is Path B acceptable as T1a?

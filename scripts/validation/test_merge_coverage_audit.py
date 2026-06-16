@@ -14,6 +14,7 @@ HEADER = [
     "coverage_status", "data_format", "probe_result", "available_anchor",
     "annual_anchor_TWh", "recommended_action", "recommended_tier_landing",
     "loader_pattern_hint", "priority_score", "notes",
+    "parent_region_id", "granularity_available", "expected_new_regions",
 ]
 
 
@@ -37,6 +38,9 @@ def make_row(country, op, **kw):
         "loader_pattern_hint": "Pattern-A",
         "priority_score": "0.0",  # will be recomputed by merge
         "notes": "",
+        "parent_region_id": "",
+        "granularity_available": "none",
+        "expected_new_regions": "0",
     }
     base.update(kw)
     return [base[k] for k in HEADER]
