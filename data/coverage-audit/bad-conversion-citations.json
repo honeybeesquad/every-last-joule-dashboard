@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 391,
+  "totalValidationDocs": 438,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 384,
-  "pctCited": 1.79,
+  "docsNotCiting": 431,
+  "pctCited": 1.6,
   "perDocCitations": [
     {
       "file": "aemo-nsw-solar.md",
@@ -107,6 +107,11 @@
       "matchedPatterns": []
     },
     {
+      "file": "atacama-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "atacama.md",
       "cited": false,
       "matchedPatterns": []
@@ -118,6 +123,16 @@
     },
     {
       "file": "azerbaijan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "azps-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "azps-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -412,7 +427,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "china-anhui.md",
+      "file": "china-anhui-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-anhui-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -457,17 +477,32 @@
       "matchedPatterns": []
     },
     {
-      "file": "china-hebei.md",
+      "file": "china-hebei-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "china-heilongjiang.md",
+      "file": "china-hebei-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "china-henan.md",
+      "file": "china-heilongjiang-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-heilongjiang-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-henan-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-henan-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -517,22 +552,42 @@
       "matchedPatterns": []
     },
     {
-      "file": "china-jilin.md",
+      "file": "china-jilin-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "china-liaoning.md",
+      "file": "china-jilin-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "china-shaanxi.md",
+      "file": "china-liaoning-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "china-shandong.md",
+      "file": "china-liaoning-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shaanxi-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shaanxi-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shandong-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shandong-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -558,6 +613,16 @@
     },
     {
       "file": "china-zhejiang.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "colombia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "colombia-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -648,6 +713,11 @@
     },
     {
       "file": "dominica.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "dominican-republic-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -909,6 +979,11 @@
       ]
     },
     {
+      "file": "india-chhattisgarh.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "india-east.md",
       "cited": false,
       "matchedPatterns": []
@@ -928,6 +1003,11 @@
       ]
     },
     {
+      "file": "india-madhya-pradesh.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "india-maharashtra.md",
       "cited": true,
       "matchedPatterns": [
@@ -936,6 +1016,16 @@
     },
     {
       "file": "india-north.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-odisha.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-punjab.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -959,6 +1049,16 @@
       ]
     },
     {
+      "file": "india-telangana.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-uttar-pradesh.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "india-west.md",
       "cited": false,
       "matchedPatterns": []
@@ -970,6 +1070,16 @@
     },
     {
       "file": "inner-mongolia.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ipco-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ipco-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1019,6 +1129,36 @@
       "matchedPatterns": []
     },
     {
+      "file": "italy-calabria-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-calabria-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-cnord-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-cnord-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-csud-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-csud-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "italy-north-zone-solar.md",
       "cited": false,
       "matchedPatterns": []
@@ -1050,6 +1190,16 @@
     },
     {
       "file": "italy-south.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-sud-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "italy-sud-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1344,6 +1494,11 @@
       "matchedPatterns": []
     },
     {
+      "file": "new-zealand-hydro.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "new-zealand-solar.md",
       "cited": false,
       "matchedPatterns": []
@@ -1489,6 +1644,26 @@
       "matchedPatterns": []
     },
     {
+      "file": "pace-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "pace-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "pacw-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "pacw-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "pakistan-solar.md",
       "cited": false,
       "matchedPatterns": []
@@ -1580,6 +1755,16 @@
     },
     {
       "file": "portugal-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "psco-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "psco-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1719,6 +1904,16 @@
       "matchedPatterns": []
     },
     {
+      "file": "soco-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "soco-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "solomon-islands.md",
       "cited": false,
       "matchedPatterns": []
@@ -1770,6 +1965,16 @@
     },
     {
       "file": "sri-lanka.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "srp-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "srp-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1839,6 +2044,16 @@
       "matchedPatterns": []
     },
     {
+      "file": "tepc-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "tepc-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "thailand.md",
       "cited": false,
       "matchedPatterns": []
@@ -1904,6 +2119,11 @@
       "matchedPatterns": []
     },
     {
+      "file": "ukraine-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "ukraine.md",
       "cited": false,
       "matchedPatterns": []
@@ -1949,7 +2169,22 @@
       "matchedPatterns": []
     },
     {
-      "file": "xinjiang.md",
+      "file": "wacm-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "wacm-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "xinjiang-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "xinjiang-wind.md",
       "cited": false,
       "matchedPatterns": []
     },

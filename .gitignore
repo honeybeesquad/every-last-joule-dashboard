@@ -17,3 +17,7 @@ __pycache__/
 .claude/
 docs/paper/~$*.docx
 .worktrees/
+
+# Tool artifacts + per-machine personal agent config (CLAUDE.md/AGENTS.md are shared; GEMINI.md is personal)
+.playwright-mcp/
+GEMINI.md

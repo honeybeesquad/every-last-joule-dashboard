@@ -1,0 +1,107 @@
+set -uo pipefail
+cleanup(){ sudo /opt/homebrew/bin/wg-quick down elj-co >/dev/null 2>&1 || true; }
+trap cleanup EXIT
+mkdir -p /tmp/xmmulti
+sudo /opt/homebrew/bin/wg-quick up elj-co >/dev/null 2>&1 && echo "tunnel up" || echo "tunnel FAIL"
+sleep 2
+IP=$(dig +short @8.8.8.8 servapibi.xm.com.co | head -1); echo "IP=$IP"
+fetch(){ curl -s --max-time 120 --retry 1 --resolve servapibi.xm.com.co:443:$IP -X POST https://servapibi.xm.com.co/$2 -H 'Content-Type: application/json' -d "{\"MetricId\":\"$3\",\"Entity\":\"$4\",\"StartDate\":\"$5\",\"EndDate\":\"$6\"}" -o /tmp/xmmulti/$1.json; echo "$1 $(wc -c < /tmp/xmmulti/$1.json)"; }
+fetch gene_2024-07 hourly Gene Recurso 2024-07-01 2024-07-31
+fetch gene_2024-08 hourly Gene Recurso 2024-08-01 2024-08-31
+fetch gene_2024-09 hourly Gene Recurso 2024-09-01 2024-09-30
+fetch gene_2024-10 hourly Gene Recurso 2024-10-01 2024-10-31
+fetch gene_2024-11 hourly Gene Recurso 2024-11-01 2024-11-30
+fetch gene_2024-12 hourly Gene Recurso 2024-12-01 2024-12-31
+fetch gene_2025-01 hourly Gene Recurso 2025-01-01 2025-01-31
+fetch gene_2025-02 hourly Gene Recurso 2025-02-01 2025-02-28
+fetch gene_2025-03 hourly Gene Recurso 2025-03-01 2025-03-31
+fetch gene_2025-04 hourly Gene Recurso 2025-04-01 2025-04-30
+fetch gene_2025-05 hourly Gene Recurso 2025-05-01 2025-05-31
+fetch gene_2025-06 hourly Gene Recurso 2025-06-01 2025-06-30
+fetch gene_2025-07 hourly Gene Recurso 2025-07-01 2025-07-31
+fetch gene_2025-08 hourly Gene Recurso 2025-08-01 2025-08-31
+fetch gene_2025-09 hourly Gene Recurso 2025-09-01 2025-09-30
+fetch gene_2025-10 hourly Gene Recurso 2025-10-01 2025-10-31
+fetch gene_2025-11 hourly Gene Recurso 2025-11-01 2025-11-30
+fetch gene_2025-12 hourly Gene Recurso 2025-12-01 2025-12-31
+fetch gene_2026-01 hourly Gene Recurso 2026-01-01 2026-01-31
+fetch gene_2026-02 hourly Gene Recurso 2026-02-01 2026-02-28
+fetch gene_2026-03 hourly Gene Recurso 2026-03-01 2026-03-31
+fetch gene_2026-04 hourly Gene Recurso 2026-04-01 2026-04-30
+fetch gene_2026-05 hourly Gene Recurso 2026-05-01 2026-05-31
+fetch geneidea_2024-07 hourly GeneIdea Recurso 2024-07-01 2024-07-31
+fetch geneidea_2024-08 hourly GeneIdea Recurso 2024-08-01 2024-08-31
+fetch geneidea_2024-09 hourly GeneIdea Recurso 2024-09-01 2024-09-30
+fetch geneidea_2024-10 hourly GeneIdea Recurso 2024-10-01 2024-10-31
+fetch geneidea_2024-11 hourly GeneIdea Recurso 2024-11-01 2024-11-30
+fetch geneidea_2024-12 hourly GeneIdea Recurso 2024-12-01 2024-12-31
+fetch geneidea_2025-01 hourly GeneIdea Recurso 2025-01-01 2025-01-31
+fetch geneidea_2025-02 hourly GeneIdea Recurso 2025-02-01 2025-02-28
+fetch geneidea_2025-03 hourly GeneIdea Recurso 2025-03-01 2025-03-31
+fetch geneidea_2025-04 hourly GeneIdea Recurso 2025-04-01 2025-04-30
+fetch geneidea_2025-05 hourly GeneIdea Recurso 2025-05-01 2025-05-31
+fetch geneidea_2025-06 hourly GeneIdea Recurso 2025-06-01 2025-06-30
+fetch geneidea_2025-07 hourly GeneIdea Recurso 2025-07-01 2025-07-31
+fetch geneidea_2025-08 hourly GeneIdea Recurso 2025-08-01 2025-08-31
+fetch geneidea_2025-09 hourly GeneIdea Recurso 2025-09-01 2025-09-30
+fetch geneidea_2025-10 hourly GeneIdea Recurso 2025-10-01 2025-10-31
+fetch geneidea_2025-11 hourly GeneIdea Recurso 2025-11-01 2025-11-30
+fetch geneidea_2025-12 hourly GeneIdea Recurso 2025-12-01 2025-12-31
+fetch geneidea_2026-01 hourly GeneIdea Recurso 2026-01-01 2026-01-31
+fetch geneidea_2026-02 hourly GeneIdea Recurso 2026-02-01 2026-02-28
+fetch geneidea_2026-03 hourly GeneIdea Recurso 2026-03-01 2026-03-31
+fetch geneidea_2026-04 hourly GeneIdea Recurso 2026-04-01 2026-04-30
+fetch geneidea_2026-05 hourly GeneIdea Recurso 2026-05-01 2026-05-31
+fetch ofer_2024-07 hourly PrecOferDesp Recurso 2024-07-01 2024-07-31
+fetch ofer_2024-08 hourly PrecOferDesp Recurso 2024-08-01 2024-08-31
+fetch ofer_2024-09 hourly PrecOferDesp Recurso 2024-09-01 2024-09-30
+fetch ofer_2024-10 hourly PrecOferDesp Recurso 2024-10-01 2024-10-31
+fetch ofer_2024-11 hourly PrecOferDesp Recurso 2024-11-01 2024-11-30
+fetch ofer_2024-12 hourly PrecOferDesp Recurso 2024-12-01 2024-12-31
+fetch ofer_2025-01 hourly PrecOferDesp Recurso 2025-01-01 2025-01-31
+fetch ofer_2025-02 hourly PrecOferDesp Recurso 2025-02-01 2025-02-28
+fetch ofer_2025-03 hourly PrecOferDesp Recurso 2025-03-01 2025-03-31
+fetch ofer_2025-04 hourly PrecOferDesp Recurso 2025-04-01 2025-04-30
+fetch ofer_2025-05 hourly PrecOferDesp Recurso 2025-05-01 2025-05-31
+fetch ofer_2025-06 hourly PrecOferDesp Recurso 2025-06-01 2025-06-30
+fetch ofer_2025-07 hourly PrecOferDesp Recurso 2025-07-01 2025-07-31
+fetch ofer_2025-08 hourly PrecOferDesp Recurso 2025-08-01 2025-08-31
+fetch ofer_2025-09 hourly PrecOferDesp Recurso 2025-09-01 2025-09-30
+fetch ofer_2025-10 hourly PrecOferDesp Recurso 2025-10-01 2025-10-31
+fetch ofer_2025-11 hourly PrecOferDesp Recurso 2025-11-01 2025-11-30
+fetch ofer_2025-12 hourly PrecOferDesp Recurso 2025-12-01 2025-12-31
+fetch ofer_2026-01 hourly PrecOferDesp Recurso 2026-01-01 2026-01-31
+fetch ofer_2026-02 hourly PrecOferDesp Recurso 2026-02-01 2026-02-28
+fetch ofer_2026-03 hourly PrecOferDesp Recurso 2026-03-01 2026-03-31
+fetch ofer_2026-04 hourly PrecOferDesp Recurso 2026-04-01 2026-04-30
+fetch ofer_2026-05 hourly PrecOferDesp Recurso 2026-05-01 2026-05-31
+fetch spot_2024-01 hourly PrecBolsNaci Sistema 2024-01-01 2024-01-31
+fetch spot_2024-02 hourly PrecBolsNaci Sistema 2024-02-01 2024-02-29
+fetch spot_2024-03 hourly PrecBolsNaci Sistema 2024-03-01 2024-03-31
+fetch spot_2024-04 hourly PrecBolsNaci Sistema 2024-04-01 2024-04-30
+fetch spot_2024-05 hourly PrecBolsNaci Sistema 2024-05-01 2024-05-31
+fetch spot_2024-06 hourly PrecBolsNaci Sistema 2024-06-01 2024-06-30
+fetch spot_2024-07 hourly PrecBolsNaci Sistema 2024-07-01 2024-07-31
+fetch spot_2024-08 hourly PrecBolsNaci Sistema 2024-08-01 2024-08-31
+fetch spot_2024-09 hourly PrecBolsNaci Sistema 2024-09-01 2024-09-30
+fetch spot_2024-10 hourly PrecBolsNaci Sistema 2024-10-01 2024-10-31
+fetch spot_2024-11 hourly PrecBolsNaci Sistema 2024-11-01 2024-11-30
+fetch spot_2024-12 hourly PrecBolsNaci Sistema 2024-12-01 2024-12-31
+fetch spot_2025-01 hourly PrecBolsNaci Sistema 2025-01-01 2025-01-31
+fetch spot_2025-02 hourly PrecBolsNaci Sistema 2025-02-01 2025-02-28
+fetch spot_2025-03 hourly PrecBolsNaci Sistema 2025-03-01 2025-03-31
+fetch spot_2025-04 hourly PrecBolsNaci Sistema 2025-04-01 2025-04-30
+fetch spot_2025-05 hourly PrecBolsNaci Sistema 2025-05-01 2025-05-31
+fetch spot_2025-06 hourly PrecBolsNaci Sistema 2025-06-01 2025-06-30
+fetch spot_2025-07 hourly PrecBolsNaci Sistema 2025-07-01 2025-07-31
+fetch spot_2025-08 hourly PrecBolsNaci Sistema 2025-08-01 2025-08-31
+fetch spot_2025-09 hourly PrecBolsNaci Sistema 2025-09-01 2025-09-30
+fetch spot_2025-10 hourly PrecBolsNaci Sistema 2025-10-01 2025-10-31
+fetch spot_2025-11 hourly PrecBolsNaci Sistema 2025-11-01 2025-11-30
+fetch spot_2025-12 hourly PrecBolsNaci Sistema 2025-12-01 2025-12-31
+fetch spot_2026-01 hourly PrecBolsNaci Sistema 2026-01-01 2026-01-31
+fetch spot_2026-02 hourly PrecBolsNaci Sistema 2026-02-01 2026-02-28
+fetch spot_2026-03 hourly PrecBolsNaci Sistema 2026-03-01 2026-03-31
+fetch spot_2026-04 hourly PrecBolsNaci Sistema 2026-04-01 2026-04-30
+fetch spot_2026-05 hourly PrecBolsNaci Sistema 2026-05-01 2026-05-31
+echo "HARVEST DONE files=$(ls /tmp/xmmulti | wc -l)"

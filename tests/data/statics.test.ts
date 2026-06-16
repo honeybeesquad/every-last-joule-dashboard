@@ -54,7 +54,7 @@ describe("static regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated,
     // added to STATIC_REGIONS as canonical anchors. 142 + 2 = 144.
     // 2026-06-07: norway-no5 reverted live→estimated, added to STATIC_REGIONS. 144 + 1 = 145.
-    expect(Object.keys(data).length).toBe(145);
+    expect(Object.keys(data).length).toBe(146);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -94,7 +94,7 @@ describe("static regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar added to pool as canonical.
     // Research pool: 146 + 2 = 148. Canonical: 142 + 2 = 144. Non-canonical: 4.
     // 2026-06-07: norway-no5 added to pool as canonical. Research pool: 148 + 1 = 149. Canonical: 144 + 1 = 145. Non-canonical: 4.
-    expect(Object.keys(researchData).length).toBe(149);
+    expect(Object.keys(researchData).length).toBe(150);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
@@ -102,7 +102,7 @@ describe("static regions", () => {
     const data = buildAllStatics();
     const expected = [
       "sichuan",
-      "xinjiang",
+      // xinjiang moved to src/data/xinjiang.json.ts (fuel-split loader, 2026-06-16)
       "iceland",
       "permian",
       "w-siberia",
@@ -167,9 +167,7 @@ describe("static regions", () => {
       // Phase-2.7 Russia+China (2026-05-03)
       "russia-yamal",
       "russia-e-siberia",
-      "china-hebei",
-      "china-heilongjiang",
-      "china-jilin",
+      // china-hebei / china-heilongjiang / china-jilin moved to split loaders (2026-06-16)
       // Phase 4-A completionist Tier A (2026-05-05)
       "afghanistan",
       "bahrain",
@@ -207,7 +205,7 @@ describe("static regions", () => {
       expect(allowed.has(r.sourceProvenance ?? "")).toBe(true);
     }
     expect(data.permian.sourceProvenance).toBe("verified");
-    expect(data.xinjiang.sourceProvenance).toBe("modelled-fallback");
+    expect(data.algeria.sourceProvenance).toBe("modelled-fallback");
   });
 
   it("never emits flat 24h profiles for static rows classified as solar", () => {
@@ -219,7 +217,7 @@ describe("static regions", () => {
     // albania uses kind:"flat" in statics.json.ts (small 0.05 TWh anchor,
     // below the typical solar-shape threshold), so it does not appear in
     // the solarIds list and is excluded from this test.
-    expect(solarIds).toContain("xinjiang");
+    // xinjiang moved to split loader; use algeria and togo as canonical solar anchors
     expect(solarIds).toContain("algeria");
     expect(solarIds).toContain("togo");
 
@@ -242,17 +240,6 @@ describe("static regions", () => {
       const first = data[id].profile[0];
       for (const v of data[id].profile) expect(v).toBe(first);
     }
-  });
-
-  it("Xinjiang uses a typical solar shape peaking around local noon (UTC 06)", () => {
-    const data = buildAllStatics();
-    const p = data.xinjiang.profile;
-    const peakHour = p.indexOf(Math.max(...p));
-    // Peak hour should be close to UTC 06:20 (local solar noon at 85°E)
-    expect(peakHour).toBeGreaterThanOrEqual(5);
-    expect(peakHour).toBeLessThanOrEqual(7);
-    // And the shape should be non-flat
-    expect(Math.max(...p)).toBeGreaterThan(Math.min(...p) * 2);
   });
 
   it("sichuan seasonal-scales below flat 3.425 GW outside the monsoon peak", () => {

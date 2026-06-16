@@ -70,14 +70,10 @@ interface StaticSpec {
 //   The flat profile is methodologically correct, not a data gap.
 const STATIC_REGIONS: Record<string, StaticSpec> = {
   sichuan: { annualTWh: 30, kind: "hydro-seasonal", seasonalSharesKey: "sichuan", source: "Ember China Electricity Review 2025 (Yangtze basin monsoon hydro spill, peaks Jul-Aug, ~zero Nov-Apr)", reportDate: "2025-Q1" },
-  // NEA 2024 renewable monitoring evaluation: Xinjiang wind utilisation 93.4%,
-  // PV utilisation 92.2%; Huaon/NBS 2024 generation by fuel gives wind
-  // 70.79 TWh and PV 38.037 TWh, implying ~8.2 TWh curtailed.
-  xinjiang: { annualTWh: 8.2, kind: "solar", localSolarPeakUTC: 6.33, source: "NEA 2024 renewable monitoring evaluation + Huaon/NBS generation by fuel (Xinjiang wind/PV curtailment ~8.2 TWh; solar-shaped fallback centred on local noon UTC 06:20)", reportDate: "2024" },
-  // Phase-2.7 NE China wind (2026-05-03)
-  "china-hebei":        { annualTWh: 2.0, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~2 TWh/yr (north China wind corridor, Zhangjiakou transmission bottleneck)", reportDate: "2025" },
-  "china-heilongjiang": { annualTWh: 1.5, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~1.5 TWh/yr (northeast grid; Daqing-area wind build-out)", reportDate: "2025" },
-  "china-jilin":        { annualTWh: 1.0, kind: "wind", localSolarPeakUTC: 4, source: "NEA 2024 provincial RE monitoring bulletin — wind curtailment ~1 TWh/yr (northeast grid; Baicheng wind corridor)", reportDate: "2025" },
+  // xinjiang moved to src/data/xinjiang.json.ts (fuel-split: wind + solar, 2026-06-16)
+  // china-hebei moved to src/data/china-hebei.json.ts (fuel-split: wind + solar, 2026-06-16)
+  // china-heilongjiang moved to src/data/china-heilongjiang.json.ts (fuel-split: wind + solar, 2026-06-16)
+  // china-jilin moved to src/data/china-jilin.json.ts (fuel-split: wind + solar, 2026-06-16)
   iceland: { annualTWh: 5.3, kind: "hydro-seasonal", seasonalSharesKey: "iceland", source: "Orkustofnun - Icelandic National Energy Authority (glacial-melt + snowmelt, peaks May-Aug)", reportDate: "2024" },
   // norway-no5 reverted live→estimated 2026-06-07: Statnett does not publish
   // per-zone A75 data for the NO5 bidding zone (all psrTypes return code 999

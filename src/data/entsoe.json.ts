@@ -152,6 +152,56 @@ export const ZONES = [
     technologies: [{ psrType: "B16", fuel: "solar", rate: 0.047 }],
     sourceNote: "ENTSO-E Sardinia: island HVDC constraint; solar-dominant share.",
   },
+  // Italy bidding zones CNOR/CSUD/SUD/CALA — the 4 of 7 missing from the dashboard (granularity survey 2026-06-10).
+  // ENTSO-E A75 confirmed live for both B16 (solar) and B19 (wind) on 2026-06-17. T1b: national Terna anchor split by zone.
+  {
+    id: "italy-cnord-wind",
+    domain: "10Y1001A1001A70O",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.004 }],
+    sourceNote: "ENTSO-E Italy Centre-North (CNOR) wind share of the Terna 2024 national curtailment anchor.",
+  },
+  {
+    id: "italy-cnord-solar",
+    domain: "10Y1001A1001A70O",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.008 }],
+    sourceNote: "ENTSO-E Italy Centre-North (CNOR) solar share of the Terna 2024 national curtailment anchor.",
+  },
+  {
+    id: "italy-csud-wind",
+    domain: "10Y1001A1001A71M",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.006 }],
+    sourceNote: "ENTSO-E Italy Centre-South (CSUD) wind share of the Terna 2024 national curtailment anchor.",
+  },
+  {
+    id: "italy-csud-solar",
+    domain: "10Y1001A1001A71M",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.025 }],
+    sourceNote: "ENTSO-E Italy Centre-South (CSUD) solar share — high-solar zone — of the Terna 2024 national anchor.",
+  },
+  {
+    id: "italy-sud-wind",
+    domain: "10Y1001A1001A788",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.012 }],
+    sourceNote: "ENTSO-E Italy South (SUD) wind share — Puglia/Basilicata wind — of the Terna 2024 national anchor.",
+  },
+  {
+    id: "italy-sud-solar",
+    domain: "10Y1001A1001A788",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.030 }],
+    sourceNote: "ENTSO-E Italy South (SUD) solar share — highest Italian solar curtailment — of the Terna 2024 anchor.",
+  },
+  {
+    id: "italy-calabria-wind",
+    domain: "10Y1001C--00096J",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.030 }],
+    sourceNote: "ENTSO-E Italy Calabria (CALA) wind share — wind-dominant peninsula tip — of the Terna 2024 anchor.",
+  },
+  {
+    id: "italy-calabria-solar",
+    domain: "10Y1001C--00096J",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.008 }],
+    sourceNote: "ENTSO-E Italy Calabria (CALA) solar share of the Terna 2024 national curtailment anchor.",
+  },
   {
     id: "sweden-north",
     domain: "10Y1001A1001A46L",
