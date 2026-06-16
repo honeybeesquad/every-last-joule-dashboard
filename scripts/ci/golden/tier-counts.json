@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (EIA-930 9 second-tier US BAs added as 18 T2 regions per granularity survey 2026-06-10; T2 6→24, total 385→403). Prior: 2026-06-10 (peru-solar moved T1a→T1b after COES EDI anchoring + daylight-only live generation shape).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (Italy CNOR/CSUD/SUD/CALA bidding zones added as 8 T1b regions per granularity survey; T1b 10→18, total 403→411). Prior: 2026-06-17 (EIA-930 9 second-tier US BAs added as 18 T2 regions; T2 6→24, total 385→403).",
   "T1a": 149,
-  "T1b": 10,
+  "T1b": 18,
   "T1c": 1,
   "T2": 24,
   "T2-flare": 8,
   "T3": 211,
-  "total": 403
+  "total": 411
 }

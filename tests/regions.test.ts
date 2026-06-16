@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 403 canonical regions", () => {
+  it("has 411 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -99,10 +99,11 @@ describe("regions", () => {
     // Issue #62 (2026-05-06): add Palestine T3 static. Net +1 region. 383 + 1 = 384.
     // 2026-05-24: new-zealand-hydro added (T1a). 384 + 1 = 385.
     // 2026-06-17: EIA-930 9 second-tier US BAs added as 18 T2 regions (granularity survey). 385 + 18 = 403.
-    expect(REGIONS.length).toBe(403);
+    // 2026-06-17: Italy CNOR/CSUD/SUD/CALA bidding zones added as 8 T1b regions. 403 + 8 = 411.
+    expect(REGIONS.length).toBe(411);
   });
 
-  it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
+  it("has 168 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
     // ... (unchanged through phase-2.6) ...
     // PR #19 peru split (2026-04-29): peru → peru-hydro + peru-solar + peru-wind.
     // With the parent removed, this is net +2 live. 63 + 2 = 65.
@@ -174,9 +175,9 @@ describe("regions", () => {
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
     expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(10);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(18);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(160);
+    expect(liveTotal).toBe(168);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -206,9 +207,9 @@ describe("regions", () => {
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. T1a: 147→150. Total: 157→160.
     // 2026-06-10: peru-solar T1a→T1b. T1a: 150→149; T1b: 9→10.
     expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(10);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(18);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(160);
+    expect(liveTotal).toBe(168);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
