@@ -1,6 +1,6 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-06-12 (granularity-gaps survey PR open on `feat/granularity-gaps-survey`; previously CI automation fix #135, PRs #128–#132)
+**Last verified against git:** 2026-06-16 (#163 granularity-gaps survey + #149 accuracy gates merged to `main` this session; #153 flare-removal draft parked as a future renewables-only variant. Previously: CI automation fix #135, PRs #128–#132)
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
@@ -105,11 +105,18 @@ Diagnosed from persistent Vercel build-log errors (all builds since ~2026-05-13 
 
 ## What's NOT shipped / open PRs
 
-**Open: Granularity & gaps survey — coverage-audit v2 (PR #163, branch `feat/granularity-gaps-survey`, 2026-06-10).**
+**SHIPPED 2026-06-16 — Granularity & gaps survey, coverage-audit v2 (PR #163).**
 - Schema v2 (`scripts/validation/coverage_audit_schema.py`): +`parent_region_id`/`granularity_available`/`expected_new_regions`, split-row scoring branch (no already-modelled penalty); v1 world CSV migrated to 20 cols, scores byte-stable (regression-tested). 35 pytest green.
 - `data/coverage-audit/2026-06-10-granularity-and-gaps.csv` — 143 candidates (32 split / 111 gap) across 10 research lanes, lint-clean; top-15 cold-verified **15/15 confirmed, 0 downgraded**. Standout: the World Bank GGFR per-site flare XLSX carries a populated `Field Name` column → `s-iraq`/`e-saudi` can split into named oilfields (~15 new flare regions); 9 EIA-930 US BAs are unwired-but-open; the dominant gap mode is TLS/egress decay, not secrecy.
-- Synthesis + ranked top-20 split/gap backlog: `docs/research/2026-06-10-granularity-and-gaps.md`. Implementation PRs to follow, top-ranked first; each split PR walks the 5-file tier checklist + magnitude `--update`.
-- No TS surface touched (typecheck + 833 tests green); pure additive audit tooling + data + docs. Spec/plan: `docs/superpowers/specs|plans/2026-06-10-granularity-*`.
+- Synthesis + ranked top-20 split/gap backlog: `docs/research/2026-06-10-granularity-and-gaps.md`. **Implementation PRs still to come, top-ranked first; each split PR walks the 5-file tier checklist + magnitude `--update`.**
+- No TS surface touched; pure additive audit tooling + data + docs. Spec/plan: `docs/superpowers/specs|plans/2026-06-10-granularity-*`.
+
+**SHIPPED 2026-06-16 — Accuracy gates (PR #149).** Three CI-enforced safeguards against the worst shipped bug classes (Brazil-ONS cap-as-curtailment eabf8e5; Hokkaido 万kW 10× overcount):
+- **Magnitude-drift golden gate** — `scripts/ci/check-magnitude-golden.ts` locks every live-tier region's snapshot `totalTWh` to a committed baseline (`scripts/ci/golden/magnitude-baseline.json`) within a factor-4 band; `--update` re-baselines (commit = the review trail), `--self-test` covers the drift logic. Wired into `ci:gates` + `verify`.
+- **Zero-allowlist expiry** — `KNOWN_ZERO_LIVE_ALLOWLIST` extracted to `scripts/lib/zero-allowlist.ts`; every entry carries `addedDate`+`reviewBy`, and `npm run validate` fails on expired entries until a human re-confirms the zero. The all-zero check can no longer be masked forever.
+- **Exact unit-conversion pins** — `tests/unit-conversions.test.ts`: exact-equality regression pins on the MW→GW, MWh→TWh, GW→EH/s constants.
+
+**Parked — renewables-only variant (#153, draft `codex/remove-flare-gas`).** A full strip of flare-gas content (UI toggle/globe/tooltip + public paper route + flare region records → dataset 385→374, ~1657 deletions across 78 files). **Not merged into `main` — would delete the flagship dataset's majority finding** (verified total is ~53% flare / 47% curtailed renewables; the paper leads with the flare-dominant headline). Owner wants this as a **separate renewables-only product variant**, scoped on its own (a distinct build/site, cf. `every-last-particle`) rather than a mutation of the canonical 385-region dataset. Draft left open pending that scoping.
 
 **Previously shipped — CI automation fix (#135, verified by bot PRs #136/#137), 2026-06-09.** The two scheduled committers — `Historical snapshot append` and `Relay pull (Colombia + India)` — had been failing on *every* run: `main`'s required `verify` status check rejects direct bot pushes (`GH006 … Required status check "verify" is expected`), and relay-pull additionally lacked `contents: write` (403). Both workflows now commit to a bot branch, open a PR, and `--auto --squash` merge once `verify` is green; `[skip ci]` dropped from the relay commit so `verify` actually runs. `ci.yml` also triggers on `push: automation/**` so the bot's branch-push deterministically produces the `verify` check — the `pull_request: opened` event can race the push-then-create and silently drop its run (observed on PR #135). **`AUTOMATION_TOKEN` secret created** — fine-grained PAT, owner honeybeesquad, scoped to this repo only, Contents + Pull requests write, **no expiration** (set 2026-06-09 per owner's call — trades the standing-credential risk for zero silent breakage; revoke/regenerate manually via token id 15584863 if it ever leaks). The default `GITHUB_TOKEN` deliberately cannot trigger `verify`, which is why a PAT is required. `allow_auto_merge` enabled repo-wide 2026-06-09. **Verified end-to-end:** both workflows dispatched → PRs auto-merged (#136 relay CSVs Colombia 1700/India 309 rows, #137 history snapshot). Unrelated failing workflows in the original report (`Deploy`, `Portal Monitor + Data Update`) belong to the separate `every-last-particle` repo.
 

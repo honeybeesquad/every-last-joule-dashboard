@@ -20,6 +20,10 @@
 
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, basename } from "node:path";
+import {
+  zeroAllowlistIds,
+  expiredZeroAllowlistEntries,
+} from "./lib/zero-allowlist.js";
 
 interface PerRegion {
   regionId: string;
@@ -81,61 +85,10 @@ const LIVE_TIER_SET: ReadonlySet<unknown> = new Set([
   "T1c-live-neighbour-anchored",
 ]);
 
-// Regions that legitimately produce all-zero T1a profiles in the rolling
-// 30-day window — small grids or sub-state allocations with installed
-// capacity that either curtails rarely or contributes a near-zero slice
-// after fuelShare splitting. Each entry is "suspected legitimate, not
-// yet investigated"; a follow-up audit should confirm and either
-// downgrade the tier (if the upstream is structurally non-T1a) or
-// remove the exemption (if real curtailment is being silently dropped).
-//
-// Adding to this list must be a deliberate action — the whole point of
-// the all-zero check is to surface silent failure for everything not
-// already on it. Seeded 2026-05-12 from the committee code review
-// (DATA-3); see docs/ops/committee-code-review-2026-05-12.md.
-const KNOWN_ZERO_LIVE_ALLOWLIST: ReadonlySet<string> = new Set([
-  // AEMO: Tasmania has ~0 GW utility solar; SEMIDISPATCHCAP almost never fires there.
-  "aemo-tas-solar",
-  // Brazil ONS sub-state allocations: smaller states / "other" buckets
-  // contribute near-zero after fuelShare splitting from the regional feed.
-  "brazil-maranhao-solar",
-  "brazil-mg-wind",
-  "brazil-sp-wind",
-  "brazil-mt-wind",
-  "brazil-mt-solar",
-  "brazil-go-wind",
-  "brazil-pr-wind",
-  "brazil-pr-solar",
-  "brazil-rs-solar",
-  "brazil-other-solar",
-  // ENTSO-E small Balkan zones: limited renewable installed base; A75
-  // curtailment series legitimately runs at zero for the window.
-  "serbia-solar",
-  "bosnia-and-herzegovina",
-  "north-macedonia-solar",
-  "montenegro",
-  // Uruguay ADME: very small grid; renewable curtailment frequently zero.
-  "uruguay",
-  // ENTSO-E small-grid wind zones where the A75 curtailment signal is
-  // structurally below the 1 MW (0.001 GW) threshold — either because
-  // installed wind capacity is tiny (Slovenia, Slovakia, Moldova) or
-  // because the calibration rate is an acknowledged placeholder
-  // (Italy North 0.3%, Czech Republic 1%). These are legitimate near-zero
-  // live-tier records, not silent parser failures.
-  "italy-north-zone-wind",
-  "czech-republic-wind",
-  "slovenia-wind",
-  "slovakia-wind",
-  "moldova-wind",
-  // EIA NYIS: solar generation is aggregated into "other" in the EIA
-  // dataset for respondent NYIS, so the SUN fuel-type feed returns all-zero
-  // values. This is a known data limitation, not a silent parser failure.
-  "nyiso-rest-solar",
-  // Okinawa Electric: very small island grid (~170 MW solar); renewable
-  // curtailment is minimal and frequently zero across the 30-day window.
-  // Confirmed legitimate by 2026-06-07 live fetch (0.0000 GW peak).
-  "japan-okinawa",
-]);
+// Extracted to scripts/lib/zero-allowlist.ts so each exemption carries an
+// expiry date and the list is unit-testable. See that module for the
+// rationale and the add-an-entry protocol.
+const KNOWN_ZERO_LIVE_ALLOWLIST: ReadonlySet<string> = zeroAllowlistIds();
 const STATUS_ENUM: ReadonlySet<unknown> = new Set(["live", "cached", "degraded", null]);
 const SOURCE_PROVENANCE_ENUM: ReadonlySet<unknown> = new Set([
   "verified",
@@ -238,7 +191,7 @@ function validate(obj: unknown, ctx: string): string[] {
         Array.isArray(arr) && arr.some((v) => typeof v === "number" && Number.isFinite(v) && v > 0);
       if (!anyPositive(r.profile) && !anyPositive(r.latestProfile)) {
         errs.push(
-          `live-tier (${r.confidenceTier}) but profile and latestProfile are all-zero — likely silent upstream failure (add to KNOWN_ZERO_LIVE_ALLOWLIST in scripts/validate-snapshots.ts if this is a known-legitimate zero)`,
+          `live-tier (${r.confidenceTier}) but profile and latestProfile are all-zero — likely silent upstream failure (add an entry to scripts/lib/zero-allowlist.ts if this is a known-legitimate zero)`,
         );
       }
     }
@@ -327,6 +280,14 @@ for (const f of files) {
     const errs = validate(parsed, fileLabel);
     failures.push(...errs);
   }
+}
+
+for (const e of expiredZeroAllowlistEntries(new Date())) {
+  failures.push(
+    `zero-allowlist: "${e.regionId}" expired (reviewBy ${e.reviewBy}, added ${e.addedDate}) — ` +
+      `re-confirm the zero is legitimate and bump reviewBy in scripts/lib/zero-allowlist.ts, ` +
+      `or remove the entry / downgrade the tier. Note: ${e.note}`,
+  );
 }
 
 console.log(`Validated ${files.length} snapshot files → ${totalRegions} region records`);

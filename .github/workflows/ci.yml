@@ -25,6 +25,9 @@ name: CI
 #                        per-bucket population of REGIONS matches the
 #                        locked golden in scripts/ci/golden/tier-counts.json.
 #                        Forces tier movements to appear in PR review.
+#   5b. magnitude-golden — scripts/ci/check-magnitude-golden.ts. Asserts every
+#                        live-tier snapshot totalTWh is within 4x of the locked baseline;
+#                        catches Brazil-ONS / Hokkaido-class unit and formula bugs.
 #   6. docs-drift      — scripts/ci/check-docs-drift.ts. Asserts every
 #                        region has a docs/validation/<id>.md and the
 #                        Tier line matches Region.tier.
@@ -79,6 +82,12 @@ jobs:
 
       - name: Tally golden (per-bucket population vs locked golden)
         run: npm run ci:tally-golden
+
+      - name: Magnitude self-test (drift-logic invariants)
+        run: npm run ci:magnitude-self-test
+
+      - name: Magnitude golden (live-tier totalTWh vs locked baseline)
+        run: npm run ci:magnitude-golden
 
       - name: Docs drift (validation MDs vs canonical regions.ts)
         run: npm run ci:docs-drift
