@@ -133,6 +133,21 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // annual TWh. Provisional 0.5 TWh/yr tuned to APG's redispatch narrative;
   // upgrade path is an ENTSO-E A75 extraction pass.
   austria: { annualTWh: 0.5, kind: "flat", source: "APG Strombilanz 2024 + ENTSO-E redispatch narrative (provisional 0.5 TWh/yr; ENTSO-E A75 extraction pending)", reportDate: "2024" },
+  // Canada T2 hydro-operator calibrated proxy — promoted from T3 static 2026-06-17.
+  // Each province anchored to published hydro-operator annual generation report,
+  // using flat-base profile (hydro is monthly-seasonal, not diurnal).
+  // Quebec: Hydro-Quebec 2024 annual report — 179.2 TWh net generation,
+  //   ~6 TWh estimated spill/curtailment (reservoir management, spring melt).
+  quebec: { annualTWh: 6.0, kind: "flat", source: "Hydro-Quebec 2024 annual report (179.2 TWh net generation; ~6 TWh reservoir spill/curtailment during spring freshet; flat base 24/7)", reportDate: "2024" },
+  // British Columbia: BC Hydro 2024 annual report — 59.7 TWh generation,
+  //   ~2 TWh estimated spill (Coquitlam/Revelstoke reservoir management).
+  "british-columbia": { annualTWh: 2.0, kind: "flat", source: "BC Hydro 2024 annual report (59.7 TWh generation; ~2 TWh reservoir spill/curtailment; flat base 24/7)", reportDate: "2024" },
+  // Manitoba: Manitoba Hydro 2024 annual report — 34.8 TWh generation,
+  //   ~1.5 TWh spill (Lac Seul/LL Williams reservoir management; Keeyask commissioning).
+  manitoba: { annualTWh: 1.5, kind: "flat", source: "Manitoba Hydro 2024 annual report (34.8 TWh generation; ~1.5 TWh reservoir spill; Keeyask commissioning; flat base 24/7)", reportDate: "2024" },
+  // Saskatchewan: SaskPower 2024 annual report — ~20 TWh total generation,
+  //   hydro ~0.9 TWh; ~0.3 TWh estimated hydro spill (Saskatchewan River system).
+  saskatchewan: { annualTWh: 0.3, kind: "flat", source: "SaskPower 2024 annual report (~0.9 TWh hydro; ~0.3 TWh estimated spill; Saskatchewan River reservoir management; flat base 24/7)", reportDate: "2024" },
   // Russia Murmansk — SO UPS published monthly dispatch-limit events for
   // Kola Peninsula wind plants in 2024 (84 MW Sep, 77 MW Nov). Annual
   // energy not tabulated; estimated ~0.07 TWh/yr assuming ~80 MW limit

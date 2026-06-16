@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
+import { splitRegion } from "../lib/split-region.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
@@ -246,12 +247,12 @@ function lastThirtyDays(points: CurtailmentPoint[]): CurtailmentPoint[] {
   return points.filter((p) => new Date(p.utcTimestamp).getTime() > startMs);
 }
 
-export function buildUruguayRegionData(points: CurtailmentPoint[], sourceNote: string): RegionData {
+export function buildUruguayRegionData(points: CurtailmentPoint[], sourceNote: string, regionId: string = REGION_ID): RegionData {
   const window = lastThirtyDays(points);
   if (window.length === 0) throw new Error("ADME restrictions workbook contained no parseable hourly rows");
   const lastUpdated = window.at(-1)?.utcTimestamp ?? new Date().toISOString();
   return {
-    regionId: REGION_ID,
+    regionId,
     profile: timeOfDayAverageGW(window),
     latestProfile: latestCompleteUtcDayProfileGW(window),
     totalTWh: totalTWh30d(window),
@@ -259,7 +260,6 @@ export function buildUruguayRegionData(points: CurtailmentPoint[], sourceNote: s
     lastUpdated,
     lastSuccessAt: lastUpdated,
     sourceNote,
-    fuelShare: { wind: 0.96, solar: 0.04 },
   };
 }
 
@@ -269,7 +269,7 @@ async function fetchBytes(url: string): Promise<Uint8Array> {
   return new Uint8Array(await res.arrayBuffer());
 }
 
-async function run(): Promise<RegionData> {
+async function run(): Promise<Record<string, RegionData>> {
   const [controlPanelHtml, consignasHtml] = await Promise.all([
     fetchText(CONTROL_PANEL_URL, { timeoutMs: 30000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } }),
     fetchText(INFO_CONSIGNAS_URL, { timeoutMs: 30000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } }),
@@ -280,16 +280,39 @@ async function run(): Promise<RegionData> {
 
   const url = `${RESTRICTIONS_URL}?anod=${latest.year}&mesd=${String(latest.month).padStart(2, "0")}&anoh=${latest.year}&mesh=${String(latest.month).padStart(2, "0")}`;
   const points = parseAdmeRestrictionsXlsx(await fetchBytes(url), plants);
-  return buildUruguayRegionData(points, `ADME control-panel hourly Restricciones Operativas workbook (${latest.year}-${String(latest.month).padStart(2, "0")}); renewable plant columns matched from info_consignas.php and fallback plant registry. Source: ${url}`);
+  const sourceNote = `ADME control-panel hourly Restricciones Operativas workbook (${latest.year}-${String(latest.month).padStart(2, "0")}); renewable plant columns matched from info_consignas.php and fallback plant registry. Source: ${url}`;
+  const aggregate = buildUruguayRegionData(points, sourceNote);
+  // ADME data is aggregate renewable curtailment (wind ~96%, solar ~4% per ADME plant registry).
+  // Split into per-fuel children using the observed fuel-share ratio.
+  const WIND_SHARE = 0.96;
+  const SOLAR_SHARE = 0.04;
+  return {
+    "uruguay-wind": {
+      ...splitRegion(aggregate, "uruguay-wind", WIND_SHARE, "Uruguay wind share (~96% of ADME aggregate, ADME plant registry)"),
+      fuelShare: { wind: 1 },
+    },
+    "uruguay-solar": {
+      ...splitRegion(aggregate, "uruguay-solar", SOLAR_SHARE, "Uruguay solar share (~4% of ADME aggregate, ADME plant registry)"),
+      fuelShare: { solar: 1 },
+    },
+  };
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback<RegionData>(REGION_ID, run, {
+  withFallback<Record<string, RegionData>>(REGION_ID, run, {
     regionTier: "live" as const,
-    tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
-    tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+    tagLive: (r) => {
+      const tagged: Record<string, RegionData> = {};
+      for (const [k, v] of Object.entries(r)) tagged[k] = { ...v, sourceStatus: "live" as const };
+      return tagged;
+    },
+    tagCached: (c) => {
+      const tagged: Record<string, RegionData> = {};
+      for (const [k, v] of Object.entries(c)) tagged[k] = { ...v, sourceStatus: "cached" as const };
+      return tagged;
+    },
   })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {

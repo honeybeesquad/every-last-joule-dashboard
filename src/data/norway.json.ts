@@ -87,9 +87,10 @@ async function fetchHydroSeries(domain: string): Promise<ReturnType<typeof parse
 }
 
 async function buildZone(spec: ZoneSpec): Promise<Record<string, RegionData>> {
-  const [hydro, wind] = await Promise.all([
+  const [hydro, wind, solar] = await Promise.all([
     fetchHydroSeries(spec.domain),
     spec.hydroOnly ? Promise.resolve([]) : fetchSeries(spec.domain, "B19"),
+    spec.hydroOnly ? Promise.resolve([]) : fetchSeries(spec.domain, "B16"),
   ]);
 
   if (spec.hydroOnly) {
@@ -103,8 +104,8 @@ async function buildZone(spec: ZoneSpec): Promise<Record<string, RegionData>> {
     return { [spec.id]: base };
   }
 
-  if (hydro.length === 0 && wind.length === 0) {
-    throw new Error(`Norway ${spec.id}: ENTSO-E returned no hydro or wind data`);
+  if (hydro.length === 0 && wind.length === 0 && solar.length === 0) {
+    throw new Error(`Norway ${spec.id}: ENTSO-E returned no hydro, wind, or solar data`);
   }
   if (hydro.length === 0) {
     throw new Error(`Norway ${spec.id}: ENTSO-E returned no hydro data`);
@@ -115,22 +116,27 @@ async function buildZone(spec: ZoneSpec): Promise<Record<string, RegionData>> {
 
   const hydroTotalMw = hydro.reduce((s, p) => s + p.mw, 0);
   const windTotalMw = wind.reduce((s, p) => s + p.mw, 0);
-  const denom = hydroTotalMw + windTotalMw;
+  const solarTotalMw = solar.reduce((s, p) => s + p.mw, 0);
+  const denom = hydroTotalMw + windTotalMw + solarTotalMw;
   const fuelShare = denom > 0
-    ? { hydro: hydroTotalMw / denom, wind: windTotalMw / denom }
+    ? { hydro: hydroTotalMw / denom, wind: windTotalMw / denom, solar: solarTotalMw / denom }
     : undefined;
 
   const noteSuffix = fuelShare
-    ? `× ${(spec.rate * 100).toFixed(1)}% rate (observed 30d split: hydro ${(fuelShare.hydro * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}%)`
+    ? `× ${(spec.rate * 100).toFixed(1)}% rate (observed 30d split: hydro ${(fuelShare.hydro * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`
     : `× ${(spec.rate * 100).toFixed(1)}% rate`;
 
   const hydroData = buildZoneData(`${spec.id}-hydro`, hydro, spec.rate, `${spec.label} ${noteSuffix} — hydro share`);
   const windData = buildZoneData(`${spec.id}-wind`, wind, spec.rate, `${spec.label} ${noteSuffix} — wind share`);
 
-  return {
-    [`${spec.id}-hydro`]: fuelShare ? { ...hydroData, fuelShare } : hydroData,
-    [`${spec.id}-wind`]: fuelShare ? { ...windData, fuelShare } : windData,
-  };
+  const out: Record<string, RegionData> = {};
+  out[`${spec.id}-hydro`] = fuelShare ? { ...hydroData, fuelShare } : hydroData;
+  out[`${spec.id}-wind`] = fuelShare ? { ...windData, fuelShare } : windData;
+  if (solar.length > 0) {
+    const solarData = buildZoneData(`${spec.id}-solar`, solar, spec.rate, `${spec.label} ${noteSuffix} — solar share`);
+    out[`${spec.id}-solar`] = fuelShare ? { ...solarData, fuelShare } : solarData;
+  }
+  return out;
 }
 
 export async function buildNorwayData(): Promise<Record<string, RegionData>> {

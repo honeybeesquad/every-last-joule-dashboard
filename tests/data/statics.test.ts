@@ -54,7 +54,10 @@ describe("static regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated,
     // added to STATIC_REGIONS as canonical anchors. 142 + 2 = 144.
     // 2026-06-07: norway-no5 reverted live→estimated, added to STATIC_REGIONS. 144 + 1 = 145.
-    expect(Object.keys(data).length).toBe(145);
+    // 2026-06-17: Canada T2 hydro calibration — quebec, british-columbia,
+    // manitoba, saskatchewan promoted from T3 to T2 anchored in STATIC_REGIONS.
+    // Canonical count: 145 + 4 = 149.
+    expect(Object.keys(data).length).toBe(149);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -94,7 +97,9 @@ describe("static regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar added to pool as canonical.
     // Research pool: 146 + 2 = 148. Canonical: 142 + 2 = 144. Non-canonical: 4.
     // 2026-06-07: norway-no5 added to pool as canonical. Research pool: 148 + 1 = 149. Canonical: 144 + 1 = 145. Non-canonical: 4.
-    expect(Object.keys(researchData).length).toBe(149);
+    // 2026-06-17: Canada T2 hydro calibration — 4 new canonical entries.
+    // Research pool: 149 + 4 = 153. Canonical: 145 + 4 = 149. Non-canonical: 4.
+    expect(Object.keys(researchData).length).toBe(153);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 

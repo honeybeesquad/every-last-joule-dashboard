@@ -393,9 +393,12 @@ const regionData = {
   "bulgaria-wind": entsoe["bulgaria-wind"],
   "bulgaria-solar": entsoe["bulgaria-solar"],
   // lithuania + latvia reverted live→estimated 2026-05-11; flow from `...statics`.
-  estonia: entsoe.estonia,
+  "estonia-wind": entsoe["estonia-wind"],
+  "estonia-solar": entsoe["estonia-solar"],
   // PR #45 leftover Balkan + Baltic regions — wired per Phase 3a-v2 per-fuel split.
   "bosnia-and-herzegovina": entsoe["bosnia-and-herzegovina"],
+  "bosnia-and-herzegovina-solar": entsoe["bosnia-and-herzegovina-solar"],
+  "bosnia-and-herzegovina-wind": entsoe["bosnia-and-herzegovina-wind"],
   "croatia-wind": entsoe["croatia-wind"],
   "croatia-solar": entsoe["croatia-solar"],
   "luxembourg-wind": entsoe["luxembourg-wind"],
@@ -404,6 +407,8 @@ const regionData = {
   "moldova-solar": entsoe["moldova-solar"],
   // malta reverted live→estimated 2026-05-11; flows from `...statics`.
   montenegro: entsoe.montenegro,
+  "montenegro-solar": entsoe["montenegro-solar"],
+  "montenegro-wind": entsoe["montenegro-wind"],
   "north-macedonia-wind": entsoe["north-macedonia-wind"],
   "north-macedonia-solar": entsoe["north-macedonia-solar"],
   "serbia-wind": entsoe["serbia-wind"],
@@ -424,7 +429,7 @@ const regionData = {
   "gb-england-wales-solar": splitRegion(northSea.solar, "gb-england-wales-solar", 0.30, "England+Wales share of GB solar curtailment"),
   ...brazilNE,
   // Norway split (2026-04-24): 5 ENTSO-E bidding zones NO1-NO5. The
-  // Norway loader emits a Record keyed by norway-no{1-4}-{hydro,wind} + norway-no5 (hydro only).
+  // Norway loader emits a Record keyed by norway-no{1-4}-{hydro,wind,solar} + norway-no5 (hydro only).
   ...norway,
   ...ontario,
   ...alberta,
@@ -438,7 +443,7 @@ const regionData = {
   atacama,
   "chile-wind": chileWind,
   argentina,
-  uruguay,
+  ...uruguay,
   paraguay,
   mexico,
   "japan-chubu":    japanChubu,

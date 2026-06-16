@@ -228,6 +228,18 @@ export const ZONES = [
     sourceNote: "BH Krajina A75 feed; hydro-dominated system. Structural hydro spill excluded per methodology.",
   },
   {
+    id: "bosnia-and-herzegovina-solar",
+    domain: "10YBA-JPCC-----D",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.02 }],
+    sourceNote: "BH Krajina ENTSO-E A75 solar: regional default ~2%.",
+  },
+  {
+    id: "bosnia-and-herzegovina-wind",
+    domain: "10YBA-JPCC-----D",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.02 }],
+    sourceNote: "BH Krajina ENTSO-E A75 wind: regional default ~2%.",
+  },
+  {
     id: "north-macedonia-wind",
     domain: "10YMK-MEPSO----8",
     technologies: [{ psrType: "B19", fuel: "wind", rate: 0.03 }],
@@ -244,6 +256,18 @@ export const ZONES = [
     domain: "10YCS-CG-TSO---S",
     technologies: [],
     sourceNote: "CGES Montenegro A75 feed; hydro-dominated system. Structural hydro spill excluded per methodology.",
+  },
+  {
+    id: "montenegro-solar",
+    domain: "10YCS-CG-TSO---S",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.02 }],
+    sourceNote: "CGES Montenegro ENTSO-E A75 solar: regional default ~2%.",
+  },
+  {
+    id: "montenegro-wind",
+    domain: "10YCS-CG-TSO---S",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.02 }],
+    sourceNote: "CGES Montenegro ENTSO-E A75 wind: regional default ~2%.",
   },
   {
     id: "croatia-wind",
@@ -287,12 +311,20 @@ export const ZONES = [
   // index.md (`...statics` spread runs after the explicit ENTSO-E wiring). Now
   // tier="estimated" in regions.ts and flowing purely from statics.
   {
-    id: "estonia",
+    id: "estonia-wind",
     domain: "10Y1001A1001A39I",
     technologies: [
       { psrType: "B19", fuel: "wind", rate: 0.025 },
     ],
     sourceNote: "Elering Estonia ENTSO-E A75 feed. Wind 2.5% regional default.",
+  },
+  {
+    id: "estonia-solar",
+    domain: "10Y1001A1001A39I",
+    technologies: [
+      { psrType: "B16", fuel: "solar", rate: 0.02 },
+    ],
+    sourceNote: "Elering Estonia ENTSO-E A75 feed. Solar 2% regional default.",
   },
   {
     id: "luxembourg-wind",
