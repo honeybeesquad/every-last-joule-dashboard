@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 418,
+  "totalValidationDocs": 433,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 411,
-  "pctCited": 1.67,
+  "docsNotCiting": 426,
+  "pctCited": 1.62,
   "perDocCitations": [
     {
       "file": "aemo-nsw-solar.md",
@@ -422,7 +422,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "china-anhui.md",
+      "file": "china-anhui-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-anhui-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -467,17 +472,32 @@
       "matchedPatterns": []
     },
     {
-      "file": "china-hebei.md",
+      "file": "china-hebei-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "china-heilongjiang.md",
+      "file": "china-hebei-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "china-henan.md",
+      "file": "china-heilongjiang-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-heilongjiang-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-henan-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-henan-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -527,22 +547,42 @@
       "matchedPatterns": []
     },
     {
-      "file": "china-jilin.md",
+      "file": "china-jilin-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "china-liaoning.md",
+      "file": "china-jilin-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "china-shaanxi.md",
+      "file": "china-liaoning-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "china-shandong.md",
+      "file": "china-liaoning-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shaanxi-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shaanxi-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shandong-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "china-shandong-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -919,6 +959,11 @@
       ]
     },
     {
+      "file": "india-chhattisgarh.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "india-east.md",
       "cited": false,
       "matchedPatterns": []
@@ -938,6 +983,11 @@
       ]
     },
     {
+      "file": "india-madhya-pradesh.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "india-maharashtra.md",
       "cited": true,
       "matchedPatterns": [
@@ -946,6 +996,16 @@
     },
     {
       "file": "india-north.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-odisha.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-punjab.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -967,6 +1027,16 @@
       "matchedPatterns": [
         "bad[\\s-]conversions?\\s+check"
       ]
+    },
+    {
+      "file": "india-telangana.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-uttar-pradesh.md",
+      "cited": false,
+      "matchedPatterns": []
     },
     {
       "file": "india-west.md",
@@ -2084,7 +2154,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "xinjiang.md",
+      "file": "xinjiang-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "xinjiang-wind.md",
       "cited": false,
       "matchedPatterns": []
     },

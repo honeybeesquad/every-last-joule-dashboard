@@ -3,12 +3,14 @@ import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
 import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
-import { readStateSldcCurtailment } from "../lib/india-gen-re.js";
+import { readStateCsvTotal, readStateSldcCurtailment, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-karnataka";
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const CSV_PATH = join(__dirname, "../../data/historical/india-karnataka-gen-daily.csv");
 const CSV_SLDC_PATH = join(__dirname, "../../data/historical/india-karnataka-sldc-curtailed-daily.csv");
+const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 
 async function run(): Promise<RegionData> {
   const sldc = readStateSldcCurtailment(CSV_SLDC_PATH, 90);
@@ -26,11 +28,28 @@ async function run(): Promise<RegionData> {
     return { ...base, confidenceTier: "T1a-live-tso" as const, sourceProvenance: "verified" };
   }
 
+  const csv = readStateCsvTotal(CSV_PATH, 365);
+
+  if (csv !== null) {
+    const curtailedTWh = computeCurtailedEnergy(csv.solarTWh, CURTAILMENT.rate);
+    const base = buildTypicalSolarRegion(
+      REGION_ID,
+      6.5,
+      curtailedTWh,
+      `CEA gen-re.cea.gov.in daily Excel, State-Wise sheet (${csv.nRows}-day CSV; trailing-365-day solar ${csv.solarTWh.toFixed(2)} TWh). ` +
+      `Annual curtailed energy = CEA generation × Ember India 2024 rate ${(CURTAILMENT.rate * 100).toFixed(0)}% / (1 − rate) = ${curtailedTWh.toFixed(2)} TWh. ` +
+      `Hourly shape is synthetic. Only the generation denominator is from a primary official source.`,
+      new Date().getFullYear().toString(),
+    );
+    return { ...base, sourceProvenance: "official-lead" };
+  }
+
+  // No CSV yet — T3 modelled fallback
   const base = buildTypicalSolarRegion(
     REGION_ID,
     6.5,
     0.5,
-    `No KSLDC curtailment CSV yet; T3-modelled fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
+    `No CEA CSV present; T3-modelled fallback calibrated to POSOCO South Region RE curtailment 2024 ` +
     `(~0.5 TWh/yr Karnataka solar curtailment; Pavagada Solar Park + Bidar solar + growing wind). ` +
     `Will be promoted to T1a-live-tso when the KSLDC fetcher accumulates ≥30 daily rows.`,
     "2024",

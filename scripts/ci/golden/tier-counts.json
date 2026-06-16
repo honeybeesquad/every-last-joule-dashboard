@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (Italy CNOR/CSUD/SUD/CALA bidding zones added as 8 T1b regions per granularity survey; T1b 10→18, total 403→411). Prior: 2026-06-17 (EIA-930 9 second-tier US BAs added as 18 T2 regions; T2 6→24, total 385→403).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (China province fuel-splits + 6 India states added as 15 net T3 regions, PR #203; T3 211→226, total 411→426). Prior: 2026-06-17 (Italy CNOR/CSUD/SUD/CALA bidding zones added as 8 T1b regions; T1b 10→18, total 403→411).",
   "T1a": 149,
   "T1b": 18,
   "T1c": 1,
   "T2": 24,
   "T2-flare": 8,
-  "T3": 211,
-  "total": 411
+  "T3": 226,
+  "total": 426
 }

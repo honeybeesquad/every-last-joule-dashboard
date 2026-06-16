@@ -1,13 +1,13 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "china-anhui";
 const SOURCE_URL = "https://ember-energy.org/";
 
-async function run({ probe = true } = {}): Promise<RegionData> {
+async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: RegionData }> {
   try {
     if (probe) {
       await fetchText(SOURCE_URL, { timeoutMs: 15000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } });
@@ -15,19 +15,21 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    return buildTypicalSolarRegion(
-      REGION_ID,
-      4,
-      2.1,
-      `Typical-shape fallback: ${(err as Error).message}; Anhui solar curtailment ~2.1 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`,
-      "2024",
-    );
+    const note = `Typical-shape fallback: ${(err as Error).message}; Anhui mixed wind+solar curtailment ~2.8 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
+    return {
+      wind:  buildTypicalWindRegion("china-anhui-wind",  15, 0.7, note + " — wind share (~0.7 TWh/yr, northern Anhui wind corridor)", "2024"),
+      solar: buildTypicalSolarRegion("china-anhui-solar", 4, 2.1, note + " — solar share (~2.1 TWh/yr)", "2024"),
+    };
   }
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  withFallback(REGION_ID, () => run())
+  withFallback<{ wind: RegionData; solar: RegionData }>(REGION_ID, () => run(), {
+    regionTier: "live" as const,
+    tagLive: r => r,
+    tagCached: c => c as { wind: RegionData; solar: RegionData },
+  })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => { console.error("china-anhui loader failed", err); process.exit(1); });
 }

@@ -9,6 +9,13 @@ export const CURTAILMENT_RATES: Record<string, { primaryFuel: "solar" | "wind" |
   "india-tamil-nadu":     { primaryFuel: "wind",  rate: 0.05 },
   "india-andhra-pradesh": { primaryFuel: "solar", rate: 0.03 },
   "india-maharashtra":    { primaryFuel: "mixed", rate: 0.02 },
+  "india-karnataka":      { primaryFuel: "solar", rate: 0.02 },
+  "india-madhya-pradesh": { primaryFuel: "solar", rate: 0.02 },
+  "india-telangana":      { primaryFuel: "mixed", rate: 0.02 },
+  "india-uttar-pradesh":  { primaryFuel: "solar", rate: 0.01 },
+  "india-punjab":         { primaryFuel: "solar", rate: 0.01 },
+  "india-odisha":         { primaryFuel: "wind",  rate: 0.01 },
+  "india-chhattisgarh":   { primaryFuel: "solar", rate: 0.01 },
 };
 
 // State ID → Hindi+English row label used in CEA State-Wise Excel sheet.
@@ -19,6 +26,13 @@ export const STATE_LABEL_MAP: Record<string, string> = {
   "india-maharashtra":    "महाराष्ट्र / Maharashtra",
   "india-tamil-nadu":     "तमिलनाडु / Tamil Nadu",
   "india-andhra-pradesh": "आंध्र प्रदेश / Andhra Pradesh",
+  "india-karnataka":      "कर्नाटक / Karnataka",
+  "india-madhya-pradesh": "मध्य प्रदेश / Madhya Pradesh",
+  "india-telangana":      "तेलंगाना / Telangana",
+  "india-uttar-pradesh":  "उत्तर प्रदेश / Uttar Pradesh",
+  "india-punjab":         "पंजाब / Punjab",
+  "india-odisha":         "ओडिशा / Odisha",
+  "india-chhattisgarh":   "छत्तीसगढ़ / Chhattisgarh",
 };
 
 interface CsvRow { date: string; windGwh: number; solarGwh: number; }

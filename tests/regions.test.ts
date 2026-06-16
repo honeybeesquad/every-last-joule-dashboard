@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 411 canonical regions", () => {
+  it("has 426 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -100,7 +100,8 @@ describe("regions", () => {
     // 2026-05-24: new-zealand-hydro added (T1a). 384 + 1 = 385.
     // 2026-06-17: EIA-930 9 second-tier US BAs added as 18 T2 regions (granularity survey). 385 + 18 = 403.
     // 2026-06-17: Italy CNOR/CSUD/SUD/CALA bidding zones added as 8 T1b regions. 403 + 8 = 411.
-    expect(REGIONS.length).toBe(411);
+    // 2026-06-17: China province fuel-splits + 6 India states (PR #203), net +15 T3. 411 + 15 = 426.
+    expect(REGIONS.length).toBe(426);
   });
 
   it("has 168 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -287,7 +288,8 @@ describe("regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. +2. 211→213.
     // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). +1. 213→214.
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. -3. 214→211.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(211);
+    // 2026-06-17: China fuel-splits + 6 India states (PR #203), all T3. +15. 211→226.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(226);
   });
 
   it("has 32 anchored regions (8 flare + 6 flat-profile + 18 EIA-930 US BAs)", () => {
@@ -305,7 +307,7 @@ describe("regions", () => {
       // Phase 3c: still mixed (insufficient per-fuel sourcing)
       "china-guangdong", "china-zhejiang", "china-fujian", "china-tianjin",
       // India (static mixed — geoblocked)
-      "india-maharashtra",
+      "india-maharashtra", "india-telangana",
       // Morocco (static mixed)
       "morocco",
       // Phase 2 T3-static mixed
