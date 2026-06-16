@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Citation graph — five options (mockup)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    :root {
+      --navy:    #1A2340;
+      --accent:  #38b0d8;
+      --amber:   #F5A623;
+      --warn:    #B8473D;
+      --offwh:   #F7F7F4;
+      --rule:    #E2E2DC;
+      --gray:    #6B7280;
+      --dim:     #8899AA;
+      --dim-lt:  #C8D2DD;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 4rem;
+      background: #fff;
+      color: var(--navy);
+      line-height: 1.5;
+    }
+    h1 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 600;
+      font-size: 1.6rem;
+      margin-bottom: 0.4rem;
+    }
+    .lede {
+      color: var(--gray);
+      font-size: 0.92rem;
+      margin-bottom: 2.5rem;
+      max-width: 720px;
+    }
+    .option {
+      margin-bottom: 3.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .option:last-child { border-bottom: none; }
+    .option-num {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .option h2 {
+      font-family: 'Source Serif 4', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin: 0.2rem 0 0.4rem;
+    }
+    .option .desc {
+      color: var(--gray);
+      font-size: 0.86rem;
+      max-width: 720px;
+      margin-bottom: 1.2rem;
+    }
+    .viz {
+      width: 100%;
+      background: var(--offwh);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .viz svg { display: block; width: 100%; height: auto; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin-top: 0.7rem;
+      font-size: 0.74rem;
+      color: var(--gray);
+    }
+    .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+    .legend-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .legend-line {
+      width: 22px;
+      height: 2px;
+      display: inline-block;
+    }
+    .node-label {
+      font-size: 10px;
+      fill: var(--navy);
+      pointer-events: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .axis-label {
+      font-size: 10px;
+      fill: var(--gray);
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Citation graph — five visualization options</h1>
+<p class="lede">Same corpus: 12 papers, ~25 citation edges. Real authors, real years, real rebuttals. Pick the structure that reads the argument most cleanly. Sunfire palette throughout.</p>
+
+<!-- ── OPTION 1 ── -->
+<section class="option">
+  <div class="option-num">Option 1</div>
+  <h2>Force-directed graph</h2>
+  <p class="desc">Physics simulation positions nodes. Clusters emerge from citation density. Hub-and-spoke shape reveals which papers are load-bearing without saying so. Nodes sized by citation count; edges weighted by influence.</p>
+  <div class="viz"><svg id="viz1" viewBox="0 0 1100 520"></svg></div>
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span>Empirical bottom-up</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--dim)"></span>Commentary / scenario / policy</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--warn)"></span>Formal rebuttal</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>This paper (Collins 2026)</span>
+    <span class="legend-item"><span class="legend-line" style="background:var(--dim)"></span>Cites</span>
+    <span class="legend-item"><span class="legend-line" style="background:var(--warn)"></span>Rebuts</span>
+  </div>
+</section>
+
+<!-- ── OPTION 2 ── -->
+<section class="option">
+  <div class="option-num">Option 2</div>
+  <h2>Radial cascade from the seed paper</h2>
+  <p class="desc">de Vries 2018 at the origin, citation lines fanning right. Downstream papers ordered by year, the cascade visible as a spreading beam. This is the Litmaps gesture — clean, immediate, makes one paper visibly load-bearing.</p>
+  <div class="viz"><svg id="viz2" viewBox="0 0 1100 520"></svg></div>
+</section>
+
+<!-- ── OPTION 3 ── -->
+<section class="option">
+  <div class="option-num">Option 3</div>
+  <h2>Arc diagram along a time baseline</h2>
+  <p class="desc">Papers on a horizontal time axis (2008 → 2026), arcs above connect citing→cited pairs. Arc thickness = citation count of the source. Rebuttals drop below the line. Reveals the temporal cascade and shows visually how recent the rebuttals are vs how long the original claims have stood.</p>
+  <div class="viz"><svg id="viz3" viewBox="0 0 1100 480"></svg></div>
+</section>
+
+<!-- ── OPTION 4 ── -->
+<section class="option">
+  <div class="option-num">Option 4</div>
+  <h2>Bipartite — primary measurement vs derivative</h2>
+  <p class="desc">Two columns: PRIMARY DATA on the left (CBECI, BECI, Stoll, Krause — anything with actual measurement), DERIVATIVE WORK on the right (Mora, Truby, Howson — extrapolation, commentary, policy review). Edges show which downstream paper draws from which primary source. Makes the concentration visible: nearly every edge points back to two or three nodes.</p>
+  <div class="viz"><svg id="viz4" viewBox="0 0 1100 540"></svg></div>
+</section>
+
+<!-- ── OPTION 5 ── -->
+<section class="option">
+  <div class="option-num">Option 5</div>
+  <h2>Constellation map — methodology clusters</h2>
+  <p class="desc">Papers placed in 2D by methodology type: empirical bottom-up (right), commentary (top-left), policy review (bottom-left), institutional model (centre). Edges only for direct citations. Star-map aesthetic; readers see at a glance that the "evidence" cluster contains two papers and the "commentary / policy" cluster contains six.</p>
+  <div class="viz"><svg id="viz5" viewBox="0 0 1100 540"></svg></div>
+</section>
+
+<script>
+// ──────────────────────────────────────────────────────────────────
+// CORPUS — single source of data for all 5 visualizations
+// ──────────────────────────────────────────────────────────────────
+const PAPERS = [
+  { id: "nakamoto",  short: "Nakamoto '08",  year: 2008, role: "foundational",    cites:  20000, label: "Nakamoto 2008" },
+  { id: "devries",   short: "de Vries '18",  year: 2018, role: "commentary",      cites:    900, label: "de Vries 2018" },
+  { id: "krause",    short: "Krause '18",    year: 2018, role: "empirical",       cites:    800, label: "Krause & Tolaymat 2018" },
+  { id: "truby",     short: "Truby '18",     year: 2018, role: "policy",          cites:    450, label: "Truby 2018" },
+  { id: "mora",      short: "Mora '18",      year: 2018, role: "scenario",        cites:   1000, label: "Mora 2018" },
+  { id: "cbeci",     short: "CBECI",         year: 2019, role: "institutional",   cites:    600, label: "Cambridge CBECI" },
+  { id: "stoll",     short: "Stoll '19",     year: 2019, role: "empirical",       cites:    800, label: "Stoll et al. 2019" },
+  { id: "masanet",   short: "Masanet '19",   year: 2019, role: "rebuttal",        cites:    200, label: "Masanet 2019" },
+  { id: "houy",      short: "Houy '19",      year: 2019, role: "rebuttal",        cites:    100, label: "Houy 2019" },
+  { id: "dittmar",   short: "Dittmar '19",   year: 2019, role: "rebuttal",        cites:    100, label: "Dittmar 2019" },
+  { id: "howson",    short: "Howson '19",    year: 2019, role: "commentary",      cites:    250, label: "Howson 2019" },
+  { id: "collins",   short: "ELJ 2026",      year: 2026, role: "this_paper",      cites:      0, label: "Collins 2026 (this paper)" },
+];
+
+// Edges: source CITES target (or REBUTS for rebuttal kind)
+const EDGES = [
+  // de Vries built on Nakamoto
+  { source: "devries", target: "nakamoto", kind: "cite" },
+  // Bottom-up empirical work cites de Vries
+  { source: "krause",  target: "devries",  kind: "cite" },
+  { source: "stoll",   target: "devries",  kind: "cite" },
+  { source: "stoll",   target: "krause",   kind: "cite" },
+  // Mora extrapolates from de Vries + Krause
+  { source: "mora",    target: "devries",  kind: "cite" },
+  { source: "mora",    target: "krause",   kind: "cite" },
+  // CBECI is institutional — many cite it
+  { source: "mora",    target: "cbeci",    kind: "cite" },
+  { source: "stoll",   target: "cbeci",    kind: "cite" },
+  { source: "truby",   target: "cbeci",    kind: "cite" },
+  { source: "howson",  target: "cbeci",    kind: "cite" },
+  // Truby is derivative review
+  { source: "truby",   target: "devries",  kind: "cite" },
+  { source: "truby",   target: "mora",     kind: "cite" },
+  { source: "truby",   target: "krause",   kind: "cite" },
+  // Howson cites everyone
+  { source: "howson",  target: "devries",  kind: "cite" },
+  { source: "howson",  target: "mora",     kind: "cite" },
+  { source: "howson",  target: "stoll",    kind: "cite" },
+  // FORMAL REBUTTALS — all three target Mora
+  { source: "masanet", target: "mora",     kind: "rebut" },
+  { source: "houy",    target: "mora",     kind: "rebut" },
+  { source: "dittmar", target: "mora",     kind: "rebut" },
+  // ELJ paper — cites the foundational set, doesn't rebut directly but reframes
+  { source: "collins", target: "devries",  kind: "cite" },
+  { source: "collins", target: "stoll",    kind: "cite" },
+  { source: "collins", target: "krause",   kind: "cite" },
+  { source: "collins", target: "mora",     kind: "cite" },
+  { source: "collins", target: "cbeci",    kind: "cite" },
+];
+
+const ROLE_COLOR = {
+  foundational:  "#5C6B7E",
+  commentary:    "#8899AA",
+  scenario:      "#8899AA",
+  policy:        "#8899AA",
+  institutional: "#8899AA",
+  empirical:     "#38b0d8",
+  rebuttal:      "#B8473D",
+  this_paper:    "#F5A623",
+};
+
+const NAV = "#1A2340", GRAY = "#6B7280", DIM = "#8899AA", RULE = "#E2E2DC";
+
+function radiusFor(p) {
+  // sqrt-scale so 1000 cites isn't 100× a 100-cite paper
+  return 6 + Math.sqrt(p.cites / 12);
+}
+
+// ──────────────────────────────────────────────────────────────────
+// OPTION 1 — Force-directed graph
+// ──────────────────────────────────────────────────────────────────
+(function() {
+  const svg = d3.select("#viz1");
+  const W = 1100, H = 520;
+  const nodes = PAPERS.map(p => ({ ...p }));
+  const links = EDGES.map(e => ({ ...e }));
+
+  const sim = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(d => d.kind === "rebut" ? 70 : 110).strength(0.7))
+    .force("charge", d3.forceManyBody().strength(-380))
+    .force("center", d3.forceCenter(W / 2, H / 2))
+    .force("collision", d3.forceCollide().radius(d => radiusFor(d) + 14))
+    .stop();
+  for (let i = 0; i < 380; i++) sim.tick();
+
+  // Draw rebuttal edges with marker arrows
+  svg.append("defs").append("marker")
+    .attr("id", "arrow-rebut").attr("viewBox", "0 -5 10 10")
+    .attr("refX", 14).attr("refY", 0).attr("markerWidth", 6).attr("markerHeight", 6)
+    .attr("orient", "auto").append("path").attr("d", "M0,-5L10,0L0,5").attr("fill", "#B8473D");
+
+  svg.append("g")
+    .attr("stroke-opacity", 0.55)
+    .selectAll("line").data(links).join("line")
+      .attr("x1", d => d.source.x).attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x).attr("y2", d => d.target.y)
+      .attr("stroke", d => d.kind === "rebut" ? "#B8473D" : "#8899AA")
+      .attr("stroke-width", d => d.kind === "rebut" ? 1.8 : 1.0)
+      .attr("marker-end", d => d.kind === "rebut" ? "url(#arrow-rebut)" : null);
+
+  const g = svg.append("g").selectAll("g").data(nodes).join("g")
+    .attr("transform", d => `translate(${d.x},${d.y})`);
+
+  g.append("circle")
+    .attr("r", d => radiusFor(d))
+    .attr("fill", d => ROLE_COLOR[d.role])
+    .attr("stroke", "#fff").attr("stroke-width", 1.5);
+
+  g.append("text")
+    .attr("class", "node-label")
+    .attr("y", d => -radiusFor(d) - 6)
+    .attr("text-anchor", "middle")
+    .text(d => d.short);
+})();
+
+// ──────────────────────────────────────────────────────────────────
+// OPTION 2 — Radial cascade from de Vries
+// ──────────────────────────────────────────────────────────────────
+(function() {
+  const svg = d3.select("#viz2");
+  const W = 1100, H = 520;
+  const cx = 90, cy = H / 2;
+
+  const seed = PAPERS.find(p => p.id === "devries");
+  const others = PAPERS.filter(p => p.id !== "devries" && p.id !== "nakamoto");
+
+  // Position others on a fan to the right
+  const angleSpread = Math.PI * 0.85;
+  const angleStart = -angleSpread / 2;
+  const radiusBase = 360;
+  const positions = {};
+  positions["devries"] = { x: cx, y: cy };
+  positions["nakamoto"] = { x: cx - 60, y: cy - 200 };
+
+  // Sort by year then alphabetically
+  const sorted = others.slice().sort((a, b) => (a.year - b.year) || a.short.localeCompare(b.short));
+  sorted.forEach((p, i) => {
+    const t = i / (sorted.length - 1);
+    const angle = angleStart + t * angleSpread;
+    const r = radiusBase + (i % 2 === 0 ? 0 : 60);
+    positions[p.id] = {
+      x: cx + Math.cos(angle) * r,
+      y: cy + Math.sin(angle) * r
+    };
+  });
+
+  // Edges — only those FROM devries downstream (and Nakamoto -> devries)
+  const cascadeEdges = EDGES.filter(e => e.target === "devries" || e.source === "devries");
+
+  svg.append("g")
+    .selectAll("path").data(cascadeEdges).join("path")
+      .attr("d", e => {
+        const s = positions[e.source], t = positions[e.target];
+        const mx = (s.x + t.x) / 2, my = (s.y + t.y) / 2;
+        // Curve outward from devries
+        const cx1 = positions["devries"].x + 80, cy1 = positions["devries"].y;
+        return `M${s.x},${s.y} Q${cx1},${cy1} ${t.x},${t.y}`;
+      })
+      .attr("fill", "none")
+      .attr("stroke", e => e.kind === "rebut" ? "#B8473D" : "#38b0d8")
+      .attr("stroke-width", e => e.kind === "rebut" ? 1.5 : 1.2)
+      .attr("opacity", 0.6);
+
+  const g = svg.append("g").selectAll("g").data(PAPERS).join("g")
+    .attr("transform", d => `translate(${positions[d.id].x},${positions[d.id].y})`);
+
+  g.append("circle")
+    .attr("r", d => d.id === "devries" ? 14 : radiusFor(d) * 0.8)
+    .attr("fill", d => d.id === "devries" ? "#1A2340" : ROLE_COLOR[d.role])
+    .attr("stroke", d => d.id === "devries" ? "#38b0d8" : "#fff")
+    .attr("stroke-width", d => d.id === "devries" ? 3 : 1.2);
+
+  g.append("text")
+    .attr("class", "node-label")
+    .attr("x", d => positions[d.id].x > cx + 100 ? 14 : -14)
+    .attr("text-anchor", d => positions[d.id].x > cx + 100 ? "start" : "end")
+    .attr("dy", 4)
+    .text(d => d.short);
+
+  // Annotation
+  svg.append("text").attr("x", cx).attr("y", cy + 32)
+    .attr("class", "node-label").attr("text-anchor", "middle")
+    .attr("fill", "#38b0d8").attr("font-weight", "700").attr("font-size", "11")
+    .text("SEED");
+})();
+
+// ──────────────────────────────────────────────────────────────────
+// OPTION 3 — Arc diagram along a time baseline
+// ──────────────────────────────────────────────────────────────────
+(function() {
+  const svg = d3.select("#viz3");
+  const W = 1100, H = 480;
+  const M = { l: 60, r: 60, t: 40, b: 60 };
+  const baseline = H - M.b;
+  const years = d3.extent(PAPERS, p => p.year);
+  // jitter same-year papers along the line
+  const grouped = d3.groups(PAPERS, p => p.year);
+  const positions = {};
+  const xScale = d3.scaleLinear().domain(years).range([M.l, W - M.r]);
+
+  grouped.forEach(([yr, group]) => {
+    const baseX = xScale(yr);
+    const spread = group.length === 1 ? 0 : 22;
+    group.forEach((p, i) => {
+      const offset = (i - (group.length - 1) / 2) * spread;
+      positions[p.id] = { x: baseX + offset, y: baseline };
+    });
+  });
+
+  // X axis — years
+  const yearTicks = d3.range(2008, 2027, 2);
+  svg.append("g")
+    .attr("transform", `translate(0,${baseline})`)
+    .selectAll("g").data(yearTicks).join("g")
+      .attr("transform", d => `translate(${xScale(d)},0)`)
+    .each(function(d) {
+      d3.select(this).append("line").attr("y1", 0).attr("y2", 5).attr("stroke", "#C8D2DD");
+      d3.select(this).append("text").attr("y", 18).attr("text-anchor", "middle")
+        .attr("class", "axis-label").text(d);
+    });
+
+  // Baseline rule
+  svg.append("line").attr("x1", M.l - 10).attr("x2", W - M.r + 10)
+    .attr("y1", baseline).attr("y2", baseline)
+    .attr("stroke", "#C8D2DD").attr("stroke-width", 1);
+
+  // Arcs ABOVE for citations, BELOW for rebuttals
+  svg.append("g")
+    .selectAll("path").data(EDGES).join("path")
+      .attr("d", e => {
+        const s = positions[e.source], t = positions[e.target];
+        const dx = Math.abs(s.x - t.x);
+        const r = dx / 2;
+        const dir = e.kind === "rebut" ? 0 : 1;   // sweep flag
+        const yOff = e.kind === "rebut" ? 30 : -8;
+        return `M${s.x},${s.y + yOff} A${r},${r} 0 0 ${dir} ${t.x},${t.y + yOff}`;
+      })
+      .attr("fill", "none")
+      .attr("stroke", e => e.kind === "rebut" ? "#B8473D" : "#8899AA")
+      .attr("stroke-width", e => {
+        if (e.kind === "rebut") return 1.6;
+        const src = PAPERS.find(p => p.id === e.source);
+        return 0.7 + Math.sqrt(src.cites / 200);
+      })
+      .attr("opacity", 0.5);
+
+  // Nodes
+  const g = svg.append("g").selectAll("g").data(PAPERS).join("g")
+    .attr("transform", d => `translate(${positions[d.id].x},${positions[d.id].y})`);
+  g.append("circle")
+    .attr("r", d => radiusFor(d) * 0.75)
+    .attr("fill", d => ROLE_COLOR[d.role])
+    .attr("stroke", "#fff").attr("stroke-width", 1.5);
+
+  // Labels — staggered up/down to avoid overlap
+  g.append("text")
+    .attr("class", "node-label")
+    .attr("y", (d, i) => 16 + (i % 2) * 12)
+    .attr("text-anchor", "middle")
+    .attr("transform", "translate(0,8)")
+    .text(d => d.short);
+
+  // Annotations
+  svg.append("text").attr("x", 30).attr("y", 28)
+    .attr("class", "axis-label").attr("fill", "#8899AA")
+    .text("↑ citations    ↓ rebuttals");
+})();
+
+// ──────────────────────────────────────────────────────────────────
+// OPTION 4 — Bipartite: primary vs derivative
+// ──────────────────────────────────────────────────────────────────
+(function() {
+  const svg = d3.select("#viz4");
+  const W = 1100, H = 540;
+
+  // Classify
+  const PRIMARY_IDS = new Set(["nakamoto", "krause", "stoll", "cbeci", "devries"]);  // measurement-like
+  const DERIVATIVE_IDS = new Set(["mora", "truby", "howson"]);
+  const REBUTTAL_IDS = new Set(["masanet", "houy", "dittmar"]);
+  const COUNTER_IDS = new Set(["collins"]);
+
+  const primaryPapers = PAPERS.filter(p => PRIMARY_IDS.has(p.id));
+  const derivPapers = PAPERS.filter(p => DERIVATIVE_IDS.has(p.id));
+  const rebuttalPapers = PAPERS.filter(p => REBUTTAL_IDS.has(p.id));
+  const counterPapers = PAPERS.filter(p => COUNTER_IDS.has(p.id));
+
+  const LEFT_X = 200, MID_X = 560, RIGHT_X = 900;
+  const positions = {};
+
+  function layoutCol(papers, x, label) {
+    const n = papers.length;
+    const span = H - 120;
+    const step = span / Math.max(n, 1);
+    papers.forEach((p, i) => {
+      positions[p.id] = { x, y: 60 + step * (i + 0.5) };
+    });
+    svg.append("text").attr("x", x).attr("y", 30)
+      .attr("text-anchor", "middle").attr("class", "axis-label")
+      .attr("fill", "#1A2340").attr("font-weight", "700").attr("letter-spacing", "0.08em")
+      .text(label);
+  }
+
+  layoutCol(primaryPapers, LEFT_X, "PRIMARY / FOUNDATIONAL");
+  layoutCol(derivPapers, MID_X, "DERIVATIVE & POLICY");
+  layoutCol(rebuttalPapers.concat(counterPapers), RIGHT_X, "REBUTTALS / COUNTER");
+
+  // Edges
+  svg.append("g")
+    .selectAll("path").data(EDGES).join("path")
+      .attr("d", e => {
+        const s = positions[e.source], t = positions[e.target];
+        if (!s || !t) return "";
+        const mx = (s.x + t.x) / 2;
+        return `M${s.x},${s.y} C${mx},${s.y} ${mx},${t.y} ${t.x},${t.y}`;
+      })
+      .attr("fill", "none")
+      .attr("stroke", e => e.kind === "rebut" ? "#B8473D" : "#8899AA")
+      .attr("stroke-width", e => {
+        if (e.kind === "rebut") return 1.8;
+        const src = PAPERS.find(p => p.id === e.source);
+        return 0.8 + Math.sqrt(src.cites / 300);
+      })
+      .attr("opacity", 0.55);
+
+  // Nodes
+  const g = svg.append("g").selectAll("g").data(PAPERS).join("g")
+    .attr("transform", d => `translate(${positions[d.id].x},${positions[d.id].y})`);
+  g.append("circle")
+    .attr("r", d => radiusFor(d) * 0.85)
+    .attr("fill", d => ROLE_COLOR[d.role])
+    .attr("stroke", "#fff").attr("stroke-width", 1.5);
+  g.append("text")
+    .attr("class", "node-label")
+    .attr("x", d => {
+      if (positions[d.id].x === LEFT_X)  return -14;
+      if (positions[d.id].x === RIGHT_X) return 14;
+      return 0;
+    })
+    .attr("y", d => positions[d.id].x === MID_X ? -16 : 4)
+    .attr("text-anchor", d => {
+      if (positions[d.id].x === LEFT_X)  return "end";
+      if (positions[d.id].x === RIGHT_X) return "start";
+      return "middle";
+    })
+    .text(d => d.short);
+})();
+
+// ──────────────────────────────────────────────────────────────────
+// OPTION 5 — Constellation: 2D methodology clusters
+// ──────────────────────────────────────────────────────────────────
+(function() {
+  const svg = d3.select("#viz5");
+  const W = 1100, H = 540;
+
+  // Cluster anchors (hand-placed for clear visual zones)
+  const CLUSTERS = {
+    empirical:     { x: 820, y: 220, label: "EMPIRICAL\nBOTTOM-UP" },
+    commentary:    { x: 260, y: 150, label: "COMMENTARY" },
+    scenario:      { x: 420, y: 120, label: "SCENARIO" },
+    policy:        { x: 180, y: 380, label: "POLICY\nREVIEW" },
+    institutional: { x: 560, y: 280, label: "INSTITUTIONAL\nMODEL" },
+    rebuttal:      { x: 720, y: 430, label: "REBUTTAL" },
+    foundational:  { x: 100, y: 280, label: "FOUNDATIONAL" },
+    this_paper:    { x: 980, y: 460, label: "THIS PAPER" },
+  };
+
+  // Faint cluster halos
+  Object.entries(CLUSTERS).forEach(([role, c]) => {
+    svg.append("circle").attr("cx", c.x).attr("cy", c.y).attr("r", 90)
+      .attr("fill", ROLE_COLOR[role]).attr("opacity", 0.06);
+    const lines = c.label.split("\n");
+    lines.forEach((line, i) => {
+      svg.append("text")
+        .attr("x", c.x).attr("y", c.y - 105 + i * 11)
+        .attr("text-anchor", "middle")
+        .attr("class", "axis-label")
+        .attr("fill", ROLE_COLOR[role])
+        .attr("font-weight", "700")
+        .attr("letter-spacing", "0.06em")
+        .text(line);
+    });
+  });
+
+  // Position papers around their cluster centre with slight jitter
+  const positions = {};
+  const grouped = d3.groups(PAPERS, p => p.role);
+  grouped.forEach(([role, group]) => {
+    const c = CLUSTERS[role];
+    if (!c) return;
+    group.forEach((p, i) => {
+      const angle = (i / group.length) * Math.PI * 2 + 0.4;
+      const r = group.length === 1 ? 0 : 38;
+      positions[p.id] = { x: c.x + Math.cos(angle) * r, y: c.y + Math.sin(angle) * r };
+    });
+  });
+
+  // Citation edges — straight lines between positioned papers
+  svg.append("g")
+    .selectAll("line").data(EDGES).join("line")
+      .attr("x1", e => positions[e.source].x)
+      .attr("y1", e => positions[e.source].y)
+      .attr("x2", e => positions[e.target].x)
+      .attr("y2", e => positions[e.target].y)
+      .attr("stroke", e => e.kind === "rebut" ? "#B8473D" : "#8899AA")
+      .attr("stroke-width", e => e.kind === "rebut" ? 1.6 : 0.8)
+      .attr("opacity", 0.42);
+
+  // Nodes
+  const g = svg.append("g").selectAll("g").data(PAPERS).join("g")
+    .attr("transform", d => `translate(${positions[d.id].x},${positions[d.id].y})`);
+  g.append("circle")
+    .attr("r", d => radiusFor(d) * 0.8)
+    .attr("fill", d => ROLE_COLOR[d.role])
+    .attr("stroke", "#fff").attr("stroke-width", 1.5);
+  g.append("text")
+    .attr("class", "node-label")
+    .attr("y", d => -radiusFor(d) - 5)
+    .attr("text-anchor", "middle")
+    .text(d => d.short);
+})();
+</script>
+
+</body>
+</html>
