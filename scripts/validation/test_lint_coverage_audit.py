@@ -14,6 +14,7 @@ VALID_HEADER = [
     "coverage_status", "data_format", "probe_result", "available_anchor",
     "annual_anchor_TWh", "recommended_action", "recommended_tier_landing",
     "loader_pattern_hint", "priority_score", "notes",
+    "parent_region_id", "granularity_available", "expected_new_regions",
 ]
 
 VALID_ROW = [
@@ -21,6 +22,7 @@ VALID_ROW = [
     "", "not-modelled", "curtailment-renewable", "published",
     "JSON-API", "200 / application/json", "EVN 2024 Operations Report",
     "4.0", "introduce-as-T1", "T1a", "Pattern-A", "4.0", "",
+    "", "none", "0",
 ]
 
 
