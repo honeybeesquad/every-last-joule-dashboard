@@ -41,7 +41,7 @@ const HOTSPOT_LIST_LIMIT = 50;
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 112;
+const _LOADER_FILE_COUNT = 121;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -50,6 +50,7 @@ initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 // on a typical connection this drops to ~300–600ms for the lot.
 const [
   cbeci, ercot, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
+  soco, pacw, pace, psco, azps, srp, ipco, tepc, wacm,
   entsoe, aemo, belgium, france, denmark, newZealand, newZealandHydro, norway, atacama,
   chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
   ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
@@ -77,6 +78,15 @@ const [
   trackFile(FileAttachment("data/nyiso.json").json(),            "New York ISO"),
   trackFile(FileAttachment("data/iso-ne.json").json(),           "ISO New England"),
   trackFile(FileAttachment("data/bpa.json").json(),              "Bonneville Power"),
+  trackFile(FileAttachment("data/soco.json").json(),             "Southern Company"),
+  trackFile(FileAttachment("data/pacw.json").json(),             "PacifiCorp West"),
+  trackFile(FileAttachment("data/pace.json").json(),             "PacifiCorp East"),
+  trackFile(FileAttachment("data/psco.json").json(),             "Public Service Colorado"),
+  trackFile(FileAttachment("data/azps.json").json(),             "Arizona Public Service"),
+  trackFile(FileAttachment("data/srp.json").json(),              "Salt River Project"),
+  trackFile(FileAttachment("data/ipco.json").json(),             "Idaho Power"),
+  trackFile(FileAttachment("data/tepc.json").json(),             "Tucson Electric Power"),
+  trackFile(FileAttachment("data/wacm.json").json(),             "WAPA Rocky Mountain"),
   trackFile(FileAttachment("data/entsoe.json").json(),           "ENTSO-E Europe"),
   trackFile(FileAttachment("data/aemo.json").json(),             "AEMO Australia"),
   trackFile(FileAttachment("data/belgium.json").json(),          "Belgium"),
@@ -336,6 +346,24 @@ const regionData = {
   "iso-ne-rest-solar":    isoNe.solar,
   "bpa-wind":  bpa.wind,
   "bpa-solar": bpa.solar,
+  "soco-wind":  soco.wind,
+  "soco-solar": soco.solar,
+  "pacw-wind":  pacw.wind,
+  "pacw-solar": pacw.solar,
+  "pace-wind":  pace.wind,
+  "pace-solar": pace.solar,
+  "psco-wind":  psco.wind,
+  "psco-solar": psco.solar,
+  "azps-wind":  azps.wind,
+  "azps-solar": azps.solar,
+  "srp-wind":   srp.wind,
+  "srp-solar":  srp.solar,
+  "ipco-wind":  ipco.wind,
+  "ipco-solar": ipco.solar,
+  "tepc-wind":  tepc.wind,
+  "tepc-solar": tepc.solar,
+  "wacm-wind":  wacm.wind,
+  "wacm-solar": wacm.solar,
   ...aemo,
   ...belgium,
   "germany-wind": entsoe["germany-wind"],
