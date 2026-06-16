@@ -4,8 +4,8 @@ import { withFallback } from "../lib/resilient.js";
 import {
   solarProfile,
   windProfile,
-  applyUncertainty,
 } from "../lib/typical-profiles.js";
+import { applyUncertainty } from "../lib/uncertainty.js";
 import { coerceLastSuccessAt } from "../lib/freshness.js";
 import type { RegionData } from "../lib/types.js";
 
@@ -199,7 +199,7 @@ const isMain =
 
 if (isMain) {
   withFallback<{ wind: RegionData; solar: RegionData }>(REGION_ID, run, {
-    regionTier: "live" as const,
+    regionTier: "estimated" as const,
     tagLive: (r) => r,
     tagCached: (c) => c as { wind: RegionData; solar: RegionData },
   })

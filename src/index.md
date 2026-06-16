@@ -472,7 +472,7 @@ const regionData = {
   "nt-pilbara": ntPilbara,
   indonesia,
   malaysia,
-  "south-korea": southKorea,
+  "south-korea-solar": southKorea.solar, "south-korea-wind": southKorea.wind,
   "russia-mainland": russiaMainland,
   taiwan,
   jordan,
