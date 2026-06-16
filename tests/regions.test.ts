@@ -98,12 +98,8 @@ describe("regions", () => {
     // split into wind+solar. Net +3 regions. 380 + 3 = 383.
     // Issue #62 (2026-05-06): add Palestine T3 static. Net +1 region. 383 + 1 = 384.
     // 2026-05-24: new-zealand-hydro added (T1a). 384 + 1 = 385.
-    // 2026-06-17: EIA-930 9 second-tier US BAs added as 18 T2 regions (granularity survey). 385 + 18 = 403.
-    // 2026-06-17: Italy CNOR/CSUD/SUD/CALA bidding zones added as 8 T1b regions. 403 + 8 = 411.
-    // 2026-06-17: China province fuel-splits + 6 India states (PR #203), net +15 T3. 411 + 15 = 426.
-    // 2026-06-17: Chile hydro + Colombia wind/solar + DR wind + Ukraine wind (PR #206), +5 T3. 426 + 5 = 431.
-    // 2026-06-17: Germany DE-LU aggregate → 4 TSO control areas (8 T1b, −2 T1a). Net +6. 431 + 6 = 437.
-    expect(REGIONS.length).toBe(437);
+    // Mexico promoted from T3 to T2 anchored, split into mexico-wind + mexico-solar (net +1).
+    expect(REGIONS.length).toBe(401);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -290,13 +286,13 @@ describe("regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. +2. 211→213.
     // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). +1. 213→214.
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. -3. 214→211.
-    // 2026-06-17: China fuel-splits + 6 India states (PR #203), all T3. +15. 211→226.
-    // 2026-06-17: Chile/Colombia/DR/Ukraine T3 statics (PR #206). +5. 226→231.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(231);
+    // Mexico promoted from estimated → anchored: net -1 estimated region.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(225);
   });
 
-  it("has 32 anchored regions (8 flare + 6 flat-profile + 18 EIA-930 US BAs)", () => {
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(32);
+  it("has 14 anchored regions (8 flare + 6 flat-profile)", () => {
+    // Mexico promoted to anchored: net +2 anchored regions (mexico-wind + mexico-solar).
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(16);
   });
 
   it("all flare-kind regions with anchored tier are GGFR-verified", () => {
@@ -423,7 +419,7 @@ describe("regions", () => {
       "argentina",
       "uruguay",
       "paraguay",
-      "mexico",
+      "mexico-wind", "mexico-solar",
       "japan-kyushu",
       "vietnam",
       "thailand",

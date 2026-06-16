@@ -147,7 +147,10 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   kurdistan: "solar",
   malaysia: "solar",
   manitoba: "mixed",
-  mexico: "solar",
+  // Mexico promoted from T3 to T2 anchored (CENACE CSV relay + calibration rates).
+  // No longer estimated → no STATIC_PROFILE_KIND entry needed (live-loader).
+  "mexico-wind": "wind",
+  "mexico-solar": "solar",
   mongolia: "wind",
   morocco: "wind",
   namibia: "solar",

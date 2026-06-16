@@ -423,7 +423,9 @@ const regionData = {
   argentina,
   uruguay,
   paraguay,
-  mexico,
+  // Mexico split: loader returns {wind, solar} (CENACE CSV relay, T2 anchored)
+  "mexico-wind":  mexico.wind,
+  "mexico-solar": mexico.solar,
   "japan-chubu":    japanChubu,
   "japan-chugoku":  japanChugoku,
   "japan-hokkaido": japanHokkaido,
