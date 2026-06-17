@@ -43,7 +43,7 @@ I haven't seen another public dashboard that does this.
 
 1. **Peru was showing 0.017 GW peak** — the COES loader fetched only solar+wind from the national generation dashboard and applied a flat 2% rate. The dominant Peru curtailment story is **Andean hydro spill**, which was completely absent from the observed signal. Rewrote as a hydro-seasonal fallback at 0.8 TWh/yr with bimodal Jan-Apr wet-season peak. Peak now 0.117 GW (7× previous). Solar in the south is represented via the MIXED_SPLITS 20% solar share of that envelope.
 
-2. **British Columbia was calibrated at 0.5 TWh/yr** — published BC Hydro 2024 Integrated Resource Plan annex documents ~1.4 TWh/yr export-constrained spill. Bumped to 1.5 TWh/yr. Peak now 0.140 GW (3× previous).
+2. **British Columbia was calibrated at 0.5 TWh/yr** — bumped to a modelled ~1.5 TWh/yr typical-year estimate for export-constrained spring-snowmelt spill on the Columbia + Peace systems. Peak now 0.140 GW (3× previous). _[Correction 2026-06-17: the original entry cited a "BC Hydro 2024 Integrated Resource Plan annex documenting ~1.4 TWh/yr export-constrained spill" — that citation could not be verified (BC Hydro IRPs are 2021 and 2025, not 2024) and is contradicted by drought-year actuals where spill ran near-zero; 1.5 TWh/yr stands only as a modelled estimate and the region remains tier: estimated.]_
 
 3. **Sub-1-GW hotspot values were rendering as "0.0 GW"** — `toFixed(1)` collapsed ~25 small-grid regions to zero-looking values. Switched to conditional `toFixed(2)` for values under 1 GW. Baltics, NYISO, Peru, Czech Republic, Bulgaria, Jeju, Honduras, etc. now display their actual values honestly.
 
