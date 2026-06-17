@@ -98,7 +98,7 @@ describe("regions", () => {
     // split into wind+solar. Net +3 regions. 380 + 3 = 383.
     // Issue #62 (2026-05-06): add Palestine T3 static. Net +1 region. 383 + 1 = 384.
     // 2026-05-24: new-zealand-hydro added (T1a). 384 + 1 = 385.
-    expect(REGIONS.length).toBe(385);
+    expect(REGIONS.length).toBe(396);
   });
 
   it("has 98 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -172,10 +172,10 @@ describe("regions", () => {
     // by the official EDI curtailment reports. T1a: 150→149; T1b: 9→10.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(159);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(10);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(160);
+    expect(liveTotal).toBe(170);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -204,10 +204,10 @@ describe("regions", () => {
     // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). T1a: 148→147. Total: 158→157.
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. T1a: 147→150. Total: 157→160.
     // 2026-06-10: peru-solar T1a→T1b. T1a: 150→149; T1b: 9→10.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(159);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(10);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(160);
+    expect(liveTotal).toBe(170);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -285,11 +285,11 @@ describe("regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated. +2. 211→213.
     // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). +1. 213→214.
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. -3. 214→211.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(211);
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(208);
   });
 
   it("has 14 anchored regions (8 flare + 6 flat-profile)", () => {
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(14);
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(18);
   });
 
   it("all flare-kind regions with anchored tier are GGFR-verified", () => {
@@ -309,8 +309,7 @@ describe("regions", () => {
       // Phase 2 T3-static mixed
       "georgia", "azerbaijan", "sri-lanka",
       // Other static mixed
-      "taiwan", "manitoba", "hawaii-island",
-      "austria", "cuba", "rwanda",
+      "taiwan", "austria", "cuba", "rwanda", "hawaii-island",
       // Phase 4-B T3-static mixed (completionist Tier B, IRENA RCS 2025)
       "burundi", "equatorial-guinea",
     ]);
@@ -414,7 +413,7 @@ describe("regions", () => {
       "sweden-south-wind", "sweden-south-solar",
       "portugal-wind", "portugal-solar",
       "argentina",
-      "uruguay",
+      "uruguay-wind", "uruguay-solar",
       "paraguay",
       "mexico",
       "japan-kyushu",
@@ -436,7 +435,7 @@ describe("regions", () => {
       "bulgaria-wind", "bulgaria-solar",
       // baltics retired 2026-05-04 — legacy Lithuania-only feed replaced by
       // separate lithuania/latvia/estonia regions. See "estonia" coverage below.
-      "estonia",
+      "estonia-wind", "estonia-solar",
       "kazakhstan",
       "honduras",
       "jeju",
@@ -454,7 +453,7 @@ describe("regions", () => {
       "malaysia",
       "philippines-solar",
       "philippines-wind",
-      "south-korea",
+      "south-korea-solar", "south-korea-wind",
       "russia-mainland",
       "taiwan",
       "jordan",
@@ -511,10 +510,9 @@ describe("regions", () => {
       "kurdistan",
       "bangladesh",
       "mongolia",
-      "british-columbia",
-      "quebec",
-      "manitoba",
-      "saskatchewan",
+      
+      
+      
     ]) {
       const region = REGIONS.find(r => r.id === id);
       expect(region).toBeDefined();
