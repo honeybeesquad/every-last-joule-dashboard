@@ -1,7 +1,7 @@
 {
-  "totalValidationDocs": 445,
+  "totalValidationDocs": 447,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 438,
+  "docsNotCiting": 440,
   "pctCited": 1.57,
   "perDocCitations": [
     {
@@ -782,7 +782,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "estonia.md",
+      "file": "estonia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "estonia-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1969,7 +1974,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "south-korea.md",
+      "file": "south-korea-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "south-korea-wind.md",
       "cited": false,
       "matchedPatterns": []
     },

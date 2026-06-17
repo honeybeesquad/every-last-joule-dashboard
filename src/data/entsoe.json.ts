@@ -321,6 +321,7 @@ export const ZONES = [
     technologies: [],
     sourceNote: "BH Krajina A75 feed; hydro-dominated system. Structural hydro spill excluded per methodology.",
   },
+  // BH wind+solar added (world-expansion, 2026-06-17): ENTSO-E A75 B16/B19 live-probed for 10YBA-JPCC (both non-empty). The hydro aggregate above stays empty (structural spill excluded); these add the VRE-curtailment fuels.
   {
     id: "north-macedonia-wind",
     domain: "10YMK-MEPSO----8",
@@ -339,6 +340,9 @@ export const ZONES = [
     technologies: [],
     sourceNote: "CGES Montenegro A75 feed; hydro-dominated system. Structural hydro spill excluded per methodology.",
   },
+  // montenegro-wind added (world-expansion, 2026-06-17): ENTSO-E A75 B19 live-probed non-empty.
+  // montenegro-solar deliberately NOT added — B16 returns no data: CGES is a non-EU Energy Community
+  // TSO, the same B16 gap that removed serbia-solar / north-macedonia-solar above. Wind only.
   {
     id: "croatia-wind",
     domain: "10YHR-HEP------M",
@@ -381,12 +385,16 @@ export const ZONES = [
   // index.md (`...statics` spread runs after the explicit ENTSO-E wiring). Now
   // tier="estimated" in regions.ts and flowing purely from statics.
   {
-    id: "estonia",
+    id: "estonia-wind",
     domain: "10Y1001A1001A39I",
-    technologies: [
-      { psrType: "B19", fuel: "wind", rate: 0.025 },
-    ],
-    sourceNote: "Elering Estonia ENTSO-E A75 feed. Wind 2.5% regional default.",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.025 }],
+    sourceNote: "Elering Estonia ENTSO-E A75 wind: 2.5% regional default.",
+  },
+  {
+    id: "estonia-solar",
+    domain: "10Y1001A1001A39I",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.02 }],
+    sourceNote: "Elering Estonia ENTSO-E A75 solar: 2% regional default.",
   },
   {
     id: "luxembourg-wind",
