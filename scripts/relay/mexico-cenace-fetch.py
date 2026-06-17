@@ -37,6 +37,7 @@ Note: CENACE hours are 1-24; we convert to 0-23 for the relay CSV.
 """
 
 from __future__ import annotations
+import ssl
 
 import argparse
 import csv
@@ -87,7 +88,10 @@ def fetch_page_state(
     if session_cookie:
         req.add_header("Cookie", session_cookie)
 
-    with urllib.request.urlopen(req, timeout=30) as resp:
+    _ctx = ssl.create_default_context()
+    _ctx.check_hostname = False
+    _ctx.verify_mode = ssl.CERT_NONE
+    with urllib.request.urlopen(req, timeout=30, context=_ctx) as resp:
         html = resp.read().decode("utf-8", errors="replace")
         # Capture any Set-Cookie headers
         cookies = resp.headers.get_all("Set-Cookie") or []
@@ -142,7 +146,10 @@ def download_csv(
     if session_cookie:
         req.add_header("Cookie", session_cookie)
 
-    with urllib.request.urlopen(req, timeout=60) as resp:
+    _ctx2 = ssl.create_default_context()
+    _ctx2.check_hostname = False
+    _ctx2.verify_mode = ssl.CERT_NONE
+    with urllib.request.urlopen(req, timeout=60, context=_ctx2) as resp:
         content_type = resp.headers.get("Content-Type", "")
         body = resp.read()
 
