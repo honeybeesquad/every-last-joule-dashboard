@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 440 canonical regions", () => {
+  it("has 468 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -104,8 +104,9 @@ describe("regions", () => {
     // 2026-06-17: Chile hydro + Colombia wind/solar + DR wind + Ukraine wind (PR #206), +5 T3. 426 + 5 = 431.
     // 2026-06-17: Germany DE-LU aggregate → 4 TSO control areas (8 T1b, −2 T1a). Net +6. 431 + 6 = 437.
     // 2026-06-17: Mexico split single 'mexico' (T3 solar) → mexico-solar + mexico-wind (both T3). Net +1. 437 + 1 = 438.
-    // 2026-06-17: Japan hokkaido + tohoku split solar→solar+wind (hokuriku left solar-only, below floor). Net +2 T1a live. 440 + 2 = 442.
-    expect(REGIONS.length).toBe(442);
+    // 2026-06-17: GGFR per-flare-site split — s-iraq/e-saudi re-anchored to bbox residual
+    //   + 26 named oilfield / N-Iraq / Nigeria-Algeria-Libya flare regions. 442 + 26 = 468.
+    expect(REGIONS.length).toBe(468);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -302,8 +303,8 @@ describe("regions", () => {
     expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(233);
   });
 
-  it("has 32 anchored regions (8 flare + 6 flat-profile + 18 EIA-930 US BAs)", () => {
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(32);
+  it("has 58 anchored regions (34 flare + 6 flat-profile + 18 EIA-930 US BAs)", () => {
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(58);
   });
 
   it("all flare-kind regions with anchored tier are GGFR-verified", () => {
