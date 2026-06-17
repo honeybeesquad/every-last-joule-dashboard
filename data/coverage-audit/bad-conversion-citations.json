@@ -5,6 +5,36 @@
   "pctCited": 1.57,
   "perDocCitations": [
     {
+      "file": "aemo-avlsf1-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-bangowf1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-coopgwf1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-darlsf1-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-limosf11-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-macarth1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "aemo-nsw-solar.md",
       "cited": false,
       "matchedPatterns": []
@@ -25,12 +55,27 @@
       "matchedPatterns": []
     },
     {
+      "file": "aemo-ryepark1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "aemo-sa-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
       "file": "aemo-sa-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-saphwf1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-stockyd1-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -51,6 +96,11 @@
     },
     {
       "file": "aemo-vic-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-wdgph1-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1003,6 +1053,66 @@
     },
     {
       "file": "iceland.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-amaranth.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-armow.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-comber.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-grandsf.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-grandwf.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-henvey-south.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-jericho.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-k2wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-kingstonsf.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-princefarm.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-underwood.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-wolfe-island.md",
       "cited": false,
       "matchedPatterns": []
     },

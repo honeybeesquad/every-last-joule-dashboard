@@ -404,3 +404,6 @@ if (isMain) {
       process.exit(1);
     });
 }
+
+// ─── Export for Observable Framework integration ──────────────────────────────
+export const buildOntarioPerPlantData = () => run();
