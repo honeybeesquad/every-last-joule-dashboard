@@ -41,7 +41,7 @@ const HOTSPOT_LIST_LIMIT = 50;
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 131;
+const _LOADER_FILE_COUNT = 133;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -51,8 +51,8 @@ initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 const [
   cbeci, ercot, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
   soco, pacw, pace, psco, azps, srp, ipco, tepc, wacm,
-  entsoe, aemo, belgium, france, denmark, newZealand, newZealandHydro, norway, atacama,
-  chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
+  entsoe, aemo, aemoPerPlant, belgium, france, denmark, newZealand, newZealandHydro, norway, atacama,
+  chileWind, statics, anchor, northSea, brazilNE, ontario, ontarioPerPlant, alberta,
   ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
   japanChubu, japanChugoku, japanHokkaido, japanHokuriku, japanKansai,
   japanKyushu, japanOkinawa, japanShikoku, japanTepco, japanTohoku,
@@ -91,6 +91,7 @@ const [
   trackFile(FileAttachment("data/wacm.json").json(),             "WAPA Rocky Mountain"),
   trackFile(FileAttachment("data/entsoe.json").json(),           "ENTSO-E Europe"),
   trackFile(FileAttachment("data/aemo.json").json(),             "AEMO Australia"),
+  trackFile(FileAttachment("data/aemo-per-plant.json").json(),  "AEMO Per-Plant"),
   trackFile(FileAttachment("data/belgium.json").json(),          "Belgium"),
   trackFile(FileAttachment("data/france.json").json(),           "France"),
   trackFile(FileAttachment("data/denmark.json").json(),          "Denmark"),
@@ -104,6 +105,7 @@ const [
   trackFile(FileAttachment("data/north-sea.json").json(),        "North Sea"),
   trackFile(FileAttachment("data/brazil-ne.json").json(),        "Brazil North-East"),
   trackFile(FileAttachment("data/ontario.json").json(),          "Ontario"),
+  trackFile(FileAttachment("data/ontario-per-plant.json").json(), "Ontario Per-Plant"),
   trackFile(FileAttachment("data/alberta.json").json(),          "Alberta"),
   trackFile(FileAttachment("data/ireland.json").json(),          "Ireland"),
   trackFile(FileAttachment("data/peru.json").json(),             "Peru"),
@@ -377,6 +379,7 @@ const regionData = {
   "wacm-wind":  wacm.wind,
   "wacm-solar": wacm.solar,
   ...aemo,
+  ...aemoPerPlant,
   ...belgium,
   "germany-50hertz-wind": entsoe["germany-50hertz-wind"],
   "germany-50hertz-solar": entsoe["germany-50hertz-solar"],
@@ -482,6 +485,7 @@ const regionData = {
   // Norway loader emits a Record keyed by norway-no{1-4}-{hydro,wind} + norway-no5 (hydro only).
   ...norway,
   ...ontario,
+  ...ontarioPerPlant,
   ...alberta,
   ...ireland,
   ...peru,

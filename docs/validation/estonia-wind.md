@@ -1,6 +1,6 @@
 # Validation — Estonia Wind (`estonia-wind`)
 
-Last updated: 2026-06-17 · Estonia per-fuel split · live T1a
+Last updated: 2026-06-17 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 

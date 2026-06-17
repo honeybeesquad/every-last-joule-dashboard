@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (STACKED PRs: #217 estonia+SK splits → total 438→440; Japan hokkaido+tohoku split → T1a 148→150, total 440→442; flare GGFR per-flare-site split → T2-flare 8→34, total 442→468). Prior: Mexico split single 'mexico' T3-solar (+1 T3, total 437→438).",
-  "T1a": 150,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (STACKED PRs: #217 estonia+SK splits \u2192 total 438\u2192440; Japan hokkaido+tohoku split \u2192 T1a 148\u2192150, total 440\u2192442; flare GGFR per-flare-site split \u2192 T2-flare 8\u219234, total 442\u2192468). Prior: Mexico split single 'mexico' T3-solar (+1 T3, total 437\u2192438); per-plant splits: +10 AEMO +12 Ontario T1a.",
+  "T1a": 172,
   "T1b": 26,
   "T1c": 1,
   "T2": 24,
   "T2-flare": 34,
   "T3": 233,
-  "total": 468
+  "total": 490
 }

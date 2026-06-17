@@ -1,6 +1,6 @@
 # Validation — Rumaila (flare) (`rumaila`)
 
-Last updated: 2026-06-17 · GGFR per-flare-site split · T2 flare
+Last updated: 2026-06-17 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -16,17 +16,17 @@ Last updated: 2026-06-17 · GGFR per-flare-site split · T2 flare
 ## Calibration
 
 - **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a — flat 24/7 flare anchor
+- **Uniform across backfill years:** n/a — no backfill
 
 ## Multi-year backfill annual totals
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(GGFR per-site VIIRS 2012–2024 series available; 2024 used as the anchor)_ | | | | | |
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **GGFR/GFMR per-site VIIRS (2024):** 2.8606 bcm flared × 3.6925 TWh-e/bcm = 10.6 TWh-e/yr
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
