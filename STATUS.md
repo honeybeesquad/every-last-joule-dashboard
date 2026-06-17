@@ -111,6 +111,12 @@ Diagnosed from persistent Vercel build-log errors (all builds since ~2026-05-13 
 - Gates: 928 vitest, `ci:gates`, `validate`, typecheck all green. Goldens (`tier-counts.json` 440, `magnitude-baseline.json` estonia split) + 4 validation docs updated; `estonia.md`/`south-korea.md` orphans deleted.
 **IN FLIGHT 2026-06-17 — Japan per-fuel split (branch `feat/japan-fuel-split`).** Splits `japan-hokkaido` + `japan-tohoku` from single summed `kind:solar` regions into `-solar` + `-wind` (the loader already parses 太陽光 / 風力 separately; it was summing them). **+2 → 440.** A 30-day measurement justified only these two: Hokkaido wind 16% / 3.5 GWh, Tohoku wind 12% / 13.5 GWh — both above the 1 GWh floor. **Hokuriku deliberately NOT split** — its current live wind curtailment is 13 MWh/30d, far below the floor (and its solar dropped 21× vs baseline, anomalous — flagged for a feed check). The other 7 areas stay solar-only (<5% wind). `runJapanAreaLoader` for the 7 untouched; new `runJapanAreaLoaderSplit` builds two RegionData from the same points. All gates + 927 tests green.
 
+**IN FLIGHT 2026-06-17 — Flare oilfield split (branch `feat/flare-oilfields`).** Splits the two aggregate flare regions into named oilfields and adds new flare coverage, from the World Bank GFMR 2025 per-flare-site VIIRS dataset (2024 rows), all at the repo's `bcm × 3.6925 TWh-e/bcm` electrical-equivalent factor. **+26 anchored/flare regions → 468** (stacked on #217 +2 and #221 Japan +2; landed in that order). T2-flare 8→34.
+- **S. Iraq**: 12 named fields (Rumaila 10.6, W.Qurna-2 7.5, Zubair 6.3, Buzurgan 5.0 TWh-e…); `s-iraq` re-anchored 63→6.7 as the bbox residual bucket.
+- **N. Iraq** (new coverage, Kirkuk/Kurdistan): 4 named + `n-iraq` residual bucket (+14.6).
+- **E. Saudi**: 6 named (Ghawar 2.7, Jafurah 1.2…); `e-saudi` re-anchored 8.1→2.2 residual.
+- **Nigeria/Algeria/Libya** national flare: +23.9 / +29.1 / +23.2.
+- Net flagship flare total grows ~+80 TWh-e (all GFMR-measured). Cross-checks reconcile to the bbox anchors within <0.01%. All gates + 952 tests green. Marjan (offshore) dot placed at its Tanajib onshore base to satisfy country-containment.
 
 **SHIPPED 2026-06-16 — Granularity & gaps survey, coverage-audit v2 (PR #163).**
 - Schema v2 (`scripts/validation/coverage_audit_schema.py`): +`parent_region_id`/`granularity_available`/`expected_new_regions`, split-row scoring branch (no already-modelled penalty); v1 world CSV migrated to 20 cols, scores byte-stable (regression-tested). 35 pytest green.

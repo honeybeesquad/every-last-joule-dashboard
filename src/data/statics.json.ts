@@ -109,14 +109,44 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // the documented +/-20% audit band against the earlier ~17 bcm basis.
   // Retrieved 2026-04-24:
   // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
-  "s-iraq": { annualTWh: 63, kind: "flat", source: "World Bank GGFR 2025 individual flare sites, 2024 South Iraq bbox 14.233 bcm cross-check; retained prior 63 TWh-e within +/-20% audit band (flat 24/7)", reportDate: "2025-07" },
+  "s-iraq": { annualTWh: 6.7, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 S. Iraq bbox residual after named-field split (33 unnamed / sub-1-TWh-e sites) 1.821 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
   // World Bank/GFMR 2025 individual flare-location dataset, 2024 rows,
   // East Saudi bbox 24.0-29.0N, 47.0-51.5E: 2.203 bcm × 3.6925 TWh_e/bcm.
   // Retrieved 2026-04-24:
   // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
-  "e-saudi": { annualTWh: 8.1, kind: "flat", source: "World Bank GGFR 2025 individual flare sites, 2024 East Saudi bbox 2.203 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "e-saudi": { annualTWh: 2.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 E. Saudi bbox residual after named-field split (79 sites) 0.597 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
   "russia-yamal":     { annualTWh: 10.0, kind: "flat", source: "GGFR 2024 Yamal-Nenets gas flaring (Gazprom/Novatek; ~2.71 bcm × 3.6925 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
   "russia-e-siberia": { annualTWh: 9.0,  kind: "flat", source: "GGFR 2024 East Siberia oil/gas flaring (ESPO corridor + Sakhalin; ~2.44 bcm × 3.6925 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
+  // GFMR per-flare-site split (2026-06-17): World Bank GFMR 2025 individual-flare-location
+  // dataset (VIIRS), 2024 rows. s-iraq / e-saudi above re-anchored to their bbox residual;
+  // named oilfields ≥1 TWh-e carved out below + N. Iraq (Kirkuk/Kurdistan) + Nigeria/Algeria/Libya
+  // national flare. All bcm × 3.6925 TWh-e/bcm, flat 24/7. Cross-checks: S-Iraq 14.233, E-Saudi 2.203, N-Iraq 3.95 bcm.
+  "rumaila": { annualTWh: 10.6, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Rumaila field 2.8606 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "west-qurna-2": { annualTWh: 7.5, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 West Qurna 2 field 2.0188 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "zubair": { annualTWh: 6.3, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Zubair field 1.7037 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "buzurgan": { annualTWh: 5.0, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Buzurgan field 1.3479 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "west-qurna-1": { annualTWh: 3.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 West Qurna 1 field 0.8724 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "halfaya": { annualTWh: 2.7, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Halfaya field 0.7357 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "gharraf": { annualTWh: 2.6, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Gharraf field 0.6946 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "fauqi": { annualTWh: 2.3, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Fauqi field 0.6327 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "majnoon": { annualTWh: 2.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Majnoon field 0.6035 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "east-baghdad": { annualTWh: 1.3, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 East Baghdad field 0.3498 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "ratawi": { annualTWh: 1.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Ratawi field 0.3123 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "faihaa": { annualTWh: 1.0, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Faihaa field 0.2796 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "bai-hassan": { annualTWh: 3.4, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Bai Hassan field 0.9213 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "khurmala": { annualTWh: 1.6, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Khurmala Dome field 0.4236 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "swara-tika": { annualTWh: 1.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Swara Tika field 0.3122 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "kirkuk": { annualTWh: 1.1, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Kirkuk (Avanah Dome) field 0.2853 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "ghawar": { annualTWh: 2.7, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Ghawar field 0.7172 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "jafurah": { annualTWh: 1.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Jafurah Basin field 0.3177 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "wafra": { annualTWh: 0.8, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Wafra field 0.2037 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "marjan": { annualTWh: 0.5, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Marjan field 0.1419 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "s-jafurah": { annualTWh: 0.4, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Southern Jafurah Gas Plant field 0.1151 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "qatif": { annualTWh: 0.4, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Qatif field 0.1103 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "n-iraq": { annualTWh: 7.4, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 N. Iraq (Kirkuk/Kurdistan) residual after named-field split (63 sites) 2.0069 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "nigeria-flare": { annualTWh: 23.9, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Nigeria national gas-flare total 6.4796 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "algeria-flare": { annualTWh: 29.1, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Algeria national gas-flare total 7.8820 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
+  "libya-flare": { annualTWh: 23.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Libya national gas-flare total 6.2751 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
   // v0.6 — Codex global-coverage-audit 2026-04-24. Hawaiian Electric's
   // RSWG metric separates curtailment by island; totals not yet extracted
   // from the public workbook, so TWh anchors here are conservative
