@@ -5,7 +5,7 @@ import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
 /**
- * Japan — Tohoku Electric area supply/demand CSV → live curtailment.
+ * Japan — Tohoku Electric area supply/demand CSV → live per-fuel curtailment.
  *
  * Endpoint:
  *   https://setsuden.nw.tohoku-epco.co.jp/common/demand/realtime_jukyu/
@@ -22,20 +22,14 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
  *           揚水,蓄電池,連系線,その他,合計
  *   Row 2+: data rows
  *
- * Relevant column indices (0-based after DATE=0, TIME=1):
- *   14 → 太陽光出力制御量 (solar curtailment MW) — direct value, no scaling
- *   16 → 風力出力制御量   (wind curtailment MW)  — direct value, no scaling
- *
- * Both columns are added to form the total curtailment MW per 30-min slot.
- *
- * Calibration note: values are from the official OCCTO/Tohoku Electric reporting
- * infrastructure and require no proxy rate. FY2023 actuals: ~0.13 TWh solar +
- * minor wind; FY2024 rising trend toward ~1.5-2 TWh/yr.
+ * Per-fuel split (2026-06-17): 30-day measurement found wind curtailment
+ * material at ~12.3% of total (13.5 GWh/30d). Emits two RegionData:
+ *   japan-tohoku-solar — 太陽光出力制御量 column only
+ *   japan-tohoku-wind  — 風力出力制御量 column only
  *
  * Fetch strategy: HTTP/1.1-forced HTTPS (same WAF bypass as Kyushu loader) via
  * fetchHttp1Bytes from src/lib/fetch.ts. Loop: daily back 30 days.
  */
-const REGION_ID = "japan-tohoku";
 const BASE_URL =
   "https://setsuden.nw.tohoku-epco.co.jp/common/demand/realtime_jukyu";
 /** 30-minute interval expressed as a fraction of an hour, for totalTWh30d */
@@ -43,8 +37,14 @@ const INTERVAL_HOURS = 0.5;
 /** Japan Standard Time offset from UTC, hours */
 const JST_OFFSET_HOURS = 9;
 
+/** A per-30-min sample preserving solar and wind MW separately. */
+interface TohokuPoint extends CurtailmentPoint {
+  solarMw: number;
+  windMw: number;
+}
+
 export interface TohokuParsed {
-  points: CurtailmentPoint[];
+  points: TohokuPoint[];
   /** Total solar curtailment MW across all 30-min samples — diagnostic. */
   solarCurtMwSum: number;
   /** Total wind curtailment MW across all 30-min samples — diagnostic. */
@@ -57,7 +57,7 @@ export interface TohokuParsed {
  * Parse a Shift-JIS-decoded Tohoku Electric daily CSV string.
  * Locates the header row (starts with "DATE,TIME"), reads column indices for
  * 太陽光出力制御量 and 風力出力制御量 by header position, then accumulates
- * curtailment MW for each 30-min interval.
+ * per-fuel curtailment MW for each 30-min interval.
  */
 export function parseTohokuCsv(decoded: string): TohokuParsed {
   const lines = decoded.split(/\r?\n/);
@@ -84,7 +84,7 @@ export function parseTohokuCsv(decoded: string): TohokuParsed {
     return { points: [], solarCurtMwSum: 0, windCurtMwSum: 0, sampleCount: 0 };
   }
 
-  const points: CurtailmentPoint[] = [];
+  const points: TohokuPoint[] = [];
   let solarCurtMwSum = 0;
   let windCurtMwSum = 0;
   let sampleCount = 0;
@@ -114,6 +114,8 @@ export function parseTohokuCsv(decoded: string): TohokuParsed {
       utcTimestamp,
       mw: totalMw,
       intervalHours: INTERVAL_HOURS,
+      solarMw,
+      windMw,
     });
   }
 
@@ -141,26 +143,6 @@ function jstDateTimeToIsoUtc(dateRaw: string, timeRaw: string): string | undefin
   );
   if (!Number.isFinite(utcMs)) return undefined;
   return new Date(utcMs).toISOString();
-}
-
-/**
- * Build a Tohoku RegionData payload from the merged 30-day parsed pointset.
- * Extracted for fixture-test reuse.
- */
-export function buildTohokuRegionData(points: CurtailmentPoint[], nowIso: string): RegionData {
-  const lastTs = points.at(-1)?.utcTimestamp ?? nowIso;
-  return {
-    regionId: REGION_ID,
-    profile: timeOfDayAverageGW(points),
-    latestProfile: latestCompleteUtcDayProfileGW(points),
-    totalTWh: totalTWh30d(points),
-    peakGW: peakGW(points),
-    lastUpdated: lastTs,
-    lastSuccessAt: lastTs,
-    sourceNote:
-      "Tohoku Electric area supply/demand CSV — direct 太陽光出力制御量+風力出力制御量 columns (MW). " +
-      "FY2023 OCCTO anchor: 0.13 TWh solar curtailment; rising trend ~1.5-2 TWh/yr by FY2025.",
-  };
 }
 
 function formatYyyymmdd(d: Date): string {
@@ -200,11 +182,10 @@ async function fetchTohokuDay(
 }
 
 /**
- * Fetch and aggregate Tohoku Electric supply/demand CSVs for the last 30 days.
- * One day's failure is logged and skipped; proceeds as long as at least one
- * day parses successfully. Sequential fetches with a 200 ms gap to be polite.
+ * Fetch and aggregate Tohoku Electric supply/demand CSVs for the last 30 days,
+ * then build two RegionData (solar + wind) from the per-fuel point split.
  */
-const run = async (): Promise<RegionData> => {
+const run = async (): Promise<Record<string, RegionData>> => {
   const now = new Date();
   const days: string[] = [];
   for (let daysAgo = 0; daysAgo < 30; daysAgo++) {
@@ -229,16 +210,69 @@ const run = async (): Promise<RegionData> => {
   }
   allPoints.sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
 
-  return buildTohokuRegionData(allPoints, now.toISOString());
+  const lastTs = allPoints.at(-1)?.utcTimestamp ?? now.toISOString();
+
+  // Build per-fuel point arrays for separate RegionData
+  const solarPoints: CurtailmentPoint[] = allPoints.map((p) => ({
+    utcTimestamp: p.utcTimestamp,
+    mw: p.solarMw,
+    intervalHours: p.intervalHours,
+  }));
+  const windPoints: CurtailmentPoint[] = allPoints.map((p) => ({
+    utcTimestamp: p.utcTimestamp,
+    mw: p.windMw,
+    intervalHours: p.intervalHours,
+  }));
+
+  const SOLAR_SOURCE_NOTE =
+    "Tohoku Electric area supply/demand CSV (realtime_jukyu_YYYYMMDD_02.csv) — " +
+    "太陽光出力制御量 column (MW, 30-min, Shift-JIS). Solar share of measured curtailment.";
+  const WIND_SOURCE_NOTE =
+    "Tohoku Electric area supply/demand CSV (realtime_jukyu_YYYYMMDD_02.csv) — " +
+    "風力出力制御量 column (MW, 30-min, Shift-JIS). Wind share of measured curtailment (~12.3% of total, 13.5 GWh/30d).";
+
+  const solar: RegionData = {
+    regionId: "japan-tohoku-solar",
+    profile: timeOfDayAverageGW(solarPoints),
+    latestProfile: latestCompleteUtcDayProfileGW(solarPoints),
+    totalTWh: totalTWh30d(solarPoints),
+    peakGW: peakGW(solarPoints),
+    lastUpdated: lastTs,
+    lastSuccessAt: lastTs,
+    sourceNote: SOLAR_SOURCE_NOTE,
+    fuelShare: { solar: 1 },
+  };
+
+  const wind: RegionData = {
+    regionId: "japan-tohoku-wind",
+    profile: timeOfDayAverageGW(windPoints),
+    latestProfile: latestCompleteUtcDayProfileGW(windPoints),
+    totalTWh: totalTWh30d(windPoints),
+    peakGW: peakGW(windPoints),
+    lastUpdated: lastTs,
+    lastSuccessAt: lastTs,
+    sourceNote: WIND_SOURCE_NOTE,
+    fuelShare: { wind: 1 },
+  };
+
+  return { "japan-tohoku-solar": solar, "japan-tohoku-wind": wind };
 };
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback<RegionData>(REGION_ID, run, {
+  withFallback<Record<string, RegionData>>("japan-tohoku", run, {
     regionTier: "live" as const,
-    tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
-    tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+    tagLive: (r) => {
+      const tagged: Record<string, RegionData> = {};
+      for (const [k, v] of Object.entries(r)) tagged[k] = { ...v, sourceStatus: "live" as const };
+      return tagged;
+    },
+    tagCached: (c) => {
+      const tagged: Record<string, RegionData> = {};
+      for (const [k, v] of Object.entries(c as Record<string, RegionData>)) tagged[k] = { ...v, sourceStatus: "cached" as const };
+      return tagged;
+    },
   })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {

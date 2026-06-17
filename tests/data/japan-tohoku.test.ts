@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildTohokuRegionData, parseTohokuCsv } from "../../src/data/japan-tohoku.json";
+import { parseTohokuCsv } from "../../src/data/japan-tohoku.json";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // Fixture is the upstream Shift-JIS bytes verbatim; the parser receives a
@@ -42,7 +42,7 @@ describe("tohoku parser (japan-tohoku loader)", () => {
     expect(typeof hasCurtailment).toBe("boolean");
   });
 
-  it("produces non-negative curtailment MW values", () => {
+  it("produces non-negative curtailment MW values (mw = solar + wind)", () => {
     const { points } = parseTohokuCsv(fixture);
     for (const p of points) {
       expect(p.mw).toBeGreaterThanOrEqual(0);
@@ -58,6 +58,16 @@ describe("tohoku parser (japan-tohoku loader)", () => {
     expect(totalPointMw).toBeCloseTo(solarCurtMwSum + windCurtMwSum, 4);
   });
 
+  it("each point carries per-fuel solarMw and windMw fields (2026-06-17 split)", () => {
+    const { points } = parseTohokuCsv(fixture);
+    for (const p of points) {
+      // solarMw and windMw must be non-negative and sum to mw
+      expect(p.solarMw).toBeGreaterThanOrEqual(0);
+      expect(p.windMw).toBeGreaterThanOrEqual(0);
+      expect(p.solarMw + p.windMw).toBeCloseTo(p.mw, 6);
+    }
+  });
+
   it("peak curtailment on April 30 is in the midday solar window", () => {
     const { points } = parseTohokuCsv(fixture);
     if (points.length === 0) return; // skip if no data
@@ -67,28 +77,5 @@ describe("tohoku parser (japan-tohoku loader)", () => {
     const peakHour = new Date(peakPoint.utcTimestamp).getUTCHours();
     expect(peakHour).toBeGreaterThanOrEqual(1);
     expect(peakHour).toBeLessThanOrEqual(6);
-  });
-
-  it("buildTohokuRegionData returns a valid 24-element profile with regionId=japan-tohoku", () => {
-    const { points } = parseTohokuCsv(fixture);
-    const region = buildTohokuRegionData(points, new Date("2026-04-30T23:59:00Z").toISOString());
-    expect(region.regionId).toBe("japan-tohoku");
-    expect(region.profile).toHaveLength(24);
-    for (const v of region.profile) {
-      expect(Number.isFinite(v)).toBe(true);
-      expect(v).toBeGreaterThanOrEqual(0);
-    }
-    expect(region.peakGW).toBeGreaterThanOrEqual(0);
-    expect(region.totalTWh).toBeGreaterThanOrEqual(0);
-    expect(typeof region.sourceNote).toBe("string");
-    expect(region.sourceNote).toMatch(/Tohoku/);
-  });
-
-  it("single-day totalTWh is in a realistic range for Tohoku (< 1 GWh per day outside curtailment season → < 0.001 TWh; up to ~1.5 GWh on heavy days)", () => {
-    const { points } = parseTohokuCsv(fixture);
-    const region = buildTohokuRegionData(points, new Date("2026-04-30T23:59:00Z").toISOString());
-    // One day's data: 0 ≤ totalTWh ≤ 0.002 (2 GWh ceiling for any single day)
-    expect(region.totalTWh).toBeGreaterThanOrEqual(0);
-    expect(region.totalTWh).toBeLessThanOrEqual(0.002);
   });
 });

@@ -104,7 +104,8 @@ describe("regions", () => {
     // 2026-06-17: Chile hydro + Colombia wind/solar + DR wind + Ukraine wind (PR #206), +5 T3. 426 + 5 = 431.
     // 2026-06-17: Germany DE-LU aggregate → 4 TSO control areas (8 T1b, −2 T1a). Net +6. 431 + 6 = 437.
     // 2026-06-17: Mexico split single 'mexico' (T3 solar) → mexico-solar + mexico-wind (both T3). Net +1. 437 + 1 = 438.
-    expect(REGIONS.length).toBe(440);
+    // 2026-06-17: Japan hokkaido + tohoku split solar→solar+wind (hokuriku left solar-only, below floor). Net +2 T1a live. 440 + 2 = 442.
+    expect(REGIONS.length).toBe(442);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -176,12 +177,15 @@ describe("regions", () => {
     // 2026-06-10: peru-solar moved T1a→T1b after replacing the bad
     // overnight-flat COES fuel curve with COES daily solar generation shaped
     // by the official EDI curtailment reports. T1a: 150→149; T1b: 9→10.
+    // 2026-06-17: Japan hokkaido/tohoku/hokuriku each split solar→solar+wind
+    // (measured wind material: hokkaido 16.4%, tohoku 12.3%, hokuriku 6.5%).
+    // Net +3 T1a live. T1a: 149→152; total live: 174→177.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(148);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(150);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(175);
+    expect(liveTotal).toBe(177);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -210,10 +214,11 @@ describe("regions", () => {
     // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). T1a: 148→147. Total: 158→157.
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. T1a: 147→150. Total: 157→160.
     // 2026-06-10: peru-solar T1a→T1b. T1a: 150→149; T1b: 9→10.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(148);
+    // 2026-06-17: Japan hokkaido + tohoku split solar→solar+wind (hokuriku left solar-only). Net +2 T1a live. T1a: 148→150; total: 175→177.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(150);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(175);
+    expect(liveTotal).toBe(177);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -672,19 +677,17 @@ describe("regions", () => {
     // Originally all 10 were tier:"live" (T1a); chubu/hokkaido/tepco downgraded to
     // "estimated" on 2026-05-10 (upstream endpoint issues — see loader comments).
     expect(REGIONS.find(r => r.id === "japan")).toBeUndefined();
-    // All 10 utilities tier:"live" (T1a). TEPCO/Chubu/Hokkaido promoted
-    // estimated→live 2026-06-07 via direct eria_jukyu area CSVs.
+    // 7 solar-only utilities still tier:"live" kind:"solar".
+    // japan-hokkaido + japan-tohoku split into solar/wind (2026-06-17); japan-hokuriku
+    // stays solar-only (current wind curtailment 13 MWh/30d — below the noise floor).
     for (const id of [
       "japan-kyushu",
-      "japan-tohoku",
       "japan-chugoku",
-      "japan-hokuriku",
       "japan-kansai",
       "japan-okinawa",
       "japan-shikoku",
       "japan-tepco",
       "japan-chubu",
-      "japan-hokkaido",
     ]) {
       const region = REGIONS.find(r => r.id === id);
       expect(region, `missing Japan utility ${id}`).toBeDefined();
@@ -692,6 +695,22 @@ describe("regions", () => {
       expect(region?.kind, `${id} should be solar`).toBe("solar");
       expect(region?.country, `${id} country should be JPN`).toBe("JPN");
     }
+    // 2026-06-17: hokkaido/tohoku/hokuriku each split into solar+wind (measured wind material).
+    for (const [id, kind] of [
+      ["japan-hokkaido-solar", "solar"],
+      ["japan-hokkaido-wind",  "wind"],
+      ["japan-tohoku-solar",   "solar"],
+      ["japan-tohoku-wind",    "wind"],
+    ] as [string, string][]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region, `missing Japan per-fuel region ${id}`).toBeDefined();
+      expect(region?.tier, `${id} should be live`).toBe("live");
+      expect(region?.kind, `${id} should be ${kind}`).toBe(kind);
+      expect(region?.country, `${id} country should be JPN`).toBe("JPN");
+    }
+    // Aggregate IDs must not exist any more.
+    expect(REGIONS.find(r => r.id === "japan-hokkaido"), "japan-hokkaido aggregate must be removed").toBeUndefined();
+    expect(REGIONS.find(r => r.id === "japan-tohoku"),   "japan-tohoku aggregate must be removed").toBeUndefined();
   });
 
   it("includes the expansion-push new regions (Chile hydro, Colombia wind+solar, DR wind, Ukraine wind)", () => {

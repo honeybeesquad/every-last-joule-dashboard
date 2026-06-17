@@ -1254,7 +1254,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "japan-hokkaido.md",
+      "file": "japan-hokkaido-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-hokkaido-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1289,7 +1294,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "japan-tohoku.md",
+      "file": "japan-tohoku-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "japan-tohoku-wind.md",
       "cited": false,
       "matchedPatterns": []
     },

@@ -192,3 +192,92 @@ export async function runJapanAreaLoader(cfg: JapanAreaConfig, sourceNote: strin
   }
   return mergeWindowBuild(parsed, cfg.regionId, sourceNote, now);
 }
+
+/**
+ * Per-fuel split builder for areas with material wind curtailment
+ * (hokkaido ~16%, tohoku ~12%, hokuriku ~6.5%). Fetches the same two-month
+ * window as `runJapanAreaLoader`, but returns TWO RegionData objects built
+ * from the solar-only and wind-only per-point MW values respectively.
+ *
+ * Solar: uses `p.solarMw` — inherits the time-of-day average shape that
+ *   reads near-zero at local night (JST), consistent with the solar mask.
+ * Wind: uses `p.windMw` — 24-hour signal, no day/night mask.
+ *
+ * Both regionIds must be registered in `src/lib/regions.ts` as
+ * `japan-<area>-solar` / `japan-<area>-wind` before this is called.
+ * Throws if the windowed point set is empty for EITHER fuel (withFallback
+ * then serves the committed last-good snapshot).
+ */
+export async function runJapanAreaLoaderSplit(
+  cfg: JapanAreaConfig,
+  solarRegionId: string,
+  windRegionId: string,
+  solarSourceNote: string,
+  windSourceNote: string,
+): Promise<{ solar: RegionData; wind: RegionData }> {
+  const now = new Date();
+  const prevD = new Date(now);
+  prevD.setUTCDate(1);
+  prevD.setUTCMonth(prevD.getUTCMonth() - 1);
+  const months = [formatYyyyMm(prevD), formatYyyyMm(now)];
+
+  const parsed: AreaParsed[] = [];
+  for (const m of months) {
+    try {
+      parsed.push(await fetchAreaMonth(cfg, m));
+    } catch (err) {
+      console.warn(`${cfg.regionId} ${m} fetch failed: ${(err as Error).message}`);
+    }
+    await new Promise((r) => setTimeout(r, 200));
+  }
+
+  const cutoffMs = now.getTime() - WINDOW_DAYS * 24 * 3600 * 1000;
+  const windowed = parsed
+    .flatMap((m) => m.points)
+    .filter((p) => new Date(p.utcTimestamp).getTime() >= cutoffMs)
+    .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+
+  if (windowed.length === 0) {
+    throw new Error(`${cfg.regionId}: no usable curtailment rows in the trailing ${WINDOW_DAYS} days`);
+  }
+
+  const lastTs = windowed.at(-1)?.utcTimestamp ?? now.toISOString();
+
+  // Build solar points — use solarMw per sample; profile naturally reads ~0 at night.
+  const solarPoints: AreaPoint[] = windowed.map((p) => ({
+    ...p,
+    mw: p.solarMw,
+  }));
+
+  // Build wind points — use windMw per sample; 24h signal.
+  const windPoints: AreaPoint[] = windowed.map((p) => ({
+    ...p,
+    mw: p.windMw,
+  }));
+
+  const solar: RegionData = {
+    regionId: solarRegionId,
+    profile: timeOfDayAverageGW(solarPoints),
+    latestProfile: latestCompleteUtcDayProfileGW(solarPoints),
+    totalTWh: totalTWh30d(solarPoints),
+    peakGW: peakGW(solarPoints),
+    lastUpdated: lastTs,
+    lastSuccessAt: lastTs,
+    sourceNote: solarSourceNote,
+    fuelShare: { solar: 1 },
+  };
+
+  const wind: RegionData = {
+    regionId: windRegionId,
+    profile: timeOfDayAverageGW(windPoints),
+    latestProfile: latestCompleteUtcDayProfileGW(windPoints),
+    totalTWh: totalTWh30d(windPoints),
+    peakGW: peakGW(windPoints),
+    lastUpdated: lastTs,
+    lastSuccessAt: lastTs,
+    sourceNote: windSourceNote,
+    fuelShare: { wind: 1 },
+  };
+
+  return { solar, wind };
+}
