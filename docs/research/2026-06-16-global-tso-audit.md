@@ -1,6 +1,8 @@
 # Global TSO Audit — 2026-06-16
 
 > **Status (2026-06-17):** point-in-time audit — counts below (391 regions) predate the expansion chain that took `main` to 440. Two HIGH-priority items here were actioned in #217: **South Korea** (anchored T3 per-fuel split — EPSIS 0% headless → published IEA anchors) and **Estonia** (live per-fuel split). The remaining HIGH/MEDIUM TSOs stay open as the honest expansion roadmap; rescued from #210 before that PR was closed.
+>
+> **Anchor research (2026-06-17):** probed Taiwan, Vietnam, Israel, Saudi Arabia, UAE, Egypt, Morocco, Argentina, India, Mexico for a *published* curtailment figure to justify a T3→T2 upgrade. Verdict: **8 of 10 have NO honest anchor** — no operator / IEA / Ember / IRENA publishes a curtailment number (MENA is a systematic blind spot; the IEA curtailment chart covers zero MENA countries). Only **India** (Ember 2.3 TWh solar, May–Dec 2025 partial-year analysis of Grid-India data) and **Egypt** (~320 GWh wind 2023, Entlaq secondary, gated) carry any figure — neither clean enough for T2. **All stay T3-modelled** — the honest result. Mexico confirmed: CENACE publishes generation-by-tech but no curtailment column. (Vietnam's only traceable number is a 5-year-old 365 GWh 2020 solar figure via a news quote of the NLDC director.)
 
 ## Executive Summary
 
@@ -100,7 +102,7 @@ These countries have grid operators with known data portals that could potential
 - **Data:** GASTAT 2024 reports; Sudair/Sakaka/NEOM scale-up
 - **Blocker:** No public dispatch API
 - **Fuel types:** Solar (5+ GW, Sudair 1.5 GW + Sakaka 300 MW + NEOM)
-- **Opportunity:** GASTAT publishes energy statistics; 5.2% curtailment rate documented
+- **Opportunity:** GASTAT publishes energy statistics. ⚠️ **CORRECTION (2026-06-17 anchor research):** the "5.2% curtailment rate" cited here is unverifiable — it traces to Saudi solar *irradiance* (~5.2 kWh/kWp/day), NOT curtailment. No SEC / GCCIA / GASTAT / IEA publication reports a Saudi renewable-curtailment figure. Saudi stays T3-modelled.
 - **Priority:** HIGH — 5+ GW solar, major capacity build-out
 
 ### 10. UAE (1 region at T3)
