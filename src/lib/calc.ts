@@ -18,6 +18,12 @@ export function ehsFromGW(gw: number, effJperTH: number = ASIC_JPER_TH): number 
 }
 
 export function regionGWAtHour(data: RegionData, utcHour: number, mode: DashboardMode = "avg30d"): number {
+  // Defensive: a region whose loader data hasn't resolved (cold-load race on the
+  // slowest FileAttachments) arrives here undefined via aggregateAtHour's
+  // Object.entries(regionData) / the timeline. Reading .latestProfile/.profile
+  // on undefined throws and kills the clock tick → blank globe. Contribute 0
+  // instead; the region rejoins when Observable re-runs with resolved data.
+  if (!data) return 0;
   const profile = mode === "last24h" && Array.isArray(data.latestProfile)
     ? data.latestProfile
     : data.profile;
