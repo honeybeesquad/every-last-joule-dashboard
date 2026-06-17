@@ -9,11 +9,9 @@
  * Only DUIDs with meaningful curtailment (>0.01 TWh / 30-day window) are
  * included — small generators that barely curtail are noise in the dataset.
  *
- * Coordinates are approximated: the DUID's AEMO region code maps to a state
- * centroid, and a deterministic hash-based offset ensures each plant plots
- * at a unique (non-overlapping) point within ±0.5° of that centroid. This is
- * explicitly labelled as "approximate" in the sourceNote so readers know the
- * lat/lon is not from a GIS registry.
+ * Coordinates sourced from OpenNEM GitHub (opennem/opennem — CC BY 4.0):
+ * 215 wind+solar DUIDs with verified lat/lon. 49 unit-map DUIDs without
+ * OpenNEM coords fall back to state centroids.
  */
 
 import { execFileSync } from "node:child_process";
@@ -27,6 +25,7 @@ import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d 
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { AEMO_UNIT_MAP } from "./aemo-unit-map.js";
+import { AEMO_DUID_COORDS } from "./aemo-duid-coords.js";
 
 // ─── Region code → state ID mapping (shared with aemo.json.ts) ───────────────
 
@@ -40,7 +39,7 @@ const REGION_CODE_TO_ID: Record<string, string> = {
   TAS1: "tas",
 };
 
-// ─── State centroids for lat/lon approximation ───────────────────────────────
+// ─── State centroids for lat/lon fallback (OpenNEM doesn't cover all DUIDs) ──
 
 const STATE_CENTROIDS: Record<string, { lat: number; lon: number }> = {
   nsw: { lat: -32.0, lon: 147.0 },
@@ -49,38 +48,6 @@ const STATE_CENTROIDS: Record<string, { lat: number; lon: number }> = {
   sa:  { lat: -30.0, lon: 139.0 },
   tas: { lat: -42.0, lon: 146.5 },
 };
-
-// ─── Deterministic DUID hash for coordinate offsets ──────────────────────────
-
-/**
- * Simple deterministic hash of a DUID string. Returns an integer in [0, 2^32).
- * Used to scatter plant coordinates so they don't stack on state centroids.
- */
-function duidHash(s: string): number {
-  let h = 0x811c9dc5; // FNV-1a 32-bit offset basis
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 0x01000193); // FNV prime
-  }
-  return h >>> 0;
-}
-
-/**
- * Approximate coordinates for a DUID. Returns a point within ±0.5° of the
- * state centroid, deterministic for a given DUID. NOT from a GIS registry —
- * labelled accordingly in sourceNote.
- */
-function approximateCoords(duid: string, stateCode: string): { lat: number; lon: number } {
-  const centroid = STATE_CENTROIDS[stateCode] ?? { lat: -33.0, lon: 145.0 };
-  const h = duidHash(duid);
-  // Spread ±0.5° using bits of the hash
-  const latOffset = ((h & 0xffff) / 0xffff - 0.5);           // -0.5 .. +0.5
-  const lonOffset = (((h >> 16) & 0xffff) / 0xffff - 0.5);   // -0.5 .. +0.5
-  return {
-    lat: Math.round((centroid.lat + latOffset) * 1000) / 1000,
-    lon: Math.round((centroid.lon + lonOffset) * 1000) / 1000,
-  };
-}
 
 // ─── Date parsing (shared logic from aemo.json.ts) ──────────────────────────
 
@@ -266,10 +233,13 @@ const run = async (): Promise<Record<string, PerPlantRegionData>> => {
 
     const hourlyPoints = hourlyAverage(acc.allPoints);
     const stateCode = REGION_CODE_TO_ID[acc.regionCode] ?? "nsw";
-    const coords = approximateCoords(duid, stateCode);
+    const opennemCoords = AEMO_DUID_COORDS[duid];
+    const coords = opennemCoords
+      ?? (STATE_CENTROIDS[stateCode] ?? { lat: -33.0, lon: 145.0 });
     const regionId = `aemo-${duid.toLowerCase()}-${acc.fueltech}`;
 
     const latestProfile = latestCompleteUtcDayProfileGW(acc.allPoints);
+    const coordSource = opennemCoords ? "OpenNEM GIS" : `state-centroid fallback (${stateCode})`;
 
     out[regionId] = {
       regionId,
@@ -286,7 +256,7 @@ const run = async (): Promise<Record<string, PerPlantRegionData>> => {
       sourceNote:
         `NEMWEB SEMIDISPATCHCAP per-DUID curtailment — ` +
         `${acc.fueltech} plant ${duid} (${acc.regionCode}). ` +
-        `Coordinates approximate (state-centroid + DUID-hash offset). ` +
+        `Coordinates: ${coordSource}. ` +
         `Threshold: ≥${MIN_TWH_30D} TWh/30d.`,
     };
   }
