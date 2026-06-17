@@ -1,5 +1,5 @@
 import { pathToFileURL } from "node:url";
-import { runJapanAreaLoader, type JapanAreaConfig } from "../lib/japan-area-csv.js";
+import { runJapanAreaLoaderSplit, type JapanAreaConfig } from "../lib/japan-area-csv.js";
 import { withFallback } from "../lib/resilient.js";
 import type { RegionData } from "../lib/types.js";
 
@@ -9,12 +9,12 @@ import type { RegionData } from "../lib/types.js";
  * Direct measured curtailment from the monthly area supply/demand CSV:
  *   https://www.hepco.co.jp/network/con_service/public_document/supply_demand_results/csv/eria_jukyu_YYYYMM_01.csv
  *
- * Encoding: Shift-JIS. 22-column layout, 30-min intervals, MW. Standalone
- * monthly CSVs from 2024-04 on. Replaces the all-renewables juyo_01 misread
- * (PR #90) — this feed has a solar-specific 太陽光出力制御量 column. Wind is a
- * non-trivial minority here (~16% in May 2026) but still solar-dominant, so
- * kind stays "solar"; the split is recorded in fuelShare. Promoted
- * estimated→live 2026-06-07.
+ * Encoding: Shift-JIS. 22-column layout, 30-min intervals, MW.
+ *
+ * Per-fuel split (2026-06-17): 30-day measurement found wind curtailment
+ * material at ~16.4% of total (5.8 GWh/30d). Emits two RegionData:
+ *   japan-hokkaido-solar — 太陽光出力制御量 column only
+ *   japan-hokkaido-wind  — 風力出力制御量 column only
  */
 const CONFIG: JapanAreaConfig = {
   regionId: "japan-hokkaido",
@@ -23,19 +23,41 @@ const CONFIG: JapanAreaConfig = {
   cadence: "monthly",
   dateFormat: "slash",
 };
-const SOURCE_NOTE =
-  "Hokkaido Electric Power Network (北海道電力ネットワーク) area supply/demand CSV (eria_jukyu_YYYYMM_01.csv) — " +
-  "direct 太陽光出力制御量+風力出力制御量 columns (MW, 30-min, Shift-JIS).";
 
-const run = async (): Promise<RegionData> => runJapanAreaLoader(CONFIG, SOURCE_NOTE);
+const SOLAR_SOURCE_NOTE =
+  "Hokkaido Electric Power Network (北海道電力ネットワーク) area supply/demand CSV (eria_jukyu_YYYYMM_01.csv) — " +
+  "太陽光出力制御量 column (MW, 30-min, Shift-JIS). Solar share of measured curtailment.";
+
+const WIND_SOURCE_NOTE =
+  "Hokkaido Electric Power Network (北海道電力ネットワーク) area supply/demand CSV (eria_jukyu_YYYYMM_01.csv) — " +
+  "風力出力制御量 column (MW, 30-min, Shift-JIS). Wind share of measured curtailment (~16.4% of total, 5.8 GWh/30d).";
+
+const run = async (): Promise<Record<string, RegionData>> => {
+  const { solar, wind } = await runJapanAreaLoaderSplit(
+    CONFIG,
+    "japan-hokkaido-solar",
+    "japan-hokkaido-wind",
+    SOLAR_SOURCE_NOTE,
+    WIND_SOURCE_NOTE,
+  );
+  return { "japan-hokkaido-solar": solar, "japan-hokkaido-wind": wind };
+};
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback<RegionData>("japan-hokkaido", run, {
+  withFallback<Record<string, RegionData>>("japan-hokkaido", run, {
     regionTier: "live" as const,
-    tagLive: (r) => ({ ...r, sourceStatus: "live" as const }),
-    tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+    tagLive: (r) => {
+      const tagged: Record<string, RegionData> = {};
+      for (const [k, v] of Object.entries(r)) tagged[k] = { ...v, sourceStatus: "live" as const };
+      return tagged;
+    },
+    tagCached: (c) => {
+      const tagged: Record<string, RegionData> = {};
+      for (const [k, v] of Object.entries(c as Record<string, RegionData>)) tagged[k] = { ...v, sourceStatus: "cached" as const };
+      return tagged;
+    },
   })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {

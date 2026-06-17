@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (honest world-expansion: estonia → estonia-wind + estonia-solar, both live T1a; south-korea → south-korea-solar + south-korea-wind, both modelled T3 anchor split. T1a 147→148, T3 232→233, total 438→440. Norway-solar/uruguay-split/bosnia-wind/montenegro-wind from world-expansion-v2 were rejected as all-zero or below the dataset noise floor). Prior: 2026-06-17 (Mexico split single 'mexico' T3-solar into mexico-solar + mexico-wind, both modelled T3; +1 region. T3 231→232, total 437→438).",
-  "T1a": 148,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (STACKED PRs: #217 honest world-expansion — estonia → estonia-wind/solar (live T1a), south-korea → south-korea-solar/wind (T3): T1a 147→148, T3 232→233, total 438→440; then Japan — hokkaido + tohoku split solar→solar+wind (+2 live T1a): T1a 148→150, total 440→442). Prior: Mexico split single 'mexico' T3-solar → mexico-solar + mexico-wind (+1 T3, total 437→438).",
+  "T1a": 150,
   "T1b": 26,
   "T1c": 1,
   "T2": 24,
   "T2-flare": 8,
   "T3": 233,
-  "total": 440
+  "total": 442
 }
