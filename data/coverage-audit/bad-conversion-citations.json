@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 444,
+  "totalValidationDocs": 445,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 437,
-  "pctCited": 1.58,
+  "docsNotCiting": 438,
+  "pctCited": 1.57,
   "perDocCitations": [
     {
       "file": "aemo-nsw-solar.md",
@@ -1434,7 +1434,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "mexico.md",
+      "file": "mexico-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "mexico-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
