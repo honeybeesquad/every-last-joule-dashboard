@@ -617,11 +617,18 @@ const regionData = {
   ...philippines
 };
 
-// Throw loudly at page load if any canonical region is missing or has a
-// malformed value (e.g. multi-region loader's whole Record wired into a
-// single key — Belgium-shape bug class). Better to fail visibly than
-// render silent zero-GW pillars.
-assertCanonicalRegionData(regionData, REGIONS);
+// Warn loudly (console) if any canonical region is missing or has a malformed
+// value (e.g. multi-region loader's whole Record wired into a single key —
+// Belgium-shape bug class). This MUST NOT throw: it runs synchronously right
+// after the regionData literal, and on a cold load the slowest FileAttachment
+// loaders can still be resolving, so a hard throw here halts the whole
+// dashboard init (stuck "Loading dashboard data") on a transient load race.
+// Surface the issue in the console for monitoring, but always render.
+try {
+  assertCanonicalRegionData(regionData, REGIONS);
+} catch (err) {
+  console.error("[region-data-integrity]", (err && err.message) || err);
+}
 
 // Solar-physics correction: zero out hours where the sun is below the horizon
 // for any region of kind:solar. Several grid-operator feeds (CAISO, PJM, MISO,
