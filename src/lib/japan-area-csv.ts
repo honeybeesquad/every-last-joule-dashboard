@@ -117,6 +117,25 @@ export function parseAreaCsv(decoded: string, cfg: { dateFormat: DateFormat }): 
 }
 
 /**
+ * Keep only the points inside the trailing WINDOW_DAYS up to `now`, sorted
+ * ascending. The lower bound drops months-old rows; the UPPER bound (`<= now`)
+ * drops the future-dated placeholder rows the monthly eria_jukyu CSV pre-fills
+ * for the rest of the calendar month — leaving them in pushes lastUpdated into
+ * the future and dilutes the time-of-day profile with trailing zeros.
+ */
+export function windowedPoints(months: AreaParsed[], now: Date): AreaPoint[] {
+  const cutoffMs = now.getTime() - WINDOW_DAYS * 24 * 3600 * 1000;
+  const nowMs = now.getTime();
+  return months
+    .flatMap((m) => m.points)
+    .filter((p) => {
+      const t = new Date(p.utcTimestamp).getTime();
+      return t >= cutoffMs && t <= nowMs;
+    })
+    .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+}
+
+/**
  * Merge parsed months, keep the trailing WINDOW_DAYS, and build RegionData
  * with a data-driven fuelShare. Pure (no network) so it is unit-testable.
  * Throws when the window is empty — the loader relies on withFallback serving
@@ -130,11 +149,7 @@ export function mergeWindowBuild(
   sourceNote: string,
   now: Date,
 ): RegionData {
-  const cutoffMs = now.getTime() - WINDOW_DAYS * 24 * 3600 * 1000;
-  const windowed = months
-    .flatMap((m) => m.points)
-    .filter((p) => new Date(p.utcTimestamp).getTime() >= cutoffMs)
-    .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+  const windowed = windowedPoints(months, now);
 
   if (windowed.length === 0) {
     throw new Error(`${regionId}: no usable curtailment rows in the trailing ${WINDOW_DAYS} days`);
@@ -170,9 +185,33 @@ async function fetchAreaMonth(cfg: JapanAreaConfig, yyyymm: string, timeoutMs = 
 }
 
 /**
+ * Refuse to build from an incomplete fetch. The trailing-30d window spans the
+ * current AND previous calendar month, so if EITHER month CSV fails to fetch
+ * the window silently shrinks to whatever parsed — a too-low magnitude served
+ * as "live". Throwing instead routes withFallback to the complete last-good
+ * snapshot (stampCached marks it cached/degraded by age → amber ring). Keyed
+ * off fetch success, never curtailment magnitude, so a genuine seasonal-zero
+ * month (both CSVs fetched, zero curtailment) still serves honestly as live.
+ */
+export function assertMonthsFetched(
+  fetchFailures: number,
+  expectedMonths: number,
+  regionId: string,
+): void {
+  if (fetchFailures > 0) {
+    throw new Error(
+      `${regionId}: ${fetchFailures}/${expectedMonths} month CSV fetch(es) failed — ` +
+        `refusing to serve a shrunken trailing-${WINDOW_DAYS}d window; ` +
+        `withFallback will serve the last-good snapshot`,
+    );
+  }
+}
+
+/**
  * Fetch the current and previous calendar month, merge, and build the trailing
- * 30-day RegionData. Each month's failure is logged and skipped; throws only if
- * BOTH yield no windowed rows (→ withFallback serves last-good).
+ * 30-day RegionData. A month that fails to fetch makes the window incomplete,
+ * so the whole run throws (→ withFallback serves last-good) rather than serving
+ * a silently-shrunken window. Throws too if the merged window is empty.
  */
 export async function runJapanAreaLoader(cfg: JapanAreaConfig, sourceNote: string): Promise<RegionData> {
   const now = new Date();
@@ -182,14 +221,17 @@ export async function runJapanAreaLoader(cfg: JapanAreaConfig, sourceNote: strin
   const months = [formatYyyyMm(prevD), formatYyyyMm(now)];
 
   const parsed: AreaParsed[] = [];
+  let fetchFailures = 0;
   for (const m of months) {
     try {
       parsed.push(await fetchAreaMonth(cfg, m));
     } catch (err) {
+      fetchFailures++;
       console.warn(`${cfg.regionId} ${m} fetch failed: ${(err as Error).message}`);
     }
     await new Promise((r) => setTimeout(r, 200));
   }
+  assertMonthsFetched(fetchFailures, months.length, cfg.regionId);
   return mergeWindowBuild(parsed, cfg.regionId, sourceNote, now);
 }
 
@@ -205,8 +247,9 @@ export async function runJapanAreaLoader(cfg: JapanAreaConfig, sourceNote: strin
  *
  * Both regionIds must be registered in `src/lib/regions.ts` as
  * `japan-<area>-solar` / `japan-<area>-wind` before this is called.
- * Throws if the windowed point set is empty for EITHER fuel (withFallback
- * then serves the committed last-good snapshot).
+ * Throws if a month CSV fails to fetch (incomplete window) or the windowed
+ * point set is empty — withFallback then serves the committed last-good
+ * snapshot rather than a silently-shrunken window.
  */
 export async function runJapanAreaLoaderSplit(
   cfg: JapanAreaConfig,
@@ -222,20 +265,19 @@ export async function runJapanAreaLoaderSplit(
   const months = [formatYyyyMm(prevD), formatYyyyMm(now)];
 
   const parsed: AreaParsed[] = [];
+  let fetchFailures = 0;
   for (const m of months) {
     try {
       parsed.push(await fetchAreaMonth(cfg, m));
     } catch (err) {
+      fetchFailures++;
       console.warn(`${cfg.regionId} ${m} fetch failed: ${(err as Error).message}`);
     }
     await new Promise((r) => setTimeout(r, 200));
   }
+  assertMonthsFetched(fetchFailures, months.length, cfg.regionId);
 
-  const cutoffMs = now.getTime() - WINDOW_DAYS * 24 * 3600 * 1000;
-  const windowed = parsed
-    .flatMap((m) => m.points)
-    .filter((p) => new Date(p.utcTimestamp).getTime() >= cutoffMs)
-    .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+  const windowed = windowedPoints(parsed, now);
 
   if (windowed.length === 0) {
     throw new Error(`${cfg.regionId}: no usable curtailment rows in the trailing ${WINDOW_DAYS} days`);
