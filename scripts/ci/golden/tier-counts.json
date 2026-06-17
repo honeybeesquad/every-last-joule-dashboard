@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (Chile hydro + Colombia wind/solar + DR wind + Ukraine wind added as 5 T3 regions, PR #206; T3 226→231, total 426→431). Prior: 2026-06-17 (China province fuel-splits + 6 India states, PR #203; T3 211→226, total 411→426).",
-  "T1a": 149,
-  "T1b": 18,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (Germany DE-LU aggregate replaced by its 4 TSO control areas as 8 T1b regions, survey PR; T1a 149→147, T1b 18→26, total 431→437). Prior: 2026-06-17 (Chile/Colombia/DR/Ukraine, PR #206; T3 226→231, total 426→431).",
+  "T1a": 147,
+  "T1b": 26,
   "T1c": 1,
   "T2": 24,
   "T2-flare": 8,
   "T3": 231,
-  "total": 431
+  "total": 437
 }

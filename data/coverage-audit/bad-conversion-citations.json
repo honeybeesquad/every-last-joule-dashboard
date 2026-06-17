@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 438,
+  "totalValidationDocs": 444,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 431,
-  "pctCited": 1.6,
+  "docsNotCiting": 437,
+  "pctCited": 1.58,
   "perDocCitations": [
     {
       "file": "aemo-nsw-solar.md",
@@ -877,12 +877,42 @@
       "matchedPatterns": []
     },
     {
-      "file": "germany-solar.md",
+      "file": "germany-50hertz-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "germany-wind.md",
+      "file": "germany-50hertz-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "germany-amprion-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "germany-amprion-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "germany-tennet-de-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "germany-tennet-de-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "germany-transnetbw-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "germany-transnetbw-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
