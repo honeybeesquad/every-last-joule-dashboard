@@ -447,7 +447,8 @@ const regionData = {
   "bulgaria-wind": entsoe["bulgaria-wind"],
   "bulgaria-solar": entsoe["bulgaria-solar"],
   // lithuania + latvia reverted live→estimated 2026-05-11; flow from `...statics`.
-  estonia: entsoe.estonia,
+  "estonia-wind": entsoe["estonia-wind"],
+  "estonia-solar": entsoe["estonia-solar"],
   // PR #45 leftover Balkan + Baltic regions — wired per Phase 3a-v2 per-fuel split.
   "bosnia-and-herzegovina": entsoe["bosnia-and-herzegovina"],
   "croatia-wind": entsoe["croatia-wind"],
@@ -522,7 +523,8 @@ const regionData = {
   "nt-pilbara": ntPilbara,
   indonesia,
   malaysia,
-  "south-korea": southKorea,
+  "south-korea-solar": southKorea.solar,
+  "south-korea-wind": southKorea.wind,
   "russia-mainland": russiaMainland,
   taiwan,
   jordan,

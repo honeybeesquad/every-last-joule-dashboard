@@ -8,6 +8,8 @@ describe("british-columbia loader", () => {
     expect(data.profile).toHaveLength(24);
     expect(data.latestProfile).toBeNull();
     expect(data.totalTWh).toBeGreaterThan(0);
-    expect(data.sourceNote).toMatch(/1\.4 TWh\/yr/);
+    // Honest framing: a modelled estimate, not a fabricated "published IRP" citation.
+    expect(data.sourceNote).toMatch(/modelled ~1\.5 TWh\/yr/i);
+    expect(data.sourceNote).not.toMatch(/Integrated Resource Plan/);
   });
 });

@@ -11,8 +11,9 @@
 ## What's shipped on `main`
 
 **Coverage — full world:**
-- 385 regions across 195 countries (every UN member + Taiwan + Palestine)
-- **Tally golden as of 2026-06-10: T1a=149, T1b=10, T1c=1, T2=6, T2-flare=8, T3=211 (total 385).** Counted directly from `src/lib/regions.ts`. Locked by `tests/regions.test.ts`. Drift since the 2026-05-11 golden (T1a=149/T3=211/total=384): new-zealand-hydro added 2026-05-24 (T1a +1); serbia-solar + north-macedonia-solar reverted live→estimated 2026-06-06 (T1a −2, T3 +2); norway-no5 reverted live→estimated 2026-06-07 (T1a −1, T3 +1, PR #125); japan-tepco/chubu/hokkaido promoted estimated→live 2026-06-07 (T1a +3, T3 −3, PR below); peru-solar moved T1a→T1b 2026-06-10 after COES EDI anchoring and daylight-only live generation shaping.
+- 440 regions across 195 countries (every UN member + Taiwan + Palestine)
+- **Tally golden as of 2026-06-17: T1a=148, T1b=26, T1c=1, T2=24, T2-flare=8, T3=233 (total 440).** Counted directly from `src/lib/regions.ts`. Locked by `tests/regions.test.ts` + `scripts/ci/golden/tier-counts.json`. Drift since the 2026-06-10 golden (total 385): EIA-930 9 US BAs +18 T2 (#163, →403); China/India/Chile/Colombia/Ukraine data expansion (#203/#206); Germany DE-LU → 4 TSO control areas, +8 T1b net replacing the 2-region aggregate (#214, →437); Mexico single→per-fuel split +1 T3 (#216, →438); **honest world-expansion this PR: estonia → estonia-wind + estonia-solar (+1 T1a) and south-korea → south-korea-solar + south-korea-wind (+1 T3 anchor split), →440.**
+- **Prior golden (2026-06-10): T1a=149, T1b=10, T1c=1, T2=6, T2-flare=8, T3=211 (total 385).**
 - Live at **everylastjoule.com** — Vercel auto-deploys from `main`
 - Dashboard banner: **"Wasted Energy Database · v1.3.2"** (pulled live from Zenodo version metadata; v1.3.2 minted 2026-06-07, version DOI `10.5281/zenodo.20570864`)
 
@@ -104,6 +105,10 @@ Diagnosed from persistent Vercel build-log errors (all builds since ~2026-05-13 
 - **Version skew resolved (2026-06-07):** v1.3.2 minted to Zenodo (version DOI `10.5281/zenodo.20570864`) via PR #121 + GitHub release `v1.3.2`. All metadata (`package.json`, `CITATION.cff`, `.zenodo.json`, `README`s, `FAIR.md`, CHANGELOG) now consistent at v1.3.2 / 385 regions. Paper cites the always-latest concept DOI, which now resolves to v1.3.2.
 
 ## What's NOT shipped / open PRs
+
+**IN FLIGHT 2026-06-17 — Honest world-expansion (branch `fix/world-expansion-honest`; supersedes #210/#215).** Rebuilds the world-expansion that #215 gutted, keeping only additions that survive the no-fabrication bar. **Shipped: estonia → `estonia-wind` + `estonia-solar`** (both live T1a, real ENTSO-E B19/B16, non-zero) and **south-korea → `south-korea-solar` + `south-korea-wind`** (T3 modelled anchor split; EPSIS returns 0% headless so the loader falls back to published IEA anchors — solar reads 0 at KST night by construction, no fabricated data). Net +2 → 440.
+- **Rejected from v2 after audit (the institutional point):** `norway-no{1..4}-solar` (Norway at 58-71°N has negligible PV; `no3-solar` was all-zero, `no2/no4-solar` were phantom rows the loader never emitted); `uruguay` split into wind+solar (main's `uruguay` is an all-zero ADME placeholder already in the zero-allowlist — splitting it just makes two zeros); `bosnia-and-herzegovina-wind` (0.00012 TWh) + `montenegro-wind` (0.00064 TWh) (real ENTSO-E but 10-50× below the dataset's smallest meaningful signal, estonia-wind 0.0019 — map clutter without analytical value); `bosnia-and-herzegovina-solar` (all-zero). All four reverted to `main`; their all-zero aggregates stay as-is (already allowlisted).
+- Gates: 928 vitest, `ci:gates`, `validate`, typecheck all green. Goldens (`tier-counts.json` 440, `magnitude-baseline.json` estonia split) + 4 validation docs updated; `estonia.md`/`south-korea.md` orphans deleted.
 
 **SHIPPED 2026-06-16 — Granularity & gaps survey, coverage-audit v2 (PR #163).**
 - Schema v2 (`scripts/validation/coverage_audit_schema.py`): +`parent_region_id`/`granularity_available`/`expected_new_regions`, split-row scoring branch (no already-modelled penalty); v1 world CSV migrated to 20 cols, scores byte-stable (regression-tested). 35 pytest green.
