@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
 
 describe("regions", () => {
-  it("has 426 canonical regions", () => {
+  it("has 437 canonical regions", () => {
     // v0.6 global-coverage-audit (Codex 2026-04-24):
     //   - 5 live regions split into 10 sub-zones (net +5 live):
     //       ireland, iso-ne, nyiso, north-sea, denmark
@@ -102,10 +102,11 @@ describe("regions", () => {
     // 2026-06-17: Italy CNOR/CSUD/SUD/CALA bidding zones added as 8 T1b regions. 403 + 8 = 411.
     // 2026-06-17: China province fuel-splits + 6 India states (PR #203), net +15 T3. 411 + 15 = 426.
     // 2026-06-17: Chile hydro + Colombia wind/solar + DR wind + Ukraine wind (PR #206), +5 T3. 426 + 5 = 431.
-    expect(REGIONS.length).toBe(431);
+    // 2026-06-17: Germany DE-LU aggregate → 4 TSO control areas (8 T1b, −2 T1a). Net +6. 431 + 6 = 437.
+    expect(REGIONS.length).toBe(437);
   });
 
-  it("has 168 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
+  it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
     // ... (unchanged through phase-2.6) ...
     // PR #19 peru split (2026-04-29): peru → peru-hydro + peru-solar + peru-wind.
     // With the parent removed, this is net +2 live. 63 + 2 = 65.
@@ -176,10 +177,10 @@ describe("regions", () => {
     // by the official EDI curtailment reports. T1a: 150→149; T1b: 9→10.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(18);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(147);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(168);
+    expect(liveTotal).toBe(174);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -208,10 +209,10 @@ describe("regions", () => {
     // 2026-06-07: norway-no5 reverted live→estimated (Statnett not reporting A75). T1a: 148→147. Total: 158→157.
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. T1a: 147→150. Total: 157→160.
     // 2026-06-10: peru-solar T1a→T1b. T1a: 150→149; T1b: 9→10.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(149);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(18);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(147);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(168);
+    expect(liveTotal).toBe(174);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {

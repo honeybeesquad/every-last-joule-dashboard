@@ -38,20 +38,64 @@ export const ZONES = [
     technologies: [{ psrType: "B16", fuel: "solar", rate: 0.10 }],
     sourceNote: "Portugal 2024 solar: primary per REN/ENTSO-E.",
   },
+  // Germany DE-LU bidding zone split into its 4 TSO control areas (granularity survey 2026-06-10).
+  // ENTSO-E A75 live-probed per CTA-EIC on 2026-06-17: B16(solar)+B19(onshore wind) present for all 4;
+  // B18(offshore wind) only for the two coastal CAs (50Hertz, TenneT) — inland Amprion/TransnetBW carry
+  // onshore wind only. EIC↔TSO mapping pinned (10YDE-EON=TenneT, 10YDE-VE=50Hertz — the historical-name trap).
+  // Rates = the BNetzA/SMARD national rates from the former germany aggregate, applied per CTA's own generation.
   {
-    id: "germany-wind",
-    domain: "10Y1001A1001A82H",
+    id: "germany-50hertz-wind",
+    domain: "10YDE-VE-------2",
     technologies: [
       { psrType: "B18", fuel: "wind", rate: 0.178 },
       { psrType: "B19", fuel: "wind", rate: 0.030 },
     ],
-    sourceNote: "Germany 2024 BNetzA/SMARD: 4.56 TWh offshore wind + 3.38 TWh onshore wind curtailed.",
+    sourceNote: "ENTSO-E 50Hertz control area (NE Germany, Baltic offshore): BNetzA/SMARD national wind rate by CTA.",
   },
   {
-    id: "germany-solar",
-    domain: "10Y1001A1001A82H",
+    id: "germany-50hertz-solar",
+    domain: "10YDE-VE-------2",
     technologies: [{ psrType: "B16", fuel: "solar", rate: 0.023 }],
-    sourceNote: "Germany 2024 BNetzA/SMARD solar: 1.39 TWh curtailed.",
+    sourceNote: "ENTSO-E 50Hertz control area solar: BNetzA/SMARD national solar rate by CTA.",
+  },
+  {
+    id: "germany-amprion-wind",
+    domain: "10YDE-RWENET---I",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.030 }],
+    sourceNote: "ENTSO-E Amprion control area (W/SW Germany, inland): onshore wind only; BNetzA/SMARD national rate by CTA.",
+  },
+  {
+    id: "germany-amprion-solar",
+    domain: "10YDE-RWENET---I",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.023 }],
+    sourceNote: "ENTSO-E Amprion control area solar: BNetzA/SMARD national solar rate by CTA.",
+  },
+  {
+    id: "germany-tennet-de-wind",
+    domain: "10YDE-EON------1",
+    technologies: [
+      { psrType: "B18", fuel: "wind", rate: 0.178 },
+      { psrType: "B19", fuel: "wind", rate: 0.030 },
+    ],
+    sourceNote: "ENTSO-E TenneT DE control area (N–S corridor, North-Sea offshore): BNetzA/SMARD national wind rate by CTA.",
+  },
+  {
+    id: "germany-tennet-de-solar",
+    domain: "10YDE-EON------1",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.023 }],
+    sourceNote: "ENTSO-E TenneT DE control area solar: BNetzA/SMARD national solar rate by CTA.",
+  },
+  {
+    id: "germany-transnetbw-wind",
+    domain: "10YDE-ENBW-----N",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.030 }],
+    sourceNote: "ENTSO-E TransnetBW control area (Baden-Württemberg, inland): onshore wind only; BNetzA/SMARD national rate by CTA.",
+  },
+  {
+    id: "germany-transnetbw-solar",
+    domain: "10YDE-ENBW-----N",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.023 }],
+    sourceNote: "ENTSO-E TransnetBW control area solar: BNetzA/SMARD national solar rate by CTA.",
   },
   {
     id: "finland-wind",
