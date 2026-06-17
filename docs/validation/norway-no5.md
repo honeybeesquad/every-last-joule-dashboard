@@ -1,6 +1,6 @@
 # Validation — Norway NO5 (Bergen) (`norway-no5`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-17 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 

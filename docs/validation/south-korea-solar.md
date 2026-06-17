@@ -1,15 +1,15 @@
-# Validation — Liechtenstein (`liechtenstein`)
+# Validation — South Korea Solar (`south-korea-solar`)
 
 Last updated: 2026-06-17 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `liechtenstein`
-- **Country:** LIE
+- **Region id:** `south-korea-solar`
+- **Country:** KOR
 - **Tier:** estimated
-- **Kind:** hydro
-- **Source:** IRENA RCS 2025 / LFV (Alpine hydro; import-dependent; near-zero VRE)
-- **Source URL:** [https://www.irena.org/Data/Downloads/IRENASTAT](https://www.irena.org/Data/Downloads/IRENASTAT)
+- **Kind:** solar
+- **Source:** KPX EPSIS KNRE (headless returns 0% — using published anchor ~0.5 TWh/yr from IEA Korea 2024 review)
+- **Source URL:** [https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do](https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
@@ -37,12 +37,12 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-T3 static region. Annual anchor from IRENA with typical-day profile. See `docs/known-limitations.md`.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_liechtenstein_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_south-korea-solar_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (Germany DE-LU aggregate replaced by its 4 TSO control areas as 8 T1b regions, survey PR; T1a 149→147, T1b 18→26, total 431→437). Prior: 2026-06-17 (Chile/Colombia/DR/Ukraine, PR #206; T3 226→231, total 426→431).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (world-expansion-v2: montenegro-solar dropped (ENTSO-E B16 empty), south-korea split to solar+wind with published anchors, SK STATIC_PROFILE_KIND fixed. T3 231→232, total 437→438).",
   "T1a": 147,
   "T1b": 26,
   "T1c": 1,
   "T2": 24,
   "T2-flare": 8,
-  "T3": 231,
-  "total": 437
+  "T3": 232,
+  "total": 438
 }

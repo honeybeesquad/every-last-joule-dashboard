@@ -1,16 +1,16 @@
-# Validation — South Korea (mainland) (`south-korea`)
+# Validation — South Korea Wind (`south-korea-wind`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-17 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `south-korea`
+- **Region id:** `south-korea-wind`
 - **Country:** KOR
 - **Tier:** estimated
-- **Kind:** solar
-- **Source:** KPX EPSIS KNRE assessed 2026-05-09: same endpoint as Jeju (selectKnreMain.do) covers mainland solar. Interactive SVG map required — browser-only, not programmatically accessible. KEPCO open data portal (opendata.kepco.co.kr) does not expose curtailment data. KEA energy statistics are PDF-only. T1 blocked.
+- **Kind:** wind
+- **Source:** KPX EPSIS KNRE (headless returns 0% — using published anchor ~0.05 TWh/yr from IEA Korea 2024 review)
 - **Source URL:** [https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do](https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do)
-- **Loader:** [`south-korea.json.ts`](../../src/data/south-korea.json.ts)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
 ## Calibration
@@ -26,14 +26,14 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** KPX 2024 RES curtailment ~0.8 TWh
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
 
 ## Known limitations
 
@@ -41,8 +41,8 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: [`south-korea.json.ts`](../../src/data/south-korea.json.ts)
-- Backfill archive: `data/historical/backfill/*_south-korea_*.parquet` (0 years)
+- Loader source: _(no single-file loader — see multi-region source)_
+- Backfill archive: `data/historical/backfill/*_south-korea-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

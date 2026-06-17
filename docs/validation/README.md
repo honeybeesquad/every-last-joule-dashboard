@@ -1,6 +1,6 @@
 # Validation index
 
-Last generated: 2026-06-07
+Last generated: 2026-06-17
 
 | Region | Tier | Kind | Backfill years | Validation doc |
 |---|---|---|---|---|
@@ -85,8 +85,10 @@ Last generated: 2026-06-07
 | Saskatchewan | estimated | wind | 0 | [saskatchewan](./saskatchewan.md) |
 | Switzerland | live-neighbour-anchored | solar | 7 | [switzerland](./switzerland.md) |
 | Atacama | live | solar | 0 | [atacama](./atacama.md) |
+| Chile Hydro | estimated | hydro | 0 | [atacama-hydro](./atacama-hydro.md) |
 | Chile Wind | live | wind | 0 | [chile-wind](./chile-wind.md) |
-| Anhui | estimated | solar | 0 | [china-anhui](./china-anhui.md) |
+| Anhui Solar | estimated | solar | 0 | [china-anhui-solar](./china-anhui-solar.md) |
+| Anhui Wind | estimated | wind | 0 | [china-anhui-wind](./china-anhui-wind.md) |
 | Beijing | estimated | solar | 0 | [china-beijing](./china-beijing.md) |
 | Chongqing Hydro | anchored | hydro | 0 | [china-chongqing-hydro](./china-chongqing-hydro.md) |
 | Chongqing Solar | estimated | solar | 0 | [china-chongqing-solar](./china-chongqing-solar.md) |
@@ -95,9 +97,12 @@ Last generated: 2026-06-07
 | Guizhou Hydro | anchored | hydro | 0 | [china-guizhou-hydro](./china-guizhou-hydro.md) |
 | Guizhou Solar | estimated | solar | 0 | [china-guizhou-solar](./china-guizhou-solar.md) |
 | Hainan | estimated | solar | 0 | [china-hainan](./china-hainan.md) |
-| Hebei | estimated | wind | 0 | [china-hebei](./china-hebei.md) |
-| Heilongjiang | estimated | wind | 0 | [china-heilongjiang](./china-heilongjiang.md) |
-| Henan | estimated | solar | 0 | [china-henan](./china-henan.md) |
+| Hebei Solar | estimated | solar | 0 | [china-hebei-solar](./china-hebei-solar.md) |
+| Hebei Wind | estimated | wind | 0 | [china-hebei-wind](./china-hebei-wind.md) |
+| Heilongjiang Solar | estimated | solar | 0 | [china-heilongjiang-solar](./china-heilongjiang-solar.md) |
+| Heilongjiang Wind | estimated | wind | 0 | [china-heilongjiang-wind](./china-heilongjiang-wind.md) |
+| Henan Solar | estimated | solar | 0 | [china-henan-solar](./china-henan-solar.md) |
+| Henan Wind | estimated | wind | 0 | [china-henan-wind](./china-henan-wind.md) |
 | Hubei Hydro | anchored | hydro | 0 | [china-hubei-hydro](./china-hubei-hydro.md) |
 | Hubei Solar | estimated | solar | 0 | [china-hubei-solar](./china-hubei-solar.md) |
 | Hubei Wind | estimated | wind | 0 | [china-hubei-wind](./china-hubei-wind.md) |
@@ -107,10 +112,14 @@ Last generated: 2026-06-07
 | Jiangsu Solar | estimated | solar | 0 | [china-jiangsu-solar](./china-jiangsu-solar.md) |
 | Jiangsu Wind | estimated | wind | 0 | [china-jiangsu-wind](./china-jiangsu-wind.md) |
 | Jiangxi | estimated | solar | 0 | [china-jiangxi](./china-jiangxi.md) |
-| Jilin | estimated | wind | 0 | [china-jilin](./china-jilin.md) |
-| Liaoning | estimated | wind | 0 | [china-liaoning](./china-liaoning.md) |
-| Shaanxi | estimated | solar | 0 | [china-shaanxi](./china-shaanxi.md) |
-| Shandong | estimated | solar | 0 | [china-shandong](./china-shandong.md) |
+| Jilin Solar | estimated | solar | 0 | [china-jilin-solar](./china-jilin-solar.md) |
+| Jilin Wind | estimated | wind | 0 | [china-jilin-wind](./china-jilin-wind.md) |
+| Liaoning Solar | estimated | solar | 0 | [china-liaoning-solar](./china-liaoning-solar.md) |
+| Liaoning Wind | estimated | wind | 0 | [china-liaoning-wind](./china-liaoning-wind.md) |
+| Shaanxi Solar | estimated | solar | 0 | [china-shaanxi-solar](./china-shaanxi-solar.md) |
+| Shaanxi Wind | estimated | wind | 0 | [china-shaanxi-wind](./china-shaanxi-wind.md) |
+| Shandong Solar | estimated | solar | 0 | [china-shandong-solar](./china-shandong-solar.md) |
+| Shandong Wind | estimated | wind | 0 | [china-shandong-wind](./china-shandong-wind.md) |
 | Shanghai | estimated | solar | 0 | [china-shanghai](./china-shanghai.md) |
 | Shanxi Solar | estimated | solar | 0 | [china-shanxi-solar](./china-shanxi-solar.md) |
 | Shanxi Wind | estimated | wind | 0 | [china-shanxi-wind](./china-shanxi-wind.md) |
@@ -124,13 +133,16 @@ Last generated: 2026-06-07
 | Qinghai | estimated | solar | 0 | [qinghai](./qinghai.md) |
 | Sichuan | estimated | hydro | 0 | [sichuan](./sichuan.md) |
 | Tibet (Xizang) | estimated | hydro | 0 | [tibet](./tibet.md) |
-| Xinjiang | estimated | solar | 0 | [xinjiang](./xinjiang.md) |
+| Xinjiang Solar | estimated | solar | 0 | [xinjiang-solar](./xinjiang-solar.md) |
+| Xinjiang Wind | estimated | wind | 0 | [xinjiang-wind](./xinjiang-wind.md) |
 | Yunnan | estimated | hydro | 0 | [yunnan](./yunnan.md) |
 | Cote d'Ivoire | estimated | solar | 0 | [cote-divoire](./cote-divoire.md) |
 | Cameroon | estimated | hydro | 0 | [cameroon](./cameroon.md) |
 | DR Congo | estimated | hydro | 0 | [congo-drc](./congo-drc.md) |
 | Republic of Congo | estimated | hydro | 0 | [congo-republic](./congo-republic.md) |
 | Colombia | live-domestic-anchored | hydro | 0 | [colombia](./colombia.md) |
+| Colombia Solar | estimated | solar | 0 | [colombia-solar](./colombia-solar.md) |
+| Colombia Wind | estimated | wind | 0 | [colombia-wind](./colombia-wind.md) |
 | Comoros | estimated | solar | 0 | [comoros](./comoros.md) |
 | Cabo Verde | estimated | solar | 0 | [cabo-verde](./cabo-verde.md) |
 | Costa Rica | estimated | hydro | 0 | [costa-rica](./costa-rica.md) |
@@ -138,8 +150,14 @@ Last generated: 2026-06-07
 | Cyprus | estimated | solar | 0 | [cyprus](./cyprus.md) |
 | Czech Republic Solar | live | solar | 0 | [czech-republic-solar](./czech-republic-solar.md) |
 | Czech Republic Wind | live | wind | 0 | [czech-republic-wind](./czech-republic-wind.md) |
-| Germany Solar | live | solar | 0 | [germany-solar](./germany-solar.md) |
-| Germany Wind | live | wind | 0 | [germany-wind](./germany-wind.md) |
+| 50Hertz Solar | live-domestic-anchored | solar | 0 | [germany-50hertz-solar](./germany-50hertz-solar.md) |
+| 50Hertz Wind | live-domestic-anchored | wind | 0 | [germany-50hertz-wind](./germany-50hertz-wind.md) |
+| Amprion Solar | live-domestic-anchored | solar | 0 | [germany-amprion-solar](./germany-amprion-solar.md) |
+| Amprion Wind | live-domestic-anchored | wind | 0 | [germany-amprion-wind](./germany-amprion-wind.md) |
+| TenneT DE Solar | live-domestic-anchored | solar | 0 | [germany-tennet-de-solar](./germany-tennet-de-solar.md) |
+| TenneT DE Wind | live-domestic-anchored | wind | 0 | [germany-tennet-de-wind](./germany-tennet-de-wind.md) |
+| TransnetBW Solar | live-domestic-anchored | solar | 0 | [germany-transnetbw-solar](./germany-transnetbw-solar.md) |
+| TransnetBW Wind | live-domestic-anchored | wind | 0 | [germany-transnetbw-wind](./germany-transnetbw-wind.md) |
 | Djibouti | estimated | solar | 0 | [djibouti](./djibouti.md) |
 | Dominica | estimated | solar | 0 | [dominica](./dominica.md) |
 | Denmark DK2 Solar | live | solar | 0 | [denmark-east-solar](./denmark-east-solar.md) |
@@ -147,6 +165,7 @@ Last generated: 2026-06-07
 | Denmark DK1 Solar | live | solar | 0 | [denmark-west-solar](./denmark-west-solar.md) |
 | Denmark DK1 Wind | live | wind | 0 | [denmark-west-wind](./denmark-west-wind.md) |
 | Dominican Republic | estimated | solar | 0 | [dominican-republic](./dominican-republic.md) |
+| Dominican Republic Wind | estimated | wind | 0 | [dominican-republic-wind](./dominican-republic-wind.md) |
 | Algeria | estimated | solar | 0 | [algeria](./algeria.md) |
 | Ecuador | estimated | hydro | 0 | [ecuador](./ecuador.md) |
 | Egypt | estimated | solar | 0 | [egypt](./egypt.md) |
@@ -189,12 +208,18 @@ Last generated: 2026-06-07
 | Hungary Wind | live | wind | 0 | [hungary-wind](./hungary-wind.md) |
 | Indonesia | estimated | solar | 0 | [indonesia](./indonesia.md) |
 | Andhra Pradesh | estimated | solar | 0 | [india-andhra-pradesh](./india-andhra-pradesh.md) |
+| Chhattisgarh | estimated | solar | 0 | [india-chhattisgarh](./india-chhattisgarh.md) |
 | India East | estimated | solar | 0 | [india-east](./india-east.md) |
 | Gujarat | estimated | solar | 0 | [india-gujarat](./india-gujarat.md) |
 | Karnataka | estimated | solar | 0 | [india-karnataka](./india-karnataka.md) |
+| Madhya Pradesh | estimated | solar | 0 | [india-madhya-pradesh](./india-madhya-pradesh.md) |
 | Maharashtra | estimated | mixed | 0 | [india-maharashtra](./india-maharashtra.md) |
+| Odisha | estimated | wind | 0 | [india-odisha](./india-odisha.md) |
+| Punjab | estimated | solar | 0 | [india-punjab](./india-punjab.md) |
 | Rajasthan | estimated | solar | 0 | [india-rajasthan](./india-rajasthan.md) |
 | Tamil Nadu | estimated | wind | 0 | [india-tamil-nadu](./india-tamil-nadu.md) |
+| Telangana | estimated | mixed | 0 | [india-telangana](./india-telangana.md) |
+| Uttar Pradesh | estimated | solar | 0 | [india-uttar-pradesh](./india-uttar-pradesh.md) |
 | Ireland (Republic) Solar | live | solar | 0 | [ireland-republic-solar](./ireland-republic-solar.md) |
 | Ireland (Republic) Wind | live | wind | 0 | [ireland-republic-wind](./ireland-republic-wind.md) |
 | Iran | estimated | solar | 0 | [iran](./iran.md) |
@@ -203,12 +228,20 @@ Last generated: 2026-06-07
 | S. Iraq | anchored | flare | 0 | [s-iraq](./s-iraq.md) |
 | Iceland | estimated | hydro | 0 | [iceland](./iceland.md) |
 | Israel | estimated | solar | 0 | [israel](./israel.md) |
+| Italy Calabria Solar | live-domestic-anchored | solar | 0 | [italy-calabria-solar](./italy-calabria-solar.md) |
+| Italy Calabria Wind | live-domestic-anchored | wind | 0 | [italy-calabria-wind](./italy-calabria-wind.md) |
+| Italy Centre-North Solar | live-domestic-anchored | solar | 0 | [italy-cnord-solar](./italy-cnord-solar.md) |
+| Italy Centre-North Wind | live-domestic-anchored | wind | 0 | [italy-cnord-wind](./italy-cnord-wind.md) |
+| Italy Centre-South Solar | live-domestic-anchored | solar | 0 | [italy-csud-solar](./italy-csud-solar.md) |
+| Italy Centre-South Wind | live-domestic-anchored | wind | 0 | [italy-csud-wind](./italy-csud-wind.md) |
 | Italy North Solar | live-domestic-anchored | solar | 0 | [italy-north-zone-solar](./italy-north-zone-solar.md) |
 | Italy North Wind | live-domestic-anchored | wind | 0 | [italy-north-zone-wind](./italy-north-zone-wind.md) |
 | Sardinia Solar | live-domestic-anchored | solar | 0 | [italy-sardinia-solar](./italy-sardinia-solar.md) |
 | Sardinia Wind | live-domestic-anchored | wind | 0 | [italy-sardinia-wind](./italy-sardinia-wind.md) |
 | Sicily Solar | live-domestic-anchored | solar | 0 | [italy-sicily-solar](./italy-sicily-solar.md) |
 | Sicily Wind | live-domestic-anchored | wind | 0 | [italy-sicily-wind](./italy-sicily-wind.md) |
+| Italy South Solar | live-domestic-anchored | solar | 0 | [italy-sud-solar](./italy-sud-solar.md) |
+| Italy South Wind | live-domestic-anchored | wind | 0 | [italy-sud-wind](./italy-sud-wind.md) |
 | Jamaica | estimated | solar | 0 | [jamaica](./jamaica.md) |
 | Jordan | estimated | solar | 0 | [jordan](./jordan.md) |
 | Chubu (Japan) | live | solar | 0 | [japan-chubu](./japan-chubu.md) |
@@ -228,7 +261,8 @@ Last generated: 2026-06-07
 | Kiribati | estimated | solar | 0 | [kiribati](./kiribati.md) |
 | St Kitts & Nevis | estimated | solar | 0 | [st-kitts-and-nevis](./st-kitts-and-nevis.md) |
 | Jeju (S. Korea) | estimated | wind | 0 | [jeju](./jeju.md) |
-| South Korea (mainland) | estimated | solar | 0 | [south-korea](./south-korea.md) |
+| South Korea Solar | estimated | solar | 0 | [south-korea-solar](./south-korea-solar.md) |
+| South Korea Wind | estimated | wind | 0 | [south-korea-wind](./south-korea-wind.md) |
 | Kuwait | anchored | flare | 0 | [kuwait](./kuwait.md) |
 | Laos | estimated | solar | 0 | [laos](./laos.md) |
 | Lebanon | estimated | solar | 0 | [lebanon](./lebanon.md) |
@@ -351,7 +385,10 @@ Last generated: 2026-06-07
 | Tanzania | estimated | hydro | 0 | [tanzania](./tanzania.md) |
 | Uganda | estimated | hydro | 0 | [uganda](./uganda.md) |
 | Ukraine | estimated | solar | 0 | [ukraine](./ukraine.md) |
+| Ukraine Wind | estimated | wind | 0 | [ukraine-wind](./ukraine-wind.md) |
 | Uruguay | live | wind | 0 | [uruguay](./uruguay.md) |
+| Arizona Public Service Solar | anchored | solar | 0 | [azps-solar](./azps-solar.md) |
+| Arizona Public Service Wind | anchored | wind | 0 | [azps-wind](./azps-wind.md) |
 | BPA Solar | live | solar | 0 | [bpa-solar](./bpa-solar.md) |
 | BPA Wind | live | wind | 0 | [bpa-wind](./bpa-wind.md) |
 | California Solar | live | solar | 0 | [caiso-solar](./caiso-solar.md) |
@@ -364,6 +401,8 @@ Last generated: 2026-06-07
 | Hawaii (Big Island) | estimated | mixed | 0 | [hawaii-island](./hawaii-island.md) |
 | Hawaii (Maui) | estimated | solar | 0 | [hawaii-maui](./hawaii-maui.md) |
 | Hawaii (Oahu) | estimated | solar | 0 | [hawaii-oahu](./hawaii-oahu.md) |
+| Idaho Power Solar | anchored | solar | 0 | [ipco-solar](./ipco-solar.md) |
+| Idaho Power Wind | anchored | wind | 0 | [ipco-wind](./ipco-wind.md) |
 | ISO-NE (whole ISO) | live | mixed | 7 | [iso-ne](./iso-ne.md) |
 | ISO-NE Maine/Vermont | live | wind | 0 | [iso-ne-maine-vermont](./iso-ne-maine-vermont.md) |
 | ISO-NE (rest) Solar | live | solar | 0 | [iso-ne-rest-solar](./iso-ne-rest-solar.md) |
@@ -374,12 +413,26 @@ Last generated: 2026-06-07
 | NYISO (rest) Solar | live | solar | 0 | [nyiso-rest-solar](./nyiso-rest-solar.md) |
 | NYISO (rest) Wind | live | wind | 0 | [nyiso-rest-wind](./nyiso-rest-wind.md) |
 | NYISO Zones D+E | live | wind | 0 | [nyiso-zones-d-e](./nyiso-zones-d-e.md) |
+| PacifiCorp East Solar | anchored | solar | 0 | [pace-solar](./pace-solar.md) |
+| PacifiCorp East Wind | anchored | wind | 0 | [pace-wind](./pace-wind.md) |
+| PacifiCorp West Solar | anchored | solar | 0 | [pacw-solar](./pacw-solar.md) |
+| PacifiCorp West Wind | anchored | wind | 0 | [pacw-wind](./pacw-wind.md) |
 | Permian Basin | anchored | flare | 0 | [permian](./permian.md) |
 | PJM Solar | live | solar | 0 | [pjm-solar](./pjm-solar.md) |
 | PJM Wind | live | wind | 0 | [pjm-wind](./pjm-wind.md) |
+| Public Service Colorado Solar | anchored | solar | 0 | [psco-solar](./psco-solar.md) |
+| Public Service Colorado Wind | anchored | wind | 0 | [psco-wind](./psco-wind.md) |
+| Southern Company Solar | anchored | solar | 0 | [soco-solar](./soco-solar.md) |
+| Southern Company Wind | anchored | wind | 0 | [soco-wind](./soco-wind.md) |
 | SPP Solar | live | solar | 0 | [spp-solar](./spp-solar.md) |
 | SPP Wind | live | wind | 0 | [spp-wind](./spp-wind.md) |
+| Salt River Project Solar | anchored | solar | 0 | [srp-solar](./srp-solar.md) |
+| Salt River Project Wind | anchored | wind | 0 | [srp-wind](./srp-wind.md) |
+| Tucson Electric Power Solar | anchored | solar | 0 | [tepc-solar](./tepc-solar.md) |
+| Tucson Electric Power Wind | anchored | wind | 0 | [tepc-wind](./tepc-wind.md) |
 | TVA (SE United States) | estimated | solar | 0 | [tva](./tva.md) |
+| WAPA Rocky Mountain Solar | anchored | solar | 0 | [wacm-solar](./wacm-solar.md) |
+| WAPA Rocky Mountain Wind | anchored | wind | 0 | [wacm-wind](./wacm-wind.md) |
 | Uzbekistan | estimated | solar | 0 | [uzbekistan](./uzbekistan.md) |
 | St Vincent | estimated | solar | 0 | [st-vincent](./st-vincent.md) |
 | Venezuela | estimated | wind | 0 | [venezuela](./venezuela.md) |

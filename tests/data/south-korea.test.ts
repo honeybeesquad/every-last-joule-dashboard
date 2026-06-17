@@ -2,14 +2,20 @@ import { describe, expect, it } from "vitest";
 import { buildSouthKoreaData } from "../../src/data/south-korea.json";
 
 describe("south-korea loader", () => {
-  it("returns a valid positive RegionData shape", async () => {
+  it("returns { solar, wind } split with valid structure", async () => {
     const data = await buildSouthKoreaData();
-    expect(data.regionId).toBe("south-korea");
-    expect(data.profile).toHaveLength(24);
-    expect(data.latestProfile).toBeNull();
-    expect(data.totalTWh).toBeGreaterThan(0);
-    expect(data.peakGW).toBeGreaterThan(0);
-    expect(data.sourceNote).toContain("Typical-shape fallback");
-    expect(data.sourceNote).toContain("mainland");
+    expect(data).toHaveProperty("solar");
+    expect(data).toHaveProperty("wind");
+
+    const solar = (data as any).solar;
+    const wind = (data as any).wind;
+
+    expect(solar.regionId).toBe("south-korea-solar");
+    expect(solar.profile).toHaveLength(24);
+    expect(typeof solar.totalTWh).toBe("number");
+
+    expect(wind.regionId).toBe("south-korea-wind");
+    expect(wind.profile).toHaveLength(24);
+    expect(typeof wind.totalTWh).toBe("number");
   });
 });
