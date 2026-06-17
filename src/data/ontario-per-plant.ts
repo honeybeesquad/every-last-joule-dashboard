@@ -16,8 +16,8 @@
  * are included. Each qualifying plant becomes its own RegionData entry
  * keyed by `ieso-<plant-id>-<fuel>`.
  *
- * Coordinates are approximate: Ontario centroid + deterministic hash
- * offset (same approach as aemo-per-plant.ts).
+ * Coordinates sourced from Wikipedia / IESO public records (22 plants
+ * verified). Plants without verified coords fall back to Ontario centroid.
  */
 
 import { pathToFileURL } from "node:url";
@@ -31,6 +31,7 @@ import {
 } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
+import { ONTARIO_PLANT_COORDS } from "./ontario-plant-coords.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -39,31 +40,10 @@ const IESO_MONTHLY_BASE =
 
 const MIN_TWH_30D = 0.01;
 
-// Ontario centroid for approximate lat/lon (central Ontario, near Kawarthas)
+// Ontario centroid for fallback (central Ontario, near Kawarthas)
 const ONTARIO_CENTROID = { lat: 44.0, lon: -80.5 };
 
 type OntarioFuel = "WIND" | "SOLAR";
-
-// ─── Deterministic plant hash for coordinate offsets ─────────────────────────
-
-function plantHash(s: string): number {
-  let h = 0x811c9dc5; // FNV-1a 32-bit offset basis
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 0x01000193); // FNV prime
-  }
-  return h >>> 0;
-}
-
-function approximateCoords(plantId: string): { lat: number; lon: number } {
-  const h = plantHash(plantId);
-  const latOffset = (h & 0xffff) / 0xffff - 0.5; // -0.5 .. +0.5
-  const lonOffset = ((h >> 16) / 0xffff) / 0xffff - 0.5;
-  return {
-    lat: Math.round((ONTARIO_CENTROID.lat + latOffset) * 1000) / 1000,
-    lon: Math.round((ONTARIO_CENTROID.lon + lonOffset) * 1000) / 1000,
-  };
-}
 
 // ─── Timezone helpers ────────────────────────────────────────────────────────
 
@@ -274,9 +254,11 @@ function buildPerPlantRegion(
   const totalTWh = totalTWh30d(acc.points);
   if (totalTWh < MIN_TWH_30D) return null;
 
-  const coords = approximateCoords(acc.generator);
+  const opennemCoords = ONTARIO_PLANT_COORDS[plantId];
+  const coords = opennemCoords ?? ONTARIO_CENTROID;
   const hourlyPoints = hourlyAverage(acc.points);
   const latestProfile = latestCompleteUtcDayProfileGW(acc.points);
+  const coordSource = opennemCoords ? "Wikipedia/IESO public records" : "Ontario-centroid fallback";
 
   return {
     regionId: plantId,
@@ -294,7 +276,7 @@ function buildPerPlantRegion(
       `IESO GenOutputCapabilityMonth per-plant curtailment — ` +
       `${acc.fuel} plant "${acc.generator}". ` +
       `Curtailment = max(0, Available Capacity − Output). ` +
-      `Coordinates approximate (Ontario-centroid + plant-hash offset). ` +
+      `Coordinates: ${coordSource}. ` +
       `Threshold: ≥${MIN_TWH_30D} TWh/30d.`,
   };
 }
