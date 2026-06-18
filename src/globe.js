@@ -5,6 +5,7 @@ import { getRegionFuelColor } from "./lib/fuel.js";
 import { readGlobeTokens, isLinearGradientToken } from "./lib/theme-tokens.js";
 import { buildPillarUnits } from "./lib/pillar-layout.js";
 import { qualityBucket, qualityOpacity, dotStyleFor } from "./lib/region-quality.js";
+import { wrapLongitude, easeOutCubic } from "./lib/globe-geo.js";
 
 // Locally-vendored world atlas: previously fetched from unpkg.com, which
 // added a third-party DNS + TLS handshake (~200–400ms on cellular) to
@@ -116,10 +117,6 @@ export async function mountGlobe(canvas, initial) {
   // region and animate scale 0 → 1 over BIRTH_MS.
   const BIRTH_MS = 350;
   const pillarBirthTimes = new Map(); // repId → DOMHighResTimeStamp
-
-  function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
 
   /**
    * Hit-test: given client coords, return the closest pillar group within
@@ -740,8 +737,4 @@ export async function mountGlobe(canvas, initial) {
       canvas.removeEventListener("wheel", onWheel);
     }
   };
-}
-
-function wrapLongitude(value) {
-  return ((value + 180) % 360 + 360) % 360 - 180;
 }
