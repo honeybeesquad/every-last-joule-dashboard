@@ -43,7 +43,7 @@ const MIN_TWH_30D = 0.01;
 // Ontario centroid for fallback (central Ontario, near Kawarthas)
 const ONTARIO_CENTROID = { lat: 44.0, lon: -80.5 };
 
-type OntarioFuel = "WIND" | "SOLAR";
+type OntarioFuel = "wind" | "solar";
 
 // ─── Timezone helpers ────────────────────────────────────────────────────────
 
@@ -108,10 +108,10 @@ function parseIesoMonthlyCsv(csv: string): PlantMeasurement[] {
 
     const date = cells[0].trim();
     const generator = cells[1].trim();
-    const fuelType = cells[2].trim().toUpperCase();
+    const fuelType = cells[2].trim().toLowerCase();
     const measurement = cells[3].trim();
 
-    if (fuelType !== "WIND" && fuelType !== "SOLAR") continue;
+    if (fuelType !== "wind" && fuelType !== "solar") continue;
     if (measurement !== "Available Capacity" && measurement !== "Output") continue;
 
     // Parse Hours 1-24 (columns 4-27)
@@ -201,7 +201,7 @@ function computePerPlantCurtailment(
 
       // Solar: clamp to 0 at night (Output = 0 means no sun, not curtailment)
       // NOTE: fuel is uppercase "SOLAR"/"WIND" from the CSV parser
-      if (fuel === "SOLAR" && outputMw <= 0) {
+      if (fuel === "solar" && outputMw <= 0) {
         curtailmentMw = 0;
       }
 
