@@ -1,6 +1,6 @@
 # Validation — Peru Solar (`peru-solar`)
 
-Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-10 · Sprint: Peru Solar EDI integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** PER
 - **Tier:** live-domestic-anchored
 - **Kind:** solar
-- **Source:** COES RER EDI reports + live daily solar generation by company × 2% curtailment calibration
+- **Source:** COES RER Energía Dejada de Inyectar reports + COES live daily solar generation by company × 2% curtailment calibration
 - **Source URL:** [https://www.coes.org.pe/Portal/PostOperacion/Informes/MagEnergiaDejadaInyectar](https://www.coes.org.pe/Portal/PostOperacion/Informes/MagEnergiaDejadaInyectar)
 - **Loader:** [`peru.json.ts`](../../src/data/peru.json.ts)
 - **Structural gap:** no
@@ -29,7 +29,7 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** —
+- **Other:** COES EDI reports show southern solar EDI rows, including `C.S. REPARTICION` at 71.63 MWh approved in February 2026 and `C.S. MAJES SOLAR` at 3.904 MWh approved in November 2025.
 
 ## Discrepancy analysis
 
