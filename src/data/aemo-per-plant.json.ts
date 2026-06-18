@@ -201,7 +201,9 @@ const run = async (): Promise<Record<string, PerPlantRegionData>> => {
   }>();
 
   for (const url of urls) {
-    const res = await fetch(url);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+    const res = await fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timeout));
     if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
     const csv = unzipCsv(new Uint8Array(await res.arrayBuffer()));
     const parsed = parseAemoDispatchCsvPerDuid(csv);

@@ -608,4 +608,13 @@ export const REGIONS: Region[] = [
   { id: "ieso-jericho-wind",            name: "Jericho Wind",           country: "CAN", lat: 44.35, lon: -80.55, tier: "live", kind: "wind",  source: "IESO per-plant curtailment", sourceUrl: "https://reports-public.ieso.ca/public/GenOutputCapabilityMonth/", sourceProvenance: "verified" },
   { id: "ieso-kingstonsf-solar",         name: "Kingston Solar",         country: "CAN", lat: 44.25, lon: -76.55, tier: "live", kind: "solar", source: "IESO per-plant curtailment", sourceUrl: "https://reports-public.ieso.ca/public/GenOutputCapabilityMonth/", sourceProvenance: "verified" },
   { id: "ieso-grandsf-solar",            name: "Grand Solar",            country: "CAN", lat: 43.95, lon: -77.35, tier: "live", kind: "solar", source: "IESO per-plant curtailment", sourceUrl: "https://reports-public.ieso.ca/public/GenOutputCapabilityMonth/", sourceProvenance: "verified" },
+
+// Peru per-plant splits — major solar and wind plants
+  // Source: COES SINAC medidoresgeneracion (T3-modelled, 2% curtailment rate)
+  // Coordinates: Public records / approximate
+  { id: "solar-majes",           name: "Majes Solar",            country: "PER", lat: -15.85, lon: -72.10, tier: "estimated", kind: "solar", source: "COES per-plant generation × 2% curtailment estimate", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion", sourceProvenance: "modelled-fallback" },
+  { id: "solar-pampa-norte",     name: "Pampa Norte Solar",      country: "PER", lat: -18.50, lon: -70.30, tier: "estimated", kind: "solar", source: "COES per-plant generation × 2% curtailment estimate", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion", sourceProvenance: "modelled-fallback" },
+  { id: "wind-terras-nuevas",    name: "Terrazas Nuevas Wind",   country: "PER", lat: -17.50, lon: -71.30, tier: "estimated", kind: "wind",  source: "COES per-plant generation × 2% curtailment estimate", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion", sourceProvenance: "modelled-fallback" },
+  { id: "solar-intipunku",       name: "Intipunku Solar",        country: "PER", lat: -17.20, lon: -71.50, tier: "estimated", kind: "solar", source: "COES per-plant generation × 2% curtailment estimate", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion", sourceProvenance: "modelled-fallback" },
+  { id: "solar-marcona",         name: "Marcona Solar",          country: "PER", lat: -15.30, lon: -75.10, tier: "estimated", kind: "solar", source: "COES per-plant generation × 2% curtailment estimate", sourceUrl: "https://www.coes.org.pe/Portal/portalinformacion/generacion", sourceProvenance: "modelled-fallback" }
 ];

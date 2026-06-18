@@ -111,7 +111,7 @@ describe("regions", () => {
     // inner-mongolia/qinghai/yunnan/tibet converted from a single region each to
     // per-fuel (4 bare ids removed, 8 per-fuel added = net +4); sichuan/guangxi added
     // new wind+solar alongside the pre-existing sichuan-hydro region (+4). Net +8.
-    // 431 + 8 = 439. Per-plant splits: +10 AEMO (T1a) + 12 Ontario (T1a) + 5 Peru (T1a/T1b).
+    // 431 + 8 = 439. Per-plant splits: +10 AEMO (T1a) + 12 Ontario (T1a) + 5 Peru (T1b/T3).
     // 439 + 27 = 466.
     expect(REGIONS.length).toBe(466);
   });

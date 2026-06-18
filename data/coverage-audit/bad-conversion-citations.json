@@ -2064,6 +2064,26 @@
       "matchedPatterns": []
     },
     {
+      "file": "solar-intipunku.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-majes.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-marcona.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-pampa-norte.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "solomon-islands.md",
       "cited": false,
       "matchedPatterns": []
@@ -2320,6 +2340,11 @@
     },
     {
       "file": "wacm-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "wind-terras-nuevas.md",
       "cited": false,
       "matchedPatterns": []
     },

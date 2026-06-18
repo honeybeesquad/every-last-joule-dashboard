@@ -246,6 +246,490 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 - Hourly shape remains synthetic (typical solar profile)
 - The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
 <!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
 ## Links
 
 - Loader source: [`india-andhra-pradesh.json.ts`](../../src/data/india-andhra-pradesh.json.ts)
