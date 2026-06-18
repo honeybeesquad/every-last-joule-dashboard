@@ -1,6 +1,6 @@
 # Validation — Mexico Solar (`mexico-solar`)
 
-Last updated: 2026-06-17 · Mexico per-fuel split · T3 modelled
+Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,19 +8,28 @@ Last updated: 2026-06-17 · Mexico per-fuel split · T3 modelled
 - **Country:** MEX
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** Modelled T3 (±40%). ~0.8 TWh/yr solar share of Mexico's ~1.2 TWh national VRE-curtailment anchor (Sonora/Chihuahua/Coahuila northern-grid), from SENER PRODESEN 2024-2038 + CRE confiabilidad reports. **CENACE publishes no measured curtailment series**, so this is a typical-shape profile scaled to the cited anchor — **no fabricated hourly data**. NREL Clean Energy Report notes Mexican VRE curtailment is "low in all scenarios". Hydro vertimientos excluded.
+- **Source:** SENER PRODESEN 2024-2038 + CRE + NREL — modelled T3 ~0.8 TWh/yr solar share of the ~1.2 TWh national VRE-curtailment anchor (Sonora/Chihuahua/Coahuila northern-grid transmission saturation). No measured CENACE feed; no fabricated hourly data. Excludes hydro vertimientos.
 - **Source URL:** [https://www.gob.mx/sener/documentos/programa-de-desarrollo-del-sistema-electrico-nacional-2024-2038](https://www.gob.mx/sener/documentos/programa-de-desarrollo-del-sistema-electrico-nacional-2024-2038)
+- **Loader:** [`mexico.json.ts`](../../src/data/mexico.json.ts)
 - **Structural gap:** no
 
 ## Calibration
 
-- **Anchor basis:** ~1.2 TWh national total (midpoint of PRODESEN-2022 ~1.0 TWh and CRE-2023 ~3 TWh), apportioned ~0.8 solar / ~0.4 wind. T3 ±40% envelope.
-- A measured CENACE curtailment series (if one is ever published) would upgrade this to T2.
+- **Rate source documented in:** `docs/methodology/` (see links below)
+- **Uniform across backfill years:** n/a — no backfill
+
+## Multi-year backfill annual totals
+
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
+|---|---|---|---|---|---|
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **CENACE measured curtailment:** — (none published)
-- **PRODESEN / CRE / NREL:** ~1.2 TWh national VRE curtailment (modelled)
+- **TSO annual curtailment (latest published):** —
+- **Ember annual:** —
+- **IRENA annual:** —
+- **Other:** —
 
 ## Discrepancy analysis
 
@@ -32,5 +41,8 @@ _Per-fuel split of the former single `mexico` region (2026-06-17). The ~1.2 TWh 
 
 ## Links
 
-- Loader: [`mexico.json.ts`](../../src/data/mexico.json.ts)
-- Methodology — tiers & live-data paths: [`docs/methodology/live-data-paths.md`](../methodology/live-data-paths.md)
+- Loader source: [`mexico.json.ts`](../../src/data/mexico.json.ts)
+- Backfill archive: `data/historical/backfill/*_mexico-solar_*.parquet` (0 years)
+- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
+- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
+- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

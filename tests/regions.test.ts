@@ -300,7 +300,7 @@ describe("regions", () => {
     // 2026-06-17: China fuel-splits + 6 India states (PR #203), all T3. +15. 211→226.
     // 2026-06-17: Chile/Colombia/DR/Ukraine T3 statics (PR #206). +5. 226→231.
     // 2026-06-17: Mexico split → mexico-solar + mexico-wind (both T3). +1. 231→232.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(233);
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(238);
   });
 
   it("has 58 anchored regions (34 flare + 6 flat-profile + 18 EIA-930 US BAs)", () => {

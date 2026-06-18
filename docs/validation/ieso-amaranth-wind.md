@@ -1,10 +1,10 @@
-# Validation — Melancthon/Amaranth (`ieso-amaranth-WIND`)
+# Validation — Melancthon/Amaranth (`ieso-amaranth-wind`)
 
 Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `ieso-amaranth-WIND`
+- **Region id:** `ieso-amaranth-wind`
 - **Country:** CAN
 - **Tier:** live
 - **Kind:** wind
@@ -42,7 +42,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_ieso-amaranth-WIND_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_ieso-amaranth-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
