@@ -16,7 +16,7 @@
 
 <div class="methodology-callout methodology-callout-abstract">
 
-This dashboard is a **wasted-energy database**: it estimates the fraction of current Bitcoin network electricity consumption that is already matched by renewable-energy curtailment, with associated-gas flaring tracked separately as a continuous base-load — measured or estimated across 385 regions. The renewable-curtailment figure is a **lower bound on visible waste**, not an upper bound on available waste. All figures are calibrated against publicly reported 2024 curtailment from the relevant grid operator or regulator. Data, sources, assumptions, and known limitations are documented below.
+This dashboard is a **wasted-energy database**: it estimates the fraction of current Bitcoin network electricity consumption that is already matched by renewable-energy curtailment — measured or estimated across 431 regions. The renewable-curtailment figure is a **lower bound on visible waste**, not an upper bound on available waste. All figures are calibrated against publicly reported 2024 curtailment from the relevant grid operator or regulator. Data, sources, assumptions, and known limitations are documented below.
 
 </div>
 
@@ -29,9 +29,7 @@ This dashboard is a **wasted-energy database**: it estimates the fraction of cur
 3. **Spill** — hydroelectric inflow exceeding dispatch or reservoir absorption (e.g., Itaipu flood-stage, Sichuan monsoon).
 4. **Steam venting** — geothermal generation exceeding overnight demand (e.g., Kenya Olkaria, per EPRA 2025).
 
-Flared natural gas is tracked separately and excluded from the headline ratio. See §6 for the flare treatment.
-
-Defensibility notes for the three recently audited assumptions are maintained separately: [flare regions](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#flare), [ERCOT West/East split](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#ercot), and [Brazil NE clustering](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#brazil-ne).
+Defensibility notes for the two recently audited assumptions are maintained separately: [ERCOT West/East split](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#ercot) and [Brazil NE clustering](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#brazil-ne).
 
 **Regional units** are chosen to match the smallest unit at which the responsible grid operator publishes dispatch data. For large interconnections, that is the ISO (CAISO, ERCOT-West/East, MISO, etc.). For ENTSO-E members, it is the bidding zone. For Brazil it is the sub-state constraint region. For countries without public hourly dispatch data, it is the national grid.
 
@@ -53,9 +51,9 @@ The live-feed tier was subdivided into three sub-tiers in CODEX-7 (locked 2026-0
 
 The ENTSO-E rate constants are tracked separately in [the ENTSO-E curtailment-rate audit](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/entsoe-rates.md). As of the 2026-04-24 audit, Germany, the Netherlands, Poland, and Greece have public 2024 anchors strong enough to set or revise loader rates; Spain, Portugal, Finland, Romania, Italy's bidding-zone split, Sweden, Hungary, Bulgaria, and the Baltic proxy remain explicitly labelled as placeholders until a national operator total or ENTSO-E A77 curtailed-renewable series is integrated.
 
-**T2-annual-calibrated (6 regions, ±20% peakGW envelope).** A static flat-base profile anchored to a published annual total, with no diurnal modelling. Currently Austria APG, Russia Murmansk wind, and four Chinese provincial hydro-flat regions (Hunan, Hubei, Guizhou, Chongqing) whose hydroelectric spill is reported annually but without hourly or diurnal resolution. The eight flare regions carry the same envelope but appear as a separate "flare" bucket on Figure 4 because their flat 24/7 base-load shape is the *physical truth* of upstream gas flaring rather than a modelling concession.
+**T2-annual-calibrated (6 regions, ±20% peakGW envelope).** A static flat-base profile anchored to a published annual total, with no diurnal modelling. Currently Austria APG, Russia Murmansk wind, and four Chinese provincial hydro-flat regions (Hunan, Hubei, Guizhou, Chongqing) whose hydroelectric spill is reported annually but without hourly or diurnal resolution.
 
-**T3-modelled (211 regions, ±40% peakGW envelope).** A typical-shape profile (solar / wind / hydro-seasonal / mixed / overnight) scaled to a published annual anchor. Used where the annual total is confidently reported but no hourly upstream exists. The eight Chinese provincial regions are the largest T3 block, calibrated against NEA 2024 utilisation rates and public provincial generation data (65.4 TWh/yr, ~77% of NEA-implied national 2024 renewable curtailment/spill — the [China provincial methodology](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/china-provinces.md) carries the full audit). T3 also covers Ireland (Republic and Northern), Peru, South Africa (all reachability probes scaled to a published annual anchor — see [`docs/known-limitations.md`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/known-limitations.md) item 6), most of South Asia, Africa, the Middle East outside flare, Latin America outside Brazil/Atacama, and Hawaii. Kenya's geothermal venting uses a specialised overnight-concentrated profile (§2.3).
+**T3-modelled (211 regions, ±40% peakGW envelope).** A typical-shape profile (solar / wind / hydro-seasonal / mixed / overnight) scaled to a published annual anchor. Used where the annual total is confidently reported but no hourly upstream exists. The eight Chinese provincial regions are the largest T3 block, calibrated against NEA 2024 utilisation rates and public provincial generation data (65.4 TWh/yr, ~77% of NEA-implied national 2024 renewable curtailment/spill — the [China provincial methodology](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/china-provinces.md) carries the full audit). T3 also covers Ireland (Republic and Northern), Peru, South Africa (all reachability probes scaled to a published annual anchor — see [`docs/known-limitations.md`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/known-limitations.md) item 6), most of South Asia, Africa, the Middle East, Latin America outside Brazil/Atacama, and Hawaii. Kenya's geothermal venting uses a specialised overnight-concentrated profile (§2.3).
 
 The runtime classification is deterministic: `confidenceTier` is derived from `Region.tier` plus the loader's profile kind by [`src/lib/uncertainty.ts::deriveTier`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/src/lib/uncertainty.ts), and the live counts above are emitted by `scripts/tally-tiers.ts` so any reviewer can confirm them from the source repo.
 
@@ -95,13 +93,7 @@ Two display modes are provided:
 
 **Last 24h** — the most recent complete UTC day of hourly observations for each region where the upstream feed supports it. Regions without a recoverable 24-hour raw sequence (T3-modelled regions by definition; some T1 ENTSO-E zones with sparse reporting in practice) retain their 30-day profile in this mode to preserve global completeness. This mode is noisier than the 30-day mode and reflects recent grid-specific events (wind lulls, transmission maintenance, holiday demand patterns).
 
-## 5. Flared gas: treatment and exclusion from headline
-
-The dashboard also tracks eight major gas-flaring basins — Permian (USA), W. Siberia (Russia), S. Iraq, E. Saudi Arabia, Qatar, Kuwait, Yamal (Russia), and E. Siberia (Russia) — using World Bank Global Gas Flaring Reduction Partnership VIIRS-derived flare-location volumes (World Bank GGFR, 2025). Flared gas volumes are converted to electrical-equivalent energy using the assumption that 1 bcm of natural gas contains 10.55 TWh_th of thermal energy and a reciprocating-engine generator operates at 35% net electrical efficiency, yielding approximately 3.7 TWh_e per bcm flared. This conversion is consistent with the modular-generator fleet operated in the field by companies such as Crusoe Energy. See the [flare audit note](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#flare) for per-basin volumes and uncertainty bounds.
-
-**Flare is excluded from the headline ratio.** The dashboard's primary story concerns *renewable* curtailment — a diurnal and seasonal phenomenon whose structure matters to any off-take solution. Flared gas is a continuous 24/7 base-load waste, operationally and physically distinct from dispatch-down. Including it would flatten the diurnal signal and conflate two different mitigation pathways. The flare total is reported as a single continuous-GW baseline in a footnote below the primary statistics, so it remains visible as context.
-
-## 6. Known limitations
+## 5. Known limitations
 
 The following limitations are inherent to the available upstream data and should be considered by any reader interpreting the ratio:
 
@@ -115,13 +107,11 @@ The following limitations are inherent to the available upstream data and should
 
 5. **ASIC efficiency sensitivity.** The headline ratio at 16 J/TH is higher than at 28.5 J/TH by approximately 78%, because the Bitcoin network denominator scales linearly with the efficiency assumption. Both readings are exposed in the UI.
 
-6. **Flare estimation uncertainty.** GGFR's VIIRS-derived volumes and national self-reporting diverge by 10–25% in some basins. The 35% generator efficiency is representative of modular reciprocating-engine deployments; larger combined-cycle plants would reach 55–60%. The flare footnote is a conservative estimate in electrical-equivalent terms. The current per-basin citation chain is documented in the [flare audit note](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#flare).
+6. **Bitcoin-network denominator methodology.** mempool.space is used because CBECI's API is not server-side accessible in the current build environment; the two sources agree within 3% as of this writing. The 16 J/TH efficiency reflects 2024–2025 fleet averages; the 2026 and 2027 roadmap implies lower values, which would raise the displayed ratio proportionally.
 
-7. **Bitcoin-network denominator methodology.** mempool.space is used because CBECI's API is not server-side accessible in the current build environment; the two sources agree within 3% as of this writing. The 16 J/TH efficiency reflects 2024–2025 fleet averages; the 2026 and 2027 roadmap implies lower values, which would raise the displayed ratio proportionally.
+7. **30-day window boundary effects.** Months with strong mid-window transitions (e.g., monsoon onset, seasonal demand changes) produce a representative rather than current figure. The explicit "Last 24h" mode is provided for users who prefer recent-day sensitivity.
 
-8. **30-day window boundary effects.** Months with strong mid-window transitions (e.g., monsoon onset, seasonal demand changes) produce a representative rather than current figure. The explicit "Last 24h" mode is provided for users who prefer recent-day sensitivity.
-
-## 7. References
+## 6. References
 
 - **Brattle Group** (2024). *Quantifying Curtailment in the US ISO Markets*. Brattle Energy Policy Review.
 - **BPA** (2024). *Oversupply Management Protocol Implementation Report 2024*. Bonneville Power Administration.
@@ -155,13 +145,12 @@ The following limitations are inherent to the available upstream data and should
 - **SAREM** (2025). *South African Renewable Energy Masterplan 2025*.
 - **SPP** (2024). *State of the Market Report 2024*. Monitoring Analytics.
 - **Terna** (2024). *Rapporto Mensile sul Sistema Elettrico*. Terna S.p.A.
-- **World Bank GGFR** (2025). *Global Gas Flaring Tracker Report and individual flare-location dataset*. https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
 
-## 8. Versioning and reproducibility
+## 7. Versioning and reproducibility
 
 The dashboard source code and this methodology are versioned at https://github.com/honeybeesquad/every-last-joule-dashboard. Every loader is pure with respect to its upstream data inputs, and cached "last-known-good" snapshots are committed for each region so that any reader can reproduce the current displayed figure from a clean build with `npm install && npm run build`. Per-region annual TWh anchors, calibrated rates, fuel-mix overrides, and seasonal multipliers are all source-visible in `src/data/` and `src/lib/`.
 
-## 9. Recent corrections
+## 8. Recent corrections
 
 A peer review on 2026-04-25 surfaced a small set of corrections, landed 2026-04-26:
 

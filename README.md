@@ -14,7 +14,7 @@ This repository contains both the published dataset (the academic artefact) and 
 
 ## What this dataset is
 
-A versioned, reproducible synthesis of hourly curtailment series, with **per-region provenance, calibration rate, and confidence tier** on every emitted row. The 385 regions break down across the T1a/T1b/T1c (live), T2 / T2-flare (annual-calibrated), and T3 (modelled) tiers — run `npm run tally:tiers` for the authoritative current breakdown and per-bucket region list.
+A versioned, reproducible synthesis of hourly curtailment series, with **per-region provenance, calibration rate, and confidence tier** on every emitted row. The regions break down across the T1a/T1b/T1c (live), T2 (annual-calibrated), and T3 (modelled) tiers — run `npm run tally:tiers` for the authoritative current breakdown and per-bucket region list.
 
 A seven-year hourly reconstruction (2020-01-01 → 2026-04-24, **2,590,195 rows × 29 regions**) is published alongside the live snapshots in [`data/historical/curtailment_backfill.parquet`](data/historical/). Methodology in [`docs/methodology/historical-backfill.md`](docs/methodology/historical-backfill.md).
 
@@ -28,7 +28,7 @@ Requires Node 20 (`nvm use`).
     npm test               # vitest unit tests
     npm run typecheck      # tsc --noEmit
     npm run validate       # validate every committed snapshot against the schema
-    npm run tally:tiers    # print the canonical T1 / T2 / T2-flare / T3 tally
+    npm run tally:tiers    # print the canonical T1 / T2 / T3 tally
 
 CI runs `typecheck`, `test`, `validate`, and `tally:tiers` on every push and PR — see [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 

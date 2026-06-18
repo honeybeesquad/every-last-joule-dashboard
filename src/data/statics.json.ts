@@ -27,9 +27,9 @@ interface StaticSpec {
    *  uncertainty engine) the confidenceTier landing — see `applyUncertainty`
    *  in `src/lib/uncertainty.ts::deriveTier` for the static→tier rules.
    *
-   *   "flat"            24/7 base load. Used for flare regions and grid-
-   *                     bottleneck statics with no diurnal signature. Routes
-   *                     to T2-annual-calibrated (±20%).
+   *   "flat"            24/7 base load. Used for grid-bottleneck statics
+   *                     with no diurnal signature. Routes to
+   *                     T2-annual-calibrated (±20%).
    *   "solar"           cos-shape centred on local noon. Requires
    *                     `localSolarPeakUTC`. Routes to T3-modelled (±40%).
    *   "wind"            weak diurnal shape (overnight bias). Requires
@@ -56,9 +56,6 @@ interface StaticSpec {
 
 // Values sourced from research/energy_arithmetic.md in the book project.
 // See docs/data-source-log.md for per-source notes.
-// Flare volumes converted from bcm/yr to electrical-equivalent TWh/yr at
-// 35% generation efficiency (matches Crusoe-style reciprocating engines):
-//   1 bcm natural gas ≈ 10.55 TWh thermal × 0.35 ≈ 3.7 TWh electrical-equiv
 //
 // Shape choice per region:
 // - Hydro and geothermal (Sichuan, Iceland) stay flat - their waste is
@@ -66,8 +63,6 @@ interface StaticSpec {
 // - Solar curtailment regions without a public hourly feed (Xinjiang) use a
 //   typical-shape profile centred on local solar noon, scaled to the
 //   published annual total. See docs/known-limitations.md for labelling.
-// - Flare regions stay flat because flare IS genuinely 24/7 base load.
-//   The flat profile is methodologically correct, not a data gap.
 const STATIC_REGIONS: Record<string, StaticSpec> = {
   sichuan: { annualTWh: 30, kind: "hydro-seasonal", seasonalSharesKey: "sichuan", source: "Ember China Electricity Review 2025 (Yangtze basin monsoon hydro spill, peaks Jul-Aug, ~zero Nov-Apr)", reportDate: "2025-Q1" },
   // xinjiang moved to src/data/xinjiang.json.ts (fuel-split: wind + solar, 2026-06-16)
@@ -93,60 +88,6 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // Anchor sourced from Ember Ukraine 2024 report (pre-war capacity adjusted for
   // infrastructure damage, 1.1-1.4 TWh/yr curtailment plausible).
   ukraine: { annualTWh: 0.7, kind: "solar", localSolarPeakUTC: 9, source: "Ember Ukraine 2024 (ENTSO-E Ukrenergo data absent post-war; solar 60% of ~1.2 TWh/yr total curtailment → 0.7 TWh/yr; wind in ukraine-wind region)", reportDate: "2024" },
-  // World Bank/GFMR 2025 individual flare-location dataset, 2024 rows,
-  // Permian bbox 28.5-34.5N, 106.5-100.0W: 5.575 bcm × 3.6925 TWh_e/bcm.
-  // Retrieved 2026-04-24:
-  // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
-  permian: { annualTWh: 20.6, kind: "flat", source: "World Bank GGFR 2025 individual flare sites, 2024 Permian bbox 5.575 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  // World Bank/GFMR 2025 individual flare-location dataset, 2024 rows,
-  // West Siberia bbox 55.0-67.5N, 60.0-85.0E: 11.479 bcm × 3.6925 TWh_e/bcm.
-  // Retrieved 2026-04-24:
-  // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
-  "w-siberia": { annualTWh: 42.4, kind: "flat", source: "World Bank GGFR 2025 individual flare sites, 2024 West Siberia bbox 11.479 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  // World Bank/GFMR 2025 individual flare-location dataset, 2024 rows,
-  // South Iraq bbox 29.0-33.5N, 43.0-49.5E: 14.233 bcm × 3.6925
-  // TWh_e/bcm = 52.6 TWh_e; retain prior 63 TWh_e because it is within
-  // the documented +/-20% audit band against the earlier ~17 bcm basis.
-  // Retrieved 2026-04-24:
-  // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
-  "s-iraq": { annualTWh: 6.7, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 S. Iraq bbox residual after named-field split (33 unnamed / sub-1-TWh-e sites) 1.821 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  // World Bank/GFMR 2025 individual flare-location dataset, 2024 rows,
-  // East Saudi bbox 24.0-29.0N, 47.0-51.5E: 2.203 bcm × 3.6925 TWh_e/bcm.
-  // Retrieved 2026-04-24:
-  // https://www.worldbank.org/en/programs/gasflaringreduction/global-flaring-data
-  "e-saudi": { annualTWh: 2.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 E. Saudi bbox residual after named-field split (79 sites) 0.597 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "russia-yamal":     { annualTWh: 10.0, kind: "flat", source: "GGFR 2024 Yamal-Nenets gas flaring (Gazprom/Novatek; ~2.71 bcm × 3.6925 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
-  "russia-e-siberia": { annualTWh: 9.0,  kind: "flat", source: "GGFR 2024 East Siberia oil/gas flaring (ESPO corridor + Sakhalin; ~2.44 bcm × 3.6925 TWh-e/bcm, flat 24/7)", reportDate: "2024" },
-  // GFMR per-flare-site split (2026-06-17): World Bank GFMR 2025 individual-flare-location
-  // dataset (VIIRS), 2024 rows. s-iraq / e-saudi above re-anchored to their bbox residual;
-  // named oilfields ≥1 TWh-e carved out below + N. Iraq (Kirkuk/Kurdistan) + Nigeria/Algeria/Libya
-  // national flare. All bcm × 3.6925 TWh-e/bcm, flat 24/7. Cross-checks: S-Iraq 14.233, E-Saudi 2.203, N-Iraq 3.95 bcm.
-  "rumaila": { annualTWh: 10.6, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Rumaila field 2.8606 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "west-qurna-2": { annualTWh: 7.5, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 West Qurna 2 field 2.0188 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "zubair": { annualTWh: 6.3, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Zubair field 1.7037 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "buzurgan": { annualTWh: 5.0, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Buzurgan field 1.3479 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "west-qurna-1": { annualTWh: 3.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 West Qurna 1 field 0.8724 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "halfaya": { annualTWh: 2.7, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Halfaya field 0.7357 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "gharraf": { annualTWh: 2.6, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Gharraf field 0.6946 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "fauqi": { annualTWh: 2.3, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Fauqi field 0.6327 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "majnoon": { annualTWh: 2.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Majnoon field 0.6035 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "east-baghdad": { annualTWh: 1.3, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 East Baghdad field 0.3498 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "ratawi": { annualTWh: 1.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Ratawi field 0.3123 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "faihaa": { annualTWh: 1.0, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Faihaa field 0.2796 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "bai-hassan": { annualTWh: 3.4, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Bai Hassan field 0.9213 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "khurmala": { annualTWh: 1.6, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Khurmala Dome field 0.4236 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "swara-tika": { annualTWh: 1.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Swara Tika field 0.3122 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "kirkuk": { annualTWh: 1.1, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Kirkuk (Avanah Dome) field 0.2853 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "ghawar": { annualTWh: 2.7, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Ghawar field 0.7172 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "jafurah": { annualTWh: 1.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Jafurah Basin field 0.3177 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "wafra": { annualTWh: 0.8, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Wafra field 0.2037 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "marjan": { annualTWh: 0.5, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Marjan field 0.1419 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "s-jafurah": { annualTWh: 0.4, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Southern Jafurah Gas Plant field 0.1151 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "qatif": { annualTWh: 0.4, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Qatif field 0.1103 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "n-iraq": { annualTWh: 7.4, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 N. Iraq (Kirkuk/Kurdistan) residual after named-field split (63 sites) 2.0069 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "nigeria-flare": { annualTWh: 23.9, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Nigeria national gas-flare total 6.4796 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "algeria-flare": { annualTWh: 29.1, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Algeria national gas-flare total 7.8820 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
-  "libya-flare": { annualTWh: 23.2, kind: "flat", source: "World Bank GFMR 2025 per-flare-site dataset (VIIRS), 2024 Libya national gas-flare total 6.2751 bcm × 3.6925 TWh-e/bcm (flat 24/7)", reportDate: "2025-07" },
   // v0.6 — Codex global-coverage-audit 2026-04-24. Hawaiian Electric's
   // RSWG metric separates curtailment by island; totals not yet extracted
   // from the public workbook, so TWh anchors here are conservative
@@ -171,10 +112,8 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // sub-1 TWh anchor sourced from IRENA Country Statistics 2024, Ember 2024,
   // GGFR 2024-25, or named operator annual reports. Profile shape defaults
   // to `solar` for the tropical solar-build-out grids, with explicit
-  // exceptions for hydro-dominated rows (Costa Rica, Ecuador), the Cuba
-  // post-Hurricane-Ian mixed anchor, and the offshore-flare anchors lifted
-  // onto Trinidad & Tobago / Guyana / Suriname grids (modelled as flat 24/7
-  // base load via `kind: "mixed"` to keep the ±40% T3 envelope).
+  // exceptions for hydro-dominated rows (Costa Rica, Ecuador) and the Cuba
+  // post-Hurricane-Ian mixed anchor.
   // Timezone mapping for `localSolarPeakUTC`:
   //   AST (UTC−4, Caribbean+Bolivia) → 16.0
   //   EST (UTC−5, Cuba/Jamaica/Panama/Ecuador) → 17.0
@@ -192,21 +131,18 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // estimated 0.3 TWh/yr from IRENA 2024 capacity + typical wind profile.
   "dominican-republic-wind": { annualTWh: 0.3, kind: "wind", localSolarPeakUTC: 16.0, source: "IRENA Dominican Republic 2024 (448 MW wind capacity; OC does not publish per-fuel curtailment; estimated 0.3 TWh/yr from capacity + typical wind profile)", reportDate: "2024" },
   jamaica: { annualTWh: 0.003, kind: "solar", localSolarPeakUTC: 17.0, source: "IEA / IDB 2024 (Wigton wind + Content solar; JPS vertically integrated; ~1–3 GWh/yr solar curtailment, low confidence; previous 0.2 TWh anchor was implausible at ~40% curtailment rate for small island; Wave-5 revised 2026-04-30)", reportDate: "2025" },
-  "trinidad-tobago": { annualTWh: 0.3, kind: "mixed", source: "GGFR 2024 Trinidad offshore flares ~1 BCM (anchor is upstream offshore flare lifted onto T&TEC grid for coverage; power side has minimal VRE; flat 24/7 profile with mixed-fuel flag; provisional 0.3 TWh/yr-electrical-equivalent Pattern-D static)", reportDate: "2024" },
   barbados: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Barbados Renewables 2024 (rooftop PV penetration; BLPC investor-owned via Emera; FRCS Caribbean reports occasional inverter trips; provisional 0.05 TWh/yr Pattern-D static at inclusion threshold)", reportDate: "2024" },
   bolivia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Bolivia 2024 (hydro+gas dominated grid; solar+wind ~3% of mix; CNDC publishes Informe Mensual de Operacion as PDF; provisional 0.1 TWh/yr Pattern-D static for solar curtailment subset)", reportDate: "2024" },
   ecuador: { annualTWh: 0.05, kind: "mixed", source: "IRENA Ecuador 2024 (hydro-dominated grid; CENACE Ecuador publishes Informe Anual + monthly Informe de Operacion as PDF; provisional 0.05 TWh/yr Pattern-D static at inclusion threshold; hydro-dominant flat profile)", reportDate: "2024" },
-  guyana: { annualTWh: 0.2, kind: "mixed", source: "GGFR 2024 Guyana Stabroek block flaring offshore (Liza FPSO upstream; not on grid; lifted onto GPL coverage for completeness; flat 24/7 profile; provisional 0.2 TWh/yr-electrical-equivalent Pattern-D static)", reportDate: "2024" },
-  suriname: { annualTWh: 0.05, kind: "mixed", source: "GGFR 2024 Suriname Block 58 offshore flaring forecast (upstream off-grid; lifted onto EBS coverage for completeness; flat 24/7 profile; provisional 0.05 TWh/yr-electrical-equivalent Pattern-D static at inclusion threshold)", reportDate: "2024" },
   "french-guiana": { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 15.0, source: "EDF SEI Bilan Previsionnel Guyane 2024 (small grid; below normal inclusion threshold; included for completeness as the only South-American French overseas territory; ENTSO-E does not cover French overseas, EDF SEI alone; provisional 0.05 TWh/yr Pattern-D static)", reportDate: "2024" },
   // Phase-2.7 Pattern-D — Africa bulk-add (2026-04-27).
   // Source: data/coverage-audit/2026-04-26-africa.csv `introduce-as-T3` subset.
   // 32 audit rows; 6 sub-0.05 TWh rows skipped (Burundi 0.01, Gambia 0.02,
   // Lesotho 0.02, Liberia 0.02, Seychelles 0.01, Sierra Leone 0.02). Net 26
   // landed; aggregate ~11.7 TWh anchor.
-  // Anchors: IRENA Country Statistics 2024, Ember country reports, GGFR
-  // Niger Delta (Nigeria flare component). All ±40% T3-modelled (or T3 via
-  // flat-as-typical for hydro/mixed) per the Pattern-D dispatch §3.
+  // Anchors: IRENA Country Statistics 2024, Ember country reports. All
+  // ±40% T3-modelled (or T3 via flat-as-typical for hydro/mixed) per the
+  // Pattern-D dispatch §3.
   // Timezones for `localSolarPeakUTC`: UTC+1 (CET/WAT) → 11.0; UTC+2 (CAT/SAST) → 10.0;
   // UTC+0 (GMT) → 12.0; UTC+3 (EAT) → 9.0; UTC+4 (MUT) → 8.0; UTC-1 (CVT) → 13.0.
   algeria: { annualTWh: 0.4, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Country Statistics 2024 (Algeria SONELGAZ/OS; small wind+PV ~1.5 GW; no public dispatch data)", reportDate: "2024" },
@@ -226,13 +162,12 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   mauritania: { annualTWh: 0.1, kind: "wind", localSolarPeakUTC: 12.0, source: "IRENA Mauritania 2024 (SOMELEC; Boulenouar wind 100 MW + Sheikh Zayed PV; OMVS member)", reportDate: "2024" },
   mauritius: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 8, source: "IRENA Mauritius 2024 (CEB; bagasse+coal+oil with growing PV; island grid). Solar-shaped (peak local noon ≈ UTC 8, Mauritius UTC+4). Small PV anchor — bagasse and coal are dispatchable.", reportDate: "2024" },
   mozambique: { annualTWh: 0.3, kind: "hydro", source: "IRENA Mozambique 2024 (EDM; Cahora Bassa hydro exports to Eskom via SAPP; growing solar)", reportDate: "2024" },
-  // Nigeria — composite phenomenon: chronic frequency-instability load-shed
-  // (Ember 2024) + Niger Delta gas flaring (~7 TWh-eq/yr per GGFR 2024-25).
+  // Nigeria — chronic frequency-instability load-shed (Ember 2024).
   // Nigeria: solar-shaped profile for the renewables curtailment component.
-  // The Niger Delta gas flare (~7 TWh-eq/yr) is a separate flat-baseload signal
-  // not captured here; the 0.5 TWh anchor covers grid solar curtailment only
-  // (TCN frequency instability causes daytime solar tripping). lat/lon at 9.0°N 8.5°E.
-  nigeria: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 11, source: "Ember Nigeria 2024 + TCN Grid Stability Report 2024 (solar curtailment from TCN frequency-instability; Niger Delta gas flare ~7 TWh-eq/yr is a separate flat-baseload signal; 0.5 TWh/yr anchor covers daytime solar tripping only; Wave-5 revised 2026-04-30)", reportDate: "2025" },
+  // Niger Delta gas flaring is excluded (renewables-only dataset); the
+  // 0.5 TWh anchor covers grid solar curtailment only (TCN frequency
+  // instability causes daytime solar tripping). lat/lon at 9.0°N 8.5°E.
+  nigeria: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 11, source: "Ember Nigeria 2024 + TCN Grid Stability Report 2024 (solar curtailment from TCN frequency-instability; Niger Delta gas flaring is excluded (renewables-only dataset); 0.5 TWh/yr anchor covers daytime solar tripping only; Wave-5 revised 2026-04-30)", reportDate: "2025" },
   rwanda: { annualTWh: 0.05, kind: "mixed", source: "IRENA Rwanda 2024 (REG/EUCL; methane-from-Lake-Kivu + hydro+solar)", reportDate: "2024" },
   senegal: { annualTWh: 0.3, kind: "solar", localSolarPeakUTC: 12, source: "IRENA Senegal 2024 (SENELEC; Taiba N'Diaye 158 MW wind + PV; OMVS/OMVG member). Solar-shaped (peak local noon ≈ UTC 12) since SENELEC's RE mix is solar-dominant; small wind share absorbed into the same shape as a methodological simplification.", reportDate: "2024" },
   tanzania: { annualTWh: 0.5, kind: "hydro", source: "IRENA Tanzania 2024 + Julius Nyerere HPP commissioning (TANESCO; JNHPP 2.1 GW commissioning 2024-25; gas+hydro)", reportDate: "2024" },
@@ -296,7 +231,6 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   bahrain: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 8.6, source: "IRENA Bahrain 2024 (EWA); gas+solar; small high-Temperature grid)", reportDate: "2024" },
   georgia: { annualTWh: 0.2, kind: "mixed", localSolarPeakUTC: 8.0, source: "IRENA Georgia 2024 (GSE); hydro+solar+wind; ENTSO-E synchronisation ongoing; UTC+4 → solar noon ≈ UTC 08:00)", reportDate: "2024" },
   jordan: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 10, source: "IRENA Jordan 2024 (NEPCO; solar+wind+gas; high VRE penetration). peakHourUtc 10: Jordan at 36°E → solar noon ≈ UTC 09:36. Previous value of 3.0 was wrong (was UTC timezone offset, not solar noon hour).", reportDate: "2025" },
-  kuwait: { annualTWh: 0.4, kind: "flat", source: "GGFR 2024 Kuwait Burgan + Wafra flare composite (KOC; Greater Burgan oil field + South Kuwait gas flaring; flat 24/7)", reportDate: "2024" },
   kyrgyzstan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Kyrgyzstan 2024 (NEK); hydro+solar; CASA-1000 candidate)", reportDate: "2024" },
   lebanon: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 9.6, source: "IRENA Lebanon 2024 (EDL); severe crisis; diesel+solar+hydro; small grid)", reportDate: "2024" },
   palestine: { annualTWh: 0.08, kind: "solar", localSolarPeakUTC: 9.7, source: "IRENA Renewable Capacity Statistics 2025 (Palestinian Energy Authority; ~120 MW installed PV, West Bank dominant; provisional 0.08 TWh/yr Pattern-D floor — no published curtailment metric; conflict context acknowledged in sourceNote)", reportDate: "2024" },
@@ -305,7 +239,6 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   turkmenistan: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Turkmenistan 2024 (TDS); gas+solar; isolated grid)", reportDate: "2024" },
   uzbekistan: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 5.0, source: "IRENA Uzbekistan 2024 (UzbekEnergo); hydro+solar+gas; solar program)", reportDate: "2024" },
   yemen: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.8, source: "IRENA Yemen 2024 (PC); solar+diesel; war-affected small grid)", reportDate: "2024" },
-  qatar: { annualTWh: 0.7, kind: "flat", source: "GGFR 2024 Qatar offshore+onshore flare composite (QatarEnergy; North Field condensate + onshore oil field flaring; flat 24/7)", reportDate: "2024" },
   // --- SOUTH ASIA (3 new) ---
   "sri-lanka": { annualTWh: 0.1, kind: "mixed", localSolarPeakUTC: 5.5, source: "CEB Sri Lanka 450 MW solar + 300 MW wind; IRENA Sri Lanka 2024", reportDate: "2024" },
   nepal: { annualTWh: 0.5, kind: "hydro-seasonal", seasonalSharesKey: "nepal", source: "World Bank Nepal Development Update 2024: 'Estimated annual renewable energy spillage exceeding 0.5 TWh (500 GWh) due to infrastructure limitations' — driven by monsoon-season run-of-river overgeneration vs transmission bottlenecks + limited India-export capacity. NEA / Department of Electricity Development confirms during FY2023/24. Same modelling treatment as Ethiopia + Iceland + Colombia (hydro spillage as wasted potential renewable energy). Gemini-3.1 research wave 4 (2026-04-30, reliability 5/5).", reportDate: "2024" },

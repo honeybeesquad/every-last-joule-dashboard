@@ -86,7 +86,7 @@ for (const docId of allDocs) {
 
 // --- 3. Tier line matches canonical. ------------------------------------
 // Format: `- **Tier:** <value>` — case-sensitive, exact match required.
-// Allow flare/static/live/live-domestic-anchored/live-neighbour-anchored.
+// Allow static/live/live-domestic-anchored/live-neighbour-anchored.
 const TIER_LINE_RE = /^- \*\*Tier:\*\* (.+)$/m;
 for (const r of REGIONS) {
   const path = join(DOCS_DIR, `${r.id}.md`);

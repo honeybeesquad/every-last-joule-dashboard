@@ -56,11 +56,6 @@ const LEGAL_PAIRS = new Set<string>([
   "T3-modelled|modelled-fallback",
 ]);
 
-// T2-flare bucket is treated identically to T2-annual-calibrated for
-// matrix-coherence purposes. (Existing ConfidenceTier enum doesn't include
-// "T2-flare" as a tier label — flare regions resolve to T2-annual-calibrated
-// at the tier level and only differ at the presentational bucket level.)
-//
 // The legacy "T1-live-TSO" alias (B4 Option B, see check-tier-coherence.ts)
 // is intentionally not handled here. `deriveTier` in src/lib/uncertainty.ts
 // no longer emits it; every live region resolves to T1a-live-tso at the tier

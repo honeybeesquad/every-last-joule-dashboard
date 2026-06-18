@@ -157,8 +157,6 @@
   /* data semantics */
   --data-renewable:      #67e8f9;
   --data-renewable-tip:  #cffafe;
-  --data-flare:          #d83923;
-  --data-flare-tip:      #ff7048;
 
   /* fuel breakouts */
   --fuel-solar:          #ffd05a;
@@ -210,8 +208,6 @@
 
   --data-renewable:      #64d8ff;
   --data-renewable-tip:  #b0ecff;
-  --data-flare:          #d83923;
-  --data-flare-tip:      #ff7048;
 
   --fuel-solar:          #ffb845;
   --fuel-wind:           #64d8ff;
@@ -258,7 +254,7 @@ html:not([data-theme]) body {
 :root {
   --slate-800: var(--surface-bg-1);
   --white:     var(--ink);
-  --btc-orange: var(--data-flare);
+  --btc-orange: #d83923;
   /* `--surface` / `--border` were used in light-on-light contexts that no
      longer exist; map them to dark equivalents so any straggler rule
      doesn't render white-on-white. */
@@ -908,102 +904,6 @@ main table {
   .globe-zoom-slider {
     width: 140px;
   }
-}
-
-/* Flare toggle — sits inline to the right of the flare footnote paragraph. */
-.flare-footnote-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-top: 14px;
-  padding-top: 10px;
-  border-top: 1px solid var(--hairline);
-}
-
-.flare-toggle-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
-  padding-top: 1px;
-}
-
-.flare-toggle-btn {
-  width: 36px;
-  height: 20px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.20);
-  cursor: pointer;
-  position: relative;
-  transition: background 0.2s, border-color 0.2s;
-  padding: 0;
-  flex-shrink: 0;
-}
-
-.flare-toggle-thumb {
-  position: absolute;
-  left: 3px;
-  top: 3px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.45);
-  transition: transform 0.2s ease, background 0.2s;
-}
-
-.flare-toggle-btn:hover {
-  background: rgba(255,255,255,0.16);
-}
-
-.flare-toggle-btn.is-active {
-  background: rgba(216,57,35,0.28);
-  border-color: rgba(216,57,35,0.60);
-}
-
-.flare-toggle-btn.is-active .flare-toggle-thumb {
-  transform: translateX(16px);
-  background: var(--data-flare);
-}
-
-.flare-toggle-label {
-  font-size: 9px;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.40);
-  user-select: none;
-  white-space: nowrap;
-}
-
-#pct-readout .pct-sign,
-#pct-readout {
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  color: var(--white);
-}
-
-#pct-readout {
-  display: inline-block;
-}
-
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 18px;
-  margin-top: 8px;
-}
-
-.flare-footnote {
-  font-size: 12px;
-  line-height: 1.45;
-  color: rgba(255,255,255,0.55);
-  margin: 0;
-}
-
-.flare-footnote #flare-readout {
-  color: var(--btc-orange);
-  font-weight: 600;
 }
 
 /* =========================================================================

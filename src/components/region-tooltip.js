@@ -28,7 +28,6 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
   let clockSub = null;
 
   function fuelOf(region) {
-    if (region.kind === "flare") return "flare";
     return dominantFuel(region, regionData[region.id]);
   }
 
@@ -37,7 +36,6 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
   }
 
   function fuelLabel(region) {
-    if (region.kind === "flare") return "Flared gas";
     return FUEL_LABEL[dominantFuel(region, regionData[region.id])];
   }
 
@@ -121,15 +119,14 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     }
 
     // Current-hour dot on top of the stack, coloured by the dominant
-    // fuel band (sorted[0] is the largest band). Previously hardcoded to
-    // flare-orange, which painted a wind-stack tooltip with an orange dot.
+    // fuel band (sorted[0] is the largest band).
     const hourNow = ((clock.hour % 24) + 24) % 24;
     const cx = pad + (hourNow / 23) * plotW;
     const interpIdx = Math.floor(hourNow) % 24;
     const t = hourNow - Math.floor(hourNow);
     const interpGW = (combined[interpIdx] ?? 0) * (1 - t) + (combined[(interpIdx + 1) % 24] ?? 0) * t;
     const cy = pad + plotH - (interpGW / maxG) * plotH;
-    ctx.fillStyle = sorted[0]?.color ?? getFuelColor("flare");
+    ctx.fillStyle = sorted[0]?.color ?? getFuelColor("solar");
     ctx.beginPath();
     ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
     ctx.fill();
@@ -182,9 +179,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
       else ctx.lineTo(x, y);
     }
     ctx.stroke();
-    // Current-hour dot, coloured by the region's own fuel rather than the
-    // hardcoded flare orange that previously painted (e.g.) a wind region's
-    // dot orange on a teal sparkline.
+    // Current-hour dot, coloured by the region's own dominant fuel.
     const hourNow = ((clock.hour % 24) + 24) % 24;
     const cx = pad + (hourNow / 23) * plotW;
     const interpIdx = Math.floor(hourNow) % 24;
@@ -284,12 +279,9 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
       const kind = tier === "anchored" ? "anchored" : "modeled";
       const klass = `region-tooltip-freshness-${kind}`;
       const vintage = vintageLabel(data);
-      // Flare regions are 24/7 baseloads with no vintage column; label them so.
-      const labelText = region.kind === "flare"
-        ? "anchored · 24/7 baseload"
-        : vintage
-          ? `${kind} · ${vintage}`
-          : kind;
+      const labelText = vintage
+        ? `${kind} · ${vintage}`
+        : kind;
       const titleAttr = `tier=${tier}; lastUpdated=${data?.lastUpdated ?? "?"}`;
       return `<span class="${klass}" title="${titleAttr}">◆ ${labelText}</span>`;
     }

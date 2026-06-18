@@ -135,29 +135,6 @@ if (unresolved.length) {
   process.exit(2);
 }
 
-// Flare-bucket invariant: every region with `Region.kind === "flare"` and
-// `Region.tier === "anchored"` must resolve to the T2-flare bucket, and
-// every region in the T2-flare bucket must have `Region.kind === "flare"`.
-//
-// Regions with `kind: "flare"` but `tier: "estimated"` (trinidad-tobago,
-// guyana, suriname) are offshore-flare anchors lifted onto country-level
-// modelled coverage; they belong in T3, not T2-flare.
-const bucketMismatches: string[] = [];
-for (const r of resolved) {
-  const isAnchoredFlare = r.region.kind === "flare" && r.region.tier === "anchored";
-  const inFlareBucket = r.bucket === "T2-flare";
-  if (isAnchoredFlare !== inFlareBucket) {
-    bucketMismatches.push(
-      `${r.id}: kind="${r.region.kind}" tier="${r.region.tier}" but bucket="${r.bucket}" — flare-bucket invariant violated`,
-    );
-  }
-}
-if (bucketMismatches.length) {
-  console.error("Flare-bucket invariant violations:");
-  for (const m of bucketMismatches) console.error(`  - ${m}`);
-  process.exit(2);
-}
-
 const files = readdirSync(SNAP_DIR)
   .filter((f) => f.endsWith(".json"))
   .filter((f) => !NON_REGION_FILES.has(f));

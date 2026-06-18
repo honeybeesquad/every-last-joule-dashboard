@@ -74,9 +74,9 @@
     },
     "fuelShare": {
       "type": "object",
-      "description": "Optional fuel-type split of the curtailed energy, fractions 0\u20131. Loaders that pull technology-separated feeds (e.g. ONS Brazil) populate this; loaders that don't omit the field. The runtime keys in src/lib/types.ts are {solar, wind, hydro}; the historical snapshot corpus also contains {geothermal, flare} from earlier loader generations. Keys outside this enum should be treated as data-quality issues.",
+      "description": "Optional fuel-type split of the curtailed energy, fractions 0\u20131. Loaders that pull technology-separated feeds (e.g. ONS Brazil) populate this; loaders that don't omit the field. The runtime keys in src/lib/types.ts are {solar, wind, hydro}; the historical snapshot corpus also contains {geothermal} from earlier loader generations. Keys outside this enum should be treated as data-quality issues.",
       "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1},
-      "propertyNames": {"enum": ["solar", "wind", "hydro", "geothermal", "flare"]}
+      "propertyNames": {"enum": ["solar", "wind", "hydro", "geothermal"]}
     },
     "uncertaintyLowGW": {
       "type": "number",

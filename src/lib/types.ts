@@ -18,7 +18,7 @@
  *   "estimated"                  — modelled profile scaled to a capacity-
  *                                  based or literature anchor (T3, ±40%)
  *
- * Content type (wind, solar, flare, etc.) is orthogonal — use `RegionKind`.
+ * Content type (wind, solar, hydro, etc.) is orthogonal — use `RegionKind`.
  */
 export type RegionTier =
   | "live"
@@ -27,8 +27,8 @@ export type RegionTier =
   | "anchored"
   | "estimated";
 
-/** The waste modality drives colouring (brand vs flare-orange) and narrative. */
-export type RegionKind = "solar" | "wind" | "hydro" | "geo" | "mixed" | "flare";
+/** The waste modality drives per-fuel colouring and narrative. */
+export type RegionKind = "solar" | "wind" | "hydro" | "geo" | "mixed";
 
 /** Freshness state of an upstream source or fallback snapshot. */
 export type SourceStatus = "live" | "cached" | "degraded";

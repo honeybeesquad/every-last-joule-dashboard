@@ -45,7 +45,6 @@ interface GoldenCounts {
   T1b: number;
   T1c: number;
   T2: number;
-  "T2-flare": number;
   T3: number;
   total: number;
 }
@@ -59,7 +58,6 @@ const REQUIRED_KEYS: (keyof GoldenCounts)[] = [
   "T1b",
   "T1c",
   "T2",
-  "T2-flare",
   "T3",
   "total",
 ];
@@ -99,10 +97,10 @@ console.log(
   `Tally-golden: comparing actual ${actual.total} regions against golden ${golden.total} regions.`,
 );
 console.log(
-  `  Buckets — golden: T1a=${golden.T1a} T1b=${golden.T1b} T1c=${golden.T1c} T2=${golden.T2} T2-flare=${golden["T2-flare"]} T3=${golden.T3}`,
+  `  Buckets — golden: T1a=${golden.T1a} T1b=${golden.T1b} T1c=${golden.T1c} T2=${golden.T2} T3=${golden.T3}`,
 );
 console.log(
-  `  Buckets — actual: T1a=${actual.T1a} T1b=${actual.T1b} T1c=${actual.T1c} T2=${actual.T2} T2-flare=${actual["T2-flare"]} T3=${actual.T3}`,
+  `  Buckets — actual: T1a=${actual.T1a} T1b=${actual.T1b} T1c=${actual.T1c} T2=${actual.T2} T3=${actual.T3}`,
 );
 
 if (failures.length === 0) {
