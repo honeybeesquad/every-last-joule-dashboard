@@ -1,6 +1,6 @@
 # Validation — Henan Solar (`china-henan-solar`)
 
-Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-17 · Granularity survey 2026-06-10 · T3 modelled
 
 ## Source
 
@@ -8,28 +8,18 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** NEA 2024 provincial RE monitoring bulletin — solar curtailment ~0.7 TWh/yr
-- **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Source:** NEA provincial renewable-utilisation bulletin 2024 (+ Huaon/NBS capacity). T3-modelled: a typical solar profile scaled to a capacity/utilisation-based annual anchor (no live per-fuel curtailment feed).
+- **Source URL:** [https://www.nea.gov.cn/](https://www.nea.gov.cn/)
 - **Structural gap:** no
 
 ## Calibration
 
-- **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a — no backfill
-
-## Multi-year backfill annual totals
-
-| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
-|---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
+- **Anchor basis:** NEA 2024 provincial solar utilisation rate × installed capacity. T3 ±40% envelope.
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** —
-- **Ember annual:** —
-- **IRENA annual:** —
-- **Other:** —
+- **Operator annual:** —
+- **Ember / IRENA annual:** —
 
 ## Discrepancy analysis
 
@@ -41,8 +31,4 @@ _New region (granularity survey 2026-06-10, PR #203). Modelled from a capacity/u
 
 ## Links
 
-- Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_china-henan-solar_*.parquet` (0 years)
-- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
-- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
-- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
+- Methodology — tiers & live-data paths: [`docs/methodology/live-data-paths.md`](../methodology/live-data-paths.md)
