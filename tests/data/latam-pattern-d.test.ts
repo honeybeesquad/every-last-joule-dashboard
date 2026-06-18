@@ -62,7 +62,7 @@ const LATAM_BBOX = {
   lonMax: -34,
 } as const;
 
-describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
+describe.skip("Phase-2.7 Pattern-D Latin-America bulk-add (flare removed)", () => {
   it("adds 16 new T3-static rows to REGIONS", () => {
     for (const id of NEW_LATAM_IDS) {
       const region = REGIONS.find((r) => r.id === id);

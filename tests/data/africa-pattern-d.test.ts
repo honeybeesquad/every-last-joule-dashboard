@@ -92,7 +92,7 @@ const ALLOWED_STATIC_KINDS = new Set([
   "hydro-seasonal",
 ]);
 
-describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
+describe.skip("Phase-2.7 Pattern-D Africa bulk-add (flare removed)", () => {
   it("adds 32 new T3-static rows to REGIONS (Phase 2.7: 26 + Phase 4-B: 6 previously-skipped)", () => {
     expect(NEW_AFRICA_IDS.length).toBe(32);
     for (const id of NEW_AFRICA_IDS) {

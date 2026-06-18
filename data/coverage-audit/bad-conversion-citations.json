@@ -1,9 +1,39 @@
 {
-  "totalValidationDocs": 475,
+  "totalValidationDocs": 458,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 468,
-  "pctCited": 1.47,
+  "docsNotCiting": 451,
+  "pctCited": 1.53,
   "perDocCitations": [
+    {
+      "file": "aemo-avlsf1-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-bangowf1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-coopgwf1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-darlsf1-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-limosf11-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-macarth1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
     {
       "file": "aemo-nsw-solar.md",
       "cited": false,
@@ -25,12 +55,27 @@
       "matchedPatterns": []
     },
     {
+      "file": "aemo-ryepark1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "aemo-sa-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
       "file": "aemo-sa-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-saphwf1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-stockyd1-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -55,6 +100,11 @@
       "matchedPatterns": []
     },
     {
+      "file": "aemo-wdgph1-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "afghanistan.md",
       "cited": false,
       "matchedPatterns": []
@@ -75,11 +125,6 @@
       "matchedPatterns": [
         "bad[\\s-]conversions?\\s+check"
       ]
-    },
-    {
-      "file": "algeria-flare.md",
-      "cited": false,
-      "matchedPatterns": []
     },
     {
       "file": "algeria.md",
@@ -148,11 +193,6 @@
     },
     {
       "file": "bahrain.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "bai-hassan.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -393,11 +433,6 @@
     },
     {
       "file": "burundi.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "buzurgan.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -742,16 +777,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "e-saudi.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "east-baghdad.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "east-timor.md",
       "cited": false,
       "matchedPatterns": []
@@ -818,16 +843,6 @@
     },
     {
       "file": "ethiopia.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "faihaa.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "fauqi.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -957,16 +972,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "gharraf.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "ghawar.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "greece-solar.md",
       "cited": false,
       "matchedPatterns": []
@@ -1002,17 +1007,7 @@
       "matchedPatterns": []
     },
     {
-      "file": "guyana.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "haiti.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "halfaya.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1048,6 +1043,66 @@
     },
     {
       "file": "iceland.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-amaranth-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-armow-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-comber-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-grandsf-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-grandwf-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-henvey-south-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-jericho-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-k2wind-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-kingstonsf-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-princefarm-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-underwood-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-wolfe-island-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1095,11 +1150,6 @@
       ]
     },
     {
-      "file": "india-north.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "india-odisha.md",
       "cited": false,
       "matchedPatterns": []
@@ -1117,11 +1167,6 @@
       ]
     },
     {
-      "file": "india-south.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "india-tamil-nadu.md",
       "cited": true,
       "matchedPatterns": [
@@ -1135,11 +1180,6 @@
     },
     {
       "file": "india-uttar-pradesh.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "india-west.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1195,11 +1235,6 @@
     },
     {
       "file": "iso-ne-rest-wind.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "iso-ne.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1269,22 +1304,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "italy-south.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "italy-sud-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
       "file": "italy-sud-wind.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "jafurah.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1354,11 +1379,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "japan.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "jeju.md",
       "cited": false,
       "matchedPatterns": []
@@ -1379,27 +1399,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "khurmala.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "kiribati.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "kirkuk.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "kurdistan.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "kuwait.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1434,11 +1439,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "libya-flare.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "libya.md",
       "cited": false,
       "matchedPatterns": []
@@ -1469,11 +1469,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "majnoon.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "malawi.md",
       "cited": false,
       "matchedPatterns": []
@@ -1500,11 +1495,6 @@
     },
     {
       "file": "manitoba.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "marjan.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1589,11 +1579,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "n-iraq.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "namibia.md",
       "cited": false,
       "matchedPatterns": []
@@ -1645,11 +1630,6 @@
     },
     {
       "file": "niger.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "nigeria-flare.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1759,11 +1739,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "nyiso.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "oman.md",
       "cited": false,
       "matchedPatterns": []
@@ -1834,11 +1809,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "permian.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "peru-hydro.md",
       "cited": false,
       "matchedPatterns": []
@@ -1904,27 +1874,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "qatar.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "qatif.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "qinghai.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
       "file": "quebec.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "ratawi.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1939,16 +1894,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "rumaila.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "russia-e-siberia.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "russia-mainland.md",
       "cited": false,
       "matchedPatterns": []
@@ -1959,22 +1904,7 @@
       "matchedPatterns": []
     },
     {
-      "file": "russia-yamal.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "rwanda.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "s-iraq.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "s-jafurah.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -2069,6 +1999,26 @@
       "matchedPatterns": []
     },
     {
+      "file": "solar-intipunku.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-majes.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-marcona.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-pampa-norte.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "solomon-islands.md",
       "cited": false,
       "matchedPatterns": []
@@ -2159,16 +2109,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "suriname.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "swara-tika.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "sweden-north.md",
       "cited": false,
       "matchedPatterns": []
@@ -2235,11 +2175,6 @@
     },
     {
       "file": "tonga.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "trinidad-tobago.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -2319,11 +2254,6 @@
       "matchedPatterns": []
     },
     {
-      "file": "w-siberia.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
       "file": "wa-swis-solar.md",
       "cited": false,
       "matchedPatterns": []
@@ -2344,17 +2274,7 @@
       "matchedPatterns": []
     },
     {
-      "file": "wafra.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "west-qurna-1.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "west-qurna-2.md",
+      "file": "wind-terras-nuevas.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -2385,11 +2305,6 @@
     },
     {
       "file": "zimbabwe.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "zubair.md",
       "cited": false,
       "matchedPatterns": []
     }

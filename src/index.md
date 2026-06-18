@@ -243,17 +243,6 @@ document.getElementById("app-root").innerHTML = `
             <div class="num-tabular stat-value" id="supportable-readout" aria-live="polite" aria-atomic="true">—</div>
           </div>
         </div>
-        <div class="flare-footnote-row">
-          <p class="flare-footnote" id="flare-footnote">Plus <span id="flare-readout" aria-live="polite" aria-atomic="true">—</span> of continuous flared-gas waste in four oil basins — a 24/7 base load, physically separate from the dispatch-down story above and excluded from the headline ratio.</p>
-          <div class="flare-toggle-wrap" id="flare-toggle-wrap" hidden>
-            <button class="flare-toggle-btn" id="globe-flare-toggle"
-                    role="switch" aria-checked="false"
-                    aria-label="Show flared-gas basins" title="Show flared-gas basins">
-              <span class="flare-toggle-thumb"></span>
-            </button>
-            <span class="flare-toggle-label">Flare gas</span>
-          </div>
-        </div>
       </section>
 
       <section class="panel panel-center" aria-label="Globe">
@@ -651,8 +640,8 @@ for (const region of REGIONS) {
 // setting confidenceTier + uncertaintyLow/HighGW upstream — typical-shape
 // builders in `src/lib/typical-profiles.ts`, the statics builder in
 // `src/data/statics.json.ts`, and the cache-boundary `enrichWithTier` in
-// `src/lib/resilient.ts` between them cover live, static-modelled, and
-// flare regions. This loop is a defensive shim for any region that slips
+// `src/lib/resilient.ts` between them cover live and static-modelled
+// regions. This loop is a defensive shim for any region that slips
 // through (e.g. a future region added to regions.ts without a loader call
 // to applyUncertainty).
 //
@@ -660,14 +649,12 @@ for (const region of REGIONS) {
 // correct tier rather than silently routing every static through T2:
 //   wind/solar/mixed → T3-modelled
 //   hydro            → T3-modelled (hydro-seasonal fallback)
-//   flare            → T2-annual-calibrated (flat 24/7)
 //   live regions     → T1-live-TSO (no profileKind)
 const KIND_TO_PROFILE = {
   wind: "wind",
   solar: "solar",
   mixed: "mixed",
   hydro: "hydro-seasonal",
-  flare: "flat"
 };
 for (const region of REGIONS) {
   const d = regionData[region.id];
@@ -681,9 +668,8 @@ for (const region of REGIONS) {
 // Populate the region-count span inside the lead copy without clobbering
 // the surrounding HTML (the ${FUEL_ORDER.map} earlier baked it in at render).
 {
-  const liveRegionCount = REGIONS.filter((r) => r.kind !== "flare").length;
   const countEl = document.getElementById("region-count");
-  if (countEl) countEl.textContent = String(liveRegionCount);
+  if (countEl) countEl.textContent = String(REGIONS.length);
 }
 document.getElementById("refreshed-at").textContent = cbeci.lastUpdated;
 
@@ -702,14 +688,11 @@ function renderAt(hour) {
   const hh = String(Math.floor(wrappedHour)).padStart(2, "0");
   const mm = String(Math.floor((wrappedHour % 1) * 60)).padStart(2, "0");
 
-  // Renewable-only aggregate — flare excluded from the headline because
-  // it is continuous 24/7 base load, not a diurnal curtailment story.
+  // Renewable aggregate
   let renewableGW = 0;
-  let flareGW = 0;
   for (const region of REGIONS) {
     const gw = result.perRegionGW[region.id] ?? 0;
-    if (region.kind === "flare") flareGW += gw;
-    else renewableGW += gw;
+    renewableGW += gw;
   }
   const renewableEHs = ehsFromGW(renewableGW);
   const renewablePct = cbeci.hashrateEHps > 0 ? (renewableEHs / cbeci.hashrateEHps) * 100 : 0;
@@ -728,8 +711,6 @@ function renderAt(hour) {
   document.getElementById("supportable-label").textContent = "Hashrate this could support";
   document.getElementById("supportable-readout").innerHTML =
     `${renewableEHs.toFixed(1)} <span class="stat-unit">EH/s</span>`;
-
-  document.getElementById("flare-readout").textContent = `${flareGW.toFixed(0)} GW`;
 
   const renewableEntries = REGIONS
     .filter(isRenewable)
@@ -814,21 +795,6 @@ const zoomControls = document.getElementById("globe-zoom-controls");
 if (zoomControls && zoomSlider) {
   zoomControls.hidden = false;
   zoomSlider.addEventListener("input", () => globe?.setZoom(parseFloat(zoomSlider.value) || 1));
-}
-
-// Wire up flare toggle.
-const flareToggleWrap = document.getElementById("flare-toggle-wrap");
-const flareToggle = document.getElementById("globe-flare-toggle");
-if (flareToggleWrap && flareToggle) {
-  flareToggleWrap.hidden = false;
-  let flareOn = false;
-  flareToggle.addEventListener("click", () => {
-    flareOn = !flareOn;
-    globe?.update({ showFlare: flareOn });
-    flareToggle.classList.toggle("is-active", flareOn);
-    flareToggle.setAttribute("aria-checked", String(flareOn));
-    flareToggle.setAttribute("aria-label", flareOn ? "Hide flared-gas basins" : "Show flared-gas basins");
-  });
 }
 
 // Dismiss the loading screen now that the globe and all data are ready.

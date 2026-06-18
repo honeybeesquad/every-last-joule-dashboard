@@ -145,6 +145,12 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   kazakhstan: "wind",
   kenya: "overnight",
   kurdistan: "solar",
+  // Peru per-plant — estimated curtailment
+  "solar-majes": "solar",
+  "solar-pampa-norte": "solar",
+  "wind-terras-nuevas": "wind",
+  "solar-intipunku": "solar",
+  "solar-marcona": "solar",
   malaysia: "solar",
   manitoba: "mixed",
   "mexico-solar": "solar",

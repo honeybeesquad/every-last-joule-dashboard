@@ -1,9 +1,7 @@
 import type { Region, RegionData } from "./types";
 
 /**
- * Four-way fuel bucketing for the renewable-only dashboard view. Flare is
- * deliberately excluded — it belongs to a separate always-on story and
- * would otherwise dominate the aggregate thanks to 24/7 base-load.
+ * Three-way fuel bucketing for the renewable-only dashboard view.
  */
 export type Fuel = "solar" | "wind" | "hydro";
 
@@ -18,24 +16,21 @@ export const FUEL_LABEL: Record<Fuel, string> = {
 /**
  * Per-fuel colour tokens. Themed at runtime via CSS custom properties so
  * that switching themes (Sunfire / Deepcurrent) re-colours every
- * canvas-painted surface. Flare colour is locked across themes (BTC orange,
- * a data-meaning convention).
+ * canvas-painted surface.
  */
-const FUEL_VAR: Record<Fuel | "flare", string> = {
+const FUEL_VAR: Record<Fuel, string> = {
   solar: "--fuel-solar",
   wind:  "--fuel-wind",
   hydro: "--fuel-hydro",
-  flare: "--data-flare",
 };
 
-const FUEL_DEFAULT: Record<Fuel | "flare", string> = {
-  solar: "#ffd05a", // Sunfire default — used in SSR / non-DOM contexts only.
+const FUEL_DEFAULT: Record<Fuel, string> = {
+  solar: "#ffd05a",
   wind:  "#67e8f9",
   hydro: "#b8cdff",
-  flare: "#d83923",
 };
 
-export function getFuelColor(fuel: Fuel | "flare"): string {
+export function getFuelColor(fuel: Fuel): string {
   if (typeof window === "undefined" || typeof document === "undefined") {
     return FUEL_DEFAULT[fuel];
   }
@@ -46,48 +41,29 @@ export function getFuelColor(fuel: Fuel | "flare"): string {
 }
 
 /**
- * Region-aware pillar/swatch colour resolver. Centralises the
- * `kind === "flare" → flare token, else dominantFuel` routing so individual
- * call sites (globe canvas, tooltip, future legend strips) cannot regress
- * the flare → solar-yellow class of bug.
- *
- * Background: `dominantFuel` returns `Fuel` (solar | wind | hydro). For a
- * `kind: "flare"` region with no `fuelShare` it falls through to the
- * `return "solar"` default — meaning any caller that forgets the
- * `kind === "flare"` short-circuit silently paints flare pillars yellow
- * (issue #44). Callers should prefer this function over composing the
- * guard themselves.
+ * Region-aware pillar/swatch colour resolver.
  */
 export function getRegionFuelColor(region: Region, regionData?: RegionData): string {
-  if (region.kind === "flare") return getFuelColor("flare");
   return getFuelColor(dominantFuel(region, regionData));
 }
 
 /**
  * Empirical curtailment split for `kind: "mixed"` regions, derived from
- * published generation-mix data for 2024. Values must sum to ≤ 1.0.
- *
- * - Peru: hydro-dominated (Mantaro, Charcani), growing solar in Atacama-
- *   adjacent region (Rubi, Tacna), small wind (Wayra I/II, Duna/Huambos).
- * - South Africa: wind (Jeffreys Bay, Cookhouse, Gouda) is the biggest
- *   renewable curtailment bucket; solar (Northern Cape IPP) smaller;
- *   residual goes to 'other' (CSP + biomass).
+ * published generation-mix data for 2024.
  */
 const MIXED_SPLITS: Record<string, Partial<Record<Fuel, number>>> = {
   peru:           { hydro: 0.70, solar: 0.20, wind: 0.10 },
-  // South Africa: the residual 10% (CSP + biomass) is folded into solar
-  // now that 'other' no longer has a column of its own.
   "south-africa": { wind:  0.55, solar: 0.45 },
 };
 
 /** True for any region that should contribute to the renewable headline. */
-export function isRenewable(region: Region): boolean {
-  return region.kind !== "flare";
+export function isRenewable(_region: Region): boolean {
+  return true;
 }
 
 /**
  * Fraction of the given region's curtailment GW that belongs to `fuel`.
- * Returns 0..1. Flare regions return 0 for every bucket.
+ * Returns 0..1.
  *
  * A loader-emitted `regionData.fuelShare` takes precedence over the canonical
  * `region.kind` — this lets loaders that pull technology-separated feeds
@@ -95,7 +71,6 @@ export function isRenewable(region: Region): boolean {
  * real observed mix instead of being pigeonholed into a single kind.
  */
 export function fuelShare(region: Region, fuel: Fuel, regionData?: RegionData): number {
-  if (region.kind === "flare") return 0;
   if (regionData?.fuelShare && Object.keys(regionData.fuelShare).length > 0) {
     return regionData.fuelShare[fuel] ?? 0;
   }
@@ -103,20 +78,15 @@ export function fuelShare(region: Region, fuel: Fuel, regionData?: RegionData): 
     const split = MIXED_SPLITS[region.id];
     return split?.[fuel] ?? 0;
   }
-  // Canonical single-kind regions.
   if (region.kind === "solar" && fuel === "solar") return 1;
   if (region.kind === "wind"  && fuel === "wind")  return 1;
   if (region.kind === "hydro" && fuel === "hydro") return 1;
-  // Geothermal collapses into the hydro bucket for the 3-way fuel scheme:
-  // both are always-on baseload renewables, narratively grouped together.
   if (region.kind === "geo"   && fuel === "hydro") return 1;
   return 0;
 }
 
 /**
- * Dominant fuel bucket for the given region — used to place it in the
- * correct hotspot column. Mixed regions sort into their largest split.
- * A loader-emitted `regionData.fuelShare` takes precedence.
+ * Dominant fuel bucket for the given region.
  */
 export function dominantFuel(region: Region, regionData?: RegionData): Fuel {
   const hasDynamic = regionData?.fuelShare && Object.keys(regionData.fuelShare).length > 0;
@@ -144,6 +114,6 @@ export function dominantFuel(region: Region, regionData?: RegionData): Fuel {
   }
   if (region.kind === "wind")  return "wind";
   if (region.kind === "hydro") return "hydro";
-  if (region.kind === "geo")   return "hydro"; // geo collapses to hydro bucket
-  return "solar"; // solar + any unclassified renewable default
+  if (region.kind === "geo")   return "hydro";
+  return "solar";
 }

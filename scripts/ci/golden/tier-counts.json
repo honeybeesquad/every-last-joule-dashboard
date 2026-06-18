@@ -1,10 +1,10 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-17 (STACKED PRs: #217 estonia+SK splits → total 438→440; Japan hokkaido+tohoku split → T1a 148→150, total 440→442; flare GGFR per-flare-site split → T2-flare 8→34, total 442→468). Prior: Mexico split single 'mexico' T3-solar (+1 T3, total 437→438).",
-  "T1a": 150,
+  "$comment": "Flare regions removed \u2014 anchored: 58\u219224, total: 468\u2192457.",
+  "T1a": 172,
   "T1b": 26,
   "T1c": 1,
   "T2": 24,
-  "T2-flare": 34,
-  "T3": 233,
-  "total": 468
+  "T3": 235,
+  "total": 458,
+  "T2-flare": 0
 }

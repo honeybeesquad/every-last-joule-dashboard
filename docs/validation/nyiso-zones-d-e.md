@@ -1,6 +1,6 @@
 # Validation — NYISO Zones D+E (`nyiso-zones-d-e`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
