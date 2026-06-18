@@ -1,6 +1,6 @@
 # Validation — Tamil Nadu (`india-tamil-nadu`)
 
-Last updated: 2026-06-17 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -102,6 +102,130 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 <!-- END MANUAL -->
 
 
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
+- Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)
+- The TNSLDC source (`tnsldc.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
 <!-- BEGIN MANUAL -->
 - Curtailment rate (5%) is Ember's estimate; Tamil Nadu wind curtailment is seasonal (monsoon peak June–September) and varies with SLDC scheduling
 - Hourly shape remains synthetic (typical wind profile centred on 09:00 UTC)

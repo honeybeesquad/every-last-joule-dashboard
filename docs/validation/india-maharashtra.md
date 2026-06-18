@@ -1,6 +1,6 @@
 # Validation — Maharashtra (`india-maharashtra`)
 
-Last updated: 2026-06-17 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -107,6 +107,154 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 <!-- END MANUAL -->
 
 
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
 <!-- BEGIN MANUAL -->
 - Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
 - Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates

@@ -1,6 +1,6 @@
 # Validation index
 
-Last generated: 2026-06-17
+Last generated: 2026-06-18
 
 | Region | Tier | Kind | Backfill years | Validation doc |
 |---|---|---|---|---|
@@ -88,18 +88,18 @@ Last generated: 2026-06-17
 | Alberta Solar | live | solar | 0 | [alberta-solar](./alberta-solar.md) |
 | Alberta Wind | live | wind | 0 | [alberta-wind](./alberta-wind.md) |
 | British Columbia | estimated | hydro | 0 | [british-columbia](./british-columbia.md) |
-| Melancthon/Amaranth | live | wind | 0 | [ieso-amaranth](./ieso-amaranth.md) |
-| Armow Wind | live | wind | 0 | [ieso-armow](./ieso-armow.md) |
-| Comber Wind | live | wind | 0 | [ieso-comber](./ieso-comber.md) |
-| Grand Solar | live | solar | 0 | [ieso-grandsf](./ieso-grandsf.md) |
-| Grand Wind | live | wind | 0 | [ieso-grandwf](./ieso-grandwf.md) |
-| Henvey Inlet South | live | wind | 0 | [ieso-henvey-south](./ieso-henvey-south.md) |
-| Jericho Wind | live | wind | 0 | [ieso-jericho](./ieso-jericho.md) |
-| K2 Wind | live | wind | 0 | [ieso-k2wind](./ieso-k2wind.md) |
-| Kingston Solar | live | solar | 0 | [ieso-kingstonsf](./ieso-kingstonsf.md) |
-| Prince Wind Farm | live | wind | 0 | [ieso-princefarm](./ieso-princefarm.md) |
-| Underwood Wind | live | wind | 0 | [ieso-underwood](./ieso-underwood.md) |
-| Wolfe Island Wind | live | wind | 0 | [ieso-wolfe-island](./ieso-wolfe-island.md) |
+| Melancthon/Amaranth | live | wind | 0 | [ieso-amaranth-wind](./ieso-amaranth-wind.md) |
+| Armow Wind | live | wind | 0 | [ieso-armow-wind](./ieso-armow-wind.md) |
+| Comber Wind | live | wind | 0 | [ieso-comber-wind](./ieso-comber-wind.md) |
+| Grand Solar | live | solar | 0 | [ieso-grandsf-solar](./ieso-grandsf-solar.md) |
+| Grand Wind | live | wind | 0 | [ieso-grandwf-wind](./ieso-grandwf-wind.md) |
+| Henvey Inlet South | live | wind | 0 | [ieso-henvey-south-wind](./ieso-henvey-south-wind.md) |
+| Jericho Wind | live | wind | 0 | [ieso-jericho-wind](./ieso-jericho-wind.md) |
+| K2 Wind | live | wind | 0 | [ieso-k2wind-wind](./ieso-k2wind-wind.md) |
+| Kingston Solar | live | solar | 0 | [ieso-kingstonsf-solar](./ieso-kingstonsf-solar.md) |
+| Prince Wind Farm | live | wind | 0 | [ieso-princefarm-wind](./ieso-princefarm-wind.md) |
+| Underwood Wind | live | wind | 0 | [ieso-underwood-wind](./ieso-underwood-wind.md) |
+| Wolfe Island Wind | live | wind | 0 | [ieso-wolfe-island-wind](./ieso-wolfe-island-wind.md) |
 | Manitoba | estimated | mixed | 0 | [manitoba](./manitoba.md) |
 | Ontario Solar | live | solar | 0 | [ontario-solar](./ontario-solar.md) |
 | Ontario Wind | live | wind | 0 | [ontario-wind](./ontario-wind.md) |
