@@ -246,6 +246,490 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 - Hourly shape remains synthetic (typical solar profile)
 - The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
 <!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
 ## Links
 
 - Loader source: [`india-gujarat.json.ts`](../../src/data/india-gujarat.json.ts)

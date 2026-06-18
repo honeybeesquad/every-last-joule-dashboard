@@ -41,7 +41,7 @@ const HOTSPOT_LIST_LIMIT = 50;
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 133;
+const _LOADER_FILE_COUNT = 134;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -53,7 +53,7 @@ const [
   soco, pacw, pace, psco, azps, srp, ipco, tepc, wacm,
   entsoe, aemo, aemoPerPlant, belgium, france, denmark, newZealand, newZealandHydro, norway, atacama,
   chileWind, statics, anchor, northSea, brazilNE, ontario, ontarioPerPlant, alberta,
-  ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
+  ireland, peru, peruPerPlant, southAfrica, argentina, uruguay, paraguay, mexico,
   japanChubu, japanChugoku, japanHokkaido, japanHokuriku, japanKansai,
   japanKyushu, japanOkinawa, japanShikoku, japanTepco, japanTohoku,
   vietnam, thailand, indiaRajasthan, cyprus, ethiopia, kazakhstan,
@@ -109,6 +109,7 @@ const [
   trackFile(FileAttachment("data/alberta.json").json(),          "Alberta"),
   trackFile(FileAttachment("data/ireland.json").json(),          "Ireland"),
   trackFile(FileAttachment("data/peru.json").json(),             "Peru"),
+  trackFile(FileAttachment("data/peru-per-plant.json").json(), "Peru Per-Plant"),
   trackFile(FileAttachment("data/south-africa.json").json(),     "South Africa"),
   trackFile(FileAttachment("data/argentina.json").json(),        "Argentina"),
   trackFile(FileAttachment("data/uruguay.json").json(),          "Uruguay"),
@@ -489,6 +490,7 @@ const regionData = {
   ...alberta,
   ...ireland,
   ...peru,
+  ...peruPerPlant,
   ...southAfrica,
   "new-zealand-wind":  newZealand.wind,
   "new-zealand-solar": newZealand.solar,

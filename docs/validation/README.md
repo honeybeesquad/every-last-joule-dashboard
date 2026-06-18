@@ -370,6 +370,11 @@ Last generated: 2026-06-18
 | Peru Hydro | live | hydro | 0 | [peru-hydro](./peru-hydro.md) |
 | Peru Solar | live-domestic-anchored | solar | 0 | [peru-solar](./peru-solar.md) |
 | Peru Wind | live | wind | 0 | [peru-wind](./peru-wind.md) |
+| Intipunku Solar | estimated | solar | 0 | [solar-intipunku](./solar-intipunku.md) |
+| Majes Solar | estimated | solar | 0 | [solar-majes](./solar-majes.md) |
+| Marcona Solar | estimated | solar | 0 | [solar-marcona](./solar-marcona.md) |
+| Pampa Norte Solar | estimated | solar | 0 | [solar-pampa-norte](./solar-pampa-norte.md) |
+| Terrazas Nuevas Wind | estimated | wind | 0 | [wind-terras-nuevas](./wind-terras-nuevas.md) |
 | Philippines Solar | estimated | solar | 0 | [philippines-solar](./philippines-solar.md) |
 | Philippines Wind | estimated | wind | 0 | [philippines-wind](./philippines-wind.md) |
 | Palau | estimated | solar | 0 | [palau](./palau.md) |

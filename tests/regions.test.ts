@@ -106,7 +106,7 @@ describe("regions", () => {
     // 2026-06-17: Mexico split single 'mexico' (T3 solar) → mexico-solar + mexico-wind (both T3). Net +1. 437 + 1 = 438.
     // 2026-06-17: GGFR per-flare-site split — s-iraq/e-saudi re-anchored to bbox residual
     //   + 26 named oilfield / N-Iraq / Nigeria-Algeria-Libya flare regions. 442 + 26 = 468.
-    expect(REGIONS.length).toBe(490);
+    expect(REGIONS.length).toBe(495);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {

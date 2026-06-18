@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 497,
+  "totalValidationDocs": 502,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 490,
-  "pctCited": 1.41,
+  "docsNotCiting": 495,
+  "pctCited": 1.39,
   "perDocCitations": [
     {
       "file": "aemo-avlsf1-solar.md",
@@ -2179,6 +2179,26 @@
       "matchedPatterns": []
     },
     {
+      "file": "solar-intipunku.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-majes.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-marcona.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-pampa-norte.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "solomon-islands.md",
       "cited": false,
       "matchedPatterns": []
@@ -2465,6 +2485,11 @@
     },
     {
       "file": "west-qurna-2.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "wind-terras-nuevas.md",
       "cited": false,
       "matchedPatterns": []
     },
