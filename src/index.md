@@ -30,10 +30,8 @@ import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
 import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./lib/fuel.js";
-import { applyUncertainty } from "./lib/uncertainty.js";
 import { splitRegion } from "./lib/split-region.js";
-import { assertCanonicalRegionData } from "./lib/region-data-integrity.js";
-import { maskSolarNight } from "./lib/solar-mask.js";
+import { finalizeRegionData } from "./lib/region-data-finalize.js";
 import { mountGlobe } from "./globe.js";
 
 const HOTSPOT_LIST_LIMIT = 50;
@@ -617,66 +615,11 @@ const regionData = {
   ...philippines
 };
 
-// Warn loudly (console) if any canonical region is missing or has a malformed
-// value (e.g. multi-region loader's whole Record wired into a single key —
-// Belgium-shape bug class). This MUST NOT throw: it runs synchronously right
-// after the regionData literal, and on a cold load the slowest FileAttachment
-// loaders can still be resolving, so a hard throw here halts the whole
-// dashboard init (stuck "Loading dashboard data") on a transient load race.
-// Surface the issue in the console for monitoring, but always render.
-try {
-  assertCanonicalRegionData(regionData, REGIONS);
-} catch (err) {
-  console.error("[region-data-integrity]", (err && err.message) || err);
-}
-
-// Solar-physics correction: zero out hours where the sun is below the horizon
-// for any region of kind:solar. Several grid-operator feeds (CAISO, PJM, MISO,
-// SPP, NYISO, ERCOT, BPA) report a non-zero "solar" floor at local night —
-// most likely battery discharge mis-categorised as solar in the EIA fuel-type
-// breakdown. Whatever the cause, solar curtailment outside daylight is
-// physically impossible, so the dashboard refuses to show it.
-for (const region of REGIONS) {
-  if (region.kind !== "solar") continue;
-  const data = regionData[region.id];
-  if (!data?.profile) continue;
-  data.profile = maskSolarNight(data.profile, region.lon);
-  if (Array.isArray(data.latestProfile)) {
-    data.latestProfile = maskSolarNight(data.latestProfile, region.lon);
-  }
-  data.peakGW = Math.max(...data.profile);
-}
-
-// S2 uncertainty: defensive fallback. Every loader is now responsible for
-// setting confidenceTier + uncertaintyLow/HighGW upstream — typical-shape
-// builders in `src/lib/typical-profiles.ts`, the statics builder in
-// `src/data/statics.json.ts`, and the cache-boundary `enrichWithTier` in
-// `src/lib/resilient.ts` between them cover live, static-modelled, and
-// flare regions. This loop is a defensive shim for any region that slips
-// through (e.g. a future region added to regions.ts without a loader call
-// to applyUncertainty).
-//
-// We derive profileKind from regions.ts kind so the fallback assigns the
-// correct tier rather than silently routing every static through T2:
-//   wind/solar/mixed → T3-modelled
-//   hydro            → T3-modelled (hydro-seasonal fallback)
-//   flare            → T2-annual-calibrated (flat 24/7)
-//   live regions     → T1-live-TSO (no profileKind)
-const KIND_TO_PROFILE = {
-  wind: "wind",
-  solar: "solar",
-  mixed: "mixed",
-  hydro: "hydro-seasonal",
-  flare: "flat"
-};
-for (const region of REGIONS) {
-  const d = regionData[region.id];
-  if (!d) continue;
-  if (d.confidenceTier) continue; // preserve tier already set by loader
-  const profileKind = region.tier === "static" ? KIND_TO_PROFILE[region.kind] : undefined;
-  console.warn(`[uncertainty] late-binding tier for ${region.id} (kind=${region.kind}); loader should set this upstream`);
-  regionData[region.id] = applyUncertainty(d, { regionTier: region.tier, profileKind });
-}
+// Finalize the assembled region data — non-fatal integrity check (#224),
+// solar-night masking, and defensive uncertainty back-fill. Extracted to a
+// shared helper so this page and src/embed/globe.md cannot drift apart
+// (src/lib/region-data-finalize.ts).
+finalizeRegionData(regionData, REGIONS);
 
 // Populate the region-count span inside the lead copy without clobbering
 // the surrounding HTML (the ${FUEL_ORDER.map} earlier baked it in at render).

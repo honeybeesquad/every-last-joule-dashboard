@@ -162,10 +162,8 @@ document.documentElement.setAttribute("data-theme", "sunfire");
 import { aggregateAtHour, ehsFromGW } from "../lib/calc.js";
 import { REGIONS } from "../lib/regions.js";
 import { isRenewable } from "../lib/fuel.js";
-import { applyUncertainty } from "../lib/uncertainty.js";
 import { splitRegion } from "../lib/split-region.js";
-import { assertCanonicalRegionData } from "../lib/region-data-integrity.js";
-import { maskSolarNight } from "../lib/solar-mask.js";
+import { finalizeRegionData } from "../lib/region-data-finalize.js";
 import { mountGlobe } from "../globe.js";
 
 // Same parallel-fetch pattern as src/index.md. The embed needs the full
@@ -535,29 +533,11 @@ const regionData = {
   ...philippines
 };
 
-assertCanonicalRegionData(regionData, REGIONS);
-
-// Solar-night masking — same physics correction as src/index.md.
-for (const region of REGIONS) {
-  if (region.kind !== "solar") continue;
-  const data = regionData[region.id];
-  if (!data?.profile) continue;
-  data.profile = maskSolarNight(data.profile, region.lon);
-  if (Array.isArray(data.latestProfile)) {
-    data.latestProfile = maskSolarNight(data.latestProfile, region.lon);
-  }
-  data.peakGW = Math.max(...data.profile);
-}
-
-// Defensive uncertainty back-fill — mirrors src/index.md.
-const KIND_TO_PROFILE = { wind: "wind", solar: "solar", mixed: "mixed", hydro: "hydro-seasonal", flare: "flat" };
-for (const region of REGIONS) {
-  const d = regionData[region.id];
-  if (!d) continue;
-  if (d.confidenceTier) continue;
-  const profileKind = region.tier === "static" ? KIND_TO_PROFILE[region.kind] : undefined;
-  regionData[region.id] = applyUncertainty(d, { regionTier: region.tier, profileKind });
-}
+// Finalize the assembled region data — shared with src/index.md. Note: this
+// previously called assertCanonicalRegionData *fatally*, retaining the
+// "stuck loading" crash that #224 fixed for index.md; the shared helper makes
+// it non-fatal here too.
+finalizeRegionData(regionData, REGIONS);
 
 const now = new Date();
 const initialHour = now.getUTCHours() + now.getUTCMinutes() / 60;
