@@ -19,7 +19,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       REGION_ID,
       7,
       0.1,
-      `Typical-shape fallback: Iraq Ministry of Electricity 2024 live feed unavailable (${(err as Error).message}); Karbala and Dhi Qar PV curtailment anchored at ~0.1 TWh/yr, separate from flare region.`,
+      `Typical-shape fallback: Iraq Ministry of Electricity 2024 live feed unavailable (${(err as Error).message}); Karbala and Dhi Qar PV curtailment anchored at ~0.1 TWh/yr.`,
       "2024",
     );
   }

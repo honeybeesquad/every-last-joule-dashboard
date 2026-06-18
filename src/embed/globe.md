@@ -542,15 +542,13 @@ finalizeRegionData(regionData, REGIONS);
 const now = new Date();
 const initialHour = now.getUTCHours() + now.getUTCMinutes() / 60;
 
-// Renewable-only Bitcoin % at the current UTC hour. Identical formula to
-// src/index.md — flare basins are excluded from the headline because they
-// represent continuous 24/7 base-load, not curtailment.
+// Renewable Bitcoin % at the current UTC hour. Identical formula to
+// src/index.md. The dataset is renewables-only.
 function computeRenewablePct(utcHour) {
   const wrappedHour = ((utcHour % 24) + 24) % 24;
   const result = aggregateAtHour(regionData, cbeci, wrappedHour, "avg30d");
   let renewableGW = 0;
   for (const region of REGIONS) {
-    if (region.kind === "flare") continue;
     renewableGW += result.perRegionGW[region.id] ?? 0;
   }
   const renewableEHs = ehsFromGW(renewableGW);

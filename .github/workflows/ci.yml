@@ -32,7 +32,7 @@ name: CI
 #                        region has a docs/validation/<id>.md and the
 #                        Tier line matches Region.tier.
 #   7. tally:tiers     — scripts/tally-tiers.ts. Informational: prints
-#                        the T1a/T1b/T1c/T2/T2-flare/T3 counts. Exits 0
+#                        the T1a/T1b/T1c/T2/T3 counts. Exits 0
 #                        always; the value is the visible log that lets
 #                        a reviewer see the count without re-running.
 #

@@ -54,7 +54,8 @@ describe("static regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated,
     // added to STATIC_REGIONS as canonical anchors. 142 + 2 = 144.
     // 2026-06-07: norway-no5 reverted live→estimated, added to STATIC_REGIONS. 144 + 1 = 145.
-    expect(Object.keys(data).length).toBe(172);
+    // 2026-06-18: flare gas purged — removed 37 flare statics (32 named/bbox + kuwait/qatar + 3 offshore). 172 − 37 = 135.
+    expect(Object.keys(data).length).toBe(135);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -94,7 +95,8 @@ describe("static regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar added to pool as canonical.
     // Research pool: 146 + 2 = 148. Canonical: 142 + 2 = 144. Non-canonical: 4.
     // 2026-06-07: norway-no5 added to pool as canonical. Research pool: 148 + 1 = 149. Canonical: 144 + 1 = 145. Non-canonical: 4.
-    expect(Object.keys(researchData).length).toBe(176);
+    // 2026-06-18: flare purge removed 37 flare statics from the research pool. 176 − 37 = 139.
+    expect(Object.keys(researchData).length).toBe(139);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
@@ -104,36 +106,6 @@ describe("static regions", () => {
       "sichuan",
       // xinjiang moved to src/data/xinjiang.json.ts (fuel-split loader, 2026-06-16)
       "iceland",
-      "permian",
-      "w-siberia",
-      "s-iraq",
-      "e-saudi",
-      "rumaila",
-      "west-qurna-2",
-      "zubair",
-      "buzurgan",
-      "west-qurna-1",
-      "halfaya",
-      "gharraf",
-      "fauqi",
-      "majnoon",
-      "east-baghdad",
-      "ratawi",
-      "faihaa",
-      "bai-hassan",
-      "khurmala",
-      "swara-tika",
-      "kirkuk",
-      "ghawar",
-      "jafurah",
-      "wafra",
-      "marjan",
-      "s-jafurah",
-      "qatif",
-      "n-iraq",
-      "nigeria-flare",
-      "algeria-flare",
-      "libya-flare",
       "ukraine",
       "hawaii-oahu",
       "hawaii-maui",
@@ -150,12 +122,9 @@ describe("static regions", () => {
       "cuba",
       "dominican-republic",
       "jamaica",
-      "trinidad-tobago",
       "barbados",
       "bolivia",
       "ecuador",
-      "guyana",
-      "suriname",
       "french-guiana",
       // Colombia removed: promoted to T1b-CSV loader (src/data/colombia.json.ts).
       // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27).
@@ -188,12 +157,6 @@ describe("static regions", () => {
       // philippines moved to standalone src/data/philippines.json.ts (2026-04-30)
       // Phase-2.7 misc (2026-05-03)
       "tva",
-      "qatar",
-      "kuwait",
-      // Phase-2.7 Russia+China (2026-05-03)
-      "russia-yamal",
-      "russia-e-siberia",
-      // china-hebei / china-heilongjiang / china-jilin moved to split loaders (2026-06-16)
       // Phase 4-A completionist Tier A (2026-05-05)
       "afghanistan",
       "bahrain",
@@ -230,7 +193,6 @@ describe("static regions", () => {
     for (const r of Object.values(data)) {
       expect(allowed.has(r.sourceProvenance ?? "")).toBe(true);
     }
-    expect(data.permian.sourceProvenance).toBe("verified");
     expect(data.algeria.sourceProvenance).toBe("modelled-fallback");
   });
 
@@ -257,11 +219,10 @@ describe("static regions", () => {
     }
   });
 
-  it("hydro and flare regions have a flat 24h shape (seasonality lives at monthly scale, not diurnal)", () => {
+  it("hydro regions have a flat 24h shape (seasonality lives at monthly scale, not diurnal)", () => {
     const data = buildAllStatics();
     // Sichuan + Iceland: seasonal-scaled but constant within any 24h.
-    // Permian/W.Siberia/S.Iraq/E.Saudi: flare 24/7 base load.
-    const flatIds = ["sichuan", "iceland", "permian", "w-siberia", "s-iraq", "e-saudi"];
+    const flatIds = ["sichuan", "iceland"];
     for (const id of flatIds) {
       const first = data[id].profile[0];
       for (const v of data[id].profile) expect(v).toBe(first);
@@ -280,11 +241,6 @@ describe("static regions", () => {
     // accidentally equal the old flat baseline — but allow equality in case a
     // test runs exactly on a month-boundary where the 30-day blend averages to 1.
     expect(data.sichuan.profile[0]).toBeLessThanOrEqual(flatGW * 3);
-  });
-
-  it("permian at 20.6 TWh/yr yields ~2.35 GW flat (flare electrical-equivalent)", () => {
-    const data = buildAllStatics();
-    expect(data.permian.profile[0]).toBeCloseTo((20.6 * 1000) / 8760, 2);
   });
 
   it("totalTWh for hydro-seasonal regions is pro-rata × seasonal factor", () => {

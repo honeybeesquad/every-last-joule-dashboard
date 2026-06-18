@@ -106,7 +106,8 @@ describe("regions", () => {
     // 2026-06-17: Mexico split single 'mexico' (T3 solar) → mexico-solar + mexico-wind (both T3). Net +1. 437 + 1 = 438.
     // 2026-06-17: GGFR per-flare-site split — s-iraq/e-saudi re-anchored to bbox residual
     //   + 26 named oilfield / N-Iraq / Nigeria-Algeria-Libya flare regions. 442 + 26 = 468.
-    expect(REGIONS.length).toBe(468);
+    // 2026-06-18: flare gas purged from site + dataset — removed all 37 flare regions. 468 − 37 = 431.
+    expect(REGIONS.length).toBe(431);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -300,17 +301,11 @@ describe("regions", () => {
     // 2026-06-17: China fuel-splits + 6 India states (PR #203), all T3. +15. 211→226.
     // 2026-06-17: Chile/Colombia/DR/Ukraine T3 statics (PR #206). +5. 226→231.
     // 2026-06-17: Mexico split → mexico-solar + mexico-wind (both T3). +1. 231→232.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(233);
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(230);
   });
 
-  it("has 58 anchored regions (34 flare + 6 flat-profile + 18 EIA-930 US BAs)", () => {
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(58);
-  });
-
-  it("all flare-kind regions with anchored tier are GGFR-verified", () => {
-    for (const r of REGIONS.filter(x => x.kind === "flare" && x.tier === "anchored")) {
-      expect(r.sourceProvenance).toBe("verified");
-    }
+  it("has 24 anchored regions (6 flat-profile + 18 EIA-930 US BAs)", () => {
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(24);
   });
 
   it("keeps remaining mixed rows explicit so no new bundled curtailment slips in", () => {
@@ -482,7 +477,6 @@ describe("regions", () => {
     ]) {
       expect(REGIONS.find(r => r.id === id)).toBeDefined();
     }
-    expect(REGIONS.find(r => r.id === "e-saudi")?.tier).toBe("anchored");
   });
 
   it("includes the v1m Africa curtailment research expansion", () => {

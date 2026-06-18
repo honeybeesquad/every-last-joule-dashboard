@@ -6,7 +6,7 @@ automated re-check via [F-UJI](https://www.f-uji.net/) scheduled immediately
 after the Zenodo DOI is minted (v1.0.0 tag push, S0 completion).
 
 This document is the manual FAIR (Findable, Accessible, Interoperable,
-Reusable) self-assessment for the Every Last Joule curtailment-and-flare
+Reusable) self-assessment for the Every Last Joule curtailment
 dataset, as required by the Scientific Data reporting standard. It grades
 each of the 15 FAIR sub-principles against the actual artefacts committed
 to this repository, not against intent.
@@ -221,8 +221,8 @@ No proprietary binary blobs, no closed schemas.
   controlled vocabulary of 384 values defined in `src/lib/regions.ts`
   with one authoritative source of truth. Stable across versions
   (SemVer-bump required for breaking rename).
-- **Fuel types** — controlled enum `{solar, wind, hydro, geothermal,
-  flare}` enforced by JSON Schema `propertyNames.enum` in
+- **Fuel types** — controlled enum `{solar, wind, hydro, geothermal}`
+  enforced by JSON Schema `propertyNames.enum` in
   `region-snapshot.schema.json`. Maps directly onto the ENTSO-E PsrType
   A75/B16/B19 classifications used by our loaders.
 - **Confidence tier** — controlled enum `{T1-live-TSO, T2-annual-calibrated,

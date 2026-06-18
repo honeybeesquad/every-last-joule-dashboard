@@ -7,8 +7,7 @@ const SAMPLES_PER_HOUR = 4; // 96 samples across 24h for smooth area curves
 /**
  * Mount a stacked-area timeline canvas showing curtailed renewable energy
  * split into four fuel buckets (solar / wind / hydro / other) across a
- * 24-hour cycle. Flared gas is deliberately excluded — it is continuous
- * base-load and would flatten the diurnal peakiness. Draws a movable
+ * 24-hour cycle. Draws a movable
  * marker at the clock's current hour; scrubs on pointer interaction;
  * loops cleanly at UTC 24.
  */
@@ -139,13 +138,14 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     const totalNow = bucketNow[0] + bucketNow[1] + bucketNow[2] + bucketNow[3];
     const cx = xAt(hourNow, plotW);
     const cy = yForGW(totalNow);
-    ctx.strokeStyle = getFuelColor("flare");
+    const markerColor = getComputedStyle(document.documentElement).getPropertyValue("--amber-500").trim() || "#f5a623";
+    ctx.strokeStyle = markerColor;
     ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.moveTo(cx, PAD);
     ctx.lineTo(cx, h - PAD);
     ctx.stroke();
-    ctx.fillStyle = getFuelColor("flare");
+    ctx.fillStyle = markerColor;
     ctx.beginPath();
     ctx.arc(cx, cy, 4.5, 0, Math.PI * 2);
     ctx.fill();

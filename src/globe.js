@@ -61,7 +61,6 @@ export async function mountGlobe(canvas, initial) {
     rotation: [-10, -15, 0],
     dragging: false,
     zoomScale: 1.0,
-    showFlare: false,
     selectedRegionId: null,
   };
 
@@ -89,25 +88,19 @@ export async function mountGlobe(canvas, initial) {
   // --- Pillar unit cache ---
   // buildPillarUnits allocates a new Map + sorted arrays each call.
   // At 60fps that's GC pressure on every frame for no reason — the inputs
-  // only change when state.regions is replaced or showFlare toggles.
+  // only change when state.regions is replaced.
   let _cachedPillarUnits = null;
   let _cachedRegionsRef = null;
-  let _cachedShowFlare = null;
 
   function buildPillarUnitsForState() {
     if (
       _cachedPillarUnits !== null &&
-      _cachedRegionsRef === state.regions &&
-      _cachedShowFlare === state.showFlare
+      _cachedRegionsRef === state.regions
     ) {
       return _cachedPillarUnits;
     }
-    const filtered = state.regions.filter(
-      (region) => !(region.kind === "flare" && !state.showFlare),
-    );
-    _cachedPillarUnits = buildPillarUnits(filtered);
+    _cachedPillarUnits = buildPillarUnits(state.regions);
     _cachedRegionsRef = state.regions;
-    _cachedShowFlare = state.showFlare;
     return _cachedPillarUnits;
   }
 

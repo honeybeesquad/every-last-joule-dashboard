@@ -1,4 +1,4 @@
-# Every Last Joule — Curtailment & Flare Dataset
+# Every Last Joule — Curtailment Dataset
 
 **Version:** v1.3.2 · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI (this version):** [10.5281/zenodo.20570864](https://doi.org/10.5281/zenodo.20570864) · **DOI (always-latest):** [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411)
 
@@ -110,8 +110,7 @@ Regenerate for a new release: `npm run version-history` (run after version bump,
 
 The short version:
 - This is a **synthesis** dataset. Most regions mix live upstream feeds (ENTSO-E, EIA, AEMO NEMWeb, Elexon BMRS, ONS Brazil, and others) with published annual calibration (IRENA, Ember, GGFR, TSO annual reports).
-- The 385 regions break down by confidence tier as **158 T1-live-TSO** (148 T1a own-jurisdiction, 9 T1b domestic-anchored, 1 T1c neighbour-anchored), **6 T2-annual-calibrated** (flat-base statics on a published annual), **8 T2-flare** (24/7 baseload, methodologically correct for flare — Permian, West Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia), and **213 T3-modelled** (typical diurnal/seasonal/mixed/overnight shape scaled to a published annual anchor — Ireland (Republic and Northern), Peru, South Africa, Chinese provinces, most of South Asia, Africa, Middle East outside flare, Latin America outside Brazil/Atacama, Hawaii, three Japan regions whose live feeds are unavailable or non-solar). Every region carries `confidenceTier` so consumers can filter by precision; see [`../docs/methodology/uncertainty.md`](../docs/methodology/uncertainty.md) and [`../docs/known-limitations.md`](../docs/known-limitations.md).
-- Flare regions (Permian, West Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia) are correctly modelled as flat 24/7 base-load — flare _is_ continuous, not diurnal.
+- The 385 regions break down by confidence tier as **158 T1-live-TSO** (148 T1a own-jurisdiction, 9 T1b domestic-anchored, 1 T1c neighbour-anchored), **6 T2-annual-calibrated** (flat-base statics on a published annual), and **213 T3-modelled** (typical diurnal/seasonal/mixed/overnight shape scaled to a published annual anchor — Ireland (Republic and Northern), Peru, South Africa, Chinese provinces, most of South Asia, Africa, Middle East, Latin America outside Brazil/Atacama, Hawaii, three Japan regions whose live feeds are unavailable or non-solar). Every region carries `confidenceTier` so consumers can filter by precision; see [`../docs/methodology/uncertainty.md`](../docs/methodology/uncertainty.md) and [`../docs/known-limitations.md`](../docs/known-limitations.md).
 - Some jurisdictions (Mexico CENACE, much of sub-Saharan Africa) have no public hourly source and are documented as **structural gaps** rather than filled with fiction.
 
 Full caveat list: [`../docs/known-limitations.md`](../docs/known-limitations.md).

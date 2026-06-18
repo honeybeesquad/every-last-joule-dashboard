@@ -2,6 +2,11 @@
 
 All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Removed
+- **Flare gas removed from the dataset.** All 37 associated-gas flaring regions (Permian, West Siberia, the Iraq/Saudi named oilfields, Nigeria/Algeria/Libya, Qatar, Kuwait, the two Russia flares, and the Trinidad/Guyana/Suriname offshore anchors) and the entire `T2-flare` confidence-tier bucket have been removed. The dataset is now renewables-only (curtailed solar/wind/hydro). Region total: 468 → 431. The `fuelShare`/`fuel` schema enums drop the `flare` value. Historical rows in `version-history.csv` and the release entries below are preserved — they accurately record what each published version (v1.0.0–v1.3.2) shipped.
+
 ## [1.3.2] — 2026-06-07
 
 Data-accuracy release. Corrects a Brazil curtailment-formula bug that overstated the global total, repairs four upstream loader failures discovered from production build logs, and reconciles every numeric claim in the paper against the corrected snapshots. Region count grows by one (385).
