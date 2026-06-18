@@ -1,6 +1,6 @@
 # Validation — Marjan (flare) (`marjan`)
 
-Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-17 · GGFR per-flare-site split · T2 flare
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** SAU
 - **Tier:** anchored
 - **Kind:** flare
-- **Source:** VIIRS + GGFR per-flare-site 2024 (Marjan offshore field; dot at Tanajib onshore base, 0.1419 bcm)
+- **Source:** VIIRS + GGFR per-flare-site 2024 (Marjan, 0.1419 bcm)
 - **Source URL:** [https://www.worldbank.org/en/programs/gasflaringreduction](https://www.worldbank.org/en/programs/gasflaringreduction)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
@@ -16,17 +16,17 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 ## Calibration
 
 - **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a — no backfill
+- **Uniform across backfill years:** n/a — flat 24/7 flare anchor
 
 ## Multi-year backfill annual totals
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
 |---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
+| _(GGFR per-site VIIRS 2012–2024 series available; 2024 used as the anchor)_ | | | | | |
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** —
+- **GGFR/GFMR per-site VIIRS (2024):** 0.1419 bcm flared × 3.6925 TWh-e/bcm = 0.5 TWh-e/yr
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —

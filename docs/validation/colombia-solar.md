@@ -1,6 +1,6 @@
 # Validation — Colombia Solar (`colombia-solar`)
 
-Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-17 · Expansion push (PR #206) · T3 modelled
 
 ## Source
 
@@ -8,28 +8,18 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** COL
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** XM SinerGox system-wide vertimientos split; growing La Guajira + NE utility PV ~0.8 TWh/yr estimated from IRENA 2024 capacity + Ember 2024 solar curtailment share (no per-technology breakdown from XM)
+- **Source:** XM SinerGox system-wide vertimientos split; growing La Guajira + NE utility PV ~0.8 TWh/yr estimated from IRENA 2024 capacity + Ember 2024 solar curtailment share (no per-technology breakdown from XM). T3-modelled: a typical solar profile scaled to a capacity/literature-based annual anchor (the operator publishes no per-technology curtailment series).
 - **Source URL:** [https://servapibi.xm.com.co/daily](https://servapibi.xm.com.co/daily)
-- **Loader:** [`colombia.json.ts`](../../src/data/colombia.json.ts)
 - **Structural gap:** no
 
 ## Calibration
 
-- **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a — no backfill
-
-## Multi-year backfill annual totals
-
-| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
-|---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
+- **Anchor basis:** capacity + typical-profile estimate, cross-checked to IRENA/Ember where available. T3 ±40% envelope. (Parent-region totals de-conflicted to avoid double-counting — see PR #206.)
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** —
-- **Ember annual:** —
-- **IRENA annual:** —
-- **Other:** —
+- **Operator annual:** —
+- **Ember / IRENA annual:** —
 
 ## Discrepancy analysis
 
@@ -41,8 +31,4 @@ _New region (granularity survey expansion, PR #206). Modelled from a capacity/li
 
 ## Links
 
-- Loader source: [`colombia.json.ts`](../../src/data/colombia.json.ts)
-- Backfill archive: `data/historical/backfill/*_colombia-solar_*.parquet` (0 years)
-- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
-- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
-- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
+- Methodology — tiers & live-data paths: [`docs/methodology/live-data-paths.md`](../methodology/live-data-paths.md)

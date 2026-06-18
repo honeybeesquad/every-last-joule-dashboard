@@ -1,6 +1,6 @@
-# Validation — E. Saudi (other fields) (`e-saudi`)
+# Validation — E. Saudi Arabia (`e-saudi`)
 
-Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** SAU
 - **Tier:** anchored
 - **Kind:** flare
-- **Source:** VIIRS + GGFR per-flare-site 2024 (E. Saudi bbox residual)
+- **Source:** VIIRS + GGFR
 - **Source URL:** [https://www.worldbank.org/en/programs/gasflaringreduction](https://www.worldbank.org/en/programs/gasflaringreduction)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

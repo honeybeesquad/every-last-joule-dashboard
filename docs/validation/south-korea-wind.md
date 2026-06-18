@@ -1,6 +1,6 @@
 # Validation — South Korea Wind (`south-korea-wind`)
 
-Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-17 · South Korea per-fuel anchor split · T3 modelled
 
 ## Source
 
@@ -10,7 +10,7 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Kind:** wind
 - **Source:** KPX EPSIS KNRE 2024: mainland wind utilization ~14%, 2 GW installed, ~2% curtailment rate (IEA Korea). Falls back to the ~0.05 TWh anchor when EPSIS yields 0% (no fabricated data).
 - **Source URL:** [https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do](https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Loader:** [`south-korea.json.ts`](../../src/data/south-korea.json.ts)
 - **Structural gap:** no
 
 ## Calibration
@@ -26,7 +26,7 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** —
+- **TSO annual curtailment (latest published):** KPX 2024 mainland wind curtailment ~0.05 TWh (IEA anchor, excl. Jeju)
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
@@ -41,7 +41,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: _(no single-file loader — see multi-region source)_
+- Loader source: [`south-korea.json.ts`](../../src/data/south-korea.json.ts)
 - Backfill archive: `data/historical/backfill/*_south-korea-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
