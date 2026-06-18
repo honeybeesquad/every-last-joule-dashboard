@@ -1,6 +1,6 @@
 # Validation — Colombia (`colombia`)
 
-Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -12,6 +12,7 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Source URL:** [https://servapibi.xm.com.co/daily](https://servapibi.xm.com.co/daily)
 - **Loader:** [`colombia.json.ts`](../../src/data/colombia.json.ts)
 - **Structural gap:** no
+- **Relay self-degradation:** if the committed CSV's newest row is older than 4 days (`RELAY_STALENESS_THRESHOLD_DAYS`), the loader pre-stamps `sourceStatus: "degraded"` and `lastSuccessAt: <newest row ISO>` so the globe pillar shows the amber ring without waiting for a `withFallback` catch. The `.github/workflows/relay-freshness.yml` workflow checks the CSV daily and opens a deduplicated `auto-relay-stale` GitHub issue when the source goes stale.
 
 ## Calibration
 

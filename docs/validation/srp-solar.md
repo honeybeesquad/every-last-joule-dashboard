@@ -1,6 +1,6 @@
 # Validation — Salt River Project Solar (`srp-solar`)
 
-Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-17 · EIA-930 second-tier balancing authority · Granularity survey 2026-06-10
 
 ## Source
 
@@ -8,27 +8,21 @@ Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** USA
 - **Tier:** anchored
 - **Kind:** solar
-- **Source:** EIA SRP solar
+- **Source:** EIA-930 Hourly Electric Grid Monitor, respondent `SRP`, fuel-type `SUN`. Live hourly generation × a 1.5% literature/IRP-anchored curtailment rate. The BA publishes generation, not its own curtailment register, so per [`live-data-paths.md`](../methodology/live-data-paths.md) (Path B, Test 2) this is **T2-annual-calibrated**, not T1a.
 - **Source URL:** [https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data](https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data)
 - **Loader:** [`srp.json.ts`](../../src/data/srp.json.ts)
 - **Structural gap:** no
 
 ## Calibration
 
-- **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a — no backfill
-
-## Multi-year backfill annual totals
-
-| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
-|---|---|---|---|---|---|
-| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
+- **Rate:** 1.5% of EIA-930 solar generation (conservative first-order anchor).
+- **Anchor basis:** SRP Integrated System Plan 2023; Ember.
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** —
+- **BA-published annual curtailment:** —
 - **Ember annual:** —
-- **IRENA annual:** —
+- **LBNL annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
@@ -43,7 +37,5 @@ _New region (granularity survey 2026-06-10). No multi-year backfill yet; magnitu
 ## Links
 
 - Loader source: [`srp.json.ts`](../../src/data/srp.json.ts)
-- Backfill archive: `data/historical/backfill/*_srp-solar_*.parquet` (0 years)
-- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
-- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
+- Methodology — live-data paths & tier rule: [`docs/methodology/live-data-paths.md`](../methodology/live-data-paths.md)
