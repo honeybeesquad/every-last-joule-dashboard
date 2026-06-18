@@ -37,7 +37,7 @@ const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv
 
 if (isMain) {
   withFallback<{ solar: RegionData; wind: RegionData }>(REGION_ID, () => run(), {
-    regionTier: "anchored" as const,
+    regionTier: "estimated" as const,
     tagLive: (r) => r,
     tagCached: (c) => c as { solar: RegionData; wind: RegionData },
   })

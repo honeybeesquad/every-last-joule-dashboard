@@ -132,7 +132,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       };
 
       // "anchored" tier: live generation shape × published curtailment rate
-      return applyUncertainty(result, { regionTier: "anchored" });
+      return applyUncertainty(result, { regionTier: "estimated" });
     } catch (err) {
       console.error(`[argentina] CAMMESA live fetch failed: ${(err as Error).message}`);
       // Fall through to fallback
@@ -154,7 +154,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run(), { regionTier: "anchored" })
+  withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("argentina loader failed", err);

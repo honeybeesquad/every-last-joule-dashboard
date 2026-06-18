@@ -1,16 +1,16 @@
-# Validation — Gansu Solar (`gansu-solar`)
+# Validation — Sichuan Wind (`sichuan-wind`)
 
 Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `gansu-solar`
+- **Region id:** `sichuan-wind`
 - **Country:** CHN
 - **Tier:** estimated
-- **Kind:** solar
-- **Source:** NEA 2024 provincial RE monitoring bulletin — solar curtailment (Hexi corridor PV, 40% of ~3.0 TWh/yr)
+- **Kind:** wind
+- **Source:** NEA 2024 provincial RE monitoring bulletin — wind curtailment (~0.1 TWh/yr, limited wind capacity in hydro-dominant grid)
 - **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
-- **Loader:** [`gansu.json.ts`](../../src/data/gansu.json.ts)
+- **Loader:** [`sichuan.json.ts`](../../src/data/sichuan.json.ts)
 - **Structural gap:** no
 
 ## Calibration
@@ -41,8 +41,8 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: [`gansu.json.ts`](../../src/data/gansu.json.ts)
-- Backfill archive: `data/historical/backfill/*_gansu-solar_*.parquet` (0 years)
+- Loader source: [`sichuan.json.ts`](../../src/data/sichuan.json.ts)
+- Backfill archive: `data/historical/backfill/*_sichuan-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

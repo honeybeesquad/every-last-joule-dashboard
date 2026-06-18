@@ -1,6 +1,6 @@
 # Validation — Gansu Wind (`gansu-wind`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** wind
-- **Source:** NEA 2024 / Gansu MIIT generation
+- **Source:** NEA 2024 provincial RE monitoring bulletin — wind curtailment (Jiuquan/Wuwei corridor, 60% of ~3.0 TWh/yr)
 - **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
 - **Loader:** [`gansu.json.ts`](../../src/data/gansu.json.ts)
 - **Structural gap:** no

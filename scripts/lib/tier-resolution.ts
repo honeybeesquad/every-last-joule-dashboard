@@ -39,6 +39,8 @@ export type Bucket = "T1a" | "T1b" | "T1c" | "T2-flare" | "T2" | "T3";
 export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   // statics.json.ts hand-curated specs
   sichuan: "hydro-seasonal",
+  "sichuan-solar": "solar",
+  "sichuan-wind": "wind",
   "xinjiang-wind": "wind",
   "xinjiang-solar": "solar",
   // W2 China provinces — typical-shape loaders (NEA 2024 provincial RE bulletin)
@@ -127,6 +129,8 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "india-chhattisgarh": "solar",
   indonesia: "solar",
   "inner-mongolia": "wind",
+  "inner-mongolia-wind": "wind",
+  "inner-mongolia-solar": "solar",
   iran: "solar",
   "iraq-mainland": "solar",
   // ireland-republic / northern-ireland: live as of 82b5496 (Phase 2.6).
@@ -145,6 +149,12 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   kazakhstan: "wind",
   kenya: "overnight",
   kurdistan: "solar",
+  // Peru per-plant — estimated curtailment
+  "solar-majes": "solar",
+  "solar-pampa-norte": "solar",
+  "wind-terras-nuevas": "wind",
+  "solar-intipunku": "solar",
+  "solar-marcona": "solar",
   malaysia: "solar",
   manitoba: "mixed",
   "mexico-solar": "solar",
@@ -164,6 +174,8 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "philippines-wind": "wind",
   paraguay: "hydro-seasonal",
   qinghai: "solar",
+  "qinghai-solar": "solar",
+  "qinghai-wind": "wind",
   quebec: "hydro-seasonal",
   "russia-mainland": "hydro-seasonal",
   saskatchewan: "wind",
@@ -173,9 +185,13 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   taiwan: "solar",
   thailand: "solar",
   tibet: "hydro-seasonal",
+  "tibet-solar": "solar",
+  "tibet-wind": "wind",
   uae: "solar",
   vietnam: "solar",
   yunnan: "hydro-seasonal",
+  "yunnan-solar": "solar",
+  "yunnan-wind": "wind",
   // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27).
   // Sixteen new T3-modelled statics from
   // `data/coverage-audit/2026-04-26-latin-america.csv`. profileKind values
@@ -342,6 +358,9 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   palau: "solar",
   tonga: "solar",
   tuvalu: "solar",
+  // W3 China provinces — Phase 2.9 expansion (2026-06-18)
+  "guangxi-wind": "wind",
+  "guangxi-solar": "solar",
 };
 
 /**
