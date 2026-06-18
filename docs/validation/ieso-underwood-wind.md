@@ -1,10 +1,10 @@
-# Validation — Wolfe Island Wind (`ieso-wolfe-island`)
+# Validation — Underwood Wind (`ieso-underwood-wind`)
 
-Last updated: 2026-06-17 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `ieso-wolfe-island`
+- **Region id:** `ieso-underwood-wind`
 - **Country:** CAN
 - **Tier:** live
 - **Kind:** wind
@@ -42,7 +42,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_ieso-wolfe-island_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_ieso-underwood-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
