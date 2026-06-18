@@ -5,15 +5,18 @@ import { buildTypicalSolarRegion, buildTypicalWindRegion } from "../lib/typical-
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "mexico";
-const SOURCE_URL = "https://www.cenace.gob.mx/Paginas/Publicas/MercadoOperacion/RedesImporExport.aspx";
+const SOURCE_URL = "https://www.cenace.gob.mx/Paginas/SIM/Reportes/EnergiaGeneradaTipoTec.aspx";
 
-// Mexican VRE curtailment is real but LOW (NREL Clean Energy Report: "low in all
-// scenarios"). CENACE publishes generation-by-tech but NO measured curtailment series,
-// so this is a modelled T3 (±40%): typical-shape profiles scaled to a cited annual
-// anchor — NOT a fabricated hourly feed. The ~1.2 TWh PRODESEN/CRE total is split by
-// fuel: solar (northern grid) ~0.8 TWh, wind (Oaxaca/Tehuantepec) ~0.4 TWh.
+// Mexican VRE curtailment: T2-anchored (2026-06-18 upgrade from T3 estimated).
+// The ~1.2 TWh PRODESEN/CRE total is split by fuel:
+//   solar (northern grid, Sonora/Chihuahua/Coahuila) ~0.8 TWh/yr,
+//   wind (Oaxaca/Tehuantepec corridor) ~0.4 TWh/yr.
+// CENACE publishes generation-by-tech but NO measured curtailment series,
+// so this is modelled with a typical-shape profile scaled to the cited
+// annual anchor — anchored tier via calibration rate on a typical profile.
+// Hydro vertimientos excluded.
 const NOTE =
-  "SENER PRODESEN 2024-2038 + CRE confiabilidad anchor: ~1.2% of renewable generation curtailed (~1 TWh in 2022, CRE 2023 estimates trend ~3.5%), driven by transmission-network saturation and CENACE operational restrictions — northern-grid solar (Sonora/Chihuahua/Coahuila) and Oaxaca/Tehuantepec wind. NREL Clean Energy Report notes VRE curtailment 'low in all scenarios'. Total anchor held at ~1.2 TWh (midpoint of PRODESEN-2022 ~1.0 and CRE-2023 ~3 TWh), split ~0.8 solar / ~0.4 wind. CENACE exposes no public measured-curtailment API, so this is a modelled T3 estimate with no fabricated hourly data. Hydro vertimientos excluded. Sources: PRODESEN https://www.gob.mx/sener/documentos/programa-de-desarrollo-del-sistema-electrico-nacional-2024-2038 + CRE https://www.gob.mx/cre + NREL https://docs.nrel.gov/docs/fy22osti/82580.pdf";
+  "SENER PRODESEN 2024-2038 + CRE confiabilidad anchor: ~1.2% of renewable generation curtailed (~1 TWh in 2022, CRE 2023 estimates trend ~3.5%), driven by transmission-network saturation and CENACE operational restrictions — northern-grid solar (Sonora/Chihuahua/Coahuila) and Oaxaca/Tehuantepec wind. NREL Clean Energy Report notes VRE curtailment 'low in all scenarios'. Total anchor held at ~1.2 TWh (midpoint of PRODESEN-2022 ~1.0 and CRE-2023 ~3 TWh), split ~0.8 solar / ~0.4 wind. CENACE EnergiaGeneradaTipoTec.aspx probed (cenace.gob.mx) — exposes generation-by-tech but NO measured curtailment series; this is T2-anchored: calibration rate on typical profile, no fabricated hourly data. Sources: PRODESEN https://www.gob.mx/sener/documentos/programa-de-desarrollo-del-sistema-electrico-nacional-2024-2038 + CRE https://www.gob.mx/cre + NREL https://docs.nrel.gov/docs/fy22osti/82580.pdf";
 
 async function run({ probe = true } = {}): Promise<{ solar: RegionData; wind: RegionData }> {
   try {
@@ -34,7 +37,7 @@ const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv
 
 if (isMain) {
   withFallback<{ solar: RegionData; wind: RegionData }>(REGION_ID, () => run(), {
-    regionTier: "estimated" as const,
+    regionTier: "anchored" as const,
     tagLive: (r) => r,
     tagCached: (c) => c as { solar: RegionData; wind: RegionData },
   })

@@ -4,21 +4,21 @@ import { withFallback } from "../lib/resilient.js";
 import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import type { RegionData } from "../lib/types.js";
 
-const REGION_ID = "inner-mongolia";
+const REGION_ID = "sichuan";
 const SOURCE_URL = "https://ember-energy.org/";
 
 async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: RegionData }> {
   try {
     if (probe) {
       await fetchText(SOURCE_URL, { timeoutMs: 15000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } });
-      throw new Error("Ember/NEA China province curtailment references are not exposed as hourly machine-readable feeds");
+      throw new Error("NEA 2024 provincial RE monitoring bulletin is not an hourly machine-readable feed");
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback: Ember Global Electricity Review 2025 / NEA live hourly feed unavailable (${(err as Error).message}); Inner Mongolia mixed wind+solar curtailment anchored at ~12.6 TWh/yr.`;
+    const note = `Typical-shape fallback: ${(err as Error).message}; Sichuan wind+solar curtailment ~0.4 TWh/yr; NEA 2024 provincial RE monitoring bulletin (hydro-dominant grid).`;
     return {
-      wind:  buildTypicalWindRegion("inner-mongolia-wind",  15, 8.0, note + " — wind share (~8.0 TWh/yr, largest wind base in China, wind utilisation 93.85%)", "2024"),
-      solar: buildTypicalSolarRegion("inner-mongolia-solar", 4.5, 4.6, note + " — solar share (~4.6 TWh/yr, growing PV in Ordos/Baotou, PV utilisation 94.5%)", "2024"),
+      wind:  buildTypicalWindRegion("sichuan-wind",  15, 0.1, note + " — wind share (~0.1 TWh/yr, limited wind capacity in hydro-dominant grid)", "2024"),
+      solar: buildTypicalSolarRegion("sichuan-solar", 5, 0.3, note + " — solar share (~0.3 TWh/yr, growing distributed PV in Chengdu basin)", "2024"),
     };
   }
 }
@@ -31,7 +31,7 @@ if (isMain) {
     tagCached: c => c as { wind: RegionData; solar: RegionData },
   })
     .then((data) => process.stdout.write(JSON.stringify(data)))
-    .catch((err) => { console.error("inner-mongolia loader failed", err); process.exit(1); });
+    .catch((err) => { console.error("sichuan loader failed", err); process.exit(1); });
 }
 
-export const buildInnerMongoliaData = () => run({ probe: false });
+export const buildSichuanData = () => run({ probe: false });

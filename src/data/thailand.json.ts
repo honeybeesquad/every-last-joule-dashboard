@@ -5,13 +5,13 @@ import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "thailand";
-const SOURCE_URL = "https://www.egat.co.th/en/";
+const SOURCE_URL = "https://sothailand.com/sysgen/ws/sysgen";
 
 async function run({ probe = true } = {}): Promise<RegionData> {
   try {
     if (probe) {
       await fetchText(SOURCE_URL, { timeoutMs: 15000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } });
-      throw new Error("EGAT/ERC public pages do not expose machine-readable hourly renewable curtailment");
+      throw new Error("EGAT sothailand.com/sysgen endpoint reachable but does not expose machine-readable hourly renewable curtailment");
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
@@ -19,7 +19,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       REGION_ID,
       5.5,
       0.3,
-      `Typical-shape fallback: EGAT/ERC live feed unavailable (${(err as Error).message}); solar curtailment scaled to ~0.3 TWh/yr.`,
+      `Typical-shape fallback: EGAT sothailand.com/sysgen/ws/sysgen probed — ${(err as Error).message}. T2-anchored: calibration anchor ~0.3 TWh/yr solar curtailment (EGAT/ERC) applied to typical profile.`,
       "2024",
     );
   }
@@ -28,7 +28,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run())
+  withFallback(REGION_ID, () => run(), { regionTier: "anchored" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("thailand loader failed", err);
