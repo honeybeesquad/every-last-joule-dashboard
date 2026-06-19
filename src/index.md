@@ -39,7 +39,7 @@ const HOTSPOT_LIST_LIMIT = 50;
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 131;
+const _LOADER_FILE_COUNT = 133;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -67,6 +67,7 @@ const [
   chinaHenan, chinaFujian, chinaJiangxi, chinaBeijing, chinaGuizhou,
   chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai,
   chinaHebei, chinaHeilongjiang, chinaJilin, xinjiang,
+  sichuan, guangxi,
   zenodoVersion
 ] = await Promise.all([
   trackFile(FileAttachment("data/cbeci.json").json(),            "CBECI"),
@@ -199,6 +200,8 @@ const [
   trackFile(FileAttachment("data/china-heilongjiang.json").json(), "China Heilongjiang"),
   trackFile(FileAttachment("data/china-jilin.json").json(),      "China Jilin"),
   trackFile(FileAttachment("data/xinjiang.json").json(),         "Xinjiang"),
+  trackFile(FileAttachment("data/sichuan.json").json(),          "Sichuan"),
+  trackFile(FileAttachment("data/guangxi.json").json(),          "Guangxi"),
   trackFile(FileAttachment("data/zenodo-version.json").json(),   "Version metadata"),
 ]);
 
@@ -523,14 +526,18 @@ const regionData = {
   uae,
   oman,
   israel,
-  "inner-mongolia": innerMongolia,
+  "inner-mongolia-wind":  innerMongolia.wind,
+  "inner-mongolia-solar": innerMongolia.solar,
   "gansu-wind":  gansu.wind,
   "gansu-solar": gansu.solar,
-  qinghai,
+  "qinghai-wind":  qinghai.wind,
+  "qinghai-solar": qinghai.solar,
   "ningxia-wind":  ningxia.wind,
   "ningxia-solar": ningxia.solar,
-  yunnan,
-  tibet,
+  "yunnan-wind":  yunnan.wind,
+  "yunnan-solar": yunnan.solar,
+  "tibet-wind":  tibet.wind,
+  "tibet-solar": tibet.solar,
   "india-gujarat": indiaGujarat,
   "india-tamil-nadu": indiaTamilNadu,
   "india-karnataka": indiaKarnataka,
@@ -598,6 +605,10 @@ const regionData = {
   "china-jilin-solar": chinaJilin.solar,
   "xinjiang-wind":  xinjiang.wind,
   "xinjiang-solar": xinjiang.solar,
+  "sichuan-wind":  sichuan.wind,
+  "sichuan-solar": sichuan.solar,
+  "guangxi-wind":  guangxi.wind,
+  "guangxi-solar": guangxi.solar,
   ...statics,
   // Philippines: split by fuel (solar + wind). Loader returns a Record so spread here.
   // Supersedes the philippines statics entry (removed 2026-04-30).

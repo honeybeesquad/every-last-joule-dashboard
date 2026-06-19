@@ -4,7 +4,7 @@ import { withFallback } from "../lib/resilient.js";
 import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import type { RegionData } from "../lib/types.js";
 
-const REGION_ID = "tibet";
+const REGION_ID = "guangxi";
 const SOURCE_URL = "https://www.nea.gov.cn/";
 
 async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: RegionData }> {
@@ -15,10 +15,10 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback: NEA 2024 provincial RE monitoring bulletin / live hourly feed unavailable (${(err as Error).message}); Tibet wind+solar curtailment anchored at ~0.2 TWh/yr wind + ~0.4 TWh/yr solar.`;
+    const note = `Typical-shape fallback: NEA 2024 provincial RE monitoring bulletin / live hourly feed unavailable (${(err as Error).message}); Guangxi wind+solar curtailment anchored at ~0.2 TWh/yr wind + ~0.3 TWh/yr solar.`;
     return {
-      wind:  buildTypicalWindRegion("tibet-wind",  15, 0.2, note + " — wind (wind utilisation 83.0%, small grid)", "2024"),
-      solar: buildTypicalSolarRegion("tibet-solar", 5, 0.4, note + " — solar (high-altitude grid constraints, PV 68.6%)", "2024"),
+      wind:  buildTypicalWindRegion("guangxi-wind",  15, 0.2, note + " — wind (coastal/mountain wind, CSG grid)", "2024"),
+      solar: buildTypicalSolarRegion("guangxi-solar", 5, 0.3, note + " — solar (growing PV in Nanning/Guilin corridor)", "2024"),
     };
   }
 }
@@ -31,7 +31,7 @@ if (isMain) {
     tagCached: c => c as { wind: RegionData; solar: RegionData },
   })
     .then((data) => process.stdout.write(JSON.stringify(data)))
-    .catch((err) => { console.error("tibet loader failed", err); process.exit(1); });
+    .catch((err) => { console.error("guangxi loader failed", err); process.exit(1); });
 }
 
-export const buildTibetData = () => run({ probe: false });
+export const buildGuangxiData = () => run({ probe: false });

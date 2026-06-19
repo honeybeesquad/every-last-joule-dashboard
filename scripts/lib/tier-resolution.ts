@@ -104,6 +104,20 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   ethiopia: "hydro-seasonal",
   "gansu-wind": "wind",
   "gansu-solar": "solar",
+  // China provincial RE curtailment splits (NEA 2024 provincial RE bulletin),
+  // 6 provinces × wind+solar typical-shape loaders.
+  "inner-mongolia-wind": "wind",
+  "inner-mongolia-solar": "solar",
+  "qinghai-wind": "wind",
+  "qinghai-solar": "solar",
+  "yunnan-wind": "wind",
+  "yunnan-solar": "solar",
+  "tibet-wind": "wind",
+  "tibet-solar": "solar",
+  "sichuan-wind": "wind",
+  "sichuan-solar": "solar",
+  "guangxi-wind": "wind",
+  "guangxi-solar": "solar",
   honduras: "solar",
   "india-east": "solar",
   // India W1/W2/W3 state-SLDC loaders: declared `tier: "live"` from
@@ -126,7 +140,6 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "india-odisha": "wind",
   "india-chhattisgarh": "solar",
   indonesia: "solar",
-  "inner-mongolia": "wind",
   iran: "solar",
   "iraq-mainland": "solar",
   // ireland-republic / northern-ireland: live as of 82b5496 (Phase 2.6).
@@ -163,7 +176,6 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "philippines-solar": "solar",
   "philippines-wind": "wind",
   paraguay: "hydro-seasonal",
-  qinghai: "solar",
   quebec: "hydro-seasonal",
   "russia-mainland": "hydro-seasonal",
   saskatchewan: "wind",
@@ -172,10 +184,8 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "south-korea-wind": "wind",
   taiwan: "solar",
   thailand: "solar",
-  tibet: "hydro-seasonal",
   uae: "solar",
   vietnam: "solar",
-  yunnan: "hydro-seasonal",
   // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27).
   // Sixteen new T3-modelled statics from
   // `data/coverage-audit/2026-04-26-latin-america.csv`. profileKind values
