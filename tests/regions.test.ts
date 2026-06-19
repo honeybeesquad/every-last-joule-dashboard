@@ -107,7 +107,12 @@ describe("regions", () => {
     // 2026-06-17: GGFR per-flare-site split — s-iraq/e-saudi re-anchored to bbox residual
     //   + 26 named oilfield / N-Iraq / Nigeria-Algeria-Libya flare regions. 442 + 26 = 468.
     // 2026-06-18: flare gas purged from site + dataset — removed all 37 flare regions. 468 − 37 = 431.
-    expect(REGIONS.length).toBe(431);
+    // 2026-06-19: China provincial RE curtailment splits — 6 provinces × wind+solar.
+    // inner-mongolia/qinghai/yunnan/tibet converted from a single region each to
+    // per-fuel (4 bare ids removed, 8 per-fuel added = net +4); sichuan/guangxi added
+    // new wind+solar alongside the pre-existing sichuan-hydro region (+4). Net +8.
+    // 431 + 8 = 439.
+    expect(REGIONS.length).toBe(439);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -301,7 +306,10 @@ describe("regions", () => {
     // 2026-06-17: China fuel-splits + 6 India states (PR #203), all T3. +15. 211→226.
     // 2026-06-17: Chile/Colombia/DR/Ukraine T3 statics (PR #206). +5. 226→231.
     // 2026-06-17: Mexico split → mexico-solar + mexico-wind (both T3). +1. 231→232.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(230);
+    // 2026-06-19: China provincial RE curtailment splits. inner-mongolia/qinghai/yunnan/tibet
+    // converted single→per-fuel (estimated: 4 bare removed, 8 per-fuel added = net +4) +
+    // sichuan/guangxi new wind+solar (+4). Net +8 estimated. 230 + 8 = 238.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(238);
   });
 
   it("has 24 anchored regions (6 flat-profile + 18 EIA-930 US BAs)", () => {
@@ -511,10 +519,16 @@ describe("regions", () => {
     // brazil-ne loader actually emits them. The no-bundled-curtailment split
     // now exercises their wind/solar children in the dedicated test below.
     for (const id of [
-      "inner-mongolia",
-      "qinghai",
-      "yunnan",
-      "tibet",
+      // inner-mongolia/qinghai/yunnan/tibet split single→per-fuel (2026-06-19);
+      // originals removed, children asserted below.
+      "inner-mongolia-wind",
+      "inner-mongolia-solar",
+      "qinghai-wind",
+      "qinghai-solar",
+      "yunnan-wind",
+      "yunnan-solar",
+      "tibet-wind",
+      "tibet-solar",
       // india-south + india-west promoted to T1a live in India W2 (2026-05-02).
       "india-east",
       "iran",
@@ -538,6 +552,14 @@ describe("regions", () => {
     expect(REGIONS.find(r => r.id === "gansu-wind")?.tier).toBe("estimated");
     expect(REGIONS.find(r => r.id === "ningxia-wind")?.tier).toBe("estimated");
     expect(REGIONS.find(r => r.id === "pakistan-wind")?.tier).toBe("estimated");
+    // 2026-06-19: inner-mongolia/qinghai/yunnan/tibet split into per-fuel — originals removed
+    expect(REGIONS.find(r => r.id === "inner-mongolia")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "qinghai")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "yunnan")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "tibet")).toBeUndefined();
+    // sichuan-wind/solar + guangxi-wind/solar added new (sichuan-hydro region stays)
+    expect(REGIONS.find(r => r.id === "sichuan-wind")?.tier).toBe("estimated");
+    expect(REGIONS.find(r => r.id === "guangxi-wind")?.tier).toBe("estimated");
   });
 
   it("Brazilian non-NE state fuel children are live (sourced from the same ONS feed as brazil-ne)", () => {

@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 438,
+  "totalValidationDocs": 446,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 431,
-  "pctCited": 1.6,
+  "docsNotCiting": 439,
+  "pctCited": 1.57,
   "perDocCitations": [
     {
       "file": "aemo-nsw-solar.md",
@@ -937,6 +937,16 @@
       "matchedPatterns": []
     },
     {
+      "file": "guangxi-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "guangxi-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "guatemala-siepac.md",
       "cited": false,
       "matchedPatterns": []
@@ -1094,7 +1104,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "inner-mongolia.md",
+      "file": "inner-mongolia-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "inner-mongolia-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1799,7 +1814,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "qinghai.md",
+      "file": "qinghai-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "qinghai-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1875,6 +1895,16 @@
     },
     {
       "file": "seychelles.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "sichuan-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "sichuan-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -2069,7 +2099,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "tibet.md",
+      "file": "tibet-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "tibet-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -2194,7 +2229,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "yunnan.md",
+      "file": "yunnan-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "yunnan-wind.md",
       "cited": false,
       "matchedPatterns": []
     },

@@ -2,12 +2,15 @@ import { describe, expect, it } from "vitest";
 import { buildInnerMongoliaData } from "../../src/data/inner-mongolia.json";
 
 describe("inner-mongolia loader", () => {
-  it("returns a valid static fallback RegionData shape", async () => {
+  it("returns per-fuel fallback data with wind and solar entries", async () => {
     const data = await buildInnerMongoliaData();
-    expect(data.regionId).toBe("inner-mongolia");
-    expect(data.profile).toHaveLength(24);
-    expect(data.latestProfile).toBeNull();
-    expect(data.totalTWh).toBeGreaterThan(0);
-    expect(data.sourceNote).toMatch(/4\.0 TWh\/yr/);
+    expect(data.wind.regionId).toBe("inner-mongolia-wind");
+    expect(data.solar.regionId).toBe("inner-mongolia-solar");
+    expect(data.wind.profile).toHaveLength(24);
+    expect(data.solar.profile).toHaveLength(24);
+    expect(data.wind.latestProfile).toBeNull();
+    expect(data.solar.latestProfile).toBeNull();
+    expect(data.wind.totalTWh).toBeCloseTo((8.0 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((4.6 * 30) / 365, 5);
   });
 });
