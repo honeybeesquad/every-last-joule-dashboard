@@ -111,8 +111,9 @@ describe("regions", () => {
     // inner-mongolia/qinghai/yunnan/tibet converted from a single region each to
     // per-fuel (4 bare ids removed, 8 per-fuel added = net +4); sichuan/guangxi added
     // new wind+solar alongside the pre-existing sichuan-hydro region (+4). Net +8.
-    // 431 + 8 = 439.
-    expect(REGIONS.length).toBe(439);
+    // 431 + 8 = 439. Per-plant splits: +10 AEMO (T1a) + 12 Ontario (T1a) live regions.
+    // Peru per-plant (5) dropped — COES feed geo-blocked, no honest fallback. 439 + 22 = 461.
+    expect(REGIONS.length).toBe(461);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -189,10 +190,10 @@ describe("regions", () => {
     // Net +3 T1a live. T1a: 149→152; total live: 174→177.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(150);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(172);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(177);
+    expect(liveTotal).toBe(199);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -222,10 +223,10 @@ describe("regions", () => {
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. T1a: 147→150. Total: 157→160.
     // 2026-06-10: peru-solar T1a→T1b. T1a: 150→149; T1b: 9→10.
     // 2026-06-17: Japan hokkaido + tohoku split solar→solar+wind (hokuriku left solar-only). Net +2 T1a live. T1a: 148→150; total: 175→177.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(150);
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(172);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(177);
+    expect(liveTotal).toBe(199);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -309,6 +310,8 @@ describe("regions", () => {
     // 2026-06-19: China provincial RE curtailment splits. inner-mongolia/qinghai/yunnan/tibet
     // converted single→per-fuel (estimated: 4 bare removed, 8 per-fuel added = net +4) +
     // sichuan/guangxi new wind+solar (+4). Net +8 estimated. 230 + 8 = 238.
+    // Per-plant splits: AEMO + Ontario are T1a live (not estimated); Peru per-plant
+    // dropped (COES geo-blocked), so the estimated count is unchanged. = 238.
     expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(238);
   });
 

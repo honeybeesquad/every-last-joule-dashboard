@@ -1,9 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-19 (China provincial RE curtailment splits: 6 provinces × wind+solar. inner-mongolia/qinghai/yunnan/tibet converted single→per-fuel (4 bare ids removed, 8 per-fuel added = net +4); sichuan/guangxi added new wind+solar alongside the existing sichuan-hydro region (+4). Net +8 T3. T3 230→238, total 431→439). Prior: 2026-06-18 (flare gas purged from site + dataset: removed 34 anchored flare regions (T2-flare 34→0) + 3 estimated offshore-flare anchors trinidad/guyana/suriname (T3 233→230); total 468→431).",
-  "T1a": 150,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-19 (per-plant splits: +10 AEMO per-DUID + 12 Ontario per-plant, all T1a live; 439 + 22 = 461. T1a 150→172. Peru per-plant (5 regions) was dropped — the COES feed is geo-blocked and the loader has no honest fallback; to be re-added via an egress relay (cf. Colombia) when reachable, as a fuel split, elevated if the data justifies it. Prior: China provincial RE curtailment splits + flare-gas purge → total 439).",
+  "T1a": 172,
   "T1b": 26,
   "T1c": 1,
   "T2": 24,
   "T3": 238,
-  "total": 439
+  "total": 461
 }

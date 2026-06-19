@@ -1,9 +1,39 @@
 {
-  "totalValidationDocs": 446,
+  "totalValidationDocs": 473,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 439,
-  "pctCited": 1.57,
+  "docsNotCiting": 466,
+  "pctCited": 1.48,
   "perDocCitations": [
+    {
+      "file": "aemo-avlsf1-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-bangowf1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-coopgwf1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-darlsf1-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-limosf11-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-macarth1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
     {
       "file": "aemo-nsw-solar.md",
       "cited": false,
@@ -25,12 +55,27 @@
       "matchedPatterns": []
     },
     {
+      "file": "aemo-ryepark1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "aemo-sa-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
       "file": "aemo-sa-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-saphwf1-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-stockyd1-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -51,6 +96,11 @@
     },
     {
       "file": "aemo-vic-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "aemo-wdgph1-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1007,6 +1057,66 @@
       "matchedPatterns": []
     },
     {
+      "file": "ieso-amaranth-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-armow-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-comber-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-grandsf-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-grandwf-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-henvey-south-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-jericho-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-k2wind-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-kingstonsf-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-princefarm-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-underwood-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "ieso-wolfe-island-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "india-andhra-pradesh.md",
       "cited": true,
       "matchedPatterns": [
@@ -1954,6 +2064,26 @@
       "matchedPatterns": []
     },
     {
+      "file": "solar-intipunku.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-majes.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-marcona.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-pampa-norte.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "solomon-islands.md",
       "cited": false,
       "matchedPatterns": []
@@ -2210,6 +2340,11 @@
     },
     {
       "file": "wacm-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "wind-terras-nuevas.md",
       "cited": false,
       "matchedPatterns": []
     },

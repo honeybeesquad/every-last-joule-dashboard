@@ -158,6 +158,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   kazakhstan: "wind",
   kenya: "overnight",
   kurdistan: "solar",
+  // Peru per-plant — COES medidoresgeneracion (estimated curtailment)
   malaysia: "solar",
   manitoba: "mixed",
   "mexico-solar": "solar",
