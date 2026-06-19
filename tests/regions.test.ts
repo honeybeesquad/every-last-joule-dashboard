@@ -112,8 +112,9 @@ describe("regions", () => {
     // per-fuel (4 bare ids removed, 8 per-fuel added = net +4); sichuan/guangxi added
     // new wind+solar alongside the pre-existing sichuan-hydro region (+4). Net +8.
     // 431 + 8 = 439. Per-plant splits: +10 AEMO (T1a) + 12 Ontario (T1a) live regions.
-    // Peru per-plant (5) dropped — COES feed geo-blocked, no honest fallback. 439 + 22 = 461.
-    expect(REGIONS.length).toBe(461);
+    // Peru per-plant (5) dropped in #247 — COES blocks cloud build IPs, build-time fetch threw. 439 + 22 = 461.
+    // 2026-06-20: Peru per-plant re-added as 12 estimated regions via residential relay + committed CSV. 461 + 12 = 473.
+    expect(REGIONS.length).toBe(473);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -311,8 +312,10 @@ describe("regions", () => {
     // converted single→per-fuel (estimated: 4 bare removed, 8 per-fuel added = net +4) +
     // sichuan/guangxi new wind+solar (+4). Net +8 estimated. 230 + 8 = 238.
     // Per-plant splits: AEMO + Ontario are T1a live (not estimated); Peru per-plant
-    // dropped (COES geo-blocked), so the estimated count is unchanged. = 238.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(238);
+    // was dropped in #247. = 238.
+    // 2026-06-20: Peru per-plant re-added as 12 estimated regions (COES per-plant
+    // generation × 2% national curtailment calibration; T3-modelled). 238 + 12 = 250.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(250);
   });
 
   it("has 24 anchored regions (6 flat-profile + 18 EIA-930 US BAs)", () => {

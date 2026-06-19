@@ -1,4 +1,4 @@
-name: Relay pull (Colombia + India)
+name: Relay pull (Colombia + India + Peru)
 
 # Pulls daily CSVs from the private every-last-joule-data-relay repo
 # (written by Britta cron) and commits them into data/historical/.
@@ -6,6 +6,9 @@ name: Relay pull (Colombia + India)
 # Colombia: runs ~19:15 UTC daily (45 min after Britta's 18:30 UTC push window).
 # India:    gen-re.cea.gov.in daily Excel; Britta fetches at 06:30 UTC; GA runs
 #           after Colombia pull to pick up both in one build.
+# Peru:     COES per-plant generation (www.coes.org.pe); Britta fetches weekly
+#           (Mondays) — COES publishes monthly with a ~2-3wk lag. Estimated tier.
+#           CSV unchanged most days, so the diff guard below makes this a no-op.
 # Also triggerable manually.
 #
 # `main` is a protected branch with a required `verify` status check, so this
@@ -62,6 +65,12 @@ jobs:
             fi
           done
 
+          # Peru per-plant (copy only if present in relay repo)
+          if [ -f /tmp/relay/peru-coes-per-plant.csv ]; then
+            cp /tmp/relay/peru-coes-per-plant.csv \
+               data/historical/peru-coes-per-plant.csv
+          fi
+
       - name: Open / refresh auto-merge PR
         env:
           GH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
@@ -75,6 +84,7 @@ jobs:
                   data/historical/india-tamil-nadu-gen-daily.csv \
                   data/historical/india-andhra-pradesh-gen-daily.csv \
                   data/historical/india-maharashtra-gen-daily.csv \
+                  data/historical/peru-coes-per-plant.csv \
                   2>/dev/null || true
 
           if git diff --cached --quiet; then

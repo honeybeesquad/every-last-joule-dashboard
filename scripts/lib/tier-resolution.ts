@@ -342,6 +342,21 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   palau: "solar",
   tonga: "solar",
   tuvalu: "solar",
+  // Peru per-plant (2026-06-20): COES SINAC per-plant generation × 2% national
+  // curtailment calibration (T3-modelled). Real generation shape from a
+  // residential-relay committed CSV; profileKind registered for tier coherence.
+  "solar-sunny": "solar",
+  "solar-san-martin": "solar",
+  "solar-rubi": "solar",
+  "solar-clemesi": "solar",
+  "solar-intipampa": "solar",
+  "solar-matarani": "solar",
+  "solar-majes": "solar",
+  "wind-punta-lomitas": "wind",
+  "wind-wayra": "wind",
+  "wind-san-juan": "wind",
+  "wind-tres-hermanas": "wind",
+  "wind-cupisnique": "wind",
 };
 
 export interface ResolvedRegion {
