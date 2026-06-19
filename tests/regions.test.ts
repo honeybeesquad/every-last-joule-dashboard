@@ -111,9 +111,9 @@ describe("regions", () => {
     // inner-mongolia/qinghai/yunnan/tibet converted from a single region each to
     // per-fuel (4 bare ids removed, 8 per-fuel added = net +4); sichuan/guangxi added
     // new wind+solar alongside the pre-existing sichuan-hydro region (+4). Net +8.
-    // 431 + 8 = 439. Per-plant splits: +10 AEMO (T1a) + 12 Ontario (T1a) + 5 Peru (T1b/T3).
-    // 439 + 27 = 466.
-    expect(REGIONS.length).toBe(466);
+    // 431 + 8 = 439. Per-plant splits: +10 AEMO (T1a) + 12 Ontario (T1a) live regions.
+    // Peru per-plant (5) dropped — COES feed geo-blocked, no honest fallback. 439 + 22 = 461.
+    expect(REGIONS.length).toBe(461);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -310,8 +310,9 @@ describe("regions", () => {
     // 2026-06-19: China provincial RE curtailment splits. inner-mongolia/qinghai/yunnan/tibet
     // converted single→per-fuel (estimated: 4 bare removed, 8 per-fuel added = net +4) +
     // sichuan/guangxi new wind+solar (+4). Net +8 estimated. 230 + 8 = 238.
-    // Per-plant splits (#223 rebase): +5 Peru per-plant T3 estimated. 238 + 5 = 243.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(243);
+    // Per-plant splits: AEMO + Ontario are T1a live (not estimated); Peru per-plant
+    // dropped (COES geo-blocked), so the estimated count is unchanged. = 238.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(238);
   });
 
   it("has 24 anchored regions (6 flat-profile + 18 EIA-930 US BAs)", () => {

@@ -1,9 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-19 (#223 rebase: per-plant splits: +10 AEMO (T1a) + 12 Ontario (T1a) + 5 Peru (T1b/T3). 439 + 27 = 466. T1a 150→172; T1b 26 unchanged (peru-solar T1b already counted); T3 238→243 (5 Peru T3). Prior: China provincial RE curtailment splits: 6 provinces × wind+solar; flare gas purged; total 431→439).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-19 (per-plant splits: +10 AEMO per-DUID + 12 Ontario per-plant, all T1a live; 439 + 22 = 461. T1a 150→172. Peru per-plant (5 regions) was dropped — the COES feed is geo-blocked and the loader has no honest fallback; to be re-added via an egress relay (cf. Colombia) when reachable, as a fuel split, elevated if the data justifies it. Prior: China provincial RE curtailment splits + flare-gas purge → total 439).",
   "T1a": 172,
   "T1b": 26,
   "T1c": 1,
   "T2": 24,
-  "T3": 243,
-  "total": 466
+  "T3": 238,
+  "total": 461
 }
