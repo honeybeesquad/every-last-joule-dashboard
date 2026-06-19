@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 446,
+  "totalValidationDocs": 473,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 439,
-  "pctCited": 1.57,
+  "docsNotCiting": 466,
+  "pctCited": 1.48,
   "perDocCitations": [
     {
       "file": "aemo-avlsf1-solar.md",

@@ -310,7 +310,8 @@ describe("regions", () => {
     // 2026-06-19: China provincial RE curtailment splits. inner-mongolia/qinghai/yunnan/tibet
     // converted single→per-fuel (estimated: 4 bare removed, 8 per-fuel added = net +4) +
     // sichuan/guangxi new wind+solar (+4). Net +8 estimated. 230 + 8 = 238.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(238);
+    // Per-plant splits (#223 rebase): +5 Peru per-plant T3 estimated. 238 + 5 = 243.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(243);
   });
 
   it("has 24 anchored regions (6 flat-profile + 18 EIA-930 US BAs)", () => {
