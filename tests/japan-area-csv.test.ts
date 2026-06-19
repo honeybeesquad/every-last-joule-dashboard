@@ -6,7 +6,10 @@ import {
   jstToIsoUtc,
   parseAreaCsv,
   mergeWindowBuild,
+  windowedPoints,
+  assertMonthsFetched,
   type AreaParsed,
+  type AreaPoint,
 } from "../src/lib/japan-area-csv.js";
 
 const fixture = (name: string) =>
@@ -97,5 +100,59 @@ describe("mergeWindowBuild", () => {
   it("throws when no points fall inside the window", () => {
     const old = mk("2026-04-01T03:00:00.000Z", 10, 0);
     expect(() => mergeWindowBuild([old], "japan-test", "note", NOW)).toThrow(/no usable/);
+  });
+
+  it("drops future-dated placeholder rows (window upper bound = now)", () => {
+    // The monthly eria_jukyu CSV is pre-filled for the WHOLE month, so the
+    // current-month file carries future-dated rows (all-zero placeholders).
+    // They must not enter the window: they push lastUpdated into the future
+    // and dilute the time-of-day profile. Cf. Hokuriku 2026-06 (lastUpdated
+    // was 2026-06-30 with data only through the 17th).
+    const NOW2 = new Date("2026-06-17T12:00:00.000Z");
+    const real = mk("2026-06-10T03:00:00.000Z", 200, 0); // in window
+    const future = mk("2026-06-25T03:00:00.000Z", 999, 999); // after NOW2 — placeholder
+    const rd = mergeWindowBuild([real, future], "japan-test", "note", NOW2);
+    // Only the real point contributes to the magnitude.
+    expect(rd.totalTWh).toBeCloseTo((200 * 0.5) / 1_000_000, 12);
+    // lastUpdated reflects the last REAL row, not the future placeholder.
+    expect(rd.lastUpdated).toBe("2026-06-10T03:00:00.000Z");
+  });
+});
+
+describe("windowedPoints", () => {
+  const NOW = new Date("2026-06-17T12:00:00.000Z");
+  const mkP = (iso: string, mw: number): AreaPoint => ({
+    utcTimestamp: iso,
+    mw,
+    intervalHours: 0.5,
+    solarMw: mw,
+    windMw: 0,
+  });
+  const months: AreaParsed[] = [
+    {
+      points: [
+        mkP("2026-06-30T03:00:00.000Z", 3), // future — dropped (upper bound)
+        mkP("2026-06-10T03:00:00.000Z", 2), // in window
+        mkP("2026-05-01T03:00:00.000Z", 1), // > 30d before NOW — dropped (lower bound)
+      ],
+      solarCurtMwSum: 6,
+      windCurtMwSum: 0,
+      sampleCount: 3,
+    },
+  ];
+
+  it("keeps only points within [now-30d, now], sorted ascending", () => {
+    const w = windowedPoints(months, NOW);
+    expect(w.map((p) => p.utcTimestamp)).toEqual(["2026-06-10T03:00:00.000Z"]);
+  });
+});
+
+describe("assertMonthsFetched", () => {
+  it("throws when any expected month CSV failed to fetch (refuse a shrunken window)", () => {
+    expect(() => assertMonthsFetched(1, 2, "japan-test")).toThrow(/shrunk|fetch/i);
+  });
+
+  it("does not throw when every expected month fetched successfully", () => {
+    expect(() => assertMonthsFetched(0, 2, "japan-test")).not.toThrow();
   });
 });
