@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 473,
+  "totalValidationDocs": 480,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 466,
-  "pctCited": 1.48,
+  "docsNotCiting": 473,
+  "pctCited": 1.46,
   "perDocCitations": [
     {
       "file": "aemo-avlsf1-solar.md",
@@ -2064,7 +2064,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "solar-intipunku.md",
+      "file": "solar-clemesi.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-intipampa.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -2074,12 +2079,22 @@
       "matchedPatterns": []
     },
     {
-      "file": "solar-marcona.md",
+      "file": "solar-matarani.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
-      "file": "solar-pampa-norte.md",
+      "file": "solar-rubi.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-san-martin.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "solar-sunny.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -2344,7 +2359,27 @@
       "matchedPatterns": []
     },
     {
-      "file": "wind-terras-nuevas.md",
+      "file": "wind-cupisnique.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "wind-punta-lomitas.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "wind-san-juan.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "wind-tres-hermanas.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "wind-wayra.md",
       "cited": false,
       "matchedPatterns": []
     },
