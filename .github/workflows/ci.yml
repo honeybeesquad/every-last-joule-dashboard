@@ -12,6 +12,12 @@ name: CI
 #   2. tests           — vitest run. Unit-level invariants: 24-hour
 #                        profiles, aggregate maths, region-list shape,
 #                        calc helpers.
+#   2b. loader-stdout-safety — scripts/ci/check-loader-stdout-safety.ts.
+#                        AST-asserts no src/data/*.json.ts loader calls a
+#                        stdout-writing console method (console.log/info/…).
+#                        A loader's stdout IS its emitted JSON file, so such a
+#                        call corrupts the data and froze production (PR #259).
+#                        Diagnostics must use console.warn/error (stderr).
 #   3. validate        — scripts/validate-snapshots.ts. Walks every
 #                        committed snapshot under data/snapshots/last-good/
 #                        and asserts conformance to dataset/schema/region-snapshot.schema.json
@@ -73,6 +79,9 @@ jobs:
 
       - name: Unit tests
         run: npm test
+
+      - name: Loader stdout-safety (no console.log in data loaders → PR #259)
+        run: npm run ci:loader-stdout-safety
 
       - name: Validate committed snapshots against schema
         run: npm run validate

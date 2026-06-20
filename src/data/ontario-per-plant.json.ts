@@ -374,7 +374,9 @@ const run = async (): Promise<Record<string, PerPlantRegionData>> => {
     );
   }
 
-  console.log(
+  // Diagnostics MUST go to stderr: this loader's stdout IS the data file, so
+  // a stray console.log() corrupts the emitted JSON and breaks the dashboard.
+  console.warn(
     `ieso-per-plant: ${Object.keys(out).length} plants above threshold ` +
     `from ${plantMap.size} total, ${totalPoints} curtailment points`,
   );
