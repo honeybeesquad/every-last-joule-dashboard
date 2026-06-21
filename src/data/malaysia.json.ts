@@ -126,7 +126,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
         sourceNote,
       };
 
-      // "anchored" tier: live generation shape × published curtailment rate
+      // estimated: live generation shape × published curtailment rate (probe-fallback)
       return applyUncertainty(result, { regionTier: "estimated" });
     } catch (err) {
       console.error(`[malaysia] GSO live fetch failed: ${(err as Error).message}`);

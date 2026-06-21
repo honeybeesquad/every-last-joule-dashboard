@@ -254,7 +254,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
         sourceNote,
       };
 
-      // "anchored" tier: live grid shape × published curtailment anchor
+      // estimated: live grid shape × published curtailment anchor (probe-fallback)
       return applyUncertainty(result, { regionTier: "estimated" });
     } catch (err) {
       console.error(`[nigeria] Niggrid live fetch failed: ${(err as Error).message}`);

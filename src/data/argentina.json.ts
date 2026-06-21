@@ -19,9 +19,10 @@ const CAMMESA_RENEWABLES_URL =
 
 /**
  * Argentina wind curtailment rate.
- * Anchor: ~2.1 TWh/yr Patagonia wind curtailment (CAMMESA/IRENA 2024).
+ * Anchor: ~0.5 TWh/yr Patagonia wind curtailment (IRENA/Ember LatAm 2024 estimate).
  * Based on ~5% of Patagonian wind generation.
- * Source: CAMMESA annual reports + IRENA LatAm 2024 estimates.
+ * Prior anchor range: 0.5–1.0 TWh/yr; conservative 0.5 used.
+ * Source: IRENA LatAm 2024 estimates, CAMMESA annual reports.
  */
 const WIND_CURTAILMENT_RATE = 0.05;
 
@@ -117,7 +118,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       const sourceNote =
         `CAMMESA live wind generation (cdsrenovables.cammesa.com) ` +
         `× ${(WIND_CURTAILMENT_RATE * 100).toFixed(0)}% calibrated curtailment rate ` +
-        `(CAMMESA/IRENA 2024 anchor ~2.1 TWh/yr Patagonia wind curtailment). ` +
+        `(IRENA/Ember LatAm 2024 anchor ~0.5 TWh/yr Patagonia wind curtailment). ` +
         `${points.length} points across 30 days. Latest: ${lastTs}.`;
 
       const result: RegionData = {
@@ -131,7 +132,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
         sourceNote,
       };
 
-      // "anchored" tier: live generation shape × published curtailment rate
+      // estimated: live generation shape × published curtailment rate (probe-fallback)
       return applyUncertainty(result, { regionTier: "estimated" });
     } catch (err) {
       console.error(`[argentina] CAMMESA live fetch failed: ${(err as Error).message}`);
@@ -144,9 +145,9 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   return buildTypicalWindRegion(
     REGION_ID,
     3,     // peakHour UTC (Patagonia wind nocturnal peak)
-    2.1,   // annualTWh anchor — ~2.1 TWh/yr Patagonia wind curtailment
+    0.5,   // annualTWh anchor — ~0.5 TWh/yr Patagonia wind curtailment (IRENA/Ember LatAm)
     `Typical-shape fallback: CAMMESA live feed unavailable${probe ? " (probe failed — API geoblocked to Argentine IPs)" : " (test mode)"}. ` +
-    `Calibration anchor ~2.1 TWh/yr Patagonia wind curtailment (CAMMESA/IRENA 2024).`,
+    `Calibration anchor ~0.5 TWh/yr Patagonia wind curtailment (IRENA/Ember LatAm 2024).`,
     "2024",
   );
 }
