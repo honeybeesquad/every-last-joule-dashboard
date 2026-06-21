@@ -397,6 +397,18 @@ export const ZONES = [
     sourceNote: "Elering Estonia ENTSO-E A75 solar: 2% regional default.",
   },
   {
+    id: "austria-wind",
+    domain: "10YAT-APG------L",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.015 }],
+    sourceNote: "APG Austria ENTSO-E A75 wind: ~1.5% regional default, B19.",
+  },
+  {
+    id: "austria-solar",
+    domain: "10YAT-APG------L",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.020 }],
+    sourceNote: "APG Austria ENTSO-E A75 solar: ~2% regional default, B16.",
+  },
+  {
     id: "luxembourg-wind",
     domain: "10YLU-CEGEDEL-NQ",
     technologies: [{ psrType: "B19", fuel: "wind", rate: 0.02 }],

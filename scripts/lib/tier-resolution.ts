@@ -89,7 +89,8 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "hawaii-island": "solar",
   florida: "solar",
   tva: "solar",
-  austria: "flat",
+  "austria-wind": "wind",
+  "austria-solar": "solar",
   "russia-murmansk-wind": "flat",
   // typical-shape loaders
   argentina: "wind",

@@ -54,8 +54,9 @@ describe("static regions", () => {
     // 2026-06-06: serbia-solar + north-macedonia-solar reverted live→estimated,
     // added to STATIC_REGIONS as canonical anchors. 142 + 2 = 144.
     // 2026-06-07: norway-no5 reverted live→estimated, added to STATIC_REGIONS. 144 + 1 = 145.
-    // 2026-06-18: flare gas purged — removed 37 flare statics (32 named/bbox + kuwait/qatar + 3 offshore). 172 − 37 = 135.
-    expect(Object.keys(data).length).toBe(135);
+    // 2026-06-18: flare gas purged — removed 37 flare statics. 172 − 37 = 135.
+    // 2026-06-21: Austria promoted from static to ENTSO-E live feed — removed from statics. 135 - 1 = 134.
+    expect(Object.keys(data).length).toBe(134);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -96,7 +97,8 @@ describe("static regions", () => {
     // Research pool: 146 + 2 = 148. Canonical: 142 + 2 = 144. Non-canonical: 4.
     // 2026-06-07: norway-no5 added to pool as canonical. Research pool: 148 + 1 = 149. Canonical: 144 + 1 = 145. Non-canonical: 4.
     // 2026-06-18: flare purge removed 37 flare statics from the research pool. 176 − 37 = 139.
-    expect(Object.keys(researchData).length).toBe(139);
+    // 2026-06-21: Austria promoted to live — removed from statics research pool. 139 − 1 = 138.
+    expect(Object.keys(researchData).length).toBe(138);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
@@ -110,7 +112,6 @@ describe("static regions", () => {
       "hawaii-oahu",
       "hawaii-maui",
       "hawaii-island",
-      "austria",
       "russia-murmansk-wind",
       // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27).
       "guatemala",

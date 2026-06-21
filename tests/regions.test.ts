@@ -114,7 +114,8 @@ describe("regions", () => {
     // 431 + 8 = 439. Per-plant splits: +10 AEMO (T1a) + 12 Ontario (T1a) live regions.
     // Peru per-plant (5) dropped in #247 — COES blocks cloud build IPs, build-time fetch threw. 439 + 22 = 461.
     // 2026-06-20: Peru per-plant re-added as 12 estimated regions via residential relay + committed CSV. 461 + 12 = 473.
-    expect(REGIONS.length).toBe(473);
+    // 2026-06-21: Austria promoted from T2 anchored to T1b via ENTSO-E A75 split (austria-wind + austria-solar). 473 - 1 + 2 = 474.
+    expect(REGIONS.length).toBe(474);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -192,9 +193,9 @@ describe("regions", () => {
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
     expect(REGIONS.filter((r) => r.tier === "live").length).toBe(172);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(28);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(199);
+    expect(liveTotal).toBe(201);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -225,9 +226,9 @@ describe("regions", () => {
     // 2026-06-10: peru-solar T1a→T1b. T1a: 150→149; T1b: 9→10.
     // 2026-06-17: Japan hokkaido + tohoku split solar→solar+wind (hokuriku left solar-only). Net +2 T1a live. T1a: 148→150; total: 175→177.
     expect(REGIONS.filter((r) => r.tier === "live").length).toBe(172);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(28);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(199);
+    expect(liveTotal).toBe(201);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -318,8 +319,8 @@ describe("regions", () => {
     expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(250);
   });
 
-  it("has 24 anchored regions (6 flat-profile + 18 EIA-930 US BAs)", () => {
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(24);
+  it("has 23 anchored regions (5 flat-profile + 18 EIA-930 US BAs — Austria promoted to T1b)", () => {
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(23);
   });
 
   it("keeps remaining mixed rows explicit so no new bundled curtailment slips in", () => {
@@ -334,7 +335,7 @@ describe("regions", () => {
       "georgia", "azerbaijan", "sri-lanka",
       // Other static mixed
       "taiwan", "manitoba", "hawaii-island",
-      "austria", "cuba", "rwanda",
+      "cuba", "rwanda",
       // Phase 4-B T3-static mixed (completionist Tier B, IRENA RCS 2025)
       "burundi", "equatorial-guinea",
     ]);
@@ -644,10 +645,14 @@ describe("regions", () => {
       expect(region, `missing estimated region ${id}`).toBeDefined();
       expect(region?.tier).toBe("estimated");
     }
-    for (const id of ["austria", "russia-murmansk-wind"]) {
+    // Austria promoted to T1b live-domestic-anchored via ENTSO-E A75 split (austria-wind + austria-solar).
+    for (const id of ["austria-wind", "austria-solar"]) {
       const region = REGIONS.find(r => r.id === id);
-      expect(region, `missing anchored region ${id}`).toBeDefined();
-      expect(region?.tier).toBe("anchored");
+      expect(region, `missing live-domestic-anchored region ${id}`).toBeDefined();
+      expect(region?.tier).toBe("live-domestic-anchored");
+    }
+    // Russia Murmansk remains anchored
+    for (const id of ["russia-murmansk-wind"]) {
     }
 
     // Former aggregate ids must now be absent.

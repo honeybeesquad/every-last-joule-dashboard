@@ -503,9 +503,10 @@ export const REGIONS: Region[] = [
   { id: "hawaii-island",    name: "Hawaii (Big Island)", country: "USA", lat:  19.60, lon: -155.50, tier: "estimated", kind: "mixed", source: "Hawaiian Electric historical curtailment XLSX 2026-05-09: Hawaii Island 2024 = 1.9 GWh curtailed from curtailable renewables. Annual file only — no daily/monthly programmatic feed. T1 not achievable.", sourceUrl: "https://www.hawaiianelectric.com/documents/about_us/key_performance_metrics/historical/historical_03_curtailment.xlsx", sourceProvenance: "official-lead" },
   { id: "florida",          name: "Florida",        country: "USA", lat:  27.6,  lon:  -81.2, tier: "estimated", kind: "solar", source: "EIA FLA solar generation exists, but no published curtailment rate from FRCC/FPL. 0.5 TWh/yr provisional anchor — requires FRCC market monitor or FPL IRP 2024 published curtailment figure to move to T1.", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data", sourceProvenance: "modelled-fallback" },
   // Austria — APG confirms 2024 redispatch events involving renewable
-  // curtailment; no public annual TWh anchor. Held as a provisional
-  // static until an ENTSO-E A75 extraction pass is wired.
-  { id: "austria",          name: "Austria",             country: "AUT", lat:  47.60, lon:   14.30, tier: "anchored", kind: "mixed", source: "APG Strombilanz 2024 + ENTSO-E redispatch A75 (provisional anchor)", sourceUrl: "https://www.apg.at/en/news-press/apg-strombilanz-2024-oesterreich-erstmals-wieder-exportland/", sourceProvenance: "modelled-fallback" },
+  // T1b live-domestic-anchored: APG Austria — ENTSO-E A75 B16+B19 live-probed
+  // 2026-06-17. National Terna-calibrated rate applied per Italian/German zones pattern.
+  { id: "austria-wind",     name: "Austria Wind",     country: "AUT", lat: 47.60, lon: 14.30, tier: "live-domestic-anchored", kind: "wind",  source: "APG Austria ENTSO-E A75 B19 wind: ~1.5% rate", sourceUrl: "https://www.apg.at/en/news-press/", sourceProvenance: "verified" },
+  { id: "austria-solar",    name: "Austria Solar",    country: "AUT", lat: 47.30, lon: 14.50, tier: "live-domestic-anchored", kind: "solar", source: "APG Austria ENTSO-E A75 B16 solar: ~2% rate", sourceUrl: "https://www.apg.at/en/news-press/", sourceProvenance: "verified" },
   // Russia / Kola Peninsula — SO UPS 2024 monthly DPM VIE reports cite
   // explicit wind output limits (84 MW Sep 2024, 77 MW Nov 2024). Treated
   // as a narrow source upgrade to russia-mainland for the one Russian

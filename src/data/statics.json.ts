@@ -96,10 +96,6 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   "hawaii-oahu":   { annualTWh: 0.08, kind: "solar", localSolarPeakUTC: 22.5, source: "Hawaiian Electric RSWG 2024 (Oahu ~30% renewables; provisional annual anchor pending workbook extraction)", reportDate: "2024" },
   "hawaii-maui":   { annualTWh: 0.04, kind: "solar", localSolarPeakUTC: 22.5, source: "Hawaiian Electric RSWG 2024 (Maui island system; provisional annual anchor)", reportDate: "2024" },
   "hawaii-island": { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 22.5, source: "Hawaiian Electric RSWG 2024 (Hawaii Island 58.7% renewable share, highest in HECO system)", reportDate: "2024" },
-  // Austria — APG acknowledges renewable curtailment in 2024 but no public
-  // annual TWh. Provisional 0.5 TWh/yr tuned to APG's redispatch narrative;
-  // upgrade path is an ENTSO-E A75 extraction pass.
-  austria: { annualTWh: 0.5, kind: "flat", source: "APG Strombilanz 2024 + ENTSO-E redispatch narrative (provisional 0.5 TWh/yr; ENTSO-E A75 extraction pending)", reportDate: "2024" },
   // Russia Murmansk — SO UPS published monthly dispatch-limit events for
   // Kola Peninsula wind plants in 2024 (84 MW Sep, 77 MW Nov). Annual
   // energy not tabulated; estimated ~0.07 TWh/yr assuming ~80 MW limit

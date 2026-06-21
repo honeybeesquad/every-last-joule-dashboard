@@ -1,9 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-20 (Peru per-plant re-added as 12 estimated/T3 regions: 7 solar + 5 wind, COES SINAC per-plant generation × 2% national vertimiento calibration, fetched via residential relay + committed CSV. COES blocks cloud/datacenter build IPs — NOT geo-blocked as the #247 drop note assumed — so a residential relay sidesteps it; tier kept estimated/modelled-fallback because COES has no measured per-plant curtailment signal. T3 238 → 250, total 461 → 473. Prior 2026-06-19: per-plant splits +10 AEMO per-DUID + 12 Ontario per-plant, all T1a live; 439 + 22 = 461. T1a 150→172).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-21 (Austria promoted from T2 anchored to T1b live-domestic-anchored via ENTSO-E A75 split: austria→austria-wind+austria-solar. T2 24→23, T1b 26→28, total 473→474.)",
   "T1a": 172,
-  "T1b": 26,
+  "T1b": 28,
   "T1c": 1,
-  "T2": 24,
+  "T2": 23,
   "T3": 250,
-  "total": 473
+  "total": 474
 }
