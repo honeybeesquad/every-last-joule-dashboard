@@ -1,6 +1,6 @@
 # Validation — Hokkaido Solar (Japan) (`japan-hokkaido-solar`)
 
-Last updated: 2026-06-17 · Sprint: Japan fuel split · Paper section: Technical Validation §4.2
+Last updated: 2026-06-21 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,14 +8,10 @@ Last updated: 2026-06-17 · Sprint: Japan fuel split · Paper section: Technical
 - **Country:** JPN
 - **Tier:** live
 - **Kind:** solar
-- **Source:** Hokkaido Electric Power Network area supply/demand CSV (eria_jukyu_YYYYMM_01.csv) — 太陽光出力制御量 column (MW, 30-min, Shift-JIS). Solar share of measured curtailment.
+- **Source:** Hokkaido Electric Power Network area supply/demand CSV (eria_jukyu_YYYYMM_01.csv) — 太陽光出力制御量 column (MW, 30-min). Solar share of measured curtailment.
 - **Source URL:** [https://www.hepco.co.jp/network/con_service/public_document/supply_demand_results/index.html](https://www.hepco.co.jp/network/con_service/public_document/supply_demand_results/index.html)
-- **Loader:** [`japan-hokkaido.json.ts`](../../src/data/japan-hokkaido.json.ts)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
-
-## Split rationale
-
-30-day measurement (May–June 2026) found wind curtailment at ~16.4% of total Hokkaido measured curtailment (~5.8 GWh/30d). This is above the 5% below-noise-floor threshold applied to the other 7 Japan areas, so Hokkaido is split into separate solar and wind regions. The other 7 areas (tepco, chubu, kansai, chugoku, shikoku, kyushu, okinawa) remain as single solar regions.
 
 ## Calibration
 
@@ -45,7 +41,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: [`japan-hokkaido.json.ts`](../../src/data/japan-hokkaido.json.ts)
+- Loader source: _(no single-file loader — see multi-region source)_
 - Backfill archive: `data/historical/backfill/*_japan-hokkaido-solar_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

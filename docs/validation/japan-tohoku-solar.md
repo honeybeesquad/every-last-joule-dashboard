@@ -1,6 +1,6 @@
 # Validation — Tohoku Solar (Japan) (`japan-tohoku-solar`)
 
-Last updated: 2026-06-17 · Sprint: Japan fuel split · Paper section: Technical Validation §4.2
+Last updated: 2026-06-21 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,14 +8,10 @@ Last updated: 2026-06-17 · Sprint: Japan fuel split · Paper section: Technical
 - **Country:** JPN
 - **Tier:** live
 - **Kind:** solar
-- **Source:** Tohoku Electric area supply/demand CSV (realtime_jukyu_YYYYMMDD_02.csv) — 太陽光出力制御量 column (MW, 30-min, Shift-JIS). Solar share of measured curtailment.
+- **Source:** Tohoku Electric area supply/demand CSV (realtime_jukyu_YYYYMMDD_02.csv) — 太陽光出力制御量 column (MW, 30-min). Solar share of measured curtailment.
 - **Source URL:** [https://setsuden.nw.tohoku-epco.co.jp/common/demand/realtime_jukyu/](https://setsuden.nw.tohoku-epco.co.jp/common/demand/realtime_jukyu/)
-- **Loader:** [`japan-tohoku.json.ts`](../../src/data/japan-tohoku.json.ts)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
-
-## Split rationale
-
-30-day measurement (May–June 2026) found wind curtailment at ~12.3% of total Tohoku measured curtailment (~13.5 GWh/30d). This is above the 5% below-noise-floor threshold, so Tohoku is split into separate solar and wind regions. FY2023 OCCTO anchor: ~0.13 TWh solar curtailment; rising trend ~1.5-2 TWh/yr by FY2025.
 
 ## Calibration
 
@@ -33,7 +29,7 @@ Last updated: 2026-06-17 · Sprint: Japan fuel split · Paper section: Technical
 - **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
-- **Other:** FY2023 OCCTO anchor: ~0.13 TWh solar curtailment
+- **Other:** —
 
 ## Discrepancy analysis
 
@@ -45,7 +41,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: [`japan-tohoku.json.ts`](../../src/data/japan-tohoku.json.ts)
+- Loader source: _(no single-file loader — see multi-region source)_
 - Backfill archive: `data/historical/backfill/*_japan-tohoku-solar_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

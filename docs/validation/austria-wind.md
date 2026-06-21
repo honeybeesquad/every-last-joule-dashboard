@@ -1,15 +1,15 @@
-# Validation — Henan Solar (`china-henan-solar`)
+# Validation — Austria Wind (`austria-wind`)
 
 Last updated: 2026-06-21 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `china-henan-solar`
-- **Country:** CHN
-- **Tier:** estimated
-- **Kind:** solar
-- **Source:** NEA 2024 provincial RE monitoring bulletin — solar curtailment ~0.7 TWh/yr
-- **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
+- **Region id:** `austria-wind`
+- **Country:** AUT
+- **Tier:** live-domestic-anchored
+- **Kind:** wind
+- **Source:** APG Austria ENTSO-E A75 B19 wind: ~1.5% rate
+- **Source URL:** [https://www.apg.at/en/news-press/](https://www.apg.at/en/news-press/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
@@ -33,16 +33,16 @@ Last updated: 2026-06-21 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Discrepancy analysis
 
-_New region (granularity survey 2026-06-10, PR #203). Modelled from a capacity/utilisation anchor; promote when a machine-readable operator curtailment series becomes reachable._
+_Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per-year totals for this region, this section will summarise the Δ vs TSO/Ember/IRENA and flag any year exceeding ±25%._
 
 ## Known limitations
 
-- Magnitude is a modelled estimate (typical solar shape × an annual anchor), not a measured curtailment series. ±40% T3 envelope.
+No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_china-henan-solar_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_austria-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

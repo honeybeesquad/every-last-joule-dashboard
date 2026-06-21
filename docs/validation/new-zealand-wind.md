@@ -1,6 +1,6 @@
 # Validation — New Zealand Wind (`new-zealand-wind`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-21 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 

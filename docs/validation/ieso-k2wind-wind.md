@@ -1,6 +1,6 @@
 # Validation — K2 Wind (`ieso-k2wind-wind`)
 
-Last updated: 2026-06-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-21 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 

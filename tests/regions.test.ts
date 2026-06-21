@@ -653,6 +653,9 @@ describe("regions", () => {
     }
     // Russia Murmansk remains anchored
     for (const id of ["russia-murmansk-wind"]) {
+      const region = REGIONS.find(r => r.id === id);
+      expect(region, `missing anchored region ${id}`).toBeDefined();
+      expect(region?.tier).toBe("anchored");
     }
 
     // Former aggregate ids must now be absent.

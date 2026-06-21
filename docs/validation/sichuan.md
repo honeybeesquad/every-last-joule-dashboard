@@ -1,6 +1,6 @@
 # Validation — Sichuan (`sichuan`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-21 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -10,7 +10,7 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Kind:** hydro
 - **Source:** NEA 2024 / Sichuan hydro-spill proxy
 - **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Loader:** [`sichuan.json.ts`](../../src/data/sichuan.json.ts)
 - **Structural gap:** no
 
 ## Calibration
@@ -41,7 +41,7 @@ No public hourly archive for Chinese provincial dispatch-down. The mechanism is 
 
 ## Links
 
-- Loader source: _(no single-file loader — see multi-region source)_
+- Loader source: [`sichuan.json.ts`](../../src/data/sichuan.json.ts)
 - Backfill archive: `data/historical/backfill/*_sichuan_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

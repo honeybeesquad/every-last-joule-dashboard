@@ -1,6 +1,6 @@
 # Validation — Inner Mongolia Solar (`inner-mongolia-solar`)
 
-Last updated: 2026-06-19 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-21 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 

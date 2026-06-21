@@ -1,7 +1,7 @@
 {
-  "totalValidationDocs": 480,
+  "totalValidationDocs": 481,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 473,
+  "docsNotCiting": 474,
   "pctCited": 1.46,
   "perDocCitations": [
     {
@@ -167,7 +167,12 @@
       "matchedPatterns": []
     },
     {
-      "file": "austria.md",
+      "file": "austria-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "austria-wind.md",
       "cited": false,
       "matchedPatterns": []
     },

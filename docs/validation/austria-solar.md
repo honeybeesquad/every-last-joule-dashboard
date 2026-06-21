@@ -1,15 +1,15 @@
-# Validation — Austria (`austria`)
+# Validation — Austria Solar (`austria-solar`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-06-21 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
-- **Region id:** `austria`
+- **Region id:** `austria-solar`
 - **Country:** AUT
-- **Tier:** anchored
-- **Kind:** mixed
-- **Source:** APG Strombilanz 2024 + ENTSO-E redispatch A75 (provisional anchor)
-- **Source URL:** [https://www.apg.at/en/news-press/apg-strombilanz-2024-oesterreich-erstmals-wieder-exportland/](https://www.apg.at/en/news-press/apg-strombilanz-2024-oesterreich-erstmals-wieder-exportland/)
+- **Tier:** live-domestic-anchored
+- **Kind:** solar
+- **Source:** APG Austria ENTSO-E A75 B16 solar: ~2% rate
+- **Source URL:** [https://www.apg.at/en/news-press/](https://www.apg.at/en/news-press/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
@@ -42,7 +42,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 ## Links
 
 - Loader source: _(no single-file loader — see multi-region source)_
-- Backfill archive: `data/historical/backfill/*_austria_*.parquet` (0 years)
+- Backfill archive: `data/historical/backfill/*_austria-solar_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

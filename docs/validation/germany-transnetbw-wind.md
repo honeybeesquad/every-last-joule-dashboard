@@ -1,6 +1,6 @@
 # Validation — TransnetBW Wind (`germany-transnetbw-wind`)
 
-Last updated: 2026-06-17 · Germany DE-LU → TSO control-area split · Granularity survey 2026-06-10
+Last updated: 2026-06-21 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,19 +8,28 @@ Last updated: 2026-06-17 · Germany DE-LU → TSO control-area split · Granular
 - **Country:** DEU
 - **Tier:** live-domestic-anchored
 - **Kind:** wind
-- **Source:** ENTSO-E Transparency A75 generation-per-type for the **TransnetBW** control area (EIC `10YDE-ENBW-----N`): onshore wind only (B19 ×3.0%; inland CA, no offshore). Live ENTSO-E generation × the national BNetzA/SMARD curtailment rate apportioned by control area. National anchor on a sub-national (CTA) feed → **T1b (live-domestic-anchored)**, ±50% envelope.
+- **Source:** ENTSO-E TransnetBW CTA wind (BNetzA/SMARD rate)
 - **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
 ## Calibration
 
-- **Rate:** onshore wind only (B19 ×3.0%; inland CA, no offshore), from the former germany-aggregate BNetzA/SMARD 2024 rates, applied to this CTA's own A75 generation.
-- **Anchor basis:** BNetzA/SMARD 2024 national curtailment (4.56 TWh offshore + 3.38 TWh onshore wind; 1.39 TWh solar), apportioned to control areas. A BNetzA per-TSO Redispatch breakdown would upgrade this to measured per-CA curtailment.
+- **Rate source documented in:** `docs/methodology/` (see links below)
+- **Uniform across backfill years:** n/a — no backfill
+
+## Multi-year backfill annual totals
+
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
+|---|---|---|---|---|---|
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **BNetzA per-TSO annual:** — (pending per-CA Redispatch figures)
-- **ENTSO-E annual:** —
+- **TSO annual curtailment (latest published):** —
+- **Ember annual:** —
+- **IRENA annual:** —
+- **Other:** —
 
 ## Discrepancy analysis
 
@@ -32,5 +41,8 @@ _New region: the Germany DE-LU bidding zone (one ENTSO-E domain) split into its 
 
 ## Links
 
-- Loader: ENTSO-E CTA zone config in [`entsoe.json.ts`](../../src/data/entsoe.json.ts)
-- Methodology — tiers & live-data paths: [`docs/methodology/live-data-paths.md`](../methodology/live-data-paths.md)
+- Loader source: _(no single-file loader — see multi-region source)_
+- Backfill archive: `data/historical/backfill/*_germany-transnetbw-wind_*.parquet` (0 years)
+- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
+- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
+- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
