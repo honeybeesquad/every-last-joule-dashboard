@@ -110,8 +110,8 @@ function parseNiggridGenerationTable(html: string): number[] {
  * Applies the solar curtailment rate to each hour's total generation.
  * NOTE: This uses total grid generation as a rough temporal shape proxy.
  * Nigeria has negligible utility solar; the shape is thermal/hydro baseload
- * rather than solar-diurnal. The estimated-tier uncertainty envelope (applyUncertainty
- * accounts for this shape-proxy mismatch.
+ * rather than solar-diurnal. The estimated-tier uncertainty envelope (applied via
+ * applyUncertainty) accounts for this shape-proxy mismatch.
  */
 function hourlyTotalsToCurtailment(
   hourlyTotals: number[],
