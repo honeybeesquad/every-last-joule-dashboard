@@ -8,6 +8,6 @@ describe("bangladesh loader", () => {
     expect(data.profile).toHaveLength(24);
     expect(data.latestProfile).toBeNull();
     expect(data.totalTWh).toBeGreaterThan(0);
-    expect(data.sourceNote).toMatch(/0\.1 TWh\/yr/);
+    expect(data.sourceNote).toMatch(/0\.04 TWh\/yr/);
   });
 });
