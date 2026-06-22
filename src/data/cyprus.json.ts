@@ -24,7 +24,6 @@ function readCsvData(): CurtailmentPoint[] | null {
   try {
     const csv = readFileSync(csvPath, "utf-8");
     const lines = csv.trim().split("\n");
-    if (lines.length < 2) return null;
 
     const points: CurtailmentPoint[] = [];
     for (let i = 1; i < lines.length; i++) {
@@ -35,7 +34,7 @@ function readCsvData(): CurtailmentPoint[] | null {
       if (!Number.isFinite(curtMw) || curtMw <= 0) continue;
       points.push({ utcTimestamp: utcTs, mw: curtMw });
     }
-    if (points.length < 4) return null;
+    if (points.length < 24) return null;  // need at least a full day of data
     return points;
   } catch {
     return null;
