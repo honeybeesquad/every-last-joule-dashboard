@@ -155,6 +155,9 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       if (points.length === 0) {
         throw new Error("PGCB HTML returned no solar data (all zeros or parse failure)");
       }
+      if (points.length < 12) {
+        throw new Error("PGCB HTML returned insufficient data points (" + points.length + ")");
+      }
 
       const lastTs = points[points.length - 1].utcTimestamp;
       const sourceNote =
