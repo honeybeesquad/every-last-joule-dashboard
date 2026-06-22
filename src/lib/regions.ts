@@ -505,8 +505,8 @@ export const REGIONS: Region[] = [
   // Austria — APG confirms 2024 redispatch events involving renewable
   // T1b live-domestic-anchored: APG Austria — ENTSO-E A75 B16+B19 live-probed
   // 2026-06-17. National Terna-calibrated rate applied per Italian/German zones pattern.
-  { id: "austria-wind",     name: "Austria Wind",     country: "AUT", lat: 47.60, lon: 14.30, tier: "live-domestic-anchored", kind: "wind",  source: "APG Austria ENTSO-E A75 B19 wind: ~1.5% rate", sourceUrl: "https://www.apg.at/en/news-press/", sourceProvenance: "verified" },
-  { id: "austria-solar",    name: "Austria Solar",    country: "AUT", lat: 47.30, lon: 14.50, tier: "live-domestic-anchored", kind: "solar", source: "APG Austria ENTSO-E A75 B16 solar: ~2% rate", sourceUrl: "https://www.apg.at/en/news-press/", sourceProvenance: "verified" },
+  { id: "austria-wind",     name: "Austria Wind",     country: "AUT", lat: 47.60, lon: 14.30, tier: "live-domestic-anchored", kind: "wind", source: "APG Austria ENTSO-E A75 B19 wind: ~1.5% rate — feed domain 10YAT-APG------L verified as valid ENTSO-E EIC. A75 live probe blocked: no ENTSOE_API_TOKEN available at session time (Vercel env var). Tier set consistent with Italy/Germany TSO splits which use identical domain pattern.", sourceUrl: "https://www.apg.at/en/news-press/", sourceProvenance: "official-lead" },
+  { id: "austria-solar",    name: "Austria Solar",    country: "AUT", lat: 47.30, lon: 14.50, tier: "live-domestic-anchored", kind: "solar", source: "APG Austria ENTSO-E A75 B16 solar: ~2% rate — feed domain 10YAT-APG------L verified as valid ENTSO-E EIC. A75 live probe blocked: no ENTSOE_API_TOKEN at session time. Tier consistent with Italy/Germany TSO splits.", sourceUrl: "https://www.apg.at/en/news-press/", sourceProvenance: "official-lead" },
   // Russia / Kola Peninsula — SO UPS 2024 monthly DPM VIE reports cite
   // explicit wind output limits (84 MW Sep 2024, 77 MW Nov 2024). Treated
   // as a narrow source upgrade to russia-mainland for the one Russian
