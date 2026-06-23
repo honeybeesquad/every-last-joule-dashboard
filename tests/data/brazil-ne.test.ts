@@ -52,7 +52,10 @@ describe("brazil-ne parser", () => {
     ].join("\n");
     const points = parseOnsCurtailmentCsv(sample);
     // Plant A has no cap → skipped. Plant B: curtailment = ref(3) − cap(1.5) = 1.5 MW.
-    expect(points["brazil-maranhao"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5 }]);
+    // ONS feed is half-hourly, so each point carries intervalHours: 0.5.
+    expect(points["brazil-maranhao"]).toEqual([
+      { utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5, intervalHours: 0.5 },
+    ]);
   });
 
   it("breaks out Paraiba and Maranhao from the residual ONS bucket", () => {
@@ -63,10 +66,31 @@ describe("brazil-ne parser", () => {
       "S;SUL;SC;SANTA CATARINA;PLANT SC;C;-;2026-03-01 00:00:00;3;0.5;100;1;;;;",
     ].join("\n");
     const points = parseOnsCurtailmentCsv(sample);
-    // curtailment = ref − cap: PB=2.5, MA=1.5, SC(→other)=0.5
-    expect(points["brazil-paraiba"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 2.5 }]);
-    expect(points["brazil-maranhao"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5 }]);
-    expect(points["brazil-other"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 0.5 }]);
+    // curtailment = ref − cap: PB=2.5, MA=1.5, SC(→other)=0.5; half-hourly interval.
+    expect(points["brazil-paraiba"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 2.5, intervalHours: 0.5 }]);
+    expect(points["brazil-maranhao"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5, intervalHours: 0.5 }]);
+    expect(points["brazil-other"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 0.5, intervalHours: 0.5 }]);
+  });
+
+  it("tags every point with intervalHours 0.5 (ONS half-hourly cadence)", () => {
+    const points = parseOnsCurtailmentCsv(csv);
+    for (const regionPoints of Object.values(points) as Array<Array<any>>) {
+      for (const p of regionPoints) expect(p.intervalHours).toBe(0.5);
+    }
+  });
+
+  it("counts half-hourly energy at 0.5h, not 1h (regression: totalTWh 2x overcount)", async () => {
+    const { totalTWh30d } = await import("../../src/lib/profile.js");
+    // Two consecutive half-hour points of 100 MW = 100 MWh, NOT 200 MWh.
+    const sample = [
+      "id_subsistema;nom_subsistema;id_estado;nom_estado;nom_usina;id_ons;ceg;din_instante;val_geracao;val_geracaolimitada;val_disponibilidade;val_geracaoreferencia;val_geracaoreferenciafinal;cod_razaorestricao;cod_origemrestricao;dsc_restricao",
+      "NE;NORDESTE;RN;RIO GRANDE DO NORTE;PLANT;X;-;2026-03-01 00:00:00;0;0;500;100;;;;",
+      "NE;NORDESTE;RN;RIO GRANDE DO NORTE;PLANT;X;-;2026-03-01 00:30:00;0;0;500;100;;;;",
+    ].join("\n");
+    const points = parseOnsCurtailmentCsv(sample)["brazil-rn"];
+    expect(points).toHaveLength(2);
+    // 100 MW × 0.5h × 2 = 100 MWh = 1e-4 TWh. Pre-fix (1h default) gave 2e-4.
+    expect(totalTWh30d(points)).toBeCloseTo(1e-4, 12);
   });
 
   it("timestamps are chronological within each cluster", () => {

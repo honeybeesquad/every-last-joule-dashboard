@@ -47,6 +47,16 @@ const STATE_TO_REGION: Record<string, BrazilStateId> = {
   RS: "brazil-rs",
 };
 
+/**
+ * ONS publishes the constrained-off feed at a 30-minute cadence (`din_instante`
+ * rows at :00 and :30). Each `val_geracao*` figure is an average-MW reading for
+ * its half-hour interval, so every emitted point represents 0.5 h of energy.
+ * Without this, `totalTWh30d` (which defaults to 1 h/point) double-counts the
+ * curtailed energy — the profile/peakGW are unaffected because
+ * `timeOfDayAverageGW` averages within each hour bucket.
+ */
+const ONS_INTERVAL_HOURS = 0.5;
+
 /** Pure parser: CSV text → timestamped points grouped by state cluster. Exported for tests. */
 export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, CurtailmentPoint[]> {
   const normalized = csv.replace(/^\uFEFF/, "").trim();
@@ -131,7 +141,7 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, Curta
   for (const regionId of Object.keys(empty) as BrazilStateId[]) {
     empty[regionId] = Array.from(totals.get(regionId)?.entries() ?? [])
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw: Math.max(0, mw) }));
+      .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw: Math.max(0, mw), intervalHours: ONS_INTERVAL_HOURS }));
   }
 
   return empty;
