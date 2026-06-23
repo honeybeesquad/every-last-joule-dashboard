@@ -114,7 +114,9 @@ describe("regions", () => {
     // 431 + 8 = 439. Per-plant splits: +10 AEMO (T1a) + 12 Ontario (T1a) live regions.
     // Peru per-plant (5) dropped in #247 — COES blocks cloud build IPs, build-time fetch threw. 439 + 22 = 461.
     // 2026-06-20: Peru per-plant re-added as 12 estimated regions via residential relay + committed CSV. 461 + 12 = 473.
-    expect(REGIONS.length).toBe(473);
+    // 2026-06-23: removed 12 broken Ontario per-plant regions (nameplate−output = capacity-factor gap,
+    // not curtailment; 12 plants implied ~29 TWh/yr > Ontario's ~14 TWh/yr total wind generation). 473 − 12 = 461.
+    expect(REGIONS.length).toBe(461);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -191,10 +193,11 @@ describe("regions", () => {
     // Net +3 T1a live. T1a: 149→152; total live: 174→177.
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(172);
+    // 2026-06-23: removed 12 broken Ontario per-plant regions (T1a). T1a: 172→160; total live: 199→187.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(160);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(199);
+    expect(liveTotal).toBe(187);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -224,10 +227,11 @@ describe("regions", () => {
     // 2026-06-07: japan-tepco/chubu/hokkaido promoted estimated→live. T1a: 147→150. Total: 157→160.
     // 2026-06-10: peru-solar T1a→T1b. T1a: 150→149; T1b: 9→10.
     // 2026-06-17: Japan hokkaido + tohoku split solar→solar+wind (hokuriku left solar-only). Net +2 T1a live. T1a: 148→150; total: 175→177.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(172);
+    // 2026-06-23: removed 12 broken Ontario per-plant regions (T1a). T1a: 172→160; total live: 199→187.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(160);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(199);
+    expect(liveTotal).toBe(187);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {

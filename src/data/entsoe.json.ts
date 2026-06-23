@@ -14,29 +14,29 @@ export const ZONES = [
     id: "spain-wind",
     domain: "10YES-REE------0",
     technologies: [
-      { psrType: "B19", fuel: "wind", rate: 0.11 },
+      { psrType: "B19", fuel: "wind", rate: 0.067 },
     ],
-    sourceNote: "Spain 2024 REE wind curtailment: ~6.8 TWh/yr per REE Informe del Sistema Eléctrico 2024.",
+    sourceNote: "Spain 2024 wind curtailment ~6.7% of wind generation (OMIE market data; Danthine, 'Five Years of Spanish Curtailment', 2025) ≈ 4 TWh/yr. cf. REE Informe 2024 narrow-technical aggregate 288 GWh (1.6%, all-tech). Prior 11% rate / '6.8 TWh' note was unverifiable against REE and is corrected down.",
   },
   {
     id: "spain-solar",
     domain: "10YES-REE------0",
     technologies: [
-      { psrType: "B16", fuel: "solar", rate: 0.055 },
+      { psrType: "B16", fuel: "solar", rate: 0.039 },
     ],
-    sourceNote: "Spain 2024 REE PV curtailment: ~2.4 TWh/yr + 1.4 TWh CSP per REE Informe 2024.",
+    sourceNote: "Spain 2024 PV curtailment ~3.9% of solar generation (OMIE market data; Danthine, 'Five Years of Spanish Curtailment', 2025). Prior 5.5% rate corrected down to the per-technology market figure.",
   },
   {
     id: "portugal-wind",
     domain: "10YPT-REN------W",
-    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.03 }],
-    sourceNote: "Portugal 2024 wind: ~0.1 TWh/yr anchor.",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.005 }],
+    sourceNote: "Portugal wind curtailment is near-zero: REN 'Dados Técnicos 2024' reports no curtailment; combined wind+solar ~0.4% (213 GWh) in 2023 (Synertics/REN). 0.5% rate is a conservative per-technology placeholder. Prior 3% rate corrected down.",
   },
   {
     id: "portugal-solar",
     domain: "10YPT-REN------W",
-    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.10 }],
-    sourceNote: "Portugal 2024 solar: primary per REN/ENTSO-E.",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.005 }],
+    sourceNote: "Portugal solar curtailment is near-zero: REN 'Dados Técnicos 2024' reports no curtailment; combined wind+solar ~0.4% (213 GWh) in 2023 (Synertics/REN). 0.5% rate is a conservative per-technology placeholder. Prior 10% rate (~25× too high) corrected down.",
   },
   // Germany DE-LU bidding zone split into its 4 TSO control areas (granularity survey 2026-06-10).
   // ENTSO-E A75 live-probed per CTA-EIC on 2026-06-17: B16(solar)+B19(onshore wind) present for all 4;

@@ -1,9 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-20 (Peru per-plant re-added as 12 estimated/T3 regions: 7 solar + 5 wind, COES SINAC per-plant generation × 2% national vertimiento calibration, fetched via residential relay + committed CSV. COES blocks cloud/datacenter build IPs — NOT geo-blocked as the #247 drop note assumed — so a residential relay sidesteps it; tier kept estimated/modelled-fallback because COES has no measured per-plant curtailment signal. T3 238 → 250, total 461 → 473. Prior 2026-06-19: per-plant splits +10 AEMO per-DUID + 12 Ontario per-plant, all T1a live; 439 + 22 = 461. T1a 150→172).",
-  "T1a": 172,
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-23 (removed 12 broken Ontario per-plant regions: the IESO GenOutputCapabilityMonth loader computed max(0, AvailableCapacity − Output) where AvailableCapacity is the plant NAMEPLATE, so the metric was the capacity-factor gap, not curtailment — e.g. K2 Wind read ~473 MW avg 'curtailment' on a 270 MW plant, and the 12 plants annualised to ~29 TWh/yr > Ontario's entire ~14 TWh/yr wind generation. No measured per-plant curtailment exists in that IESO feed; the province aggregate ontario-wind/ontario-solar (generation × rate) remains. T1a 172 → 160, total 473 → 461. Prior 2026-06-20: Peru per-plant re-added as 12 estimated/T3 regions; T3 238 → 250, total 461 → 473.).",
+  "T1a": 160,
   "T1b": 26,
   "T1c": 1,
   "T2": 24,
   "T3": 250,
-  "total": 473
+  "total": 461
 }
