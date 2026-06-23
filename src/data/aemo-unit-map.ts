@@ -240,3 +240,22 @@ export const AEMO_UNIT_MAP = {
   "WOLARSF1": { "region": "NSW1", "fueltech": "wind" },
   "WUNUSF1": { "region": "VIC1", "fueltech": "solar" }
 } as const;
+
+/**
+ * First-class per-plant regions (see aemo-per-plant.json.ts).
+ * Excluded from the aemo.json state aggregates so they aren't double-counted
+ * in the headline total. Derived from the 10 canonical `aemo-*` per-plant
+ * region ids in src/lib/regions.ts (middle segment uppercased).
+ */
+export const PER_PLANT_DUIDS: ReadonlySet<string> = new Set([
+  "AVLSF1",
+  "BANGOWF1",
+  "COOPGWF1",
+  "DARLSF1",
+  "LIMOSF11",
+  "MACARTH1",
+  "RYEPARK1",
+  "SAPHWF1",
+  "STOCKYD1",
+  "WDGPH1",
+]);

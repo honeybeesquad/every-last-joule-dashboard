@@ -8,7 +8,7 @@ import { hourlyAverage } from "../lib/csv.js";
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
-import { AEMO_UNIT_MAP } from "./aemo-unit-map.js";
+import { AEMO_UNIT_MAP, PER_PLANT_DUIDS } from "./aemo-unit-map.js";
 
 const DIRECTORY_URL = "https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/";
 
@@ -92,6 +92,10 @@ export function parseAemoDispatchCsv(csv: string): AemoParsed {
     const uigf = Number(get("UIGF") || 0);
 
     if (!duid || semidispatchCap !== 1) continue;
+    // Skip DUIDs that are emitted as first-class per-plant regions in
+    // aemo-per-plant.json.ts — they must not also appear in the state aggregate
+    // or they get double-counted in the headline total.
+    if (PER_PLANT_DUIDS.has(duid)) continue;
     const unit = AEMO_UNIT_MAP[duid as keyof typeof AEMO_UNIT_MAP];
     if (!unit) continue;
     const regionId = REGION_CODE_TO_ID[unit.region];
