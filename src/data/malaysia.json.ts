@@ -17,6 +17,15 @@ const GSO_GEN_URL = "https://www.gso.org.my/SystemData/CurrentGen.aspx/GetChartD
  */
 const CURTAILMENT_RATE = 0.01;
 
+/**
+ * GSO publishes generation at a 10-minute cadence (6 samples/hour). Each emitted
+ * CurtailmentPoint therefore represents 1/6 h of energy. Without this,
+ * `totalTWh30d` (which defaults to 1 h/point) counts every 10-min sample as a
+ * full hour and overcounts curtailed energy ~6×. The `profile`/`peakGW` are
+ * unaffected because `timeOfDayAverageGW` averages within each hour bucket.
+ */
+const GSO_INTERVAL_HOURS = 1 / 6;
+
 /** GSO API returns timestamps in Asia/Kuala_Lumpur (UTC+8) without timezone suffix. */
 const MALAYSIA_UTC_OFFSET_HOURS = 8;
 
@@ -68,6 +77,27 @@ async function fetchGsoGenForDate(date: Date): Promise<GsoGenPoint[]> {
   return JSON.parse(resp.d) as GsoGenPoint[];
 }
 
+/**
+ * Map GSO generation rows → solar CurtailmentPoint[] at the raw 10-min cadence.
+ * Each point carries `intervalHours` so downstream energy totals are correct.
+ * Pure (no I/O) and exported for tests.
+ */
+export function gsoSolarToCurtailmentPoints(genPoints: GsoGenPoint[]): CurtailmentPoint[] {
+  const points: CurtailmentPoint[] = [];
+  for (const pt of genPoints) {
+    if (!pt.DT || pt.Solar == null) continue;
+    try {
+      const utcTs = gsoDtToUtc(pt.DT);
+      // Curtailment MW = generation MW × rate
+      const curtailedMw = pt.Solar * CURTAILMENT_RATE;
+      points.push({ utcTimestamp: utcTs, mw: Math.max(0, curtailedMw), intervalHours: GSO_INTERVAL_HOURS });
+    } catch {
+      // Skip bad timestamps
+    }
+  }
+  return points;
+}
+
 /** Fetch GSO solar generation for the last N days, return as CurtailmentPoints. */
 async function fetchGsoSolarCurtailment(days: number): Promise<CurtailmentPoint[]> {
   const points: CurtailmentPoint[] = [];
@@ -83,17 +113,7 @@ async function fetchGsoSolarCurtailment(days: number): Promise<CurtailmentPoint[
       continue;
     }
 
-    for (const pt of genPoints) {
-      if (!pt.DT || pt.Solar == null) continue;
-      try {
-        const utcTs = gsoDtToUtc(pt.DT);
-        // Curtailment MW = generation MW × rate
-        const curtailedMw = pt.Solar * CURTAILMENT_RATE;
-        points.push({ utcTimestamp: utcTs, mw: Math.max(0, curtailedMw) });
-      } catch {
-        // Skip bad timestamps
-      }
-    }
+    points.push(...gsoSolarToCurtailmentPoints(genPoints));
   }
 
   return points;
