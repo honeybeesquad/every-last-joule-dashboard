@@ -15,13 +15,15 @@ const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 async function run(): Promise<RegionData> {
   const sldc = readStateSldcCurtailment(CSV_SLDC_PATH, 90);
   if (sldc !== null) {
-    const curtailedTWh = sldc.solarCurtailedTWh + sldc.windCurtailedTWh;
+    const rawWindowTWh = sldc.solarCurtailedTWh + sldc.windCurtailedTWh;
+    const annualizedTWh = rawWindowTWh * 365 / sldc.nRows;
     const base = buildTypicalSolarRegion(
       REGION_ID,
       6.5,
-      curtailedTWh,
+      annualizedTWh,
       `UPNLDC (Uttar Pradesh State Load Despatch Centre) direct curtailment — ${sldc.nRows}-day CSV, ` +
-      `trailing-90-day solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh + wind ${sldc.windCurtailedTWh.toFixed(2)} TWh curtailed. ` +
+      `trailing-90-day solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh + wind ${sldc.windCurtailedTWh.toFixed(2)} TWh curtailed; ` +
+      `annualised to ${annualizedTWh.toFixed(2)} TWh/yr (× 365 / ${sldc.nRows} rows). ` +
       `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
       new Date().getFullYear().toString(),
     );
