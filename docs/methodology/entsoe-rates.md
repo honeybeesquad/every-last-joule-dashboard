@@ -15,10 +15,10 @@ Rates are shown as percentages of observed generation. "Before" is the pre-audit
 | germany | `10Y1001A1001A82H` | B18 | wind offshore | n/a | BNetzA curtailment, BNetzA/SMARD generation | 17.8% | n/a | Grounded rate added |
 | germany | `10Y1001A1001A82H` | B19 | wind onshore | 8.0% | BNetzA curtailment, BNetzA/SMARD generation | 3.0% | -5.0 | Grounded rate updated |
 | germany | `10Y1001A1001A82H` | B16 | solar | 2.3% | BNetzA curtailment, BNetzA/SMARD generation | 2.2% | -0.1 | Cited unchanged |
-| iberia | `10YES-REE------0` | B16 | solar | 5.5% | IEA/REE chart only; no extractable 2024 GWh found | n/a | n/a | Acknowledged placeholder |
-| iberia | `10YES-REE------0` | B19 | wind | 11.0% | IEA/REE chart only; no extractable 2024 GWh found | n/a | n/a | Acknowledged placeholder |
-| portugal | `10YPT-REN------W` | B16 | solar | 10.0% | REN generation published; no curtailment total found | n/a | n/a | Acknowledged placeholder |
-| portugal | `10YPT-REN------W` | B19 | wind | 3.0% | REN generation published; no curtailment total found | n/a | n/a | Acknowledged placeholder |
+| iberia | `10YES-REE------0` | B16 | solar | 3.9% | OMIE market data; Danthine "Five Years of Spanish Curtailment" 2025 (per-tech 2024) | 5.5% (old) | -1.6 | Corrected down to per-tech market figure |
+| iberia | `10YES-REE------0` | B19 | wind | 6.7% | OMIE market data; Danthine "Five Years of Spanish Curtailment" 2025 (per-tech 2024); cf. REE Informe 2024 narrow-technical 288 GWh (1.6%, all-tech) | 11.0% (old) | -4.3 | Corrected down; old "6.8 TWh" note unverifiable vs REE |
+| portugal | `10YPT-REN------W` | B16 | solar | 0.5% | REN "Dados Técnicos 2024" reports no curtailment; combined wind+solar ~0.4% / 213 GWh in 2023 (Synertics/REN) | 10.0% (old) | -9.5 | Corrected (~25× too high); near-zero per REN |
+| portugal | `10YPT-REN------W` | B19 | wind | 0.5% | REN "Dados Técnicos 2024" reports no curtailment; combined wind+solar ~0.4% / 213 GWh in 2023 (Synertics/REN) | 3.0% (old) | -2.5 | Corrected; near-zero per REN |
 | finland | `10YFI-1--------U` | B19 | wind | 5.0% | Fingrid reports grid/generation context; no national curtailed-energy total found | n/a | n/a | Acknowledged placeholder |
 | netherlands | `10YNL----------L` | B18 | wind offshore | 9.0% | IEEFA summary of Dutch 2024 wind+solar curtailment | 4.9% | -4.1 | Grounded aggregate rate updated |
 | netherlands | `10YNL----------L` | B19 | wind onshore | 4.5% | IEEFA summary of Dutch 2024 wind+solar curtailment | 4.9% | +0.4 | Cited unchanged |
@@ -56,13 +56,15 @@ Rates are shown as percentages of observed generation. "Before" is the pre-audit
 
 **Greece.** HAEE's 2025 energy-news summary states that official 2024 green-energy curtailment was 860 GWh, and the Greek Energy Market Report attributes the curtailment series to IPTO. Because no public wind/solar split was found, the rate is applied as a single wind+solar aggregate: 860 GWh divided by Ember's 2024 Greece wind+solar generation of 23.81 TWh, or 3.6%. Both Greek loader rates were updated.
 
-**Spain/Iberia.** IEA's 2025 report includes Spain in its official-data VRE curtailment chart and cites REE I3DIA and e-sios, but the public text does not expose an exact 2024 GWh or percentage value. REE's 2024 system report gives renewable generation and integration context, not a clean annual curtailed-energy series. The current 5.5% solar and 11.0% wind constants therefore remain placeholders pending either an e-sios extraction or ENTSO-E A77 validation.
+**Spain/Iberia.** Corrected 2026-06-23. The prior 11.0% wind / 5.5% solar constants (with a "~6.8 TWh/yr REE" note that could not be verified against REE's own report) were too high. Two definitions exist: REE's narrow grid-technical aggregate (288 GWh ≈ 1.6%, all-tech, REE *Informe del Sistema Eléctrico 2024*) and the market-economic per-technology figure (wind 6.7%, PV 3.9%, 2024, from OMIE market data via Danthine, *Five Years of Spanish Curtailment*, 2025). The loader uses the per-technology market figures (6.7% / 3.9%) because they match its rate×generation-by-fuel model and are the most directly applicable; the definition is stated in the `source:` note. ENTSO-E A77 remains the preferred future upgrade.
+
+**Portugal.** Corrected 2026-06-23. The prior 10.0% solar / 3.0% wind constants were a large overstatement: REN's *Dados Técnicos 2024* reports no curtailment, and the only quantified figure is a combined wind+solar ~0.4% (213 GWh) for 2023 (Synertics, REN-derived). Both rates set to a conservative 0.5% per-technology placeholder reflecting near-zero Portuguese curtailment.
 
 **Italy.** Terna publishes national renewable generation, and the current loader uses editorial national-to-zone allocation notes. This audit did not find a public Terna or ARERA 2024 curtailed-energy table split by ENTSO-E bidding zone. The Italy north/south/Sardinia rates remain placeholders, with a plausible ordering but no citable zonal denominator.
 
 ## Limitations
 
-No citable 2023/2024 curtailed-energy total was found for Portugal, Finland, Romania, the Italy bidding-zone split, Sweden, Hungary, Bulgaria, or Lithuania/Baltics. These rates should be treated as illustrative floor/ceiling values rather than measured annual calibration.
+No citable 2023/2024 curtailed-energy total was found for Finland, Romania, the Italy bidding-zone split, Sweden, Hungary, Bulgaria, or Lithuania/Baltics. These rates should be treated as illustrative floor/ceiling values rather than measured annual calibration. (Portugal and Spain were re-grounded 2026-06-23 — see notes above. A 2026-06-23 sweep also confirmed several of these absences are structural: Finland/Sweden publish countertrade/redispatch in EUR rather than constrained-off VRE volume; ENTSO-E's Winter Outlook states Romanian wind was not curtailed.)
 
 Spain and Czechia are better described as measured-substitution candidates than as permanently ungrounded estimates. The ENTSO-E API guide documents A77 curtailed renewable energy requests, and the Czech sample appears directly in the guide. A follow-up loader should test A77 coverage for every domain in this table, compare annual sums against national operator reports, and replace generation-times-rate modelling where A77 is complete.
 
