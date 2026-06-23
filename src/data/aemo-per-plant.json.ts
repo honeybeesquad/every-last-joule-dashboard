@@ -24,7 +24,7 @@ import { hourlyAverage } from "../lib/csv.js";
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
-import { AEMO_UNIT_MAP } from "./aemo-unit-map.js";
+import { AEMO_UNIT_MAP, PER_PLANT_DUIDS } from "./aemo-unit-map.js";
 import { AEMO_DUID_COORDS } from "./aemo-duid-coords.js";
 
 // ─── Region code → state ID mapping (shared with aemo.json.ts) ───────────────
@@ -226,10 +226,16 @@ const run = async (): Promise<Record<string, PerPlantRegionData>> => {
     );
   }
 
-  // Build RegionData for each DUID, filtering by threshold
+  // Build RegionData for each DUID, gated to the registry of first-class
+  // per-plant regions (PER_PLANT_DUIDS). The registry gate keeps this
+  // emission set identical to the exclusion set in aemo.json.ts so that
+  // total = (rest-of-state aggregate) + (named per-plant) = full state,
+  // counted once. We also apply the MIN_TWH_30D noise floor as a secondary
+  // guard, though all registry DUIDs are expected to exceed it.
   const out: Record<string, PerPlantRegionData> = {};
 
   for (const [duid, acc] of duidAccumulator) {
+    if (!PER_PLANT_DUIDS.has(duid)) continue;
     const totalTWh = totalTWh30d(acc.allPoints);
     if (totalTWh < MIN_TWH_30D) continue;
 

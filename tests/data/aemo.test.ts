@@ -16,7 +16,9 @@ describe("aemo parser", () => {
 
   it("clusters directly constrained DUID output into the five AEMO regions", () => {
     const { points } = parseAemoDispatchCsv(csv);
-    expect(points["aemo-nsw"].length).toBeGreaterThan(0);
+    // NSW: the fixture only contains BANGOWF1 (a named per-plant DUID, excluded
+    // from the state aggregate after the double-count fix). So NSW is now empty.
+    expect(points["aemo-nsw"].length).toBe(0);
     expect(points["aemo-vic"].length).toBeGreaterThan(0);
     expect(points["aemo-qld"].length).toBeGreaterThan(0);
     expect(points["aemo-sa"].length).toBeGreaterThan(0);
@@ -30,8 +32,10 @@ describe("aemo parser", () => {
 
   it("uses UIGF minus dispatch target only when SEMIDISPATCHCAP is set", () => {
     const { points } = parseAemoDispatchCsv(csv);
-    expect(points["aemo-nsw"][0].mw).toBeCloseTo(54.99985, 5);
+    // NSW only had BANGOWF1 (a named per-plant DUID, now excluded from state
+    // aggregate to avoid double-counting). Use QLD and VIC to verify the math.
     expect(points["aemo-qld"][0].mw).toBeCloseTo(359.62836, 5);
+    expect(points["aemo-vic"][0].mw).toBeCloseTo(59.19, 5);
   });
 
   it("accumulates per-state wind/solar MW totals from the fueltech map", () => {
