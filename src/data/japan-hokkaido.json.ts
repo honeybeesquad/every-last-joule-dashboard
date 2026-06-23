@@ -12,7 +12,7 @@ import type { RegionData } from "../lib/types.js";
  * Encoding: Shift-JIS. 22-column layout, 30-min intervals, MW.
  *
  * Per-fuel split (2026-06-17): 30-day measurement found wind curtailment
- * material at ~16.4% of total (5.8 GWh/30d). Emits two RegionData:
+ * material at ~16% of total (a seasonal few GWh/30d). Emits two RegionData:
  *   japan-hokkaido-solar — 太陽光出力制御量 column only
  *   japan-hokkaido-wind  — 風力出力制御量 column only
  */
@@ -30,7 +30,7 @@ const SOLAR_SOURCE_NOTE =
 
 const WIND_SOURCE_NOTE =
   "Hokkaido Electric Power Network (北海道電力ネットワーク) area supply/demand CSV (eria_jukyu_YYYYMM_01.csv) — " +
-  "風力出力制御量 column (MW, 30-min, Shift-JIS). Wind share of measured curtailment (~16.4% of total, 5.8 GWh/30d).";
+  "風力出力制御量 column (MW, 30-min, Shift-JIS). Wind is the minority fuel (~16% of measured curtailment; absolute volume is seasonal).";
 
 const run = async (): Promise<Record<string, RegionData>> => {
   const { solar, wind } = await runJapanAreaLoaderSplit(

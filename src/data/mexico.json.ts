@@ -132,10 +132,10 @@ function buildRegionData(
 }
 
 const NOTE =
-  "SENER PRODESEN 2024-2038 + CRE confiabilidad anchor: ~1.2% of renewable generation " +
-  "curtailed (~1 TWh in 2022, CRE 2023 estimates trend ~3.5%), driven by transmission-network " +
+  "SENER PRODESEN 2024-2038 + CRE confiabilidad anchor: ~1.2 TWh/yr total VRE curtailment " +
+  "(~1 TWh in 2022; CRE 2023 notes an upward trend), driven by transmission-network " +
   "saturation and CENACE operational restrictions. Profile shaped by real CENACE generation data " +
-  "(Generacion Liquidada relay CSV) × calibrated curtailment rate (solar 7%, wind 5%). " +
+  "(Generacion Liquidada relay CSV) × calibrated curtailment rate (solar 7%, wind 5%; ~6% blended). " +
   "CENACE exposes no public measured-curtailment API — this is a modelled T3 estimate with " +
   "no fabricated hourly data. Sources: PRODESEN + CRE + NREL + CENACE relay.";
 
