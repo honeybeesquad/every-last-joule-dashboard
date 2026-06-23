@@ -15,15 +15,17 @@ const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
 async function run(): Promise<RegionData> {
   const sldc = readStateSldcCurtailment(CSV_SLDC_PATH, 90);
   if (sldc !== null) {
-    const curtailedTWh = sldc.solarCurtailedTWh + sldc.windCurtailedTWh;
-    const solarShare = curtailedTWh > 0 ? sldc.solarCurtailedTWh / curtailedTWh : 0.55;
-    const windShare  = curtailedTWh > 0 ? sldc.windCurtailedTWh  / curtailedTWh : 0.45;
+    const rawWindowTWh = sldc.solarCurtailedTWh + sldc.windCurtailedTWh;
+    const annualizedTWh = rawWindowTWh * 365 / sldc.nRows;
+    const solarShare = rawWindowTWh > 0 ? sldc.solarCurtailedTWh / rawWindowTWh : 0.55;
+    const windShare  = rawWindowTWh > 0 ? sldc.windCurtailedTWh  / rawWindowTWh : 0.45;
     const base = buildTypicalMixedRegion(
       REGION_ID,
-      curtailedTWh,
+      annualizedTWh,
       { solar: solarShare, wind: windShare },
       `MSLDC (Maharashtra State Load Despatch Centre) direct curtailment — ${sldc.nRows}-day CSV, ` +
-      `trailing-90-day solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh + wind ${sldc.windCurtailedTWh.toFixed(2)} TWh curtailed. ` +
+      `trailing-90-day solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh + wind ${sldc.windCurtailedTWh.toFixed(2)} TWh curtailed; ` +
+      `annualised to ${annualizedTWh.toFixed(2)} TWh/yr (× 365 / ${sldc.nRows} rows). ` +
       `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
       new Date().getFullYear().toString(),
       7,
