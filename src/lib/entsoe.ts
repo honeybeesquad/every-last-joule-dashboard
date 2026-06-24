@@ -116,6 +116,8 @@ export function buildZoneData(
     lastUpdated: rawPoints.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     lastSuccessAt: rawPoints.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     sourceNote,
+    generationProfile: timeOfDayAverageGW(rawPoints),
+    generationTotalTWh: totalTWh30d(rawPoints),
   };
 
   if (fuelShare && Object.keys(fuelShare).length > 0) data.fuelShare = fuelShare;
@@ -210,6 +212,26 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
     );
   }
 
+  // Accumulate raw generation points (pre-rate) across all technologies
+  // for the two-sided output. Each series contributes its raw A75 MW values.
+  const genSummed = new Map<string, { mw: number; intervalHours: number | undefined }>();
+  for (const { technology, points: techPoints } of series) {
+    for (const point of techPoints) {
+      const existing = genSummed.get(point.utcTimestamp);
+      genSummed.set(point.utcTimestamp, {
+        mw: (existing?.mw ?? 0) + Math.max(0, point.mw),
+        intervalHours: existing?.intervalHours ?? point.intervalHours,
+      });
+    }
+  }
+  const genPoints = Array.from(genSummed.entries())
+    .map(([utcTimestamp, point]) => ({
+      utcTimestamp,
+      mw: point.mw,
+      intervalHours: point.intervalHours,
+    }))
+    .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+
   const denom = Object.values(fuelTotals).reduce((sum, value) => sum + (value ?? 0), 0);
   const fuelShare = denom > 0
     ? Object.fromEntries(
@@ -233,5 +255,7 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
     lastSuccessAt: lastUpdated ?? new Date().toISOString(),
     sourceNote,
     ...(fuelShare ? { fuelShare } : {}),
+    generationProfile: timeOfDayAverageGW(genPoints),
+    generationTotalTWh: totalTWh30d(genPoints),
   };
 }
