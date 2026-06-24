@@ -105,6 +105,18 @@
         "T4-structural-gap"
       ],
       "description": "Deterministic source-quality classification. Per B4 Option B (locked 2026-04-25, see docs/proposals/b4-option-b-decision.md), T1 is subdivided into T1a (own-jurisdiction calibration rate; \u00b115%), T1b (domestic-stat-agency rate or modelled-share split; empirical \u00b150%), and T1c (neighbour-extrapolated rate; empirical \u00b135.5%). T2 = static anchored to a published annual (Ember, IRENA, GGFR, TSO annual; \u00b120%). T3 = static annual + typical-shape profile (solar/wind/hydro-seasonal/mixed/overnight; \u00b140%). T4 is reserved in the enum for symmetry but is never emitted \u2014 structural-gap regions do not appear in the dataset at all. The pre-2026-04-25 single label \"T1-live-TSO\" is retained for backward compatibility on legacy snapshots; new emissions use T1a/T1b/T1c. Derived deterministically by src/lib/uncertainty.ts::deriveTier; see docs/methodology/uncertainty.md."
+    },
+    "generationProfile": {
+      "type": "array",
+      "description": "30-day trailing average gross renewable generation in GW, one value per UTC hour (index 0 = 00:00\u201301:00 UTC). Companion to profile (curtailment). Populated progressively by loaders that expose two-sided data (generation + curtailment); absence means the loader has not yet exposed generation as a first-class field.",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {"type": "number", "minimum": 0}
+    },
+    "generationTotalTWh": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Trailing-30-day total gross renewable generation in TWh. Companion to totalTWh (curtailment). generationTotalTWh >= totalTWh must hold (cannot curtail more than was generated)."
     }
   },
   "additionalProperties": false

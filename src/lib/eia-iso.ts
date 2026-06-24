@@ -102,6 +102,14 @@ function toPoints(raw: EIAResponse, rate: number): CurtailmentPoint[] {
   }));
 }
 
+/** Extract raw generation points (pre-rate) from an EIA response. */
+function toGenPoints(raw: EIAResponse): CurtailmentPoint[] {
+  return raw.response.data.map((r) => ({
+    utcTimestamp: `${r.period}:00:00Z`,
+    mw: Math.max(0, Number(r.value)),
+  }));
+}
+
 export function parseEiaIsoRegionPerFuel(
   config: EiaIsoConfig,
   windRaw: EIAResponse,
@@ -125,6 +133,10 @@ export function parseEiaIsoRegionPerFuel(
     ? { wind: windTotalMw / denom, solar: solarTotalMw / denom }
     : { wind: 1, solar: 0 };
 
+  // Raw generation points (pre-rate) for the two-sided output.
+  const windGenPoints = toGenPoints(windRaw);
+  const solarGenPoints = toGenPoints(solarRaw ?? { response: { total: 0, data: [] } });
+
   const wind: RegionData = {
     regionId: `${config.regionId}-wind`,
     profile: timeOfDayAverageGW(windPoints),
@@ -134,6 +146,8 @@ export function parseEiaIsoRegionPerFuel(
     lastUpdated: windLast,
     lastSuccessAt: windLast,
     sourceNote: `EIA ${config.respondent} wind × ${(config.windRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
+    generationProfile: timeOfDayAverageGW(windGenPoints),
+    generationTotalTWh: totalTWh30d(windGenPoints),
   };
 
   const solar: RegionData = {
@@ -145,6 +159,8 @@ export function parseEiaIsoRegionPerFuel(
     lastUpdated: solarLast,
     lastSuccessAt: solarLast,
     sourceNote: `EIA ${config.respondent} solar × ${(config.solarRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
+    generationProfile: timeOfDayAverageGW(solarGenPoints),
+    generationTotalTWh: totalTWh30d(solarGenPoints),
   };
 
   return { wind, solar };
@@ -173,6 +189,11 @@ export function parseEiaIsoRegion(
     : { wind: 1, solar: 0 };
   const lastPeriod = combined.at(-1)?.utcTimestamp ?? new Date().toISOString();
 
+  // Raw generation points (pre-rate) merged for the two-sided output.
+  const windGenPoints = toGenPoints(windRaw);
+  const solarGenPoints = toGenPoints({ response: { total: solarRaw?.response?.total ?? 0, data: solarRaw?.response?.data ?? [] } });
+  const combinedGen = mergeSum(windGenPoints, solarGenPoints);
+
   return {
     regionId: config.regionId,
     profile: timeOfDayAverageGW(combined),
@@ -183,6 +204,8 @@ export function parseEiaIsoRegion(
     lastSuccessAt: lastPeriod,
     sourceNote: `EIA ${config.respondent} hourly wind × ${(config.windRate * 100).toFixed(1)}% + solar × ${(config.solarRate * 100).toFixed(1)}% calibrated curtailment (observed 30d split: wind ${(fuelShare.wind * 100).toFixed(0)}% / solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
     fuelShare,
+    generationProfile: timeOfDayAverageGW(combinedGen),
+    generationTotalTWh: totalTWh30d(combinedGen),
   };
 }
 
