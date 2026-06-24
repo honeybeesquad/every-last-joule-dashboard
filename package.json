@@ -33,6 +33,7 @@
     "lint:coverage-audit": "python3 scripts/validation/lint_coverage_audit.py data/coverage-audit/2026-04-26-world.csv data/coverage-audit/2026-06-10-granularity-and-gaps.csv",
     "test:coverage-audit": "python3 -m pytest scripts/validation/test_coverage_audit_schema.py scripts/validation/test_lint_coverage_audit.py scripts/validation/test_merge_coverage_audit.py -v",
     "data:refresh": "observable build",
+    "scorecard": "tsx scripts/scorecard.ts",
     "snapshot": "tsx scripts/write-snapshot.ts",
     "reproduce:ercot-west": "python3 scripts/reproduce/reproduce_2024_ercot_west.py",
     "postinstall": "git config core.hooksPath .githooks 2>/dev/null || true"
