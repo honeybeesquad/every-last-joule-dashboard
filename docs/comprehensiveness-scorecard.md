@@ -64,6 +64,8 @@ _*T1 = live + live-domestic-anchored + live-neighbour-anchored_
 
 All 270 snapshots bucketed by age of `lastSuccessAt`.
 
+> **What this measures:** the age of the *committed* `data/snapshots/last-good/*.json` corpus — i.e. the **fallback** that is served only when a live fetch fails at build. Production redeploys roughly every 3 h (`.github/workflows/data-refresh.yml`) and re-fetches live, so committed-snapshot age is **not** the age of the data on everylastjoule.com (which is current whenever the upstream is reachable at build time). Many `> 30 d` entries are also **static-anchor** snapshots that never change by design (modelled T3 regions). The number that actually matters is the live-tier subset below.
+
 | Age bucket | Snapshots | Share |
 |---|---|---|
 | < 24 h | 30 | 11.1% |
@@ -74,8 +76,11 @@ All 270 snapshots bucketed by age of `lastSuccessAt`.
 
 ### Live-tier regions with stale snapshots (> 7 d)
 
-These are the cases where stale = potentially misleading, because the region
-carries a "live" tier label but its snapshot has not been refreshed recently.
+Live-tier regions whose committed **fallback** snapshot is > 7 d old. Prod still
+re-fetches these every ~3 h, so this does **not** mean the live site shows stale
+data — but it flags (a) the fallback corpus worth periodically regenerating, and
+(b) any feed that may have silently drifted to its fallback. Cross-check the
+`health-check.yml` prod monitor before treating any as a live outage.
 
 - `aemo-nsw-solar`
 - `aemo-nsw-wind`
