@@ -22,6 +22,23 @@ export interface ZeroAllowlistEntry {
 }
 
 export const ZERO_ALLOWLIST: readonly ZeroAllowlistEntry[] = [
+  // Germany netztransparenz measured curtailment: renewable redispatch is concentrated
+  // in the northern 50Hertz/TenneT zones; Amprion (W/inland Germany) measures ~0 renewable
+  // curtailment (confirmed across May-2025 + May-2026 windows). Measured-zero is accurate,
+  // NOT a dead feed — the loader picks up nonzero data in windier months. reviewBy is set
+  // post-winter to re-confirm Amprion stays low through a high-wind season.
+  {
+    regionId: "germany-amprion-wind",
+    addedDate: "2026-06-25",
+    reviewBy: "2026-12-25",
+    note: "netztransparenz measured: Amprion (W Germany) has negligible renewable redispatch curtailment; ~0 confirmed across May 2025 + May 2026. Curtailment concentrates in 50Hertz/TenneT (north).",
+  },
+  {
+    regionId: "germany-amprion-solar",
+    addedDate: "2026-06-25",
+    reviewBy: "2026-12-25",
+    note: "netztransparenz measured: Amprion (W Germany) has negligible renewable redispatch curtailment; ~0 confirmed across May 2025 + May 2026. Curtailment concentrates in 50Hertz/TenneT (north).",
+  },
   {
     regionId: "aemo-tas-solar",
     addedDate: "2026-05-12",
