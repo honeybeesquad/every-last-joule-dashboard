@@ -39,7 +39,7 @@ const HOTSPOT_LIST_LIMIT = 50;
 // Initialise the loading-progress terminal before fetches start.
 // trackFile() wraps each FileAttachment promise so the terminal updates
 // as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 132;
+const _LOADER_FILE_COUNT = 133;
 initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 
 // Fetch all region data in parallel. Prior to this, every FileAttachment
@@ -49,7 +49,7 @@ initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
 const [
   cbeci, ercot, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
   soco, pacw, pace, psco, azps, srp, ipco, tepc, wacm,
-  entsoe, aemo, aemoPerPlant, belgium, france, denmark, newZealand, newZealandHydro, norway, atacama,
+  entsoe, germanyCurtailment, aemo, aemoPerPlant, belgium, france, denmark, newZealand, newZealandHydro, norway, atacama,
   chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
   ireland, peru, peruPerPlant, southAfrica, argentina, uruguay, paraguay, mexico,
   japanChubu, japanChugoku, japanHokkaido, japanHokuriku, japanKansai,
@@ -89,6 +89,7 @@ const [
   trackFile(FileAttachment("data/tepc.json").json(),             "Tucson Electric Power"),
   trackFile(FileAttachment("data/wacm.json").json(),             "WAPA Rocky Mountain"),
   trackFile(FileAttachment("data/entsoe.json").json(),           "ENTSO-E Europe"),
+  trackFile(FileAttachment("data/germany-curtailment.json").json(), "Germany curtailment"),
   trackFile(FileAttachment("data/aemo.json").json(),             "AEMO Australia"),
   trackFile(FileAttachment("data/aemo-per-plant.json").json(),  "AEMO Per-Plant"),
   trackFile(FileAttachment("data/belgium.json").json(),          "Belgium"),
@@ -371,14 +372,14 @@ const regionData = {
   ...aemo,
   ...aemoPerPlant,
   ...belgium,
-  "germany-50hertz-wind": entsoe["germany-50hertz-wind"],
-  "germany-50hertz-solar": entsoe["germany-50hertz-solar"],
-  "germany-amprion-wind": entsoe["germany-amprion-wind"],
-  "germany-amprion-solar": entsoe["germany-amprion-solar"],
-  "germany-tennet-de-wind": entsoe["germany-tennet-de-wind"],
-  "germany-tennet-de-solar": entsoe["germany-tennet-de-solar"],
-  "germany-transnetbw-wind": entsoe["germany-transnetbw-wind"],
-  "germany-transnetbw-solar": entsoe["germany-transnetbw-solar"],
+  "germany-50hertz-wind": germanyCurtailment["germany-50hertz-wind"],
+  "germany-50hertz-solar": germanyCurtailment["germany-50hertz-solar"],
+  "germany-amprion-wind": germanyCurtailment["germany-amprion-wind"],
+  "germany-amprion-solar": germanyCurtailment["germany-amprion-solar"],
+  "germany-tennet-de-wind": germanyCurtailment["germany-tennet-de-wind"],
+  "germany-tennet-de-solar": germanyCurtailment["germany-tennet-de-solar"],
+  "germany-transnetbw-wind": germanyCurtailment["germany-transnetbw-wind"],
+  "germany-transnetbw-solar": germanyCurtailment["germany-transnetbw-solar"],
   "spain-wind": entsoe["spain-wind"],
   "spain-solar": entsoe["spain-solar"],
   "portugal-wind": entsoe["portugal-wind"],
