@@ -1,6 +1,6 @@
 # Validation — 50Hertz Wind (`germany-50hertz-wind`)
 
-Last updated: 2026-06-17 · Germany DE-LU → TSO control-area split · Granularity survey 2026-06-10
+Last updated: 2026-06-25 · Source upgraded from ENTSO-E proxy to netztransparenz.de measured curtailment
 
 ## Source
 
@@ -8,29 +8,31 @@ Last updated: 2026-06-17 · Germany DE-LU → TSO control-area split · Granular
 - **Country:** DEU
 - **Tier:** live-domestic-anchored
 - **Kind:** wind
-- **Source:** ENTSO-E Transparency A75 generation-per-type for the **50Hertz** control area (EIC `10YDE-VE-------2`): offshore (B18 ×17.8%) + onshore (B19 ×3.0%) wind. Live ENTSO-E generation × the national BNetzA/SMARD curtailment rate apportioned by control area. National anchor on a sub-national (CTA) feed → **T1b (live-domestic-anchored)**, ±50% envelope.
-- **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
+- **Source:** netztransparenz.de redispatch API — MEASURED renewable curtailment (`GESAMTE_ARBEIT_MWH` where `RICHTUNG=Wirkleistungseinspeisung reduzieren` and `PRIMAERENERGIEART=Erneuerbar`) per instructing TSO (50Hertz). Wind/solar split apportioned by the ENTSO-E per-fuel ratio (the feed reports renewable curtailment without a fuel breakdown); magnitude is measured, split is estimated. Seasonal — single-month window.
+- **Source URL:** [https://ds.netztransparenz.de/](https://ds.netztransparenz.de/)
 - **Structural gap:** no
 
 ## Calibration
 
-- **Rate:** offshore (B18 ×17.8%) + onshore (B19 ×3.0%) wind, from the former germany-aggregate BNetzA/SMARD 2024 rates, applied to this CTA's own A75 generation.
-- **Anchor basis:** BNetzA/SMARD 2024 national curtailment (4.56 TWh offshore + 3.38 TWh onshore wind; 1.39 TWh solar), apportioned to control areas. A BNetzA per-TSO Redispatch breakdown would upgrade this to measured per-CA curtailment.
+- **Method:** Direct measurement from netztransparenz redispatch (not generation × rate). No calibration rate applied — `GESAMTE_ARBEIT_MWH` is the metered energy of each redispatch measure. Wind/solar split: `fw = wind_twh / (wind_twh + solar_twh)` from the ENTSO-E 50Hertz CTA snapshot.
+- **Anchor basis:** Measured redispatch totals from netztransparenz.de for the latest complete calendar month. Tier remains T1b (live-domestic-anchored) because the wind/solar apportionment is estimated rather than directly measured.
 
 ## Published anchors
 
-- **BNetzA per-TSO annual:** — (pending per-CA Redispatch figures)
-- **ENTSO-E annual:** —
+- **netztransparenz.de annual:** available via the same API for prior years
+- **BNetzA per-TSO annual:** consistent with netztransparenz (same source)
 
 ## Discrepancy analysis
 
-_New region: the Germany DE-LU bidding zone (one ENTSO-E domain) split into its 4 TSO control areas (granularity survey 2026-06-10). ENTSO-E A75 live-probed per CTA-EIC on 2026-06-17 — B16/B19 present for all 4; B18 offshore only for the coastal CAs (50Hertz, TenneT). Replaces the former germany-wind/germany-solar aggregate. ±50% T1b envelope pending per-TSO BNetzA confirmation._
+_Source upgraded 2026-06-25 from ENTSO-E A75 generation × national BNetzA/SMARD rate proxy to direct netztransparenz.de measured renewable redispatch curtailment. Magnitude changed from proxy to measured; the wind/solar split remains estimated via ENTSO-E fuel ratio. Amprion and TransnetBW correctly show near-zero measured curtailment in the May 2026 window — consistent with operational reality (wind/solar curtailment in Germany is concentrated in the 50Hertz and TenneT DE zones)._
 
 ## Known limitations
 
-- The curtailment rate is the BNetzA national rate split to control areas, not a BNetzA per-TSO published figure — hence T1b, not T1a. Offshore (B18) is applied only to the two coastal CAs (50Hertz, TenneT); the inland CAs (Amprion, TransnetBW) carry onshore wind only, matching the live A75 feed.
+- Wind/solar split is estimated (ENTSO-E fuel ratio) because the netztransparenz feed does not break down `Erneuerbar` further into wind vs solar. Hence T1b, not T1a.
+- Single-month window (latest complete calendar month, ~1–2 month settlement lag). Seasonal variation applies.
+- On API outage, loader falls back to last-good snapshot via `withFallback`.
 
 ## Links
 
-- Loader: ENTSO-E CTA zone config in [`entsoe.json.ts`](../../src/data/entsoe.json.ts)
+- Loader: [`src/data/germany-curtailment.json.ts`](../../src/data/germany-curtailment.json.ts)
 - Methodology — tiers & live-data paths: [`docs/methodology/live-data-paths.md`](../methodology/live-data-paths.md)

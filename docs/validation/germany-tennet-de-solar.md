@@ -1,6 +1,6 @@
 # Validation — TenneT DE Solar (`germany-tennet-de-solar`)
 
-Last updated: 2026-06-17 · Germany DE-LU → TSO control-area split · Granularity survey 2026-06-10
+Last updated: 2026-06-25 · Source upgraded from ENTSO-E proxy to netztransparenz.de measured curtailment
 
 ## Source
 
@@ -8,29 +8,29 @@ Last updated: 2026-06-17 · Germany DE-LU → TSO control-area split · Granular
 - **Country:** DEU
 - **Tier:** live-domestic-anchored
 - **Kind:** solar
-- **Source:** ENTSO-E Transparency A75 generation-per-type for the **TenneT DE** control area (EIC `10YDE-EON------1`): solar (B16 ×2.3%). Live ENTSO-E generation × the national BNetzA/SMARD curtailment rate apportioned by control area. National anchor on a sub-national (CTA) feed → **T1b (live-domestic-anchored)**, ±50% envelope.
-- **Source URL:** [https://transparency.entsoe.eu/](https://transparency.entsoe.eu/)
+- **Source:** netztransparenz.de redispatch API — MEASURED renewable curtailment per instructing TSO (TenneT DE). Wind/solar split apportioned by the ENTSO-E per-fuel ratio; magnitude is measured, split is estimated.
+- **Source URL:** [https://ds.netztransparenz.de/](https://ds.netztransparenz.de/)
 - **Structural gap:** no
 
 ## Calibration
 
-- **Rate:** solar (B16 ×2.3%), from the former germany-aggregate BNetzA/SMARD 2024 rates, applied to this CTA's own A75 generation.
-- **Anchor basis:** BNetzA/SMARD 2024 national curtailment (4.56 TWh offshore + 3.38 TWh onshore wind; 1.39 TWh solar), apportioned to control areas. A BNetzA per-TSO Redispatch breakdown would upgrade this to measured per-CA curtailment.
+- **Method:** Direct measurement — no calibration rate applied. Wind/solar split: `fs = 1 − fw` from ENTSO-E TenneT DE CTA snapshot.
+- **Anchor basis:** Measured redispatch totals from netztransparenz.de for the latest complete calendar month.
 
 ## Published anchors
 
-- **BNetzA per-TSO annual:** — (pending per-CA Redispatch figures)
-- **ENTSO-E annual:** —
+- **netztransparenz.de annual:** available via the same API for prior years
 
 ## Discrepancy analysis
 
-_New region: the Germany DE-LU bidding zone (one ENTSO-E domain) split into its 4 TSO control areas (granularity survey 2026-06-10). ENTSO-E A75 live-probed per CTA-EIC on 2026-06-17 — B16/B19 present for all 4; B18 offshore only for the coastal CAs (50Hertz, TenneT). Replaces the former germany-wind/germany-solar aggregate. ±50% T1b envelope pending per-TSO BNetzA confirmation._
+_Source upgraded 2026-06-25. See germany-tennet-de-wind for full notes._
 
 ## Known limitations
 
-- The curtailment rate is the BNetzA national rate split to control areas, not a BNetzA per-TSO published figure — hence T1b, not T1a. Offshore (B18) is applied only to the two coastal CAs (50Hertz, TenneT); the inland CAs (Amprion, TransnetBW) carry onshore wind only, matching the live A75 feed.
+- Wind/solar split is estimated (ENTSO-E fuel ratio). Hence T1b, not T1a.
+- Single-month window with ~1–2 month settlement lag.
 
 ## Links
 
-- Loader: ENTSO-E CTA zone config in [`entsoe.json.ts`](../../src/data/entsoe.json.ts)
+- Loader: [`src/data/germany-curtailment.json.ts`](../../src/data/germany-curtailment.json.ts)
 - Methodology — tiers & live-data paths: [`docs/methodology/live-data-paths.md`](../methodology/live-data-paths.md)

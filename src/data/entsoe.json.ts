@@ -38,65 +38,9 @@ export const ZONES = [
     technologies: [{ psrType: "B16", fuel: "solar", rate: 0.005 }],
     sourceNote: "Portugal solar curtailment is near-zero: REN 'Dados Técnicos 2024' reports no curtailment; combined wind+solar ~0.4% (213 GWh) in 2023 (Synertics/REN). 0.5% rate is a conservative per-technology placeholder. Prior 10% rate (~25× too high) corrected down.",
   },
-  // Germany DE-LU bidding zone split into its 4 TSO control areas (granularity survey 2026-06-10).
-  // ENTSO-E A75 live-probed per CTA-EIC on 2026-06-17: B16(solar)+B19(onshore wind) present for all 4;
-  // B18(offshore wind) only for the two coastal CAs (50Hertz, TenneT) — inland Amprion/TransnetBW carry
-  // onshore wind only. EIC↔TSO mapping pinned (10YDE-EON=TenneT, 10YDE-VE=50Hertz — the historical-name trap).
-  // Rates = the BNetzA/SMARD national rates from the former germany aggregate, applied per CTA's own generation.
-  {
-    id: "germany-50hertz-wind",
-    domain: "10YDE-VE-------2",
-    technologies: [
-      { psrType: "B18", fuel: "wind", rate: 0.178 },
-      { psrType: "B19", fuel: "wind", rate: 0.030 },
-    ],
-    sourceNote: "ENTSO-E 50Hertz control area (NE Germany, Baltic offshore): BNetzA/SMARD national wind rate by CTA.",
-  },
-  {
-    id: "germany-50hertz-solar",
-    domain: "10YDE-VE-------2",
-    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.023 }],
-    sourceNote: "ENTSO-E 50Hertz control area solar: BNetzA/SMARD national solar rate by CTA.",
-  },
-  {
-    id: "germany-amprion-wind",
-    domain: "10YDE-RWENET---I",
-    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.030 }],
-    sourceNote: "ENTSO-E Amprion control area (W/SW Germany, inland): onshore wind only; BNetzA/SMARD national rate by CTA.",
-  },
-  {
-    id: "germany-amprion-solar",
-    domain: "10YDE-RWENET---I",
-    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.023 }],
-    sourceNote: "ENTSO-E Amprion control area solar: BNetzA/SMARD national solar rate by CTA.",
-  },
-  {
-    id: "germany-tennet-de-wind",
-    domain: "10YDE-EON------1",
-    technologies: [
-      { psrType: "B18", fuel: "wind", rate: 0.178 },
-      { psrType: "B19", fuel: "wind", rate: 0.030 },
-    ],
-    sourceNote: "ENTSO-E TenneT DE control area (N–S corridor, North-Sea offshore): BNetzA/SMARD national wind rate by CTA.",
-  },
-  {
-    id: "germany-tennet-de-solar",
-    domain: "10YDE-EON------1",
-    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.023 }],
-    sourceNote: "ENTSO-E TenneT DE control area solar: BNetzA/SMARD national solar rate by CTA.",
-  },
-  {
-    id: "germany-transnetbw-wind",
-    domain: "10YDE-ENBW-----N",
-    technologies: [{ psrType: "B19", fuel: "wind", rate: 0.030 }],
-    sourceNote: "ENTSO-E TransnetBW control area (Baden-Württemberg, inland): onshore wind only; BNetzA/SMARD national rate by CTA.",
-  },
-  {
-    id: "germany-transnetbw-solar",
-    domain: "10YDE-ENBW-----N",
-    technologies: [{ psrType: "B16", fuel: "solar", rate: 0.023 }],
-    sourceNote: "ENTSO-E TransnetBW control area solar: BNetzA/SMARD national solar rate by CTA.",
-  },
+  // German TSO zones (germany-50hertz-*, germany-amprion-*, germany-tennet-de-*, germany-transnetbw-*)
+  // removed 2026-06-25: replaced by germany-curtailment.json.ts (netztransparenz.de measured
+  // renewable curtailment). The new loader is authoritative; its withFallback covers outages.
   {
     id: "finland-wind",
     domain: "10YFI-1--------U",
