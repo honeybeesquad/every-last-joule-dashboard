@@ -6,8 +6,11 @@ import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { nzTradingPeriodUtc } from "./new-zealand.json.js";
 
-// EMI DispatchNodalPricesAndVolumes — monthly CSVs, one row per PoC per
-// trading period. Uses the same Azure Blob Storage base as Generation_MD.
+// EMI DispatchNodalPricesAndVolumes — one row per PoC per trading period.
+// EMI migrated this dataset (~2026-Q2) from flat monthly files
+// (`…/NodalPricesAndVolumes/YYYYMM_…csv`) to DAILY files nested under a year
+// folder (`…/NodalPricesAndVolumes/YYYY/YYYYMMDD_…csv`), published ~1 day in
+// arrears. The daily layout replaced the old ~1–1.5-month publication lag.
 const BASE_URL = "https://emidatasets.blob.core.windows.net/publicdata/Datasets/Wholesale/DispatchAndPricing/NodalPricesAndVolumes";
 
 // 3-letter PoC prefixes for the three hydro corridors named in the source.
@@ -84,42 +87,53 @@ export function buildNzHydroData(points: CurtailmentPoint[]): RegionData {
   };
 }
 
-function monthKey(date: Date): string {
-  return `${date.getUTCFullYear()}${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+/** EMI daily-file path parts: year folder + YYYYMMDD stem + YYYY-MM-DD date. */
+function dayKey(date: Date): { year: string; ymd: string; iso: string } {
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(date.getUTCDate()).padStart(2, "0");
+  return { year: String(y), ymd: `${y}${m}${d}`, iso: `${y}-${m}-${d}` };
 }
 
 const run = async (): Promise<RegionData> => {
   const now = new Date();
-  // NodalPricesAndVolumes files have the same ~1–1.5 month publication lag as
-  // Generation_MD. Look back 5 months and stop once we have 2 months of data.
-  const LOOKBACK = 5;
-  const months = Array.from({ length: LOOKBACK }, (_, i) =>
-    new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1)),
+  // Daily files publish ~1 day in arrears. Walk back 33 days so the 30-day
+  // profile/total window is fully covered even when the most recent day or two
+  // aren't posted yet. A day with no ≤$0 hydro is normal (no points) and is
+  // simply skipped; the silent-zero guard below degrades to fallback only if
+  // *every* fetched day is empty (whole dataset moved/broken again).
+  const LOOKBACK_DAYS = 33;
+  const days = Array.from({ length: LOOKBACK_DAYS }, (_, i) =>
+    new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - i)),
   );
 
-  const allPoints: CurtailmentPoint[] = [];
-  let monthsFetched = 0;
-
-  for (const date of months) {
-    if (monthsFetched >= 2) break;
-    const key = monthKey(date);
-    try {
-      const csv = await fetchText(
-        `${BASE_URL}/${key}_DispatchNodalPricesAndVolumes.csv`,
-        { timeoutMs: 60_000, retries: 1 },
-      );
-      // Monthly files carry a TradingDate column — pass an empty string as
-      // the fallback date; the parser will read from each row.
-      const pts = parseEmiNodalCsv(csv, "");
-      if (pts.length) {
-        allPoints.push(...pts);
-        monthsFetched++;
+  // Each daily CSV is ~11 MB, so fetch with bounded concurrency rather than
+  // 33 sequential round-trips — keeps the loader's wall-clock a few seconds on
+  // the build network instead of minutes.
+  const CONCURRENCY = 8;
+  const perDay: CurtailmentPoint[][] = new Array(days.length);
+  let next = 0;
+  const worker = async (): Promise<void> => {
+    while (next < days.length) {
+      const i = next++;
+      const { year, ymd, iso } = dayKey(days[i]);
+      try {
+        const csv = await fetchText(
+          `${BASE_URL}/${year}/${ymd}_DispatchNodalPricesAndVolumes.csv`,
+          { timeoutMs: 60_000, retries: 1 },
+        );
+        // Daily files carry a TradingDate column; pass the day's date as the
+        // fallback for any row missing it.
+        perDay[i] = parseEmiNodalCsv(csv, iso);
+      } catch (err) {
+        console.warn(`nz-hydro nodal day skipped ${ymd}: ${(err as Error).message}`);
+        perDay[i] = [];
       }
-    } catch (err) {
-      console.warn(`nz-hydro nodal month skipped ${key}: ${(err as Error).message}`);
     }
-  }
+  };
+  await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
 
+  const allPoints = perDay.flat();
   if (!allPoints.length) throw new Error("NZ EMI DispatchNodalPricesAndVolumes returned no usable hydro curtailment points");
   return buildNzHydroData(allPoints);
 };
