@@ -1,10 +1,25 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-06-25 (#313 Germany netztransparenz **measured** curtailment merged to `main`, gates green; Spain ESIOS curtailment probed + confirmed buildable pending a free token — see Parked items. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)
+**Last verified against git:** 2026-07-17 (live-data incident sweep — see the section below: ENTSO-E token 401 **fixed** (~60 regions un-frozen after ~4 weeks on 2026-06-17 fallback), NZ hydro EMI daily-file migration **PR #470**, Node 20→24 **#487**; Germany creds + Colombia relay still need a human. Previously 2026-06-25: #313 Germany netztransparenz **measured** curtailment merged to `main`, gates green; Spain ESIOS curtailment probed + confirmed buildable pending a free token — see Parked items. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
 > **For AI sessions:** read this file before drafting plans, brainstorming, or creating worktrees. Plans in `~/.claude/plans/` and `docs/superpowers/plans/` may be SHIPPED — check this file before treating any plan as live work.
+
+---
+
+## Live-data incidents (2026-07-17 sweep)
+
+A build-log audit of production found six feeds silently serving `withFallback` last-good data while the dashboard showed only an amber "degraded" ring. Two are fixed, one is a PR, three are open:
+
+- **ENTSO-E token 401 — FIXED 2026-07-15 (Vercel config, no commit).** ~54 ENTSO-E zones **+ Norway** (which reads the same `ENTSOE_API_TOKEN`) served the **2026-06-17** snapshot for ~4 weeks. Root cause: the token in **Vercel Production** returned **HTTP 401** on every A75 request (57× in one build log); the local `.env.local` token was valid the whole time (200 on the identical request), so the loader code and the API were never at fault — ENTSO-E rotated/revoked the Vercel-side token ~2026-06-17. Fix: synced the working token into Vercel Production + rebuilt. Verified: **0 × 401**, all **54 zones `live`** on everylastjoule.com. The health-check ([#207](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/207)) correctly flagged this daily from 2026-06-16 — alerting worked, the human-response loop was the gap. **Whenever many ENTSO-E regions go degraded at once, grep the Vercel build log for `HTTP 401` first — it's the token, not 60 loaders.**
+- **NZ hydro EMI migration — PR #470.** EMI restructured `DispatchNodalPricesAndVolumes` (~2026-Q2) from flat monthly files to **daily files nested under a year folder** (`…/NodalPricesAndVolumes/YYYY/YYYYMMDD_…csv`); the old monthly URL 404s for every month, so `new-zealand-hydro` fetched nothing and froze at **2026-04-30**. Loader now walks 33 daily files with bounded concurrency (each CSV ~11 MB). Bonus: the daily layout drops the old ~1–1.5-month publication lag. **Not a regression to watch for:** with the feed healthy, a no-spill period (NZ winter, spot ~$50/MWh) yields zero ≤$0/MWh events, so the silent-zero guard still falls back — it now self-heals at the next spill event instead of 404ing forever. Follow-up left open: consider distinguishing "feed healthy but genuinely zero curtailment" (honest fresh zero) from "feed broken" (fall back).
+- **Germany netztransparenz — STILL OPEN (needs a human).** `NETZTRANSPARENZ_CLIENT_ID` / `NETZTRANSPARENZ_CLIENT_SECRET` are **still not set in Vercel**, so all 8 DE regions serve the committed *measured* snapshot rather than refreshing live. The creds exist and are **verified working** (loader run 2026-07-16 returned 8 regions live). This is the single remaining action from #313.
+- **Colombia relay — STILL OPEN ([#405](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/405)).** Newest CSV row **2026-07-02** (15 days stale, threshold 4). `abed.local` is unreachable — the egress host needs waking / its WireGuard tunnel restarted. Infra, not code.
+- **Ireland — NO FIX NEEDED.** The one-off `[ireland] live fetch failed` was a transient network blip; 0 failures across the last 3 builds and all 4 IE/NI regions are `live`. `withFallback` absorbed it correctly.
+- **Japan/Turkey/Alberta zero-peak — NOT breakage.** Summer seasonality (JP curtailment ≈ 0 in July). Health-check false positives; do not chase.
+
+**Node 24:** `engines` / CI / `.nvmrc` bumped 20→24 (#487) — Vercel deprecated Node 20 and would have **failed all builds from 2026-10-01**.
 
 ---
 
