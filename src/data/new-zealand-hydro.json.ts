@@ -82,7 +82,7 @@ export function buildNzHydroData(points: CurtailmentPoint[]): RegionData {
     peakGW: peakGW(points),
     lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
     lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-    sourceNote: "EMI DispatchNodalPricesAndVolumes ≤$0/MWh nodal price signal — Waitaki corridor (BEN/ROX/CYD/TWZ/TKU), Manapouri (MAT), Waikato (ARO/ATI/KAW/OHA/WAI)",
+    sourceNote: "EMI DispatchNodalPricesAndVolumes ≤$0/MWh nodal price signal — Waitaki corridor (BEN/ROX/CYD/TWZ/TKU), Manapouri (MAT), Waikato (ARO/ATI/KAW/OHA/WAI). CAVEAT: ≤$0 nodal prices are rare in NZ — nine months of EMI final pricing (2025-10 → 2026-06) hit ≤$0 at hydro nodes on one day only, flooring at $0.010 otherwise — so this series reads a genuine zero most of the time and is a floor on NZ hydro spill, not a measure of it.",
     fuelShare: { hydro: 1 },
   };
 }
@@ -99,9 +99,16 @@ const run = async (): Promise<RegionData> => {
   const now = new Date();
   // Daily files publish ~1 day in arrears. Walk back 33 days so the 30-day
   // profile/total window is fully covered even when the most recent day or two
-  // aren't posted yet. A day with no ≤$0 hydro is normal (no points) and is
-  // simply skipped; the silent-zero guard below degrades to fallback only if
-  // *every* fetched day is empty (whole dataset moved/broken again).
+  // aren't posted yet.
+  //
+  // A window with no ≤$0 hydro at all is NORMAL in New Zealand, not a breakage.
+  // Nine months of EMI FinalEnergyPrices (2025-10 → 2026-06) sampled 2026-08-01
+  // put hydro-node prices at or below $0 on exactly one day (2025-11, 7 rows);
+  // every other month floors at $0.010. So the guard below keys on FETCH
+  // success, not on point count: if enough days downloaded and parsed, an empty
+  // result is a truthful zero and is emitted as such. Only a collapse in
+  // fetchable days (dataset moved/renamed again, as in the ~2026-Q2 migration)
+  // is treated as breakage and degraded to the cached snapshot.
   const LOOKBACK_DAYS = 33;
   const days = Array.from({ length: LOOKBACK_DAYS }, (_, i) =>
     new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - i)),
@@ -112,6 +119,7 @@ const run = async (): Promise<RegionData> => {
   // the build network instead of minutes.
   const CONCURRENCY = 8;
   const perDay: CurtailmentPoint[][] = new Array(days.length);
+  let fetched = 0;
   let next = 0;
   const worker = async (): Promise<void> => {
     while (next < days.length) {
@@ -125,6 +133,7 @@ const run = async (): Promise<RegionData> => {
         // Daily files carry a TradingDate column; pass the day's date as the
         // fallback for any row missing it.
         perDay[i] = parseEmiNodalCsv(csv, iso);
+        fetched++;
       } catch (err) {
         console.warn(`nz-hydro nodal day skipped ${ymd}: ${(err as Error).message}`);
         perDay[i] = [];
@@ -133,8 +142,21 @@ const run = async (): Promise<RegionData> => {
   };
   await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
 
+  // The newest 1–2 days are routinely not yet posted, so require most of the
+  // window rather than all of it. Below this, assume the dataset moved again.
+  const MIN_FETCHED_DAYS = 25;
+  if (fetched < MIN_FETCHED_DAYS) {
+    throw new Error(
+      `NZ EMI DispatchNodalPricesAndVolumes fetched only ${fetched}/${LOOKBACK_DAYS} daily files (need ${MIN_FETCHED_DAYS}) — dataset likely moved`,
+    );
+  }
+
   const allPoints = perDay.flat();
-  if (!allPoints.length) throw new Error("NZ EMI DispatchNodalPricesAndVolumes returned no usable hydro curtailment points");
+  if (!allPoints.length) {
+    console.warn(
+      `nz-hydro: ${fetched}/${LOOKBACK_DAYS} daily files parsed, zero ≤$0 hydro half-hours in window — emitting a genuine zero`,
+    );
+  }
   return buildNzHydroData(allPoints);
 };
 

@@ -75,6 +75,28 @@ jobs:
               "slovakia-wind",
               "moldova-wind",
               "nyiso-rest-solar",
+              # Japan (OCCTO eria_jukyu): curtailment is strongly seasonal —
+              # spring peak, near-zero across the mid-year. These areas read ~0
+              # every July-August and held issue #207 open for six weeks,
+              # drowning two genuine faults (Germany creds, NZ hydro staleness).
+              # TRADE-OFF: a real Japan loader break during the zero season will
+              # not raise the zero-peak count. The freshness check still covers
+              # it — a broken fetch degrades to cached and is counted there.
+              "japan-chugoku",
+              "japan-hokkaido-solar",
+              "japan-hokkaido-wind",
+              "japan-hokuriku",
+              "japan-kansai",
+              "japan-kyushu",
+              "japan-okinawa",
+              "japan-shikoku",
+              "japan-tepco",
+              "japan-tohoku-wind",
+              # NZ ≤$0 nodal-price regions: nine months of EMI final pricing
+              # (2025-10 → 2026-06) hit ≤$0 at these nodes on one day only, so a
+              # zero here is the true reading of a live feed, not a breakage.
+              "new-zealand-hydro",
+              "new-zealand-solar",
           }
 
           def is_region_record(value):
