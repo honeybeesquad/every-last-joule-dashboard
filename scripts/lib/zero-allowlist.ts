@@ -182,6 +182,19 @@ export const ZERO_ALLOWLIST: readonly ZeroAllowlistEntry[] = [
     reviewBy: "2026-09-07",
     note: "Very small island grid (~170 MW solar); curtailment minimal. Confirmed legitimate by 2026-06-07 live fetch (0.0000 GW peak).",
   },
+  // NZ hydro reads zero because the ≤$0/MWh nodal-price proxy almost never
+  // fires, not because the feed is dead: the 2026-08-01 live fetch parsed
+  // 32/33 EMI daily files (~5,700 hydro rows/day) and found no ≤$0 half-hours.
+  // Nine months of EMI FinalEnergyPrices (2025-10 → 2026-06) hit ≤$0 at these
+  // nodes on one day only (2025-11), flooring at $0.010 otherwise. reviewBy is
+  // set past the Oct–Dec high-inflow season — the window the single historical
+  // ≤$0 event fell in — so a spring with genuine spill forces a re-confirm.
+  {
+    regionId: "new-zealand-hydro",
+    addedDate: "2026-08-01",
+    reviewBy: "2027-01-15",
+    note: "EMI ≤$0/MWh proxy is a floor, not a measure: feed verified live (32/33 daily files parsed 2026-08-01) but ≤$0 hydro prices occurred on 1 day in the 9 months 2025-10 → 2026-06. Zero is the true reading, not a dead feed.",
+  },
 ];
 
 export function zeroAllowlistIds(): ReadonlySet<string> {
