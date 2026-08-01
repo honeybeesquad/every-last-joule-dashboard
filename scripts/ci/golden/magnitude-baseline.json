@@ -1,5 +1,5 @@
 {
-  "$comment": "Locked per-region totalTWh baseline for LIVE-tier regions. Regenerate with `npx tsx scripts/ci/check-magnitude-golden.ts --update` and commit in the same PR as the snapshot change. Drift band is factor-4 either way; see script header.",
+  "$comment": "Locked per-region totalTWh baseline for LIVE-tier regions. Regenerate with `npx tsx scripts/ci/check-magnitude-golden.ts --update` and commit in the same PR as the snapshot change. Drift band is factor-4 either way; see script header. WARNING: `--update` rewrites EVERY key from whatever snapshots are on the running machine — on a dev box with stale local snapshots that silently relaxes the gate for unrelated regions (observed 2026-08-01: a full --update moved 68 keys, halving the Brazil set). Prefer hand-editing the single key you intend to move. Last touched: 2026-08-01 — new-zealand-hydro 0.058 → 0: the ≤$0/MWh EMI proxy yields a genuine zero (≤$0 hit NZ hydro nodes on one day in the nine months 2025-10 → 2026-06), and the old 0.058 was residue of a frozen 2026-04-30 snapshot, not a live reading.",
   "regions": {
     "aemo-nsw-solar": 0.106702,
     "aemo-nsw-wind": 0.008143,
@@ -120,7 +120,7 @@
     "netherlands-solar": 0.00167,
     "netherlands-wind": 0.056137,
     "new-zealand-geo": 0.021598,
-    "new-zealand-hydro": 0.058,
+    "new-zealand-hydro": 0,
     "new-zealand-solar": 0.000435,
     "new-zealand-wind": 0.00721,
     "north-macedonia-wind": 0.000214,
