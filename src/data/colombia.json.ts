@@ -119,20 +119,38 @@ async function run({
   let sourceDetail: string;
 
   if (probe) {
+    // Read the committed relay CSV first — it is local, cheap, and acts as the
+    // freshness floor the live path has to beat.
+    const csv = readCsvRelay(csvPath);
+    const fromCsv = (reason: string) => ({
+      annualTWh: csv.annualTWh,
+      latestDate: csv.latestDate,
+      sourceDetail: `CSV relay ${reason} (${csv.nRows}-day committed CSV, latest: ${csv.latestDate})`,
+    });
+
     try {
-      // Primary: XM SinerGox live API. Geoblocked outside Colombia; will fail
-      // from Vercel/CI build environments and fall through to the CSV relay.
+      // Primary: XM SinerGox live API. Historically geoblocked outside Colombia
+      // and expected to fail from Vercel/CI, but that is NOT reliable: on
+      // 2026-08-01 the Vercel build fetched it successfully and got a series
+      // ending 2026-04-03, ~4 months behind the relay CSV's 2026-07-28. The old
+      // code preferred live unconditionally, so a reachable-but-stale API
+      // silently overrode fresher relay data and pinned the region to
+      // `degraded` with lastSuccessAt 2026-04-03. Freshness now decides, not
+      // reachability: live has to be at least as recent as the CSV to win.
       const live = await fetchXmLast365Days();
-      annualTWh = live.annualTWh;
-      latestDate = live.latestDate;
-      sourceDetail = `XM SinerGox API live (${live.nDays} days, latest: ${live.latestDate})`;
+      if (live.latestDate >= csv.latestDate) {
+        annualTWh = live.annualTWh;
+        latestDate = live.latestDate;
+        sourceDetail = `XM SinerGox API live (${live.nDays} days, latest: ${live.latestDate})`;
+      } else {
+        console.error(
+          `[colombia] XM live reachable but stale (latest ${live.latestDate} < relay CSV ${csv.latestDate}); using CSV relay`,
+        );
+        ({ annualTWh, latestDate, sourceDetail } = fromCsv("(live reachable but staler)"));
+      }
     } catch (liveErr) {
       console.error(`[colombia] XM live fetch failed (${(liveErr as Error).message}); falling back to CSV relay`);
-      // Secondary: committed CSV updated by Britta cron at 18:30 UTC.
-      const csv = readCsvRelay(csvPath);
-      annualTWh = csv.annualTWh;
-      latestDate = csv.latestDate;
-      sourceDetail = `CSV relay fallback (${csv.nRows}-day committed CSV, latest: ${csv.latestDate})`;
+      ({ annualTWh, latestDate, sourceDetail } = fromCsv("fallback"));
     }
   } else {
     // Test path: skip live API, read CSV directly for deterministic results.

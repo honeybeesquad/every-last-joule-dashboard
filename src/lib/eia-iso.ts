@@ -318,6 +318,25 @@ export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
       fetchFueltype(apiKey, config.respondent, "SUN"),
     ]);
 
+    // Dead respondent: EIA returned NO rows for either fuel across the whole
+    // window. That is categorically different from "rows arrived and they are
+    // zero" (a real BA with genuinely no wind/solar output in the period),
+    // which the solar-gap branch below handles. Emitting zeros here would
+    // stamp `sourceStatus: "live"` with a current timestamp on a feed that has
+    // stopped publishing — which is exactly what happened to WACM: retired as
+    // a balancing authority on 2026-04-01 (absorbed into SPP West / `SWPW`),
+    // last EIA-930 row 2026-04-02, yet the loader kept emitting a fresh-stamped
+    // 0 GW indefinitely. Monitoring could not see it either: the freshness
+    // check trusted the current timestamp, and the zero-peak check only
+    // inspects live-tier regions, so a T2 region was exempt. Throw instead, so
+    // withFallback degrades honestly and the staleness becomes visible.
+    if (windRaw.response.data.length === 0 && solarRaw.response.data.length === 0) {
+      throw new Error(
+        `EIA respondent ${config.respondent} returned no wind or solar rows for the window — ` +
+        `feed appears retired or renamed (check whether the BA code is still valid)`,
+      );
+    }
+
     // Detect EIA data gap: API returned rows but every value is zero/null.
     // Don't fall back to a stale snapshot — keep wind fresh and synthesise solar.
     const solarGap = solarRaw.response.data.length > 0 &&
