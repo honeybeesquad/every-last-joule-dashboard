@@ -1,9 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-06-23 (removed 12 broken Ontario per-plant regions: the IESO GenOutputCapabilityMonth loader computed max(0, AvailableCapacity − Output) where AvailableCapacity is the plant NAMEPLATE, so the metric was the capacity-factor gap, not curtailment — e.g. K2 Wind read ~473 MW avg 'curtailment' on a 270 MW plant, and the 12 plants annualised to ~29 TWh/yr > Ontario's entire ~14 TWh/yr wind generation. No measured per-plant curtailment exists in that IESO feed; the province aggregate ontario-wind/ontario-solar (generation × rate) remains. T1a 172 → 160, total 473 → 461. Prior 2026-06-20: Peru per-plant re-added as 12 estimated/T3 regions; T3 238 → 250, total 461 → 473.).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-08-03 (india-maharashtra T3 -> T2: replaced an Ember-rate-on-generation estimate with MEASURED MSLDC Monthly Curtailment Reports \u2014 33.28 GWh across 15 published months (2025-01 -> 2026-06), ~26.8 GWh/yr annualised. The prior estimate emitted 0.101 TWh/30d (~1.23 TWh/yr), overstating measured curtailment by ~46x. T2 not T1 because MSLDC publishes monthly, lags 1-2 months and skips months. T2 24 -> 25, T3 250 -> 249, total unchanged at 461.).",
   "T1a": 160,
   "T1b": 26,
   "T1c": 1,
-  "T2": 24,
-  "T3": 250,
+  "T2": 25,
+  "T3": 249,
   "total": 461
 }

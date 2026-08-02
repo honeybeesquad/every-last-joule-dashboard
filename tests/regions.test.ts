@@ -253,7 +253,7 @@ describe("regions", () => {
     expect(REGIONS.find((r) => r.id === "italy-north-zone")).toBeUndefined();
   });
 
-  it("has 98 static regions", () => {
+  it("has 249 estimated (T3) regions", () => {
     // v0.6: +5 statics (Hawaii×3, Austria, Russia Murmansk) → 60 + 5 = 65.
     // Colombia removed pending live XM API access; no modelled fallback.
     // tier-routing fix (2026-04-25): -6 (brazil non-NE states promoted live).
@@ -319,11 +319,15 @@ describe("regions", () => {
     // was dropped in #247. = 238.
     // 2026-06-20: Peru per-plant re-added as 12 estimated regions (COES per-plant
     // generation × 2% national curtailment calibration; T3-modelled). 238 + 12 = 250.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(250);
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(249);
   });
 
-  it("has 24 anchored regions (6 flat-profile + 18 EIA-930 US BAs)", () => {
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(24);
+  it("has 25 anchored regions (7 flat-profile + 18 EIA-930 US BAs)", () => {
+    // 2026-08-03: india-maharashtra promoted estimated -> anchored on measured
+    // MSLDC Monthly Curtailment Reports (33.28 GWh across 15 published months).
+    // T2 rather than T1 because MSLDC publishes monthly, lags 1-2 months and
+    // skips months; see docs/validation/india-maharashtra.md.
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(25);
   });
 
   it("keeps remaining mixed rows explicit so no new bundled curtailment slips in", () => {

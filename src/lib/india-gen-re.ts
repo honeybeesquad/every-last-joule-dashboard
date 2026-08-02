@@ -114,7 +114,20 @@ function parseSldcCsv(text: string): SldcCurtailmentRow[] {
 export function readStateSldcCurtailment(
   csvPath: string,
   days = 90,
-): { windCurtailedTWh: number; solarCurtailedTWh: number; nRows: number; latestDate: string } | null {
+): {
+  windCurtailedTWh: number;
+  solarCurtailedTWh: number;
+  nRows: number;
+  /**
+   * Number of rows actually summed — i.e. `min(days, nRows)`. Annualise with
+   * THIS, not `nRows`: the sums cover the trailing window, so dividing the
+   * window total by the full row count understates by `nRows / windowDays`
+   * whenever the CSV is longer than the window (a 453-row CSV read at 90 days
+   * came out 5× low).
+   */
+  windowDays: number;
+  latestDate: string;
+} | null {
   let text: string;
   try {
     text = readFileSync(csvPath, "utf-8");
@@ -129,6 +142,7 @@ export function readStateSldcCurtailment(
     windCurtailedTWh:  tail.reduce((s, r) => s + r.windCurtailedGwh,  0) / 1000,
     solarCurtailedTWh: tail.reduce((s, r) => s + r.solarCurtailedGwh, 0) / 1000,
     nRows:      rows.length,
+    windowDays: tail.length,
     latestDate: rows[rows.length - 1].date,
   };
 }

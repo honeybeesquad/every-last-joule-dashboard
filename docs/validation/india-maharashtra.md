@@ -1,15 +1,15 @@
 # Validation — Maharashtra (`india-maharashtra`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-03 · MSLDC measured-curtailment promotion · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `india-maharashtra`
 - **Country:** IND
-- **Tier:** estimated
+- **Tier:** anchored
 - **Kind:** mixed
-- **Source:** MSLDC (Maharashtra State Load Despatch Centre / MSEDCL) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: msldc.mahavedha.com timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader emits T3-modelled typical-shape calibrated to POSOCO Western Region 2024 (~0.3 TWh/yr mixed solar+wind curtailment; Solapur solar + Satara/Dhule wind corridor).
-- **Source URL:** [https://msldc.mahavedha.com/](https://msldc.mahavedha.com/)
+- **Source:** MSLDC (Maharashtra State Load Despatch Centre) **Monthly Curtailment Reports** — measured daily wind+solar curtailment (Max MW, Energy MU) with operator cause codes, published as `mr10_MMYYYY.pdf`. **The prior "site unreachable / T1 blocked" finding was wrong on both counts:** the recorded domain `msldc.mahavedha.com` is NXDOMAIN at the registry (a dead domain, not a geoblock), and the real site `mahasldc.in` is reachable with no relay from a NZ residential IP. Corrected 2026-08-03.
+- **Source URL:** [https://mahasldc.in/reports/monthly-curtailment-reports](https://mahasldc.in/reports/monthly-curtailment-reports)
 - **Loader:** [`india-maharashtra.json.ts`](../../src/data/india-maharashtra.json.ts)
 - **Structural gap:** no
 
@@ -17,9 +17,9 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 <!-- BEGIN MANUAL -->
 - **Region id:** `india-maharashtra`
 - **Country:** IND
-- **Tier:** estimated
+- **Tier:** anchored
 - **Methodology note:** T2-annual-calibrated (generation denominator from CEA official source; curtailment rate modelled from Ember India 2024). Tier bucket stays T3 until tier-resolution.ts gains a T2-static path.
-- **Source provenance:** `official-lead` — generation denominator from CEA official daily Excel; curtailment rate modelled from Ember India 2024
+- **Source provenance:** `verified` — curtailment energy is measured and published by the state grid operator itself; no rate is applied
 - **Kind:** mixed (solar + wind)
 - **Source:** CEA Renewable Project Monitoring Division — daily generation Excel, State-Wise sheet (`gen-re.cea.gov.in`)
 - **Source URL:** [https://gen-re.cea.gov.in/reports](https://gen-re.cea.gov.in/reports)
@@ -29,17 +29,24 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 <!-- END MANUAL -->
 ## Calibration
 
-- **Rate source documented in:** `docs/methodology/` (see links below)
-- **Uniform across backfill years:** n/a — no backfill
+- **Method:** none. Curtailment energy is taken directly from the operator's published daily table; no generation denominator and no curtailment rate are involved. This replaces the former CEA-generation x Ember-India-2024-rate calculation.
+- **Record:** 33.28 GWh measured across **15 published months** (2025-01 -> 2026-06), 453 daily rows.
+- **Annualised:** ~26.8 GWh/yr (0.0268 TWh/yr), computed over the full published record rather than a trailing window — monthly totals range from 0.000 to 12.040 GWh, so a 90-day window annualises to wildly unstable answers.
+- **Split:** ~92% solar / ~8% wind, measured.
+- **Magnitude correction:** the previous estimate emitted **0.101 TWh/30d (~1.23 TWh/yr)** — roughly **46x** the measured annualised figure, and ~28x the worst single measured month. Maharashtra's contribution to the global total drops accordingly. This is the headline-anchor change called out in `STATUS.md`.
 
+## Why T2 and not T1
 
-<!-- BEGIN MANUAL -->
-- **Generation source:** CEA gen-re.cea.gov.in daily Excel, State-Wise sheet, Wind Energy + Solar Energy (MU) columns combined
-- **Curtailment rate:** ~2% combined — Ember India 2024 state-level estimate
-- **Formula:** `annual_curtailed_TWh = annual_generation_TWh × 0.02 / (1 − 0.02)`
-- **Ember convention:** rate expressed as fraction of potential (curtailed / (generated + curtailed))
-- **Solar/wind split:** derived from actual CEA CSV ratios; fallback 55% solar / 45% wind (MNRE 2024 capacity-weighted)
-<!-- END MANUAL -->
+T1 requires a live feed. MSLDC publishes **monthly**, lags **1-2 months**, and **skips months outright** — 2025-03, 2025-12, 2026-01 and 2026-07 were all unpublished (HTTP 404) as at 2026-08-03. The data is measured and operator-published, which clears T2's evidence bar comfortably, but no live-feed claim survives contact with that publication cadence. The emitted profile is flat 24/7: the source gives daily energy with no intraday breakdown, so any diurnal shape would be invented.
+
+`lastUpdated` carries the newest published MSLDC day and is the field to read when judging currency. `lastSuccessAt` is stamped by `withFallback` when the loader runs, per repo-wide convention, and will normally be 1-2 months ahead of `lastUpdated`.
+
+## Refresh
+
+    python3 scripts/fetch-msldc-curtailment.py --from 2025-01 --to <YYYY-MM>
+
+Writes `data/historical/india-maharashtra-sldc-curtailed-daily.csv`. Requires `pdftotext` (poppler). Nothing in CI or the build fetches this; run it on demand and commit the CSV.
+
 ## Multi-year backfill annual totals
 
 | Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |

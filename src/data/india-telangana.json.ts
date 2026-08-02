@@ -16,7 +16,7 @@ async function run(): Promise<RegionData> {
   const sldc = readStateSldcCurtailment(CSV_SLDC_PATH, 90);
   if (sldc !== null) {
     const rawWindowTWh = sldc.solarCurtailedTWh + sldc.windCurtailedTWh;
-    const annualizedTWh = rawWindowTWh * 365 / sldc.nRows;
+    const annualizedTWh = rawWindowTWh * 365 / sldc.windowDays;
     const solarShare = rawWindowTWh > 0 ? sldc.solarCurtailedTWh / rawWindowTWh : 0.7;
     const windShare  = rawWindowTWh > 0 ? sldc.windCurtailedTWh  / rawWindowTWh : 0.3;
     const base = buildTypicalMixedRegion(
