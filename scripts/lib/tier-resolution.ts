@@ -132,7 +132,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "india-karnataka": "solar",
   "india-andhra-pradesh": "solar",
   "india-tamil-nadu": "wind",
-  "india-maharashtra": "mixed",
+  "india-maharashtra": "flat",   // T2 measured MSLDC monthly totals; daily energy only, no intraday shape claimed
   "india-madhya-pradesh": "solar",
   "india-telangana": "mixed",
   "india-uttar-pradesh": "solar",
