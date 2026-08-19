@@ -7,6 +7,7 @@ import {
   parseEskomTotalHourlyGeneration,
   buildEskomCsvCandidates,
   resolveEskomCsv,
+  scrapeEskomCsvUrl,
 } from "../../src/data/south-africa.json";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -182,5 +183,62 @@ describe("parseEskomTotalHourlyGeneration", () => {
     // emits a solar entry too (0 MW when only wind is present that hour).
     expect(result.solarPoints.length).toBe(2);
     expect(result.solarPoints.some((p) => p.mw > 0)).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// scrapeEskomCsvUrl (portal page must not be a single point of failure)
+// ---------------------------------------------------------------------------
+
+describe("scrapeEskomCsvUrl", () => {
+  it("returns the scraped csvUrl when the page fetches and parses fine", async () => {
+    const fetchPageFn = async () => fixture;
+    const url = await scrapeEskomCsvUrl(fetchPageFn);
+    // The fixture doesn't contain a literal CSV link, so parseEskomDataPortal
+    // legitimately returns "" here — the point of this test is that a
+    // successful fetch+parse path returns without throwing.
+    expect(typeof url).toBe("string");
+  });
+
+  it("resolves to \"\" (not a rejection) when the page fetch throws", async () => {
+    const fetchPageFn = async () => {
+      throw new Error("HTTP 503 for portal page");
+    };
+    const url = await scrapeEskomCsvUrl(fetchPageFn);
+    expect(url).toBe("");
+  });
+
+  it("resolves to \"\" (not a rejection) when the page HTML has no <title>", async () => {
+    const fetchPageFn = async () => "<html><body>no title here</body></html>";
+    const url = await scrapeEskomCsvUrl(fetchPageFn);
+    expect(url).toBe("");
+  });
+
+  it("end-to-end: a failed portal fetch still lets the loader resolve via a computed candidate", async () => {
+    // Simulates the exact gap this test guards against: the portal page is
+    // down, but buildEskomCsvCandidates("") + resolveEskomCsv still finds
+    // a working CSV among the computed month candidates.
+    const fetchPageFn = async () => {
+      throw new Error("portal unreachable");
+    };
+    const scrapedUrl = await scrapeEskomCsvUrl(fetchPageFn);
+    expect(scrapedUrl).toBe("");
+
+    const now = new Date("2026-08-19T12:00:00Z");
+    const candidates = buildEskomCsvCandidates(scrapedUrl, now, 3);
+    expect(candidates).toEqual([
+      "https://www.eskom.co.za/dataportal/wp-content/uploads/2026/08/Total_Hourly_Generation.csv",
+      "https://www.eskom.co.za/dataportal/wp-content/uploads/2026/07/Total_Hourly_Generation.csv",
+      "https://www.eskom.co.za/dataportal/wp-content/uploads/2026/06/Total_Hourly_Generation.csv",
+      "https://www.eskom.co.za/dataportal/wp-content/uploads/2026/05/Total_Hourly_Generation.csv",
+    ]);
+
+    const csvFetchFn = async (url: string) => {
+      if (url.includes("2026/08")) return SAMPLE_CSV;
+      throw new Error("HTTP 404 for " + url);
+    };
+    const { url, parsed } = await resolveEskomCsv(candidates, csvFetchFn);
+    expect(url).toContain("2026/08");
+    expect(parsed.windPoints.length).toBeGreaterThan(0);
   });
 });

@@ -169,6 +169,31 @@ export async function resolveEskomCsv(
   );
 }
 
+/**
+ * Fetch the Eskom portal page and scrape its CSV link. The portal page
+ * itself is not load-bearing for this loader — if it's unreachable, times
+ * out, or comes back reskinned without a <title> (parseEskomDataPortal
+ * throws), we still have four perfectly good computed candidates from
+ * buildEskomCsvCandidates("") for resolveEskomCsv to try. So this never
+ * throws: on any failure it logs the reason to stderr and resolves to "",
+ * letting the caller fall through to computed-only candidates.
+ * `fetchPageFn` is injectable so this is testable without live network
+ * access; it defaults to the real portal fetch.
+ */
+export async function scrapeEskomCsvUrl(
+  fetchPageFn: () => Promise<string> = () => fetchText(ESKOM_PAGE_URL, { timeoutMs: 45000, retries: 1 }),
+): Promise<string> {
+  try {
+    const html = await fetchPageFn();
+    return parseEskomDataPortal(html).csvUrl;
+  } catch (err) {
+    console.warn(
+      `south-africa loader: portal page fetch/parse failed, falling back to computed candidates only: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    return "";
+  }
+}
+
 function trailingPoints(points: CurtailmentPoint[], days = 30): CurtailmentPoint[] {
   const sorted = [...points].sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
   const latest = sorted.at(-1);
@@ -220,9 +245,8 @@ function normalizeCachedSouthAfrica(cached: unknown): Record<string, RegionData>
 }
 
 const run = async (): Promise<Record<string, RegionData>> => {
-  const html = await fetchText(ESKOM_PAGE_URL, { timeoutMs: 45000, retries: 1 });
-  const meta = parseEskomDataPortal(html);
-  const candidates = buildEskomCsvCandidates(meta.csvUrl);
+  const scrapedUrl = await scrapeEskomCsvUrl();
+  const candidates = buildEskomCsvCandidates(scrapedUrl);
   const { url: resolvedUrl, parsed } = await resolveEskomCsv(candidates);
   console.warn(`south-africa loader: resolved CSV at ${resolvedUrl} (${candidates.length} candidate(s) considered)`);
   const { windPoints, solarPoints } = parsed;
