@@ -82,6 +82,11 @@ jobs:
               # TRADE-OFF: a real Japan loader break during the zero season will
               # not raise the zero-peak count. The freshness check still covers
               # it — a broken fetch degrades to cached and is counted there.
+              # This list must cover ALL 12 japan-* ids in src/lib/regions.ts.
+              # It previously held 10: japan-chubu and japan-tohoku-solar were
+              # missing, so the two of them alone kept the zero-peak count over
+              # threshold and reopened a health issue ten times in 17 days.
+              "japan-chubu",
               "japan-chugoku",
               "japan-hokkaido-solar",
               "japan-hokkaido-wind",
@@ -91,6 +96,7 @@ jobs:
               "japan-okinawa",
               "japan-shikoku",
               "japan-tepco",
+              "japan-tohoku-solar",
               "japan-tohoku-wind",
               # NZ ≤$0 nodal-price regions: nine months of EMI final pricing
               # (2025-10 → 2026-06) hit ≤$0 at these nodes on one day only, so a
