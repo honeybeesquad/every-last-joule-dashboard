@@ -22,13 +22,37 @@ DNS has no record without the tunnel, so we pin the IP via dig @8.8.8.8 +
 curl --resolve, with a fallback IP list (XM rotates across these).
 
 Transport reliability (scheduled `--month` mode): the elj-co tunnel is
-bandwidth-limited (~27 KB/s, endpoint-limited). A single whole-month request
-for `--month current` completes early in the month but starts timing out
-(curl rc=28) once the window grows past roughly the first week, and then
-fails identically every night for the rest of the month. To fit the slow
-link, each metric's month window is split into sequential CHUNK_DAYS-sized
-sub-windows (`--chunk-days`, default 7) and concatenated -- the resulting
-rows are the same as a single successful whole-month request would produce.
+bandwidth-limited (~27 KB/s, endpoint-limited), so a whole-month request for
+a late-in-the-month window is a large ask over a slow link. Each metric's
+month window is therefore split into sequential CHUNK_DAYS-sized sub-windows
+(`--chunk-days`, default 7) and concatenated -- the resulting rows are the
+same as a single successful whole-month request would produce.
+
+This chunking is resilience work, NOT a fix for the 2026-07 outage, and it
+should not be described as one. An earlier draft of this docstring blamed
+the nightly `rc=28` failures on the request window outgrowing the tunnel.
+The service journal disproves that: `Gene` succeeded at a 25-day window on
+2026-07-26, first failed at 26 days on 2026-07-27, and then failed at a
+ONE-day window (`2026-08-01..2026-08-01`) on 2026-08-02 and at every window
+since. A one-day fetch is a few hundred KB against a 90s `--max-time`, so
+bandwidth was never the constraint.
+
+The real cause, found by probing abed on 2026-08-19 with the tunnel held up:
+`wg-quick up elj-co` installs all three routes correctly and every known XM
+IP resolves via `dev elj-co`, but none of them complete a TCP handshake --
+all four return `conn=0.000000 tls=0.000000 http=000` and hang to the full
+timeout. Packets enter the tunnel and nothing returns, so the WireGuard peer
+or its Colombian exit stopped forwarding. Everything egress-dependent died in
+the same three-day window (last good capture 2026-07-26, vertimientos CSV
+ends 2026-07-28, last relay push 2026-07-29). Restoring the egress is the
+fix; no change in this file can substitute for it.
+
+What this file's changes DO buy, once the egress is back: per-metric failure
+isolation. `Gene` is first in METRICS, and its unhandled exception aborted
+the entire run every night from 2026-07-27, so the other four metrics were
+not attempted for over three weeks -- the lake shows all of them stopped at
+2026-07. Wrapping each metric's fetch stops one dead metric taking the rest
+down with it.
 
 Failure semantics for `--month` mode: chunks are fetched in date order
 starting from the 1st of the month. If a chunk fails (after `fetch()`'s own
