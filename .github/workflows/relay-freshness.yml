@@ -101,6 +101,41 @@ jobs:
               else:
                   print(f"::notice::{csv_path} is fresh: {max_date.date().isoformat()} ({age_days:.1f} days old)")
 
+          # ---------------------------------------------------------------------
+          # abed heartbeat: written nightly by elj-capture-healthcheck.sh on abed
+          # and copied in by colombia-relay-pull.yml. Stale or unhealthy means the
+          # abed capture stack (XM lake + vertimientos) needs attention - the
+          # 2026-07-27 NordLynx rotation went unnoticed for three weeks because
+          # the only alarm was a desktop notification on abed itself.
+          # ---------------------------------------------------------------------
+          import json
+          HEARTBEAT_PATH = "data/historical/abed-heartbeat.json"
+          HEARTBEAT_MAX_AGE_HOURS = 48
+          if os.path.exists(HEARTBEAT_PATH):
+              try:
+                  with open(HEARTBEAT_PATH, encoding="utf-8") as fh:
+                      hb = json.load(fh)
+                  hb_at = datetime.fromisoformat(hb["at"].replace("Z", "+00:00"))
+                  hb_age_h = (now - hb_at).total_seconds() / 3600
+                  if hb_age_h > HEARTBEAT_MAX_AGE_HOURS:
+                      all_fresh = False
+                      stale_items.append(
+                          f"- abed heartbeat: last beat {hb['at']} ({hb_age_h:.0f}h old, "
+                          f"threshold {HEARTBEAT_MAX_AGE_HOURS}h) - abed or its healthcheck cron is down"
+                      )
+                  elif not hb.get("ok", False):
+                      all_fresh = False
+                      issues = "; ".join(hb.get("issues", [])) or "unspecified"
+                      stale_items.append(f"- abed heartbeat UNHEALTHY: {issues}")
+                  else:
+                      print(f"::notice::abed heartbeat healthy ({hb_age_h:.0f}h old)")
+              except Exception as exc:
+                  all_fresh = False
+                  stale_items.append(f"- abed heartbeat: unparseable ({exc})")
+          else:
+              # Absent until the first beat lands post-deploy; warn, don't alert.
+              print("::warning::no abed heartbeat file yet (expected after first 23:30 NZST healthcheck run)")
+
           write_output("all_fresh", "true" if all_fresh else "false")
           write_multiline("stale_list", "\n".join(stale_items))
           write_output("stale_count", str(len(stale_items)))
@@ -131,11 +166,11 @@ jobs:
 
           ${STALE_LIST}
 
-          **Likely causes:**
-          1. Britta Mac asleep / offline — wake it and verify the \`elj-co\` WireGuard tunnel is up
-          2. XM API auth change — check Britta cron logs for authentication errors
-          3. WireGuard tunnel down — reconnect with \`wg-quick up elj-co\` on Britta
-          4. SSH key for the relay repo revoked — check \`RELAY_DEPLOY_KEY\` secret in this repo
+          **Likely causes (Colombia + heartbeat live on abed since 2026-08-19; India/VN/TW on Britta):**
+          1. NordVPN rotated the NordLynx key the \`elj-co\` tunnel is built from — the 2026-07 outage. Symptom: \`sudo wg show elj-co\` on abed shows no handshake, 0 B received. Recipe: docs/ops/abed-capture-service.md "Credential rotation".
+          2. abed offline or its cron dead — check the abed heartbeat line above.
+          3. India CSVs stale — Britta-side; check \`~/code/elj-relay/logs/cron-*.log\` on Britta.
+          4. SSH deploy key revoked — \`RELAY_DEPLOY_KEY\` secret here, \`abed-elj-relay-push\` / \`britta-cron-push\` keys on the relay repo.
 
           **How to verify:** SSH to Britta and run the relay script manually. The committed CSV at \`data/historical/colombia-vertimientos-daily.csv\` should update within minutes.
 

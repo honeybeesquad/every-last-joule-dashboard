@@ -45,6 +45,13 @@ for cand in $FALLBACK_IPS; do [ -n "${IP:-}" ] && break; IP=$cand; done
 if [ -z "${IP:-}" ]; then log "ERROR: could not resolve servapibi.xm.com.co"; exit 1; fi
 log "resolved servapibi -> $IP"
 
+# Sync the checkout first - another writer may have moved the branch. On
+# 2026-08-19 Britta's legacy relay-push.sh clobbered 21 freshly-pushed rows
+# because both hosts wrote this file; Britta no longer touches it, but pull
+# anyway so LAST is computed against the remote truth, not a stale checkout.
+export GIT_SSH_COMMAND="ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=accept-new"
+git -C "$RELAY_REPO" pull --ff-only -q origin main 2>>"$LOG" || log "WARN: pre-fetch pull failed, continuing on local state"
+
 [ -f "$CSV" ] || echo "date,gwh,fetched_at_utc,note" > "$CSV"
 
 LAST=$(tail -1 "$CSV" | cut -d, -f1)
@@ -112,7 +119,6 @@ if [ "$APPENDED" -eq 0 ]; then
   exit 0
 fi
 
-export GIT_SSH_COMMAND="ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=accept-new"
 cd "$RELAY_REPO" || exit 1
 git add colombia-vertimientos-daily.csv
 git -c user.name="abed-elj-relay" -c user.email="simon@collins.nu" \
@@ -121,6 +127,12 @@ if git push -q origin HEAD 2>>"$LOG"; then
   log "pushed $APPENDED row(s)"
   echo "OK: pushed $APPENDED row(s) through $END"
 else
-  log "ERROR: push failed"
-  exit 1
+  log "push rejected - rebasing once and retrying"
+  if git pull --rebase -q origin main 2>>"$LOG" && git push -q origin HEAD 2>>"$LOG"; then
+    log "pushed $APPENDED row(s) after rebase"
+    echo "OK: pushed $APPENDED row(s) through $END (after rebase)"
+  else
+    log "ERROR: push failed even after rebase"
+    exit 1
+  fi
 fi

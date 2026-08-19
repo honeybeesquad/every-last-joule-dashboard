@@ -65,6 +65,11 @@ jobs:
             fi
           done
 
+          # abed heartbeat (ops signal for relay-freshness.yml)
+          if [ -f /tmp/relay/abed-heartbeat.json ]; then
+            cp /tmp/relay/abed-heartbeat.json data/historical/abed-heartbeat.json
+          fi
+
           # Peru per-plant (copy only if present in relay repo)
           if [ -f /tmp/relay/peru-coes-per-plant.csv ]; then
             cp /tmp/relay/peru-coes-per-plant.csv \
@@ -85,6 +90,7 @@ jobs:
                   data/historical/india-andhra-pradesh-gen-daily.csv \
                   data/historical/india-maharashtra-gen-daily.csv \
                   data/historical/peru-coes-per-plant.csv \
+                  data/historical/abed-heartbeat.json \
                   2>/dev/null || true
 
           if git diff --cached --quiet; then

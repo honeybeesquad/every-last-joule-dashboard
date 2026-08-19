@@ -30,6 +30,39 @@ else
   fi
 fi
 
+# Heartbeat: push the verdict to the relay repo so the dashboard's CI can see
+# it. The notify-send below is local to abed - the 2026-07-27 outage proved a
+# desktop notification nobody is watching is not monitoring. The dashboard's
+# colombia-relay-pull.yml copies this file in, and relay-freshness.yml opens
+# an issue when it goes stale or unhealthy.
+HEARTBEAT_REPO="$HOME/elj-relay/data-relay-repo"
+if [ -d "$HEARTBEAT_REPO/.git" ] && [ -f "$HOME/.ssh/elj-relay-deploy" ]; then
+  OK=$([ ${#ISSUES[@]} -eq 0 ] && echo true || echo false)
+  ISSUES_JSON=$(printf '%s\n' "${ISSUES[@]:-}" | python3 -c 'import json,sys; print(json.dumps([l for l in sys.stdin.read().splitlines() if l]))')
+  cat > "$HEARTBEAT_REPO/abed-heartbeat.json" <<JSON
+{
+  "host": "abed",
+  "at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "ok": $OK,
+  "lake_newest_age_hours": ${AGE_H:-null},
+  "issues": $ISSUES_JSON
+}
+JSON
+  (
+    export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/elj-relay-deploy -o StrictHostKeyChecking=accept-new"
+    cd "$HEARTBEAT_REPO" || exit 0
+    git pull --rebase -q origin main 2>>"$LOG" || true
+    git add abed-heartbeat.json
+    git -c user.name="abed-elj-relay" -c user.email="simon@collins.nu" \
+        commit -q -m "ops: abed heartbeat $(date -u +%FT%TZ) ok=$OK" 2>>"$LOG" \
+      && git push -q origin HEAD 2>>"$LOG" \
+      && echo "$(date): heartbeat pushed (ok=$OK)" >> "$LOG" \
+      || echo "$(date): heartbeat push failed" >> "$LOG"
+  )
+else
+  echo "$(date): heartbeat skipped (no relay repo checkout or deploy key)" >> "$LOG"
+fi
+
 if [ ${#ISSUES[@]} -gt 0 ]; then
   MSG="ELJ Colombia capture issues:\n"
   for i in "${ISSUES[@]}"; do MSG+="• $i\n"; done
