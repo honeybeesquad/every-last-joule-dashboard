@@ -116,7 +116,11 @@ describe("regions", () => {
     // 2026-06-20: Peru per-plant re-added as 12 estimated regions via residential relay + committed CSV. 461 + 12 = 473.
     // 2026-06-23: removed 12 broken Ontario per-plant regions (nameplate−output = capacity-factor gap,
     // not curtailment; 12 plants implied ~29 TWh/yr > Ontario's ~14 TWh/yr total wind generation). 473 − 12 = 461.
-    expect(REGIONS.length).toBe(461);
+    // 2026-08-19: removed wacm-wind + wacm-solar — WACM was retired as an EIA-930
+    // balancing-authority code on 2026-04-01 (absorbed into SPP West / SWPW); both
+    // regions sat permanently degraded at exactly 0.0 TWh/30d, so removal costs
+    // nothing in magnitude. Owner chose removal over repointing to SWPW. 461 − 2 = 459.
+    expect(REGIONS.length).toBe(459);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -322,12 +326,14 @@ describe("regions", () => {
     expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(249);
   });
 
-  it("has 25 anchored regions (7 flat-profile + 18 EIA-930 US BAs)", () => {
+  it("has 23 anchored regions (7 flat-profile + 16 EIA-930 US BAs)", () => {
     // 2026-08-03: india-maharashtra promoted estimated -> anchored on measured
     // MSLDC Monthly Curtailment Reports (33.28 GWh across 15 published months).
     // T2 rather than T1 because MSLDC publishes monthly, lags 1-2 months and
     // skips months; see docs/validation/india-maharashtra.md.
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(25);
+    // 2026-08-19: removed wacm-wind + wacm-solar (dead EIA-930 respondent,
+    // retired 2026-04-01, permanently 0.0 TWh/30d). 18 EIA-930 US BAs -> 16. 25 -> 23.
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(23);
   });
 
   it("keeps remaining mixed rows explicit so no new bundled curtailment slips in", () => {

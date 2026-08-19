@@ -1,7 +1,7 @@
 {
-  "totalValidationDocs": 468,
+  "totalValidationDocs": 466,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 461,
+  "docsNotCiting": 459,
   "pctCited": 1.5,
   "perDocCitations": [
     {
@@ -2285,16 +2285,6 @@
     },
     {
       "file": "wa-swis-wind.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "wacm-solar.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "wacm-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
