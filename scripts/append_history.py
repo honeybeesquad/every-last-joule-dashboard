@@ -111,10 +111,18 @@ _MANIFEST_RE = re.compile(r"data/[a-z0-9-]+\.[a-f0-9]+\.json")
 # healthy run:
 #   - MIN_MANIFEST_FILES = 100   (observed 137 hashed data/*.json paths in
 #     the deployed HTML on 2026-08-19; the build has never been this thin)
-#   - MIN_REGION_RECORDS = 400   (observed 447 region records across those
-#     137 payloads on 2026-08-19, against 461 canonical entries in
-#     src/lib/regions.ts — some regions share multi-region payload files,
-#     and a handful of per-plant sub-records add to the count)
+#   - MIN_REGION_RECORDS = 400   (observed 447 raw region records across
+#     those 137 payloads on 2026-08-19, but only 446 DISTINCT regionIds —
+#     "jordan" is served by both data/jordan.<hash>.json and
+#     data/statics.<hash>.json, so a naive count double-writes it every
+#     build. fetch_deployed_regions() de-duplicates on regionId, last
+#     wins, and logs the collision to stderr BEFORE this guard ever sees
+#     the count — see the de-duplication block there. That ordering is
+#     load-bearing: this guard must always count de-duplicated records, so
+#     it can never be satisfied by duplicates padding the total. 446
+#     distinct still clears 400 comfortably, against 461 canonical entries
+#     in src/lib/regions.ts — some regions share multi-region payload
+#     files, and a handful of per-plant sub-records add to the count)
 MIN_MANIFEST_FILES = 100
 MIN_REGION_RECORDS = 400
 
@@ -176,16 +184,56 @@ def fetch_manifest_paths(base_url: str) -> list[str]:
     return sorted(set(_MANIFEST_RE.findall(html)))
 
 
+def _profile_length(record: dict) -> int | str:
+    """Length of a record's profile for logging; "n/a" if it isn't a list."""
+    profile = record.get("profile")
+    return len(profile) if isinstance(profile, list) else "n/a"
+
+
+def _has_valid_profile(record: dict) -> bool:
+    """A region record is only usable if its profile is exactly 24 hourly
+    points. is_region_record() only requires a list (any length, including
+    empty), and _make_row() zero-fills missing hours — so a loader that
+    ever emits `profile: []` would otherwise land 24 zeros in the archive,
+    stamped "deployed-build" with a current timestamp, indistinguishable
+    from a genuine measured zero. That is the fresh-stamped-zeros failure
+    mode STATUS.md documents for WACM. Restores the check the old
+    (committed-snapshot) build_rows used to make.
+    """
+    profile = record.get("profile")
+    return isinstance(profile, list) and len(profile) == 24
+
+
 def fetch_deployed_regions(base_url: str) -> tuple[list[str], list[tuple[str, dict]]]:
     """Fetch every region record currently served by the deployed dashboard.
 
-    Returns (manifest_paths, [(region_id, record), ...]). Does not apply the
-    size guard itself — callers (build_rows) decide what to do with a short
-    result.
+    Returns (manifest_paths, [(region_id, record), ...]). The returned
+    records are already filtered and de-duplicated:
+
+    - Records whose profile is not exactly 24 points are skipped (see
+      _has_valid_profile) and logged to stderr with the region id and the
+      length seen.
+    - Records are de-duplicated on regionId, LAST WINS. Some regions are
+      served by more than one payload file in the same build — e.g.
+      "jordan" appears in both data/jordan.<hash>.json and
+      data/statics.<hash>.json — and without de-duplication every such
+      region writes two rows per build, breaking the "one row per region
+      per build" contract documented in dataset/SCHEMA.md. Paths are
+      walked in sorted order (see fetch_manifest_paths), so "last wins"
+      favours whichever payload path sorts last alphabetically. Every
+      collision is logged to stderr naming the region id and both payload
+      paths, so a future duplicate is visible rather than silent.
+
+    This filtering happens here, before the caller (build_rows) applies
+    the MIN_MANIFEST_FILES / MIN_REGION_RECORDS size guard, so that guard
+    always counts usable, de-duplicated records — it can never be
+    satisfied by duplicate or malformed rows padding the total.
     """
     paths = fetch_manifest_paths(base_url)
 
-    records: list[tuple[str, dict]] = []
+    kept: dict[str, dict] = {}       # region_id -> record actually kept
+    kept_at: dict[str, str] = {}     # region_id -> path that supplied it
+
     for path in paths:
         file_url = f"{base_url}/_file/{path}"
         try:
@@ -194,8 +242,29 @@ def fetch_deployed_regions(base_url: str) -> tuple[list[str], list[tuple[str, di
             print(f"  warn: failed to fetch {path}: {exc}", file=sys.stderr)
             continue
         for record in region_records(payload):
-            records.append((record["regionId"], record))
+            region_id = record["regionId"]
 
+            if not _has_valid_profile(record):
+                print(
+                    f"  warn: skipping region {region_id!r}: profile has "
+                    f"{_profile_length(record)} points, expected 24 "
+                    f"({path})",
+                    file=sys.stderr,
+                )
+                continue
+
+            if region_id in kept:
+                print(
+                    f"  warn: duplicate regionId {region_id!r} served by "
+                    f"both {kept_at[region_id]} and {path}; keeping the "
+                    f"record from {path} (last wins)",
+                    file=sys.stderr,
+                )
+
+            kept[region_id] = record
+            kept_at[region_id] = path
+
+    records = [(region_id, record) for region_id, record in kept.items()]
     return paths, records
 
 
@@ -323,8 +392,9 @@ def build_rows(now: datetime, base_url: str) -> list[dict]:
     paths, records = fetch_deployed_regions(base_url)
 
     print(
-        f"Fetched {len(paths)} manifest files, {len(records)} region "
-        f"records from {base_url}",
+        f"Fetched {len(paths)} manifest files, {len(records)} distinct "
+        f"region records (de-duplicated, 24-point profiles only) from "
+        f"{base_url}",
         file=sys.stderr,
     )
 
