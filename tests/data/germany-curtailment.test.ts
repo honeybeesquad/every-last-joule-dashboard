@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { writeFileSync } from "fs";
 import {
   parseGermanDecimal,
   parseRedispatchCsv,
@@ -7,8 +6,14 @@ import {
   parseGermanDateTime,
   accumulateMeasure,
   buildRegionData,
-  readTsoFuelRatios,
+  splitNote,
+  windFractionFromProxies,
+  deriveTsoWindFraction,
+  resolveFuelRatios,
+  TSO_ENTSOE_SPECS,
+  STATIC_WIND_FRACTION,
   type TsoAccumulator,
+  type TsoFuelRatios,
 } from "../../src/data/germany-curtailment.json.js";
 
 // ---------------------------------------------------------------------------
@@ -272,8 +277,9 @@ describe("buildRegionData wind/solar apportionment", () => {
     acc.profileMwSum[10] = 600;
     acc.profileCount[10] = 2;
 
-    const windRegion = buildRegionData("tennet-de", "wind", acc, 0.8, "2026-04");
-    const solarRegion = buildRegionData("tennet-de", "solar", acc, 0.2, "2026-04");
+    const ratios: TsoFuelRatios = { windFraction: 0.8, solarFraction: 0.2, ratioSource: "entsoe-live" };
+    const windRegion = buildRegionData("tennet-de", "wind", acc, ratios, "2026-04");
+    const solarRegion = buildRegionData("tennet-de", "solar", acc, ratios, "2026-04");
 
     expect(windRegion.regionId).toBe("germany-tennet-de-wind");
     expect(solarRegion.regionId).toBe("germany-tennet-de-solar");
@@ -296,7 +302,7 @@ describe("buildRegionData wind/solar apportionment", () => {
       profileCount: new Array(24).fill(0),
       totalMwh: 0,
     };
-    const region = buildRegionData("amprion", "wind", acc, 0.5, "2026-04");
+    const region = buildRegionData("amprion", "wind", acc, { windFraction: 0.5, solarFraction: 0.5, ratioSource: "static-prior" }, "2026-04");
     expect(region.profile.length).toBe(24);
   });
 
@@ -306,50 +312,163 @@ describe("buildRegionData wind/solar apportionment", () => {
       profileCount: new Array(24).fill(0),
       totalMwh: 0,
     };
-    const region = buildRegionData("50hertz", "solar", acc, 0.4, "2026-04");
+    const region = buildRegionData("50hertz", "solar", acc, { windFraction: 0.6, solarFraction: 0.4, ratioSource: "entsoe-live" }, "2026-04");
     expect(region.sourceProvenance).toBe("verified");
   });
 });
 
 // ---------------------------------------------------------------------------
-// Wind/solar split ratios from entsoe snapshot
+// Wind/solar split ratio derivation (live ENTSO-E -> static prior -> 50/50)
 // ---------------------------------------------------------------------------
 
-describe("readTsoFuelRatios", () => {
-  it("computes correct wind fraction from mock snapshot", () => {
-    // Write a minimal mock entsoe snapshot to a temp path
-    const tmpPath = "/tmp/test-entsoe-snapshot.json";
-    const mockSnapshot = {
-      "germany-50hertz-wind":    { totalTWh: 0.12 },
-      "germany-50hertz-solar":   { totalTWh: 0.08 },
-      "germany-amprion-wind":    { totalTWh: 0.05 },
-      "germany-amprion-solar":   { totalTWh: 0.06 },
-      "germany-tennet-de-wind":  { totalTWh: 0.33 },
-      "germany-tennet-de-solar": { totalTWh: 0.08 },
-      "germany-transnetbw-wind": { totalTWh: 0.01 },
-      "germany-transnetbw-solar":{ totalTWh: 0.04 },
-    };
-    writeFileSync(tmpPath, JSON.stringify(mockSnapshot));
+/**
+ * Minimal A75 GL_MarketDocument with a single hourly period.
+ * quantities: array of MW values, one point per hour from startIso.
+ */
+function a75Xml(startIso: string, quantities: number[]): string {
+  const points = quantities
+    .map((q, i) => `<Point><position>${i + 1}</position><quantity>${q}</quantity></Point>`)
+    .join("");
+  return (
+    `<?xml version="1.0" encoding="UTF-8"?>` +
+    `<GL_MarketDocument><TimeSeries><Period>` +
+    `<timeInterval><start>${startIso}</start><end>${startIso}</end></timeInterval>` +
+    `<resolution>PT60M</resolution>${points}` +
+    `</Period></TimeSeries></GL_MarketDocument>`
+  );
+}
 
-    const ratios = readTsoFuelRatios(tmpPath);
-
-    // 50hertz: 0.12/(0.12+0.08) = 0.6
-    expect(ratios["50hertz"].windFraction).toBeCloseTo(0.6);
-    expect(ratios["50hertz"].solarFraction).toBeCloseTo(0.4);
-
-    // tennet-de: 0.33/(0.33+0.08) ≈ 0.805
-    expect(ratios["tennet-de"].windFraction).toBeCloseTo(0.33 / 0.41);
-
-    // transnetbw: 0.01/(0.01+0.04) = 0.2
-    expect(ratios["transnetbw"].windFraction).toBeCloseTo(0.2);
-    expect(ratios["transnetbw"].solarFraction).toBeCloseTo(0.8);
+describe("windFractionFromProxies", () => {
+  it("computes the wind share of the summed proxies", () => {
+    expect(windFractionFromProxies(300, 100)).toBeCloseTo(0.75);
+    expect(windFractionFromProxies(1, 3)).toBeCloseTo(0.25);
   });
 
-  it("defaults to 50/50 when snapshot file is missing", () => {
-    const ratios = readTsoFuelRatios("/tmp/nonexistent-snapshot-abc.json");
-    for (const stem of ["50hertz", "amprion", "tennet-de", "transnetbw"]) {
-      expect(ratios[stem].windFraction).toBe(0.5);
-      expect(ratios[stem].solarFraction).toBe(0.5);
+  it("returns null when both proxies are zero", () => {
+    expect(windFractionFromProxies(0, 0)).toBeNull();
+  });
+
+  it("returns null on negative or non-finite input", () => {
+    expect(windFractionFromProxies(-1, 5)).toBeNull();
+    expect(windFractionFromProxies(NaN, 5)).toBeNull();
+    expect(windFractionFromProxies(5, Infinity)).toBeNull();
+  });
+});
+
+describe("deriveTsoWindFraction", () => {
+  // 50Hertz spec: wind = B18 (rate 0.178) + B19 (rate 0.030), solar = B16 (rate 0.023)
+  const spec = TSO_ENTSOE_SPECS["50hertz"];
+
+  it("derives the wind fraction from A75 generation x BNetzA prior rates", async () => {
+    // 2 hours each: B18 1000 MW, B19 2000 MW, B16 4000 MW
+    const fetchXml = vi.fn(async (_domain: string, psrType: string) => {
+      if (psrType === "B18") return a75Xml("2026-07-01T00:00Z", [1000, 1000]);
+      if (psrType === "B19") return a75Xml("2026-07-01T00:00Z", [2000, 2000]);
+      return a75Xml("2026-07-01T00:00Z", [4000, 4000]);
+    });
+
+    const fw = await deriveTsoWindFraction(spec, fetchXml);
+
+    // windProxy = 2000*0.178 + 4000*0.030 = 356 + 120 = 476 MWh-equivalent
+    // solarProxy = 8000*0.023 = 184
+    expect(fw).toBeCloseTo(476 / (476 + 184), 6);
+    expect(fetchXml).toHaveBeenCalledTimes(3);
+  });
+
+  it("returns null when every series is zero", async () => {
+    const fetchXml = vi.fn(async () => a75Xml("2026-07-01T00:00Z", [0, 0]));
+    expect(await deriveTsoWindFraction(spec, fetchXml)).toBeNull();
+  });
+
+  it("returns null (not throw) when the fetch fails", async () => {
+    const fetchXml = vi.fn(async () => {
+      throw new Error("HTTP 401");
+    });
+    expect(await deriveTsoWindFraction(spec, fetchXml)).toBeNull();
+  });
+});
+
+describe("resolveFuelRatios fallback chain", () => {
+  it("uses the live ENTSO-E ratio when the fetch succeeds", async () => {
+    const fetchXml = vi.fn(async (_domain: string, psrType: string) => {
+      if (psrType === "B18") return a75Xml("2026-07-01T00:00Z", [1000]);
+      if (psrType === "B19") return a75Xml("2026-07-01T00:00Z", [2000]);
+      return a75Xml("2026-07-01T00:00Z", [4000]);
+    });
+
+    const ratios = await resolveFuelRatios(fetchXml);
+
+    for (const stem of Object.keys(TSO_ENTSOE_SPECS)) {
+      expect(ratios[stem].ratioSource).toBe("entsoe-live");
+      expect(ratios[stem].windFraction + ratios[stem].solarFraction).toBeCloseTo(1);
     }
+    // Offshore-bearing TSOs (B18 at 17.8%) must have a higher wind fraction
+    // than onshore-only TSOs given identical generation inputs.
+    expect(ratios["50hertz"].windFraction).toBeGreaterThan(ratios["amprion"].windFraction);
+    // Onshore-only: windProxy = 2000*0.030 = 60, solarProxy = 4000*0.023 = 92
+    expect(ratios["amprion"].windFraction).toBeCloseTo(60 / 152, 6);
+  });
+
+  it("falls back to the static prior when live ENTSO-E fails", async () => {
+    const fetchXml = vi.fn(async () => {
+      throw new Error("ENTSO-E down");
+    });
+
+    const ratios = await resolveFuelRatios(fetchXml);
+
+    for (const [stem, staticFw] of Object.entries(STATIC_WIND_FRACTION)) {
+      expect(ratios[stem].ratioSource).toBe("static-prior");
+      expect(ratios[stem].windFraction).toBeCloseTo(staticFw);
+      expect(ratios[stem].solarFraction).toBeCloseTo(1 - staticFw);
+    }
+  });
+
+  it("static priors are per-TSO, not identical", () => {
+    const values = Object.values(STATIC_WIND_FRACTION);
+    expect(new Set(values.map((v) => v.toFixed(3))).size).toBe(values.length);
+    expect(values.every((v) => v > 0 && v < 1)).toBe(true);
+  });
+
+  it("falls back to 50/50 only when live fails AND no static prior exists", async () => {
+    const fetchXml = vi.fn(async () => {
+      throw new Error("ENTSO-E down");
+    });
+    const saved = { ...STATIC_WIND_FRACTION };
+    try {
+      for (const k of Object.keys(STATIC_WIND_FRACTION)) delete STATIC_WIND_FRACTION[k];
+
+      const ratios = await resolveFuelRatios(fetchXml);
+
+      for (const stem of Object.keys(TSO_ENTSOE_SPECS)) {
+        expect(ratios[stem].ratioSource).toBe("even-split");
+        expect(ratios[stem].windFraction).toBe(0.5);
+      }
+    } finally {
+      Object.assign(STATIC_WIND_FRACTION, saved);
+    }
+  });
+});
+
+describe("splitNote honesty", () => {
+  it("live path names the ENTSO-E derivation and calls the split estimated", () => {
+    const note = splitNote({ windFraction: 0.749, solarFraction: 0.251, ratioSource: "entsoe-live" });
+    expect(note).toContain("ENTSO-E A75");
+    expect(note).toContain("0.749");
+    expect(note).toContain("magnitude is measured");
+    expect(note).toContain("estimated apportionment");
+    expect(note).not.toContain("split is measured");
+  });
+
+  it("static path says the prior is static and live was unavailable", () => {
+    const note = splitNote({ windFraction: 0.346, solarFraction: 0.654, ratioSource: "static-prior" });
+    expect(note).toContain("static prior");
+    expect(note).toContain("unavailable");
+    expect(note).toContain("estimated apportionment");
+  });
+
+  it("even-split path admits the split is a guess", () => {
+    const note = splitNote({ windFraction: 0.5, solarFraction: 0.5, ratioSource: "even-split" });
+    expect(note).toContain("50/50");
+    expect(note).toContain("guess");
   });
 });
