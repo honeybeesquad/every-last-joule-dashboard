@@ -35,11 +35,11 @@ import { pathToFileURL } from "url";
  */
 
 const ESKOM_PAGE_URL = "https://www.eskom.co.za/dataportal/renewables-performance/total-hourly-renewable-generation/";
-const FALLBACK_CSV_URL = "https://www.eskom.co.za/dataportal/wp-content/uploads/2026/04/Total_Hourly_Generation.csv";
 const CURTAILMENT_RATE = 0.12;
 
 export interface EskomPageMeta {
   title: string;
+  /** URL scraped from the portal page, or "" if no CSV link was found. */
   csvUrl: string;
 }
 
@@ -54,8 +54,38 @@ export function parseEskomDataPortal(html: string): EskomPageMeta {
   const csvMatch = html.match(/https?:\/\/[^"'<> ]+Total_Hourly_Generation\.csv|\/dataportal\/wp-content\/uploads\/[^"'<> ]+Total_Hourly_Generation\.csv/i);
   return {
     title: titleMatch[1].trim(),
-    csvUrl: csvMatch ? absoluteUrl(csvMatch[0].replace(/&amp;/g, "&")) : FALLBACK_CSV_URL,
+    csvUrl: csvMatch ? absoluteUrl(csvMatch[0].replace(/&amp;/g, "&")) : "",
   };
+}
+
+/**
+ * The Eskom data portal page's own link to the current CSV goes stale
+ * (observed 2026-08-19: portal linked .../2026/07/... which 404s while the
+ * live file had already rolled to .../2026/08/...). Build an ordered,
+ * deduplicated list of candidates: the scraped URL first (if any), then the
+ * predictable `uploads/YYYY/MM/Total_Hourly_Generation.csv` path for the
+ * current UTC month and the preceding `monthsBack` months, so a stale portal
+ * link or an early-month rollover doesn't take the loader down.
+ */
+export function buildEskomCsvCandidates(
+  scrapedUrl: string,
+  now: Date = new Date(),
+  monthsBack = 3,
+): string[] {
+  const candidates: string[] = [];
+  if (scrapedUrl) candidates.push(scrapedUrl);
+
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+  for (let back = 0; back <= monthsBack; back++) {
+    const d = new Date(Date.UTC(year, month - back, 1));
+    const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+    candidates.push(
+      `https://www.eskom.co.za/dataportal/wp-content/uploads/${d.getUTCFullYear()}/${mm}/Total_Hourly_Generation.csv`,
+    );
+  }
+
+  return Array.from(new Set(candidates));
 }
 
 function parseNumber(value: string | undefined): number {
@@ -106,6 +136,128 @@ export function parseEskomTotalHourlyGeneration(csv: string): EskomParsed {
     .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw, intervalHours: 1 }));
 
   return { windPoints, solarPoints, windMwhTotal, solarMwhTotal };
+}
+
+/**
+ * A candidate is "current" once its newest non-zero point is within this
+ * many days of "now" — the short-circuit accepts it immediately instead of
+ * fetching the rest. Eskom's CSV is hourly and pre-filled to month end with
+ * zero rows (see parseEskomTotalHourlyGeneration's zero-row skip), so a
+ * genuinely up-to-date file's newest real point is normally at most a few
+ * hours old. 3 days covers ordinary publish lag plus one missed daily
+ * refresh, while still being tight enough that a month-old stale portal
+ * link (the entire premise of this loader) cannot pass as current.
+ */
+const FRESHNESS_SHORT_CIRCUIT_DAYS = 3;
+
+function newestPointTimestamp(parsed: EskomParsed): string | undefined {
+  let newest: string | undefined;
+  for (const p of [...parsed.windPoints, ...parsed.solarPoints]) {
+    if (!newest || p.utcTimestamp > newest) newest = p.utcTimestamp;
+  }
+  return newest;
+}
+
+export interface EskomResolution {
+  url: string;
+  parsed: EskomParsed;
+  /** ISO timestamp of the newest non-zero point across wind + solar. */
+  newestTimestamp: string;
+}
+
+/**
+ * Evaluate candidate CSV URLs and pick the one whose data is freshest,
+ * rather than the first that merely parses. A stale-but-reachable portal
+ * link that still resolves to a real (older) file must not beat a fresher
+ * computed-month candidate — see the module-level PR discussion: a
+ * partially-working upstream is worse than a dead one, because the failure
+ * path never runs and the loader would silently serve month-old data as
+ * "live" (mirrors the Colombia XM-vs-relay fix, PR #622).
+ *
+ * Cost control: candidates are tried in order and a candidate whose newest
+ * point is within FRESHNESS_SHORT_CIRCUIT_DAYS of `now` is accepted
+ * immediately, without fetching the remaining candidates — the common case
+ * (first/scraped candidate is current) costs exactly one fetch. Only when
+ * no candidate is "current enough" do we fall through the whole list and
+ * take the freshest of whatever parsed successfully.
+ *
+ * `fetchFn` is injectable so this is testable without live network access;
+ * it defaults to the real `fetchText`. Throws (does not silently succeed)
+ * if every candidate fails to parse to at least one usable point, so
+ * `withFallback` still degrades honestly.
+ */
+export async function resolveEskomCsv(
+  candidates: string[],
+  fetchFn: (url: string) => Promise<string> = (url) => fetchText(url, { timeoutMs: 45000, retries: 1 }),
+  now: Date = new Date(),
+): Promise<EskomResolution> {
+  const errors: string[] = [];
+  let best: EskomResolution | undefined;
+
+  for (const url of candidates) {
+    let csv: string;
+    try {
+      csv = await fetchFn(url);
+    } catch (err) {
+      errors.push(`${url}: ${err instanceof Error ? err.message : String(err)}`);
+      continue;
+    }
+
+    const parsed = parseEskomTotalHourlyGeneration(csv);
+    const newestTimestamp = newestPointTimestamp(parsed);
+    if (!newestTimestamp) {
+      errors.push(`${url}: parsed but no usable (non-zero) points`);
+      continue;
+    }
+
+    if (!best || newestTimestamp > best.newestTimestamp) {
+      best = { url, parsed, newestTimestamp };
+    }
+
+    const ageMs = now.getTime() - new Date(newestTimestamp).getTime();
+    if (ageMs <= FRESHNESS_SHORT_CIRCUIT_DAYS * 24 * 60 * 60 * 1000) {
+      console.warn(
+        `south-africa loader: candidate ${url} is current (newest point ${newestTimestamp}, within ${FRESHNESS_SHORT_CIRCUIT_DAYS}d) — accepting without trying remaining candidates`,
+      );
+      return best;
+    }
+  }
+
+  if (best) {
+    console.warn(
+      `south-africa loader: no candidate within the ${FRESHNESS_SHORT_CIRCUIT_DAYS}d freshness short-circuit; used freshest of ${candidates.length} candidate(s): ${best.url} (newest point ${best.newestTimestamp})`,
+    );
+    return best;
+  }
+
+  throw new Error(
+    `Eskom CSV unresolved after ${candidates.length} candidate(s): ${errors.join("; ")}`,
+  );
+}
+
+/**
+ * Fetch the Eskom portal page and scrape its CSV link. The portal page
+ * itself is not load-bearing for this loader — if it's unreachable, times
+ * out, or comes back reskinned without a <title> (parseEskomDataPortal
+ * throws), we still have four perfectly good computed candidates from
+ * buildEskomCsvCandidates("") for resolveEskomCsv to try. So this never
+ * throws: on any failure it logs the reason to stderr and resolves to "",
+ * letting the caller fall through to computed-only candidates.
+ * `fetchPageFn` is injectable so this is testable without live network
+ * access; it defaults to the real portal fetch.
+ */
+export async function scrapeEskomCsvUrl(
+  fetchPageFn: () => Promise<string> = () => fetchText(ESKOM_PAGE_URL, { timeoutMs: 45000, retries: 1 }),
+): Promise<string> {
+  try {
+    const html = await fetchPageFn();
+    return parseEskomDataPortal(html).csvUrl;
+  } catch (err) {
+    console.warn(
+      `south-africa loader: portal page fetch/parse failed, falling back to computed candidates only: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    return "";
+  }
 }
 
 function trailingPoints(points: CurtailmentPoint[], days = 30): CurtailmentPoint[] {
@@ -159,10 +311,11 @@ function normalizeCachedSouthAfrica(cached: unknown): Record<string, RegionData>
 }
 
 const run = async (): Promise<Record<string, RegionData>> => {
-  const html = await fetchText(ESKOM_PAGE_URL, { timeoutMs: 45000, retries: 1 });
-  const meta = parseEskomDataPortal(html);
-  const csv = await fetchText(meta.csvUrl, { timeoutMs: 45000, retries: 1 });
-  const { windPoints, solarPoints } = parseEskomTotalHourlyGeneration(csv);
+  const scrapedUrl = await scrapeEskomCsvUrl();
+  const candidates = buildEskomCsvCandidates(scrapedUrl);
+  const { url: resolvedUrl, parsed, newestTimestamp } = await resolveEskomCsv(candidates);
+  console.warn(`south-africa loader: resolved CSV at ${resolvedUrl} (newest point ${newestTimestamp}; ${candidates.length} candidate(s) considered)`);
+  const { windPoints, solarPoints } = parsed;
 
   const wind30d = trailingPoints(windPoints);
   const solar30d = trailingPoints(solarPoints);

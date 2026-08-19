@@ -1,10 +1,28 @@
 #!/usr/bin/env python3
 """
-Append the current committed snapshots to the rolling Parquet history file.
+Append the deployed dashboard's current region records to the rolling
+Parquet history file.
 
-Called by .github/workflows/history-append.yml after each successful data refresh.
-Reads every data/snapshots/last-good/*.json file and appends one row per region
-to data/historical/curtailment_history.parquet.
+Called by .github/workflows/history-append.yml after each successful data
+refresh. Fetches the live dashboard's hashed data payloads (the same
+traversal .github/workflows/health-check.yml already performs) and appends
+one row per region record to data/historical/curtailment_history.parquet.
+
+Why the deployed dashboard, not the committed corpus
+------------------------------------------------------
+Earlier versions of this script read every data/snapshots/last-good/*.json
+file in the repo. That directory is a committed fallback corpus, refreshed
+only when someone commits new snapshot JSON — it is NOT the live dashboard
+output, which is rebuilt from real upstream fetches on every scheduled
+Vercel deploy but never written back to the repo. Because
+.github/workflows/data-refresh.yml only pings a Vercel deploy hook, the
+committed corpus can go stale for weeks while production stays live. Reading
+it here silently re-stamped stale data with a fresh build_timestamp on every
+run: 854 builds between 2026-04-23 and 2026-08-19 produced only 35 distinct
+global totals, with byte-identical figures for 139 consecutive builds
+(2026-08-03 → 2026-08-19) and a separate 37-day flat stretch
+(2026-06-25 → 2026-08-01). See docs/paper/every-last-joule-scientific-data-draft.md
+§3.2 and dataset/SCHEMA.md for the full accounting.
 
 Schema
 ------
@@ -22,6 +40,12 @@ confidence_tier     str     "T1a-live-tso" | "T1b-live-domestic-anchored" |
                             (see src/lib/uncertainty.ts + docs/methodology/uncertainty.md)
 uncertainty_low_gw  float32 lower bound on peak_gw (GW). Clamped to 0.
 uncertainty_high_gw float32 upper bound on peak_gw (GW). Always ≥ peak_gw.
+capture_source      str     "committed-snapshot" | "deployed-build" | null.
+                            "committed-snapshot" marks every row written by
+                            the pre-cutover version of this script (all
+                            209,400 rows through 2026-08-19, backfilled by
+                            scripts/backfill_capture_source.py). "deployed-build"
+                            marks every row this version writes.
 profile_h00..h23    float32 24 hourly average GW values (UTC)
 
 Historical rows written before the S2 uncertainty sprint (2026-04-24) will
@@ -33,8 +57,11 @@ the older partition is read back without the new schema.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -49,11 +76,317 @@ except ImportError:
 # Paths
 # ---------------------------------------------------------------------------
 REPO_ROOT = Path(__file__).parent.parent
-SNAPSHOTS_DIR = REPO_ROOT / "data" / "snapshots" / "last-good"
 HISTORY_FILE = REPO_ROOT / "data" / "historical" / "curtailment_history.parquet"
 
-# Non-region snapshots to skip
+# Non-region payloads to skip if a deployed record ever carries one of these
+# ids (defensive parity with the old filename-based skip list; in practice
+# the "anchor" and "cbeci" payloads do not shape-match is_region_record and
+# are already excluded by region_records() below).
 SKIP_IDS = {"cbeci", "anchor"}
+
+# ---------------------------------------------------------------------------
+# Deployed-dashboard fetch
+# ---------------------------------------------------------------------------
+# Base URL of the deployed dashboard. Overridable so tests and manual runs
+# can point at a preview deployment or a local server instead of prod.
+DEFAULT_DASHBOARD_URL = "https://everylastjoule.com"
+
+# Matches hashed asset paths like "data/caiso-wind.9c1a2b3d.json" embedded in
+# the dashboard's built HTML — the same regex health-check.yml uses.
+_MANIFEST_RE = re.compile(r"data/[a-z0-9-]+\.[a-f0-9]+\.json")
+
+# ---------------------------------------------------------------------------
+# CRITICAL GUARD — do not relax without re-reading the incident this fixes.
+# ---------------------------------------------------------------------------
+# A fetch that returns too little must abort loudly, not fall back to the
+# committed data/snapshots/last-good/ corpus. That silent fallback is
+# exactly what produced 854 builds of phantom history (see module docstring
+# and docs/paper/every-last-joule-scientific-data-draft.md §3.2): the old
+# script never noticed the corpus had frozen because "some rows" always
+# looked like a successful run.
+#
+# Thresholds are set well below the real, currently-observed numbers so a
+# partial degradation (a broken build, a CDN hiccup, a truncated manifest)
+# trips the guard long before the count could plausibly be mistaken for a
+# healthy run:
+#   - MIN_MANIFEST_FILES = 100   (observed 137 hashed data/*.json paths in
+#     the deployed HTML on 2026-08-19; the build has never been this thin)
+#   - MIN_REGION_RECORDS = 400   (observed 447 raw region records across
+#     those 137 payloads on 2026-08-19, but only 446 DISTINCT regionIds —
+#     "jordan" is served by both data/jordan.<hash>.json and
+#     data/statics.<hash>.json, so a naive count double-writes it every
+#     build. fetch_deployed_regions() de-duplicates on regionId using an
+#     explicit freshness rule — see _choose_winner() — and logs the
+#     collision to stderr BEFORE this guard ever sees the count. That
+#     ordering is load-bearing: this guard must always count
+#     de-duplicated records, so it can never be satisfied by duplicates
+#     padding the total. 446 distinct still clears 400 comfortably,
+#     against 461 canonical entries in src/lib/regions.ts — some regions
+#     share multi-region payload files, and a handful of per-plant
+#     sub-records add to the count)
+MIN_MANIFEST_FILES = 100
+MIN_REGION_RECORDS = 400
+
+
+class DeployedFetchError(RuntimeError):
+    """Raised when the deployed-dashboard fetch fails or looks incomplete.
+
+    main() catches this, prints the reason, and exits non-zero WITHOUT
+    writing to HISTORY_FILE — see the CRITICAL GUARD comment above.
+    """
+
+
+def _http_get(url: str, timeout: int = 30) -> bytes:
+    """Thin wrapper around urllib so tests can monkeypatch a single seam."""
+    with urllib.request.urlopen(url, timeout=timeout) as resp:  # noqa: S310
+        return resp.read()
+
+
+def is_region_record(value: object) -> bool:
+    """A payload (or a value inside a dict-of-regions payload) is a region
+    record if it has a string regionId and a list profile. Mirrors
+    .github/workflows/health-check.yml::is_region_record.
+    """
+    return (
+        isinstance(value, dict)
+        and isinstance(value.get("regionId"), str)
+        and isinstance(value.get("profile"), list)
+    )
+
+
+def region_records(payload: object) -> list[dict]:
+    """Extract every region record from a fetched JSON payload.
+
+    A payload is either a single region record, or a dict mapping ids to
+    region records (the six multi-region loaders: aemo, brazil-ne, entsoe,
+    ercot, ercot-native, norway — plus per-plant payloads such as
+    aemo-per-plant / peru-per-plant). Mirrors
+    .github/workflows/health-check.yml::region_records.
+    """
+    if is_region_record(payload):
+        return [payload]
+    if isinstance(payload, dict):
+        return [v for v in payload.values() if is_region_record(v)]
+    return []
+
+
+def fetch_manifest_paths(base_url: str) -> list[str]:
+    """GET the dashboard root and extract the hashed data/*.json asset
+    paths referenced by the current build.
+    """
+    cb = int(datetime.now(timezone.utc).timestamp())
+    index_url = f"{base_url}/?cb={cb}"
+    try:
+        html = _http_get(index_url).decode("utf-8", errors="replace")
+    except (urllib.error.URLError, OSError, TimeoutError) as exc:
+        raise DeployedFetchError(
+            f"failed to fetch dashboard index at {index_url}: {exc}"
+        ) from exc
+    return sorted(set(_MANIFEST_RE.findall(html)))
+
+
+def _profile_length(record: dict) -> int | str:
+    """Length of a record's profile for logging; "n/a" if it isn't a list."""
+    profile = record.get("profile")
+    return len(profile) if isinstance(profile, list) else "n/a"
+
+
+def _has_valid_profile(record: dict) -> bool:
+    """A region record is only usable if its profile is exactly 24 hourly
+    points. is_region_record() only requires a list (any length, including
+    empty), and _make_row() zero-fills missing hours — so a loader that
+    ever emits `profile: []` would otherwise land 24 zeros in the archive,
+    stamped "deployed-build" with a current timestamp, indistinguishable
+    from a genuine measured zero. That is the fresh-stamped-zeros failure
+    mode STATUS.md documents for WACM. Restores the check the old
+    (committed-snapshot) build_rows used to make.
+    """
+    profile = record.get("profile")
+    return isinstance(profile, list) and len(profile) == 24
+
+
+def _parse_iso8601(value: object) -> datetime | None:
+    """Best-effort ISO-8601 parse. Returns None for missing/unparseable
+    values rather than raising, since these come from live dashboard JSON
+    a future loader change could shape unexpectedly. Naive timestamps are
+    treated as UTC (every timestamp this codebase emits is UTC).
+    """
+    if not isinstance(value, str) or not value.strip():
+        return None
+    text = value.strip()
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed
+
+
+def _source_status_rank(record: dict) -> int:
+    """Higher is better: 2 for "live", 1 for any other non-empty
+    sourceStatus, 0 for missing/falsy. Used as tie-break rule 2 in
+    _choose_winner.
+    """
+    status = record.get("sourceStatus")
+    if not status:
+        return 0
+    return 2 if status == "live" else 1
+
+
+def _choose_winner(
+    incumbent: dict,
+    incumbent_path: str,
+    candidate: dict,
+    candidate_path: str,
+) -> tuple[dict, str, str]:
+    """Decide which of two same-regionId records to keep when a region is
+    served by more than one deployed payload in the same build.
+
+    Alphabetical path order carries no information about which record is
+    fresher or more trustworthy — an earlier version of this function used
+    "last path wins", which for the real "jordan" collision kept the STALE
+    data/statics.<hash>.json placeholder (sourceStatus missing,
+    lastSuccessAt 2025-01-01, peakGW 0.2159) over the live
+    data/jordan.<hash>.json record the actual loader wrote that day
+    (sourceStatus "live", lastSuccessAt today, peakGW 0.0661) — purely
+    because "statics" sorts after "jordan". Same failure shape as PR #622
+    (Colombia): a reachable-but-stale record parses perfectly, so nothing
+    flags it unless freshness is checked explicitly. See STATUS.md's "a
+    partially-working upstream is worse than a dead one, because the
+    failure path never runs."
+
+    Rules, in order:
+    1. Prefer the record with the more recent lastSuccessAt — but only
+       when BOTH sides parse to a timestamp AND those timestamps differ.
+       A single stale-but-parseable timestamp is not proof of freshness
+       on its own; if either side is missing/unparseable, or they're
+       equal, fall through to rule 2.
+    2. Prefer the record that carries a sourceStatus at all, and "live"
+       over any other status (see _source_status_rank).
+    3. If still tied, keep the incumbent (first record seen) and say so.
+
+    Returns (winning_record, winning_path, reason) — reason is a short
+    human-readable string for the collision log line.
+    """
+    inc_ts = _parse_iso8601(incumbent.get("lastSuccessAt"))
+    cand_ts = _parse_iso8601(candidate.get("lastSuccessAt"))
+
+    if inc_ts is not None and cand_ts is not None and inc_ts != cand_ts:
+        if cand_ts > inc_ts:
+            return (
+                candidate,
+                candidate_path,
+                f"fresher lastSuccessAt ({cand_ts.isoformat()} > {inc_ts.isoformat()})",
+            )
+        return (
+            incumbent,
+            incumbent_path,
+            f"fresher lastSuccessAt ({inc_ts.isoformat()} > {cand_ts.isoformat()})",
+        )
+
+    inc_rank = _source_status_rank(incumbent)
+    cand_rank = _source_status_rank(candidate)
+    if inc_rank != cand_rank:
+        if cand_rank > inc_rank:
+            return (
+                candidate,
+                candidate_path,
+                f"lastSuccessAt tied/unparseable on one or both sides; "
+                f"sourceStatus {candidate.get('sourceStatus')!r} outranks "
+                f"{incumbent.get('sourceStatus')!r}",
+            )
+        return (
+            incumbent,
+            incumbent_path,
+            f"lastSuccessAt tied/unparseable on one or both sides; "
+            f"sourceStatus {incumbent.get('sourceStatus')!r} outranks "
+            f"{candidate.get('sourceStatus')!r}",
+        )
+
+    return (
+        incumbent,
+        incumbent_path,
+        "lastSuccessAt and sourceStatus both tied/unparseable; keeping the "
+        "first-seen record",
+    )
+
+
+def fetch_deployed_regions(base_url: str) -> tuple[list[str], list[tuple[str, dict]]]:
+    """Fetch every region record currently served by the deployed dashboard.
+
+    Returns (manifest_paths, [(region_id, record), ...]). The returned
+    records are already filtered and de-duplicated:
+
+    - Records whose profile is not exactly 24 points are skipped (see
+      _has_valid_profile) and logged to stderr with the region id and the
+      length seen.
+    - Records are de-duplicated on regionId using an explicit freshness
+      rule (see _choose_winner), NOT payload path order. Some regions are
+      served by more than one payload file in the same build — e.g.
+      "jordan" appears in both data/jordan.<hash>.json and
+      data/statics.<hash>.json — and without de-duplication every such
+      region writes two rows per build, breaking the "one row per region
+      per build" contract documented in dataset/SCHEMA.md. Every
+      collision is logged to stderr naming the region id, both payload
+      paths, both lastSuccessAt values, which record won, and why — so a
+      future duplicate is auditable rather than a silent coin-flip.
+
+    This filtering happens here, before the caller (build_rows) applies
+    the MIN_MANIFEST_FILES / MIN_REGION_RECORDS size guard, so that guard
+    always counts usable, de-duplicated records — it can never be
+    satisfied by duplicate or malformed rows padding the total.
+    """
+    paths = fetch_manifest_paths(base_url)
+
+    kept: dict[str, dict] = {}       # region_id -> record actually kept
+    kept_at: dict[str, str] = {}     # region_id -> path that supplied it
+
+    for path in paths:
+        file_url = f"{base_url}/_file/{path}"
+        try:
+            payload = json.loads(_http_get(file_url).decode("utf-8"))
+        except Exception as exc:  # noqa: BLE001 — one bad file shouldn't abort the run
+            print(f"  warn: failed to fetch {path}: {exc}", file=sys.stderr)
+            continue
+        for record in region_records(payload):
+            region_id = record["regionId"]
+
+            if not _has_valid_profile(record):
+                print(
+                    f"  warn: skipping region {region_id!r}: profile has "
+                    f"{_profile_length(record)} points, expected 24 "
+                    f"({path})",
+                    file=sys.stderr,
+                )
+                continue
+
+            if region_id in kept:
+                winner, winner_path, reason = _choose_winner(
+                    kept[region_id], kept_at[region_id], record, path
+                )
+                print(
+                    f"  warn: duplicate regionId {region_id!r}: "
+                    f"{kept_at[region_id]} "
+                    f"(lastSuccessAt={kept[region_id].get('lastSuccessAt')!r}, "
+                    f"sourceStatus={kept[region_id].get('sourceStatus')!r}) "
+                    f"vs {path} "
+                    f"(lastSuccessAt={record.get('lastSuccessAt')!r}, "
+                    f"sourceStatus={record.get('sourceStatus')!r}); "
+                    f"keeping {winner_path} — {reason}",
+                    file=sys.stderr,
+                )
+                kept[region_id] = winner
+                kept_at[region_id] = winner_path
+            else:
+                kept[region_id] = record
+                kept_at[region_id] = path
+
+    records = [(region_id, record) for region_id, record in kept.items()]
+    return paths, records
+
 
 # ---------------------------------------------------------------------------
 # Uncertainty tier derivation (mirrors src/lib/uncertainty.ts::deriveTier)
@@ -157,35 +490,49 @@ SCHEMA = pa.schema([
     pa.field("confidence_tier",      pa.string()),
     pa.field("uncertainty_low_gw",   pa.float32()),
     pa.field("uncertainty_high_gw",  pa.float32()),
+    pa.field("capture_source",       pa.string()),
 ] + HOUR_FIELDS)
 
+# Stamped on every row this version of the script writes. See the
+# capture_source description in the module docstring and
+# scripts/backfill_capture_source.py, which stamped "committed-snapshot" on
+# every row written by the pre-cutover version.
+CAPTURE_SOURCE_DEPLOYED = "deployed-build"
 
-def build_rows(now: datetime) -> list[dict]:
+
+def build_rows(now: datetime, base_url: str) -> list[dict]:
+    """Fetch the deployed dashboard's current region records and turn them
+    into Parquet rows. Raises DeployedFetchError (writing nothing) if the
+    fetch fails outright or the guard thresholds are not met — see the
+    CRITICAL GUARD comment above MIN_MANIFEST_FILES.
+    """
     rows: list[dict] = []
     ts = now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    for snap_path in sorted(SNAPSHOTS_DIR.glob("*.json")):
-        region_id = snap_path.stem
+    paths, records = fetch_deployed_regions(base_url)
 
+    print(
+        f"Fetched {len(paths)} manifest files, {len(records)} distinct "
+        f"region records (de-duplicated, 24-point profiles only) from "
+        f"{base_url}",
+        file=sys.stderr,
+    )
+
+    if len(paths) < MIN_MANIFEST_FILES or len(records) < MIN_REGION_RECORDS:
+        raise DeployedFetchError(
+            f"deployed dashboard fetch looks incomplete "
+            f"({len(paths)} manifest files, {len(records)} region records; "
+            f"require >= {MIN_MANIFEST_FILES} files and >= {MIN_REGION_RECORDS} "
+            f"records). Refusing to fall back to the committed "
+            f"data/snapshots/last-good/ corpus — that silent fallback is "
+            f"exactly what produced 854 builds of phantom history. Writing "
+            f"nothing."
+        )
+
+    for region_id, data in records:
         if region_id in SKIP_IDS:
             continue
-
-        try:
-            data: dict = json.loads(snap_path.read_text())
-        except Exception as exc:
-            print(f"  skip {region_id}: {exc}", file=sys.stderr)
-            continue
-
-        profile: list = data.get("profile") or []
-        if len(profile) != 24:
-            # Multi-region loaders (e.g. entsoe.json) emit a dict of regions.
-            if isinstance(data, dict) and not data.get("profile"):
-                for sub_id, sub_data in data.items():
-                    if isinstance(sub_data, dict) and len(sub_data.get("profile", [])) == 24:
-                        rows.append(_make_row(ts, sub_data.get("regionId", sub_id), sub_data))
-            continue
-
-        rows.append(_make_row(ts, data.get("regionId", region_id), data))
+        rows.append(_make_row(ts, region_id, data))
 
     return rows
 
@@ -225,6 +572,7 @@ def _make_row(ts: str, region_id: str, data: dict) -> dict:
         "confidence_tier":      str(tier) if tier is not None else None,
         "uncertainty_low_gw":   float(unc_low) if unc_low is not None else None,
         "uncertainty_high_gw":  float(unc_high) if unc_high is not None else None,
+        "capture_source":       CAPTURE_SOURCE_DEPLOYED,
     }
     for h in range(24):
         row[f"profile_h{h:02d}"] = float(profile[h]) if h < len(profile) else 0.0
@@ -233,12 +581,22 @@ def _make_row(ts: str, region_id: str, data: dict) -> dict:
 
 def main() -> None:
     now = datetime.now(timezone.utc).replace(microsecond=0)
-    print(f"Building snapshot rows for {now.isoformat()} …")
+    base_url = os.environ.get("ELJ_DASHBOARD_URL", DEFAULT_DASHBOARD_URL).rstrip("/")
+    print(f"Building snapshot rows for {now.isoformat()} from {base_url} …")
 
-    rows = build_rows(now)
+    try:
+        rows = build_rows(now, base_url)
+    except DeployedFetchError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(1)
+
     if not rows:
-        print("No valid snapshot rows found — skipping.", file=sys.stderr)
-        sys.exit(0)
+        # Unreachable in practice given the guard above, but fail loudly
+        # rather than silently no-op if it ever is.
+        print("ERROR: no region rows produced from a fetch that passed the "
+              "size guard — this should not happen. Writing nothing.",
+              file=sys.stderr)
+        sys.exit(1)
 
     new_table = pa.Table.from_pylist(rows, schema=SCHEMA)
 
@@ -246,10 +604,20 @@ def main() -> None:
 
     if HISTORY_FILE.exists():
         # Read the existing parquet WITHOUT enforcing the new schema, so
-        # pre-S2 partitions (missing confidence_tier / uncertainty_*) load
-        # successfully. promote_options="default" fills in the missing
-        # columns with null on concatenation.
+        # older partitions (missing confidence_tier / uncertainty_* /
+        # capture_source) load successfully. promote_options="default"
+        # fills in the missing columns with null on concatenation — this is
+        # how the pre-existing capture_source-less rows get promoted rather
+        # than requiring every historical partition to be rewritten again.
         existing = pq.read_table(HISTORY_FILE)
+        if "capture_source" not in existing.schema.names:
+            print(
+                "  note: existing history file predates the capture_source "
+                "column; promoting it to null for those rows "
+                "(run scripts/backfill_capture_source.py to stamp them "
+                "'committed-snapshot' explicitly instead of leaving null).",
+                file=sys.stderr,
+            )
         combined = pa.concat_tables(
             [existing, new_table],
             promote_options="default",
