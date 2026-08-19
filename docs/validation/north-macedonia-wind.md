@@ -37,7 +37,8 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+- Structurally tiny signal: MK wind is the single 36.8 MW Bogdanci farm, so the modelled proxy (A75 B19 × 3%) is ≤ 1.1 MW even at rated output — permanently at or below the health check's 1 MW zero-peak floor (allowlisted 2026-08-19).
+- Intermittent reporting: MEPSO is a non-EU Energy Community TSO and A75 reporting is voluntary. B19 reported continuously through July 2026 (probe max 35.9 MW) then **ceased 2026-08-04T22:00Z** (Acknowledgement "No matching data" for 2026-08-12→19, probed 2026-08-19) — the same non-reporting pattern that ended the MK/RS solar B16 feeds in May 2026. If B19 never resumes, revert to an estimated anchor like `serbia-solar`.
 
 ## Links
 

@@ -271,6 +271,14 @@ export const ZONES = [
     domain: "10YMK-MEPSO----8",
     technologies: [{ psrType: "B19", fuel: "wind", rate: 0.03 }],
     sourceNote: "MEPSO North Macedonia: regional default ~3% wind.",
+    // WATCH (2026-08-19): MEPSO's voluntary A75 B19 reporting ceased
+    // 2026-08-04T22:00Z (probed: full data through July, Acknowledgement
+    // "No matching data" for 2026-08-12→19). Same Energy Community
+    // non-reporting pattern that killed MK/RS B16 in May. While the 30d
+    // window still holds pre-Aug-4 points the zone reads "live" with a
+    // decaying profile; once it empties (~2026-09-04) fetchEntsoeZone
+    // throws and the zone degrades to cached. If B19 never resumes,
+    // revert to an estimated anchor in statics.json.ts like serbia-solar.
   },
   // north-macedonia-solar removed 2026-06-06: ENTSO-E A75 B16 feed ceased ~2026-05-13.
   // MEPSO is a non-EU Energy Community TSO; EnC Secretariat 2023 report found

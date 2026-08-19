@@ -29,6 +29,7 @@ _New zone (granularity survey 2026-06-10). Completes Italy's 7-zone partition (w
 ## Known limitations
 
 - The calibration rate is a zone-share of the Terna national anchor, not a Terna per-zone published figure — hence T1b, not T1a. Terna's download center would upgrade this.
+- Structurally tiny signal: CNOR wind generation peaked at 55 MW over 2026-08-12→19 (live A75 probe, 495/496 nonzero points) × 0.4% = 0.22 MW proxy peak. Clearing the health check's 1 MW zero-peak floor would need 250 MW of zone generation, ~5× anything observed — allowlisted there 2026-08-19 as a true reading of a live feed.
 
 ## Links
 

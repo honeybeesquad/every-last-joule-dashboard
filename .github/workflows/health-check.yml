@@ -103,6 +103,42 @@ jobs:
               # zero here is the true reading of a live feed, not a breakage.
               "new-zealand-hydro",
               "new-zealand-solar",
+              # Small-fleet ENTSO-E wind zones whose calibrated curtailment
+              # proxy sits structurally below the 1 MW (0.001 GW) zero-peak
+              # floor. All three feeds live-probed via A75 on 2026-08-19:
+              # - italy-cnord-wind: CNOR B19 live (probe 2026-08-12→19: 496
+              #   pts, max 55 MW) × 0.4% Terna zone share = 0.22 MW peak.
+              #   Clearing the floor needs 250 MW of CNOR wind generation —
+              #   ~5× the highest output the zone has ever shown. Same class
+              #   as italy-north-zone-wind above (0.3%).
+              # - hungary-wind: MAVIR B19 live (probe: 716/716 nonzero pts,
+              #   max 225 MW) × 1% ≤ 2.3 MW on the windiest hour; the 30d
+              #   time-of-day profile peaks ~0.6 MW and flickers around the
+              #   floor. Hungary's wind fleet has been frozen ~330 MW by the
+              #   2016 permitting ban, so this does not grow out of the floor.
+              # - north-macedonia-wind: MK wind = the single 36.8 MW Bogdanci
+              #   farm; B19 × 3% ≤ 1.1 MW even at rated output (July 2026
+              #   probe: 711 pts, max 35.9 MW). NOTE: MEPSO's voluntary A75
+              #   reporting ceased 2026-08-04 (Energy Community non-reporting,
+              #   the same pattern that killed MK/RS solar B16 in May). If it
+              #   never resumes, the 30d window empties ~2026-09-04, the fetch
+              #   returns Acknowledgements, the zone degrades to cached, and
+              #   the freshness count picks it up — the right channel for a
+              #   dead feed. Revisit the live tier if it stays dead.
+              "hungary-wind",
+              "italy-cnord-wind",
+              "north-macedonia-wind",
+              # turkey-solar: the public EPIAS dashboard endpoint carries the
+              # CURRENT DAY only (probed 2026-08-19: 13 hourly items, `sun`
+              # 3.4 GW at Turkish noon; the date-ranged endpoint returns
+              # HTTP 406 "TGT gerekmektedir" — needs registered credentials
+              # the repo doesn't have). Any data refresh before Turkish
+              # sunrise therefore emits an all-zero solar profile: a true
+              # overnight reading of a live feed, recurring nightly, not a
+              # break. A real schema break (renamed `sun` field) now throws
+              # in the loader (midday silent-zero guard, same PR as this
+              # entry) and lands in the freshness count instead.
+              "turkey-solar",
           }
 
           def is_region_record(value):
