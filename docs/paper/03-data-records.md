@@ -41,11 +41,37 @@ value matches the per-region schema above.
 
 **Location:** `data/historical/curtailment_history.parquet`
 **Format:** Apache Parquet 2.6, Snappy compression, typed columns.
-**Cadence:** one row per region per scheduled build (~384 rows / 3 h
-≈ 17 MB / year), appended by `scripts/append_history.py` via
-`.github/workflows/history-append.yml`.
-**Granularity:** build-level snapshot — each row captures the
-30-day trailing aggregate at the moment the row was written.
+**Cadence:** one row per region per scheduled build, appended by
+`scripts/append_history.py` via `.github/workflows/history-append.yml`.
+**Granularity:** build-level snapshot. For rows with
+`capture_source == "deployed-build"`, each row captures the 30-day
+trailing aggregate read from the deployed dashboard at the moment the
+row was written.
+
+**Capture-source discontinuity:** rows are labelled by
+`capture_source`, which is the load-bearing definition of which era a
+row belongs to (the dates below are descriptive, not a filter
+boundary - the cutover is identified by the first
+`capture_source == "deployed-build"` row, not a fixed calendar date).
+`capture_source == "committed-snapshot"` rows (earliest 2026-04-23)
+came from a version of `scripts/append_history.py` that read the
+repository's committed fallback corpus rather than the deployed
+dashboard, so they re-stamp a fresh `build_timestamp` on data that
+only actually changed when the corpus was recommitted. That era's 854
+builds carry just 35 distinct global totals, including flat stretches
+from 2026-06-25 to 2026-08-01 and from 2026-08-03 to 2026-08-19, and
+cover 274 regions per build. Once the reworked script first runs after
+this PR merges, `deployed-build` rows read the dashboard's live
+payloads directly and cover approximately 446 distinct regions per
+build (de-duplicated on `regionId` by an explicit freshness rule -
+most recent `lastSuccessAt` wins, ties broken by `sourceStatus` - not
+by payload path order; some regions, such as `jordan`, are served by
+more than one payload file in the same build), including AEMO's
+per-plant regions alongside its state aggregates -
+summing a build is still correct, because the state aggregates
+exclude the named per-plant DUIDs since PR #298. Full accounting, and
+guidance for de-duplicating the committed-snapshot era, in
+`dataset/SCHEMA.md` § "Parquet rolling history".
 
 Column list and types in `dataset/SCHEMA.md` § "Parquet rolling
 history".
