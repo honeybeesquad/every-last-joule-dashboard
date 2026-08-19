@@ -32,14 +32,30 @@ rows are the same as a single successful whole-month request would produce.
 
 Failure semantics for `--month` mode: chunks are fetched in date order
 starting from the 1st of the month. If a chunk fails (after `fetch()`'s own
-retries), fetching for THAT metric stops immediately; whatever earlier,
-contiguous chunks already succeeded are still written to the metric's
-Parquet file (a partial month, never a hole in the middle), and the process
-exits non-zero so the operator/monitoring sees the failure. Other metrics
-are unaffected -- one metric's chunk failure does not stop the remaining
-metrics from being attempted. A partial run can overwrite a previously
-complete file for that month with fewer rows; the non-zero exit is the
-signal that a re-run or investigation is needed.
+retries), fetching for THAT metric stops immediately. What happens to the
+rows fetched before the failure depends on whether anything is already on
+disk for that month:
+
+  - If `<metric>/<YYYY-MM>.parquet` already exists, the freshly fetched rows
+    are MERGED into it (union, keyed on (metric, date, hour, code); a
+    colliding key takes the freshly fetched value, so a late-settling XM
+    revision still applies) and the merged result is written. A chunk
+    failure can therefore never reduce that file's row count or its latest
+    date versus what was already there -- the steady-state failure pattern
+    (the tunnel degrades after ~day 8 and then fails every night for the
+    rest of the month, per the 2026-08 incident) accumulates coverage night
+    over night instead of capping it at the first failure boundary.
+  - If nothing is on disk yet, the partial rows fetched before the failure
+    are written as-is (there is nothing to lose by doing so).
+
+Either way the process exits non-zero so the operator/monitoring sees the
+failure, and other metrics are unaffected -- one metric's chunk failure does
+not stop the remaining metrics from being attempted.
+
+A complete, failure-free run for a metric still force-overwrites its file
+outright (no merge), exactly as before: that is what lets upstream
+revisions *and deletions* settle, and is safe precisely because nothing
+failed.
 """
 from __future__ import annotations
 import argparse, datetime, json, os, subprocess, sys, time
@@ -118,11 +134,15 @@ def parse_rows(metric: str, units: str, fallback_date: str, data: dict) -> list[
     return rows
 
 
+def _metric_parquet_path(metric: str, tag: str) -> str:
+    return os.path.join(LAKE, metric, f"{tag}.parquet")
+
+
 def write_parquet(metric: str, rows: list[tuple], tag: str) -> str:
     import duckdb
     d = os.path.join(LAKE, metric)
     os.makedirs(d, exist_ok=True)
-    path = os.path.join(d, f"{tag}.parquet")
+    path = _metric_parquet_path(metric, tag)
     con = duckdb.connect()
     con.execute(
         "CREATE TABLE t(metric VARCHAR, date DATE, hour INT, code VARCHAR, value DOUBLE, units VARCHAR)"
@@ -131,6 +151,55 @@ def write_parquet(metric: str, rows: list[tuple], tag: str) -> str:
     con.execute(f"COPY t TO '{path}' (FORMAT PARQUET)")
     con.close()
     return path
+
+
+def read_parquet_rows(metric: str, tag: str) -> list[tuple]:
+    """Read all rows already on disk for <metric>/<tag>.parquet, or [] if
+    the file doesn't exist yet. Used to merge a partial (chunk-failure) run
+    on top of what's already there instead of overwriting it -- see the
+    module docstring's "Failure semantics" section."""
+    path = _metric_parquet_path(metric, tag)
+    if not os.path.exists(path):
+        return []
+    import duckdb
+    con = duckdb.connect()
+    try:
+        result = con.execute(
+            f"SELECT metric, date, hour, code, value, units FROM read_parquet('{path}')"
+        ).fetchall()
+    finally:
+        con.close()
+    return [tuple(r) for r in result]
+
+
+def _row_key(row: tuple) -> tuple:
+    """Natural key for a lake row. The schema in write_parquet is
+    (metric, date, hour, code, value, units) -- value and units are the
+    measurement, not part of the identity, so the key is
+    (metric, date, hour, code): one metric, one calendar day, one hour,
+    one resource/system code. `date` is normalised to its ISO string
+    because freshly parsed rows carry a str (see parse_rows) while rows
+    read back from an existing Parquet file via duckdb carry a
+    datetime.date -- without normalising, the same real-world row would
+    compare as two different keys and never de-duplicate."""
+    metric, date, hour, code, _value, _units = row
+    date_key = date.isoformat() if hasattr(date, "isoformat") else str(date)
+    return (metric, date_key, hour, code)
+
+
+def merge_rows(existing: list[tuple], fresh: list[tuple]) -> list[tuple]:
+    """Union `existing` (already on disk) with `fresh` (just fetched),
+    keyed on `_row_key`. A colliding key takes the `fresh` row, so a
+    late-settling revision from XM still applies -- this preserves the
+    intent of the nightly force-overwrite for the rows fresh actually
+    covers. Existing rows whose key has no counterpart in `fresh` (i.e.
+    everything past the point a partial run's chunk failure cut it off)
+    are carried through untouched. Result is always >= len(existing) in
+    row count, which is the invariant a chunk failure must not violate."""
+    merged: dict[tuple, tuple] = {_row_key(r): r for r in existing}
+    for r in fresh:
+        merged[_row_key(r)] = r
+    return list(merged.values())
 
 
 def windows(start: str, end: str, window_days: int = WINDOW_DAYS):
@@ -163,16 +232,19 @@ def month_bounds(ym: str, today: datetime.date) -> tuple[str, str] | None:
 
 
 def capture_month(ym: str, today: datetime.date, sel, chunk_days: int = CHUNK_DAYS) -> tuple[int, bool]:
-    """Capture one calendar month into <metric>/<YYYY-MM>.parquet (force-overwrite).
-    The current month's file is rewritten on each scheduled run as days settle.
+    """Capture one calendar month into <metric>/<YYYY-MM>.parquet.
 
     Each metric's request window is split into sequential `chunk_days`-sized
     sub-windows (see module docstring for why) and fetched in date order. If
-    a chunk fails for a metric, fetching stops for that metric only --
-    already-fetched chunks for it are still written, other metrics are still
-    attempted, and the run is reported as a failure via the returned flag.
+    a chunk fails for a metric, fetching stops for that metric only, and the
+    fresh rows gathered before the failure are MERGED into whatever is
+    already on disk for that month (see module docstring's "Failure
+    semantics") rather than overwriting it, so a chunk failure can never
+    reduce the file's row count or latest date versus before this run. A
+    complete, failure-free run for a metric still overwrites outright, as
+    before -- that's what lets upstream revisions and deletions settle.
 
-    Returns (total_rows_written, had_failure).
+    Returns (total_rows_in_file_after_this_run, had_failure).
     """
     bounds = month_bounds(ym, today)
     if bounds is None:
@@ -200,13 +272,24 @@ def capture_month(ym: str, today: datetime.date, sel, chunk_days: int = CHUNK_DA
                 had_failure = True
                 break
             rows.extend(parse_rows(metric, units, ws, data))
-        if rows:
+
+        if metric_failed:
+            existing = read_parquet_rows(metric, ym)
+            merged = merge_rows(existing, rows)
+            if merged:
+                write_parquet(metric, merged, ym)
+                total += len(merged)
+                print(
+                    f"{metric} {ym} ({start}..{end}): {len(rows)} new row(s) fetched before "
+                    f"failure, merged with {len(existing)} existing row(s) on disk -> "
+                    f"{len(merged)} total [PARTIAL - chunk failure, see stderr]"
+                )
+            else:
+                print(f"{metric} {ym}: 0 rows fetched before failure and no existing file, nothing written")
+        elif rows:
             write_parquet(metric, rows, ym)
             total += len(rows)
-            tag = " [PARTIAL - chunk failure, see stderr]" if metric_failed else ""
-            print(f"{metric} {ym} ({start}..{end}): {len(rows)} rows{tag}")
-        elif metric_failed:
-            print(f"{metric} {ym}: 0 rows fetched before failure, nothing written")
+            print(f"{metric} {ym} ({start}..{end}): {len(rows)} rows")
         else:
             print(f"{metric} {ym}: 0 rows (no data yet)")
     tag = " (PARTIAL - one or more metrics hit a chunk failure, see stderr)" if had_failure else ""
