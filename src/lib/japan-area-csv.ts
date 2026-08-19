@@ -1,3 +1,7 @@
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { fetchHttp1Bytes } from "./fetch.js";
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "./profile.js";
 import type { CurtailmentPoint, RegionData } from "./types.js";
@@ -178,10 +182,70 @@ function formatYyyyMm(d: Date): string {
   return `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
+/** True for the "HTTP 404 for <url>" shape thrown by fetchHttp1Bytes on a 404 response. */
+export function isNotFoundError(err: unknown): boolean {
+  return err instanceof Error && /^HTTP 404 /.test(err.message);
+}
+
+/**
+ * Extract one member's raw bytes from a ZIP archive via the system `unzip`
+ * CLI — same pattern as the aemo/caiso/chile-cen-reductions/uruguay/wa-swis
+ * loaders, so no zip-parsing dependency is introduced. Returns undefined
+ * if the archive doesn't contain the member (rather than throwing), so
+ * callers can produce a message naming both the member and the archive.
+ */
+export function extractZipMember(zipBytes: Uint8Array, member: string): Uint8Array | undefined {
+  const dir = mkdtempSync(join(tmpdir(), "japan-area-zip-"));
+  const zipPath = join(dir, "archive.zip");
+  try {
+    writeFileSync(zipPath, zipBytes);
+    const out = execFileSync("unzip", ["-p", zipPath, member], {
+      maxBuffer: 64 * 1024 * 1024,
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+    return out.length > 0 ? new Uint8Array(out.buffer, out.byteOffset, out.byteLength) : undefined;
+  } catch {
+    return undefined;
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+/**
+ * Fallback for TSOs that roll a month's standalone CSV into a yearly ZIP
+ * archive (`eria_jukyu_{year}.zip`, same OCCTO-standard filename inside)
+ * sooner than our trailing-30d window needs it — confirmed for Chubu
+ * 2026-08: the portal now retains only the CURRENT month standalone and
+ * rolls the previous month straight into the yearly zip, instead of
+ * keeping two months standalone as it used to. Only tried when the
+ * standalone fetch 404s, so it costs nothing for TSOs that still publish
+ * two months standalone — any other fetch error there still propagates.
+ */
+async function fetchAreaMonthFromZip(
+  cfg: JapanAreaConfig,
+  yyyymm: string,
+  timeoutMs: number,
+): Promise<AreaParsed> {
+  const year = yyyymm.slice(0, 4);
+  const zipUrl = `${cfg.baseUrl}/eria_jukyu_${year}.zip`;
+  const zipBytes = await fetchHttp1Bytes(zipUrl, timeoutMs);
+  const member = `eria_jukyu_${yyyymm}_${cfg.areaCode}.csv`;
+  const memberBytes = extractZipMember(zipBytes, member);
+  if (!memberBytes) {
+    throw new Error(`${member} not found inside ${zipUrl}`);
+  }
+  return parseAreaCsv(decodeAreaCsv(memberBytes), cfg);
+}
+
 async function fetchAreaMonth(cfg: JapanAreaConfig, yyyymm: string, timeoutMs = 30000): Promise<AreaParsed> {
   const url = `${cfg.baseUrl}/eria_jukyu_${yyyymm}_${cfg.areaCode}.csv`;
-  const buf = await fetchHttp1Bytes(url, timeoutMs);
-  return parseAreaCsv(decodeAreaCsv(buf), cfg);
+  try {
+    const buf = await fetchHttp1Bytes(url, timeoutMs);
+    return parseAreaCsv(decodeAreaCsv(buf), cfg);
+  } catch (err) {
+    if (!isNotFoundError(err)) throw err;
+    return fetchAreaMonthFromZip(cfg, yyyymm, timeoutMs);
+  }
 }
 
 /**

@@ -8,12 +8,15 @@ import {
   mergeWindowBuild,
   windowedPoints,
   assertMonthsFetched,
+  isNotFoundError,
+  extractZipMember,
   type AreaParsed,
   type AreaPoint,
 } from "../src/lib/japan-area-csv.js";
 
 const fixture = (name: string) =>
   readFileSync(join(__dirname, "fixtures", name), "utf8");
+const fixtureBytes = (name: string) => new Uint8Array(readFileSync(join(__dirname, "fixtures", name)));
 
 describe("jstToIsoUtc", () => {
   it("converts slash JST date+time to UTC (−9h)", () => {
@@ -144,6 +147,41 @@ describe("windowedPoints", () => {
   it("keeps only points within [now-30d, now], sorted ascending", () => {
     const w = windowedPoints(months, NOW);
     expect(w.map((p) => p.utcTimestamp)).toEqual(["2026-06-10T03:00:00.000Z"]);
+  });
+});
+
+describe("isNotFoundError", () => {
+  it("recognises the fetchHttp1Bytes 404 error shape", () => {
+    expect(isNotFoundError(new Error("HTTP 404 for https://example.test/foo.csv"))).toBe(true);
+  });
+
+  it("rejects other statuses and error types", () => {
+    expect(isNotFoundError(new Error("HTTP 500 for https://example.test/foo.csv"))).toBe(false);
+    expect(isNotFoundError(new Error("timeout after 30000ms for https://example.test/foo.csv"))).toBe(false);
+    expect(isNotFoundError("HTTP 404 for x")).toBe(false); // not an Error instance
+  });
+});
+
+// Regression coverage for the Chubu 2026-08 outage: the portal now rolls the
+// previous month's standalone CSV into a yearly ZIP archive sooner than the
+// loader's 30-day window needs it, so a 404 on the standalone file must fall
+// back to extracting the same-named member from `eria_jukyu_{year}.zip`.
+describe("extractZipMember", () => {
+  const archive = () => fixtureBytes("japan-area-yearly-archive.zip");
+
+  it("extracts a named member's raw bytes from a ZIP archive", () => {
+    const bytes = extractZipMember(archive(), "eria_jukyu_202607_04.csv");
+    expect(bytes).toBeDefined();
+    const decoded = decodeAreaCsv(bytes!);
+    expect(decoded).toContain("太陽光出力制御量");
+    // The member round-trips through the same parser the standalone-CSV path uses.
+    const parsed = parseAreaCsv(decoded, { dateFormat: "slash" });
+    expect(parsed.sampleCount).toBe(2);
+    expect(parsed.solarCurtMwSum).toBe(300);
+  });
+
+  it("returns undefined for a member the archive doesn't contain", () => {
+    expect(extractZipMember(archive(), "eria_jukyu_202601_04.csv")).toBeUndefined();
   });
 });
 

@@ -9,10 +9,17 @@ import type { RegionData } from "../lib/types.js";
  * Direct measured curtailment from the monthly area supply/demand CSV:
  *   https://powergrid.chuden.co.jp/denki_yoho_content_data/eria_jukyu_YYYYMM_04.csv
  *
- * Encoding: Shift-JIS. 22-column layout, 30-min intervals, MW. Only the current
- * and previous month are exposed standalone (older months → yearly zip); the
- * current+previous month fetch covers the 30-day window. The dead juyo_cepco003
- * proxy path (PR #90) is retired. Promoted estimated→live 2026-06-07.
+ * Encoding: Shift-JIS. 22-column layout, 30-min intervals, MW. As of 2026-08
+ * the portal keeps only the CURRENT month standalone and rolls the previous
+ * month straight into the yearly `eria_jukyu_{year}.zip` archive (confirmed:
+ * `eria_jukyu_202607_04.csv` 404s standalone but is present inside
+ * `eria_jukyu_2026.zip`, same 22-column Shift-JIS content) — narrower than
+ * the "current+previous standalone" retention this loader used to rely on,
+ * which is what silently broke the live fetch for ~2.5 months (2026-06 to
+ * 2026-08). `runJapanAreaLoader`'s shared `fetchAreaMonth` now falls back to
+ * the yearly zip on a 404, so the current+previous-month fetch still covers
+ * the 30-day window either way. The dead juyo_cepco003 proxy path (PR #90)
+ * is retired. Promoted estimated→live 2026-06-07.
  */
 const CONFIG: JapanAreaConfig = {
   regionId: "japan-chubu",
