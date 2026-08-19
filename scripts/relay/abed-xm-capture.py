@@ -20,6 +20,26 @@ DISTINCT on (metric, date, hour, code).
 Egress: requires the elj-co WireGuard tunnel up (this host). XM is geo-blocked;
 DNS has no record without the tunnel, so we pin the IP via dig @8.8.8.8 +
 curl --resolve, with a fallback IP list (XM rotates across these).
+
+Transport reliability (scheduled `--month` mode): the elj-co tunnel is
+bandwidth-limited (~27 KB/s, endpoint-limited). A single whole-month request
+for `--month current` completes early in the month but starts timing out
+(curl rc=28) once the window grows past roughly the first week, and then
+fails identically every night for the rest of the month. To fit the slow
+link, each metric's month window is split into sequential CHUNK_DAYS-sized
+sub-windows (`--chunk-days`, default 7) and concatenated -- the resulting
+rows are the same as a single successful whole-month request would produce.
+
+Failure semantics for `--month` mode: chunks are fetched in date order
+starting from the 1st of the month. If a chunk fails (after `fetch()`'s own
+retries), fetching for THAT metric stops immediately; whatever earlier,
+contiguous chunks already succeeded are still written to the metric's
+Parquet file (a partial month, never a hole in the middle), and the process
+exits non-zero so the operator/monitoring sees the failure. Other metrics
+are unaffected -- one metric's chunk failure does not stop the remaining
+metrics from being attempted. A partial run can overwrite a previously
+complete file for that month with fewer rows; the non-zero exit is the
+signal that a re-run or investigation is needed.
 """
 from __future__ import annotations
 import argparse, datetime, json, os, subprocess, sys, time
@@ -29,6 +49,9 @@ HOST = "servapibi.xm.com.co"
 RESOLVER = "8.8.8.8"
 FALLBACK_IPS = ["190.90.250.249", "191.97.49.119", "179.1.12.119", "179.1.5.120"]
 WINDOW_DAYS = 31  # XM hard cap per request
+CHUNK_DAYS = 7  # default sub-window size for --month mode; small enough to
+                # finish over the ~27 KB/s abed<->XM tunnel before curl's
+                # own --max-time cuts it off. Override with --chunk-days.
 
 # (MetricId, url-path, Entity, units) — from the recon catalog (Type/Url authoritative)
 METRICS = [
@@ -110,43 +133,85 @@ def write_parquet(metric: str, rows: list[tuple], tag: str) -> str:
     return path
 
 
-def windows(start: str, end: str):
+def windows(start: str, end: str, window_days: int = WINDOW_DAYS):
     s = datetime.date.fromisoformat(start)
     e = datetime.date.fromisoformat(end)
     cur = s
     while cur <= e:
-        w_end = min(cur + datetime.timedelta(days=WINDOW_DAYS - 1), e)
+        w_end = min(cur + datetime.timedelta(days=window_days - 1), e)
         yield cur.isoformat(), w_end.isoformat()
         cur = w_end + datetime.timedelta(days=1)
 
 
-def month_bounds(ym: str, today: datetime.date) -> tuple[str, str]:
+def month_bounds(ym: str, today: datetime.date) -> tuple[str, str] | None:
+    """Return the (start, end) ISO-date window to capture for month `ym` as of
+    `today`, or None when there is no valid window yet.
+
+    On the 1st of any month, `today - 1 day` is still the last day of the
+    *previous* month, which precedes the 1st of `ym` -- an empty window, not
+    an error. Returning None lets the caller skip cleanly instead of
+    computing start > end.
+    """
     import calendar
     y, m = int(ym[:4]), int(ym[5:7])
     last = calendar.monthrange(y, m)[1]
     start = datetime.date(y, m, 1)
     end = min(datetime.date(y, m, last), today - datetime.timedelta(days=1))
+    if start > end:
+        return None
     return start.isoformat(), end.isoformat()
 
 
-def capture_month(ym: str, today: datetime.date, sel) -> int:
+def capture_month(ym: str, today: datetime.date, sel, chunk_days: int = CHUNK_DAYS) -> tuple[int, bool]:
     """Capture one calendar month into <metric>/<YYYY-MM>.parquet (force-overwrite).
-    The current month's file is rewritten on each scheduled run as days settle."""
-    start, end = month_bounds(ym, today)
+    The current month's file is rewritten on each scheduled run as days settle.
+
+    Each metric's request window is split into sequential `chunk_days`-sized
+    sub-windows (see module docstring for why) and fetched in date order. If
+    a chunk fails for a metric, fetching stops for that metric only --
+    already-fetched chunks for it are still written, other metrics are still
+    attempted, and the run is reported as a failure via the returned flag.
+
+    Returns (total_rows_written, had_failure).
+    """
+    bounds = month_bounds(ym, today)
+    if bounds is None:
+        print(f"==== {ym}: no valid window yet (1st-of-month edge case), skipping ====")
+        return 0, False
+    start, end = bounds
+
     total = 0
+    had_failure = False
     for metric, path, entity, units in METRICS:
         if sel and metric not in sel:
             continue
-        data = fetch(metric, path, entity, start, end)
-        rows = parse_rows(metric, units, start, data)
+        rows: list[tuple] = []
+        metric_failed = False
+        for ws, we in windows(start, end, chunk_days):
+            try:
+                data = fetch(metric, path, entity, ws, we)
+            except RuntimeError as exc:
+                print(
+                    f"{metric} {ym} chunk {ws}..{we}: FAILED ({exc}); "
+                    f"stopping this metric, keeping {len(rows)} already-fetched row(s)",
+                    file=sys.stderr,
+                )
+                metric_failed = True
+                had_failure = True
+                break
+            rows.extend(parse_rows(metric, units, ws, data))
         if rows:
             write_parquet(metric, rows, ym)
             total += len(rows)
-            print(f"{metric} {ym} ({start}..{end}): {len(rows)} rows")
+            tag = " [PARTIAL - chunk failure, see stderr]" if metric_failed else ""
+            print(f"{metric} {ym} ({start}..{end}): {len(rows)} rows{tag}")
+        elif metric_failed:
+            print(f"{metric} {ym}: 0 rows fetched before failure, nothing written")
         else:
             print(f"{metric} {ym}: 0 rows (no data yet)")
-    print(f"==== {ym}: {total} rows into {LAKE} ====")
-    return total
+    tag = " (PARTIAL - one or more metrics hit a chunk failure, see stderr)" if had_failure else ""
+    print(f"==== {ym}: {total} rows into {LAKE}{tag} ====")
+    return total, had_failure
 
 
 def main() -> int:
@@ -157,15 +222,20 @@ def main() -> int:
     ap.add_argument("--metrics", default="", help="comma-separated subset of metric ids")
     ap.add_argument("--force", action="store_true", help="re-fetch windows even if the parquet exists")
     ap.add_argument("--month", default="", help='"current" or YYYY-MM: capture one month to <metric>/<YYYY-MM>.parquet (the scheduled mode)')
+    ap.add_argument("--chunk-days", type=int, default=CHUNK_DAYS,
+                     help=f"days per fetch sub-window in --month mode (default {CHUNK_DAYS}); "
+                          "smaller values finish faster over a slow tunnel but issue more requests")
     a = ap.parse_args()
     sel = set(a.metrics.split(",")) if a.metrics else None
 
     # Scheduled mode: one stable file per metric per calendar month.
     if a.month:
         ym = today.strftime("%Y-%m") if a.month == "current" else a.month
-        return 0 if capture_month(ym, today, sel) >= 0 else 1
+        _total, had_failure = capture_month(ym, today, sel, a.chunk_days)
+        return 1 if had_failure else 0
 
     grand = 0
+    had_failure = False
     for metric, path, entity, units in METRICS:
         if sel and metric not in sel:
             continue
@@ -175,7 +245,12 @@ def main() -> int:
             if os.path.exists(out) and not a.force:
                 print(f"{metric} {ws}..{we}: exists, skip")
                 continue
-            data = fetch(metric, path, entity, ws, we)
+            try:
+                data = fetch(metric, path, entity, ws, we)
+            except RuntimeError as exc:
+                print(f"{metric} {ws}..{we}: FAILED ({exc}); continuing with remaining windows/metrics", file=sys.stderr)
+                had_failure = True
+                continue
             rows = parse_rows(metric, units, ws, data)
             if rows:
                 write_parquet(metric, rows, f"{ws}_{we}")
@@ -185,8 +260,9 @@ def main() -> int:
                 print(f"{metric} {ws}..{we}: 0 rows (no data)")
         print(f"== {metric}: {total} rows ==")
         grand += total
-    print(f"==== TOTAL: {grand} rows into {LAKE} ====")
-    return 0
+    tag = " (one or more windows FAILED, see stderr)" if had_failure else ""
+    print(f"==== TOTAL: {grand} rows into {LAKE}{tag} ====")
+    return 1 if had_failure else 0
 
 
 if __name__ == "__main__":
