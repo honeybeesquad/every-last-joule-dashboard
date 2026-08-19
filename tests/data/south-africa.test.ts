@@ -95,6 +95,7 @@ const ALL_ZERO_CSV = [
 
 describe("resolveEskomCsv", () => {
   it("accepts the first candidate that fetches and parses successfully", async () => {
+    const now = new Date("2026-08-01T02:00:00Z"); // just after SAMPLE_CSV's newest point
     const fetchFn = async (url: string) => {
       expect(url).toBe("https://example.com/2026/08/Total_Hourly_Generation.csv");
       return SAMPLE_CSV;
@@ -102,12 +103,14 @@ describe("resolveEskomCsv", () => {
     const { url, parsed } = await resolveEskomCsv(
       ["https://example.com/2026/08/Total_Hourly_Generation.csv"],
       fetchFn,
+      now,
     );
     expect(url).toBe("https://example.com/2026/08/Total_Hourly_Generation.csv");
     expect(parsed.windPoints.length).toBeGreaterThan(0);
   });
 
   it("falls through to the next candidate when the first 404s", async () => {
+    const now = new Date("2026-08-01T02:00:00Z"); // just after SAMPLE_CSV's newest point
     const attempted: string[] = [];
     const fetchFn = async (url: string) => {
       attempted.push(url);
@@ -121,6 +124,7 @@ describe("resolveEskomCsv", () => {
         "https://example.com/2026/06/Total_Hourly_Generation.csv",
       ],
       fetchFn,
+      now,
     );
 
     expect(attempted).toEqual([
@@ -132,6 +136,7 @@ describe("resolveEskomCsv", () => {
   });
 
   it("falls through a candidate that fetches but parses to zero usable points", async () => {
+    const now = new Date("2026-08-01T02:00:00Z"); // just after SAMPLE_CSV's newest point
     const fetchFn = async (url: string) => {
       if (url.includes("2026/08/31")) return ALL_ZERO_CSV;
       return SAMPLE_CSV;
@@ -143,6 +148,7 @@ describe("resolveEskomCsv", () => {
         "https://example.com/2026/07/Total_Hourly_Generation.csv",
       ],
       fetchFn,
+      now,
     );
 
     expect(url).toBe("https://example.com/2026/07/Total_Hourly_Generation.csv");
@@ -162,6 +168,74 @@ describe("resolveEskomCsv", () => {
         fetchFn,
       ),
     ).rejects.toThrow(/Eskom CSV unresolved/);
+  });
+
+  // -------------------------------------------------------------------------
+  // Freshness comparison (the review finding this PR update addresses): a
+  // stale-but-parsing first candidate must lose to a fresher later one, and
+  // a current first candidate must short-circuit without fetching the rest.
+  // -------------------------------------------------------------------------
+
+  const STALE_CSV = [
+    "Date Time Hour Beginning,Wind,PV,CSP,Other_RE",
+    "2026-06-01 00:00:00,100,0,0,0",
+    "2026-06-01 01:00:00,110,0,0,0",
+  ].join("\n");
+
+  const FRESH_CSV = [
+    "Date Time Hour Beginning,Wind,PV,CSP,Other_RE",
+    "2026-08-19 08:00:00,150,20,0,0",
+    "2026-08-19 09:00:00,160,25,0,0",
+  ].join("\n");
+
+  it("picks the freshest candidate, not the first that merely parses", async () => {
+    const now = new Date("2026-08-19T10:00:00Z"); // 1-2h after FRESH_CSV's newest point
+    const attempted: string[] = [];
+    const fetchFn = async (url: string) => {
+      attempted.push(url);
+      if (url.includes("scraped-stale")) return STALE_CSV;
+      return FRESH_CSV;
+    };
+
+    const { url, newestTimestamp } = await resolveEskomCsv(
+      [
+        "https://example.com/scraped-stale/Total_Hourly_Generation.csv", // stale portal link, still parses
+        "https://example.com/2026/08/Total_Hourly_Generation.csv", // fresher computed candidate
+      ],
+      fetchFn,
+      now,
+    );
+
+    // Both candidates get fetched — the stale one alone isn't "current
+    // enough" to short-circuit — and the freshest wins.
+    expect(attempted).toEqual([
+      "https://example.com/scraped-stale/Total_Hourly_Generation.csv",
+      "https://example.com/2026/08/Total_Hourly_Generation.csv",
+    ]);
+    expect(url).toBe("https://example.com/2026/08/Total_Hourly_Generation.csv");
+    expect(newestTimestamp > "2026-06-01T01:00:00.000Z").toBe(true);
+  });
+
+  it("short-circuits on a current first candidate without fetching the rest", async () => {
+    const now = new Date("2026-08-19T10:00:00Z"); // 1-2h after FRESH_CSV's newest point
+    const attempted: string[] = [];
+    const fetchFn = async (url: string) => {
+      attempted.push(url);
+      return FRESH_CSV;
+    };
+
+    const { url } = await resolveEskomCsv(
+      [
+        "https://example.com/2026/08/Total_Hourly_Generation.csv", // current — should short-circuit
+        "https://example.com/2026/07/Total_Hourly_Generation.csv",
+        "https://example.com/2026/06/Total_Hourly_Generation.csv",
+      ],
+      fetchFn,
+      now,
+    );
+
+    expect(attempted).toEqual(["https://example.com/2026/08/Total_Hourly_Generation.csv"]);
+    expect(url).toBe("https://example.com/2026/08/Total_Hourly_Generation.csv");
   });
 });
 

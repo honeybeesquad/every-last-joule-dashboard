@@ -139,29 +139,95 @@ export function parseEskomTotalHourlyGeneration(csv: string): EskomParsed {
 }
 
 /**
- * Try each candidate CSV URL in order, accepting the first that both fetches
- * and parses to at least one usable (wind or solar) point. `fetchFn` is
- * injectable so this is testable without live network access; it defaults to
- * the real `fetchText`. Throws (does not silently succeed) if every
- * candidate fails, so `withFallback` still degrades honestly.
+ * A candidate is "current" once its newest non-zero point is within this
+ * many days of "now" — the short-circuit accepts it immediately instead of
+ * fetching the rest. Eskom's CSV is hourly and pre-filled to month end with
+ * zero rows (see parseEskomTotalHourlyGeneration's zero-row skip), so a
+ * genuinely up-to-date file's newest real point is normally at most a few
+ * hours old. 3 days covers ordinary publish lag plus one missed daily
+ * refresh, while still being tight enough that a month-old stale portal
+ * link (the entire premise of this loader) cannot pass as current.
+ */
+const FRESHNESS_SHORT_CIRCUIT_DAYS = 3;
+
+function newestPointTimestamp(parsed: EskomParsed): string | undefined {
+  let newest: string | undefined;
+  for (const p of [...parsed.windPoints, ...parsed.solarPoints]) {
+    if (!newest || p.utcTimestamp > newest) newest = p.utcTimestamp;
+  }
+  return newest;
+}
+
+export interface EskomResolution {
+  url: string;
+  parsed: EskomParsed;
+  /** ISO timestamp of the newest non-zero point across wind + solar. */
+  newestTimestamp: string;
+}
+
+/**
+ * Evaluate candidate CSV URLs and pick the one whose data is freshest,
+ * rather than the first that merely parses. A stale-but-reachable portal
+ * link that still resolves to a real (older) file must not beat a fresher
+ * computed-month candidate — see the module-level PR discussion: a
+ * partially-working upstream is worse than a dead one, because the failure
+ * path never runs and the loader would silently serve month-old data as
+ * "live" (mirrors the Colombia XM-vs-relay fix, PR #622).
+ *
+ * Cost control: candidates are tried in order and a candidate whose newest
+ * point is within FRESHNESS_SHORT_CIRCUIT_DAYS of `now` is accepted
+ * immediately, without fetching the remaining candidates — the common case
+ * (first/scraped candidate is current) costs exactly one fetch. Only when
+ * no candidate is "current enough" do we fall through the whole list and
+ * take the freshest of whatever parsed successfully.
+ *
+ * `fetchFn` is injectable so this is testable without live network access;
+ * it defaults to the real `fetchText`. Throws (does not silently succeed)
+ * if every candidate fails to parse to at least one usable point, so
+ * `withFallback` still degrades honestly.
  */
 export async function resolveEskomCsv(
   candidates: string[],
   fetchFn: (url: string) => Promise<string> = (url) => fetchText(url, { timeoutMs: 45000, retries: 1 }),
-): Promise<{ url: string; parsed: EskomParsed }> {
+  now: Date = new Date(),
+): Promise<EskomResolution> {
   const errors: string[] = [];
+  let best: EskomResolution | undefined;
 
   for (const url of candidates) {
+    let csv: string;
     try {
-      const csv = await fetchFn(url);
-      const parsed = parseEskomTotalHourlyGeneration(csv);
-      if (parsed.windPoints.length > 0 || parsed.solarPoints.length > 0) {
-        return { url, parsed };
-      }
-      errors.push(`${url}: parsed but no usable (non-zero) points`);
+      csv = await fetchFn(url);
     } catch (err) {
       errors.push(`${url}: ${err instanceof Error ? err.message : String(err)}`);
+      continue;
     }
+
+    const parsed = parseEskomTotalHourlyGeneration(csv);
+    const newestTimestamp = newestPointTimestamp(parsed);
+    if (!newestTimestamp) {
+      errors.push(`${url}: parsed but no usable (non-zero) points`);
+      continue;
+    }
+
+    if (!best || newestTimestamp > best.newestTimestamp) {
+      best = { url, parsed, newestTimestamp };
+    }
+
+    const ageMs = now.getTime() - new Date(newestTimestamp).getTime();
+    if (ageMs <= FRESHNESS_SHORT_CIRCUIT_DAYS * 24 * 60 * 60 * 1000) {
+      console.warn(
+        `south-africa loader: candidate ${url} is current (newest point ${newestTimestamp}, within ${FRESHNESS_SHORT_CIRCUIT_DAYS}d) — accepting without trying remaining candidates`,
+      );
+      return best;
+    }
+  }
+
+  if (best) {
+    console.warn(
+      `south-africa loader: no candidate within the ${FRESHNESS_SHORT_CIRCUIT_DAYS}d freshness short-circuit; used freshest of ${candidates.length} candidate(s): ${best.url} (newest point ${best.newestTimestamp})`,
+    );
+    return best;
   }
 
   throw new Error(
@@ -247,8 +313,8 @@ function normalizeCachedSouthAfrica(cached: unknown): Record<string, RegionData>
 const run = async (): Promise<Record<string, RegionData>> => {
   const scrapedUrl = await scrapeEskomCsvUrl();
   const candidates = buildEskomCsvCandidates(scrapedUrl);
-  const { url: resolvedUrl, parsed } = await resolveEskomCsv(candidates);
-  console.warn(`south-africa loader: resolved CSV at ${resolvedUrl} (${candidates.length} candidate(s) considered)`);
+  const { url: resolvedUrl, parsed, newestTimestamp } = await resolveEskomCsv(candidates);
+  console.warn(`south-africa loader: resolved CSV at ${resolvedUrl} (newest point ${newestTimestamp}; ${candidates.length} candidate(s) considered)`);
   const { windPoints, solarPoints } = parsed;
 
   const wind30d = trailingPoints(windPoints);
