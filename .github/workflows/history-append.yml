@@ -51,9 +51,34 @@ on:
     - cron: "0 2 * * *"
   workflow_dispatch: {}
 
+# This step now fetches the deployed dashboard (one index request plus one
+# request per hashed data/*.json payload — 137 as at 2026-08-19) instead of
+# reading local files, so a run can take much longer than the old ~20s. A
+# warm sequential run measures ~29s, but each payload fetch has its own 30s
+# timeout in _http_get(), so the worst case is roughly (137 + 1) * 30s ≈ 69
+# minutes. Without a concurrency group, two overlapping runs would both
+# derive `combined` from the same base Parquet and both `git push --force`
+# the automation/history-snapshot branch below — the later push silently
+# discards the earlier run's rows. The smallest gap between two triggers in
+# the existing archive is 54.5 minutes (workflow_run after the 3-hourly
+# refresh, plus the 02:00 daily cron), which a slow run can exceed.
+concurrency:
+  group: history-append
+  # Do NOT cancel in progress: a half-finished append that gets cancelled
+  # loses nothing (it hasn't pushed yet), but cancelling the run that is
+  # about to push would lose the rows it already collected. Queue instead.
+  cancel-in-progress: false
+
 jobs:
   append:
     runs-on: ubuntu-latest
+    # 90 minutes: the theoretical worst case above (~69 minutes) plus a
+    # ~30% buffer for retries, DNS, and GitHub Actions runner scheduling
+    # overhead — generous enough not to kill a genuinely slow-but-healthy
+    # run, but bounded so a truly hung fetch can't sit indefinitely and
+    # block every subsequent scheduled trigger behind it in the
+    # cancel-in-progress: false queue above.
+    timeout-minutes: 90
     # Only run after a successful refresh (or on manual / cron trigger).
     if: >-
       github.event_name == 'workflow_dispatch' ||
