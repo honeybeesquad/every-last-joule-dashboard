@@ -14,21 +14,31 @@
  *   - Settlement lag ~1–2 months: query latest complete calendar month
  *
  * Wind/solar split: the feed reports renewable curtailment without a fuel
- * breakdown. We read the current entsoe.json snapshot to get wind vs solar
- * totalTWh per TSO and use that ratio (fw = wind/(wind+solar)) to apportion
- * each TSO's measured curtailment into wind and solar sub-regions. The
- * magnitude is MEASURED; the wind/solar split is ESTIMATED (hence T1b tier
- * persists — the source note documents this explicitly).
+ * breakdown. We derive a per-TSO wind fraction from live ENTSO-E A75
+ * generation for each TSO control area (30-day window, per psrType) weighted
+ * by the documented BNetzA prior per-fuel curtailment rates:
+ *   windFraction = Σ(windGen × windRate) / (Σ(windGen × windRate) + solarGen × solarRate)
+ * and use it to apportion each TSO's measured curtailment into wind and solar
+ * sub-regions. If ENTSO-E is unreachable, a static prior ratio (derived
+ * 2026-08-19 from the same formula) is used; a 50/50 split is the loud last
+ * resort only. The magnitude is MEASURED; the wind/solar split is an
+ * ESTIMATED apportionment in every case (hence T1b tier persists — the
+ * source note documents which path produced the split).
+ *
+ * History: the original #313 implementation read germany-{tso}-{fuel} keys
+ * from data/snapshots/last-good/entsoe.json — but the same PR removed those
+ * zones from entsoe.json.ts, so the keys could never exist again and every
+ * build silently fell through to 50/50. Fixed by deriving the ratio directly
+ * from ENTSO-E here.
  *
  * On any failure (OAuth, network, empty response, backend pool down) the
  * loader falls back via withFallback() to the last-good snapshot. All
  * diagnostics go to stderr (console.warn/error). stdout is the emitted JSON.
  */
 
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { withFallback } from "../lib/resilient.js";
-import type { RegionData } from "../lib/types.js";
+import { parseEntsoeXml } from "../lib/entsoe.js";
+import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 import { pathToFileURL } from "url";
 
 // ---------------------------------------------------------------------------
@@ -338,53 +348,196 @@ export async function fetchLatestCompleteMonth(
 }
 
 // ---------------------------------------------------------------------------
-// Wind/solar split from ENTSO-E snapshot
+// Wind/solar split from live ENTSO-E A75 generation × BNetzA prior rates
 // ---------------------------------------------------------------------------
 
-interface TsoFuelRatios {
+export interface TsoFuelRatios {
   windFraction: number;
   solarFraction: number;
+  /** Which fallback rung produced this ratio (drives the sourceNote wording) */
+  ratioSource: "entsoe-live" | "static-prior" | "even-split";
+}
+
+interface TechSpec {
+  psrType: string;
+  /** BNetzA prior per-fuel curtailment rate (see docs/methodology/entsoe-rates.md) */
+  rate: number;
 }
 
 /**
- * Read the entsoe.json last-good snapshot and compute per-TSO wind fraction
- * (fw = wind_twh / (wind_twh + solar_twh)).
- *
- * Falls back to fw=0.5 for any TSO where both are zero or data is missing.
+ * ENTSO-E control-area domains + BNetzA prior per-fuel curtailment rates for
+ * the 4 German TSOs. Recovered from the pre-#313 entsoe.json.ts proxy zones
+ * (B18 offshore wind 17.8%, B19 onshore wind 3.0%, B16 solar 2.3% — BNetzA
+ * 2024 grid-congestion figures; Amprion and TransnetBW have no offshore).
  */
-export function readTsoFuelRatios(
-  snapshotPath: string,
-): Record<string, TsoFuelRatios> {
-  let snapshot: Record<string, { totalTWh?: number }> = {};
+export const TSO_ENTSOE_SPECS: Record<
+  string,
+  { domain: string; wind: TechSpec[]; solar: TechSpec[] }
+> = {
+  "50hertz": {
+    domain: "10YDE-VE-------2",
+    wind: [{ psrType: "B18", rate: 0.178 }, { psrType: "B19", rate: 0.030 }],
+    solar: [{ psrType: "B16", rate: 0.023 }],
+  },
+  "amprion": {
+    domain: "10YDE-RWENET---I",
+    wind: [{ psrType: "B19", rate: 0.030 }],
+    solar: [{ psrType: "B16", rate: 0.023 }],
+  },
+  "tennet-de": {
+    domain: "10YDE-EON------1",
+    wind: [{ psrType: "B18", rate: 0.178 }, { psrType: "B19", rate: 0.030 }],
+    solar: [{ psrType: "B16", rate: 0.023 }],
+  },
+  "transnetbw": {
+    domain: "10YDE-ENBW-----N",
+    wind: [{ psrType: "B19", rate: 0.030 }],
+    solar: [{ psrType: "B16", rate: 0.023 }],
+  },
+};
+
+/**
+ * Static prior wind fractions, used only when live ENTSO-E is unreachable.
+ * Derived 2026-08-19 from ENTSO-E A75 30-day generation per control area ×
+ * the BNetzA prior rates above (same formula as the live path):
+ *   50hertz 0.656, amprion 0.346, tennet-de 0.749, transnetbw 0.143.
+ * Still an estimate — but anchored, unlike a 50/50 guess.
+ */
+export const STATIC_WIND_FRACTION: Record<string, number> = {
+  "50hertz": 0.656,
+  "amprion": 0.346,
+  "tennet-de": 0.749,
+  "transnetbw": 0.143,
+};
+
+/**
+ * Wind fraction from per-fuel curtailment proxies (MWh × rate sums).
+ * Returns null when the inputs cannot support a ratio (both zero, negative,
+ * or non-finite) so the caller can fall back.
+ */
+export function windFractionFromProxies(
+  windProxyMwh: number,
+  solarProxyMwh: number,
+): number | null {
+  if (!Number.isFinite(windProxyMwh) || !Number.isFinite(solarProxyMwh)) return null;
+  if (windProxyMwh < 0 || solarProxyMwh < 0) return null;
+  const total = windProxyMwh + solarProxyMwh;
+  if (total <= 0) return null;
+  return windProxyMwh / total;
+}
+
+/** Energy sum (MWh) of an ENTSO-E point series. */
+function seriesMwh(points: CurtailmentPoint[]): number {
+  return points.reduce(
+    (sum, p) => sum + Math.max(0, p.mw) * (p.intervalHours ?? 1),
+    0,
+  );
+}
+
+/** Fetches raw ENTSO-E A75 XML for one control area + psrType (30-day window). */
+export type EntsoeXmlFetcher = (domain: string, psrType: string) => Promise<string>;
+
+function defaultEntsoeXmlFetcher(): EntsoeXmlFetcher {
+  const token = process.env.ENTSOE_API_TOKEN;
+  if (!token) throw new Error("ENTSOE_API_TOKEN not set");
+  const now = new Date();
+  const start = new Date(now.getTime() - 30 * 24 * 3600 * 1000);
+  const fmt = (d: Date) => d.toISOString().replace(/[-:T]/g, "").slice(0, 12);
+  return async (domain, psrType) => {
+    const params = new URLSearchParams({
+      securityToken: token,
+      documentType: "A75",
+      processType: "A16",
+      in_Domain: domain,
+      psrType,
+      periodStart: fmt(start),
+      periodEnd: fmt(now),
+    });
+    const res = await fetch(`https://web-api.tp.entsoe.eu/api?${params.toString()}`);
+    if (!res.ok) {
+      throw new Error(`ENTSO-E A75 ${domain} ${psrType}: HTTP ${res.status}`);
+    }
+    return res.text();
+  };
+}
+
+/**
+ * Derive one TSO's wind fraction from live ENTSO-E A75 generation weighted by
+ * the BNetzA prior rates. Returns null (caller falls back) when the fetches
+ * fail or the data cannot support a ratio.
+ */
+export async function deriveTsoWindFraction(
+  spec: { domain: string; wind: TechSpec[]; solar: TechSpec[] },
+  fetchXml: EntsoeXmlFetcher,
+): Promise<number | null> {
   try {
-    snapshot = JSON.parse(
-      readFileSync(snapshotPath, "utf-8"),
-    ) as Record<string, { totalTWh?: number }>;
+    let windProxy = 0;
+    for (const tech of spec.wind) {
+      const xml = await fetchXml(spec.domain, tech.psrType);
+      windProxy += seriesMwh(parseEntsoeXml(xml)) * tech.rate;
+    }
+    let solarProxy = 0;
+    for (const tech of spec.solar) {
+      const xml = await fetchXml(spec.domain, tech.psrType);
+      solarProxy += seriesMwh(parseEntsoeXml(xml)) * tech.rate;
+    }
+    return windFractionFromProxies(windProxy, solarProxy);
   } catch (err) {
     console.warn(
-      `[germany-curtailment] cannot read entsoe.json snapshot: ${(err as Error).message}. Defaulting to 50/50 split.`,
+      `[germany-curtailment] ENTSO-E A75 fetch failed for ${spec.domain}: ${(err as Error).message}`,
     );
-    return Object.fromEntries(
-      Object.values(TSO_MAP).map((stem) => [stem, { windFraction: 0.5, solarFraction: 0.5 }]),
-    );
+    return null;
+  }
+}
+
+/**
+ * Resolve per-TSO wind/solar ratios via the fallback chain:
+ *   1. live ENTSO-E A75 generation × BNetzA prior rates ("entsoe-live")
+ *   2. static prior ratio derived from the same formula ("static-prior")
+ *   3. 50/50 — last resort only, logged loudly ("even-split")
+ */
+export async function resolveFuelRatios(
+  fetchXml?: EntsoeXmlFetcher,
+): Promise<Record<string, TsoFuelRatios>> {
+  let fetcher: EntsoeXmlFetcher | null = fetchXml ?? null;
+  if (!fetcher) {
+    try {
+      fetcher = defaultEntsoeXmlFetcher();
+    } catch (err) {
+      console.warn(
+        `[germany-curtailment] ${(err as Error).message} — using static prior wind/solar split`,
+      );
+    }
   }
 
   const ratios: Record<string, TsoFuelRatios> = {};
-  for (const stem of Object.values(TSO_MAP)) {
-    const windTwh = snapshot[`germany-${stem}-wind`]?.totalTWh ?? 0;
-    const solarTwh = snapshot[`germany-${stem}-solar`]?.totalTWh ?? 0;
-    const total = windTwh + solarTwh;
-    if (total <= 0) {
-      console.warn(
-        `[germany-curtailment] TSO ${stem}: zero wind+solar in entsoe snapshot, defaulting to 50/50 split`,
-      );
-      ratios[stem] = { windFraction: 0.5, solarFraction: 0.5 };
-    } else {
+  for (const [stem, spec] of Object.entries(TSO_ENTSOE_SPECS)) {
+    const live = fetcher ? await deriveTsoWindFraction(spec, fetcher) : null;
+    if (live !== null) {
       ratios[stem] = {
-        windFraction: windTwh / total,
-        solarFraction: solarTwh / total,
+        windFraction: live,
+        solarFraction: 1 - live,
+        ratioSource: "entsoe-live",
       };
+      continue;
     }
+    const staticFw = STATIC_WIND_FRACTION[stem];
+    if (staticFw !== undefined) {
+      console.warn(
+        `[germany-curtailment] TSO ${stem}: live ENTSO-E ratio unavailable — using static prior wind fraction ${staticFw}`,
+      );
+      ratios[stem] = {
+        windFraction: staticFw,
+        solarFraction: 1 - staticFw,
+        ratioSource: "static-prior",
+      };
+      continue;
+    }
+    console.error(
+      `[germany-curtailment] TSO ${stem}: NO ratio available (live ENTSO-E failed, no static prior) — ` +
+        `falling back to a 50/50 wind/solar split. The split for this TSO is a GUESS; fix the ratio source.`,
+    );
+    ratios[stem] = { windFraction: 0.5, solarFraction: 0.5, ratioSource: "even-split" };
   }
   return ratios;
 }
@@ -393,15 +546,41 @@ export function readTsoFuelRatios(
 // Build RegionData for a single TSO × fuel
 // ---------------------------------------------------------------------------
 
+/** Human-readable description of how the wind/solar split was derived */
+export function splitNote(ratios: TsoFuelRatios): string {
+  const fw = ratios.windFraction.toFixed(3);
+  switch (ratios.ratioSource) {
+    case "entsoe-live":
+      return (
+        `Wind/solar split apportioned by live ENTSO-E A75 30d generation × BNetzA prior ` +
+        `per-fuel curtailment rates (wind fraction ${fw}); the feed reports renewable ` +
+        `curtailment without a fuel breakdown — magnitude is measured, split is an ` +
+        `estimated apportionment.`
+      );
+    case "static-prior":
+      return (
+        `Wind/solar split apportioned by a static prior ratio (wind fraction ${fw}, derived ` +
+        `2026-08-19 from ENTSO-E A75 generation × BNetzA prior rates; live ENTSO-E was ` +
+        `unavailable at build time) — magnitude is measured, split is an estimated apportionment.`
+      );
+    case "even-split":
+      return (
+        `Wind/solar split UNKNOWN — assumed 50/50 (no ENTSO-E ratio and no static prior ` +
+        `available at build time); magnitude is measured, split is a guess.`
+      );
+  }
+}
+
 export function buildRegionData(
   tsoStem: string,
   fuel: "wind" | "solar",
   acc: TsoAccumulator,
-  fraction: number,
+  ratios: TsoFuelRatios,
   monthLabel: string,
 ): RegionData {
   const regionId = `germany-${tsoStem}-${fuel}`;
   const now = new Date().toISOString();
+  const fraction = fuel === "wind" ? ratios.windFraction : ratios.solarFraction;
 
   // Profile: average MW per hour-of-day → GW, scaled by fuel fraction
   const profile = acc.profileMwSum.map((sum, i) => {
@@ -416,9 +595,7 @@ export function buildRegionData(
   const sourceNote =
     `netztransparenz redispatch — MEASURED renewable curtailment (GESAMTE_ARBEIT_MWH where ` +
     `RICHTUNG=reduzieren, PRIMAERENERGIEART=Erneuerbar), per instructing TSO (${tsomLabel(tsoStem)}), ` +
-    `window ${monthLabel}. Wind/solar split apportioned by the ENTSO-E per-fuel rate ratio ` +
-    `(the feed reports renewable curtailment without a fuel breakdown); magnitude is measured, ` +
-    `split is estimated. Seasonal — single-month window.`;
+    `window ${monthLabel}. ${splitNote(ratios)} Seasonal — single-month window.`;
 
   return {
     regionId,
@@ -482,20 +659,13 @@ export async function run(): Promise<Record<string, RegionData>> {
     );
   }
 
-  // Read wind/solar split ratios from entsoe snapshot
-  const snapshotPath = join(
-    process.cwd(),
-    "data",
-    "snapshots",
-    "last-good",
-    "entsoe.json",
-  );
-  const fuelRatios = readTsoFuelRatios(snapshotPath);
+  // Derive wind/solar split ratios: live ENTSO-E → static prior → 50/50
+  const fuelRatios = await resolveFuelRatios();
 
   // Log wind fractions
   for (const stem of Object.values(TSO_MAP)) {
     console.warn(
-      `[germany-curtailment] ${stem}: wind fraction = ${fuelRatios[stem].windFraction.toFixed(3)}`,
+      `[germany-curtailment] ${stem}: wind fraction = ${fuelRatios[stem].windFraction.toFixed(3)} (${fuelRatios[stem].ratioSource})`,
     );
   }
 
@@ -503,20 +673,8 @@ export async function run(): Promise<Record<string, RegionData>> {
   const out: Record<string, RegionData> = {};
   for (const stem of Object.values(TSO_MAP)) {
     const acc = accByTso[stem];
-    out[`germany-${stem}-wind`] = buildRegionData(
-      stem,
-      "wind",
-      acc,
-      fuelRatios[stem].windFraction,
-      monthLabel,
-    );
-    out[`germany-${stem}-solar`] = buildRegionData(
-      stem,
-      "solar",
-      acc,
-      fuelRatios[stem].solarFraction,
-      monthLabel,
-    );
+    out[`germany-${stem}-wind`] = buildRegionData(stem, "wind", acc, fuelRatios[stem], monthLabel);
+    out[`germany-${stem}-solar`] = buildRegionData(stem, "solar", acc, fuelRatios[stem], monthLabel);
   }
 
   return out;
