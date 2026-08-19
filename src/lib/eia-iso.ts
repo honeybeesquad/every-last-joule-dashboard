@@ -330,6 +330,9 @@ export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
     // check trusted the current timestamp, and the zero-peak check only
     // inspects live-tier regions, so a T2 region was exempt. Throw instead, so
     // withFallback degrades honestly and the staleness becomes visible.
+    // (The wacm-wind / wacm-solar regions themselves were removed 2026-08-19 —
+    // the owner chose removal over repointing to SWPW — but this guard and its
+    // history stay, since other EIA-930 respondents can retire the same way.)
     if (windRaw.response.data.length === 0 && solarRaw.response.data.length === 0) {
       throw new Error(
         `EIA respondent ${config.respondent} returned no wind or solar rows for the window — ` +

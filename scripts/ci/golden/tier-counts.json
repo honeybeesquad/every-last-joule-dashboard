@@ -1,9 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-08-03 (india-maharashtra T3 -> T2: replaced an Ember-rate-on-generation estimate with MEASURED MSLDC Monthly Curtailment Reports \u2014 33.28 GWh across 15 published months (2025-01 -> 2026-06), ~26.8 GWh/yr annualised. The prior estimate emitted 0.101 TWh/30d (~1.23 TWh/yr), overstating measured curtailment by ~46x. T2 not T1 because MSLDC publishes monthly, lags 1-2 months and skips months. T2 24 -> 25, T3 250 -> 249, total unchanged at 461.).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-08-19 (removed wacm-wind + wacm-solar: WACM was retired as an EIA-930 balancing-authority code on 2026-04-01, absorbed into SPP West (SWPW); both regions sat permanently degraded at exactly 0.0 TWh/30d since PR #622's honest-degrade guard, so removal costs nothing in magnitude. Owner chose removal over repointing to SWPW. T2 25 -> 23, total 461 -> 459.).",
   "T1a": 160,
   "T1b": 26,
   "T1c": 1,
-  "T2": 25,
+  "T2": 23,
   "T3": 249,
-  "total": 461
+  "total": 459
 }
