@@ -151,3 +151,29 @@ abed push a heartbeat to `every-last-joule-data-relay` so the dashboard repo's C
 open an issue like `relay-freshness.yml` already does for the Colombia CSV - which
 needs a deploy key on the relay repo, the same credential the vertimientos producer
 is waiting on.
+
+---
+
+## Colombia vertimientos fetch (migrated from Britta, 2026-08-19)
+
+The daily VertEner fetch that feeds `data/historical/colombia-vertimientos-daily.csv`
+now runs on abed, not Britta.
+
+- **Script:** `scripts/relay/colombia-vertimientos-fetch.sh`, deployed to
+  `~/elj-relay/colombia-vertimientos-fetch.sh`.
+- **Schedule:** 06:45 NZST daily via simon's crontab, ahead of the dashboard's
+  `colombia-relay-pull.yml` at 19:15 UTC (07:15 NZST).
+- **Push path:** writes into `~/elj-relay/data-relay-repo`, commits and pushes with the
+  `abed-elj-relay-push` deploy key (`~/.ssh/elj-relay-deploy`, registered on
+  `every-last-joule-data-relay` with write access on 2026-08-19).
+
+It **backfills** every missing day between the CSV's last row and yesterday, capped at
+`MAX_BACKFILL_DAYS=60`. Britta's original fetched only yesterday, so any day it failed on
+was lost permanently - the 2026-07-27 tunnel outage cost 21 days that way, which this
+version recovered in one run.
+
+**Britta's copy has been removed, not just disabled** (`~/code/elj-relay/cron-wrapper.sh`,
+backup at `cron-wrapper.sh.bak-20260819`). Do not re-enable it: both hosts pushing would
+race on the same CSV. That step also used to `exit 1` on failure, which is why the
+Colombia tunnel dying silently blocked the India, Vietnam and Taiwan fetchers as well and
+stopped the entire daily push for three weeks. Britta still runs those three.
