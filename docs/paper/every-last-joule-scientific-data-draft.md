@@ -548,15 +548,21 @@ deployed dashboard's current region payloads directly (the same
 traversal `.github/workflows/health-check.yml` uses), so
 `deployed-build` rows are genuine per-build readings. The cutover also
 changes per-build region coverage: `committed-snapshot` rows cover 274
-regions per build, while `deployed-build` rows cover approximately 447
-region records per build, close to the 461 regions defined in
-`src/lib/regions.ts`. `deployed-build` rows additionally include
-AEMO's per-plant regions, which `committed-snapshot` rows never
-captured; summing all rows in a `deployed-build` build is nonetheless
-correct, because AEMO's state aggregates exclude the named per-plant
-DUIDs since PR #298 (aggregate-minus-named) - a reader who sees both
-families in the same build should not subtract either to avoid a
-double count.
+regions per build, while `deployed-build` rows cover approximately 446
+distinct regions per build, close to the 461 regions defined in
+`src/lib/regions.ts`. The count is of distinct `regionId`s after
+de-duplication: some regions are served by more than one deployed
+payload file in the same build (`jordan` appears in both
+`data/jordan.<hash>.json` and `data/statics.<hash>.json`), and
+`scripts/append_history.py::fetch_deployed_regions` keeps only the
+last record seen per `regionId`, logging the collision to stderr, so
+each build still writes exactly one row per region. `deployed-build`
+rows additionally include AEMO's per-plant regions, which
+`committed-snapshot` rows never captured; summing all rows in a
+`deployed-build` build is nonetheless correct, because AEMO's state
+aggregates exclude the named per-plant DUIDs since PR #298
+(aggregate-minus-named) - a reader who sees both families in the same
+build should not subtract either to avoid a double count.
 
 Consumers of the `committed-snapshot` era should de-duplicate on value
 change, or treat it as a step function across the 35 distinct states,

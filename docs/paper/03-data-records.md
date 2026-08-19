@@ -62,7 +62,9 @@ builds carry just 35 distinct global totals, including flat stretches
 from 2026-06-25 to 2026-08-01 and from 2026-08-03 to 2026-08-19, and
 cover 274 regions per build. Once the reworked script first runs after
 this PR merges, `deployed-build` rows read the dashboard's live
-payloads directly and cover approximately 447 regions per build,
+payloads directly and cover approximately 446 distinct regions per
+build (de-duplicated on `regionId`, last wins - some regions, such as
+`jordan`, are served by more than one payload file in the same build),
 including AEMO's per-plant regions alongside its state aggregates -
 summing a build is still correct, because the state aggregates
 exclude the named per-plant DUIDs since PR #298. Full accounting, and
