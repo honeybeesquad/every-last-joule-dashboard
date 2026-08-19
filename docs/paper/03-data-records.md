@@ -41,11 +41,25 @@ value matches the per-region schema above.
 
 **Location:** `data/historical/curtailment_history.parquet`
 **Format:** Apache Parquet 2.6, Snappy compression, typed columns.
-**Cadence:** one row per region per scheduled build (~384 rows / 3 h
-≈ 17 MB / year), appended by `scripts/append_history.py` via
-`.github/workflows/history-append.yml`.
-**Granularity:** build-level snapshot — each row captures the
-30-day trailing aggregate at the moment the row was written.
+**Cadence:** one row per region per scheduled build, appended by
+`scripts/append_history.py` via `.github/workflows/history-append.yml`.
+**Granularity:** build-level snapshot. For rows with
+`capture_source == "deployed-build"`, each row captures the 30-day
+trailing aggregate read from the deployed dashboard at the moment the
+row was written.
+
+**Capture-source discontinuity:** every row written before 2026-08-19
+came from a version of `scripts/append_history.py` that read the
+repository's committed fallback corpus rather than the deployed
+dashboard, so those rows (`capture_source == "committed-snapshot"`)
+re-stamp a fresh `build_timestamp` on data that only actually changed
+when the corpus was recommitted. The 854 builds in that era carry just
+35 distinct global totals, including flat stretches from 2026-06-25 to
+2026-08-01 and from 2026-08-03 to 2026-08-19, and cover 274 regions per
+build. From 2026-08-19, `deployed-build` rows read the dashboard's
+live payloads directly and cover approximately 447 regions per build.
+Full accounting, and guidance for de-duplicating the pre-cutover era,
+in `dataset/SCHEMA.md` § "Parquet rolling history".
 
 Column list and types in `dataset/SCHEMA.md` § "Parquet rolling
 history".

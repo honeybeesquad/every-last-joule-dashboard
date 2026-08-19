@@ -62,7 +62,15 @@ Location: `data/historical/curtailment_history.parquet`
 
 One row per region per successful scheduled build. Appended by `scripts/append_history.py` via `.github/workflows/history-append.yml` (daily at 02:00 UTC plus on every successful refresh).
 
-Compression: Snappy. Format: Parquet 2.6. Typical size: ~100 bytes per row × 384 regions × ~4 builds/day ≈ **35 MB / year**.
+Compression: Snappy. Format: Parquet 2.6.
+
+### Capture source and the pre-2026-08-19 discontinuity
+
+Every row is tagged by the nullable `capture_source` column with which capture regime wrote it:
+
+- `"committed-snapshot"` - rows written by the version of `scripts/append_history.py` in place from 2026-04-23 to 2026-08-19. That version read `data/snapshots/last-good/*.json`, the repository's committed fallback corpus, rather than the deployed dashboard. The corpus is refreshed only when someone commits new snapshot JSON to the repository; the production dashboard rebuilds from live upstream fetches on its own schedule and is never written back to the repository. As a result, the 854 builds recorded in this era produced only 35 distinct global totals: the total was byte-identical across 139 consecutive builds from 2026-08-03 to 2026-08-19, and separately flat across a 37-day stretch from 2026-06-25 to 2026-08-01. Each row's `build_timestamp` is genuine, but the data it re-stamps is not - the row count overstates how often the underlying figures actually changed. Downstream users of this era should de-duplicate on value change, or treat it as a step function across the 35 distinct states, rather than as 854 independent per-build observations. Coverage in this era is 274 region rows per build.
+- `"deployed-build"` - rows written from 2026-08-19 onward by the reworked script, which fetches the deployed dashboard's current region payloads directly (the same traversal `.github/workflows/health-check.yml` uses to check dashboard health). These rows are genuine per-build readings. Coverage rises to approximately 447 region records per build, close to the 461 regions defined in `src/lib/regions.ts` - most of the remaining gap is per-plant sub-records folded into multi-region payloads (e.g. `aemo-per-plant`, `peru-per-plant`), not missing regions.
+- `null` - reserved for any Parquet partition read back before the column existed; in practice the checked-in file has no such rows, because `scripts/backfill_capture_source.py` stamped every pre-cutover row `"committed-snapshot"` in the same change that added the column.
 
 ### Columns
 
@@ -78,6 +86,7 @@ Compression: Snappy. Format: Parquet 2.6. Typical size: ~100 bytes per row × 38
 | `confidence_tier` | `string` | `"T1-live-TSO"` (legacy alias), `"T1a-live-tso"`, `"T1b-live-domestic-anchored"`, `"T1c-live-neighbour-anchored"`, `"T2-annual-calibrated"`, `"T3-modelled"`, or `"T4-structural-gap"` (`T4` is reserved in the enum but never emitted — structural-gap regions do not appear in the dataset at all). |
 | `uncertainty_low_gw` | `float32` | Lower bound of the per-tier envelope on `peak_gw` (`max(0, peak_gw − δ)`). |
 | `uncertainty_high_gw` | `float32` | Upper bound of the per-tier envelope on `peak_gw` (`peak_gw + δ`). |
+| `capture_source` | `string`, nullable | `"committed-snapshot"` or `"deployed-build"` - see "Capture source and the pre-2026-08-19 discontinuity" above. |
 | `profile_h00` … `profile_h23` | `float32` × 24 | Average curtailment in GW per UTC hour, matching JSON `profile`. |
 
 The three confidence-tier columns were added by the S2 uncertainty sprint (2026-04-24). Rows written before that date carry null values in those columns; `pyarrow.concat_tables(promote_options="default")` fills them on the next append, so the committed Parquet may contain a mix of pre-S2 and post-S2 rows depending on when it was last refreshed.

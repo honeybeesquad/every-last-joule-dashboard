@@ -513,11 +513,44 @@ Full field descriptions and update semantics: `dataset/SCHEMA.md`.
 
 **Location:** `data/historical/curtailment_history.parquet`
 **Format:** Apache Parquet 2.6, Snappy compression, typed columns.
-**Cadence:** one row per region per scheduled build (~384 rows / 3 h
-≈ 17 MB / year), appended by `scripts/append_history.py` via
-`.github/workflows/history-append.yml`.
-**Granularity:** build-level snapshot — each row captures the
-30-day trailing aggregate at the moment the row was written.
+**Cadence:** one row per region per scheduled build, appended by
+`scripts/append_history.py` via `.github/workflows/history-append.yml`.
+**Granularity:** build-level snapshot. For rows with
+`capture_source == "deployed-build"`, each row captures the 30-day
+trailing aggregate read from the deployed dashboard at the moment the
+row was written. Rows with `capture_source == "committed-snapshot"` do
+not have that property; see the discontinuity below.
+
+### Capture-source discontinuity (2026-04-23 to 2026-08-19)
+
+Every row written before 2026-08-19 came from a version of
+`scripts/append_history.py` that read the repository's committed
+fallback corpus at `data/snapshots/last-good/*.json`, not the deployed
+dashboard. That corpus is refreshed only when someone commits new
+snapshot JSON; the production dashboard rebuilds from live upstream
+fetches on its own schedule and is never written back to the
+repository. As a result, the 854 builds recorded in this era produced
+only 35 distinct global totals: the total was byte-identical across 139
+consecutive builds from 2026-08-03 to 2026-08-19, and separately flat
+across a 37-day stretch from 2026-06-25 to 2026-08-01. Each row's
+`build_timestamp` is genuine, but the data it re-stamps is not - the
+row count overstates how often the underlying figures actually
+changed.
+
+From 2026-08-19, `scripts/append_history.py` fetches the deployed
+dashboard's current region payloads directly (the same traversal
+`.github/workflows/health-check.yml` uses), so `deployed-build` rows
+are genuine per-build readings. The cutover also changes per-build
+region coverage: `committed-snapshot` rows cover 274 regions per
+build, while `deployed-build` rows cover approximately 447 region
+records per build, close to the 461 regions defined in
+`src/lib/regions.ts`.
+
+Consumers of the pre-cutover era should de-duplicate on value change,
+or treat it as a step function across the 35 distinct states, rather
+than as 854 independent per-build observations. Consumers of
+`deployed-build` rows can treat `build_timestamp` as a genuine
+per-build reading.
 
 ### Schema
 
@@ -534,6 +567,7 @@ Full field descriptions and update semantics: `dataset/SCHEMA.md`.
 | `uncertainty_low_gw` | `float32` | Lower bound on `peak_gw`. |
 | `uncertainty_high_gw` | `float32` | Upper bound on `peak_gw`. |
 | `confidence_tier` | `string` | Tier label. |
+| `capture_source` | `string`, nullable | `"committed-snapshot"` or `"deployed-build"` - see the discontinuity above. |
 
 ## 3.3 Seven-year Parquet backfill
 

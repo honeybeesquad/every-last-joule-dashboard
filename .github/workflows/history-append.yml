@@ -4,11 +4,19 @@ name: Historical snapshot append
 # researchers can download a full time-series archive with stable schema.
 #
 # Runs daily at 02:00 UTC (after the 01:15 refresh build has settled) and
-# after every successful data-refresh workflow.  Each run reads every
-# data/snapshots/last-good/*.json file, builds a flat row per region, and
-# appends it to data/historical/curtailment_history.parquet.
+# after every successful data-refresh workflow.  Each run fetches the
+# deployed dashboard's current region payloads (https://everylastjoule.com
+# by default, overridable via ELJ_DASHBOARD_URL), builds a flat row per
+# region, and appends it to data/historical/curtailment_history.parquet.
+# Before 2026-08-19 this workflow read the repository's committed
+# data/snapshots/last-good/*.json fallback corpus instead — see the
+# capture_source column and dataset/SCHEMA.md § "Parquet rolling history"
+# for the resulting discontinuity in the archive.
 #
-# Schema (one row per region per build):
+# Schema (one row per region per build) — see scripts/append_history.py's
+# module docstring and dataset/SCHEMA.md for the full column list,
+# including confidence_tier, uncertainty_low_gw/high_gw, and
+# capture_source.
 #   build_timestamp  — ISO-8601 UTC (string, sortable)
 #   region_id        — string
 #   peak_gw          — float32
