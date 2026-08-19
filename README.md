@@ -1,6 +1,6 @@
 # Every Last Joule
 
-Hourly renewable-electricity curtailment and associated-gas flaring across **461 regions** on six continents. Live dashboard at **[everylastjoule.com](https://everylastjoule.com)**.
+Hourly renewable-electricity curtailment across **461 regions** on six continents (renewables-only: solar, wind, and hydro; associated-gas flaring was removed from the dataset on 2026-06-18). Live dashboard at **[everylastjoule.com](https://everylastjoule.com)**.
 
 This repository contains both the published dataset (the academic artefact) and the dashboard build that produces it (the engineering artefact).
 

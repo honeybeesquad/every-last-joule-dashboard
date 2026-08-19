@@ -2,7 +2,9 @@
 
 **Version:** v1.3.2 · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI (this version):** [10.5281/zenodo.20570864](https://doi.org/10.5281/zenodo.20570864) · **DOI (always-latest):** [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411)
 
-A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 461 regions across 6 continents. Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
+A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 385 regions across 6 continents. Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
+
+> **Note: repository HEAD has moved past this pinned v1.3.2 description.** Associated-gas flaring was purged from the dataset on 2026-06-18 (renewables-only pivot); `src/lib/regions.ts` on `main` now defines 461 regions (solar/wind/hydro curtailment only, no flaring). The figures above describe the archived v1.3.2 deposit this page is versioned to; they will move to 461 (and this note will come out) at the next version bump and Zenodo mint.
 
 ## What's in it
 
@@ -13,7 +15,7 @@ A versioned, reproducible synthesis dataset of hourly renewable-electricity curt
 - **`data/historical/figure2_validation_scatter.csv`** — 23 region-year anchor pairs with published TSO / ISO / IMM / SoM / GGFR / IRENA / Ember annual curtailment totals vs. our backfill reconstruction. Machine-readable evidence table for Figure 2.
 - **`data/historical/figure3_daily_global.csv`** — daily global sum 2020-01-01 → 2026-04-24 (2,306 days), stacked by source platform. Feeds Figure 3.
 - **`docs/methodology/*.md`** — per-source audit trails. Every calibration rate has a provenance document.
-- **`docs/validation/<region>.md`** — 468 per-region triangulation documents (plus a directory README and a `_template.md` scaffold) against published TSO / ISO / IMM / SoM / GGFR / IRENA / Ember annual reports, with commit-grade diagnostic prose per region.
+- **`docs/validation/<region>.md`** — 130 per-region triangulation documents (plus a directory README and a `_template.md` scaffold) against published TSO / ISO / IMM / SoM / GGFR / IRENA / Ember annual reports, with commit-grade diagnostic prose per region.
 - **`docs/figures/figure{1..5}_*.{pdf,png}`** — the five publication-grade figures committed in the repository alongside the regeneration scripts in `scripts/validation/`.
 - **`docs/paper/*.md`** — draft Scientific Data Data Descriptor body sections and journal-ready figure captions.
 - **`docs/known-limitations.md`** — running ledger of every caveat we surface in the paper.
