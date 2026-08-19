@@ -521,34 +521,46 @@ trailing aggregate read from the deployed dashboard at the moment the
 row was written. Rows with `capture_source == "committed-snapshot"` do
 not have that property; see the discontinuity below.
 
-### Capture-source discontinuity (2026-04-23 to 2026-08-19)
+### Capture-source discontinuity
 
-Every row written before 2026-08-19 came from a version of
-`scripts/append_history.py` that read the repository's committed
-fallback corpus at `data/snapshots/last-good/*.json`, not the deployed
-dashboard. That corpus is refreshed only when someone commits new
-snapshot JSON; the production dashboard rebuilds from live upstream
-fetches on its own schedule and is never written back to the
-repository. As a result, the 854 builds recorded in this era produced
-only 35 distinct global totals: the total was byte-identical across 139
-consecutive builds from 2026-08-03 to 2026-08-19, and separately flat
-across a 37-day stretch from 2026-06-25 to 2026-08-01. Each row's
-`build_timestamp` is genuine, but the data it re-stamps is not - the
-row count overstates how often the underlying figures actually
-changed.
+Rows are labelled by `capture_source`. Rows with
+`capture_source == "committed-snapshot"` (the earliest is 2026-04-23;
+the era ends at the cutover described below) were written by an
+earlier version of `scripts/append_history.py` that read the
+repository's committed fallback corpus at
+`data/snapshots/last-good/*.json`, not the deployed dashboard. That
+corpus is refreshed only when someone commits new snapshot JSON; the
+production dashboard rebuilds from live upstream fetches on its own
+schedule and is never written back to the repository. As a result, the
+committed-snapshot era's 854 builds produced only 35 distinct global
+totals: the total was byte-identical across 139 consecutive builds
+from 2026-08-03 to 2026-08-19, and separately flat across a 37-day
+stretch from 2026-06-25 to 2026-08-01. Each row's `build_timestamp` is
+genuine, but the data it re-stamps is not - the row count overstates
+how often the underlying figures actually changed.
 
-From 2026-08-19, `scripts/append_history.py` fetches the deployed
-dashboard's current region payloads directly (the same traversal
-`.github/workflows/health-check.yml` uses), so `deployed-build` rows
-are genuine per-build readings. The cutover also changes per-build
-region coverage: `committed-snapshot` rows cover 274 regions per
-build, while `deployed-build` rows cover approximately 447 region
-records per build, close to the 461 regions defined in
-`src/lib/regions.ts`.
+The cutover to `capture_source == "deployed-build"` is identified by
+the first row carrying that label, not by a fixed calendar date - the
+boundary depends on when the reworked `scripts/append_history.py`
+first runs after merge, which may be some time after this text was
+written. From that point, `scripts/append_history.py` fetches the
+deployed dashboard's current region payloads directly (the same
+traversal `.github/workflows/health-check.yml` uses), so
+`deployed-build` rows are genuine per-build readings. The cutover also
+changes per-build region coverage: `committed-snapshot` rows cover 274
+regions per build, while `deployed-build` rows cover approximately 447
+region records per build, close to the 461 regions defined in
+`src/lib/regions.ts`. `deployed-build` rows additionally include
+AEMO's per-plant regions, which `committed-snapshot` rows never
+captured; summing all rows in a `deployed-build` build is nonetheless
+correct, because AEMO's state aggregates exclude the named per-plant
+DUIDs since PR #298 (aggregate-minus-named) - a reader who sees both
+families in the same build should not subtract either to avoid a
+double count.
 
-Consumers of the pre-cutover era should de-duplicate on value change,
-or treat it as a step function across the 35 distinct states, rather
-than as 854 independent per-build observations. Consumers of
+Consumers of the `committed-snapshot` era should de-duplicate on value
+change, or treat it as a step function across the 35 distinct states,
+rather than as 854 independent per-build observations. Consumers of
 `deployed-build` rows can treat `build_timestamp` as a genuine
 per-build reading.
 
