@@ -182,6 +182,19 @@ export const ZERO_ALLOWLIST: readonly ZeroAllowlistEntry[] = [
     reviewBy: "2026-09-07",
     note: "Very small island grid (~170 MW solar); curtailment minimal. Confirmed legitimate by 2026-06-07 live fetch (0.0000 GW peak).",
   },
+  // Chubu reads zero because OCCTO curtailment is strongly seasonal (spring
+  // peak, mid-year ~0), not because the feed is dead. The 2026-08-20 fix
+  // restored the fetch after Chuden began deleting standalone monthly CSVs
+  // once republished into the yearly archive; the recovered August file
+  // parses 922 rows with zero curtailment throughout. reviewBy lands in the
+  // autumn shoulder, when a persistent zero would no longer be explicable
+  // by season and should be re-diagnosed rather than re-exempted.
+  {
+    regionId: "japan-chubu",
+    addedDate: "2026-08-20",
+    reviewBy: "2026-11-20",
+    note: "OCCTO eria_jukyu seasonality: curtailment peaks in spring and sits at ~0 mid-year. Fetch confirmed healthy 2026-08-20 (922 August rows parsed, zero curtailment throughout) after the yearly-zip fallback landed.",
+  },
   // NZ hydro reads zero because the ≤$0/MWh nodal-price proxy almost never
   // fires, not because the feed is dead: the 2026-08-01 live fetch parsed
   // 32/33 EMI daily files (~5,700 hydro rows/day) and found no ≤$0 half-hours.
