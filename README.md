@@ -1,6 +1,6 @@
 # Every Last Joule
 
-Hourly renewable-electricity curtailment and associated-gas flaring across **385 regions** on six continents. Live dashboard at **[everylastjoule.com](https://everylastjoule.com)**.
+Hourly renewable-electricity curtailment and associated-gas flaring across **461 regions** on six continents. Live dashboard at **[everylastjoule.com](https://everylastjoule.com)**.
 
 This repository contains both the published dataset (the academic artefact) and the dashboard build that produces it (the engineering artefact).
 
@@ -8,7 +8,7 @@ This repository contains both the published dataset (the academic artefact) and 
 
 - **You're reading the paper** → [`docs/paper/`](docs/paper/) — Scientific Data Data Descriptor draft (background, methods, data records, technical validation, usage notes, code availability) plus journal-ready figure captions.
 - **You want the dataset** → [`dataset/README.md`](dataset/README.md) — schema, citation, FAIR scorecard, and load examples for Python / DuckDB / direct JSON. Versioned, CC-BY-4.0, reproducible from a clean clone.
-- **You want to look at a region's calibration** → [`docs/validation/<region>.md`](docs/validation/) — 130 per-region triangulation files vs. published TSO / ISO / IMM / SoM / IRENA / Ember / GGFR annual totals, with diagnostic prose for every material discrepancy.
+- **You want to look at a region's calibration** → [`docs/validation/<region>.md`](docs/validation/) — 468 per-region triangulation files vs. published TSO / ISO / IMM / SoM / IRENA / Ember / GGFR annual totals, with diagnostic prose for every material discrepancy.
 - **You want the methodology** → [`src/methodology.md`](src/methodology.md) (public-facing) and [`docs/methodology/uncertainty.md`](docs/methodology/uncertainty.md) (tier model, envelope rationale).
 - **You want to run the dashboard locally** → see "Develop" below.
 
@@ -41,7 +41,7 @@ Live data loaders need free upstream API tokens (`ENTSOE_TOKEN`, `EIA_API_KEY`, 
 | `dataset/` | Academic-facing entry point — README, SCHEMA, CITATION.cff, FAIR.md, CHANGELOG, schema JSON. |
 | `docs/paper/` | Scientific Data manuscript draft (six body sections + figure captions). |
 | `docs/methodology/` | Per-source audit trails — ENTSO-E rate calibration, China provinces, flare/ERCOT/Brazil, historical-backfill, uncertainty. |
-| `docs/validation/` | 130 per-region triangulation files vs. published anchors (plus a directory README and `_template.md`). |
+| `docs/validation/` | 468 per-region triangulation files vs. published anchors (plus a directory README and `_template.md`). |
 | `docs/figures/` | Five publication-grade figures (PDF + PNG) regeneratable from `scripts/validation/figure*.py`. |
 | `data/snapshots/last-good/` | One JSON per loader; the resilient-fetch fallback corpus. |
 | `data/historical/` | Rolling Parquet history + seven-year backfill + figure-2/3 source CSVs. |
