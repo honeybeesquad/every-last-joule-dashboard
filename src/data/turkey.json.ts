@@ -32,6 +32,26 @@ function numberOrZero(value: unknown): number {
   return typeof value === "number" && Number.isFinite(value) ? Math.max(0, value) : 0;
 }
 
+/**
+ * True when the response window includes any Turkish midday hour
+ * (10:00–16:00 local, UTC+3). Turkey has ~20 GW of installed solar, so
+ * national solar output across midday is never zero in any season. The
+ * dashboard endpoint only carries the current day, so early-morning
+ * fetches legitimately contain zero solar — but a window that covers
+ * midday with zero solar throughout means the `sun` field is gone
+ * (schema rename), not that the sun didn't shine.
+ */
+export function coversTurkishMidday(response: EpiasDashboardResponse): boolean {
+  for (const item of response.items ?? []) {
+    if (!item.date) continue;
+    const date = new Date(item.date);
+    if (Number.isNaN(date.getTime())) continue;
+    const localHour = (date.getUTCHours() + 3) % 24;
+    if (localHour >= 10 && localHour <= 16) return true;
+  }
+  return false;
+}
+
 export function parseEpiasDashboard(
   response: EpiasDashboardResponse,
   rate = TURKEY_CURTAILMENT_RATE,
@@ -84,6 +104,17 @@ export function buildTurkeyPerFuelData(
   const { windPoints, solarPoints, windMwTotal, solarMwTotal } = parseEpiasDashboard(response);
   if (windPoints.length === 0 && solarPoints.length === 0) throw new Error("EPIAS dashboard returned no wind/solar generation points");
   if (solarPoints.length === 0) throw new Error("EPIAS dashboard returned no solar generation points");
+  // Midday silent-zero guard: numberOrZero() maps a renamed/missing `sun`
+  // field to 0, so an EPIAS schema change would otherwise emit an all-zero
+  // "live" solar record indefinitely — and turkey-solar is health-check
+  // allowlisted for its legitimate pre-sunrise zeros, which would mask the
+  // break. Throwing here makes withFallback degrade to the cached snapshot,
+  // which the health check counts in the freshness channel instead.
+  if (solarMwTotal === 0 && coversTurkishMidday(response)) {
+    throw new Error(
+      "EPIAS dashboard solar (`sun`) is zero across Turkish midday hours — likely field rename or schema change, not a real reading",
+    );
+  }
 
   const fuelTotal = windMwTotal + solarMwTotal;
   const fuelShare = fuelTotal > 0

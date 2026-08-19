@@ -37,7 +37,7 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+- Structurally tiny signal: Hungary's wind fleet is frozen at ~330 MW by the 2016 permitting ban, and the modelled proxy (A75 B19 × 1%) peaks ≤ 2.3 MW on the windiest hour (live probe 2026-08-19: 716/716 nonzero points, max 225 MW). The 30-day time-of-day profile flickers around the health check's 1 MW zero-peak floor, so the region is allowlisted there (2026-08-19) — the zero is a true reading of a live feed, not a breakage.
 
 ## Links
 

@@ -37,7 +37,7 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+- The public EPIAS dashboard endpoint carries the **current day only** (probed 2026-08-19: 13 hourly items). The date-ranged API returns HTTP 406 and needs registered TGT credentials the repo doesn't hold, so `profile`/`totalTWh` are computed over a partial day, not a 30-day window: `totalTWh` understates and any data refresh before Turkish sunrise emits an all-zero solar profile. That pre-sunrise zero is a true overnight reading, health-check allowlisted 2026-08-19; a schema break (renamed `sun` field) throws via the loader's midday silent-zero guard instead. An EPIAS account would unlock the ranged endpoint and a real 30-day window.
 
 ## Links
 

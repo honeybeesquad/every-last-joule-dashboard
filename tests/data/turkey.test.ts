@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeAll } from "vitest";
 
 let buildTurkeyData: any;
+let buildTurkeyPerFuelData: any;
+let coversTurkishMidday: any;
 let parseEpiasDashboard: any;
 let TURKEY_CURTAILMENT_RATE: number;
 
@@ -32,6 +34,8 @@ describe("turkey EPIAS dashboard loader", () => {
   beforeAll(async () => {
     const module = await import("../../src/data/turkey.json.js");
     buildTurkeyData = module.buildTurkeyData;
+    buildTurkeyPerFuelData = module.buildTurkeyPerFuelData;
+    coversTurkishMidday = module.coversTurkishMidday;
     parseEpiasDashboard = module.parseEpiasDashboard;
     TURKEY_CURTAILMENT_RATE = module.TURKEY_CURTAILMENT_RATE;
   });
@@ -58,5 +62,43 @@ describe("turkey EPIAS dashboard loader", () => {
     const data = buildTurkeyData(fixture);
     expect(data.fuelShare.wind).toBeGreaterThan(0.99);
     expect(data.fuelShare.solar).toBeGreaterThan(0);
+  });
+
+  describe("midday silent-zero guard", () => {
+    // Turkish local (+03:00) hours 10:00-16:00 are midday; a window that
+    // includes them can never legitimately carry all-zero solar (Turkey has
+    // ~20 GW installed PV). A missing/renamed `sun` field parses to 0 via
+    // numberOrZero, so the guard must throw rather than emit a live all-zero
+    // solar record that the health-check allowlist would then mask.
+    const middayItems = [
+      { date: "2026-08-19T11:00:00+03:00", hour: "11:00", wind: 1200.5 },
+      { date: "2026-08-19T12:00:00+03:00", hour: "12:00", wind: 1208.22 },
+    ];
+    const overnightItems = [
+      { date: "2026-08-19T01:00:00+03:00", hour: "01:00", wind: 1273.4, sun: 0 },
+      { date: "2026-08-19T04:00:00+03:00", hour: "04:00", wind: 1301.9, sun: 0 },
+    ];
+
+    it("detects Turkish midday coverage from +03:00 timestamps", () => {
+      expect(coversTurkishMidday({ items: middayItems })).toBe(true);
+      expect(coversTurkishMidday({ items: overnightItems })).toBe(false);
+      expect(coversTurkishMidday({ items: [] })).toBe(false);
+    });
+
+    it("throws when solar is zero across a window that includes midday (schema rename)", () => {
+      expect(() => buildTurkeyPerFuelData({ items: middayItems })).toThrow(/midday/);
+    });
+
+    it("does not throw for a legitimate all-zero solar pre-sunrise window", () => {
+      const { solar, wind } = buildTurkeyPerFuelData({ items: overnightItems });
+      expect(solar.peakGW).toBe(0);
+      expect(wind.peakGW).toBeGreaterThan(0);
+    });
+
+    it("does not throw when midday solar is present and nonzero", () => {
+      const items = [...overnightItems, { date: "2026-08-19T12:00:00+03:00", hour: "12:00", wind: 1208.22, sun: 3217.84 }];
+      const { solar } = buildTurkeyPerFuelData({ items });
+      expect(solar.peakGW).toBeGreaterThan(0);
+    });
   });
 });
