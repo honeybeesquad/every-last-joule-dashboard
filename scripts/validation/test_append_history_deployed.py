@@ -244,43 +244,152 @@ def test_skip_ids_still_filtered_from_deployed_records(monkeypatch):
 
 
 # ---------------------------------------------------------------------------
-# De-duplication on regionId (Finding 1)
+# De-duplication on regionId (Finding 1) — freshness tie-break, not path order
 # ---------------------------------------------------------------------------
 
-def test_fetch_deployed_regions_dedups_same_region_id_last_wins(monkeypatch, capsys):
-    # "jordan" served by both data/jordan.<hash>.json and
-    # data/statics.<hash>.json — mirrors the real 2026-08-19 collision.
-    # Paths are walked in the sorted order fetch_manifest_paths returns, so
-    # "data/jordan..." (j) sorts before "data/statics..." (s) and the
-    # statics record should win.
+def test_dedup_prefers_fresher_last_success_at_when_fresher_sorts_first(monkeypatch, capsys):
+    # The fresher record is served from the path that sorts FIRST
+    # alphabetically ("aaa-fresh" < "zzz-stale"), and is also processed
+    # first (becomes the incumbent). A naive "last path wins" rule would
+    # already happen to get this right by accident (it'd keep whatever
+    # sorts/arrives last, but here that's the stale one arriving second,
+    # so "last wins" would WRONGLY prefer the stale record). This test
+    # exists specifically so path order cannot accidentally pass: the
+    # freshness rule must look at lastSuccessAt, not position.
     index_html = (
-        b'<script src="data/jordan.aaa111.json"></script>'
-        b'<script src="data/statics.bbb222.json"></script>'
+        b'<script src="data/aaa-fresh.111111.json"></script>'
+        b'<script src="data/zzz-stale.222222.json"></script>'
     )
-    jordan_from_jordan_file = _make_region_payload("jordan")
-    jordan_from_jordan_file["peakGW"] = 1.0
-    jordan_from_statics_file = _make_region_payload("jordan")
-    jordan_from_statics_file["peakGW"] = 9.0
+    fresh = _make_region_payload("duptest")
+    fresh["lastSuccessAt"] = "2026-08-19T04:25:27Z"
+    fresh["sourceStatus"] = "live"
+    fresh["peakGW"] = 0.5
+    stale = _make_region_payload("duptest")
+    stale["lastSuccessAt"] = "2025-01-01T00:00:00Z"
+    stale["sourceStatus"] = "live"
+    stale["peakGW"] = 9.0
     files = {
-        "data/jordan.aaa111.json": json.dumps(jordan_from_jordan_file).encode(),
-        "data/statics.bbb222.json": json.dumps(
-            {"jordan": jordan_from_statics_file}
+        "data/aaa-fresh.111111.json": json.dumps(fresh).encode(),
+        "data/zzz-stale.222222.json": json.dumps(stale).encode(),
+    }
+    monkeypatch.setattr(append_history, "_http_get", _stub_http_get(index_html, files))
+
+    paths, records = append_history.fetch_deployed_regions("https://example.test")
+
+    assert paths == ["data/aaa-fresh.111111.json", "data/zzz-stale.222222.json"]
+    assert len(records) == 1
+    region_id, kept = records[0]
+    assert region_id == "duptest"
+    assert kept["peakGW"] == 0.5  # the fresher record, despite sorting/arriving first
+
+    err = capsys.readouterr().err
+    assert "duplicate regionId 'duptest'" in err
+    assert "data/aaa-fresh.111111.json" in err
+    assert "data/zzz-stale.222222.json" in err
+    assert "keeping data/aaa-fresh.111111.json" in err
+    assert "fresher lastSuccessAt" in err
+
+
+def test_dedup_prefers_fresher_last_success_at_when_fresher_sorts_last(monkeypatch, capsys):
+    # Mirror case: the fresher record arrives second / sorts last. Together
+    # with the test above, this proves the outcome tracks lastSuccessAt in
+    # both directions, not "whichever path sorts/arrives last".
+    index_html = (
+        b'<script src="data/aaa-stale.111111.json"></script>'
+        b'<script src="data/zzz-fresh.222222.json"></script>'
+    )
+    stale = _make_region_payload("duptest")
+    stale["lastSuccessAt"] = "2025-01-01T00:00:00Z"
+    stale["sourceStatus"] = "live"
+    stale["peakGW"] = 9.0
+    fresh = _make_region_payload("duptest")
+    fresh["lastSuccessAt"] = "2026-08-19T04:25:27Z"
+    fresh["sourceStatus"] = "live"
+    fresh["peakGW"] = 0.5
+    files = {
+        "data/aaa-stale.111111.json": json.dumps(stale).encode(),
+        "data/zzz-fresh.222222.json": json.dumps(fresh).encode(),
+    }
+    monkeypatch.setattr(append_history, "_http_get", _stub_http_get(index_html, files))
+
+    paths, records = append_history.fetch_deployed_regions("https://example.test")
+
+    assert len(records) == 1
+    region_id, kept = records[0]
+    assert region_id == "duptest"
+    assert kept["peakGW"] == 0.5
+
+
+def test_dedup_breaks_tied_last_success_at_by_source_status(monkeypatch, capsys):
+    # Same lastSuccessAt on both sides (rule 1 can't decide) -> falls
+    # through to rule 2: the record WITH a sourceStatus beats the one
+    # with none, regardless of which path it came from.
+    index_html = (
+        b'<script src="data/aaa-no-status.111111.json"></script>'
+        b'<script src="data/zzz-live.222222.json"></script>'
+    )
+    no_status = _make_region_payload("duptest")
+    no_status["lastSuccessAt"] = "2026-08-19T00:00:00Z"
+    del no_status["sourceStatus"]
+    no_status["peakGW"] = 9.0
+    has_status = _make_region_payload("duptest")
+    has_status["lastSuccessAt"] = "2026-08-19T00:00:00Z"
+    has_status["sourceStatus"] = "live"
+    has_status["peakGW"] = 0.5
+    files = {
+        "data/aaa-no-status.111111.json": json.dumps(no_status).encode(),
+        "data/zzz-live.222222.json": json.dumps(has_status).encode(),
+    }
+    monkeypatch.setattr(append_history, "_http_get", _stub_http_get(index_html, files))
+
+    paths, records = append_history.fetch_deployed_regions("https://example.test")
+
+    assert len(records) == 1
+    region_id, kept = records[0]
+    assert region_id == "duptest"
+    assert kept["peakGW"] == 0.5
+    assert kept["sourceStatus"] == "live"
+
+    err = capsys.readouterr().err
+    assert "sourceStatus 'live' outranks" in err
+
+
+def test_dedup_real_jordan_shape_regression(monkeypatch):
+    # Regression test using the actual shapes reported for the live
+    # 2026-08-19 collision: the real jordan.json loader record is live and
+    # current; the statics.json placeholder is a stale 2025 snapshot with
+    # no sourceStatus at all and a peakGW 3.3x too high. The fresh, live
+    # record must win even though "statics" sorts (and would have been
+    # processed) after "jordan".
+    index_html = (
+        b'<script src="data/jordan.5322f5ed.json"></script>'
+        b'<script src="data/statics.3d686c60.json"></script>'
+    )
+    jordan_live = _make_region_payload("jordan")
+    jordan_live["sourceStatus"] = "live"
+    jordan_live["lastSuccessAt"] = "2026-08-19T04:25:27Z"
+    jordan_live["totalTWh"] = 0.0288
+    jordan_live["peakGW"] = 0.0661
+    jordan_static = _make_region_payload("jordan")
+    del jordan_static["sourceStatus"]
+    jordan_static["lastSuccessAt"] = "2025-01-01T00:00:00Z"
+    jordan_static["totalTWh"] = 0.0411
+    jordan_static["peakGW"] = 0.2159
+    files = {
+        "data/jordan.5322f5ed.json": json.dumps(jordan_live).encode(),
+        "data/statics.3d686c60.json": json.dumps(
+            {"jordan": jordan_static}
         ).encode(),
     }
     monkeypatch.setattr(append_history, "_http_get", _stub_http_get(index_html, files))
 
     paths, records = append_history.fetch_deployed_regions("https://example.test")
 
-    assert paths == ["data/jordan.aaa111.json", "data/statics.bbb222.json"]
     assert len(records) == 1
     region_id, kept = records[0]
     assert region_id == "jordan"
-    assert kept["peakGW"] == 9.0  # last-wins: the statics.json record
-
-    err = capsys.readouterr().err
-    assert "duplicate regionId 'jordan'" in err
-    assert "data/jordan.aaa111.json" in err
-    assert "data/statics.bbb222.json" in err
+    assert kept["peakGW"] == pytest.approx(0.0661)
+    assert kept["sourceStatus"] == "live"
 
 
 def test_build_rows_produces_exactly_one_row_per_duplicate_region_id(monkeypatch):

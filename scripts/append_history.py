@@ -115,14 +115,15 @@ _MANIFEST_RE = re.compile(r"data/[a-z0-9-]+\.[a-f0-9]+\.json")
 #     those 137 payloads on 2026-08-19, but only 446 DISTINCT regionIds —
 #     "jordan" is served by both data/jordan.<hash>.json and
 #     data/statics.<hash>.json, so a naive count double-writes it every
-#     build. fetch_deployed_regions() de-duplicates on regionId, last
-#     wins, and logs the collision to stderr BEFORE this guard ever sees
-#     the count — see the de-duplication block there. That ordering is
-#     load-bearing: this guard must always count de-duplicated records, so
-#     it can never be satisfied by duplicates padding the total. 446
-#     distinct still clears 400 comfortably, against 461 canonical entries
-#     in src/lib/regions.ts — some regions share multi-region payload
-#     files, and a handful of per-plant sub-records add to the count)
+#     build. fetch_deployed_regions() de-duplicates on regionId using an
+#     explicit freshness rule — see _choose_winner() — and logs the
+#     collision to stderr BEFORE this guard ever sees the count. That
+#     ordering is load-bearing: this guard must always count
+#     de-duplicated records, so it can never be satisfied by duplicates
+#     padding the total. 446 distinct still clears 400 comfortably,
+#     against 461 canonical entries in src/lib/regions.ts — some regions
+#     share multi-region payload files, and a handful of per-plant
+#     sub-records add to the count)
 MIN_MANIFEST_FILES = 100
 MIN_REGION_RECORDS = 400
 
@@ -204,6 +205,115 @@ def _has_valid_profile(record: dict) -> bool:
     return isinstance(profile, list) and len(profile) == 24
 
 
+def _parse_iso8601(value: object) -> datetime | None:
+    """Best-effort ISO-8601 parse. Returns None for missing/unparseable
+    values rather than raising, since these come from live dashboard JSON
+    a future loader change could shape unexpectedly. Naive timestamps are
+    treated as UTC (every timestamp this codebase emits is UTC).
+    """
+    if not isinstance(value, str) or not value.strip():
+        return None
+    text = value.strip()
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed
+
+
+def _source_status_rank(record: dict) -> int:
+    """Higher is better: 2 for "live", 1 for any other non-empty
+    sourceStatus, 0 for missing/falsy. Used as tie-break rule 2 in
+    _choose_winner.
+    """
+    status = record.get("sourceStatus")
+    if not status:
+        return 0
+    return 2 if status == "live" else 1
+
+
+def _choose_winner(
+    incumbent: dict,
+    incumbent_path: str,
+    candidate: dict,
+    candidate_path: str,
+) -> tuple[dict, str, str]:
+    """Decide which of two same-regionId records to keep when a region is
+    served by more than one deployed payload in the same build.
+
+    Alphabetical path order carries no information about which record is
+    fresher or more trustworthy — an earlier version of this function used
+    "last path wins", which for the real "jordan" collision kept the STALE
+    data/statics.<hash>.json placeholder (sourceStatus missing,
+    lastSuccessAt 2025-01-01, peakGW 0.2159) over the live
+    data/jordan.<hash>.json record the actual loader wrote that day
+    (sourceStatus "live", lastSuccessAt today, peakGW 0.0661) — purely
+    because "statics" sorts after "jordan". Same failure shape as PR #622
+    (Colombia): a reachable-but-stale record parses perfectly, so nothing
+    flags it unless freshness is checked explicitly. See STATUS.md's "a
+    partially-working upstream is worse than a dead one, because the
+    failure path never runs."
+
+    Rules, in order:
+    1. Prefer the record with the more recent lastSuccessAt — but only
+       when BOTH sides parse to a timestamp AND those timestamps differ.
+       A single stale-but-parseable timestamp is not proof of freshness
+       on its own; if either side is missing/unparseable, or they're
+       equal, fall through to rule 2.
+    2. Prefer the record that carries a sourceStatus at all, and "live"
+       over any other status (see _source_status_rank).
+    3. If still tied, keep the incumbent (first record seen) and say so.
+
+    Returns (winning_record, winning_path, reason) — reason is a short
+    human-readable string for the collision log line.
+    """
+    inc_ts = _parse_iso8601(incumbent.get("lastSuccessAt"))
+    cand_ts = _parse_iso8601(candidate.get("lastSuccessAt"))
+
+    if inc_ts is not None and cand_ts is not None and inc_ts != cand_ts:
+        if cand_ts > inc_ts:
+            return (
+                candidate,
+                candidate_path,
+                f"fresher lastSuccessAt ({cand_ts.isoformat()} > {inc_ts.isoformat()})",
+            )
+        return (
+            incumbent,
+            incumbent_path,
+            f"fresher lastSuccessAt ({inc_ts.isoformat()} > {cand_ts.isoformat()})",
+        )
+
+    inc_rank = _source_status_rank(incumbent)
+    cand_rank = _source_status_rank(candidate)
+    if inc_rank != cand_rank:
+        if cand_rank > inc_rank:
+            return (
+                candidate,
+                candidate_path,
+                f"lastSuccessAt tied/unparseable on one or both sides; "
+                f"sourceStatus {candidate.get('sourceStatus')!r} outranks "
+                f"{incumbent.get('sourceStatus')!r}",
+            )
+        return (
+            incumbent,
+            incumbent_path,
+            f"lastSuccessAt tied/unparseable on one or both sides; "
+            f"sourceStatus {incumbent.get('sourceStatus')!r} outranks "
+            f"{candidate.get('sourceStatus')!r}",
+        )
+
+    return (
+        incumbent,
+        incumbent_path,
+        "lastSuccessAt and sourceStatus both tied/unparseable; keeping the "
+        "first-seen record",
+    )
+
+
 def fetch_deployed_regions(base_url: str) -> tuple[list[str], list[tuple[str, dict]]]:
     """Fetch every region record currently served by the deployed dashboard.
 
@@ -213,16 +323,16 @@ def fetch_deployed_regions(base_url: str) -> tuple[list[str], list[tuple[str, di
     - Records whose profile is not exactly 24 points are skipped (see
       _has_valid_profile) and logged to stderr with the region id and the
       length seen.
-    - Records are de-duplicated on regionId, LAST WINS. Some regions are
+    - Records are de-duplicated on regionId using an explicit freshness
+      rule (see _choose_winner), NOT payload path order. Some regions are
       served by more than one payload file in the same build — e.g.
       "jordan" appears in both data/jordan.<hash>.json and
       data/statics.<hash>.json — and without de-duplication every such
       region writes two rows per build, breaking the "one row per region
-      per build" contract documented in dataset/SCHEMA.md. Paths are
-      walked in sorted order (see fetch_manifest_paths), so "last wins"
-      favours whichever payload path sorts last alphabetically. Every
-      collision is logged to stderr naming the region id and both payload
-      paths, so a future duplicate is visible rather than silent.
+      per build" contract documented in dataset/SCHEMA.md. Every
+      collision is logged to stderr naming the region id, both payload
+      paths, both lastSuccessAt values, which record won, and why — so a
+      future duplicate is auditable rather than a silent coin-flip.
 
     This filtering happens here, before the caller (build_rows) applies
     the MIN_MANIFEST_FILES / MIN_REGION_RECORDS size guard, so that guard
@@ -254,15 +364,25 @@ def fetch_deployed_regions(base_url: str) -> tuple[list[str], list[tuple[str, di
                 continue
 
             if region_id in kept:
+                winner, winner_path, reason = _choose_winner(
+                    kept[region_id], kept_at[region_id], record, path
+                )
                 print(
-                    f"  warn: duplicate regionId {region_id!r} served by "
-                    f"both {kept_at[region_id]} and {path}; keeping the "
-                    f"record from {path} (last wins)",
+                    f"  warn: duplicate regionId {region_id!r}: "
+                    f"{kept_at[region_id]} "
+                    f"(lastSuccessAt={kept[region_id].get('lastSuccessAt')!r}, "
+                    f"sourceStatus={kept[region_id].get('sourceStatus')!r}) "
+                    f"vs {path} "
+                    f"(lastSuccessAt={record.get('lastSuccessAt')!r}, "
+                    f"sourceStatus={record.get('sourceStatus')!r}); "
+                    f"keeping {winner_path} — {reason}",
                     file=sys.stderr,
                 )
-
-            kept[region_id] = record
-            kept_at[region_id] = path
+                kept[region_id] = winner
+                kept_at[region_id] = winner_path
+            else:
+                kept[region_id] = record
+                kept_at[region_id] = path
 
     records = [(region_id, record) for region_id, record in kept.items()]
     return paths, records

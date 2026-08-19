@@ -63,9 +63,11 @@ from 2026-06-25 to 2026-08-01 and from 2026-08-03 to 2026-08-19, and
 cover 274 regions per build. Once the reworked script first runs after
 this PR merges, `deployed-build` rows read the dashboard's live
 payloads directly and cover approximately 446 distinct regions per
-build (de-duplicated on `regionId`, last wins - some regions, such as
-`jordan`, are served by more than one payload file in the same build),
-including AEMO's per-plant regions alongside its state aggregates -
+build (de-duplicated on `regionId` by an explicit freshness rule -
+most recent `lastSuccessAt` wins, ties broken by `sourceStatus` - not
+by payload path order; some regions, such as `jordan`, are served by
+more than one payload file in the same build), including AEMO's
+per-plant regions alongside its state aggregates -
 summing a build is still correct, because the state aggregates
 exclude the named per-plant DUIDs since PR #298. Full accounting, and
 guidance for de-duplicating the committed-snapshot era, in
