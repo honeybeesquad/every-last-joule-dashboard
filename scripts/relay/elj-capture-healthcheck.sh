@@ -14,19 +14,34 @@ LOG="$HOME/elj-capture/healthcheck.log"
 STALE_HOURS=48
 ISSUES=()
 
-# 1. Did the last service run fail?
-if systemctl is-failed --quiet elj-capture.service; then
-  ISSUES+=("elj-capture.service is in a failed state")
-fi
-
-# 2. Has the lake stopped growing? Newest parquet across all metrics.
+# 1. Has the lake stopped growing? Newest parquet across all metrics.
+#    Computed first because the unit check below compares against it.
 NEWEST=$(find "$LAKE" -name '*.parquet' -printf '%T@\n' 2>/dev/null | sort -n | tail -1)
 if [ -z "$NEWEST" ]; then
   ISSUES+=("no parquet files found under $LAKE")
+  NEWEST_EPOCH=0
 else
-  AGE_H=$(( ( $(date +%s) - ${NEWEST%.*} ) / 3600 ))
+  NEWEST_EPOCH=${NEWEST%.*}
+  AGE_H=$(( ( $(date +%s) - NEWEST_EPOCH ) / 3600 ))
   if [ "$AGE_H" -gt "$STALE_HOURS" ]; then
     ISSUES+=("lake is stale: newest parquet is ${AGE_H}h old (threshold ${STALE_HOURS}h)")
+  fi
+fi
+
+# 2. Did the last service run fail AND nothing succeed since?
+#    systemd keeps a unit in "failed" until its next successful start, so a
+#    manual catch-up run writes fresh lake files without clearing the flag.
+#    Alerting on the flag alone raised a false auto-relay-stale issue (#806)
+#    hours after the capture was already working again. Compare the unit's
+#    last exit against the lake's newest file: only a failure that nothing
+#    has overtaken is worth waking someone for.
+if systemctl is-failed --quiet elj-capture.service; then
+  UNIT_EXIT_RAW=$(systemctl show elj-capture.service -p ExecMainExitTimestamp --value 2>/dev/null)
+  UNIT_EXIT_EPOCH=$(date -d "$UNIT_EXIT_RAW" +%s 2>/dev/null || echo 0)
+  if [ "$UNIT_EXIT_EPOCH" -gt 0 ] && [ "$NEWEST_EPOCH" -ge "$UNIT_EXIT_EPOCH" ]; then
+    echo "$(date): note - unit failed at $UNIT_EXIT_RAW but lake is newer; treating as overtaken" >> "$LOG"
+  else
+    ISSUES+=("elj-capture.service failed at ${UNIT_EXIT_RAW:-unknown} and nothing has succeeded since")
   fi
 fi
 
@@ -39,7 +54,13 @@ HEARTBEAT_REPO="$HOME/elj-relay/data-relay-repo"
 if [ -d "$HEARTBEAT_REPO/.git" ] && [ -f "$HOME/.ssh/elj-relay-deploy" ]; then
   OK=$([ ${#ISSUES[@]} -eq 0 ] && echo true || echo false)
   ISSUES_JSON=$(printf '%s\n' "${ISSUES[@]:-}" | python3 -c 'import json,sys; print(json.dumps([l for l in sys.stdin.read().splitlines() if l]))')
-  cat > "$HEARTBEAT_REPO/abed-heartbeat.json" <<JSON
+  (
+    export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/elj-relay-deploy -o StrictHostKeyChecking=accept-new"
+    cd "$HEARTBEAT_REPO" || exit 0
+    # Pull BEFORE writing: a rebase onto a dirty tree aborts ("Please commit or
+    # stash them"), which silently left this checkout diverging from origin.
+    git pull --rebase -q origin main 2>>"$LOG" || true
+    cat > abed-heartbeat.json <<JSON
 {
   "host": "abed",
   "at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
@@ -48,16 +69,16 @@ if [ -d "$HEARTBEAT_REPO/.git" ] && [ -f "$HOME/.ssh/elj-relay-deploy" ]; then
   "issues": $ISSUES_JSON
 }
 JSON
-  (
-    export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/elj-relay-deploy -o StrictHostKeyChecking=accept-new"
-    cd "$HEARTBEAT_REPO" || exit 0
-    git pull --rebase -q origin main 2>>"$LOG" || true
     git add abed-heartbeat.json
     git -c user.name="abed-elj-relay" -c user.email="simon@collins.nu" \
-        commit -q -m "ops: abed heartbeat $(date -u +%FT%TZ) ok=$OK" 2>>"$LOG" \
-      && git push -q origin HEAD 2>>"$LOG" \
-      && echo "$(date): heartbeat pushed (ok=$OK)" >> "$LOG" \
-      || echo "$(date): heartbeat push failed" >> "$LOG"
+        commit -q -m "ops: abed heartbeat $(date -u +%FT%TZ) ok=$OK" 2>>"$LOG" || exit 0
+    if git push -q origin HEAD 2>>"$LOG"; then
+      echo "$(date): heartbeat pushed (ok=$OK)" >> "$LOG"
+    elif git pull --rebase -q origin main 2>>"$LOG" && git push -q origin HEAD 2>>"$LOG"; then
+      echo "$(date): heartbeat pushed (ok=$OK) after rebase" >> "$LOG"
+    else
+      echo "$(date): heartbeat push FAILED" >> "$LOG"
+    fi
   )
 else
   echo "$(date): heartbeat skipped (no relay repo checkout or deploy key)" >> "$LOG"
