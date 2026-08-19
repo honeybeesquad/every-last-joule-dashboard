@@ -12,10 +12,22 @@ WHY A RELAY (not a build-time fetch):
   COES. Same pattern as Colombia hydro (data/historical/colombia-*.csv) and
   Mexico CENACE (data/historical/mexico-generacion.csv).
 
-  NB: the "1" the feed returns is the POST /exportar SUCCESS flag, not a
-  geo-block sentinel — the earlier "returns 1 instead of CSV" diagnosis was
-  wrong. The real obstruction is cloud-ASN filtering, which the residential
-  relay sidesteps.
+  CONTRACT (verified live 2026-08-19, after the 2026-08 portal redesign):
+  COES replaced the old two-step flow (POST /exportar returning the literal
+  success flag "1", then GET /descargar?tipo=N) with a single
+  GET /Exportar?fechaInicial=..&fechaFinal=..&tiposGeneracion=..&tipo=3
+  that streams the CSV directly (Content-Disposition: attachment,
+  ReporteMedidores.csv). The old POST route now falls through to a full
+  HTML page — that is a dead route, not a geo-block. Success is now "the
+  response body is a CSV whose header row carries plant columns"; see
+  ensure_export_csv(). The `central` parameter is ignored server-side
+  (identical bytes for 0/1/3). Dates stay DD/MM/YYYY.
+
+  PUBLICATION CADENCE (also changed): the redesigned portal only publishes
+  COMPLETE months — a window touching the current month returns a CSV with
+  a bare `fechahora` column and no plant columns. The default window
+  therefore ends on the last day of the previous month (Peru local) rather
+  than yesterday.
 
 DATA HONESTY:
   COES medidoresgeneracion publishes per-plant *generation* (MW), NOT
@@ -50,8 +62,7 @@ from http.cookiejar import CookieJar
 from urllib import request, parse, error
 
 PAGE_URL = "https://www.coes.org.pe/Portal/mediciones/medidoresgeneracion"
-EXPORT_URL = f"{PAGE_URL}/exportar"
-DOWNLOAD_URL = f"{PAGE_URL}/descargar?tipo=3"
+EXPORT_URL = f"{PAGE_URL}/Exportar"  # single GET; streams the CSV directly
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
 
 PERU_UTC_OFFSET_HOURS = -5  # Peru is UTC-5 year-round (no DST)
@@ -117,37 +128,53 @@ def build_opener() -> request.OpenerDirector:
     return op
 
 
+def ensure_export_csv(text: str) -> str:
+    """Validate a /Exportar response body and return it.
+
+    Success contract (replaces the old "expected '1'" POST flag): the body is
+    a CSV whose first line starts with `fechahora` (BOM-tolerant) and carries
+    at least one plant column. The two known failure shapes are:
+      - a full HTML page (the pre-redesign POST route now returns this;
+        also what a removed/renamed route would return), and
+      - a bare `fechahora`-only CSV, which is what the portal serves for a
+        window it has not published yet (it only publishes complete months).
+    """
+    stripped = text.lstrip("﻿ \r\n")  # strip UTF-8 BOM + whitespace
+    if stripped[:200].lstrip().lower().startswith(("<!doctype", "<html")):
+        raise RuntimeError("/Exportar returned an HTML page, not CSV — "
+                           "the endpoint contract has changed again")
+    header = stripped.split("\n", 1)[0]
+    if not header.lower().startswith("fechahora"):
+        raise RuntimeError(f"/Exportar returned unrecognised body "
+                           f"(first line {header[:80]!r})")
+    if len(header.split(",")) < 2:
+        raise RuntimeError("/Exportar returned a CSV with no plant columns — "
+                           "the requested window is not published yet "
+                           "(COES publishes complete months only)")
+    return text
+
+
 def fetch_export(opener, tipo: str, fecha_ini: str, fecha_fin: str,
                  retries: int = 3) -> str:
-    """Drive POST /exportar (returns "1" on success) then GET /descargar."""
+    """GET /Exportar — the response body IS the CSV (contract of 2026-08)."""
     last_err = None
     for attempt in range(1, retries + 1):
         try:
-            # Seed cookies from the page.
-            opener.open(request.Request(PAGE_URL), timeout=30).read()
-            body = parse.urlencode({
+            query = parse.urlencode({
                 "fechaInicial": fecha_ini,
                 "fechaFinal": fecha_fin,
                 "tiposEmpresa": "",
                 "empresas": "",
                 "tiposGeneracion": tipo,
-                "central": "0",
+                "central": "0",      # ignored server-side; kept for parity with the UI
                 "parametros": "1",   # Potencia Activa (MW)
                 "tipo": "3",         # CSV format
-            }).encode()
-            req = request.Request(EXPORT_URL, data=body, method="POST", headers={
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "X-Requested-With": "XMLHttpRequest",
+            })
+            req = request.Request(f"{EXPORT_URL}?{query}", headers={
                 "Referer": PAGE_URL,
             })
-            resp = opener.open(req, timeout=60).read().decode("utf-8", "replace").strip()
-            if resp.strip('"') != "1":
-                raise RuntimeError(f"/exportar returned {resp[:80]!r} (expected '1')")
-            csv_req = request.Request(DOWNLOAD_URL, headers={"Referer": PAGE_URL})
-            text = opener.open(csv_req, timeout=90).read().decode("utf-8", "replace")
-            if len(text) < 100 or "fechahora" not in text.lower():
-                raise RuntimeError(f"/descargar returned suspicious body ({len(text)} bytes)")
-            return text
+            text = opener.open(req, timeout=120).read().decode("utf-8", "replace")
+            return ensure_export_csv(text)
         except (error.URLError, RuntimeError, TimeoutError) as e:  # noqa: PERF203
             last_err = e
             sys.stderr.write(f"[peru-coes] tipo={tipo} attempt {attempt}/{retries} failed: {e}\n")
@@ -236,10 +263,13 @@ def main() -> int:
     if args.start and args.end:
         fecha_ini, fecha_fin = args.start, args.end
     else:
-        # Trailing window ending yesterday (Peru local).
+        # Trailing window ending on the last day of the PREVIOUS month (Peru
+        # local): the redesigned portal (2026-08) publishes complete months
+        # only, so any day in the current month comes back column-less.
         peru_now = datetime.now(timezone.utc) + timedelta(hours=PERU_UTC_OFFSET_HOURS)
-        end = peru_now.replace(tzinfo=None) - timedelta(days=1)
-        start = end - timedelta(days=args.days)
+        end = peru_now.replace(tzinfo=None, hour=0, minute=0, second=0,
+                               microsecond=0).replace(day=1) - timedelta(days=1)
+        start = end - timedelta(days=args.days - 1)
         fecha_ini, fecha_fin = fmt_date(start), fmt_date(end)
 
     sys.stderr.write(f"[peru-coes] window {fecha_ini} .. {fecha_fin}\n")
