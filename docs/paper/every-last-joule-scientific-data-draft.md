@@ -462,7 +462,7 @@ URLs.
 ## 3.1 Per-region JSON snapshots
 
 **Location:** `data/snapshots/last-good/<regionId>.json`
-**Count:** 384 entries emitted, one per region, covering every entry in
+**Count:** 461 entries emitted, one per region, covering every entry in
 `src/lib/regions.ts`.
 **Format:** UTF-8 JSON, ≈ 3 KB per file, schema enforced by
 `dataset/schema/region-snapshot.schema.json` (JSON Schema Draft 2020-12).
@@ -690,8 +690,8 @@ MDs (§3.8) and the discrepancy analysis in §4.
 ## 3.8 Per-region validation MDs
 
 **Location:** `docs/validation/<region>.md`
-**Count:** 130 per-region files (plus a directory `README.md` and a
-`_template.md` scaffold = 132 *.md total in the directory).
+**Count:** 468 per-region files (plus a directory `README.md` and a
+`_template.md` scaffold = 470 *.md total in the directory).
 **Format:** Markdown prose.
 **Per-file sections:** upstream source(s), calibration anchor,
 discrepancy analysis, v0.5 decision. Generated and enriched via

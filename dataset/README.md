@@ -4,6 +4,8 @@
 
 A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 385 regions across 6 continents. Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
 
+> **Note: repository HEAD has moved past this pinned v1.3.2 description.** Associated-gas flaring was purged from the dataset on 2026-06-18 (renewables-only pivot); `src/lib/regions.ts` on `main` now defines 461 regions (solar/wind/hydro curtailment only, no flaring). The figures above describe the archived v1.3.2 deposit this page is versioned to; they will move to 461 (and this note will come out) at the next version bump and Zenodo mint.
+
 ## What's in it
 
 - **`data/snapshots/last-good/*.json`** — the current committed snapshot for each region. One JSON per region. Schema in [`SCHEMA.md`](SCHEMA.md).

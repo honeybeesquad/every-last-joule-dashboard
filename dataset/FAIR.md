@@ -75,7 +75,7 @@ versioned DOI `10.5281/zenodo.19835566` (concept DOI
 - `docs/methodology/*.md` — per-source audit trails
   (`entsoe-rates.md`, `china-provinces.md`, `flare-ercot-brazil.md`,
   `historical-backfill.md`, `uncertainty.md`, `validation-discrepancies.md`).
-- `docs/validation/<region>.md` — 130 per-region validation documents
+- `docs/validation/<region>.md` — 468 per-region validation documents
   (plus a directory README and `_template.md`) each covering
   provenance, calibration anchor, discrepancy vs published annual,
   and v0.5 decision.
@@ -218,7 +218,7 @@ No proprietary binary blobs, no closed schemas.
 **Evidence:**
 
 - **Region IDs** (kebab-case, lowercase, pattern-enforced) — a
-  controlled vocabulary of 384 values defined in `src/lib/regions.ts`
+  controlled vocabulary of 461 values defined in `src/lib/regions.ts`
   with one authoritative source of truth. Stable across versions
   (SemVer-bump required for breaking rename).
 - **Fuel types** — controlled enum `{solar, wind, hydro, geothermal}`
@@ -320,7 +320,7 @@ Scientific Data-accepted, and SPDX-registered.
   surveys every material gap between reconstruction and published
   TSO/IMM/SoM anchor, with diagnostic category and v1 recalibration
   candidate where applicable.
-- `docs/validation/<region>.md` (130 region files plus README +
+- `docs/validation/<region>.md` (468 region files plus README +
   `_template.md`) carry per-region provenance
   prose — what the anchor is, where it came from, what discrepancy
   category applies, and what v0.5 does about it.
