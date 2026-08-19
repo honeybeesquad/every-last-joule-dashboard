@@ -24,6 +24,22 @@ An end-to-end health assessment. **Production is fine** - the deployed dashboard
 
 ---
 
+## Relay-stack repair (2026-08-19 evening sweep, continues the morning sweep above)
+
+The NordLynx root-cause fix unblocked a chain of further finds. All verified live; PRs noted where code changed.
+
+- **Colombia egress RESTORED + Britta clobber incident.** After the tunnel fix, Britta's legacy `relay-push.sh` overwrote abed's 21 fresh vertimientos rows on its very next run (it copied its own stale local CSV over the repo file - the exact dual-writer race the migration was meant to end, but only the fetch step had been removed, not the push step). Repaired by revert; Britta's push script no longer touches the Colombia CSV, and abed's fetcher now pulls before reading state and rebases once on a rejected push. Relay repo and dashboard both current through 2026-08-18 (1,749 rows).
+- **India gen-re feed was frozen for ~3.5 months by a one-line Python bug.** Britta's `fetchers/india-gen-re.sh` did `with open(path) as f: zf = ZipFile(f)` - the handle closes at the end of the with-block and every later member read raises `ValueError: seek of closed file` (surfaced by a Homebrew Python bump). Fixed on Britta, then **backfilled 103 missing days** (2026-05-08 → 2026-08-17) from CEA's date-addressable report URLs and sorted the CSVs. Dashboard now carries **412 rows per state** (was 309), current through 2026-08-18, incl. new telangana/MP/UP/punjab/odisha/chhattisgarh CSVs in the relay repo.
+- **The Colombia failure also blocked India/Vietnam/Taiwan for 3 weeks**: Britta's `cron-wrapper.sh` did `exit 1` when the Colombia fetch failed, so the whole daily push died with it. The Colombia step is now removed (not just disabled) and the wrapper no longer aborts.
+- **Vietnam + Taiwan fetchers are scaffolding, not production.** They have NEVER written a CSV to the relay repo: `set -euo pipefail` killed them at an unguarded grep before they logged anything, and even past that Taiwan "completes" without writing output. The pipefail crashes are fixed so they now fail *visibly*; building them out for real (incl. NordVPN egress) is a separate project. Dashboard VN/TW regions are T3 and never depended on them.
+- **abed heartbeat → CI chain (PR #793).** abed's nightly healthcheck now pushes `abed-heartbeat.json` to the relay repo; `colombia-relay-pull.yml` copies it in; `relay-freshness.yml` opens the auto-relay-stale issue when the beat is >48h old or `ok:false`. First beat verified live (honestly reporting the pre-fix failed unit; clears after the next successful 21:17 capture). The desktop-notification-only alarm that let 2026-07-27 rot for three weeks is retired as the sole signal.
+- **India SLDC recon via NordVPN Indian egress (issue #43 update).** abed's NordVPN unlocks two of the five SLDCs that were dead from NZ: **Tamil Nadu (`www.tantransco.org`) HTTP 200** and **Gujarat (`www.sldcguj.com`) HTTP 200 past the WAF**. AP connects then stalls; Rajasthan/ERLDC still unreachable. The old #43 premise ("needs a genuinely separate egress") is now satisfied by NordVPN on abed - next step is checking whether TN/Gujarat publish machine-readable curtailment, then loaders.
+- **Peru COES export broke ~2026-08-10**: the site is up and reachable from NZ residential, but `POST /exportar` now returns an HTML page instead of the `"1"` success flag - the endpoint contract changed. Fix in flight (agent working against the live site via abed).
+- **abed's `~/code/every-last-joule-dashboard` is now a real git clone** (was a bare data/scripts skeleton; script deploys were scp'd blind). Deploys are now `git pull`.
+- Also opened this sweep: **#795** (WACM removal - T2 25→23, total 461→459, zero totals impact), **#796** (paper stale-figure audit: 9 fixed, 7 flagged for the author - incl. the paper still describing the flare-era 384-region dataset and calling Maharashtra T1a).
+
+---
+
 ## Live-data incidents (2026-07-17 sweep)
 
 A build-log audit of production found six feeds silently serving `withFallback` last-good data while the dashboard showed only an amber "degraded" ring. Two are fixed, one is a PR, three are open:
