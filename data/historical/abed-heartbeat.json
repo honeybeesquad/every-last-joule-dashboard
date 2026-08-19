@@ -1,0 +1,7 @@
+{
+  "host": "abed",
+  "at": "2026-08-19T11:31:25Z",
+  "ok": false,
+  "lake_newest_age_hours": 0,
+  "issues": ["elj-capture.service is in a failed state"]
+}
