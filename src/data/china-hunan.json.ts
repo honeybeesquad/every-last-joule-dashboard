@@ -1,7 +1,8 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalWindRegion, buildTypicalSolarRegion, buildTypicalHydroRegion } from "../lib/typical-profiles.js";
+import { buildChinaRegionFromAnchor } from "../lib/chinaParse.js";
+import { buildTypicalHydroRegion } from "../lib/typical-profiles.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "china-hunan";
@@ -17,9 +18,19 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
   } catch (err) {
     const note = `Typical-shape fallback: ${(err as Error).message}; Hunan mixed wind+solar+hydro curtailment ~1.9 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
     return {
-      wind:  buildTypicalWindRegion("china-hunan-wind",  15, 1.9 * 0.5, note + " — wind share (50%)", "2024"),
-      solar: buildTypicalSolarRegion("china-hunan-solar",  4, 1.9 * 0.3, note + " — solar share (30%)", "2024"),
-      hydro: buildTypicalHydroRegion("china-hunan-hydro", 1.9 * 0.2, note + " — hydro share (20%)", "2024"),
+      wind:  buildChinaRegionFromAnchor(
+        "china-hunan-wind", "wind", 15, 1.9 * 0.5,
+        note + " — wind share (50%)",
+      ),
+      solar: buildChinaRegionFromAnchor(
+        "china-hunan-solar", "solar", 4, 1.9 * 0.3,
+        note + " — solar share (30%)",
+      ),
+      hydro: {
+        ...buildTypicalHydroRegion("china-hunan-hydro", 1.9 * 0.2, note + " — hydro share (20%)", "2024"),
+        sourceStatus: "cached" as const,
+        sourceProvenance: "modelled-fallback" as const,
+      },
     };
   }
 }
@@ -27,7 +38,7 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   withFallback<{ wind: RegionData; solar: RegionData; hydro: RegionData }>(REGION_ID, () => run(), {
-    regionTier: "live" as const,
+    regionTier: "estimated" as const,
     tagLive: r => r,
     tagCached: c => c as { wind: RegionData; solar: RegionData; hydro: RegionData },
   })

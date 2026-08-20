@@ -1,7 +1,223 @@
 {
-  "generatedAt": "2026-08-20T03:53:51.123Z",
+  "generatedAt": "2026-08-20T05:58:25.100Z",
   "source": "https://storage.googleapis.com/emb-prod-bkt-publicdata/public-downloads/generation/outputs/release_chn_subnational_generation_monthly.csv",
   "anchors": [
+    {
+      "regionId": "china-anhui-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 56.422,
+      "curtailmentRate": 0.001,
+      "annualTWh": 0.056,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 0.1% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-anhui-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 22.692,
+      "curtailmentRate": 0.001,
+      "annualTWh": 0.023,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 0.1% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "gansu-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 43.954,
+      "curtailmentRate": 0.084,
+      "annualTWh": 3.692,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 8.4% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "gansu-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 57.184,
+      "curtailmentRate": 0.061,
+      "annualTWh": 3.488,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 6.1% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-hebei-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 101.446,
+      "curtailmentRate": 0.035,
+      "annualTWh": 3.551,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 3.5% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-hebei-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 83.21,
+      "curtailmentRate": 0.06,
+      "annualTWh": 4.993,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 6.0% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-heilongjiang-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 10.262,
+      "curtailmentRate": 0.034,
+      "annualTWh": 0.349,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 3.4% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-heilongjiang-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 40.668,
+      "curtailmentRate": 0.05,
+      "annualTWh": 2.033,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 5.0% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-henan-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 53.831,
+      "curtailmentRate": 0.019,
+      "annualTWh": 1.023,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 1.9% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-henan-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 50.194,
+      "curtailmentRate": 0.037,
+      "annualTWh": 1.857,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 3.7% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-hubei-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 44.341,
+      "curtailmentRate": 0.025,
+      "annualTWh": 1.109,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 2.5% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-hubei-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 16.948,
+      "curtailmentRate": 0.019,
+      "annualTWh": 0.322,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 1.9% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-hunan-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 28.598,
+      "curtailmentRate": 0.006,
+      "annualTWh": 0.172,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 0.6% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-hunan-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 20.065,
+      "curtailmentRate": 0.03,
+      "annualTWh": 0.602,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 3.0% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "inner-mongolia-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 79.119,
+      "curtailmentRate": 0.053,
+      "annualTWh": 4.193,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 5.3% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "inner-mongolia-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 209.731,
+      "curtailmentRate": 0.046,
+      "annualTWh": 9.648,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 4.6% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-jiangsu-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 96.567,
+      "curtailmentRate": 0.001,
+      "annualTWh": 0.097,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 0.1% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-jiangsu-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 56.031,
+      "curtailmentRate": 0.003,
+      "annualTWh": 0.168,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 0.3% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-jilin-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 9.801,
+      "curtailmentRate": 0.024,
+      "annualTWh": 0.235,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 2.4% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-jilin-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 32.674,
+      "curtailmentRate": 0.065,
+      "annualTWh": 2.124,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 6.5% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-liaoning-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 17.391,
+      "curtailmentRate": 0.029,
+      "annualTWh": 0.504,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 2.9% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-liaoning-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 46.025,
+      "curtailmentRate": 0.05,
+      "annualTWh": 2.301,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 5.0% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "ningxia-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 50.731,
+      "curtailmentRate": 0.046,
+      "annualTWh": 2.334,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 4.6% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "ningxia-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 30.406,
+      "curtailmentRate": 0.025,
+      "annualTWh": 0.76,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 2.5% (transcribed from published utilisation)"
+    },
     {
       "regionId": "qinghai-solar",
       "fuel": "solar",
@@ -21,6 +237,24 @@
       "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 7.2% (transcribed from published utilisation)"
     },
     {
+      "regionId": "china-shaanxi-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 46.426,
+      "curtailmentRate": 0.049,
+      "annualTWh": 2.275,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 4.9% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-shaanxi-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 29.05,
+      "curtailmentRate": 0.057,
+      "annualTWh": 1.656,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 5.7% (transcribed from published utilisation)"
+    },
+    {
       "regionId": "china-shandong-solar",
       "fuel": "solar",
       "annualGenerationTWh": 108.771,
@@ -28,6 +262,33 @@
       "annualTWh": 4.025,
       "latestMonth": "2026-06",
       "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 3.7% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-shandong-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 54.462,
+      "curtailmentRate": 0.036,
+      "annualTWh": 1.961,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 3.6% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-shanxi-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 55.931,
+      "curtailmentRate": 0.01,
+      "annualTWh": 0.559,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 1.0% (transcribed from published utilisation)"
+    },
+    {
+      "regionId": "china-shanxi-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 55.767,
+      "curtailmentRate": 0.01,
+      "annualTWh": 0.558,
+      "latestMonth": "2026-06",
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 1.0% (transcribed from published utilisation)"
     },
     {
       "regionId": "xinjiang-solar",

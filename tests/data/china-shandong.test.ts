@@ -12,7 +12,7 @@ describe("china-shandong loader", () => {
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.wind.regionId).toBe("china-shandong-wind");
     expect(data.wind.profile).toHaveLength(24);
-    expect(data.wind.totalTWh).toBeCloseTo((2.5 * 30) / 365, 8);
+    expect(data.wind.totalTWh).toBeCloseTo((1.961 * 30) / 365, 8);
     expect(data.wind.confidenceTier).toBe("T3-modelled");
   });
 });

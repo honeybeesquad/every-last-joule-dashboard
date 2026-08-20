@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { buildChinaRegionFromAnchor } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "china-henan";
@@ -17,8 +17,14 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
   } catch (err) {
     const note = `Typical-shape fallback: ${(err as Error).message}; Henan mixed wind+solar curtailment ~1.0 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
     return {
-      wind:  buildTypicalWindRegion("china-henan-wind",  15, 0.3, note + " — wind share (~0.3 TWh/yr, northern Henan wind corridor)", "2024"),
-      solar: buildTypicalSolarRegion("china-henan-solar", 4, 0.7, note + " — solar share (~0.7 TWh/yr)", "2024"),
+      wind:  buildChinaRegionFromAnchor(
+        "china-henan-wind", "wind", 15, 0.3,
+        note + " — wind share (~0.3 TWh/yr, northern Henan wind corridor)",
+      ),
+      solar: buildChinaRegionFromAnchor(
+        "china-henan-solar", "solar", 4, 0.7,
+        note + " — solar share (~0.7 TWh/yr)",
+      ),
     };
   }
 }
@@ -26,7 +32,7 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   withFallback<{ wind: RegionData; solar: RegionData }>(REGION_ID, () => run(), {
-    regionTier: "live" as const,
+    regionTier: "estimated" as const,
     tagLive: r => r,
     tagCached: c => c as { wind: RegionData; solar: RegionData },
   })

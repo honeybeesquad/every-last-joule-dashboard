@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { buildChinaRegionFromAnchor } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "ningxia";
@@ -17,8 +17,14 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
   } catch (err) {
     const note = `Typical-shape fallback: Ember GER 2025 / NEA quarterly statistics unavailable as hourly feed (${(err as Error).message}); Ningxia wind+solar curtailment anchored at ~1.0 TWh/yr.`;
     return {
-      wind:  buildTypicalWindRegion("ningxia-wind",  15,  1.0 * 0.5, note + " — wind share (50%)", "2024"),
-      solar: buildTypicalSolarRegion("ningxia-solar", 4.5, 1.0 * 0.5, note + " — solar share (50%)", "2024"),
+      wind:  buildChinaRegionFromAnchor(
+        "ningxia-wind", "wind", 15, 1.0 * 0.5,
+        note + " — wind share (50%)",
+      ),
+      solar: buildChinaRegionFromAnchor(
+        "ningxia-solar", "solar", 4.5, 1.0 * 0.5,
+        note + " — solar share (50%)",
+      ),
     };
   }
 }
@@ -26,7 +32,7 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   withFallback<{ wind: RegionData; solar: RegionData }>(REGION_ID, () => run(), {
-    regionTier: "live" as const,
+    regionTier: "estimated" as const,
     tagLive: r => r,
     tagCached: c => c as { wind: RegionData; solar: RegionData },
   })

@@ -11,10 +11,10 @@ const CSV = [
   "China,CHN,Xinjiang,XJ,2024-02-01,Wind,False,0.48",
   "China,CHN,Xinjiang,XJ,2024-01-01,Solar,False,0.32",
   "China,CHN,Xinjiang,XJ,2024-02-01,Solar,False,0.30",
-  // Gansu has no published curtailment rate in the (honest) table, so it is
+  // Guangdong has no published curtailment rate in the (honest) table, so it is
   // skipped by buildAnchors — only Xinjiang (transcribed rates) appears.
-  "China,CHN,Gansu,GS,2024-01-01,Wind,False,0.12",
-  "China,CHN,Gansu,GS,2024-02-01,Wind,False,0.11",
+  "China,CHN,Guangdong,GD,2024-01-01,Wind,False,0.12",
+  "China,CHN,Guangdong,GD,2024-02-01,Wind,False,0.11",
 ].join("\n");
 
 describe("refresh-china buildAnchors", () => {
@@ -29,8 +29,8 @@ describe("refresh-china buildAnchors", () => {
   });
 
   it("skips provinces with no published curtailment rate", () => {
-    // CSV has Xinjiang (transcribed rate) + Gansu (no published rate). Only
-    // Xinjiang appears; Gansu is skipped by the rate===undefined -> continue path.
+    // CSV has Xinjiang (transcribed rate) + Guangdong (no published rate). Only
+    // Xinjiang appears; Guangdong is skipped by the rate===undefined -> continue path.
     const anchors = buildAnchors(CSV);
     expect(anchors.map((a) => a.regionId).sort()).toEqual(["xinjiang-solar", "xinjiang-wind"]);
   });

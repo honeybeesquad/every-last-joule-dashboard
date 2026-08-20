@@ -37,18 +37,54 @@ const OUT_PATH = join(process.cwd(), "data", "china-anchors.json");
 // here unless you can cite the published utilisation percentage it derives from.
 // Keyed by Ember province name (matches chinaParse PROVINCE_TO_REGION).
 //
-// Transcribed (utilisation U% -> rate = 1 - U/100):
+// Transcribed (utilisation U% -> rate = 1 - U/100) from the 全国新能源消纳监测预警中心
+// (NEA Renewable Energy Curtailment Monitoring Center) 2024 full-year / 2024M1-11
+// provincial new-energy grid-integration utilisation bulletin, published 2025-02-06
+// (reported by 中国能源新闻网: https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html).
+// These are the SAME authoritative source the original 5 rates use. Inner Mongolia
+// here = 蒙西 (West Inner Mongolia grid), which is the curtailing grid the dashboard's
+// inner-mongolia regions represent. NOTE: the rate is 蒙西-scoped but the generation
+// multiplier is Ember's whole-Inner-Mongolia row (includes 蒙东), so the anchor is an
+// upper bound for the 蒙西 curtailing grid.
 //   Xinjiang  wind 93.4% -> 6.6%   solar 92.2% -> 7.8%
 //   Qinghai   wind 92.8% -> 7.2%   solar 90.3% -> 9.7%
 //   Yunnan    wind 99.1% -> 0.9%   solar 96.7% -> 3.3%
 //   Tibet     wind 83.0% -> 17.0%  solar 68.6% -> 31.4%
-//   Shandong  solar 96.3% -> 3.7%  (wind rate not published -> omitted)
+//   Shandong  wind 96.4% -> 3.6%   solar 96.3% -> 3.7%
+//   Gansu     wind 93.9% -> 6.1%   solar 91.6% -> 8.4%
+//   Inner Mongolia (蒙西) wind 95.4% -> 4.6%   solar 94.7% -> 5.3%
+//   Ningxia   wind 97.5% -> 2.5%   solar 95.4% -> 4.6%
+//   Hebei     wind 94.0% -> 6.0%   solar 96.5% -> 3.5%
+//   Shaanxi   wind 94.3% -> 5.7%   solar 95.1% -> 4.9%
+//   Henan     wind 96.3% -> 3.7%   solar 98.1% -> 1.9%
+//   Hubei     wind 98.1% -> 1.9%   solar 97.5% -> 2.5%
+//   Hunan     wind 97.0% -> 3.0%   solar 99.4% -> 0.6%
+//   Shanxi    wind 99.0% -> 1.0%   solar 99.0% -> 1.0%
+//   Liaoning  wind 95.0% -> 5.0%   solar 97.1% -> 2.9%
+//   Jilin     wind 93.5% -> 6.5%   solar 97.6% -> 2.4%
+//   Heilongjiang wind 95.0% -> 5.0%  solar 96.6% -> 3.4%
+//   Jiangsu   wind 99.7% -> 0.3%   solar 99.9% -> 0.1%
+//   Anhui     wind 99.9% -> 0.1%   solar 99.9% -> 0.1%
 const PROVINCE_FUEL_CURTAILMENT_RATE: Record<string, Partial<Record<Fuel, number>>> = {
   Xinjiang: { wind: 0.066, solar: 0.078 }, // util 93.4% / 92.2%
   Qinghai: { wind: 0.072, solar: 0.097 }, // util 92.8% / 90.3%
   Yunnan: { wind: 0.009, solar: 0.033 }, // util 99.1% / 96.7%
   Tibet: { wind: 0.17, solar: 0.314 }, // util 83.0% / 68.6%
-  Shandong: { solar: 0.037 }, // util 96.3% (wind rate not published -> omitted)
+  Shandong: { wind: 0.036, solar: 0.037 }, // util 96.4% / 96.3% (wind rate was previously omitted as "not published" — that was a transcription gap; the 2024 bulletin lists 96.4%)
+  Gansu: { wind: 0.061, solar: 0.084 }, // util 93.9% / 91.6%
+  "Inner Mongolia": { wind: 0.046, solar: 0.053 }, // 蒙西 util 95.4% / 94.7%
+  Ningxia: { wind: 0.025, solar: 0.046 }, // util 97.5% / 95.4%
+  Hebei: { wind: 0.06, solar: 0.035 }, // util 94.0% / 96.5%
+  Shaanxi: { wind: 0.057, solar: 0.049 }, // util 94.3% / 95.1%
+  Henan: { wind: 0.037, solar: 0.019 }, // util 96.3% / 98.1%
+  Hubei: { wind: 0.019, solar: 0.025 }, // util 98.1% / 97.5%
+  Hunan: { wind: 0.03, solar: 0.006 }, // util 97.0% / 99.4%
+  Shanxi: { wind: 0.01, solar: 0.01 }, // util 99.0% / 99.0%
+  Liaoning: { wind: 0.05, solar: 0.029 }, // util 95.0% / 97.1%
+  Jilin: { wind: 0.065, solar: 0.024 }, // util 93.5% / 97.6%
+  Heilongjiang: { wind: 0.05, solar: 0.034 }, // util 95.0% / 96.6%
+  Jiangsu: { wind: 0.003, solar: 0.001 }, // util 99.7% / 99.9%
+  Anhui: { wind: 0.001, solar: 0.001 }, // util 99.9% / 99.9%
 };
 
 interface AnchorRow {

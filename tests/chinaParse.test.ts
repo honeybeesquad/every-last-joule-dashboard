@@ -55,7 +55,7 @@ describe("chinaParse", () => {
   it("maps province+fuel to the dashboard region id", () => {
     expect(regionIdFor("Xinjiang", "wind" as Fuel)).toBe("xinjiang-wind");
     expect(regionIdFor("Shandong", "solar" as Fuel)).toBe("china-shandong-solar");
-    expect(regionIdFor("Gansu", "hydro" as Fuel)).toBe("china-gansu-hydro");
+    expect(regionIdFor("Gansu", "hydro" as Fuel)).toBe("gansu-hydro");
   });
 
   it("throws on an unknown province", () => {

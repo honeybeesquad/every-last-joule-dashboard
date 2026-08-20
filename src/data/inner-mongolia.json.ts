@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { buildChinaRegionFromAnchor } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "inner-mongolia";
@@ -17,8 +17,14 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
   } catch (err) {
     const note = `Typical-shape fallback: NEA 2024 provincial RE monitoring bulletin / live hourly feed unavailable (${(err as Error).message}); Inner Mongolia wind+solar curtailment anchored at ~8.0 TWh/yr wind + ~4.6 TWh/yr solar.`;
     return {
-      wind:  buildTypicalWindRegion("inner-mongolia-wind",  15, 8.0, note + " — wind (largest wind base in China)", "2024"),
-      solar: buildTypicalSolarRegion("inner-mongolia-solar", 5, 4.6, note + " — solar (growing PV in Ordos/Baotou)", "2024"),
+      wind:  buildChinaRegionFromAnchor(
+        "inner-mongolia-wind", "wind", 15, 8.0,
+        note + " — wind (largest wind base in China)",
+      ),
+      solar: buildChinaRegionFromAnchor(
+        "inner-mongolia-solar", "solar", 5, 4.6,
+        note + " — solar (growing PV in Ordos/Baotou)",
+      ),
     };
   }
 }

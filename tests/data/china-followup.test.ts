@@ -28,13 +28,13 @@ describe("China loader anchor refresh (post-PR #815 follow-up)", () => {
     expect(d.solar.totalTWh).toBeCloseTo((1.929 * 30) / 365, 4);
   });
 
-  it("shandong-solar consumes the refreshed store; wind falls back (no wind rate)", async () => {
+  it("shandong wind + solar both consume the refreshed store", async () => {
     const d = await buildChinaShandongData();
     expect(d.solar.confidenceTier).toBe("T3-modelled");
     // store: china-shandong-solar 4.025 (vs hardcoded 4.5)
     expect(d.solar.totalTWh).toBeCloseTo((4.025 * 30) / 365, 4);
-    // wind has no published rate in the table, so it uses the hardcoded 2.5 fallback
-    expect(d.wind.totalTWh).toBeCloseTo((2.5 * 30) / 365, 4);
+    // wind now has a published rate (96.4% util -> 3.6%) -> refreshed anchor 1.961
+    expect(d.wind.totalTWh).toBeCloseTo((1.961 * 30) / 365, 4);
     expect(d.wind.confidenceTier).toBe("T3-modelled");
   });
 });
