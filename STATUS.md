@@ -35,6 +35,25 @@ Two cheap honesty-consistency fixes flagged by the #817 review:
 - `data/snapshots/last-good/china-shandong.json` — regenerated from `buildChinaShandongData()` so it no longer carries the stale `sourceStatus: "live"` on its two T3-modelled records (the exact class of defect #812 banned). `china-shandong-solar` now correctly reads `cached` with the refreshed 4.025 TWh/yr; `china-shandong-wind` carries no sourceStatus (hardcoded 2.5 TWh fallback, no anchor). Scope held to the regions my China PRs touched — the broader pre-existing stale-`live` in other committed snapshots (gansu, ningxia, mexico, pakistan, south-korea, unwired china-*) is inert (overwritten every build) and was logged as a known caveat in #812; a proper fix is a full `observable build` regen, deferred.
 - `tsc` clean; 1100 vitest + 5 CI gates (tier-coherence, tally-golden, loader-stdout-safety, source-provenance-coherence, magnitude-golden) green; `npm run validate` (snapshot schema, a separate CI step) also green. NOTE: an initial regen via the loader directly dropped `sourceProvenance` from the wind record and baked a "live probe skipped in tests" note; fixed by regenerating through the real `withFallback` build path (`npx tsx src/data/china-shandong.json.ts`), which stamps both records correctly. Independent review caught this before merge.
 
+## China big research push — wired 14 more provinces (2026-08-20)
+
+Following the independent-review discipline, the 2024 NEA monitoring-center (全国新能源消纳监测预警中心) provincial new-energy utilisation bulletin (published 2025-02-06) was transcribed for all 31 provinces. Every province with a per-fuel `kind: wind/solar` loader AND a published utilisation figure now has a refreshed Ember-anchored region:
+
+- Extended `PROVINCE_FUEL_CURTAILMENT_RATE` (refresh-china.ts) with 19 transcribed province+fuel rates (utilisation → 1−U).
+- Regenerated `data/china-anchors.json`: **7 → 36 anchors** (all 18 wired provinces + the 5 from #815).
+- Wired 14 loaders through `buildChinaRegionFromAnchor` (was `buildTypical*`): gansu, inner-mongolia, ningxia, china-hebei, china-shaanxi, china-henan, china-hubei, china-hunan, china-shanxi, china-liaoning, china-jilin, china-heilongjiang, china-jiangsu, china-anhui. Also fixed their inert `regionTier: "live"` decorations → `estimated`.
+- Updated `regions.ts` source citations for all 36 wired China regions to the Ember-anchored form (removed stale `NEA 2024 provincial RE monitoring bulletin` text + a dangling `Huaon ...` fragment that #815 had left in xinjiang/qinghai/yunnan/shandong).
+- Regenerated the 14 corresponding `data/snapshots/last-good/*.json` via the real loader path (no stale `sourceStatus:"live"`).
+
+**Honesty contract preserved:** every wired region is `T3-modelled` + `sourceStatus:"cached"` + `sourceProvenance:"modelled-fallback"`. No live promotion. The 2024 utilisation rate is mixed with the 2026M6 Ember generation anchor — the same pattern as #815, consistent with the repo's design.
+
+**Deferred (out of scope, documented):**
+- Mixed `kind` regions (china-guangdong, china-jiangxi, china-fujian, china-zhebei) — need a combined wind/solar anchor design; the store only carries per-fuel rows.
+- Near-zero placeholder regions (china-beijing, china-hainan, china-shanghai) — curtailment ~0, anchor change immaterial.
+- Tibet — has a transcribed rate but no Ember generation row, so no anchor (stays NEA-only, honestly).
+
+- `tsc` clean; 1100 vitest + 5 CI gates + `npm run validate` all green.
+
 ## System-performance assessment (2026-08-19 sweep)
 
 An end-to-end health assessment. **Production is fine** - the deployed dashboard is genuinely live (spot-checked `caiso`, `aemo`, `aemo-per-plant`, all carrying `lastSuccessAt` within the hour), CI is green on every run, and ENTSO-E has held since the July token swap. The faults are in the archive and in the alerting around it. Four PRs from this sweep are **merged to `main`**: [#784](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/784) `9449b11d` (health allowlist), [#786](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/786) `f8a90130` (XM chunking + per-metric isolation), [#785](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/785) `42bf2b5e` (Eskom URL resolution), [#787](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/787) `aa8ae79b` (history archive). All five were code-reviewed before merge and the review found real defects in three of them - a duplicate-`regionId` double-write, a stale-record tie-break, a stale-URL preference, and a disproved root cause - all fixed in the branches before landing.

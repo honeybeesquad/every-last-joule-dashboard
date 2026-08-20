@@ -46,7 +46,7 @@ export const PROVINCE_TO_REGION: Record<string, string> = {
   Beijing: "china-beijing",
   Chongqing: "china-chongqing",
   Fujian: "china-fujian",
-  Gansu: "china-gansu",
+  Gansu: "gansu",
   Guangdong: "china-guangdong",
   Guizhou: "china-guizhou",
   Hainan: "china-hainan",

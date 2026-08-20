@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { buildChinaRegionFromAnchor } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "china-heilongjiang";
@@ -17,8 +17,14 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
   } catch (err) {
     const note = `Typical-shape fallback: ${(err as Error).message}; Heilongjiang mixed wind+solar curtailment ~1.8 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
     return {
-      wind:  buildTypicalWindRegion("china-heilongjiang-wind",  15, 1.5, note + " — wind share (~1.5 TWh/yr, northeast grid; Daqing-area wind build-out)", "2025"),
-      solar: buildTypicalSolarRegion("china-heilongjiang-solar", 4, 0.3, note + " — solar share (~0.3 TWh/yr, growing PV in Harbin/southern corridor)", "2025"),
+      wind:  buildChinaRegionFromAnchor(
+        "china-heilongjiang-wind", "wind", 15, 1.5,
+        note + " — wind share (~1.5 TWh/yr, northeast grid; Daqing-area wind build-out)",
+      ),
+      solar: buildChinaRegionFromAnchor(
+        "china-heilongjiang-solar", "solar", 4, 0.3,
+        note + " — solar share (~0.3 TWh/yr, growing PV in Harbin/southern corridor)",
+      ),
     };
   }
 }
@@ -26,7 +32,7 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   withFallback<{ wind: RegionData; solar: RegionData }>(REGION_ID, () => run(), {
-    regionTier: "live" as const,
+    regionTier: "estimated" as const,
     tagLive: r => r,
     tagCached: c => c as { wind: RegionData; solar: RegionData },
   })
