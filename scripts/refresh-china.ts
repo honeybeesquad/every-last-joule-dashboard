@@ -39,10 +39,13 @@ const OUT_PATH = join(process.cwd(), "data", "china-anchors.json");
 //
 // Transcribed (utilisation U% -> rate = 1 - U/100) from the 全国新能源消纳监测预警中心
 // (NEA Renewable Energy Curtailment Monitoring Center) 2024 full-year / 2024M1-11
-// provincial new-energy grid-integration utilisation bulletin, published 2025-02-06.
+// provincial new-energy grid-integration utilisation bulletin, published 2025-02-06
+// (reported by 中国能源新闻网: https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html).
 // These are the SAME authoritative source the original 5 rates use. Inner Mongolia
 // here = 蒙西 (West Inner Mongolia grid), which is the curtailing grid the dashboard's
-// inner-mongolia regions represent.
+// inner-mongolia regions represent. NOTE: the rate is 蒙西-scoped but the generation
+// multiplier is Ember's whole-Inner-Mongolia row (includes 蒙东), so the anchor is an
+// upper bound for the 蒙西 curtailing grid.
 //   Xinjiang  wind 93.4% -> 6.6%   solar 92.2% -> 7.8%
 //   Qinghai   wind 92.8% -> 7.2%   solar 90.3% -> 9.7%
 //   Yunnan    wind 99.1% -> 0.9%   solar 96.7% -> 3.3%
@@ -67,7 +70,7 @@ const PROVINCE_FUEL_CURTAILMENT_RATE: Record<string, Partial<Record<Fuel, number
   Qinghai: { wind: 0.072, solar: 0.097 }, // util 92.8% / 90.3%
   Yunnan: { wind: 0.009, solar: 0.033 }, // util 99.1% / 96.7%
   Tibet: { wind: 0.17, solar: 0.314 }, // util 83.0% / 68.6%
-  Shandong: { wind: 0.036, solar: 0.037 }, // util 96.4% / 96.3%
+  Shandong: { wind: 0.036, solar: 0.037 }, // util 96.4% / 96.3% (wind rate was previously omitted as "not published" — that was a transcription gap; the 2024 bulletin lists 96.4%)
   Gansu: { wind: 0.061, solar: 0.084 }, // util 93.9% / 91.6%
   "Inner Mongolia": { wind: 0.046, solar: 0.053 }, // 蒙西 util 95.4% / 94.7%
   Ningxia: { wind: 0.025, solar: 0.046 }, // util 97.5% / 95.4%

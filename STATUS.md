@@ -39,16 +39,18 @@ Two cheap honesty-consistency fixes flagged by the #817 review:
 
 Following the independent-review discipline, the 2024 NEA monitoring-center (全国新能源消纳监测预警中心) provincial new-energy utilisation bulletin (published 2025-02-06) was transcribed for all 31 provinces. Every province with a per-fuel `kind: wind/solar` loader AND a published utilisation figure now has a refreshed Ember-anchored region:
 
-- Extended `PROVINCE_FUEL_CURTAILMENT_RATE` (refresh-china.ts) with 19 transcribed province+fuel rates (utilisation → 1−U).
-- Regenerated `data/china-anchors.json`: **7 → 36 anchors** (all 18 wired provinces + the 5 from #815).
+- Extended `PROVINCE_FUEL_CURTAILMENT_RATE` (refresh-china.ts) with **29 transcribed province+fuel rates** (utilisation → 1−U) from the NEA 2024 monitoring-center bulletin.
+- Regenerated `data/china-anchors.json`: **7 → 36 anchors** (the 5 from #815 plus 14 newly-wired provinces, each wind+solar; Tibet carries a rate but no Ember generation row so stays unwired).
 - Wired 14 loaders through `buildChinaRegionFromAnchor` (was `buildTypical*`): gansu, inner-mongolia, ningxia, china-hebei, china-shaanxi, china-henan, china-hubei, china-hunan, china-shanxi, china-liaoning, china-jilin, china-heilongjiang, china-jiangsu, china-anhui. Also fixed their inert `regionTier: "live"` decorations → `estimated`.
-- Updated `regions.ts` source citations for all 36 wired China regions to the Ember-anchored form (removed stale `NEA 2024 provincial RE monitoring bulletin` text + a dangling `Huaon ...` fragment that #815 had left in xinjiang/qinghai/yunnan/shandong).
-- Regenerated the 14 corresponding `data/snapshots/last-good/*.json` via the real loader path (no stale `sourceStatus:"live"`).
+- Updated `regions.ts` source citations for all 36 wired China regions to the Ember-anchored form (removed stale `NEA 2024 provincial RE monitoring bulletin` text + a dangling `Huaon ...` fragment that #815 had left in xinjiang/qinghai/yunnan/shandong). `sourceUrl` now points at the citable 2024 NEA utilisation bulletin (中国能源新闻网), so the rate half is verifiable.
+- Regenerated the **15** corresponding `data/snapshots/last-good/*.json` (14 new + china-shandong, whose wind anchor moved 2.5→1.961) via the real loader path. Fixed two hydro records (china-hubei-hydro, china-hunan-hydro) that `buildTypicalHydroRegion` had stamped `sourceStatus:"live"` — now `cached`/`modelled-fallback`/`T3-modelled`.
 
-**Honesty contract preserved:** every wired region is `T3-modelled` + `sourceStatus:"cached"` + `sourceProvenance:"modelled-fallback"`. No live promotion. The 2024 utilisation rate is mixed with the 2026M6 Ember generation anchor — the same pattern as #815, consistent with the repo's design.
+**Magnitude call-out (CLAUDE.md rule 3):** the China subtotal moves materially. Annual anchor across the 14 newly-wired provinces ≈36.2 → ≈50.7 TWh/yr (+40%). Notable individual swings: hebei 2.5→8.54 (+242%), ningxia 1.0→3.09 (+209%), henan 1.0→2.88 (+188%), gansu 3.0→7.18 (+139%); conversely jiangsu 2.8→0.265 (−91%) and anhui 2.8→0.079 (−97%) dropped sharply because the old hardcoded figures were over-estimates vs the Ember generation × NEA utilisation product. These are well-cited corrections, not noise. `ci:magnitude-golden` does not cover T3 regions (scoped to LIVE_TIERS), so this call-out is the only signal.
+
+**Honesty contract preserved:** every wired region is `T3-modelled` + `sourceStatus:"cached"` + `sourceProvenance:"modelled-fallback"`. No live promotion. The 2024 utilisation rate is mixed with the 2026M6 Ember generation anchor — the same pattern as #815, consistent with the repo's design and methodology guide §5.
 
 **Deferred (out of scope, documented):**
-- Mixed `kind` regions (china-guangdong, china-jiangxi, china-fujian, china-zhebei) — need a combined wind/solar anchor design; the store only carries per-fuel rows.
+- Mixed `kind` regions (china-guangdong, china-jiangxi, china-fujian, china-zhejiang) — need a combined wind/solar anchor design; the store only carries per-fuel rows.
 - Near-zero placeholder regions (china-beijing, china-hainan, china-shanghai) — curtailment ~0, anchor change immaterial.
 - Tibet — has a transcribed rate but no Ember generation row, so no anchor (stays NEA-only, honestly).
 

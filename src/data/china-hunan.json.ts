@@ -26,7 +26,11 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
         "china-hunan-solar", "solar", 4, 1.9 * 0.3,
         note + " — solar share (30%)",
       ),
-      hydro: buildTypicalHydroRegion("china-hunan-hydro", 1.9 * 0.2, note + " — hydro share (20%)", "2024"),
+      hydro: {
+        ...buildTypicalHydroRegion("china-hunan-hydro", 1.9 * 0.2, note + " — hydro share (20%)", "2024"),
+        sourceStatus: "cached" as const,
+        sourceProvenance: "modelled-fallback" as const,
+      },
     };
   }
 }
