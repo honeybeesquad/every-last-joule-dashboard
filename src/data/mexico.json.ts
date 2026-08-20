@@ -97,10 +97,19 @@ function rowsToShape(rows: CsvRow[], fuel: "eolica" | "fotovoltaica"): number[] 
 }
 
 function buildPoints(shape: number[], annualTWh: number): CurtailmentPoint[] {
-  const hourlyTWh = annualTWh / 8760;
+  // Spread the annual anchor across the 24h typical-day shape, NORMALISED by
+  // shapeSum so the rendered profile integrates to exactly the annual anchor.
+  // (Sibling loaders do the same via scaleProfileToAnnualTWh.) Without this
+  // normalisation the profile integrates to annual * mean(shape) (~40% of the
+  // anchor), which would disagree with totalTWh by ~2.5x.
+  const dailyTWh = annualTWh / 365;
+  const shapeSum = shape.reduce((sum, v) => sum + v, 0);
+  const norm = shapeSum > 0 ? shapeSum : 1;
   return shape.map((frac, hour) => ({
     utcTimestamp: `2024-06-15T${String(hour).padStart(2, "0")}:00:00Z`,
-    mw: (frac * hourlyTWh * 1_000_000) / 1, // TWh→MW for 1h interval
+    // (frac/norm) = share of the day's energy in this hour; * dailyTWh = TWh;
+    // * 1e6 = MW for the 1h interval.
+    mw: ((frac / norm) * dailyTWh) * 1_000_000,
   }));
 }
 
@@ -108,22 +117,24 @@ function buildRegionData(
   id: string,
   kind: "solar" | "wind",
   points: CurtailmentPoint[],
-  shape: number[],
   annualTWh: number,
   note: string,
 ): RegionData {
   const profile = timeOfDayAverageGW(points);
-  const totalTWh = totalTWh30d(points);
   const peak = peakGW(points);
   const now = new Date().toISOString();
+  // RegionData.totalTWh is the trailing-30-day cumulative (types.ts docs +
+  // tooltip "30d total"). buildPoints emits one representative 24h day, so a
+  // single day's total is dailyTWh30d(points); scale to 30 days. Deriving it
+  // from the points keeps it consistent with the rendered profile — after the
+  // shapeSum normalisation above, totalTWh === annual * 30/365 and the curve
+  // and the number agree.
+  const totalTWh = totalTWh30d(points) * 30;
   const base: RegionData = {
     regionId: id,
     profile,
     latestProfile: null, // T3 modelled — no real-time feed, no latest-day profile
-    // RegionData.totalTWh is the 30-day cumulative (see types.ts / tooltip
-    // "30d total"). Scale the annual anchor to a 30-day window to match every
-    // other loader, instead of emitting the full annual figure (~12x too large).
-    totalTWh: annualTWh * (30 / 365),
+    totalTWh,
     peakGW: peak,
     lastUpdated: now,
     lastSuccessAt: now,
@@ -163,9 +174,9 @@ async function run(): Promise<{ solar: RegionData; wind: RegionData }> {
   const windPoints = buildPoints(windShape, 0.4);
 
   return {
-    solar: buildRegionData("mexico-solar", "solar", solarPoints, solarShape, 0.8,
+    solar: buildRegionData("mexico-solar", "solar", solarPoints, 0.8,
       `${NOTE} — solar share (Sonora/Chihuahua/Coahuila northern grid).`),
-    wind: buildRegionData("mexico-wind", "wind", windPoints, windShape, 0.4,
+    wind: buildRegionData("mexico-wind", "wind", windPoints, 0.4,
       `${NOTE} — wind share (Oaxaca/Tehuantepec).`),
   };
 }

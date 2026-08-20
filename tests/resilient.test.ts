@@ -58,6 +58,70 @@ describe("withFallback", () => {
     expect(result.lastSuccessAt).toBe(now.toISOString());
   });
 
+  it("still stamps a genuine live (T1a) region as live", async () => {
+    // Negative test: a T1a live-fed region must NOT be downgraded to cached.
+    // Guards against an over-broad stampLive condition (e.g. startsWith("T"))
+    // that would catch live tiers.
+    const result = await withFallback<RegionData>(
+      canonicalCacheName,
+      async () => ({
+        ...cachedRegion(now.toISOString()),
+        regionId: canonicalCacheName,
+        confidenceTier: "T1a-live-tso" as const,
+        sourceProvenance: "verified" as const,
+      }),
+      { now: () => now },
+    );
+
+    expect(result.sourceStatus).toBe("live");
+  });
+
+  it("keeps a T3 region that already fell back to degraded as degraded", async () => {
+    // Ordering guard: stampLive's cached/degraded early-return must precede the
+    // T3→cached branch, so a stale-CSV fallback marked "degraded" is not
+    // silently promoted to "cached".
+    mkdirSync(CACHE_DIR, { recursive: true });
+    writeFileSync(
+      canonicalCachePath,
+      JSON.stringify({
+        ...cachedRegion("2026-04-23T11:59:59.000Z"),
+        regionId: canonicalCacheName,
+        confidenceTier: "T3-modelled" as const,
+      }),
+    );
+
+    const result = await withFallback<RegionData>(
+      canonicalCacheName,
+      async () => {
+        throw new Error("upstream 500");
+      },
+      {
+        tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
+        now: () => now,
+      },
+    );
+
+    expect(result.sourceStatus).toBe("degraded");
+  });
+
+  it("downgrades only the T3 sub-region in a mixed multi-region payload", async () => {
+    // The real risk path: a multi-region loader (mexico, entsoe, china-*) whose
+    // payload is Record<string, RegionData>. A T3 sub-region must be cached
+    // while a sibling live sub-region stays live — not all-or-nothing.
+    const payload = {
+      "mexico-solar": { ...cachedRegion(now.toISOString()), regionId: "mexico-solar", confidenceTier: "T3-modelled" as const },
+      "caiso-wind": { ...cachedRegion(now.toISOString()), regionId: "caiso-wind", confidenceTier: "T1a-live-tso" as const },
+    };
+    const result = await withFallback<Record<string, RegionData>>(
+      canonicalCacheName,
+      async () => payload,
+      { now: () => now },
+    );
+
+    expect(result["mexico-solar"].sourceStatus).toBe("cached");
+    expect(result["caiso-wind"].sourceStatus).toBe("live");
+  });
+
   it("writes snapshot on live success", async () => {
     await withFallback(testCacheName, async () => ({ v: 42 }));
     expect(existsSync(cachePath)).toBe(true);

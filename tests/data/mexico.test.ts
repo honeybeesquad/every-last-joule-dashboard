@@ -24,18 +24,27 @@ describe("mexico loader", () => {
     expect(data.solar.totalTWh).toBeGreaterThan(data.wind.totalTWh);
   });
 
-  it("totalTWh is the 30-day figure, not the full annual anchor", async () => {
+  it("totalTWh is the 30-day figure and agrees with the rendered profile", async () => {
     const data = await buildMexicoData();
-    // RegionData.totalTWh is documented as the 30-day cumulative (see
-    // types.ts + the tooltip's "30d total" label). The loader encodes an
-    // *annual* anchor (0.8 / 0.4 TWh/yr) and must scale it to 30 days so it
-    // is comparable with every other loader — NOT emit the full annual value.
-    const expectedSolar = 0.8 * (30 / 365);
-    const expectedWind = 0.4 * (30 / 365);
-    expect(data.solar.totalTWh).toBeCloseTo(expectedSolar, 6);
-    expect(data.wind.totalTWh).toBeCloseTo(expectedWind, 6);
-    // Sanity: annual would be ~12x larger; guard against that regression.
-    expect(data.solar.totalTWh).toBeLessThan(0.8);
+    // RegionData.totalTWh is the trailing-30-day cumulative (types.ts docs +
+    // tooltip "30d total"). The profile is a normalized typical-day shape whose
+    // 24h energy is dailyTWh = annual/365; the 30-day total is therefore
+    // annual * 30/365. Critically, the tooltip number must equal what the curve
+    // beside it integrates to — assert THAT, which catches a shape that is not
+    // properly normalized by shapeSum.
+    for (const [fuel, annual] of [
+      ["solar", 0.8],
+      ["wind", 0.4],
+    ] as const) {
+      const r = data[fuel];
+      const profileEnergyTWh = (r.profile.reduce((s, v) => s + v, 0)) / 1000 * 30;
+      // The tooltip total must match the curve's 30-day integral, not just a
+      // hardcoded annual*30/365. Tolerance 1e-9 TWh (<< 1 MW·day).
+      expect(r.totalTWh).toBeCloseTo(profileEnergyTWh, 9);
+      expect(r.totalTWh).toBeCloseTo(annual * (30 / 365), 6);
+      // Guard against the old regression: full-annual (~12x) would be > annual.
+      expect(r.totalTWh).toBeLessThan(annual);
+    }
   });
 
   it("uses the CENACE relay CSV for solar profile shape (not hardcoded)", () => {
