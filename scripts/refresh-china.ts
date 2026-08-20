@@ -71,6 +71,13 @@ const PROVINCE_FUEL_CURTAILMENT_RATE: Record<string, Partial<Record<Fuel, number
   Yunnan: { wind: 0.009, solar: 0.033 }, // util 99.1% / 96.7%
   Tibet: { wind: 0.17, solar: 0.314 }, // util 83.0% / 68.6%
   Shandong: { wind: 0.036, solar: 0.037 }, // util 96.4% / 96.3% (wind rate was previously omitted as "not published" — that was a transcription gap; the 2024 bulletin lists 96.4%)
+  // Coastal / central provinces: utilisation rounds to 100.0% in the bulletin, so
+  // curtailment is near-zero. Rates use a 0.05% floor (99.95% util) to avoid a
+  // zero-area profile while staying consistent with the published "100.0%".
+  Guangdong: { wind: 0.001, solar: 0.001 }, // util ~99.9% (CSG grid, coastal)
+  Fujian: { wind: 0.0005, solar: 0.0005 }, // util 100.0% (bulletin) -> 99.95% floor
+  Zhejiang: { wind: 0.0005, solar: 0.0005 }, // util 100.0% (bulletin) -> 99.95% floor
+  Jiangxi: { wind: 0.005, solar: 0.011 }, // util 99.5% / 98.9%
   Gansu: { wind: 0.061, solar: 0.084 }, // util 93.9% / 91.6%
   "Inner Mongolia": { wind: 0.046, solar: 0.053 }, // 蒙西 util 95.4% / 94.7%
   Ningxia: { wind: 0.025, solar: 0.046 }, // util 97.5% / 95.4%

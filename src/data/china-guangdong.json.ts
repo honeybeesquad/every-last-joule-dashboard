@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalMixedRegion } from "../lib/typical-profiles.js";
+import { buildChinaMixedRegionFromAnchors } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "china-guangdong";
@@ -15,12 +15,12 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    return buildTypicalMixedRegion(
+    const note = `Typical-shape fallback: ${(err as Error).message}; Guangdong CSG-grid mixed wind+solar curtailment ~3.2 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
+    return buildChinaMixedRegionFromAnchors(
       REGION_ID,
-      3.2,
       { wind: 0.55, solar: 0.45 },
-      `Typical-shape fallback: ${(err as Error).message}; Guangdong CSG-grid mixed wind+solar curtailment ~3.2 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`,
-      "2024",
+      3.2,
+      note,
       4,
       15,
     );

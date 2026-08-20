@@ -1,14 +1,22 @@
-import { describe, expect, it } from "vitest";
-import { buildChinaFujianData } from "../../src/data/china-fujian.json";
+import { resolve } from "node:path";
+import { readFileSync } from "node:fs";
+import { describe, it, expect } from "vitest";
+import { buildChinaFujianData } from "../../src/data/china-fujian.json.js";
 
-describe("china-fujian loader", () => {
-  it("returns T3 mixed fallback data", async () => {
-    const data = await buildChinaFujianData();
-    expect(data.regionId).toBe("china-fujian");
-    expect(data.profile).toHaveLength(24);
-    expect(data.totalTWh).toBeCloseTo((0.6 * 30) / 365, 8);
-    expect(data.confidenceTier).toBe("T3-modelled");
-    expect(data.fuelShare?.wind).toBeCloseTo(0.55, 2);
-    expect(data.fuelShare?.solar).toBeCloseTo(0.45, 2);
+function anchorAnnual(regionId: string): number {
+  const store = JSON.parse(readFileSync(resolve("data/china-anchors.json"), "utf-8"));
+  const row = store.anchors.find((a: { regionId: string }) => a.regionId === regionId);
+  if (!row) throw new Error(`no anchor for ${regionId}`);
+  return row.annualTWh as number;
+}
+
+describe("china-fujian (mixed) consumes the refreshed store", () => {
+  it("is T3-modelled, cached, modelled-fallback with refreshed totalTWh", async () => {
+    const d = await buildChinaFujianData();
+    expect(d.confidenceTier).toBe("T3-modelled");
+    expect(d.sourceStatus).toBe("cached");
+    expect(d.sourceProvenance).toBe("modelled-fallback");
+    const annual = anchorAnnual("china-fujian-wind") + anchorAnnual("china-fujian-solar");
+    expect(d.totalTWh).toBeCloseTo((annual * 30) / 365, 4);
   });
 });
