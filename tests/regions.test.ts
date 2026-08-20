@@ -123,7 +123,7 @@ describe("regions", () => {
     expect(REGIONS.length).toBe(459);
   });
 
-  it("has 176 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
+  it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
     // ... (unchanged through phase-2.6) ...
     // PR #19 peru split (2026-04-29): peru → peru-hydro + peru-solar + peru-wind.
     // With the parent removed, this is net +2 live. 63 + 2 = 65.
@@ -199,9 +199,9 @@ describe("regions", () => {
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
     // 2026-06-23: removed 12 broken Ontario per-plant regions (T1a). T1a: 172→160; total live: 199→187.
     expect(REGIONS.filter((r) => r.tier === "live").length).toBe(160);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(28);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(189);
+    expect(liveTotal).toBe(187);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -233,9 +233,9 @@ describe("regions", () => {
     // 2026-06-17: Japan hokkaido + tohoku split solar→solar+wind (hokuriku left solar-only). Net +2 T1a live. T1a: 148→150; total: 175→177.
     // 2026-06-23: removed 12 broken Ontario per-plant regions (T1a). T1a: 172→160; total live: 199→187.
     expect(REGIONS.filter((r) => r.tier === "live").length).toBe(160);
-    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(28);
+    expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(189);
+    expect(liveTotal).toBe(187);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -323,7 +323,7 @@ describe("regions", () => {
     // was dropped in #247. = 238.
     // 2026-06-20: Peru per-plant re-added as 12 estimated regions (COES per-plant
     // generation × 2% national curtailment calibration; T3-modelled). 238 + 12 = 250.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(247);
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(249);
   });
 
   it("has 23 anchored regions (7 flat-profile + 16 EIA-930 US BAs)", () => {

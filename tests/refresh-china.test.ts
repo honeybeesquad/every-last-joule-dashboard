@@ -11,6 +11,8 @@ const CSV = [
   "China,CHN,Xinjiang,XJ,2024-02-01,Wind,False,0.48",
   "China,CHN,Xinjiang,XJ,2024-01-01,Solar,False,0.32",
   "China,CHN,Xinjiang,XJ,2024-02-01,Solar,False,0.30",
+  // Gansu has no published curtailment rate in the (honest) table, so it is
+  // skipped by buildAnchors — only Xinjiang (transcribed rates) appears.
   "China,CHN,Gansu,GS,2024-01-01,Wind,False,0.12",
   "China,CHN,Gansu,GS,2024-02-01,Wind,False,0.11",
 ].join("\n");
@@ -27,9 +29,10 @@ describe("refresh-china buildAnchors", () => {
   });
 
   it("skips provinces with no published curtailment rate", () => {
-    // CSV has only Xinjiang + Gansu; Gansu rate is in the table, both appear.
+    // CSV has Xinjiang (transcribed rate) + Gansu (no published rate). Only
+    // Xinjiang appears; Gansu is skipped by the rate===undefined -> continue path.
     const anchors = buildAnchors(CSV);
-    expect(anchors.map((a) => a.regionId).sort()).toEqual(["china-gansu-wind", "xinjiang-solar", "xinjiang-wind"]);
+    expect(anchors.map((a) => a.regionId).sort()).toEqual(["xinjiang-solar", "xinjiang-wind"]);
   });
 
   it("returns latestMonth from the newest row", () => {

@@ -18,19 +18,28 @@ describe("buildChinaRegionFromAnchor", () => {
     expect(annual(r)).toBeCloseTo(5.0, 1);
   });
 
-  it("promotes to T1b when a live anchor exists", () => {
+  it("uses the refreshed anchor but stays T3-modelled with honest provenance (no live promotion)", () => {
     writeFileSync(
       store,
       JSON.stringify({
         generatedAt: "2026-08-20T00:00:00Z",
-        anchors: [{ regionId: "xinjiang-wind", annualTWh: 5.031, latestMonth: "2024-12", source: "ember x" }],
+        anchors: [{ regionId: "xinjiang-wind", annualTWh: 5.031, latestMonth: "2026-06", source: "ember x" }],
       }),
     );
     const r = buildChinaRegionFromAnchor("xinjiang-wind", "wind", 15, 5.0, "fallback note", store);
-    expect(r.confidenceTier).toBe("T1b-live-domestic-anchored");
-    expect(r.sourceProvenance).toBe("verified");
-    expect(r.sourceStatus).toBe("live");
+    // No tier promotion: still T3-modelled (typical shape scaled to a published anchor).
+    expect(r.confidenceTier).toBe("T3-modelled");
+    // Provenance is modelled-fallback, NOT verified (guide §5: a typical-shape
+    // profile scaled to a published anchor is T3, never "verified").
+    expect(r.sourceProvenance).toBe("modelled-fallback");
+    // sourceStatus is cached (committed refreshed file, not a live fetch this build).
+    expect(r.sourceStatus).toBe("cached");
+    // lastSuccessAt derives from latestMonth, not Date.now().
+    expect(r.lastSuccessAt).toBe("2026-06-01T00:00:00.000Z");
+    // Anchor is fresher than the 5.0 fallback.
     expect(annual(r)).toBeCloseTo(5.031, 3);
-    expect(r.totalTWh).toBeCloseTo((5.031 * 30) / 365, 4);
+    // Uncertainty envelope is recomputed and in-band (low <= peakGW <= high).
+    expect(r.peakGW).toBeGreaterThanOrEqual(r.uncertaintyLowGW ?? 0);
+    expect(r.peakGW).toBeLessThanOrEqual(r.uncertaintyHighGW ?? 0);
   });
 });

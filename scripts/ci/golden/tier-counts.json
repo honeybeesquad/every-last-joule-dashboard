@@ -1,9 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-08-20 (China auto-scraper PR: xinjiang-wind + xinjiang-solar promoted estimated -> live-domestic-anchored via scripts/refresh-china.ts ingesting Ember China subnational generation. T1b 26 -> 28, T3 249 -> 247, total unchanged at 459. The remaining ~46 China estimated regions follow the same pattern once their loaders consume data/china-anchors.json.).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-08-20 (China auto-scraper PR #815: refresh-china.ts + data/china-anchors.json ingest Ember monthly generation to refresh China estimated-region annual anchors — but regions stay T3-modelled with sourceProvenance 'modelled-fallback' (no live fetch exists; promoting to live would re-violate PR #812's honesty contract). No tier counts moved. T1b 26, T3 249, total 459 unchanged.).",
   "T1a": 160,
-  "T1b": 28,
+  "T1b": 26,
   "T1c": 1,
   "T2": 23,
-  "T3": 247,
+  "T3": 249,
   "total": 459
 }

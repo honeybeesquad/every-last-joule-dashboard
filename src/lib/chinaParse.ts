@@ -22,6 +22,7 @@ import {
   buildTypicalSolarRegion,
   buildTypicalHydroRegion,
 } from "./typical-profiles.js";
+import { applyUncertainty } from "./uncertainty.js";
 
 export type Fuel = "wind" | "solar" | "hydro";
 
@@ -179,14 +180,20 @@ export function chinaAnchor(
  * Build a China RegionData that consumes the refreshed anchor store when
  * present, otherwise falls back to the loader's hardcoded (estimated) anchor.
  *
- * When a live anchor exists (data/china-anchors.json, produced by
- * scripts/refresh-china.ts from Ember's monthly generation × published NEA
- * curtailment rate), the region is promoted to `live-domestic-anchored` (T1b):
- * the annual energy is live-monthly, the 24h *shape* stays the modelled
- * typical-profile (per methodology), and sourceStatus is "live" (a verified
- * live upstream feed of the anchor exists). When the store is absent, behavior
- * is identical to calling buildTypical* directly (tier stays "estimated") — so
- * loader output is unchanged until the store is generated.
+ * IMPORTANT — honesty contract (see docs/methodology/tier-classification-guide.md §5):
+ * the anchor (data/china-anchors.json, produced by scripts/refresh-china.ts from
+ * Ember's monthly generation × a published NEA curtailment rate) is a *published
+ * annual* figure. The region still emits a modelled typical-shape profile, so it
+ * stays T3-modelled with sourceProvenance "modelled-fallback" — it is NOT
+ * promoted to live-domestic-anchored, and sourceStatus is "cached" (the anchor
+ * is a committed, periodically-refreshed file, not a live fetch this build).
+ * lastSuccessAt is derived from the anchor's latestMonth, never Date.now().
+ * When the store is absent the loader's own hardcoded (estimated) anchor is used
+ * unchanged.
+ *
+ * The only thing the store improves is the *freshness of the annual anchor*
+ * (2026 trailing-12mo generation instead of the 2024 NEA press release) — a
+ * genuine data-quality gain, but not a tier promotion.
  */
 export function buildChinaRegionFromAnchor(
   regionId: string,
@@ -199,24 +206,24 @@ export function buildChinaRegionFromAnchor(
   const fallback = buildTypicalRegionByFuel(regionId, fuel, peakHourUtc, fallbackAnnualTWh, fallbackNote);
   const anchor = chinaAnchor(regionId, storePath);
   if (!anchor) return fallback;
-  // Live anchor present -> promote to T1b.
+  // Fresher anchor present -> rebuild with the refreshed annualTWh, but keep the
+  // region honestly T3-modelled (typical shape, published anchor). The envelope is
+  // recomputed by applyUncertainty so peakGW stays within [low, high].
   const annualTWh = anchor.annualTWh;
-  const profile = buildTypicalRegionByFuel(regionId, fuel, peakHourUtc, annualTWh, anchor.source).profile;
-  const promoted: RegionData = {
-    ...fallback,
+  const refreshed = buildTypicalRegionByFuel(regionId, fuel, peakHourUtc, annualTWh, anchor.source);
+  const enriched: RegionData = {
+    ...refreshed,
     regionId,
-    profile,
     latestProfile: null,
     totalTWh: (annualTWh * 30) / 365,
-    peakGW: Math.max(...profile),
+    peakGW: Math.max(...refreshed.profile),
     lastUpdated: anchor.latestMonth,
-    lastSuccessAt: new Date().toISOString(),
-    confidenceTier: "T1b-live-domestic-anchored",
-    sourceProvenance: "verified",
-    sourceStatus: "live",
+    lastSuccessAt: new Date(`${anchor.latestMonth}-01T00:00:00.000Z`).toISOString(),
+    sourceProvenance: "modelled-fallback",
+    sourceStatus: "cached",
     sourceNote: anchor.source,
   };
-  return promoted;
+  return applyUncertainty(enriched, { regionTier: "estimated", profileKind: fuel === "hydro" ? "hydro-seasonal" : fuel });
 }
 
 function buildTypicalRegionByFuel(

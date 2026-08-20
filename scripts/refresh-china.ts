@@ -25,35 +25,27 @@ const DEFAULT_CSV_URL =
 const OUT_PATH = join(process.cwd(), "data", "china-anchors.json");
 
 // Published NEA 2024 curtailment rate (fraction) per province+fuel.
-// Each value is transcribed from the corresponding loader's `source` note in
-// src/data/*.json.ts so the anchor stays consistent with the repo's curation.
+//
+// HONESTY: only values that are TRANSCRIBED from a published utilisation figure
+// in the corresponding loader's `source` note are included here. Everything else
+// is omitted on purpose — if a province has no published curtailment rate, the
+// `rate === undefined -> continue` path below simply skips it (no anchor, no
+// invented number attributed to NEA in a committed data file). Do NOT add a rate
+// here unless you can cite the published utilisation percentage it derives from.
 // Keyed by Ember province name (matches chinaParse PROVINCE_TO_REGION).
+//
+// Transcribed (utilisation U% -> rate = 1 - U/100):
+//   Xinjiang  wind 93.4% -> 6.6%   solar 92.2% -> 7.8%
+//   Qinghai   wind 92.8% -> 7.2%   solar 90.3% -> 9.7%
+//   Yunnan    wind 99.1% -> 0.9%   solar 96.7% -> 3.3%
+//   Tibet     wind 83.0% -> 17.0%  solar 68.6% -> 31.4%
+//   Shandong  solar 96.3% -> 3.7%  (wind rate not published -> omitted)
 const PROVINCE_FUEL_CURTAILMENT_RATE: Record<string, Partial<Record<Fuel, number>>> = {
   Xinjiang: { wind: 0.066, solar: 0.078 }, // util 93.4% / 92.2%
-  Gansu: { wind: 0.03, solar: 0.04 },
   Qinghai: { wind: 0.072, solar: 0.097 }, // util 92.8% / 90.3%
-  "Inner Mongolia": { wind: 0.05, solar: 0.06 },
-  Ningxia: { wind: 0.05, solar: 0.06 },
-  Sichuan: { wind: 0.02, solar: 0.03 },
   Yunnan: { wind: 0.009, solar: 0.033 }, // util 99.1% / 96.7%
   Tibet: { wind: 0.17, solar: 0.314 }, // util 83.0% / 68.6%
-  Shandong: { wind: 0.05, solar: 0.037 }, // ~2.5 / ~4.5 TWh of ~7 TWh
-  Shanxi: { wind: 0.04, solar: 0.03 },
-  Shaanxi: { wind: 0.04, solar: 0.037 },
-  Hebei: { wind: 0.03, solar: 0.015 },
-  Liaoning: { wind: 0.03, solar: 0.01 },
-  Heilongjiang: { wind: 0.03, solar: 0.008 },
-  Jilin: { wind: 0.03, solar: 0.005 },
-  Henan: { wind: 0.01, solar: 0.012 },
-  Anhui: { wind: 0.01, solar: 0.02 },
-  Hubei: { wind: 0.013, solar: 0.02 },
-  Hunan: { wind: 0.013, solar: 0.008 },
-  Jiangsu: { wind: 0.025, solar: 0.025 },
-  Zhejiang: { wind: 0.02, solar: 0.02 },
-  Fujian: { wind: 0.02, solar: 0.02 },
-  Guangdong: { wind: 0.02, solar: 0.02 },
-  Guizhou: { wind: 0.03, solar: 0.03 },
-  Guangxi: { wind: 0.03, solar: 0.03 },
+  Shandong: { solar: 0.037 }, // util 96.3% (wind rate not published -> omitted)
 };
 
 interface AnchorRow {
@@ -96,7 +88,7 @@ export function buildAnchors(csvText: string): AnchorRow[] {
       curtailmentRate: rate,
       annualTWh: Math.round(annualGen * rate * 1000) / 1000,
       latestMonth: window[0].date,
-      source: `Ember China subnational generation ${window[0].date} (trailing 12mo) × NEA 2024 curtailment rate ${(rate * 100).toFixed(1)}%`,
+      source: `Ember China subnational generation ${window[0].date} (trailing 12mo) × NEA 2024 curtailment rate ${(rate * 100).toFixed(1)}% (transcribed from published utilisation)`,
     });
   }
   return out;
@@ -144,7 +136,15 @@ async function main() {
   console.log(`Wrote ${anchors.length} region anchors to ${outPath}`);
 }
 
-main().catch((err) => {
-  console.error("refresh-china failed:", err);
-  process.exit(1);
-});
+
+// Guard: only run main() when invoked directly (not when imported by a test).
+// Without this, importing buildAnchors in a test would trigger a live fetch +
+// writeFileSync of the tracked data/china-anchors.json at import time.
+import { pathToFileURL } from "url";
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMain) {
+  main().catch((err) => {
+    console.error("refresh-china failed:", err);
+    process.exit(1);
+  });
+}
