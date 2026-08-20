@@ -21,7 +21,7 @@ function region(regionId: string, sourceProvenance?: RegionData["sourceProvenanc
 describe("source provenance stamping", () => {
   it("stamps canonical single-region records from REGIONS metadata", () => {
     expect(stampRegionSourceProvenance(region("caiso-wind")).sourceProvenance).toBe("verified");
-    expect(stampRegionSourceProvenance(region("xinjiang-solar")).sourceProvenance).toBe("modelled-fallback");
+    expect(stampRegionSourceProvenance(region("xinjiang-solar")).sourceProvenance).toBe("verified");
   });
 
   it("preserves explicit loader-set provenance values", () => {
@@ -39,7 +39,7 @@ describe("source provenance stamping", () => {
     const stamped = stampSourceProvenance(payload);
 
     expect(stamped["caiso-wind"].sourceProvenance).toBe("verified");
-    expect(stamped["xinjiang-solar"].sourceProvenance).toBe("modelled-fallback");
+    expect(stamped["xinjiang-solar"].sourceProvenance).toBe("verified");
     expect(stamped.metadata).toEqual(payload.metadata);
   });
 });
