@@ -14,8 +14,11 @@ const CSV_PATH = join(__dirname, "../../data/historical/mexico-generacion.csv");
 // capacity (12 GW solar + 8 GW wind) → blended ~6% rate.
 // Split: solar ~7% (northern-grid saturation in Sonora/Chihuahua/Coahuila),
 // wind ~5% (Oaxaca/Tehuantepec transmission bottlenecks, lower utilisation).
-const SOLAR_RATE = 0.07;
-const WIND_RATE = 0.05;
+// NOTE: the rate is applied at the ANNUAL-anchor level (it sizes the total
+// energy, already baked into the 0.8/0.4 TWh/yr anchors below), not as a
+// per-hour multiplier on the shape — a scalar rate on a shapeSum-normalized
+// profile is mathematically a no-op, so it is intentionally not re-applied
+// here. The profile below is the *shape* of that curtailed energy by hour.
 
 // Hour-of-day solar profile from CENACE relay CSV (31-day average, CST→UTC shifted).
 // Solar reads 0 at night (hours 2-4 UTC = 8-10 PM CST), peaks midday.
@@ -162,8 +165,10 @@ function buildRegionData(
 const NOTE =
   "SENER PRODESEN 2024-2038 + CRE confiabilidad anchor: ~1.2 TWh/yr total VRE curtailment " +
   "(~1 TWh in 2022; CRE 2023 notes an upward trend), driven by transmission-network " +
-  "saturation and CENACE operational restrictions. Profile shaped by real CENACE generation data " +
-  "(Generacion Liquidada relay CSV) × calibrated curtailment rate (solar 7%, wind 5%; ~6% blended). " +
+  "saturation and CENACE operational restrictions. Total energy scaled to the SENER/CRE " +
+  "calibrated curtailment rate (solar ~7%, wind ~5%, ~6% blended across the ~20 GW VRE " +
+  "fleet); the profile shape below is the real CENACE generation shape (Generacion " +
+  "Liquidada relay CSV), not the rate applied per-hour. " +
   "CENACE exposes no public measured-curtailment API — this is a modelled T3 estimate with " +
   "no fabricated hourly data. Sources: PRODESEN + CRE + NREL + CENACE relay.";
 

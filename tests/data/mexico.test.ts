@@ -19,6 +19,11 @@ describe("mexico loader", () => {
       expect(r.totalTWh).toBeGreaterThan(0);
       expect(r.peakGW).toBeGreaterThan(0);
       expect(r.confidenceTier).toBe("T3-modelled");
+      // sourceStatus must be "cached" at construction — buildMexicoData()
+      // bypasses withFallback, so this is the path a regression (re-hardcoding
+      // "live") would reopen. See resilient.ts stampLive.
+      expect(r.sourceStatus).toBe("cached");
+      expect(r.sourceProvenance).toBe("modelled-fallback");
     }
     // Solar is the larger share of the ~1.2 TWh anchor (0.8 vs 0.4 wind).
     expect(data.solar.totalTWh).toBeGreaterThan(data.wind.totalTWh);
