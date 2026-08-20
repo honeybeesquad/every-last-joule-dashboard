@@ -1,6 +1,6 @@
 # Validation — 50Hertz Wind (`germany-50hertz-wind`)
 
-Last updated: 2026-06-25 · Source upgraded from ENTSO-E proxy to netztransparenz.de measured curtailment
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,19 +8,28 @@ Last updated: 2026-06-25 · Source upgraded from ENTSO-E proxy to netztransparen
 - **Country:** DEU
 - **Tier:** live-domestic-anchored
 - **Kind:** wind
-- **Source:** netztransparenz.de redispatch API — MEASURED renewable curtailment (`GESAMTE_ARBEIT_MWH` where `RICHTUNG=Wirkleistungseinspeisung reduzieren` and `PRIMAERENERGIEART=Erneuerbar`) per instructing TSO (50Hertz). Wind/solar split apportioned by the ENTSO-E per-fuel ratio (the feed reports renewable curtailment without a fuel breakdown); magnitude is measured, split is estimated. Seasonal — single-month window.
+- **Source:** netztransparenz.de redispatch (measured renewable curtailment, 50Hertz; wind/solar split apportioned by ENTSO-E fuel ratio)
 - **Source URL:** [https://ds.netztransparenz.de/](https://ds.netztransparenz.de/)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
 ## Calibration
 
-- **Method:** Direct measurement from netztransparenz redispatch (not generation × rate). No calibration rate applied — `GESAMTE_ARBEIT_MWH` is the metered energy of each redispatch measure. Wind/solar split: `fw = wind_twh / (wind_twh + solar_twh)` from the ENTSO-E 50Hertz CTA snapshot.
-- **Anchor basis:** Measured redispatch totals from netztransparenz.de for the latest complete calendar month. Tier remains T1b (live-domestic-anchored) because the wind/solar apportionment is estimated rather than directly measured.
+- **Rate source documented in:** `docs/methodology/` (see links below)
+- **Uniform across backfill years:** n/a — no backfill
+
+## Multi-year backfill annual totals
+
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
+|---|---|---|---|---|---|
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **netztransparenz.de annual:** available via the same API for prior years
-- **BNetzA per-TSO annual:** consistent with netztransparenz (same source)
+- **TSO annual curtailment (latest published):** —
+- **Ember annual:** —
+- **IRENA annual:** —
+- **Other:** —
 
 ## Discrepancy analysis
 
@@ -34,5 +43,8 @@ _Source upgraded 2026-06-25 from ENTSO-E A75 generation × national BNetzA/SMARD
 
 ## Links
 
-- Loader: [`src/data/germany-curtailment.json.ts`](../../src/data/germany-curtailment.json.ts)
-- Methodology — tiers & live-data paths: [`docs/methodology/live-data-paths.md`](../methodology/live-data-paths.md)
+- Loader source: _(no single-file loader — see multi-region source)_
+- Backfill archive: `data/historical/backfill/*_germany-50hertz-wind_*.parquet` (0 years)
+- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
+- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
+- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

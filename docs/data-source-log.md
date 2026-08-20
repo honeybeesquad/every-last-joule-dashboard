@@ -645,3 +645,14 @@ The existing South Korea mainland loader remains a conservative typical solar pr
 - No public 2023/2024 curtailed-energy totals were found for Portugal, Finland, Romania, Italy's ENTSO-E bidding-zone split, Sweden, Hungary, Bulgaria, or Lithuania/Baltics. Spain has IEA/REE evidence but no exact open annual value extracted in this pass.
 
 **Upgrade path:** ENTSO-E documents the A77 `Curtailed Renewable Energy` API product with `businessType=A53`. A future loader should test A77 for every domain currently in the A75 rate proxy, reconcile annual sums to operator/regulator reports, and replace generation-times-rate modelling wherever A77 coverage is complete.
+
+---
+
+## South Korea mainland — 2026-08-20 Ember-anchored revision
+
+The 2026-04-24 session left the mainland loader on a conservative typical solar profile at 0.5 TWh/yr (solar) / 0.05 TWh/yr (wind), citing "IEA Korea 2024" without an explicit rate. On 2026-08-20 this was replaced with a two-source-cited computation (`src/data/south-korea.json.ts`):
+
+- **Generation**: Ember / Our World in Data, South Korea, 2025 — wind 3.64 TWh, solar 37.80 TWh.
+- **Rate**: published 2024 curtailment — 4.1% wind / 3.2% PV in major (mainland) power systems (MDPI 2024, citing IEA; "curtailed wind and PV increased ~55% in 2024"). Jeju excluded.
+
+Resulting curtailed energy: **solar 1.21 TWh/yr**, **wind 0.149 TWh/yr**. This is consistent with the repo's own prior rate narrative ("~5% solar / ~2% wind curtailment, IEA/KPX") — the old 0.5/0.05 TWh anchor was inconsistent with that stated rate. Tier unchanged: `estimated` / T3-modelled / cached / modelled-fallback. The KPX/data.go.kr live feed remains blocked on a Korean-identity `serviceKey` (not obtainable; documented, not wired). See PR #829.

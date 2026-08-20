@@ -1,6 +1,6 @@
 # Validation — Andhra Pradesh (`india-andhra-pradesh`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** APTRANSCO / APSLDC (Andhra Pradesh Transmission Corporation Ltd / State Load Despatch Centre) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: apsldc.in timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader emits T3-modelled typical-shape calibrated to POSOCO Southern Region 2024 (~0.4 TWh/yr solar curtailment).
-- **Source URL:** [https://apsldc.in/](https://apsldc.in/)
+- **Source:** APTRANSCO / APSLDC (Andhra Pradesh Transmission Corporation Ltd / State Load Despatch Centre) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: apsldc.in timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader uses live CEA daily generation × Ember 2024 rate 3% / (1−rate) (≈1.7 TWh/yr at current 54 TWh/yr solar generation); supersedes the older ~0.4 TWh/yr POSOCO anchor.
+- **Source URL:** [https://sldc.aptransco.co.in/](https://sldc.aptransco.co.in/)
 - **Loader:** [`india-andhra-pradesh.json.ts`](../../src/data/india-andhra-pradesh.json.ts)
 - **Structural gap:** no
 
@@ -59,7 +59,6 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Ember estimated curtailment:** ~0.4 TWh/yr
 - **Fallback anchor (no CSV):** 0.4 TWh/yr solar (POSOCO Southern Region 2024, unchanged)
 <!-- END MANUAL -->
-
 <!-- BEGIN MANUAL -->
 ## Bad-conversions check
 
@@ -91,6 +90,28 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 <!-- END MANUAL -->
 
 
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
+- Hourly shape remains synthetic (typical solar profile)
+- The APSLDC source (`apsldc.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
 <!-- BEGIN MANUAL -->
 - Curtailment rate (3%) is Ember's estimate; Andhra Pradesh curtailment concentrated in Anantapur and Kadapa districts, varies with seasonal irradiance and SLDC scheduling
 - Hourly shape remains synthetic (typical solar profile)

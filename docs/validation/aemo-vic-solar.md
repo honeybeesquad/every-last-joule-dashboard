@@ -1,6 +1,6 @@
 # Validation — Victoria Solar (`aemo-vic-solar`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** AUS
 - **Tier:** live
 - **Kind:** solar
-- **Source:** AEMO NEMWeb solar SEMIDISPATCHCAP
+- **Source:** AEMO NEMWeb solar SEMIDISPATCHCAP (rest of state; named per-plant DUIDs split out separately to avoid double-counting)
 - **Source URL:** [https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/](https://nemweb.com.au/Reports/Current/Next_Day_Dispatch/)
 - **Loader:** [`aemo.json.ts`](../../src/data/aemo.json.ts)
 - **Structural gap:** no

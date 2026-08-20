@@ -1,6 +1,6 @@
 # Validation — Tohoku Wind (Japan) (`japan-tohoku-wind`)
 
-Last updated: 2026-06-17 · Sprint: Japan fuel split · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,14 +8,10 @@ Last updated: 2026-06-17 · Sprint: Japan fuel split · Paper section: Technical
 - **Country:** JPN
 - **Tier:** live
 - **Kind:** wind
-- **Source:** Tohoku Electric area supply/demand CSV (realtime_jukyu_YYYYMMDD_02.csv) — 風力出力制御量 column (MW, 30-min, Shift-JIS). Wind share of measured curtailment (~12.3% of total, 13.5 GWh/30d).
+- **Source:** Tohoku Electric area supply/demand CSV (realtime_jukyu_YYYYMMDD_02.csv) — 風力出力制御量 column (MW, 30-min). Wind share of measured curtailment (~12.3% of total, 13.5 GWh/30d).
 - **Source URL:** [https://setsuden.nw.tohoku-epco.co.jp/common/demand/realtime_jukyu/](https://setsuden.nw.tohoku-epco.co.jp/common/demand/realtime_jukyu/)
-- **Loader:** [`japan-tohoku.json.ts`](../../src/data/japan-tohoku.json.ts)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
-
-## Split rationale
-
-30-day measurement (May–June 2026) found wind curtailment at ~12.3% of total Tohoku measured curtailment (~13.5 GWh/30d). This is above the 5% below-noise-floor threshold, so Tohoku is split into separate solar and wind regions. Wind figures are directly measured (風力出力制御量 column), not modelled. Tohoku is the largest wind-curtailment area in Japan, driven by transmission constraints in Tohoku region wind corridors.
 
 ## Calibration
 
@@ -45,7 +41,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: [`japan-tohoku.json.ts`](../../src/data/japan-tohoku.json.ts)
+- Loader source: _(no single-file loader — see multi-region source)_
 - Backfill archive: `data/historical/backfill/*_japan-tohoku-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

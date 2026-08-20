@@ -1,6 +1,6 @@
 # Validation — South Korea Solar (`south-korea-solar`)
 
-Last updated: 2026-06-17 · South Korea per-fuel anchor split · T3 modelled
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-06-17 · South Korea per-fuel anchor split · T3 modelled
 - **Country:** KOR
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** KPX EPSIS KNRE 2024: mainland solar utilization ~13%, 27 GW installed, ~5% curtailment rate (IEA/KPX). EPSIS AJAX returns 0% headless, so the loader falls back to the ~0.5 TWh IEA anchor (no fabricated data).
-- **Source URL:** [https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do](https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do)
-- **Loader:** [`south-korea.json.ts`](../../src/data/south-korea.json.ts)
+- **Source:** Curtailment = Ember/OWID 2025 solar generation 37.80 TWh × 3.2% published 2024 curtailment rate (MDPI 2024, citing IEA; mainland excl. Jeju). KPX live feed needs a serviceKey (Korean identity verification) — documented blocker, not wired.
+- **Source URL:** [https://ourworldindata.org/grapher/electricity-mix?country=KOR&metric=share_of_generation&source=solar](https://ourworldindata.org/grapher/electricity-mix?country=KOR&metric=share_of_generation&source=solar)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
 ## Calibration
@@ -26,7 +26,7 @@ Last updated: 2026-06-17 · South Korea per-fuel anchor split · T3 modelled
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** KPX 2024 mainland solar curtailment ~0.5 TWh (IEA anchor, excl. Jeju)
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
@@ -41,7 +41,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: [`south-korea.json.ts`](../../src/data/south-korea.json.ts)
+- Loader source: _(no single-file loader — see multi-region source)_
 - Backfill archive: `data/historical/backfill/*_south-korea-solar_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

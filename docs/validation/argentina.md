@@ -1,6 +1,6 @@
 # Validation — Argentina (`argentina`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** ARG
 - **Tier:** estimated
 - **Kind:** wind
-- **Source:** CAMMESA api.cammesa.com assessed 2026-05-09: public REST API exists but only exposes marginal cost and demand data. Curtailment/restricciones endpoints are restricted to registered market participants (Agentes) — no unauthenticated path. No public annual curtailment figure found in CAMMESA web or ENRE reports. IRENA/Ember LatAm estimate ~0.5–1 TWh/yr Patagonian wind; synthetic anchor retained. T1 blocked: agent-registered API only.
-- **Source URL:** [https://api.cammesa.com/](https://api.cammesa.com/)
+- **Source:** CAMMESA cdsrenovables.cammesa.com live wind generation × 5% calibrated curtailment rate (CAMMESA/IRENA 2024 anchor ~0.5 TWh/yr Patagonia wind curtailment). Fallback: typical Patagonia wind profile.
+- **Source URL:** [https://cdsrenovables.cammesa.com/exhisto/RenovablesService/GetChartTotalTRDataSource/](https://cdsrenovables.cammesa.com/exhisto/RenovablesService/GetChartTotalTRDataSource/)
 - **Loader:** [`argentina.json.ts`](../../src/data/argentina.json.ts)
 - **Structural gap:** no
 

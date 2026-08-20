@@ -1,6 +1,6 @@
 # Validation — Maharashtra (`india-maharashtra`)
 
-Last updated: 2026-08-03 · MSLDC measured-curtailment promotion · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-08-03 · MSLDC measured-curtailment promotion · Sprint: S1 +
 - **Country:** IND
 - **Tier:** anchored
 - **Kind:** mixed
-- **Source:** MSLDC (Maharashtra State Load Despatch Centre) **Monthly Curtailment Reports** — measured daily wind+solar curtailment (Max MW, Energy MU) with operator cause codes, published as `mr10_MMYYYY.pdf`. **The prior "site unreachable / T1 blocked" finding was wrong on both counts:** the recorded domain `msldc.mahavedha.com` is NXDOMAIN at the registry (a dead domain, not a geoblock), and the real site `mahasldc.in` is reachable with no relay from a NZ residential IP. Corrected 2026-08-03.
-- **Source URL:** [https://mahasldc.in/reports/monthly-curtailment-reports](https://mahasldc.in/reports/monthly-curtailment-reports)
+- **Source:** MSLDC (Maharashtra State Load Despatch Centre) Monthly Curtailment Reports — MEASURED daily wind+solar curtailment with operator cause codes (mr10_MMYYYY.pdf). 33.28 GWh across 15 published months (2025-01 → 2026-06); ~26.8 GWh/yr annualised. Monthly publication, 1–2 month lag, months skipped — not a live feed, hence T2 not T1. Supersedes the prior Ember-rate estimate, which overstated by ~46x
+- **Source URL:** [https://mahasldc.in/](https://mahasldc.in/)
 - **Loader:** [`india-maharashtra.json.ts`](../../src/data/india-maharashtra.json.ts)
 - **Structural gap:** no
 
@@ -29,23 +29,8 @@ Last updated: 2026-08-03 · MSLDC measured-curtailment promotion · Sprint: S1 +
 <!-- END MANUAL -->
 ## Calibration
 
-- **Method:** none. Curtailment energy is taken directly from the operator's published daily table; no generation denominator and no curtailment rate are involved. This replaces the former CEA-generation x Ember-India-2024-rate calculation.
-- **Record:** 33.28 GWh measured across **15 published months** (2025-01 -> 2026-06), 453 daily rows.
-- **Annualised:** ~26.8 GWh/yr (0.0268 TWh/yr), computed over the full published record rather than a trailing window — monthly totals range from 0.000 to 12.040 GWh, so a 90-day window annualises to wildly unstable answers.
-- **Split:** ~92% solar / ~8% wind, measured.
-- **Magnitude correction:** the previous estimate emitted **0.101 TWh/30d (~1.23 TWh/yr)** — roughly **46x** the measured annualised figure, and ~28x the worst single measured month. Maharashtra's contribution to the global total drops accordingly. This is the headline-anchor change called out in `STATUS.md`.
-
-## Why T2 and not T1
-
-T1 requires a live feed. MSLDC publishes **monthly**, lags **1-2 months**, and **skips months outright** — 2025-03, 2025-12, 2026-01 and 2026-07 were all unpublished (HTTP 404) as at 2026-08-03. The data is measured and operator-published, which clears T2's evidence bar comfortably, but no live-feed claim survives contact with that publication cadence. The emitted profile is flat 24/7: the source gives daily energy with no intraday breakdown, so any diurnal shape would be invented.
-
-`lastUpdated` carries the newest published MSLDC day and is the field to read when judging currency. `lastSuccessAt` is stamped by `withFallback` when the loader runs, per repo-wide convention, and will normally be 1-2 months ahead of `lastUpdated`.
-
-## Refresh
-
-    python3 scripts/fetch-msldc-curtailment.py --from 2025-01 --to <YYYY-MM>
-
-Writes `data/historical/india-maharashtra-sldc-curtailed-daily.csv`. Requires `pdftotext` (poppler). Nothing in CI or the build fetches this; run it on demand and commit the CSV.
+- **Rate source documented in:** `docs/methodology/` (see links below)
+- **Uniform across backfill years:** n/a — no backfill
 
 ## Multi-year backfill annual totals
 
@@ -67,7 +52,6 @@ Writes `data/historical/india-maharashtra-sldc-curtailed-daily.csv`. Requires `p
 - **Ember estimated curtailment:** ~0.3 TWh/yr
 - **Fallback anchor (no CSV):** 0.3 TWh/yr mixed (POSOCO Western Region 2024, unchanged)
 <!-- END MANUAL -->
-
 <!-- BEGIN MANUAL -->
 ## Bad-conversions check
 
@@ -101,6 +85,32 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 <!-- END MANUAL -->
 
 
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
+- Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates
+- Hourly shape remains synthetic (mixed solar + wind typical profiles)
+- The MSLDC source (`msldc.mahavedha.com`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
 <!-- BEGIN MANUAL -->
 - Curtailment rate (2%) is Ember's estimate; Maharashtra's mixed portfolio (Solapur solar + Satara/Dhule wind) has lower aggregate curtailment than pure-solar/wind states
 - Solar/wind split derived from CSV ratios; will update automatically as CEA data accumulates

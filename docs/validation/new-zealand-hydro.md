@@ -1,6 +1,6 @@
 # Validation — New Zealand Hydro (`new-zealand-hydro`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** NZL
 - **Tier:** live
 - **Kind:** hydro
-- **Source:** EMI DispatchNodalPricesAndVolumes ≤$0/MWh nodal price signal (Waitaki corridor, Manapouri, Waikato)
+- **Source:** EMI DispatchNodalPricesAndVolumes ≤$0/MWh nodal price signal (Waitaki corridor, Manapouri, Waikato) — ≤$0 events are rare in NZ, so this reads a genuine zero most of the time (floor, not a measure of total spill)
 - **Source URL:** [https://emidatasets.blob.core.windows.net/publicdata/Datasets/Wholesale/DispatchAndPricing/NodalPricesAndVolumes](https://emidatasets.blob.core.windows.net/publicdata/Datasets/Wholesale/DispatchAndPricing/NodalPricesAndVolumes)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Loader:** [`new-zealand-hydro.json.ts`](../../src/data/new-zealand-hydro.json.ts)
 - **Structural gap:** no
 
 ## Calibration
@@ -46,7 +46,7 @@ Only nodes in the static POC fuel map contribute. Well-known but less common hyd
 
 ## Links
 
-- Loader source: _(no single-file loader — see multi-region source)_
+- Loader source: [`new-zealand-hydro.json.ts`](../../src/data/new-zealand-hydro.json.ts)
 - Backfill archive: `data/historical/backfill/*_new-zealand-hydro_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
