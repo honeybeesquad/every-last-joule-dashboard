@@ -35,6 +35,21 @@ Two cheap honesty-consistency fixes flagged by the #817 review:
 - `data/snapshots/last-good/china-shandong.json` — regenerated from `buildChinaShandongData()` so it no longer carries the stale `sourceStatus: "live"` on its two T3-modelled records (the exact class of defect #812 banned). `china-shandong-solar` now correctly reads `cached` with the refreshed 4.025 TWh/yr; `china-shandong-wind` carries no sourceStatus (hardcoded 2.5 TWh fallback, no anchor). Scope held to the regions my China PRs touched — the broader pre-existing stale-`live` in other committed snapshots (gansu, ningxia, mexico, pakistan, south-korea, unwired china-*) is inert (overwritten every build) and was logged as a known caveat in #812; a proper fix is a full `observable build` regen, deferred.
 - `tsc` clean; 1100 vitest + 5 CI gates (tier-coherence, tally-golden, loader-stdout-safety, source-provenance-coherence, magnitude-golden) green; `npm run validate` (snapshot schema, a separate CI step) also green. NOTE: an initial regen via the loader directly dropped `sourceProvenance` from the wind record and baked a "live probe skipped in tests" note; fixed by regenerating through the real `withFallback` build path (`npx tsx src/data/china-shandong.json.ts`), which stamps both records correctly. Independent review caught this before merge.
 
+## China mixed/solar regions wired (2026-08-20)
+
+Completes the deferred "mixed-kind regions" from the big push. Added a combined-anchor helper `buildChinaMixedRegionFromAnchors` (chinaParse.ts) that consumes the per-fuel wind+solar anchors and combines them into a single `kind: mixed` RegionData, with the same honesty stamping (T3-modelled / cached / modelled-fallback). Wired the 4 remaining China regions that have both a published rate and Ember generation:
+
+- `china-guangdong` (mixed): 0.0076 TWh/30d — was hardcoded 3.2 TWh (≈420× over-estimate; Guangdong barely curtails).
+- `china-fujian` (mixed): 0.0020 TWh/30d — was 0.6.
+- `china-zhejiang` (mixed): 0.0032 TWh/30d — was 0.8.
+- `china-jiangxi` (solar): 0.0262 TWh/30d — was 0.4.
+
+Rates added to `PROVINCE_FUEL_CURTAILMENT_RATE`: Guangdong 0.1%/0.1% (CSG coastal), Fujian/Zhejiang 0.05% floor (bulletin rounds to 100.0% — floor avoids a zero-area profile), Jiangxi 0.5%/1.1% (util 99.5%/98.9%). Store regenerated: **36 → 44 anchors** (8 new: wind+solar for the 4 provinces). `regions.ts` citations updated to the Ember-anchored form with the citable NEA bulletin URL.
+
+**Every province with a published 2024 NEA utilisation rate AND Ember generation is now wired** — the China expansion is at its honest ceiling. Remaining unwired (documented): Beijing/Shanghai/Hainan/Chongqing/Guizhou/Tianjin/Sichuan/Guangxi (no published rate), and Tibet (rate but no Ember generation row).
+
+`tsc` clean; 1100 vitest + 5 CI gates + `npm run validate` green. Independent Claude review pending before merge.
+
 ## China big research push — wired 14 more provinces (2026-08-20)
 
 Following the independent-review discipline, the 2024 NEA monitoring-center (全国新能源消纳监测预警中心) provincial new-energy utilisation bulletin (published 2025-02-06) was transcribed for all 31 provinces. Every province with a per-fuel `kind: wind/solar` loader AND a published utilisation figure now has a refreshed Ember-anchored region:

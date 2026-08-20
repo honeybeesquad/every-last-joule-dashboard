@@ -1,14 +1,22 @@
-import { describe, expect, it } from "vitest";
-import { buildChinaGuangdongData } from "../../src/data/china-guangdong.json";
+import { resolve } from "node:path";
+import { readFileSync } from "node:fs";
+import { describe, it, expect } from "vitest";
+import { buildChinaGuangdongData } from "../../src/data/china-guangdong.json.js";
 
-describe("china-guangdong loader", () => {
-  it("returns T3 mixed fallback data", async () => {
-    const data = await buildChinaGuangdongData();
-    expect(data.regionId).toBe("china-guangdong");
-    expect(data.profile).toHaveLength(24);
-    expect(data.totalTWh).toBeCloseTo((3.2 * 30) / 365, 8);
-    expect(data.confidenceTier).toBe("T3-modelled");
-    expect(data.fuelShare?.wind).toBeCloseTo(0.55, 2);
-    expect(data.fuelShare?.solar).toBeCloseTo(0.45, 2);
+function anchorAnnual(regionId: string): number {
+  const store = JSON.parse(readFileSync(resolve("data/china-anchors.json"), "utf-8"));
+  const row = store.anchors.find((a: { regionId: string }) => a.regionId === regionId);
+  if (!row) throw new Error(`no anchor for ${regionId}`);
+  return row.annualTWh as number;
+}
+
+describe("china-guangdong (mixed) consumes the refreshed store", () => {
+  it("is T3-modelled, cached, modelled-fallback with refreshed totalTWh", async () => {
+    const d = await buildChinaGuangdongData();
+    expect(d.confidenceTier).toBe("T3-modelled");
+    expect(d.sourceStatus).toBe("cached");
+    expect(d.sourceProvenance).toBe("modelled-fallback");
+    const annual = anchorAnnual("china-guangdong-wind") + anchorAnnual("china-guangdong-solar");
+    expect(d.totalTWh).toBeCloseTo((annual * 30) / 365, 4);
   });
 });

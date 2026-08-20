@@ -23,6 +23,7 @@ import {
   buildTypicalWindRegion,
   buildTypicalSolarRegion,
   buildTypicalHydroRegion,
+  buildTypicalMixedRegion,
 } from "./typical-profiles.js";
 import { applyUncertainty } from "./uncertainty.js";
 
@@ -238,4 +239,53 @@ function buildTypicalRegionByFuel(
   if (fuel === "wind") return buildTypicalWindRegion(regionId, peakHourUtc, annualTWh, note);
   if (fuel === "solar") return buildTypicalSolarRegion(regionId, peakHourUtc, annualTWh, note);
   return buildTypicalHydroRegion(regionId, annualTWh, note);
+}
+
+/**
+ * Build a China *mixed* (wind+solar combined) RegionData that consumes the
+ * refreshed anchor store when present, otherwise falls back to the loader's
+ * hardcoded typical-shape mixed anchor. Mirrors buildChinaRegionFromAnchor but
+ * combines the per-fuel wind + solar anchors into a single profile so it can
+ * back a `kind: "mixed"` region.
+ *
+ * Honesty contract: identical to buildChinaRegionFromAnchor — T3-modelled,
+ * sourceStatus "cached", sourceProvenance "modelled-fallback". No live
+ * promotion. When either per-fuel anchor is missing, the loader's hardcoded
+ * (estimated) mixed anchor is used unchanged.
+ */
+export function buildChinaMixedRegionFromAnchors(
+  regionId: string,
+  fuelShare: { wind: number; solar: number },
+  fallbackAnnualTWh: number,
+  fallbackNote: string,
+  solarPeakHourUtc = 7,
+  windPeakHourUtc = 15,
+  storePath?: string,
+): RegionData {
+  const fallback = buildTypicalMixedRegion(
+    regionId, fallbackAnnualTWh, fuelShare, fallbackNote, "2024", solarPeakHourUtc, windPeakHourUtc,
+  );
+  const windAnchor = chinaAnchor(`${regionId}-wind`, storePath);
+  const solarAnchor = chinaAnchor(`${regionId}-solar`, storePath);
+  if (!windAnchor || !solarAnchor) return fallback;
+
+  const wind = buildChinaRegionFromAnchor(`${regionId}-wind`, "wind", windPeakHourUtc, fallbackAnnualTWh * (fuelShare.wind ?? 0), fallbackNote, storePath);
+  const solar = buildChinaRegionFromAnchor(`${regionId}-solar`, "solar", solarPeakHourUtc, fallbackAnnualTWh * (fuelShare.solar ?? 0), fallbackNote, storePath);
+  const profile = wind.profile.map((v, h) => v + solar.profile[h]);
+  const latestMonth = windAnchor.latestMonth >= solarAnchor.latestMonth ? windAnchor.latestMonth : solarAnchor.latestMonth;
+  const source = `Ember China subnational generation (trailing 12mo) × NEA 2024 curtailment rate — combined wind+solar anchor`;
+  const base: RegionData = {
+    regionId,
+    profile,
+    latestProfile: null,
+    totalTWh: wind.totalTWh + solar.totalTWh,
+    peakGW: Math.max(...profile),
+    lastUpdated: latestMonth,
+    lastSuccessAt: new Date(`${latestMonth}-01T00:00:00.000Z`).toISOString(),
+    sourceProvenance: "modelled-fallback",
+    sourceStatus: "cached",
+    sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d`,
+    fuelShare,
+  };
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });
 }
