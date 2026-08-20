@@ -183,7 +183,18 @@ function stampLive<T>(value: T, nowIso: string): T {
     // This also catches the ~75 loaders that swallow a live-fetch error and
     // return a modelled fallback: withFallback would otherwise stamp that
     // fallback "live".
-    if (record.confidenceTier === "T3-modelled") {
+    //
+    // A region is T3-modelled if EITHER (a) it already carries confidenceTier
+    // "T3-modelled" (set by applyUncertainty / withFallback(regionTier)), OR
+    // (b) its canonical table tier is "estimated" and the loader didn't stamp a
+    // confidenceTier at all (≈39 loaders pass no regionTier). Without the
+    // fallback we'd let a genuinely estimated region slip through as "live".
+    const isT3 =
+      record.confidenceTier === "T3-modelled" ||
+      (typeof record.regionId === "string" &&
+        REGION_TIER_BY_ID[record.regionId] === "estimated" &&
+        !record.confidenceTier);
+    if (isT3) {
       return { ...record, sourceStatus: "cached", lastSuccessAt: nowIso };
     }
     return {

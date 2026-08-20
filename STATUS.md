@@ -1,10 +1,21 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-08-19 (system-performance assessment — see the 2026-08-19 sweep below: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)
+**Last verified against git:** 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 **Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
 
 > **For AI sessions:** read this file before drafting plans, brainstorming, or creating worktrees. Plans in `~/.claude/plans/` and `docs/superpowers/plans/` may be SHIPPED — check this file before treating any plan as live work.
+
+---
+
+## Honesty / data-label fixes (2026-08-20)
+
+Two review-driven fixes, both independently code-reviewed (Claude Code review pass). Open as PR [#812](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/812) against `main`; NOT yet merged.
+
+- **T3-modelled regions were stamped `sourceStatus: "live"`.** `src/lib/resilient.ts` `stampLive` now stamps `T3-modelled` (and any canonical `estimated` tier, even when the loader passed no `confidenceTier`) as `"cached"`, not `"live"`. This is a labelling-semantics change across **63 committed T3-modelled snapshots** (`data/snapshots/last-good/*.json`), which still carry the stale `"live"` stamp until the next data-refresh build re-emits them. Scope: honesty contract (CLAUDE.md rule 3). `peakGW`/uncertainty bands are unaffected — only the freshness badge/legend.
+- **Mexico's profile did not integrate to its anchor.** `src/data/mexico.json.ts` `buildPoints` now normalizes by `shapeSum` (matching `scaleProfileToAnnualTWh`), so the rendered curve integrates to exactly the annual anchor and `totalTWh` (derived from the points, `×30`) agrees with the curve to 1e-9 TWh. Also: `buildPoints` now throws on a zero-area shape (was silently emitting a flat-zero profile that dropped the region), and the Mexico T3 record is constructed as `cached` at source (previously hardcoded `live` and rescued only by the downstream override; `buildMexicoData()` bypassed that). `peakGW` moves to anchor-faithful (solar ~0.09 → ~0.28 GW), which also moves `uncertaintyLow/HighGW`.
+- **Docs corrected:** `docs/paper/02-methods.md` no longer claims T3 `sourceStatus: "live"` means "the probe succeeded" — `sourceStatus` is freshness (`cached` = modelled proxy / last-good), and a T3 region is always `cached`.
+- Verification: `tsc` clean; `vitest run` 1084 pass; `ci:check-tier-coherence`, `ci:check-tally-golden`, `ci:loader-stdout-safety`, `ci:check-source-provenance-coherence` all pass. No tier counts moved (golden file untouched), so no `status.md` tier table edit required.
 
 ---
 

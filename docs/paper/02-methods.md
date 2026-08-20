@@ -99,9 +99,14 @@ Africa, EirGrid Ireland — split 58/42 into `ireland-republic` and
 `northern-ireland` at consumption time) are classified `T3-modelled`
 via `tier: "static"` in `src/lib/regions.ts`, with the ±40% T3
 envelope. The reachability-probe nature of the upstream is preserved
-in the `sourceNote` and `sourceStatus` ("live" = the probe succeeded,
-not "this is a measured dispatch series"); reviewers can audit the
-distinction in `docs/known-limitations.md` item 6. IESO Ontario, AESO
+in the `sourceNote` and `sourceStatus` (`sourceStatus` is
+`freshness`, not `liveness of the data`: `cached` = a modelled proxy
+computed this build / served from last-good, `live` = a verified live
+upstream feed succeeded. A `T3-modelled` region is always `cached`,
+never `live`, because its payload is a typical-shape profile scaled to
+an anchor, not a measured dispatch series — see the honesty contract in
+`CLAUDE.md` rule 3 / `AGENTS.md` data-contract boundaries. Reviewers can
+audit the distinction in `docs/known-limitations.md` item 6. IESO Ontario, AESO
 Alberta, EMI New Zealand, EPİAŞ Turkey, and CEN Chile do produce
 dispatch-derived hourly values from their respective live sources.
 

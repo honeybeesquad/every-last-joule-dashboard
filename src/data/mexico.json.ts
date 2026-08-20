@@ -100,16 +100,24 @@ function buildPoints(shape: number[], annualTWh: number): CurtailmentPoint[] {
   // Spread the annual anchor across the 24h typical-day shape, NORMALISED by
   // shapeSum so the rendered profile integrates to exactly the annual anchor.
   // (Sibling loaders do the same via scaleProfileToAnnualTWh.) Without this
-  // normalisation the profile integrates to annual * mean(shape) (~40% of the
-  // anchor), which would disagree with totalTWh by ~2.5x.
+  // normalisation the profile integrates to annual * mean(shape), which would
+  // disagree with totalTWh.
+  //
+  // A zero-area shape is a degenerate input (e.g. an all-zero relay CSV row
+  // that slipped past the plausibility gate). Throw — do NOT silently emit a
+  // flat-zero profile that zeroes the region's totalTWh/peakGW. withFallback
+  // then serves last-good, which is the correct behaviour (matches
+  // scaleProfileToAnnualTWh, which throws on non-positive area).
   const dailyTWh = annualTWh / 365;
   const shapeSum = shape.reduce((sum, v) => sum + v, 0);
-  const norm = shapeSum > 0 ? shapeSum : 1;
+  if (shapeSum <= 0) {
+    throw new Error("mexico buildPoints: shape has non-positive area; refusing to emit a zero-energy profile");
+  }
   return shape.map((frac, hour) => ({
     utcTimestamp: `2024-06-15T${String(hour).padStart(2, "0")}:00:00Z`,
-    // (frac/norm) = share of the day's energy in this hour; * dailyTWh = TWh;
-    // * 1e6 = MW for the 1h interval.
-    mw: ((frac / norm) * dailyTWh) * 1_000_000,
+    // (frac/shapeSum) = share of the day's energy in this hour; * dailyTWh =
+    // TWh; * 1e6 = MW for the 1h interval.
+    mw: ((frac / shapeSum) * dailyTWh) * 1_000_000,
   }));
 }
 
@@ -125,11 +133,17 @@ function buildRegionData(
   const now = new Date().toISOString();
   // RegionData.totalTWh is the trailing-30-day cumulative (types.ts docs +
   // tooltip "30d total"). buildPoints emits one representative 24h day, so a
-  // single day's total is dailyTWh30d(points); scale to 30 days. Deriving it
+  // single day's total is totalTWh30d(points); scale to 30 days. Deriving it
   // from the points keeps it consistent with the rendered profile — after the
   // shapeSum normalisation above, totalTWh === annual * 30/365 and the curve
   // and the number agree.
   const totalTWh = totalTWh30d(points) * 30;
+  // This is a T3-modelled region (no verified live upstream feed — the payload
+  // is a typical-shape profile scaled to an anchor). Per CLAUDE.md rule 3 /
+  // AGENTS.md data-contract boundaries it must NOT be stamped "live". The
+  // withFallback pipeline also re-stamps it "cached" downstream, but
+  // buildMexicoData() bypasses withFallback, so we set the truthful label at
+  // the source rather than relying on the override to rescue a dishonest one.
   const base: RegionData = {
     regionId: id,
     profile,
@@ -139,7 +153,7 @@ function buildRegionData(
     lastUpdated: now,
     lastSuccessAt: now,
     sourceNote: note,
-    sourceStatus: "live",
+    sourceStatus: "cached",
     sourceProvenance: "modelled-fallback",
   };
   return applyUncertainty(base, { regionTier: "estimated", profileKind: kind });
@@ -197,3 +211,6 @@ if (isMain) {
 }
 
 export const buildMexicoData = () => run();
+
+/** Exported for unit testing (shape normalization / degenerate-shape guard). */
+export const buildMexicoPoints = buildPoints;

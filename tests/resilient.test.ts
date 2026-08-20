@@ -76,32 +76,45 @@ describe("withFallback", () => {
     expect(result.sourceStatus).toBe("live");
   });
 
-  it("keeps a T3 region that already fell back to degraded as degraded", async () => {
-    // Ordering guard: stampLive's cached/degraded early-return must precede the
-    // T3→cached branch, so a stale-CSV fallback marked "degraded" is not
-    // silently promoted to "cached".
-    mkdirSync(CACHE_DIR, { recursive: true });
-    writeFileSync(
-      canonicalCachePath,
-      JSON.stringify({
-        ...cachedRegion("2026-04-23T11:59:59.000Z"),
-        regionId: canonicalCacheName,
-        confidenceTier: "T3-modelled" as const,
-      }),
-    );
-
+  it("keeps a T3 region that run() already marked degraded as degraded", async () => {
+    // Ordering guard: stampLive's cached/degraded early-return (line 174) must
+    // precede the T3→cached branch, so a multi-region loader (e.g. colombia,
+    // whose T3 sub-regions self-stamp "degraded" on a stale relay CSV) that
+    // ALREADY marked a T3 sub-region "degraded" is not silently promoted to
+    // "cached". The fetch must SUCCEED and carry the degraded status — if it
+    // threw, withFallback would run stampCached instead and stampLive would
+    // never be exercised.
     const result = await withFallback<RegionData>(
       canonicalCacheName,
-      async () => {
-        throw new Error("upstream 500");
-      },
-      {
-        tagCached: (c) => ({ ...c, sourceStatus: "cached" as const }),
-        now: () => now,
-      },
+      async () => ({
+        ...cachedRegion(now.toISOString()),
+        regionId: "colombia-solar", // canonical tier "estimated" → T3
+        confidenceTier: "T3-modelled" as const,
+        sourceStatus: "degraded",
+      }),
+      { now: () => now },
     );
 
     expect(result.sourceStatus).toBe("degraded");
+  });
+
+  it("downgrades an estimated region that carried no confidenceTier", async () => {
+    // Closes the ~39 loaders that pass no regionTier: such regions have no
+    // confidenceTier, so the check must fall back to the canonical table. A
+    // region whose REGIONS tier is "estimated" must still be stamped cached
+    // even without a confidenceTier on the payload. Uses the auto-cleaned
+    // test-region cache (see beforeEach) so it leaves no last-good pollution.
+    const result = await withFallback<RegionData>(
+      testCacheName,
+      async () => ({
+        ...cachedRegion(now.toISOString()),
+        regionId: "mexico-solar", // canonical tier "estimated"
+        // deliberately no confidenceTier
+      }),
+      { now: () => now },
+    );
+
+    expect(result.sourceStatus).toBe("cached");
   });
 
   it("downgrades only the T3 sub-region in a mixed multi-region payload", async () => {

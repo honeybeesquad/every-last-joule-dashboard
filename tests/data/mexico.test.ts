@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { buildMexicoData } from "../../src/data/mexico.json";
+import { buildMexicoData, buildMexicoPoints } from "../../src/data/mexico.json";
 
 const CSV_PATH = join(process.cwd(), "data/historical/mexico-generacion.csv");
 
@@ -24,23 +24,33 @@ describe("mexico loader", () => {
     expect(data.solar.totalTWh).toBeGreaterThan(data.wind.totalTWh);
   });
 
+  it("throws (does not silently zero the region) on a degenerate zero-area shape", async () => {
+    // A zero-area shape is a degenerate input (e.g. an all-zero relay CSV row
+    // that slips past the plausibility gate). buildPoints must THROW so the
+    // loader's withFallback serves last-good, rather than emitting a flat-zero
+    // profile that silently zeroes the region's totalTWh/peakGW. This matches
+    // scaleProfileToAnnualTWh, which throws on non-positive area.
+    expect(() => buildMexicoPoints([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0.8)).toThrow();
+  });
+
   it("totalTWh is the 30-day figure and agrees with the rendered profile", async () => {
     const data = await buildMexicoData();
     // RegionData.totalTWh is the trailing-30-day cumulative (types.ts docs +
-    // tooltip "30d total"). The profile is a normalized typical-day shape whose
-    // 24h energy is dailyTWh = annual/365; the 30-day total is therefore
-    // annual * 30/365. Critically, the tooltip number must equal what the curve
-    // beside it integrates to — assert THAT, which catches a shape that is not
-    // properly normalized by shapeSum.
+    // tooltip "30d total"). The normalized typical-day shape's 24h energy is
+    // dailyTWh = annual/365, so the 30-day total must equal annual * 30/365.
+    // The first assertion (profile integral) is a self-consistency check on
+    // buildPoints; the SECOND (annual*30/365) is the load-bearing guard that
+    // fails if the shape is not normalized by shapeSum. Both must hold.
     for (const [fuel, annual] of [
       ["solar", 0.8],
       ["wind", 0.4],
     ] as const) {
       const r = data[fuel];
       const profileEnergyTWh = (r.profile.reduce((s, v) => s + v, 0)) / 1000 * 30;
-      // The tooltip total must match the curve's 30-day integral, not just a
-      // hardcoded annual*30/365. Tolerance 1e-9 TWh (<< 1 MW·day).
+      // Self-consistency: totalTWh must equal the rendered curve's 30-day
+      // integral (catches a shape that is not normalized by shapeSum).
       expect(r.totalTWh).toBeCloseTo(profileEnergyTWh, 9);
+      // Load-bearing anchor check: 30-day total == annual * 30/365.
       expect(r.totalTWh).toBeCloseTo(annual * (30 / 365), 6);
       // Guard against the old regression: full-annual (~12x) would be > annual.
       expect(r.totalTWh).toBeLessThan(annual);
