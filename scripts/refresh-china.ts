@@ -7,10 +7,13 @@
 //
 // HONESTY: Ember CSV = generation, not curtailment. We annualise the trailing
 // 12 months of generation per province+fuel, then apply the PUBLISHED NEA
-// curtailment rate (弃风率/弃光率) to get the curtailment anchor. The rate is
-// NOT invented here — it is the repo's own cited NEA 2024 figure (see the
-// PROVINCE_FUEL_CURTAILMENT_RATE table, each entry cites its loader source note).
-// Resulting tier is live-domestic-anchored (T1b), never live (T1a).
+// curtailment rate (弃风率/弃光率) — ONLY rates transcribed from a loader's own
+// source note, never invented (see PROVINCE_FUEL_CURTAILMENT_RATE). The store
+// (china-anchors.json) refreshes the regions' ANNUAL ANCHOR only. It does NOT
+// promote them: a region that consumes an anchor stays T3-modelled with
+// sourceProvenance "modelled-fallback" and sourceStatus "cached" (see
+// src/lib/chinaParse.ts + tier-classification-guide.md §5). No "live" / T1b
+// claim is made — no public live hourly Chinese curtailment feed exists.
 
 import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";

@@ -7,12 +7,14 @@
 //
 // HONESTY NOTE: this CSV carries *generation*, not *curtailment*. It lets us
 // refresh the China regions' annual energy anchor from a live-monthly source
-// (replacing the hardcoded annual NEA anchor + guessed typical-shape). The
-// curtailment RATE (弃风率/弃光率) is still taken from the published NEA
-// figure — it is NOT in this file. The resulting tier is
-// `live-domestic-anchored` (T1b): live-monthly generation anchor + published
-// curtailment rate. We do NOT claim `live` (T1a) hourly curtailment, which no
-// public Chinese source provides.
+// (replacing the hardcoded annual NEA anchor). The curtailment RATE
+// (弃风率/弃光率) is still taken from the published NEA figure — it is NOT in
+// this file. CRITICAL: refreshing the anchor does NOT promote the region. The
+// region stays T3-modelled (typical shape scaled to a published anchor) with
+// sourceProvenance "modelled-fallback" and sourceStatus "cached" — it is NOT
+// "live" or "live-domestic-anchored", because no public live hourly Chinese
+// curtailment feed exists (see docs/methodology/tier-classification-guide.md §5
+// and PR #812's honesty contract). We do NOT claim live (T1a/T1b) curtailment.
 
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
