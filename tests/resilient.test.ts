@@ -36,6 +36,28 @@ describe("withFallback", () => {
     expect(result).toEqual({ v: 42 });
   });
 
+  it("does not stamp a T3-modelled region as live", async () => {
+    // A modelled (T3) region has no verified live upstream feed; its payload
+    // is a typical-shape profile scaled to an anchor. withFallback must stamp
+    // it "cached", never "live" (honesty contract: CLAUDE.md rule 3 /
+    // AGENTS.md data-contract boundaries). This also guards the ~75 loaders
+    // that swallow a live-fetch error and return a modelled fallback — which
+    // would otherwise be mislabeled "live".
+    const result = await withFallback<RegionData>(
+      canonicalCacheName,
+      async () => ({
+        ...cachedRegion(now.toISOString()),
+        regionId: canonicalCacheName,
+        confidenceTier: "T3-modelled" as const,
+        sourceProvenance: "modelled-fallback" as const,
+      }),
+      { now: () => now },
+    );
+
+    expect(result.sourceStatus).toBe("cached");
+    expect(result.lastSuccessAt).toBe(now.toISOString());
+  });
+
   it("writes snapshot on live success", async () => {
     await withFallback(testCacheName, async () => ({ v: 42 }));
     expect(existsSync(cachePath)).toBe(true);

@@ -120,7 +120,10 @@ function buildRegionData(
     regionId: id,
     profile,
     latestProfile: null, // T3 modelled — no real-time feed, no latest-day profile
-    totalTWh: annualTWh, // Use cited anchor, not 30-day sample
+    // RegionData.totalTWh is the 30-day cumulative (see types.ts / tooltip
+    // "30d total"). Scale the annual anchor to a 30-day window to match every
+    // other loader, instead of emitting the full annual figure (~12x too large).
+    totalTWh: annualTWh * (30 / 365),
     peakGW: peak,
     lastUpdated: now,
     lastSuccessAt: now,

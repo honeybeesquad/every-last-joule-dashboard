@@ -24,6 +24,20 @@ describe("mexico loader", () => {
     expect(data.solar.totalTWh).toBeGreaterThan(data.wind.totalTWh);
   });
 
+  it("totalTWh is the 30-day figure, not the full annual anchor", async () => {
+    const data = await buildMexicoData();
+    // RegionData.totalTWh is documented as the 30-day cumulative (see
+    // types.ts + the tooltip's "30d total" label). The loader encodes an
+    // *annual* anchor (0.8 / 0.4 TWh/yr) and must scale it to 30 days so it
+    // is comparable with every other loader — NOT emit the full annual value.
+    const expectedSolar = 0.8 * (30 / 365);
+    const expectedWind = 0.4 * (30 / 365);
+    expect(data.solar.totalTWh).toBeCloseTo(expectedSolar, 6);
+    expect(data.wind.totalTWh).toBeCloseTo(expectedWind, 6);
+    // Sanity: annual would be ~12x larger; guard against that regression.
+    expect(data.solar.totalTWh).toBeLessThan(0.8);
+  });
+
   it("uses the CENACE relay CSV for solar profile shape (not hardcoded)", () => {
     // The relay CSV must exist and be non-trivial for the loader to use real data
     expect(existsSync(CSV_PATH)).toBe(true);
