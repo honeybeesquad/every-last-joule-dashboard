@@ -12,55 +12,6 @@ function scaleProfileToAnnualTWh(profile: number[], annualTWh: number): number[]
   return profile.map((value) => value * scale);
 }
 
-const CHINA_PROVINCE_CALIBRATIONS: Record<string, { annualTWh: number; note: string }> = {
-  // NEA 2024 renewable monitoring evaluation + Huaon/NBS 2024 provincial
-  // wind/PV generation: wind 164.3 TWh at ~93.85% utilisation, PV 31.038 TWh
-  // at ~94.5% utilisation.
-  "inner-mongolia": {
-    annualTWh: 12.6,
-    note: "2024 annual anchor recalibrated to 12.6 TWh from NEA provincial wind/PV utilisation rates and Huaon/NBS generation by fuel.",
-  },
-  // NEA 2024: wind 94.0%, PV 91.3%; Gansu MIIT 2024 generation:
-  // wind 45.789 TWh, PV 33.704 TWh.
-  gansu: {
-    annualTWh: 6.1,
-    note: "2024 annual anchor recalibrated to 6.1 TWh from NEA provincial wind/PV utilisation rates and Gansu MIIT generation by fuel.",
-  },
-  // NEA 2024: wind 92.8%, PV 90.3%; Huaon/NBS 2024 generation:
-  // wind 13.1 TWh, PV 28.751 TWh.
-  qinghai: {
-    annualTWh: 4.1,
-    note: "2024 annual anchor recalibrated to 4.1 TWh from NEA provincial wind/PV utilisation rates and Huaon/NBS generation by fuel.",
-  },
-  // NEA 2024: wind 97.6%, PV 95.3%; Huaon/NBS 2024 generation:
-  // wind 26.18 TWh, PV 27.856 TWh.
-  ningxia: {
-    annualTWh: 2.0,
-    note: "2024 annual anchor recalibrated to 2.0 TWh from NEA provincial wind/PV utilisation rates and Huaon/NBS generation by fuel.",
-  },
-  // NEA 2024: wind 99.1%, PV 96.7%, Lancang River hydro 99.85%; Yunnan
-  // statistics: wind 37.43 TWh, PV 28.17 TWh, hydro-spill proxy 0.5 TWh.
-  yunnan: {
-    annualTWh: 1.8,
-    note: "2024 annual anchor recalibrated to 1.8 TWh from NEA wind/PV/hydro utilisation rates and Yunnan provincial generation data.",
-  },
-  // NEA 2024: wind 83.0%, PV 68.6%; Huaon/NBS 2024 generation:
-  // wind 0.13 TWh, PV 1.11 TWh, plus small high-altitude hydro-spill proxy.
-  tibet: {
-    annualTWh: 0.6,
-    note: "2024 annual anchor recalibrated to 0.6 TWh from NEA provincial wind/PV utilisation rates and Huaon/NBS generation by fuel.",
-  },
-};
-
-function calibrateAnnualTWh(regionId: string, annualTWh: number, sourceNote: string) {
-  const calibration = CHINA_PROVINCE_CALIBRATIONS[regionId];
-  if (!calibration) return { annualTWh, sourceNote };
-  return {
-    annualTWh: calibration.annualTWh,
-    sourceNote: `${sourceNote} ${calibration.note}`,
-  };
-}
-
 export function solarProfile(peakHourUtc: number, annualTWh: number): number[] {
   const shape = Array.from({ length: 24 }, (_, hour) => {
     const center = hour + 0.5;
@@ -181,7 +132,6 @@ export function buildTypicalHydroSeasonalRegion(
   lastUpdated = "2024",
   now: Date = new Date(),
 ): RegionData {
-  ({ annualTWh, sourceNote } = calibrateAnnualTWh(regionId, annualTWh, sourceNote));
   const factor = seasonalScaleFactor(monthlyShares, now);
   const profile = hydroSeasonalProfile(annualTWh, monthlyShares, now);
   const base: RegionData = {
@@ -206,7 +156,6 @@ export function buildTypicalSolarRegion(
   sourceNote: string,
   lastUpdated = "2024",
 ): RegionData {
-  ({ annualTWh, sourceNote } = calibrateAnnualTWh(regionId, annualTWh, sourceNote));
   const profile = solarProfile(peakHourUtc, annualTWh);
   const base: RegionData = {
     regionId,
@@ -228,7 +177,6 @@ export function buildTypicalWindRegion(
   sourceNote: string,
   lastUpdated = "2024",
 ): RegionData {
-  ({ annualTWh, sourceNote } = calibrateAnnualTWh(regionId, annualTWh, sourceNote));
   const profile = windProfile(peakHourUtc, annualTWh);
   const base: RegionData = {
     regionId,
@@ -249,7 +197,6 @@ export function buildTypicalHydroRegion(
   sourceNote: string,
   lastUpdated = "2024",
 ): RegionData {
-  ({ annualTWh, sourceNote } = calibrateAnnualTWh(regionId, annualTWh, sourceNote));
   const profile = hydroProfile(annualTWh);
   const base: RegionData = {
     regionId,
@@ -273,7 +220,6 @@ export function buildTypicalMixedRegion(
   solarPeakHourUtc = 7,
   windPeakHourUtc = 15,
 ): RegionData {
-  ({ annualTWh, sourceNote } = calibrateAnnualTWh(regionId, annualTWh, sourceNote));
   const solar = solarProfile(solarPeakHourUtc, annualTWh * (fuelShare.solar ?? 0));
   const wind = windProfile(windPeakHourUtc, annualTWh * (fuelShare.wind ?? 0));
   const hydro = hydroProfile(annualTWh * (fuelShare.hydro ?? 0));

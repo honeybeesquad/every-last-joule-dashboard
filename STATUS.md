@@ -2,7 +2,22 @@
 
 **Last verified against git:** 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
-**Maintained by:** humans + AI sessions. **Update protocol:** any session that ships work to `main`, or notices STATUS is wrong, must update this file in the same commit. Stale STATUS is worse than no STATUS.
+
+## Repo-health pass — dead-code cleanup + embed/globe.md drift (2026-08-21)
+
+Two non-data fixes from the rest-of-world coverage research pass:
+
+### 1. Dead-code removal: `CHINA_PROVINCE_CALIBRATIONS`
+`src/lib/typical-profiles.ts` held a `CHINA_PROVINCE_CALIBRATIONS` map (inner-mongolia, gansu, qinghai, ningxia, yunnan, tibet) and a `calibrateAnnualTWh()` wrapper that looked it up by **bare province id**. The China loaders were refactored in #819 to use `buildChinaRegionFromAnchor` with **per-fuel ids** (gansu-wind, etc.), so the map keyed on bare ids never matched — `calibrateAnnualTWh` was a pure no-op (verified: no loader passes a bare province id). Removed the map, the function, and its 5 identical call sites. Behaviorally identical — confirmed by 1100 tests + all gates unchanged.
+
+### 2. Embed `globe.md` drift fix
+`src/embed/globe.md` (the Observable embed) had drifted from `regions.ts` / `src/index.md` (the live dashboard). The stale audit note (2026-06-17) over-claimed ~44 missing, but most cited regions (Italy zones, Estonia, Mexico, Japan splits, Korea) were already present. The **genuine** remaining drift:
+- German TSO zones (`germany-50hertz-*`, `germany-amprion-*`, `germany-tennet-de-*`, `germany-transnetbw-*`, 8 regions) were absent — the loader (`germany-curtailment.json.ts`) was never imported into globe.md, and the two stale `entsoe["germany-wind"/"germany-solar"]` keys pointed at regions the entsoe loader no longer emits.
+- Five bare single-region keys (`japan-hokkaido`, `japan-tohoku`, `south-korea`, `inner-mongolia`, `estonia`) had been split into per-fuel ids in `regions.ts` but globe.md still used the old single-region keys.
+
+Fix: imported `germanyCurtailment`, replaced the 2 stale german entries with the 8 TSO zones, and split the 5 bare keys into their per-fuel ids — mirroring `src/index.md`. Added `tests/globe-drift.test.ts` (the audit's recommended "end-to-end integrity" follow-up): parses globe.md's regionData keys, asserts every explicit key is a canonical region id (no stale refs) and that the German TSO zones are present + imported. This guard now catches any reintroduced stale key (verified: re-injecting `germany-wind` fails the test; it parses both quoted and bare keys robustly, including the bare `estonia:` form the first draft missed).
+
+tsc clean; 1103 vitest (3 new) + 5 CI gates + ci:docs-drift + npm run validate green. Independent Claude review pending before merge.
 
 > **For AI sessions:** read this file before drafting plans, brainstorming, or creating worktrees. Plans in `~/.claude/plans/` and `docs/superpowers/plans/` may be SHIPPED — check this file before treating any plan as live work.
 
