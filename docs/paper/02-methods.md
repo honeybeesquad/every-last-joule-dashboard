@@ -97,11 +97,19 @@ unauthenticated machine-readable hourly curtailment series. The
 explicitly. All four (CAMMESA Argentina, COES SINAC Peru, ESKOM South
 Africa, EirGrid Ireland — split 58/42 into `ireland-republic` and
 `northern-ireland` at consumption time) are classified `T3-modelled`
-via `tier: "static"` in `src/lib/regions.ts`, with the ±40% T3
+via `tier: "estimated"` in `src/lib/regions.ts`, with the ±40% T3
 envelope. The reachability-probe nature of the upstream is preserved
-in the `sourceNote` and `sourceStatus` ("live" = the probe succeeded,
-not "this is a measured dispatch series"); reviewers can audit the
-distinction in `docs/known-limitations.md` item 6. IESO Ontario, AESO
+in the `sourceNote` and `sourceStatus` (`sourceStatus` is
+`freshness`, not `liveness of the data`: `cached` = a modelled proxy
+computed this build / served from last-good, `live` = a verified live
+upstream feed succeeded). A `T3-modelled` region is emitted as `cached`,
+never `live` — its payload is a typical-shape profile scaled to an
+anchor, not a measured dispatch series — see the honesty contract in
+`CLAUDE.md` rule 3 / `AGENTS.md` data-contract boundaries. (Note: the
+committed `data/snapshots/last-good/*.json` T3 records carry a stale
+`"live"` stamp from older builds and are re-emitted as `cached` on the
+next data-refresh build; this is a snapshot-freshness lag, not a live
+label.) Reviewers can audit the distinction in `docs/known-limitations.md` item 6. IESO Ontario, AESO
 Alberta, EMI New Zealand, EPİAŞ Turkey, and CEN Chile do produce
 dispatch-derived hourly values from their respective live sources.
 

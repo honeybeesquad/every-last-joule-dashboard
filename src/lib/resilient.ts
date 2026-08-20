@@ -174,6 +174,29 @@ function stampLive<T>(value: T, nowIso: string): T {
     if (record.sourceStatus === "cached" || record.sourceStatus === "degraded") {
       return record;
     }
+    // A modelled (T3) region has no verified live upstream feed — its payload is
+    // a typical-shape profile scaled to an anchor, not a fresh fetch. Stamping
+    // it "live" would violate the repo's honesty contract (CLAUDE.md rule 3 /
+    // AGENTS.md data-contract boundaries) and light the "live" dot on the
+    // globe for data that was never fetched live. Keep it as "cached" (modelled
+    // proxy computed this build) so the freshness badge and legend are truthful.
+    // This also catches the ~75 loaders that swallow a live-fetch error and
+    // return a modelled fallback: withFallback would otherwise stamp that
+    // fallback "live".
+    //
+    // A region is T3-modelled if EITHER (a) it already carries confidenceTier
+    // "T3-modelled" (set by applyUncertainty / withFallback(regionTier)), OR
+    // (b) its canonical table tier is "estimated" and the loader didn't stamp a
+    // confidenceTier at all (≈39 loaders pass no regionTier). Without the
+    // fallback we'd let a genuinely estimated region slip through as "live".
+    const isT3 =
+      record.confidenceTier === "T3-modelled" ||
+      (typeof record.regionId === "string" &&
+        REGION_TIER_BY_ID[record.regionId] === "estimated" &&
+        !record.confidenceTier);
+    if (isT3) {
+      return { ...record, sourceStatus: "cached", lastSuccessAt: nowIso };
+    }
     return {
       ...record,
       sourceStatus: "live",

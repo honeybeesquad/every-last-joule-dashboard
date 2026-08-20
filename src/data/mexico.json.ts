@@ -14,8 +14,11 @@ const CSV_PATH = join(__dirname, "../../data/historical/mexico-generacion.csv");
 // capacity (12 GW solar + 8 GW wind) → blended ~6% rate.
 // Split: solar ~7% (northern-grid saturation in Sonora/Chihuahua/Coahuila),
 // wind ~5% (Oaxaca/Tehuantepec transmission bottlenecks, lower utilisation).
-const SOLAR_RATE = 0.07;
-const WIND_RATE = 0.05;
+// NOTE: the rate is applied at the ANNUAL-anchor level (it sizes the total
+// energy, already baked into the 0.8/0.4 TWh/yr anchors below), not as a
+// per-hour multiplier on the shape — a scalar rate on a shapeSum-normalized
+// profile is mathematically a no-op, so it is intentionally not re-applied
+// here. The profile below is the *shape* of that curtailed energy by hour.
 
 // Hour-of-day solar profile from CENACE relay CSV (31-day average, CST→UTC shifted).
 // Solar reads 0 at night (hours 2-4 UTC = 8-10 PM CST), peaks midday.
@@ -97,10 +100,27 @@ function rowsToShape(rows: CsvRow[], fuel: "eolica" | "fotovoltaica"): number[] 
 }
 
 function buildPoints(shape: number[], annualTWh: number): CurtailmentPoint[] {
-  const hourlyTWh = annualTWh / 8760;
+  // Spread the annual anchor across the 24h typical-day shape, NORMALISED by
+  // shapeSum so the rendered profile integrates to exactly the annual anchor.
+  // (Sibling loaders do the same via scaleProfileToAnnualTWh.) Without this
+  // normalisation the profile integrates to annual * mean(shape), which would
+  // disagree with totalTWh.
+  //
+  // A zero-area shape is a degenerate input (e.g. an all-zero relay CSV row
+  // that slipped past the plausibility gate). Throw — do NOT silently emit a
+  // flat-zero profile that zeroes the region's totalTWh/peakGW. withFallback
+  // then serves last-good, which is the correct behaviour (matches
+  // scaleProfileToAnnualTWh, which throws on non-positive area).
+  const dailyTWh = annualTWh / 365;
+  const shapeSum = shape.reduce((sum, v) => sum + v, 0);
+  if (shapeSum <= 0) {
+    throw new Error("mexico buildPoints: shape has non-positive area; refusing to emit a zero-energy profile");
+  }
   return shape.map((frac, hour) => ({
     utcTimestamp: `2024-06-15T${String(hour).padStart(2, "0")}:00:00Z`,
-    mw: (frac * hourlyTWh * 1_000_000) / 1, // TWh→MW for 1h interval
+    // (frac/shapeSum) = share of the day's energy in this hour; * dailyTWh =
+    // TWh; * 1e6 = MW for the 1h interval.
+    mw: ((frac / shapeSum) * dailyTWh) * 1_000_000,
   }));
 }
 
@@ -108,24 +128,35 @@ function buildRegionData(
   id: string,
   kind: "solar" | "wind",
   points: CurtailmentPoint[],
-  shape: number[],
   annualTWh: number,
   note: string,
 ): RegionData {
   const profile = timeOfDayAverageGW(points);
-  const totalTWh = totalTWh30d(points);
   const peak = peakGW(points);
   const now = new Date().toISOString();
+  // RegionData.totalTWh is the trailing-30-day cumulative (types.ts docs +
+  // tooltip "30d total"). buildPoints emits one representative 24h day, so a
+  // single day's total is totalTWh30d(points); scale to 30 days. Deriving it
+  // from the points keeps it consistent with the rendered profile — after the
+  // shapeSum normalisation above, totalTWh === annual * 30/365 and the curve
+  // and the number agree.
+  const totalTWh = totalTWh30d(points) * 30;
+  // This is a T3-modelled region (no verified live upstream feed — the payload
+  // is a typical-shape profile scaled to an anchor). Per CLAUDE.md rule 3 /
+  // AGENTS.md data-contract boundaries it must NOT be stamped "live". The
+  // withFallback pipeline also re-stamps it "cached" downstream, but
+  // buildMexicoData() bypasses withFallback, so we set the truthful label at
+  // the source rather than relying on the override to rescue a dishonest one.
   const base: RegionData = {
     regionId: id,
     profile,
     latestProfile: null, // T3 modelled — no real-time feed, no latest-day profile
-    totalTWh: annualTWh, // Use cited anchor, not 30-day sample
+    totalTWh,
     peakGW: peak,
     lastUpdated: now,
     lastSuccessAt: now,
     sourceNote: note,
-    sourceStatus: "live",
+    sourceStatus: "cached",
     sourceProvenance: "modelled-fallback",
   };
   return applyUncertainty(base, { regionTier: "estimated", profileKind: kind });
@@ -134,8 +165,10 @@ function buildRegionData(
 const NOTE =
   "SENER PRODESEN 2024-2038 + CRE confiabilidad anchor: ~1.2 TWh/yr total VRE curtailment " +
   "(~1 TWh in 2022; CRE 2023 notes an upward trend), driven by transmission-network " +
-  "saturation and CENACE operational restrictions. Profile shaped by real CENACE generation data " +
-  "(Generacion Liquidada relay CSV) × calibrated curtailment rate (solar 7%, wind 5%; ~6% blended). " +
+  "saturation and CENACE operational restrictions. Total energy scaled to the SENER/CRE " +
+  "calibrated curtailment rate (solar ~7%, wind ~5%, ~6% blended across the ~20 GW VRE " +
+  "fleet); the profile shape below is the real CENACE generation shape (Generacion " +
+  "Liquidada relay CSV), not the rate applied per-hour. " +
   "CENACE exposes no public measured-curtailment API — this is a modelled T3 estimate with " +
   "no fabricated hourly data. Sources: PRODESEN + CRE + NREL + CENACE relay.";
 
@@ -160,9 +193,9 @@ async function run(): Promise<{ solar: RegionData; wind: RegionData }> {
   const windPoints = buildPoints(windShape, 0.4);
 
   return {
-    solar: buildRegionData("mexico-solar", "solar", solarPoints, solarShape, 0.8,
+    solar: buildRegionData("mexico-solar", "solar", solarPoints, 0.8,
       `${NOTE} — solar share (Sonora/Chihuahua/Coahuila northern grid).`),
-    wind: buildRegionData("mexico-wind", "wind", windPoints, windShape, 0.4,
+    wind: buildRegionData("mexico-wind", "wind", windPoints, 0.4,
       `${NOTE} — wind share (Oaxaca/Tehuantepec).`),
   };
 }
@@ -183,3 +216,6 @@ if (isMain) {
 }
 
 export const buildMexicoData = () => run();
+
+/** Exported for unit testing (shape normalization / degenerate-shape guard). */
+export const buildMexicoPoints = buildPoints;
