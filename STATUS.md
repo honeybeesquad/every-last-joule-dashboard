@@ -50,6 +50,19 @@ Rates added to `PROVINCE_FUEL_CURTAILMENT_RATE`: Guangdong 0.1%/0.1% (CSG coasta
 
 `tsc` clean; 1100 vitest + 5 CI gates + `npm run validate` green. Independent Claude review pending before merge.
 
+## South Korea Ember-anchored curtailment (2026-08-20)
+
+Replaced the repo's magic-number IEA anchor (0.5 solar / 0.05 wind TWh/yr) for South Korea with a **two-source-cited** estimate, mirroring the China Ember-anchored pattern:
+
+- **Generation**: Ember / Our World in Data, South Korea, 2025 — wind 3.64 TWh, solar 37.80 TWh (`owid-energy.org` "Electricity Data Explorer / Yearly Electricity Data", Ember 2026).
+- **Rate**: published 2024 curtailment — 4.1% wind / 3.2% PV in major (mainland) power systems (MDPI 2024, citing IEA; "curtailed wind and PV increased ~55% in 2024"). Jeju excluded, matching the repo's mainland scope.
+
+Resulting curtailed energy: **solar 1.21 TWh/yr** (was 0.5), **wind 0.149 TWh/yr** (was 0.05) — a ~2.4× / ~3× honest correction using explicit published figures instead of a reverse-engineered anchor. Mixed years (2025 gen × 2024 rate) follow the same precedent as the China regions.
+
+Changes: `src/data/south-korea.json.ts` (computed anchor from cited constants, blocker note kept — KPX/data.go.kr still needs a Korean-identity serviceKey), `src/lib/regions.ts` (source citations updated to Ember/OWID gen × MDPI/IEA rate, with the KPX key blocker documented), regenerated `data/snapshots/last-good/south-korea.json`. Tier unchanged (`estimated` / T3-modelled / cached / modelled-fallback) — shape is modelled, annual is derived from two published sources. Existing `tests/data/south-korea.test.ts` still passes (structure-based, no hardcoded TWh).
+
+Note: a Korean-government `serviceKey` (본인인증 / Korean identity verification) is the only path to a *live* KPX feed; that was not obtainable, so Korea correctly remains estimated. tsc clean; 1100 vitest + 5 CI gates + npm run validate green.
+
 ## China big research push — wired 14 more provinces (2026-08-20)
 
 Following the independent-review discipline, the 2024 NEA monitoring-center (全国新能源消纳监测预警中心) provincial new-energy utilisation bulletin (published 2025-02-06) was transcribed for all 31 provinces. Every province with a per-fuel `kind: wind/solar` loader AND a published utilisation figure now has a refreshed Ember-anchored region:
