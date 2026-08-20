@@ -1,5 +1,5 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-08-19 (removed wacm-wind + wacm-solar: WACM was retired as an EIA-930 balancing-authority code on 2026-04-01, absorbed into SPP West (SWPW); both regions sat permanently degraded at exactly 0.0 TWh/30d since PR #622's honest-degrade guard, so removal costs nothing in magnitude. Owner chose removal over repointing to SWPW. T2 25 -> 23, total 461 -> 459.).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-08-20 (China auto-scraper PR #815: refresh-china.ts + data/china-anchors.json ingest Ember monthly generation to refresh China estimated-region annual anchors — but regions stay T3-modelled with sourceProvenance 'modelled-fallback' (no live fetch exists; promoting to live would re-violate PR #812's honesty contract). No tier counts moved. T1b 26, T3 249, total 459 unchanged.).",
   "T1a": 160,
   "T1b": 26,
   "T1c": 1,

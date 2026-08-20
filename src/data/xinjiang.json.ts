@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { buildChinaRegionFromAnchor } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "xinjiang";
@@ -17,8 +17,14 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
   } catch (err) {
     const note = `Typical-shape fallback: ${(err as Error).message}; Xinjiang mixed wind+solar curtailment ~8.2 TWh/yr; NEA 2024 renewable monitoring evaluation.`;
     return {
-      wind:  buildTypicalWindRegion("xinjiang-wind",  15, 5.0, note + " — wind share (~5.0 TWh/yr, Xinjiang wind utilisation 93.4%; Huaon 70.79 TWh gen)", "2024"),
-      solar: buildTypicalSolarRegion("xinjiang-solar", 6.33, 3.2, note + " — solar share (~3.2 TWh/yr, Xinjiang PV utilisation 92.2%; Huaon 38.04 TWh gen)", "2024"),
+      wind:  buildChinaRegionFromAnchor(
+        "xinjiang-wind", "wind", 15, 5.0,
+        note + " — wind share (~5.0 TWh/yr, Xinjiang wind utilisation 93.4%; Huaon 70.79 TWh gen)",
+      ),
+      solar: buildChinaRegionFromAnchor(
+        "xinjiang-solar", "solar", 6.33, 3.2,
+        note + " — solar share (~3.2 TWh/yr, Xinjiang PV utilisation 92.2%; Huaon 38.04 TWh gen)",
+      ),
     };
   }
 }
