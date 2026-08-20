@@ -1,6 +1,6 @@
 # Validation — Zhejiang (`china-zhejiang`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** mixed
-- **Source:** NEA 2024 provincial RE monitoring bulletin — coastal mixed wind+solar curtailment ~0.8 TWh/yr
-- **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
+- **Source:** Ember China subnational generation (trailing 12mo) × NEA 2024 curtailment rate — Zhejiang coastal mixed wind+solar
+- **Source URL:** [https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html](https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html)
 - **Loader:** [`china-zhejiang.json.ts`](../../src/data/china-zhejiang.json.ts)
 - **Structural gap:** no
 

@@ -1,6 +1,6 @@
 # Validation — Hubei Wind (`china-hubei-wind`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** wind
-- **Source:** NEA 2024 provincial RE monitoring bulletin — wind curtailment (wind 26% of ~1.5 TWh/yr, Three Gorges basin)
-- **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
+- **Source:** Ember China subnational generation (trailing 12mo) × NEA 2024 curtailment rate 1.9% (utilisation 98.1%); refreshed anchor, T3-modelled shape
+- **Source URL:** [https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html](https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 

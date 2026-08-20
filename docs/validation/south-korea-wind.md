@@ -1,6 +1,6 @@
 # Validation — South Korea Wind (`south-korea-wind`)
 
-Last updated: 2026-06-17 · South Korea per-fuel anchor split · T3 modelled
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-06-17 · South Korea per-fuel anchor split · T3 modelled
 - **Country:** KOR
 - **Tier:** estimated
 - **Kind:** wind
-- **Source:** KPX EPSIS KNRE 2024: mainland wind utilization ~14%, 2 GW installed, ~2% curtailment rate (IEA Korea). Falls back to the ~0.05 TWh anchor when EPSIS yields 0% (no fabricated data).
-- **Source URL:** [https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do](https://epsis.kpx.or.kr/epsisnew/selectKnreMain.do)
-- **Loader:** [`south-korea.json.ts`](../../src/data/south-korea.json.ts)
+- **Source:** Curtailment = Ember/OWID 2025 wind generation 3.64 TWh × 4.1% published 2024 curtailment rate (MDPI 2024, citing IEA; mainland excl. Jeju). KPX live feed needs a serviceKey (Korean identity verification) — documented blocker, not wired.
+- **Source URL:** [https://ourworldindata.org/grapher/electricity-mix?country=KOR&metric=share_of_generation&source=wind](https://ourworldindata.org/grapher/electricity-mix?country=KOR&metric=share_of_generation&source=wind)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
 ## Calibration
@@ -26,7 +26,7 @@ Last updated: 2026-06-17 · South Korea per-fuel anchor split · T3 modelled
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** KPX 2024 mainland wind curtailment ~0.05 TWh (IEA anchor, excl. Jeju)
+- **TSO annual curtailment (latest published):** —
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
@@ -41,7 +41,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: [`south-korea.json.ts`](../../src/data/south-korea.json.ts)
+- Loader source: _(no single-file loader — see multi-region source)_
 - Backfill archive: `data/historical/backfill/*_south-korea-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

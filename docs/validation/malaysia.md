@@ -1,6 +1,6 @@
 # Validation — Malaysia (`malaysia`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** MYS
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** IRENA Malaysia 2024 + Suruhanjaya Tenaga (ST) 2024 anchor (~0.15 TWh/yr provisional). Gemini-3.1 research wave 2026-04-29: SEDA / ST policy classifies systemic renewable curtailment as a 'rising risk' for Peninsular Malaysia but reports current operations as stable; no published annual curtailment TWh figure exists yet. Live promotion attempt reverted (GSO real-time solar feed is generation-only, not curtailment). Held at T3 pending publication of a real curtailment figure.
+- **Source:** GSO Malaysia live solar generation (gso.org.my, 10-min) × 1.0% calibrated curtailment rate (Suruhanjaya Tenaga / IRENA 2024 anchor ~0.15 TWh/yr Peninsular Malaysia solar curtailment). GSO publishes real-time solar generation in MW at 10-min cadence without authentication; the loader applies the published rate to estimate curtailment.
 - **Source URL:** [https://www.gso.org.my/](https://www.gso.org.my/)
 - **Loader:** [`malaysia.json.ts`](../../src/data/malaysia.json.ts)
 - **Structural gap:** no

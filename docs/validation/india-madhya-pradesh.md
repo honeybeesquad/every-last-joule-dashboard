@@ -1,6 +1,6 @@
 # Validation — Madhya Pradesh (`india-madhya-pradesh`)
 
-Last updated: 2026-06-17 · Granularity survey 2026-06-10 · T3 modelled
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,18 +8,28 @@ Last updated: 2026-06-17 · Granularity survey 2026-06-10 · T3 modelled
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** CEA gen-re.cea.gov.in daily Excel × Ember India 2024 state curtailment rate. T3-modelled: a typical solar profile scaled to a capacity/utilisation-based annual anchor (no live per-fuel curtailment feed).
-- **Source URL:** [https://cea.nic.in/](https://cea.nic.in/)
+- **Source:** CEA gen-re.cea.gov.in daily Excel — Rewa Ultra Mega Solar Park + Mandsaur solar corridor. T3-modelled fallback calibrated to Ember India 2024 (~0.3 TWh/yr solar curtailment). Loader reads committed CEA CSV when available.
+- **Source URL:** [https://gen-re.cea.gov.in/](https://gen-re.cea.gov.in/)
+- **Loader:** [`india-madhya-pradesh.json.ts`](../../src/data/india-madhya-pradesh.json.ts)
 - **Structural gap:** no
 
 ## Calibration
 
-- **Anchor basis:** Ember India 2024 solar curtailment rate × CEA generation. T3 ±40% envelope.
+- **Rate source documented in:** `docs/methodology/` (see links below)
+- **Uniform across backfill years:** n/a — no backfill
+
+## Multi-year backfill annual totals
+
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
+|---|---|---|---|---|---|
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **Operator annual:** —
-- **Ember / IRENA annual:** —
+- **TSO annual curtailment (latest published):** —
+- **Ember annual:** —
+- **IRENA annual:** —
+- **Other:** —
 
 ## Discrepancy analysis
 
@@ -31,4 +41,8 @@ _New region (granularity survey 2026-06-10, PR #203). Modelled from a capacity/u
 
 ## Links
 
-- Methodology — tiers & live-data paths: [`docs/methodology/live-data-paths.md`](../methodology/live-data-paths.md)
+- Loader source: [`india-madhya-pradesh.json.ts`](../../src/data/india-madhya-pradesh.json.ts)
+- Backfill archive: `data/historical/backfill/*_india-madhya-pradesh_*.parquet` (0 years)
+- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
+- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
+- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

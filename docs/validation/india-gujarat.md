@@ -1,6 +1,6 @@
 # Validation — Gujarat (`india-gujarat`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** GSLDC (Gujarat State Load Despatch Centre / GETCO) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: sldc.gujarat.gov.in timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader emits T3-modelled typical-shape calibrated to POSOCO/Ember India 2024 (~1.0 TWh/yr solar curtailment).
-- **Source URL:** [https://sldc.gujarat.gov.in/](https://sldc.gujarat.gov.in/)
+- **Source:** GSLDC (Gujarat State Load Despatch Centre / GETCO) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: sldc.gujarat.gov.in timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader uses live CEA daily generation × Ember 2024 rate 3% / (1−rate) (≈2.4 TWh/yr at current 77 TWh/yr solar generation); supersedes the older ~1.0 TWh/yr POSOCO anchor.
+- **Source URL:** [https://www.sldcguj.com/](https://www.sldcguj.com/)
 - **Loader:** [`india-gujarat.json.ts`](../../src/data/india-gujarat.json.ts)
 - **Structural gap:** no
 
@@ -59,7 +59,6 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Ember estimated curtailment:** ~1.0 TWh/yr
 - **Fallback anchor (no CSV):** 1.0 TWh/yr solar (POSOCO/Ember India 2024, unchanged)
 <!-- END MANUAL -->
-
 <!-- BEGIN MANUAL -->
 ## Bad-conversions check
 
@@ -91,6 +90,28 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 <!-- END MANUAL -->
 
 
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+
+
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
+<!-- BEGIN MANUAL -->
+- Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
+- Hourly shape remains synthetic (typical solar profile)
+- The GSLDC source (`sldc.gujarat.gov.in`) remains geoblocked; T1a promotion gated on Indian residential IP relay
+<!-- END MANUAL -->
 <!-- BEGIN MANUAL -->
 - Curtailment rate (3%) is Ember's estimate; actual Gujarat rate varies with Khavda-Kutch solar park output and transmission availability
 - Hourly shape remains synthetic (typical solar profile)

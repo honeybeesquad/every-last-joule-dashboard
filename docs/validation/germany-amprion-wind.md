@@ -1,6 +1,6 @@
 # Validation — Amprion Wind (`germany-amprion-wind`)
 
-Last updated: 2026-06-25 · Source upgraded from ENTSO-E proxy to netztransparenz.de measured curtailment
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,18 +8,28 @@ Last updated: 2026-06-25 · Source upgraded from ENTSO-E proxy to netztransparen
 - **Country:** DEU
 - **Tier:** live-domestic-anchored
 - **Kind:** wind
-- **Source:** netztransparenz.de redispatch API — MEASURED renewable curtailment per instructing TSO (Amprion). Wind/solar split apportioned by the ENTSO-E per-fuel ratio; magnitude is measured, split is estimated.
+- **Source:** netztransparenz.de redispatch (measured renewable curtailment, Amprion; wind/solar split apportioned by ENTSO-E fuel ratio)
 - **Source URL:** [https://ds.netztransparenz.de/](https://ds.netztransparenz.de/)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
 ## Calibration
 
-- **Method:** Direct measurement — no calibration rate applied. Wind/solar split: `fw = wind_twh / (wind_twh + solar_twh)` from ENTSO-E Amprion CTA snapshot.
-- **Anchor basis:** Measured redispatch totals from netztransparenz.de for the latest complete calendar month (~1–2 month lag).
+- **Rate source documented in:** `docs/methodology/` (see links below)
+- **Uniform across backfill years:** n/a — no backfill
+
+## Multi-year backfill annual totals
+
+| Year | Backfill rows | Backfill annual TWh | Published TSO annual TWh | Δ % | Source |
+|---|---|---|---|---|---|
+| _(no backfill or TSO anchors yet — will be populated after HB fan-out completes)_ | | | | | |
 
 ## Published anchors
 
-- **netztransparenz.de annual:** available via the same API for prior years
+- **TSO annual curtailment (latest published):** —
+- **Ember annual:** —
+- **IRENA annual:** —
+- **Other:** —
 
 ## Discrepancy analysis
 
@@ -33,5 +43,8 @@ _Source upgraded 2026-06-25 from ENTSO-E A75 proxy to direct measured curtailmen
 
 ## Links
 
-- Loader: [`src/data/germany-curtailment.json.ts`](../../src/data/germany-curtailment.json.ts)
-- Methodology — tiers & live-data paths: [`docs/methodology/live-data-paths.md`](../methodology/live-data-paths.md)
+- Loader source: _(no single-file loader — see multi-region source)_
+- Backfill archive: `data/historical/backfill/*_germany-amprion-wind_*.parquet` (0 years)
+- Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
+- Data source log: [`docs/data-source-log.md`](../data-source-log.md)
+- Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)

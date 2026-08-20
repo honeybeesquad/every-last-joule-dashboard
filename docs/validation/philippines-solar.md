@@ -1,6 +1,6 @@
 # Validation — Philippines Solar (`philippines-solar`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** PHL
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** IRENA Philippines RE Statistics 2024 anchor; IEMOP RTD endpoint exposes current-day dispatch schedules, not curtailed-energy. The 2% rate previously applied was an invented placeholder with no published source. Held at T3 until IEMOP/WESM publishes a citable curtailment rate.
+- **Source:** IRENA Philippines RE Statistics 2024 anchor (~0.04 TWh/yr solar). IEMOP RTD endpoint (iemop.ph) probed — RTD carries SCHED_MW only (dispatch schedules), no available-capacity column, so curtailment cannot be measured from this feed. No published curtailment rate available from IEMOP/WESM. Held at estimated until IEMOP publishes explicit curtailment data or a machine-readable alternative appears.
 - **Source URL:** [https://www.iemop.ph/market-data/rtd-prices-and-schedules/](https://www.iemop.ph/market-data/rtd-prices-and-schedules/)
 - **Loader:** [`philippines.json.ts`](../../src/data/philippines.json.ts)
 - **Structural gap:** no

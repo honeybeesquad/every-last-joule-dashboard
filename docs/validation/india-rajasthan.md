@@ -1,6 +1,6 @@
 # Validation — Rajasthan (`india-rajasthan`)
 
-Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-06-07 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** RRVPNL SLDC (Rajasthan State Load Despatch Centre) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: sldc.rajasthan.gov.in returns HTTP 403 on all paths. Login-gated portal, no public data surface. T1 blocked: no unauthenticated endpoint. Loader emits T3-modelled typical-shape calibrated to Ember India 2025 (~3.5 TWh/yr solar curtailment).
+- **Source:** RRVPNL SLDC (Rajasthan State Load Despatch Centre) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: sldc.rajasthan.gov.in returns HTTP 403 on all paths. Login-gated portal, no public data surface. T1 blocked: no unauthenticated endpoint. Loader uses live CEA daily generation × Ember 2024 rate 6% / (1−rate) (≈6.3 TWh/yr at current 98 TWh/yr generation); supersedes the older ~3.5 TWh/yr Ember-anchor estimate.
 - **Source URL:** [https://sldc.rajasthan.gov.in/](https://sldc.rajasthan.gov.in/)
 - **Loader:** [`india-rajasthan.json.ts`](../../src/data/india-rajasthan.json.ts)
 - **Structural gap:** no

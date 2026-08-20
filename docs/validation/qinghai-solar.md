@@ -1,6 +1,6 @@
 # Validation — Qinghai Solar (`qinghai-solar`)
 
-Last updated: 2026-06-19 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-06-19 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** NEA 2024 provincial RE monitoring bulletin — solar curtailment (~2.6 TWh/yr, Haixi/Golmud solar corridor, PV 90.3%)
-- **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
+- **Source:** Ember China subnational generation (trailing 12mo) × NEA 2024 curtailment rate 9.7% (utilisation 90.3%); refreshed anchor, T3-modelled shape
+- **Source URL:** [https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html](https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html)
 - **Loader:** [`qinghai.json.ts`](../../src/data/qinghai.json.ts)
 - **Structural gap:** no
 
