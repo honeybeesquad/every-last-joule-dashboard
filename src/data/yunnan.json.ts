@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { buildChinaRegionFromAnchor } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "yunnan";
@@ -17,8 +17,14 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
   } catch (err) {
     const note = `Typical-shape fallback: NEA 2024 provincial RE monitoring bulletin / live hourly feed unavailable (${(err as Error).message}); Yunnan wind+solar curtailment anchored at ~0.9 TWh/yr wind + ~0.9 TWh/yr solar.`;
     return {
-      wind:  buildTypicalWindRegion("yunnan-wind",  15, 0.9, note + " — wind (wind utilisation 99.1%)", "2024"),
-      solar: buildTypicalSolarRegion("yunnan-solar", 5, 0.9, note + " — solar (PV utilisation 96.7%)", "2024"),
+      wind:  buildChinaRegionFromAnchor(
+        "yunnan-wind", "wind", 15, 0.9,
+        note + " — wind (wind utilisation 99.1%)",
+      ),
+      solar: buildChinaRegionFromAnchor(
+        "yunnan-solar", "solar", 5, 0.9,
+        note + " — solar (PV utilisation 96.7%)",
+      ),
     };
   }
 }

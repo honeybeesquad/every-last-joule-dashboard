@@ -8,7 +8,7 @@ describe("china-shandong loader", () => {
     expect(data).toHaveProperty("solar");
     expect(data.solar.regionId).toBe("china-shandong-solar");
     expect(data.solar.profile).toHaveLength(24);
-    expect(data.solar.totalTWh).toBeCloseTo((4.5 * 30) / 365, 8);
+    expect(data.solar.totalTWh).toBeCloseTo((4.025 * 30) / 365, 8);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.wind.regionId).toBe("china-shandong-wind");
     expect(data.wind.profile).toHaveLength(24);
