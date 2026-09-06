@@ -3,7 +3,7 @@ import { join } from "node:path";
 import type { RegionData, RegionTier, SourceStatus } from "./types.js";
 import { REGIONS } from "./regions.js";
 import { applyUncertainty } from "./uncertainty.js";
-import { stampSourceProvenance } from "./source-provenance.js";
+import { stampSourceProvenance, sourceProvenanceForRegion } from "./source-provenance.js";
 
 export const DEFAULT_STALENESS_THRESHOLD_HOURS = 24;
 
@@ -194,7 +194,27 @@ function stampLive<T>(value: T, nowIso: string): T {
       (typeof record.regionId === "string" &&
         REGION_TIER_BY_ID[record.regionId] === "estimated" &&
         !record.confidenceTier);
-    if (isT3) {
+
+    // The T3 test above misses one shape: a modelled region that lands on a
+    // *higher* confidence tier. `buildTypicalHydroRegion` passes regionTier
+    // "anchored", so its output is T2-annual-calibrated even though the
+    // payload is a typical shape scaled to an annual anchor — nothing was
+    // fetched. china-chongqing-hydro and china-guizhou-hydro reached the
+    // globe stamped "live" that way.
+    //
+    // Canonical `sourceProvenance` is the durable signal here: a region the
+    // REGIONS table declares "modelled-fallback" has no upstream feed to be
+    // fresh from, at any tier. Read it from the table rather than the record,
+    // because stampSourceProvenance has not run yet at this point — only
+    // loaders that set the field by hand would carry it. The source-provenance
+    // coherence gate already classes a live tier paired with modelled-fallback
+    // as an *impossible* pairing; this stops withFallback minting one.
+    const isModelled =
+      typeof record.regionId === "string" &&
+      (record.sourceProvenance === "modelled-fallback" ||
+        sourceProvenanceForRegion(record.regionId) === "modelled-fallback");
+
+    if (isT3 || isModelled) {
       return { ...record, sourceStatus: "cached", lastSuccessAt: nowIso };
     }
     return {
