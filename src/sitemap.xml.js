@@ -31,6 +31,7 @@ const REPO_ROOT = fileURLToPath(new URL("../", import.meta.url));
 const STATIC_PAGES = [
   { path: "/", priority: "1.0", changefreq: "daily" },
   { path: "/regions", priority: "0.9", changefreq: "weekly" },
+  { path: "/history", priority: "0.9", changefreq: "weekly" },
   { path: "/methodology", priority: "0.8", changefreq: "weekly" },
   { path: "/paper", priority: "0.8", changefreq: "weekly" },
   { path: "/about", priority: "0.7", changefreq: "monthly" },

@@ -285,7 +285,7 @@ describe("the sitemap", () => {
   );
 
   it("lists every region page plus the hand-maintained pages", () => {
-    expect(xml.match(/<url>/g)?.length).toBe(REGIONS.length + 5);
+    expect(xml.match(/<url>/g)?.length).toBe(REGIONS.length + 6);
     expect(xml).toContain("<loc>https://everylastjoule.com/regions</loc>");
     expect(xml).toContain(
       `<loc>https://everylastjoule.com/region/${REGIONS[0].id}</loc>`,
