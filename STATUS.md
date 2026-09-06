@@ -30,7 +30,7 @@
 
 **Gate hazard confirmed (unresolved).** `check-magnitude-golden.ts` tells you on failure to "run `--update` and commit the diff", but the baseline file's own `$comment` warns that `--update` rewrites *every* key from whatever snapshots are on the local machine. Running it here would have silently moved **79 unrelated keys** (halving the Brazil set again — the exact 2026-08-01 incident the warning records — and tripling `germany-tennet-de-wind`) and deleted the warning comment itself. The 10 keys were hand-inserted instead. **The gate's own failure message contradicts the file it writes; worth fixing.**
 
-Verification: `tsc` clean; 1112 vitest (9 new in `tests/data/aemo-per-plant-emission.test.ts`); `npm run validate` green; all 9 `ci:gates` green.
+Verification: `tsc` clean; 1126 vitest across 200 files (9 new in `tests/data/aemo-per-plant-emission.test.ts`); `npm run validate` green; all 9 `ci:gates` green. Rebased onto `origin/main` at 84d752b0, after #921/#922.
 
 ---
 
