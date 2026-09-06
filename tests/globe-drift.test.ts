@@ -3,8 +3,9 @@ import { join } from "path";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
 
-// Guards `src/embed/globe.md` (the da-ri.org paper iframe) against the three
-// failure modes that have actually shipped to production from this file:
+// Guards `src/embed/globe.md` (the da-ri.org paper iframe) and `src/index.md`
+// against the three failure modes that have actually shipped to production
+// from these files:
 //
 //   1. SYNTAX. PR #830 appended a FileAttachment line without the comma on the
 //      line above, so the whole block failed to parse and the embed rendered a
@@ -20,18 +21,27 @@ import { describe, expect, it } from "vitest";
 //      Italy zones, the US utilities, …) never reached the embed, and keys
 //      split per fuel upstream (`mexico` → `mexico-{solar,wind}`) went stale.
 //
-// The parity assertion below is what makes the duplication safe. Until the
-// shared `buildRegionData()` extraction lands, adding a loader to the
-// dashboard MUST also add it here or this test fails.
+// Both pages now derive their fetch list and their payload record from one
+// keyed registry (`src/lib/data-loaders.js`), so a name is bound to a file by
+// *name*, on one line, rather than by array position — mode 2 is no longer
+// representable in a page. It is still representable in the registry itself
+// (write `key: "pakistan"` beside `FileAttachment(".../iran.json")` and you
+// have the #203 bug back), so the alignment assertion below moved there rather
+// than being dropped.
+//
+// The parity assertion is what makes the remaining regionData duplication
+// safe. Until the shared `buildRegionData()` extraction lands, adding a region
+// to the dashboard MUST also add it to the embed or this test fails.
 
 const REPO = join(__dirname, "..");
 const INDEX = "src/index.md";
 const EMBED = "src/embed/globe.md";
+const REGISTRY = "src/lib/data-loaders.js";
 
 /** Loaders the dashboard has that the embed deliberately does not. */
 const EMBED_EXEMPT_LOADERS = new Set([
   // Version badge for the dashboard chrome, not a region. It is also a live
-  // Zenodo fetch inside the blocking Promise.all; the embed must not wait on it.
+  // Zenodo fetch, which the embed must not block on.
   "zenodo-version",
 ]);
 
@@ -88,51 +98,71 @@ function syntaxErrors(block: Block): string[] {
     });
 }
 
+interface RegistryEntry {
+  /** Identifier the pages read the payload as (`feeds.<key>`). */
+  name: string;
+  /** Data-file stem, e.g. `iso-ne` for `../data/iso-ne.json`. */
+  file: string;
+  /** false when the row carries `embed: false`. */
+  embed: boolean;
+  /** 1-based line in the registry, for a legible failure message. */
+  line: number;
+}
+
 /**
- * The loader header of a page, in either shape it is written in:
+ * Parse `src/lib/data-loaders.js` — the one declared mapping both pages fetch
+ * from. Each row pairs a key with its FileAttachment on a single line:
  *
- *   inline    const [ … ] = await Promise.all([ …FileAttachment… ]);
- *   indirect  const _loaderFiles = [ …FileAttachment… ];
- *             const [ … ] = await Promise.all(_loaderFiles);
+ *   { key: "isoNe", file: FileAttachment("../data/iso-ne.json"), label: "…" },
  *
- * The dashboard uses the indirect shape so the loading-terminal total can be
- * derived from `_loaderFiles.length` instead of a hand-maintained constant
- * (which desynced and made the counter overshoot to "468 / 459"). The embed
- * still uses the inline shape. Both must yield the same names/files pairing,
- * because the alignment assertion below is what stops the #203 rotation class
- * of bug recurring — so this reads whichever shape is present rather than
- * relaxing what is checked.
+ * Read as text rather than imported, because the module imports
+ * `observablehq:stdlib`, which only Observable Framework resolves.
+ *
+ * A row that declares a key but no FileAttachment (or vice versa) is not
+ * silently dropped: the row count is asserted against the number of `key:`
+ * occurrences, so half-written rows fail rather than disappear.
  */
-function loaderHeader(md: string): { names: string[]; files: string[] } {
-  const arrStart = md.indexOf("const _loaderFiles = [");
-  const indirect = arrStart > -1;
+function registryEntries(): RegistryEntry[] {
+  const src = read(REGISTRY);
+  const start = src.indexOf("export const DATA_LOADERS = [");
+  const end = src.indexOf("\n];", start);
+  expect(start, "DATA_LOADERS array not found").toBeGreaterThan(-1);
+  expect(end, "DATA_LOADERS array not terminated").toBeGreaterThan(start);
 
-  const start = md.indexOf("const [");
-  const mid = indirect
-    ? md.indexOf("] = await Promise.all(_loaderFiles);", start)
-    : md.indexOf("] = await Promise.all([", start);
-  expect(start, "loader destructuring not found").toBeGreaterThan(-1);
-  expect(mid, "Promise.all not found").toBeGreaterThan(start);
+  const body = src.slice(start, end);
+  const before = src.slice(0, start).split("\n").length;
+  const entries: RegistryEntry[] = [];
+  body.split("\n").forEach((raw, i) => {
+    const m = /key:\s*"([^"]+)"\s*,\s*file:\s*FileAttachment\("([^"]+)"\)/.exec(raw);
+    if (!m) return;
+    entries.push({
+      name: m[1],
+      file: m[2].replace(/^.*\//, "").replace(/\.json$/, ""),
+      embed: !/\bembed:\s*false\b/.test(raw),
+      line: before + i,
+    });
+  });
 
-  const names = md
-    .slice(start + "const [".length, mid)
-    .split("\n")
-    .map((l) => l.replace(/\/\/.*$/, ""))
-    .join(",")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-
-  // Files come from the FileAttachment list, wherever it lives.
-  const fileFrom = indirect ? arrStart : mid;
-  const fileTo = indirect ? md.indexOf("\n];", arrStart) : md.indexOf("]);", mid);
-  expect(fileTo, "loader file list not terminated").toBeGreaterThan(fileFrom);
-
-  const files = [...md.slice(fileFrom, fileTo).matchAll(/FileAttachment\("([^"]+)"\)/g)].map((m) =>
-    m[1].replace(/^.*\//, "").replace(/\.json$/, ""),
+  // Every `key:` in the array must have produced an entry — otherwise a
+  // malformed row would vanish from every assertion below.
+  expect(entries.length, "a DATA_LOADERS row is missing its key or FileAttachment").toBe(
+    [...body.matchAll(/\bkey:\s*"/g)].length,
   );
+  return entries;
+}
 
-  return { names, files };
+/** Data-file stems a page fetches, via the registry it imports. */
+function loaderFiles(rel: string): string[] {
+  const md = read(rel);
+  const all = registryEntries();
+  if (rel === EMBED) {
+    expect(md, "embed must load the embed subset").toContain("EMBED_DATA_LOADERS");
+    return all.filter((e) => e.embed).map((e) => e.file);
+  }
+  expect(md, "dashboard must load the full registry").toContain(
+    "loadDataFiles(DATA_LOADERS, trackFile)",
+  );
+  return all.map((e) => e.file);
 }
 
 function toKebab(name: string): string {
@@ -151,7 +181,9 @@ function regionDataShape(md: string): { keys: string[]; spreads: string[] } {
   for (const raw of md.slice(start, end).split("\n")) {
     const s = raw.trim();
     if (!s || s.startsWith("//") || s.startsWith("*")) continue;
-    let m = /^\.\.\.([A-Za-z_$][\w$]*)\s*,?$/.exec(s);
+    // `...feeds.aemo,` — the dotted form since the loader payloads moved into
+    // one `feeds` record. The spread source recorded is the loader key.
+    let m = /^\.\.\.(?:feeds\.)?([A-Za-z_$][\w$]*)\s*,?$/.exec(s);
     if (m) {
       spreads.push(m[1]);
       continue;
@@ -186,6 +218,39 @@ const GERMAN_TSO_IDS = [
   "germany-transnetbw-solar",
 ];
 
+describe("src/lib/data-loaders.js", () => {
+  it("has no JavaScript syntax errors", () => {
+    expect(syntaxErrors({ src: read(REGISTRY), firstLine: 1 })).toEqual([]);
+  });
+
+  // THE #203 ASSERTION. It used to compare two parallel arrays by index; it now
+  // compares the two halves of a single row. Same invariant, fewer ways to
+  // break it: a name can only drift from its file if someone writes the wrong
+  // FileAttachment beside the key, and that is what this catches.
+  it("binds each loader key to the data file of the same name", () => {
+    const entries = registryEntries();
+    const pairs = entries.map((e) => `${REGISTRY}:${e.line} ${toKebab(e.name)} <- ${e.file}`);
+    const expected = entries.map(
+      (e) => `${REGISTRY}:${e.line} ${toKebab(e.name)} <- ${toKebab(e.name)}`,
+    );
+    expect(pairs).toEqual(expected);
+  });
+
+  it("declares every loader exactly once", () => {
+    const entries = registryEntries();
+    expect(entries.length).toBeGreaterThan(100);
+    expect(new Set(entries.map((e) => e.name)).size).toBe(entries.length);
+    expect(new Set(entries.map((e) => e.file)).size).toBe(entries.length);
+  });
+
+  it("flags exactly the documented embed exemptions", () => {
+    const exempt = registryEntries()
+      .filter((e) => !e.embed)
+      .map((e) => e.file);
+    expect(exempt.sort()).toEqual([...EMBED_EXEMPT_LOADERS].sort());
+  });
+});
+
 describe.each([
   ["src/index.md", INDEX],
   ["src/embed/globe.md", EMBED],
@@ -198,12 +263,22 @@ describe.each([
     }
   });
 
-  it("binds each destructured name to the loader at the same index", () => {
-    const { names, files } = loaderHeader(md);
-    expect(names.length).toBe(files.length);
-    const pairs = names.map((n, i) => `${toKebab(n)} <- ${files[i]}`);
-    const expected = names.map((n) => `${toKebab(n)} <- ${toKebab(n)}`);
-    expect(pairs).toEqual(expected);
+  // The registry is only load-bearing while it is the *only* place a data file
+  // is named. A page-local `FileAttachment(...).json()` list would be a second
+  // source of truth and could reintroduce the positional pairing. (The globe's
+  // `FileAttachment("…/countries-110m.json").url()` is topology, not a loader,
+  // and is deliberately not matched here.)
+  it("fetches its data only through the registry", () => {
+    expect([...md.matchAll(/FileAttachment\("([^"]+)"\)\s*\.json\(\)/g)].map((m) => m[1])).toEqual(
+      [],
+    );
+  });
+
+  it("reads only loader keys the registry declares", () => {
+    const declared = new Set(registryEntries().map((e) => e.name));
+    const used = [...md.matchAll(/\bfeeds\.([A-Za-z_$][\w$]*)/g)].map((m) => m[1]);
+    expect(used.length).toBeGreaterThan(0);
+    expect([...new Set(used)].filter((k) => !declared.has(k))).toEqual([]);
   });
 
   it("references only canonical region ids in regionData", () => {
@@ -217,15 +292,15 @@ describe("embed/globe.md parity with the dashboard", () => {
   const embed = read(EMBED);
 
   it("loads every dashboard loader except the documented exemptions", () => {
-    const inIndex = loaderHeader(index).files;
-    const inEmbed = new Set(loaderHeader(embed).files);
+    const inIndex = loaderFiles(INDEX);
+    const inEmbed = new Set(loaderFiles(EMBED));
     const missing = inIndex.filter((f) => !inEmbed.has(f) && !EMBED_EXEMPT_LOADERS.has(f));
     expect(missing).toEqual([]);
   });
 
   it("loads no region loader the dashboard does not", () => {
-    const inIndex = new Set(loaderHeader(index).files);
-    expect(loaderHeader(embed).files.filter((f) => !inIndex.has(f))).toEqual([]);
+    const inIndex = new Set(loaderFiles(INDEX));
+    expect(loaderFiles(EMBED).filter((f) => !inIndex.has(f))).toEqual([]);
   });
 
   it("assembles exactly the same regionData keys as the dashboard", () => {
@@ -235,13 +310,13 @@ describe("embed/globe.md parity with the dashboard", () => {
     expect([...new Set(b.spreads)].sort()).toEqual([...new Set(a.spreads)].sort());
   });
 
-  it("includes the German TSO zones and imports their loader", () => {
+  it("includes the German TSO zones and loads their loader", () => {
     const { keys } = regionDataShape(embed);
     const canon = canonicalRegionIds();
     for (const id of GERMAN_TSO_IDS) {
       expect(canon.has(id)).toBe(true);
       expect(keys).toContain(id);
     }
-    expect(embed).toContain('FileAttachment("../data/germany-curtailment.json")');
+    expect(loaderFiles(EMBED)).toContain("germany-curtailment");
   });
 });
