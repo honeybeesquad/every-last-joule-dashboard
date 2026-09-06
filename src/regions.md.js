@@ -154,7 +154,7 @@ toc: false
 pager: false
 ---
 
-<nav class="page-back-nav"><a href="./">← Dashboard</a> <span class="page-back-sep">·</span> <a href="./methodology">Methodology</a></nav>
+<nav class="page-back-nav"><a href="./">← Dashboard</a> <span class="page-back-sep">·</span> <a href="./history">Historical record</a> <span class="page-back-sep">·</span> <a href="./methodology">Methodology</a></nav>
 
 <div class="methodology-doc region-directory">
 
