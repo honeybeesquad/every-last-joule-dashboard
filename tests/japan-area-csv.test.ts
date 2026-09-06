@@ -45,6 +45,10 @@ describe("parseAreaCsv", () => {
       intervalHours: 0.5,
       solarMw: 100,
       windMw: 10,
+      // 太陽光発電実績 / 風力発電実績 — measured generation published on the
+      // same row as the 出力制御量 curtailment columns, one index earlier.
+      solarGenMw: 5000,
+      windGenMw: 400,
     });
   });
 
@@ -79,8 +83,8 @@ describe("decodeAreaCsv", () => {
 
 describe("mergeWindowBuild", () => {
   const NOW = new Date("2026-05-31T00:00:00.000Z");
-  const mk = (iso: string, solarMw: number, windMw: number): AreaParsed => ({
-    points: [{ utcTimestamp: iso, mw: solarMw + windMw, intervalHours: 0.5, solarMw, windMw }],
+  const mk = (iso: string, solarMw: number, windMw: number, solarGenMw = 0, windGenMw = 0): AreaParsed => ({
+    points: [{ utcTimestamp: iso, mw: solarMw + windMw, intervalHours: 0.5, solarMw, windMw, solarGenMw, windGenMw }],
     solarCurtMwSum: solarMw,
     windCurtMwSum: windMw,
     sampleCount: 1,
@@ -130,6 +134,8 @@ describe("windowedPoints", () => {
     intervalHours: 0.5,
     solarMw: mw,
     windMw: 0,
+    solarGenMw: 0,
+    windGenMw: 0,
   });
   const months: AreaParsed[] = [
     {

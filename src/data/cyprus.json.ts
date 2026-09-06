@@ -165,6 +165,10 @@ export function buildCyprusRegion(points: CurtailmentPoint[]): RegionData {
       "the published annual anchor, not a measurement — the region stays T3-modelled.",
     generationProfile: generationShapeGW,
     generationTotalTWh,
+    // PV generation is measured; the curtailment magnitude is the published
+    // annual anchor spread across the window. The ratio is an implied rate
+    // (quoted in the source note above), not an observed share.
+    generationBasis: "anchor-implied" as const,
   };
 
   return applyUncertainty(base, { regionTier: "estimated", profileKind: "solar" });

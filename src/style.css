@@ -1282,6 +1282,55 @@ main table {
 
 .hotspot-country { display: none; }
 
+/* ── Share view ────────────────────────────────────────────────────────────
+   Regions with no honest share are listed, never omitted: an absent row would
+   read as "this region curtails nothing", which is a different fact. They are
+   dimmed and separated by a rule so the ranked list above stays legible, and
+   each row's title attribute carries the reason from generation-share.ts.
+   Colours are the same rgba-on-dark values the rest of this panel uses, so both
+   themes (Sunfire, Deep Current) inherit correctly. */
+.hotspot-unavailable-head {
+  list-style: none;
+  margin-top: 10px;
+  padding: 8px 0 4px;
+  border-top: 1px dashed rgba(255,255,255,0.14);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+  font-variant-numeric: tabular-nums;
+}
+
+.hotspot-item-unavailable {
+  opacity: 0.55;
+  cursor: help;
+}
+
+.hotspot-gw-unavailable {
+  font-style: italic;
+  color: rgba(255,255,255,0.5);
+}
+
+/* Explains what the share view is measuring and what it deliberately leaves
+   alone. Hidden entirely in the absolute view via the `hidden` attribute. */
+.hotspot-units-note {
+  margin: 4px 0 6px;
+  font-size: 10px;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.5);
+  border-left: 2px solid var(--amber-500);
+  padding-left: 8px;
+}
+
+/* Mode toggle (time window) + units toggle (GW vs share) sit side by side.
+   They are orthogonal and compose, so they stay two groups rather than one. */
+.toggle-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
 @media (max-width: 900px) {
   .hotspot-columns {
     grid-template-columns: 1fr;

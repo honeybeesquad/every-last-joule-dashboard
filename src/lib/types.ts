@@ -173,7 +173,38 @@ export interface RegionData {
   generationProfile?: number[];
   /** Trailing-30-day total renewable generation (TWh), companion to generationProfile. */
   generationTotalTWh?: number;
+  /**
+   * How this record's generation figures relate to its curtailment figures.
+   * Required reading before dividing one by the other.
+   *
+   *   "measured-independent"     the upstream source publishes curtailment as
+   *                              its OWN quantity, measured separately from
+   *                              generation, and publishes generation for the
+   *                              same window. `totalTWh / generationTotalTWh`
+   *                              is an OBSERVATION.
+   *   "derived-from-generation"  curtailment was computed AS
+   *                              `generation x rate`. `totalTWh /
+   *                              generationTotalTWh` returns `rate` — the
+   *                              input, not a finding. Never publish it as a
+   *                              share.
+   *   "anchor-implied"           generation is measured but the curtailment
+   *                              magnitude is a published annual anchor spread
+   *                              across the window, not a measurement of it.
+   *                              The ratio is an implied rate, not an observed
+   *                              share.
+   *
+   * Absent means the loader emits no generation at all. Only
+   * "measured-independent" may be surfaced as a share; see
+   * `src/lib/generation-share.ts`, which is the single gate for that decision.
+   */
+  generationBasis?: GenerationBasis;
 }
+
+/** See `RegionData.generationBasis`. */
+export type GenerationBasis =
+  | "measured-independent"
+  | "derived-from-generation"
+  | "anchor-implied";
 
 
 /** Network consumption and hashrate reference from Cambridge CBECI. */

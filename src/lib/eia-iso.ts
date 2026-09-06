@@ -148,6 +148,10 @@ export function parseEiaIsoRegionPerFuel(
     sourceNote: `EIA ${config.respondent} wind × ${(config.windRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
     generationProfile: timeOfDayAverageGW(windGenPoints),
     generationTotalTWh: totalTWh30d(windGenPoints),
+    // Curtailment above IS this generation x config.windRate, so the implied
+    // share is the rate constant. Declared derived so `curtailmentShare()`
+    // refuses to publish it. See src/lib/generation-share.ts.
+    generationBasis: "derived-from-generation",
   };
 
   const solar: RegionData = {
@@ -161,6 +165,7 @@ export function parseEiaIsoRegionPerFuel(
     sourceNote: `EIA ${config.respondent} solar × ${(config.solarRate * 100).toFixed(1)}% calibrated curtailment (observed 30d share: solar ${(fuelShare.solar * 100).toFixed(0)}%)`,
     generationProfile: timeOfDayAverageGW(solarGenPoints),
     generationTotalTWh: totalTWh30d(solarGenPoints),
+    generationBasis: "derived-from-generation",
   };
 
   return { wind, solar };
@@ -206,6 +211,7 @@ export function parseEiaIsoRegion(
     fuelShare,
     generationProfile: timeOfDayAverageGW(combinedGen),
     generationTotalTWh: totalTWh30d(combinedGen),
+    generationBasis: "derived-from-generation",
   };
 }
 
