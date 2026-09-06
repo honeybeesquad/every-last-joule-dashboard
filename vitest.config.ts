@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
 // Node ≥22 ships a built-in localStorage stub that lacks `.clear()`; jsdom
@@ -11,6 +12,16 @@ const nodeMajor = Number(process.versions.node.split(".")[0]);
 const workerExecArgv = nodeMajor >= 22 ? ["--no-experimental-webstorage"] : [];
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      // `src/lib/data-loaders.js` imports FileAttachment from Observable
+      // Framework's virtual stdlib module, which only the framework resolves.
+      // Aliasing it to a stub makes the loader registry importable in tests.
+      "observablehq:stdlib": fileURLToPath(
+        new URL("./tests/stubs/observablehq-stdlib.ts", import.meta.url),
+      ),
+    },
+  },
   test: {
     environment: "node",
     include: ["tests/**/*.test.ts"],
