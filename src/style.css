@@ -1954,3 +1954,333 @@ main > h1:first-child {
 @media (max-width: 900px) {
   .globe-legend { left: 8px; bottom: 8px; font-size: 11px; max-width: 60vw; }
 }
+
+/* =========================================================================
+   REGION PAGES — the /regions directory and the /region/<id> records
+   =========================================================================
+   Both surfaces sit inside .methodology-doc, so the type scale, link colours,
+   table styling, and both theme token sets already apply. Nothing here
+   introduces a colour value: every rule reads --ink / --ink-muted /
+   --ink-soft / --hairline / --brand-rgb / --surface-*, which
+   :root[data-theme="sunfire"] and :root[data-theme="deepcurrent"] both
+   define. Quality dots reuse the .ql-dot vocabulary from the globe legend
+   above, so a reader sees the same mark in both places. */
+
+.page-back-sep { color: var(--ink-soft); margin: 0 6px; }
+
+/* ---- Shared: the identity facts strip under a page's deck --------------- */
+.region-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px 24px;
+  margin: 22px 0 0;
+}
+.region-facts .region-fact dt {
+  font: 500 11px/1.2 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 5px;
+}
+.region-facts .region-fact dd {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* ---- /region/<id>: the provenance panel --------------------------------
+   Deliberately the first thing under the header. This project's value is
+   honesty about data quality, so the tier, its envelope, and what the tier
+   means are not allowed to sit below the fold. */
+.region-doc .region-provenance {
+  border: 1px solid var(--hairline-strong);
+  border-left: 3px solid rgba(var(--brand-rgb), 0.7);
+  border-radius: var(--r-md);
+  background: var(--surface-raised);
+  padding: 20px 24px;
+  margin: 0 0 44px;
+}
+.region-doc .region-provenance-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.region-doc .region-provenance-title {
+  font: 600 13px/1.2 var(--font-body);
+  letter-spacing: 0.02em;
+  color: var(--ink-muted);
+}
+.region-quality-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px 4px 10px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-pill);
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--surface-bg-2);
+}
+.region-doc .region-provenance-grid { margin: 0; display: grid; gap: 16px; }
+.region-doc .region-provenance-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 4px 20px;
+}
+.region-doc .region-provenance-row dt {
+  font: 500 11px/1.5 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.region-doc .region-provenance-row dd {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
+}
+.region-doc .region-provenance-row dd p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+.region-doc .region-provenance-row dd p.region-provenance-note {
+  color: var(--ink-soft);
+  font-style: italic;
+}
+.region-doc .region-provenance-foot {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.region-doc .region-doc-foot {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* ---- /regions: legend, filter, and list --------------------------------- */
+.region-directory { max-width: 980px; }
+
+.region-legend {
+  list-style: none;
+  padding: 16px 20px;
+  margin: 0 0 10px;
+  display: grid;
+  gap: 9px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  background: var(--surface-raised);
+  font-size: 13px;
+}
+.region-legend li {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  color: var(--ink-muted);
+  margin: 0;
+  padding: 0;
+}
+.region-legend .ql-dot { position: relative; top: 2px; }
+.region-legend strong { color: var(--ink); font-weight: 600; }
+.region-legend-count {
+  margin-left: auto;
+  padding-left: 14px;
+  white-space: nowrap;
+  font: 500 11px/1 var(--font-mono);
+  color: var(--ink-soft);
+}
+.region-directory .region-legend-foot {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin: 0 0 28px;
+}
+
+.region-filter {
+  display: grid;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-md);
+  background: var(--surface-bg-2);
+  margin-bottom: 20px;
+}
+.region-filter-search { display: grid; gap: 6px; }
+.region-filter-search label {
+  font: 500 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.region-filter input[type="search"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  font: 400 15px/1.3 var(--font-body);
+  color: var(--ink);
+  background: var(--surface-bg-3);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-sm);
+}
+.region-filter input[type="search"]:focus-visible,
+.region-filter select:focus-visible,
+.region-chip input:focus-visible + span {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+  border-color: rgba(var(--brand-rgb), 0.6);
+}
+.region-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+}
+.region-chip-group { border: 0; margin: 0; padding: 0; min-width: 0; }
+.region-chip-group legend {
+  padding: 0 0 7px;
+  font: 500 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.region-chip { display: inline-block; margin: 0 6px 6px 0; cursor: pointer; }
+.region-chip input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.region-chip span {
+  display: inline-block;
+  padding: 5px 11px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-pill);
+  font: 500 12px/1.2 var(--font-mono);
+  color: var(--ink-muted);
+  background: var(--surface-raised);
+  transition: color var(--dur-fast, 120ms) ease, border-color var(--dur-fast, 120ms) ease;
+}
+.region-chip:hover span { color: var(--ink); }
+.region-chip input:checked + span {
+  color: var(--brand-on);
+  background: var(--brand);
+  border-color: var(--brand);
+}
+.region-filter select {
+  padding: 7px 10px;
+  font: 400 13px/1.2 var(--font-body);
+  color: var(--ink);
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-sm);
+  max-width: 100%;
+}
+.region-filter-status {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+}
+.region-directory .region-count {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.region-filter-reset {
+  font: 500 11px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 13px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.region-filter-reset:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+.region-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  border-top: 1px solid var(--hairline);
+}
+.region-list .region-row { margin: 0; padding: 0; }
+.region-list .region-row[hidden] { display: none; }
+.region-row > a {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 10px;
+  border-bottom: 1px solid var(--hairline);
+  text-decoration: none;
+  color: inherit;
+  border-left: 2px solid transparent;
+}
+.region-row > a:hover {
+  background: var(--surface-raised);
+  border-left-color: rgba(var(--brand-rgb), 0.7);
+  text-decoration: none;
+}
+/* Wrap rather than truncate. The name and the id are both things a reader
+   might be here to copy — an ellipsis in either is a lossy reference page. */
+.region-row-main {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  min-width: 0;
+}
+.region-row-name { font-size: 14.5px; color: var(--ink); }
+.region-row-id { font: 400 11px/1.4 var(--font-mono); color: var(--ink-soft); }
+.region-row-meta {
+  font-size: 12px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.region-row-tier {
+  font: 500 10px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-pill);
+  padding: 4px 9px;
+  white-space: nowrap;
+}
+.region-directory .region-empty {
+  padding: 28px 0;
+  text-align: center;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 760px) {
+  .region-doc .region-provenance { padding: 16px 16px; }
+  .region-doc .region-provenance-row { grid-template-columns: 1fr; }
+  /* Let the per-bucket count drop below its definition rather than squeezing
+     the definition into a two-word column. */
+  .region-legend li { flex-wrap: wrap; }
+  .region-legend-count { flex: 1 0 100%; margin-left: 21px; padding-left: 0; }
+  .region-row > a { grid-template-columns: 12px minmax(0, 1fr); gap: 4px 12px; }
+  .region-row-main { flex-direction: column; gap: 2px; }
+  .region-row-meta,
+  .region-row-tier { grid-column: 2; justify-self: start; }
+  .region-row-tier { margin-top: 4px; }
+}
+
+/* The .ql-anchored ring paints its gap in --surface-bg-2, which is the globe
+   legend's own background. Repaint it where the directory puts a dot on a
+   raised surface, so the ring reads as a ring and not as a smudge. */
+.region-legend .ql-anchored,
+.region-row > a:hover .ql-anchored {
+  box-shadow: 0 0 0 2px var(--surface-raised), 0 0 0 3px var(--ink);
+}
