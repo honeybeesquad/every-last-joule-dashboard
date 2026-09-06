@@ -481,7 +481,13 @@ export const REGIONS: Region[] = [
   { id: "iran",             name: "Iran",            country: "IRN", lat:  33.0, lon:  52.0, tier: "estimated", kind: "solar", source: "TAVANIR fallback", sourceUrl: "https://www.tavanir.org.ir/", sourceProvenance: "modelled-fallback" },
   { id: "iraq-mainland",    name: "Iraq",            country: "IRQ", lat: 34.0, lon: 43.5, tier: "estimated", kind: "solar", source: "Ministry of Electricity fallback", sourceUrl: "https://moelc.gov.iq/", sourceProvenance: "modelled-fallback" },
   { id: "kurdistan",        name: "Kurdistan (KRG)", country: "IRQ", lat:  36.5, lon:  44.0, tier: "estimated", kind: "solar", source: "KRG Ministry fallback", sourceUrl: "https://gov.krd/moel-en/", sourceProvenance: "modelled-fallback" },
-  { id: "bangladesh",       name: "Bangladesh",      country: "BGD", lat:  24.0, lon:  90.0, tier: "estimated", kind: "solar", source: "BPDB fallback", sourceUrl: "https://bpdb.gov.bd/", sourceProvenance: "modelled-fallback" },
+  // Shape measured, magnitude modelled. PGCB's public dashboard publishes a
+  // rolling ~48h table of hourly system generation by fuel, so the diurnal
+  // SHAPE is real national metered solar output. It publishes no curtailment,
+  // and Bangladesh has no published national curtailment rate, so the energy
+  // total is still the repo's own 0.1 TWh/yr estimate — unchanged from the
+  // BPDB fallback this replaced. Stays `estimated`; do not call it measured.
+  { id: "bangladesh",       name: "Bangladesh",      country: "BGD", lat:  24.0, lon:  90.0, tier: "estimated", kind: "solar", source: "PGCB hourly generation-by-fuel dashboard supplies the measured solar diurnal shape; the 0.1 TWh/yr curtailment total is an unattributed repo estimate (PGCB publishes generation, not curtailment). Loader reports the rate the anchor implies against observed generation each build.", sourceUrl: "https://erp.powergrid.gov.bd/web/generations/view_generations_bn", sourceProvenance: "modelled-fallback" },
   { id: "brazil-mg-wind",   name: "Minas Gerais Wind", country: "BRA", lat: -18.0, lon: -44.2, tier: "live", kind: "wind",  source: "ONS wind constrained-off", sourceUrl: "https://www.ons.org.br/", sourceProvenance: "verified" },
   { id: "brazil-mg-solar",  name: "Minas Gerais Solar", country: "BRA", lat: -17.8, lon: -43.8, tier: "live", kind: "solar", source: "ONS solar constrained-off", sourceUrl: "https://www.ons.org.br/", sourceProvenance: "verified" },
   { id: "brazil-sp-wind",   name: "Sao Paulo Wind", country: "BRA", lat: -22.5, lon: -48.2, tier: "live", kind: "wind",  source: "ONS wind constrained-off", sourceUrl: "https://www.ons.org.br/", sourceProvenance: "verified" },
