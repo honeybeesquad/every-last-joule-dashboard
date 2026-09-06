@@ -1,9 +1,17 @@
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 
+import { REGIONS } from "./src/lib/regions.js";
+
 const fontFiles = readdirSync(join("src", "fonts"))
   .filter((file) => file.endsWith(".ttf") || file.endsWith(".woff2"))
   .map((file) => `/fonts/${file}`);
+
+// One `/region/<id>` route per canonical region, rendered by the parameterised
+// page loader at src/region/[id].md.js. `pages:` below controls navigation,
+// not routing — a path only gets built if it comes out of config.paths(), and
+// for a parameterised loader that means listing it here.
+const regionPaths = REGIONS.map((region) => `/region/${region.id}`);
 
 // Social-share card. The description is the one-line story the card tells
 // when the link is pasted into iMessage / Slack / Twitter / LinkedIn etc.
@@ -37,10 +45,19 @@ export default {
   interpreters: {
     ".ts": ["tsx"]
   },
-  // og-image.png is referenced only via <meta> tags (not by any page's
-  // HTML), so Observable Framework doesn't auto-copy it unless we list
-  // it explicitly here.
-  dynamicPaths: [...fontFiles, "/og-image.png"],
+  // Framework only emits a file when its path comes out of config.paths(),
+  // and for anything that is not a page or a page loader that means listing
+  // it here. og-image.png is referenced only via <meta> tags; robots.txt and
+  // sitemap.xml are referenced by nothing at all, which is why they were
+  // silently absent from every build until now even though src/robots.txt
+  // advertises the sitemap.
+  dynamicPaths: [
+    ...fontFiles,
+    "/og-image.png",
+    "/robots.txt",
+    "/sitemap.xml",
+    ...regionPaths,
+  ],
   pages: [
     { name: "Dashboard", path: "/" },
     { name: "Methodology", path: "/methodology" },
