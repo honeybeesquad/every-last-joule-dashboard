@@ -1156,6 +1156,13 @@ main table {
   font-style: italic;
 }
 
+/* Truncation notice appended to the subtitle. Upright and tabular so the
+   figures read as data against the italic descriptor beside them. */
+.hotspot-column-count {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+
 .hotspot-list {
   list-style: none;
   padding: 0;

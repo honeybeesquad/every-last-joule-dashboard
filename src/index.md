@@ -149,7 +149,7 @@ document.getElementById("app-root").innerHTML = `
                   <span class="dot dot--${fuel}"></span>
                   <span>${FUEL_LABEL[fuel]}</span>
                 </div>
-                <div class="hotspot-column-subtitle">${subtitle}</div>
+                <div class="hotspot-column-subtitle">${subtitle}<span class="hotspot-column-count" id="hotspot-count-${fuel}"></span></div>
                 <ol class="hotspot-list" id="hotspot-list-${fuel}"></ol>
               </div>
             `;
@@ -550,6 +550,20 @@ function renderAt(hour) {
     const rows = allEntries
       .sort((a, b) => b.gw - a.gw)
       .slice(0, HOTSPOT_LIST_LIMIT);
+
+    // Say plainly when the column is truncated. `allEntries` is every region
+    // currently curtailing in this fuel bucket; `rows` is what fits under
+    // HOTSPOT_LIST_LIMIT. With 246 solar and 144 wind regions competing for 50
+    // slots, the tail is routinely cut, and a list that silently stops at 50
+    // reads as complete. The cap itself stays: renderAt() rebuilds all three
+    // lists on every clock tick, including timeline playback at up to 8x.
+    const countEl = document.getElementById(`hotspot-count-${fuel}`);
+    if (countEl) {
+      countEl.textContent = allEntries.length > rows.length
+        ? ` · ${rows.length} of ${allEntries.length} shown`
+        : ` · ${allEntries.length} active`;
+    }
+
     document.getElementById(`hotspot-list-${fuel}`).innerHTML =
       rows.map(({ region, gw }) => `
         <li class="hotspot-item">
