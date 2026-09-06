@@ -17,11 +17,15 @@
  *
  * This script is read-only: it touches no data files, no regions.ts, and
  * no golden fixtures.
+ *
+ * The two outputs above are written only when this file is run as the main
+ * module. Importing it for `computeScorecard` writes nothing, so `npm test`
+ * and the CI gates leave the tracked output files alone.
  */
 
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 import { REGIONS } from "../src/lib/regions.js";
 import { resolveAll } from "./lib/tier-resolution.js";
 import type { RegionData, RegionTier } from "../src/lib/types.js";
@@ -449,29 +453,38 @@ the relevant region in \`src/lib/regions.ts\` and re-run \`npm run scorecard\`._
 
 // ── Write outputs ─────────────────────────────────────────────────────────────
 
-const sc = computeScorecard();
+// Guarded so that importing this module for `computeScorecard` (tests/scorecard.test.ts,
+// and anything else that pulls it in transitively) does not rewrite the two tracked
+// output files as a side effect. `npm run scorecard` still regenerates both.
+const isMain =
+  Boolean(process.argv[1]) &&
+  import.meta.url === pathToFileURL(process.argv[1]!).href;
 
-// Write JSON
-const jsonPath = path.join(ROOT, "data/scorecard.json");
-fs.writeFileSync(jsonPath, JSON.stringify(sc, null, 2) + "\n");
-console.log(`Wrote ${jsonPath}`);
+if (isMain) {
+  const sc = computeScorecard();
 
-// Write Markdown
-const mdPath = path.join(ROOT, "docs/comprehensiveness-scorecard.md");
-const mdContent = buildMarkdownReport(sc);
-fs.writeFileSync(mdPath, mdContent);
-console.log(`Wrote ${mdPath}`);
+  // Write JSON
+  const jsonPath = path.join(ROOT, "data/scorecard.json");
+  fs.writeFileSync(jsonPath, JSON.stringify(sc, null, 2) + "\n");
+  console.log(`Wrote ${jsonPath}`);
 
-// Print headline summary to stdout
-const { measured, anchored: anch2, modelled } = sc.measuredClass;
-const T = sc.regionCount;
-console.log(`\n=== Comprehensiveness Scorecard (${sc.generatedOn}) ===`);
-console.log(`Regions:        ${T} across ${sc.countryCount} countries/territories`);
-console.log(`Measured (T1):  ${measured} (${pct(measured, T)}%)`);
-console.log(`Anchored (T2):  ${anch2} (${pct(anch2, T)}%)`);
-console.log(`Modelled (T3):  ${modelled} (${pct(modelled, T)}%)`);
-console.log(`Provenance: verified=${sc.byProvenance["verified"]}, official-lead=${sc.byProvenance["official-lead"]}, modelled-fallback=${sc.byProvenance["modelled-fallback"]}`);
-console.log(`Freshness: <24h=${sc.freshnessBuckets["<24h"]}, <7d=${sc.freshnessBuckets["<7d"]}, 7-30d=${sc.freshnessBuckets["7-30d"]}, >30d=${sc.freshnessBuckets[">30d"]}`);
-const twh = sc.twhByClass;
-console.log(`30-day TWh: measured=${fmt(twh.measured)}, anchored=${fmt(twh.anchored)}, modelled=${fmt(twh.modelled)}, total=${fmt(twh.total)}`);
-console.log(`Stale-but-live feeds: ${sc.staleButLive.length}`);
+  // Write Markdown
+  const mdPath = path.join(ROOT, "docs/comprehensiveness-scorecard.md");
+  const mdContent = buildMarkdownReport(sc);
+  fs.writeFileSync(mdPath, mdContent);
+  console.log(`Wrote ${mdPath}`);
+
+  // Print headline summary to stdout
+  const { measured, anchored: anch2, modelled } = sc.measuredClass;
+  const T = sc.regionCount;
+  console.log(`\n=== Comprehensiveness Scorecard (${sc.generatedOn}) ===`);
+  console.log(`Regions:        ${T} across ${sc.countryCount} countries/territories`);
+  console.log(`Measured (T1):  ${measured} (${pct(measured, T)}%)`);
+  console.log(`Anchored (T2):  ${anch2} (${pct(anch2, T)}%)`);
+  console.log(`Modelled (T3):  ${modelled} (${pct(modelled, T)}%)`);
+  console.log(`Provenance: verified=${sc.byProvenance["verified"]}, official-lead=${sc.byProvenance["official-lead"]}, modelled-fallback=${sc.byProvenance["modelled-fallback"]}`);
+  console.log(`Freshness: <24h=${sc.freshnessBuckets["<24h"]}, <7d=${sc.freshnessBuckets["<7d"]}, 7-30d=${sc.freshnessBuckets["7-30d"]}, >30d=${sc.freshnessBuckets[">30d"]}`);
+  const twh = sc.twhByClass;
+  console.log(`30-day TWh: measured=${fmt(twh.measured)}, anchored=${fmt(twh.anchored)}, modelled=${fmt(twh.modelled)}, total=${fmt(twh.total)}`);
+  console.log(`Stale-but-live feeds: ${sc.staleButLive.length}`);
+}
