@@ -1,6 +1,6 @@
 # Validation — Cyprus (`cyprus`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-09-06 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
