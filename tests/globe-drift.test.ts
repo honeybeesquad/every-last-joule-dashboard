@@ -88,11 +88,29 @@ function syntaxErrors(block: Block): string[] {
     });
 }
 
-/** The `const [ … ] = await Promise.all([ … ]);` header of a page. */
+/**
+ * The loader header of a page, in either shape it is written in:
+ *
+ *   inline    const [ … ] = await Promise.all([ …FileAttachment… ]);
+ *   indirect  const _loaderFiles = [ …FileAttachment… ];
+ *             const [ … ] = await Promise.all(_loaderFiles);
+ *
+ * The dashboard uses the indirect shape so the loading-terminal total can be
+ * derived from `_loaderFiles.length` instead of a hand-maintained constant
+ * (which desynced and made the counter overshoot to "468 / 459"). The embed
+ * still uses the inline shape. Both must yield the same names/files pairing,
+ * because the alignment assertion below is what stops the #203 rotation class
+ * of bug recurring — so this reads whichever shape is present rather than
+ * relaxing what is checked.
+ */
 function loaderHeader(md: string): { names: string[]; files: string[] } {
+  const arrStart = md.indexOf("const _loaderFiles = [");
+  const indirect = arrStart > -1;
+
   const start = md.indexOf("const [");
-  const mid = md.indexOf("] = await Promise.all([", start);
-  const end = md.indexOf("]);", mid);
+  const mid = indirect
+    ? md.indexOf("] = await Promise.all(_loaderFiles);", start)
+    : md.indexOf("] = await Promise.all([", start);
   expect(start, "loader destructuring not found").toBeGreaterThan(-1);
   expect(mid, "Promise.all not found").toBeGreaterThan(start);
 
@@ -105,7 +123,12 @@ function loaderHeader(md: string): { names: string[]; files: string[] } {
     .map((s) => s.trim())
     .filter(Boolean);
 
-  const files = [...md.slice(mid, end).matchAll(/FileAttachment\("([^"]+)"\)/g)].map((m) =>
+  // Files come from the FileAttachment list, wherever it lives.
+  const fileFrom = indirect ? arrStart : mid;
+  const fileTo = indirect ? md.indexOf("\n];", arrStart) : md.indexOf("]);", mid);
+  expect(fileTo, "loader file list not terminated").toBeGreaterThan(fileFrom);
+
+  const files = [...md.slice(fileFrom, fileTo).matchAll(/FileAttachment\("([^"]+)"\)/g)].map((m) =>
     m[1].replace(/^.*\//, "").replace(/\.json$/, ""),
   );
 

@@ -36,44 +36,27 @@ import { mountGlobe } from "./globe.js";
 
 const HOTSPOT_LIST_LIMIT = 50;
 
-// Initialise the loading-progress terminal before fetches start.
-// trackFile() wraps each FileAttachment promise so the terminal updates
-// as each source resolves (HTTP/2 delivers them in parallel).
-const _LOADER_FILE_COUNT = 132;
-initLoaderProgress(REGIONS.length, _LOADER_FILE_COUNT);
-
 // Fetch all region data in parallel. Prior to this, every FileAttachment
 // was awaited sequentially — 76 round-trips serialised = ~3–5s of pure
 // network latency before first paint. HTTP/2 multiplexes these easily;
 // on a typical connection this drops to ~300–600ms for the lot.
-const [
-  cbeci, ercot, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
-  soco, pacw, pace, psco, azps, srp, ipco, tepc,
-  entsoe, germanyCurtailment, aemo, aemoPerPlant, belgium, france, denmark, newZealand, newZealandHydro, norway, atacama,
-  chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
-  ireland, peru, peruPerPlant, southAfrica, argentina, uruguay, paraguay, mexico,
-  japanChubu, japanChugoku, japanHokkaido, japanHokuriku, japanKansai,
-  japanKyushu, japanOkinawa, japanShikoku, japanTepco, japanTohoku,
-  vietnam, thailand, indiaRajasthan, cyprus, ethiopia, kazakhstan,
-  honduras, jeju, kenya, egypt, morocco, namibia, waSwis, ntPilbara,
-  indonesia, malaysia, philippines, southKorea, russiaMainland, taiwan, jordan,
-  saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
-  yunnan, tibet, indiaGujarat, indiaTamilNadu, indiaKarnataka, indiaAndhraPradesh, indiaMaharashtra, indiaEast,
-  // Order below MUST match the FileAttachment order in the Promise.all array:
-  // the six India states are fetched BEFORE pakistan/iran. (#203 appended the
-  // names after pakistan/iran and rotated eight bindings by six slots.)
-  indiaMadhyaPradesh, indiaTelangana, indiaUttarPradesh, indiaPunjab, indiaOdisha, indiaChhattisgarh,
-  pakistan, iran,
-  iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
-  quebec, manitoba, saskatchewan, turkey, colombia, florida,
-  chinaShandong, chinaGuangdong, chinaJiangsu, chinaAnhui, chinaHunan,
-  chinaLiaoning, chinaHubei, chinaShanxi, chinaShaanxi, chinaZhejiang,
-  chinaHenan, chinaFujian, chinaJiangxi, chinaBeijing, chinaGuizhou,
-  chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai,
-  chinaHebei, chinaHeilongjiang, chinaJilin, xinjiang,
-  sichuan, guangxi,
-  zenodoVersion
-] = await Promise.all([
+//
+// trackFile() (loader-progress.js) wraps each promise below so the
+// loading-progress terminal updates as each source resolves. The
+// terminal's total is _loaderFiles.length — the true count of entries
+// in the array below — never a hand-maintained number. This list grows
+// with every new data-source PR; a hand-maintained count silently
+// desyncs from it (this happened: a stale count of 132 against the
+// real 135 entries made the terminal's mop-up-on-last-file logic fire
+// three files early, so the last three files each added another share
+// on top of an already-complete total, and the counter overshot to
+// "468 / 459 regions"). Also note not every entry is a single
+// canonical region: some (CBECI, Anchor data, Version metadata) are
+// non-region payloads, and "Static regions" bundles several regions
+// in one file — the per-file share is a smoothed approximation of
+// progress, not a literal region tally, but it is guaranteed to land
+// on exactly REGIONS.length once every file above has resolved.
+const _loaderFiles = [
   trackFile(FileAttachment("data/cbeci.json").json(),            "CBECI"),
   trackFile(FileAttachment("data/ercot.json").json(),            "ERCOT"),
   trackFile(FileAttachment("data/caiso.json").json(),            "California ISO"),
@@ -209,7 +192,37 @@ const [
   trackFile(FileAttachment("data/sichuan.json").json(),          "Sichuan"),
   trackFile(FileAttachment("data/guangxi.json").json(),          "Guangxi"),
   trackFile(FileAttachment("data/zenodo-version.json").json(),   "Version metadata"),
-]);
+];
+initLoaderProgress(REGIONS.length, _loaderFiles.length);
+
+const [
+  cbeci, ercot, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
+  soco, pacw, pace, psco, azps, srp, ipco, tepc,
+  entsoe, germanyCurtailment, aemo, aemoPerPlant, belgium, france, denmark, newZealand, newZealandHydro, norway, atacama,
+  chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
+  ireland, peru, peruPerPlant, southAfrica, argentina, uruguay, paraguay, mexico,
+  japanChubu, japanChugoku, japanHokkaido, japanHokuriku, japanKansai,
+  japanKyushu, japanOkinawa, japanShikoku, japanTepco, japanTohoku,
+  vietnam, thailand, indiaRajasthan, cyprus, ethiopia, kazakhstan,
+  honduras, jeju, kenya, egypt, morocco, namibia, waSwis, ntPilbara,
+  indonesia, malaysia, philippines, southKorea, russiaMainland, taiwan, jordan,
+  saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
+  yunnan, tibet, indiaGujarat, indiaTamilNadu, indiaKarnataka, indiaAndhraPradesh, indiaMaharashtra, indiaEast,
+  // Order below MUST match the FileAttachment order in the Promise.all array:
+  // the six India states are fetched BEFORE pakistan/iran. (#203 appended the
+  // names after pakistan/iran and rotated eight bindings by six slots.)
+  indiaMadhyaPradesh, indiaTelangana, indiaUttarPradesh, indiaPunjab, indiaOdisha, indiaChhattisgarh,
+  pakistan, iran,
+  iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
+  quebec, manitoba, saskatchewan, turkey, colombia, florida,
+  chinaShandong, chinaGuangdong, chinaJiangsu, chinaAnhui, chinaHunan,
+  chinaLiaoning, chinaHubei, chinaShanxi, chinaShaanxi, chinaZhejiang,
+  chinaHenan, chinaFujian, chinaJiangxi, chinaBeijing, chinaGuizhou,
+  chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai,
+  chinaHebei, chinaHeilongjiang, chinaJilin, xinjiang,
+  sichuan, guangxi,
+  zenodoVersion
+] = await Promise.all(_loaderFiles);
 
 document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
