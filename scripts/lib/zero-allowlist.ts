@@ -45,6 +45,17 @@ export const ZERO_ALLOWLIST: readonly ZeroAllowlistEntry[] = [
     reviewBy: "2027-03-01",
     note: "Tasmania has ~0 GW utility solar; SEMIDISPATCHCAP almost never fires there. Re-confirmed 2026-09-05: AEMO feed alive — 9 of 10 AEMO regions carry positive signal in the same snapshot, so the TAS-solar zero is structural, not a dead feed. reviewBy set past the southern-hemisphere summer solar peak (Dec-Feb).",
   },
+  // Rye Park Wind (NSW): the only one of the 10 AEMO per-plant regions with no
+  // curtailment in the window. Unlike the other nine this is a *capped but not
+  // constrained* zero — SEMIDISPATCHCAP fires, but UIGF never exceeds
+  // TOTALCLEARED, so the measured curtailment is genuinely nil. Added 2026-09-06
+  // with the loader change that stopped dropping sub-threshold plants.
+  {
+    regionId: "aemo-ryepark1-wind",
+    addedDate: "2026-09-06",
+    reviewBy: "2027-02-15",
+    note: "NEMWEB feed verified live for this DUID, not merely for its parent: RYEPARK1 appears in all 30 daily Next_Day_Dispatch CSVs (8,640 dispatch intervals, 176 of them at SEMIDISPATCHCAP=1) over the window ending 2026-09-05, and 9 of the 10 aemo-per-plant regions carry positive signal in the same snapshot. On every capped interval UIGF − TOTALCLEARED ≤ 0, so zero is the measured reading, not a dead feed. reviewBy is set past the southern-hemisphere spring/summer negative-price season (Sep-Feb) when NSW wind curtailment peaks. If Rye Park starts carrying signal, REMOVE this entry rather than bumping it — an allowlist entry on a region that normally curtails suppresses the silent-failure alarm the gate exists to raise (the lesson of the 2026-09-05 review).",
+  },
   // Brazil ONS sub-state allocations: smaller states / "other" buckets
   // contribute near-zero after fuelShare splitting from the regional feed.
   {

@@ -6,8 +6,12 @@
  * buckets. Each qualifying DUID becomes its own RegionData entry keyed by
  * `aemo-<duid>-<fueltech>`.
  *
- * Only DUIDs with meaningful curtailment (>0.01 TWh / 30-day window) are
- * included — small generators that barely curtail are noise in the dataset.
+ * Emission is gated to `PER_PLANT_DUIDS` and to nothing else. That set is the
+ * same one aemo.json.ts excludes from its state aggregates, so the
+ * aggregate-minus-named contract (#298) — total = rest-of-state + named =
+ * full state, counted once — holds only while every registry DUID is emitted
+ * here. A registry plant that recorded no curtailment in the window is
+ * therefore emitted as a measured zero rather than dropped.
  *
  * Coordinates sourced from OpenNEM GitHub (opennem/opennem — CC BY 4.0):
  * 215 wind+solar DUIDs with verified lat/lon. 49 unit-map DUIDs without
@@ -66,6 +70,17 @@ function parseAemoDate(localAest: string): string | null {
   return new Date(utcMs).toISOString();
 }
 
+// ─── Dispatch cadence ───────────────────────────────────────────────────────
+
+/**
+ * NEMWEB DISPATCH UNIT_SOLUTION rows are 5-minute dispatch intervals (288 per
+ * day). `totalTWh30d` bills a point at 1 hour unless it carries an
+ * `intervalHours`, so without this every per-plant energy total read exactly
+ * 12x the curtailed MWh. The state aggregate in aemo.json.ts sidesteps the
+ * same trap by hourly-averaging before it totals.
+ */
+const DISPATCH_INTERVAL_HOURS = 5 / 60;
+
 // ─── Per-DUID parsed output ─────────────────────────────────────────────────
 
 interface PerDuidEntry {
@@ -82,7 +97,7 @@ interface PerDuidEntry {
  * buckets. Reuses the exact same row-level logic as `parseAemoDispatchCsv` in
  * aemo.json.ts but groups by `${duid}` rather than by state.
  */
-function parseAemoDispatchCsvPerDuid(csv: string): Map<string, PerDuidEntry> {
+export function parseAemoDispatchCsvPerDuid(csv: string): Map<string, PerDuidEntry> {
   const duidBuckets = new Map<string, { points: Map<string, number>; fueltech: AemoFuel; duid: string; regionCode: string }>();
   let headers: string[] = [];
   let sawDataRow = false;
@@ -141,7 +156,7 @@ function parseAemoDispatchCsvPerDuid(csv: string): Map<string, PerDuidEntry> {
   for (const [duid, bucket] of duidBuckets) {
     const sortedPoints = Array.from(bucket.points.entries())
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
+      .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw, intervalHours: DISPATCH_INTERVAL_HOURS }));
     result.set(duid, {
       points: sortedPoints,
       fueltech: bucket.fueltech,
@@ -172,9 +187,6 @@ function listRecentZips(html: string, limit = 30): string[] {
   ).map((m) => m[1]);
   return matches.slice(-limit).map((href) => new URL(href, DIRECTORY_URL).toString());
 }
-
-// ─── Curtailed-MWh threshold: 0.01 TWh = 10,000 MWh over 30 days ──────────
-const MIN_TWH_30D = 0.01;
 
 // ─── Main loader ─────────────────────────────────────────────────────────────
 
@@ -226,51 +238,103 @@ const run = async (): Promise<Record<string, PerPlantRegionData>> => {
     );
   }
 
-  // Build RegionData for each DUID, gated to the registry of first-class
-  // per-plant regions (PER_PLANT_DUIDS). The registry gate keeps this
-  // emission set identical to the exclusion set in aemo.json.ts so that
-  // total = (rest-of-state aggregate) + (named per-plant) = full state,
-  // counted once. We also apply the MIN_TWH_30D noise floor as a secondary
-  // guard, though all registry DUIDs are expected to exceed it.
+  // `lastUpdated` on a measured-zero plant comes from the feed's most recent
+  // curtailment interval rather than wall-clock now, so the region never claims
+  // more source freshness than the feed actually has. (`lastSuccessAt` is a
+  // different question — "when did this snapshot last refresh successfully" —
+  // and withFallback's stampLive correctly restamps it to build time.)
+  const feedLatestUtc = [...duidAccumulator.values()].reduce(
+    (latest, a) => a.allPoints.reduce((l, p) => (p.utcTimestamp > l ? p.utcTimestamp : l), latest),
+    "",
+  );
+
+  return buildPerPlantRegions(duidAccumulator, { feedLatestUtc });
+};
+
+// ─── Region assembly ─────────────────────────────────────────────────────────
+
+export interface PerDuidAccumulatorEntry {
+  allPoints: CurtailmentPoint[];
+  fueltech: AemoFuel;
+  duid: string;
+  regionCode: string;
+}
+
+/**
+ * Build one RegionData per registry DUID.
+ *
+ * Registry membership (`PER_PLANT_DUIDS`) is the ONLY gate. aemo.json.ts
+ * excludes every registry DUID from its state aggregates unconditionally, so
+ * a magnitude filter here would not merely hide a plant — it would delete that
+ * plant's curtailment from the dataset, because nothing else counts it. The
+ * 0.01 TWh/30d floor this replaced did exactly that to 7 of the 10 plants
+ * (verified against a live NEMWEB build, 2026-09-06).
+ *
+ * A registry DUID that accumulated no points curtailed nothing in the window.
+ * SEMIDISPATCHCAP may still have fired on it — being capped is not the same as
+ * being constrained below what was available — so this is a measured zero from
+ * a demonstrably live feed, and it is emitted as an all-zero region whose
+ * `lastUpdated` is the feed's latest interval. `scripts/lib/zero-allowlist.ts`
+ * carries the matching exemption for the all-zero snapshot check.
+ */
+export function buildPerPlantRegions(
+  accumulator: ReadonlyMap<string, PerDuidAccumulatorEntry>,
+  opts: { feedLatestUtc: string },
+): Record<string, PerPlantRegionData> {
   const out: Record<string, PerPlantRegionData> = {};
 
-  for (const [duid, acc] of duidAccumulator) {
-    if (!PER_PLANT_DUIDS.has(duid)) continue;
-    const totalTWh = totalTWh30d(acc.allPoints);
-    if (totalTWh < MIN_TWH_30D) continue;
+  for (const duid of PER_PLANT_DUIDS) {
+    const acc = accumulator.get(duid);
+    const unit: { region: string; fueltech: AemoFuel } | undefined =
+      AEMO_UNIT_MAP[duid as keyof typeof AEMO_UNIT_MAP];
+    const fueltech: AemoFuel | undefined = acc?.fueltech ?? unit?.fueltech;
+    const regionCode = acc?.regionCode ?? unit?.region;
+    if (!fueltech || !regionCode) {
+      // Throw rather than skip: aemo.json.ts has already excluded this DUID
+      // from its state aggregate, so skipping would silently drop the plant.
+      // Throwing degrades the loader to its last-good snapshot instead.
+      throw new Error(
+        `AEMO per-plant: registry DUID ${duid} has no usable AEMO_UNIT_MAP entry, ` +
+          `so its region id cannot be derived — and aemo.json.ts has already ` +
+          `excluded it from the state aggregate.`,
+      );
+    }
 
-    const hourlyPoints = hourlyAverage(acc.allPoints);
-    const stateCode = REGION_CODE_TO_ID[acc.regionCode] ?? "nsw";
+    const points = acc?.allPoints ?? [];
+    const hourlyPoints = hourlyAverage(points);
+    const stateCode = REGION_CODE_TO_ID[regionCode] ?? "nsw";
     const opennemCoords = AEMO_DUID_COORDS[duid];
     const coords = opennemCoords
       ?? (STATE_CENTROIDS[stateCode] ?? { lat: -33.0, lon: 145.0 });
-    const regionId = `aemo-${duid.toLowerCase()}-${acc.fueltech}`;
-
-    const latestProfile = latestCompleteUtcDayProfileGW(acc.allPoints);
+    const regionId = `aemo-${duid.toLowerCase()}-${fueltech}`;
     const coordSource = opennemCoords ? "OpenNEM GIS" : `state-centroid fallback (${stateCode})`;
+    const observedAt = points.at(-1)?.utcTimestamp ?? opts.feedLatestUtc;
 
     out[regionId] = {
       regionId,
       profile: timeOfDayAverageGW(hourlyPoints),
-      latestProfile,
-      totalTWh,
+      latestProfile: latestCompleteUtcDayProfileGW(points),
+      totalTWh: totalTWh30d(points),
       peakGW: peakGW(hourlyPoints),
       lat: coords.lat,
       lon: coords.lon,
-      duid: acc.duid,
-      fueltech: acc.fueltech,
-      lastUpdated: acc.allPoints.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-      lastSuccessAt: acc.allPoints.at(-1)?.utcTimestamp ?? new Date().toISOString(),
+      duid,
+      fueltech,
+      lastUpdated: observedAt,
+      lastSuccessAt: observedAt,
       sourceNote:
         `NEMWEB SEMIDISPATCHCAP per-DUID curtailment — ` +
-        `${acc.fueltech} plant ${duid} (${acc.regionCode}). ` +
-        `Coordinates: ${coordSource}. ` +
-        `Threshold: ≥${MIN_TWH_30D} TWh/30d.`,
+        `${fueltech} plant ${duid} (${regionCode}). ` +
+        `Coordinates: ${coordSource}.` +
+        (points.length
+          ? ""
+          : ` Measured zero: the feed is current to ${opts.feedLatestUtc} but this ` +
+            `plant recorded no curtailment across the 30-day window.`),
     };
   }
 
   return out;
-};
+}
 
 // ─── CLI entry point ─────────────────────────────────────────────────────────
 
