@@ -26,7 +26,7 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   withFallback<{ wind: RegionData; solar: RegionData }>(REGION_ID, () => run(), {
-    regionTier: "live" as const,
+    regionTier: "estimated" as const,
     tagLive: r => r,
     tagCached: c => c as { wind: RegionData; solar: RegionData },
   })
