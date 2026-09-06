@@ -88,6 +88,53 @@ not the tail of a UI change. **No tier moved**, `scripts/ci/golden/tier-counts.j
   whole state, not just the 241 units in `AEMO_UNIT_MAP`. Deliberately left without a share.
 - Refresh the Japanese snapshots and re-baseline `ci:magnitude-golden` for the seasonal drop.
 
+## Chongqing + Guizhou hydro stamped `live` - the gap #812's T3 guard left (2026-09-06)
+
+`china-chongqing-hydro` and `china-guizhou-hydro` reached the globe with `sourceStatus: "live"` on data
+nothing had fetched. Both loaders run the decorative-probe pattern - fetch `ember-energy.org`, then throw
+unconditionally - and return `buildTypicalHydroRegion` output scaled to a hardcoded annual anchor
+(0.22 TWh/yr Chongqing, 0.25 TWh/yr Guizhou).
+
+They slipped past the #812 guard on a technicality. `stampLive` downgraded a region only when it carried
+`confidenceTier: "T3-modelled"` (or a canonical `estimated` tier with no `confidenceTier` at all), but
+`buildTypicalHydroRegion` passes `regionTier: "anchored"`, so its output lands on `T2-annual-calibrated`
+and neither test fired. The 2026-08-20 China push hit the same thing and patched `china-hubei-hydro` and
+`china-hunan-hydro` by hand (see that entry below); Chongqing and Guizhou were missed.
+
+**The root cause is closed, not just the two files.** `stampLive` now also refuses to stamp any region the
+canonical REGIONS table declares `sourceProvenance: "modelled-fallback"`, whatever its confidence tier. It
+reads the table rather than the record, because `stampSourceProvenance` runs *after* `stampLive`. The
+repo's own provenance gate already classes a live tier paired with `modelled-fallback` as an **impossible**
+pairing (`scripts/ci/check-source-provenance-coherence.ts`); this stops `withFallback` minting one.
+
+**Blast radius is exactly the four China hydro regions.** Of the 240 regions declared `modelled-fallback`,
+234 are `tier: "estimated"` and were already caught by the existing clauses. The other six are those four
+hydro records plus `austria` and `russia-murmansk-wind` - and both of those are built by `statics.json.ts`,
+which never calls `withFallback`, so `stampLive` cannot reach them. For hubei and hunan the new clause is a
+no-op behind their hand-written overrides.
+
+**Pakistan carried the same latent mislabel.** `pakistan.json.ts` also paired `regionTier: "live"` with a
+decorative probe. Its two sub-regions are T3, so the #812 guard already caught them and nothing shipped
+wrong - but the option was still a false claim one hydro builder away from the same bug. All three loaders
+now pass `regionTier: "estimated"`, matching every other China sibling, and Chongqing and Guizhou also carry
+the explicit `sourceStatus: "cached"` / `sourceProvenance: "modelled-fallback"` override that hubei and
+hunan use.
+
+**No tier moved.** No `tier:` field in `regions.ts` changed - `china-chongqing-hydro` and
+`china-guizhou-hydro` were already `anchored` - and `ci:tally-golden` is untouched (459 regions;
+T1a=160 T1b=26 T1c=1 T2=23 T3=249). This is a freshness-label change only: the three regenerated snapshots
+differ in `sourceStatus` and `lastSuccessAt` and nothing else, so profiles, `peakGW` and uncertainty bands
+are unchanged. As with hubei and hunan, the hydro records' `lastSuccessAt` now reads `2024-01-01` (the
+anchor's own date) rather than a build timestamp, because the explicit `cached` override is preserved
+ahead of the stamping.
+
+**Guard:** `tests/resilient.test.ts` gains a case that fails on the pre-fix code. Full suite 1213 pass;
+`ci:gates` green.
+
+**Follow-up (not in this change):** 26 records across 25 committed snapshots still carry pre-guard stale
+`live`. This is the inert caveat logged at #812 - the fallback read path runs `stampCached`, which
+overwrites `sourceStatus` unconditionally, so a stale label in the file never reaches the site. Clearing it
+wants a full data-refresh build, not a hand edit.
 ---
 
 ## Loader registry — the positional wiring is gone (2026-09-06)

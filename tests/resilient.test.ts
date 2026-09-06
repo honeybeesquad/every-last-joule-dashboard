@@ -58,6 +58,31 @@ describe("withFallback", () => {
     expect(result.lastSuccessAt).toBe(now.toISOString());
   });
 
+  it("does not stamp a modelled-fallback region as live, whatever its confidenceTier", async () => {
+    // The T3 clause above is not enough on its own. `buildTypicalHydroRegion`
+    // lands on T2-annual-calibrated (regionTier "anchored"), so a loader that
+    // returns a typical hydro shape and passes regionTier "live" used to slip
+    // past the T3 guard and get stamped "live" — see china-chongqing-hydro and
+    // china-guizhou-hydro. Canonical `sourceProvenance` is the durable signal:
+    // a region the REGIONS table declares "modelled-fallback" has no upstream
+    // feed to be fresh from, at any tier. The source-provenance coherence gate
+    // already calls a live tier paired with modelled-fallback an *impossible*
+    // pairing (scripts/ci/check-source-provenance-coherence.ts); this keeps
+    // withFallback from minting one.
+    const result = await withFallback<RegionData>(
+      testCacheName,
+      async () => ({
+        ...cachedRegion(now.toISOString()),
+        regionId: "china-chongqing-hydro",
+        confidenceTier: "T2-annual-calibrated" as const,
+      }),
+      { now: () => now },
+    );
+
+    expect(result.sourceStatus).toBe("cached");
+    expect(result.lastSuccessAt).toBe(now.toISOString());
+  });
+
   it("still stamps a genuine live (T1a) region as live", async () => {
     // Negative test: a T1a live-fed region must NOT be downgraded to cached.
     // Guards against an over-broad stampLive condition (e.g. startsWith("T"))

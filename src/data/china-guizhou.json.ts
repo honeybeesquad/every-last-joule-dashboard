@@ -18,7 +18,11 @@ async function run({ probe = true } = {}): Promise<{ solar: RegionData; hydro: R
     const note = `Typical-shape fallback: ${(err as Error).message}; Guizhou mixed solar+hydro curtailment ~0.25 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
     return {
       solar: buildTypicalSolarRegion("china-guizhou-solar", 5, 0.25 * 0.5, note + " — solar share (50%)", "2024"),
-      hydro: buildTypicalHydroRegion("china-guizhou-hydro", 0.25 * 0.5, note + " — hydro share (50%)", "2024"),
+      hydro: {
+        ...buildTypicalHydroRegion("china-guizhou-hydro", 0.25 * 0.5, note + " — hydro share (50%)", "2024"),
+        sourceStatus: "cached" as const,
+        sourceProvenance: "modelled-fallback" as const,
+      },
     };
   }
 }
@@ -26,7 +30,7 @@ async function run({ probe = true } = {}): Promise<{ solar: RegionData; hydro: R
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   withFallback<{ solar: RegionData; hydro: RegionData }>(REGION_ID, () => run(), {
-    regionTier: "live" as const,
+    regionTier: "estimated" as const,
     tagLive: r => r,
     tagCached: c => c as { solar: RegionData; hydro: RegionData },
   })
