@@ -24,6 +24,7 @@ import { initLoaderProgress, trackFile } from "./components/loader-progress.js";
 import { createClock } from "./components/clock.js";
 import { mountControls } from "./components/controls.js";
 import { mountModeToggle } from "./components/mode-toggle.js";
+import { mountUnitsToggle } from "./components/units-toggle.js";
 import { mountThemeToggle } from "./components/theme-toggle.js";
 import { mountTimeline } from "./components/timeline.js";
 import { mountRegionTooltip } from "./components/region-tooltip.js";
@@ -31,11 +32,19 @@ import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
 import { DATA_LOADERS, loadDataFiles } from "./lib/data-loaders.js";
 import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./lib/fuel.js";
+import { curtailmentShare, shareUnavailable, formatShare } from "./lib/generation-share.js";
 import { splitRegion } from "./lib/split-region.js";
 import { finalizeRegionData } from "./lib/region-data-finalize.js";
 import { mountGlobe } from "./globe.js";
 
 const HOTSPOT_LIST_LIMIT = 50;
+
+/** Absolute-view column subtitles, hoisted so the share view can restore them. */
+const FUEL_SUBTITLE = {
+  solar: "Peaks at local noon",
+  wind: "Often peaks overnight",
+  hydro: "Seasonal — flat within a day",
+};
 
 // Fetch every registered data file in parallel. Prior to this, each
 // FileAttachment was awaited sequentially — 76 round-trips serialised = ~3–5s
@@ -136,20 +145,17 @@ document.getElementById("app-root").innerHTML = `
 
       <section class="panel panel-right" aria-label="Biggest curtailments right now">
         <div class="eyebrow" id="hotspots-title">Biggest curtailments right now · UTC —</div>
+        <p class="hotspot-units-note" id="hotspot-units-note" hidden></p>
         <div class="hotspot-columns hotspot-columns-three">
           ${FUEL_ORDER.map((fuel) => {
-            const subtitle = fuel === "solar"
-              ? "Peaks at local noon"
-              : fuel === "wind"
-                ? "Often peaks overnight"
-                : "Seasonal — flat within a day";
+            const subtitle = FUEL_SUBTITLE[fuel];
             return `
               <div class="hotspot-column">
                 <div class="hotspot-column-title">
                   <span class="dot dot--${fuel}"></span>
                   <span>${FUEL_LABEL[fuel]}</span>
                 </div>
-                <div class="hotspot-column-subtitle">${subtitle}<span class="hotspot-column-count" id="hotspot-count-${fuel}"></span></div>
+                <div class="hotspot-column-subtitle"><span id="hotspot-subtitle-${fuel}">${subtitle}</span><span class="hotspot-column-count" id="hotspot-count-${fuel}"></span></div>
                 <ol class="hotspot-list" id="hotspot-list-${fuel}"></ol>
               </div>
             `;
@@ -166,7 +172,10 @@ document.getElementById("app-root").innerHTML = `
       <canvas id="timeline-canvas"></canvas>
       <div class="timeline-controls">
         <div id="timeline-controls"></div>
-        <div id="mode-toggle"></div>
+        <div class="toggle-cluster">
+          <div id="mode-toggle"></div>
+          <div id="units-toggle"></div>
+        </div>
       </div>
     </div>
 
@@ -496,7 +505,8 @@ const now = new Date();
 const initialHour = now.getUTCHours() + now.getUTCMinutes() / 60;
 const clock = createClock(initialHour);
 const mode = typeof Mutable === "function" ? Mutable("avg30d") : { value: "avg30d" };
-const unit = { value: "MW" };
+// "absolute" (GW) | "share" (% of measured generation). See units-toggle.js.
+const units = { value: "absolute" };
 
 function renderAt(hour) {
   const wrappedHour = ((hour % 24) + 24) % 24;
@@ -539,6 +549,23 @@ function renderAt(hour) {
   // 1 decimal for values ≥ 1 GW where that granularity matters less.
   const fmtGW = (gw) => (gw >= 1 ? gw.toFixed(1) : gw.toFixed(2));
 
+  const shareView = units.value === "share";
+
+  // The share view answers a different question from the rest of the page, so
+  // it says so rather than silently re-labelling the figures above it. The
+  // headline percentage is Bitcoin-hashrate-derived and the GW stat is a global
+  // sum; neither has an honest share equivalent, so neither changes.
+  const unitsNote = document.getElementById("hotspot-units-note");
+  if (unitsNote) {
+    unitsNote.hidden = !shareView;
+    unitsNote.textContent = shareView
+      ? "Curtailed energy as a share of measured generation over the same trailing 30-day window — "
+        + "a fixed window figure, so it does not move with the clock. Shown only where the source "
+        + "measures curtailment separately from generation; everywhere else a share would just "
+        + "return the rate the loader assumed. The headline figures stay in GW and EH/s."
+      : "";
+  }
+
   for (const fuel of FUEL_ORDER) {
     const allEntries = renewableEntries
       .map(({ region, gw }) => ({
@@ -546,6 +573,58 @@ function renderAt(hour) {
         gw: gw * fuelShare(region, fuel, regionData[region.id]),
       }))
       .filter(({ gw }) => gw > 0);
+
+    const subtitleEl = document.getElementById(`hotspot-subtitle-${fuel}`);
+    if (subtitleEl) {
+      subtitleEl.textContent = shareView ? "Share of generation · 30d" : FUEL_SUBTITLE[fuel];
+    }
+
+    if (shareView) {
+      // Rank by share, not by magnitude — that inversion is the whole point of
+      // the view. Regions whose share would be circular or undenominated are
+      // NOT dropped: they are listed below the ranked ones with the reason,
+      // because "no honest share" and "no curtailment" are different facts and
+      // an omission would read as the latter.
+      const scored = allEntries.map((entry) => ({
+        ...entry,
+        share: curtailmentShare(regionData[entry.region.id]),
+      }));
+      const ranked = scored
+        .filter((e) => e.share !== null)
+        .sort((a, b) => b.share - a.share);
+      const withoutShareEntries = scored.filter((e) => e.share === null);
+      const withoutShare = withoutShareEntries.length;
+      const unavailable = withoutShareEntries
+        .sort((a, b) => b.gw - a.gw)
+        .slice(0, HOTSPOT_LIST_LIMIT);
+
+      const countEl = document.getElementById(`hotspot-count-${fuel}`);
+      if (countEl) {
+        countEl.textContent = ` · ${ranked.length} of ${allEntries.length} with a measured share`;
+      }
+
+      document.getElementById(`hotspot-list-${fuel}`).innerHTML =
+        ranked.map(({ region, share, gw }) => `
+          <li class="hotspot-item">
+            <span class="dot dot--${fuel}"></span>
+            <span class="hotspot-name">${region.name}</span>
+            <span class="hotspot-gw num-tabular" title="${fmtGW(gw)} GW at this hour">${formatShare(share)}</span>
+          </li>
+        `).join("")
+        + (unavailable.length
+          ? `<li class="hotspot-unavailable-head">No measured share · ${unavailable.length === withoutShare ? `${withoutShare} regions` : `${unavailable.length} of ${withoutShare}`}</li>`
+            + unavailable.map(({ region }) => {
+                const why = shareUnavailable(region, regionData[region.id]);
+                return `
+          <li class="hotspot-item hotspot-item-unavailable" title="${why.reason}">
+            <span class="dot dot--${fuel}"></span>
+            <span class="hotspot-name">${region.name}</span>
+            <span class="hotspot-gw hotspot-gw-unavailable">${why.label}</span>
+          </li>`;
+              }).join("")
+          : "");
+      continue;
+    }
 
     const rows = allEntries
       .sort((a, b) => b.gw - a.gw)
@@ -587,7 +666,19 @@ mountModeToggle(document.getElementById("mode-toggle"), {
     mode.value = nextMode;
     renderAt(clock.hour);
     timeline.update({ mode: nextMode });
-    globe?.update({ utcHour: clock.hour, mode: nextMode, unitMode: "MW" });
+    globe?.update({ utcHour: clock.hour, mode: nextMode });
+  },
+});
+
+mountUnitsToggle(document.getElementById("units-toggle"), {
+  initial: units.value,
+  onChange(nextUnits) {
+    units.value = nextUnits;
+    renderAt(clock.hour);
+    // Deliberately NOT forwarded to the globe or the timeline. Only 22 of 459
+    // regions can show an honest share, so a share-scaled globe would blank the
+    // map, and pillar height encodes absolute magnitude by design. Both stay in
+    // GW; the note under the hotspots title says so.
   },
 });
 
@@ -607,7 +698,6 @@ globe = await mountGlobe(canvas, {
   regionData,
   utcHour: initialHour,
   mode: mode.value,
-  unitMode: "MW",
   topologyUrl: await FileAttachment("data/countries-110m.json").url(),
   onRegionClick(region, anchor) {
     if (region) regionTooltip.show(region, anchor);
@@ -636,6 +726,6 @@ if (pageLoader) {
   setTimeout(() => pageLoader.remove(), 380);
 }
 
-clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value, unitMode: "MW" }));
+clock.subscribe((hour) => globe.update({ utcHour: hour, mode: mode.value }));
 clock.subscribe(renderAt);
 ```

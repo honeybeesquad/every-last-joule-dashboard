@@ -85,6 +85,19 @@ const DISPATCH_INTERVAL_HOURS = 5 / 60;
 
 interface PerDuidEntry {
   points: CurtailmentPoint[];
+  /**
+   * Dispatched output (TOTALCLEARED) for this DUID across EVERY dispatch
+   * interval in the file, not just the SEMIDISPATCHCAP ones that `points`
+   * covers. That distinction is the whole point: a denominator summed only over
+   * constrained intervals would inflate the share enormously.
+   *
+   * NEMWEB publishes TOTALCLEARED as its own measured field, so it is not the
+   * multiplicand of the curtailment number the way a calibration-rate loader's
+   * generation is — hence `generationBasis: "measured-independent"` downstream.
+   * The scope is exactly one unit's own metering, so unlike the state
+   * aggregates there is no registry-completeness gap in the denominator.
+   */
+  genPoints: CurtailmentPoint[];
   fueltech: AemoFuel;
   duid: string;
   regionCode: string;
@@ -98,7 +111,13 @@ interface PerDuidEntry {
  * aemo.json.ts but groups by `${duid}` rather than by state.
  */
 export function parseAemoDispatchCsvPerDuid(csv: string): Map<string, PerDuidEntry> {
-  const duidBuckets = new Map<string, { points: Map<string, number>; fueltech: AemoFuel; duid: string; regionCode: string }>();
+  const duidBuckets = new Map<string, {
+    points: Map<string, number>;
+    genPoints: Map<string, number>;
+    fueltech: AemoFuel;
+    duid: string;
+    regionCode: string;
+  }>();
   let headers: string[] = [];
   let sawDataRow = false;
   const lines = csv.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
@@ -122,25 +141,52 @@ export function parseAemoDispatchCsvPerDuid(csv: string): Map<string, PerDuidEnt
     const semidispatchCap = Number(get("SEMIDISPATCHCAP") || 0);
     const uigf = Number(get("UIGF") || 0);
 
-    if (!duid || semidispatchCap !== 1) continue;
+    if (!duid) continue;
     const unit = AEMO_UNIT_MAP[duid as keyof typeof AEMO_UNIT_MAP];
     if (!unit) continue;
     const utcTimestamp = localTimestamp ? parseAemoDate(localTimestamp) : null;
     if (!utcTimestamp) continue;
 
-    const unconstrained = Number.isFinite(uigf) && uigf > 0 ? uigf : availability;
-    const curtailedMw = Math.max(0, unconstrained - (Number.isFinite(totalCleared) ? totalCleared : 0));
-    if (curtailedMw <= 0) continue;
-
     const tech = (unit as { fueltech?: string }).fueltech;
     if (tech !== "wind" && tech !== "solar") continue;
+
+    // Skip rows that can contribute nothing: not a per-plant DUID (so no
+    // generation is wanted) and not a capped interval (so no curtailment is
+    // possible). Without this the parser would allocate a bucket for all 241
+    // mapped units on their very first uncapped row.
+    if (!PER_PLANT_DUIDS.has(duid) && semidispatchCap !== 1) continue;
 
     // Bucket by DUID
     let bucket = duidBuckets.get(duid);
     if (!bucket) {
-      bucket = { points: new Map<string, number>(), fueltech: tech as AemoFuel, duid, regionCode: unit.region };
+      bucket = {
+        points: new Map<string, number>(),
+        genPoints: new Map<string, number>(),
+        fueltech: tech as AemoFuel,
+        duid,
+        regionCode: unit.region,
+      };
       duidBuckets.set(duid, bucket);
     }
+
+    // Generation accumulates on EVERY interval — the SEMIDISPATCHCAP gate below
+    // applies to curtailment only. Summing TOTALCLEARED across capped intervals
+    // alone would produce a denominator several orders of magnitude too small.
+    //
+    // Restricted to PER_PLANT_DUIDS because only those 10 are emitted as
+    // regions. AEMO_UNIT_MAP has 241 entries; retaining every unit's full
+    // dispatch series would hold ~2M points in memory across the 30-day loop
+    // for data nothing reads.
+    if (PER_PLANT_DUIDS.has(duid) && Number.isFinite(totalCleared) && totalCleared > 0) {
+      bucket.genPoints.set(utcTimestamp, (bucket.genPoints.get(utcTimestamp) ?? 0) + totalCleared);
+    }
+
+    // ── Curtailment path: unchanged from the pre-existing behaviour. ──
+    if (semidispatchCap !== 1) continue;
+    const unconstrained = Number.isFinite(uigf) && uigf > 0 ? uigf : availability;
+    const curtailedMw = Math.max(0, unconstrained - (Number.isFinite(totalCleared) ? totalCleared : 0));
+    if (curtailedMw <= 0) continue;
+
     bucket.points.set(utcTimestamp, (bucket.points.get(utcTimestamp) ?? 0) + curtailedMw);
   }
 
@@ -153,12 +199,14 @@ export function parseAemoDispatchCsvPerDuid(csv: string): Map<string, PerDuidEnt
 
   // Convert internal Map<timestamp, mw> → CurtailmentPoint[]
   const result = new Map<string, PerDuidEntry>();
-  for (const [duid, bucket] of duidBuckets) {
-    const sortedPoints = Array.from(bucket.points.entries())
+  const toPoints = (m: Map<string, number>): CurtailmentPoint[] =>
+    Array.from(m.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw, intervalHours: DISPATCH_INTERVAL_HOURS }));
+  for (const [duid, bucket] of duidBuckets) {
     result.set(duid, {
-      points: sortedPoints,
+      points: toPoints(bucket.points),
+      genPoints: toPoints(bucket.genPoints),
       fueltech: bucket.fueltech,
       duid: bucket.duid,
       regionCode: bucket.regionCode,
@@ -207,6 +255,7 @@ const run = async (): Promise<Record<string, PerPlantRegionData>> => {
   // Accumulate per-DUID points across all 30 days of CSVs
   const duidAccumulator = new Map<string, {
     allPoints: CurtailmentPoint[];
+    allGenPoints: CurtailmentPoint[];
     fueltech: AemoFuel;
     duid: string;
     regionCode: string;
@@ -223,10 +272,17 @@ const run = async (): Promise<Record<string, PerPlantRegionData>> => {
     for (const [duid, entry] of parsed) {
       let acc = duidAccumulator.get(duid);
       if (!acc) {
-        acc = { allPoints: [], fueltech: entry.fueltech, duid: entry.duid, regionCode: entry.regionCode };
+        acc = {
+          allPoints: [],
+          allGenPoints: [],
+          fueltech: entry.fueltech,
+          duid: entry.duid,
+          regionCode: entry.regionCode,
+        };
         duidAccumulator.set(duid, acc);
       }
       acc.allPoints.push(...entry.points);
+      acc.allGenPoints.push(...entry.genPoints);
     }
   }
 
@@ -255,6 +311,8 @@ const run = async (): Promise<Record<string, PerPlantRegionData>> => {
 
 export interface PerDuidAccumulatorEntry {
   allPoints: CurtailmentPoint[];
+  /** Dispatched output across every interval; see `PerDuidEntry.genPoints`. */
+  allGenPoints?: CurtailmentPoint[];
   fueltech: AemoFuel;
   duid: string;
   regionCode: string;
@@ -302,6 +360,20 @@ export function buildPerPlantRegions(
 
     const points = acc?.allPoints ?? [];
     const hourlyPoints = hourlyAverage(points);
+    // Measured generation companion. `hourlyAverage` first for the same reason
+    // the curtailment path does it: totalTWh30d bills a point at its
+    // intervalHours, and the profile helper wants hourly buckets. A DUID whose
+    // window carries no dispatched output (offline, or a last-good snapshot
+    // predating this field) gets no generation and therefore no share.
+    const genPoints = acc?.allGenPoints ?? [];
+    const generationTotalTWh = totalTWh30d(genPoints);
+    const generation = generationTotalTWh > 0
+      ? {
+          generationProfile: timeOfDayAverageGW(hourlyAverage(genPoints)),
+          generationTotalTWh,
+          generationBasis: "measured-independent" as const,
+        }
+      : {};
     const stateCode = REGION_CODE_TO_ID[regionCode] ?? "nsw";
     const opennemCoords = AEMO_DUID_COORDS[duid];
     const coords = opennemCoords
@@ -322,6 +394,7 @@ export function buildPerPlantRegions(
       fueltech,
       lastUpdated: observedAt,
       lastSuccessAt: observedAt,
+      ...generation,
       sourceNote:
         `NEMWEB SEMIDISPATCHCAP per-DUID curtailment — ` +
         `${fueltech} plant ${duid} (${regionCode}). ` +

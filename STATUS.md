@@ -1,7 +1,94 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
+**Last verified against git:** 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
+
+## Curtailment share + units toggle — a small honest metric, not a broad circular one (2026-09-06)
+
+The dashboard reported everything in absolute GW, which rewards large grids and cannot say which grid
+wastes the largest *fraction* of what it generates. A **GW ⇄ % of generation** toggle now sits beside the
+existing 30-day/Last-24h mode toggle. The interesting part is how few regions may honestly answer it.
+
+**The enumeration.** All ~140 loaders in `src/data/` were read and classified by how they derive
+curtailment. Of 459 regions:
+
+- **~186 are DERIVED-FROM-GENERATION** — curtailment IS `generation x a calibration rate`. Every EIA-930
+  region (14 loaders via `src/lib/eia-iso.ts`), all 52 rate-bearing ENTSO-E zones (`src/lib/entsoe.ts`),
+  plus France, Belgium, Denmark, North Sea, Ontario, Alberta, ERCOT, Turkey, South Africa, New Zealand,
+  WA-SWIS, Peru, Malaysia and 4 India states. For these, `totalTWh / generationTotalTWh` returns **the
+  rate the loader assumed** — an input, not a finding.
+- **~249 are MODELLED-SYNTHETIC** — all 135 `statics.json.ts` regions, 31 China provinces, 8 India states
+  and ~21 typical-profile loaders. No measured generation exists to divide by.
+- **~30 measure curtailment independently but publish no generation** — Germany (netztransparenz
+  redispatch), Colombia (XM `VertEner`), Brazil-NE (ONS constrained-off), Ireland (EirGrid dispatch-down),
+  Chile (CEN reductions), CAISO (OASIS `SLD_REN_CURTAIL`), Uruguay (ADME), ERCOT-native (HDL−GEN), the
+  AEMO **state** aggregates, and India-Maharashtra (MSLDC). Measured numerator, no honest denominator.
+- **22 region ids have both**, and only those show a share.
+
+**The 22.** The 10 Japanese OCCTO area CSVs (12 ids) publish 太陽光/風力発電実績 (measured generation)
+one column before 太陽光/風力出力制御量 (measured curtailment) on the same 30-minute row — two separate
+measurements of the same interval. The 10 AEMO per-plant DUIDs get generation from NEMWEB `TOTALCLEARED`
+across **every** dispatch interval, against curtailment from `UIGF − TOTALCLEARED` on `SEMIDISPATCHCAP`
+intervals; at unit level the denominator is that unit's own metering, so there is no registry-completeness
+gap the way there is in the state aggregates.
+
+**`generationBasis` is the gate, not field presence.** `src/lib/eia-iso.ts`, `src/lib/entsoe.ts` and
+`src/data/peru-per-plant.json.ts` have emitted `generationProfile`/`generationTotalTWh` since v1.0.0 — and
+every one of them is circular. A new `RegionData.generationBasis`
+(`measured-independent` | `derived-from-generation` | `anchor-implied`) makes that explicit, and
+`src/lib/generation-share.ts::curtailmentShare()` returns a number only for `measured-independent`.
+Those three loaders are now labelled `derived-from-generation`; Cyprus (measured PV generation, annual
+curtailment anchor) is `anchor-implied`. `tests/generation-share.test.ts` asserts the refusal against the
+real build paths — re-gating on field presence instead of basis fails it 6 times, each one an assumed rate
+escaping as a finding.
+
+**What the toggle changes:** the three hotspot columns only — the value shown, the sort order (by share,
+which is the whole point of the inversion), and the column subtitle. **What it deliberately does not
+change:** the headline percentage (Bitcoin-hashrate-derived, so a share view would silently change its
+meaning), "Curtailed this hour" GW, "Hashrate this could support", the globe pillars, and the timeline.
+The globe is excluded on purpose — 437 of 459 regions have no honest share, so a share-scaled globe would
+blank the map, and pillar height encodes absolute magnitude by design. A note under the hotspots title
+states all of this in the share view rather than leaving it implied.
+
+**Regions without a share are listed, never omitted.** Each appears below the ranked list with a reason
+label (`n/a — derived` / `anchored` / `modelled` / `no generation feed`) and the full sentence on hover.
+An omission would read as "this region curtails nothing", which is a different fact.
+
+**The share is a 30-day window figure, not an hourly one.** An hourly share divides by a denominator that
+is zero every night for solar. It does not move with the clock, and the subtitle says so.
+
+**The dead `unitMode` hook was removed, not extended.** `src/globe.js:60` stored `unitMode` in globe state
+and nothing ever read it; `src/index.md` passed a hardcoded `"MW"` at three call sites and held an unused
+`const unit = { value: "MW" }`. It was a stub for MW/GW number formatting inside the globe — the one
+surface this toggle deliberately does not touch — so it was the wrong seam.
+
+**Measured against the live feeds** (2026-09-06, loaders run directly): AEMO Macarthur wind **20.7 %**
+(0.0134 TWh curtailed / 0.0647 TWh generated), Coopers Gap **6.5 %**, Limondale solar **2.3 %**, Bango
+**1.7 %**, Stockyard Hill **1.3 %**, Avonlie **0.69 %**, Wandoan **0.57 %**, Darlington Point **0.29 %**,
+Snowtown **0.053 %**, Rye Park **0 %** (measured zero). Japan Kyushu **0.214 %** (0.0034 / 1.593 TWh),
+Tohoku solar **0.280 %**; the other seven Japanese areas read a genuine measured **0 %** in a September
+window, which is seasonal (curtailment there peaks in spring), not a fault. Macarthur is the case for the
+metric: 0.0134 TWh is invisible in a GW ranking, and 20.7 % is the highest measured share in the dataset.
+
+**No snapshot refresh in this PR, deliberately.** The Japanese `last-good` snapshots date from June and
+predate the generation columns, so an offline build shows Japan as "no measured share" until its next live
+build — the gate behaving correctly on a snapshot that genuinely has no denominator. Refreshing them was
+tried and reverted: a September window collapses 7 Japanese magnitudes out of `ci:magnitude-golden`'s 4x
+band (Kyushu 0.4311 → 0.0034 TWh/30d) purely on seasonality. That is a data PR with its own justification,
+not the tail of a UI change. **No tier moved**, `scripts/ci/golden/tier-counts.json` is untouched, and no
+`tier:` field in `regions.ts` was edited.
+
+**Follow-ups (not in this change):**
+- Germany, Brazil-NE and ERCOT-native each fetch or read a generation series they then discard. Germany
+  pulls ENTSO-E A75 per TSO purely to weight the wind/solar split; ERCOT-native reads `GEN` inside
+  `HDL − GEN`; Brazil-NE reads `val_geracaoreferencia` but skips unconstrained rows, so its sum would be a
+  constrained-intervals-only denominator. Each could reach `measured-independent` with loader work and an
+  upstream-semantics check.
+- The AEMO **state** aggregates measure curtailment but would need a generation denominator covering the
+  whole state, not just the 241 units in `AEMO_UNIT_MAP`. Deliberately left without a share.
+- Refresh the Japanese snapshots and re-baseline `ci:magnitude-golden` for the seasonal drop.
+
+---
 
 ## Loader registry — the positional wiring is gone (2026-09-06)
 

@@ -118,6 +118,9 @@ export function buildZoneData(
     sourceNote,
     generationProfile: timeOfDayAverageGW(rawPoints),
     generationTotalTWh: totalTWh30d(rawPoints),
+    // `points` above is `rawPoints x rate`, so curtailment/generation is the
+    // rate constant by construction — an input, not an observation.
+    generationBasis: "derived-from-generation",
   };
 
   if (fuelShare && Object.keys(fuelShare).length > 0) data.fuelShare = fuelShare;
@@ -257,5 +260,6 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
     ...(fuelShare ? { fuelShare } : {}),
     generationProfile: timeOfDayAverageGW(genPoints),
     generationTotalTWh: totalTWh30d(genPoints),
+    generationBasis: "derived-from-generation",
   };
 }

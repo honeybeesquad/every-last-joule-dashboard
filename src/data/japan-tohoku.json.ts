@@ -41,6 +41,14 @@ const JST_OFFSET_HOURS = 9;
 interface TohokuPoint extends CurtailmentPoint {
   solarMw: number;
   windMw: number;
+  /**
+   * Measured generation on the same row (太陽光発電実績 / 風力発電実績), MW.
+   * Published beside the 出力制御量 columns rather than derived from them, so
+   * curtailment ÷ generation here is an observation. See
+   * `src/lib/generation-share.ts`.
+   */
+  solarGenMw: number;
+  windGenMw: number;
 }
 
 export interface TohokuParsed {
@@ -66,6 +74,8 @@ export function parseTohokuCsv(decoded: string): TohokuParsed {
   let headerIdx = -1;
   let solarCurtCol = -1;
   let windCurtCol = -1;
+  let solarGenCol = -1;
+  let windGenCol = -1;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -76,6 +86,8 @@ export function parseTohokuCsv(decoded: string): TohokuParsed {
       const h = headers[c].trim();
       if (h === "太陽光出力制御量") solarCurtCol = c;
       if (h === "風力出力制御量") windCurtCol = c;
+      if (h === "太陽光発電実績") solarGenCol = c;
+      if (h === "風力発電実績") windGenCol = c;
     }
     break;
   }
@@ -105,6 +117,14 @@ export function parseTohokuCsv(decoded: string): TohokuParsed {
     const solarMw = Math.max(0, Number(cells[solarCurtCol]?.trim() ?? "0") || 0);
     const windMw = Math.max(0, Number(cells[windCurtCol]?.trim() ?? "0") || 0);
     const totalMw = solarMw + windMw;
+    // Generation columns are optional: a layout without them yields 0, which the
+    // builder reads as "no denominator" and emits no generation fields for.
+    const solarGenMw = solarGenCol >= 0
+      ? Math.max(0, Number(cells[solarGenCol]?.trim() ?? "0") || 0)
+      : 0;
+    const windGenMw = windGenCol >= 0
+      ? Math.max(0, Number(cells[windGenCol]?.trim() ?? "0") || 0)
+      : 0;
 
     solarCurtMwSum += solarMw;
     windCurtMwSum += windMw;
@@ -116,6 +136,8 @@ export function parseTohokuCsv(decoded: string): TohokuParsed {
       intervalHours: INTERVAL_HOURS,
       solarMw,
       windMw,
+      solarGenMw,
+      windGenMw,
     });
   }
 
@@ -182,6 +204,31 @@ async function fetchTohokuDay(
 }
 
 /**
+ * Measured-generation companion for one fuel. Mirrors
+ * `buildAreaGeneration` in src/lib/japan-area-csv.ts — Tohoku publishes the
+ * same OCCTO columns through a daily endpoint rather than the monthly one, so
+ * it needs its own copy of the four-line build. Returns null when the window
+ * carries no generation, so the caller emits no denominator rather than a zero.
+ */
+function tohokuGeneration(
+  points: TohokuPoint[],
+  pick: (p: TohokuPoint) => number,
+): Pick<RegionData, "generationProfile" | "generationTotalTWh" | "generationBasis"> | null {
+  const genPoints: CurtailmentPoint[] = points.map((p) => ({
+    utcTimestamp: p.utcTimestamp,
+    mw: pick(p),
+    intervalHours: p.intervalHours,
+  }));
+  const generationTotalTWh = totalTWh30d(genPoints);
+  if (!(generationTotalTWh > 0)) return null;
+  return {
+    generationProfile: timeOfDayAverageGW(genPoints),
+    generationTotalTWh,
+    generationBasis: "measured-independent",
+  };
+}
+
+/**
  * Fetch and aggregate Tohoku Electric supply/demand CSVs for the last 30 days,
  * then build two RegionData (solar + wind) from the per-fuel point split.
  */
@@ -241,6 +288,7 @@ const run = async (): Promise<Record<string, RegionData>> => {
     lastSuccessAt: lastTs,
     sourceNote: SOLAR_SOURCE_NOTE,
     fuelShare: { solar: 1 },
+    ...(tohokuGeneration(allPoints, (p) => p.solarGenMw) ?? {}),
   };
 
   const wind: RegionData = {
@@ -253,6 +301,7 @@ const run = async (): Promise<Record<string, RegionData>> => {
     lastSuccessAt: lastTs,
     sourceNote: WIND_SOURCE_NOTE,
     fuelShare: { wind: 1 },
+    ...(tohokuGeneration(allPoints, (p) => p.windGenMw) ?? {}),
   };
 
   return { "japan-tohoku-solar": solar, "japan-tohoku-wind": wind };

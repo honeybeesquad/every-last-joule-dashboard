@@ -163,6 +163,11 @@ function buildRegion(row: CsvRow, plant: PeruPlant): PeruPlantRegionData {
     lastSuccessAt: lastUpdated,
     generationProfile: row.hourlyGenMw.map((mw) => mw / 1000),
     generationTotalTWh,
+    // Generation here is measured (COES per-plant metering) but the
+    // curtailment above is that same generation x CURTAILMENT_RATE, so the
+    // implied share is the 2% constant. Declared derived so the dashboard's
+    // share view refuses it. See src/lib/generation-share.ts.
+    generationBasis: "derived-from-generation" as const,
     fuelShare: { [plant.kind]: 1 },
     sourceNote:
       `COES SINAC medidoresgeneracion per-plant export (Potencia Activa MW), ` +

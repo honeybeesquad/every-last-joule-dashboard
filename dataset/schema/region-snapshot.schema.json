@@ -117,6 +117,11 @@
       "type": "number",
       "minimum": 0,
       "description": "Trailing-30-day total gross renewable generation in TWh. Companion to totalTWh (curtailment). generationTotalTWh >= totalTWh must hold (cannot curtail more than was generated)."
+    },
+    "generationBasis": {
+      "type": "string",
+      "enum": ["measured-independent", "derived-from-generation", "anchor-implied"],
+      "description": "How this record's generation relates to its curtailment, and therefore whether totalTWh / generationTotalTWh may be published as a share. \"measured-independent\": the source publishes curtailment as its own measured quantity alongside generation for the same window, so the ratio is an observation. \"derived-from-generation\": curtailment was computed AS generation x a calibration rate, so the ratio returns that rate — an input, never a finding. \"anchor-implied\": generation is measured but the curtailment magnitude is a published annual anchor spread across the window, so the ratio is an implied rate. Absent means the loader emits no generation. Only \"measured-independent\" is surfaced as a share; src/lib/generation-share.ts is the single gate."
     }
   },
   "additionalProperties": false

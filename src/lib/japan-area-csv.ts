@@ -37,6 +37,15 @@ export interface JapanAreaConfig {
 export interface AreaPoint extends CurtailmentPoint {
   solarMw: number;
   windMw: number;
+  /**
+   * Measured generation on the same row, MW. The OCCTO area CSV publishes
+   * 太陽光発電実績 / 風力発電実績 (actual output) immediately before the
+   * matching 出力制御量 (suppressed output) column, so curtailment and
+   * generation are two separate measurements of the same interval — not one
+   * derived from the other. That is what makes a share honest here.
+   */
+  solarGenMw: number;
+  windGenMw: number;
 }
 
 export interface AreaParsed {
@@ -87,7 +96,7 @@ export function jstToIsoUtc(dateRaw: string, timeRaw: string, fmt: DateFormat): 
  */
 export function parseAreaCsv(decoded: string, cfg: { dateFormat: DateFormat }): AreaParsed {
   const lines = decoded.split(/\r?\n/);
-  let headerIdx = -1, solarCol = -1, windCol = -1;
+  let headerIdx = -1, solarCol = -1, windCol = -1, solarGenCol = -1, windGenCol = -1;
   for (let i = 0; i < lines.length; i++) {
     if (!lines[i].includes("太陽光出力制御量")) continue;
     headerIdx = i;
@@ -95,6 +104,8 @@ export function parseAreaCsv(decoded: string, cfg: { dateFormat: DateFormat }): 
     for (let c = 0; c < headers.length; c++) {
       if (headers[c] === "太陽光出力制御量") solarCol = c;
       if (headers[c] === "風力出力制御量") windCol = c;
+      if (headers[c] === "太陽光発電実績") solarGenCol = c;
+      if (headers[c] === "風力発電実績") windGenCol = c;
     }
     break;
   }
@@ -112,10 +123,23 @@ export function parseAreaCsv(decoded: string, cfg: { dateFormat: DateFormat }): 
     if (!utcTimestamp) continue;
     const solarMw = Math.max(0, Number(cells[solarCol]) || 0);
     const windMw = windCol >= 0 ? Math.max(0, Number(cells[windCol]) || 0) : 0;
+    // Generation columns are resolved by name like the curtailment ones and are
+    // optional: a layout without them yields 0, which mergeWindowBuild reads as
+    // "no denominator" and declines to emit a basis for.
+    const solarGenMw = solarGenCol >= 0 ? Math.max(0, Number(cells[solarGenCol]) || 0) : 0;
+    const windGenMw = windGenCol >= 0 ? Math.max(0, Number(cells[windGenCol]) || 0) : 0;
     solarCurtMwSum += solarMw;
     windCurtMwSum += windMw;
     sampleCount += 1;
-    points.push({ utcTimestamp, mw: solarMw + windMw, intervalHours: INTERVAL_HOURS, solarMw, windMw });
+    points.push({
+      utcTimestamp,
+      mw: solarMw + windMw,
+      intervalHours: INTERVAL_HOURS,
+      solarMw,
+      windMw,
+      solarGenMw,
+      windGenMw,
+    });
   }
   return { points, solarCurtMwSum, windCurtMwSum, sampleCount };
 }
@@ -137,6 +161,38 @@ export function windowedPoints(months: AreaParsed[], now: Date): AreaPoint[] {
       return t >= cutoffMs && t <= nowMs;
     })
     .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+}
+
+/**
+ * Build the measured-generation companion for a set of area points.
+ *
+ * `pick` selects which generation column(s) count towards this region — solar
+ * only, wind only, or both for a combined area region. Returns `null` when the
+ * window carries no generation at all, which happens for a layout without the
+ * 発電実績 columns; the caller then emits no generation fields and no basis,
+ * and the dashboard shows the region as having no denominator rather than a
+ * zero one.
+ *
+ * The basis is "measured-independent" because the 出力制御量 (curtailment) and
+ * 発電実績 (generation) columns are two separate measurements published on the
+ * same row by the same TSO. Nothing here multiplies one by the other.
+ */
+export function buildAreaGeneration(
+  windowed: AreaPoint[],
+  pick: (p: AreaPoint) => number,
+): Pick<RegionData, "generationProfile" | "generationTotalTWh" | "generationBasis"> | null {
+  const genPoints: CurtailmentPoint[] = windowed.map((p) => ({
+    utcTimestamp: p.utcTimestamp,
+    mw: pick(p),
+    intervalHours: p.intervalHours,
+  }));
+  const generationTotalTWh = totalTWh30d(genPoints);
+  if (!(generationTotalTWh > 0)) return null;
+  return {
+    generationProfile: timeOfDayAverageGW(genPoints),
+    generationTotalTWh,
+    generationBasis: "measured-independent",
+  };
 }
 
 /**
@@ -175,6 +231,7 @@ export function mergeWindowBuild(
     lastSuccessAt: lastTs,
     sourceNote,
     fuelShare,
+    ...(buildAreaGeneration(windowed, (p) => p.solarGenMw + p.windGenMw) ?? {}),
   };
 }
 
@@ -371,6 +428,7 @@ export async function runJapanAreaLoaderSplit(
     lastSuccessAt: lastTs,
     sourceNote: solarSourceNote,
     fuelShare: { solar: 1 },
+    ...(buildAreaGeneration(windowed, (p) => p.solarGenMw) ?? {}),
   };
 
   const wind: RegionData = {
@@ -383,6 +441,7 @@ export async function runJapanAreaLoaderSplit(
     lastSuccessAt: lastTs,
     sourceNote: windSourceNote,
     fuelShare: { wind: 1 },
+    ...(buildAreaGeneration(windowed, (p) => p.windGenMw) ?? {}),
   };
 
   return { solar, wind };
