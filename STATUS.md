@@ -1,6 +1,6 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132))))
+**Last verified against git:** 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
 ## Loader registry — the positional wiring is gone (2026-09-06)
@@ -23,6 +23,64 @@ That test reads the registry as text. `tests/data-loaders.test.ts` covers the ru
 **Follow-ups (not in this change):**
 - The shared `buildRegionData()` extraction. The `regionData` literal is still a hand-maintained copy on each page — the only remaining duplication, and still the reason the parity test exists.
 - `anchor` (`data/anchor.json`) is fetched by both pages and read by neither. It has been dead weight since before this change; removing it moves the loader count, so it wants its own PR.
+---
+
+## Cyprus — decorative probe replaced with a measured ENTSO-E shape; PR #280 not revived (2026-09-06)
+
+`src/data/cyprus.json.ts` fetched `https://tsoc.org.cy/` and then **threw unconditionally** whether or
+not the fetch succeeded, so the "live probe" could never do anything but fall through to
+`buildTypicalSolarRegion`. It has been decorative for at least four months — the committed snapshot
+records `HTTP 403 for https://tsoc.org.cy/` with `lastSuccessAt 2026-05-04`. This is exactly the pattern
+CLAUDE.md rule 3 names ("a live probe that always falls through to fallback is decoration").
+
+**PR #280 (Cyprus TSOC wind relay, Flaresolverr) was reviewed and deliberately not revived.** Three
+findings, each verified rather than inferred:
+
+1. **Its fuel change was wrong.** #280 flipped `cyprus` from `kind: "solar"` to `kind: "wind"`. Cyprus is
+   solar-dominated by an order of magnitude: over the 30 days to 2026-09-06, ENTSO-E CY delivered
+   **0.1512 TWh solar (B16) against 0.0150 TWh wind (B19)**, peak 761 MW against 115 MW; the same ordering
+   holds across the 12 months to 2026-09-05. The repo's own anchor is a **PV**-curtailment figure
+   (`docs/methodology/anchors.md`; `external-anchors.json` `tsoc-2024-annual`). `kind` stays `solar`.
+2. **Its committed CSV could never load.** `data/historical/cyprus-tsoc-wind.csv` held 20 rows that are
+   10 unique timestamps duplicated, from a 2-hour window on 2026-06-21 — below the loader's own 24-point
+   minimum, so the CSV path never fired. #280's own body admits the loader falls back.
+3. **Its `curtailment_mw` column was fabricated.** It is `wind_mw × 0.02`, with the 2% "estimated from the
+   gap between installed wind and typical dispatch patterns" — an invented rate shipped as a data column.
+
+**Flaresolverr is available and does work** — a container is running on `abed` (port 8191) and reaches
+`tsoc.org.cy` today with HTTP 200 / "Challenge not detected". The dependency was real, not imaginary. It
+was rejected anyway because a **non-Flaresolverr route exists and is strictly better**: ENTSO-E publishes
+the Cyprus bidding zone (`10YCY-1001A0003J`) A75 at PT30M for both B16 and B19, reachable with the repo's
+existing `ENTSOE_API_TOKEN` through the existing `parseEntsoeXml`. Plain `curl` from `abed` also gets 403,
+so the TSOC block is browser-fingerprint based, not geographic — and TSOC's page carries **only the
+current day** and publishes generation, not curtailment. Choosing it would have meant 30 days of daily
+capture through a home-lab browser proxy, for a worse series, in the failure class that cost three weeks
+of Colombia capture in 2026-07.
+
+**What shipped:** the loader now derives its diurnal shape from measured ENTSO-E CY solar generation and
+scales it to the published annual anchor. It **throws** on an untrustworthy window so `withFallback`
+serves last-good.
+
+**MAGNITUDE CALL-OUT (CLAUDE.md rule 3).** `cyprus` moves **0.00822 → 0.01233 TWh/30d** and `peakGW`
+0.0432 → 0.0491. The loader's undocumented 0.1 TWh/yr constant is replaced by the **0.15 TWh/yr** figure
+the repo already records in `scripts/validation/external-anchors.json` and `docs/validation/cyprus.md` —
+the loader and the validation doc had disagreed. Implied curtailment rate against measured PV generation
+is 8.2% over the window.
+
+**No tier moved.** `tier: "estimated"` / T3-modelled / `sourceProvenance: "modelled-fallback"` are all
+unchanged, `scripts/ci/golden/tier-counts.json` is untouched, and the region is not in the magnitude
+baseline. `stampLive` correctly stamps the output `sourceStatus: "cached"`, never `live` — the shape is
+measured but the magnitude is an inferred anchor, so this is **not** a live promotion.
+
+**Known caveat, guarded not hidden:** the ENTSO-E CY solar feed is intermittently broken. Peak
+hour-of-day means over the last 12 months were 634 MW (2026-08) and 218 MW (2025-12), but collapsed to
+20.5 MW (2026-02), 11.3 MW (2026-07) and 8.9 MW (2026-04), with ~95% of intervals near zero. The loader
+guards on coverage (≥20 distinct days), magnitude (peak hour-of-day mean ≥50 MW) and peak hour
+(05:00–14:00 UTC) and throws otherwise.
+
+Verification: `tsc` clean; 1134 vitest across 200 files (9 in `tests/data/cyprus.test.ts`, all hermetic —
+the old test called the network-bound loader); `npm run validate` green; all 9 `ci:gates` green; loader
+run live against ENTSO-E, 31 days / 1204 intervals.
 
 ---
 

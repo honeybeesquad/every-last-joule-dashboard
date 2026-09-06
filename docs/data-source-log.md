@@ -656,3 +656,37 @@ The 2026-04-24 session left the mainland loader on a conservative typical solar 
 - **Rate**: published 2024 curtailment — 4.1% wind / 3.2% PV in major (mainland) power systems (MDPI 2024, citing IEA; "curtailed wind and PV increased ~55% in 2024"). Jeju excluded.
 
 Resulting curtailed energy: **solar 1.21 TWh/yr**, **wind 0.149 TWh/yr**. This is consistent with the repo's own prior rate narrative ("~5% solar / ~2% wind curtailment, IEA/KPX") — the old 0.5/0.05 TWh anchor was inconsistent with that stated rate. Tier unchanged: `estimated` / T3-modelled / cached / modelled-fallback. The KPX/data.go.kr live feed remains blocked on a Korean-identity `serviceKey` (not obtainable; documented, not wired). See PR #829.
+
+---
+
+## Cyprus — 2026-09-06 TSOC probe result and ENTSO-E CY shape
+
+The 2026-04 pass left `cyprus` on a typical solar profile at 0.1 TWh/yr behind a probe of
+`https://tsoc.org.cy/` that could never succeed. Re-probed 2026-09-06:
+
+- **`tsoc.org.cy` returns HTTP 403 to every non-browser client.** Confirmed with and without a browser
+  user-agent, and from a second, unrelated egress host — so the block is browser-fingerprint based, not
+  geographic. A headless-browser proxy (Flaresolverr) does reach it and returns HTTP 200 with
+  "Challenge not detected", which is what PR #280 relied on.
+- **The TSOC page would not have helped anyway.** Its machine-readable table
+  (`#production_graph_data`, ISO timestamps, 15-minute cadence) carries **only the current day**, and it
+  publishes wind generation and a distributed-PV *estimate* — no curtailment column. Building a 30-day
+  window from it needs 30 days of daily capture through a home-lab browser proxy, for a series that is
+  still generation rather than curtailment.
+- **ENTSO-E publishes Cyprus.** The CY bidding zone (`10YCY-1001A0003J`) returns A75 actual generation
+  per production type for both B16 (solar) and B19 (wind) at PT30M, over the repo's existing
+  `ENTSOE_API_TOKEN` and through the existing `parseEntsoeXml`. No proxy, no new egress dependency.
+- **Cyprus is solar-dominated.** Over the 30 days to 2026-09-06, B16 delivered 0.1512 TWh against B19's
+  0.0150 TWh — a 10:1 ratio, with peak instantaneous 761 MW solar against 115 MW wind. Over the 12
+  months to 2026-09-05 the same ordering holds. The published anchor is a **PV**-curtailment figure
+  (`docs/methodology/anchors.md`: "Cyprus PV curtailment: TSOC press release (2024)"), so `kind` stays
+  `solar`.
+- **Caveat: the CY solar feed is intermittently broken.** Peak hour-of-day means over the last 12 months:
+  634 MW (2026-08), 218 MW (2025-12), but 20.5 MW (2026-02), 11.3 MW (2026-07), 8.9 MW (2026-04). In the
+  collapsed months ~95% of intervals report near-zero. `src/data/cyprus.json.ts` guards on coverage
+  (≥20 distinct days), magnitude (peak hour-of-day mean ≥50 MW) and peak hour (05:00–14:00 UTC), and
+  throws otherwise so `withFallback` serves last-good.
+
+The region stays `tier: estimated` / T3-modelled / `modelled-fallback`: ENTSO-E supplies the diurnal
+shape, but no hourly or machine-readable curtailment series exists for Cyprus, so the magnitude remains
+the inferred TSOC ~0.15 TWh/yr annual anchor.
