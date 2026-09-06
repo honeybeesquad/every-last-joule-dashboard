@@ -94,4 +94,34 @@ describe("region data integrity", () => {
     );
     expect(issues.malformed).toEqual(["alpha"]);
   });
+
+  // Loader-order bug: a positional `Promise.all` destructuring that has drifted
+  // out of step with the fetch list binds each name to the *next* loader's
+  // output. The values are well-formed, so only `regionId` gives it away.
+  it("reports a slot holding another region's data (loader-order bug)", () => {
+    const issues = findRegionDataIntegrityIssues(
+      { alpha: data("beta"), beta: data("beta") },
+      regions,
+    );
+    expect(issues.mismatchedId).toEqual(["alpha"]);
+    expect(issues.malformed).toEqual([]);
+    expect(issues.missing).toEqual([]);
+    expect(issues.extra).toEqual([]);
+  });
+
+  it("names both sides of a loader-order mismatch in the thrown message", () => {
+    expect(() =>
+      assertCanonicalRegionData({ alpha: data("beta"), beta: data("beta") }, regions),
+    ).toThrow(/alpha holds beta/);
+  });
+
+  it("ignores values that carry no regionId at all", () => {
+    const noId = { ...data("alpha") } as Partial<RegionData>;
+    delete noId.regionId;
+    const issues = findRegionDataIntegrityIssues(
+      { alpha: noId as RegionData, beta: data("beta") },
+      regions,
+    );
+    expect(issues.mismatchedId).toEqual([]);
+  });
 });

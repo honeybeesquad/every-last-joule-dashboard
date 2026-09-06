@@ -171,9 +171,10 @@ import { mountGlobe } from "../globe.js";
 // individual loaders are not duplicated, just re-imported via FileAttachment.
 const [
   cbeci, ercot, caiso, miso, pjm, spp, nyiso, isoNe, bpa,
-  entsoe, aemo, belgium, france, denmark, newZealand, norway, atacama,
+  soco, pacw, pace, psco, azps, srp, ipco, tepc,
+  entsoe, germanyCurtailment, aemo, aemoPerPlant, belgium, france, denmark, newZealand, newZealandHydro, norway, atacama,
   chileWind, statics, anchor, northSea, brazilNE, ontario, alberta,
-  ireland, peru, southAfrica, argentina, uruguay, paraguay, mexico,
+  ireland, peru, peruPerPlant, southAfrica, argentina, uruguay, paraguay, mexico,
   japanChubu, japanChugoku, japanHokkaido, japanHokuriku, japanKansai,
   japanKyushu, japanOkinawa, japanShikoku, japanTepco, japanTohoku,
   vietnam, thailand, indiaRajasthan, cyprus, ethiopia, kazakhstan,
@@ -181,15 +182,20 @@ const [
   indonesia, malaysia, philippines, southKorea, russiaMainland, taiwan, jordan,
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
   yunnan, tibet, indiaGujarat, indiaTamilNadu, indiaKarnataka, indiaAndhraPradesh,
-  indiaMaharashtra, indiaEast, pakistan, iran,
+  indiaMaharashtra, indiaEast,
+  // Order below MUST match the FileAttachment order in the Promise.all array:
+  // the six India states are fetched BEFORE pakistan/iran. (#203 appended the
+  // names after pakistan/iran and rotated eight bindings by six slots.)
   indiaMadhyaPradesh, indiaTelangana, indiaUttarPradesh, indiaPunjab, indiaOdisha, indiaChhattisgarh,
+  pakistan, iran,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
   quebec, manitoba, saskatchewan, turkey, colombia, florida,
   chinaShandong, chinaGuangdong, chinaJiangsu, chinaAnhui, chinaHunan,
   chinaLiaoning, chinaHubei, chinaShanxi, chinaShaanxi, chinaZhejiang,
   chinaHenan, chinaFujian, chinaJiangxi, chinaBeijing, chinaGuizhou,
   chinaChongqing, chinaTianjin, chinaHainan, chinaShanghai,
-  chinaHebei, chinaHeilongjiang, chinaJilin, xinjiang, germanyCurtailment
+  chinaHebei, chinaHeilongjiang, chinaJilin, xinjiang,
+  sichuan, guangxi
 ] = await Promise.all([
   FileAttachment("../data/cbeci.json").json(),
   FileAttachment("../data/ercot.json").json(),
@@ -200,12 +206,23 @@ const [
   FileAttachment("../data/nyiso.json").json(),
   FileAttachment("../data/iso-ne.json").json(),
   FileAttachment("../data/bpa.json").json(),
+  FileAttachment("../data/soco.json").json(),
+  FileAttachment("../data/pacw.json").json(),
+  FileAttachment("../data/pace.json").json(),
+  FileAttachment("../data/psco.json").json(),
+  FileAttachment("../data/azps.json").json(),
+  FileAttachment("../data/srp.json").json(),
+  FileAttachment("../data/ipco.json").json(),
+  FileAttachment("../data/tepc.json").json(),
   FileAttachment("../data/entsoe.json").json(),
+  FileAttachment("../data/germany-curtailment.json").json(),
   FileAttachment("../data/aemo.json").json(),
+  FileAttachment("../data/aemo-per-plant.json").json(),
   FileAttachment("../data/belgium.json").json(),
   FileAttachment("../data/france.json").json(),
   FileAttachment("../data/denmark.json").json(),
   FileAttachment("../data/new-zealand.json").json(),
+  FileAttachment("../data/new-zealand-hydro.json").json(),
   FileAttachment("../data/norway.json").json(),
   FileAttachment("../data/atacama-chile.json").json(),
   FileAttachment("../data/chile-wind.json").json(),
@@ -217,6 +234,7 @@ const [
   FileAttachment("../data/alberta.json").json(),
   FileAttachment("../data/ireland.json").json(),
   FileAttachment("../data/peru.json").json(),
+  FileAttachment("../data/peru-per-plant.json").json(),
   FileAttachment("../data/south-africa.json").json(),
   FileAttachment("../data/argentina.json").json(),
   FileAttachment("../data/uruguay.json").json(),
@@ -310,14 +328,22 @@ const [
   FileAttachment("../data/china-hebei.json").json(),
   FileAttachment("../data/china-heilongjiang.json").json(),
   FileAttachment("../data/china-jilin.json").json(),
-  FileAttachment("../data/xinjiang.json").json()
-  FileAttachment("../data/germany-curtailment.json").json()
+  FileAttachment("../data/xinjiang.json").json(),
+  FileAttachment("../data/sichuan.json").json(),
+  FileAttachment("../data/guangxi.json").json()
 ]);
 
-// Identical wiring to src/index.md. Kept inline (rather than abstracted to
-// a shared loaders.ts module) because the dashboard wiring is not yet
-// factored out — see the "End-to-end loader-output integrity test" follow-up
-// in STATUS.md. When that refactor lands this block should follow it.
+// Identical wiring to src/index.md, minus the zenodo-version badge (not a
+// region, and a live fetch the embed must not block on). Kept inline rather
+// than abstracted to a shared loaders.ts module because the dashboard wiring
+// is not yet factored out — see the "End-to-end loader-output integrity test"
+// follow-up in STATUS.md. When that refactor lands this block should follow it.
+//
+// Until then `tests/globe-drift.test.ts` enforces the copy: it asserts this
+// object has exactly the same keys and spreads as src/index.md's, that both
+// pages parse as JavaScript, and that each destructured name above lines up
+// with the FileAttachment at the same index. Add a loader to the dashboard
+// and that test fails until you add it here too.
 const regionData = {
   "ercot-east-wind":  ercot["ercot-east-wind"],
   "ercot-east-solar":  ercot["ercot-east-solar"],
@@ -339,7 +365,24 @@ const regionData = {
   "iso-ne-rest-solar":    isoNe.solar,
   "bpa-wind":  bpa.wind,
   "bpa-solar": bpa.solar,
+  "soco-wind":  soco.wind,
+  "soco-solar": soco.solar,
+  "pacw-wind":  pacw.wind,
+  "pacw-solar": pacw.solar,
+  "pace-wind":  pace.wind,
+  "pace-solar": pace.solar,
+  "psco-wind":  psco.wind,
+  "psco-solar": psco.solar,
+  "azps-wind":  azps.wind,
+  "azps-solar": azps.solar,
+  "srp-wind":   srp.wind,
+  "srp-solar":  srp.solar,
+  "ipco-wind":  ipco.wind,
+  "ipco-solar": ipco.solar,
+  "tepc-wind":  tepc.wind,
+  "tepc-solar": tepc.solar,
   ...aemo,
+  ...aemoPerPlant,
   ...belgium,
   "germany-50hertz-wind":  germanyCurtailment["germany-50hertz-wind"],
   "germany-50hertz-solar": germanyCurtailment["germany-50hertz-solar"],
@@ -382,6 +425,14 @@ const regionData = {
   "italy-sicily-solar": entsoe["italy-sicily-solar"],
   "italy-sardinia-wind": entsoe["italy-sardinia-wind"],
   "italy-sardinia-solar": entsoe["italy-sardinia-solar"],
+  "italy-cnord-wind": entsoe["italy-cnord-wind"],
+  "italy-cnord-solar": entsoe["italy-cnord-solar"],
+  "italy-csud-wind": entsoe["italy-csud-wind"],
+  "italy-csud-solar": entsoe["italy-csud-solar"],
+  "italy-sud-wind": entsoe["italy-sud-wind"],
+  "italy-sud-solar": entsoe["italy-sud-solar"],
+  "italy-calabria-wind": entsoe["italy-calabria-wind"],
+  "italy-calabria-solar": entsoe["italy-calabria-solar"],
   "sweden-north": entsoe["sweden-north"],
   "sweden-south-wind": entsoe["sweden-south-wind"],
   "sweden-south-solar": entsoe["sweden-south-solar"],
@@ -420,16 +471,19 @@ const regionData = {
   ...alberta,
   ...ireland,
   ...peru,
+  ...peruPerPlant,
   ...southAfrica,
   "new-zealand-wind":  newZealand.wind,
   "new-zealand-solar": newZealand.solar,
   "new-zealand-geo":   newZealand.geo,
+  "new-zealand-hydro": newZealandHydro,
   atacama,
   "chile-wind": chileWind,
   argentina,
   uruguay,
   paraguay,
-  mexico,
+  "mexico-solar": mexico.solar,
+  "mexico-wind": mexico.wind,
   "japan-chubu":    japanChubu,
   "japan-chugoku":  japanChugoku,
   "japan-hokkaido-solar": japanHokkaido["japan-hokkaido-solar"],
@@ -471,11 +525,14 @@ const regionData = {
   "inner-mongolia-solar": innerMongolia.solar,
   "gansu-wind":  gansu.wind,
   "gansu-solar": gansu.solar,
-  qinghai,
+  "qinghai-wind":  qinghai.wind,
+  "qinghai-solar": qinghai.solar,
   "ningxia-wind":  ningxia.wind,
   "ningxia-solar": ningxia.solar,
-  yunnan,
-  tibet,
+  "yunnan-wind":  yunnan.wind,
+  "yunnan-solar": yunnan.solar,
+  "tibet-wind":  tibet.wind,
+  "tibet-solar": tibet.solar,
   "india-gujarat": indiaGujarat,
   "india-tamil-nadu": indiaTamilNadu,
   "india-karnataka": indiaKarnataka,
@@ -541,6 +598,10 @@ const regionData = {
   "china-jilin-solar": chinaJilin.solar,
   "xinjiang-wind":  xinjiang.wind,
   "xinjiang-solar": xinjiang.solar,
+  "sichuan-wind":  sichuan.wind,
+  "sichuan-solar": sichuan.solar,
+  "guangxi-wind":  guangxi.wind,
+  "guangxi-solar": guangxi.solar,
   ...statics,
   ...philippines
 };

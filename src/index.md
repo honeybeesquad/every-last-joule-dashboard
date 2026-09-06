@@ -58,8 +58,12 @@ const [
   honduras, jeju, kenya, egypt, morocco, namibia, waSwis, ntPilbara,
   indonesia, malaysia, philippines, southKorea, russiaMainland, taiwan, jordan,
   saudiSolar, uae, oman, israel, innerMongolia, gansu, qinghai, ningxia,
-  yunnan, tibet, indiaGujarat, indiaTamilNadu, indiaKarnataka, indiaAndhraPradesh, indiaMaharashtra, indiaEast, pakistan, iran,
+  yunnan, tibet, indiaGujarat, indiaTamilNadu, indiaKarnataka, indiaAndhraPradesh, indiaMaharashtra, indiaEast,
+  // Order below MUST match the FileAttachment order in the Promise.all array:
+  // the six India states are fetched BEFORE pakistan/iran. (#203 appended the
+  // names after pakistan/iran and rotated eight bindings by six slots.)
   indiaMadhyaPradesh, indiaTelangana, indiaUttarPradesh, indiaPunjab, indiaOdisha, indiaChhattisgarh,
+  pakistan, iran,
   iraqMainland, kurdistan, bangladesh, mongolia, britishColumbia,
   quebec, manitoba, saskatchewan, turkey, colombia, florida,
   chinaShandong, chinaGuangdong, chinaJiangsu, chinaAnhui, chinaHunan,
