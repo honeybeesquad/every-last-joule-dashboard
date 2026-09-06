@@ -9,7 +9,7 @@
 
 **The console warning was the least of it.** `aemo.json.ts:98` excludes *every* member of `PER_PLANT_DUIDS` from its state aggregates unconditionally — the aggregate-minus-named contract from **#298**. So each per-plant region the loader dropped was curtailment subtracted from the state total and never added back anywhere: **~2,000 MWh of measured NEMWEB curtailment silently deleted** from the dataset per 30-day window.
 
-**Root cause was not "no data for those plants."** Verified against 30 days of NEMWEB `Next_Day_Dispatch` CSVs (window ending 2026-09-05), cross-checked by an independent Python reimplementation that agreed with the loader to 8 decimal places on all 10 plants:
+**Root cause was not "no data for those plants."** Verified against 30 days of NEMWEB `Next_Day_Dispatch` CSVs (window ending 2026-09-05), cross-checked by an independent Python reimplementation that agrees with the loader to floating-point rounding on all 10 plants (max absolute difference 2.3e-17 TWh):
 
 - All 10 DUIDs appear in all 30 daily files — 8,640 dispatch intervals each, every one with `SEMIDISPATCHCAP=1` rows. No missing feed, no unit-map gap, no coordinate gap.
 - **Six** of the seven (`wdgph1`, `darlsf1`, `limosf11`, `saphwf1`, `avlsf1`, `bangowf1`) carry **real, positive, measured curtailment** and were dropped by the `MIN_TWH_30D = 0.01` noise floor. These were never zeros — allowlisting them as such would have been a fabricated zero.
@@ -17,7 +17,7 @@
 
 **Second defect, found in the same pass — a 12x energy overcount.** `totalTWh30d(acc.allPoints)` ran on raw 5-minute dispatch points at the helper's 1-hour default, so every per-plant `totalTWh` read **exactly 12.0x** the curtailed MWh (confirmed on all 10 DUIDs). `aemo.json.ts` avoids this only because it hourly-averages before totalling. The 12x is also what let three plants clear the 0.01 TWh floor while seven did not — the floor and the unit error were entangled.
 
-**MAGNITUDE CALL-OUT (CLAUDE.md rule 3).** The three already-published per-plant regions drop 12x to their true measured values: `aemo-macarth1-wind` 0.1610 → **0.01341**, `aemo-coopgwf1-wind` 0.0845 → **0.00704**, `aemo-stockyd1-wind` 0.0226 → **0.00188** TWh/30d. This is a correction, not a regime change — the prior figures were a unit error on `sourceProvenance: "verified"` measured data. Net effect on dataset totals is a reduction of ~0.24 TWh/30d from those three, partly offset by ~0.0016 TWh/30d of newly-emitted curtailment from the six plants that were being dropped.
+**MAGNITUDE CALL-OUT (CLAUDE.md rule 3).** The three already-published per-plant regions drop 12x to their true measured values: `aemo-macarth1-wind` 0.1610 → **0.01341**, `aemo-coopgwf1-wind` 0.0845 → **0.00704**, `aemo-stockyd1-wind` 0.0226 → **0.00188** TWh/30d. This is a correction, not a regime change — the prior figures were a unit error on `sourceProvenance: "verified"` measured data. Net effect on dataset totals is a reduction of ~0.24 TWh/30d from those three, partly offset by 0.0020 TWh/30d (2,004 MWh) of newly-emitted curtailment from the six plants that were being dropped - the same energy the aggregate-minus-named gap was deleting.
 
 **Fix (one PR):**
 - Points carry `intervalHours = 5/60`, so `totalTWh30d` bills the true dispatch cadence.

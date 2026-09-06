@@ -154,8 +154,13 @@ describe("AEMO per-plant: real-feed zeros are emitted, not dropped", () => {
     expect(rye.lon).toBeCloseTo(148.954, 2);
   });
 
-  it("dates the zero region from the feed, never from wall-clock now", () => {
+  it("dates the zero region's lastUpdated from the feed, not from wall-clock now", () => {
     const rye = out()["aemo-ryepark1-wind"];
+    // lastUpdated is the field that carries source freshness downstream, and it
+    // must never be Date.now() for a plant with no points. lastSuccessAt is set
+    // here too, but withFallback's stampLive restamps it to build time at the
+    // cache boundary — correctly, since it answers "when did the refresh
+    // succeed", not "how fresh is the source data".
     expect(rye.lastUpdated).toBe("2026-06-23T18:10:00.000Z");
     expect(rye.lastSuccessAt).toBe("2026-06-23T18:10:00.000Z");
   });

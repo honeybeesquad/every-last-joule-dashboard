@@ -238,9 +238,11 @@ const run = async (): Promise<Record<string, PerPlantRegionData>> => {
     );
   }
 
-  // Date any measured-zero plant from the feed's most recent curtailment
-  // interval rather than wall-clock now, so a zero region never claims more
-  // freshness than the feed actually has.
+  // `lastUpdated` on a measured-zero plant comes from the feed's most recent
+  // curtailment interval rather than wall-clock now, so the region never claims
+  // more source freshness than the feed actually has. (`lastSuccessAt` is a
+  // different question — "when did this snapshot last refresh successfully" —
+  // and withFallback's stampLive correctly restamps it to build time.)
   const feedLatestUtc = [...duidAccumulator.values()].reduce(
     (latest, a) => a.allPoints.reduce((l, p) => (p.utcTimestamp > l ? p.utcTimestamp : l), latest),
     "",
@@ -271,9 +273,9 @@ export interface PerDuidAccumulatorEntry {
  * A registry DUID that accumulated no points curtailed nothing in the window.
  * SEMIDISPATCHCAP may still have fired on it — being capped is not the same as
  * being constrained below what was available — so this is a measured zero from
- * a demonstrably live feed, and it is emitted as an all-zero region dated from
- * the feed's latest interval. `scripts/lib/zero-allowlist.ts` carries the
- * matching exemption for the all-zero snapshot check.
+ * a demonstrably live feed, and it is emitted as an all-zero region whose
+ * `lastUpdated` is the feed's latest interval. `scripts/lib/zero-allowlist.ts`
+ * carries the matching exemption for the all-zero snapshot check.
  */
 export function buildPerPlantRegions(
   accumulator: ReadonlyMap<string, PerDuidAccumulatorEntry>,
@@ -283,10 +285,9 @@ export function buildPerPlantRegions(
 
   for (const duid of PER_PLANT_DUIDS) {
     const acc = accumulator.get(duid);
-    const unit = AEMO_UNIT_MAP[duid as keyof typeof AEMO_UNIT_MAP] as
-      | { region: string; fueltech: string }
-      | undefined;
-    const fueltech = acc?.fueltech ?? (unit?.fueltech as AemoFuel | undefined);
+    const unit: { region: string; fueltech: AemoFuel } | undefined =
+      AEMO_UNIT_MAP[duid as keyof typeof AEMO_UNIT_MAP];
+    const fueltech: AemoFuel | undefined = acc?.fueltech ?? unit?.fueltech;
     const regionCode = acc?.regionCode ?? unit?.region;
     if (!fueltech || !regionCode) {
       // Throw rather than skip: aemo.json.ts has already excluded this DUID
