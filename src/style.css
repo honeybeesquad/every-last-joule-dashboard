@@ -721,6 +721,10 @@ main table {
   display: inline-flex;
   gap: 4px;
   align-items: center;
+  /* Five items with long labels ("Historical record") overflow a narrow
+     header; without this the row scrolls sideways instead of wrapping. */
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 .app-nav a {
   font-size: 12px;

@@ -87,6 +87,8 @@ document.getElementById("app-root").innerHTML = `
       <div class="app-header-right">
         <div id="theme-toggle-mount"></div>
         <nav class="app-nav" aria-label="Primary">
+          <a href="./regions">All regions</a>
+          <a href="./history">Historical record</a>
           <a href="./methodology">Methodology</a>
           <a href="./paper">Paper</a>
           <a href="./about">About</a>
