@@ -1,0 +1,48 @@
+source_view,filter_month,inferred_report_month,report_title,source_url,month_mismatch,duplicate_url
+month_filter,2025-01,2025-11,Curtailment_RE_Power_Nov. 2025,https://sldc.rajasthan.gov.in/rrvpnl/download/12/6943edd4065ca_Curtailment_RE_Power_Nov.2025.pdf,yes,no
+month_filter,2025-02,2025-12,Curtailment_RE_Power_Dec.2025.pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/6955fbfde8ada_Curtailment_RE_Power_Dec.2025.pdf,yes,no
+month_filter,2025-11,2025-11,Curtailment_RE_Power_Nov. 2025,https://sldc.rajasthan.gov.in/rrvpnl/download/12/6943edd4065ca_Curtailment_RE_Power_Nov.2025.pdf,no,yes
+month_filter,2025-12,2025-12,Curtailment_RE_Power_Dec.2025.pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/6955fbfde8ada_Curtailment_RE_Power_Dec.2025.pdf,no,yes
+month_filter,2026-01,2026-01,Curtailment_RE_Power_Jan.2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/697ec76b4b8cb_Curtailment_RE_Power_Jan.2026.pdf,no,no
+month_filter,2026-02,2026-02,Curtailment_RE_Power_Feb 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69a3b8195e6c6_Curtailment_RE_Power_Feb.2026.pdf,no,no
+month_filter,2026-03,2026-03,Curtailment_RE_Power_30 & 31 march 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69ccecaa19810_Curtailment_RE_Power_30&31march2026.pdf,no,no
+month_filter,2026-03,2026-03,Curtailment_RE_Power_20march 2026 to 28 march 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69c8d1eae19d0_Curtailment_RE_Power_20march2026to28march2026.pdf,no,no
+month_filter,2026-03,2026-03,Curtailment_RE_Power_march 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69bb7d2788216_Curtailment_RE_Power_march2026.pdf,no,no
+month_filter,2026-04,2026-04,Curtailment_RE_Power_29 & 30 April 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f58110e42f3_Curtailment_RE_Power_29&30April2026.pdf,no,no
+month_filter,2026-04,2026-04,Curtailment_RE_Power_05April_2026.pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69d37d38bfc18_Curtailment_RE_Power05April2026.pdf,no,no
+month_filter,2026-04,2026-04,Curtailment_RE_Power_02 & 03 April 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69d0adb6d52bf_Curtailment_RE_Power_02&03April2026.pdf,no,no
+month_filter,2026-05,2026-05,Curtailment_RE_Power_06 May - 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69fb3abd1450d_Curtailment_RE_Power_06May-2026.pdf,no,no
+month_filter,2026-05,2026-05,Curtailment_RE_Power_05 May - 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69fac1e7f37a9_Curtailment_RE_Power_05May-2026.pdf,no,no
+month_filter,2026-05,2026-05,RE_Curtailment_03_May_2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f9721d9fbb3_FormatofRECurtailmenteventfoRDT03.05.2026.pdf,no,no
+month_filter,2026-05,2026-05,RE_Curtailment_04_MAY_2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f9725538e56_FormatofRECurtailmenteventfoRDT04.05.2026.pdf,no,no
+month_filter,2026-05,2026-05,Curtailment_RE_Power_01 & 02 May - 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f6db7ed3637_Curtailment_RE_Power_01&02May-2026.pdf,no,no
+re_curtailment_default,,2026-05,Curtailment_RE_Power_06 May - 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69fb3abd1450d_Curtailment_RE_Power_06May-2026.pdf,no,yes
+re_curtailment_default,,2026-05,Curtailment_RE_Power_05 May - 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69fac1e7f37a9_Curtailment_RE_Power_05May-2026.pdf,no,yes
+re_curtailment_default,,2026-05,RE_Curtailment_03_May_2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f9721d9fbb3_FormatofRECurtailmenteventfoRDT03.05.2026.pdf,no,yes
+re_curtailment_default,,2026-05,RE_Curtailment_04_MAY_2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f9725538e56_FormatofRECurtailmenteventfoRDT04.05.2026.pdf,no,yes
+re_curtailment_default,,2026-05,Curtailment_RE_Power_01 & 02 May - 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f6db7ed3637_Curtailment_RE_Power_01&02May-2026.pdf,no,yes
+re_curtailment_default,,2026-04,Curtailment_RE_Power_29 & 30 April 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f58110e42f3_Curtailment_RE_Power_29&30April2026.pdf,no,yes
+re_curtailment_default,,2026-04,Curtailment_RE_Power_05April_2026.pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69d37d38bfc18_Curtailment_RE_Power05April2026.pdf,no,yes
+re_curtailment_default,,2026-04,Curtailment_RE_Power_02 & 03 April 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69d0adb6d52bf_Curtailment_RE_Power_02&03April2026.pdf,no,yes
+re_curtailment_default,,2026-03,Curtailment_RE_Power_30 & 31 march 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69ccecaa19810_Curtailment_RE_Power_30&31march2026.pdf,no,yes
+re_curtailment_default,,2026-03,Curtailment_RE_Power_20march 2026 to 28 march 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69c8d1eae19d0_Curtailment_RE_Power_20march2026to28march2026.pdf,no,yes
+re_curtailment_default,,2026-03,Curtailment_RE_Power_march 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69bb7d2788216_Curtailment_RE_Power_march2026.pdf,no,yes
+re_curtailment_default,,2026-02,Curtailment_RE_Power_Feb 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69a3b8195e6c6_Curtailment_RE_Power_Feb.2026.pdf,no,yes
+re_curtailment_default,,2026-01,Curtailment_RE_Power_Jan.2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/697ec76b4b8cb_Curtailment_RE_Power_Jan.2026.pdf,no,yes
+re_curtailment_default,,2025-12,Curtailment_RE_Power_Dec.2025.pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/6955fbfde8ada_Curtailment_RE_Power_Dec.2025.pdf,no,yes
+re_curtailment_default,,2025-11,Curtailment_RE_Power_Nov. 2025,https://sldc.rajasthan.gov.in/rrvpnl/download/12/6943edd4065ca_Curtailment_RE_Power_Nov.2025.pdf,no,yes
+downloads_default,,2026-05,Curtailment_RE_Power_06 May - 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69fb3abd1450d_Curtailment_RE_Power_06May-2026.pdf,no,yes
+downloads_default,,2026-05,Curtailment_RE_Power_05 May - 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69fac1e7f37a9_Curtailment_RE_Power_05May-2026.pdf,no,yes
+downloads_default,,2026-05,RE_Curtailment_03_May_2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f9721d9fbb3_FormatofRECurtailmenteventfoRDT03.05.2026.pdf,no,yes
+downloads_default,,2026-05,RE_Curtailment_04_MAY_2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f9725538e56_FormatofRECurtailmenteventfoRDT04.05.2026.pdf,no,yes
+downloads_default,,2026-05,Curtailment_RE_Power_01 & 02 May - 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f6db7ed3637_Curtailment_RE_Power_01&02May-2026.pdf,no,yes
+downloads_default,,2026-04,Curtailment_RE_Power_29 & 30 April 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f58110e42f3_Curtailment_RE_Power_29&30April2026.pdf,no,yes
+downloads_default,,2026-04,Curtailment_RE_Power_05April_2026.pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69d37d38bfc18_Curtailment_RE_Power05April2026.pdf,no,yes
+downloads_default,,2026-04,Curtailment_RE_Power_02 & 03 April 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69d0adb6d52bf_Curtailment_RE_Power_02&03April2026.pdf,no,yes
+downloads_default,,2026-03,Curtailment_RE_Power_30 & 31 march 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69ccecaa19810_Curtailment_RE_Power_30&31march2026.pdf,no,yes
+downloads_default,,2026-03,Curtailment_RE_Power_20march 2026 to 28 march 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69c8d1eae19d0_Curtailment_RE_Power_20march2026to28march2026.pdf,no,yes
+downloads_default,,2026-03,Curtailment_RE_Power_march 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69bb7d2788216_Curtailment_RE_Power_march2026.pdf,no,yes
+downloads_default,,2026-02,Curtailment_RE_Power_Feb 2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69a3b8195e6c6_Curtailment_RE_Power_Feb.2026.pdf,no,yes
+downloads_default,,2026-01,Curtailment_RE_Power_Jan.2026,https://sldc.rajasthan.gov.in/rrvpnl/download/12/697ec76b4b8cb_Curtailment_RE_Power_Jan.2026.pdf,no,yes
+downloads_default,,2025-12,Curtailment_RE_Power_Dec.2025.pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/6955fbfde8ada_Curtailment_RE_Power_Dec.2025.pdf,no,yes
+downloads_default,,2025-11,Curtailment_RE_Power_Nov. 2025,https://sldc.rajasthan.gov.in/rrvpnl/download/12/6943edd4065ca_Curtailment_RE_Power_Nov.2025.pdf,no,yes

@@ -1,0 +1,14 @@
+report_title,events,text_chars,status,source_url
+Curtailment_RE_Power_Jan.2026,2,0,manual_extraction_from_scanned_pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/697ec76b4b8cb_Curtailment_RE_Power_Jan.2026.pdf
+Curtailment_RE_Power_Feb 2026,0,0,ocr_review_no_obvious_curtailment_rows,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69a3b8195e6c6_Curtailment_RE_Power_Feb.2026.pdf
+Curtailment_RE_Power_30 & 31 march 2026,6,0,manual_extraction_from_scanned_pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69ccecaa19810_Curtailment_RE_Power_30&31march2026.pdf
+Curtailment_RE_Power_20march 2026 to 28 march 2026,19,0,manual_extraction_from_scanned_pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69c8d1eae19d0_Curtailment_RE_Power_20march2026to28march2026.pdf
+Curtailment_RE_Power_march 2026,13,0,manual_extraction_from_scanned_pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69bb7d2788216_Curtailment_RE_Power_march2026.pdf
+Curtailment_RE_Power_29 & 30 April 2026,4,0,manual_extraction_from_scanned_pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f58110e42f3_Curtailment_RE_Power_29&30April2026.pdf
+Curtailment_RE_Power_05April_2026.pdf,6,25646,parsed,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69d37d38bfc18_Curtailment_RE_Power05April2026.pdf
+Curtailment_RE_Power_02 & 03 April 2026,8,0,manual_extraction_from_scanned_pdf,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69d0adb6d52bf_Curtailment_RE_Power_02&03April2026.pdf
+Curtailment_RE_Power_06 May - 2026,2,2828,parsed,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69fb3abd1450d_Curtailment_RE_Power_06May-2026.pdf
+Curtailment_RE_Power_05 May - 2026,2,2828,parsed,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69fac1e7f37a9_Curtailment_RE_Power_05May-2026.pdf
+RE_Curtailment_03_May_2026,2,1811,parsed,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f9721d9fbb3_FormatofRECurtailmenteventfoRDT03.05.2026.pdf
+RE_Curtailment_04_MAY_2026,5,3744,parsed,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f9725538e56_FormatofRECurtailmenteventfoRDT04.05.2026.pdf
+Curtailment_RE_Power_01 & 02 May - 2026,6,5885,parsed,https://sldc.rajasthan.gov.in/rrvpnl/download/12/69f6db7ed3637_Curtailment_RE_Power_01&02May-2026.pdf

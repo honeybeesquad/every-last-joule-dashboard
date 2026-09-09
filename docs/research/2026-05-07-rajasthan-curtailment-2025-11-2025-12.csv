@@ -1,0 +1,1 @@
+report_title,date,fuel,from_time,to_time,duration_hours,actual_generation_mw,relief_mw,curtailed_mwh,curtailed_twh,reason,extraction_method,confidence,source_url

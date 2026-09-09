@@ -1,0 +1,17 @@
+report_month,state,curtailment_mu,curtailment_twh,source_text,official_pdf_url,table_page,extraction_method,confidence,notes
+2019-12,Andhra Pradesh,22.53,0.022530,APTRANSCO Website- http://apps.aptransco.co.in/sldcreports/forms/BackDownWind.aspx,https://cea.nic.in/wp-content/uploads/2020/02/renewable-12.pdf,30,pdftotext_layout,medium,
+2019-12,Telangana,0,0.000000,"Information furnished by SLDC, TSTransco through email.",https://cea.nic.in/wp-content/uploads/2020/02/renewable-12.pdf,30,pdftotext_layout,medium,
+2019-12,Tamil Nadu,,,- No information is available on website.,https://cea.nic.in/wp-content/uploads/2020/02/renewable-12.pdf,30,pdftotext_layout,medium,
+2019-12,Karnataka,0,0.000000,"SLDC, KPTCL Website- http://kptclsldc.com/recurtail.aspx",https://cea.nic.in/wp-content/uploads/2020/02/renewable-12.pdf,30,pdftotext_layout,medium,
+2019-12,Maharashtra,,,- No information is available on website.,https://cea.nic.in/wp-content/uploads/2020/02/renewable-12.pdf,30,pdftotext_layout,medium,
+2019-12,Gujarat,,,- No information is available on website.,https://cea.nic.in/wp-content/uploads/2020/02/renewable-12.pdf,30,pdftotext_layout,medium,
+2019-12,Rajasthan,0,0.000000,"SLDC, RRVPNL Website- https://sldc.rajasthan.gov.in/mis/monthlyReDsmReports",https://cea.nic.in/wp-content/uploads/2020/02/renewable-12.pdf,30,pdftotext_layout,medium,
+2019-12,Madhya Pradesh,0,0.000000,"SLDC, MP Power Transmission Corporation Ltd.-http://223.31.122.117/mpsldc/RE_DATA",https://cea.nic.in/wp-content/uploads/2020/02/renewable-12.pdf,30,pdftotext_layout,medium,
+2021-12,Andhra Pradesh,,,APTRANSCO Website- http://apps.aptransco.co.in/sldcreports/forms/BackDownWind.aspx,https://cea.nic.in/wp-content/uploads/resd/2022/01/Broad_overview_December_21.pdf,36,pdftotext_layout,medium,
+2021-12,Telangana,,,"Information furnished by SLDC, TSTransco through email.",https://cea.nic.in/wp-content/uploads/resd/2022/01/Broad_overview_December_21.pdf,36,pdftotext_layout,medium,
+2021-12,Tamil Nadu,,,- No information is available on website.,https://cea.nic.in/wp-content/uploads/resd/2022/01/Broad_overview_December_21.pdf,36,pdftotext_layout,medium,
+2021-12,Karnataka,,,"SLDC, KPTCL Website- http://kptclsldc.com/recurtail.aspx",https://cea.nic.in/wp-content/uploads/resd/2022/01/Broad_overview_December_21.pdf,36,pdftotext_layout,medium,
+2021-12,Maharashtra,,,- No information is available on website.,https://cea.nic.in/wp-content/uploads/resd/2022/01/Broad_overview_December_21.pdf,36,pdftotext_layout,medium,
+2021-12,Gujarat,,,- No information is available on website.,https://cea.nic.in/wp-content/uploads/resd/2022/01/Broad_overview_December_21.pdf,36,pdftotext_layout,medium,
+2021-12,Rajasthan,,,"SLDC, RRVPNL Website- https://sldc.rajasthan.gov.in/mis/monthlyReDsmReports",https://cea.nic.in/wp-content/uploads/resd/2022/01/Broad_overview_December_21.pdf,36,pdftotext_layout,medium,Non-numeric table value: _
+2021-12,Madhya Pradesh,,,"SLDC, MP Power Transmission Corporation Ltd.-http://223.31.122.117/mpsldc/RE_DATA",https://cea.nic.in/wp-content/uploads/resd/2022/01/Broad_overview_December_21.pdf,36,pdftotext_layout,medium,Non-numeric table value: _

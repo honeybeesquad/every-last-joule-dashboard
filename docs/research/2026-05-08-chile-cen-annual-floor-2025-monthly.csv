@@ -1,0 +1,13 @@
+year,month,source_url,solar_mwh,wind_mwh,solar_points,wind_points
+2025,1,https://www.coordinador.cl/wp-content/uploads/2025/02/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Enero-25-PE-PFV_Publicar.xlsx,494064.65161228343,147028.88301833326,393,469
+2025,2,https://www.coordinador.cl/wp-content/uploads/2025/03/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Febrero-25-PE-PFV_Publicar.xlsx,310079.96299650084,100285.62610666669,315,412
+2025,3,https://www.coordinador.cl/wp-content/uploads/2025/05/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Marzo-25-PE-PFV_Publicar.xlsx,414810.7083574039,121007.1272005267,353,470
+2025,4,https://www.coordinador.cl/wp-content/uploads/2025/06/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Abril-25-PE-PFV_Final.xlsx,265951.44551329326,65279.24008500005,272,310
+2025,5,https://www.coordinador.cl/wp-content/uploads/2025/07/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Mayo-25-PE-PFV_Publicar.xlsx,141368.33233620005,44241.98770166671,265,285
+2025,6,https://www.coordinador.cl/wp-content/uploads/2025/08/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Junio-25-PE-PFV_Publicar.xlsx,217424.58044948,69493.75827166662,297,366
+2025,7,https://www.coordinador.cl/wp-content/uploads/2025/09/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Julio-25-PE-PFV_Publicar.xlsx,174018.22559630332,67553.13735333328,307,466
+2025,8,https://www.coordinador.cl/wp-content/uploads/2025/11/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Agosto-25-PE-PFV_Publicar.xlsx,334583.43248571316,151153.61269833322,346,555
+2025,9,https://www.coordinador.cl/wp-content/uploads/2025/11/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Septiembre-25-PE-PFV_Publicar.xlsx,404360.0584949,182701.9889733332,343,479
+2025,10,https://www.coordinador.cl/wp-content/uploads/2025/11/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Octubre-25-PE-PFV_Publicar.xlsx,515886.3915147765,208474.2160216665,387,496
+2025,11,https://www.coordinador.cl/wp-content/uploads/2026/01/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Noviembre-25-PE-PFV_Publicar.xlsx,551629.5116854167,252323.04232499984,386,453
+2025,12,https://www.coordinador.cl/wp-content/uploads/2026/01/Reducciones-de-Energia-Eolica-Solar-Hidro-en-el-SEN_Diciembre-25-PE-PFV_Publicar.xlsx,581226.2780673342,210272.21965166667,401,442

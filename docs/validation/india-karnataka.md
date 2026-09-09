@@ -139,6 +139,7 @@ The KSLDC live parser is not yet implemented (though the site is accessible). Th
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)
 - Known limitations index: [`docs/known-limitations.md`](../known-limitations.md)
+- Research (May 2026, not production): the official `RE Curtailment Details` PDFs at `kptclsldc.in/recurtail.aspx` (still public 2026-09-10; six one-page instruction PDFs, 2019–2024) — probe [`karnataka-curtailment-postback-probe.mjs`](../../scripts/research/karnataka-curtailment-postback-probe.mjs); instruction inventory [`2026-05-07-karnataka-curtailment-instruction-inventory.md`](../research/2026-05-07-karnataka-curtailment-instruction-inventory.md); denominator search [`2026-05-07-karnataka-denominator-search.md`](../research/2026-05-07-karnataka-denominator-search.md). Confirms item 3 below: percentages and windows, no interval generation denominator.
 <!-- END MANUAL -->
 <!-- BEGIN MANUAL -->
 See [`docs/methodology/tier-classification-guide.md#bad-conversions-you-must-reject`](../methodology/tier-classification-guide.md#bad-conversions-you-must-reject) for the full checklist. **Karnataka is the load-bearing positive example for item 3 — it is the working negative control showing the checklist correctly blocking a promotion.**

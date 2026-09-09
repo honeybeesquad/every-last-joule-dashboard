@@ -3,6 +3,37 @@
 **Last verified against git:** 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
+## May-2026 source-elevation research corpus recovered and landed (2026-09-10)
+
+A four-month-uncommitted research branch (`codex/global-source-elevation-sweep`, 16 modified + 119 new files
+dated 2026-05-06..08) was found in a stale checkout on 2026-09-09, preserved, triaged against `main`
+(`docs/research/2026-09-09-session-handoff.md`, `docs/research/2026-09-09-wip-triage.md`) and landed as
+research artifacts only — **no production loader, region, tier or snapshot changes**. What it adds:
+
+- **Source-verified annual floor layer** — `data/source-verified-floor/2025.{csv,json,md}` (schema in
+  `dataset/SCHEMA.md`): official measured calendar-year curtailment, 18 rows, **43.2 TWh** — Brazil ONS
+  37.18 TWh (16 state/fuel rows) + Chile CEN 6.03 TWh (SEN-wide solar 4.41 as floor-only id
+  `chile-sen-solar`, wind 1.62). A missing row means "not source-verified", not zero. Reproducible via
+  `scripts/research/{brazil-ons-calendar-year,source-verified-floor}.mjs`. This is a different axis from
+  `generationBasis`/`sourceProvenance` (calendar-year sums vs 30-day windows), not a duplicate.
+- **Brazil corrected at landing.** The May pass used `val_geracaoreferenciafinal`, which ONS's dictionary
+  defines as REL-only settlement data (3.8 TWh). Recomputed under ONS's GNRa definition — see the Brazil
+  entry above / PR #960.
+- **Release-layer manifest + readiness audit** (`docs/research/2026-05-07-public-release-layer-manifest.*`,
+  regenerated as `2026-09-10-*` with the corrected floor; `…-global-source-readiness-audit.*`) over the
+  401-row May reconciliation table — stale by 58 regions vs today's 459; the Brazil `annual_twh` fields in
+  `2026-05-06-annual-source-reconciliation.csv` are superseded by the floor file.
+- **India research lanes (research-only, no production change):** Rajasthan official RRVPNL PDF extraction
+  (15 PDFs, 75 rows, **0.052 TWh Jan–May 2026**, 52 manual-from-scan rows) — **>50× below the ≈6.3 TWh/yr
+  CEA×Ember anchor now on the dashboard**; issue to follow. Karnataka `kptclsldc.in/recurtail.aspx` official
+  instruction PDFs (still public 2026-09-10; percentages, no denominator — confirms the item-3 block). CEA
+  Table-11 monthly anchors (Dec 2019 / Dec 2021). Gujarat leads only.
+- **Uruguay open on both sides:** ADME workbook sums 0.41 / 0.20 TWh (2024 / 2025) via the research script
+  vs zero from the loader for 2026-07; kept out of the floor.
+- Housekeeping from the recovery: `git status`/`checkout` hang under the Claude Code Bash sandbox in this
+  repo (empty output ≠ clean tree); iCloud Desktop sync produced 727 `* 2` duplicate dirs in `node_modules`
+  and a `refs/remotes/origin/main 2` file — both cleaned.
+
 ## Curtailment share + units toggle — a small honest metric, not a broad circular one (2026-09-06)
 
 The dashboard reported everything in absolute GW, which rewards large grids and cannot say which grid

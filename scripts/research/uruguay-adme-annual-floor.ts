@@ -1,0 +1,179 @@
+#!/usr/bin/env tsx
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import {
+  FALLBACK_RENEWABLE_PLANTS,
+  parseAdmeConsignaPlantNames,
+  parseAdmeRestrictionsXlsx,
+} from "../../src/data/uruguay.json.js";
+
+const ROOT = process.cwd();
+const STAMP = "2026-05-08";
+const OUT_DIR = join(ROOT, "docs/research");
+const INFO_CONSIGNAS_URL = "https://www.adme.com.uy/info_consignas.php";
+const RESTRICTIONS_URL = "https://www.adme.com.uy/panelControl/ro_excel.php";
+const REGION_ID = "uruguay";
+const VALIDATION_DOC = "docs/validation/uruguay.md";
+
+type AnnualRow = {
+  year: number;
+  region_id: string;
+  country: string;
+  kind: string;
+  curtailed_energy_twh: number;
+  curtailed_energy_mwh: number;
+  hourly_rows: number;
+  nonzero_hourly_rows: number;
+  first_utc: string;
+  last_utc: string;
+  source_url: string;
+  source_field_formula: string;
+  plant_matching: string;
+  production_ready: string;
+  publication_status: string;
+  blocker: string;
+  validation_doc: string;
+  notes: string;
+};
+
+function csvEscape(value: unknown): string {
+  const s = value == null ? "" : String(value);
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function fmt(value: number, digits = 6): string {
+  return Number.isFinite(value) ? value.toFixed(digits) : "";
+}
+
+async function fetchText(url: string): Promise<string> {
+  const res = await fetch(url, { headers: { "user-agent": "Mozilla/5.0" } });
+  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+  return res.text();
+}
+
+async function fetchBytes(url: string): Promise<Uint8Array> {
+  const res = await fetch(url, { headers: { "user-agent": "Mozilla/5.0" } });
+  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+  return new Uint8Array(await res.arrayBuffer());
+}
+
+async function renewablePlants(): Promise<{ plants: Set<string>; liveCount: number; fallbackCount: number }> {
+  const html = await fetchText(INFO_CONSIGNAS_URL);
+  const plants = parseAdmeConsignaPlantNames(html);
+  const liveCount = plants.size;
+  for (const name of FALLBACK_RENEWABLE_PLANTS) plants.add(name);
+  return { plants, liveCount, fallbackCount: FALLBACK_RENEWABLE_PLANTS.size };
+}
+
+async function annualRow(year: number, plants: Set<string>, liveCount: number, fallbackCount: number): Promise<AnnualRow> {
+  const sourceUrl = `${RESTRICTIONS_URL}?anod=${year}&mesd=01&anoh=${year}&mesh=12`;
+  const points = parseAdmeRestrictionsXlsx(await fetchBytes(sourceUrl), plants);
+  const sorted = points.slice().sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+  const mwh = sorted.reduce((sum, point) => sum + Math.max(0, point.mw) * (point.intervalHours ?? 1), 0);
+  const nonzero = sorted.filter((point) => point.mw > 0).length;
+  return {
+    year,
+    region_id: REGION_ID,
+    country: "URY",
+    kind: "wind",
+    curtailed_energy_twh: mwh / 1_000_000,
+    curtailed_energy_mwh: mwh,
+    hourly_rows: sorted.length,
+    nonzero_hourly_rows: nonzero,
+    first_utc: sorted[0]?.utcTimestamp ?? "",
+    last_utc: sorted.at(-1)?.utcTimestamp ?? "",
+    source_url: sourceUrl,
+    source_field_formula: "sum(max(hourly renewable restriction plant columns, 0) * 1h)",
+    plant_matching: `${liveCount} live info_consignas plant names plus ${fallbackCount} fallback renewable plant names`,
+    production_ready: "no",
+    publication_status: "research_only_pending_definition_reconciliation",
+    blocker: "Current reproducible raw workbook sum conflicts with the existing Uruguay validation note (~0.108 TWh for 2024 and near-zero 2025); do not publish until the source column key and active-restriction denominator are reconciled.",
+    validation_doc: VALIDATION_DOC,
+    notes: "ADME workbook values are raw hourly operating-restriction columns for matched renewable plants. Preserve as research-only; do not substitute old 0.4-0.5 TWh assumptions or publish these raw sums as curtailed energy until the definition conflict is resolved.",
+  };
+}
+
+function writeCsv(rows: AnnualRow[]): void {
+  const header = [
+    "year",
+    "region_id",
+    "country",
+    "kind",
+    "curtailed_energy_twh",
+    "curtailed_energy_mwh",
+    "hourly_rows",
+    "nonzero_hourly_rows",
+    "first_utc",
+    "last_utc",
+    "source_url",
+    "source_field_formula",
+    "plant_matching",
+    "production_ready",
+    "publication_status",
+    "blocker",
+    "validation_doc",
+    "notes",
+  ];
+  const csv = [
+    header.join(","),
+    ...rows.map((row) => header.map((key) => csvEscape(row[key as keyof AnnualRow])).join(",")),
+  ].join("\n") + "\n";
+  writeFileSync(join(OUT_DIR, `${STAMP}-uruguay-adme-annual-floor.csv`), csv);
+}
+
+function writeMd(rows: AnnualRow[]): void {
+  const total = rows.reduce((sum, row) => sum + row.curtailed_energy_twh, 0);
+  const md: string[] = [];
+  md.push("# Uruguay ADME Annual Restriction Workbook Candidate");
+  md.push("");
+  md.push(`Date: ${STAMP}`);
+  md.push("");
+  md.push("Generated by `npx tsx scripts/research/uruguay-adme-annual-floor.ts 2024 2025`.");
+  md.push("");
+  md.push("Publication status: `research_only_pending_definition_reconciliation`.");
+  md.push("");
+  md.push("## Source Lock");
+  md.push("");
+  md.push("- Official source: ADME `panelControl/ro_excel.php` Restricciones Operativas workbook.");
+  md.push("- Renewable columns: matched from `info_consignas.php` plus the loader fallback renewable plant registry.");
+  md.push("- Raw formula tested: `sum(max(hourly renewable restriction plant columns, 0) * 1h)`.");
+  md.push("- Exclusion rule: old `0.4-0.5 TWh` Uruguay assumptions remain excluded; these raw workbook sums are not production floor rows.");
+  md.push("- Blocker: the raw 2024/2025 sums conflict with the existing validation note (`~0.108 TWh` in 2024 and near-zero 2025). Source column semantics and active-restriction denominator must be reconciled before production use.");
+  md.push("");
+  md.push("## Summary");
+  md.push("");
+  md.push("| Year | Raw TWh | Raw MWh | Hourly rows | Nonzero rows | Production ready | UTC coverage |");
+  md.push("|---:|---:|---:|---:|---:|---|---|");
+  for (const row of rows) {
+    md.push(`| ${row.year} | ${fmt(row.curtailed_energy_twh, 6)} | ${fmt(row.curtailed_energy_mwh, 1)} | ${row.hourly_rows} | ${row.nonzero_hourly_rows} | ${row.production_ready} | ${row.first_utc} to ${row.last_utc} |`);
+  }
+  md.push(`| **Total raw artifact rows** | **${fmt(total, 6)}** |  |  |  |  |  |`);
+  md.push("");
+  md.push("## Required Reconciliation");
+  md.push("");
+  md.push("- Confirm the workbook column key: whether values are active curtailment/restriction energy, maximum restricted output, authorized restriction capacity, or another operational setpoint.");
+  md.push("- Reproduce or retire the existing `~0.108 TWh` 2024 validation note with a citable formula.");
+  md.push("- Keep `data/source-verified-floor/` gated on `production_ready=yes`; current Uruguay rows are deliberately `no`.");
+  md.push("");
+  writeFileSync(join(OUT_DIR, `${STAMP}-uruguay-adme-annual-floor.md`), md.join("\n"));
+}
+
+async function main(): Promise<void> {
+  const years = process.argv.slice(2).map(Number).filter((year) => Number.isInteger(year) && year >= 2000);
+  if (years.length === 0) years.push(2024, 2025);
+  mkdirSync(OUT_DIR, { recursive: true });
+  const { plants, liveCount, fallbackCount } = await renewablePlants();
+  const rows = [];
+  for (const year of years) rows.push(await annualRow(year, plants, liveCount, fallbackCount));
+  rows.sort((a, b) => a.year - b.year);
+  writeCsv(rows);
+  writeMd(rows);
+  for (const row of rows) {
+    console.log(`${row.year}: ${fmt(row.curtailed_energy_twh, 6)} TWh from ${row.hourly_rows} hourly rows`);
+  }
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
