@@ -3,6 +3,32 @@
 **Last verified against git:** 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
+## Brazil ONS — loader aligned to ONS's own frustrated-generation definition (2026-09-10)
+
+`src/data/brazil-ne.json.ts` now computes curtailment exactly as ONS defines `val_geracaonaorealizadaapurada`
+(GNRa) in the dataset's data dictionary: `max(0, val_geracaoreferencia − val_geracao)` on half-hours where
+`val_geracaolimitada` is non-null. Files from 2026 carry GNRa as a column and it is read directly; on the
+2026-08 wind and solar files the recomputation reproduces that column with **mean absolute difference 0 MW**.
+The previous `referencia − limitada` (eabf8e5) had the right row filter but undercounted by ~4%, because the
+cap binds in only 37–42% of limited half-hours and ONS subtracts actual generation, not the cap.
+Calendar-2025, all 24 monthly files: **37.2 TWh** (wind 26.2 / solar 11.0) vs 35.4 under the old formula.
+Reason split now surfaces in each Brazil `sourceNote` (2025: ENE 20.0 / CNF 12.4 / REL 4.8 TWh — surplus,
+reliability, transmission-outage). Snapshot regenerated (window to 2026-09-09; 30-day sum 2.50 → 4.97 TWh, of which the formula is
+~+4% and the rest is the Aug–Sep peak season). Magnitude golden: one key hand-set, `brazil-rs-wind`
+0.035 → 0.298 — formula-neutral (old vs new 0.316 vs 0.321 on the same August file); RS had limits on
+31/31 days in Aug 2026 vs 9 in Jun 2025, 82% coded REL. RS swings >4× between seasons and will flap
+this gate on a quiet window. Paper Brazil rows drift <5% and were not re-derived. **Rule-3 call-out:** this moves a T1a headline anchor by ~+4%;
+the citation is the ONS dictionary (`DicionarioDados_RestricaoContrainedoff_UsiEolicas.json`, S3) and the
+formula history is in `docs/methodology/flare-ercot-brazil.md#curtailment-formula`.
+
+A May-2026 research branch (`codex/global-source-elevation-sweep`, recovered 2026-09-09 after four months
+uncommitted) had independently changed this loader to `referenciafinal − geracao`; the dictionary says that
+column exists only for REL half-hours, so it captured ~13% of curtailment (3.8 TWh for 2025). Rejected; the
+rest of that branch is triaged in `docs/research/2026-09-09-wip-triage.md`. Follow-up from the same triage:
+`india-rajasthan`'s ≈6.3 TWh/yr modelled anchor vs 0.052 TWh in official RRVPNL PDFs for Jan–May 2026 (issue
+to be filed), and a structured `curtailmentReasonShare` snapshot field (needs a schema bump; reason split is
+text-only in `sourceNote` for now).
+
 ## Curtailment share + units toggle — a small honest metric, not a broad circular one (2026-09-06)
 
 The dashboard reported everything in absolute GW, which rewards large grids and cannot say which grid
