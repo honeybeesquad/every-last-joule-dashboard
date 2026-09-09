@@ -156,4 +156,22 @@ modelled data as measured.
 - Node installed is 26.8.1; `package.json` `engines` asks for 24.x. Advisory only so far.
 - One PR open upstream: **#931** `fix(honesty): stop stamping modelled-fallback regions
   live`, open since 2026-09-06.
-- This file is itself uncommitted. It is the only thing in the tree that is.
+- This file landed in PR #961 with the corpus.
+
+---
+
+## Outcome (2026-09-10)
+
+The triage in `2026-09-09-wip-triage.md` was completed the next day. Result:
+
+- **PR #960** — Brazil loader aligned to ONS's own frustrated-generation definition (GNRa), verified to
+  reproduce ONS's published column to the MW; ~+4% on Brazil T1a rows; reason split (ENE/CNF/REL) in
+  `sourceNote`. The WIP's loader change was **rejected** (REL-only settlement column, ~13% of curtailment).
+- **PR #961** — the research corpus, with the Brazil floor **recomputed** (37.18 TWh for 2025, not 3.81;
+  floor total 43.2 TWh over 18 rows), loader/test/snapshot changes dropped, India links ported inside
+  MANUAL markers, docs-drift allow-list for the two annual-floor notes.
+- **Open:** Rajasthan ≈6.3 TWh/yr anchor vs 0.052 TWh in official PDFs (issue drafted); Uruguay workbook
+  semantics (0.2–0.4 TWh/yr research vs zero loader); structured `curtailmentReasonShare` snapshot field
+  (schema bump); `brazil-rs-wind` magnitude-golden key will flap on a quiet window.
+- Both PRs insert at the same point in `STATUS.md` and append to `docs/data-source-log.md`: merge one,
+  rebase the other.
