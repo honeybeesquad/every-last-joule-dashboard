@@ -22,7 +22,7 @@ const RESTRICTIONS_URL = "https://www.adme.com.uy/panelControl/ro_excel.php";
  *   curl https://www.adme.com.uy/info_consignas.php | grep -oE 'consignas_[a-z0-9_-]+' | sort -u
  * and reconciling against this set. Last refreshed: 2026-04-29.
  */
-const FALLBACK_RENEWABLE_PLANTS = new Set([
+export const FALLBACK_RENEWABLE_PLANTS = new Set([
   "18 de julio",
   "albisu",
   "alto cielo",

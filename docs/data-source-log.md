@@ -358,6 +358,8 @@ The 30-day time-of-day average of this series inherits the real diurnal shape of
 
 **2026-04-29 northern-Brazil refinement:** sampled April 2026 ONS wind/solar CSVs showed the former residual bucket was hiding material Paraiba curtailment (31.333 GWh wind plus 29.055 GWh solar in the month-to-date sample) and smaller Maranhao wind curtailment (4.725 GWh). Both are now explicit live ONS rows; `brazil-other` remains only as a residual for smaller untracked state codes.
 
+**2026-05-06 field-definition correction:** the loader now computes frustrated generation as `max(val_geracaoreferenciafinal - val_geracao, 0)` and tags each point with `intervalHours = 0.5`, because the ONS `*_tm` files are semi-hourly MWmed observations. `val_geracaolimitada` is documented by ONS as limited generation, not lost energy, so it is no longer treated as curtailed MW. The companion annual reconciliation `docs/research/2026-05-06-brazil-ons-calendar-year-2025.md` keeps `val_geracaolimitada` only as a limited-setpoint diagnostic.
+
 March 2026 ONS constrained-off rows observed the following member counts in the five NE dashboard clusters:
 
 - `RN -> brazil-rn`: 54 wind members, 7 solar members.
@@ -368,7 +370,7 @@ March 2026 ONS constrained-off rows observed the following member counts in the 
 
 ONS `capacidade-geracao` was used as the installed-capacity cross-check by state because the direct ANEEL SIGA open-data CSV endpoint timed out from this NZ worktree. The ANEEL SIGA page remains the authoritative public reference for capacity by "Resumo Estadual" and "Usinas e Agentes de Geracao"; the ONS capacity table carries the ANEEL `ceg` field and is sufficient to validate state correspondence for this loader.
 
-This remains a direct curtailment feed, not a calibrated proxy. See `docs/methodology/flare-ercot-brazil.md#brazil-ne` for the citation chain and unresolved direct-SIGA download limitation.
+This remains a direct constrained-off/frustrated-generation feed, not a calibrated proxy. See `docs/methodology/flare-ercot-brazil.md#brazil-ne` for the citation chain and unresolved direct-SIGA download limitation.
 
 ---
 
@@ -460,7 +462,10 @@ These regions intentionally use typical-shape fallback profiles after one-day li
 - Japan: OCCTO/JEPX/METI probed; Kyushu solar fallback, 1.7 TWh/yr, solar profile peaking UTC 03:00.
 - Vietnam: EVN/EVNEPS/NSMO/EAV/MOIT/IEA/VWEM re-probed in the 2026 section above; no accessible hourly feed found, so the existing `vietnam.json.ts` typical solar fallback remains.
 - Thailand: EGAT/ERC probed; central solar fallback, 0.3 TWh/yr, solar profile peaking UTC 05:30.
-- North India: NRLDC/CEA/MERIT probed; Rajasthan/Northern Region solar fallback, 1.5 TWh/yr, solar profile peaking UTC 06:30.
+- Rajasthan: RRVPNL SLDC RE curtailment PDF source confirmed at `https://sldc.rajasthan.gov.in/rrvpnl/re-curtailment`. The research extractor (`scripts/research/rajasthan-curtailment-reconciliation.mjs`) parses both event-style PDFs and monthly-summary text PDFs, integrating `Relief/Curtailment (MW) * curtailment-period hours`; the 2026-05-07 Jan-May month-filter sample produced 75 event/fuel rows and 0.052327 TWh after adding 52 explicitly tagged `manual_from_scanned_pdf` rows for scanned official PDFs. The regenerated research CSV preserves `source_page` and `notes` for manual rows. February 2026, November 2025, and December 2025 remain scanned/image-only under `pdftotext`; Tesseract 5.5.2 OCR plus contact-sheet review found no obvious non-NIL curtailment pages in those reports, but they should remain OCR-reviewed rather than machine-confirmed zero until independent review. The expanded listing inventory checks month filters plus default RE-curtailment/downloads views and currently finds 15 unique curtailment PDFs. Dashboard remains T3-modelled until parser QA and calendar-year reconciliation are complete.
+- Karnataka: KPTCL/KSLDC official `RE Curtailment Details` source confirmed at `https://kptclsldc.in/recurtail.aspx`. The ASP.NET TreeView postback exposes iframe paths under `RE Curtailment/<filename>.pdf`; `scripts/research/karnataka-curtailment-postback-probe.mjs` resolves and downloads six one-page official PDFs, producing `docs/research/2026-05-07-karnataka-curtailment-instruction-inventory.{md,csv}`. The PDFs are text-extractable and yield seven instruction rows, but they report percentage curtailment instructions/windows rather than curtailed MWh. A denominator search found the official `loadwindhis.aspx` historical LoadWindSolar page, but the visible archive is 2026-era and does not cover the six 2019/2021/2024 instruction windows. Dashboard remains T3-modelled until those instruction windows can be reconciled with contemporaneous RE generation/availability data.
+- India CEA monthly anchors: CEA renewable generation PDFs expose Table 11, `RE Curtailment Data as available from SLDCs`, with state-level monthly curtailment in MU and source attribution. `scripts/research/cea-monthly-curtailment-extract.mjs` currently source-locks Dec 2019 and Dec 2021 into `docs/research/2026-05-07-cea-monthly-curtailment.{md,csv}`. Dec 2019 includes Andhra Pradesh `22.53 MU`, true `0` rows for Telangana/Karnataka/Rajasthan/Madhya Pradesh, and missing dash rows for Tamil Nadu/Maharashtra/Gujarat. Dec 2021 contains the same table structure, but checked values are blank/dash/underscore and must remain missing, not zero. Jan 2025 was added as a negative control: the official broad overview no longer contains the old curtailment table and instead contains `RE Deviation Data for ISGS`, which must not be treated as curtailment. This is an official monthly anchor layer only when the curtailment table and numeric state values are actually present.
+- Gujarat: `sldcguj.com` remains source-unlocked from this environment because plain local `curl` returns HTTP 403 and the browser/PDF pass did not download live page content. Search/model passes identify `https://sldcguj.com/EnergyAccount/Energy_Block.php` and possible `Energy_Block_New.php` as `Wind Energy Blocked` leads, but no table, units, or definition has been captured. UI-RE/DSM PDF patterns appear to be INR deviation/settlement-charge accounts, not curtailment volume. Dashboard remains T3-modelled until `Wind Energy Blocked` is verified as SLDC curtailment/backing-down energy rather than commercial/certificate blocking.
 - Cyprus: TSOC/EAC probed; isolated-grid solar fallback, 0.1 TWh/yr, solar profile peaking UTC 10:00.
 - Ethiopia: EEP probed; GERD/cascade hydro-spill fallback, 5 TWh/yr, near-flat hydro profile. This estimate is speculative and derived from reservoir capacity and seasonal inflow assumptions.
 
@@ -645,3 +650,17 @@ The existing South Korea mainland loader remains a conservative typical solar pr
 - No public 2023/2024 curtailed-energy totals were found for Portugal, Finland, Romania, Italy's ENTSO-E bidding-zone split, Sweden, Hungary, Bulgaria, or Lithuania/Baltics. Spain has IEA/REE evidence but no exact open annual value extracted in this pass.
 
 **Upgrade path:** ENTSO-E documents the A77 `Curtailed Renewable Energy` API product with `businessType=A53`. A future loader should test A77 for every domain currently in the A75 rate proxy, reconcile annual sums to operator/regulator reports, and replace generation-times-rate modelling wherever A77 coverage is complete.
+
+---
+
+## Global source-elevation closeout (2026-05-07)
+
+The May 2026 source-elevation sweep now has a release-gating package rather than a redrafted dashboard claim:
+
+- `docs/research/2026-05-07-global-source-elevation-closeout.md` is the controlling closeout note.
+- `scripts/research/public-release-layer-manifest.mjs` generates `docs/research/2026-05-07-public-release-layer-manifest.{md,csv,json}` from the annual reconciliation table.
+- `scripts/research/global-source-readiness-audit.mjs` generates `docs/research/2026-05-07-global-source-readiness-audit.{md,csv}`.
+
+Decision: the first source-verified annual floor slice is production-ready and has two official-source families: Brazil ONS 2025 state/fuel constrained-off/frustrated generation and Chile CEN 2025 SEN-wide wind/solar generation reductions. They are emitted in `data/source-verified-floor/2025.{csv,json,md}` with validation in `docs/validation/brazil-ons-annual-floor-2025.md` and `docs/validation/chile-cen-annual-floor-2025.md`. The truthful public structure is layered: source-verified floor, measured-feed annualization backlog, source-derived research candidates, modelled envelope, and excluded/missing rows. Do not publish a single undifferentiated global total from the current reconciliation table.
+
+High-risk modelled/envelope rows that must not be treated as source-verified floor include Paraguay, Yunnan, China Shandong, Inner Mongolia, Vietnam, India Rajasthan's dashboard-scale 3.5 TWh value, and China Guangdong. The Rajasthan official-PDF research sample is separate and remains partial/research-only at 0.052327 TWh for Jan-May 2026 until independent QA and field-definition signoff are complete.

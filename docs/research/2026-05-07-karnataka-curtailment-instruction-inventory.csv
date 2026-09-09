@@ -1,0 +1,8 @@
+report_name,inferred_report_date,source_url,pages,pdftotext_status,fuel,from_time,to_time,curtailment_percent,contains_curtailment_instruction,notes
+07sep2019.pdf,2019-09-07,https://kptclsldc.in/RE%20Curtailment/07sep2019.pdf,1,text_extracted,mixed_wind_solar,12:15,17:30,10,yes,Instruction percentage only; no source MW/MWh extracted.
+08sep2019.pdf,2019-09-08,https://kptclsldc.in/RE%20Curtailment/08sep2019.pdf,1,text_extracted,mixed_wind_solar,12:15,17:30,10,yes,Instruction percentage only; no source MW/MWh extracted.
+Re curtailment 25.08.2024.pdf,2024-08-25,https://kptclsldc.in/RE%20Curtailment/Re%20curtailment%2025.08.2024.pdf,1,text_extracted,mixed_wind_solar,11:20,15:45,20-30,yes,Instruction percentage only; no source MW/MWh extracted.
+recurtail_17june2021.pdf,2021-06-17,https://kptclsldc.in/RE%20Curtailment/recurtail_17june2021.pdf,1,text_extracted,mixed_wind_solar,,15:30,30,yes,Instruction percentage only; no source MW/MWh extracted.
+recurtail_20june2021.pdf,2021-06-20,https://kptclsldc.in/RE%20Curtailment/recurtail_20june2021.pdf,1,text_extracted,mixed_wind_solar,11:30,12:30,15,yes,Instruction percentage only; no source MW/MWh extracted.
+recurtail_20june2021.pdf,2021-06-20,https://kptclsldc.in/RE%20Curtailment/recurtail_20june2021.pdf,1,text_extracted,mixed_wind_solar,12:30,15:30,25,yes,Instruction percentage only; no source MW/MWh extracted.
+RE_curtail_16May2021.pdf,2021-05-16,https://kptclsldc.in/RE%20Curtailment/RE_curtail_16May2021.pdf,1,text_extracted,mixed_wind_solar,10:00,15:00,30,yes,Instruction percentage only; no source MW/MWh extracted.

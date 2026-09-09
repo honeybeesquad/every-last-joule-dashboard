@@ -35,6 +35,8 @@ Last updated: 2026-05-05 · Sprint: S1 + HB integration · Paper section: Techni
 
 The prior T3 assumption of ~0.4-0.5 TWh/yr is not supported by the ADME hourly restriction workbook. Direct ADME rows resolve the annual-anchor conflict toward ~0.1 TWh for 2024 and near-zero 2025 restrictions.
 
+2026-05-08 recheck: `scripts/research/uruguay-adme-annual-floor.ts` reproduced the annual workbook pull but obtained higher raw sums (0.407454 TWh for 2024 and 0.203744 TWh for 2025) when summing all matched renewable restriction columns. These values are preserved as research-only in `docs/research/2026-05-08-uruguay-adme-annual-floor.*` and are not production floor rows. The blocker is the unresolved source-definition conflict: the workbook column key and active-restriction denominator must be reconciled against the earlier ~0.108 TWh note before Uruguay can be published in `data/source-verified-floor/`.
+
 ## Known limitations
 
 ADME publishes the current restriction-status table in quasi-real time, but the control-panel restriction workbook is month-complete DTE data. This is measured TSO data, not a modelled shape, but freshness is monthly rather than sub-hourly.

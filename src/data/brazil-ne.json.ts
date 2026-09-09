@@ -47,6 +47,15 @@ const STATE_TO_REGION: Record<string, BrazilStateId> = {
   RS: "brazil-rs",
 };
 
+const HALF_HOUR = 0.5;
+
+function parseOnsNumber(value: string | undefined): number | null {
+  const clean = value?.trim();
+  if (!clean) return null;
+  const parsed = Number(clean.replace(",", "."));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 /** Pure parser: CSV text → timestamped points grouped by state cluster. Exported for tests. */
 export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, CurtailmentPoint[]> {
   const normalized = csv.replace(/^\uFEFF/, "").trim();
@@ -73,10 +82,11 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, Curta
 
   const headers = lines[0].split(";");
   const timestampIndex = headers.indexOf("din_instante");
-  const curtailedIndex = headers.indexOf("val_geracaolimitada");
+  const generationIndex = headers.indexOf("val_geracao");
+  const referenceFinalIndex = headers.indexOf("val_geracaoreferenciafinal");
   const stateIndex = headers.indexOf("id_estado");
 
-  if (timestampIndex === -1 || curtailedIndex === -1 || stateIndex === -1) {
+  if (timestampIndex === -1 || generationIndex === -1 || referenceFinalIndex === -1 || stateIndex === -1) {
     throw new Error("ONS CSV missing required columns");
   }
 
@@ -92,9 +102,11 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, Curta
     const state = cells[stateIndex]?.trim().toUpperCase();
     const regionId = STATE_TO_REGION[state] ?? "brazil-other";
 
-    const curtailedRaw = cells[curtailedIndex]?.trim() ?? "";
-    const curtailedMw = curtailedRaw === "" ? 0 : Number(curtailedRaw);
-    if (!Number.isFinite(curtailedMw)) continue;
+    const generationMw = parseOnsNumber(cells[generationIndex]);
+    const referenceFinalMw = parseOnsNumber(cells[referenceFinalIndex]);
+    const curtailedMw = generationMw == null || referenceFinalMw == null
+      ? 0
+      : Math.max(0, referenceFinalMw - generationMw);
 
     const match = localTimestamp.match(
       /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/
@@ -120,7 +132,7 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, Curta
   for (const regionId of Object.keys(empty) as BrazilStateId[]) {
     empty[regionId] = Array.from(totals.get(regionId)?.entries() ?? [])
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw: Math.max(0, mw) }));
+      .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw: Math.max(0, mw), intervalHours: HALF_HOUR }));
   }
 
   return empty;
@@ -187,7 +199,7 @@ const run = async (): Promise<Record<BrazilRegionId, RegionData>> => {
       peakGW: peakGW(points),
       lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
       lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-      sourceNote: `ONS Brazil direct constrained-off ${fuel} curtailment (${stateId.replace("brazil-", "").toUpperCase()})`,
+      sourceNote: `ONS Brazil direct constrained-off ${fuel} frustrated generation (${stateId.replace("brazil-", "").toUpperCase()}; val_geracaoreferenciafinal - val_geracao, half-hourly)`,
     };
   };
 
@@ -223,7 +235,7 @@ function splitLegacyBrazilCache(
       latestProfile: parent.latestProfile ? parent.latestProfile.map((value) => value * share) : null,
       totalTWh: parent.totalTWh * share,
       peakGW: parent.peakGW * share,
-      sourceNote: `ONS Brazil direct constrained-off ${fuel} curtailment (${stateId.replace("brazil-", "").toUpperCase()}; split from legacy state wind+solar cache)`,
+      sourceNote: `ONS Brazil direct constrained-off ${fuel} frustrated generation (${stateId.replace("brazil-", "").toUpperCase()}; split from legacy state wind+solar cache)`,
       fuelShare: undefined,
       confidenceTier: undefined,
       uncertaintyLowGW: undefined,
