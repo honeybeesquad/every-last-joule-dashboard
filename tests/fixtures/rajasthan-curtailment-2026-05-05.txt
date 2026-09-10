@@ -1,0 +1,29 @@
+                                                    FORMAT of Curtailment event for SLDC                                                                  ANNEXURE-1
+
+
+                                Date: 05/5/2026
+                                                                Curtailment Period                                                         Actual
+                                                                                                                                      Generation at the
+S. No.            Message No.         Name of PSS           From Time                              Reason for Curtailment                                  Relief (MW)      System Parameters(*)
+                                                                          To time block                                                    time of
+                                                              Block                                                                   Curtailment (MW)
+
+  1                             220 kV GSS Gajner                                          overloading 220 KV BIKANER - GAJNER LINE     SOLAR-6578          SOLAR- 50      FREQ:-50.08 UD: -363 RAJ
+                                                          10.33 hrs      15.01 hrs        1&2 (10% curtailment on solar generation)                                      DEMAND :- 9857 MW WIND:-
+         RUVNL: NIL             220 kV GSS Chhhatragarh
+                                132 Kv Kolayat                                                                                                                                       264
+                                132 kV Nokhadhaiya
+
+         LD :                                             LD/OP/05/149   LD/OP/05/156
+  2                                                       10:48 hrs      14.56 hrs          DUE TO OVERLOADING OF BHADLA ICT'S          SOLAR-6796          SOLAR- 108   FREQ:-50.08 UD: -321  RAJ
+                                                                                             (10% curtailment on solar generation)                                           DEMAND :- 9847 MW
+                                   400 kV GSS Bhadla                                                                                                                               WIND:-196
+                                      220 kV GSS
+         RUVNL: NIL             Bhadla(Alongwith 132KV
+                                     GSS Khetusar)
+                                      220 kV GSS
+                                Kanasar(Alongwith 132KV
+                                         GSS )
+                                    220kv gss Badisid
+                                  220KV GSS Bhawad
+         LD:                                              LD/OP/05/151   LD/OP/05/155

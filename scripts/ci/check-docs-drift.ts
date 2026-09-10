@@ -51,6 +51,11 @@ const NON_REGION_DOCS = new Set<string>([
   "india-west",    // → replaced by india-gujarat (India W2)
   "italy-south",   // → replaced by italy-sicily (B4 Option B, 2026-04-25)
   "japan",         // → renamed japan-kyushu, then split into 10 utilities (Japan W1)
+  // Source-verified annual floor validation notes (data/source-verified-floor/).
+  // Country-level calendar-year sums, referenced from the floor CSV's
+  // `validation_doc` column; not per-region dashboard pages.
+  "brazil-ons-annual-floor-2025",
+  "chile-cen-annual-floor-2025",
 ]);
 
 if (!existsSync(DOCS_DIR)) {

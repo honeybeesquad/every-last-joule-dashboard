@@ -1,7 +1,7 @@
 {
-  "totalValidationDocs": 466,
+  "totalValidationDocs": 468,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 459,
+  "docsNotCiting": 461,
   "pctCited": 1.5,
   "perDocCitations": [
     {
@@ -327,6 +327,11 @@
       "matchedPatterns": []
     },
     {
+      "file": "brazil-ons-annual-floor-2025.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "brazil-other-solar.md",
       "cited": false,
       "matchedPatterns": []
@@ -468,6 +473,11 @@
     },
     {
       "file": "chad.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "chile-cen-annual-floor-2025.md",
       "cited": false,
       "matchedPatterns": []
     },

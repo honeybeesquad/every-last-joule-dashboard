@@ -1,0 +1,178 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1"><title>
+	Untitled Page
+</title></head>
+<body>
+    <form method="post" action="./recurtail.aspx" id="form1">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTE0ODE4MTI2MDgPZBYCAgMPZBYEAhYPZBYCAgMPPCsACQIADxYCHg1OZXZlckV4cGFuZGVkZGQIFCsAAgUDMDowFCsAAhYEHgRUZXh0BQ5SRSBDdXJ0YWlsbWVudB4IRXhwYW5kZWRnFCsABwUXMDowLDA6MSwwOjIsMDozLDA6NCwwOjUUKwACFgIfAQUNMDdzZXAyMDE5LnBkZmQUKwACFgIfAQUNMDhzZXAyMDE5LnBkZmQUKwACFgIfAQUdUmUgY3VydGFpbG1lbnQgMjUuMDguMjAyNC5wZGZkFCsAAhYCHwEFGHJlY3VydGFpbF8xN2p1bmUyMDIxLnBkZmQUKwACFgQfAQUYcmVjdXJ0YWlsXzIwanVuZTIwMjEucGRmHghTZWxlY3RlZGdkFCsAAhYCHwEFGFJFX2N1cnRhaWxfMTZNYXkyMDIxLnBkZmRkAhgPZBYCAgEPFgIeA3NyYwUnUkUgQ3VydGFpbG1lbnQvcmVjdXJ0YWlsXzIwanVuZTIwMjEucGRmZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WAQUGTXlUcmVlVfUnrrULTyNXJRAaptKvxdCt/8FIIn/bCQ6jnD9C1Ko=" />
+
+<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="F461B079" />
+<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAkfdq8WdamB80H9nhuJXlRofnCjXfd2sTXyvVDbEq9vQOeZkN2tPN2+wJmSHXKjGIlEmQvPWsmnNvbt5GCAa4WedmUlYNIse469ZX7u9juBGU952g8yy5Vn4vEH7M/rbuy0Xsi/hAXEnr/ueQGaiE3G5Y379B6eOz23EvwntUSOpJWu3b0kpmYLZyYaS7ivjbnDnNk9Rq8jv4Gz857OwK5z4JIHdQmRgugj2XjAWNkCpA==" />
+    <div >
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        &nbsp;&nbsp;<br />
+        <br />
+        &nbsp;
+       
+        &nbsp;<br />
+        <br />
+        <div style="width: 1164px; height: 113px; z-index: 1; left: 2px; position: absolute; top: 4px; text-align: center; background: #999; /* for non-css3 browsers */
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#A3E0FF', endColorstr='#16406B'); /* for IE */
+background: -webkit-gradient(linear, left top, left bottom, from(#A3E0FF), to(#16406B)); /* for webkit browsers */
+background: -moz-linear-gradient(top,  #A3E0FF,  #16406B);" /* for firefox 3.6+ */  color: #ccffff;">
+            <span style="font-size: 20pt"><span style="color: #16406b; text-decoration: underline">
+                <strong>
+                    <img id="IMG1" align="right" src="KPTCL-Logo.jpg" style="font-weight: bold; height: 112px"
+                        width="200" />KARNATAKA POWER TRANSMISSION
+                    CORPORATION LIMITED<br />
+                </strong></span><span style="font-size: 16pt; color: #16406b"><strong>Karnataka State
+                    Load Dispatch Centre</strong><br />
+                    <span style="font-size: 12pt"><span style="font-family: Calibri"><span style="color: lightcyan">
+                        Transmission Grid Management<br />
+                        Facilitates Inter state transfer &amp; Intra state transfer of power to Distribution
+                        Companies of Karnataka in a secure and economical manner &nbsp;</span> &nbsp; &nbsp;
+                    </span>&nbsp; &nbsp;</span><span style="font-size: 14pt; font-family: Sylfaen"><em>&nbsp;</em></span></span></span></div>
+        &nbsp;&nbsp;
+        <div style="z-index: 1; left: 2px; width: 167px; position: absolute; top: 124px;
+            height: 582px;  background: #999; /* for non-css3 browsers */
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#A3E0FF', endColorstr='#FFFFFF'); /* for IE */
+background: -webkit-gradient(linear, left top, left bottom, from(#A3E0FF), to(#FFFFFF)); /* for webkit browsers */
+background: -moz-linear-gradient(top,  #A3E0FF,  #FFFFFF);" border="2" bordercolor="#000099" id="DIV2" language="javascript" onclick="return DIV1_onclick()">
+            <a id="HyperLink3" href="Default.aspx" style="display:inline-block;vertical-align: baseline; text-align: left"><font color="DarkBlue" size="5">Home</font></a>
+            <a id="HyperLink4" href="StateGen.aspx" style="display:inline-block;vertical-align: bottom; text-align: left"><font color="DarkBlue" size="5">Generation</font></a>
+            <a id="HyperLink5" href="Snapshot.aspx" style="display:inline-block;text-align: left"><font color="DarkBlue" size="5">ESCOM Sch&Actual</font></a>
+            <a id="HyperLink6" href="StateNCEP.aspx" style="display:inline-block;text-align: left"><font color="DarkBlue" size="5">NCEPs</font></a>
+            <a id="HyperLink7" href="escom.aspx" style="display:inline-block;text-align: left"><font color="DarkBlue" size="5">ESCOM Wise 220kV Load</font></a><a id="HyperLink8" href="Load%20curve.aspx" style="display:inline-block;text-align: left"><font color="DarkBlue" size="5">State Vital Information</font></a>
+            <a id="HyperLink9" href="https://loadcurve.kptcl.net/LoadCurveUpload/lcdownloadview.asp" style="display:inline-block;text-align: left"><font color="DarkBlue" size="5">Load Curve</font></a>
+            <a id="HyperLink1" href="Load_Wind.aspx" style="display:inline-block;text-align: left"><font color="DarkBlue" size="5">Load-Wind-Solar Profile</font></a><br />
+            <br />
+            <a id="HyperLink10" href="https://mausam.imd.gov.in" style="display:inline-block;text-align: left"><font color="DarkBlue" size="5">Weather Today</font></a>
+            <a id="HyperLink2" href="https://karemc.com" style="display:inline-block;text-align: left"><font color="DarkBlue" size="5">REMC Scheduling</font></a>
+            <a id="HyperLink_isgs" href="https://wbes.srldc.in/ReportFullSchedule" style="display:inline-block;text-align: left"><font color="DarkBlue" size="5">ISGS Schedule-KARNATAKA</font></a></div>
+        <br />
+        <br />
+        &nbsp; &nbsp;&nbsp;&nbsp;<br />
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp;&nbsp;
+        <br />
+        <div id="Div1" style="z-index: 1; left: 171px; width: 1316px; position: absolute; top: 125px;
+            height: 727px;   /* for non-css3 browsers */
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=&#39;#A3E0FF&#39;, endColorstr=&#39;#FFFFFF&#39;); /* for IE */
+background: -webkit-gradient(linear, left top, left bottom, from(#A3E0FF), to(#FFFFFF)); /* for webkit browsers */
+background: -moz-linear-gradient(top,  #A3E0FF,  #FFFFFF);" border="2" bordercolor="#000099" language="javascript">
+            &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            &nbsp;&nbsp;
+            
+            &nbsp;<span id="Label1"><b><u><font color="MidnightBlue" size="6">Merit Order Dispatch Details</font></u></b></span><br />
+            <a href="#MyTree_SkipLink"><img alt="Skip Navigation Links." src="/WebResource.axd?d=pq2Xm4qu7VyG9Tq5v0d5bWauiQlxPG6bmNdT-7nD5gEMbbnJvpjBgYiJVNJ6i80NDmNAQKZXC9-bZLZEYrZarEP-2KBjqrZuRzf7zihHtR41&amp;t=638901289900000000" width="0" height="0" border="0" /></a><div id="MyTree"><u><font face="Verdana" color="MidnightBlue" size="4">
+	<table cellpadding="0" cellspacing="0">
+		<tr>
+			<td><a href="javascript:__doPostBack(&#39;MyTree&#39;,&#39;tRE Curtailment&#39;)"><img src="/WebResource.axd?d=VxjNbgCwOD_rJlVFvpaCDxa1A3TxDLFKk7LR4jd6CPhF-2yd2aOgJwK16WnqHQCnaJJ2jSbYfgsQMPFtB7xa5m4pnQpdGvZ7md4h03LxtP88L7gq27h5tRCJ4NbIvT3i0&amp;t=638901289900000000" alt="Collapse RE Curtailment" border="0" /></a></td><td nowrap="nowrap"><a href="javascript:__doPostBack(&#39;MyTree&#39;,&#39;sRE Curtailment&#39;)" id="MyTreet0"><b><u><font face="Arial" color="Black" size="5">RE Curtailment</font></u></b></a></td>
+		</tr><tr>
+			<td></td>
+		</tr>
+	</table><table cellpadding="0" cellspacing="0">
+		<tr>
+			<td></td>
+		</tr><tr>
+			<td><table width="20">
+				<tr>
+					<td></td>
+				</tr>
+			</table></td><td><img src="/WebResource.axd?d=5EJYHuriwEeUTJVEcXf_GRX4AN9DpHMbBcwr3x9eSDLxrLFAX0nXKnGxbt9IumbAJxBbs7rGQtz_3UET78Y2gPyWm02g4w3g-zGFXSqY_tIoXZQLVB0WVj9QCxht4kI_0&amp;t=638901289900000000" alt="" /></td><td nowrap="nowrap"><a href="javascript:__doPostBack(&#39;MyTree&#39;,&#39;sRE Curtailment\\07sep2019.pdf&#39;)" id="MyTreet1"><u><font face="Arial" color="infotext" size="3">07sep2019.pdf</font></u></a></td>
+		</tr><tr>
+			<td></td>
+		</tr>
+	</table><table cellpadding="0" cellspacing="0">
+		<tr>
+			<td></td>
+		</tr><tr>
+			<td><table width="20">
+				<tr>
+					<td></td>
+				</tr>
+			</table></td><td><img src="/WebResource.axd?d=5EJYHuriwEeUTJVEcXf_GRX4AN9DpHMbBcwr3x9eSDLxrLFAX0nXKnGxbt9IumbAJxBbs7rGQtz_3UET78Y2gPyWm02g4w3g-zGFXSqY_tIoXZQLVB0WVj9QCxht4kI_0&amp;t=638901289900000000" alt="" /></td><td nowrap="nowrap"><a href="javascript:__doPostBack(&#39;MyTree&#39;,&#39;sRE Curtailment\\08sep2019.pdf&#39;)" id="MyTreet2"><u><font face="Arial" color="infotext" size="3">08sep2019.pdf</font></u></a></td>
+		</tr><tr>
+			<td></td>
+		</tr>
+	</table><table cellpadding="0" cellspacing="0">
+		<tr>
+			<td></td>
+		</tr><tr>
+			<td><table width="20">
+				<tr>
+					<td></td>
+				</tr>
+			</table></td><td><img src="/WebResource.axd?d=5EJYHuriwEeUTJVEcXf_GRX4AN9DpHMbBcwr3x9eSDLxrLFAX0nXKnGxbt9IumbAJxBbs7rGQtz_3UET78Y2gPyWm02g4w3g-zGFXSqY_tIoXZQLVB0WVj9QCxht4kI_0&amp;t=638901289900000000" alt="" /></td><td nowrap="nowrap"><a href="javascript:__doPostBack(&#39;MyTree&#39;,&#39;sRE Curtailment\\Re curtailment 25.08.2024.pdf&#39;)" id="MyTreet3"><u><font face="Arial" color="infotext" size="3">Re curtailment 25.08.2024.pdf</font></u></a></td>
+		</tr><tr>
+			<td></td>
+		</tr>
+	</table><table cellpadding="0" cellspacing="0">
+		<tr>
+			<td></td>
+		</tr><tr>
+			<td><table width="20">
+				<tr>
+					<td></td>
+				</tr>
+			</table></td><td><img src="/WebResource.axd?d=5EJYHuriwEeUTJVEcXf_GRX4AN9DpHMbBcwr3x9eSDLxrLFAX0nXKnGxbt9IumbAJxBbs7rGQtz_3UET78Y2gPyWm02g4w3g-zGFXSqY_tIoXZQLVB0WVj9QCxht4kI_0&amp;t=638901289900000000" alt="" /></td><td nowrap="nowrap"><a href="javascript:__doPostBack(&#39;MyTree&#39;,&#39;sRE Curtailment\\recurtail_17june2021.pdf&#39;)" id="MyTreet4"><u><font face="Arial" color="infotext" size="3">recurtail_17june2021.pdf</font></u></a></td>
+		</tr><tr>
+			<td></td>
+		</tr>
+	</table><table cellpadding="0" cellspacing="0">
+		<tr>
+			<td></td>
+		</tr><tr>
+			<td><table width="20">
+				<tr>
+					<td></td>
+				</tr>
+			</table></td><td><img src="/WebResource.axd?d=5EJYHuriwEeUTJVEcXf_GRX4AN9DpHMbBcwr3x9eSDLxrLFAX0nXKnGxbt9IumbAJxBbs7rGQtz_3UET78Y2gPyWm02g4w3g-zGFXSqY_tIoXZQLVB0WVj9QCxht4kI_0&amp;t=638901289900000000" alt="" /></td><td nowrap="nowrap"><a href="javascript:__doPostBack(&#39;MyTree&#39;,&#39;sRE Curtailment\\recurtail_20june2021.pdf&#39;)" id="MyTreet5"><u><font face="Arial" color="#C00000" size="3">recurtail_20june2021.pdf</font></u></a></td>
+		</tr><tr>
+			<td></td>
+		</tr>
+	</table><table cellpadding="0" cellspacing="0">
+		<tr>
+			<td></td>
+		</tr><tr>
+			<td><table width="20">
+				<tr>
+					<td></td>
+				</tr>
+			</table></td><td><img src="/WebResource.axd?d=5EJYHuriwEeUTJVEcXf_GRX4AN9DpHMbBcwr3x9eSDLxrLFAX0nXKnGxbt9IumbAJxBbs7rGQtz_3UET78Y2gPyWm02g4w3g-zGFXSqY_tIoXZQLVB0WVj9QCxht4kI_0&amp;t=638901289900000000" alt="" /></td><td nowrap="nowrap"><a href="javascript:__doPostBack(&#39;MyTree&#39;,&#39;sRE Curtailment\\RE_curtail_16May2021.pdf&#39;)" id="MyTreet6"><u><font face="Arial" color="infotext" size="3">RE_curtail_16May2021.pdf</font></u></a></td>
+		</tr><tr>
+			<td></td>
+		</tr>
+	</table>
+</font></u></div><a id="MyTree_SkipLink"></a>
+            </div>
+        
+       <div id="Div3" style="z-index: 1; left: 400px; width: 870px; position: absolute; top: 153px;
+            height: 700px;   /* for non-css3 browsers */
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=&#39;#A3E0FF&#39;, endColorstr=&#39;#FFFFFF&#39;); /* for IE */
+background: -webkit-gradient(linear, left top, left bottom, from(#A3E0FF), to(#FFFFFF)); /* for webkit browsers */
+background: -moz-linear-gradient(top,  #A3E0FF,  #FFFFFF);" border="2" bordercolor="#000099" language="javascript">
+            &nbsp;
+             
+            <iframe id="myfile" language="javascript" frameborder="1" width="1200" scrolling="yes" height="800" style="width: 1067px;
+                border-top-style: none; border-right-style: none; border-left-style: none; height: 676px;
+                border-bottom-style: none" onblur="return myfile_onblur()" name="embeddedFrame" marginwidth="10" src="RE Curtailment/recurtail_20june2021.pdf">
+          
+         </iframe>
+            </div> 
+    
+    </div>
+    </form>
+</body>
+</html>

@@ -25,9 +25,39 @@ A May-2026 research branch (`codex/global-source-elevation-sweep`, recovered 202
 uncommitted) had independently changed this loader to `referenciafinal − geracao`; the dictionary says that
 column exists only for REL half-hours, so it captured ~13% of curtailment (3.8 TWh for 2025). Rejected; the
 rest of that branch is triaged in `docs/research/2026-09-09-wip-triage.md`. Follow-up from the same triage:
-`india-rajasthan`'s ≈6.3 TWh/yr modelled anchor vs 0.052 TWh in official RRVPNL PDFs for Jan–May 2026 (issue
-to be filed), and a structured `curtailmentReasonShare` snapshot field (needs a schema bump; reason split is
+`india-rajasthan`'s ≈6.3 TWh/yr modelled anchor vs 0.052 TWh in official RRVPNL PDFs for Jan–May 2026 (issue #964), and a structured `curtailmentReasonShare` snapshot field (needs a schema bump; reason split is
 text-only in `sourceNote` for now).
+
+## May-2026 source-elevation research corpus recovered and landed (2026-09-10)
+
+A four-month-uncommitted research branch (`codex/global-source-elevation-sweep`, 16 modified + 119 new files
+dated 2026-05-06..08) was found in a stale checkout on 2026-09-09, preserved, triaged against `main`
+(`docs/research/2026-09-09-session-handoff.md`, `docs/research/2026-09-09-wip-triage.md`) and landed as
+research artifacts only — **no production loader, region, tier or snapshot changes**. What it adds:
+
+- **Source-verified annual floor layer** — `data/source-verified-floor/2025.{csv,json,md}` (schema in
+  `dataset/SCHEMA.md`): official measured calendar-year curtailment, 18 rows, **43.2 TWh** — Brazil ONS
+  37.18 TWh (16 state/fuel rows) + Chile CEN 6.03 TWh (SEN-wide solar 4.41 as floor-only id
+  `chile-sen-solar`, wind 1.62). A missing row means "not source-verified", not zero. Reproducible via
+  `scripts/research/{brazil-ons-calendar-year,source-verified-floor}.mjs`. This is a different axis from
+  `generationBasis`/`sourceProvenance` (calendar-year sums vs 30-day windows), not a duplicate.
+- **Brazil corrected at landing.** The May pass used `val_geracaoreferenciafinal`, which ONS's dictionary
+  defines as REL-only settlement data (3.8 TWh). Recomputed under ONS's GNRa definition — see the Brazil
+  entry above / PR #960.
+- **Release-layer manifest + readiness audit** (`docs/research/2026-05-07-public-release-layer-manifest.*`,
+  regenerated as `2026-09-10-*` with the corrected floor; `…-global-source-readiness-audit.*`) over the
+  401-row May reconciliation table — stale by 58 regions vs today's 459; the Brazil `annual_twh` fields in
+  `2026-05-06-annual-source-reconciliation.csv` are superseded by the floor file.
+- **India research lanes (research-only, no production change):** Rajasthan official RRVPNL PDF extraction
+  (15 PDFs, 75 rows, **0.052 TWh Jan–May 2026**, 52 manual-from-scan rows) — **>50× below the ≈6.3 TWh/yr
+  CEA×Ember anchor now on the dashboard** — issue #964. Karnataka `kptclsldc.in/recurtail.aspx` official
+  instruction PDFs (still public 2026-09-10; percentages, no denominator — confirms the item-3 block). CEA
+  Table-11 monthly anchors (Dec 2019 / Dec 2021). Gujarat leads only.
+- **Uruguay open on both sides:** ADME workbook sums 0.41 / 0.20 TWh (2024 / 2025) via the research script
+  vs zero from the loader for 2026-07; kept out of the floor.
+- Housekeeping from the recovery: `git status`/`checkout` hang under the Claude Code Bash sandbox in this
+  repo (empty output ≠ clean tree); iCloud Desktop sync produced 727 `* 2` duplicate dirs in `node_modules`
+  and a `refs/remotes/origin/main 2` file — both cleaned.
 
 ## Curtailment share + units toggle — a small honest metric, not a broad circular one (2026-09-06)
 

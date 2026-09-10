@@ -1,0 +1,9 @@
+month,fuel,extraction_method,confidence,event_rows,curtailed_mwh,curtailed_twh
+2026-01,solar,manual_from_scanned_pdf,medium,2,2060.600,0.002060600
+2026-03,solar,manual_from_scanned_pdf,medium,35,18535.317,0.018535317
+2026-03,wind,manual_from_scanned_pdf,medium,3,645.267,0.000645267
+2026-04,solar,manual_from_scanned_pdf,medium,12,1621.933,0.001621933
+2026-04,solar,pdf_text_monthly_summary,high,3,3501.200,0.003501200
+2026-04,wind,pdf_text_monthly_summary,high,3,298.950,0.000298950
+2026-05,solar,pdf_text_event_row,high,12,24444.417,0.024444417
+2026-05,wind,pdf_text_event_row,high,5,1219.150,0.001219150
