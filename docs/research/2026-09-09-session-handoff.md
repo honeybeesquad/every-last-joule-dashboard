@@ -170,7 +170,7 @@ The triage in `2026-09-09-wip-triage.md` was completed the next day. Result:
 - **PR #961** — the research corpus, with the Brazil floor **recomputed** (37.18 TWh for 2025, not 3.81;
   floor total 43.2 TWh over 18 rows), loader/test/snapshot changes dropped, India links ported inside
   MANUAL markers, docs-drift allow-list for the two annual-floor notes.
-- **Open:** Rajasthan ≈6.3 TWh/yr anchor vs 0.052 TWh in official PDFs (issue drafted); Uruguay workbook
+- **Open:** Rajasthan ≈6.3 TWh/yr anchor vs 0.052 TWh in official PDFs (issue #964); Uruguay workbook
   semantics (0.2–0.4 TWh/yr research vs zero loader); structured `curtailmentReasonShare` snapshot field
   (schema bump); `brazil-rs-wind` magnitude-golden key will flap on a quiet window.
 - Both PRs insert at the same point in `STATUS.md` and append to `docs/data-source-log.md`: merge one,

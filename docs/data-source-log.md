@@ -697,6 +697,36 @@ the inferred TSOC ~0.15 TWh/yr annual anchor.
 
 ---
 
+## Brazil ONS — 2026-09-10 alignment to ONS's frustrated-generation definition
+
+The ONS constrained-off open-data bucket publishes a data dictionary next to the CSVs
+(`DicionarioDados_RestricaoContrainedoff_UsiEolicas.json` / `…UsiFotovoltaica.json`). Two definitions in
+it settle how the loader should compute curtailment:
+
+- `val_geracaonaorealizadaapurada` (GNRa): *"estimativa de geração frustrada … diferença entre a geração de
+  referência e a geração verificada (se menor que zero, GNRa = 0), nos períodos em que houve limitação de
+  geração"* — i.e. `max(0, val_geracaoreferencia − val_geracao)` on half-hours where `val_geracaolimitada`
+  is non-null. The column itself appears in files from 2026.
+- `val_geracaoreferenciafinal`: *"calculado apenas para os patamares em que houve restrição por
+  indisponibilidade externa (REL) … para fins de … cálculo dos ESS por constrained-off"* — a CCEE
+  settlement input that exists only for one restriction reason.
+
+`src/data/brazil-ne.json.ts` now uses GNRa directly when the column is present and recomputes it from the
+definition otherwise. Verified on the 2026-08 wind and solar files: 119,581 and 40,772 GNRa-populated
+half-hours, mean absolute difference between the recomputation and ONS's column **0 MW**. The previous
+`max(0, referencia − limitada)` formula (2026-05-17, eabf8e5) is ~4% low on the same files (3.869 vs 4.022
+TWh wind; 1.546 vs 1.595 solar) because the cap binds within 1 MW in only 37–42% of limited half-hours.
+
+Calendar-2025 across all 24 monthly files (`scripts/research/brazil-ons-calendar-year.mjs 2025`): **37.2 TWh**
+(wind 26.2, solar 11.0); by reason ENE 20.0 / CNF 12.4 / REL 4.8; under the old formula 35.4. Public
+reporting puts 2025 curtailment above 20% of wind+solar generation, consistent with this magnitude. The
+per-region `sourceNote` now carries the 30-day reason split.
+
+A May-2026 research branch (`codex/global-source-elevation-sweep`) had changed this loader to
+`val_geracaoreferenciafinal − val_geracao`; that column exists only for REL half-hours, so the formula
+captures ~13% of curtailment (3.8 TWh for 2025). It was never merged — see
+`docs/research/2026-09-09-wip-triage.md`.
+
 ## Global source-elevation closeout (research pass 2026-05-07, landed 2026-09-10)
 
 The May 2026 source-elevation sweep produced a release-gating package rather than a redrafted dashboard claim.
