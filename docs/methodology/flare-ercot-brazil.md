@@ -116,6 +116,28 @@ ONS constrained-off dictionaries define the relevant fields:
 - `nom_usina`: plant or plant-set name.
 - `id_ons`: ONS identifier for the plant or plant set.
 - `ceg`: the ANEEL generation-enterprise code; ONS notes plant sets may have `-` instead of a CEG.
+- `val_geracao`: verified generation, MWmed (SCADA, may be revised post-operation).
+- `val_geracaolimitada`: the generation limit ONS set in real time, MWmed. *Null means ONS set no limit in that half-hour*; zero means ONS asked for zero injection.
+- `val_geracaoreferencia`: estimated generation had there been no limit (RO-AO.BR.13), MWmed.
+- `val_geracaoreferenciafinal`: reference after RO-AO.BR.13 settlement rules — **computed only for REL (external-unavailability) half-hours and sent to CCEE for constrained-off ESS**. It is a settlement input covering one restriction reason, not a curtailment measure.
+- `val_geracaonaorealizadaapurada` (GNRa, in files from 2026): ONS's own frustrated-generation figure — *"diferença entre a geração de referência e a geração verificada (se menor que zero, GNRa = 0), nos períodos em que houve limitação de geração"*.
+- `cod_razaorestricao`: ENE (energy/surplus), CNF (reliability), REL (external unavailability), PAR (access-opinion restriction). `cod_origemrestricao`: LOC / SIS.
+
+### Curtailment formula
+
+The loader follows ONS's GNRa definition: `max(0, val_geracaoreferencia − val_geracao)` on half-hours where `val_geracaolimitada` is non-null, at 0.5 h per row. Where a file carries the GNRa column it is read directly; the recomputation reproduces that column to the MW on the 2026-08 wind and solar files (119,581 and 40,772 populated rows, mean absolute difference 0 MW).
+
+History of the formula, because each step was a real bug class:
+
+| Period | Formula | Effect |
+|---|---|---|
+| to 2026-05-17 | `Σ val_geracaolimitada` | Summed the cap as if it were lost energy — ~2.3× overcount on 2025 |
+| 2026-05-17 (`eabf8e5`) to 2026-09 | `max(0, referencia − limitada)`, limited rows only | Right row filter; ~4% undercount because the cap binds in only 37–42% of limited half-hours and ONS subtracts actual generation |
+| from 2026-09 | GNRa definition above | Matches ONS's published figure |
+
+A May-2026 research branch tried `max(0, referenciafinal − geracao)` on all rows; per the dictionary that column exists only for REL half-hours, so it captured ~13% of curtailment (2025: 3.8 TWh vs 37.2 TWh). It was never merged.
+
+Calendar-2025 totals under the GNRa definition (all 24 monthly files; `scripts/research/brazil-ons-calendar-year.mjs`): wind 26.2 TWh, solar 11.0 TWh, total **37.2 TWh** — ENE 20.0 / CNF 12.4 / REL 4.8. Under `referencia − limitada` the same files give 35.4 TWh. Public reporting for 2025 puts curtailment above 20% of wind+solar generation (ENGIE), consistent with this magnitude.
 
 ONS also publishes a supervised wind/solar plant table stating that it lists wind and photovoltaic plants under centralized ONS dispatch control, with subsystem, state, connection point, plant set, installed capacity, operating dates, location, and ANEEL code. The ONS Open Data Portal on AWS identifies the S3 source and provides the installed-generation-capacity dataset used for the state capacity cross-check.
 

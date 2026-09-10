@@ -57,41 +57,78 @@ const STATE_TO_REGION: Record<string, BrazilStateId> = {
  */
 const ONS_INTERVAL_HOURS = 0.5;
 
-/** Pure parser: CSV text → timestamped points grouped by state cluster. Exported for tests. */
-export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, CurtailmentPoint[]> {
-  const normalized = csv.replace(/^\uFEFF/, "").trim();
-  const empty: Record<BrazilStateId, CurtailmentPoint[]> = {
-    "brazil-rn": [],
-    "brazil-ce": [],
-    "brazil-bahia": [],
-    "brazil-piaui": [],
-    "brazil-pernambuco": [],
-    "brazil-paraiba": [],
-    "brazil-maranhao": [],
-    "brazil-mg": [],
-    "brazil-sp": [],
-    "brazil-mt": [],
-    "brazil-go": [],
-    "brazil-pr": [],
-    "brazil-rs": [],
-    "brazil-other": [],
-  };
-  if (!normalized) return empty;
+/**
+ * Restriction reason codes from the ONS data dictionary (`cod_razaorestricao`):
+ * ENE energy/surplus, CNF reliability requirements, REL external (transmission)
+ * unavailability, PAR restriction stated in the access opinion.
+ */
+export type OnsReason = "ENE" | "CNF" | "REL" | "PAR";
+const ONS_REASONS: readonly OnsReason[] = ["ENE", "CNF", "REL", "PAR"];
+
+export interface OnsReasonPoint {
+  utcTimestamp: string;
+  /** Curtailed MW in this half-hour, split by ONS reason code. */
+  mwByReason: Record<OnsReason, number>;
+}
+
+export interface OnsParsed {
+  points: Record<BrazilStateId, CurtailmentPoint[]>;
+  reasons: Record<BrazilStateId, OnsReasonPoint[]>;
+}
+
+function parseOnsNumber(raw: string | undefined): number | null {
+  const s = raw?.trim() ?? "";
+  if (s === "") return null;
+  const n = Number(s.replace(",", "."));
+  return Number.isFinite(n) ? n : null;
+}
+
+/**
+ * Pure parser: CSV text → timestamped points grouped by state cluster, plus the
+ * same energy split by restriction reason. Exported for tests.
+ *
+ * Curtailed MW follows ONS's own definition of frustrated generation —
+ * `val_geracaonaorealizadaapurada` (GNRa) in the dictionary published with the
+ * dataset: `max(0, val_geracaoreferencia − val_geracao)` on intervals where ONS
+ * set a generation limit (`val_geracaolimitada` non-null; null means no limit).
+ * Files from 2026 carry GNRa as a column and it is read directly; older files
+ * are recomputed from the definition, which reproduces the column to the MW
+ * where both exist (checked on 2026-08 wind and solar).
+ *
+ * `val_geracaoreferenciafinal` is deliberately unused: the dictionary defines
+ * it as computed only for REL intervals, for CCEE settlement — a fraction of
+ * curtailment. `val_geracaolimitada` is the cap ONS imposed, not lost energy;
+ * `reference − cap` (this loader's formula until 2026-09) undercounts by ~4%
+ * because the cap binds in fewer than half of constrained intervals.
+ */
+export function parseOnsCurtailmentCsvDetailed(csv: string): OnsParsed {
+  const normalized = csv.replace(/^﻿/, "").trim();
+  const points = makeEmptyBuckets();
+  const reasons = makeEmptyReasonBuckets();
+  const out: OnsParsed = { points, reasons };
+  if (!normalized) return out;
 
   const lines = normalized.split(/\r?\n/);
-  if (lines.length < 2) return empty;
+  if (lines.length < 2) return out;
 
   const headers = lines[0].split(";");
   const timestampIndex = headers.indexOf("din_instante");
+  const generationIndex = headers.indexOf("val_geracao");
   const limitedIndex = headers.indexOf("val_geracaolimitada");
   const referenceIndex = headers.indexOf("val_geracaoreferencia");
+  const gnraIndex = headers.indexOf("val_geracaonaorealizadaapurada"); // absent before 2026
+  const reasonIndex = headers.indexOf("cod_razaorestricao");
   const stateIndex = headers.indexOf("id_estado");
 
-  if (timestampIndex === -1 || limitedIndex === -1 || referenceIndex === -1 || stateIndex === -1) {
+  if (
+    timestampIndex === -1 || generationIndex === -1 || limitedIndex === -1 ||
+    referenceIndex === -1 || stateIndex === -1
+  ) {
     throw new Error("ONS CSV missing required columns");
   }
 
   const totals = new Map<string, Map<string, number>>();
+  const reasonTotals = new Map<string, Map<string, Record<OnsReason, number>>>();
 
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i];
@@ -103,19 +140,22 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, Curta
     const state = cells[stateIndex]?.trim().toUpperCase();
     const regionId = STATE_TO_REGION[state] ?? "brazil-other";
 
-    // val_geracaolimitada is the generation cap ONS imposed (what the plant was allowed to generate).
-    // Empty means no constraint was active — skip the row entirely.
-    const limitedRaw = cells[limitedIndex]?.trim() ?? "";
-    if (limitedRaw === "") continue;
-    const limitedMw = Number(limitedRaw);
-    if (!Number.isFinite(limitedMw)) continue;
+    // Null cap = ONS set no limit in this interval (per the dictionary) — not curtailment.
+    const limitedMw = parseOnsNumber(cells[limitedIndex]);
+    if (limitedMw === null) continue;
 
-    // val_geracaoreferencia is what the plant would have generated without the constraint.
-    // Curtailment = reference − cap (clamped to zero for any floating-point underflow).
-    const referenceRaw = cells[referenceIndex]?.trim() ?? "";
-    const referenceMw = referenceRaw === "" ? 0 : Number(referenceRaw);
-    if (!Number.isFinite(referenceMw)) continue;
-    const curtailedMw = Math.max(0, referenceMw - limitedMw);
+    const generationMw = parseOnsNumber(cells[generationIndex]);
+    const referenceMw = parseOnsNumber(cells[referenceIndex]);
+    const gnraMw = gnraIndex === -1 ? null : parseOnsNumber(cells[gnraIndex]);
+    let curtailedMw: number;
+    if (gnraMw !== null) {
+      curtailedMw = Math.max(0, gnraMw);
+    } else if (generationMw !== null && referenceMw !== null) {
+      curtailedMw = Math.max(0, referenceMw - generationMw);
+    } else {
+      // Verified generation or reference missing on a constrained row: fall back to reference − cap.
+      curtailedMw = Math.max(0, (referenceMw ?? 0) - limitedMw);
+    }
 
     const match = localTimestamp.match(
       /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/
@@ -136,18 +176,79 @@ export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, Curta
     let bucket = totals.get(regionId);
     if (!bucket) totals.set(regionId, (bucket = new Map<string, number>()));
     bucket.set(utcTimestamp, (bucket.get(utcTimestamp) ?? 0) + curtailedMw);
+
+    const reason = (reasonIndex === -1 ? "" : cells[reasonIndex]?.trim().toUpperCase() ?? "") as OnsReason;
+    if (curtailedMw > 0 && ONS_REASONS.includes(reason)) {
+      let reasonBucket = reasonTotals.get(regionId);
+      if (!reasonBucket) reasonTotals.set(regionId, (reasonBucket = new Map()));
+      let entry = reasonBucket.get(utcTimestamp);
+      if (!entry) reasonBucket.set(utcTimestamp, (entry = { ENE: 0, CNF: 0, REL: 0, PAR: 0 }));
+      entry[reason] += curtailedMw;
+    }
   }
 
-  for (const regionId of Object.keys(empty) as BrazilStateId[]) {
-    empty[regionId] = Array.from(totals.get(regionId)?.entries() ?? [])
+  for (const regionId of Object.keys(points) as BrazilStateId[]) {
+    points[regionId] = Array.from(totals.get(regionId)?.entries() ?? [])
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw: Math.max(0, mw), intervalHours: ONS_INTERVAL_HOURS }));
+    reasons[regionId] = Array.from(reasonTotals.get(regionId)?.entries() ?? [])
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([utcTimestamp, mwByReason]) => ({ utcTimestamp, mwByReason }));
   }
 
-  return empty;
+  return out;
+}
+
+/** Pure parser: CSV text → timestamped points grouped by state cluster. Exported for tests. */
+export function parseOnsCurtailmentCsv(csv: string): Record<BrazilStateId, CurtailmentPoint[]> {
+  return parseOnsCurtailmentCsvDetailed(csv).points;
+}
+
+/**
+ * Share of curtailed energy by ONS reason code over a set of reason points,
+ * e.g. `{ ENE: 0.61, CNF: 0.26, REL: 0.13 }`. Reasons with zero energy are
+ * omitted; returns `{}` when nothing was curtailed.
+ */
+export function reasonShares(reasonPoints: OnsReasonPoint[]): Partial<Record<OnsReason, number>> {
+  const sums: Record<OnsReason, number> = { ENE: 0, CNF: 0, REL: 0, PAR: 0 };
+  for (const point of reasonPoints) {
+    for (const reason of ONS_REASONS) sums[reason] += point.mwByReason[reason] ?? 0;
+  }
+  const total = ONS_REASONS.reduce((acc, reason) => acc + sums[reason], 0);
+  if (total <= 0) return {};
+  const shares: Partial<Record<OnsReason, number>> = {};
+  for (const reason of ONS_REASONS) if (sums[reason] > 0) shares[reason] = sums[reason] / total;
+  return shares;
+}
+
+/** "ENE 61% / CNF 26% / REL 13%" for the sourceNote; empty string when no split is available. */
+function describeReasonShares(shares: Partial<Record<OnsReason, number>>): string {
+  const parts = ONS_REASONS
+    .filter((reason) => (shares[reason] ?? 0) > 0)
+    .map((reason) => `${reason} ${Math.round((shares[reason] ?? 0) * 100)}%`);
+  return parts.length ? `; reasons ${parts.join(" / ")}` : "";
 }
 
 function makeEmptyBuckets(): Record<BrazilStateId, CurtailmentPoint[]> {
+  return {
+    "brazil-rn": [],
+    "brazil-ce": [],
+    "brazil-bahia": [],
+    "brazil-piaui": [],
+    "brazil-pernambuco": [],
+    "brazil-paraiba": [],
+    "brazil-maranhao": [],
+    "brazil-mg": [],
+    "brazil-sp": [],
+    "brazil-mt": [],
+    "brazil-go": [],
+    "brazil-pr": [],
+    "brazil-rs": [],
+    "brazil-other": [],
+  };
+}
+
+function makeEmptyReasonBuckets(): Record<BrazilStateId, OnsReasonPoint[]> {
   return {
     "brazil-rn": [],
     "brazil-ce": [],
@@ -178,14 +279,21 @@ const run = async (): Promise<Record<BrazilRegionId, RegionData>> => {
   const solarUrls = [`${SOLAR_CSV_URL}${prev}.csv`, `${SOLAR_CSV_URL}${current}.csv`];
   const windPoints = makeEmptyBuckets();
   const solarPoints = makeEmptyBuckets();
+  const windReasons = makeEmptyReasonBuckets();
+  const solarReasons = makeEmptyReasonBuckets();
 
-  async function fillFrom(urls: string[], sink: Record<BrazilStateId, CurtailmentPoint[]>) {
+  async function fillFrom(
+    urls: string[],
+    sink: Record<BrazilStateId, CurtailmentPoint[]>,
+    reasonSink: Record<BrazilStateId, OnsReasonPoint[]>,
+  ) {
     for (const url of urls) {
       try {
         const csv = await fetchText(url);
-        const parsed = parseOnsCurtailmentCsv(csv);
+        const parsed = parseOnsCurtailmentCsvDetailed(csv);
         for (const regionId of Object.keys(sink) as BrazilStateId[]) {
-          sink[regionId].push(...parsed[regionId]);
+          sink[regionId].push(...parsed.points[regionId]);
+          reasonSink[regionId].push(...parsed.reasons[regionId]);
         }
       } catch (err) {
         console.warn(`ons fetch skipped: ${url}: ${(err as Error).message}`);
@@ -193,13 +301,21 @@ const run = async (): Promise<Record<BrazilRegionId, RegionData>> => {
     }
   }
 
-  await fillFrom(windUrls, windPoints);
-  await fillFrom(solarUrls, solarPoints);
+  await fillFrom(windUrls, windPoints, windReasons);
+  await fillFrom(solarUrls, solarPoints, solarReasons);
 
   const cutoff = now.getTime() - 30 * 24 * 3600 * 1000;
+  const inWindow = <T extends { utcTimestamp: string }>(items: T[]): T[] =>
+    items.filter((item) => new Date(item.utcTimestamp).getTime() >= cutoff);
   const out = {} as Record<BrazilRegionId, RegionData>;
-  const buildRegion = (stateId: BrazilStateId, fuel: BrazilFuel, points: CurtailmentPoint[]): RegionData => {
+  const buildRegion = (
+    stateId: BrazilStateId,
+    fuel: BrazilFuel,
+    points: CurtailmentPoint[],
+    reasonPoints: OnsReasonPoint[],
+  ): RegionData => {
     const regionId = `${stateId}-${fuel}` as BrazilRegionId;
+    const state = stateId.replace("brazil-", "").toUpperCase();
     return {
       regionId,
       profile: timeOfDayAverageGW(points),
@@ -208,19 +324,19 @@ const run = async (): Promise<Record<BrazilRegionId, RegionData>> => {
       peakGW: peakGW(points),
       lastUpdated: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
       lastSuccessAt: points.at(-1)?.utcTimestamp ?? new Date().toISOString(),
-      sourceNote: `ONS Brazil direct constrained-off ${fuel} curtailment (${stateId.replace("brazil-", "").toUpperCase()})`,
+      sourceNote:
+        `ONS Brazil direct constrained-off ${fuel} curtailment (${state}; ONS GNRa definition, ` +
+        `reference − verified generation on limited half-hours${describeReasonShares(reasonShares(reasonPoints))})`,
     };
   };
 
   for (const stateId of Object.keys(windPoints) as BrazilStateId[]) {
-    const windRecent = windPoints[stateId].filter(
-      (p) => new Date(p.utcTimestamp).getTime() >= cutoff,
+    out[`${stateId}-wind` as BrazilRegionId] = buildRegion(
+      stateId, "wind", inWindow(windPoints[stateId]), inWindow(windReasons[stateId]),
     );
-    const solarRecent = solarPoints[stateId].filter(
-      (p) => new Date(p.utcTimestamp).getTime() >= cutoff,
+    out[`${stateId}-solar` as BrazilRegionId] = buildRegion(
+      stateId, "solar", inWindow(solarPoints[stateId]), inWindow(solarReasons[stateId]),
     );
-    out[`${stateId}-wind` as BrazilRegionId] = buildRegion(stateId, "wind", windRecent);
-    out[`${stateId}-solar` as BrazilRegionId] = buildRegion(stateId, "solar", solarRecent);
   }
 
   return out;
