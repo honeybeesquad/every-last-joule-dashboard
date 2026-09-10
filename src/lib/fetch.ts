@@ -2,83 +2,99 @@ import { request as httpsRequest, type RequestOptions as HttpsRequestOptions } f
 
 export interface FetchJSONOptions {
   headers?: Record<string, string>;
-  timeoutMs?: number;      // default 30000
-  retries?: number;        // default 3
+  timeoutMs?: number;      // default LOADER_FETCH_TIMEOUT_MS, else 30000
+  retries?: number;        // default LOADER_FETCH_RETRIES, else 3
   backoffBaseMs?: number;  // default 1000 (linear backoff)
   method?: string;
   body?: BodyInit | null;
 }
 
-/** Fetch JSON with 3 retries and linear backoff. Throws if all retries fail. */
-export async function fetchJSON<T = unknown>(
+/**
+ * Build-time knobs. The pre-build runner (scripts/build/prefetch-loaders.ts)
+ * sets these lower than the interactive defaults, because every loader has a
+ * last-good snapshot to fall back to and a deploy must not wait on a dead
+ * upstream: 30 s × 4 attempts per URL is what turned an ENTSO-E stall into a
+ * 46-minute failed build (2026-09-10).
+ */
+function envInt(name: string, fallback: number): number {
+  const raw = process.env[name];
+  if (raw === undefined || raw === "") return fallback;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
+}
+export const DEFAULT_TIMEOUT_MS = () => envInt("LOADER_FETCH_TIMEOUT_MS", 30000);
+export const DEFAULT_RETRIES = () => envInt("LOADER_FETCH_RETRIES", 3);
+
+/**
+ * Every in-flight fetch registers its AbortController here so that
+ * `abortInflightFetches()` — called by withFallback when a loader hits its
+ * wall-clock deadline — can stop the sockets immediately instead of letting
+ * them run to their own timeouts. Once tripped, new attempts fail fast.
+ */
+const inflight = new Set<AbortController>();
+let deadlineTripped: string | null = null;
+
+export function abortInflightFetches(reason: string): number {
+  deadlineTripped = reason;
+  const n = inflight.size;
+  for (const c of inflight) c.abort();
+  inflight.clear();
+  return n;
+}
+
+/** Test hook: clear the tripped state between cases. */
+export function resetFetchDeadlineForTests(): void {
+  deadlineTripped = null;
+  inflight.clear();
+}
+
+async function withRetries<T>(
   url: string,
-  opts: FetchJSONOptions = {}
+  opts: FetchJSONOptions,
+  read: (res: Response) => Promise<T>,
 ): Promise<T> {
   const {
     headers = {},
-    timeoutMs = 30000,
-    retries = 3,
+    timeoutMs = DEFAULT_TIMEOUT_MS(),
+    retries = DEFAULT_RETRIES(),
     backoffBaseMs = 1000,
     method = "GET",
-    body
+    body,
   } = opts;
 
   let lastErr: unknown;
   for (let attempt = 0; attempt <= retries; attempt++) {
+    if (deadlineTripped) throw new Error(`fetch skipped: ${deadlineTripped} (${url})`);
     const controller = new AbortController();
+    inflight.add(controller);
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const res = await fetch(url, { method, headers, body, signal: controller.signal });
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status} ${res.statusText} for ${url}`);
-      }
-      const data = (await res.json()) as T;
-      clearTimeout(timer);
+      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} for ${url}`.trimEnd());
+      const data = await read(res);
       return data;
     } catch (err) {
-      clearTimeout(timer);
       lastErr = err;
+      if (deadlineTripped) break;
       if (attempt < retries) {
-        await new Promise(r => setTimeout(r, backoffBaseMs * (attempt + 1)));
+        await new Promise((r) => setTimeout(r, backoffBaseMs * (attempt + 1)));
       }
+    } finally {
+      clearTimeout(timer);
+      inflight.delete(controller);
     }
   }
   throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
 }
 
-/** Fetch CSV as text with retries. */
-export async function fetchText(
-  url: string,
-  opts: FetchJSONOptions = {}
-): Promise<string> {
-  const {
-    headers = {},
-    timeoutMs = 30000,
-    retries = 3,
-    backoffBaseMs = 1000,
-    method = "GET",
-    body
-  } = opts;
+/** Fetch JSON with retries and linear backoff. Throws if all retries fail. */
+export async function fetchJSON<T = unknown>(url: string, opts: FetchJSONOptions = {}): Promise<T> {
+  return withRetries(url, opts, (res) => res.json() as Promise<T>);
+}
 
-  let lastErr: unknown;
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const res = await fetch(url, { method, headers, body, signal: controller.signal });
-      if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-      const text = await res.text();
-      clearTimeout(timer);
-      return text;
-    } catch (err) {
-      clearTimeout(timer);
-      lastErr = err;
-      if (attempt < retries) {
-        await new Promise(r => setTimeout(r, backoffBaseMs * (attempt + 1)));
-      }
-    }
-  }
-  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
+/** Fetch CSV/XML/HTML as text with retries. */
+export async function fetchText(url: string, opts: FetchJSONOptions = {}): Promise<string> {
+  return withRetries(url, opts, (res) => res.text());
 }
 
 /**

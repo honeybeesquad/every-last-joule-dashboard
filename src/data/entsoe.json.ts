@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { mapWithConcurrency } from "../lib/concurrency.js";
 import { join } from "node:path";
 import { withFallback } from "../lib/resilient.js";
 import type { RegionData } from "../lib/types.js";
@@ -386,45 +387,46 @@ const run = async (): Promise<Record<string, RegionData>> => {
     previous = JSON.parse(readFileSync(cachePath, "utf-8")) as Record<string, RegionData>;
   } catch { /* no previous cache */ }
 
-  const out: Record<string, RegionData> = {};
   let anySuccess = false;
 
-  for (const zone of ZONES) {
+  // Zones are fetched a few at a time. Serially, a stalled ENTSO-E API costs
+  // (timeout × attempts) per zone — 126 s × 52 zones on 2026-09-10, past
+  // Vercel's 45-minute build limit. Per-zone fallback semantics are unchanged:
+  // a failed zone reuses its previous record (cached/degraded by age), and a
+  // failed zone with no previous record still fails the whole loader.
+  const zoneConcurrency = Number(process.env.ENTSOE_ZONE_CONCURRENCY) || 6;
+  const perZone = await mapWithConcurrency(ZONES, zoneConcurrency, async (zone): Promise<RegionData> => {
+    if (zone.technologies.length === 0) {
+      // Zones where structural spill is excluded per methodology.
+      // Preserve previous cache if available; otherwise emit honest zero.
+      return previous[zone.id] ?? {
+        regionId: zone.id,
+        profile: Array(24).fill(0),
+        latestProfile: null,
+        totalTWh: 0,
+        peakGW: 0,
+        lastUpdated: new Date().toISOString(),
+        lastSuccessAt: new Date().toISOString(),
+        sourceNote: zone.sourceNote,
+      };
+    }
     try {
-      if (zone.technologies.length === 0) {
-        // Zones where structural spill is excluded per methodology.
-        // Preserve previous cache if available; otherwise emit honest zero.
-        out[zone.id] = previous[zone.id] ?? {
-          regionId: zone.id,
-          profile: Array(24).fill(0),
-          latestProfile: null,
-          totalTWh: 0,
-          peakGW: 0,
-          lastUpdated: new Date().toISOString(),
-          lastSuccessAt: new Date().toISOString(),
-          sourceNote: zone.sourceNote,
-        };
-        continue;
-      }
-      out[zone.id] = await fetchEntsoeZone(zone);
+      const data = await fetchEntsoeZone(zone);
       anySuccess = true;
+      return data;
     } catch (err) {
       console.warn(`ENTSO-E zone ${zone.id} failed: ${(err as Error).message}`);
-      if (previous[zone.id]) {
-        const prev = previous[zone.id];
-        const lastSuccessAt = prev.lastSuccessAt ?? prev.lastUpdated ?? "";
-        const ageHours = lastSuccessAt
-          ? (Date.now() - new Date(lastSuccessAt).getTime()) / 3_600_000
-          : Infinity;
-        out[zone.id] = {
-          ...prev,
-          sourceStatus: ageHours > 24 ? "degraded" : "cached",
-        };
-      } else {
-        throw new Error(`ENTSO-E zone ${zone.id} failed and no cached data available`);
-      }
+      const prev = previous[zone.id];
+      if (!prev) throw new Error(`ENTSO-E zone ${zone.id} failed and no cached data available`);
+      const lastSuccessAt = prev.lastSuccessAt ?? prev.lastUpdated ?? "";
+      const ageHours = lastSuccessAt
+        ? (Date.now() - new Date(lastSuccessAt).getTime()) / 3_600_000
+        : Infinity;
+      return { ...prev, sourceStatus: ageHours > 24 ? "degraded" : "cached" };
     }
-  }
+  });
+  const out: Record<string, RegionData> = {};
+  ZONES.forEach((zone, i) => { out[zone.id] = perZone[i]; });
 
   if (!anySuccess) {
     throw new Error("All ENTSO-E zones failed");
