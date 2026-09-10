@@ -98,11 +98,11 @@ document.getElementById("app-root").innerHTML = `
 
     <div class="app-body">
       <section class="panel panel-left" aria-label="Headline">
-        <div class="eyebrow">Sustainable hashrate · unlocked right now</div>
+        <div class="eyebrow">Hashrate this waste could cover</div>
         <div class="stat-headline-row">
           <div class="display-xl num-tabular" id="pct-readout" aria-live="polite" aria-atomic="true">—%</div>
         </div>
-        <p class="lead" id="lead-copy">of today's Bitcoin network could be powered entirely by renewable energy that was wasted on an average day — observed curtailed, spilled, or constrained-off across <span id="region-count" aria-live="polite" aria-atomic="true">—</span> tracked regions. This is a measured floor, not a speculative ceiling.</p>
+        <p class="lead" id="lead-copy">of the Bitcoin network could run on renewable energy that grids wasted on an average day — curtailed, spilled, or constrained-off across <span id="region-count" aria-live="polite" aria-atomic="true">—</span> regions. Lower bound: what operators publish.</p>
         <div class="stats-row">
           <div class="stat">
             <div class="eyebrow micro" id="hashrate-label">Bitcoin network hashrate</div>
@@ -124,7 +124,7 @@ document.getElementById("app-root").innerHTML = `
           <div class="globe-placeholder" id="globe-placeholder" aria-live="polite">
             <span class="globe-placeholder-label">Computing land mask…</span>
           </div>
-          <canvas id="globe-canvas" role="img" aria-label="Rotating globe showing active waste-energy hotspots"></canvas>
+          <canvas id="globe-canvas" role="img" aria-label="Rotating globe of renewable curtailment by region"></canvas>
         </div>
         <!-- Bottom row of the globe column: legend left, zoom right. In normal
              flow (not absolute) so neither can slide under the side panels. -->
@@ -149,8 +149,8 @@ document.getElementById("app-root").innerHTML = `
         </div>
       </section>
 
-      <section class="panel panel-right" aria-label="Biggest curtailments right now">
-        <div class="eyebrow" id="hotspots-title">Biggest curtailments right now · UTC —</div>
+      <section class="panel panel-right" aria-label="Largest curtailments this hour">
+        <div class="eyebrow" id="hotspots-title">Largest curtailments · UTC —</div>
         <p class="hotspot-units-note" id="hotspot-units-note" hidden></p>
         <div class="hotspot-columns hotspot-columns-three">
           ${FUEL_ORDER.map((fuel) => {
@@ -172,8 +172,8 @@ document.getElementById("app-root").innerHTML = `
 
     <div class="app-timeline">
       <div class="timeline-header">
-        <span class="eyebrow">Global curtailment across a 24-hour cycle (GW, stacked by fuel)</span>
-        <span class="caption">drag to scrub through the day · press play to watch it loop · toggle Last 24h for raw yesterday</span>
+        <span class="eyebrow">Global curtailment, 24 hours (GW, stacked by fuel)</span>
+        <span class="caption">drag to scrub · play to loop · Last 24h for yesterday</span>
       </div>
       <canvas id="timeline-canvas"></canvas>
       <div class="timeline-controls">
@@ -532,7 +532,7 @@ function renderAt(hour) {
   const renewablePct = feeds.cbeci.hashrateEHps > 0 ? (renewableEHs / feeds.cbeci.hashrateEHps) * 100 : 0;
 
   document.getElementById("pct-readout").textContent = `${renewablePct.toFixed(0)}%`;
-  document.getElementById("hotspots-title").textContent = `Active hotspots · UTC ${hh}:${mm}`;
+  document.getElementById("hotspots-title").textContent = `Largest curtailments · UTC ${hh}:${mm}`;
 
   document.getElementById("hashrate-label").textContent = "Bitcoin network hashrate";
   document.getElementById("hashrate-readout").innerHTML =
@@ -565,10 +565,9 @@ function renderAt(hour) {
   if (unitsNote) {
     unitsNote.hidden = !shareView;
     unitsNote.textContent = shareView
-      ? "Curtailed energy as a share of measured generation over the same trailing 30-day window — "
-        + "a fixed window figure, so it does not move with the clock. Shown only where the source "
-        + "measures curtailment separately from generation; everywhere else a share would just "
-        + "return the rate the loader assumed. The headline figures stay in GW and EH/s."
+      ? "Share of measured generation over the trailing 30 days — a window figure, so it does not "
+        + "move with the clock. Shown only where curtailment and generation are measured separately; "
+        + "everywhere else a share would return the rate the loader assumed. Headline figures stay in GW and EH/s."
       : "";
   }
 

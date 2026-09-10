@@ -243,7 +243,7 @@ The chart below is stamped with **observation time** - when the energy was curta
 
 ## What grew, and by how much
 
-Every value below covers **the same ${backfill.regionCount} regions in every month**, from ${monthName(backfill.months[0])} to ${monthName(backfill.months[backfill.months.length - 1])}. That matters more than it sounds: the live dashboard's region set has moved repeatedly - regions added, per-fuel splits introduced, 37 flare-gas regions removed outright - so a global total drawn from it can rise purely because coverage grew. Holding the region set constant is what makes the slope below mean something.
+Every value below covers **the same ${backfill.regionCount} regions in every month**, from ${monthName(backfill.months[0])} to ${monthName(backfill.months[backfill.months.length - 1])}. The live dashboard's region set has moved repeatedly — regions added, per-fuel splits, 37 flare-gas regions removed — so a global total drawn from it can rise because coverage grew. Holding the region set constant is what makes the slope below mean something.
 
 <figure class="hc-figure">
 <figcaption class="hc-figcaption"><strong>Figure 1.</strong> Monthly reconstructed curtailment by fuel, ${monthName(backfill.months[0])} – ${monthName(backfill.months[backfill.months.length - 1])}. Fixed set of ${backfill.regionCount} regions. The shaded envelope is the ±${bandPercent} published uncertainty band for tier <code>${escapeHtml(backfill.confidenceTier)}</code>.</figcaption>
@@ -268,9 +268,9 @@ ${annualRows}
 </tbody>
 </table>
 
-### What this series is, precisely
+### What this series is
 
-Three constraints travel with every number on this page, and they narrow the claim considerably.
+Three constraints on every number:
 
 **None of it is measured curtailment.** All ${backfill.hourlyRows.toLocaleString("en-NZ")} hourly rows are measured *generation* from ENTSO-E and EIA multiplied by a published curtailment rate. The rate is a single constant per region and fuel across all seven years - checked at build time, not assumed. So the hourly *shape* is measured and the *level* is inferred, and month-to-month movement in these charts is movement in generation under a fixed rate, not evidence that grids became more or less willing to curtail. A doubling of the solar band means solar generation roughly doubled, with curtailment assumed to track it proportionally.
 

@@ -216,7 +216,7 @@ describe("the rendered history page", () => {
 
   it("states the constant-region-set defence against a coverage artefact", () => {
     expect(page).toContain(`the same ${backfill.regionCount} regions in every month`);
-    expect(page).toContain("can rise purely because coverage grew");
+    expect(page).toContain("can rise because coverage grew");
   });
 
   it("labels the archive total explicitly as a counter-example", () => {

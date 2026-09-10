@@ -164,7 +164,7 @@ pager: false
 
 # Every region in the dataset
 
-<p class="methodology-deck">All ${rows.length} regions across ${countries.length} countries, each with its data tier, uncertainty band, and validation record. The dashboard's hotspot lists show the top 50 per fuel at the current hour; this page shows the rest of the dataset, including the regions whose curtailment right now is zero.</p>
+<p class="methodology-deck">All ${rows.length} regions in ${countries.length} countries, with tier, uncertainty band, and validation record. The dashboard lists the top 50 per fuel this hour; this page lists the rest, including zeros.</p>
 
 </header>
 
@@ -172,7 +172,7 @@ pager: false
 ${legendItems}
 </ul>
 
-<p class="region-legend-foot">The bucket is a lens on data quality, not a ranking of importance. Feed freshness — live, cached, or degraded — is a per-build property that only the running dashboard knows, so it is shown on <a href="./">the globe</a> rather than here.</p>
+<p class="region-legend-foot">The bucket is data quality, not importance. Feed freshness — live, cached, or degraded — is a property of the running build, so it is on <a href="./">the globe</a>, not here.</p>
 
 <form class="region-filter" id="region-filter" role="search" aria-label="Filter regions">
   <div class="region-filter-search">
