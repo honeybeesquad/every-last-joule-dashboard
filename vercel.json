@@ -15,5 +15,6 @@
       "source": "/particle",
       "destination": "https://every-last-particle.vercel.app/particle"
     }
-  ]
+  ],
+  "ignoreCommand": "bash scripts/build/vercel-ignore.sh"
 }

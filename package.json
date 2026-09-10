@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "observable preview",
-    "prebuild": "rm -rf src/.observablehq/cache",
+    "prebuild": "rm -rf src/.observablehq/cache && tsx scripts/build/prefetch-loaders.ts",
     "build": "observable build",
     "postbuild": "npm run ci:build-output-json",
     "deploy": "observable deploy",
@@ -37,7 +37,8 @@
     "scorecard": "tsx scripts/scorecard.ts",
     "snapshot": "tsx scripts/write-snapshot.ts",
     "reproduce:ercot-west": "python3 scripts/reproduce/reproduce_2024_ercot_west.py",
-    "postinstall": "git config core.hooksPath .githooks 2>/dev/null || true"
+    "postinstall": "git config core.hooksPath .githooks 2>/dev/null || true",
+    "build:prefetch": "tsx scripts/build/prefetch-loaders.ts"
   },
   "dependencies": {
     "@observablehq/framework": "^1.13.0",

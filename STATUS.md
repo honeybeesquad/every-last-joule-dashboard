@@ -3,6 +3,29 @@
 **Last verified against git:** 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
+## Build time: loaders run concurrently with a per-loader deadline (2026-09-10)
+
+Vercel builds were 14–17 min when every upstream answered and **failed at the 45-minute limit twice on
+2026-09-10** when ENTSO-E stalled. Two causes, both measured from the Vercel build logs:
+
+- **Framework 1.13 runs data loaders one at a time.** In a successful build the 135 loaders' durations summed
+  to 14.7 min and the loader phase took 14.7 min of wall — 0 of 134 overlapped. `scripts/build/prefetch-loaders.ts`
+  (wired into `prebuild`) now runs them ~8-wide and writes their stdout into Framework's cache
+  (`src/.observablehq/cache/data/`), so `observable build` finds every loader fresh and skips it. Semantics are
+  Framework's own: a loader that fails or exceeds the hard cap writes nothing and Framework runs it itself.
+  Knobs: `LOADER_CONCURRENCY`, `SKIP_PREFETCH=1`.
+- **Nothing capped a loader.** `withFallback` now races the live fetch against `deadlineMs` (default
+  `LOADER_DEADLINE_MS` = 180 s; 0 disables); on expiry it aborts every in-flight `fetchText`/`fetchJSON`
+  request and serves the last-good snapshot as `cached`. The build's fetch defaults are 15 s × 2 attempts
+  (`LOADER_FETCH_TIMEOUT_MS`, `LOADER_FETCH_RETRIES`; library defaults unchanged at 30 s × 4).
+- ENTSO-E's 52 zones are fetched 6 at a time (`ENTSOE_ZONE_CONCURRENCY`) instead of serially — 181 s → tens of
+  seconds when healthy, bounded by the deadline when not. Per-zone fallback unchanged.
+- `vercel.json` `ignoreCommand` (`scripts/build/vercel-ignore.sh`) skips builds whose only changes are
+  `data/history`, `data/snapshots` or docs — the automated snapshot/relay merges — while deploy-hook
+  redeploys always build. Expected: ~16 min → ~4–5 min per deploy with a hard ceiling, ~4 fewer builds/day.
+- Follow-up: `aemo.json.ts` and `aemo-per-plant.json.ts` each download the same 30 daily NEMWEB zips
+  (84 s + 123 s serial); sharing one download would remove the next-largest cost.
+
 ## UI pass — globe legend/zoom no longer hide under the side panels; paper figure restored (2026-09-10)
 
 - The globe legend (bottom-left) and zoom slider (bottom-right) were absolutely positioned against the full-width `.app-body`, whose bottom corners are exactly where the opaque edges of the left/right panels sit — so the left panel's stats row painted over the legend ("Hashrate this could support" on top of "Measured / Anchored") and the right panel covered the zoom control. Both now live in a normal-flow `.globe-overlay` row pinned to the bottom of the globe column (`.panel-center` stretched to the grid row), wrapping onto two lines below ~1100px. Verified by element geometry at 1440, 1100, 1024, 768 and 375: no overlap with either panel, no horizontal overflow, legend toggle clickable (it had been inside a `pointer-events: none` container).
