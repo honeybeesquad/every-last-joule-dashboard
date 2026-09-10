@@ -460,7 +460,11 @@ These regions intentionally use typical-shape fallback profiles after one-day li
 - Japan: OCCTO/JEPX/METI probed; Kyushu solar fallback, 1.7 TWh/yr, solar profile peaking UTC 03:00.
 - Vietnam: EVN/EVNEPS/NSMO/EAV/MOIT/IEA/VWEM re-probed in the 2026 section above; no accessible hourly feed found, so the existing `vietnam.json.ts` typical solar fallback remains.
 - Thailand: EGAT/ERC probed; central solar fallback, 0.3 TWh/yr, solar profile peaking UTC 05:30.
-- North India: NRLDC/CEA/MERIT probed; Rajasthan/Northern Region solar fallback, 1.5 TWh/yr, solar profile peaking UTC 06:30.
+- North India: NRLDC/CEA/MERIT probed; Rajasthan/Northern Region solar fallback, 1.5 TWh/yr, solar profile peaking UTC 06:30. (Superseded on the dashboard by the 2026-08 CEA × Ember rate anchor; the May-2026 research findings below are research-only.)
+- Rajasthan (research, 2026-05-07): RRVPNL SLDC RE curtailment PDF source confirmed at `https://sldc.rajasthan.gov.in/rrvpnl/re-curtailment` from a non-datacenter egress (times out from NZ and 403s from a Bangalore droplet). The research extractor (`scripts/research/rajasthan-curtailment-reconciliation.mjs`) parses both event-style PDFs and monthly-summary text PDFs, integrating `Relief/Curtailment (MW) × curtailment-period hours`; the Jan–May 2026 month-filter sample produced 75 event/fuel rows and 0.052327 TWh after adding 52 explicitly tagged `manual_from_scanned_pdf` rows for scanned official PDFs. The research CSV preserves `source_page` and `notes` for manual rows. February 2026, November 2025, and December 2025 remain scanned/image-only under `pdftotext`; Tesseract 5.5.2 OCR plus contact-sheet review found no obvious non-NIL curtailment pages in those reports, but they should remain OCR-reviewed rather than machine-confirmed zero until independent review. The listing inventory finds 15 unique curtailment PDFs. Dashboard remains T3-modelled; the >50× gap against the CEA × Ember anchor is tracked separately.
+- Karnataka (research, 2026-05-07): KPTCL/KSLDC official `RE Curtailment Details` source confirmed at `https://kptclsldc.in/recurtail.aspx` (still public 2026-09-10). The ASP.NET TreeView postback exposes iframe paths under `RE Curtailment/<filename>.pdf`; `scripts/research/karnataka-curtailment-postback-probe.mjs` resolves and downloads six one-page official PDFs, producing `docs/research/2026-05-07-karnataka-curtailment-instruction-inventory.{md,csv}`. The PDFs are text-extractable and yield seven instruction rows, but they report percentage curtailment instructions/windows rather than curtailed MWh. A denominator search found the official `loadwindhis.aspx` historical LoadWindSolar page, but the visible archive is 2026-era and does not cover the six 2019/2021/2024 instruction windows. Dashboard remains T3-modelled.
+- India CEA monthly anchors (research, 2026-05-07): CEA renewable generation PDFs expose Table 11, `RE Curtailment Data as available from SLDCs`, with state-level monthly curtailment in MU and source attribution. `scripts/research/cea-monthly-curtailment-extract.mjs` source-locks Dec 2019 and Dec 2021 into `docs/research/2026-05-07-cea-monthly-curtailment.{md,csv}`. Dec 2019 includes Andhra Pradesh `22.53 MU`, true `0` rows for Telangana/Karnataka/Rajasthan/Madhya Pradesh, and missing dash rows for Tamil Nadu/Maharashtra/Gujarat. Dec 2021 has the same table structure with blank/dash/underscore values that must remain missing, not zero. Jan 2025 was a negative control: the broad overview no longer contains the curtailment table and instead has `RE Deviation Data for ISGS`, which must not be treated as curtailment.
+- Gujarat (research, 2026-05-07): `sldcguj.com` returned HTTP 403 to plain `curl`; search/model passes identify `https://sldcguj.com/EnergyAccount/Energy_Block.php` and `Energy_Block_New.php` as `Wind Energy Blocked` leads, but no table, units, or definition was captured. UI-RE/DSM PDF patterns appear to be INR deviation/settlement-charge accounts, not curtailment volume. (STATUS 2026-08-19: NordVPN Indian egress on `abed` now reaches `www.sldcguj.com` HTTP 200 past the WAF.)
 - Cyprus: TSOC/EAC probed; isolated-grid solar fallback, 0.1 TWh/yr, solar profile peaking UTC 10:00.
 - Ethiopia: EEP probed; GERD/cascade hydro-spill fallback, 5 TWh/yr, near-flat hydro profile. This estimate is speculative and derived from reservoir capacity and seasonal inflow assumptions.
 
@@ -690,3 +694,71 @@ The 2026-04 pass left `cyprus` on a typical solar profile at 0.1 TWh/yr behind a
 The region stays `tier: estimated` / T3-modelled / `modelled-fallback`: ENTSO-E supplies the diurnal
 shape, but no hourly or machine-readable curtailment series exists for Cyprus, so the magnitude remains
 the inferred TSOC ~0.15 TWh/yr annual anchor.
+
+---
+
+## Brazil ONS — 2026-09-10 alignment to ONS's frustrated-generation definition
+
+The ONS constrained-off open-data bucket publishes a data dictionary next to the CSVs
+(`DicionarioDados_RestricaoContrainedoff_UsiEolicas.json` / `…UsiFotovoltaica.json`). Two definitions in
+it settle how the loader should compute curtailment:
+
+- `val_geracaonaorealizadaapurada` (GNRa): *"estimativa de geração frustrada … diferença entre a geração de
+  referência e a geração verificada (se menor que zero, GNRa = 0), nos períodos em que houve limitação de
+  geração"* — i.e. `max(0, val_geracaoreferencia − val_geracao)` on half-hours where `val_geracaolimitada`
+  is non-null. The column itself appears in files from 2026.
+- `val_geracaoreferenciafinal`: *"calculado apenas para os patamares em que houve restrição por
+  indisponibilidade externa (REL) … para fins de … cálculo dos ESS por constrained-off"* — a CCEE
+  settlement input that exists only for one restriction reason.
+
+`src/data/brazil-ne.json.ts` now uses GNRa directly when the column is present and recomputes it from the
+definition otherwise. Verified on the 2026-08 wind and solar files: 119,581 and 40,772 GNRa-populated
+half-hours, mean absolute difference between the recomputation and ONS's column **0 MW**. The previous
+`max(0, referencia − limitada)` formula (2026-05-17, eabf8e5) is ~4% low on the same files (3.869 vs 4.022
+TWh wind; 1.546 vs 1.595 solar) because the cap binds within 1 MW in only 37–42% of limited half-hours.
+
+Calendar-2025 across all 24 monthly files (`scripts/research/brazil-ons-calendar-year.mjs 2025`): **37.2 TWh**
+(wind 26.2, solar 11.0); by reason ENE 20.0 / CNF 12.4 / REL 4.8; under the old formula 35.4. Public
+reporting puts 2025 curtailment above 20% of wind+solar generation, consistent with this magnitude. The
+per-region `sourceNote` now carries the 30-day reason split.
+
+A May-2026 research branch (`codex/global-source-elevation-sweep`) had changed this loader to
+`val_geracaoreferenciafinal − val_geracao`; that column exists only for REL half-hours, so the formula
+captures ~13% of curtailment (3.8 TWh for 2025). It was never merged — see
+`docs/research/2026-09-09-wip-triage.md`.
+
+## Global source-elevation closeout (research pass 2026-05-07, landed 2026-09-10)
+
+The May 2026 source-elevation sweep produced a release-gating package rather than a redrafted dashboard claim.
+It sat uncommitted for four months and was recovered and triaged on 2026-09-09
+(`docs/research/2026-09-09-session-handoff.md`, `docs/research/2026-09-09-wip-triage.md`):
+
+- `docs/research/2026-05-07-global-source-elevation-closeout.md` is the controlling closeout note (with a
+  2026-09-10 revision banner).
+- `scripts/research/public-release-layer-manifest.mjs` classifies the annual reconciliation table into five
+  public layers; `scripts/research/global-source-readiness-audit.mjs` sorts the release-readiness queue.
+- `scripts/research/source-verified-floor.mjs` emits `data/source-verified-floor/2025.{csv,json,md}` — official
+  measured calendar-year curtailment only — from `scripts/research/brazil-ons-calendar-year.mjs` (Brazil ONS,
+  all 24 monthly files) and `docs/research/2026-05-08-chile-cen-annual-floor-2025.csv` (Chile CEN monthly
+  workbooks, wind and solar, hydro excluded). Validation: `docs/validation/brazil-ons-annual-floor-2025.md`,
+  `docs/validation/chile-cen-annual-floor-2025.md`.
+
+**Brazil correction at landing.** The May pass computed Brazil with `max(val_geracaoreferenciafinal −
+val_geracao, 0)`. ONS's dictionary defines that column as computed only for REL (external-unavailability)
+half-hours, for CCEE settlement; it was empty in 97% of 2025 rows and gave 3.8 TWh. The floor now uses ONS's
+own frustrated-generation definition (`val_geracaonaorealizadaapurada`: `max(0, referencia − geracao)` on
+limited half-hours), verified to reproduce ONS's published column to the MW on 2026-08. **Brazil 2025 =
+37.18 TWh** (wind 26.18 / solar 11.00; ENE 19.9 / CNF 12.4 / REL 4.9). The 2025 floor is 43.2 TWh over 18
+rows. The dashboard loader's alignment to the same definition is PR #960.
+
+Layer discipline is unchanged: source-verified floor, measured-feed annualisation backlog, source-derived
+research candidates, modelled envelope, excluded/missing. Do not publish a single undifferentiated global
+total from the reconciliation table. High-risk modelled rows that must not be treated as floor include
+Paraguay, Yunnan, Shandong, Inner Mongolia, Vietnam, Guangdong, and Rajasthan's dashboard-scale anchor
+(≈6.3 TWh/yr on `main` as of 2026-08; the official-PDF research sample is 0.052 TWh for Jan–May 2026 and
+remains research-only pending QA).
+
+**Uruguay stays out of the floor.** `scripts/research/uruguay-adme-annual-floor.ts` sums the ADME
+`ro_excel.php` workbook's renewable plant columns to 0.407 TWh (2024) / 0.204 TWh (2025), while the
+dashboard loader reads the same workbook family as zero for 2026-07 (STATUS 2026-09-05). Column semantics
+are unreconciled; rows are marked `production_ready=no`.

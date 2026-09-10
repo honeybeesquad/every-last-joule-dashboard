@@ -1,6 +1,35 @@
 # Schema
 
-Two artifacts are published: per-region JSON snapshots (one file per region, overwritten on each build) and a rolling Parquet time-series (appended after each successful build).
+Published artifacts: per-region JSON snapshots (one file per region, overwritten on each build), the rolling and historical Parquet time-series, and — from 2026-09 — source-verified annual floor tables (calendar-year sums from official measured sources; a different axis from the 30-day snapshot window).
+
+## Source-verified annual floor
+
+Location: `data/source-verified-floor/<year>.csv`
+
+This is the conservative annual floor layer: official measured curtailment energy only. A missing row is not a zero; it means that region has not cleared the source-verified annual gate.
+
+### Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `year` | `int16` | Calendar year of the annual sum. |
+| `region_id` | `string` | Stable ID matching `src/lib/regions.ts` where applicable; floor-only IDs are allowed when an official annual source has a wider geography than an existing dashboard region. |
+| `country` | `string` | ISO-3 country code. |
+| `kind` | `string` | Renewable technology/fuel bucket, e.g. `wind` or `solar`. |
+| `curtailed_energy_twh` | `float64` | Annual source-verified curtailed or constrained-off energy in TWh. |
+| `curtailed_energy_mwh` | `float64` | Same annual value in MWh. |
+| `source_tier` | `string` | Currently `source_verified_annual_floor`. |
+| `source_type` | `string` | Source method class, e.g. `direct_constrained_off`. |
+| `source_name` | `string` | Human-readable official source label. |
+| `source_url` | `string` | Public source or dataset landing URL. |
+| `source_dataset` | `string` | Machine-readable dataset/table identifier where available. |
+| `source_field_formula` | `string` | Formula used to transform source fields into curtailed energy. |
+| `interval_hours` | `float64` | Source interval length used in energy conversion. |
+| `calendar_coverage` | `string` | Calendar period and file coverage. |
+| `definition_status` | `string` | Source-definition gate status. |
+| `validation_doc` | `string` | Validation note that documents source, formula, caveats, and exclusions. |
+| `research_artifact` | `string` | Reconciliation artifact used to produce the floor row. |
+| `notes` | `string` | Caveats and exclusions. |
 
 ## Per-region JSON snapshot
 

@@ -44,29 +44,85 @@ describe("brazil-ne parser", () => {
     }
   });
 
-  it("skips unconstrained rows (blank val_geracaolimitada) and computes curtailment as reference minus cap", () => {
+  const HEADER =
+    "id_subsistema;nom_subsistema;id_estado;nom_estado;nom_usina;id_ons;ceg;din_instante;val_geracao;val_geracaolimitada;val_disponibilidade;val_geracaoreferencia;val_geracaoreferenciafinal;cod_razaorestricao;cod_origemrestricao;dsc_restricao";
+
+  it("skips unconstrained rows (blank val_geracaolimitada) and computes curtailment as reference minus verified generation (ONS GNRa definition)", () => {
     const sample = [
-      "id_subsistema;nom_subsistema;id_estado;nom_estado;nom_usina;id_ons;ceg;din_instante;val_geracao;val_geracaolimitada;val_disponibilidade;val_geracaoreferencia;val_geracaoreferenciafinal;cod_razaorestricao;cod_origemrestricao;dsc_restricao",
+      HEADER,
       "N;NORTE;MA;MARANHAO;PLANT A;A;-;2026-03-01 00:00:00;12.757;;389.1;20.721;;;;",
-      "N;NORTE;MA;MARANHAO;PLANT B;B;-;2026-03-01 00:00:00;7.593;1.5;386.265;3;;;;",
+      "N;NORTE;MA;MARANHAO;PLANT B;B;-;2026-03-01 00:00:00;1.2;1.5;386.265;3;;ENE;SIS;",
     ].join("\n");
     const points = parseOnsCurtailmentCsv(sample);
-    // Plant A has no cap → skipped. Plant B: curtailment = ref(3) − cap(1.5) = 1.5 MW.
+    // Plant A has no cap → skipped. Plant B: ref(3) − verified generation(1.2) = 1.8 MW —
+    // NOT ref − cap (1.5): ONS defines frustrated generation against what was actually
+    // generated, and the cap does not bind in most constrained intervals.
     // ONS feed is half-hourly, so each point carries intervalHours: 0.5.
     expect(points["brazil-maranhao"]).toEqual([
-      { utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5, intervalHours: 0.5 },
+      { utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.8, intervalHours: 0.5 },
     ]);
+  });
+
+  it("clamps to zero when verified generation exceeds the reference", () => {
+    const sample = [
+      HEADER,
+      "N;NORTE;MA;MARANHAO;PLANT B;B;-;2026-03-01 00:00:00;7.593;1.5;386.265;3;;ENE;SIS;",
+    ].join("\n");
+    expect(parseOnsCurtailmentCsv(sample)["brazil-maranhao"]).toEqual([
+      { utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 0, intervalHours: 0.5 },
+    ]);
+  });
+
+  it("reads ONS's own val_geracaonaorealizadaapurada column when the file carries it (2026+ files)", () => {
+    const sample = [
+      HEADER + ";id_pontoconexao;nom_pontoconexao;nom_agenteoperador;val_geracaonaorealizadaapurada;num_minutos_rel;num_minutos_cnf;num_minutos_ene;num_minutos_restricao",
+      // ref − gen would be 1.8; GNRa says 1.7 (ONS applies RO-AO.BR.13 adjustments). GNRa wins.
+      "N;NORTE;MA;MARANHAO;PLANT B;B;-;2026-09-01 00:00:00;1.2;1.5;386.265;3;;ENE;SIS;;X;Y;Z;1.7;0;0;30;30",
+      // Constrained row with the column blank falls back to the recomputation.
+      "N;NORTE;MA;MARANHAO;PLANT B;B;-;2026-09-01 00:30:00;1.2;1.5;386.265;3;;ENE;SIS;;X;Y;Z;;0;0;30;30",
+    ].join("\n");
+    expect(parseOnsCurtailmentCsv(sample)["brazil-maranhao"]).toEqual([
+      { utcTimestamp: "2026-09-01T03:00:00.000Z", mw: 1.7, intervalHours: 0.5 },
+      { utcTimestamp: "2026-09-01T03:30:00.000Z", mw: 1.8, intervalHours: 0.5 },
+    ]);
+  });
+
+  it("never uses val_geracaoreferenciafinal (REL-only settlement column)", () => {
+    const sample = [
+      HEADER,
+      // referenciafinal present and wildly different; result must still be ref − gen = 1.8.
+      "N;NORTE;MA;MARANHAO;PLANT B;B;-;2026-03-01 00:00:00;1.2;1.5;386.265;3;99;REL;LOC;",
+    ].join("\n");
+    expect(parseOnsCurtailmentCsv(sample)["brazil-maranhao"][0].mw).toBe(1.8);
+  });
+
+  it("splits curtailed energy by ONS reason code", async () => {
+    const { parseOnsCurtailmentCsvDetailed, reasonShares } = await import("../../src/data/brazil-ne.json.js");
+    const sample = [
+      HEADER,
+      "NE;NORDESTE;BA;BAHIA;PLANT 1;A;-;2026-03-01 00:00:00;0;0;100;6;;ENE;SIS;",
+      "NE;NORDESTE;BA;BAHIA;PLANT 2;B;-;2026-03-01 00:00:00;0;0;100;3;;CNF;SIS;",
+      "NE;NORDESTE;BA;BAHIA;PLANT 3;C;-;2026-03-01 00:30:00;0;0;100;1;;REL;LOC;",
+    ].join("\n");
+    const parsed = parseOnsCurtailmentCsvDetailed(sample);
+    expect(parsed.points["brazil-bahia"].map((p: any) => p.mw)).toEqual([9, 1]);
+    expect(parsed.reasons["brazil-bahia"]).toEqual([
+      { utcTimestamp: "2026-03-01T03:00:00.000Z", mwByReason: { ENE: 6, CNF: 3, REL: 0, PAR: 0 } },
+      { utcTimestamp: "2026-03-01T03:30:00.000Z", mwByReason: { ENE: 0, CNF: 0, REL: 1, PAR: 0 } },
+    ]);
+    expect(reasonShares(parsed.reasons["brazil-bahia"])).toEqual({ ENE: 0.6, CNF: 0.3, REL: 0.1 });
+    expect(reasonShares([])).toEqual({});
   });
 
   it("breaks out Paraiba and Maranhao from the residual ONS bucket", () => {
     const sample = [
-      "id_subsistema;nom_subsistema;id_estado;nom_estado;nom_usina;id_ons;ceg;din_instante;val_geracao;val_geracaolimitada;val_disponibilidade;val_geracaoreferencia;val_geracaoreferenciafinal;cod_razaorestricao;cod_origemrestricao;dsc_restricao",
-      "NE;NORDESTE;PB;PARAIBA;PLANT PB;A;-;2026-03-01 00:00:00;12;2.5;389.1;5;;;;",
-      "N;NORTE;MA;MARANHAO;PLANT MA;B;-;2026-03-01 00:00:00;7;1.5;386.265;3;;;;",
-      "S;SUL;SC;SANTA CATARINA;PLANT SC;C;-;2026-03-01 00:00:00;3;0.5;100;1;;;;",
+      HEADER,
+      "NE;NORDESTE;PB;PARAIBA;PLANT PB;A;-;2026-03-01 00:00:00;2.5;2.5;389.1;5;;;;",
+      "N;NORTE;MA;MARANHAO;PLANT MA;B;-;2026-03-01 00:00:00;1.5;1.5;386.265;3;;;;",
+      "S;SUL;SC;SANTA CATARINA;PLANT SC;C;-;2026-03-01 00:00:00;0.5;0.5;100;1;;;;",
     ].join("\n");
     const points = parseOnsCurtailmentCsv(sample);
-    // curtailment = ref − cap: PB=2.5, MA=1.5, SC(→other)=0.5; half-hourly interval.
+    // curtailment = ref − verified generation: PB=2.5, MA=1.5, SC(→other)=0.5; half-hourly interval.
     expect(points["brazil-paraiba"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 2.5, intervalHours: 0.5 }]);
     expect(points["brazil-maranhao"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 1.5, intervalHours: 0.5 }]);
     expect(points["brazil-other"]).toEqual([{ utcTimestamp: "2026-03-01T03:00:00.000Z", mw: 0.5, intervalHours: 0.5 }]);

@@ -4,11 +4,12 @@
 
 A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 385 regions across 6 continents. Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
 
-> **Note: repository HEAD has moved past this pinned v1.3.2 description.** Associated-gas flaring was purged from the dataset on 2026-06-18 (renewables-only pivot); `src/lib/regions.ts` on `main` now defines 461 regions (solar/wind/hydro curtailment only, no flaring). The figures above describe the archived v1.3.2 deposit this page is versioned to; they will move to 461 (and this note will come out) at the next version bump and Zenodo mint.
+> **Note: repository HEAD has moved past this pinned v1.3.2 description.** Associated-gas flaring was purged from the dataset on 2026-06-18 (renewables-only pivot); `src/lib/regions.ts` on `main` now defines 459 regions (solar/wind/hydro curtailment only, no flaring). The figures above describe the archived v1.3.2 deposit this page is versioned to; they will move to 459 (and this note will come out) at the next version bump and Zenodo mint.
 
 ## What's in it
 
 - **`data/snapshots/last-good/*.json`** — the current committed snapshot for each region. One JSON per region. Schema in [`SCHEMA.md`](SCHEMA.md).
+- **`data/source-verified-floor/<year>.csv`** — conservative annual floor rows that have cleared source verification. As of 2026-09-10, `2025.csv` holds 18 rows / 43.2 TWh — Brazil ONS state/fuel constrained-off (ONS's own frustrated-generation definition) and Chile CEN SEN-wide wind/solar reductions; absence from this file is missing/not-yet-verified, not zero.
 - **`data/historical/curtailment_history.parquet`** — a rolling Parquet time-series appended after each successful scheduled data refresh (~every 6 hours). One row per region per build. Use DuckDB or pandas. Schema in [`SCHEMA.md`](SCHEMA.md).
 - **`data/historical/curtailment_backfill.parquet`** — seven-year hourly reconstruction (2020-01-01 → 2026-04-24) for 29 regions whose upstream archive supports multi-year history. 2,590,195 rows × 7 columns, Snappy-compressed (~20 MB). Built by `scripts/backfill/`; methodology in `docs/methodology/historical-backfill.md`.
 - **`data/historical/per_region_annual.parquet`** — annual rollup derived from the backfill (203 rows = 29 regions × 7 years); feeds Figures 2 and 5.

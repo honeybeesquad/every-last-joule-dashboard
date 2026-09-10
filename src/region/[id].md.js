@@ -115,7 +115,7 @@ pager: false
 
 # ${escapeHtml(region.name)}
 
-<p class="methodology-deck">Provenance, data tier, and validation record for <code>${escapeHtml(region.id)}</code>. This page carries no live curtailment figures — <a href="../">open the globe</a> for the current numbers.</p>
+<p class="methodology-deck">Provenance, tier, and validation record for <code>${escapeHtml(region.id)}</code>. No live curtailment figures on this page — those are on <a href="../">the globe</a>.</p>
 
 <dl class="region-facts">
   ${facts}
@@ -127,7 +127,7 @@ pager: false
 
 <div class="region-provenance-head">
 <span class="region-quality-chip" data-quality="${escapeHtml(bucket)}"><span class="ql-dot ql-${bucket}" aria-hidden="true"></span>${escapeHtml(QUALITY_LABEL[bucket])}</span>
-<span class="region-provenance-title">How good is this number?</span>
+<span class="region-provenance-title">Data quality</span>
 </div>
 
 <dl class="region-provenance-grid">
@@ -159,7 +159,7 @@ ${docBody}
 
 <hr>
 
-<p class="region-doc-foot">Live curtailment for this region — current GW, 24-hour peak, 30-day TWh, and feed freshness — is on <a href="../">the dashboard globe</a>. Cite this page as <code>everylastjoule.com/region/${escapeHtml(region.id)}</code>; the dataset itself carries a DOI, see <a href="../about">About</a>.</p>
+<p class="region-doc-foot">Current GW, 24-hour peak, 30-day TWh, and feed freshness for this region are on <a href="../">the globe</a>. Cite this page as <code>everylastjoule.com/region/${escapeHtml(region.id)}</code>. The dataset has a DOI; see <a href="../about">About</a>.</p>
 
 </div>
 `;

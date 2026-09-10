@@ -56,6 +56,9 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 ## Links
 
 - Loader source: [`india-rajasthan.json.ts`](../../src/data/india-rajasthan.json.ts)
+<!-- BEGIN MANUAL -->
+- Research (May 2026, not production): official RRVPNL `re-curtailment` PDF extraction — [`rajasthan-curtailment-reconciliation.mjs`](../../scripts/research/rajasthan-curtailment-reconciliation.mjs); status [`2026-05-07-rajasthan-source-elevation-status.md`](../research/2026-05-07-rajasthan-source-elevation-status.md); Jan–May 2026 extraction [`2026-05-07-rajasthan-curtailment-2026-01-2026-02-2026-03-2026-04-2026-05.md`](../research/2026-05-07-rajasthan-curtailment-2026-01-2026-02-2026-03-2026-04-2026-05.md) (75 rows, 0.052 TWh, 52 manual-from-scan); listing inventory [`2026-05-07-rajasthan-curtailment-listing-inventory-2025-01-2026-05.md`](../research/2026-05-07-rajasthan-curtailment-listing-inventory-2025-01-2026-05.md); February OCR review [`2026-05-07-rajasthan-february-ocr-review.md`](../research/2026-05-07-rajasthan-february-ocr-review.md); India source discovery [`2026-05-07-india-curtailment-source-discovery.md`](../research/2026-05-07-india-curtailment-source-discovery.md). That extraction sits >50× below the CEA × Ember anchor above — see `docs/research/2026-09-09-wip-triage.md` §4.
+<!-- END MANUAL -->
 - Backfill archive: `data/historical/backfill/*_india-rajasthan_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

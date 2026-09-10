@@ -4,8 +4,53 @@ import type { RegionData, RegionTier, SourceStatus } from "./types.js";
 import { REGIONS } from "./regions.js";
 import { applyUncertainty } from "./uncertainty.js";
 import { stampSourceProvenance, sourceProvenanceForRegion } from "./source-provenance.js";
+import { abortInflightFetches } from "./fetch.js";
 
 export const DEFAULT_STALENESS_THRESHOLD_HOURS = 24;
+
+/**
+ * Wall-clock budget for one loader's live fetch. Past it, withFallback aborts
+ * every in-flight request and serves the last-good snapshot — the deploy gets
+ * a "cached" region instead of a dead build. 2026-09-10: ENTSO-E stalled and
+ * its loader alone needed 109 min (126 s × 52 zones), so production builds
+ * died at Vercel's 45-minute limit twice in one morning. Override per call
+ * with `deadlineMs`, globally with LOADER_DEADLINE_MS; 0 disables.
+ */
+export const DEFAULT_LOADER_DEADLINE_MS = 180_000;
+
+export class LoaderDeadlineError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "LoaderDeadlineError";
+  }
+}
+
+function deadlineFromEnv(): number {
+  const raw = process.env.LOADER_DEADLINE_MS;
+  if (raw === undefined || raw === "") return DEFAULT_LOADER_DEADLINE_MS;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? n : DEFAULT_LOADER_DEADLINE_MS;
+}
+
+async function raceDeadline<T>(work: Promise<T>, deadlineMs: number, cacheName: string): Promise<T> {
+  if (!(deadlineMs > 0)) return work;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const deadline = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      const aborted = abortInflightFetches(`${cacheName} exceeded ${deadlineMs / 1000}s loader deadline`);
+      reject(new LoaderDeadlineError(
+        `live fetch exceeded ${deadlineMs / 1000}s deadline (${aborted} in-flight request(s) aborted)`,
+      ));
+    }, deadlineMs);
+  });
+  try {
+    // Promise.race subscribes to `work`, so a late rejection after the deadline
+    // is observed (not an unhandled rejection) and simply ignored.
+    return await Promise.race([work, deadline]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 /**
  * Per-region tier lookup, built from the canonical REGIONS table. Used by
@@ -62,6 +107,11 @@ export interface WithFallbackOptions<T> {
   stalenessThresholdHours?: number;
   /** Test seam for deterministic cache-age classification. */
   now?: () => Date;
+  /**
+   * Wall-clock budget for fetchFn in ms; past it the last-good snapshot is
+   * served. Default LOADER_DEADLINE_MS or DEFAULT_LOADER_DEADLINE_MS; 0 disables.
+   */
+  deadlineMs?: number;
 }
 
 /**
@@ -250,9 +300,11 @@ export async function withFallback<T>(
   const cachePath = join(cacheDir, `${cacheName}.json`);
   const now = opts.now?.() ?? new Date();
   const stalenessThresholdHours = opts.stalenessThresholdHours ?? DEFAULT_STALENESS_THRESHOLD_HOURS;
+  const deadlineMs = opts.deadlineMs ?? deadlineFromEnv();
+  const startedAt = Date.now();
 
   try {
-    const fresh = await fetchFn();
+    const fresh = await raceDeadline(fetchFn(), deadlineMs, cacheName);
     let tagged = opts.tagLive ? opts.tagLive(fresh) : fresh;
     if (opts.regionTier) tagged = enrichWithTier(tagged, opts.regionTier);
     tagged = stampLive(tagged, now.toISOString());
@@ -270,7 +322,7 @@ export async function withFallback<T>(
     return tagged;
   } catch (err) {
     const msg = (err as Error).message;
-    console.error(`[${cacheName}] live fetch failed: ${msg}`);
+    console.error(`[${cacheName}] live fetch failed after ${((Date.now() - startedAt) / 1000).toFixed(1)}s: ${msg}`);
 
     if (!existsSync(cachePath)) {
       console.error(`[${cacheName}] no cached snapshot at ${cachePath}; re-throwing`);

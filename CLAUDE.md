@@ -59,6 +59,12 @@ Multiple AI-authored data PRs (e.g. #267) shipped descriptions claiming tier upg
 - **Theme tokens:** `src/lib/theme-tokens.ts` (`readGlobeTokens`, `parseHexToRGB`, `sanitisePillarAlpha`). Re-read on `themechange` event.
 - **Fuel colours:** `src/lib/fuel.ts::getFuelColor()`. Do NOT introduce hardcoded fuel hex codes; that migration is done.
 
+## Where this repo runs (added 2026-09-10)
+
+- **Local checkout:** `~/code/every-last-joule`. It was moved there from `~/Desktop` on 2026-09-10 because iCloud Desktop sync made every worktree-scanning git command hang under the Claude Code sandbox (empty `git status` output read as "clean" and nearly cost four months of uncommitted research) and spawned 727 `<name> 2` duplicate directories in `node_modules` after `npm ci`. **Do not put the checkout under `~/Desktop` or `~/Documents`.** If git hangs or a `* 2` package appears, check the location before debugging anything else.
+- **Cloud vs local:** research and data work — long source pulls, calendar-year recomputes, gate runs, docs — runs in cloud sessions by default; the repo, CI and Vercel secrets all live on GitHub/Vercel, so nothing is lost. Use a local session only for tasks that need home-lab network egress: `abed`'s NordVPN Indian exit (India SLDCs), the Flaresolverr proxy (TSOC), the Colombia relay producer.
+- **Preserving uncommitted work:** before any "start from a clean baseline" action, confirm the tree is really clean with a git command you have seen return output. `git status` showing nothing is not evidence.
+
 ## Safety rails
 
 - Never push directly to `main`/`master`.

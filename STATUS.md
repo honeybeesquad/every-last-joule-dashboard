@@ -3,6 +3,94 @@
 **Last verified against git:** 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer and the EIA key rotation still need a human. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
+## Build time: loaders run concurrently with a per-loader deadline (2026-09-10)
+
+Vercel builds were 14–17 min when every upstream answered and **failed at the 45-minute limit twice on
+2026-09-10** when ENTSO-E stalled. Two causes, both measured from the Vercel build logs:
+
+- **Framework 1.13 runs data loaders one at a time.** In a successful build the 135 loaders' durations summed
+  to 14.7 min and the loader phase took 14.7 min of wall — 0 of 134 overlapped. `scripts/build/prefetch-loaders.ts`
+  (wired into `prebuild`) now runs them ~8-wide and writes their stdout into Framework's cache
+  (`src/.observablehq/cache/data/`), so `observable build` finds every loader fresh and skips it. Semantics are
+  Framework's own: a loader that fails or exceeds the hard cap writes nothing and Framework runs it itself.
+  Knobs: `LOADER_CONCURRENCY`, `SKIP_PREFETCH=1`.
+- **Nothing capped a loader.** `withFallback` now races the live fetch against `deadlineMs` (default
+  `LOADER_DEADLINE_MS` = 180 s; 0 disables); on expiry it aborts every in-flight `fetchText`/`fetchJSON`
+  request and serves the last-good snapshot as `cached`. The build's fetch defaults are 15 s × 2 attempts
+  (`LOADER_FETCH_TIMEOUT_MS`, `LOADER_FETCH_RETRIES`; library defaults unchanged at 30 s × 4).
+- ENTSO-E's 52 zones are fetched 6 at a time (`ENTSOE_ZONE_CONCURRENCY`) instead of serially — 181 s → tens of
+  seconds when healthy, bounded by the deadline when not. Per-zone fallback unchanged.
+- `vercel.json` `ignoreCommand` (`scripts/build/vercel-ignore.sh`) skips builds whose only changes are
+  `data/history`, `data/snapshots` or docs — the automated snapshot/relay merges — while deploy-hook
+  redeploys always build. Expected: ~16 min → ~4–5 min per deploy with a hard ceiling, ~4 fewer builds/day.
+- Follow-up: `aemo.json.ts` and `aemo-per-plant.json.ts` each download the same 30 daily NEMWEB zips
+  (84 s + 123 s serial); sharing one download would remove the next-largest cost.
+
+## UI pass — globe legend/zoom no longer hide under the side panels; paper figure restored (2026-09-10)
+
+- The globe legend (bottom-left) and zoom slider (bottom-right) were absolutely positioned against the full-width `.app-body`, whose bottom corners are exactly where the opaque edges of the left/right panels sit — so the left panel's stats row painted over the legend ("Hashrate this could support" on top of "Measured / Anchored") and the right panel covered the zoom control. Both now live in a normal-flow `.globe-overlay` row pinned to the bottom of the globe column (`.panel-center` stretched to the grid row), wrapping onto two lines below ~1100px. Verified by element geometry at 1440, 1100, 1024, 768 and 375: no overlap with either panel, no horizontal overflow, legend toggle clickable (it had been inside a `pointer-events: none` container).
+- `src/paper.md` referenced its only figure as `../docs/dari/charts/claim-cascade.svg` — outside Framework's `src` root, so it never reached `dist/` and **was a 404 on the production paper page**. Copied to `src/charts/` and repointed.
+- Preview-only, not a site bug: `observable preview` serves none of `/fonts/*` (production serves all of them), so local screenshots render in fallback fonts.
+- Housekeeping: running the dev server rewrites `data/snapshots/last-good/*` via `withFallback`; those 91 files were reverted and are not part of this change.
+
+## Brazil ONS — loader aligned to ONS's own frustrated-generation definition (2026-09-10)
+
+`src/data/brazil-ne.json.ts` now computes curtailment exactly as ONS defines `val_geracaonaorealizadaapurada`
+(GNRa) in the dataset's data dictionary: `max(0, val_geracaoreferencia − val_geracao)` on half-hours where
+`val_geracaolimitada` is non-null. Files from 2026 carry GNRa as a column and it is read directly; on the
+2026-08 wind and solar files the recomputation reproduces that column with **mean absolute difference 0 MW**.
+The previous `referencia − limitada` (eabf8e5) had the right row filter but undercounted by ~4%, because the
+cap binds in only 37–42% of limited half-hours and ONS subtracts actual generation, not the cap.
+Calendar-2025, all 24 monthly files: **37.2 TWh** (wind 26.2 / solar 11.0) vs 35.4 under the old formula.
+Reason split now surfaces in each Brazil `sourceNote` (2025: ENE 20.0 / CNF 12.4 / REL 4.8 TWh — surplus,
+reliability, transmission-outage). Snapshot regenerated (window to 2026-09-09; 30-day sum 2.50 → 4.97 TWh, of which the formula is
+~+4% and the rest is the Aug–Sep peak season). Magnitude golden: one key hand-set, `brazil-rs-wind`
+0.035 → 0.298 — formula-neutral (old vs new 0.316 vs 0.321 on the same August file); RS had limits on
+31/31 days in Aug 2026 vs 9 in Jun 2025, 82% coded REL. RS swings >4× between seasons and will flap
+this gate on a quiet window. Paper Brazil rows drift <5% and were not re-derived. **Rule-3 call-out:** this moves a T1a headline anchor by ~+4%;
+the citation is the ONS dictionary (`DicionarioDados_RestricaoContrainedoff_UsiEolicas.json`, S3) and the
+formula history is in `docs/methodology/flare-ercot-brazil.md#curtailment-formula`.
+
+A May-2026 research branch (`codex/global-source-elevation-sweep`, recovered 2026-09-09 after four months
+uncommitted) had independently changed this loader to `referenciafinal − geracao`; the dictionary says that
+column exists only for REL half-hours, so it captured ~13% of curtailment (3.8 TWh for 2025). Rejected; the
+rest of that branch is triaged in `docs/research/2026-09-09-wip-triage.md`. Follow-up from the same triage:
+`india-rajasthan`'s ≈6.3 TWh/yr modelled anchor vs 0.052 TWh in official RRVPNL PDFs for Jan–May 2026 (issue #964), and a structured `curtailmentReasonShare` snapshot field (needs a schema bump; reason split is
+text-only in `sourceNote` for now).
+
+## May-2026 source-elevation research corpus recovered and landed (2026-09-10)
+
+A four-month-uncommitted research branch (`codex/global-source-elevation-sweep`, 16 modified + 119 new files
+dated 2026-05-06..08) was found in a stale checkout on 2026-09-09, preserved, triaged against `main`
+(`docs/research/2026-09-09-session-handoff.md`, `docs/research/2026-09-09-wip-triage.md`) and landed as
+research artifacts only — **no production loader, region, tier or snapshot changes**. What it adds:
+
+- **Source-verified annual floor layer** — `data/source-verified-floor/2025.{csv,json,md}` (schema in
+  `dataset/SCHEMA.md`): official measured calendar-year curtailment, 18 rows, **43.2 TWh** — Brazil ONS
+  37.18 TWh (16 state/fuel rows) + Chile CEN 6.03 TWh (SEN-wide solar 4.41 as floor-only id
+  `chile-sen-solar`, wind 1.62). A missing row means "not source-verified", not zero. Reproducible via
+  `scripts/research/{brazil-ons-calendar-year,source-verified-floor}.mjs`. This is a different axis from
+  `generationBasis`/`sourceProvenance` (calendar-year sums vs 30-day windows), not a duplicate.
+- **Brazil corrected at landing.** The May pass used `val_geracaoreferenciafinal`, which ONS's dictionary
+  defines as REL-only settlement data (3.8 TWh). Recomputed under ONS's GNRa definition — see the Brazil
+  entry above / PR #960.
+- **Release-layer manifest + readiness audit** (`docs/research/2026-05-07-public-release-layer-manifest.*`,
+  regenerated as `2026-09-10-*` with the corrected floor; `…-global-source-readiness-audit.*`) over the
+  401-row May reconciliation table — stale by 58 regions vs today's 459; the Brazil `annual_twh` fields in
+  `2026-05-06-annual-source-reconciliation.csv` are superseded by the floor file.
+- **India research lanes (research-only, no production change):** Rajasthan official RRVPNL PDF extraction
+  (15 PDFs, 75 rows, **0.052 TWh Jan–May 2026**, 52 manual-from-scan rows) — **>50× below the ≈6.3 TWh/yr
+  CEA×Ember anchor now on the dashboard** — issue #964. Karnataka `kptclsldc.in/recurtail.aspx` official
+  instruction PDFs (still public 2026-09-10; percentages, no denominator — confirms the item-3 block). CEA
+  Table-11 monthly anchors (Dec 2019 / Dec 2021). Gujarat leads only.
+- **Uruguay open on both sides:** ADME workbook sums 0.41 / 0.20 TWh (2024 / 2025) via the research script
+  vs zero from the loader for 2026-07; kept out of the floor.
+- Housekeeping from the recovery: `git status`/`checkout` hung under the Claude Code Bash sandbox in this
+  repo (empty output ≠ clean tree); iCloud Desktop sync produced 727 `* 2` duplicate dirs in `node_modules`
+  and a `refs/remotes/origin/main 2` file — both cleaned. **Root cause was iCloud, not the sandbox:** the
+  checkout was moved to `~/code/every-last-joule` on 2026-09-10 and sandboxed `git status` went from
+  hanging to 0.45 s. See CLAUDE.md "Where this repo runs".
+
 ## Curtailment share + units toggle — a small honest metric, not a broad circular one (2026-09-06)
 
 The dashboard reported everything in absolute GW, which rewards large grids and cannot say which grid

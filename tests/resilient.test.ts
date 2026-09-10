@@ -259,3 +259,67 @@ describe("withFallback", () => {
     ).rejects.toThrow(/kebab-case/);
   });
 });
+
+describe("withFallback loader deadline", () => {
+  const name = "test-deadline-region";
+  const cachePath = join(CACHE_DIR, `${name}.json`);
+  const now = new Date("2026-09-10T12:00:00.000Z");
+  const cached: RegionData = {
+    regionId: name,
+    profile: new Array(24).fill(1),
+    latestProfile: null,
+    totalTWh: 1,
+    peakGW: 1,
+    lastUpdated: "2026-09-10T00:00:00.000Z",
+    lastSuccessAt: "2026-09-10T11:00:00.000Z",
+    sourceStatus: "live",
+  };
+
+  beforeEach(async () => {
+    const { resetFetchDeadlineForTests } = await import("../src/lib/fetch");
+    resetFetchDeadlineForTests();
+    mkdirSync(CACHE_DIR, { recursive: true });
+    writeFileSync(cachePath, JSON.stringify(cached));
+  });
+
+  it("serves the last-good snapshot when fetchFn outlives the deadline", async () => {
+    const never = () => new Promise<RegionData>(() => {});
+    const t0 = Date.now();
+    const result = await withFallback<RegionData>(name, never, { now: () => now, deadlineMs: 60 });
+    expect(Date.now() - t0).toBeLessThan(2000);
+    expect(result.sourceStatus).toBe("cached");
+    expect(result.totalTWh).toBe(1);
+  });
+
+  it("returns the live result when fetchFn beats the deadline", async () => {
+    const result = await withFallback<RegionData>(
+      name,
+      async () => ({ ...cached, totalTWh: 7 }),
+      { now: () => now, deadlineMs: 500 },
+    );
+    expect(result.sourceStatus).toBe("live");
+    expect(result.totalTWh).toBe(7);
+  });
+
+  it("deadlineMs: 0 disables the budget", async () => {
+    const result = await withFallback<RegionData>(
+      name,
+      async () => { await new Promise((r) => setTimeout(r, 30)); return { ...cached, totalTWh: 9 }; },
+      { now: () => now, deadlineMs: 0 },
+    );
+    expect(result.totalTWh).toBe(9);
+  });
+
+  it("trips the shared fetch abort registry so later fetch attempts fail fast", async () => {
+    const { fetchText } = await import("../src/lib/fetch");
+    await withFallback<RegionData>(name, () => new Promise(() => {}), { now: () => now, deadlineMs: 20 });
+    await expect(fetchText("http://127.0.0.1:9/never", { retries: 0, timeoutMs: 5000 })).rejects.toThrow(/deadline/);
+  });
+
+  it("rethrows the deadline error when there is no snapshot to fall back to", async () => {
+    rmSync(cachePath);
+    await expect(
+      withFallback<RegionData>(name, () => new Promise(() => {}), { now: () => now, deadlineMs: 20 }),
+    ).rejects.toThrow(/deadline/);
+  });
+});
