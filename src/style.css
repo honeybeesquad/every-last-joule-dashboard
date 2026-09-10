@@ -787,7 +787,33 @@ main table {
   align-items: center;
   justify-content: center;
   overflow: visible;
+  /* Fill the grid row so the .globe-overlay row (margin-top: auto) pins to the
+     bottom of the globe column instead of floating at its vertical centre. */
+  align-self: stretch;
 }
+
+/* Legend (left) + zoom (right) in the globe column, in normal flow. They used
+   to be absolutely positioned against .app-body, whose bottom corners are
+   exactly where the opaque edges of the side panels sit, so the left panel's
+   stats row painted over the legend. pointer-events: none on the row keeps
+   globe drag working through the gap; the children restore it. */
+.globe-overlay {
+  margin-top: auto;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;            /* narrow desktop: zoom drops to its own line */
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px 12px;
+  padding: 0 12px 12px;
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+.globe-overlay > * { pointer-events: auto; }
+.globe-overlay > .globe-legend { flex: 0 0 auto; }   /* never squeeze the legend */
+.globe-overlay > .globe-zoom-controls { margin-left: auto; } /* right-aligned even when wrapped */
 
 /* Globe canvas-area sits absolute within .app-body (position: relative) so it
    spans from the header's bottom border to the timeline's top border, across
@@ -862,17 +888,11 @@ main table {
   color: rgba(255,255,255,0.58);
 }
 
-/* Zoom control row — pinned to the bottom-right corner of the canvas-area.
-   position: absolute escapes the stacked grid and gives precise placement.
-   pointer-events: auto restores interactivity since parent canvas-area has none. */
+/* Zoom control row — right-hand end of .globe-overlay. */
 .globe-zoom-controls {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
   display: flex;
   align-items: center;
   gap: 8px;
-  z-index: 1;
   pointer-events: auto;
 }
 
@@ -1972,10 +1992,6 @@ main > h1:first-child {
 
 /* ============ GLOBE QUALITY LEGEND ============ */
 .globe-legend {
-  position: absolute;
-  left: 12px;
-  bottom: 12px;
-  z-index: 3;
   font-size: 12px;
   color: var(--ink);
   background: color-mix(in srgb, var(--surface-bg-2) 82%, transparent);
@@ -2005,7 +2021,8 @@ main > h1:first-child {
 .ql-degraded { background: transparent; border: 1.5px dashed var(--quality-warning); }
 
 @media (max-width: 900px) {
-  .globe-legend { left: 8px; bottom: 8px; font-size: 11px; max-width: 60vw; }
+  .globe-legend { font-size: 11px; max-width: 60vw; }
+  .globe-overlay { padding: 8px 8px 0; align-items: flex-start; }
 }
 
 /* =========================================================================

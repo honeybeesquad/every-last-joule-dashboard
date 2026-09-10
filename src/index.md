@@ -125,6 +125,10 @@ document.getElementById("app-root").innerHTML = `
             <span class="globe-placeholder-label">Computing land mask…</span>
           </div>
           <canvas id="globe-canvas" role="img" aria-label="Rotating globe of renewable curtailment by region"></canvas>
+        </div>
+        <!-- Bottom row of the globe column: legend left, zoom right. In normal
+             flow (not absolute) so neither can slide under the side panels. -->
+        <div class="globe-overlay">
           <details class="globe-legend" id="globe-legend" aria-label="Legend: data quality and freshness">
             <summary class="globe-legend-summary">ⓘ Legend</summary>
             <div class="globe-legend-body">
@@ -135,13 +139,13 @@ document.getElementById("app-root").innerHTML = `
               <div class="globe-legend-caption">Brighter pillar = higher confidence</div>
             </div>
           </details>
-        </div>
-        <div class="globe-zoom-controls" id="globe-zoom-controls" hidden>
-          <span class="globe-zoom-label">Zoom</span>
-          <input type="range" id="globe-zoom-slider"
-                 class="globe-zoom-slider"
-                 min="0.5" max="4" step="0.05" value="1"
-                 aria-label="Globe zoom" title="Zoom">
+          <div class="globe-zoom-controls" id="globe-zoom-controls" hidden>
+            <span class="globe-zoom-label">Zoom</span>
+            <input type="range" id="globe-zoom-slider"
+                   class="globe-zoom-slider"
+                   min="0.5" max="4" step="0.05" value="1"
+                   aria-label="Globe zoom" title="Zoom">
+          </div>
         </div>
       </section>
 
