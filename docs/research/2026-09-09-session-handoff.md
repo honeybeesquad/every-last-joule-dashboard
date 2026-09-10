@@ -34,6 +34,10 @@ Workaround: run git with the sandbox disabled. With it off, `git status` complet
 
 Verify any "clean tree" claim before acting on it.
 
+> **Resolved 2026-09-10.** The cause was iCloud Desktop sync, not the sandbox: the checkout lived under
+> `~/Desktop`. Moved to `~/code/every-last-joule`; sandboxed `git status` now completes in 0.45 s. The
+> lesson about empty output stands.
+
 ## Trap 2 — the old checkout's CLAUDE.md and STATUS.md were stale, and inverted
 
 Pre-sync, this checkout carried the May CLAUDE.md, which said:
