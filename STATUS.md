@@ -55,9 +55,11 @@ research artifacts only — **no production loader, region, tier or snapshot cha
   Table-11 monthly anchors (Dec 2019 / Dec 2021). Gujarat leads only.
 - **Uruguay open on both sides:** ADME workbook sums 0.41 / 0.20 TWh (2024 / 2025) via the research script
   vs zero from the loader for 2026-07; kept out of the floor.
-- Housekeeping from the recovery: `git status`/`checkout` hang under the Claude Code Bash sandbox in this
+- Housekeeping from the recovery: `git status`/`checkout` hung under the Claude Code Bash sandbox in this
   repo (empty output ≠ clean tree); iCloud Desktop sync produced 727 `* 2` duplicate dirs in `node_modules`
-  and a `refs/remotes/origin/main 2` file — both cleaned.
+  and a `refs/remotes/origin/main 2` file — both cleaned. **Root cause was iCloud, not the sandbox:** the
+  checkout was moved to `~/code/every-last-joule` on 2026-09-10 and sandboxed `git status` went from
+  hanging to 0.45 s. See CLAUDE.md "Where this repo runs".
 
 ## Curtailment share + units toggle — a small honest metric, not a broad circular one (2026-09-06)
 
