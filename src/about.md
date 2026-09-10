@@ -6,21 +6,19 @@
 
 <div class="methodology-eyebrow">Every Last Joule · About</div>
 
-# A measured working model, not a branding exercise
+# About
 
-<p class="methodology-deck">The world's most comprehensive open database of wasted grid-scale energy — curtailed renewables across 430 regions — and a live working proof of the arithmetic in a forthcoming book on Bitcoin and energy. Updated every few hours, sourced exclusively from grid operators and regulators.</p>
+<p class="methodology-deck">An open database of renewable electricity that never reached a customer — curtailed, spilled, or constrained-off. Sourced from grid operators and regulators. Updated every few hours.</p>
 
 </header>
 
-## The author
+## Simon Collins
 
-Dr Simon Collins is a New Zealand-based Bitcoin operator, researcher, and author. He runs Stackr, contributes research through the Digital Assets Research Institute, and writes on the economics of Bitcoin's relationship with energy, infrastructure, and displacement. The through-line across that work is methodological rather than promotional: start with the measured system, state the limitations plainly, and prefer conservative arithmetic to expansive claims.
-
-This dashboard follows the same stance. It is not a branding exercise for an argument that has already been decided elsewhere. It is a public working model of the numbers — open enough to inspect, narrow enough to challenge, and conservative enough to be useful.
+Bitcoin operator and researcher in New Zealand. Runs Stackr. Writes for the Digital Assets Research Institute.
 
 ## The book
 
-*Every Last Joule: How Bitcoin Meets Energy Where It Is* — forthcoming. This dashboard is the live proof of the book's central arithmetic claim: that the world already wastes energy on a scale large enough to matter to Bitcoin, and Bitcoin is unusual in being able to meet that energy where it is.
+*Every Last Joule: How Bitcoin Meets Energy Where It Is* — forthcoming. The book's claim is arithmetic: wasted energy already exists at a scale that matters to Bitcoin, and Bitcoin can take it where it sits.
 
 ## Elsewhere
 
@@ -29,10 +27,12 @@ This dashboard follows the same stance. It is not a branding exercise for an arg
 - **Book pre-order** — *TBD*
 - **Contact / corrections** — [simon@collins.nu](mailto:simon@collins.nu)
 
-## This dashboard
+## The dashboard
 
-The dashboard is open-source on GitHub: [honeybeesquad/every-last-joule-dashboard](https://github.com/honeybeesquad/every-last-joule-dashboard). Its methodology is published in full (see the [Methodology](./methodology) page), its assumptions are named in source, and corrections are welcome. The figures shown here should be read as **lower bounds** rather than maximal claims: a measured floor, not a speculative ceiling.
+Source is on GitHub: [honeybeesquad/every-last-joule-dashboard](https://github.com/honeybeesquad/every-last-joule-dashboard). [Methodology](./methodology) is on this site. Assumptions live in the loaders. Corrections welcome.
 
-Every region's data loader, calibration rate, seasonal multiplier, and fallback behavior is visible in source. Every rate is anchored to a 2024 figure published by the relevant grid operator or regulator, cited inline in the methodology reference list. When a live upstream fails, a committed "last-known-good" snapshot is served instead, and the region's status badge in the dashboard tooltip flips from `live` to `cached` so readers can see the degradation.
+Treat the totals as a **lower bound**. Operators do not publish self-curtailment, and we do not invent it.
+
+Each region's loader, calibration rate, seasonal multiplier, and fallback are in source. Rates are anchored to a 2024 figure from the relevant operator or regulator, cited on the methodology page. If a live upstream fails, a committed last-good snapshot is served and the tooltip badge switches from `live` to `cached`.
 
 </div>
