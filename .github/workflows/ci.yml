@@ -101,5 +101,8 @@ jobs:
       - name: Docs drift (validation MDs vs canonical regions.ts)
         run: npm run ci:docs-drift
 
+      - name: Methodology counts (methodology.md §2.1 prose vs locked golden)
+        run: npm run ci:methodology-counts
+
       - name: Tally tier counts (informational)
         run: npm run tally:tiers
