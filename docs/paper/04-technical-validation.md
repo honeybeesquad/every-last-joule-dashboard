@@ -144,6 +144,24 @@ The v1 recalibration roadmap is five concrete items listed in
 
 ## 4.5 Tier coverage visualisation (Figure 4)
 
+> **Vintage note (added 2026-09-11).** The counts in this section, like
+> the rest of the paper body and the committed
+> `docs/figures/figure4_coverage_map.{png,pdf}`, describe the 384-region
+> v1.3.1 deposit the manuscript cites
+> (`10.5281/zenodo.20136284`, minted 2026-05-12). Repository HEAD has
+> moved past it: `npm run tally:tiers` on 2026-09-11 reports **T1a 160,
+> T1b 26, T1c 1, T2 23, T3 249, total 459**, matching
+> `scripts/ci/golden/tier-counts.json`. In particular the **T2 flare
+> bucket below is empty on HEAD** — associated-gas flaring was purged
+> from the dataset on 2026-06-18 (#242, renewables-only), and no region
+> carries a flare tier or kind — and T2 is no longer only flat-base
+> proxies: 16 of the 23 current T2 regions are EIA-930 second-tier
+> balancing authorities running on a live hourly feed with an externally
+> anchored rate. The enumerations are left at the v1.3.1 vintage rather
+> than half-swept, so that this section, §1, §2, the figure captions and
+> the rendered figure keep telling the same story; the whole paper moves
+> together at the next version bump and Zenodo mint.
+
 Figure 4 answers the single-glance question "where is the dataset
 strong and where is it weak?" at geographic scale. Each of the 384
 regions renders as a tier-coloured dot:
@@ -186,8 +204,13 @@ regions renders as a tier-coloured dot:
   outside Brazil/Atacama, 27 Chinese provinces, and the
   Hawaii islands.
 
-Tier assignment is deterministic from `Region.tier` plus the loader
-profileKind (code-level truth: `src/lib/uncertainty.ts::deriveTier`).
+Tier assignment is deterministic from `Region.tier` alone (code-level
+truth: `src/lib/uncertainty.ts::deriveTier`, which maps the five
+`RegionTier` values one-to-one onto T1a/T1b/T1c/T2/T3 and throws on
+anything else). The loader `profileKind` selects the modelled shape for
+T3 regions and is recorded in
+`scripts/lib/tier-resolution.ts::STATIC_PROFILE_KIND`, but it has not
+been an input to tier derivation since #88 (2026-05-10).
 Live counts are emitted by `scripts/tally-tiers.ts`, which any
 reviewer can run to confirm the figure values from the source of
 truth in `src/lib/regions.ts`.

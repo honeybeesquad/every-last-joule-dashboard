@@ -1,8 +1,8 @@
 # Tier Classification Guide
 
 **File purpose:** Definitive reference for tier classification decisions.
-**Authoritative source:** `src/lib/uncertainty.ts:1-48` and `docs/methodology/uncertainty.md`
-**Last updated:** 2026-04-28 by Claude (research/phase1-data-audit branch)
+**Authoritative source:** `src/lib/uncertainty.ts::deriveTier` and `docs/methodology/uncertainty.md`
+**Last updated:** 2026-09-11 — T2/T3 conditions corrected against `deriveTier` (see the correction note under "Tier definitions"). Originally written 2026-04-28 on the research/phase1-data-audit branch.
 **Status:** Active working reference — update this file when tier classifications change.
 
 ---
@@ -77,6 +77,8 @@ A region cannot be promoted from T3-modelled to T2-annual-calibrated, T1c, T1b, 
 
 These are the canonical definitions. Any classification decision must satisfy the conditions in the **"What this requires"** column for the claimed tier. The **"What this does NOT accept"** column is the demotion filter — if any item in that column applies, the candidate cannot be placed in that tier without first obtaining the missing evidence.
 
+**Correction (2026-09-11).** Until this revision the T2 condition read `Region.tier === "flare"` OR (`Region.tier === "static"` AND `profileKind === "flat"`), and the T3 condition read `Region.tier === "static"` AND a `profileKind` set. Neither `"flare"` nor `"static"` has been a member of `RegionTier` since [#88](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/88) (2026-05-10) separated content kind from data-quality tier, so both conditions matched no region in `src/lib/regions.ts`. `profileKind` is no longer an input to derivation at all: `deriveTier` reads `Region.tier` and nothing else, mapping the five `RegionTier` values one-to-one onto T1a / T1b / T1c / T2 / T3 and throwing on anything outside that set. `profileKind` is still carried on `TierInputs` for loaders that thread it through to profile-shape selection, and the per-region shape table lives in `scripts/lib/tier-resolution.ts::STATIC_PROFILE_KIND`. The sections below describe the mapping the code already implements; no region changed tier in this edit and `scripts/ci/golden/tier-counts.json` is untouched.
+
 ### T1a-live-tso
 
 **Condition:** `Region.tier === "live"` AND a calibration rate published by the **same jurisdiction's TSO or regulator**.
@@ -134,12 +136,12 @@ These are the canonical definitions. Any classification decision must satisfy th
 
 ### T2-annual-calibrated
 
-**Condition:** `Region.tier === "flare"` OR (`Region.tier === "static"` AND `profileKind === "flat"`).
+**Condition:** `Region.tier === "anchored"`.
 
 **What this requires (ALL must be satisfied):**
-1. An explicit, named, dated document that states an annual curtailment total for a specific region
-2. The document is from one of: TSO annual report, Ember country report, GGFR satellite data, IEA WEO, ACER decision, or equivalent authoritative source
-3. The annual figure is a measured or independently estimated total — not a capacity-based calculation (installed capacity × capacity factor × curtailment rate)
+1. An explicit, named, dated document that states an annual curtailment total for a specific region — **or** an externally published curtailment *rate* for that region, applied to a live generation feed
+2. The document is from one of: TSO annual report, Ember country report, IEA WEO, ACER decision, a regulator's or load-despatch centre's periodic curtailment register, a utility IRP or peer-reviewed/agency literature anchor, or equivalent authoritative source
+3. The annual figure (or rate) is a measured or independently estimated value — not a capacity-based calculation (installed capacity × capacity factor × curtailment rate)
 
 **What this does NOT accept:**
 - An IRENA capacity-based estimate: IRENA publishes installed capacity and generation by fuel. Curtailment is not directly measured; it must be back-calculated from the gap between potential generation (capacity × CF) and actual generation. This requires assumptions. It is not a published curtailment total.
@@ -147,8 +149,15 @@ These are the canonical definitions. Any classification decision must satisfy th
 - An invented figure with no published source
 - A vague citation like "IRENA 2024" without a specific document URL or page reference
 
-**Critical distinction — T2 vs T3 for static regions:**
-A static region lands in T2 if and only if `profileKind === "flat"` AND the source is a published annual total. If the annual figure is from a capacity-based calculation, `profileKind` should be `"solar"`/`"wind"`/`"mixed"`/`"hydro"` and the region is T3.
+**Two mechanics sit in this tier — T2 does not mean "flat", and it does not mean "no live feed".** The 23 `anchored` regions as of 2026-09-11 (`npm run tally:tiers`) split as:
+
+- **Annual-anchored flat base — 7 regions.** Austria APG, Russia Murmansk wind, the four Chinese provincial hydro regions (Hunan, Hubei, Guizhou, Chongqing), and India Maharashtra. These are the regions carrying `profileKind: "flat"` in `STATIC_PROFILE_KIND`: a published annual total (for Maharashtra, measured MSLDC monthly totals) with no intraday shape claimed.
+- **EIA-930 second-tier US balancing authorities — 16 regions.** Southern Company, PacifiCorp West, PacifiCorp East, Public Service Colorado, Arizona Public Service, Salt River Project, Idaho Power and Tucson Electric Power, wind and solar each, all built on `src/lib/eia-iso.ts`. Their hourly shape is a **live** EIA-930 per-fuel generation feed; only the magnitude is externally anchored. They carry no `STATIC_PROFILE_KIND` entry, because nothing about their shape is modelled.
+
+What puts those sixteen in T2 rather than T1a is the provenance of the *rate*, not the shape: the rate is a literature/IRP anchor rather than a number the balancing authority itself published, which is `docs/methodology/live-data-paths.md` Path B failing Test 2 ("the rate has a TSO-published numerator"). Each region's `docs/validation/<id>.md` states this in its Known limitations section.
+
+**Critical distinction — T2 vs T3:**
+Both tiers pair an annual anchor with an hourly series, and neither is decided by `profileKind` — the `tier:` field in `src/lib/regions.ts` decides, and everything below is the review-time test for setting it. T2 requires that the magnitude come from a published curtailment total or rate **and** that the hourly series be either genuinely shapeless (a flat base, where flatness is the claim) or genuinely measured (a live generation feed). If the magnitude is a capacity-based back-calculation, or the hourly series is a typical-shape archetype standing in for data that does not exist, the region is T3.
 
 **Envelope:** ±20% of peakGW.
 
@@ -156,15 +165,15 @@ A static region lands in T2 if and only if `profileKind === "flat"` AND the sour
 
 ### T3-modelled
 
-**Condition:** `Region.tier === "static"` AND `profileKind ∈ { "solar", "wind", "mixed", "hydro", "hydro-seasonal" }`.
+**Condition:** `Region.tier === "estimated"`.
 
 **What this requires (ALL must be satisfied):**
 1. An annual anchor exists (from any source, including IRENA capacity-based estimates)
-2. A typical diurnal/seasonal/fuel-mix profile is applied to represent the hourly shape
+2. A typical diurnal/seasonal/fuel-mix profile is applied to represent the hourly shape, and is recorded for that region in `scripts/lib/tier-resolution.ts::STATIC_PROFILE_KIND` — `profileKind ∈ { "solar", "wind", "mixed", "hydro-seasonal", "overnight" }`. (There is no `"hydro"` member; seasonal hydro spill uses `"hydro-seasonal"`. An `estimated` region with no `STATIC_PROFILE_KIND` entry is reported as `unresolved` by `scripts/lib/tier-resolution.ts` rather than silently defaulted.)
 
 **What this does NOT accept:**
-- A flat profile with no shape — that is T2 or flare
-- A live hourly feed — that is T1a/T1b/T1c
+- A live hourly feed — that is T1a/T1b/T1c when the rate is TSO-published, and T2 when the feed is live but the rate is an external anchor (see the T2 section)
+- A flat profile — but as a prompt to re-check the `tier:` field, not as an automatic disqualifier. Flatness means no shape is being modelled, which is the T2 mechanic, and all 7 `"flat"` entries in `STATIC_PROFILE_KIND` today belong to `anchored` (T2) regions. This is a review-time heuristic rather than a derivation rule: `deriveTier` ignores `profileKind`, so an `estimated` region given a `"flat"` shape would still resolve to T3, and the correction is to its `tier:` field, not to its shape.
 
 **Envelope:** ±40% of peakGW.
 
@@ -412,9 +421,9 @@ The audit was conducted against this guide. Each candidate country was assessed 
 
 1. **Source authority is not the same as data specificity.** A TSO may publish data without publishing a curtailment rate. T1a requires both — the feed and the rate from the same jurisdiction.
 
-2. **IRENA estimates are not T2-qualifying.** IRENA publishes installed capacity and generation. Curtailment is derived, not measured. A derived figure requires assumptions. T2 requires a published total — Ember's annual country review, a TSO's annual report, GGFR's satellite data.
+2. **IRENA estimates are not T2-qualifying.** IRENA publishes installed capacity and generation. Curtailment is derived, not measured. A derived figure requires assumptions. T2 requires a published total or a published rate — Ember's annual country review, a TSO's annual report, a load-despatch centre's curtailment register, a utility IRP. (GGFR satellite data was the third example here until flare gas left the dataset in [#242](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/242), 2026-06-18; it anchors nothing now.)
 
-3. **"Kind: flat" is not a T2 upgrade.** Changing `profileKind` from `"solar"` to `"flat"` in `statics.json.ts` narrows the uncertainty band from ±40% to ±20% but adds no new data. This is a mislabel, not an improvement. It is acceptable only when the annual figure already comes from a qualifying published source.
+3. **Relabelling the shape is not a tier upgrade — and since #88 it is not even a band change.** When this lesson was written, flipping `profileKind` from `"solar"` to `"flat"` moved a region from T3 to T2 and narrowed the band from ±40% to ±20% without adding data. That routing is gone: `deriveTier` ignores `profileKind`, so the edit now changes nothing at all — not the tier, not the envelope, not the dashboard. The band moves only when the `tier:` field in `src/lib/regions.ts` moves, and a real move also touches `scripts/ci/golden/tier-counts.json` and `STATUS.md` in the same commit (`CLAUDE.md` §"Writing data PRs" rule 2). The underlying discipline is unchanged and now applies to the `tier:` field: narrowing a region's band is only honest when a qualifying published source arrived, and prose describing a region as anchored is not a tier change.
 
 4. **Load-shed is not curtailment.** Nigeria's ~7 TWh figure is partly chronic load-shed from grid inadequacy, not VRE curtailment. These phenomena have different causes and policy implications. A single composite number conflates them.
 
