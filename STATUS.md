@@ -3,13 +3,41 @@
 **Last verified against git:** 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only; May 2026 paper still reports 385 + flare. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer still needs a human; the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
+## `ci:methodology-counts` — the methodology page is now gated against the dataset (2026-09-11)
+
+`src/methodology.md` §2.1's five sub-tier counts summed to **377 against an actual 459** and had been wrong
+for roughly three months (T1a/T1b since 2026-06-16 #200, T2 since 2026-05-10 #94, T3 since 2026-05-12
+v1.3.0). #979 corrected the prose; this is the gate that stops it recurring. Nothing read methodology prose
+before: `ci:tally-golden` compares `scripts/ci/golden/tier-counts.json` to `src/lib/regions.ts` and
+`ci:docs-drift` compares the per-region validation docs to `regions.ts`, so the public-facing page could
+drift from the dataset indefinitely.
+
+`scripts/ci/check-methodology-counts.ts` (parser in `scripts/lib/methodology-counts.ts`) compares §2.1's
+five `**T{1a,1b,1c,2,3}-<name> (N regions, ...)` headers against the golden per-bucket counts, and every
+`N regions` total claim outside §2.1 and §8 — today the Abstract's "across 459 regions" and §5's "Coverage is
+459 regions" — against the golden total. It reads the **golden file, not `regions.ts`**, so a tier move fails
+`ci:tally-golden` first and reaches this gate only once the golden is deliberately updated; one audit trail,
+not two competing ones. §8 is excluded on purpose — its "T1a-live-tso (63 regions...)" entry is a past-tense
+record of the April-2026 CODEX-7 lock, and a gate that rewrote history would be worse than the drift.
+
+**The failure mode defended against is a vacuous pass, not a wrong digit.** A prose gate that sweeps for
+matches goes green over a reworded header it never found. So the parse is closed: all five sub-tier keys must
+be present or the gate names the one that vanished, and at least `MIN_TOTAL_CLAIMS` (2) total claims must be
+found. `tests/methodology-counts.test.ts` (27 cases) covers six header rewrites — em-dash, missing comma,
+"zones", spelled-out number, unbolded, non-line-initial — each carrying the *correct* count, and asserts the
+gate still fails. Verified against the real regression: run on `main`'s pre-#979 page the gate exits 1 and
+reports T1a 149→160, T1b 10→26, T2 6→23, T3 211→249 plus the 377-vs-459 sum, leaving the correct T1c alone.
+Exits 2 if §2.1 is renamed out from under it.
+
+`ci:gates` is now **10 gates**, and the workflow runs the new step after `ci:docs-drift`.
+
 ## Copy — Claudish voice stripped from the public site (2026-09-11)
 
 **PR #968**, squash `4d1a047a`. About, dashboard lead, paper prose, methodology framing, region/history decks, embed readout, and OG tags. Tables, citations, and paper numbers are unchanged.
 
 Live-site copy now says **459 regions, renewables only**. The old OG card and README still mentioned flared gas and 384/461 regions after the 2026-06-18 purge. The May 2026 paper still reports **385 regions and flare** — that is the v1.3.x deposit it cites, not a silent retcon. The embed says curtailment *could cover* hashrate; it no longer says the network *is* powered by it. **No tier moved.**
 
-**Follow-ups (not in #968):** methodology §2.1 still has stale sub-tier counts (T1a 149 vs golden T1a 160 / total 459). `docs/paper/` and `docs/dari/` drafts were left alone.
+**Follow-ups (not in #968):** methodology §2.1's stale sub-tier counts were corrected in **#979** and are now gated by `ci:methodology-counts` (**#981**) — see the entry above. `docs/paper/` and `docs/dari/` drafts were left alone.
 
 ## Secret rotation — EIA key rotated (SEC-1 closed), ENTSO-E deliberately deferred (2026-09-10)
 
