@@ -1,7 +1,54 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only; May 2026 paper still reports 385 + flare. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer still needs a human; the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
+**Last verified against git:** 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only; May 2026 paper still reports 385 + flare. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia relay producer still needs a human; the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
+
+## `ci:tier-count-docs` — the remaining tier-count prose is gated too (2026-09-14)
+
+**PR #1003.** `ci:methodology-counts` (**#981**, entry below) gated `src/methodology.md`. It was one of
+**five** documents #979/#980/#982 had just corrected by hand; the other four were still unguarded. This gate
+takes them: `docs/methodology/uncertainty.md`, `dataset/README.md`,
+`docs/methodology/tier-classification-guide.md` and `docs/methodology/live-data-paths.md`.
+
+**One real drift found and fixed on the way in.** `live-data-paths.md` opened its Path A/B catalogue with
+"The **66** regions resolving to `T1a-live-tso`" — the Phase-2.6 golden tally, against a current T1a of
+**160**. Corrected and now gated. Its Path A/B rows still sum to that old 66 and are **marked stale rather
+than re-derived**: classifying 160 T1a loaders by path is real work, not a docs edit, and two of the table's
+named exemplars have since moved (Peru hydro/wind and South Africa to T1a, Peru solar to T1b).
+
+**Why it is not a regex sweep — the pinned-content problem.** These documents carry stale figures *on
+purpose*, and an open `N regions` sweep would demand exactly the edits that falsify a published record.
+`dataset/README.md` is pinned to the archived **v1.3.2 Zenodo deposit**; `uncertainty.md` retains the
+**2026-04-26** snapshot because that four-zone cohort is what the ±50 % T1b envelope was actually measured on;
+`dataset/CHANGELOG.md` release entries and `docs/paper/*` are pinned the same way and are **not gated at
+all**. So claims are found by two closed routes instead: *roster lines* (a line naming all five buckets with
+a count, auto-detected, checked per bucket, against its stated total, and for self-consistency) and *bucket
+claims* (opt-in, the author tags the line `<!-- tier-counts:T1a -->`). Pinned lines carry
+`<!-- tier-counts:ignore -->`. This fired on the first run: `dataset/README.md`'s quote of STATUS's
+2026-06-10 golden parses as a roster, and the gate wanted 459-era numbers for a v1.3.2 figure. It also
+independently reported that line's buckets summing to **377 against its stated 385** — the missing flare
+bucket, which #982 had worked out by hand.
+
+**Every per-document expectation is an exact count** — rosters, bucket claims and ignored lines alike — so the
+gate fails closed both ways. Reword a claim and the count drops and it names what it stopped checking; silence
+a mismatch with a new ignore marker and the count rises, surfacing in review as a deliberate edit to
+`GATED_DOCS`. `tests/tier-count-docs.test.ts` (32 cases) covers both directions, and the 66-vs-160 regression
+is reproduced against the real file. Verified end-to-end: editing `uncertainty.md`'s roster to
+`T1a = 149, T1b = 10` makes the gate report both mismatches plus the sum contradiction and exit 1.
+
+`ci:gates` is now **11 gates**; the workflow runs the new step after `ci:methodology-counts`. **No tier
+moved** — the golden file is untouched and `ci:tally-golden` passes unchanged.
+
+**Open, not fixed here:** the guide's **7 flat / 16 EIA-930** T2 split is ungated, because those figures are
+derived from `REGIONS` + `STATIC_PROFILE_KIND` rather than present in the golden — gating them means either
+reading `regions.ts` from this gate (breaking the one-audit-trail rule below) or adding sub-keys to the golden
+file; that is a decision, not an oversight. The paper's 384→459 sweep and `figure4_coverage_map.py`'s
+`STATIC_FLAT_REGIONS` (2 of the 7 flat regions) remain open from #982.
+
+**Known wrinkle in this file:** the entry below records the 2026-06-24 golden as `T2=24, T3=250 (total 461)`,
+while the 2026-09-06 sweep entry describes **#795** as moving `T2 25→23, total 461→459`. Those disagree —
+24 vs 25 — for the same 461-region state. Flagged rather than corrected: telling which is right means
+reconstructing that state, and guessing in this file is worse than naming the gap.
 
 ## `ci:methodology-counts` — the methodology page is now gated against the dataset (2026-09-11)
 
@@ -29,7 +76,7 @@ gate still fails. Verified against the real regression: run on `main`'s pre-#979
 reports T1a 149→160, T1b 10→26, T2 6→23, T3 211→249 plus the 377-vs-459 sum, leaving the correct T1c alone.
 Exits 2 if §2.1 is renamed out from under it.
 
-`ci:gates` is now **10 gates**, and the workflow runs the new step after `ci:docs-drift`.
+`ci:gates` was **10 gates** after this PR, and the workflow runs the new step after `ci:docs-drift`. (It is **11** since **#1003** — see the entry above.)
 
 ## Copy — Claudish voice stripped from the public site (2026-09-11)
 
