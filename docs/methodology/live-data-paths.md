@@ -68,7 +68,7 @@ The current Path-B loaders (Peru, South Africa) pass all three tests as of 2026-
 
 ## Catalogue — currently-live T1a regions by path
 
-The 66 regions resolving to `T1a-live-tso` (golden tally from `scripts/ci/golden/tier-counts.json`, after Phase 2.6) split as follows:
+The 160 <!-- tier-counts:T1a --> regions resolving to `T1a-live-tso` (golden tally from `scripts/ci/golden/tier-counts.json`) split as follows:
 
 | Path | Count | Examples | Anchor type |
 |---|---|---|---|
@@ -76,6 +76,8 @@ The 66 regions resolving to `T1a-live-tso` (golden tally from `scripts/ci/golden
 | **Path B — live-shape × rate proxy** | ~3 | Peru, South Africa, (any future loaders that fail to find a measured-DD endpoint and use a TSO-provenance annual anchor) | TSO-published annual curtailment quantity |
 
 (The ~3 vs ~63 split is approximate because some loaders are hybrid — e.g. an A75 zone that occasionally falls back to a generation-shape × rate during transparency-platform outages. The full enumeration lives in each loader's `sourceNote`.)
+
+**Stale split, corrected headline (2026-09-14).** The headline above read "66 regions" until this revision — the golden T1a tally after Phase 2.6. T1a has since grown to 160 and the headline now tracks `scripts/ci/golden/tier-counts.json` (asserted by `npm run ci:tier-count-docs`). **The Path A / Path B rows still sum to that old 66 and have not been re-derived**, so read them as the 2026-04-26 shape of the catalogue, not as a current split. Two of the named exemplars have also moved: Peru's hydro and wind aggregates and South Africa are T1a on live feeds, and Peru solar is T1b. Re-deriving the split means classifying all 160 T1a loaders by path, which is open work — the per-loader truth is in each `sourceNote` meanwhile.
 
 ## Implications for backfill validation
 

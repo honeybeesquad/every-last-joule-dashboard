@@ -104,5 +104,8 @@ jobs:
       - name: Methodology counts (methodology.md §2.1 prose vs locked golden)
         run: npm run ci:methodology-counts
 
+      - name: Tier-count docs (uncertainty / guide / dataset README / live-data-paths vs locked golden)
+        run: npm run ci:tier-count-docs
+
       - name: Tally tier counts (informational)
         run: npm run tally:tiers
