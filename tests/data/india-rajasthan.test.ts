@@ -10,6 +10,9 @@ describe("india-rajasthan loader", () => {
     expect(data.totalTWh).toBeGreaterThan(0);
     expect(data.peakGW).toBeGreaterThan(0);
     expect(data.confidenceTier).toBe("T3-modelled");
+    expect(data.sourceProvenance).toBe("official-lead");
+    expect(data.sourceNote).toMatch(/0\.052 TWh/);
+    expect(data.sourceNote).toMatch(/issue #964/);
   });
 
   it("solar profile peaks around UTC 06-07 (Rajasthan ~73°E local noon)", async () => {
