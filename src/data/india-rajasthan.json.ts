@@ -40,7 +40,8 @@ async function run(): Promise<RegionData> {
       curtailedTWh,
       `CEA gen-re.cea.gov.in daily Excel, State-Wise sheet (${csv.nRows}-day CSV; trailing-365-day solar ${csv.solarTWh.toFixed(2)} TWh). ` +
       `Annual curtailed energy = CEA generation × Ember India 2024 rate ${(CURTAILMENT.rate * 100).toFixed(0)}% / (1 − rate) = ${curtailedTWh.toFixed(2)} TWh. ` +
-      `Hourly shape is synthetic. Only the generation denominator is from a primary official source.`,
+      `Hourly shape is synthetic. Only the generation denominator is from a primary official source. ` +
+      `RRVPNL re-curtailment PDFs for Jan–May 2026 sum to 0.052 TWh (research extraction, issue #964) — >50× below this modelled anchor; that floor is not annualised and is not what the dashboard plots.`,
       new Date().getFullYear().toString(),
     );
     return { ...base, sourceProvenance: "official-lead" };
