@@ -29,9 +29,9 @@
  *      the count and fails, rather than silently leaving the gate reading an
  *      empty set.
  *
- * Pinned content — `dataset/README.md`'s v1.3.2 deposit figures,
+ * Pinned content — `dataset/README.md`'s archived v1.3.2 flare-era breakdown,
  * `uncertainty.md`'s retained 2026-04-26 snapshot, `dataset/CHANGELOG.md`'s
- * release entries, `docs/paper/*`'s 384-region vintage — is exempt by design.
+ * release entries, `docs/paper/*`'s historical vintage — is exempt by design.
  * The first two carry `<!-- tier-counts:ignore -->` where they would otherwise
  * parse; the last two are not gated at all. Rewriting any of them to match HEAD
  * would falsify a published record, which is the opposite of what this gate is

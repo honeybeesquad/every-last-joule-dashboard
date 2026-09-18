@@ -4,8 +4,21 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+## [1.4.0] — 2026-09-19
+
+First renewables-only deposit. v1.3.2 (`10.5281/zenodo.20570864`, 385 regions, includes associated-gas flaring) remains the previous mint and is not rewritten. Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) will resolve here once the `v1.4.0` GitHub release mints the version DOI.
+
 ### Removed
-- **Flare gas removed from the dataset.** All 37 associated-gas flaring regions (Permian, West Siberia, the Iraq/Saudi named oilfields, Nigeria/Algeria/Libya, Qatar, Kuwait, the two Russia flares, and the Trinidad/Guyana/Suriname offshore anchors) and the entire `T2-flare` confidence-tier bucket have been removed. The dataset is now renewables-only (curtailed solar/wind/hydro). Region total: 468 → 431. The `fuelShare`/`fuel` schema enums drop the `flare` value. Historical rows in `version-history.csv` and the release entries below are preserved — they accurately record what each published version (v1.0.0–v1.3.2) shipped.
+- **Associated-gas flaring.** All 37 flare regions and the `T2-flare` bucket, 2026-06-18 ([#242](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/242)). Solar, wind, hydro, and geothermal only. The `fuelShare`/`fuel` schema enums drop `flare`. Historical rows in `version-history.csv` and the v1.0.0–v1.3.2 entries below still record what those cuts shipped.
+
+### Changed — coverage / tiers
+- **459 regions** in 191 countries and territories. Counted from `src/lib/regions.ts`; golden `scripts/ci/golden/tier-counts.json`: **T1a 160, T1b 26, T1c 1, T2 23, T3 249**.
+- Path from v1.3.2's 385: live-feed and modelled expansions (including EIA-930 second-tier BAs, Germany's four TSO areas, Japan's ten area CSVs), a flare-oilfield split that took the total to 468, the #242 purge (468 → 431), further expansions, then WACM wind/solar removal ([#795](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/795), 461 → 459).
+- T2 is no longer only flat-base annuals: 16 of 23 are EIA-930 BAs (live shape, external rate); 7 are annual-anchored flats.
+
+### Changed — paper / metadata
+- Public methodology, DARI essay, and Scientific Data drafts rewritten to this cut (renewables-only, 16 J/TH Bitcoin denominator).
+- `CITATION.cff`, `.zenodo.json`, and this dataset card describe 459 regions, no flaring. Version DOI is filled in after the GitHub release.
 
 ## [1.3.2] — 2026-06-07
 

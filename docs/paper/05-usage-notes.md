@@ -5,10 +5,10 @@ words._
 
 ## 5.1 Loading the dataset
 
-HEAD is 459 regions, renewables only. The last minted Zenodo cut is
-**v1.3.2** (385 regions, still includes flare). Use `main` or a
-post-2026-06-18 commit for the records this descriptor describes.
-A flare-free version DOI has not been cut yet.
+This descriptor is **v1.4.0**: 459 regions, renewables only. Concept
+DOI `10.5281/zenodo.19835411`. The version DOI is minted when the
+GitHub release publishes. v1.3.2 (`10.5281/zenodo.20570864`) is the
+last cut that included flare.
 
 ### Python (pandas + pyarrow)
 
@@ -115,13 +115,12 @@ Full ledger: `docs/known-limitations.md`.
 
 ## 5.5 Recommended citation
 
-Machine-readable: `dataset/CITATION.cff` (still pinned to **v1.3.2**).
-Version DOI for that deposit: `10.5281/zenodo.20570864`.
-Concept DOI (resolves to latest mint): `10.5281/zenodo.19835411`.
+Machine-readable: `dataset/CITATION.cff` (**v1.4.0**).
+Concept DOI: `10.5281/zenodo.19835411`. The v1.4.0 version DOI is
+minted when the GitHub release publishes.
 
-Cite the **version you used**. This descriptor describes repository
-HEAD (459 regions, renewables only), which does not yet have its own
-version DOI. Do not cite it as Scientific Data in review.
+Cite the **version you used**. This descriptor is v1.4.0 (459
+regions, renewables only). Do not cite it as Scientific Data in review.
 
 For the archived v1.3.2 cut (385 regions, includes flare):
 

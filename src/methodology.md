@@ -121,7 +121,7 @@ Hashrate sources disagree by low-single-digit percent. The 24-hour average is us
 
 Source: https://github.com/honeybeesquad/every-last-joule-dashboard. Loaders are deterministic given their upstream response. Last-good snapshots are committed, so `npm install && npm run build` reproduces the displayed figure when an upstream is down. Rates, anchors, fuel-mix overrides, and seasonal multipliers are in `src/data/` and `src/lib/`.
 
-The Zenodo v1.3.2 deposit (DOI [10.5281/zenodo.20570864](https://doi.org/10.5281/zenodo.20570864)) is the last archived cut that still included flare. The live site and this page describe HEAD: 459 regions, renewables only. Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to the latest mint.
+The Zenodo **v1.4.0** cut is this page: 459 regions, renewables only. Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to the latest mint; the version DOI is assigned when the GitHub release publishes. v1.3.2 ([10.5281/zenodo.20570864](https://doi.org/10.5281/zenodo.20570864)) is the last archived cut that still included flare.
 
 ## 8. Recent corrections
 

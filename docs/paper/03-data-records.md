@@ -4,7 +4,7 @@ _Scientific Data Data Descriptor · Section 3 · Target 500–1000 words._
 
 Three artefact classes, all at the Zenodo concept DOI and on GitHub: per-region JSON snapshots, a rolling Parquet history, and a seven-year hourly backfill. Field-level schema: `dataset/SCHEMA.md`.
 
-The minted v1.3.2 deposit still includes flare. The records below describe repository HEAD (459 regions, renewables only). A flare-free version DOI has not been cut yet.
+The records below describe **v1.4.0** (459 regions, renewables only). Concept DOI `10.5281/zenodo.19835411`. The version DOI is minted when the GitHub release publishes. v1.3.2 (`10.5281/zenodo.20570864`) still includes flare.
 
 ## 3.1 Per-region JSON snapshots
 

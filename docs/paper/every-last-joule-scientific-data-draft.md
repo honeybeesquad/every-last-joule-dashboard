@@ -14,10 +14,9 @@ the live text.
 6. [`06-code-availability.md`](06-code-availability.md)
 7. [`figure-captions.md`](figure-captions.md)
 
-Those describe repository HEAD: **459 regions**, renewables only.
-The last Zenodo mint (v1.3.2, `10.5281/zenodo.20570864`) is a
-different artefact — 385 regions, still includes flare — and is
-not silently retconned here.
+Those describe **v1.4.0**: **459 regions**, renewables only.
+v1.3.2 (`10.5281/zenodo.20570864`) is a different artefact —
+385 regions, still includes flare — and is not silently retconned.
 
 The public Bitcoin-matching essay is `src/paper.md`, not this
 descriptor. Neither draft is in review at Scientific Data.
