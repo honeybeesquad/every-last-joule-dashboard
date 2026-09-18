@@ -6,7 +6,7 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [1.4.0] — 2026-09-19
 
-First renewables-only deposit. v1.3.2 (`10.5281/zenodo.20570864`, 385 regions, includes associated-gas flaring) remains the previous mint and is not rewritten. Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) will resolve here once the `v1.4.0` GitHub release mints the version DOI.
+First renewables-only deposit. Version DOI [10.5281/zenodo.22837934](https://doi.org/10.5281/zenodo.22837934). v1.3.2 (`10.5281/zenodo.20570864`, 385 regions, includes associated-gas flaring) remains the previous mint and is not rewritten. Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) now resolves here.
 
 ### Removed
 - **Associated-gas flaring.** All 37 flare regions and the `T2-flare` bucket, 2026-06-18 ([#242](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/242)). Solar, wind, hydro, and geothermal only. The `fuelShare`/`fuel` schema enums drop `flare`. Historical rows in `version-history.csv` and the v1.0.0–v1.3.2 entries below still record what those cuts shipped.
@@ -18,7 +18,7 @@ First renewables-only deposit. v1.3.2 (`10.5281/zenodo.20570864`, 385 regions, i
 
 ### Changed — paper / metadata
 - Public methodology, DARI essay, and Scientific Data drafts rewritten to this cut (renewables-only, 16 J/TH Bitcoin denominator).
-- `CITATION.cff`, `.zenodo.json`, and this dataset card describe 459 regions, no flaring. Version DOI is filled in after the GitHub release.
+- `CITATION.cff`, `.zenodo.json`, and this dataset card describe 459 regions, no flaring. Version DOI `10.5281/zenodo.22837934` (minted 2026-09-19).
 
 ## [1.3.2] — 2026-06-07
 

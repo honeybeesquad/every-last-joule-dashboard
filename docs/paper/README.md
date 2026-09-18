@@ -15,11 +15,12 @@ what the files are, how they were built, how they were checked.
 | Regions | **459** | 385 |
 | Scope | Renewables only (solar, wind, hydro, geothermal) | Curtailment + associated-gas flaring |
 | Tiers | T1a 160, T1b 26, T1c 1, T2 23, T3 249 | Includes a T2-flare bucket |
-| Version DOI | pending GitHub release | `10.5281/zenodo.20570864` |
+| Version DOI | `10.5281/zenodo.22837934` | `10.5281/zenodo.20570864` |
 
-These drafts describe **v1.4.0**. Cite the concept DOI
-`10.5281/zenodo.19835411` until the version DOI is minted. v1.3.2
-is a different artefact and is not silently rewritten.
+These drafts describe **v1.4.0** (`10.5281/zenodo.22837934`). Cite
+the version you used. Concept DOI `10.5281/zenodo.19835411` resolves
+to latest. v1.3.2 is a different artefact and is not silently
+rewritten.
 
 Figures 1 and 4 still need a regen pass (`docs/figures/`). The
 committed images show the pre-purge flare palette.
@@ -33,7 +34,7 @@ committed images show the pre-purge flare palette.
 | 3 | [`03-data-records.md`](03-data-records.md) | 500–1000 | 459; no `T2-flare`; capture_source split kept |
 | 4 | [`04-technical-validation.md`](04-technical-validation.md) | 1000–2000 | 23-pair scatter kept; §4.5–4.8 on HEAD |
 | 5 | [`05-usage-notes.md`](05-usage-notes.md) | 500–1000 | v1.4.0 load paths; v1.3.2 archived citation kept |
-| 6 | [`06-code-availability.md`](06-code-availability.md) | 100–200 | v1.4.0 tag; version DOI pending |
+| 6 | [`06-code-availability.md`](06-code-availability.md) | 100–200 | v1.4.0 tag; `10.5281/zenodo.22837934` |
 | — | [`figure-captions.md`](figure-captions.md) | n/a | 459 counts; regen flagged |
 
 The combined file
@@ -58,5 +59,5 @@ ahead of any submission. Do not claim the journal has it.
 
 Zenodo history: v1.0.0 `10.5281/zenodo.19835566` … v1.3.2
 `10.5281/zenodo.20570864` (last flare-inclusive mint). v1.4.0
-version DOI pending the GitHub release. Concept DOI
-`10.5281/zenodo.19835411` resolves to latest.
+`10.5281/zenodo.22837934`. Concept DOI `10.5281/zenodo.19835411`
+resolves to latest.

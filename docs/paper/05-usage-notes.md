@@ -5,10 +5,10 @@ words._
 
 ## 5.1 Loading the dataset
 
-This descriptor is **v1.4.0**: 459 regions, renewables only. Concept
-DOI `10.5281/zenodo.19835411`. The version DOI is minted when the
-GitHub release publishes. v1.3.2 (`10.5281/zenodo.20570864`) is the
-last cut that included flare.
+This descriptor is **v1.4.0**: 459 regions, renewables only. Version
+DOI `10.5281/zenodo.22837934`. Concept DOI `10.5281/zenodo.19835411`.
+v1.3.2 (`10.5281/zenodo.20570864`) is the last cut that included
+flare.
 
 ### Python (pandas + pyarrow)
 
@@ -116,11 +116,15 @@ Full ledger: `docs/known-limitations.md`.
 ## 5.5 Recommended citation
 
 Machine-readable: `dataset/CITATION.cff` (**v1.4.0**).
-Concept DOI: `10.5281/zenodo.19835411`. The v1.4.0 version DOI is
-minted when the GitHub release publishes.
+Version DOI: `10.5281/zenodo.22837934`. Concept DOI:
+`10.5281/zenodo.19835411`.
 
 Cite the **version you used**. This descriptor is v1.4.0 (459
 regions, renewables only). Do not cite it as Scientific Data in review.
+
+> Collins, S. (2026). Every Last Joule: an hourly synthesis of
+> renewable-electricity curtailment across 459 regions. Dataset
+> version v1.4.0. https://doi.org/10.5281/zenodo.22837934
 
 For the archived v1.3.2 cut (385 regions, includes flare):
 

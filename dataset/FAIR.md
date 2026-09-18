@@ -41,10 +41,10 @@ versioned DOI `10.5281/zenodo.19835566` (concept DOI
 
 **Evidence:**
 
-- `dataset/CITATION.cff` declares a **concept DOI** `10.5281/zenodo.19835411`
-  (resolves to the latest version across releases). Version **1.4.0** is the
-  current cut; its version DOI is minted by Zenodo when the `v1.4.0` GitHub
-  release publishes. v1.3.2 remains archived at
+- `dataset/CITATION.cff` declares two DOI identifiers under `identifiers:`:
+  the **version DOI** `10.5281/zenodo.22837934` (pins to the v1.4.0 tag) and
+  the **concept DOI** `10.5281/zenodo.19835411` (resolves to the latest
+  version across releases). v1.3.2 remains archived at
   `10.5281/zenodo.20570864`.
 - DOIs minted by Zenodo on 2026-04-27 via the GitHub-Zenodo integration
   documented in `docs/academic-model/zenodo-setup.md`. Each future tag

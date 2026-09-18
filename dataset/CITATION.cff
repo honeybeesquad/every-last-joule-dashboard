@@ -37,8 +37,11 @@ repository-code: "https://github.com/honeybeesquad/every-last-joule-dashboard"
 url: "https://everylastjoule.com"
 identifiers:
   - type: doi
+    value: "10.5281/zenodo.22837934"
+    description: "Zenodo archival DOI (versioned, v1.4.0 — minted 2026-09-19)"
+  - type: doi
     value: "10.5281/zenodo.19835411"
-    description: "Zenodo concept DOI (resolves to latest version; v1.4.0 version DOI pending GitHub release)"
+    description: "Zenodo concept DOI (resolves to latest version)"
 preferred-citation:
   type: data
   title: "Every Last Joule: an hourly synthesis of renewable-electricity curtailment across 459 regions"
@@ -47,4 +50,4 @@ preferred-citation:
       given-names: Simon
   year: 2026
   version: 1.4.0
-  doi: "10.5281/zenodo.19835411"
+  doi: "10.5281/zenodo.22837934"

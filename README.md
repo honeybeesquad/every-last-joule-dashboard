@@ -50,9 +50,9 @@ Live data loaders need free upstream API tokens (`ENTSOE_TOKEN`, `EIA_API_KEY`, 
 
 ## Citation
 
-The live site and this repository are **v1.4.0**: 459 regions, renewables only. Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to the latest mint. The v1.4.0 version DOI is assigned when the GitHub release publishes. v1.3.2 (`10.5281/zenodo.20570864`) remains the last cut that included associated-gas flaring.
+The live site and this repository are **v1.4.0**: 459 regions, renewables only. Version DOI [10.5281/zenodo.22837934](https://doi.org/10.5281/zenodo.22837934). Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to the latest mint. v1.3.2 (`10.5281/zenodo.20570864`) remains the last cut that included associated-gas flaring.
 
-> Collins, S. (2026). _Every Last Joule: an hourly synthesis of renewable-electricity curtailment across 459 regions._ Dataset version v1.4.0. Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411).
+> Collins, S. (2026). _Every Last Joule: an hourly synthesis of renewable-electricity curtailment across 459 regions._ Dataset version v1.4.0; Zenodo version DOI [10.5281/zenodo.22837934](https://doi.org/10.5281/zenodo.22837934).
 
 A Scientific Data descriptor for HEAD is drafted in [`docs/paper/`](docs/paper/). It is not in review. The public Bitcoin-matching essay is [`src/paper.md`](src/paper.md).
 
