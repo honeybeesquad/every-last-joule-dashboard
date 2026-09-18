@@ -22,133 +22,106 @@ This dashboard estimates how much of current Bitcoin network electricity use is 
 
 ## 1. Scope and definitions
 
-**Curtailment** is defined here as electricity that could have been generated from a committed renewable asset but was not, owing to an instruction from a system operator, a market rule, or a transmission constraint. This encompasses four operationally distinct phenomena that the dashboard treats as a single class:
+**Curtailment** is electricity that could have been generated from a committed renewable asset but was not, because of a system-operator instruction, a market rule, or a transmission constraint. Four operationally distinct things are treated as one class:
 
-1. **Dispatch-down** — generation instructed below available output by a system operator (e.g., EirGrid SNSP curtailment, AEMO SEMIDISPATCHCAP).
-2. **Constrained-off** — generation prevented by a transmission limit (e.g., ONS Brazil `restricao_coff`, Eskom Northern Cape constraints).
-3. **Spill** — hydroelectric inflow exceeding dispatch or reservoir absorption (e.g., Itaipu flood-stage, Sichuan monsoon).
-4. **Steam venting** — geothermal generation exceeding overnight demand (e.g., Kenya Olkaria, per EPRA 2025).
+1. **Dispatch-down** — generation instructed below available output (EirGrid SNSP, AEMO SEMIDISPATCHCAP).
+2. **Constrained-off** — generation blocked by a transmission limit (ONS Brazil `restricao_coff`, Eskom Northern Cape).
+3. **Spill** — hydro inflow that cannot be stored or dispatched (Itaipu flood-stage, Sichuan monsoon).
+4. **Steam venting** — geothermal generation dumped overnight (Kenya Olkaria, EPRA 2025).
 
-Defensibility notes for the two recently audited assumptions are maintained separately: [ERCOT West/East split](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#ercot) and [Brazil NE clustering](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#brazil-ne).
+Associated-gas flaring is not in this dataset. It was removed on 18 June 2026. The flare map lives on [Every Last Particle](https://everylastjoule.com/particle). Notes that still matter for this dashboard: [ERCOT West/East split](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#ercot) and [Brazil NE clustering](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#brazil-ne).
 
-**Regional units** are chosen to match the smallest unit at which the responsible grid operator publishes dispatch data. For large interconnections, that is the ISO (CAISO, ERCOT-West/East, MISO, etc.). For ENTSO-E members, it is the bidding zone. For Brazil it is the sub-state constraint region. For countries without public hourly dispatch data, it is the national grid.
+**Regions** match the smallest unit the operator publishes. ISO or balancing authority in the US; bidding zone in ENTSO-E; sub-state constraint cluster in Brazil; TSO area in Japan; national grid where nothing finer exists.
 
-**Time resolution** is hourly UTC, aggregated to 24 values representing a 30-day trailing time-of-day average. Where a grid operator publishes at finer cadence (ENTSO-E at 15 minutes, Elexon BMRS at 30 minutes), the finer cadence is used for input and averaged to hourly output.
+**Time resolution** is hourly UTC. Input at 15 or 30 minutes (ENTSO-E, Elexon) is averaged to the hour. The default display is a 30-day trailing time-of-day average: 24 values, each the mean of that UTC hour across the window.
 
 ## 2. Method
 
 ### 2.1 Confidence tiers
 
-Every region carries an explicit `confidenceTier` so readers can filter or weight observations by source quality. The tiers, the underlying loader mechanics, and the published envelope are documented in full in [`docs/methodology/uncertainty.md`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/uncertainty.md). The short version:
+Every region carries a `confidenceTier`. Full envelope math is in [`docs/methodology/uncertainty.md`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/uncertainty.md). Live counts come from `scripts/tally-tiers.ts`.
 
-The live-feed tier was subdivided into three sub-tiers in CODEX-7 (locked 2026-04-25, see [`docs/proposals/b4-option-b-decision.md`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/proposals/b4-option-b-decision.md)) once the post-B1 rerun made it clear that "live feed plus rate" hides three operationally distinct calibration provenances. The legacy `T1-live-TSO` label is retained as an alias for pre-2026-04-25 snapshots and reads as T1a for envelope sizing.
+The live-feed tier is three sub-tiers, because “live feed plus a rate” is three different calibration provenances. Older snapshots may still say `T1-live-TSO`; that label is treated as T1a for envelope sizing.
 
-**T1a-live-tso (160 regions, ±15% peakGW envelope or ±2σ from 5-year backfill).** Live TSO/ISO/operator hourly feed *and* a calibration rate published by the same jurisdiction's TSO or regulator. Two loader mechanics fall here: *direct-measurement* loaders sum published dispatch-down / constrained-off / spill volumes (Brazil's fourteen ONS state clusters — seven named Northeast states plus six South/Centre-South states, with a catch-all bucket for unmapped rows; Belgium, Denmark, the UK North Sea, New Zealand, the five AEMO states plus ten named per-plant DUIDs; all ten Japanese areas (Tohoku, TEPCO, Chubu, Hokkaido, Okinawa, Kansai, Chugoku, Shikoku, Hokuriku, and Kyushu) via the direct 太陽光出力制御量+風力出力制御量 columns of the operators' eria_jukyu area CSVs); *calibrated-proxy* loaders take published hourly generation and multiply by a region-specific 2024-anchored rate (CAISO at 4.25%, ERCOT West/East at 6.15% wind + 4% solar, WA-SWIS at 8% via AEMO WEM Facility SCADA, most ENTSO-E bidding zones). Both mechanics start from a live grid feed and an own-jurisdiction anchor; they differ only in whether the operator publishes curtailment directly or whether we infer it from generation. The diurnal shape in both cases is real, not assumed. Default envelope is ±15% of peakGW; replaced with 2σ of annual peakGW from the 5-year backfill where the historical archive supports it.
+**T1a-live-tso (160 regions, ±15% peakGW envelope or ±2σ from 5-year backfill).** Live TSO/ISO/operator hourly feed *and* a calibration rate from the same jurisdiction. Two mechanics: *direct measurement* sums published dispatch-down, constrained-off, or spill (Brazil’s ONS state clusters; Belgium, Denmark, Great Britain, New Zealand; AEMO states and named plants; Japan’s ten areas from the operators’ `eria_jukyu` curtailment columns). *Calibrated proxy* multiplies published hourly generation by a 2024-anchored rate (CAISO, ERCOT West/East, most ENTSO-E zones). Shape is observed either way. Default envelope ±15% of peakGW; 2σ of backfill annual peakGW where the archive is long enough.
 
-**T1b-live-domestic-anchored (26 regions, ±50% peakGW envelope).** Live feed plus a calibration rate sourced from a *domestic statistical agency* or modelled share-split of a national anchor — i.e., the rate's scope and the live feed's scope do not coincide. The 26 zones are: Germany's four TSO control areas — 50Hertz, Amprion, TenneT DE, TransnetBW — wind and solar each (eight); Italy's seven TERNA bidding zones — North, Centre-North, Centre-South, South, Sicily, Sardinia, Calabria — wind and solar each (fourteen, on TERNA bidding-zone live feeds with the rate from a national anchor split by zone-share); Netherlands wind/solar (TenneT live feed; rate modelled from the CBS national renewables share); Peru solar; and Colombia (XM SinerGox live hydro-spill via WireGuard Colombian egress; vertimientos daily series with bimodal seasonal shape). The ±50% envelope is empirical but was measured on a smaller cohort than it now covers: the post-B1 rerun on 2026-04-26 measured a P67 fractional residual of 0.50 across the four zones then in T1b (Italy-Sardinia, Italy-North-Zone, Netherlands, and the Baltic proxy), reflecting systematic anchor-scope offset that 2σ on the live series cannot capture. [`uncertainty.md`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/uncertainty.md) still records the envelope as that four-zone measurement; it has not been re-measured across all 26.
+**T1b-live-domestic-anchored (26 regions, ±50% peakGW envelope).** Live feed, but the rate comes from a domestic statistical agency or a modelled split of a national anchor — feed scope and rate scope do not match. The 26 are Germany’s four TSO areas (wind and solar; measured renewable redispatch from netztransparenz, fuel-split by BNetzA ratio), Italy’s seven TERNA bidding zones (wind and solar; national anchor split by zone share), Netherlands wind/solar, Peru solar, and Colombia (XM vertimientos). The ±50% envelope is a P67 residual measured on 26 April 2026 across the four zones then in T1b. It has not been re-measured on all 26.
 
-**T1c-live-neighbour-anchored (1 region, ±35.5% peakGW envelope).** Live feed plus a calibration rate *extrapolated from a neighbouring zone* (no domestic rate published). Switzerland uses Swissgrid's live curtailment feed multiplied by the Czech CEPS rate. The ±35.5% envelope is the empirical residual of Switzerland's reconstructed total against the Czech-rate-projected total over the post-B1 rerun window; it is wider than T1a but narrower than T1b because the neighbouring rate is a closer proxy than a domestic-stat-agency split, but still introduces cross-border generation-mix bias. T1c is a structural slot — additional zones may move into it as more domestic anchors are audited.
+**T1c-live-neighbour-anchored (1 region, ±35.5% peakGW envelope).** Live feed, rate borrowed from a neighbour. Switzerland: Swissgrid feed × Czech CEPS rate. Envelope is Switzerland’s residual against that Czech-rate projection.
 
-The ENTSO-E rate constants are tracked separately in [the ENTSO-E curtailment-rate audit](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/entsoe-rates.md). As of the 2026-04-24 audit, Germany, the Netherlands, Poland, and Greece have public 2024 anchors strong enough to set or revise loader rates; Spain, Portugal, Finland, Romania, Italy's bidding-zone split, Sweden, Hungary, Bulgaria, and the Baltic proxy remain explicitly labelled as placeholders until a national operator total or ENTSO-E A77 curtailed-renewable series is integrated.
+ENTSO-E zones that are still generation × rate are listed in [the rate audit](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/entsoe-rates.md). There is no ENTSO-E curtailed-renewable time series (A77 is plant outages, not curtailment). Measured European curtailment lives in national TSO feeds. Germany is on that path. Several other ENTSO-E rates remain placeholders.
 
-**T2-annual-calibrated (23 regions, ±20% peakGW envelope).** Set by `tier: "anchored"` in `src/lib/regions.ts` (resolved by `deriveTier` in `src/lib/uncertainty.ts`). Two different mechanics sit in this tier. *Annual-anchored flat-base* — seven regions: Austria APG, Russia Murmansk wind, four Chinese provincial hydro-flat regions (Hunan, Hubei, Guizhou, Chongqing) whose hydroelectric spill is reported annually but without hourly or diurnal resolution, and India Maharashtra (measured MSLDC monthly totals; daily energy only, no intraday shape claimed). *EIA-930 second-tier US balancing authorities* — sixteen regions: Southern Company, PacifiCorp West, PacifiCorp East, Public Service Colorado, Arizona Public Service, Salt River Project, Idaho Power, and Tucson Electric Power, wind and solar each. These multiply live EIA-930 hourly generation by an Ember/LBNL/IRP-anchored curtailment rate rather than the balancing authority's own curtailment register, which is why they sit in T2 despite running on a live feed (`docs/methodology/live-data-paths.md` Path B). Their diurnal shape is therefore real, not modelled — the flat-base description above applies only to the seven annual-anchored regions.
+**T2-annual-calibrated (23 regions, ±20% peakGW envelope).** `tier: "anchored"`. Seven annual-anchored regions with no hourly shape (Austria APG, Murmansk wind, four Chinese hydro provinces, Maharashtra MSLDC monthly totals). Sixteen EIA-930 second-tier US balancing authorities (eight BAs, wind and solar) whose hourly shape is live but whose rate is Ember/LBNL/IRP rather than the BA’s own register — Path B in `docs/methodology/live-data-paths.md`, which is why they are T2.
 
-**T3-modelled (249 regions, ±40% peakGW envelope).** A typical-shape profile (solar / wind / hydro-seasonal / mixed / overnight) scaled to a published annual anchor. Used where the annual total is confidently reported but no hourly upstream exists. Chinese provincial regions are the largest T3 block — 51 of the 249 — calibrated against NEA 2024 utilisation rates and public provincial generation data. The [China provincial methodology](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/china-provinces.md) carries the full audit and puts the bottom-up total at ~88.9 TWh/yr across 27 provinces (65.4 TWh for the original eight plus 23.5 TWh for the nineteen added in W2), which slightly *exceeds* the NEA-implied national total of ~84.7 TWh rather than falling short of it. The figures previously quoted here — 65.4 TWh/yr and ~77% of the NEA-implied national total — described the original eight provinces only. T3 also covers twelve named Peruvian plants, most of South Asia, Africa, the Middle East, Latin America outside Brazil/Atacama, and Hawaii. Ireland (Republic and Northern, four regions), South Africa (two) and Peru's three aggregate regions have since been promoted out of T3 onto live feeds — Ireland and South Africa to T1a, Peru to T1a (hydro, wind) and T1b (solar) — and are no longer reachability probes scaled to a published annual anchor; see [`docs/known-limitations.md`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/known-limitations.md) item 6 for the limitations that remain. Kenya's geothermal venting uses a specialised overnight-concentrated profile (§2.3).
+**T3-modelled (249 regions, ±40% peakGW envelope).** A typical shape (solar, wind, hydro-seasonal, mixed, overnight) scaled to a published annual anchor. China’s provincial block is the largest; the [China audit](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/china-provinces.md) puts the bottom-up total a little above the NEA-implied national figure. Also most of South Asia, Africa, the Middle East, Latin America outside Brazil/Atacama, Hawaii, and twelve named Peruvian plants. Ireland, South Africa, and Peru’s three national aggregates have since moved onto live feeds. Kenya geothermal uses the overnight profile in §2.3.
 
-The runtime classification is deterministic: `confidenceTier` is derived from `Region.tier` plus the loader's profile kind by [`src/lib/uncertainty.ts::deriveTier`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/src/lib/uncertainty.ts), and the live counts above are emitted by `scripts/tally-tiers.ts` so any reviewer can confirm them from the source repo.
+`confidenceTier` is derived from `Region.tier` by [`src/lib/uncertainty.ts::deriveTier`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/src/lib/uncertainty.ts).
 
-### 2.2 Fuel-mix attribution (fuelShare)
+### 2.2 Fuel-mix attribution
 
-Where a loader fetches multiple generation technologies, the per-region observation is stored together with a measured fuel-mix vector `fuelShare = { solar, wind, hydro }` derived from the ratio of observed wind to solar MWh over the same 30-day window. This is the preferred form of attribution because it uses actually observed dispatch data rather than a fixed assumption.
-
-For regions with only one published technology feed (e.g., ENTSO-E Finland wind-only; Cyprus solar-only), a single-kind attribution is used. For regions where no technology breakdown is published but the generation mix is known from annual reports (e.g., Peru: 70% hydro / 20% solar / 10% wind), a fixed published-ratio attribution is applied.
-
-This mechanism materially corrects bucketing errors that a uniform assumption would introduce. For example, Brazilian sub-state Ceará observes approximately 77% solar / 23% wind of its curtailment volume (ONS 2025), rather than the 100% wind that the region's historical reputation would suggest.
+Where a loader sees more than one technology, `fuelShare = { solar, wind, hydro }` is the observed MWh split over the same 30-day window. Single-technology feeds stay single-kind. Where only an annual mix is published (Peru 70/20/10 hydro/solar/wind), that ratio is used. Ceará, for example, is about 77% solar / 23% wind of curtailment volume (ONS 2025), not the 100% wind the region’s reputation would suggest.
 
 ### 2.3 Seasonal corrections
 
-Two renewable classes have strong sub-annual seasonality that a flat annual rate misrepresents:
+**Hydro spill** for Sichuan, Iceland, Paraguay, Ethiopia, and European Russia uses monthly-share vectors that sum to 1.0, so a full-year integral recovers the published annual total. Sichuan peaks June–August (~52%); Paraguay peaks December–February.
 
-**Hydroelectric spill** occurs during wet-season inflow exceeding reservoir and dispatch capacity. For five regions (Sichuan, Iceland, Paraguay, Ethiopia, European Russia), monthly-share vectors summing to 1.0 are derived from published hydrological reports and applied as a time-varying multiplier against the 30-day rolling window. The multiplier is the mean of the current 30 days' daily monthly shares, multiplied by 12 (so that a full-year integration recovers the published annual total). For Sichuan, this places approximately 52% of curtailment in June–August; for Paraguay (Southern Hemisphere) the peak shifts to December–February.
+**Kenya geothermal venting** is a raised-cosine bump centred on UTC 23:30 (EPRA’s 0000–0500 local window, UTC+3), scaled by EPRA’s monthly totals.
 
-**Geothermal overnight venting** in Kenya is modelled as a raised-cosine bump centred on UTC 23:30 with half-width 2.5 hours, producing zero curtailment during daylight hours and concentrated output between UTC 21:00 and 02:00. This directly reflects EPRA's reported curtailment window of 0000–0500 local time (UTC+3) for Olkaria and Menengai geothermal fields. A monthly seasonal factor scales the overall magnitude, anchored to EPRA's 117.5 GWh July 2024 peak and 6.6 GWh June 2025 trough.
-
-These treatments are specific to the physical phenomena cited, not generic. Other renewables (solar, wind) are represented by their diurnal shape alone; their weekly-to-annual variation emerges naturally from the 30-day rolling window of actual observed generation.
+Solar and wind take their shape from the 30-day window. No extra seasonal layer.
 
 ## 3. Comparison basis: Bitcoin network consumption
 
-The numerator of the headline ratio is annualised curtailment in TWh_e. The denominator is current Bitcoin network electricity consumption, computed as:
+Headline numerator: annualised curtailment, TWh. Denominator:
 
-`Network (TWh/yr) = hashrate (EH/s) × J/TH efficiency × 365.25 × 24 × 3600 × 10^-9`
+`Network (TWh/yr) = hashrate (EH/s) × J/TH × 365.25 × 24 × 3600 × 10^-9`
 
-The hashrate value is obtained from mempool.space's public 24-hour rolling average, refreshed hourly. The efficiency assumption is **16 J/TH**, the fleet-average figure implied by the Cambridge Centre for Alternative Finance *Cambridge Digital Mining Industry Report* (CCAF, 2025) and consistent with the Cambridge Bitcoin Electricity Consumption Index (CBECI) 2025 mid-estimate of approximately 138 TWh/yr at roughly 1,000 EH/s. The dashboard also exposes a secondary reading at 28.5 J/TH (field-weighted, CoinMetrics 2025) so that users can observe the efficiency-assumption sensitivity directly.
+Hashrate is mempool.space’s public 24-hour average. Efficiency is **16 J/TH**, the fleet average implied by CCAF 2025 / CBECI’s mid-estimate (~138 TWh/yr near 1,000 EH/s). A second reading at 28.5 J/TH (CoinMetrics 2025, field-weighted) is on the dashboard so the sensitivity is visible.
 
-No claim is made that mempool.space's hashrate equals the "true" current hashrate; all hashrate measurements are proxies observing share chains, and they diverge by low-single-digit percentages across sources. The 24-hour rolling average was selected over instantaneous readings to smooth block-timing noise.
+Hashrate sources disagree by low-single-digit percent. The 24-hour average is used to damp block-timing noise. CBECI’s own API is recaptcha-gated, which is why the loader uses mempool.space.
 
 ## 4. Dashboard modes
 
-Two display modes are provided:
+**30-day average** (default) — 24 hourly GW values, each the mean of that UTC hour across 30 days. Structural shape, not “today”.
 
-**30-day average** (default) — a trailing time-of-day average over 30 days of hourly observations, expressed as 24 hourly GW values. Each UTC hour is the mean of that hour across the window. This mode de-noises dispatch variability and reveals structural diurnal shape. It does not represent the most recent day.
-
-**Last 24h** — the most recent complete UTC day of hourly observations for each region where the upstream feed supports it. Regions without a recoverable 24-hour raw sequence (T3-modelled regions by definition; some T1 ENTSO-E zones with sparse reporting in practice) retain their 30-day profile in this mode to preserve global completeness. This mode is noisier than the 30-day mode and reflects recent grid-specific events (wind lulls, transmission maintenance, holiday demand patterns).
+**Last 24h** — the latest complete UTC day where the feed supports it. T3 regions, and some sparse T1 zones, keep the 30-day profile so the globe stays complete.
 
 ## 5. Known limitations
 
-The following limitations are inherent to the available upstream data and should be considered by any reader interpreting the ratio:
+1. **Self-curtailment is invisible.** Owners who throttle in negative-price hours without an operator instruction do not appear. True curtailment is higher than the sum of published dispatch-down.
 
-1. **Self-curtailment is invisible.** Asset owners throttling their own output during negative-price hours do not appear in dispatch-down statistics. True curtailment is therefore systematically higher than the sum of system-operator figures.
+2. **Geographic completeness.** Coverage is 459 regions. Parts of Central Africa, Central Asia beyond Kazakhstan, and Russian renewables beyond the tracked hydro/wind anchors are estimated. Remaining gaps are listed, not invented. See [`docs/known-limitations.md`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/known-limitations.md).
 
-2. **Geographic completeness.** Coverage is 459 regions. Low-dispatch-data regions (parts of Central Africa, Central Asia beyond Kazakhstan, and Russian renewable-curtailment regions beyond the tracked hydro/wind anchors) remain estimated rather than observed. Colombia is included via the XM relay path and is labelled with its live-domestic-anchored uncertainty tier. Remaining structural gaps are documented rather than filled with fiction.
+3. **Rate-proxy drift.** Calibrated rates use a single published year. A weird 2024 (drought, unusual wind) will not match 2025 volumes. Envelopes (±15% / ±50% / ±35.5% of peakGW) cover that; they do not remove it.
 
-3. **Rate-proxy uncertainty (T1 calibrated-proxy regions).** Calibrated rates are anchored to a single year's published total. Where 2024 was anomalous (drought-driven hydro scarcity, unusual wind patterns), 2025's observed volumes may diverge from the implied rate. The rate is reviewed annually. The per-sub-tier envelopes (±15% of `peakGW` for T1a, ±50% for T1b, ±35.5% for T1c) cover this drift but do not eliminate it; T1b/T1c envelopes are larger because the rate's jurisdiction does not match the live feed's jurisdiction (see §2.1).
+4. **T3 shape.** Typical-shape profiles match annual magnitude, not local transmission events. Filter on `confidenceTier` if the analysis needs measured hours only. Some modelled annuals are far from later official floors — Rajasthan is the current example (CEA×Ember ~6 TWh/yr on the dashboard; RRVPNL PDFs extract 0.052 TWh for Jan–May 2026).
 
-4. **Profile-shape assumption (T3-modelled regions).** T3 fallbacks use typical-shape profiles for the region's dominant technology. These reproduce the correct magnitude at annual scale but do not capture local transmission events or weather anomalies. The ±40% peakGW envelope is wider than T1/T2 precisely because of the shape-assumption layer. T3 regions are flagged visually and labelled in hotspot tooltips, and `confidenceTier` lets any downstream consumer filter them out if their analysis requires only measured hourly data.
+5. **ASIC efficiency.** The ratio at 16 J/TH is about 78% higher than at 28.5 J/TH. Both are shown.
 
-5. **ASIC efficiency sensitivity.** The headline ratio at 16 J/TH is higher than at 28.5 J/TH by approximately 78%, because the Bitcoin network denominator scales linearly with the efficiency assumption. Both readings are exposed in the UI.
+6. **Denominator.** mempool.space vs CBECI hashrate usually agree within a few percent. A more efficient fleet than 16 J/TH raises the displayed ratio.
 
-6. **Bitcoin-network denominator methodology.** mempool.space is used because CBECI's API is not server-side accessible in the current build environment; the two sources agree within 3% as of this writing. The 16 J/TH efficiency reflects 2024–2025 fleet averages; the 2026 and 2027 roadmap implies lower values, which would raise the displayed ratio proportionally.
-
-7. **30-day window boundary effects.** Months with strong mid-window transitions (e.g., monsoon onset, seasonal demand changes) produce a representative rather than current figure. The explicit "Last 24h" mode is provided for users who prefer recent-day sensitivity.
+7. **30-day window.** A monsoon onset or a seasonal demand step in the middle of the window produces a representative figure, not a current one. Use Last 24h for recent-day sensitivity.
 
 ## 6. References
 
-- **Brattle Group** (2024). *Quantifying Curtailment in the US ISO Markets*. Brattle Energy Policy Review.
-- **BPA** (2024). *Oversupply Management Protocol Implementation Report 2024*. Bonneville Power Administration.
 - **BNetzA** (2025). *Monitoringbericht 2025: Preliminary 2024 Figures*. Bundesnetzagentur / Bundeskartellamt.
-- **Cambridge Centre for Alternative Finance** (2025). *Cambridge Digital Mining Industry Report: Global Operations, Sentiment, and Energy Use*. CCAF, University of Cambridge. https://www.jbs.cam.ac.uk/faculty-research/centres/alternative-finance/
+- **Cambridge Centre for Alternative Finance** (2025). *Cambridge Digital Mining Industry Report*. https://www.jbs.cam.ac.uk/faculty-research/centres/alternative-finance/
 - **Cambridge Blockchain Network Sustainability Index** (2025). *CBECI dashboard*. https://ccaf.io/cbnsi/cbeci
-- **CBS / TenneT** (2025). *Renewables 2024 Report*. Statistics Netherlands / Transmission System Operator.
 - **CoinMetrics** (2025). *Field-Weighted ASIC Efficiency Estimate*. https://coinmetrics.io/
-- **Coordinador Eléctrico Nacional Chile** (2025). *Reducciones de Energía Eólica, Solar e Hidráulica en el SEN, Monthly Workbooks*. https://www.coordinador.cl/
-- **EIA** (2025). *Hourly Electric Grid Monitor, fuel-type data API*. US Energy Information Administration. https://api.eia.gov/v2/electricity/rto/fuel-type-data/data/
-- **EirGrid** (2024). *Annual Report 2024 — Dispatch-Down Statistics*. https://www.eirgridgroup.com/
+- **EIA** (2025). *Hourly Electric Grid Monitor, fuel-type data API*. https://api.eia.gov/v2/electricity/rto/fuel-type-data/data/
+- **Elexon** (2025). *BMRS `AGWS`*. https://data.elexon.co.uk/bmrs/api/v1/datasets/AGWS
 - **Ember** (2025). *Global Electricity Review 2025*. https://ember-energy.org/
-- **Ember India** (2025). *India Solar Curtailment Monitor, May–December 2025*.
-- **ENTSO-E** (2025). *Transparency Platform, generation-per-type and redispatch datasets*. https://transparency.entsoe.eu/
-- **EPRA Kenya** (2025). *Energy & Petroleum Statistics Report, Year Ended June 2025*. Energy and Petroleum Regulatory Authority.
-- **Eskom** (2025). *Medium-Term System Adequacy Outlook October 2025*.
-- **EVN / NLDC Vietnam** (2024). *Renewable Energy Curtailment Reports, Provincial Breakdown*.
-- **IEA** (2025). *Renewables 2025*. International Energy Agency. https://www.iea.org/reports/renewables-2025/renewable-electricity
-- **International Hydropower Association** (2024). *Country Reservoir Hydrology Reports*.
-- **ISO-NE** (2024). *2024 Regional Electricity Outlook*.
-- **Elexon** (2025). *Balancing Mechanism Reporting Service (BMRS), `AGWS` dataset*. https://data.elexon.co.uk/bmrs/api/v1/datasets/AGWS
-- **MISO** (2024). *State of the Market Report 2024*. Potomac Economics (Independent Market Monitor).
-- **NREA Egypt** (2025). *FY2024/25 Annual Renewable Energy Report*. New and Renewable Energy Authority.
-- **NYISO** (2024). *Power Trends 2024; Gold Book 2024*.
-- **ONS Brazil** (2025). *Constrained-off wind and solar open-data series*. https://www.ons.org.br/
-- **ONS / ANEEL Brazil NE audit** (2026). *Brazil NE state-code clustering citation chain*. https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#brazil-ne
-- **PJM** (2024). *2024 Renewable Integration Study*; Monitoring Analytics *State of the Market Report*.
-- **Potomac Economics / ERCOT audit** (2026). *ERCOT West/East split limitation note*. https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#ercot
-- **REE** (2024). *Informe del Sistema Eléctrico 2024*. Red Eléctrica de España.
-- **RTE** (2024). *Bilan Électrique 2024*. Réseau de Transport d'Électricité.
-- **SAREM** (2025). *South African Renewable Energy Masterplan 2025*.
-- **SPP** (2024). *State of the Market Report 2024*. Monitoring Analytics.
-- **Terna** (2024). *Rapporto Mensile sul Sistema Elettrico*. Terna S.p.A.
+- **ENTSO-E** (2025). *Transparency Platform*. https://transparency.entsoe.eu/
+- **EPRA Kenya** (2025). *Energy & Petroleum Statistics Report, Year Ended June 2025*.
+- **IEA** (2025). *Renewables 2025*. https://www.iea.org/reports/renewables-2025/renewable-electricity
+- **ONS Brazil** (2025). Constrained-off wind and solar series. https://www.ons.org.br/
+- **ONS / ANEEL Brazil NE audit** (2026). https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#brazil-ne
+- **Potomac Economics / ERCOT audit** (2026). https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/flare-ercot-brazil.md#ercot
 
 ## 7. Versioning and reproducibility
 
-The dashboard source code and this methodology are versioned at https://github.com/honeybeesquad/every-last-joule-dashboard. Every loader is pure with respect to its upstream data inputs, and cached "last-known-good" snapshots are committed for each region so that any reader can reproduce the current displayed figure from a clean build with `npm install && npm run build`. Per-region annual TWh anchors, calibrated rates, fuel-mix overrides, and seasonal multipliers are all source-visible in `src/data/` and `src/lib/`.
+Source: https://github.com/honeybeesquad/every-last-joule-dashboard. Loaders are deterministic given their upstream response. Last-good snapshots are committed, so `npm install && npm run build` reproduces the displayed figure when an upstream is down. Rates, anchors, fuel-mix overrides, and seasonal multipliers are in `src/data/` and `src/lib/`.
+
+The Zenodo v1.3.2 deposit (DOI [10.5281/zenodo.20570864](https://doi.org/10.5281/zenodo.20570864)) is the last archived cut that still included flare. The live site and this page describe HEAD: 459 regions, renewables only. Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to the latest mint.
 
 ## 8. Recent corrections
 
@@ -164,6 +137,6 @@ A peer review on 2026-04-25 surfaced a small set of corrections, landed 2026-04-
 
 ---
 
-*This methodology accompanies* Every Last Joule: How Bitcoin Meets Energy Where It Is *(Collins, forthcoming). Corrections and source suggestions: GitHub issues.*
+*This page is the public methodology for* [everylastjoule.com](https://everylastjoule.com). *The companion essay is* [Every Last Joule: Bitcoin and curtailed renewable electricity](./paper). *Corrections: GitHub issues.*
 
 </div>

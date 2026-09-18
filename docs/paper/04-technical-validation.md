@@ -3,10 +3,12 @@
 _Scientific Data Data Descriptor · Section 4 · Target length 1000–2000
 words._
 
-Synthesis Data Descriptors live or die in this section. This section
-documents how the dataset's reconstruction is triangulated against
-independent public anchors, quantifies the gaps, and states where
-the gaps come from and how they will be closed in future releases.
+How the reconstruction is checked against public annuals, where it
+diverges, and what that divergence is. The scatter (Figure 2) is
+still the 23-pair backfill exercise; live HEAD is 459 regions and
+does not include flare. Germany's *live* path is now measured
+netztransparenz redispatch — the `germany` row in Figure 2 is the
+older rate-model backfill, not that live path.
 
 ## 4.1 Validation strategy
 
@@ -144,76 +146,25 @@ The v1 recalibration roadmap is five concrete items listed in
 
 ## 4.5 Tier coverage visualisation (Figure 4)
 
-> **Vintage note (added 2026-09-11).** The counts in this section, like
-> the rest of the paper body and the committed
-> `docs/figures/figure4_coverage_map.{png,pdf}`, describe the 384-region
-> v1.3.1 deposit the manuscript cites
-> (`10.5281/zenodo.20136284`, minted 2026-05-12). Repository HEAD has
-> moved past it: `npm run tally:tiers` on 2026-09-11 reports **T1a 160,
-> T1b 26, T1c 1, T2 23, T3 249, total 459**, matching
-> `scripts/ci/golden/tier-counts.json`. In particular the **T2 flare
-> bucket below is empty on HEAD** — associated-gas flaring was purged
-> from the dataset on 2026-06-18 (#242, renewables-only), and no region
-> carries a flare tier or kind — and T2 is no longer only flat-base
-> proxies: 16 of the 23 current T2 regions are EIA-930 second-tier
-> balancing authorities running on a live hourly feed with an externally
-> anchored rate. The enumerations are left at the v1.3.1 vintage rather
-> than half-swept, so that this section, §1, §2, the figure captions and
-> the rendered figure keep telling the same story; the whole paper moves
-> together at the next version bump and Zenodo mint.
+Figure 4 is the geographic answer to “where is this strong?”. HEAD
+counts, from `npm run tally:tiers`:
 
-Figure 4 answers the single-glance question "where is the dataset
-strong and where is it weak?" at geographic scale. Each of the 384
-regions renders as a tier-coloured dot:
+- **T1a 160, cyan.** Live feed + own-jurisdiction rate. Dense over
+  North America, ENTSO-E Europe, GB, Nordics, AEMO, ONS Brazil,
+  Japan’s ten TSO areas. India SLDCs are *not* in this bucket.
+- **T1b 26, cyan.** Germany’s four TSOs × wind/solar, Italy’s seven
+  TERNA zones × wind/solar, Netherlands, Peru solar, Colombia.
+- **T1c 1, cyan.** Switzerland.
+- **T2 23, amber.** Seven annual flat-base regions plus sixteen
+  EIA-930 second-tier BAs (live shape, external rate).
+- **T3 249, terracotta.** Typical shape on a published annual.
+  China, most of Africa, South Asia, Middle East, Latin America
+  outside Brazil/Atacama.
 
-- **T1a-live-tso (149 regions, cyan).** Live hourly feed + own-
-  jurisdiction calibration rate, split per-fuel (wind/solar)
-  where the upstream feed exposes generation by source. Dense
-  over North America (EIA + ERCOT + CAISO sub-zones, IESO,
-  AESO), Europe (ENTSO-E zones split per-fuel; Elexon GB
-  per-fuel; RTE; Energinet; Elia; Statnett Norway per-fuel; Nord
-  Pool), the Nordics, Australia (AEMO five
-  states + AEMO WEM/WA-SWIS), Brazil (eleven ONS states),
-  Turkey (EPİAŞ per-fuel), New Zealand (EMI per-fuel), Chile
-  (CEN), Uruguay (ADME), seven Japan utilities, and six India
-  state SLDCs. The EIA + ENTSO-E + AEMO + ONS quartet is the
-  dataset's strongest spine.
-- **T1b-live-domestic-anchored (9 regions, cyan).** Italy-
-  Sardinia (wind+solar), Italy-North-Zone (wind+solar),
-  Italy-Sicily (wind+solar), Netherlands (wind+solar), and
-  Colombia (XM API) — live feeds paired with a
-  domestic-stat-agency, modelled-share, or national-anchor rate;
-  ±50% empirical envelope.
-- **T1c-live-neighbour-anchored (1 region, cyan).** Switzerland —
-  Swissgrid live feed against the Czech CEPS rate as a neighbouring
-  proxy; ±35.5% empirical envelope.
-- **T2-annual-calibrated (6 regions, amber).** Austria APG,
-  Russia Murmansk wind, and four Chinese hydro provinces (Hunan,
-  Hubei, Guizhou, Chongqing) — flat-base proxies built on a
-  published annual without diurnal modelling.
-- **T2 flare (8 regions, brown square).** Permian, West Siberia,
-  South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-
-  Nenets, Russia East Siberia — correctly flat 24/7 baseload.
-- **T3-modelled (211 regions, terracotta).** Static annual anchors
-  (Ember, IRENA, regulator reports) combined with a typical diurnal
-  or monthly-seasonal shape. Covers Ireland (Republic + Northern,
-  EirGrid reachability probe scaled to the SONI/EirGrid 2024
-  all-island anchor), Peru and South Africa (Eskom / COES
-  reachability probes scaled to published annuals), most of
-  South Asia, Africa, the Middle East outside flare, Latin America
-  outside Brazil/Atacama, 27 Chinese provinces, and the
-  Hawaii islands.
-
-Tier assignment is deterministic from `Region.tier` alone (code-level
-truth: `src/lib/uncertainty.ts::deriveTier`, which maps the five
-`RegionTier` values one-to-one onto T1a/T1b/T1c/T2/T3 and throws on
-anything else). The loader `profileKind` selects the modelled shape for
-T3 regions and is recorded in
-`scripts/lib/tier-resolution.ts::STATIC_PROFILE_KIND`, but it has not
-been an input to tier derivation since #88 (2026-05-10).
-Live counts are emitted by `scripts/tally-tiers.ts`, which any
-reviewer can run to confirm the figure values from the source of
-truth in `src/lib/regions.ts`.
+No flare bucket. Committed `docs/figures/figure4_coverage_map.*`
+still shows the v1.3 flare palette and must be regenerated before
+submission. `deriveTier` maps the five `RegionTier` values onto
+T1a/T1b/T1c/T2/T3 and throws on anything else.
 
 ## 4.6 Seven-year temporal trace (Figure 3)
 
@@ -236,63 +187,41 @@ The trace corroborates three methodology points:
    diagnosis for the `germany` −59% anchor gap.
 3. **Post-2022 super-linear growth.** The 30-day rolling mean
    grows faster than solar capacity additions alone would predict,
-   supporting the paper's headline empirical claim that curtailment
-   scales super-linearly with solar deployment in
-   transmission-constrained systems.
+   consistent with curtailment growing faster than capacity in
+   transmission-constrained systems — a claim about the *backfilled*
+   ENTSO-E+EIA subset, not about all 459 regions.
 
 ## 4.7 Top-20 timeseries (Figure 5)
 
 Figure 5 ranks the 29 backfilled regions by mean annual TWh
-across 2020–2026 and plots the top 20 as a 4×5 facet grid. The
-narrative payoff — the paper's "curtailment is concentrated"
-thesis — is visible in the data: the top 3 regions (Germany,
-Iberia, MISO) account for ~51% of the combined top-20 total.
-Every panel is a live-feed sub-tier in v0.5 (cyan) — predominantly
-T1a-live-tso, with Italy-Sardinia, Italy-North-Zone, and Switzerland
-sitting at T1b/T1c where their bidding-zone calibration provenance
-applies. Tier-colour infrastructure is in place for v1
-rate-recalibrations that may promote T2 regions into the top tier.
+across 2020–2026 and plots the top 20 as a 4×5 facet grid. In
+that subset the top 3 (Germany, Iberia, MISO) account for ~51%
+of the combined top-20 total. Live HEAD is Brazil- and
+US-ISO-heavy; Figure 5 has not been regenerated against that
+mix. Every panel is a live-feed sub-tier (cyan) — mostly T1a,
+with Italy-Sardinia, Italy-North-Zone, and Switzerland at
+T1b/T1c.
 
 ## 4.8 Current-snapshot validation (Figure 1)
 
-Figure 1 is the geographic opening shot. 110 of 384 regions have
-a current peak-GW reading; the remainder are static regions
-without a live fetch yet. Dot area scales with √peakGW so a 10 GW
-hotspot is roughly 3× the visible area of a 1 GW region. The
-top-8 regions by peak GW at render time are labelled; the
-Brazilian wind-and-solar cluster (Minas Gerais in the Southeast
-plus the Northeastern states Bahia, Rio Grande do Norte, and
-Piauí) dominates the current picture, followed by the US MISO
-footprint, Vietnam, Germany, and north India. The specific
-GW values are snapshot-dependent and refresh each dashboard build.
-
-The 274-region gap between `src/lib/regions.ts` (384) and the
-snapshot-count (110) is reported honestly on the figure: those
-regions appear at minimum-size so the map shows full geographic
-coverage without overclaiming live data.
+Figure 1 is a geographic snapshot of `regions.ts` joined to the
+latest payloads. Dot area ∝ √peakGW. Live HEAD is 459 regions;
+the committed figure still shows the 384-region flare-era layout
+and must be regenerated. On 18 September 2026 the live-tier
+volume was led by Brazil (Rio Grande do Norte wind, Bahia wind,
+Minas Gerais solar), US ISOs (MISO, SPP, ERCOT West), Colombia
+hydro, and Spain. T3 Sichuan hydro is larger than any live-tier
+region and is modelled, not measured.
 
 ## 4.9 What the validation does not cover
 
-Explicitly out of scope for v0.5 technical validation:
-
-- **Hour-level reconstruction accuracy.** Annual totals are
-  validated; hour-level accuracy is assumed constant within a
-  year (piecewise-constant rate). Where sub-annual reality
-  diverges materially (e.g., Q3-concentrated CAISO solar
-  curtailment), it is a known approximation, not a published
-  bound.
-- **Pre-2020 reconstruction.** The backfill window starts
-  2020-01-01; pre-2020 reconstructions would require a
-  different rate regime (pre-IRA, pre-RePowerEU) and are
-  deferred to a v1 "historical-deep" sprint.
-- **Self-curtailment.** Asset owners throttling output in
-  response to negative prices do not appear in dispatch-down
-  statistics. Book research places the true total at 50–70% of
-  the invisible figure, but this is a blind-spot disclosure
-  (§5 Usage Notes), not a correction applied to the published
-  data.
-
-All three are named disclosures, not silent assumptions.
+- **Hour-level reconstruction.** Annuals are checked; hour-level
+  accuracy is assumed constant within a year. Q3-heavy CAISO
+  solar is a known approximation, not a published bound.
+- **Pre-2020.** The backfill starts 2020-01-01.
+- **Self-curtailment.** Owner throttling at negative prices does
+  not appear in dispatch-down statistics. The published numbers
+  are a lower bound on visible waste (§5).
 
 ## Cross-references
 
