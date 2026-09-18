@@ -7,10 +7,11 @@ Code is MIT; dataset content is CC-BY-4.0 (`dataset/LICENSE`).
 
 - **Repository:**
   https://github.com/honeybeesquad/every-last-joule-dashboard
-- **Tagged release:** `v1.4.0` (version DOI pending the GitHub
-  release; concept DOI `10.5281/zenodo.19835411`) — 459 regions,
-  renewables only. v1.3.2 (`10.5281/zenodo.20570864`) is the last
-  mint that included flare.
+- **Tagged release:** `v1.4.0` (version DOI
+  `10.5281/zenodo.22837934`; concept DOI
+  `10.5281/zenodo.19835411`) — 459 regions, renewables only.
+  v1.3.2 (`10.5281/zenodo.20570864`) is the last mint that included
+  flare.
 - **Languages:** TypeScript (Observable Framework loaders);
   Python 3.12+ (backfill, validation, figures).
 - **Key dependencies:** Observable Framework; `matplotlib ≥ 3.10`

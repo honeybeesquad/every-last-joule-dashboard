@@ -16,7 +16,7 @@
 
 **Dashboard:** [everylastjoule.com](https://everylastjoule.com) · **Methodology:** [everylastjoule.com/methodology](https://everylastjoule.com/methodology)
 
-**Dataset:** concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) (always latest). This paper describes **v1.4.0** (459 regions, renewables only). The version DOI is minted when the GitHub release publishes. v1.3.2 still includes flare.
+**Dataset:** concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) (always latest). This paper describes **v1.4.0** ([10.5281/zenodo.22837934](https://doi.org/10.5281/zenodo.22837934); 459 regions, renewables only). v1.3.2 still includes flare.
 
 </header>
 

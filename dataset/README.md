@@ -1,6 +1,6 @@
 # Every Last Joule — Curtailment Dataset
 
-**Version:** v1.4.0 · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI (this version):** pending the `v1.4.0` GitHub release · **DOI (always-latest):** [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411)
+**Version:** v1.4.0 · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI (this version):** [10.5281/zenodo.22837934](https://doi.org/10.5281/zenodo.22837934) · **DOI (always-latest):** [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411)
 
 A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment across **459 regions** in 191 countries and territories (solar, wind, hydro, geothermal). Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
 
@@ -59,7 +59,7 @@ print(snap["peakGW"], snap["sourceStatus"], snap["lastUpdated"])
 
 If you use this dataset in academic work, please cite:
 
-> Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-electricity curtailment across 459 regions. Dataset version v1.4.0. Concept DOI: [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411). The v1.4.0 version DOI is minted when the GitHub release publishes.
+> Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-electricity curtailment across 459 regions. Dataset version v1.4.0. https://doi.org/10.5281/zenodo.22837934
 
 Machine-readable citation metadata in [`CITATION.cff`](CITATION.cff).
 
