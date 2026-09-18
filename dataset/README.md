@@ -1,10 +1,10 @@
 # Every Last Joule — Curtailment Dataset
 
-**Version:** v1.3.2 · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI (this version):** [10.5281/zenodo.20570864](https://doi.org/10.5281/zenodo.20570864) · **DOI (always-latest):** [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411)
+**Version:** v1.4.0 · **Licence (data):** CC-BY-4.0 · **Licence (code):** MIT (see repo root) · **DOI (this version):** pending the `v1.4.0` GitHub release · **DOI (always-latest):** [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411)
 
-A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment and associated-gas flaring, covering 385 regions across 6 continents. Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
+A versioned, reproducible synthesis dataset of hourly renewable-electricity curtailment across **459 regions** in 191 countries and territories (solar, wind, hydro, geothermal). Built to support the Bitcoin-curtailment-matching hypothesis (the "Every Last Joule" thesis) but published as a general-purpose open resource.
 
-> **Note: repository HEAD has moved past this pinned v1.3.2 description.** Associated-gas flaring was purged from the dataset on 2026-06-18 (renewables-only pivot); `src/lib/regions.ts` on `main` now defines 459 regions (solar/wind/hydro curtailment only, no flaring). The figures above describe the archived v1.3.2 deposit this page is versioned to; they will move to 459 (and this note will come out) at the next version bump and Zenodo mint.
+Associated-gas flaring was in versions through v1.3.2 ([10.5281/zenodo.20570864](https://doi.org/10.5281/zenodo.20570864)) and was removed on 18 June 2026. It is not in this cut.
 
 ## What's in it
 
@@ -16,7 +16,7 @@ A versioned, reproducible synthesis dataset of hourly renewable-electricity curt
 - **`data/historical/figure2_validation_scatter.csv`** — 23 region-year anchor pairs with published TSO / ISO / IMM / SoM / GGFR / IRENA / Ember annual curtailment totals vs. our backfill reconstruction. Machine-readable evidence table for Figure 2.
 - **`data/historical/figure3_daily_global.csv`** — daily global sum 2020-01-01 → 2026-04-24 (2,306 days), stacked by source platform. Feeds Figure 3.
 - **`docs/methodology/*.md`** — per-source audit trails. Every calibration rate has a provenance document.
-- **`docs/validation/<region>.md`** — 130 per-region triangulation documents (plus a directory README and a `_template.md` scaffold) against published TSO / ISO / IMM / SoM / GGFR / IRENA / Ember annual reports, with commit-grade diagnostic prose per region.
+- **`docs/validation/<region>.md`** — one triangulation note per canonical region (plus a directory README and `_template.md`) against published TSO / ISO / IMM / SoM / IRENA / Ember annuals.
 - **`docs/figures/figure{1..5}_*.{pdf,png}`** — the five publication-grade figures committed in the repository alongside the regeneration scripts in `scripts/validation/`.
 - **`docs/paper/*.md`** — draft Scientific Data Data Descriptor body sections and journal-ready figure captions.
 - **`docs/known-limitations.md`** — running ledger of every caveat we surface in the paper.
@@ -59,7 +59,7 @@ print(snap["peakGW"], snap["sourceStatus"], snap["lastUpdated"])
 
 If you use this dataset in academic work, please cite:
 
-> Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-electricity curtailment and associated-gas flaring across 385 regions. _Scientific Data_ (in review). Dataset DOI: [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411).
+> Collins, S. (2026). Every Last Joule: an hourly synthesis of renewable-electricity curtailment across 459 regions. Dataset version v1.4.0. Concept DOI: [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411). The v1.4.0 version DOI is minted when the GitHub release publishes.
 
 Machine-readable citation metadata in [`CITATION.cff`](CITATION.cff).
 
@@ -112,9 +112,9 @@ Regenerate for a new release: `npm run version-history` (run after version bump,
 ## Scope and limitations
 
 The short version:
-- This is a **synthesis** dataset. Most regions mix live upstream feeds (ENTSO-E, EIA, AEMO NEMWeb, Elexon BMRS, ONS Brazil, and others) with published annual calibration (IRENA, Ember, GGFR, TSO annual reports).
-- **In the pinned v1.3.2 deposit**, <!-- tier-counts:ignore --> the 385 regions break down by confidence tier as **158 T1-live-TSO** (148 T1a own-jurisdiction, 9 T1b domestic-anchored, 1 T1c neighbour-anchored), **6 T2-annual-calibrated** (flat-base statics on a published annual), and **213 T3-modelled** (typical diurnal/seasonal/mixed/overnight shape scaled to a published annual anchor — Ireland (Republic and Northern), Peru, South Africa, Chinese provinces, most of South Asia, Africa, Middle East, Latin America outside Brazil/Atacama, Hawaii, three Japan regions whose live feeds are unavailable or non-solar). Note that those three figures sum to 377, not 385: the remainder is the separately-coloured T2-flare bucket, which this sentence has never named. `STATUS.md` records the adjacent 2026-06-10 golden as `T1a=149, T1b=10, T1c=1, T2=6, T2-flare=8, T3=211 (total 385)`, and the paper's Technical Validation §4.5 enumerates the same eight flare regions.
-- **On repository HEAD** (per the note at the top of this page), `npm run tally:tiers` reports **T1a 160, T1b 26, T1c 1, T2 23, T3 249 — total 459**, matching `scripts/ci/golden/tier-counts.json`. Two differences of substance, not just of count: there is no flare bucket at all, and T2 is no longer only flat-base statics — 16 of the 23 are EIA-930 second-tier US balancing authorities whose hourly shape is a live feed and whose rate is externally anchored, the other 7 being the annual-anchored flat-base regions. These figures move into the bold numbers above at the next version bump and Zenodo mint.
+- This is a **synthesis** dataset. Most regions mix live upstream feeds (ENTSO-E, EIA, AEMO NEMWeb, Elexon BMRS, ONS Brazil, and others) with published annual calibration (IRENA, Ember, TSO annual reports).
+- **v1.4.0** (`npm run tally:tiers`): **T1a 160, T1b 26, T1c 1, T2 23, T3 249 — total 459**, matching `scripts/ci/golden/tier-counts.json`. No flare bucket. T2 is seven annual-anchored flats plus sixteen EIA-930 second-tier US balancing authorities (live shape, external rate).
+- **In the archived v1.3.2 deposit**, <!-- tier-counts:ignore --> the 385 regions break down by confidence tier as **158 T1-live-TSO** (148 T1a own-jurisdiction, 9 T1b domestic-anchored, 1 T1c neighbour-anchored), **6 T2-annual-calibrated** (flat-base statics on a published annual), and **213 T3-modelled**. Those three figures sum to 377, not 385: the remainder is the T2-flare bucket, which that sentence never named. `STATUS.md` records the adjacent 2026-06-10 golden as `T1a=149, T1b=10, T1c=1, T2=6, T2-flare=8, T3=211 (total 385)`.
 - Every region carries `confidenceTier` so consumers can filter by precision; see [`../docs/methodology/uncertainty.md`](../docs/methodology/uncertainty.md), [`../docs/methodology/tier-classification-guide.md`](../docs/methodology/tier-classification-guide.md) and [`../docs/known-limitations.md`](../docs/known-limitations.md).
 - Some jurisdictions (Mexico CENACE, much of sub-Saharan Africa) have no public hourly source and are documented as **structural gaps** rather than filled with fiction.
 

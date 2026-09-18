@@ -26,7 +26,8 @@
  *   - `docs/methodology/uncertainty.md` states the current population *and*, on
  *     the next line, the 2026-04-26 snapshot the ±50 % T1b envelope was measured
  *     on — kept because deleting it would orphan the envelope's provenance.
- *   - `dataset/README.md` is pinned to the archived v1.3.2 Zenodo deposit, with
+ *   - `dataset/README.md` keeps the archived v1.3.2 flare-era breakdown behind
+ *     an ignore marker; its live roster is the v1.4.0 / HEAD golden split,
  *     a note saying HEAD has moved past it.
  *   - `dataset/CHANGELOG.md` release entries and `docs/paper/*` are pinned the
  *     same way and are not gated here at all.
@@ -155,7 +156,7 @@ export const GATED_DOCS: readonly DocSpec[] = [
     rosters: 1,
     bucketClaims: 0,
     ignored: 1,
-    why: "the repository-HEAD tier split beneath the pinned v1.3.2 breakdown, which is itself exempt",
+    why: "the v1.4.0 / HEAD roster; the archived v1.3.2 flare-era breakdown is ignore-tagged",
   },
   {
     path: "docs/methodology/tier-classification-guide.md",

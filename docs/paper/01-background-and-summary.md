@@ -1,157 +1,41 @@
 # Background & Summary
 
-_Scientific Data Data Descriptor · Section 1 · Target length 500–700 words._
+_Scientific Data Data Descriptor · Section 1 · Target ~500–700 words._
 
-**Status:** draft skeleton (Simon keeps voice per submission plan §Work
-division). This file provides the evidence skeleton and proposed argument
-thread; final prose is Simon's.
+## Opening
 
-## Opening hook (50 words)
+Grid operators already throw away tens of terawatt-hours of renewable electricity a year. The volumes are public, but they sit in national portals, 15-minute XML dumps, and annual PDFs. This descriptor publishes them as one hourly, tiered dataset: **459 regions** in **191 countries and territories**, solar, wind, hydro, and geothermal only.
 
-The global renewable build-out now curtails tens of terawatt-hours of
-clean electricity per year. Where, when, and how much that curtailed
-energy amounts to has not been synthesised across transmission-system
-operators at hourly resolution in a single open dataset. This work
-fills that gap across 384 regions in 195 countries — every UN
-member state — spanning every inhabited continent.
+Associated-gas flaring was in versions through v1.3.2 and was removed on 18 June 2026. It is not in the records described here.
 
-## Why this dataset exists (200 words)
+## Why the dataset exists
 
-Curtailment is the unavoidable counterpart of high-penetration variable
-generation. As solar and wind build continues outpacing transmission
-capacity, system operators instruct generators to reduce output more
-frequently, longer, and at larger scale. The energy loss is neither
-random nor uniform: it clusters in specific geographies (the Brazilian
-northeast, the U.S. Southwest Power Pool, Germany north–south
-transmission, the Iberian peninsula) and at specific hours (solar noon
-in oversupplied grids, overnight wind-rich weather events in thermally
-constrained systems).
+Curtailment is the counterpart of high-penetration wind and solar. It clusters in places (Brazil’s Northeast, SPP, Germany’s north–south corridor, Iberia) and in hours (solar noon, overnight wind against thermal minimum). ENTSO-E, EIA, AEMO, ONS, and a long tail of national TSOs each publish a slice. None of them publish a comparable hourly series for the others.
 
-Despite its scale, curtailment data is publicly fragmented. ENTSO-E
-publishes dispatch-down and redispatch volumes by bidding zone; the
-U.S. EIA reports hourly generation and some ISOs publish market-
-settled curtailment in post-hoc State-of-the-Market reports; AEMO
-exposes SCADA via NEMWeb; TSOs outside the OECD publish annual
-aggregates or not at all. No single source harmonises these into a
-cross-comparable hourly series.
+Existing curtailment products are narrower. The IEA covers about a dozen countries, mostly paywalled. Ember treats curtailment as a side metric in a handful of markets. BloombergNEF is paywalled. GridStatus.io is live for a few US ISOs. Electricity Maps has carbon intensity, not curtailment. IRENA, the Energy Institute, and Our World in Data publish generation and capacity.
 
-The best existing curtailment-specific datasets underscore the gap.
-The IEA publishes annual curtailment figures for approximately a
-dozen countries (Australia, Chile, China, Germany, Ireland, Italy,
-Japan, Spain, the UK, and the US), mostly behind a paywall. Ember
-tracks curtailment as a secondary metric within its broader
-electricity dataset, with curtailment data available for fewer than
-ten markets. Bloomberg NEF produces curtailment analyses for 10–20
-markets, fully paywalled. GridStatus.io offers near-real-time
-curtailment for 5–7 US ISOs — the most granular public source, but
-US-only. Electricity Maps covers 350+ zones in 200+ countries with
-real-time carbon-intensity data, but does not track curtailment.
-IRENA, the Energy Institute (formerly BP Statistical Review), and
-Our World in Data all publish generation and capacity data without
-a curtailment metric. No public dataset combines global geographic
-scope, sub-national granularity, hourly temporal resolution, and
-curtailment as the primary measured quantity.
+Anyone who wants a global curtailment series — for siting interruptible load, for integration studies, or for the Bitcoin-matching question that motivated this work — currently has to assemble it. This descriptor is that assembly, with the gaps labelled.
 
-Users who want to estimate global curtailment — for power-system
-modelling, demand-response siting, interruptible-load feasibility,
-or the Bitcoin/renewables matching debate that motivates this
-dataset — have to assemble it themselves.
+## What it contains
 
-This Data Descriptor publishes a seven-year hourly reconstruction
-(2020–2026) of renewable-electricity curtailment and a separate
-flat-baseline representation of associated-gas flaring for the
-regions where gas flaring is the dominant "wasted-energy" source.
+- **459 regions.** T1a 160 (live feed + own-jurisdiction rate), T1b 26 (live feed + domestic or split rate), T1c 1 (Switzerland × Czech rate), T2 23 (annual-anchored, or EIA-930 shape with an external rate), T3 249 (typical shape on a published annual). Counts from `scripts/tally-tiers.ts`.
+- **Hourly UTC** for live-feed regions; 30-day time-of-day average as the default published profile.
+- **Three artefacts:** per-region JSON snapshots, a rolling Parquet history, a seven-year hourly backfill where archives exist.
+- **A confidence tier and a source citation on every row.** Documented-gap jurisdictions are listed in `docs/known-limitations.md` and are not filled with fiction.
 
-## What the dataset contains (150 words)
+India state SLDCs are not live T1a. Maharashtra is T2 (MSLDC monthly). Rajasthan, Gujarat, Tamil Nadu, Karnataka, and Andhra Pradesh are T3. Japan’s ten TSO areas are T1a via the operators’ area CSVs.
 
-- **384 regions across 195 countries.** 149 in `T1a-live-tso`
-  (own-jurisdiction rate; ENTSO-E and EIA with ERCOT and CAISO
-  sub-zones, split per-fuel where the upstream feed exposes wind
-  and solar separately; AEMO per-state; Elexon per-fuel; ONS
-  Brazil; RTE; Energinet; Elia; IESO; AESO; EMI New Zealand
-  per-fuel; EPİAŞ Turkey per-fuel; Statnett Norway per-fuel; CEN
-  Chile; ADME Uruguay; Nord Pool; 7 Japan utilities — Kyushu,
-  Tohoku, Chugoku, Shikoku, Kansai, Hokuriku, Okinawa; 6 India
-  state SLDCs — Rajasthan, Gujarat, Tamil Nadu, Karnataka,
-  Andhra Pradesh, Maharashtra MSLDC); 9 in `T1b-live-domestic-anchored` (live
-  feed + domestic-stat-agency or modelled-share rate, per-fuel
-  where applicable: Italy-Sardinia wind+solar, Italy-North-Zone
-  wind+solar, Italy-Sicily wind+solar, Netherlands wind+solar,
-  Colombia XM); 1 in `T1c-live-neighbour-anchored` (Switzerland
-  on the Czech CEPS rate); 6 in `T2-annual-calibrated` (Austria
-  APG, Russia Murmansk, and four Chinese hydro provinces — Hunan,
-  Hubei, Guizhou, Chongqing); 8 flare regions (Permian, West
-  Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia
-  Yamal-Nenets, Russia East Siberia); 211 in `T3-modelled`
-  (annual anchor + typical shape — covers every remaining UN
-  member state without a public live feed).
-- **Hourly resolution** for every live-feed region; hourly
-  reconstruction backfilled to 2020-01-01 where upstream archives
-  support it (2.59 M rows in `curtailment_backfill.parquet`).
-- **Three artefact classes**: per-region JSON snapshots (updated
-  every build), a rolling Parquet history (appended on every build),
-  and the seven-year backfill Parquet.
-- **Per-region provenance and confidence tier** on every row.
-  No region silently unlabelled.
+## What is different
 
-## What distinguishes this dataset (150 words)
+1. **Coverage.** 459 regions is roughly thirty times the IEA’s public curtailment set. 187 regions (41%) have a live operator feed.
+2. **Reproducible loaders.** Each loader is deterministic given its upstream response. Figures rebuild from committed sources.
+3. **Honest gaps.** Missing jurisdictions are documented. Self-curtailment is excluded, so published totals are a floor.
+4. **Tiered uncertainty.** T1a ±15% (or 2σ), T1b ±50% (measured on four zones, now applied to 26), T1c ±35.5%, T2 ±20%, T3 ±40%.
 
-The dataset is organised on two orthogonal axes (full taxonomy:
-`docs/methodology/taxonomy.md`):
+## Companion analysis
 
-| | `published` | `documented-gap` | `out-of-scope` |
-|---|---|---|---|
-| **`curtailment-renewable`** | 384 regions across 195 countries: live ENTSO-E/EIA/AEMO/Elexon/etc.; T2 calibrated; T3 modelled. | Mexico CENACE, parts of SE Asia, Iran solar… (see `docs/known-limitations.md`) | Antarctica, Vatican, Greenland (~all baseload thermal/diesel) |
-| **`flare-associated-gas`** | 8 regions: Permian, West Siberia, South Iraq, East Saudi Arabia, Qatar, Kuwait, Russia Yamal-Nenets, Russia East Siberia. | Iran flaring (no GGFR-equivalent disaggregation). | Small flares < 1 Bcm/yr |
+A separate essay uses the live-tier subset to compare published curtailment with Bitcoin’s electricity use. Acceptance of this descriptor does not depend on that comparison. The dataset is for anyone who needs hourly curtailment with a provenance tag.
 
-Four aspects set this work apart:
+## Figures
 
-1. **First open global curtailment synthesis.** At 384 regions
-   across 195 countries, this dataset is approximately 30× broader
-   in geographic scope than the IEA's curtailment tracking (the
-   most authoritative existing source, covering ~12 countries) and
-   is the only public dataset that combines global coverage,
-   sub-national granularity, and hourly resolution for curtailment
-   specifically. 43% of regions (165) are backed by live
-   grid-operator feeds refreshed every three hours; the remainder
-   use anchored estimates from published national statistics — a
-   conservative lower bound on visible waste, since self-curtailment
-   by asset owners (estimated at 30–50% of true curtailment in some
-   European and US markets) is excluded entirely.
-2. **Reproducibility-first.** Every loader is deterministic given
-   its upstream response. Every figure is regenerable from
-   committed source data on a clean `matplotlib`+`pyarrow` install.
-3. **Honest coverage.** Gap regions are documented, not invented.
-4. **Tier-explicit uncertainty.** Every emitted value carries a
-   confidence tier (T1a ±15%, T1b ±50% empirical, T1c ±35.5%
-   empirical, T2 ±20%, T3 ±40%) with an envelope grounded either in
-   observed backfill variance or in the upstream publisher's own
-   stated precision.
-
-## Companion analysis (100 words)
-
-This Data Descriptor is submitted alongside a companion analysis
-paper (target: Joule or Applied Energy) that uses the dataset to
-test the specific hypothesis that an interruptible load such as
-Bitcoin mining, sited and dispatched against curtailment hotspots,
-could absorb the observed waste at scale. Acceptance of this Data
-Descriptor does not depend on the companion claim: the dataset
-is intended to be useful to any renewable-integration,
-grid-planning, power-systems-modelling, or waste-heat-economy
-research programme, regardless of the authors' specific interest.
-
-## Cross-references for reviewer
-
-- Global curtailment snapshot: **Figure 1** + caption.
-- Backfill-vs-anchor validation: **Figure 2** + caption +
-  `docs/methodology/validation-discrepancies.md`.
-- Seven-year temporal trace: **Figure 3** + caption.
-- Per-region confidence-tier coverage: **Figure 4** + caption.
-- Top-20 regions annual timeseries: **Figure 5** + caption.
-
-## Citation context
-
-Once the companion paper is published, this section will cite it in
-the final paragraph. In the interim, cite the Data Descriptor alone
-via the Zenodo DOI recorded in `dataset/CITATION.cff` and visible in
-the repository Zenodo badge.
+Figure 1 global snapshot; Figure 2 backfill vs published annuals; Figure 3 daily trace 2020–2026; Figure 4 tier map; Figure 5 top-20 annual panels. Captions in `figure-captions.md`. Figures still need a regen pass against HEAD before submission — several still show the pre-purge flare palette.
