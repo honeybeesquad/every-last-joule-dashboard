@@ -231,15 +231,29 @@ export async function mountGlobe(canvas, initial) {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // One flat ocean fill. The radial day wash and the night-overlay wash
-    // that used to sit on top are gone: they tinted the whole sphere the
-    // same hue as the solar pillars, which is what made the globe read as a
-    // single warm haze. Day and night are now carried entirely by the land
-    // matrix below, so the only saturated thing on the sphere is fuel colour.
+    // Night ocean first, then the daylit hemisphere painted flat on top of
+    // it and edged with a hairline at the terminator.
+    //
+    // The radial day wash this replaces tinted the whole sphere the same hue
+    // as the solar pillars, which is what made the globe read as one warm
+    // haze. But dropping it outright cost something real: with day and night
+    // carried only by the land dots' hue, there was no visible light source,
+    // so you could not see which face was in daylight — and therefore could
+    // not see why solar is curtailing where it is. Two flat fills and a hard
+    // edge give that back without a single gradient.
     ctx.beginPath();
     path({ type: "Sphere" });
     ctx.fillStyle = tokens.oceanHex;
     ctx.fill();
+
+    const dayHemisphere = d3.geoCircle().center([sunLng, sunLat]).radius(90)();
+    ctx.beginPath();
+    path(dayHemisphere);
+    ctx.fillStyle = tokens.oceanLitHex;
+    ctx.fill();
+    ctx.strokeStyle = tokens.terminator;
+    ctx.lineWidth = 1;
+    ctx.stroke();
 
     const dotPx = size >= 820 ? 1.8 : 1.5;
     const dotHalf = dotPx / 2;
@@ -253,9 +267,11 @@ export async function mountGlobe(canvas, initial) {
       // continents read across the whole face instead of fading out.
       const solarAngle = d3.geoDistance([lon, lat], [sunLng, sunLat]);
       const lit = Math.cos(solarAngle) > 0.12;
+      // Lit dots are brighter AND a different hue. Hue alone does not read at
+      // this dot size — cream against amber is invisible at 1.8px.
       ctx.fillStyle = lit
-        ? `rgba(${tokens.dotDayRGB}, 0.97)`
-        : `rgba(${tokens.dotNightRGB}, 0.95)`;
+        ? `rgba(${tokens.dotDayRGB}, 0.98)`
+        : `rgba(${tokens.dotNightRGB}, 0.82)`;
       ctx.fillRect(point[0] - dotHalf, point[1] - dotHalf, dotPx, dotPx);
     }
 
