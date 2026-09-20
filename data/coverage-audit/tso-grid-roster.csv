@@ -509,8 +509,8 @@ Kosovo Wind,XKX,wind,live-tso,entsoe,unpublished,kosovo-wind,ENTSO-E A75 generat
 Kosovo Solar,XKX,solar,live-tso,entsoe,unpublished,kosovo-solar,ENTSO-E A75 generation; waste unpublished.
 Kauai (KIUC),USA,solar,no-public-series,tso-grid-markers,unpublished,kauai,Grid present; no public ops series wired.
 Alaska Railbelt,USA,mixed,no-public-series,tso-grid-markers,unpublished,alaska-railbelt,Grid present; no public ops series wired.
-Puerto Rico Wind,PRI,wind,no-public-series,tso-grid-markers,unpublished,puerto-rico-wind,Grid present; no public ops series wired.
-Puerto Rico Solar,PRI,solar,no-public-series,tso-grid-markers,unpublished,puerto-rico-solar,Grid present; no public ops series wired.
+Puerto Rico Wind,PRI,wind,relay-tso,puerto-rico,unpublished,puerto-rico-wind,Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones.
+Puerto Rico Solar,PRI,solar,relay-tso,puerto-rico,unpublished,puerto-rico-solar,Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones.
 Guam,GUM,solar,no-public-series,tso-grid-markers,unpublished,guam,Grid present; no public ops series wired.
 US Virgin Islands,VIR,solar,no-public-series,tso-grid-markers,unpublished,us-virgin-islands,Grid present; no public ops series wired.
 American Samoa,ASM,solar,no-public-series,tso-grid-markers,unpublished,american-samoa,Grid present; no public ops series wired.
@@ -546,6 +546,7 @@ IEMOP / NGCP,PHL,"solar,wind",not-collecting,philippines,unpublished,philippines
 EVN / NSMO / NLDC,VNM,solar,not-collecting,vietnam,unpublished,vietnam,"TLS fail, PDF daily dispatch. Relay not writing CSV. 365 GWh 2020 quote is not a T2 anchor."
 NTDC / NPCC,PAK,"wind,solar",not-collecting,pakistan,unpublished,pakistan-wind;pakistan-solar,NEPRA PDF / NPCC TLS. Waste unpublished.
 PGCB / BPDB,BGD,solar,not-collecting,bangladesh,unpublished,bangladesh,BPDB daily PDF Pattern-D not automated. Waste unpublished.
+PREPA / LUMA / Genera,PRI,"wind,solar",relay-tso,puerto-rico,unpublished,puerto-rico-wind;puerto-rico-solar,operationdata.prepa.pr.gov dataSource.js utility-scale PPOA SiteTotal MW. abed NordVPN on 403 → relay CSV. EIA-930 has no PR BA. Waste unpublished. Not T1a. Lake needs ≥24 snapshots before a diurnal is emitted.
 Landsnet,ISL,hydro,not-collecting,,unpublished,iceland,iceland is T3 hydro modelled. Landsnet generation is not a public time series. Spill unpublished unless Orkustofnun publishes it.
 Grid-India / RLDCs,IND,"solar,wind",not-collecting,india-grid-india,unpublished,india-grid-india,"abed is Starlink CHC, not an India PoP. SLDCs are subgrids only when their portal yields a series."
 SGCC North,CHN,"wind,solar,hydro",no-public-series,,unpublished,,No machine-readable dispatch. Provincial Ember×NEA is not this TSO.

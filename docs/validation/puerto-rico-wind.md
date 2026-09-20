@@ -8,11 +8,11 @@ Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Tech
 - **Country:** PRI
 - **Tier:** estimated
 - **Kind:** wind
-- **Source:** PREPA/LUMA. EIA-930 probe pending. Waste unpublished.
-- **Source URL:** [https://www.lumapr.com/](https://www.lumapr.com/)
-- **Loader:** _(see region source / TSO-grid completeness loaders)_
+- **Source:** PREPA operationdata.prepa.pr.gov dataSource.js (utility-scale PPOA wind SiteTotal MW; abed NordVPN relay CSV). Waste unpublished — no curtailment column. EIA-930 has no PR BA. Not T1a.
+- **Source URL:** [https://operationdata.prepa.pr.gov/](https://operationdata.prepa.pr.gov/)
+- **Loader:** [`puerto-rico.json.ts`](../../src/data/puerto-rico.json.ts)
 - **Structural gap:** no
-- **Waste status:** unpublished unless the operator publishes a curtailment/spill series. Missing ≠ zero. Live generation does not make waste T1a.
+- **Waste status:** unpublished. Missing ≠ zero. Live generation does not make waste T1a.
 
 ## Calibration
 
@@ -34,14 +34,16 @@ Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Tech
 
 ## Discrepancy analysis
 
-Grid-completeness row. Waste is unpublished unless a later loader adds a published series. Do not read a zero `profile` as a measured finding.
+Relay lake starts from live `dataSource.js` snapshots (not EIA-930 — 83 respondents, no PREP/LUMA/CEPR). Until ≥24 distinct timestamps, generationProfile is empty unpublished. Do not read a zero `profile` as a measured waste finding. Utility-scale PPOA only — not rooftop DG.
 
 ## Known limitations
 
-See `docs/methodology/historical-backfill.md` and STATUS.md TSO-grid completeness.
+See `docs/methodology/historical-backfill.md` and STATUS.md TSO-grid completeness. Azure mirror is IP-forbidden from NZ; abed NordVPN is the 403 path.
 
 ## Links
 
+- Loader source: [`puerto-rico.json.ts`](../../src/data/puerto-rico.json.ts)
+- Relay fetch: [`puerto-rico-prepa-fetch.py`](../../scripts/relay/puerto-rico-prepa-fetch.py)
 - Backfill archive: `data/historical/backfill/*_puerto-rico-wind_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

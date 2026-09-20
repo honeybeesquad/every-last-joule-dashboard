@@ -17,8 +17,6 @@ export const TSO_GRID_MARKERS: ReadonlyArray<{
 }> = [
   { id: "kauai", note: "KIUC Kauai: annual PDF only; no hourly TSO series. Grid present, ops unpublished.", profileKind: "solar" },
   { id: "alaska-railbelt", note: "Alaska Railbelt (Chugach/MEA/GVEA/HEA): no public hourly series. Grid present, ops unpublished.", profileKind: "mixed" },
-  { id: "puerto-rico-wind", note: "PREPA/LUMA EIA-930 probe pending; waste unpublished.", profileKind: "wind" },
-  { id: "puerto-rico-solar", note: "PREPA/LUMA EIA-930 probe pending; waste unpublished.", profileKind: "solar" },
   { id: "guam", note: "GPA Guam: annual reports only. Grid present, ops unpublished.", profileKind: "solar" },
   { id: "us-virgin-islands", note: "USVI WAPA: annual reports only. Grid present, ops unpublished.", profileKind: "solar" },
   { id: "american-samoa", note: "ASPA: annual reports only. Grid present, ops unpublished.", profileKind: "solar" },

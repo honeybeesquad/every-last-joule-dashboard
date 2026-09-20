@@ -105,6 +105,7 @@ export const DATA_LOADERS = [
   { key: "uruguay",             file: FileAttachment("../data/uruguay.json"),              label: "Uruguay" },
   { key: "paraguay",            file: FileAttachment("../data/paraguay.json"),             label: "Paraguay" },
   { key: "mexico",              file: FileAttachment("../data/mexico.json"),               label: "Mexico" },
+  { key: "puertoRico",          file: FileAttachment("../data/puerto-rico.json"),          label: "Puerto Rico PREPA" },
   { key: "japanChubu",          file: FileAttachment("../data/japan-chubu.json"),          label: "Japan Chubu" },
   { key: "japanChugoku",        file: FileAttachment("../data/japan-chugoku.json"),        label: "Japan Chugoku" },
   { key: "japanHokkaido",       file: FileAttachment("../data/japan-hokkaido.json"),       label: "Japan Hokkaido" },

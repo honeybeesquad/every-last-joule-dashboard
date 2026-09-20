@@ -1,7 +1,7 @@
-name: Relay pull (Colombia + India + Peru)
+name: Relay pull (Colombia + India + Peru + PREPA)
 
 # Pulls daily CSVs from the private every-last-joule-data-relay repo
-# (written by Britta cron) and commits them into data/historical/.
+# (written by Britta cron / abed) and commits them into data/historical/.
 #
 # Colombia: runs ~19:15 UTC daily (45 min after Britta's 18:30 UTC push window).
 # India:    gen-re.cea.gov.in daily Excel; Britta fetches at 06:30 UTC; GA runs
@@ -9,6 +9,8 @@ name: Relay pull (Colombia + India + Peru)
 # Peru:     COES per-plant generation (www.coes.org.pe); Britta fetches weekly
 #           (Mondays) — COES publishes monthly with a ~2-3wk lag. Estimated tier.
 #           CSV unchanged most days, so the diff guard below makes this a no-op.
+# PREPA:    operationdata.prepa.pr.gov dataSource.js snapshots; abed appends
+#           hourly (NordVPN on 403) into puerto-rico-genera.csv.
 # Also triggerable manually.
 #
 # `main` is a protected branch with a required `verify` status check, so this
@@ -76,6 +78,12 @@ jobs:
                data/historical/peru-coes-per-plant.csv
           fi
 
+          # PREPA/Genera generation snapshots (copy only if present)
+          if [ -f /tmp/relay/puerto-rico-genera.csv ]; then
+            cp /tmp/relay/puerto-rico-genera.csv \
+               data/historical/puerto-rico-genera.csv
+          fi
+
       - name: Open / refresh auto-merge PR
         env:
           GH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
@@ -90,6 +98,7 @@ jobs:
                   data/historical/india-andhra-pradesh-gen-daily.csv \
                   data/historical/india-maharashtra-gen-daily.csv \
                   data/historical/peru-coes-per-plant.csv \
+                  data/historical/puerto-rico-genera.csv \
                   data/historical/abed-heartbeat.json \
                   2>/dev/null || true
 

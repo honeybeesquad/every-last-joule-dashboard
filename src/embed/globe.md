@@ -404,6 +404,8 @@ const regionData = {
   colombia: feeds.colombia,
   ...feeds.eiaVreBas,
   ...feeds.tsoGridMarkers,
+  "puerto-rico-solar": feeds.puertoRico.solar,
+  "puerto-rico-wind": feeds.puertoRico.wind,
   "china-shandong-wind":  feeds.chinaShandong.wind,
   "china-shandong-solar": feeds.chinaShandong.solar,
   "china-guangdong": feeds.chinaGuangdong,

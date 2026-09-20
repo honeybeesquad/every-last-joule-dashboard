@@ -52,6 +52,8 @@ const RELAY_TSO = new Set([
   "mexico-wind",
   "mexico-solar",
   "argentina",
+  "puerto-rico-wind",
+  "puerto-rico-solar",
 ]);
 
 /** Operators with no dashboard region, or honesty overlays. */
@@ -67,6 +69,7 @@ const EXTRA_OPERATORS: TsoGridRosterRow[] = [
   { operator: "EVN / NSMO / NLDC", iso3: "VNM", fuels: "solar", collectStatus: "not-collecting", loaderKey: "vietnam", wasteStatus: "unpublished", regionIds: "vietnam", notes: "TLS fail, PDF daily dispatch. Relay not writing CSV. 365 GWh 2020 quote is not a T2 anchor." },
   { operator: "NTDC / NPCC", iso3: "PAK", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "pakistan", wasteStatus: "unpublished", regionIds: "pakistan-wind;pakistan-solar", notes: "NEPRA PDF / NPCC TLS. Waste unpublished." },
   { operator: "PGCB / BPDB", iso3: "BGD", fuels: "solar", collectStatus: "not-collecting", loaderKey: "bangladesh", wasteStatus: "unpublished", regionIds: "bangladesh", notes: "BPDB daily PDF Pattern-D not automated. Waste unpublished." },
+  { operator: "PREPA / LUMA / Genera", iso3: "PRI", fuels: "wind,solar", collectStatus: "relay-tso", loaderKey: "puerto-rico", wasteStatus: "unpublished", regionIds: "puerto-rico-wind;puerto-rico-solar", notes: "operationdata.prepa.pr.gov dataSource.js utility-scale PPOA SiteTotal MW. abed NordVPN on 403 → relay CSV. EIA-930 has no PR BA. Waste unpublished. Not T1a. Lake needs ≥24 snapshots before a diurnal is emitted." },
   { operator: "Landsnet", iso3: "ISL", fuels: "hydro", collectStatus: "not-collecting", loaderKey: "", wasteStatus: "unpublished", regionIds: "iceland", notes: "iceland is T3 hydro modelled. Landsnet generation is not a public time series. Spill unpublished unless Orkustofnun publishes it." },
   { operator: "Grid-India / RLDCs", iso3: "IND", fuels: "solar,wind", collectStatus: "not-collecting", loaderKey: "india-grid-india", wasteStatus: "unpublished", regionIds: "india-grid-india", notes: "abed is Starlink CHC, not an India PoP. SLDCs are subgrids only when their portal yields a series." },
   { operator: "SGCC North", iso3: "CHN", fuels: "wind,solar,hydro", collectStatus: "no-public-series", loaderKey: "", wasteStatus: "unpublished", regionIds: "", notes: "No machine-readable dispatch. Provincial Ember×NEA is not this TSO." },
@@ -100,7 +103,7 @@ function classify(id: string, tier: string, provenance: string | undefined): Pic
     return { collectStatus: "no-public-series", loaderKey: "tso-grid-markers", wasteStatus: "unpublished", notes: "Grid present; no public ops series wired." };
   }
   if (RELAY_TSO.has(id)) {
-    return { collectStatus: "relay-tso", loaderKey: id.startsWith("mexico") ? "mexico" : id.startsWith("colombia") ? "colombia" : "argentina", wasteStatus: "unpublished", notes: "Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones." };
+    return { collectStatus: "relay-tso", loaderKey: id.startsWith("mexico") ? "mexico" : id.startsWith("colombia") ? "colombia" : id.startsWith("puerto-rico") ? "puerto-rico" : "argentina", wasteStatus: "unpublished", notes: "Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones." };
   }
   if (tier === "live" || tier === "live-domestic-anchored" || tier === "live-neighbour-anchored") {
     return { collectStatus: "live-tso", loaderKey: "", wasteStatus: "legacy-unspecified", notes: "Existing live waste or Path-B generation×rate." };
