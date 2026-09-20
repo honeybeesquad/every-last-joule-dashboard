@@ -28,6 +28,7 @@ import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./
 import { curtailmentShare, shareUnavailable, formatShare } from "./lib/generation-share.js";
 import { splitRegion } from "./lib/split-region.js";
 import { finalizeRegionData } from "./lib/region-data-finalize.js";
+import { countPublishedWasteRegions } from "./lib/waste-status.js";
 import { mountGlobe } from "./globe.js";
 
 const HOTSPOT_LIST_LIMIT = 50;
@@ -495,8 +496,13 @@ finalizeRegionData(regionData, REGIONS);
 
 // Populate the region-count span inside the lead copy without clobbering
 // the surrounding HTML (the ${FUEL_ORDER.map} earlier baked it in at render).
+//
+// This counts regions that PUBLISH waste, not REGIONS.length: the lead copy is
+// a claim about curtailed energy, and the roster now also carries grids we
+// track for generation whose operators publish no waste at all. See
+// countPublishedWasteRegions in src/lib/waste-status.ts.
 {
-  const liveRegionCount = REGIONS.length;
+  const liveRegionCount = countPublishedWasteRegions(regionData, REGIONS);
   const countEl = document.getElementById("region-count");
   if (countEl) countEl.textContent = String(liveRegionCount);
 }

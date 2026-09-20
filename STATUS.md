@@ -18,6 +18,22 @@ Country T3 stubs are not TSO collection. This program adds operational generatio
 **Wave 5.** China provincials stay Ember×NEA modelled; interconnection families (SGCC/CSG/Mengxi) are roster `no-public-series`. `india-grid-india` is the national TSO row; SLDCs stay subgrids. Saudi 5.2% is **irradiance, not curtailment**.
 
 **Golden:** T1a 160, T1b 26, T1c 1, T2 22, T3 327 — total 536. T1 waste counts did not move.
+
+**The two public region-count claims were split apart, because 536 is now a
+coverage number and not a waste number.** The dashboard lead copy ("curtailed,
+spilled, or constrained-off across N regions") was filled from
+`REGIONS.length`. That was defensible while every region carried a waste
+figure; it is not once the roster includes grids whose operators publish none
+(68 snapshot records carry `wasteStatus: "unpublished"` at the time of this
+commit). It now calls `countPublishedWasteRegions` (`src/lib/waste-status.ts`),
+which counts `measured` + `measured-zero` + legacy records — the same predicate
+`showsWastePillar` uses for the globe, so the sentence and the pillars can
+never disagree. `observablehq.config.ts`'s `OG_DESCRIPTION` had "459 grid
+regions" hardcoded; it is now derived from `REGIONS.length` and reworded so the
+number reads as grids tracked, not grids wasting. `tests/waste-status-count.test.ts`
+pins both, including that a **measured zero is a published figure** (a fact
+about the grid) while **unpublished is a fact about the operator** — merging
+those two is the failure this whole program exists to avoid.
 ## Brand face site-wide — Schibsted Grotesk (2026-09-20)
 
 Branch `feat/brand-face-site-wide`, **stacked on `feat/animated-mark-loader`**

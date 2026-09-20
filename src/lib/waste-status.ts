@@ -25,6 +25,26 @@ export function isTsoCollected(data?: RegionData | null): boolean {
   return Array.isArray(data?.generationProfile) && data.generationProfile.length === 24;
 }
 
+/**
+ * How many regions actually publish waste — the number the dashboard's lead
+ * copy is entitled to claim curtailment "across".
+ *
+ * NOT `REGIONS.length`. Since the TSO-grid completeness work, the roster also
+ * carries grids we track for generation while their operator publishes no
+ * waste at all (`wasteStatus: "unpublished"`). Counting those in a sentence
+ * about wasted energy would assert curtailment this project has explicitly
+ * declined to invent — the same failure as calling a modelled figure measured.
+ *
+ * Legacy snapshots omit `wasteStatus` and count, matching `showsWastePillar`:
+ * a region absent from the payload entirely does not.
+ */
+export function countPublishedWasteRegions(
+  regionData: Record<string, RegionData | null | undefined>,
+  regionIds: readonly { id: string }[],
+): number {
+  return regionIds.reduce((n, r) => n + (showsWastePillar(regionData[r.id]) ? 1 : 0), 0);
+}
+
 export function unpublishedEmptyRegion(
   regionId: string,
   sourceNote: string,
