@@ -37,6 +37,7 @@ const ISO3_TO_NUMERIC: Record<string, string> = {
   ARE: "784",
   ARG: "032",
   ARM: "051",
+  ASM: "016", // American Samoa — NOT in 110m topojson
   ATG: "028", // Antigua & Barbuda — NOT in 110m topojson
   AUS: "036",
   AUT: "040",
@@ -95,14 +96,18 @@ const ISO3_TO_NUMERIC: Record<string, string> = {
   GEO: "268",
   GHA: "288",
   GIN: "324",
+  GLP: "312", // Guadeloupe — NOT in 110m topojson
   GMB: "270",
   GNB: "624",
   GNQ: "226",
   GRC: "300",
   GRD: "308", // Grenada — NOT in 110m topojson
+  GRL: "304", // Greenland — may be in 110m as a separate polygon
   GTM: "320",
   GUF: "254", // French Guiana — NOT in 110m topojson (overseas territory)
+  GUM: "316", // Guam — NOT in 110m topojson
   GUY: "328",
+  HKG: "344", // Hong Kong — typically absorbed into CHN at 110m
   HND: "340",
   HRV: "191",
   HTI: "332",
@@ -137,6 +142,7 @@ const ISO3_TO_NUMERIC: Record<string, string> = {
   LTU: "440",
   LUX: "442",
   LVA: "428",
+  MAC: "446", // Macau — typically absorbed into CHN at 110m
   MAR: "504",
   MCO: "492", // Monaco — NOT in 110m topojson
   MDA: "498",
@@ -150,12 +156,15 @@ const ISO3_TO_NUMERIC: Record<string, string> = {
   MMR: "104",
   MNE: "499",
   MNG: "496",
+  MNP: "580", // Northern Mariana Islands — NOT in 110m topojson
   MOZ: "508",
   MRT: "478",
+  MTQ: "474", // Martinique — NOT in 110m topojson
   MUS: "480", // Mauritius — NOT in 110m topojson
   MWI: "454",
   MYS: "458",
   NAM: "516",
+  NCL: "540", // New Caledonia — NOT in 110m topojson
   NER: "562",
   NGA: "566",
   NIC: "558",
@@ -172,11 +181,14 @@ const ISO3_TO_NUMERIC: Record<string, string> = {
   PLW: "585", // Palau — NOT in 110m topojson
   PNG: "598",
   POL: "616",
+  PRI: "630", // Puerto Rico — typically absorbed into USA at 110m
   PRK: "408",
   PRT: "620",
   PRY: "600",
   PSE: "275",
+  PYF: "258", // French Polynesia — NOT in 110m topojson
   QAT: "634",
+  REU: "638", // Réunion — NOT in 110m topojson
   ROU: "642",
   RUS: "643",
   RWA: "646",
@@ -219,9 +231,12 @@ const ISO3_TO_NUMERIC: Record<string, string> = {
   UZB: "860",
   VCT: "670", // St Vincent — NOT in 110m topojson
   VEN: "862",
+  VIR: "850", // US Virgin Islands — NOT in 110m topojson
   VNM: "704",
   VUT: "548",
   WSM: "882", // Samoa — NOT in 110m topojson
+  WLF: "876", // Wallis and Futuna — NOT in 110m topojson
+  XKX: "983", // Kosovo — user-assigned; Natural Earth may omit at 110m
   YEM: "887",
   ZAF: "710",
   ZMB: "894",

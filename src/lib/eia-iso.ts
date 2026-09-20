@@ -36,6 +36,12 @@ export interface EiaIsoConfig {
    * cron-bot regen overwrites the snapshot with real per-fuel data.
    */
   fallbackSplit?: { wind: number; solar: number };
+  /**
+   * Generation-only BAs: EIA-930 WND/SUN is collected, the operator does not
+   * publish a curtailment rate. `profile` stays zeros with wasteStatus
+   * unpublished. Never T1a.
+   */
+  wasteMode?: "unpublished";
 }
 
 /**
@@ -115,6 +121,42 @@ export function parseEiaIsoRegionPerFuel(
   windRaw: EIAResponse,
   solarRaw?: EIAResponse,
 ): { wind: RegionData; solar: RegionData } {
+  if (config.wasteMode === "unpublished") {
+    const windGenPoints = toGenPoints(windRaw);
+    const solarGenPoints = toGenPoints(solarRaw ?? { response: { total: 0, data: [] } });
+    const windLast = windGenPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
+    const solarLast = solarGenPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
+    const note = (fuel: string) =>
+      `EIA-930 ${config.respondent} ${fuel} generation collected; ${config.displayName} does not publish a curtailment/spill series. wasteStatus unpublished — missing ≠ zero.`;
+    const wind: RegionData = {
+      regionId: `${config.regionId}-wind`,
+      profile: Array(24).fill(0),
+      latestProfile: null,
+      totalTWh: 0,
+      peakGW: 0,
+      lastUpdated: windLast,
+      lastSuccessAt: windLast,
+      sourceNote: note("wind"),
+      wasteStatus: "unpublished",
+      generationProfile: timeOfDayAverageGW(windGenPoints),
+      generationTotalTWh: totalTWh30d(windGenPoints),
+    };
+    const solar: RegionData = {
+      regionId: `${config.regionId}-solar`,
+      profile: Array(24).fill(0),
+      latestProfile: null,
+      totalTWh: 0,
+      peakGW: 0,
+      lastUpdated: solarLast,
+      lastSuccessAt: solarLast,
+      sourceNote: note("solar"),
+      wasteStatus: "unpublished",
+      generationProfile: timeOfDayAverageGW(solarGenPoints),
+      generationTotalTWh: totalTWh30d(solarGenPoints),
+    };
+    return { wind, solar };
+  }
+
   const windPoints = toPoints(windRaw, config.windRate);
   const solarPoints = toPoints(solarRaw ?? { response: { total: 0, data: [] } }, config.solarRate);
 
@@ -350,7 +392,7 @@ export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
     // Don't fall back to a stale snapshot — keep wind fresh and synthesise solar.
     const solarGap = solarRaw.response.data.length > 0 &&
       solarRaw.response.data.every((r) => !Number(r.value));
-    if (solarGap) {
+    if (solarGap && config.wasteMode !== "unpublished") {
       const split = config.fallbackSplit ?? { wind: 0.5, solar: 0.5 };
       console.warn(
         `[${config.regionId}] EIA ${config.respondent} solar returned ${solarRaw.response.data.length} all-zero points; ` +
@@ -369,7 +411,7 @@ export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
       config.regionId,
       run,
       {
-        regionTier: "live" as const,
+        regionTier: (config.wasteMode === "unpublished" ? "estimated" : "live") as "estimated" | "live",
         tagLive: (r) => r,
         tagCached: (c) =>
           adaptCachedAggregateToPerFuel(c, config.regionId, fallbackSplit),

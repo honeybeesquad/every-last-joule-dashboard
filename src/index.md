@@ -329,6 +329,7 @@ const regionData = {
   // Switzerland — PV-only ENTSO-E feed; understates hydro spill but
   // captures summer-midday PV oversupply on Swissgrid's corridor.
   switzerland: feeds.entsoe.switzerland,
+  ...feeds.entsoe,
   // GB split — NESO 2024 Markets Roadmap reports ~11 TWh/yr of constraint
   // actions, dominated by the Scotland-to-England boundary. 70/30 split
   // reflects Scotland's disproportionate share of curtailed wind.
@@ -434,7 +435,8 @@ const regionData = {
   // Colombia: T1b-CSV loader reads committed XM API data (Britta daily relay).
   // Supersedes the T3-static entry in buildAllStatics().
   colombia: feeds.colombia,
-  florida: feeds.florida,
+  ...feeds.eiaVreBas,
+  ...feeds.tsoGridMarkers,
   "china-shandong-wind":  feeds.chinaShandong.wind,
   "china-shandong-solar": feeds.chinaShandong.solar,
   "china-guangdong": feeds.chinaGuangdong,

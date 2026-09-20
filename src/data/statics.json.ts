@@ -99,7 +99,6 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // Austria — APG acknowledges renewable curtailment in 2024 but no public
   // annual TWh. Provisional 0.5 TWh/yr tuned to APG's redispatch narrative;
   // upgrade path is an ENTSO-E A75 extraction pass.
-  austria: { annualTWh: 0.5, kind: "flat", source: "APG Strombilanz 2024 + ENTSO-E redispatch narrative (provisional 0.5 TWh/yr; ENTSO-E A75 extraction pending)", reportDate: "2024" },
   // Russia Murmansk — SO UPS published monthly dispatch-limit events for
   // Kola Peninsula wind plants in 2024 (84 MW Sep, 77 MW Nov). Annual
   // energy not tabulated; estimated ~0.07 TWh/yr assuming ~80 MW limit
@@ -181,7 +180,6 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // TVA: Tennessee Valley Authority, SE United States. CST/EST straddle →
   // localSolarPeakUTC 17.5 (average of UTC-6 and UTC-5). Flagged for
   // Pattern-A promotion when TVA JSON-API curtailment series is wired.
-  tva: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 17.5, source: "TVA Sustainability Report 2024 (provisional 0.05 TWh/yr at inclusion threshold; SE-US solar curtailment duck-curve; TVA JSON-API path documented for future Pattern-A promotion)", reportDate: "2024" },
   bahamas: { annualTWh: 0.01, kind: "solar", localSolarPeakUTC: 12.5, source: "IRENA Bahamas 2024 (BPL; solar+oil; island grids)", reportDate: "2024" },
   belize: { annualTWh: 0.02, kind: "hydro", source: "IRENA Belize 2024 (BEL); Herrera hydroelectric + Belize oil + solar", reportDate: "2024" },
   // colombia: promoted to canonical T3-static hydro-seasonal at line 103
@@ -203,18 +201,15 @@ const STATIC_REGIONS: Record<string, StaticSpec> = {
   // Phase 4-C: European microstates (near andorra / liechtenstein)
   monaco: { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 11.5, source: "IRENA RCS 2025 / Monaco (~5 MW distributed rooftop PV; effectively part of French grid)", reportDate: "2024" },
   "san-marino": { annualTWh: 0.005, kind: "solar", localSolarPeakUTC: 11.2, source: "IRENA RCS 2025 / AASS San Marino (~25 MW solar; effectively part of Italian grid)", reportDate: "2024" },
-  malta: { annualTWh: 0.03, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Malta 2024 (ENEMalta); gas+solar; EU island state)", reportDate: "2024" },
   moldova: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Moldova 2024 (Moldelectrica); solar+gas; ENTSO-E continental sync 2022)", reportDate: "2024" },
   // Reverted from ENTSO-E live T1a (2026-04-28): no verifiable A75 published
   // curtailment rate found for these 6 TSOs. Returned to T3 static pending
   // actual calibration data from HOPS (croatia), SEPS (slovakia), ELES
   // (slovenia), Litgrid (lithuania), AST (latvia), ERE (albania).
+  // Litgrid/AST/OST moved to ENTSO generation-only (waste unpublished) 2026-09-20.
   croatia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 9.0, source: "IRENA Croatia 2024 (HOPS); solar+wind+hydro; HOPS publishes monthly wind PDF reports, not machine-readable A75; ENTSO-E A75 verification pending)", reportDate: "2024" },
   slovakia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Slovakia 2024 (SEPS); solar+wind; SEPS dashboard has generation data but no published curtailment rate; ENTSO-E A75 verification pending)", reportDate: "2024" },
   slovenia: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 8.0, source: "IRENA Slovenia 2024 (ELES); solar+hydro+wind; ELES publishes generation data but no published curtailment rate; ENTSO-E A75 verification pending)", reportDate: "2024" },
-  lithuania: { annualTWh: 0.2, kind: "wind", localSolarPeakUTC: 9.0, source: "IRENA Lithuania 2024 (ESO); solar+wind; BRELL ring member; ENTSO-E A75 verification pending)", reportDate: "2024" },
-  latvia: { annualTWh: 0.1, kind: "hydro", source: "IRENA Latvia 2024 (AST); Augstkaigo + Ventspils nafta + solar; BRELL; ENTSO-E A75 verification pending)", reportDate: "2024" },
-  albania: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 11.0, source: "IRENA Albania 2024 — Karavasta (140 MW) + Spitalla (100 MW) PV; ~240 MW total; modelled ~2% curtailment", reportDate: "2024" },
   // Serbia and North Macedonia: reverted live→estimated 2026-06-06.
   // ENTSO-E A75 B16 feed unreliable — both are non-EU Energy Community TSOs;
   // EU Reg 543/2013 does not bind them. NMK transparency flagged as "well below

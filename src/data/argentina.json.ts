@@ -3,36 +3,15 @@ import { join } from "path";
 import { pathToFileURL } from "url";
 import { fetchJSON } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { timeOfDayAverageGW, totalTWh30d, peakGW, latestCompleteUtcDayProfileGW } from "../lib/profile.js";
-import { buildTypicalWindRegion } from "../lib/typical-profiles.js";
+import { timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
+import { unpublishedEmptyRegion } from "../lib/waste-status.js";
 
 const REGION_ID = "argentina";
 
-/**
- * CAMMESA renewables endpoint.
- * GET with query params: desde=DD-MM-YYYY&hasta=DD-MM-YYYY
- * Returns array of { momento, eolica, fotovoltaica, hidraulica, biocombustible }
- * NOTE: geoblocked to Argentine IP addresses. From non-AR hosts this will timeout.
- */
 const CAMMESA_RENEWABLES_URL =
   "https://cdsrenovables.cammesa.com/exhisto/RenovablesService/GetChartTotalTRDataSource/";
-
-/**
- * Argentina wind curtailment rate.
- * Anchor: ~0.5 TWh/yr Patagonia wind curtailment (IRENA/Ember LatAm 2024 estimate).
- * Based on ~5% of Patagonian wind generation.
- * Source: IRENA LatAm 2024 estimates.
- */
-const WIND_CURTAILMENT_RATE = 0.05;
-
-/**
- * Argentina solar curtailment rate.
- * Anchor: ~0.3 TWh/yr Cuyo/NOA solar curtailment (CAMMESA 2024).
- * Based on ~2% of PV generation.
- */
-const SOLAR_CURTAILMENT_RATE = 0.02;
 
 interface CammesaRenewablePoint {
   momento: string;
@@ -89,9 +68,9 @@ async function fetchCammesaWindCurtailment(days: number): Promise<CurtailmentPoi
         if (isNaN(utcDate.getTime())) continue;
         const utcTs = utcDate.toISOString();
 
-        const windCurtMw = (pt.eolica || 0) * WIND_CURTAILMENT_RATE;
-        if (windCurtMw > 0) {
-          points.push({ utcTimestamp: utcTs, mw: Math.max(0, windCurtMw) });
+        const windMw = pt.eolica || 0;
+        if (windMw > 0) {
+          points.push({ utcTimestamp: utcTs, mw: Math.max(0, windMw) });
         }
       } catch {
         // Skip bad timestamps
@@ -117,13 +96,12 @@ function readCsvData(): CurtailmentPoint[] | null {
     const points: CurtailmentPoint[] = [];
     for (let i = 1; i < lines.length; i++) {
       const cols = lines[i].split(",");
-      if (cols.length < 6) continue;
+      if (cols.length < 2) continue;
       const utcTs = cols[0].trim();
       const eolicaMw = parseFloat(cols[1]);
       if (!Number.isFinite(eolicaMw) || eolicaMw <= 0) continue;
 
-      const windCurtMw = eolicaMw * WIND_CURTAILMENT_RATE;
-      points.push({ utcTimestamp: utcTs, mw: windCurtMw });
+      points.push({ utcTimestamp: utcTs, mw: eolicaMw });
     }
 
     if (points.length < 24) return null;
@@ -141,20 +119,22 @@ async function run({ probe = true } = {}): Promise<RegionData> {
       if (points.length > 0) {
         const lastTs = points[points.length - 1].utcTimestamp;
         const sourceNote =
-          `CAMMESA live wind generation (cdsrenovables.cammesa.com) ` +
-          `× ${(WIND_CURTAILMENT_RATE * 100).toFixed(0)}% calibrated curtailment rate ` +
-          `(IRENA/Ember LatAm 2024 anchor ~0.5 TWh/yr Patagonia wind curtailment). ` +
+          `CAMMESA live wind generation (cdsrenovables.cammesa.com). ` +
+          `Waste unpublished — restricciones need agent registration. ` +
           `${points.length} points across 30 days. Latest: ${lastTs}.`;
 
         const result: RegionData = {
           regionId: REGION_ID,
-          profile: timeOfDayAverageGW(points),
-          latestProfile: latestCompleteUtcDayProfileGW(points),
-          totalTWh: totalTWh30d(points),
-          peakGW: peakGW(points),
+          profile: Array(24).fill(0),
+          latestProfile: null,
+          totalTWh: 0,
+          peakGW: 0,
           lastUpdated: lastTs,
           lastSuccessAt: new Date().toISOString(),
           sourceNote,
+          wasteStatus: "unpublished",
+          generationProfile: timeOfDayAverageGW(points),
+          generationTotalTWh: totalTWh30d(points),
         };
 
         return applyUncertainty(result, { regionTier: "estimated" });
@@ -170,33 +150,33 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   if (csvPoints && csvPoints.length > 0) {
     const lastTs = csvPoints[csvPoints.length - 1].utcTimestamp;
     const sourceNote =
-      `CAMMESA relay CSV (argentina-cammesa.csv, ${csvPoints.length} points) ` +
-      `× ${(WIND_CURTAILMENT_RATE * 100).toFixed(0)}% calibrated wind curtailment rate ` +
-      `(IRENA/Ember LatAm 2024 anchor ~0.5 TWh/yr). Live API geoblocked — using relay data. ` +
-      `Latest: ${lastTs}.`;
+      `CAMMESA relay CSV (argentina-cammesa.csv, ${csvPoints.length} points). ` +
+      `Generation measured. Waste unpublished — live API geoblocked. Latest: ${lastTs}.`;
 
     const result: RegionData = {
       regionId: REGION_ID,
-      profile: timeOfDayAverageGW(csvPoints),
+      profile: Array(24).fill(0),
       latestProfile: null,
-      totalTWh: totalTWh30d(csvPoints),
-      peakGW: peakGW(csvPoints),
+      totalTWh: 0,
+      peakGW: 0,
       lastUpdated: lastTs,
       lastSuccessAt: lastTs,
       sourceNote,
+      wasteStatus: "unpublished",
+      generationProfile: timeOfDayAverageGW(csvPoints),
+      generationTotalTWh: totalTWh30d(csvPoints),
     };
 
     return applyUncertainty(result, { regionTier: "estimated" });
   }
 
   // 3. Fallback: typical wind profile for Patagonia
-  return buildTypicalWindRegion(
-    REGION_ID,
-    3,     // peakHour UTC (Patagonia wind nocturnal peak)
-    0.5,   // annualTWh anchor — ~0.5 TWh/yr Patagonia wind curtailment
-    `Typical-shape fallback: CAMMESA live feed unavailable${probe ? " (probe failed — API geoblocked to Argentine IPs, no relay CSV)" : " (test mode)"}. ` +
-    `Calibration anchor ~0.5 TWh/yr Patagonia wind curtailment (IRENA/Ember LatAm 2024).`,
-    "2024",
+  return applyUncertainty(
+    unpublishedEmptyRegion(
+      REGION_ID,
+      `CAMMESA live feed unavailable${probe ? " (probe failed — API geoblocked to Argentine IPs, no relay CSV)" : " (test mode)"}. Not TSO-collected this build. Waste unpublished.`,
+    ),
+    { regionTier: "estimated", profileKind: "wind" },
   );
 }
 

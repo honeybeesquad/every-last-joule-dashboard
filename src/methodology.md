@@ -16,7 +16,7 @@
 
 <div class="methodology-callout methodology-callout-abstract">
 
-This dashboard estimates how much of current Bitcoin network electricity use is already matched by renewable curtailment — measured or estimated across 459 regions. That figure is a lower bound on published waste, not an upper bound on all waste. Calibration is against publicly reported 2024 curtailment from the relevant operator or regulator. Sources, assumptions, and known limits are below.
+This dashboard estimates how much of current Bitcoin network electricity use is already matched by renewable curtailment — measured or estimated across 536 regions. The globe also marks TSO-collected grids whose operators do not publish waste; unpublished is not a measured zero. That figure is a lower bound on published waste, not an upper bound on all waste. Calibration is against publicly reported 2024 curtailment from the relevant operator or regulator. Sources, assumptions, and known limits are below.
 
 </div>
 
@@ -51,9 +51,9 @@ The live-feed tier is three sub-tiers, because “live feed plus a rate” is th
 
 ENTSO-E zones that are still generation × rate are listed in [the rate audit](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/entsoe-rates.md). There is no ENTSO-E curtailed-renewable time series (A77 is plant outages, not curtailment). Measured European curtailment lives in national TSO feeds. Germany is on that path. Several other ENTSO-E rates remain placeholders.
 
-**T2-annual-calibrated (23 regions, ±20% peakGW envelope).** `tier: "anchored"`. Seven annual-anchored regions with no hourly shape (Austria APG, Murmansk wind, four Chinese hydro provinces, Maharashtra MSLDC monthly totals). Sixteen EIA-930 second-tier US balancing authorities (eight BAs, wind and solar) whose hourly shape is live but whose rate is Ember/LBNL/IRP rather than the BA’s own register — Path B in `docs/methodology/live-data-paths.md`, which is why they are T2.
+**T2-annual-calibrated (22 regions, ±20% peakGW envelope).** `tier: "anchored"`. Six annual-anchored regions with no hourly shape (Murmansk wind, four Chinese hydro provinces, Maharashtra MSLDC monthly totals). Sixteen EIA-930 second-tier US balancing authorities (eight BAs, wind and solar) whose hourly shape is live but whose rate is Ember/LBNL/IRP rather than the BA’s own register — Path B in `docs/methodology/live-data-paths.md`, which is why they are T2. Austria APG was demoted off this list when generation moved to unpublished ENTSO A75.
 
-**T3-modelled (249 regions, ±40% peakGW envelope).** A typical shape (solar, wind, hydro-seasonal, mixed, overnight) scaled to a published annual anchor. China’s provincial block is the largest; the [China audit](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/china-provinces.md) puts the bottom-up total a little above the NEA-implied national figure. Also most of South Asia, Africa, the Middle East, Latin America outside Brazil/Atacama, Hawaii, and twelve named Peruvian plants. Ireland, South Africa, and Peru’s three national aggregates have since moved onto live feeds. Kenya geothermal uses the overnight profile in §2.3.
+**T3-modelled (327 regions, ±40% peakGW envelope).** A typical shape (solar, wind, hydro-seasonal, mixed, overnight) scaled to a published annual anchor, or a TSO-collected generation grid whose waste is unpublished. China’s provincial block is the largest; the [China audit](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/methodology/china-provinces.md) puts the bottom-up total a little above the NEA-implied national figure. Also most of South Asia, Africa, the Middle East, Latin America outside Brazil/Atacama, Hawaii, unpublished EIA/ENTSO grids, and twelve named Peruvian plants. Ireland, South Africa, and Peru’s three national aggregates have since moved onto live feeds. Kenya geothermal uses the overnight profile in §2.3.
 
 `confidenceTier` is derived from `Region.tier` by [`src/lib/uncertainty.ts::deriveTier`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/src/lib/uncertainty.ts).
 
@@ -89,7 +89,7 @@ Hashrate sources disagree by low-single-digit percent. The 24-hour average is us
 
 1. **Self-curtailment is invisible.** Owners who throttle in negative-price hours without an operator instruction do not appear. True curtailment is higher than the sum of published dispatch-down.
 
-2. **Geographic completeness.** Coverage is 459 regions. Parts of Central Africa, Central Asia beyond Kazakhstan, and Russian renewables beyond the tracked hydro/wind anchors are estimated. Remaining gaps are listed, not invented. See [`docs/known-limitations.md`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/known-limitations.md).
+2. **Geographic completeness.** Coverage is 536 regions. Parts of Central Africa, Central Asia beyond Kazakhstan, and Russian renewables beyond the tracked hydro/wind anchors are estimated. Remaining gaps are listed, not invented. See [`docs/known-limitations.md`](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/known-limitations.md).
 
 3. **Rate-proxy drift.** Calibrated rates use a single published year. A weird 2024 (drought, unusual wind) will not match 2025 volumes. Envelopes (±15% / ±50% / ±35.5% of peakGW) cover that; they do not remove it.
 
@@ -121,7 +121,7 @@ Hashrate sources disagree by low-single-digit percent. The 24-hour average is us
 
 Source: https://github.com/honeybeesquad/every-last-joule-dashboard. Loaders are deterministic given their upstream response. Last-good snapshots are committed, so `npm install && npm run build` reproduces the displayed figure when an upstream is down. Rates, anchors, fuel-mix overrides, and seasonal multipliers are in `src/data/` and `src/lib/`.
 
-The Zenodo **v1.4.0** cut is this page: 459 regions, renewables only ([10.5281/zenodo.22837934](https://doi.org/10.5281/zenodo.22837934)). Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to the latest mint. v1.3.2 ([10.5281/zenodo.20570864](https://doi.org/10.5281/zenodo.20570864)) is the last archived cut that still included flare.
+The Zenodo **v1.4.0** cut is the 2026-09 deposit of this page ([10.5281/zenodo.22837934](https://doi.org/10.5281/zenodo.22837934)). Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) always resolves to the latest mint. v1.3.2 ([10.5281/zenodo.20570864](https://doi.org/10.5281/zenodo.20570864)) is the last archived cut that still included flare.
 
 ## 8. Recent corrections
 

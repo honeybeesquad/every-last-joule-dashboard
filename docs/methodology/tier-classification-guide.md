@@ -149,9 +149,9 @@ These are the canonical definitions. Any classification decision must satisfy th
 - An invented figure with no published source
 - A vague citation like "IRENA 2024" without a specific document URL or page reference
 
-**Two mechanics sit in this tier — T2 does not mean "flat", and it does not mean "no live feed".** The 23 <!-- tier-counts:T2 --> `anchored` regions as of 2026-09-11 (`npm run tally:tiers`) split as:
+**Two mechanics sit in this tier — T2 does not mean "flat", and it does not mean "no live feed".** The 22 <!-- tier-counts:T2 --> `anchored` regions as of 2026-09-20 (`npm run tally:tiers`) split as:
 
-- **Annual-anchored flat base — 7 regions.** Austria APG, Russia Murmansk wind, the four Chinese provincial hydro regions (Hunan, Hubei, Guizhou, Chongqing), and India Maharashtra. These are the regions carrying `profileKind: "flat"` in `STATIC_PROFILE_KIND`: a published annual total (for Maharashtra, measured MSLDC monthly totals) with no intraday shape claimed.
+- **Annual-anchored flat base — 6 regions.** Russia Murmansk wind, the four Chinese provincial hydro regions (Hunan, Hubei, Guizhou, Chongqing), and India Maharashtra. These are the regions carrying `profileKind: "flat"` in `STATIC_PROFILE_KIND`: a published annual total (for Maharashtra, measured MSLDC monthly totals) with no intraday shape claimed. Austria APG left this list when generation moved onto unpublished ENTSO A75.
 - **EIA-930 second-tier US balancing authorities — 16 regions.** Southern Company, PacifiCorp West, PacifiCorp East, Public Service Colorado, Arizona Public Service, Salt River Project, Idaho Power and Tucson Electric Power, wind and solar each, all built on `src/lib/eia-iso.ts`. Their hourly shape is a **live** EIA-930 per-fuel generation feed; only the magnitude is externally anchored. They carry no `STATIC_PROFILE_KIND` entry, because nothing about their shape is modelled.
 
 What puts those sixteen in T2 rather than T1a is the provenance of the *rate*, not the shape: the rate is a literature/IRP anchor rather than a number the balancing authority itself published, which is `docs/methodology/live-data-paths.md` Path B failing Test 2 ("the rate has a TSO-published numerator"). Each region's `docs/validation/<id>.md` states this in its Known limitations section.

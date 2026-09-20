@@ -54,6 +54,20 @@ export type SourceStatus = "live" | "cached" | "degraded";
  */
 export type SourceProvenance = "verified" | "official-lead" | "modelled-fallback";
 
+/**
+ * Whether this snapshot's waste (`profile` / `totalTWh`) is a TSO-published
+ * series. Orthogonal to `Region.tier` (waste-confidence) and to generation.
+ *
+ *   "measured"        operator publishes a curtailment/spill/constraint series
+ *   "measured-zero"   operator publishes that series and it is zero in-window
+ *   "unpublished"     TSO generation (or grid presence) is collected; the
+ *                     operator does not publish waste. `profile` is zeros.
+ *                     Missing ≠ zero — do not treat unpublished as a finding.
+ *
+ * Absent on legacy snapshots: display waste pillars from `profile` as today.
+ */
+export type WasteStatus = "measured" | "measured-zero" | "unpublished";
+
 /** Canonical region definition. Immutable; does not change per build. */
 export interface Region {
   id: string;              // kebab-case stable id
@@ -198,6 +212,12 @@ export interface RegionData {
    * `src/lib/generation-share.ts`, which is the single gate for that decision.
    */
   generationBasis?: GenerationBasis;
+  /**
+   * Whether `profile` is TSO-published waste. See `WasteStatus`.
+   * TSO-collected grids with unpublished waste keep `profile` as zeros and
+   * must emit `generationProfile` — never copy generation into `profile`.
+   */
+  wasteStatus?: WasteStatus;
 }
 
 /** See `RegionData.generationBasis`. */

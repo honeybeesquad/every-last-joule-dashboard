@@ -55,6 +55,10 @@ One file per region. Overwritten on each scheduled build. Historical values acce
 | `confidenceTier` | `string` | One of `"T1-live-TSO"` (legacy alias), `"T1a-live-tso"`, `"T1b-live-domestic-anchored"`, `"T1c-live-neighbour-anchored"`, `"T2-annual-calibrated"`, `"T3-modelled"`, or `"T4-structural-gap"`. Derived deterministically by `src/lib/uncertainty.ts::deriveTier`. See `docs/methodology/uncertainty.md`. | Yes (legacy snapshots may pre-date S2 enrichment) |
 | `uncertaintyLowGW` | `number` | Lower bound of the per-tier envelope on `peakGW`. `max(0, peakGW − δ)`. | Yes |
 | `uncertaintyHighGW` | `number` | Upper bound of the per-tier envelope on `peakGW`. `peakGW + δ`. | Yes |
+| `generationProfile` | `number[24]` | 30-day trailing average **generation** in GW per UTC hour, when the loader emits it. Orthogonal to `profile` (waste). | Yes |
+| `generationTotalTWh` | `number` | 30-day trailing generation in TWh. | Yes |
+| `generationBasis` | `string` | How generation relates to waste for share publication. See `src/lib/generation-share.ts`. | Yes |
+| `wasteStatus` | `"measured" \| "measured-zero" \| "unpublished"` | Whether `profile` is TSO-published waste. `unpublished` means the operator does not publish curtailment/spill — zeros on `profile` are not a finding. Required on TSO-collected grids whose waste is not a published series; those records must also emit `generationProfile`. Absent on legacy snapshots. | Yes |
 
 ### Example
 

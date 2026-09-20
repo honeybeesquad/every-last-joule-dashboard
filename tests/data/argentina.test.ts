@@ -7,7 +7,10 @@ describe("argentina loader", () => {
     expect(data.regionId).toBe("argentina");
     expect(data.profile).toHaveLength(24);
     expect(data.latestProfile).toBeNull();
-    expect(data.totalTWh).toBeGreaterThan(0);
-    expect(data.peakGW).toBeGreaterThan(0);
+    expect(data.totalTWh).toBe(0);
+    expect(data.wasteStatus).toBe("unpublished");
+    expect(data.generationProfile).toHaveLength(24);
+    expect(data.generationTotalTWh).toBeGreaterThan(0);
+    expect(data.confidenceTier).toBe("T3-modelled");
   });
 });
