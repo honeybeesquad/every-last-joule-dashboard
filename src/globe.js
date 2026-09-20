@@ -448,13 +448,15 @@ export async function mountGlobe(canvas, initial) {
       }
 
       ctx.globalAlpha = pillarAlpha * visible;
-      // Casing first, so a region dot never merges into the land beneath it.
-      ctx.fillStyle = tokens.keyline;
-      ctx.beginPath();
-      ctx.arc(anchorX, anchorY, coreR + 1.1, 0, Math.PI * 2);
-      ctx.fill();
       if (repDotStyle === "hollow") {
         // Estimated: outline ring only, no fill — reads as "not measured".
+        // Nothing is painted inside it: a casing here would fill the dot in
+        // and destroy the one cue that says this number is modelled.
+        ctx.strokeStyle = tokens.keyline;
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.arc(anchorX, anchorY, coreR + 0.9, 0, Math.PI * 2);
+        ctx.stroke();
         ctx.strokeStyle = domColor;
         ctx.lineWidth = 1.1;
         ctx.beginPath();
@@ -466,8 +468,12 @@ export async function mountGlobe(canvas, initial) {
         ctx.beginPath();
         ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);
         ctx.fill();
+        // Separation from the land comes from a hairline on the dot's own
+        // edge. It used to be a filled casing 1.1px wider, which on a 0.02 GW
+        // region added ~180% more area — a field of small regions (Japan has
+        // twelve) read as chunky dark blobs with a coloured pip in them.
         ctx.strokeStyle = tokens.keyline;
-        ctx.lineWidth = 0.6;
+        ctx.lineWidth = 1;
         ctx.stroke();
         if (repDotStyle === "ringed") {
           // Anchored: thin concentric ring around the filled core.

@@ -52,6 +52,40 @@ and hydro arrays and then sums them, keeping only the annual ratio. Masking
 removes the impossible part (solar at night); it does not give wind and
 hydro their own shapes. Fixing that means carrying per-fuel profiles on
 `RegionData` and is a larger change.
+## Console layout — lockup into the sidebar, one ranked rail (2026-09-20)
+
+Branch `feat/matte-console-layout`, stacked on the matte refresh above.
+
+**Sidebar.** The mark and wordmark move out of the full-width header to the
+head of `.panel-left`, above the headline stack, separated by one hairline —
+the percentage, the deck and the three figures read as one column under the
+mark rather than as a band below a banner. The header keeps the database tag,
+the theme toggle and the nav.
+
+**One rail instead of three fuel columns.** `.panel-right` was three columns
+of up to 50 rows each, one per fuel. It is now a single list ranked across all
+fuels, the fuel carried by the dot on each row and named in the legend under
+the list. A region still contributes a row per fuel it curtails in, which is
+how the names already read ("Bahia Solar", "Bahia Wind").
+
+**What it costs, on the record:** the rail shows `RAIL_LIST_LIMIT` = 18 rows
+where the columns showed up to 150, and the per-fuel time-of-day descriptors
+("Peaks at local noon") move to legend tooltips. The truncation notice names
+the remainder across every fuel (`Hard cut at 18 — N more curtailing now`) so
+the cut is never silent. This reduction was originally offset by on-globe
+callouts; **those were removed** (see the entry above), so the 150 → 18 drop
+currently stands with no compensating surface. `RAIL_LIST_LIMIT` in
+`src/index.md` is the single knob, and the rail scrolls, so a larger number
+costs no layout.
+
+**The share view is unchanged in behaviour:** it still ranks by share rather
+than magnitude, and still lists regions whose share would be circular or
+undenominated below the ranked ones with the reason, because "no honest
+share" and "no curtailment" are different facts.
+
+Dead code removed with the columns: `HOTSPOT_LIST_LIMIT` and the
+`.hotspot-columns` / `-column` / `-title` / `-subtitle` / `-count` rules.
+
 ## Matte globe refresh — gold off the sphere, colour only where data is (2026-09-20)
 
 Branch `feat/matte-globe-refresh`. The globe read as one warm haze: sphere
