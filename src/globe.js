@@ -3,7 +3,7 @@ import * as topojson from "npm:topojson-client";
 import { regionGWAtHour, generationGWAtHour } from "./lib/calc.js";
 import { showsWastePillar, wasteStatusOf } from "./lib/waste-status.js";
 import { getRegionFuelColor } from "./lib/fuel.js";
-import { readGlobeTokens, isLinearGradientToken } from "./lib/theme-tokens.js";
+import { readGlobeTokens } from "./lib/theme-tokens.js";
 import { buildPillarUnits } from "./lib/pillar-layout.js";
 import { qualityBucket, qualityOpacity, dotStyleFor } from "./lib/region-quality.js";
 import { wrapLongitude, easeOutCubic } from "./lib/globe-geo.js";
@@ -12,7 +12,7 @@ import { wrapLongitude, easeOutCubic } from "./lib/globe-geo.js";
 // added a third-party DNS + TLS handshake (~200–400ms on cellular) to
 // every cold page load. Served from our own origin now via FileAttachment.
 let countriesPromise;
-let landDots;
+const landDotsByStep = new Map();
 
 async function loadCountries(topologyUrl) {
   if (!countriesPromise) {
@@ -23,29 +23,46 @@ async function loadCountries(topologyUrl) {
   return countriesPromise;
 }
 
-function precomputeLandDots(countries) {
-  if (landDots) return landDots;
+// The land matrix is the globe's main texture, so its density has to track
+// how large the globe is actually drawn. At a fixed 2.5deg the dots spread
+// out and stop reading as a surface above roughly 700px — the continents
+// dissolve into scattered specks. Step is chosen once per mount from the
+// canvas size and floored at 1.8deg: finer than that the one-off
+// geoContains filter below costs more main-thread time than the extra
+// fidelity is worth.
+function gridStepFor(size) {
+  if (size >= 820) return 1.8;
+  if (size >= 560) return 2.1;
+  return 2.5;
+}
+
+function precomputeLandDots(countries, step) {
+  const key = step.toFixed(2);
+  const cached = landDotsByStep.get(key);
+  if (cached) return cached;
   const dots = [];
-  for (let lat = -80; lat <= 80; lat += 2.5) {
+  for (let lat = -80; lat <= 80; lat += step) {
     const cos = Math.cos((lat * Math.PI) / 180);
-    const lonStep = 2.5 / Math.max(cos, 0.2);
+    const lonStep = step / Math.max(cos, 0.2);
     for (let lon = -180; lon <= 180; lon += lonStep) {
       dots.push([lon, lat]);
     }
   }
-  landDots = dots.filter(([lon, lat]) => {
+  const filtered = dots.filter(([lon, lat]) => {
     for (const feature of countries.features) {
       if (d3.geoContains(feature, [lon, lat])) return true;
     }
     return false;
   });
-  return landDots;
+  landDotsByStep.set(key, filtered);
+  return filtered;
 }
 
 export async function mountGlobe(canvas, initial) {
   const ctx = canvas.getContext("2d");
   const countries = await loadCountries(initial.topologyUrl);
-  const dots = precomputeLandDots(countries);
+  const mountSize = Math.min(canvas.clientWidth || 0, canvas.clientHeight || 0) || 720;
+  const dots = precomputeLandDots(countries, gridStepFor(mountSize));
   // Cap DPR lower on narrow viewports — a 1.5x render on a 360px-wide
   // phone is visually indistinguishable from 2x but costs 45% fewer
   // pixels per frame to composite.
@@ -53,6 +70,9 @@ export async function mountGlobe(canvas, initial) {
   const dprCap = isMobileViewport ? 1.5 : 2;
   const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
   const onRegionClick = typeof initial.onRegionClick === "function" ? initial.onRegionClick : null;
+  // Callouts name the largest curtailments on the face you can currently see.
+  // Off by default so the paper's embed stays a bare globe.
+  const showCallouts = initial.showCallouts === true;
   const state = {
     regions: initial.regions,
     regionData: initial.regionData,
@@ -111,6 +131,76 @@ export async function mountGlobe(canvas, initial) {
   // region and animate scale 0 → 1 over BIRTH_MS.
   const BIRTH_MS = 350;
   const pillarBirthTimes = new Map(); // repId → DOMHighResTimeStamp
+
+  // --- Callout selection -----------------------------------------------
+  // Which regions get named is re-picked on a slow cadence, not per frame:
+  // at 60fps the top-N set flickers as pillars cross the horizon and labels
+  // visibly reshuffle. Positions still track their own pillar every frame,
+  // so a label stays glued to the pillar it names while the globe turns.
+  const CALLOUT_MAX = 6;
+  const CALLOUT_REPICK_MS = 1400;
+  const CALLOUT_MIN_SEP_PX = 44;
+  let calloutIds = [];
+  let calloutPickedAt = -Infinity;
+
+  /**
+   * Name the largest curtailments on the visible face: a short leader line
+   * from each pillar tip out to a label parked in the left or right gutter.
+   * Labels are spread vertically so they never overlap each other.
+   */
+  function drawCallouts(ctx, pool, geom, width, height, now) {
+    if (now - calloutPickedAt > CALLOUT_REPICK_MS || calloutIds.length === 0) {
+      calloutIds = pool
+        .sort((a, b) => b.gw - a.gw)
+        .slice(0, CALLOUT_MAX)
+        .map((c) => c.id);
+      calloutPickedAt = now;
+    }
+    const items = [];
+    for (const id of calloutIds) {
+      const g = geom.get(id);
+      if (g) items.push({ ...g, side: g.x < width / 2 ? "left" : "right" });
+    }
+    const GUTTER = 104;
+    for (const side of ["left", "right"]) {
+      const col = items.filter((i) => i.side === side).sort((a, b) => a.y - b.y);
+      let last = -Infinity;
+      for (const i of col) {
+        i.labelY = Math.max(i.y, last + CALLOUT_MIN_SEP_PX);
+        last = i.labelY;
+      }
+    }
+    ctx.save();
+    ctx.setLineDash([]);
+    for (const i of items) {
+      if (i.labelY < 18 || i.labelY > height - 18) continue;
+      const elbowX = i.x + i.dx * 16;
+      const elbowY = i.y + i.dy * 16;
+      const labelX = i.side === "left" ? GUTTER : width - GUTTER;
+      ctx.globalAlpha = 0.85;
+      ctx.strokeStyle = tokens.border;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(i.x, i.y);
+      ctx.lineTo(elbowX, elbowY);
+      ctx.lineTo(labelX, i.labelY);
+      ctx.stroke();
+      ctx.fillStyle = i.color;
+      ctx.beginPath();
+      ctx.arc(elbowX, elbowY, 2.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.textAlign = i.side === "left" ? "right" : "left";
+      const tx = labelX + (i.side === "left" ? -9 : 9);
+      ctx.font = '11px "IBM Plex Mono", ui-monospace, monospace';
+      ctx.fillStyle = `rgba(${tokens.dotDayRGB}, 0.95)`;
+      ctx.fillText(i.name, tx, i.labelY - 5);
+      ctx.font = '13px "IBM Plex Mono", ui-monospace, monospace';
+      ctx.fillStyle = i.color;
+      ctx.fillText(`${i.gw.toFixed(i.gw >= 1 ? 1 : 2)} GW`, tx, i.labelY + 12);
+    }
+    ctx.restore();
+  }
 
   /**
    * Hit-test: given client coords, return the closest pillar group within
@@ -214,63 +304,32 @@ export async function mountGlobe(canvas, initial) {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
+    // One flat ocean fill. The radial day wash and the night-overlay wash
+    // that used to sit on top are gone: they tinted the whole sphere the
+    // same hue as the solar pillars, which is what made the globe read as a
+    // single warm haze. Day and night are now carried entirely by the land
+    // matrix below, so the only saturated thing on the sphere is fuel colour.
     ctx.beginPath();
     path({ type: "Sphere" });
-    ctx.fillStyle = tokens.spherebaseHex;
+    ctx.fillStyle = tokens.oceanHex;
     ctx.fill();
 
-    if (sunScreen) {
-      const gradient = ctx.createRadialGradient(
-        sunScreen[0],
-        sunScreen[1],
-        size * 0.04,
-        sunScreen[0],
-        sunScreen[1],
-        size * 0.55
-      );
-      gradient.addColorStop(0,    tokens.dayGradient1);
-      gradient.addColorStop(0.45, tokens.dayGradient2);
-      gradient.addColorStop(1,    tokens.dayGradient3);
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      path({ type: "Sphere" });
-      ctx.fill();
-    }
-
-    ctx.beginPath();
-    path(d3.geoCircle().center([antiSolarLng, -sunLat]).radius(90)());
-    if (isLinearGradientToken(tokens.nightOverlay)) {
-      // A theme may use a CSS linear-gradient() for --night-overlay,
-      // which canvas can't consume as a fillStyle; reproduce it here.
-      const w = canvas.width / dpr;
-      const h = canvas.height / dpr;
-      const cosA = Math.cos((135 * Math.PI) / 180);
-      const sinA = Math.sin((135 * Math.PI) / 180);
-      const x0 = w / 2 - (w * cosA) / 2;
-      const y0 = h / 2 - (h * sinA) / 2;
-      const x1 = w / 2 + (w * cosA) / 2;
-      const y1 = h / 2 + (h * sinA) / 2;
-      const grad = ctx.createLinearGradient(x0, y0, x1, y1);
-      grad.addColorStop(0, "rgba(40,30,20,0.30)");
-      grad.addColorStop(1, "rgba(15,10,5,0.55)");
-      ctx.fillStyle = grad;
-    } else {
-      ctx.fillStyle = tokens.nightOverlay;
-    }
-    ctx.fill();
-
+    const dotPx = size >= 820 ? 1.8 : 1.5;
+    const dotHalf = dotPx / 2;
     for (const [lon, lat] of dots) {
       const dist = d3.geoDistance([lon, lat], center);
       if (dist > Math.PI / 2 - 0.02) continue;
       const point = projection([lon, lat]);
       if (!point) continue;
-      const fade = 1 - dist / (Math.PI / 2);
+      // Hard terminator rather than a falloff: a dot is lit or it is not.
+      // The unlit side stays warm and bright (amber, not grey) so the
+      // continents read across the whole face instead of fading out.
       const solarAngle = d3.geoDistance([lon, lat], [sunLng, sunLat]);
-      const sunlit = Math.max(0, Math.cos(solarAngle));
-      const brightness = 0.30 + fade * 0.10 + Math.pow(sunlit, 0.7) * 0.60;
-      const dotRGB = sunlit > 0.3 ? tokens.dotDayRGB : tokens.dotNightRGB;
-      ctx.fillStyle = `rgba(${dotRGB}, ${brightness})`;
-      ctx.fillRect(point[0] - 0.6, point[1] - 0.6, 1.4, 1.4);
+      const lit = Math.cos(solarAngle) > 0.12;
+      ctx.fillStyle = lit
+        ? `rgba(${tokens.dotDayRGB}, 0.97)`
+        : `rgba(${tokens.dotNightRGB}, 0.95)`;
+      ctx.fillRect(point[0] - dotHalf, point[1] - dotHalf, dotPx, dotPx);
     }
 
     ctx.beginPath();
@@ -290,6 +349,8 @@ export async function mountGlobe(canvas, initial) {
 
     const pillarUnits = buildPillarUnitsForState();
     const visibleThisFrame = new Set();
+    const calloutPool = [];
+    const calloutGeom = new Map();
 
     for (const unit of pillarUnits) {
       const group = unit.regions;
@@ -315,6 +376,11 @@ export async function mountGlobe(canvas, initial) {
       if (dist > Math.PI / 2) continue;
       const point = projection([rep.lon, rep.lat]);
       if (!point) continue;
+      // Only well inside the limb: a label on a pillar at the very edge
+      // points off the disc and its leader line crosses the whole globe.
+      if (showCallouts && showWaste && dist < Math.PI / 2 * 0.86) {
+        calloutPool.push({ id: rep.id, name: rep.name, gw: totalWasteGW });
+      }
 
       // Birth animation: first time a region crosses the horizon, scale it
       // from 0 → 1 over BIRTH_MS so it emerges rather than snapping in.
@@ -335,13 +401,16 @@ export async function mountGlobe(canvas, initial) {
 
       const visible = 1 - dist / (Math.PI / 2);
       const weight = Math.sqrt(totalGW);
+      // Kept only as the radius of the selection ring; nothing is drawn with
+      // a blur any more.
       const glowR = (4 + weight * 5) * birthT;
       const coreR = (1.5 + weight * 0.8) * birthT;
       const centreX = width / 2;
       const centreY = height / 2;
-      const solarAngle = d3.geoDistance([rep.lon, rep.lat], [sunLng, sunLat]);
-      const sunlit = Math.max(0, Math.cos(solarAngle));
-      const sunDim = 0.6 + 0.4 * Math.max(0, sunlit);
+      // Sun dimming is gone. The land matrix already states day from night;
+      // dimming the pillars by it as well double-dimmed the night side and
+      // hid real curtailment. Confidence (qualityOpacity) and limb distance
+      // are the only things allowed to touch pillar opacity.
 
       // Dominant color for glow + core dot.
       const repData = state.regionData[rep.id];
@@ -370,15 +439,6 @@ export async function mountGlobe(canvas, initial) {
         ctx.restore();
       }
 
-      ctx.save();
-      ctx.filter = "blur(4px)";
-      ctx.globalAlpha = pillarAlpha * 0.45 * visible;
-      ctx.fillStyle = domColor;
-      ctx.beginPath();
-      ctx.arc(anchorX, anchorY, glowR, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-
       // Outward direction from globe centre is anchored at the original
       // projection point so all offset pillars within a bucket lean the
       // same way (parallel bars 44px apart on screen).
@@ -391,30 +451,33 @@ export async function mountGlobe(canvas, initial) {
         const pillarH = (3 + weight * 48) * birthT;
         const pillarW = 3;
 
+        if (showCallouts) {
+          calloutGeom.set(rep.id, {
+            x: anchorX + dx * pillarH, y: anchorY + dy * pillarH,
+            dx, dy, color: domColor, gw: totalWasteGW, name: rep.name,
+          });
+        }
         if (group.length === 1) {
-          // Single-fuel pillar: same gradient style as before.
+          // Single-fuel pillar: one flat stroke, butt cap, no base-to-tip
+          // gradient. The keyline underneath is what keeps a solar pillar
+          // legible where it crosses the lit (near-white) or unlit (amber)
+          // land — both are close enough to solar gold to swallow it.
           const tipX = anchorX + dx * pillarH;
           const tipY = anchorY + dy * pillarH;
-          const pillarGradient = ctx.createLinearGradient(anchorX, anchorY, tipX, tipY);
-          pillarGradient.addColorStop(0, `${domColor}${tokens.pillarBaseAlpha}`);
-          pillarGradient.addColorStop(1, domColor);
-          ctx.strokeStyle = pillarGradient;
-          ctx.lineWidth = pillarW;
-          ctx.lineCap = "round";
-          ctx.globalAlpha = pillarAlpha * visible * sunDim;
+          ctx.globalAlpha = pillarAlpha * visible;
+          ctx.lineCap = "butt";
+          ctx.strokeStyle = tokens.keyline;
+          ctx.lineWidth = pillarW + 2.5;
           ctx.beginPath();
           ctx.moveTo(anchorX, anchorY);
           ctx.lineTo(tipX, tipY);
           ctx.stroke();
-
-          ctx.save();
-          ctx.filter = "blur(3px)";
-          ctx.globalAlpha = pillarAlpha * 0.5 * visible * sunDim;
-          ctx.fillStyle = domColor;
+          ctx.strokeStyle = domColor;
+          ctx.lineWidth = pillarW;
           ctx.beginPath();
-          ctx.arc(tipX, tipY, pillarW * 1.6, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
+          ctx.moveTo(anchorX, anchorY);
+          ctx.lineTo(tipX, tipY);
+          ctx.stroke();
         } else {
           // Stacked composite pillar: draw one segment per member, proportional to GW.
           // Sort by GW descending so the largest fuel is at the base.
@@ -435,35 +498,31 @@ export async function mountGlobe(canvas, initial) {
             const segBucket = qualityBucket(seg.region, segData);
             const segDegraded = segData?.sourceStatus === "degraded";
             const segAlpha = qualityOpacity(segDegraded ? "estimated" : segBucket);
-            const isBase = segStart === 0;
-            const isTip = segStart + segLen >= pillarH - 0.5;
-            const grad = ctx.createLinearGradient(segStartX, segStartY, segEndX, segEndY);
-            grad.addColorStop(0, isBase ? `${segColor}${tokens.pillarBaseAlpha}` : segColor);
-            grad.addColorStop(1, segColor);
-            ctx.strokeStyle = grad;
-            ctx.lineWidth = pillarW;
-            ctx.lineCap = isTip ? "round" : "butt";
-            ctx.globalAlpha = segAlpha * visible * sunDim;
+            ctx.globalAlpha = segAlpha * visible;
+            ctx.lineCap = "butt";
+            ctx.strokeStyle = tokens.keyline;
+            ctx.lineWidth = pillarW + 2.5;
             ctx.beginPath();
             ctx.moveTo(segStartX, segStartY);
             ctx.lineTo(segEndX, segEndY);
             ctx.stroke();
-            if (isTip) {
-              ctx.save();
-              ctx.filter = "blur(3px)";
-              ctx.globalAlpha = segAlpha * 0.5 * visible * sunDim;
-              ctx.fillStyle = segColor;
-              ctx.beginPath();
-              ctx.arc(segEndX, segEndY, pillarW * 1.6, 0, Math.PI * 2);
-              ctx.fill();
-              ctx.restore();
-            }
+            ctx.strokeStyle = segColor;
+            ctx.lineWidth = pillarW;
+            ctx.beginPath();
+            ctx.moveTo(segStartX, segStartY);
+            ctx.lineTo(segEndX, segEndY);
+            ctx.stroke();
             segStart += segLen;
           }
         }
       }
 
       ctx.globalAlpha = pillarAlpha * visible;
+      // Casing first, so a region dot never merges into the land beneath it.
+      ctx.fillStyle = tokens.keyline;
+      ctx.beginPath();
+      ctx.arc(anchorX, anchorY, coreR + 1.1, 0, Math.PI * 2);
+      ctx.fill();
       if (repDotStyle === "hollow") {
         // Estimated: outline ring only, no fill — reads as "not measured".
         ctx.strokeStyle = domColor;
@@ -477,12 +536,12 @@ export async function mountGlobe(canvas, initial) {
         ctx.beginPath();
         ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
+        ctx.strokeStyle = tokens.keyline;
         ctx.lineWidth = 0.6;
         ctx.stroke();
         if (repDotStyle === "ringed") {
           // Anchored: thin concentric ring around the filled core.
-          ctx.strokeStyle = "rgba(255, 255, 255, 0.7)";
+          ctx.strokeStyle = tokens.dotDayRGB ? `rgba(${tokens.dotDayRGB}, 0.7)` : "rgba(255,248,224,0.7)";
           ctx.lineWidth = 0.6;
           ctx.beginPath();
           ctx.arc(anchorX, anchorY, coreR + 2, 0, Math.PI * 2);
@@ -512,6 +571,8 @@ export async function mountGlobe(canvas, initial) {
         ctx.restore();
       }
     }
+
+    if (showCallouts) drawCallouts(ctx, calloutPool, calloutGeom, width, height, renderNow);
 
     // Update birth-animation state for next frame.
     // Any region that was visible last frame but not this frame has rotated
