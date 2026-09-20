@@ -3,6 +3,40 @@
 **Last verified against git:** 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk is now `--font-display` and `--font-body` in both themes, and the dashboard wordmark's italic serif "Joule" is gone; see the entry below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
+## Console layout — lockup into the sidebar, one ranked rail (2026-09-20)
+
+Branch `feat/matte-console-layout`, stacked on the matte refresh above.
+
+**Sidebar.** The mark and wordmark move out of the full-width header to the
+head of `.panel-left`, above the headline stack, separated by one hairline —
+the percentage, the deck and the three figures read as one column under the
+mark rather than as a band below a banner. The header keeps the database tag,
+the theme toggle and the nav.
+
+**One rail instead of three fuel columns.** `.panel-right` was three columns
+of up to 50 rows each, one per fuel. It is now a single list ranked across all
+fuels, the fuel carried by the dot on each row and named in the legend under
+the list. A region still contributes a row per fuel it curtails in, which is
+how the names already read ("Bahia Solar", "Bahia Wind").
+
+**What it costs, on the record:** the rail shows `RAIL_LIST_LIMIT` = 18 rows
+where the columns showed up to 150, and the per-fuel time-of-day descriptors
+("Peaks at local noon") move to legend tooltips. The truncation notice names
+the remainder across every fuel (`Hard cut at 18 — N more curtailing now`) so
+the cut is never silent. This reduction was originally offset by on-globe
+callouts; **those were removed** (see the entry above), so the 150 → 18 drop
+currently stands with no compensating surface. `RAIL_LIST_LIMIT` in
+`src/index.md` is the single knob, and the rail scrolls, so a larger number
+costs no layout.
+
+**The share view is unchanged in behaviour:** it still ranks by share rather
+than magnitude, and still lists regions whose share would be circular or
+undenominated below the ranked ones with the reason, because "no honest
+share" and "no curtailment" are different facts.
+
+Dead code removed with the columns: `HOTSPOT_LIST_LIMIT` and the
+`.hotspot-columns` / `-column` / `-title` / `-subtitle` / `-count` rules.
+
 ## Matte globe refresh — gold off the sphere, colour only where data is (2026-09-20)
 
 Branch `feat/matte-globe-refresh`. The globe read as one warm haze: sphere

@@ -32,7 +32,9 @@ import { finalizeRegionData } from "./lib/region-data-finalize.js";
 import { countPublishedWasteRegions } from "./lib/waste-status.js";
 import { mountGlobe } from "./globe.js";
 
-const HOTSPOT_LIST_LIMIT = 50;
+// The single ranked rail is narrower and taller-bounded than the three
+// columns it replaced, so it carries fewer rows and says so under the list.
+const RAIL_LIST_LIMIT = 18;
 
 /** Absolute-view column subtitles, hoisted so the share view can restore them. */
 const FUEL_SUBTITLE = {
@@ -75,8 +77,6 @@ document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
     <header class="app-header">
       <div class="app-title">
-        <img class="app-mark" src="/brand/mark-still.svg" alt="" width="22" height="22" decoding="async">
-        <span class="app-wordmark">Every Last <span class="app-wordmark-accent">Joule</span></span>
         <span class="app-tag">Wasted Energy Database · <a class="app-tag-version" href="${feeds.zenodoVersion.recordUrl}" target="_blank" rel="noopener">v${feeds.zenodoVersion.version}</a></span>
       </div>
       <div class="app-header-right">
@@ -93,6 +93,10 @@ document.getElementById("app-root").innerHTML = `
 
     <div class="app-body">
       <section class="panel panel-left" aria-label="Headline">
+        <div class="app-brand">
+          <img class="app-mark" src="/brand/mark-still.svg" alt="" width="26" height="26" decoding="async">
+          <span class="app-wordmark">Every Last <span class="app-wordmark-accent">Joule</span></span>
+        </div>
         <div class="eyebrow">Hashrate this waste could cover</div>
         <div class="stat-headline-row">
           <div class="display-xl num-tabular" id="pct-readout" aria-live="polite" aria-atomic="true">—%</div>
@@ -147,20 +151,13 @@ document.getElementById("app-root").innerHTML = `
       <section class="panel panel-right" aria-label="Largest curtailments this hour">
         <div class="eyebrow" id="hotspots-title">Largest curtailments · UTC —</div>
         <p class="hotspot-units-note" id="hotspot-units-note" hidden></p>
-        <div class="hotspot-columns hotspot-columns-three">
-          ${FUEL_ORDER.map((fuel) => {
-            const subtitle = FUEL_SUBTITLE[fuel];
-            return `
-              <div class="hotspot-column">
-                <div class="hotspot-column-title">
-                  <span class="dot dot--${fuel}"></span>
-                  <span>${FUEL_LABEL[fuel]}</span>
-                </div>
-                <div class="hotspot-column-subtitle"><span id="hotspot-subtitle-${fuel}">${subtitle}</span><span class="hotspot-column-count" id="hotspot-count-${fuel}"></span></div>
-                <ol class="hotspot-list" id="hotspot-list-${fuel}"></ol>
-              </div>
-            `;
-          }).join("")}
+        <ol class="hotspot-list rail-list" id="hotspot-list"></ol>
+        <p class="rail-note" id="rail-note"></p>
+        <div class="rail-legend">
+          ${FUEL_ORDER.map((fuel) => `
+            <span class="rail-legend-item" title="${FUEL_SUBTITLE[fuel]}">
+              <span class="dot dot--${fuel}"></span>${FUEL_LABEL[fuel]}
+            </span>`).join("")}
         </div>
       </section>
     </div>
@@ -573,92 +570,90 @@ function renderAt(hour) {
       : "";
   }
 
-  for (const fuel of FUEL_ORDER) {
-    const allEntries = renewableEntries
+  // One ranked rail across every fuel, rather than three fuel columns. A
+  // region contributes a row per fuel it curtails in, which is how the names
+  // already read ("Bahia Solar", "Bahia Wind"), so the rows stay comparable.
+  const railEntries = FUEL_ORDER.flatMap((fuel) =>
+    renewableEntries
       .map(({ region, gw }) => ({
         region,
+        fuel,
         gw: gw * fuelShare(region, fuel, regionData[region.id]),
       }))
-      .filter(({ gw }) => gw > 0);
+      .filter(({ gw }) => gw > 0)
+  );
 
-    const subtitleEl = document.getElementById(`hotspot-subtitle-${fuel}`);
-    if (subtitleEl) {
-      subtitleEl.textContent = shareView ? "Share of generation · 30d" : FUEL_SUBTITLE[fuel];
-    }
+  const listEl = document.getElementById("hotspot-list");
+  const noteEl = document.getElementById("rail-note");
 
-    if (shareView) {
-      // Rank by share, not by magnitude — that inversion is the whole point of
-      // the view. Regions whose share would be circular or undenominated are
-      // NOT dropped: they are listed below the ranked ones with the reason,
-      // because "no honest share" and "no curtailment" are different facts and
-      // an omission would read as the latter.
-      const scored = allEntries.map((entry) => ({
-        ...entry,
-        share: curtailmentShare(regionData[entry.region.id]),
-      }));
-      const ranked = scored
-        .filter((e) => e.share !== null)
-        .sort((a, b) => b.share - a.share);
-      const withoutShareEntries = scored.filter((e) => e.share === null);
-      const withoutShare = withoutShareEntries.length;
-      const unavailable = withoutShareEntries
-        .sort((a, b) => b.gw - a.gw)
-        .slice(0, HOTSPOT_LIST_LIMIT);
-
-      const countEl = document.getElementById(`hotspot-count-${fuel}`);
-      if (countEl) {
-        countEl.textContent = ` · ${ranked.length} of ${allEntries.length} with a measured share`;
-      }
-
-      document.getElementById(`hotspot-list-${fuel}`).innerHTML =
-        ranked.map(({ region, share, gw }) => `
-          <li class="hotspot-item">
-            <span class="dot dot--${fuel}"></span>
-            <span class="hotspot-name">${region.name}</span>
-            <span class="hotspot-gw num-tabular" title="${fmtGW(gw)} GW at this hour">${formatShare(share)}</span>
-          </li>
-        `).join("")
-        + (unavailable.length
-          ? `<li class="hotspot-unavailable-head">No measured share · ${unavailable.length === withoutShare ? `${withoutShare} regions` : `${unavailable.length} of ${withoutShare}`}</li>`
-            + unavailable.map(({ region }) => {
-                const why = shareUnavailable(region, regionData[region.id]);
-                return `
-          <li class="hotspot-item hotspot-item-unavailable" title="${why.reason}">
-            <span class="dot dot--${fuel}"></span>
-            <span class="hotspot-name">${region.name}</span>
-            <span class="hotspot-gw hotspot-gw-unavailable">${why.label}</span>
-          </li>`;
-              }).join("")
-          : "");
-      continue;
-    }
-
-    const rows = allEntries
+  if (shareView) {
+    // Rank by share, not magnitude — that inversion is the whole point of the
+    // view. Regions whose share would be circular or undenominated are NOT
+    // dropped: they are listed below the ranked ones with the reason, because
+    // "no honest share" and "no curtailment" are different facts and an
+    // omission would read as the latter.
+    const scored = railEntries.map((entry) => ({
+      ...entry,
+      share: curtailmentShare(regionData[entry.region.id]),
+    }));
+    const ranked = scored
+      .filter((e) => e.share !== null)
+      .sort((a, b) => b.share - a.share)
+      .slice(0, RAIL_LIST_LIMIT);
+    const withoutShareEntries = scored.filter((e) => e.share === null);
+    const unavailable = withoutShareEntries
       .sort((a, b) => b.gw - a.gw)
-      .slice(0, HOTSPOT_LIST_LIMIT);
+      .slice(0, RAIL_LIST_LIMIT);
 
-    // Say plainly when the column is truncated. `allEntries` is every region
-    // currently curtailing in this fuel bucket; `rows` is what fits under
-    // HOTSPOT_LIST_LIMIT. With 246 solar and 144 wind regions competing for 50
-    // slots, the tail is routinely cut, and a list that silently stops at 50
-    // reads as complete. The cap itself stays: renderAt() rebuilds all three
-    // lists on every clock tick, including timeline playback at up to 8x.
-    const countEl = document.getElementById(`hotspot-count-${fuel}`);
-    if (countEl) {
-      countEl.textContent = allEntries.length > rows.length
-        ? ` · ${rows.length} of ${allEntries.length} shown`
-        : ` · ${allEntries.length} active`;
-    }
-
-    document.getElementById(`hotspot-list-${fuel}`).innerHTML =
-      rows.map(({ region, gw }) => `
+    listEl.innerHTML =
+      ranked.map(({ region, fuel, share, gw }) => `
         <li class="hotspot-item">
           <span class="dot dot--${fuel}"></span>
           <span class="hotspot-name">${region.name}</span>
-          <span class="hotspot-gw num-tabular">${fmtGW(gw)} GW</span>
+          <span class="hotspot-gw num-tabular" title="${fmtGW(gw)} GW at this hour">${formatShare(share)}</span>
         </li>
-      `).join("");
+      `).join("")
+      + (unavailable.length
+        ? `<li class="hotspot-unavailable-head">No measured share · ${
+            unavailable.length === withoutShareEntries.length
+              ? `${withoutShareEntries.length} regions`
+              : `${unavailable.length} of ${withoutShareEntries.length}`
+          }</li>`
+          + unavailable.map(({ region, fuel }) => {
+              const why = shareUnavailable(region, regionData[region.id]);
+              return `
+        <li class="hotspot-item hotspot-item-unavailable" title="${why.reason}">
+          <span class="dot dot--${fuel}"></span>
+          <span class="hotspot-name">${region.name}</span>
+          <span class="hotspot-gw hotspot-gw-unavailable">${why.label}</span>
+        </li>`;
+            }).join("")
+        : "");
+
+    const scoredTotal = scored.filter((e) => e.share !== null).length;
+    noteEl.textContent = scoredTotal > ranked.length
+      ? `${ranked.length} of ${scoredTotal} with a measured share`
+      : `${scoredTotal} with a measured share`;
+    return;
   }
+
+  const rows = railEntries.sort((a, b) => b.gw - a.gw).slice(0, RAIL_LIST_LIMIT);
+
+  listEl.innerHTML = rows.map(({ region, fuel, gw }) => `
+    <li class="hotspot-item">
+      <span class="dot dot--${fuel}"></span>
+      <span class="hotspot-name">${region.name}</span>
+      <span class="hotspot-gw num-tabular">${fmtGW(gw)} GW</span>
+    </li>
+  `).join("");
+
+  // Say plainly that the rail is cut. It shows the top RAIL_LIST_LIMIT of
+  // every region-fuel pair currently curtailing; a list that silently stops
+  // reads as complete. The six largest on the visible hemisphere are also
+  // named on the globe itself.
+  noteEl.textContent = railEntries.length > rows.length
+    ? `Hard cut at ${rows.length} — ${railEntries.length - rows.length} more curtailing now`
+    : `${railEntries.length} curtailing now`;
 }
 
 const canvas = document.getElementById("globe-canvas");
