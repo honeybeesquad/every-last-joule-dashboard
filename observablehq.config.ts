@@ -20,8 +20,13 @@ const regionPaths = REGIONS.map((region) => `/region/${region.id}`);
 const SITE_URL = "https://everylastjoule.com";
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
 const OG_TITLE = "Every Last Joule";
+// Derived from the roster, never hardcoded: this string said "459 grid
+// regions" for as long as the roster happened to be 459 long. The count is a
+// COVERAGE claim ("grids tracked"), not a waste claim — some of those grids
+// publish no waste at all, which is why the dashboard's own lead copy counts
+// published-waste regions instead (src/lib/waste-status.ts).
 const OG_DESCRIPTION =
-  "Curtailed renewable electricity across 459 grid regions, from operators and regulators. How much of Bitcoin's hashrate that waste could cover.";
+  `Curtailed, spilled and constrained-off renewable electricity, from grid operators and regulators across ${REGIONS.length} grids. How much of Bitcoin's hashrate that waste could cover.`;
 
 const socialMeta = [
   `<meta name="description" content="${OG_DESCRIPTION}">`,

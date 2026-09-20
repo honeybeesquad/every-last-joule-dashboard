@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ehsFromGW, aggregateAtHour, perHourAggregate } from "../src/lib/calc";
+import { ehsFromGW, aggregateAtHour, perHourAggregate, generationGWAtHour, regionGWAtHour } from "../src/lib/calc";
 import type { RegionData, CBECIData } from "../src/lib/types";
 
 const cbeci: CBECIData = {
@@ -106,5 +106,21 @@ describe("perHourAggregate", () => {
     expect(results.length).toBe(24);
     expect(results[0].utcHour).toBe(0);
     expect(results[23].utcHour).toBe(23);
+  });
+});
+
+describe("generationGWAtHour", () => {
+  it("interpolates generationProfile independently of waste profile", () => {
+    const data = makeRegionData("a", Array(24).fill(0));
+    data.generationProfile = Array(24).fill(0);
+    data.generationProfile[10] = 4;
+    data.generationProfile[11] = 6;
+    expect(generationGWAtHour(data, 10)).toBe(4);
+    expect(generationGWAtHour(data, 10.5)).toBeCloseTo(5, 8);
+    expect(regionGWAtHour(data, 10)).toBe(0);
+  });
+
+  it("returns 0 when generationProfile is absent", () => {
+    expect(generationGWAtHour(makeRegionData("a", Array(24).fill(1)), 12)).toBe(0);
   });
 });

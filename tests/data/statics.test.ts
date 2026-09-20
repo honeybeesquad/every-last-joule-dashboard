@@ -55,7 +55,9 @@ describe("static regions", () => {
     // added to STATIC_REGIONS as canonical anchors. 142 + 2 = 144.
     // 2026-06-07: norway-no5 reverted live→estimated, added to STATIC_REGIONS. 144 + 1 = 145.
     // 2026-06-18: flare gas purged — removed 37 flare statics (32 named/bbox + kuwait/qatar + 3 offshore). 172 − 37 = 135.
-    expect(Object.keys(data).length).toBe(135);
+    // 2026-09-20: TSO-grid completeness moved austria/tva/malta/lithuania/latvia/albania
+    // off statics onto ENTSO/EIA unpublished loaders. 135 − 6 = 129.
+    expect(Object.keys(data).length).toBe(129);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -96,7 +98,8 @@ describe("static regions", () => {
     // Research pool: 146 + 2 = 148. Canonical: 142 + 2 = 144. Non-canonical: 4.
     // 2026-06-07: norway-no5 added to pool as canonical. Research pool: 148 + 1 = 149. Canonical: 144 + 1 = 145. Non-canonical: 4.
     // 2026-06-18: flare purge removed 37 flare statics from the research pool. 176 − 37 = 139.
-    expect(Object.keys(researchData).length).toBe(139);
+    // 2026-09-20: removed 6 canonical statics (austria/tva/malta/lithuania/latvia/albania). 139 − 6 = 133.
+    expect(Object.keys(researchData).length).toBe(133);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
@@ -110,7 +113,6 @@ describe("static regions", () => {
       "hawaii-oahu",
       "hawaii-maui",
       "hawaii-island",
-      "austria",
       "russia-murmansk-wind",
       // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27).
       "guatemala",
@@ -155,9 +157,7 @@ describe("static regions", () => {
       "zambia",
       "zimbabwe",
       // philippines moved to standalone src/data/philippines.json.ts (2026-04-30)
-      // Phase-2.7 misc (2026-05-03)
-      "tva",
-      // Phase 4-A completionist Tier A (2026-05-05)
+      // Phase-4-A completionist Tier A (2026-05-05)
       "afghanistan",
       "bahrain",
       "belarus-wind",

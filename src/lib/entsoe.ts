@@ -19,6 +19,8 @@ export interface EntsoeSingleZoneSpec {
   psrType: string;
   rate: number;
   sourceNote: string;
+  wasteStatus?: "unpublished";
+  allowEmpty?: boolean;
 }
 
 export interface EntsoeMultiZoneSpec {
@@ -26,6 +28,8 @@ export interface EntsoeMultiZoneSpec {
   domain: string;
   technologies: readonly EntsoeTechnologySpec[];
   sourceNote: string;
+  wasteStatus?: "unpublished";
+  allowEmpty?: boolean;
 }
 
 export type EntsoeZoneSpec = EntsoeSingleZoneSpec | EntsoeMultiZoneSpec;
@@ -210,6 +214,22 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
   // instead. Common causes: expired ENTSOE_API_TOKEN, ENTSO-E outage,
   // upstream schema change.
   if (points.length === 0) {
+    if (zone.allowEmpty) {
+      const empty: RegionData = {
+        regionId: zone.id,
+        profile: Array(24).fill(0),
+        latestProfile: null,
+        totalTWh: 0,
+        peakGW: 0,
+        lastUpdated: new Date().toISOString(),
+        lastSuccessAt: new Date().toISOString(),
+        sourceNote: `${zone.sourceNote} ENTSO-E A75 empty in-window; waste unpublished.`,
+        wasteStatus: zone.wasteStatus ?? "unpublished",
+        generationProfile: Array(24).fill(0),
+        generationTotalTWh: 0,
+      };
+      return empty;
+    }
     throw new Error(
       `ENTSO-E ${zone.id}: all technologies returned zero points (likely token revoked, outage, or schema change). Falling back to last-good snapshot.`,
     );
@@ -260,6 +280,8 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
     ...(fuelShare ? { fuelShare } : {}),
     generationProfile: timeOfDayAverageGW(genPoints),
     generationTotalTWh: totalTWh30d(genPoints),
-    generationBasis: "derived-from-generation",
+    ...(zone.wasteStatus === "unpublished"
+      ? { wasteStatus: "unpublished" as const }
+      : { generationBasis: "derived-from-generation" as const }),
   };
 }

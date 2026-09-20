@@ -128,6 +128,10 @@ Hydro spill is the weakest source chain. Public 2024 data is by major river basi
 
 Province-to-grid mismatch remains. Inner Mongolia is reported by NEA as Monxi and Mongdong utilisation rates, but public generation data is more commonly provincial. The model uses a province-level central value because the dashboard region is province-level.
 
+## Interconnection honesty (2026-09-20)
+
+China's operational grids are interconnection families — SGCC North / Central / East / Northeast, CSG, and Mengxi — not 31 live provincial TSOs. Until NEA or SGCC publish machine-readable dispatch, provincial Ember×NEA rows stay **modelled generation** with waste from NEA **rates** (`anchor-implied`, never `measured`). Do not advertise live TSO collection. One region per interconnection would be more honest than fake live provincials; that remap is not this change.
+
 ## Sources
 
 - 国家能源局, `国家能源局关于印发2024年度全国可再生能源电力发展监测评价结果的通知` / "National Energy Administration notice issuing the 2024 national renewable electricity development monitoring and evaluation results", 2025-10-28. https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html

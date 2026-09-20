@@ -3,6 +3,7 @@ import { mapWithConcurrency } from "../lib/concurrency.js";
 import { join } from "node:path";
 import { withFallback } from "../lib/resilient.js";
 import type { RegionData } from "../lib/types.js";
+import { unpublishedEmptyRegion } from "../lib/waste-status.js";
 import {
   fetchEntsoeZone,
   parseEntsoeXml as parseEntsoeXmlImpl,
@@ -375,6 +376,152 @@ export const ZONES = [
   },
   // Malta was here until 2026-05-11. Enemalta's A75 feed returns zero curtailment
   // (the loader produced peakGW=0); reverted to estimated and flowing from statics.
+  // Re-added 2026-09-20 as generation-only (rate 0, waste unpublished) so the
+  // grid is collected without restamping live zero waste.
+  {
+    id: "malta",
+    domain: "10Y1001A1001A93C",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0 }],
+    sourceNote: "Enemalta A75 solar generation. Waste unpublished — A75 zero curtailment is not a measured-zero finding.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "austria-wind",
+    domain: "10YAT-APG------L",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0 }],
+    sourceNote: "APG Austria ENTSO-E A75 wind generation. Waste unpublished — Strombilanz annual is not a measured curtailment series.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "austria-solar",
+    domain: "10YAT-APG------L",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0 }],
+    sourceNote: "APG Austria ENTSO-E A75 solar generation. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "latvia-wind",
+    domain: "10YLV-1001A00074",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0 }],
+    sourceNote: "AST Latvia A75 wind generation. Waste unpublished — prior live zeros were unverified.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "latvia-solar",
+    domain: "10YLV-1001A00074",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0 }],
+    sourceNote: "AST Latvia A75 solar generation. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "lithuania-wind",
+    domain: "10YLT-1001A00070",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0 }],
+    sourceNote: "Litgrid A75 wind generation. Waste unpublished — prior live zeros were unverified.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "lithuania-solar",
+    domain: "10YLT-1001A00070",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0 }],
+    sourceNote: "Litgrid A75 solar generation. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "sweden-se1-wind",
+    domain: "10Y1001A1001A44P",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0 }],
+    sourceNote: "Svenska kraftnät SE1 wind generation. sweden-north remains the existing SE3-labelled row; this id is new. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "sweden-se1-solar",
+    domain: "10Y1001A1001A44P",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0 }],
+    sourceNote: "Svenska kraftnät SE1 solar generation. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "sweden-se2-wind",
+    domain: "10Y1001A1001A45N",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0 }],
+    sourceNote: "Svenska kraftnät SE2 wind generation (real SE2 EIC). Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "sweden-se2-solar",
+    domain: "10Y1001A1001A45N",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0 }],
+    sourceNote: "Svenska kraftnät SE2 solar generation. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "bosnia-wind",
+    domain: "10YBA-JPCC-----D",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0 }],
+    sourceNote: "NOS BiH A75 wind generation. Hydro spill stays unpublished. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "bosnia-solar",
+    domain: "10YBA-JPCC-----D",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0 }],
+    sourceNote: "NOS BiH A75 solar generation. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "montenegro-wind",
+    domain: "10YCS-CG-TSO---S",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0 }],
+    sourceNote: "CGES A75 wind generation. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "montenegro-solar",
+    domain: "10YCS-CG-TSO---S",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0 }],
+    sourceNote: "CGES A75 solar generation. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "albania",
+    domain: "10YAL-KESH-----5",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0 }],
+    sourceNote: "OST Albania A75 solar generation (observer). Waste unpublished; empty A75 stays a grid marker.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "kosovo-wind",
+    domain: "10YCS-KOSTT-----B",
+    technologies: [{ psrType: "B19", fuel: "wind", rate: 0 }],
+    sourceNote: "KOSTT Kosovo A75 wind generation. Waste unpublished; empty A75 stays a grid marker.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
+  {
+    id: "kosovo-solar",
+    domain: "10YCS-KOSTT-----B",
+    technologies: [{ psrType: "B16", fuel: "solar", rate: 0 }],
+    sourceNote: "KOSTT Kosovo A75 solar generation. Waste unpublished.",
+    wasteStatus: "unpublished",
+    allowEmpty: true,
+  },
 ] as const;
 
 export const parseEntsoeXml = parseEntsoeXmlImpl;
@@ -408,6 +555,9 @@ const run = async (): Promise<Record<string, RegionData>> => {
         lastUpdated: new Date().toISOString(),
         lastSuccessAt: new Date().toISOString(),
         sourceNote: zone.sourceNote,
+        wasteStatus: "unpublished",
+        generationProfile: Array(24).fill(0),
+        generationTotalTWh: 0,
       };
     }
     try {
@@ -417,7 +567,15 @@ const run = async (): Promise<Record<string, RegionData>> => {
     } catch (err) {
       console.warn(`ENTSO-E zone ${zone.id} failed: ${(err as Error).message}`);
       const prev = previous[zone.id];
-      if (!prev) throw new Error(`ENTSO-E zone ${zone.id} failed and no cached data available`);
+      if (!prev) {
+        if ("allowEmpty" in zone && zone.allowEmpty) {
+          return unpublishedEmptyRegion(
+            zone.id,
+            `${zone.sourceNote} ENTSO-E fetch failed with no last-good cache; waste unpublished.`,
+          );
+        }
+        throw new Error(`ENTSO-E zone ${zone.id} failed and no cached data available`);
+      }
       const lastSuccessAt = prev.lastSuccessAt ?? prev.lastUpdated ?? "";
       const ageHours = lastSuccessAt
         ? (Date.now() - new Date(lastSuccessAt).getTime()) / 3_600_000

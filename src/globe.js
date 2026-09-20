@@ -1,6 +1,7 @@
 import * as d3 from "npm:d3";
 import * as topojson from "npm:topojson-client";
-import { regionGWAtHour } from "./lib/calc.js";
+import { regionGWAtHour, generationGWAtHour } from "./lib/calc.js";
+import { showsWastePillar, wasteStatusOf } from "./lib/waste-status.js";
 import { getRegionFuelColor } from "./lib/fuel.js";
 import { readGlobeTokens, isLinearGradientToken } from "./lib/theme-tokens.js";
 import { buildPillarUnits } from "./lib/pillar-layout.js";
@@ -298,8 +299,17 @@ export async function mountGlobe(canvas, initial) {
         const data = state.regionData[r.id];
         return data ? Math.max(0, regionGWAtHour(data, hour, state.mode)) : 0;
       });
-      const totalGW = gwByRegion.reduce((s, g) => s + g, 0);
-      if (totalGW <= 0.01) continue;
+      const totalWasteGW = gwByRegion.reduce((s, g) => s + g, 0);
+      const genByRegion = group.map((r) => {
+        const data = state.regionData[r.id];
+        return data ? Math.max(0, generationGWAtHour(data, hour)) : 0;
+      });
+      const totalGenGW = genByRegion.reduce((s, g) => s + g, 0);
+      const unpublished = group.some((r) => wasteStatusOf(state.regionData[r.id]) === "unpublished");
+      const showWaste = group.some((r) => showsWastePillar(state.regionData[r.id])) && totalWasteGW > 0.01;
+      const showGen = unpublished || totalGenGW > 0.01;
+      if (!showWaste && !showGen) continue;
+      const totalGW = showWaste ? totalWasteGW : Math.max(totalGenGW, unpublished ? 0.05 : 0);
 
       const dist = d3.geoDistance([rep.lon, rep.lat], center);
       if (dist > Math.PI / 2) continue;
@@ -346,6 +356,20 @@ export async function mountGlobe(canvas, initial) {
       const repDotStyle = dotStyleFor(repBucket, repData?.sourceStatus);
       const pillarAlpha = qualityOpacity(repDegraded ? "estimated" : repBucket);
 
+      if (showGen) {
+        const genWeight = Math.sqrt(Math.max(totalGenGW, unpublished ? 0.05 : 0));
+        const genR = (5.5 + genWeight * 3.5) * birthT;
+        ctx.save();
+        ctx.globalAlpha = pillarAlpha * visible * 0.55;
+        ctx.strokeStyle = unpublished && totalGenGW <= 0.01 ? tokens.border : domColor;
+        ctx.lineWidth = unpublished && totalGenGW <= 0.01 ? 1.1 : 1.7;
+        if (unpublished && totalGenGW <= 0.01) ctx.setLineDash([2.5, 2.5]);
+        ctx.beginPath();
+        ctx.arc(anchorX, anchorY, genR, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
       ctx.save();
       ctx.filter = "blur(4px)";
       ctx.globalAlpha = pillarAlpha * 0.45 * visible;
@@ -361,7 +385,7 @@ export async function mountGlobe(canvas, initial) {
       let dx = point[0] - centreX;
       let dy = point[1] - centreY;
       const len = Math.sqrt(dx * dx + dy * dy);
-      if (len > 0.1) {
+      if (showWaste && len > 0.1) {
         dx /= len;
         dy /= len;
         const pillarH = (3 + weight * 48) * birthT;

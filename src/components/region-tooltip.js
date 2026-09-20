@@ -1,4 +1,5 @@
-import { regionGWAtHour } from "../lib/calc.js";
+import { regionGWAtHour, generationGWAtHour } from "../lib/calc.js";
+import { showsWastePillar, wasteStatusOf } from "../lib/waste-status.js";
 import { getFuelColor, FUEL_LABEL, dominantFuel, getRegionFuelColor } from "../lib/fuel.js";
 
 /**
@@ -239,6 +240,36 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     el.style.top = `${y}px`;
   }
 
+  function wasteCaption(data) {
+    if (wasteStatusOf(data) === "unpublished") {
+      return `<div class="region-tooltip-note">Operator does not publish curtailment/spill. Missing ≠ zero.</div>`;
+    }
+    if (wasteStatusOf(data) === "measured-zero") {
+      return `<div class="region-tooltip-note">Measured waste is zero in this window.</div>`;
+    }
+    return "";
+  }
+
+  function generationStats(group, { live = false } = {}) {
+    const genNow = group.reduce((s, r) => {
+      const d = regionData[r.id];
+      return s + (d ? generationGWAtHour(d, clock.hour) : 0);
+    }, 0);
+    const genTWh = group.reduce((s, r) => s + (regionData[r.id]?.generationTotalTWh ?? 0), 0);
+    const hasGen = group.some((r) => Array.isArray(regionData[r.id]?.generationProfile));
+    if (!hasGen) return "";
+    const liveAttr = live ? " data-now" : "";
+    return `<div class="region-tooltip-stat"><span>Gen now</span><span class="num-tabular"${liveAttr}>${genNow.toFixed(2)} GW</span></div>
+          <div class="region-tooltip-stat" title="Trailing 30-day generation when the operator publishes it"><span>Gen 30d</span><span class="num-tabular">${genTWh.toFixed(2)} TWh</span></div>`;
+  }
+
+  function wasteStats(group, nowGW, peakGW, totalTWh) {
+    if (!group.some((r) => showsWastePillar(regionData[r.id]))) return "";
+    return `<div class="region-tooltip-stat"><span>Waste now</span><span class="num-tabular" data-now>${nowGW.toFixed(2)} GW</span></div>
+          <div class="region-tooltip-stat"><span>24h peak</span><span class="num-tabular">${peakGW.toFixed(2)} GW</span></div>
+          <div class="region-tooltip-stat" title="Trailing 30-day cumulative waste energy"><span>30d waste</span><span class="num-tabular">${totalTWh.toFixed(2)} TWh</span></div>`;
+  }
+
   function formatAge(iso) {
     if (!iso) return "unknown";
     const then = new Date(iso).getTime();
@@ -333,11 +364,11 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
           </div>
         </div>
         <div class="region-tooltip-stats">
-          <div class="region-tooltip-stat"><span>Now (UTC)</span><span class="num-tabular" data-now>${nowGW.toFixed(2)} GW</span></div>
-          <div class="region-tooltip-stat"><span>24h peak</span><span class="num-tabular">${peakGW.toFixed(2)} GW</span></div>
-          <div class="region-tooltip-stat" title="Trailing 30-day cumulative energy"><span>30d total</span><span class="num-tabular">${totalTWh.toFixed(2)} TWh</span></div>
+          ${wasteStats(currentGroup, nowGW, peakGW, totalTWh)}
+          ${generationStats(currentGroup, { live: !currentGroup.some((r) => showsWastePillar(regionData[r.id])) })}
         </div>
         <canvas class="region-tooltip-sparkline" width="240" height="48" aria-label="24-hour curtailment profile"></canvas>
+        ${wasteCaption(regionData[rep.id])}
         <div class="region-tooltip-footer">
           ${rep.sourceUrl ? `<a href="${rep.sourceUrl}" target="_blank" rel="noopener noreferrer">${rep.source}</a>` : `<span>${rep.source ?? ""}</span>`}
           ${badge}
@@ -365,11 +396,11 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
           </div>
         </div>
         <div class="region-tooltip-stats">
-          <div class="region-tooltip-stat"><span>Now (UTC)</span><span class="num-tabular" data-now>${nowGW.toFixed(2)} GW</span></div>
-          <div class="region-tooltip-stat"><span>24h peak</span><span class="num-tabular">${peakGW.toFixed(2)} GW</span></div>
-          <div class="region-tooltip-stat" title="Trailing 30-day cumulative energy"><span>30d total</span><span class="num-tabular">${totalTWh.toFixed(2)} TWh</span></div>
+          ${wasteStats(currentGroup, nowGW, peakGW, totalTWh)}
+          ${generationStats(currentGroup, { live: !showsWastePillar(data) })}
         </div>
         <canvas class="region-tooltip-sparkline" width="240" height="48" aria-label="24-hour curtailment profile"></canvas>
+        ${wasteCaption(data)}
         <div class="region-tooltip-footer">
           ${region.sourceUrl ? `<a href="${region.sourceUrl}" target="_blank" rel="noopener noreferrer">${region.source}</a>` : `<span>${region.source ?? ""}</span>`}
           ${freshnessBadge(region, data)}

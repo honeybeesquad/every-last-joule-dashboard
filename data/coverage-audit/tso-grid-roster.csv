@@ -1,0 +1,568 @@
+operator,iso3,fuels,collect_status,loader_key,waste_status,region_ids,notes
+California Wind,USA,wind,live-tso,,legacy-unspecified,caiso-wind,Existing live waste or Path-B generation×rate.
+California Solar,USA,solar,live-tso,,legacy-unspecified,caiso-solar,Existing live waste or Path-B generation×rate.
+ERCOT West Wind,USA,wind,live-tso,,legacy-unspecified,ercot-west-wind,Existing live waste or Path-B generation×rate.
+ERCOT West Solar,USA,solar,live-tso,,legacy-unspecified,ercot-west-solar,Existing live waste or Path-B generation×rate.
+ERCOT East Wind,USA,wind,live-tso,,legacy-unspecified,ercot-east-wind,Existing live waste or Path-B generation×rate.
+ERCOT East Solar,USA,solar,live-tso,,legacy-unspecified,ercot-east-solar,Existing live waste or Path-B generation×rate.
+MISO (Midwest) Wind,USA,wind,live-tso,,legacy-unspecified,miso-wind,Existing live waste or Path-B generation×rate.
+MISO (Midwest) Solar,USA,solar,live-tso,,legacy-unspecified,miso-solar,Existing live waste or Path-B generation×rate.
+PJM Wind,USA,wind,live-tso,,legacy-unspecified,pjm-wind,Existing live waste or Path-B generation×rate.
+PJM Solar,USA,solar,live-tso,,legacy-unspecified,pjm-solar,Existing live waste or Path-B generation×rate.
+SPP Wind,USA,wind,live-tso,,legacy-unspecified,spp-wind,Existing live waste or Path-B generation×rate.
+SPP Solar,USA,solar,live-tso,,legacy-unspecified,spp-solar,Existing live waste or Path-B generation×rate.
+NYISO Zones D+E,USA,wind,live-tso,,legacy-unspecified,nyiso-zones-d-e,Existing live waste or Path-B generation×rate.
+NYISO (rest) Wind,USA,wind,live-tso,,legacy-unspecified,nyiso-rest-wind,Existing live waste or Path-B generation×rate.
+NYISO (rest) Solar,USA,solar,live-tso,,legacy-unspecified,nyiso-rest-solar,Existing live waste or Path-B generation×rate.
+ISO-NE Maine/Vermont,USA,wind,live-tso,,legacy-unspecified,iso-ne-maine-vermont,Existing live waste or Path-B generation×rate.
+ISO-NE (rest) Wind,USA,wind,live-tso,,legacy-unspecified,iso-ne-rest-wind,Existing live waste or Path-B generation×rate.
+ISO-NE (rest) Solar,USA,solar,live-tso,,legacy-unspecified,iso-ne-rest-solar,Existing live waste or Path-B generation×rate.
+BPA Wind,USA,wind,live-tso,,legacy-unspecified,bpa-wind,Existing live waste or Path-B generation×rate.
+BPA Solar,USA,solar,live-tso,,legacy-unspecified,bpa-solar,Existing live waste or Path-B generation×rate.
+Southern Company Wind,USA,wind,not-collecting,statics,legacy-unspecified,soco-wind,T2 annual waste anchor. Not hourly TSO collection.
+Southern Company Solar,USA,solar,not-collecting,statics,legacy-unspecified,soco-solar,T2 annual waste anchor. Not hourly TSO collection.
+PacifiCorp West Wind,USA,wind,not-collecting,statics,legacy-unspecified,pacw-wind,T2 annual waste anchor. Not hourly TSO collection.
+PacifiCorp West Solar,USA,solar,not-collecting,statics,legacy-unspecified,pacw-solar,T2 annual waste anchor. Not hourly TSO collection.
+PacifiCorp East Wind,USA,wind,not-collecting,statics,legacy-unspecified,pace-wind,T2 annual waste anchor. Not hourly TSO collection.
+PacifiCorp East Solar,USA,solar,not-collecting,statics,legacy-unspecified,pace-solar,T2 annual waste anchor. Not hourly TSO collection.
+Public Service Colorado Wind,USA,wind,not-collecting,statics,legacy-unspecified,psco-wind,T2 annual waste anchor. Not hourly TSO collection.
+Public Service Colorado Solar,USA,solar,not-collecting,statics,legacy-unspecified,psco-solar,T2 annual waste anchor. Not hourly TSO collection.
+Arizona Public Service Wind,USA,wind,not-collecting,statics,legacy-unspecified,azps-wind,T2 annual waste anchor. Not hourly TSO collection.
+Arizona Public Service Solar,USA,solar,not-collecting,statics,legacy-unspecified,azps-solar,T2 annual waste anchor. Not hourly TSO collection.
+Salt River Project Wind,USA,wind,not-collecting,statics,legacy-unspecified,srp-wind,T2 annual waste anchor. Not hourly TSO collection.
+Salt River Project Solar,USA,solar,not-collecting,statics,legacy-unspecified,srp-solar,T2 annual waste anchor. Not hourly TSO collection.
+Idaho Power Wind,USA,wind,not-collecting,statics,legacy-unspecified,ipco-wind,T2 annual waste anchor. Not hourly TSO collection.
+Idaho Power Solar,USA,solar,not-collecting,statics,legacy-unspecified,ipco-solar,T2 annual waste anchor. Not hourly TSO collection.
+Tucson Electric Power Wind,USA,wind,not-collecting,statics,legacy-unspecified,tepc-wind,T2 annual waste anchor. Not hourly TSO collection.
+Tucson Electric Power Solar,USA,solar,not-collecting,statics,legacy-unspecified,tepc-solar,T2 annual waste anchor. Not hourly TSO collection.
+New South Wales Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-nsw-wind,Existing live waste or Path-B generation×rate.
+New South Wales Solar,AUS,solar,live-tso,,legacy-unspecified,aemo-nsw-solar,Existing live waste or Path-B generation×rate.
+Victoria Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-vic-wind,Existing live waste or Path-B generation×rate.
+Victoria Solar,AUS,solar,live-tso,,legacy-unspecified,aemo-vic-solar,Existing live waste or Path-B generation×rate.
+Queensland Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-qld-wind,Existing live waste or Path-B generation×rate.
+Queensland Solar,AUS,solar,live-tso,,legacy-unspecified,aemo-qld-solar,Existing live waste or Path-B generation×rate.
+South Australia Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-sa-wind,Existing live waste or Path-B generation×rate.
+South Australia Solar,AUS,solar,live-tso,,legacy-unspecified,aemo-sa-solar,Existing live waste or Path-B generation×rate.
+Tasmania Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-tas-wind,Existing live waste or Path-B generation×rate.
+Tasmania Solar,AUS,solar,live-tso,,legacy-unspecified,aemo-tas-solar,Existing live waste or Path-B generation×rate.
+Belgium Wind,BEL,wind,live-tso,,legacy-unspecified,belgium-wind,Existing live waste or Path-B generation×rate.
+Belgium Solar,BEL,solar,live-tso,,legacy-unspecified,belgium-solar,Existing live waste or Path-B generation×rate.
+Spain Wind,ESP,wind,live-tso,,legacy-unspecified,spain-wind,Existing live waste or Path-B generation×rate.
+Spain Solar,ESP,solar,live-tso,,legacy-unspecified,spain-solar,Existing live waste or Path-B generation×rate.
+Portugal Wind,PRT,wind,live-tso,,legacy-unspecified,portugal-wind,Existing live waste or Path-B generation×rate.
+Portugal Solar,PRT,solar,live-tso,,legacy-unspecified,portugal-solar,Existing live waste or Path-B generation×rate.
+50Hertz Wind,DEU,wind,live-tso,,legacy-unspecified,germany-50hertz-wind,Existing live waste or Path-B generation×rate.
+50Hertz Solar,DEU,solar,live-tso,,legacy-unspecified,germany-50hertz-solar,Existing live waste or Path-B generation×rate.
+Amprion Wind,DEU,wind,live-tso,,legacy-unspecified,germany-amprion-wind,Existing live waste or Path-B generation×rate.
+Amprion Solar,DEU,solar,live-tso,,legacy-unspecified,germany-amprion-solar,Existing live waste or Path-B generation×rate.
+TenneT DE Wind,DEU,wind,live-tso,,legacy-unspecified,germany-tennet-de-wind,Existing live waste or Path-B generation×rate.
+TenneT DE Solar,DEU,solar,live-tso,,legacy-unspecified,germany-tennet-de-solar,Existing live waste or Path-B generation×rate.
+TransnetBW Wind,DEU,wind,live-tso,,legacy-unspecified,germany-transnetbw-wind,Existing live waste or Path-B generation×rate.
+TransnetBW Solar,DEU,solar,live-tso,,legacy-unspecified,germany-transnetbw-solar,Existing live waste or Path-B generation×rate.
+Finland Wind,FIN,wind,live-tso,,legacy-unspecified,finland-wind,Existing live waste or Path-B generation×rate.
+Finland Solar,FIN,solar,live-tso,,legacy-unspecified,finland-solar,Existing live waste or Path-B generation×rate.
+France Wind,FRA,wind,live-tso,,legacy-unspecified,france-wind,Existing live waste or Path-B generation×rate.
+France Solar,FRA,solar,live-tso,,legacy-unspecified,france-solar,Existing live waste or Path-B generation×rate.
+Netherlands Wind,NLD,wind,live-tso,,legacy-unspecified,netherlands-wind,Existing live waste or Path-B generation×rate.
+Netherlands Solar,NLD,solar,live-tso,,legacy-unspecified,netherlands-solar,Existing live waste or Path-B generation×rate.
+Denmark DK1 Wind,DNK,wind,live-tso,,legacy-unspecified,denmark-west-wind,Existing live waste or Path-B generation×rate.
+Denmark DK1 Solar,DNK,solar,live-tso,,legacy-unspecified,denmark-west-solar,Existing live waste or Path-B generation×rate.
+Denmark DK2 Wind,DNK,wind,live-tso,,legacy-unspecified,denmark-east-wind,Existing live waste or Path-B generation×rate.
+Denmark DK2 Solar,DNK,solar,live-tso,,legacy-unspecified,denmark-east-solar,Existing live waste or Path-B generation×rate.
+Poland Wind,POL,wind,live-tso,,legacy-unspecified,poland-wind,Existing live waste or Path-B generation×rate.
+Poland Solar,POL,solar,live-tso,,legacy-unspecified,poland-solar,Existing live waste or Path-B generation×rate.
+Greece Wind,GRC,wind,live-tso,,legacy-unspecified,greece-wind,Existing live waste or Path-B generation×rate.
+Greece Solar,GRC,solar,live-tso,,legacy-unspecified,greece-solar,Existing live waste or Path-B generation×rate.
+Romania Wind,ROU,wind,live-tso,,legacy-unspecified,romania-wind,Existing live waste or Path-B generation×rate.
+Romania Solar,ROU,solar,live-tso,,legacy-unspecified,romania-solar,Existing live waste or Path-B generation×rate.
+Turkey (wind),TUR,wind,live-tso,,legacy-unspecified,turkey-wind,Existing live waste or Path-B generation×rate.
+Turkey (solar),TUR,solar,live-tso,,legacy-unspecified,turkey-solar,Existing live waste or Path-B generation×rate.
+Italy North Wind,ITA,wind,live-tso,,legacy-unspecified,italy-north-zone-wind,Existing live waste or Path-B generation×rate.
+Italy North Solar,ITA,solar,live-tso,,legacy-unspecified,italy-north-zone-solar,Existing live waste or Path-B generation×rate.
+Sicily Wind,ITA,wind,live-tso,,legacy-unspecified,italy-sicily-wind,Existing live waste or Path-B generation×rate.
+Sicily Solar,ITA,solar,live-tso,,legacy-unspecified,italy-sicily-solar,Existing live waste or Path-B generation×rate.
+Sardinia Wind,ITA,wind,live-tso,,legacy-unspecified,italy-sardinia-wind,Existing live waste or Path-B generation×rate.
+Sardinia Solar,ITA,solar,live-tso,,legacy-unspecified,italy-sardinia-solar,Existing live waste or Path-B generation×rate.
+Italy Centre-North Wind,ITA,wind,live-tso,,legacy-unspecified,italy-cnord-wind,Existing live waste or Path-B generation×rate.
+Italy Centre-North Solar,ITA,solar,live-tso,,legacy-unspecified,italy-cnord-solar,Existing live waste or Path-B generation×rate.
+Italy Centre-South Wind,ITA,wind,live-tso,,legacy-unspecified,italy-csud-wind,Existing live waste or Path-B generation×rate.
+Italy Centre-South Solar,ITA,solar,live-tso,,legacy-unspecified,italy-csud-solar,Existing live waste or Path-B generation×rate.
+Italy South Wind,ITA,wind,live-tso,,legacy-unspecified,italy-sud-wind,Existing live waste or Path-B generation×rate.
+Italy South Solar,ITA,solar,live-tso,,legacy-unspecified,italy-sud-solar,Existing live waste or Path-B generation×rate.
+Italy Calabria Wind,ITA,wind,live-tso,,legacy-unspecified,italy-calabria-wind,Existing live waste or Path-B generation×rate.
+Italy Calabria Solar,ITA,solar,live-tso,,legacy-unspecified,italy-calabria-solar,Existing live waste or Path-B generation×rate.
+Sweden North,SWE,wind,live-tso,,legacy-unspecified,sweden-north,Existing live waste or Path-B generation×rate.
+Sweden South Wind,SWE,wind,live-tso,,legacy-unspecified,sweden-south-wind,Existing live waste or Path-B generation×rate.
+Sweden South Solar,SWE,solar,live-tso,,legacy-unspecified,sweden-south-solar,Existing live waste or Path-B generation×rate.
+Ukraine,UKR,solar,not-collecting,statics,unpublished,ukraine,Country/T3 stub — Ember/IRENA is not TSO collection.
+Ukraine Wind,UKR,wind,not-collecting,statics,unpublished,ukraine-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hungary Wind,HUN,wind,live-tso,,legacy-unspecified,hungary-wind,Existing live waste or Path-B generation×rate.
+Hungary Solar,HUN,solar,live-tso,,legacy-unspecified,hungary-solar,Existing live waste or Path-B generation×rate.
+Czech Republic Wind,CZE,wind,live-tso,,legacy-unspecified,czech-republic-wind,Existing live waste or Path-B generation×rate.
+Czech Republic Solar,CZE,solar,live-tso,,legacy-unspecified,czech-republic-solar,Existing live waste or Path-B generation×rate.
+Bulgaria Wind,BGR,wind,live-tso,,legacy-unspecified,bulgaria-wind,Existing live waste or Path-B generation×rate.
+Bulgaria Solar,BGR,solar,live-tso,,legacy-unspecified,bulgaria-solar,Existing live waste or Path-B generation×rate.
+Serbia Wind,SRB,wind,live-tso,,legacy-unspecified,serbia-wind,Existing live waste or Path-B generation×rate.
+Serbia Solar,SRB,solar,not-collecting,statics,unpublished,serbia-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Bosnia & Herzegovina,BIH,hydro,live-tso,entsoe,unpublished,bosnia-and-herzegovina,ENTSO-E A75 generation; waste unpublished.
+North Macedonia Wind,MKD,wind,live-tso,,legacy-unspecified,north-macedonia-wind,Existing live waste or Path-B generation×rate.
+North Macedonia Solar,MKD,solar,not-collecting,statics,unpublished,north-macedonia-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Montenegro,MNE,hydro,live-tso,entsoe,unpublished,montenegro,ENTSO-E A75 generation; waste unpublished.
+Croatia Wind,HRV,wind,live-tso,,legacy-unspecified,croatia-wind,Existing live waste or Path-B generation×rate.
+Croatia Solar,HRV,solar,live-tso,,legacy-unspecified,croatia-solar,Existing live waste or Path-B generation×rate.
+Slovenia Wind,SVN,wind,live-tso,,legacy-unspecified,slovenia-wind,Existing live waste or Path-B generation×rate.
+Slovenia Solar,SVN,solar,live-tso,,legacy-unspecified,slovenia-solar,Existing live waste or Path-B generation×rate.
+Slovakia Wind,SVK,wind,live-tso,,legacy-unspecified,slovakia-wind,Existing live waste or Path-B generation×rate.
+Slovakia Solar,SVK,solar,live-tso,,legacy-unspecified,slovakia-solar,Existing live waste or Path-B generation×rate.
+Lithuania Wind,LTU,wind,live-tso,entsoe,unpublished,lithuania-wind,ENTSO-E A75 generation; waste unpublished.
+Lithuania Solar,LTU,solar,live-tso,entsoe,unpublished,lithuania-solar,ENTSO-E A75 generation; waste unpublished.
+Latvia Wind,LVA,wind,live-tso,entsoe,unpublished,latvia-wind,ENTSO-E A75 generation; waste unpublished.
+Latvia Solar,LVA,solar,live-tso,entsoe,unpublished,latvia-solar,ENTSO-E A75 generation; waste unpublished.
+Estonia Wind,EST,wind,live-tso,,legacy-unspecified,estonia-wind,Existing live waste or Path-B generation×rate.
+Estonia Solar,EST,solar,live-tso,,legacy-unspecified,estonia-solar,Existing live waste or Path-B generation×rate.
+Luxembourg Wind,LUX,wind,live-tso,,legacy-unspecified,luxembourg-wind,Existing live waste or Path-B generation×rate.
+Luxembourg Solar,LUX,solar,live-tso,,legacy-unspecified,luxembourg-solar,Existing live waste or Path-B generation×rate.
+Malta,MLT,solar,live-tso,entsoe,unpublished,malta,ENTSO-E A75 generation; waste unpublished.
+Moldova Wind,MDA,wind,live-tso,,legacy-unspecified,moldova-wind,Existing live waste or Path-B generation×rate.
+Moldova Solar,MDA,solar,live-tso,,legacy-unspecified,moldova-solar,Existing live waste or Path-B generation×rate.
+GB Scotland Wind,GBR,wind,live-tso,,legacy-unspecified,gb-scotland-wind,Existing live waste or Path-B generation×rate.
+GB Scotland Solar,GBR,solar,live-tso,,legacy-unspecified,gb-scotland-solar,Existing live waste or Path-B generation×rate.
+GB England+Wales Wind,GBR,wind,live-tso,,legacy-unspecified,gb-england-wales-wind,Existing live waste or Path-B generation×rate.
+GB England+Wales Solar,GBR,solar,live-tso,,legacy-unspecified,gb-england-wales-solar,Existing live waste or Path-B generation×rate.
+Rio Grande do Norte Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-rn-wind,Existing live waste or Path-B generation×rate.
+Rio Grande do Norte Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-rn-solar,Existing live waste or Path-B generation×rate.
+Ceara Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-ce-wind,Existing live waste or Path-B generation×rate.
+Ceara Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-ce-solar,Existing live waste or Path-B generation×rate.
+Bahia Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-bahia-wind,Existing live waste or Path-B generation×rate.
+Bahia Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-bahia-solar,Existing live waste or Path-B generation×rate.
+Piaui Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-piaui-wind,Existing live waste or Path-B generation×rate.
+Piaui Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-piaui-solar,Existing live waste or Path-B generation×rate.
+Pernambuco Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-pernambuco-wind,Existing live waste or Path-B generation×rate.
+Pernambuco Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-pernambuco-solar,Existing live waste or Path-B generation×rate.
+Paraiba Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-paraiba-wind,Existing live waste or Path-B generation×rate.
+Paraiba Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-paraiba-solar,Existing live waste or Path-B generation×rate.
+Maranhao Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-maranhao-wind,Existing live waste or Path-B generation×rate.
+Maranhao Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-maranhao-solar,Existing live waste or Path-B generation×rate.
+Brazil Other ONS States Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-other-wind,Existing live waste or Path-B generation×rate.
+Brazil Other ONS States Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-other-solar,Existing live waste or Path-B generation×rate.
+Norway NO1 Hydro (Oslo),NOR,hydro,live-tso,,legacy-unspecified,norway-no1-hydro,Existing live waste or Path-B generation×rate.
+Norway NO1 Wind (Oslo),NOR,wind,live-tso,,legacy-unspecified,norway-no1-wind,Existing live waste or Path-B generation×rate.
+Norway NO2 Hydro (Kristiansand),NOR,hydro,live-tso,,legacy-unspecified,norway-no2-hydro,Existing live waste or Path-B generation×rate.
+Norway NO2 Wind (Kristiansand),NOR,wind,live-tso,,legacy-unspecified,norway-no2-wind,Existing live waste or Path-B generation×rate.
+Norway NO3 Hydro (Trondheim),NOR,hydro,live-tso,,legacy-unspecified,norway-no3-hydro,Existing live waste or Path-B generation×rate.
+Norway NO3 Wind (Trondheim),NOR,wind,live-tso,,legacy-unspecified,norway-no3-wind,Existing live waste or Path-B generation×rate.
+Norway NO4 Hydro (Tromsø),NOR,hydro,live-tso,,legacy-unspecified,norway-no4-hydro,Existing live waste or Path-B generation×rate.
+Norway NO4 Wind (Tromsø),NOR,wind,live-tso,,legacy-unspecified,norway-no4-wind,Existing live waste or Path-B generation×rate.
+Norway NO5 (Bergen),NOR,hydro,not-collecting,statics,unpublished,norway-no5,Country/T3 stub — Ember/IRENA is not TSO collection.
+Switzerland,CHE,solar,live-tso,,legacy-unspecified,switzerland,Existing live waste or Path-B generation×rate.
+Ontario Wind,CAN,wind,live-tso,,legacy-unspecified,ontario-wind,Existing live waste or Path-B generation×rate.
+Ontario Solar,CAN,solar,live-tso,,legacy-unspecified,ontario-solar,Existing live waste or Path-B generation×rate.
+Alberta Wind,CAN,wind,live-tso,,legacy-unspecified,alberta-wind,Existing live waste or Path-B generation×rate.
+Alberta Solar,CAN,solar,live-tso,,legacy-unspecified,alberta-solar,Existing live waste or Path-B generation×rate.
+Ireland (Republic) Wind,IRL,wind,live-tso,,legacy-unspecified,ireland-republic-wind,Existing live waste or Path-B generation×rate.
+Ireland (Republic) Solar,IRL,solar,live-tso,,legacy-unspecified,ireland-republic-solar,Existing live waste or Path-B generation×rate.
+Northern Ireland Wind,GBR,wind,live-tso,,legacy-unspecified,northern-ireland-wind,Existing live waste or Path-B generation×rate.
+Northern Ireland Solar,GBR,solar,live-tso,,legacy-unspecified,northern-ireland-solar,Existing live waste or Path-B generation×rate.
+Peru Hydro,PER,hydro,live-tso,,legacy-unspecified,peru-hydro,Existing live waste or Path-B generation×rate.
+Peru Solar,PER,solar,live-tso,,legacy-unspecified,peru-solar,Existing live waste or Path-B generation×rate.
+Peru Wind,PER,wind,live-tso,,legacy-unspecified,peru-wind,Existing live waste or Path-B generation×rate.
+South Africa Solar,ZAF,solar,live-tso,,legacy-unspecified,south-africa-solar,Existing live waste or Path-B generation×rate.
+South Africa Wind,ZAF,wind,live-tso,,legacy-unspecified,south-africa-wind,Existing live waste or Path-B generation×rate.
+New Zealand Hydro,NZL,hydro,live-tso,,legacy-unspecified,new-zealand-hydro,Existing live waste or Path-B generation×rate.
+New Zealand Wind,NZL,wind,live-tso,,legacy-unspecified,new-zealand-wind,Existing live waste or Path-B generation×rate.
+New Zealand Solar,NZL,solar,live-tso,,legacy-unspecified,new-zealand-solar,Existing live waste or Path-B generation×rate.
+New Zealand Geo,NZL,geo,live-tso,,legacy-unspecified,new-zealand-geo,Existing live waste or Path-B generation×rate.
+Atacama,CHL,solar,live-tso,,legacy-unspecified,atacama,Existing live waste or Path-B generation×rate.
+Chile Wind,CHL,wind,live-tso,,legacy-unspecified,chile-wind,Existing live waste or Path-B generation×rate.
+Chile Hydro,CHL,hydro,not-collecting,statics,unpublished,atacama-hydro,Country/T3 stub — Ember/IRENA is not TSO collection.
+Sichuan,CHN,hydro,not-collecting,statics,unpublished,sichuan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Sichuan Wind,CHN,wind,not-collecting,statics,unpublished,sichuan-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Sichuan Solar,CHN,solar,not-collecting,statics,unpublished,sichuan-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Guangxi Wind,CHN,wind,not-collecting,statics,unpublished,guangxi-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Guangxi Solar,CHN,solar,not-collecting,statics,unpublished,guangxi-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Xinjiang Wind,CHN,wind,not-collecting,statics,unpublished,xinjiang-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Xinjiang Solar,CHN,solar,not-collecting,statics,unpublished,xinjiang-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Inner Mongolia Wind,CHN,wind,not-collecting,statics,unpublished,inner-mongolia-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Inner Mongolia Solar,CHN,solar,not-collecting,statics,unpublished,inner-mongolia-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Gansu Wind,CHN,wind,not-collecting,statics,unpublished,gansu-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Gansu Solar,CHN,solar,not-collecting,statics,unpublished,gansu-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Qinghai Wind,CHN,wind,not-collecting,statics,unpublished,qinghai-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Qinghai Solar,CHN,solar,not-collecting,statics,unpublished,qinghai-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Ningxia Wind,CHN,wind,not-collecting,statics,unpublished,ningxia-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Ningxia Solar,CHN,solar,not-collecting,statics,unpublished,ningxia-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Yunnan Wind,CHN,wind,not-collecting,statics,unpublished,yunnan-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Yunnan Solar,CHN,solar,not-collecting,statics,unpublished,yunnan-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Tibet Wind,CHN,wind,not-collecting,statics,unpublished,tibet-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Tibet Solar,CHN,solar,not-collecting,statics,unpublished,tibet-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Shandong Solar,CHN,solar,not-collecting,statics,unpublished,china-shandong-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Shandong Wind,CHN,wind,not-collecting,statics,unpublished,china-shandong-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Guangdong,CHN,mixed,not-collecting,statics,unpublished,china-guangdong,Country/T3 stub — Ember/IRENA is not TSO collection.
+Jiangsu Wind,CHN,wind,not-collecting,statics,unpublished,china-jiangsu-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Jiangsu Solar,CHN,solar,not-collecting,statics,unpublished,china-jiangsu-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Anhui Solar,CHN,solar,not-collecting,statics,unpublished,china-anhui-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Anhui Wind,CHN,wind,not-collecting,statics,unpublished,china-anhui-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hunan Wind,CHN,wind,not-collecting,statics,unpublished,china-hunan-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hunan Solar,CHN,solar,not-collecting,statics,unpublished,china-hunan-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hunan Hydro,CHN,hydro,not-collecting,statics,legacy-unspecified,china-hunan-hydro,T2 annual waste anchor. Not hourly TSO collection.
+Liaoning Wind,CHN,wind,not-collecting,statics,unpublished,china-liaoning-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Liaoning Solar,CHN,solar,not-collecting,statics,unpublished,china-liaoning-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hebei Wind,CHN,wind,not-collecting,statics,unpublished,china-hebei-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hebei Solar,CHN,solar,not-collecting,statics,unpublished,china-hebei-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Heilongjiang Wind,CHN,wind,not-collecting,statics,unpublished,china-heilongjiang-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Heilongjiang Solar,CHN,solar,not-collecting,statics,unpublished,china-heilongjiang-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Jilin Wind,CHN,wind,not-collecting,statics,unpublished,china-jilin-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Jilin Solar,CHN,solar,not-collecting,statics,unpublished,china-jilin-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hubei Wind,CHN,wind,not-collecting,statics,unpublished,china-hubei-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hubei Solar,CHN,solar,not-collecting,statics,unpublished,china-hubei-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hubei Hydro,CHN,hydro,not-collecting,statics,legacy-unspecified,china-hubei-hydro,T2 annual waste anchor. Not hourly TSO collection.
+Shanxi Wind,CHN,wind,not-collecting,statics,unpublished,china-shanxi-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Shanxi Solar,CHN,solar,not-collecting,statics,unpublished,china-shanxi-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Shaanxi Solar,CHN,solar,not-collecting,statics,unpublished,china-shaanxi-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Shaanxi Wind,CHN,wind,not-collecting,statics,unpublished,china-shaanxi-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Zhejiang,CHN,mixed,not-collecting,statics,unpublished,china-zhejiang,Country/T3 stub — Ember/IRENA is not TSO collection.
+Henan Solar,CHN,solar,not-collecting,statics,unpublished,china-henan-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Henan Wind,CHN,wind,not-collecting,statics,unpublished,china-henan-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Fujian,CHN,mixed,not-collecting,statics,unpublished,china-fujian,Country/T3 stub — Ember/IRENA is not TSO collection.
+Jiangxi,CHN,solar,not-collecting,statics,unpublished,china-jiangxi,Country/T3 stub — Ember/IRENA is not TSO collection.
+Beijing,CHN,solar,not-collecting,statics,unpublished,china-beijing,Country/T3 stub — Ember/IRENA is not TSO collection.
+Guizhou Solar,CHN,solar,not-collecting,statics,unpublished,china-guizhou-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Guizhou Hydro,CHN,hydro,not-collecting,statics,legacy-unspecified,china-guizhou-hydro,T2 annual waste anchor. Not hourly TSO collection.
+Chongqing Hydro,CHN,hydro,not-collecting,statics,legacy-unspecified,china-chongqing-hydro,T2 annual waste anchor. Not hourly TSO collection.
+Chongqing Solar,CHN,solar,not-collecting,statics,unpublished,china-chongqing-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Tianjin,CHN,mixed,not-collecting,statics,unpublished,china-tianjin,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hainan,CHN,solar,not-collecting,statics,unpublished,china-hainan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Shanghai,CHN,solar,not-collecting,statics,unpublished,china-shanghai,Country/T3 stub — Ember/IRENA is not TSO collection.
+Iceland,ISL,hydro,not-collecting,statics,unpublished,iceland,Country/T3 stub — Ember/IRENA is not TSO collection.
+Argentina,ARG,wind,relay-tso,argentina,unpublished,argentina,Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones.
+Uruguay,URY,wind,live-tso,,legacy-unspecified,uruguay,Existing live waste or Path-B generation×rate.
+Paraguay,PRY,hydro,not-collecting,statics,unpublished,paraguay,Country/T3 stub — Ember/IRENA is not TSO collection.
+Colombia,COL,hydro,live-tso,,legacy-unspecified,colombia,Existing live waste or Path-B generation×rate.
+Colombia Wind,COL,wind,not-collecting,statics,unpublished,colombia-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Colombia Solar,COL,solar,not-collecting,statics,unpublished,colombia-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Mexico Solar,MEX,solar,relay-tso,mexico,unpublished,mexico-solar,Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones.
+Mexico Wind,MEX,wind,relay-tso,mexico,unpublished,mexico-wind,Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones.
+Chubu (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-chubu,Existing live waste or Path-B generation×rate.
+Chugoku (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-chugoku,Existing live waste or Path-B generation×rate.
+Hokkaido Solar (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-hokkaido-solar,Existing live waste or Path-B generation×rate.
+Hokkaido Wind (Japan),JPN,wind,live-tso,,legacy-unspecified,japan-hokkaido-wind,Existing live waste or Path-B generation×rate.
+Hokuriku (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-hokuriku,Existing live waste or Path-B generation×rate.
+Kansai (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-kansai,Existing live waste or Path-B generation×rate.
+Kyushu (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-kyushu,Existing live waste or Path-B generation×rate.
+Okinawa (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-okinawa,Existing live waste or Path-B generation×rate.
+Shikoku (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-shikoku,Existing live waste or Path-B generation×rate.
+TEPCO (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-tepco,Existing live waste or Path-B generation×rate.
+Tohoku Solar (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-tohoku-solar,Existing live waste or Path-B generation×rate.
+Tohoku Wind (Japan),JPN,wind,live-tso,,legacy-unspecified,japan-tohoku-wind,Existing live waste or Path-B generation×rate.
+Vietnam,VNM,solar,not-collecting,statics,unpublished,vietnam,Country/T3 stub — Ember/IRENA is not TSO collection.
+Thailand,THA,solar,not-collecting,statics,unpublished,thailand,Country/T3 stub — Ember/IRENA is not TSO collection.
+Rajasthan,IND,solar,not-collecting,,unpublished,india-rajasthan,Authoritative operator exists; live path not producing usable waste.
+Gujarat,IND,solar,not-collecting,,unpublished,india-gujarat,Authoritative operator exists; live path not producing usable waste.
+Tamil Nadu,IND,wind,not-collecting,,unpublished,india-tamil-nadu,Authoritative operator exists; live path not producing usable waste.
+Karnataka,IND,solar,not-collecting,,unpublished,india-karnataka,Authoritative operator exists; live path not producing usable waste.
+Andhra Pradesh,IND,solar,not-collecting,,unpublished,india-andhra-pradesh,Authoritative operator exists; live path not producing usable waste.
+Maharashtra,IND,mixed,not-collecting,statics,legacy-unspecified,india-maharashtra,T2 annual waste anchor. Not hourly TSO collection.
+India East,IND,solar,not-collecting,statics,unpublished,india-east,Country/T3 stub — Ember/IRENA is not TSO collection.
+Madhya Pradesh,IND,solar,not-collecting,,unpublished,india-madhya-pradesh,Authoritative operator exists; live path not producing usable waste.
+Telangana,IND,mixed,not-collecting,,unpublished,india-telangana,Authoritative operator exists; live path not producing usable waste.
+Uttar Pradesh,IND,solar,not-collecting,,unpublished,india-uttar-pradesh,Authoritative operator exists; live path not producing usable waste.
+Punjab,IND,solar,not-collecting,,unpublished,india-punjab,Authoritative operator exists; live path not producing usable waste.
+Odisha,IND,wind,not-collecting,,unpublished,india-odisha,Authoritative operator exists; live path not producing usable waste.
+Chhattisgarh,IND,solar,not-collecting,,unpublished,india-chhattisgarh,Authoritative operator exists; live path not producing usable waste.
+Cyprus,CYP,solar,not-collecting,statics,unpublished,cyprus,Country/T3 stub — Ember/IRENA is not TSO collection.
+Ethiopia,ETH,hydro,not-collecting,statics,unpublished,ethiopia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Kenya,KEN,hydro,not-collecting,statics,unpublished,kenya,Country/T3 stub — Ember/IRENA is not TSO collection.
+Egypt,EGY,solar,not-collecting,statics,unpublished,egypt,Country/T3 stub — Ember/IRENA is not TSO collection.
+Morocco,MAR,mixed,not-collecting,statics,unpublished,morocco,Country/T3 stub — Ember/IRENA is not TSO collection.
+Namibia,NAM,solar,not-collecting,statics,unpublished,namibia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Kazakhstan,KAZ,wind,not-collecting,statics,unpublished,kazakhstan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Mongolia,MNG,wind,not-collecting,statics,unpublished,mongolia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Albania,ALB,solar,live-tso,entsoe,unpublished,albania,ENTSO-E A75 generation; waste unpublished.
+Georgia,GEO,mixed,not-collecting,statics,unpublished,georgia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Armenia,ARM,solar,not-collecting,statics,unpublished,armenia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Azerbaijan,AZE,mixed,not-collecting,statics,unpublished,azerbaijan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Uzbekistan,UZB,solar,not-collecting,statics,unpublished,uzbekistan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Afghanistan,AFG,solar,not-collecting,statics,unpublished,afghanistan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Bahrain,BHR,solar,not-collecting,statics,unpublished,bahrain,Country/T3 stub — Ember/IRENA is not TSO collection.
+Belarus Wind,BLR,wind,not-collecting,statics,unpublished,belarus-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Belarus Solar,BLR,solar,not-collecting,statics,unpublished,belarus-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Brunei,BRN,solar,not-collecting,statics,unpublished,brunei,Country/T3 stub — Ember/IRENA is not TSO collection.
+Haiti,HTI,solar,not-collecting,statics,unpublished,haiti,Country/T3 stub — Ember/IRENA is not TSO collection.
+Kyrgyzstan,KGZ,hydro,not-collecting,statics,unpublished,kyrgyzstan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Lebanon,LBN,solar,not-collecting,statics,unpublished,lebanon,Country/T3 stub — Ember/IRENA is not TSO collection.
+Libya,LBY,solar,not-collecting,statics,unpublished,libya,Country/T3 stub — Ember/IRENA is not TSO collection.
+Mali,MLI,solar,not-collecting,statics,unpublished,mali,Country/T3 stub — Ember/IRENA is not TSO collection.
+Niger,NER,solar,not-collecting,statics,unpublished,niger,Country/T3 stub — Ember/IRENA is not TSO collection.
+North Korea,PRK,solar,not-collecting,statics,unpublished,north-korea,Country/T3 stub — Ember/IRENA is not TSO collection.
+Singapore,SGP,solar,not-collecting,statics,unpublished,singapore,Country/T3 stub — Ember/IRENA is not TSO collection.
+Syria,SYR,solar,not-collecting,statics,unpublished,syria,Country/T3 stub — Ember/IRENA is not TSO collection.
+Tajikistan,TJK,hydro,not-collecting,statics,unpublished,tajikistan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Turkmenistan,TKM,solar,not-collecting,statics,unpublished,turkmenistan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Yemen,YEM,solar,not-collecting,statics,unpublished,yemen,Country/T3 stub — Ember/IRENA is not TSO collection.
+Burundi,BDI,mixed,not-collecting,statics,unpublished,burundi,Country/T3 stub — Ember/IRENA is not TSO collection.
+Bhutan,BTN,hydro,not-collecting,statics,unpublished,bhutan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Central African Republic,CAF,hydro,not-collecting,statics,unpublished,central-african-republic,Country/T3 stub — Ember/IRENA is not TSO collection.
+Republic of Congo,COG,hydro,not-collecting,statics,unpublished,congo-republic,Country/T3 stub — Ember/IRENA is not TSO collection.
+Comoros,COM,solar,not-collecting,statics,unpublished,comoros,Country/T3 stub — Ember/IRENA is not TSO collection.
+Djibouti,DJI,solar,not-collecting,statics,unpublished,djibouti,Country/T3 stub — Ember/IRENA is not TSO collection.
+Eritrea,ERI,solar,not-collecting,statics,unpublished,eritrea,Country/T3 stub — Ember/IRENA is not TSO collection.
+Fiji,FJI,hydro,not-collecting,statics,unpublished,fiji,Country/T3 stub — Ember/IRENA is not TSO collection.
+Gambia,GMB,solar,not-collecting,statics,unpublished,gambia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Guinea,GIN,hydro,not-collecting,statics,unpublished,guinea,Country/T3 stub — Ember/IRENA is not TSO collection.
+Guinea-Bissau,GNB,solar,not-collecting,statics,unpublished,guinea-bissau,Country/T3 stub — Ember/IRENA is not TSO collection.
+Equatorial Guinea,GNQ,mixed,not-collecting,statics,unpublished,equatorial-guinea,Country/T3 stub — Ember/IRENA is not TSO collection.
+Lesotho,LSO,hydro,not-collecting,statics,unpublished,lesotho,Country/T3 stub — Ember/IRENA is not TSO collection.
+Liberia,LBR,hydro,not-collecting,statics,unpublished,liberia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Maldives,MDV,solar,not-collecting,statics,unpublished,maldives,Country/T3 stub — Ember/IRENA is not TSO collection.
+Papua New Guinea,PNG,hydro,not-collecting,statics,unpublished,papua-new-guinea,Country/T3 stub — Ember/IRENA is not TSO collection.
+Solomon Islands,SLB,solar,not-collecting,statics,unpublished,solomon-islands,Country/T3 stub — Ember/IRENA is not TSO collection.
+Sierra Leone,SLE,hydro,not-collecting,statics,unpublished,sierra-leone,Country/T3 stub — Ember/IRENA is not TSO collection.
+Somalia,SOM,solar,not-collecting,statics,unpublished,somalia,Country/T3 stub — Ember/IRENA is not TSO collection.
+South Sudan,SSD,solar,not-collecting,statics,unpublished,south-sudan,Country/T3 stub — Ember/IRENA is not TSO collection.
+São Tomé & Príncipe,STP,solar,not-collecting,statics,unpublished,sao-tome,Country/T3 stub — Ember/IRENA is not TSO collection.
+Seychelles,SYC,solar,not-collecting,statics,unpublished,seychelles,Country/T3 stub — Ember/IRENA is not TSO collection.
+Chad,TCD,solar,not-collecting,statics,unpublished,chad,Country/T3 stub — Ember/IRENA is not TSO collection.
+Timor-Leste,TLS,solar,not-collecting,statics,unpublished,east-timor,Country/T3 stub — Ember/IRENA is not TSO collection.
+Vanuatu,VUT,solar,not-collecting,statics,unpublished,vanuatu,Country/T3 stub — Ember/IRENA is not TSO collection.
+Samoa,WSM,solar,not-collecting,statics,unpublished,samoa,Country/T3 stub — Ember/IRENA is not TSO collection.
+Andorra,AND,hydro,not-collecting,statics,unpublished,andorra,Country/T3 stub — Ember/IRENA is not TSO collection.
+Liechtenstein,LIE,hydro,not-collecting,statics,unpublished,liechtenstein,Country/T3 stub — Ember/IRENA is not TSO collection.
+Monaco,MCO,solar,not-collecting,statics,unpublished,monaco,Country/T3 stub — Ember/IRENA is not TSO collection.
+San Marino,SMR,solar,not-collecting,statics,unpublished,san-marino,Country/T3 stub — Ember/IRENA is not TSO collection.
+Antigua & Barbuda,ATG,solar,not-collecting,statics,unpublished,antigua-and-barbuda,Country/T3 stub — Ember/IRENA is not TSO collection.
+Bahamas,BHS,solar,not-collecting,statics,unpublished,bahamas,Country/T3 stub — Ember/IRENA is not TSO collection.
+Belize,BLZ,hydro,not-collecting,statics,unpublished,belize,Country/T3 stub — Ember/IRENA is not TSO collection.
+Dominica,DMA,solar,not-collecting,statics,unpublished,dominica,Country/T3 stub — Ember/IRENA is not TSO collection.
+Grenada,GRD,solar,not-collecting,statics,unpublished,grenada,Country/T3 stub — Ember/IRENA is not TSO collection.
+St Kitts & Nevis,KNA,solar,not-collecting,statics,unpublished,st-kitts-and-nevis,Country/T3 stub — Ember/IRENA is not TSO collection.
+St Lucia,LCA,solar,not-collecting,statics,unpublished,st-lucia,Country/T3 stub — Ember/IRENA is not TSO collection.
+St Vincent,VCT,solar,not-collecting,statics,unpublished,st-vincent,Country/T3 stub — Ember/IRENA is not TSO collection.
+Kiribati,KIR,solar,not-collecting,statics,unpublished,kiribati,Country/T3 stub — Ember/IRENA is not TSO collection.
+Marshall Islands,MHL,solar,not-collecting,statics,unpublished,marshall-islands,Country/T3 stub — Ember/IRENA is not TSO collection.
+Micronesia,FSM,solar,not-collecting,statics,unpublished,micronesia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Nauru,NRU,solar,not-collecting,statics,unpublished,nauru,Country/T3 stub — Ember/IRENA is not TSO collection.
+Palau,PLW,solar,not-collecting,statics,unpublished,palau,Country/T3 stub — Ember/IRENA is not TSO collection.
+Tonga,TON,solar,not-collecting,statics,unpublished,tonga,Country/T3 stub — Ember/IRENA is not TSO collection.
+Tuvalu,TUV,solar,not-collecting,statics,unpublished,tuvalu,Country/T3 stub — Ember/IRENA is not TSO collection.
+Sri Lanka,LKA,mixed,not-collecting,statics,unpublished,sri-lanka,Country/T3 stub — Ember/IRENA is not TSO collection.
+Sudan,SDN,solar,not-collecting,statics,unpublished,sudan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Venezuela,VEN,wind,not-collecting,statics,unpublished,venezuela,Country/T3 stub — Ember/IRENA is not TSO collection.
+Laos,LAO,solar,not-collecting,statics,unpublished,laos,Country/T3 stub — Ember/IRENA is not TSO collection.
+Cambodia,KHM,solar,not-collecting,statics,unpublished,cambodia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Myanmar,MMR,solar,not-collecting,statics,unpublished,myanmar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Honduras,HND,solar,not-collecting,statics,unpublished,honduras,Country/T3 stub — Ember/IRENA is not TSO collection.
+Jeju (S. Korea),KOR,wind,not-collecting,statics,unpublished,jeju,Country/T3 stub — Ember/IRENA is not TSO collection.
+Western Australia Solar (SWIS),AUS,solar,live-tso,,legacy-unspecified,wa-swis-solar,Existing live waste or Path-B generation×rate.
+Western Australia Wind (SWIS),AUS,wind,live-tso,,legacy-unspecified,wa-swis-wind,Existing live waste or Path-B generation×rate.
+NT & Pilbara,AUS,solar,not-collecting,statics,unpublished,nt-pilbara,Country/T3 stub — Ember/IRENA is not TSO collection.
+Indonesia,IDN,solar,not-collecting,statics,unpublished,indonesia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Malaysia,MYS,solar,not-collecting,statics,unpublished,malaysia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Philippines Solar,PHL,solar,not-collecting,statics,unpublished,philippines-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Philippines Wind,PHL,wind,not-collecting,statics,unpublished,philippines-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+South Korea Solar,KOR,solar,not-collecting,statics,unpublished,south-korea-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+South Korea Wind,KOR,wind,not-collecting,statics,unpublished,south-korea-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Russia (European grid),RUS,hydro,not-collecting,statics,unpublished,russia-mainland,Country/T3 stub — Ember/IRENA is not TSO collection.
+Taiwan,TWN,mixed,not-collecting,,unpublished,taiwan,Authoritative operator exists; live path not producing usable waste.
+Palestine,PSE,solar,not-collecting,statics,unpublished,palestine,Country/T3 stub — Ember/IRENA is not TSO collection.
+Jordan,JOR,solar,not-collecting,statics,unpublished,jordan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Saudi Arabia (solar),SAU,solar,not-collecting,statics,unpublished,saudi-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+UAE,ARE,solar,not-collecting,statics,unpublished,uae,Country/T3 stub — Ember/IRENA is not TSO collection.
+Oman,OMN,solar,not-collecting,statics,unpublished,oman,Country/T3 stub — Ember/IRENA is not TSO collection.
+Israel,ISR,solar,not-collecting,statics,unpublished,israel,Country/T3 stub — Ember/IRENA is not TSO collection.
+Pakistan Wind,PAK,wind,not-collecting,statics,unpublished,pakistan-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Pakistan Solar,PAK,solar,not-collecting,statics,unpublished,pakistan-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Nepal,NPL,hydro,not-collecting,statics,unpublished,nepal,Country/T3 stub — Ember/IRENA is not TSO collection.
+Iran,IRN,solar,not-collecting,statics,unpublished,iran,Country/T3 stub — Ember/IRENA is not TSO collection.
+Iraq,IRQ,solar,not-collecting,statics,unpublished,iraq-mainland,Country/T3 stub — Ember/IRENA is not TSO collection.
+Kurdistan (KRG),IRQ,solar,not-collecting,statics,unpublished,kurdistan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Bangladesh,BGD,solar,not-collecting,statics,unpublished,bangladesh,Country/T3 stub — Ember/IRENA is not TSO collection.
+Minas Gerais Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-mg-wind,Existing live waste or Path-B generation×rate.
+Minas Gerais Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-mg-solar,Existing live waste or Path-B generation×rate.
+Sao Paulo Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-sp-wind,Existing live waste or Path-B generation×rate.
+Sao Paulo Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-sp-solar,Existing live waste or Path-B generation×rate.
+Mato Grosso Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-mt-wind,Existing live waste or Path-B generation×rate.
+Mato Grosso Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-mt-solar,Existing live waste or Path-B generation×rate.
+Goias Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-go-wind,Existing live waste or Path-B generation×rate.
+Goias Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-go-solar,Existing live waste or Path-B generation×rate.
+Parana Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-pr-wind,Existing live waste or Path-B generation×rate.
+Parana Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-pr-solar,Existing live waste or Path-B generation×rate.
+Rio Grande do Sul Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-rs-wind,Existing live waste or Path-B generation×rate.
+Rio Grande do Sul Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-rs-solar,Existing live waste or Path-B generation×rate.
+British Columbia,CAN,hydro,not-collecting,statics,unpublished,british-columbia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Quebec,CAN,hydro,not-collecting,statics,unpublished,quebec,Country/T3 stub — Ember/IRENA is not TSO collection.
+Manitoba,CAN,mixed,not-collecting,statics,unpublished,manitoba,Country/T3 stub — Ember/IRENA is not TSO collection.
+Saskatchewan,CAN,wind,not-collecting,statics,unpublished,saskatchewan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Hawaii (Oahu),USA,solar,not-collecting,,unpublished,hawaii-oahu,Authoritative operator exists; live path not producing usable waste.
+Hawaii (Maui),USA,solar,not-collecting,,unpublished,hawaii-maui,Authoritative operator exists; live path not producing usable waste.
+Hawaii (Big Island),USA,mixed,not-collecting,,unpublished,hawaii-island,Authoritative operator exists; live path not producing usable waste.
+Florida Power & Light Wind,USA,wind,live-tso,eia-vre-bas,unpublished,fpl-wind,EIA-930 generation; BA publishes no curtailment rate.
+Florida Power & Light Solar,USA,solar,live-tso,eia-vre-bas,unpublished,fpl-solar,EIA-930 generation; BA publishes no curtailment rate.
+Duke Energy Florida Wind,USA,wind,live-tso,eia-vre-bas,unpublished,fpc-wind,EIA-930 generation; BA publishes no curtailment rate.
+Duke Energy Florida Solar,USA,solar,live-tso,eia-vre-bas,unpublished,fpc-solar,EIA-930 generation; BA publishes no curtailment rate.
+Tampa Electric Wind,USA,wind,live-tso,eia-vre-bas,unpublished,tec-wind,EIA-930 generation; BA publishes no curtailment rate.
+Tampa Electric Solar,USA,solar,live-tso,eia-vre-bas,unpublished,tec-solar,EIA-930 generation; BA publishes no curtailment rate.
+Austria Wind,AUT,wind,live-tso,entsoe,unpublished,austria-wind,ENTSO-E A75 generation; waste unpublished.
+Austria Solar,AUT,solar,live-tso,entsoe,unpublished,austria-solar,ENTSO-E A75 generation; waste unpublished.
+Russia (Murmansk),RUS,wind,not-collecting,statics,legacy-unspecified,russia-murmansk-wind,T2 annual waste anchor. Not hourly TSO collection.
+TVA Wind,USA,wind,live-tso,eia-vre-bas,unpublished,tva-wind,EIA-930 generation; BA publishes no curtailment rate.
+TVA Solar,USA,solar,live-tso,eia-vre-bas,unpublished,tva-solar,EIA-930 generation; BA publishes no curtailment rate.
+Guatemala,GTM,solar,not-collecting,statics,unpublished,guatemala,Country/T3 stub — Ember/IRENA is not TSO collection.
+El Salvador,SLV,solar,not-collecting,statics,unpublished,el-salvador,Country/T3 stub — Ember/IRENA is not TSO collection.
+Nicaragua,NIC,solar,not-collecting,statics,unpublished,nicaragua,Country/T3 stub — Ember/IRENA is not TSO collection.
+Costa Rica,CRI,hydro,not-collecting,statics,unpublished,costa-rica,Country/T3 stub — Ember/IRENA is not TSO collection.
+Panama,PAN,solar,not-collecting,statics,unpublished,panama,Country/T3 stub — Ember/IRENA is not TSO collection.
+Central America (SIEPAC),GTM,solar,not-collecting,statics,unpublished,guatemala-siepac,Country/T3 stub — Ember/IRENA is not TSO collection.
+Cuba,CUB,mixed,not-collecting,statics,unpublished,cuba,Country/T3 stub — Ember/IRENA is not TSO collection.
+Dominican Republic,DOM,solar,not-collecting,statics,unpublished,dominican-republic,Country/T3 stub — Ember/IRENA is not TSO collection.
+Dominican Republic Wind,DOM,wind,not-collecting,statics,unpublished,dominican-republic-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Jamaica,JAM,solar,not-collecting,statics,unpublished,jamaica,Country/T3 stub — Ember/IRENA is not TSO collection.
+Barbados,BRB,solar,not-collecting,statics,unpublished,barbados,Country/T3 stub — Ember/IRENA is not TSO collection.
+Bolivia,BOL,solar,not-collecting,statics,unpublished,bolivia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Ecuador,ECU,hydro,not-collecting,statics,unpublished,ecuador,Country/T3 stub — Ember/IRENA is not TSO collection.
+French Guiana,GUF,solar,not-collecting,statics,unpublished,french-guiana,Country/T3 stub — Ember/IRENA is not TSO collection.
+Algeria,DZA,solar,not-collecting,statics,unpublished,algeria,Country/T3 stub — Ember/IRENA is not TSO collection.
+Angola,AGO,solar,not-collecting,statics,unpublished,angola,Country/T3 stub — Ember/IRENA is not TSO collection.
+Benin,BEN,solar,not-collecting,statics,unpublished,benin,Country/T3 stub — Ember/IRENA is not TSO collection.
+Botswana,BWA,solar,not-collecting,statics,unpublished,botswana,Country/T3 stub — Ember/IRENA is not TSO collection.
+Burkina Faso,BFA,solar,not-collecting,statics,unpublished,burkina-faso,Country/T3 stub — Ember/IRENA is not TSO collection.
+Cabo Verde,CPV,solar,not-collecting,statics,unpublished,cabo-verde,Country/T3 stub — Ember/IRENA is not TSO collection.
+Cameroon,CMR,hydro,not-collecting,statics,unpublished,cameroon,Country/T3 stub — Ember/IRENA is not TSO collection.
+DR Congo,COD,hydro,not-collecting,statics,unpublished,congo-drc,Country/T3 stub — Ember/IRENA is not TSO collection.
+Cote d'Ivoire,CIV,solar,not-collecting,statics,unpublished,cote-divoire,Country/T3 stub — Ember/IRENA is not TSO collection.
+Eswatini,SWZ,solar,not-collecting,statics,unpublished,eswatini,Country/T3 stub — Ember/IRENA is not TSO collection.
+Gabon,GAB,hydro,not-collecting,statics,unpublished,gabon,Country/T3 stub — Ember/IRENA is not TSO collection.
+Ghana,GHA,solar,not-collecting,statics,unpublished,ghana,Country/T3 stub — Ember/IRENA is not TSO collection.
+Madagascar,MDG,hydro,not-collecting,statics,unpublished,madagascar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Malawi,MWI,hydro,not-collecting,statics,unpublished,malawi,Country/T3 stub — Ember/IRENA is not TSO collection.
+Mauritania,MRT,wind,not-collecting,statics,unpublished,mauritania,Country/T3 stub — Ember/IRENA is not TSO collection.
+Mauritius,MUS,solar,not-collecting,statics,unpublished,mauritius,Country/T3 stub — Ember/IRENA is not TSO collection.
+Mozambique,MOZ,hydro,not-collecting,statics,unpublished,mozambique,Country/T3 stub — Ember/IRENA is not TSO collection.
+Nigeria,NGA,solar,not-collecting,statics,unpublished,nigeria,Country/T3 stub — Ember/IRENA is not TSO collection.
+Rwanda,RWA,mixed,not-collecting,statics,unpublished,rwanda,Country/T3 stub — Ember/IRENA is not TSO collection.
+Senegal,SEN,solar,not-collecting,statics,unpublished,senegal,Country/T3 stub — Ember/IRENA is not TSO collection.
+Tanzania,TZA,hydro,not-collecting,statics,unpublished,tanzania,Country/T3 stub — Ember/IRENA is not TSO collection.
+Togo,TGO,solar,not-collecting,statics,unpublished,togo,Country/T3 stub — Ember/IRENA is not TSO collection.
+Tunisia,TUN,solar,not-collecting,statics,unpublished,tunisia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Uganda,UGA,hydro,not-collecting,statics,unpublished,uganda,Country/T3 stub — Ember/IRENA is not TSO collection.
+Zambia,ZMB,hydro,not-collecting,statics,unpublished,zambia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Zimbabwe,ZWE,hydro,not-collecting,statics,unpublished,zimbabwe,Country/T3 stub — Ember/IRENA is not TSO collection.
+Western Downs Solar,AUS,solar,live-tso,,legacy-unspecified,aemo-wdgph1-solar,Existing live waste or Path-B generation×rate.
+Stockyard Hill Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-stockyd1-wind,Existing live waste or Path-B generation×rate.
+Coopers Gap Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-coopgwf1-wind,Existing live waste or Path-B generation×rate.
+Macarthur Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-macarth1-wind,Existing live waste or Path-B generation×rate.
+Rye Park Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-ryepark1-wind,Existing live waste or Path-B generation×rate.
+Darlington Point Solar,AUS,solar,live-tso,,legacy-unspecified,aemo-darlsf1-solar,Existing live waste or Path-B generation×rate.
+Limondale Solar,AUS,solar,live-tso,,legacy-unspecified,aemo-limosf11-solar,Existing live waste or Path-B generation×rate.
+Sapphire Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-saphwf1-wind,Existing live waste or Path-B generation×rate.
+Avonlie Solar,AUS,solar,live-tso,,legacy-unspecified,aemo-avlsf1-solar,Existing live waste or Path-B generation×rate.
+Bango Wind,AUS,wind,live-tso,,legacy-unspecified,aemo-bangowf1-wind,Existing live waste or Path-B generation×rate.
+Sunny Solar,PER,solar,not-collecting,statics,unpublished,solar-sunny,Country/T3 stub — Ember/IRENA is not TSO collection.
+San Martín Solar,PER,solar,not-collecting,statics,unpublished,solar-san-martin,Country/T3 stub — Ember/IRENA is not TSO collection.
+Rubí Solar,PER,solar,not-collecting,statics,unpublished,solar-rubi,Country/T3 stub — Ember/IRENA is not TSO collection.
+Clemesí Solar,PER,solar,not-collecting,statics,unpublished,solar-clemesi,Country/T3 stub — Ember/IRENA is not TSO collection.
+Intipampa Solar,PER,solar,not-collecting,statics,unpublished,solar-intipampa,Country/T3 stub — Ember/IRENA is not TSO collection.
+Matarani Solar,PER,solar,not-collecting,statics,unpublished,solar-matarani,Country/T3 stub — Ember/IRENA is not TSO collection.
+Majes Solar,PER,solar,not-collecting,statics,unpublished,solar-majes,Country/T3 stub — Ember/IRENA is not TSO collection.
+Punta Lomitas Wind,PER,wind,not-collecting,statics,unpublished,wind-punta-lomitas,Country/T3 stub — Ember/IRENA is not TSO collection.
+Wayra Wind,PER,wind,not-collecting,statics,unpublished,wind-wayra,Country/T3 stub — Ember/IRENA is not TSO collection.
+San Juan Wind,PER,wind,not-collecting,statics,unpublished,wind-san-juan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Tres Hermanas Wind,PER,wind,not-collecting,statics,unpublished,wind-tres-hermanas,Country/T3 stub — Ember/IRENA is not TSO collection.
+Cupisnique Wind,PER,wind,not-collecting,statics,unpublished,wind-cupisnique,Country/T3 stub — Ember/IRENA is not TSO collection.
+NV Energy Wind,USA,wind,live-tso,eia-vre-bas,unpublished,nevp-wind,EIA-930 generation; BA publishes no curtailment rate.
+NV Energy Solar,USA,solar,live-tso,eia-vre-bas,unpublished,nevp-solar,EIA-930 generation; BA publishes no curtailment rate.
+WAPA Desert Southwest Wind,USA,wind,live-tso,eia-vre-bas,unpublished,walc-wind,EIA-930 generation; BA publishes no curtailment rate.
+WAPA Desert Southwest Solar,USA,solar,live-tso,eia-vre-bas,unpublished,walc-solar,EIA-930 generation; BA publishes no curtailment rate.
+SPP West Wind,USA,wind,live-tso,eia-vre-bas,unpublished,swpw-wind,EIA-930 generation; BA publishes no curtailment rate.
+SPP West Solar,USA,solar,live-tso,eia-vre-bas,unpublished,swpw-solar,EIA-930 generation; BA publishes no curtailment rate.
+Duke Energy Carolinas Wind,USA,wind,live-tso,eia-vre-bas,unpublished,duk-wind,EIA-930 generation; BA publishes no curtailment rate.
+Duke Energy Carolinas Solar,USA,solar,live-tso,eia-vre-bas,unpublished,duk-solar,EIA-930 generation; BA publishes no curtailment rate.
+Duke Energy Progress East Wind,USA,wind,live-tso,eia-vre-bas,unpublished,cple-wind,EIA-930 generation; BA publishes no curtailment rate.
+Duke Energy Progress East Solar,USA,solar,live-tso,eia-vre-bas,unpublished,cple-solar,EIA-930 generation; BA publishes no curtailment rate.
+Duke Energy Progress West Wind,USA,wind,live-tso,eia-vre-bas,unpublished,cplw-wind,EIA-930 generation; BA publishes no curtailment rate.
+Duke Energy Progress West Solar,USA,solar,live-tso,eia-vre-bas,unpublished,cplw-solar,EIA-930 generation; BA publishes no curtailment rate.
+LG&E/KU Wind,USA,wind,live-tso,eia-vre-bas,unpublished,lgee-wind,EIA-930 generation; BA publishes no curtailment rate.
+LG&E/KU Solar,USA,solar,live-tso,eia-vre-bas,unpublished,lgee-solar,EIA-930 generation; BA publishes no curtailment rate.
+Imperial Irrigation District Wind,USA,wind,live-tso,eia-vre-bas,unpublished,iid-wind,EIA-930 generation; BA publishes no curtailment rate.
+Imperial Irrigation District Solar,USA,solar,live-tso,eia-vre-bas,unpublished,iid-solar,EIA-930 generation; BA publishes no curtailment rate.
+BANC Wind,USA,wind,live-tso,eia-vre-bas,unpublished,banc-wind,EIA-930 generation; BA publishes no curtailment rate.
+BANC Solar,USA,solar,live-tso,eia-vre-bas,unpublished,banc-solar,EIA-930 generation; BA publishes no curtailment rate.
+Los Angeles DWP Wind,USA,wind,live-tso,eia-vre-bas,unpublished,ldwp-wind,EIA-930 generation; BA publishes no curtailment rate.
+Los Angeles DWP Solar,USA,solar,live-tso,eia-vre-bas,unpublished,ldwp-solar,EIA-930 generation; BA publishes no curtailment rate.
+Public Service New Mexico Wind,USA,wind,live-tso,eia-vre-bas,unpublished,pnm-wind,EIA-930 generation; BA publishes no curtailment rate.
+Public Service New Mexico Solar,USA,solar,live-tso,eia-vre-bas,unpublished,pnm-solar,EIA-930 generation; BA publishes no curtailment rate.
+El Paso Electric Wind,USA,wind,live-tso,eia-vre-bas,unpublished,epe-wind,EIA-930 generation; BA publishes no curtailment rate.
+El Paso Electric Solar,USA,solar,live-tso,eia-vre-bas,unpublished,epe-solar,EIA-930 generation; BA publishes no curtailment rate.
+Associated Electric Cooperative Wind,USA,wind,live-tso,eia-vre-bas,unpublished,aeci-wind,EIA-930 generation; BA publishes no curtailment rate.
+Associated Electric Cooperative Solar,USA,solar,live-tso,eia-vre-bas,unpublished,aeci-solar,EIA-930 generation; BA publishes no curtailment rate.
+Southwestern Power Administration Wind,USA,wind,live-tso,eia-vre-bas,unpublished,spa-wind,EIA-930 generation; BA publishes no curtailment rate.
+Southwestern Power Administration Solar,USA,solar,live-tso,eia-vre-bas,unpublished,spa-solar,EIA-930 generation; BA publishes no curtailment rate.
+Dominion Energy South Carolina Wind,USA,wind,live-tso,eia-vre-bas,unpublished,sceg-wind,EIA-930 generation; BA publishes no curtailment rate.
+Dominion Energy South Carolina Solar,USA,solar,live-tso,eia-vre-bas,unpublished,sceg-solar,EIA-930 generation; BA publishes no curtailment rate.
+Sweden SE1 Wind,SWE,wind,live-tso,entsoe,unpublished,sweden-se1-wind,ENTSO-E A75 generation; waste unpublished.
+Sweden SE1 Solar,SWE,solar,live-tso,entsoe,unpublished,sweden-se1-solar,ENTSO-E A75 generation; waste unpublished.
+Sweden SE2 Wind,SWE,wind,live-tso,entsoe,unpublished,sweden-se2-wind,ENTSO-E A75 generation; waste unpublished.
+Sweden SE2 Solar,SWE,solar,live-tso,entsoe,unpublished,sweden-se2-solar,ENTSO-E A75 generation; waste unpublished.
+Bosnia Wind,BIH,wind,live-tso,entsoe,unpublished,bosnia-wind,ENTSO-E A75 generation; waste unpublished.
+Bosnia Solar,BIH,solar,live-tso,entsoe,unpublished,bosnia-solar,ENTSO-E A75 generation; waste unpublished.
+Montenegro Wind,MNE,wind,live-tso,entsoe,unpublished,montenegro-wind,ENTSO-E A75 generation; waste unpublished.
+Montenegro Solar,MNE,solar,live-tso,entsoe,unpublished,montenegro-solar,ENTSO-E A75 generation; waste unpublished.
+Kosovo Wind,XKX,wind,live-tso,entsoe,unpublished,kosovo-wind,ENTSO-E A75 generation; waste unpublished.
+Kosovo Solar,XKX,solar,live-tso,entsoe,unpublished,kosovo-solar,ENTSO-E A75 generation; waste unpublished.
+Kauai (KIUC),USA,solar,no-public-series,tso-grid-markers,unpublished,kauai,Grid present; no public ops series wired.
+Alaska Railbelt,USA,mixed,no-public-series,tso-grid-markers,unpublished,alaska-railbelt,Grid present; no public ops series wired.
+Puerto Rico Wind,PRI,wind,no-public-series,tso-grid-markers,unpublished,puerto-rico-wind,Grid present; no public ops series wired.
+Puerto Rico Solar,PRI,solar,no-public-series,tso-grid-markers,unpublished,puerto-rico-solar,Grid present; no public ops series wired.
+Guam,GUM,solar,no-public-series,tso-grid-markers,unpublished,guam,Grid present; no public ops series wired.
+US Virgin Islands,VIR,solar,no-public-series,tso-grid-markers,unpublished,us-virgin-islands,Grid present; no public ops series wired.
+American Samoa,ASM,solar,no-public-series,tso-grid-markers,unpublished,american-samoa,Grid present; no public ops series wired.
+Northern Mariana Islands,MNP,solar,no-public-series,tso-grid-markers,unpublished,northern-mariana-islands,Grid present; no public ops series wired.
+New Brunswick,CAN,mixed,no-public-series,tso-grid-markers,unpublished,new-brunswick,Grid present; no public ops series wired.
+Nova Scotia,CAN,wind,no-public-series,tso-grid-markers,unpublished,nova-scotia,Grid present; no public ops series wired.
+Prince Edward Island,CAN,wind,no-public-series,tso-grid-markers,unpublished,prince-edward-island,Grid present; no public ops series wired.
+Newfoundland and Labrador,CAN,hydro,no-public-series,tso-grid-markers,unpublished,newfoundland-labrador,Grid present; no public ops series wired.
+Yukon,CAN,hydro,no-public-series,tso-grid-markers,unpublished,yukon,Grid present; no public ops series wired.
+Northwest Territories,CAN,hydro,no-public-series,tso-grid-markers,unpublished,northwest-territories,Grid present; no public ops series wired.
+Nunavut,CAN,mixed,no-public-series,tso-grid-markers,unpublished,nunavut,Grid present; no public ops series wired.
+Greenland,GRL,hydro,no-public-series,tso-grid-markers,unpublished,greenland,Grid present; no public ops series wired.
+Hong Kong CLP,HKG,solar,no-public-series,tso-grid-markers,unpublished,hong-kong-clp,Grid present; no public ops series wired.
+Hong Kong Electric,HKG,solar,no-public-series,tso-grid-markers,unpublished,hong-kong-hke,Grid present; no public ops series wired.
+Macau,MAC,solar,no-public-series,tso-grid-markers,unpublished,macau,Grid present; no public ops series wired.
+Sarawak Energy,MYS,hydro,no-public-series,tso-grid-markers,unpublished,malaysia-sarawak,Grid present; no public ops series wired.
+SESB Sabah,MYS,solar,no-public-series,tso-grid-markers,unpublished,malaysia-sabah,Grid present; no public ops series wired.
+Réunion,REU,solar,no-public-series,tso-grid-markers,unpublished,reunion,Grid present; no public ops series wired.
+Martinique,MTQ,solar,no-public-series,tso-grid-markers,unpublished,martinique,Grid present; no public ops series wired.
+Guadeloupe,GLP,solar,no-public-series,tso-grid-markers,unpublished,guadeloupe,Grid present; no public ops series wired.
+New Caledonia,NCL,solar,no-public-series,tso-grid-markers,unpublished,new-caledonia,Grid present; no public ops series wired.
+French Polynesia,PYF,solar,no-public-series,tso-grid-markers,unpublished,french-polynesia,Grid present; no public ops series wired.
+Wallis and Futuna,WLF,solar,no-public-series,tso-grid-markers,unpublished,wallis-and-futuna,Grid present; no public ops series wired.
+Grid-India,IND,solar,no-public-series,tso-grid-markers,unpublished,india-grid-india,Grid present; no public ops series wired.
+REE ESIOS,ESP,"wind,solar",not-collecting,entsoe,unpublished,spain-wind;spain-solar,Human gate: consultasios@ree.es token. Generation already ENTSO. Do not start parser until token is in Vercel.
+KPX,KOR,"wind,solar",not-collecting,southKorea,unpublished,south-korea-wind;south-korea-solar,Human gate: data.go.kr serviceKey (Korean ID).
+OC SENI,DOM,"wind,solar",not-collecting,,unpublished,dominican-republic;dominican-republic-wind,"GetGeneracionReprogramadaJSon is scheduled/actual total, not VRE waste. Generation collectable; waste unpublished."
+Noga / IEC,ISR,solar,not-collecting,israel,unpublished,israel,Typical stub. Probe Noga open data; waste unpublished unless Noga documents it.
+NEPCO,JOR,"solar,wind",not-collecting,jordan,unpublished,jordan,PDF commentary exists. No hourly dashboard wired.
+Taipower,TWN,mixed,not-collecting,taiwan,unpublished,taiwan,genary.json geo-blocked. Relay from in-region IP required. Annual PDF is not live waste. Britta fetchers are scaffolding.
+EMA / SP PowerGrid,SGP,solar,not-collecting,,unpublished,singapore,EMA TES / wholesale half-hourly not wired. Waste unpublished.
+IEMOP / NGCP,PHL,"solar,wind",not-collecting,philippines,unpublished,philippines-solar;philippines-wind,WESM SPA has SCHED/actual; no curtailment column on the free tier. Headless capture not wired.
+EVN / NSMO / NLDC,VNM,solar,not-collecting,vietnam,unpublished,vietnam,"TLS fail, PDF daily dispatch. Relay not writing CSV. 365 GWh 2020 quote is not a T2 anchor."
+NTDC / NPCC,PAK,"wind,solar",not-collecting,pakistan,unpublished,pakistan-wind;pakistan-solar,NEPRA PDF / NPCC TLS. Waste unpublished.
+PGCB / BPDB,BGD,solar,not-collecting,bangladesh,unpublished,bangladesh,BPDB daily PDF Pattern-D not automated. Waste unpublished.
+Landsnet,ISL,hydro,not-collecting,,unpublished,iceland,iceland is T3 hydro modelled. Landsnet generation is not a public time series. Spill unpublished unless Orkustofnun publishes it.
+Grid-India / RLDCs,IND,"solar,wind",not-collecting,india-grid-india,unpublished,india-grid-india,"abed is Starlink CHC, not an India PoP. SLDCs are subgrids only when their portal yields a series."
+SGCC North,CHN,"wind,solar,hydro",no-public-series,,unpublished,,No machine-readable dispatch. Provincial Ember×NEA is not this TSO.
+SGCC Central,CHN,"wind,solar,hydro",no-public-series,,unpublished,,No machine-readable dispatch.
+SGCC East,CHN,"wind,solar,hydro",no-public-series,,unpublished,,No machine-readable dispatch.
+SGCC Northeast,CHN,"wind,solar,hydro",no-public-series,,unpublished,,No machine-readable dispatch.
+CSG,CHN,"wind,solar,hydro",no-public-series,,unpublished,,No machine-readable dispatch.
+Mengxi,CHN,"wind,solar",no-public-series,,unpublished,,No machine-readable dispatch.
+SEC,SAU,solar,no-public-series,saudiSolar,unpublished,saudi-solar,"Structural dark. 5.2% June audit figure is irradiance, not curtailment. Partnership email."
+EWEC/TRANSCO,ARE,solar,no-public-series,uae,unpublished,uae,Structural dark. Partnership email.
+DEWA,ARE,solar,no-public-series,,unpublished,,Structural dark.
+OETC,OMN,solar,no-public-series,oman,unpublished,oman,Structural dark.
+Kahramaa,QAT,solar,no-public-series,,unpublished,,Structural dark.
+EETC,EGY,"solar,wind",no-public-series,egypt,unpublished,egypt,Structural dark.
+ONEE,MAR,"solar,wind",no-public-series,morocco,unpublished,morocco,Structural dark.
+STEG,TUN,"solar,wind",no-public-series,,unpublished,tunisia,Structural dark.
+GRTE/Sonelgaz,DZA,solar,no-public-series,,unpublished,,Structural dark.
+SO UPS Siberia/Far East/Kaliningrad,RUS,"hydro,wind",no-public-series,,unpublished,,Post-2022 opacity. Murmansk stays T2; European UES modelled.
+Ukrenergo,UKR,"wind,solar",conflict-blocked,,unpublished,ukraine;ukraine-wind,ENTSO absent post-war. Ember is not Ukrenergo.
+DPRK,PRK,hydro,no-public-series,,unpublished,north-korea,Dark. Roster row so every grid is honest about darkness.

@@ -28,6 +28,7 @@ import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./
 import { curtailmentShare, shareUnavailable, formatShare } from "./lib/generation-share.js";
 import { splitRegion } from "./lib/split-region.js";
 import { finalizeRegionData } from "./lib/region-data-finalize.js";
+import { countPublishedWasteRegions } from "./lib/waste-status.js";
 import { mountGlobe } from "./globe.js";
 
 const HOTSPOT_LIST_LIMIT = 50;
@@ -329,6 +330,7 @@ const regionData = {
   // Switzerland — PV-only ENTSO-E feed; understates hydro spill but
   // captures summer-midday PV oversupply on Swissgrid's corridor.
   switzerland: feeds.entsoe.switzerland,
+  ...feeds.entsoe,
   // GB split — NESO 2024 Markets Roadmap reports ~11 TWh/yr of constraint
   // actions, dominated by the Scotland-to-England boundary. 70/30 split
   // reflects Scotland's disproportionate share of curtailed wind.
@@ -434,7 +436,8 @@ const regionData = {
   // Colombia: T1b-CSV loader reads committed XM API data (Britta daily relay).
   // Supersedes the T3-static entry in buildAllStatics().
   colombia: feeds.colombia,
-  florida: feeds.florida,
+  ...feeds.eiaVreBas,
+  ...feeds.tsoGridMarkers,
   "china-shandong-wind":  feeds.chinaShandong.wind,
   "china-shandong-solar": feeds.chinaShandong.solar,
   "china-guangdong": feeds.chinaGuangdong,
@@ -493,8 +496,13 @@ finalizeRegionData(regionData, REGIONS);
 
 // Populate the region-count span inside the lead copy without clobbering
 // the surrounding HTML (the ${FUEL_ORDER.map} earlier baked it in at render).
+//
+// This counts regions that PUBLISH waste, not REGIONS.length: the lead copy is
+// a claim about curtailed energy, and the roster now also carries grids we
+// track for generation whose operators publish no waste at all. See
+// countPublishedWasteRegions in src/lib/waste-status.ts.
 {
-  const liveRegionCount = REGIONS.length;
+  const liveRegionCount = countPublishedWasteRegions(regionData, REGIONS);
   const countEl = document.getElementById("region-count");
   if (countEl) countEl.textContent = String(liveRegionCount);
 }

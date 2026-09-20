@@ -120,7 +120,9 @@ describe("regions", () => {
     // balancing-authority code on 2026-04-01 (absorbed into SPP West / SWPW); both
     // regions sat permanently degraded at exactly 0.0 TWh/30d, so removal costs
     // nothing in magnitude. Owner chose removal over repointing to SWPW. 461 − 2 = 459.
-    expect(REGIONS.length).toBe(459);
+    // 2026-09-20: TSO-grid completeness. Replaced florida/tva/austria/lithuania/latvia
+    // (−5) with unpublished EIA/ENTSO fuels + missing-grid markers (+82). 459 + 77 = 536.
+    expect(REGIONS.length).toBe(536);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -323,17 +325,23 @@ describe("regions", () => {
     // was dropped in #247. = 238.
     // 2026-06-20: Peru per-plant re-added as 12 estimated regions (COES per-plant
     // generation × 2% national curtailment calibration; T3-modelled). 238 + 12 = 250.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(249);
+    // 2026-06-20: Peru per-plant re-added as 12 estimated regions (COES per-plant
+    // generation × 2% national curtailment calibration; T3-modelled). 238 + 12 = 250.
+    // 2026-08-19: wacm removal was T2 not T3.
+    // 2026-09-20: TSO-grid completeness unpublished grids. 249 − 4 (florida/tva/lithuania/latvia)
+    // + 82 new T3 = 327.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(327);
   });
 
-  it("has 23 anchored regions (7 flat-profile + 16 EIA-930 US BAs)", () => {
+  it("has 22 anchored regions (6 flat-profile + 16 EIA-930 US BAs)", () => {
     // 2026-08-03: india-maharashtra promoted estimated -> anchored on measured
     // MSLDC Monthly Curtailment Reports (33.28 GWh across 15 published months).
     // T2 rather than T1 because MSLDC publishes monthly, lags 1-2 months and
     // skips months; see docs/validation/india-maharashtra.md.
     // 2026-08-19: removed wacm-wind + wacm-solar (dead EIA-930 respondent,
     // retired 2026-04-01, permanently 0.0 TWh/30d). 18 EIA-930 US BAs -> 16. 25 -> 23.
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(23);
+    // 2026-09-20: Austria APG left T2 (generation unpublished on ENTSO A75). 23 -> 22.
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(22);
   });
 
   it("keeps remaining mixed rows explicit so no new bundled curtailment slips in", () => {
@@ -348,9 +356,11 @@ describe("regions", () => {
       "georgia", "azerbaijan", "sri-lanka",
       // Other static mixed
       "taiwan", "manitoba", "hawaii-island",
-      "austria", "cuba", "rwanda",
+      "cuba", "rwanda",
       // Phase 4-B T3-static mixed (completionist Tier B, IRENA RCS 2025)
       "burundi", "equatorial-guinea",
+      // 2026-09-20 unpublished grid markers (no public fuel split)
+      "alaska-railbelt", "new-brunswick", "nunavut",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
@@ -658,11 +668,12 @@ describe("regions", () => {
       expect(region, `missing estimated region ${id}`).toBeDefined();
       expect(region?.tier).toBe("estimated");
     }
-    for (const id of ["austria", "russia-murmansk-wind"]) {
-      const region = REGIONS.find(r => r.id === id);
-      expect(region, `missing anchored region ${id}`).toBeDefined();
-      expect(region?.tier).toBe("anchored");
-    }
+    const murmansk = REGIONS.find(r => r.id === "russia-murmansk-wind");
+    expect(murmansk, "missing anchored region russia-murmansk-wind").toBeDefined();
+    expect(murmansk?.tier).toBe("anchored");
+    expect(REGIONS.find(r => r.id === "austria")).toBeUndefined();
+    expect(REGIONS.find(r => r.id === "austria-wind")?.tier).toBe("estimated");
+    expect(REGIONS.find(r => r.id === "austria-solar")?.tier).toBe("estimated");
 
     // Former aggregate ids must now be absent.
     for (const id of ["ireland", "iso-ne", "nyiso", "north-sea", "denmark"]) {

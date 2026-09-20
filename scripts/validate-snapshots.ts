@@ -41,6 +41,9 @@ interface PerRegion {
   uncertaintyHighGW?: unknown;
   observedStdGW?: unknown;
   confidenceTier?: unknown;
+  wasteStatus?: unknown;
+  generationProfile?: unknown;
+  generationTotalTWh?: unknown;
 }
 
 // Required matches dataset/schema/region-snapshot.schema.json which in
@@ -159,6 +162,18 @@ function validate(obj: unknown, ctx: string): string[] {
     );
   }
 
+  if ("wasteStatus" in r && r.wasteStatus !== undefined) {
+    if (r.wasteStatus !== "measured" && r.wasteStatus !== "measured-zero" && r.wasteStatus !== "unpublished") {
+      errs.push(`wasteStatus = ${JSON.stringify(r.wasteStatus)} not in {measured, measured-zero, unpublished}`);
+    }
+    if (r.wasteStatus === "unpublished") {
+      const genOk = Array.isArray(r.generationProfile) && (r.generationProfile as unknown[]).length === 24;
+      if (!genOk) {
+        errs.push("wasteStatus unpublished requires generationProfile of length 24 (TSO-collected claim)");
+      }
+    }
+  }
+
   // fuelShare is optional. When present, validate keys + value range.
   if ("fuelShare" in r && r.fuelShare !== undefined) {
     if (typeof r.fuelShare !== "object" || r.fuelShare === null || Array.isArray(r.fuelShare)) {
@@ -187,12 +202,18 @@ function validate(obj: unknown, ctx: string): string[] {
     // Regions known to legitimately produce zero in the current
     // 30-day window are explicitly allow-listed above.
     if (LIVE_TIER_SET.has(r.confidenceTier) && !KNOWN_ZERO_LIVE_ALLOWLIST.has(r.regionId)) {
+      // Unpublished waste is zeros by contract (generation lives on
+      // generationProfile). That is not a silent upstream failure.
+      if (r.wasteStatus === "unpublished") {
+        // skip waste zero-check
+      } else {
       const anyPositive = (arr: unknown): boolean =>
         Array.isArray(arr) && arr.some((v) => typeof v === "number" && Number.isFinite(v) && v > 0);
       if (!anyPositive(r.profile) && !anyPositive(r.latestProfile)) {
         errs.push(
           `live-tier (${r.confidenceTier}) but profile and latestProfile are all-zero — likely silent upstream failure (add an entry to scripts/lib/zero-allowlist.ts if this is a known-legitimate zero)`,
         );
+      }
       }
     }
   }
