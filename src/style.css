@@ -171,10 +171,17 @@
   --fuel-wind:           #67e8f9;
   --fuel-hydro:          #b8cdff;
 
-  /* globe */
-  --globe-dot-day:       #fff8e0;
-  --globe-dot-night:     #c9a662;
-  --globe-border:        rgba(255, 208, 90, 0.35);
+  /* globe — "lit land": the sphere takes one flat ocean fill and the land
+     matrix carries day/night. Night land is warm amber rather than a dimmed
+     grey, which is what used to read as cold. The border is neutral ink, not
+     gold: gold on a gold-washed sphere is what camouflaged the solar pillars. */
+  --globe-ocean:         #15110a;
+  --globe-ocean-lit:     #332816;
+  --globe-terminator:    rgba(255, 248, 224, 0.30);
+  --globe-keyline:       #17110a;
+  --globe-dot-day:       #fffdf2;
+  --globe-dot-night:     #f0bf7a;
+  --globe-border:        rgba(255, 248, 224, 0.16);
   --day-gradient-1:      rgba(255, 208, 90, 0.55);
   --day-gradient-2:      rgba(230, 160, 32, 0.25);
   --day-gradient-3:      rgba(0, 0, 0, 0);
@@ -221,9 +228,13 @@
   --fuel-wind:           #64d8ff;
   --fuel-hydro:          #b4a0f0;
 
-  --globe-dot-day:       #e0f0ff;
-  --globe-dot-night:     #4080a0;
-  --globe-border:        rgba(100, 216, 255, 0.35);
+  --globe-ocean:         #0a1018;
+  --globe-ocean-lit:     #17283a;
+  --globe-terminator:    rgba(224, 240, 255, 0.30);
+  --globe-keyline:       #060a10;
+  --globe-dot-day:       #eaf6ff;
+  --globe-dot-night:     #7fb4d8;
+  --globe-border:        rgba(224, 240, 255, 0.16);
   --day-gradient-1:      rgba(100, 216, 255, 0.45);
   --day-gradient-2:      rgba(56, 176, 216, 0.20);
   --day-gradient-3:      rgba(0, 0, 0, 0);
@@ -252,7 +263,7 @@
 :root:not([data-theme]),
 html:not([data-theme]) body {
   /* paint at least the page chrome with hardcoded Sunfire values */
-  background: radial-gradient(ellipse at 50% 40%, #2d1f0e 0%, #1a1207 60%, #0a0703 100%);
+  background: #0a0703;
   color: #fff8e0;
 }
 
@@ -279,7 +290,7 @@ html:not([data-theme]) body {
 html, body {
   font-family: var(--font-sans);
   color: var(--ink);
-  background: radial-gradient(ellipse at 50% 40%, var(--surface-bg-1) 0%, var(--surface-bg-2) 60%, var(--surface-bg-3) 100%);
+  background: var(--surface-bg-3);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   font-weight: var(--fw-book);
@@ -347,7 +358,7 @@ code, .mono {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: radial-gradient(ellipse at 50% 40%, var(--surface-bg-1) 0%, var(--surface-bg-2) 60%, var(--surface-bg-3) 100%);
+  background: var(--surface-bg-3);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -645,8 +656,7 @@ code, .mono {
   width: 0;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--brand-strong), var(--brand));
-  box-shadow: 0 0 12px rgba(255, 208, 90, 0.45);
+  background: var(--brand);
   transition: width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -702,7 +712,7 @@ code, .mono {
    the start (#0f1517) is brand-shifted for cool chrome feel. */
 html,
 body {
-  background: radial-gradient(ellipse at 50% 40%, var(--surface-bg-1) 0%, var(--surface-bg-2) 60%, var(--surface-bg-3) 100%);
+  background: var(--surface-bg-3);
   color: var(--ink);
   min-height: 100vh;
 }
@@ -793,9 +803,14 @@ main table {
   gap: 14px;
 }
 
+/* The Spectrum mark, static. The loader runs the animated version once;
+   a second copy animating forever in the header would compete with the
+   globe for the same main thread that #1054 had to rescue. */
 .app-mark {
-  color: var(--brand);
-  font-size: 20px;
+  width: 22px;
+  height: 22px;
+  display: block;
+  flex-shrink: 0;
 }
 
 .app-wordmark {
@@ -910,16 +925,10 @@ main table {
   z-index: 1;
   padding: 80px 0 80px 24px;
   /* Opaque at outer edge, fades to transparent toward globe */
-  background: linear-gradient(
-    to right,
-    var(--surface-bg-3) 0%,
-    rgba(10, 7, 3, 0.92) 50%,
-    rgba(26, 18, 7, 0.40) 80%,
-    transparent 100%
-  );
-  /* Soften the top and bottom edges of the dark background */
-  mask-image: linear-gradient(to bottom, transparent, black 80px, black calc(100% - 80px), transparent);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black 80px, black calc(100% - 80px), transparent);
+  /* Flat panel, hard edge. This used to fade to transparent toward the
+     globe and mask its own top and bottom away, which is most of what read
+     as "faded" — a list that dissolves instead of ending. */
+  background: var(--surface-bg-3);
 }
 
 /* Globe panel sits in the center column of the 3-column grid.
@@ -984,16 +993,7 @@ main table {
   z-index: 1;
   padding: 80px 16px 80px 0;
   /* Mirror of panel-left — transparent toward globe, opaque at outer edge */
-  background: linear-gradient(
-    to left,
-    var(--surface-bg-3) 0%,
-    rgba(10, 7, 3, 0.92) 50%,
-    rgba(26, 18, 7, 0.40) 80%,
-    transparent 100%
-  );
-  /* Soften the top and bottom edges of the dark background */
-  mask-image: linear-gradient(to bottom, transparent, black 80px, black calc(100% - 80px), transparent);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black 80px, black calc(100% - 80px), transparent);
+  background: var(--surface-bg-3);
 }
 
 #globe-canvas {
@@ -1021,8 +1021,7 @@ main table {
   display: grid;
   place-items: center;
   background:
-    radial-gradient(circle at 50% 40%, rgba(var(--brand-rgb),0.12), rgba(var(--brand-rgb),0.04) 35%, rgba(255,255,255,0.02) 60%, transparent 75%),
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), rgba(0,0,0,0) 72%);
+    none;
 }
 
 .globe-placeholder-label {
@@ -1086,9 +1085,7 @@ main table {
   background: rgba(16, 22, 26, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(var(--brand-rgb), 0.12) inset;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--hairline-strong);
   color: rgba(255, 255, 255, 0.88);
   font-size: 12px;
   line-height: 1.4;
@@ -1528,12 +1525,10 @@ main table {
 
 .dot-brand {
   background: var(--brand);
-  box-shadow: 0 0 10px rgba(var(--brand-rgb),0.5);
 }
 
 .dot-orange {
   background: var(--btc-orange);
-  box-shadow: 0 0 10px rgba(216,57,35,0.5);
 }
 
 /* Fuel-themed dots — resolved at paint time from CSS custom properties so
@@ -1542,15 +1537,12 @@ main table {
    getFuelColor()" was called before non-Sunfire theme CSS had resolved. */
 .dot--solar {
   background: var(--fuel-solar);
-  box-shadow: 0 0 9px var(--fuel-solar);
 }
 .dot--wind {
   background: var(--fuel-wind);
-  box-shadow: 0 0 9px var(--fuel-wind);
 }
 .dot--hydro {
   background: var(--fuel-hydro);
-  box-shadow: 0 0 9px var(--fuel-hydro);
 }
 
 .legend {
@@ -1615,8 +1607,6 @@ main table {
   .panel-right {
     z-index: auto;
     background: none;
-    mask-image: none;
-    -webkit-mask-image: none;
     padding: 0 0 0 16px;
   }
 
@@ -2143,7 +2133,7 @@ main > h1:first-child {
   border-radius: 8px;
   padding: 6px 10px;
   max-width: 220px;
-  backdrop-filter: blur(3px);
+  border: 1px solid var(--hairline);
 }
 .globe-legend-summary {
   cursor: pointer;
