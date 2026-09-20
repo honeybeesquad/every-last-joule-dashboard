@@ -148,7 +148,7 @@ export async function mountGlobe(canvas, initial) {
    * from each pillar tip out to a label parked in the left or right gutter.
    * Labels are spread vertically so they never overlap each other.
    */
-  function drawCallouts(ctx, pool, geom, width, height, now) {
+  function drawCallouts(ctx, pool, geom, width, height, now, radius) {
     if (now - calloutPickedAt > CALLOUT_REPICK_MS || calloutIds.length === 0) {
       calloutIds = pool
         .sort((a, b) => b.gw - a.gw)
@@ -161,7 +161,16 @@ export async function mountGlobe(canvas, initial) {
       const g = geom.get(id);
       if (g) items.push({ ...g, side: g.x < width / 2 ? "left" : "right" });
     }
-    const GUTTER = 104;
+    // Park the labels just inside the disc rather than at the canvas edge.
+    // The canvas is wider than the globe and the side panels sit on top of
+    // its left and right margins, so a gutter measured from the canvas edge
+    // puts every label underneath a panel — drawn, but invisible. Keying off
+    // the globe's own radius keeps them over the sphere, which is flat and
+    // dark enough to read against, whatever the surrounding layout does.
+    const cxMid = width / 2;
+    const inset = Math.max(96, radius * 0.62);
+    const gutterL = Math.max(84, cxMid - inset);
+    const gutterR = Math.min(width - 84, cxMid + inset);
     for (const side of ["left", "right"]) {
       const col = items.filter((i) => i.side === side).sort((a, b) => a.y - b.y);
       let last = -Infinity;
@@ -176,7 +185,7 @@ export async function mountGlobe(canvas, initial) {
       if (i.labelY < 18 || i.labelY > height - 18) continue;
       const elbowX = i.x + i.dx * 16;
       const elbowY = i.y + i.dy * 16;
-      const labelX = i.side === "left" ? GUTTER : width - GUTTER;
+      const labelX = i.side === "left" ? gutterL : gutterR;
       ctx.globalAlpha = 0.85;
       ctx.strokeStyle = tokens.border;
       ctx.lineWidth = 1;
@@ -190,8 +199,10 @@ export async function mountGlobe(canvas, initial) {
       ctx.arc(elbowX, elbowY, 2.2, 0, Math.PI * 2);
       ctx.fill();
       ctx.globalAlpha = 1;
-      ctx.textAlign = i.side === "left" ? "right" : "left";
-      const tx = labelX + (i.side === "left" ? -9 : 9);
+      // Text reads inward, toward the centre, not outward: outward is where
+      // the side panels are, so an outward label runs straight under one.
+      ctx.textAlign = i.side === "left" ? "left" : "right";
+      const tx = labelX + (i.side === "left" ? 9 : -9);
       ctx.font = '11px "IBM Plex Mono", ui-monospace, monospace';
       ctx.fillStyle = `rgba(${tokens.dotDayRGB}, 0.95)`;
       ctx.fillText(i.name, tx, i.labelY - 5);
@@ -572,7 +583,9 @@ export async function mountGlobe(canvas, initial) {
       }
     }
 
-    if (showCallouts) drawCallouts(ctx, calloutPool, calloutGeom, width, height, renderNow);
+    if (showCallouts) {
+      drawCallouts(ctx, calloutPool, calloutGeom, width, height, renderNow, projection.scale());
+    }
 
     // Update birth-animation state for next frame.
     // Any region that was visible last frame but not this frame has rotated
