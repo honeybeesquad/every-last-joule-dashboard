@@ -25,7 +25,7 @@ import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
 import { REGIONS } from "./lib/regions.js";
 import { DATA_LOADERS, loadDataFiles } from "./lib/data-loaders.js";
-import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, isRenewable } from "./lib/fuel.js";
+import { FUEL_ORDER, FUEL_LABEL, getFuelColor, fuelShare, fuelShareAtHour, isRenewable } from "./lib/fuel.js";
 import { curtailmentShare, shareUnavailable, formatShare } from "./lib/generation-share.js";
 import { splitRegion } from "./lib/split-region.js";
 import { finalizeRegionData } from "./lib/region-data-finalize.js";
@@ -577,7 +577,7 @@ function renderAt(hour) {
     const allEntries = renewableEntries
       .map(({ region, gw }) => ({
         region,
-        gw: gw * fuelShare(region, fuel, regionData[region.id]),
+        gw: gw * fuelShareAtHour(region, fuel, hour, regionData[region.id]),
       }))
       .filter(({ gw }) => gw > 0);
 

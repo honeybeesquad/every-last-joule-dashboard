@@ -3,6 +3,56 @@
 **Last verified against git:** 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk is now `--font-display` and `--font-body` in both themes, and the dashboard wordmark's italic serif "Joule" is gone; see the entry below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
+## Fuel attribution stated three impossible things (2026-09-21)
+
+Branch `fix/fuel-attribution`. Reported as "why do Azerbaijan and Georgia
+have solar curtailment 24/7". Three separate defects, all of them producing
+a number that cannot be true rather than one that is merely uncertain.
+
+**1. An unsplit `mixed` region was silently labelled solar.** `dominantFuel`
+seeded `bestShare = -1`, so with no `MIXED_SPLITS` entry and no loader
+`fuelShare` every share was 0 and the FIRST entry of `FUEL_ORDER` won by
+default — solar. Eleven mixed regions had no split: Alaska Railbelt,
+Azerbaijan, Burundi, Cuba, Equatorial Guinea, Georgia, Hawaii (Big Island),
+New Brunswick, Nunavut, Rwanda, Sri Lanka. Georgia is ~95% hydro by the
+capacity its own `source:` string cites and still drew a gold solar pillar,
+on a flat profile, so it read as solar curtailing at midnight. Splits are
+now encoded for the three whose sources state a mix (Azerbaijan, Georgia,
+Sri Lanka — no new numbers, each read off the capacity already cited), the
+seed is 0 so a real share has to win, and the fallback is the named constant
+`UNSPLIT_MIXED_FUEL = "hydro"`: an unsourced region is never asserted to be
+solar, the one fuel whose output is impossible for half of every day.
+
+**2. Split rows were re-split by their parent's mix.** Zones split into
+per-fuel rows (Norway NO1-NO4, Belgium) carry the parent's combined
+`fuelShare` on every child. `fuelShare()` applied it, so `norway-no1-wind`
+was credited 74.6% hydro — a wind row appeared in the hydro column at three
+quarters of its value, and the same volume was counted twice across two
+columns. Ten rows were affected. A single-kind row now always returns 1 for
+its own fuel and 0 for the others.
+
+**3. Solar was attributed in local darkness.** `maskSolarNight` only ran for
+`kind === "solar"`, so any region with a solar *share* kept its overnight
+profile, and both consumers (the hotspot list and the stacked 24h timeline)
+multiply an hourly total by a fuel share. Nine regions published solar
+curtailment in the dark. Widening the profile mask is not safe — a mixed
+region's combined series also carries wind and hydro, which legitimately run
+at night — so the attribution is masked instead: new `fuelShareAtHour` /
+`solarShareAtHour` in `fuel.ts`, using the same local 06:00-19:00 window as
+`solar-mask.ts` so a region cannot be lit by one rule and dark by the other.
+`src/index.md` and `src/components/timeline.js` both use it now.
+
+**Gate:** `tests/fuel-attribution-physics.test.ts`, five invariants. Checked
+against the pre-fix logic it fails with 3,168 solar-in-darkness violations
+and 1,318 cross-attribution violations, so it is not passing vacuously.
+
+**Known limitation, not fixed here.** A mixed region still shares one hourly
+shape across its fuels — `typical-profiles.ts` builds separate solar, wind
+and hydro arrays and then sums them, keeping only the annual ratio. Masking
+removes the impossible part (solar at night); it does not give wind and
+hydro their own shapes. Fixing that means carrying per-fuel profiles on
+`RegionData` and is a larger change.
+
 ## Loading-screen mark: SMIL in an <img> froze under load (2026-09-20)
 
 Branch `fix/loader-mark-compositor`. Reported from production: the mark "ran

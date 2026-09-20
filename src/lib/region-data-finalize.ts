@@ -40,6 +40,18 @@ export function finalizeRegionData(
   }
 
   // 2. Solar-physics correction.
+  //
+  // This used to key on `kind === "solar"` alone, which missed every region
+  // that is not a solar row but still has a solar SHARE — the mixed regions,
+  // and the split zones whose rows carry a parent's combined share. Their
+  // profiles kept running through local midnight, and the hotspot list and
+  // the stacked timeline both multiply an hourly total by a fuel share, so
+  // they published solar curtailment in the dark. Nine regions were doing
+  // it. The mask is only safe to widen where solar is the WHOLE row: a
+  // mixed region's profile also carries wind and hydro, which legitimately
+  // run at night, so zeroing the combined series would delete real
+  // curtailment. Those are handled by masking the attribution instead —
+  // see solarShareAtHour in fuel.ts.
   for (const region of regions) {
     if (region.kind !== "solar") continue;
     const data = regionData[region.id];

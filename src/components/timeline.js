@@ -1,5 +1,5 @@
 import { regionGWAtHour } from "../lib/calc.js";
-import { FUEL_ORDER, fuelShare, getFuelColor } from "../lib/fuel.js";
+import { FUEL_ORDER, fuelShareAtHour, getFuelColor } from "../lib/fuel.js";
 
 const PAD = 14;
 const SAMPLES_PER_HOUR = 4; // 96 samples across 24h for smooth area curves
@@ -21,17 +21,20 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
   // which takes precedence over the region's canonical kind.
   const shareTable = regions.map((r) => ({
     id: r.id,
-    shares: FUEL_ORDER.map((f) => fuelShare(r, f, regionData[r.id])),
+    // Per hour, not once per region: the chart stacks 24 hours, and a flat
+    // annual share paints solar into the overnight bars.
+    sharesAtHour: (h) => FUEL_ORDER.map((f) => fuelShareAtHour(r, f, h, regionData[r.id])),
   }));
 
   function seriesAt(hour) {
     // Array of 4 GW values: [solar, wind, hydro, other].
     const bucket = [0, 0, 0, 0];
-    for (const { id, shares } of shareTable) {
+    for (const { id, sharesAtHour } of shareTable) {
       const d = regionData[id];
       if (!d) continue;
       const gw = regionGWAtHour(d, hour, mode);
       if (gw <= 0) continue;
+      const shares = sharesAtHour(hour);
       for (let i = 0; i < 4; i += 1) {
         if (shares[i] > 0) bucket[i] += gw * shares[i];
       }
