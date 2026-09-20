@@ -164,8 +164,13 @@ describe("the loader wordmark's typeface", () => {
     const css = readFileSync(join(SRC, "style.css"), "utf8");
     const display = [...css.matchAll(/--font-display:\s*([^;]+);/g)].map((m) => m[1].trim());
     const body = [...css.matchAll(/--font-body:\s*([^;]+);/g)].map((m) => m[1].trim());
-    expect(display).toHaveLength(2); // Sunfire + Deepcurrent
-    expect(body).toHaveLength(2);
+    // Exactly two, because the site has exactly two themes since Triad was
+    // removed. This fails closed both ways on purpose: a new theme that does
+    // not declare the brand face trips it, and so does one that declares it
+    // in a stack this test has not seen.
+    const why = "add the brand face to the new theme's --font-display/--font-body stack";
+    expect(display, `Sunfire + Deepcurrent expected — ${why}`).toHaveLength(2);
+    expect(body, `Sunfire + Deepcurrent expected — ${why}`).toHaveLength(2);
     for (const stack of [...display, ...body]) {
       expect(stack.startsWith('"Schibsted Grotesk"')).toBe(true);
     }
