@@ -18,18 +18,6 @@ export function parseHexToRGB(hex: string): string | null {
   return `${r},${g},${b}`;
 }
 
-/**
- * Sanitise the --pillar-base-alpha token to a 2-char lowercase hex pair.
- * Accepts "aa", "0xAA", or "AA" — anything else falls back to the supplied
- * default so a typo never paints garbage onto the canvas via string concat.
- */
-export function sanitisePillarAlpha(raw: unknown, fallback: string = "99"): string {
-  if (typeof raw !== "string") return fallback;
-  const cleaned = raw.trim().toLowerCase().replace(/^0x/, "");
-  if (/^[0-9a-f]{2}$/.test(cleaned)) return cleaned;
-  return fallback;
-}
-
 /** Tokens needed by `globe.js`. Strings as they appear in CSS — caller
  *  decides whether to use directly (rgba), parse (hex), or treat as a
  *  linear-gradient sentinel (some themes ship `--night-overlay` as a
@@ -52,23 +40,6 @@ export interface GlobeTokens {
   /** Casing drawn under every pillar and region dot (--globe-keyline) so
    *  fuel colour never merges into the land beneath it. */
   keyline: string;
-  /** NOTE: the matte renderer no longer consumes the three fields below or
-   *  `nightOverlay` / `pillarBaseAlpha` — the sphere takes one flat fill and
-   *  day/night is carried by the land matrix. They stay readable for themes
-   *  and tooling that still describe a lit sphere. */
-  dayGradient1: string;
-  dayGradient2: string;
-  dayGradient3: string;
-  /** Raw value of --night-overlay. May be an rgba(...) string OR a
-   *  linear-gradient(...) descriptor. Caller MUST detect the
-   *  linear-gradient form and synthesise a canvas gradient. */
-  nightOverlay: string;
-  /** Hex for the sphere base fill (--surface-bg-2 is a sensible source). */
-  spherebaseHex: string;
-  /** 2-char hex pair appended to fuel hex for the pillar-gradient base
-   *  stop. Theme-scoped so the light-mode day-side can use a bolder
-   *  base than the dark themes if a future theme demands it. */
-  pillarBaseAlpha: string;
   /** Hex/colour for the degraded-feed amber warning ring (--quality-warning). */
   qualityWarning: string;
 }
@@ -85,18 +56,6 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
     oceanLitHex:  get("--globe-ocean-lit")  || "#2e2415",
     terminator:   get("--globe-terminator") || "rgba(255,248,224,0.30)",
     keyline:      get("--globe-keyline")    || "#17110a",
-    dayGradient1: get("--day-gradient-1")   || "rgba(255,208,90,0.55)",
-    dayGradient2: get("--day-gradient-2")   || "rgba(230,160,32,0.25)",
-    dayGradient3: get("--day-gradient-3")   || "rgba(0,0,0,0)",
-    nightOverlay: get("--night-overlay")    || "rgba(20,14,5,0.42)",
-    spherebaseHex: get("--surface-bg-2")    || "#1a1207",
-    pillarBaseAlpha: sanitisePillarAlpha(get("--pillar-base-alpha"), "99"),
     qualityWarning: get("--quality-warning") || "#f7931a",
   };
-}
-
-/** True if the night-overlay token is a CSS gradient descriptor rather
- *  than a flat rgba(...) string. */
-export function isLinearGradientToken(value: string): boolean {
-  return /^linear-gradient\s*\(/i.test(value.trim());
 }

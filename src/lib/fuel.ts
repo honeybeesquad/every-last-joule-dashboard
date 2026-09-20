@@ -1,3 +1,4 @@
+import { isSolarNight } from "./solar-mask.js";
 import type { Region, RegionData } from "./types";
 
 /**
@@ -135,8 +136,9 @@ export function fuelShare(region: Region, fuel: Fuel, regionData?: RegionData): 
  * Masking the region's whole profile cannot fix that without deleting the
  * wind and hydro along with it; the attribution is what has to be masked.
  *
- * The daylight window matches solar-mask.ts exactly (local 06:00-19:00, from
- * longitude) so a region cannot be lit by one rule and dark by the other.
+ * The daylight window is isSolarNight from solar-mask.ts — the same predicate
+ * maskSolarNight uses, so a region cannot be lit by one rule and dark by the
+ * other. It was duplicated here as a literal; that is what this shares.
  */
 export function solarShareAtHour(
   region: Region,
@@ -145,8 +147,7 @@ export function solarShareAtHour(
 ): number {
   const share = fuelShare(region, "solar", regionData);
   if (share <= 0) return 0;
-  const localHour = (((utcHour + region.lon / 15) % 24) + 24) % 24;
-  return localHour < 6 || localHour >= 19 ? 0 : share;
+  return isSolarNight(utcHour, region.lon) ? 0 : share;
 }
 
 /**
