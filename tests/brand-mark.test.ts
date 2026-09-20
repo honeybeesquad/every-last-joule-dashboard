@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 import { describe, it, expect } from "vitest";
@@ -121,5 +121,48 @@ describe("the sweep-and-release cycle", () => {
     const still = readFileSync(join(SRC, "brand/mark-still.svg"), "utf8");
     expect(still).not.toContain("animate");
     expect(still.match(/<rect/g) ?? []).toHaveLength(SPOKES);
+  });
+});
+
+// The loading screen's wordmark is the lockup from the mark work — Schibsted
+// Grotesk 700 at -0.01em, mixed case, "Joule" in --brand — not the site's mono
+// caps. The face is self-hosted like every other one here. `observable preview`
+// serves src/fonts under /_file/, so a preview check cannot prove the built
+// path; what makes /fonts/<file> resolve in the build is config.dynamicPaths,
+// which globs src/fonts for .woff2/.ttf. These pin that chain end to end.
+describe("the loader wordmark's typeface", () => {
+  const FONT_FILE = "SchibstedGrotesk-Variable.woff2";
+
+  it("ships the font file", () => {
+    const path = join(SRC, "fonts", FONT_FILE);
+    expect(statSync(path).size).toBeGreaterThan(10_000);
+  });
+
+  it("is picked up by the config's src/fonts glob, so the build emits /fonts/<file>", () => {
+    // Same filter as observablehq.config.ts.
+    const globbed = readdirSync(join(SRC, "fonts"))
+      .filter((file) => file.endsWith(".ttf") || file.endsWith(".woff2"))
+      .map((file) => `/fonts/${file}`);
+    expect(globbed).toContain(`/fonts/${FONT_FILE}`);
+
+    const config = readFileSync(join(process.cwd(), "observablehq.config.ts"), "utf8");
+    expect(config).toContain("...fontFiles");
+  });
+
+  it("declares the face against that path and uses it for the wordmark", () => {
+    const css = readFileSync(join(SRC, "style.css"), "utf8");
+    expect(css).toContain(`url("/fonts/${FONT_FILE}")`);
+    expect(css).toMatch(/font-family: "Schibsted Grotesk";[^\n]*font-weight: 400 700/);
+    expect(css).toMatch(/\.loader-wordmark \{[^}]*"Schibsted Grotesk"/);
+    // The lockup, as drawn: 700 weight, -0.01em, no uppercasing.
+    expect(css).toMatch(/\.loader-wordmark \{[^}]*font-weight: 700/);
+    expect(css).toMatch(/\.loader-wordmark \{[^}]*letter-spacing: -0\.01em/);
+    expect(css).not.toMatch(/\.loader-wordmark \{[^}]*text-transform/);
+  });
+
+  it("logs its provenance, as every other self-hosted face does", () => {
+    const sources = readFileSync(join(SRC, "fonts", "SOURCES.md"), "utf8");
+    expect(sources).toContain("Schibsted Grotesk");
+    expect(sources).toContain("schibstedgrotesk");
   });
 });

@@ -50,6 +50,24 @@ grows from 4 cases to 8: the rail fills in step and clamps at 100% under the
 same totalFiles drift that overshot the counter, the source label starts empty
 and names the latest file, and the module no-ops when the markup is absent.
 
+**The wordmark is the lockup, in the brand face.** `src/fonts/SchibstedGrotesk-Variable.woff2`
+(latin subset, one variable file covering 400–700, OFL, logged in
+`src/fonts/SOURCES.md`) is self-hosted like every other face here, and the
+loader wordmark is the Pair board's lockup exactly: **Schibsted Grotesk 700,
+-0.01em, mixed case, "Joule" in `--brand`.** The first pass used the site's
+mono caps instead, which is the old chrome voice, not the mark's. The themes'
+`--font-display` (Fraunces / IBM Plex Sans) is **untouched** — this face is on
+the loading screen only, and moving it site-wide is a separate decision.
+
+Note for whoever verifies this: `/fonts/*.woff2` **404s under
+`observable preview`** for every face, not just this one — preview serves
+`src/` under `/_file/`, and it is `config.dynamicPaths` (which globs
+`src/fonts`) that makes `/fonts/<file>` resolve in the built site. Four cases
+in `tests/brand-mark.test.ts` pin that chain instead: the file exists, the
+glob would emit it, `style.css` declares the face against that path and
+applies 700/-0.01em/no-uppercase to `.loader-wordmark`, and SOURCES.md records
+where it came from.
+
 **Not done here:** the avatars ship as SVG only. Neither X nor Instagram
 animates a profile picture, and there is no GIF/MP4 render in the repo (no
 Pillow, no ffmpeg on the build path), so `avatar-loop.svg` is a source for a

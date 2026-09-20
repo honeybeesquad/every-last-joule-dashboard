@@ -22,6 +22,12 @@
 @font-face { font-family: "Gotham"; src: url("/fonts/Gotham-UltraItalic.ttf") format("truetype");  font-weight: 900; font-style: italic; font-display: swap; }
 
 /* ---------- Theme system fonts (woff2, self-hosted, OFL) ---------- */
+/* Schibsted Grotesk — the brand face from the mark work (the lockup on the
+   Pair board: 700, -0.01em, mixed case, "Joule" in gold). One variable
+   file, latin subset, covering the 400–700 range. Used by the page
+   loader's wordmark; the themes' --font-display is untouched. */
+@font-face { font-family: "Schibsted Grotesk"; src: url("/fonts/SchibstedGrotesk-Variable.woff2") format("woff2"); font-weight: 400 700; font-style: normal; font-display: swap; }
+
 @font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-Regular.woff2")     format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-SemiBold.woff2")    format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
 @font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-ExtraBold.woff2")   format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
@@ -383,16 +389,17 @@ code, .mono {
   }
 }
 
+/* The lockup exactly as drawn on the Pair board: Schibsted Grotesk 700 at
+   -0.01em, mixed case, "Joule" in --brand. Not the site's mono caps — this
+   is the brand mark's own wordmark, and it sits under the mark. */
 .loader-wordmark {
-  font-size: 13px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(255, 248, 224, 0.58);
-  font-family: var(--font-mono, monospace);
-  /* The 0.3em tracking hangs off the last letter; pull the block back so it
-     still reads as centred under the mark. */
-  text-indent: 0.3em;
-  margin-top: 8px;
+  font-family: "Schibsted Grotesk", var(--font-body, system-ui), sans-serif;
+  font-size: clamp(30px, 5vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: #fff8e0;
+  margin-top: 14px;
 }
 
 .loader-wordmark span {
@@ -464,7 +471,6 @@ code, .mono {
 
 @media (max-width: 520px) {
   .loader-mark { width: 112px; height: 112px; }
-  .loader-wordmark { font-size: 11px; letter-spacing: 0.24em; text-indent: 0.24em; }
 }
 
 /* Dashboard body - always dark.
