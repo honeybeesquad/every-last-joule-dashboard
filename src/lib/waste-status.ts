@@ -1,4 +1,6 @@
-import type { RegionData, WasteStatus } from "./types.js";
+import { timeOfDayAverageGW, totalTWh30d } from "./profile.js";
+import type { CurtailmentPoint, RegionData, WasteStatus } from "./types.js";
+import { applyUncertainty, type TierInputs } from "./uncertainty.js";
 
 export const WASTE_STATUS_VALUES = ["measured", "measured-zero", "unpublished"] as const;
 
@@ -63,4 +65,47 @@ export function unpublishedEmptyRegion(
     generationProfile: Array(24).fill(0),
     generationTotalTWh: 0,
   };
+}
+
+export type UnpublishedProfileKind = NonNullable<TierInputs["profileKind"]>;
+
+/**
+ * Generation collected, waste unpublished. `profile` / `totalTWh` stay zero.
+ * Short windows (<25 days) annualise the 30-day generation total from the
+ * diurnal mean so a 48-hour TSO page is not filed as two days of energy.
+ */
+export function unpublishedGenerationRegion(
+  regionId: string,
+  kind: UnpublishedProfileKind,
+  points: CurtailmentPoint[],
+  note: string,
+  opts: { minPoints?: number } = {},
+): RegionData {
+  const minPoints = opts.minPoints ?? 24;
+  if (points.length < minPoints) {
+    throw new Error(`${regionId}: fewer than ${minPoints} generation points`);
+  }
+  const first = points[0]?.utcTimestamp;
+  const last = points.at(-1)?.utcTimestamp ?? new Date().toISOString();
+  const generationProfile = timeOfDayAverageGW(points);
+  const fromPoints = totalTWh30d(points);
+  const fromProfile = (generationProfile.reduce((sum, gw) => sum + gw, 0) * 30) / 1000;
+  const spanDays = first ? (Date.parse(last) - Date.parse(first)) / 86_400_000 : 0;
+  const generationTotalTWh = spanDays >= 25 ? fromPoints : fromProfile;
+  const base: RegionData = {
+    regionId,
+    profile: Array(24).fill(0),
+    latestProfile: null,
+    totalTWh: 0,
+    peakGW: 0,
+    lastUpdated: last,
+    lastSuccessAt: last,
+    sourceNote: note,
+    sourceStatus: "cached",
+    sourceProvenance: "official-lead",
+    wasteStatus: "unpublished",
+    generationProfile,
+    generationTotalTWh,
+  };
+  return applyUncertainty(base, { regionTier: "estimated", profileKind: kind });
 }

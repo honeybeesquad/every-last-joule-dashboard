@@ -17,8 +17,6 @@ export const TSO_GRID_MARKERS: ReadonlyArray<{
 }> = [
   { id: "kauai", note: "KIUC Kauai: annual PDF only; no hourly TSO series. Grid present, ops unpublished.", profileKind: "solar" },
   { id: "alaska-railbelt", note: "Alaska Railbelt (Chugach/MEA/GVEA/HEA): no public hourly series. Grid present, ops unpublished.", profileKind: "mixed" },
-  { id: "puerto-rico-wind", note: "PREPA/LUMA EIA-930 probe pending; waste unpublished.", profileKind: "wind" },
-  { id: "puerto-rico-solar", note: "PREPA/LUMA EIA-930 probe pending; waste unpublished.", profileKind: "solar" },
   { id: "guam", note: "GPA Guam: annual reports only. Grid present, ops unpublished.", profileKind: "solar" },
   { id: "us-virgin-islands", note: "USVI WAPA: annual reports only. Grid present, ops unpublished.", profileKind: "solar" },
   { id: "american-samoa", note: "ASPA: annual reports only. Grid present, ops unpublished.", profileKind: "solar" },
@@ -42,7 +40,6 @@ export const TSO_GRID_MARKERS: ReadonlyArray<{
   { id: "new-caledonia", note: "Enercal: no hourly series wired. Grid present, waste unpublished.", profileKind: "solar" },
   { id: "french-polynesia", note: "EDT: no hourly series wired. Grid present, waste unpublished.", profileKind: "solar" },
   { id: "wallis-and-futuna", note: "EEWF: no hourly series wired. Grid present, waste unpublished.", profileKind: "solar" },
-  { id: "india-grid-india", note: "Grid-India national TSO. CEA gen-re is generation, not live SLDC dispatch. Waste unpublished until hourly instruction energy exists. Not a substitute for SLDC subgrids.", profileKind: "solar" },
 ];
 
 function run(): Record<string, RegionData> {

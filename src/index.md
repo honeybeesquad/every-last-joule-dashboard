@@ -329,6 +329,7 @@ const regionData = {
   // captures summer-midday PV oversupply on Swissgrid's corridor.
   switzerland: feeds.entsoe.switzerland,
   ...feeds.entsoe,
+  ...feeds.spainEsios,
   // GB split — NESO 2024 Markets Roadmap reports ~11 TWh/yr of constraint
   // actions, dominated by the Scotland-to-England boundary. 70/30 split
   // reflects Scotland's disproportionate share of curtailed wind.
@@ -436,6 +437,9 @@ const regionData = {
   colombia: feeds.colombia,
   ...feeds.eiaVreBas,
   ...feeds.tsoGridMarkers,
+  // PREPA relay CSV — explicit keys after the marker spread.
+  "puerto-rico-solar": feeds.puertoRico.solar,
+  "puerto-rico-wind": feeds.puertoRico.wind,
   "china-shandong-wind":  feeds.chinaShandong.wind,
   "china-shandong-solar": feeds.chinaShandong.solar,
   "china-guangdong": feeds.chinaGuangdong,
@@ -481,9 +485,11 @@ const regionData = {
   "guangxi-wind":  feeds.guangxi.wind,
   "guangxi-solar": feeds.guangxi.solar,
   ...feeds.statics,
-  // Philippines: split by fuel (solar + wind). Loader returns a Record so spread here.
-  // Supersedes the philippines statics entry (removed 2026-04-30).
-  ...feeds.philippines
+  // Philippines: IEMOP RTD SCHED_MW. Supersedes the statics entry (removed 2026-04-30).
+  ...feeds.philippines,
+  // OC SENI total generation; supersedes IRENA invented waste in statics.
+  ...feeds.dominican,
+  "india-grid-india": feeds.indiaGridIndia,
 };
 
 // Finalize the assembled region data — non-fatal integrity check (#224),

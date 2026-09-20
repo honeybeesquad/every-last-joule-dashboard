@@ -16,10 +16,13 @@ describe("TSO grid markers", () => {
     }
   });
 
-  it("includes Kauai, Railbelt, PREPA, Maritimes, HK/Macau, and Grid-India", () => {
+  it("includes Kauai, Railbelt, Maritimes, HK/Macau — PREPA and Grid-India are loaders now", () => {
     const ids = new Set(TSO_GRID_MARKERS.map((m) => m.id));
-    for (const id of ["kauai", "alaska-railbelt", "puerto-rico-solar", "new-brunswick", "hong-kong-clp", "macau", "india-grid-india"]) {
+    for (const id of ["kauai", "alaska-railbelt", "new-brunswick", "hong-kong-clp", "macau"]) {
       expect(ids.has(id)).toBe(true);
     }
+    expect(ids.has("puerto-rico-solar")).toBe(false);
+    expect(ids.has("puerto-rico-wind")).toBe(false);
+    expect(ids.has("india-grid-india")).toBe(false);
   });
 });

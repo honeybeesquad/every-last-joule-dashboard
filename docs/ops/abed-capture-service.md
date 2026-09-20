@@ -177,3 +177,27 @@ backup at `cron-wrapper.sh.bak-20260819`). Do not re-enable it: both hosts pushi
 race on the same CSV. That step also used to `exit 1` on failure, which is why the
 Colombia tunnel dying silently blocked the India, Vietnam and Taiwan fetchers as well and
 stopped the entire daily push for three weeks. Britta still runs those three.
+
+## PREPA generation poll (2026-09-20)
+
+`operationdata.prepa.pr.gov/dataSource.js` is a live fuel-split snapshot, not a
+30-day archive. abed appends one row per distinct `dataFechaAcualizado` into the
+relay repo; `colombia-relay-pull.yml` copies `puerto-rico-genera.csv` into the
+dashboard. NordVPN Puerto_Rico / United_States only on HTTP 403 (default
+`--vpn on-403`) so a working public fetch does not take the LAN SSH path down.
+The Azure mirror is IP-forbidden from NZ; genera-pr.com is Cloudflare 403 from
+SYD. Waste unpublished. Not T1a.
+
+- **Scripts:** `scripts/relay/puerto-rico-prepa-fetch.py` +
+  `scripts/relay/puerto-rico-prepa-push.sh`, copy to `~/elj-relay/`.
+- **Schedule:** hourly. The loader emits unpublished-empty generation until the
+  lake has 24 distinct timestamps — do not clone a single 7am snapshot into a
+  fake diurnal.
+- **Push path:** same `~/elj-relay/data-relay-repo` + `~/.ssh/elj-relay-deploy`
+  as Colombia.
+
+```bash
+# on abed, after copying the two scripts:
+# 7 * * * * /home/simon/elj-relay/puerto-rico-prepa-push.sh
+```
+

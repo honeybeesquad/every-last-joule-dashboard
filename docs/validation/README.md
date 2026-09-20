@@ -182,7 +182,7 @@ Last generated: 2026-08-20
 | Denmark DK2 Wind | live | wind | 0 | [denmark-east-wind](./denmark-east-wind.md) |
 | Denmark DK1 Solar | live | solar | 0 | [denmark-west-solar](./denmark-west-solar.md) |
 | Denmark DK1 Wind | live | wind | 0 | [denmark-west-wind](./denmark-west-wind.md) |
-| Dominican Republic | estimated | solar | 0 | [dominican-republic](./dominican-republic.md) |
+| Dominican Republic | estimated | mixed | 0 | [dominican-republic](./dominican-republic.md) |
 | Dominican Republic Wind | estimated | wind | 0 | [dominican-republic-wind](./dominican-republic-wind.md) |
 | Algeria | estimated | solar | 0 | [algeria](./algeria.md) |
 | Ecuador | estimated | hydro | 0 | [ecuador](./ecuador.md) |
