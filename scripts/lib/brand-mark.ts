@@ -201,6 +201,101 @@ export function renderMark(options: MarkOptions): string {
   return parts.join("\n");
 }
 
+
+/* ────────────────────────────────────────────────────────────────────────
+ * The loading screen's mark: HTML elements + CSS transforms, not SVG.
+ *
+ * It was SMIL inside an <img>, which is driven by the MAIN THREAD. On the
+ * loading screen the main thread is saturated — ~135 data files arriving,
+ * parsing, the globe initialising — so the mark froze a few hundred
+ * milliseconds in (right after the cyan arc) and only jumped to a full ring
+ * once the work finished. Measured: during a 4s synthetic block the SMIL
+ * version rendered a bare disc the whole time.
+ *
+ * CSS transform/opacity animations on HTML elements are composited off the
+ * main thread, so they keep running no matter what the page is doing. That is
+ * the whole point of this screen's animation: it is a sign of life, and it has
+ * to be truthful about being alive.
+ *
+ * Each pillar gets its OWN @keyframes rule, which is what buys the
+ * choreography: every pillar shares one 6.6s period with zero delay, so the
+ * cycle restarts for all of them at the same instant, while its own keyframe
+ * percentages place its rise, its fall and its tick inside that cycle. A
+ * shared keyframe plus animation-delay cannot do this — the delay shifts each
+ * pillar's cycle boundary too, which smears the reset into a second wave.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/** Percentage of the cycle, as a keyframe selector. */
+const pct = (seconds: number): string =>
+  Number(((seconds / CYCLE) * 100).toFixed(3)).toString();
+
+/** The markup: geometry and timing live in the stylesheet, keyed by class. */
+export function markLoaderHtml(): string {
+  const pillars_ = pillars();
+  const bars = pillars_.map((_, i) => `<i class="p${i}"><b></b></i>`).join("");
+  return `<div class="loader-mark" aria-hidden="true">${bars}<u></u></div>`;
+}
+
+/**
+ * The stylesheet block: one rule + one keyframes per pillar, plus its tick.
+ *
+ * Every length is in `em`, where 1em is the mark's diameter — so the whole
+ * thing scales from a single font-size (148px on desktop, 112px on phones)
+ * with no wrapper transform to fight the layout.
+ */
+export function markLoaderCss(): string {
+  const out: string[] = [];
+  const em = (userUnits: number): string => Number((userUnits / S).toFixed(4)) + "em";
+
+  out.push(
+    `.loader-mark{position:relative;width:1em;height:1em;flex-shrink:0;line-height:0}`,
+    `.loader-mark u{position:absolute;left:50%;top:50%;width:${em(DISC_R * 2)};height:${em(DISC_R * 2)};` +
+      `margin:${em(-DISC_R)} 0 0 ${em(-DISC_R)};border-radius:50%;background:${GOLD}}`,
+    `.loader-mark i{position:absolute;left:50%;top:50%;width:${em(PILLAR_W)};margin-left:${em(-PILLAR_W / 2)}}`,
+    `.loader-mark b{display:block;width:100%;height:100%;border-radius:${em(PILLAR_W / 2)};` +
+      `transform-origin:50% 100%;transform:scaleY(0);animation-duration:${CYCLE}s;` +
+      `animation-timing-function:linear;animation-iteration-count:infinite}`,
+    `.loader-mark i::after{content:"";position:absolute;left:0;top:${em(-TICK_H - 4)};width:100%;` +
+      `height:${em(TICK_H)};border-radius:${em(PILLAR_W / 2)};opacity:0;animation-duration:${CYCLE}s;` +
+      `animation-timing-function:cubic-bezier(.25,.6,.5,1);animation-iteration-count:infinite}`,
+  );
+
+  pillars().forEach((p, i) => {
+    const fill = p.curtailed ? CYAN : GOLD_DIM;
+    const alpha = p.curtailed ? "0.95" : "0.55";
+    const tickFill = p.curtailed ? CYAN_TIP : GOLD_TIP;
+    out.push(
+      // The bar's top-centre sits on the mark's centre (left/top 50% plus the
+      // negative margin), so that is the pivot: `50% 0`. Anything else rotates
+      // each bar about a point off the centre and the ring comes apart.
+      // Composed right-to-left: lift the bar out to its radius, then rotate.
+      `.loader-mark .p${i}{height:${em(p.length)};transform-origin:50% 0;` +
+        `transform:rotate(${r(p.angle)}deg) translateY(${em(-INNER_R - p.length)})}`,
+      `.loader-mark .p${i} b{background:${fill};opacity:${alpha};animation-name:elj-p${i}}`,
+      `.loader-mark .p${i}::after{background:${tickFill};animation-name:elj-t${i}}`,
+      // Easing is declared inside the keyframe that STARTS each segment, which
+      // is how the A6 curves survive: ease-out on the way up, ease-in down.
+      // (A stop at 0% would repeat as "0%,0%" for the first pillar.)
+      `@keyframes elj-p${i}{${pct(p.riseAt) === "0" ? "0%" : `0%,${pct(p.riseAt)}%`}` +
+        `{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}` +
+        `${pct(p.riseAt + RISE_DUR)}%,${pct(p.fallAt)}%` +
+        `{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}` +
+        `${pct(p.fallAt + FALL_DUR)}%,100%{transform:scaleY(0)}}`,
+      `@keyframes elj-t${i}{${pct(p.fallAt) === "0" ? "0%" : `0%,${pct(p.fallAt)}%`}{transform:translateY(0);opacity:0}` +
+        `${pct(p.fallAt + TICK_DUR * 0.12)}%{opacity:0.95}` +
+        `${pct(p.fallAt + TICK_DUR)}%,100%{transform:translateY(${em(-TICK_TRAVEL)});opacity:0}}`,
+    );
+  });
+
+  // Reduced motion: hold the full ring, no sweep, no ticks.
+  out.push(
+    `@media (prefers-reduced-motion: reduce){`,
+    `.loader-mark b{animation:none;transform:scaleY(1)}`,
+    `.loader-mark i::after{animation:none;opacity:0}}`,
+  );
+  return out.join("\n");
+}
+
 /** Every generated asset, keyed by its path under `src/`. */
 export function markAssets(): Record<string, string> {
   return {
