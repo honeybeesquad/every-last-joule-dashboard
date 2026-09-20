@@ -23,10 +23,12 @@
 
 /* ---------- Theme system fonts (woff2, self-hosted, OFL) ---------- */
 /* Schibsted Grotesk — the brand face from the mark work (the lockup on the
-   Pair board: 700, -0.01em, mixed case, "Joule" in gold). One variable
-   file, latin subset, covering the 400–700 range. Used by the page
-   loader's wordmark; the themes' --font-display is untouched. */
-@font-face { font-family: "Schibsted Grotesk"; src: url("/fonts/SchibstedGrotesk-Variable.woff2") format("woff2"); font-weight: 400 700; font-style: normal; font-display: swap; }
+   Pair board: 700, -0.01em, mixed case, "Joule" in gold). One variable file,
+   latin subset; the axis runs 400–900, which is why --fw-black (800) renders
+   rather than clamping. Every region name in regions.ts is inside latin-1,
+   so no latin-ext file is needed. This is now the site face: both themes
+   point --font-display and --font-body at it. */
+@font-face { font-family: "Schibsted Grotesk"; src: url("/fonts/SchibstedGrotesk-Variable.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: swap; }
 
 @font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-Regular.woff2")     format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-SemiBold.woff2")    format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
@@ -186,8 +188,8 @@
   --info:                var(--data-renewable);
 
   /* type */
-  --font-display:        "Fraunces", Georgia, "Times New Roman", serif;
-  --font-body:           "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-display:        "Schibsted Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-body:           "Schibsted Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --font-sans:           var(--font-body);   /* alias: legacy rules read --font-sans */
   --display-weight-strong: 800;
@@ -233,8 +235,8 @@
   --danger:              #f87171;
   --info:                var(--data-renewable);
 
-  --font-display:        "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --font-body:           "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-display:        "Schibsted Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-body:           "Schibsted Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --font-sans:           var(--font-body);
   --display-weight-strong: 700;
@@ -288,7 +290,7 @@ html, body {
 
 .display-xl, .display-lg, .display,
 h1, h2, h3, h4 {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   color: var(--ink);
   letter-spacing: var(--ls-display);
   line-height: var(--lh-heading);
@@ -583,16 +585,15 @@ main table {
   color: var(--ink);
 }
 
-/* Editorial italic accent on the wordmark — carried over from the Ledger
-   redesign because Simon liked it. Uses Fraunces (already loaded for both
-   Sunfire and Deepcurrent themes) and picks up --brand so it tints yellow
-   on Sunfire and blue on Deepcurrent. */
+/* "Joule" on the wordmark. This was an italic Fraunces accent carried over
+   from the Ledger redesign; it is now upright brand face at 700, which is the
+   lockup as drawn on the design canvas and what the loading screen shows two
+   seconds earlier. It still picks up --brand, so it tints gold on Sunfire and
+   blue on Deepcurrent. Reverting is this rule alone. */
 .app-wordmark-accent {
-  font-family: "Fraunces", Georgia, "Times New Roman", serif;
-  font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--brand);
-  letter-spacing: -0.005em;
+  letter-spacing: -0.01em;
   margin-left: 1px;
 }
 
