@@ -42,6 +42,25 @@ describe("puerto-rico PREPA relay", () => {
     expect(data.solar.sourceProvenance).toBe("official-lead");
   });
 
+  it("will not emit a diurnal from 24 rows crammed into a few hours", () => {
+    // PREPA republishes every ~6 minutes, so a sub-hourly cron or a handful
+    // of manual runs during setup reaches 24 rows without covering 24 hours.
+    // A row-count guard passes that, and every uncovered hour then reads as
+    // 0 GW generated — a mostly-zero day, including overnight wind.
+    const header =
+      "utc_timestamp,solar_mw,wind_mw,system_mw,source_updated_local,fetched_at_utc";
+    const rows = Array.from({ length: 24 }, (_, i) => {
+      const hour = 11 + Math.floor(i / 6); // 24 rows, four UTC hours
+      const minute = (i % 6) * 10;
+      const ts = `2026-09-20T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00Z`;
+      return `${ts},20,2,2000,x,${ts}`;
+    });
+    const data = buildPuertoRicoFromCsv([header, ...rows].join("\n"));
+    expect(data.solar.generationProfile).toEqual(Array(24).fill(0));
+    expect(data.wind.generationProfile).toEqual(Array(24).fill(0));
+    expect(data.solar.sourceNote).toMatch(/4\/24 UTC hours/);
+  });
+
   it("emits unpublished generation once the lake has 24 snapshots", () => {
     const data = buildPuertoRicoFromCsv(csvFromHours(48));
     expect(data.solar.regionId).toBe("puerto-rico-solar");

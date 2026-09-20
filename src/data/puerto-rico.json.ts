@@ -96,9 +96,22 @@ export function buildPuertoRicoFromCsv(text: string): { solar: RegionData; wind:
   const last = rows.at(-1)?.utcTimestamp ?? new Date().toISOString();
   const solarNote = `${NOTE} — solar (utility-scale PPOA).`;
   const windNote = `${NOTE} — wind (utility-scale PPOA).`;
-  if (rows.length < 24) {
+  // Count distinct UTC hours, not rows. The lake is appended one row per
+  // distinct `dataFechaAcualizado`, and PREPA republishes every ~6 minutes,
+  // so a sub-hourly cron, a retry storm, or a few manual runs while the
+  // relay is being set up all reach 24 ROWS inside a few hours. That passes
+  // a row-count guard and then timeOfDayAverageGW leaves every uncovered
+  // hour at 0 — publishing a day that is mostly zero generation, including
+  // overnight wind, which is its own fabrication rather than the 7am-clone
+  // one this guard was written to stop. Same rule as
+  // latestCompleteUtcDayProfileGW: missing any hour makes the day ineligible.
+  const distinctHours = new Set(
+    rows.map((row) => new Date(row.utcTimestamp).getUTCHours()),
+  ).size;
+  if (distinctHours < 24) {
     const filling =
-      ` Relay lake has ${rows.length} snapshot(s); need 24 before a diurnal generation profile is emitted.`;
+      ` Relay lake has ${rows.length} snapshot(s) covering ${distinctHours}/24 UTC hours;` +
+      ` need 24 distinct hours before a diurnal generation profile is emitted.`;
     return {
       solar: emptyFuel(SOLAR_ID, "solar", solarNote + filling, last),
       wind: emptyFuel(WIND_ID, "wind", windNote + filling, last),
