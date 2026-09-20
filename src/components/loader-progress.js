@@ -1,24 +1,28 @@
 /**
  * loader-progress.js
  *
- * Scrolling terminal UI for the initial data-load screen.
- * Shows each data source as it resolves, with a live region counter.
+ * Progress for the initial data-load screen: a determinate rail, a region
+ * counter, and the name of the source that just landed.
+ *
+ * The scrolling five-row terminal this used to drive is gone — the animated
+ * mark (src/brand/mark-loop.svg) is the motion on that screen now, and three
+ * competing animations read as noise. What survives is the information the
+ * terminal actually carried: how far along we are, and where the last batch
+ * came from.
  *
  * Usage:
  *   initLoaderProgress(totalRegions, totalFiles)
  *   trackFile(promise, label)  — wraps a FileAttachment promise
  */
 
-const ROW_H       = 23;   // px — must match CSS .loader-t-row height
-const VISIBLE_ROWS = 5;   // rows shown at once
-
-let scrollEl    = null;
-let counterEl   = null;
-let totalEl     = null;
-let rows        = [];
+let counterEl = null;
+let totalEl = null;
+let railEl = null;
+let sourceEl = null;
 let loadedRegions = 0;
 let regionsPerFile = 0;
 let filesRemaining = 0;
+let filesTotal = 0;
 
 /**
  * Called once before the Promise.all starts.
@@ -26,22 +30,26 @@ let filesRemaining = 0;
  * @param {number} totalFiles    - number of FileAttachment promises
  */
 export function initLoaderProgress(totalRegions, totalFiles) {
-  scrollEl      = document.getElementById("loader-terminal-scroll");
-  counterEl     = document.getElementById("loader-n");
-  totalEl       = document.getElementById("loader-total");
+  counterEl = document.getElementById("loader-n");
+  totalEl = document.getElementById("loader-total");
+  railEl = document.getElementById("loader-rail-fill");
+  sourceEl = document.getElementById("loader-source");
 
   regionsPerFile = Math.floor(totalRegions / totalFiles);
   filesRemaining = totalFiles;
+  filesTotal = totalFiles;
 
   if (totalEl) totalEl.textContent = totalRegions.toLocaleString();
   if (counterEl) counterEl.textContent = "0";
+  if (railEl) railEl.style.width = "0%";
+  if (sourceEl) sourceEl.textContent = "";
 }
 
 /**
  * Wraps a FileAttachment().json() promise.
- * On resolve: adds a row to the terminal, updates the counter.
+ * On resolve: advances the rail, updates the counter, names the source.
  * @param {Promise<any>} promise
- * @param {string}       label    — human-readable source name shown in the terminal
+ * @param {string}       label    — human-readable source name
  */
 export function trackFile(promise, label) {
   return promise.then((result) => {
@@ -53,39 +61,18 @@ export function trackFile(promise, label) {
       : regionsPerFile;
 
     loadedRegions = Math.max(0, loadedRegions + add);
-    _addRow(label);
     if (counterEl) counterEl.textContent = loadedRegions.toLocaleString();
+
+    // The rail measures files, not regions: files resolving is the only
+    // progress this page actually observes. It never runs backwards, and it
+    // is clamped so an undercounted totalFiles cannot push it past 100%.
+    if (railEl && filesTotal > 0) {
+      const done = Math.min(filesTotal, Math.max(0, filesTotal - filesRemaining));
+      railEl.style.width = `${((done / filesTotal) * 100).toFixed(1)}%`;
+    }
+
+    if (sourceEl) sourceEl.textContent = label;
 
     return result;
   });
-}
-
-/** @private */
-function _addRow(label) {
-  if (!scrollEl) return;
-
-  // Mark previous active row as done
-  const prev = scrollEl.querySelector(".loader-t-row.active");
-  if (prev) {
-    prev.classList.replace("active", "done");
-    const icon = prev.querySelector(".loader-t-icon");
-    if (icon) icon.textContent = "✓";
-  }
-
-  // Append new active row
-  const row = document.createElement("div");
-  row.className = "loader-t-row active";
-  row.innerHTML =
-    `<span class="loader-t-icon">···</span>` +
-    `<span class="loader-t-name">${label}</span>`;
-  scrollEl.appendChild(row);
-  rows.push(row);
-
-  // Slide the list up so the new row enters from the bottom
-  const offset = Math.max(0, (rows.length - VISIBLE_ROWS) * ROW_H);
-  scrollEl.style.transition =
-    rows.length > VISIBLE_ROWS
-      ? "transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1)"
-      : "none";
-  scrollEl.style.transform = `translateY(-${offset}px)`;
 }

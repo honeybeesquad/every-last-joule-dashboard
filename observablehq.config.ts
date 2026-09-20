@@ -54,6 +54,14 @@ export default {
   dynamicPaths: [
     ...fontFiles,
     "/og-image.png",
+    // Generated brand assets (npm run brand:assets). mark-loop is the page
+    // loader's animated mark and mark-still its reduced-motion swap; the
+    // avatars are referenced by nothing in the build, and are published so
+    // social profiles can be pointed at a URL rather than a re-uploaded file.
+    "/brand/mark-loop.svg",
+    "/brand/mark-still.svg",
+    "/brand/avatar-loop.svg",
+    "/brand/avatar-still.svg",
     "/robots.txt",
     "/sitemap.xml",
     ...regionPaths,

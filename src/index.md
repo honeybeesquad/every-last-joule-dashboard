@@ -1,20 +1,13 @@
 # Every Last Joule
 
 <div id="page-loader" role="status" aria-label="Loading dashboard data">
-  <div class="loader-topbar"><div class="loader-topbar-fill"></div></div>
-  <div class="loader-center-mark">●</div>
-  <div class="loader-center-text">Every Last Joule</div>
-  <div class="loader-terminal">
-    <div class="loader-terminal-bar">
-      <div class="loader-terminal-dots"><span></span><span></span><span></span></div>
-      <span class="loader-terminal-title">Loading regions</span>
-    </div>
-    <div class="loader-terminal-viewport">
-      <div id="loader-terminal-scroll" class="loader-terminal-scroll"></div>
-    </div>
-  </div>
+  <img class="loader-mark" src="./brand/mark-loop.svg" alt="" aria-hidden="true"
+       width="148" height="148" decoding="async">
+  <div class="loader-wordmark">Every Last <span>Joule</span></div>
+  <div class="loader-rail" aria-hidden="true"><div id="loader-rail-fill" class="loader-rail-fill"></div></div>
   <div class="loader-counter">
-    <span id="loader-n">0</span> / <span id="loader-total">—</span> regions
+    <span id="loader-n">0</span> / <span id="loader-total">—</span> regions<span
+      id="loader-source" class="loader-source" aria-hidden="true"></span>
   </div>
 </div>
 <div id="app-root"></div>

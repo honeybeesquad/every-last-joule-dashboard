@@ -14,6 +14,7 @@
     "deploy": "observable deploy",
     "test": "vitest run",
     "version-history": "tsx scripts/build-version-history.ts",
+    "brand:assets": "tsx scripts/build/build-mark-assets.ts",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "validate": "tsx scripts/validate-snapshots.ts",
