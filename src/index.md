@@ -711,8 +711,6 @@ globe = await mountGlobe(canvas, {
     else regionTooltip.hide();
   },
   onZoomChange: (scale) => { if (zoomSlider) zoomSlider.value = String(scale.toFixed(3)); },
-  // Name the largest curtailments on the face currently facing the viewer.
-  showCallouts: true,
 });
 canvas.hidden = false;
 document.getElementById("globe-placeholder")?.remove();

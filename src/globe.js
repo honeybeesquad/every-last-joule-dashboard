@@ -70,9 +70,6 @@ export async function mountGlobe(canvas, initial) {
   const dprCap = isMobileViewport ? 1.5 : 2;
   const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
   const onRegionClick = typeof initial.onRegionClick === "function" ? initial.onRegionClick : null;
-  // Callouts name the largest curtailments on the face you can currently see.
-  // Off by default so the paper's embed stays a bare globe.
-  const showCallouts = initial.showCallouts === true;
   const state = {
     regions: initial.regions,
     regionData: initial.regionData,
@@ -131,87 +128,6 @@ export async function mountGlobe(canvas, initial) {
   // region and animate scale 0 → 1 over BIRTH_MS.
   const BIRTH_MS = 350;
   const pillarBirthTimes = new Map(); // repId → DOMHighResTimeStamp
-
-  // --- Callout selection -----------------------------------------------
-  // Which regions get named is re-picked on a slow cadence, not per frame:
-  // at 60fps the top-N set flickers as pillars cross the horizon and labels
-  // visibly reshuffle. Positions still track their own pillar every frame,
-  // so a label stays glued to the pillar it names while the globe turns.
-  const CALLOUT_MAX = 6;
-  const CALLOUT_REPICK_MS = 1400;
-  const CALLOUT_MIN_SEP_PX = 44;
-  let calloutIds = [];
-  let calloutPickedAt = -Infinity;
-
-  /**
-   * Name the largest curtailments on the visible face: a short leader line
-   * from each pillar tip out to a label parked in the left or right gutter.
-   * Labels are spread vertically so they never overlap each other.
-   */
-  function drawCallouts(ctx, pool, geom, width, height, now, radius) {
-    if (now - calloutPickedAt > CALLOUT_REPICK_MS || calloutIds.length === 0) {
-      calloutIds = pool
-        .sort((a, b) => b.gw - a.gw)
-        .slice(0, CALLOUT_MAX)
-        .map((c) => c.id);
-      calloutPickedAt = now;
-    }
-    const items = [];
-    for (const id of calloutIds) {
-      const g = geom.get(id);
-      if (g) items.push({ ...g, side: g.x < width / 2 ? "left" : "right" });
-    }
-    // Park the labels just inside the disc rather than at the canvas edge.
-    // The canvas is wider than the globe and the side panels sit on top of
-    // its left and right margins, so a gutter measured from the canvas edge
-    // puts every label underneath a panel — drawn, but invisible. Keying off
-    // the globe's own radius keeps them over the sphere, which is flat and
-    // dark enough to read against, whatever the surrounding layout does.
-    const cxMid = width / 2;
-    const inset = Math.max(96, radius * 0.62);
-    const gutterL = Math.max(84, cxMid - inset);
-    const gutterR = Math.min(width - 84, cxMid + inset);
-    for (const side of ["left", "right"]) {
-      const col = items.filter((i) => i.side === side).sort((a, b) => a.y - b.y);
-      let last = -Infinity;
-      for (const i of col) {
-        i.labelY = Math.max(i.y, last + CALLOUT_MIN_SEP_PX);
-        last = i.labelY;
-      }
-    }
-    ctx.save();
-    ctx.setLineDash([]);
-    for (const i of items) {
-      if (i.labelY < 18 || i.labelY > height - 18) continue;
-      const elbowX = i.x + i.dx * 16;
-      const elbowY = i.y + i.dy * 16;
-      const labelX = i.side === "left" ? gutterL : gutterR;
-      ctx.globalAlpha = 0.85;
-      ctx.strokeStyle = tokens.border;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(i.x, i.y);
-      ctx.lineTo(elbowX, elbowY);
-      ctx.lineTo(labelX, i.labelY);
-      ctx.stroke();
-      ctx.fillStyle = i.color;
-      ctx.beginPath();
-      ctx.arc(elbowX, elbowY, 2.2, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 1;
-      // Text reads inward, toward the centre, not outward: outward is where
-      // the side panels are, so an outward label runs straight under one.
-      ctx.textAlign = i.side === "left" ? "left" : "right";
-      const tx = labelX + (i.side === "left" ? 9 : -9);
-      ctx.font = '11px "IBM Plex Mono", ui-monospace, monospace';
-      ctx.fillStyle = `rgba(${tokens.dotDayRGB}, 0.95)`;
-      ctx.fillText(i.name, tx, i.labelY - 5);
-      ctx.font = '13px "IBM Plex Mono", ui-monospace, monospace';
-      ctx.fillStyle = i.color;
-      ctx.fillText(`${i.gw.toFixed(i.gw >= 1 ? 1 : 2)} GW`, tx, i.labelY + 12);
-    }
-    ctx.restore();
-  }
 
   /**
    * Hit-test: given client coords, return the closest pillar group within
@@ -360,8 +276,6 @@ export async function mountGlobe(canvas, initial) {
 
     const pillarUnits = buildPillarUnitsForState();
     const visibleThisFrame = new Set();
-    const calloutPool = [];
-    const calloutGeom = new Map();
 
     for (const unit of pillarUnits) {
       const group = unit.regions;
@@ -387,11 +301,6 @@ export async function mountGlobe(canvas, initial) {
       if (dist > Math.PI / 2) continue;
       const point = projection([rep.lon, rep.lat]);
       if (!point) continue;
-      // Only well inside the limb: a label on a pillar at the very edge
-      // points off the disc and its leader line crosses the whole globe.
-      if (showCallouts && showWaste && dist < Math.PI / 2 * 0.86) {
-        calloutPool.push({ id: rep.id, name: rep.name, gw: totalWasteGW });
-      }
 
       // Birth animation: first time a region crosses the horizon, scale it
       // from 0 → 1 over BIRTH_MS so it emerges rather than snapping in.
@@ -462,12 +371,6 @@ export async function mountGlobe(canvas, initial) {
         const pillarH = (3 + weight * 48) * birthT;
         const pillarW = 3;
 
-        if (showCallouts) {
-          calloutGeom.set(rep.id, {
-            x: anchorX + dx * pillarH, y: anchorY + dy * pillarH,
-            dx, dy, color: domColor, gw: totalWasteGW, name: rep.name,
-          });
-        }
         if (group.length === 1) {
           // Single-fuel pillar: one flat stroke, butt cap, no base-to-tip
           // gradient. The keyline underneath is what keeps a solar pillar
@@ -581,10 +484,6 @@ export async function mountGlobe(canvas, initial) {
         ctx.stroke();
         ctx.restore();
       }
-    }
-
-    if (showCallouts) {
-      drawCallouts(ctx, calloutPool, calloutGeom, width, height, renderNow, projection.scale());
     }
 
     // Update birth-animation state for next frame.
