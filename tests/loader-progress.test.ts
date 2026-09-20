@@ -17,11 +17,20 @@ beforeEach(async () => {
   ({ initLoaderProgress, trackFile } = await import("../src/components/loader-progress.js"));
 
   document.body.innerHTML = `
-    <div id="loader-terminal-scroll"></div>
+    <div class="loader-rail"><div id="loader-rail-fill"></div></div>
     <span id="loader-n">0</span>
     <span id="loader-total">—</span>
+    <span id="loader-source"></span>
   `;
 });
+
+function railWidth(): number {
+  return parseFloat(document.getElementById("loader-rail-fill")!.style.width);
+}
+
+function shownSource(): string {
+  return document.getElementById("loader-source")!.textContent!;
+}
 
 function shownCount(): number {
   return parseInt(document.getElementById("loader-n")!.textContent!.replace(/,/g, ""), 10);
@@ -88,5 +97,49 @@ describe("loader-progress counter coherence", () => {
     }
 
     expect(shownCount()).toBe(totalRegions);
+  });
+});
+
+// The five-row scrolling terminal this module used to drive was removed when
+// the animated mark became the motion on the loading screen. These cover what
+// replaced it: a determinate rail measured in files, and the name of the
+// source that landed last.
+describe("loader-progress rail and source label", () => {
+  it("fills the rail in step with files resolved, reaching 100% exactly", async () => {
+    const totalFiles = 10;
+    initLoaderProgress(459, totalFiles);
+    expect(railWidth()).toBe(0);
+
+    for (let i = 1; i <= totalFiles; i++) {
+      await trackFile(Promise.resolve(i), `source-${i}`);
+      expect(railWidth()).toBeCloseTo((i / totalFiles) * 100, 1);
+    }
+
+    expect(railWidth()).toBe(100);
+  });
+
+  it("clamps the rail at 100% when more files resolve than were declared", async () => {
+    // Same drift as the '468 / 459 regions' incident below, seen from the
+    // rail's side: the counter overshoots, the rail must not.
+    initLoaderProgress(459, 3);
+    for (let i = 0; i < 5; i++) await trackFile(Promise.resolve(i), `source-${i}`);
+    expect(railWidth()).toBe(100);
+  });
+
+  it("names the source that resolved last, and starts empty", async () => {
+    initLoaderProgress(459, 2);
+    expect(shownSource()).toBe("");
+
+    await trackFile(Promise.resolve(1), "National Grid ESO");
+    expect(shownSource()).toBe("National Grid ESO");
+
+    await trackFile(Promise.resolve(2), "AEMO");
+    expect(shownSource()).toBe("AEMO");
+  });
+
+  it("does not throw when the loader markup is absent", async () => {
+    document.body.innerHTML = "";
+    initLoaderProgress(459, 2);
+    await expect(trackFile(Promise.resolve(1), "AEMO")).resolves.toBe(1);
   });
 });

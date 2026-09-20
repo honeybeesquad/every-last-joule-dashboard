@@ -38,6 +38,18 @@ region data and the mark is not a chart; it is drawn identically in every
 asset. Nothing here reads `regions.ts`. **No tier moved** — `ci:tally-golden`,
 `ci:tier-coherence` and `ci:docs-drift` pass untouched.
 
+**The loading screen was redesigned around it (same branch).** The five-row
+scrolling source terminal and the top shimmer bar are gone — three competing
+motions on one screen. What is left is the mark at 148px, the wordmark, a
+determinate rail and one line of text. The rail measures **files resolved**,
+which is the only progress the page observes; the region counter is unchanged
+(an even share per file, landing exactly on the total — the arithmetic the
+'468 / 459 regions' regression test still pins), and the name of the source
+that landed last replaces the terminal feed. `tests/loader-progress.test.ts`
+grows from 4 cases to 8: the rail fills in step and clamps at 100% under the
+same totalFiles drift that overshot the counter, the source label starts empty
+and names the latest file, and the module no-ops when the markup is absent.
+
 **Not done here:** the avatars ship as SVG only. Neither X nor Instagram
 animates a profile picture, and there is no GIF/MP4 render in the repo (no
 Pillow, no ffmpeg on the build path), so `avatar-loop.svg` is a source for a
