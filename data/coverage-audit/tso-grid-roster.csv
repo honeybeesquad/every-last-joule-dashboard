@@ -546,6 +546,7 @@ IEMOP / NGCP,PHL,"solar,wind",live-tso,philippines,unpublished,philippines-solar
 EVN / NSMO / NLDC,VNM,solar,not-collecting,vietnam,unpublished,vietnam,nldc.evn.vn timed out from this IP. 4 TWh literature kept until a PDF relay writes CSV. 365 GWh 2020 is not T2.
 NTDC / NPCC,PAK,"wind,solar",not-collecting,pakistan,unpublished,pakistan-wind;pakistan-solar,NEPRA NPMV 1.34 TWh is published missed volume — keep until NTDC series exists.
 PGCB / BPDB,BGD,solar,live-tso,bangladesh,unpublished,bangladesh,PGCB hourly solar generation collected. Waste unpublished. Invented 0.1 TWh dropped.
+PREPA / LUMA,PRI,"wind,solar",no-public-series,tso-grid-markers,unpublished,puerto-rico-wind;puerto-rico-solar,"EIA-930 probe 2026-09-20: 83 respondents, no PREP/LUMA/CEPR (total=0). Contiguous-US BAs only. LUMA BPS daily PDFs exclude solar/wind from Available Supply. Mi LUMA JSON is outages only."
 Landsnet,ISL,hydro,not-collecting,,unpublished,iceland,No public Landsnet time series. Keep Orkustofnun 5.3 TWh modelled spill until a TSO series exists.
 Grid-India / RLDCs,IND,"solar,wind",relay-tso,india-grid-india,unpublished,india-grid-india,CEA gen-re state CSVs summed. abed is not an India PoP. Not a substitute for SLDC subgrids.
 SGCC North,CHN,"wind,solar,hydro",no-public-series,,unpublished,,No machine-readable dispatch. Provincial Ember×NEA is not this TSO.

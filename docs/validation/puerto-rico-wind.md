@@ -8,7 +8,7 @@ Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Tech
 - **Country:** PRI
 - **Tier:** estimated
 - **Kind:** wind
-- **Source:** PREPA/LUMA. EIA-930 probe pending. Waste unpublished.
+- **Source:** PREPA/LUMA. EIA-930 has no PR BA (83 respondents 2026-09-20; PREP/LUMA/CEPR total=0). LUMA BPS daily PDFs exclude solar/wind from Available Supply. Mi LUMA JSON is outages. Waste unpublished.
 - **Source URL:** [https://www.lumapr.com/](https://www.lumapr.com/)
 - **Loader:** _(see region source / TSO-grid completeness loaders)_
 - **Structural gap:** no

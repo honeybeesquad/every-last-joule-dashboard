@@ -24,7 +24,7 @@ Country T3 stubs are not TSO collection. This program adds operational generatio
 - ADME Uruguay was already live waste (not a gap).
 - Noga 403, Taipower geo-blocked, NLDC timeout, Landsnet/NEPCO/EMA/Gulf still have no public series from this IP. Pakistan NPMV 1.34 TWh and Iceland Orkustofnun 5.3 TWh kept until a TSO series exists.
 
-**Wave 4.** Missing grids (KIUC, Railbelt, PREPA, Maritimes, HK/Macau, Sarawak/Sabah, EDF SEI, …) stay unpublished markers, not invented waste. Ember/IRENA is not TSO collection.
+**Wave 4.** Missing grids (KIUC, Railbelt, Maritimes, HK/Macau, Sarawak/Sabah, EDF SEI, …) stay unpublished markers, not invented waste. Ember/IRENA is not TSO collection. PREPA/LUMA EIA-930 probe 2026-09-20: 83 respondents, no PREP/LUMA/CEPR (total=0). LUMA BPS daily PDFs exclude solar/wind from Available Supply; Mi LUMA JSON is outages. Stay markers.
 
 **Wave 5.** China provincials stay Ember×NEA modelled; interconnection families (SGCC/CSG/Mengxi) are roster `no-public-series`. `india-grid-india` is the national TSO row; SLDCs stay subgrids. Saudi 5.2% is **irradiance, not curtailment**.
 

@@ -37,6 +37,7 @@ describe("unpublished EIA-930 VRE BAs", () => {
   it("lists the Wave-1 BAs including TVA and Florida FRCC", () => {
     const ids = EIA_VRE_BA_CONFIGS.map((c) => c.regionId);
     expect(ids).toEqual(expect.arrayContaining(["tva", "fpl", "fpc", "tec", "swpw", "nevp"]));
+    expect(ids).not.toContain("puerto-rico");
     expect(EIA_VRE_BA_CONFIGS.every((c) => c.wasteMode === "unpublished")).toBe(true);
   });
 });
