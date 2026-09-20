@@ -2,7 +2,8 @@
 
 <div id="page-loader" role="status" aria-label="Loading dashboard data">
   <div class="loader-topbar"><div class="loader-topbar-fill"></div></div>
-  <div class="loader-center-mark">●</div>
+  <img class="loader-center-mark" src="./brand/mark-loop.svg" alt="" aria-hidden="true"
+       width="96" height="96" decoding="async">
   <div class="loader-center-text">Every Last Joule</div>
   <div class="loader-terminal">
     <div class="loader-terminal-bar">
