@@ -12,10 +12,15 @@ camouflaged against its own background. Removing the blur alone made it
 **worse** — the glow was carrying the light, so de-blooming only made the
 globe dimmer. The fix is to take the chroma off the sphere entirely.
 
-**Globe (`src/globe.js`).** One flat `--globe-ocean` fill; the radial day
-gradient and the night-overlay wash are gone. Day/night is carried by the land
-matrix alone — a hard terminator, with the unlit side warm amber rather than
-dimmed grey (the greyness is what read as cold). Pillars are flat strokes,
+**Globe (`src/globe.js`).** The radial day wash is gone, but the light source
+is not: the sphere takes a flat `--globe-ocean` night fill with a flat
+`--globe-ocean-lit` daylit hemisphere painted over it and a
+`--globe-terminator` hairline along the boundary. Two flat fills and a hard
+edge, no gradient. A first pass dropped sphere lighting altogether and carried
+day/night on the land dots' hue alone; that was wrong — cream against amber is
+invisible at 1.8px, so you could not see which face was in daylight and
+therefore could not see why solar was curtailing where it was. Lit land is now
+brighter as well as a different hue (0.98 vs 0.82 alpha). Pillars are flat strokes,
 butt cap, no base-to-tip gradient, no blurred glow disc, no blurred tip dot;
 each pillar and region dot carries a `--globe-keyline` casing so fuel colour
 never merges into the land under it. Sun dimming removed — the land already

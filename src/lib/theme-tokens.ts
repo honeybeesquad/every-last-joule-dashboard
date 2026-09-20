@@ -41,8 +41,14 @@ export interface GlobeTokens {
   dotNightRGB: string;
   /** Raw value of --globe-border (already an rgba string). */
   border: string;
-  /** Hex for the flat ocean fill (--globe-ocean). */
+  /** Hex for the flat night-side ocean fill (--globe-ocean). */
   oceanHex: string;
+  /** Hex for the flat daylit-hemisphere ocean fill (--globe-ocean-lit).
+   *  Painted over oceanHex inside the 90deg circle around the subsolar
+   *  point, so the lit face reads without any gradient. */
+  oceanLitHex: string;
+  /** Hairline stroked along the day/night boundary (--globe-terminator). */
+  terminator: string;
   /** Casing drawn under every pillar and region dot (--globe-keyline) so
    *  fuel colour never merges into the land beneath it. */
   keyline: string;
@@ -76,6 +82,8 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
     dotNightRGB: parseHexToRGB(get("--globe-dot-night")) ?? "201,166,98",
     border:       get("--globe-border")     || "rgba(255,248,224,0.16)",
     oceanHex:     get("--globe-ocean")      || get("--surface-bg-2") || "#15110a",
+    oceanLitHex:  get("--globe-ocean-lit")  || "#2e2415",
+    terminator:   get("--globe-terminator") || "rgba(255,248,224,0.30)",
     keyline:      get("--globe-keyline")    || "#17110a",
     dayGradient1: get("--day-gradient-1")   || "rgba(255,208,90,0.55)",
     dayGradient2: get("--day-gradient-2")   || "rgba(230,160,32,0.25)",

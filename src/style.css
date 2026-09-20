@@ -176,6 +176,8 @@
      grey, which is what used to read as cold. The border is neutral ink, not
      gold: gold on a gold-washed sphere is what camouflaged the solar pillars. */
   --globe-ocean:         #15110a;
+  --globe-ocean-lit:     #332816;
+  --globe-terminator:    rgba(255, 248, 224, 0.30);
   --globe-keyline:       #17110a;
   --globe-dot-day:       #fffdf2;
   --globe-dot-night:     #f0bf7a;
@@ -227,6 +229,8 @@
   --fuel-hydro:          #b4a0f0;
 
   --globe-ocean:         #0a1018;
+  --globe-ocean-lit:     #17283a;
+  --globe-terminator:    rgba(224, 240, 255, 0.30);
   --globe-keyline:       #060a10;
   --globe-dot-day:       #eaf6ff;
   --globe-dot-night:     #7fb4d8;
