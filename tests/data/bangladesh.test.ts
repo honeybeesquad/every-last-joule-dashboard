@@ -132,71 +132,45 @@ describe("bangladesh: PGCB page parsing", () => {
 describe("bangladesh: region assembly", () => {
   const data = buildBangladeshDataFromFile(FIXTURE, { now: FIXED_NOW });
 
-  it("emits a valid RegionData shape", () => {
+  it("emits unpublished waste and measured PGCB generation", () => {
     expect(data.regionId).toBe("bangladesh");
     expect(data.profile).toHaveLength(24);
-    expect(data.profile.every((v) => Number.isFinite(v) && v >= 0)).toBe(true);
-    expect(data.peakGW).toBeGreaterThan(0);
-    expect(data.totalTWh).toBeGreaterThan(0);
+    expect(data.profile.every((v) => v === 0)).toBe(true);
+    expect(data.totalTWh).toBe(0);
+    expect(data.peakGW).toBe(0);
+    expect(data.wasteStatus).toBe("unpublished");
+    expect(data.generationProfile).toHaveLength(24);
+    expect(data.generationTotalTWh).toBeGreaterThan(0);
     expect(data.lastUpdated).toBe("2026-09-06T05:00:00.000Z");
-    expect(data.lastSuccessAt).toBe("2026-09-06T12:00:00.000Z");
   });
 
-  it("reports latestProfile as null when the window has no gap-free UTC day", () => {
-    // This capture is the normal case, not a broken one: PGCB filed a
-    // 13:30Z row on 2026-09-05 and no 18:00Z row, so no UTC day in the
-    // rolling window is complete. Null is the honest answer.
-    expect(data.latestProfile).toBeNull();
-    const points = parseSolarGenerationMW(FIXTURE_HTML);
-    const sep5 = points.filter((p) => p.utcTimestamp.startsWith("2026-09-05"));
-    expect(sep5.some((p) => p.utcTimestamp.endsWith("T13:30:00.000Z"))).toBe(true);
-    expect(sep5.some((p) => p.utcTimestamp.endsWith("T18:00:00.000Z"))).toBe(false);
-  });
-
-  it("reports a 30-day total, not the ~48 hours the page actually covers", () => {
-    // Regression guard: feeding the raw points to totalTWh30d would report
-    // the window's own energy (~2 days) in a field the dataset reads as 30.
-    expect(data.totalTWh).toBeCloseTo((0.1 * 30) / 365, 12);
-  });
-
-  it("stays on the estimated tier — the magnitude is modelled", () => {
+  it("stays on the estimated tier — waste is unpublished", () => {
     expect(data.confidenceTier).toBe("T3-modelled");
-    expect(data.uncertaintyLowGW!).toBeLessThanOrEqual(data.peakGW);
-    expect(data.uncertaintyHighGW!).toBeGreaterThanOrEqual(data.peakGW);
   });
 
-  it("carries the measured-shape / modelled-magnitude caveat and the implied rate", () => {
-    expect(data.sourceNote).toMatch(/MODELLED magnitude on a MEASURED shape/);
-    expect(data.sourceNote).toMatch(/not curtailment/);
-    expect(data.sourceNote).toMatch(/ESTIMATED 0\.1 TWh\/yr/);
-    expect(data.sourceNote).toMatch(/implies a \d+\.\d\d% curtailment rate/);
+  it("does not scale generation to the old 0.1 TWh invented anchor", () => {
+    expect(data.sourceNote).toMatch(/Waste unpublished/);
+    expect(data.sourceNote).toMatch(/0\.1 TWh\/yr repo estimate is dropped/);
     expect(data.sourceNote).not.toMatch(/\blive\b/i);
+    expect(data.totalTWh).toBe(0);
   });
 
-  it("integrates to the 0.1 TWh/yr anchor rather than to the raw generation", () => {
-    // The 24 hourly GW means sum to mean daily GWh; annualised that is the anchor.
-    const meanDailyTWh = data.profile.reduce((sum, gw) => sum + gw, 0) / 1000;
-    expect(meanDailyTWh * 365).toBeCloseTo(0.1, 6);
-  });
-
-  it("carries the real diurnal shape — solar noon, dark nights", () => {
-    // Bangladesh solar noon is 12:00 BST = 06:00 UTC.
-    const peakHour = data.profile.indexOf(Math.max(...data.profile));
+  it("carries the real diurnal shape on generationProfile — solar noon, dark nights", () => {
+    const gen = data.generationProfile!;
+    const peakHour = gen.indexOf(Math.max(...gen));
     expect(peakHour).toBe(6);
-    // 18:00-23:00 UTC is midnight-to-05:00 local: no sun.
     for (let hour = 18; hour <= 23; hour++) {
-      expect(data.profile[hour]).toBe(0);
+      expect(gen[hour]).toBe(0);
     }
   });
 
-  it("scales linearly — doubling generation leaves the anchored total unmoved", () => {
+  it("scales generation linearly — doubling MW doubles generationTotalTWh", () => {
     const points = parseSolarGenerationMW(FIXTURE_HTML);
     const doubled = buildBangladeshRegion(
       points.map((p) => ({ ...p, mw: p.mw * 2 })),
       { now: FIXED_NOW },
     );
-    expect(doubled.totalTWh).toBeCloseTo(data.totalTWh, 12);
-    // The implied rate halves, and the note says so.
-    expect(doubled.sourceNote).not.toBe(data.sourceNote);
+    expect(doubled.generationTotalTWh).toBeCloseTo(data.generationTotalTWh! * 2, 8);
+    expect(doubled.totalTWh).toBe(0);
   });
 });

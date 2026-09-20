@@ -46,7 +46,18 @@ Country T3 stubs are not TSO collection. This program adds operational generatio
 
 **Wave 1 (wired).** Remaining EIA-930 VRE BAs (TVA, FPL/FPC/TEC, NEVP, WALC, SWPW, Duke, LGEE, IID, BANC, LDWP, PNM, EPE, AECI, SPA, SCEG) via `src/data/eia-vre-bas.json.ts`. ENTSO unpublished generation: APG Austria (replaces T2 mixed stub), AST/Litgrid, Enemalta, SE1/SE2 as new ids (do not retarget `sweden-north`), NOS BiH / CGES VRE, OST Albania, KOSTT Kosovo. `allowEmpty` so new zones without last-good do not take down the ENTSO loader. Serbia/MK solar stay estimated — A75 B16 ceased.
 
-**Wave 2–4 (honest, not mega-PR).** CENACE CSV is generation with unpublished waste (modelled 6% rate dropped). CAMMESA relay CSV same. KPX/ESIOS/India PoP/Gulf remain **human-gated**. Missing grids (KIUC, Railbelt, Maritimes, HK/Macau, Sarawak/Sabah, EDF SEI, …) are unpublished markers, not invented waste. Ember/IRENA is not TSO collection. PREPA/LUMA is **relay-tso** (2026-09-20): `operationdata.prepa.pr.gov/dataSource.js` utility-scale PPOA solar/wind SiteTotal MW, appended by abed (`scripts/relay/puerto-rico-prepa-fetch.py`, NordVPN Puerto_Rico/United_States on 403) into `data/historical/puerto-rico-genera.csv`. EIA-930 has no PR BA. Waste unpublished. Not T1a. The committed CSV is two live snapshots; the loader emits unpublished-empty generation until ≥24 distinct timestamps — do not clone a 7am reading into a fake diurnal.
+**Wave 2–3 (wired 2026-09-20).** Public generation parsers that were left as roster notes:
+
+- IEMOP WESM RTD SCHED_MW ZIPs (`philippines.json.ts`) — fuel-split solar/wind. Invented 0.04/0.02 TWh IRENA waste dropped.
+- OC SENI `GetGeneracionReprogramadaJSon` (`dominican.json.ts`) — total-system MW. Invented 0.5/0.3 TWh IRENA waste dropped.
+- PGCB hourly solar (`bangladesh.json.ts`) — invented 0.1 TWh repo estimate dropped.
+- CEA gen-re state CSVs summed (`india-grid-india.json.ts`) — national TSO row, not an SLDC substitute.
+- ESIOS parser (`spain-esios.json.ts`) — returns `{}` without `ESIOS_API_TOKEN`; does **not** overwrite ENTSO Spain T1a. Indicator 704 is mixed-fuel; no invented split.
+- KPX `PvAmountByLocHr` parser behind `DATA_GO_KR_SERVICE_KEY`; Ember×rate until the key is issued. Wind stays Ember until a KPX wind series exists.
+- ADME Uruguay was already live waste (not a gap).
+- Noga 403, Taipower geo-blocked, NLDC timeout, Landsnet/NEPCO/EMA/Gulf still have no public series from this IP. Pakistan NPMV 1.34 TWh and Iceland Orkustofnun 5.3 TWh kept until a TSO series exists.
+
+**Wave 4.** Missing grids (KIUC, Railbelt, Maritimes, HK/Macau, Sarawak/Sabah, EDF SEI, …) stay unpublished markers, not invented waste. Ember/IRENA is not TSO collection. PREPA/LUMA is **relay-tso** (2026-09-20): `operationdata.prepa.pr.gov/dataSource.js` utility-scale PPOA solar/wind SiteTotal MW, appended by abed (`scripts/relay/puerto-rico-prepa-fetch.py`, NordVPN Puerto_Rico/United_States on 403) into `data/historical/puerto-rico-genera.csv`. EIA-930 has no PR BA. Waste unpublished. Not T1a. The committed CSV is two live snapshots; the loader emits unpublished-empty generation until ≥24 distinct timestamps — do not clone a 7am reading into a fake diurnal.
 
 **Wave 5.** China provincials stay Ember×NEA modelled; interconnection families (SGCC/CSG/Mengxi) are roster `no-public-series`. `india-grid-india` is the national TSO row; SLDCs stay subgrids. Saudi 5.2% is **irradiance, not curtailment**.
 
@@ -67,6 +78,7 @@ number reads as grids tracked, not grids wasting. `tests/waste-status-count.test
 pins both, including that a **measured zero is a published figure** (a fact
 about the grid) while **unpublished is a fact about the operator** — merging
 those two is the failure this whole program exists to avoid.
+
 ## Brand face site-wide — Schibsted Grotesk (2026-09-20)
 
 Branch `feat/brand-face-site-wide`, **stacked on `feat/animated-mark-loader`**

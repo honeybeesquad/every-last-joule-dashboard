@@ -306,6 +306,7 @@ const regionData = {
   "slovenia-solar": feeds.entsoe["slovenia-solar"],
   switzerland: feeds.entsoe.switzerland,
   ...feeds.entsoe,
+  ...feeds.spainEsios,
   "gb-scotland-wind":       splitRegion(feeds.northSea.wind,  "gb-scotland-wind",       0.70, "Scotland share"),
   "gb-scotland-solar":      splitRegion(feeds.northSea.solar, "gb-scotland-solar",      0.70, "Scotland share"),
   "gb-england-wales-wind":  splitRegion(feeds.northSea.wind,  "gb-england-wales-wind",  0.30, "E+W share"),
@@ -451,7 +452,9 @@ const regionData = {
   "guangxi-wind":  feeds.guangxi.wind,
   "guangxi-solar": feeds.guangxi.solar,
   ...feeds.statics,
-  ...feeds.philippines
+  ...feeds.philippines,
+  ...feeds.dominican,
+  "india-grid-india": feeds.indiaGridIndia,
 };
 
 // Finalize the assembled region data — shared with src/index.md. Note: this

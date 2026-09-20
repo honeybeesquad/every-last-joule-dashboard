@@ -356,8 +356,8 @@ Western Australia Wind (SWIS),AUS,wind,live-tso,,legacy-unspecified,wa-swis-wind
 NT & Pilbara,AUS,solar,not-collecting,statics,unpublished,nt-pilbara,Country/T3 stub — Ember/IRENA is not TSO collection.
 Indonesia,IDN,solar,not-collecting,statics,unpublished,indonesia,Country/T3 stub — Ember/IRENA is not TSO collection.
 Malaysia,MYS,solar,not-collecting,statics,unpublished,malaysia,Country/T3 stub — Ember/IRENA is not TSO collection.
-Philippines Solar,PHL,solar,not-collecting,statics,unpublished,philippines-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
-Philippines Wind,PHL,wind,not-collecting,statics,unpublished,philippines-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Philippines Solar,PHL,solar,live-tso,philippines,unpublished,philippines-solar,TSO generation collected; waste unpublished.
+Philippines Wind,PHL,wind,live-tso,philippines,unpublished,philippines-wind,TSO generation collected; waste unpublished.
 South Korea Solar,KOR,solar,not-collecting,statics,unpublished,south-korea-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
 South Korea Wind,KOR,wind,not-collecting,statics,unpublished,south-korea-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
 Russia (European grid),RUS,hydro,not-collecting,statics,unpublished,russia-mainland,Country/T3 stub — Ember/IRENA is not TSO collection.
@@ -374,7 +374,7 @@ Nepal,NPL,hydro,not-collecting,statics,unpublished,nepal,Country/T3 stub — Emb
 Iran,IRN,solar,not-collecting,statics,unpublished,iran,Country/T3 stub — Ember/IRENA is not TSO collection.
 Iraq,IRQ,solar,not-collecting,statics,unpublished,iraq-mainland,Country/T3 stub — Ember/IRENA is not TSO collection.
 Kurdistan (KRG),IRQ,solar,not-collecting,statics,unpublished,kurdistan,Country/T3 stub — Ember/IRENA is not TSO collection.
-Bangladesh,BGD,solar,not-collecting,statics,unpublished,bangladesh,Country/T3 stub — Ember/IRENA is not TSO collection.
+Bangladesh,BGD,solar,live-tso,bangladesh,unpublished,bangladesh,TSO generation collected; waste unpublished.
 Minas Gerais Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-mg-wind,Existing live waste or Path-B generation×rate.
 Minas Gerais Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-mg-solar,Existing live waste or Path-B generation×rate.
 Sao Paulo Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-sp-wind,Existing live waste or Path-B generation×rate.
@@ -412,8 +412,8 @@ Costa Rica,CRI,hydro,not-collecting,statics,unpublished,costa-rica,Country/T3 st
 Panama,PAN,solar,not-collecting,statics,unpublished,panama,Country/T3 stub — Ember/IRENA is not TSO collection.
 Central America (SIEPAC),GTM,solar,not-collecting,statics,unpublished,guatemala-siepac,Country/T3 stub — Ember/IRENA is not TSO collection.
 Cuba,CUB,mixed,not-collecting,statics,unpublished,cuba,Country/T3 stub — Ember/IRENA is not TSO collection.
-Dominican Republic,DOM,solar,not-collecting,statics,unpublished,dominican-republic,Country/T3 stub — Ember/IRENA is not TSO collection.
-Dominican Republic Wind,DOM,wind,not-collecting,statics,unpublished,dominican-republic-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Dominican Republic,DOM,mixed,live-tso,dominican,unpublished,dominican-republic,TSO generation collected; waste unpublished.
+Dominican Republic Wind,DOM,wind,live-tso,dominican,unpublished,dominican-republic-wind,TSO generation collected; waste unpublished.
 Jamaica,JAM,solar,not-collecting,statics,unpublished,jamaica,Country/T3 stub — Ember/IRENA is not TSO collection.
 Barbados,BRB,solar,not-collecting,statics,unpublished,barbados,Country/T3 stub — Ember/IRENA is not TSO collection.
 Bolivia,BOL,solar,not-collecting,statics,unpublished,bolivia,Country/T3 stub — Ember/IRENA is not TSO collection.
@@ -534,21 +534,21 @@ Guadeloupe,GLP,solar,no-public-series,tso-grid-markers,unpublished,guadeloupe,Gr
 New Caledonia,NCL,solar,no-public-series,tso-grid-markers,unpublished,new-caledonia,Grid present; no public ops series wired.
 French Polynesia,PYF,solar,no-public-series,tso-grid-markers,unpublished,french-polynesia,Grid present; no public ops series wired.
 Wallis and Futuna,WLF,solar,no-public-series,tso-grid-markers,unpublished,wallis-and-futuna,Grid present; no public ops series wired.
-Grid-India,IND,solar,no-public-series,tso-grid-markers,unpublished,india-grid-india,Grid present; no public ops series wired.
-REE ESIOS,ESP,"wind,solar",not-collecting,entsoe,unpublished,spain-wind;spain-solar,Human gate: consultasios@ree.es token. Generation already ENTSO. Do not start parser until token is in Vercel.
-KPX,KOR,"wind,solar",not-collecting,southKorea,unpublished,south-korea-wind;south-korea-solar,Human gate: data.go.kr serviceKey (Korean ID).
-OC SENI,DOM,"wind,solar",not-collecting,,unpublished,dominican-republic;dominican-republic-wind,"GetGeneracionReprogramadaJSon is scheduled/actual total, not VRE waste. Generation collectable; waste unpublished."
-Noga / IEC,ISR,solar,not-collecting,israel,unpublished,israel,Typical stub. Probe Noga open data; waste unpublished unless Noga documents it.
-NEPCO,JOR,"solar,wind",not-collecting,jordan,unpublished,jordan,PDF commentary exists. No hourly dashboard wired.
-Taipower,TWN,mixed,not-collecting,taiwan,unpublished,taiwan,genary.json geo-blocked. Relay from in-region IP required. Annual PDF is not live waste. Britta fetchers are scaffolding.
-EMA / SP PowerGrid,SGP,solar,not-collecting,,unpublished,singapore,EMA TES / wholesale half-hourly not wired. Waste unpublished.
-IEMOP / NGCP,PHL,"solar,wind",not-collecting,philippines,unpublished,philippines-solar;philippines-wind,WESM SPA has SCHED/actual; no curtailment column on the free tier. Headless capture not wired.
-EVN / NSMO / NLDC,VNM,solar,not-collecting,vietnam,unpublished,vietnam,"TLS fail, PDF daily dispatch. Relay not writing CSV. 365 GWh 2020 quote is not a T2 anchor."
-NTDC / NPCC,PAK,"wind,solar",not-collecting,pakistan,unpublished,pakistan-wind;pakistan-solar,NEPRA PDF / NPCC TLS. Waste unpublished.
-PGCB / BPDB,BGD,solar,not-collecting,bangladesh,unpublished,bangladesh,BPDB daily PDF Pattern-D not automated. Waste unpublished.
+Grid-India,IND,solar,relay-tso,india-grid-india,unpublished,india-grid-india,Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones.
+REE ESIOS,ESP,"wind,solar",not-collecting,spain-esios,unpublished,spain-wind;spain-solar,Parser shipped. Returns {} without ESIOS_API_TOKEN. Does not overwrite ENTSO T1a Spain. Indicator 704 is mixed-fuel — no invented split.
+KPX,KOR,"wind,solar",not-collecting,southKorea,unpublished,south-korea-wind;south-korea-solar,PvAmountByLocHr parser behind DATA_GO_KR_SERVICE_KEY. Ember×rate until the key is issued. Wind stays Ember until a KPX wind series exists.
+OC SENI,DOM,mixed,live-tso,dominican,unpublished,dominican-republic;dominican-republic-wind,"GetGeneracionReprogramadaJSon GENERACION MW is total system, not VRE waste. Generation collected."
+Noga / IEC,ISR,solar,not-collecting,israel,unpublished,israel,noga-iso.co.il 403 from this IP. PUA literature waste kept until a Noga series exists.
+NEPCO,JOR,"solar,wind",not-collecting,jordan,unpublished,jordan,No hourly dashboard. PDF commentary is not a TSO series.
+Taipower,TWN,mixed,not-collecting,taiwan,unpublished,taiwan,genary.txt geo-blocked from this IP. Relay from in-region IP required.
+EMA / SP PowerGrid,SGP,solar,not-collecting,,unpublished,singapore,EMA TES / wholesale half-hourly not a public JSON from this IP.
+IEMOP / NGCP,PHL,"solar,wind",live-tso,philippines,unpublished,philippines-solar;philippines-wind,WESM RTD SCHED_MW ZIP is public. No available-capacity column. Waste unpublished.
+EVN / NSMO / NLDC,VNM,solar,not-collecting,vietnam,unpublished,vietnam,nldc.evn.vn timed out from this IP. 4 TWh literature kept until a PDF relay writes CSV. 365 GWh 2020 is not T2.
+NTDC / NPCC,PAK,"wind,solar",not-collecting,pakistan,unpublished,pakistan-wind;pakistan-solar,NEPRA NPMV 1.34 TWh is published missed volume — keep until NTDC series exists.
+PGCB / BPDB,BGD,solar,live-tso,bangladesh,unpublished,bangladesh,PGCB hourly solar generation collected. Waste unpublished. Invented 0.1 TWh dropped.
 PREPA / LUMA / Genera,PRI,"wind,solar",relay-tso,puerto-rico,unpublished,puerto-rico-wind;puerto-rico-solar,operationdata.prepa.pr.gov dataSource.js utility-scale PPOA SiteTotal MW. abed NordVPN on 403 → relay CSV. EIA-930 has no PR BA. Waste unpublished. Not T1a. Lake needs ≥24 snapshots before a diurnal is emitted.
-Landsnet,ISL,hydro,not-collecting,,unpublished,iceland,iceland is T3 hydro modelled. Landsnet generation is not a public time series. Spill unpublished unless Orkustofnun publishes it.
-Grid-India / RLDCs,IND,"solar,wind",not-collecting,india-grid-india,unpublished,india-grid-india,"abed is Starlink CHC, not an India PoP. SLDCs are subgrids only when their portal yields a series."
+Landsnet,ISL,hydro,not-collecting,,unpublished,iceland,No public Landsnet time series. Keep Orkustofnun 5.3 TWh modelled spill until a TSO series exists.
+Grid-India / RLDCs,IND,"solar,wind",relay-tso,india-grid-india,unpublished,india-grid-india,CEA gen-re state CSVs summed. abed is not an India PoP. Not a substitute for SLDC subgrids.
 SGCC North,CHN,"wind,solar,hydro",no-public-series,,unpublished,,No machine-readable dispatch. Provincial Ember×NEA is not this TSO.
 SGCC Central,CHN,"wind,solar,hydro",no-public-series,,unpublished,,No machine-readable dispatch.
 SGCC East,CHN,"wind,solar,hydro",no-public-series,,unpublished,,No machine-readable dispatch.

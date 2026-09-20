@@ -57,7 +57,9 @@ describe("static regions", () => {
     // 2026-06-18: flare gas purged — removed 37 flare statics (32 named/bbox + kuwait/qatar + 3 offshore). 172 − 37 = 135.
     // 2026-09-20: TSO-grid completeness moved austria/tva/malta/lithuania/latvia/albania
     // off statics onto ENTSO/EIA unpublished loaders. 135 − 6 = 129.
-    expect(Object.keys(data).length).toBe(129);
+    // 2026-09-20: OC SENI unpublished generation moved dominican-republic +
+    // dominican-republic-wind off statics. 129 − 2 = 127.
+    expect(Object.keys(data).length).toBe(127);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -99,7 +101,8 @@ describe("static regions", () => {
     // 2026-06-07: norway-no5 added to pool as canonical. Research pool: 148 + 1 = 149. Canonical: 144 + 1 = 145. Non-canonical: 4.
     // 2026-06-18: flare purge removed 37 flare statics from the research pool. 176 − 37 = 139.
     // 2026-09-20: removed 6 canonical statics (austria/tva/malta/lithuania/latvia/albania). 139 − 6 = 133.
-    expect(Object.keys(researchData).length).toBe(133);
+    // 2026-09-20: dominican-republic + dominican-republic-wind moved to OC loader. 133 − 2 = 131.
+    expect(Object.keys(researchData).length).toBe(131);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
@@ -122,7 +125,6 @@ describe("static regions", () => {
       "panama",
       "guatemala-siepac",
       "cuba",
-      "dominican-republic",
       "jamaica",
       "barbados",
       "bolivia",

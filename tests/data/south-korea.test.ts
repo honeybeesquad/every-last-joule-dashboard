@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSouthKoreaData } from "../../src/data/south-korea.json";
+import { buildSouthKoreaData, parseKpxPvItems } from "../../src/data/south-korea.json";
 
 // Anchored constants (must stay in sync with src/data/south-korea.json.ts).
 // Curtailed = Ember/OWID 2025 generation × published 2024 rate (MDPI/IEA).
@@ -31,5 +31,22 @@ describe("south-korea loader", () => {
     expect(wind.peakGW).toBeGreaterThan(0);
     expect(wind.sourceNote).toContain("mainland");
     expect(wind.totalTWh * 365 / 30).toBeCloseTo(WIND_CURTAILED_TWH, 3);
+  });
+
+  it("parses PvAmountByLocHr items into KST→UTC points", () => {
+    const points = parseKpxPvItems({
+      response: {
+        body: {
+          items: {
+            item: [
+              { ymd: "20260919", hh: "12", pvAmount: 1500 },
+              { ymd: "20260919", hh: "13", pvAmount: 1400 },
+            ],
+          },
+        },
+      },
+    });
+    expect(points[0].utcTimestamp).toBe("2026-09-19T03:00:00.000Z");
+    expect(points[0].mw).toBe(1500);
   });
 });

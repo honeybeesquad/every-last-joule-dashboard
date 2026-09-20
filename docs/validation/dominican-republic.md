@@ -7,11 +7,12 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Region id:** `dominican-republic`
 - **Country:** DOM
 - **Tier:** estimated
-- **Kind:** solar
-- **Source:** IRENA Dominican Republic 2024 + OC (Organismo Coordinador del SENI) Reportes de Operacion 2024. Live promotion attempt 2026-04-29 reverted: OC `GetGeneracionReprogramadaJSon` endpoint exposes scheduled/actual total generation, not renewable-specific curtailed-energy. Held at T3 pending a genuine curtailment source.
+- **Kind:** mixed
+- **Source:** OC SENI GetGeneracionReprogramadaJSon GENERACION MW (total system). Waste unpublished — not VRE-specific curtailment. IRENA invented waste dropped.
 - **Source URL:** [https://www.oc.org.do/](https://www.oc.org.do/)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Loader:** [`dominican.json.ts`](../../src/data/dominican.json.ts)
 - **Structural gap:** no
+- **Waste status:** unpublished. Missing ≠ zero. Live generation does not make waste T1a.
 
 ## Calibration
 

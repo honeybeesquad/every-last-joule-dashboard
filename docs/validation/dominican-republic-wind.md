@@ -8,10 +8,11 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** DOM
 - **Tier:** estimated
 - **Kind:** wind
-- **Source:** IRENA Dominican Republic 2024 (448 MW wind; OC does not publish per-fuel curtailment; estimated 0.3 TWh/yr from capacity + typical wind profile)
+- **Source:** OC SENI does not fuel-split. Total generation is on dominican-republic. Waste unpublished.
 - **Source URL:** [https://www.oc.org.do/](https://www.oc.org.do/)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Loader:** [`dominican.json.ts`](../../src/data/dominican.json.ts)
 - **Structural gap:** no
+- **Waste status:** unpublished. Missing ≠ zero.
 
 ## Calibration
 

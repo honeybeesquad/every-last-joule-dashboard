@@ -52,26 +52,35 @@ const RELAY_TSO = new Set([
   "mexico-wind",
   "mexico-solar",
   "argentina",
+  "india-grid-india",
   "puerto-rico-wind",
   "puerto-rico-solar",
 ]);
 
+const LIVE_UNPUBLISHED_GEN = new Set([
+  "bangladesh",
+  "philippines-solar",
+  "philippines-wind",
+  "dominican-republic",
+  "dominican-republic-wind",
+]);
+
 /** Operators with no dashboard region, or honesty overlays. */
 const EXTRA_OPERATORS: TsoGridRosterRow[] = [
-  { operator: "REE ESIOS", iso3: "ESP", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "entsoe", wasteStatus: "unpublished", regionIds: "spain-wind;spain-solar", notes: "Human gate: consultasios@ree.es token. Generation already ENTSO. Do not start parser until token is in Vercel." },
-  { operator: "KPX", iso3: "KOR", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "southKorea", wasteStatus: "unpublished", regionIds: "south-korea-wind;south-korea-solar", notes: "Human gate: data.go.kr serviceKey (Korean ID)." },
-  { operator: "OC SENI", iso3: "DOM", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "", wasteStatus: "unpublished", regionIds: "dominican-republic;dominican-republic-wind", notes: "GetGeneracionReprogramadaJSon is scheduled/actual total, not VRE waste. Generation collectable; waste unpublished." },
-  { operator: "Noga / IEC", iso3: "ISR", fuels: "solar", collectStatus: "not-collecting", loaderKey: "israel", wasteStatus: "unpublished", regionIds: "israel", notes: "Typical stub. Probe Noga open data; waste unpublished unless Noga documents it." },
-  { operator: "NEPCO", iso3: "JOR", fuels: "solar,wind", collectStatus: "not-collecting", loaderKey: "jordan", wasteStatus: "unpublished", regionIds: "jordan", notes: "PDF commentary exists. No hourly dashboard wired." },
-  { operator: "Taipower", iso3: "TWN", fuels: "mixed", collectStatus: "not-collecting", loaderKey: "taiwan", wasteStatus: "unpublished", regionIds: "taiwan", notes: "genary.json geo-blocked. Relay from in-region IP required. Annual PDF is not live waste. Britta fetchers are scaffolding." },
-  { operator: "EMA / SP PowerGrid", iso3: "SGP", fuels: "solar", collectStatus: "not-collecting", loaderKey: "", wasteStatus: "unpublished", regionIds: "singapore", notes: "EMA TES / wholesale half-hourly not wired. Waste unpublished." },
-  { operator: "IEMOP / NGCP", iso3: "PHL", fuels: "solar,wind", collectStatus: "not-collecting", loaderKey: "philippines", wasteStatus: "unpublished", regionIds: "philippines-solar;philippines-wind", notes: "WESM SPA has SCHED/actual; no curtailment column on the free tier. Headless capture not wired." },
-  { operator: "EVN / NSMO / NLDC", iso3: "VNM", fuels: "solar", collectStatus: "not-collecting", loaderKey: "vietnam", wasteStatus: "unpublished", regionIds: "vietnam", notes: "TLS fail, PDF daily dispatch. Relay not writing CSV. 365 GWh 2020 quote is not a T2 anchor." },
-  { operator: "NTDC / NPCC", iso3: "PAK", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "pakistan", wasteStatus: "unpublished", regionIds: "pakistan-wind;pakistan-solar", notes: "NEPRA PDF / NPCC TLS. Waste unpublished." },
-  { operator: "PGCB / BPDB", iso3: "BGD", fuels: "solar", collectStatus: "not-collecting", loaderKey: "bangladesh", wasteStatus: "unpublished", regionIds: "bangladesh", notes: "BPDB daily PDF Pattern-D not automated. Waste unpublished." },
+  { operator: "REE ESIOS", iso3: "ESP", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "spain-esios", wasteStatus: "unpublished", regionIds: "spain-wind;spain-solar", notes: "Parser shipped. Returns {} without ESIOS_API_TOKEN. Does not overwrite ENTSO T1a Spain. Indicator 704 is mixed-fuel — no invented split." },
+  { operator: "KPX", iso3: "KOR", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "southKorea", wasteStatus: "unpublished", regionIds: "south-korea-wind;south-korea-solar", notes: "PvAmountByLocHr parser behind DATA_GO_KR_SERVICE_KEY. Ember×rate until the key is issued. Wind stays Ember until a KPX wind series exists." },
+  { operator: "OC SENI", iso3: "DOM", fuels: "mixed", collectStatus: "live-tso", loaderKey: "dominican", wasteStatus: "unpublished", regionIds: "dominican-republic;dominican-republic-wind", notes: "GetGeneracionReprogramadaJSon GENERACION MW is total system, not VRE waste. Generation collected." },
+  { operator: "Noga / IEC", iso3: "ISR", fuels: "solar", collectStatus: "not-collecting", loaderKey: "israel", wasteStatus: "unpublished", regionIds: "israel", notes: "noga-iso.co.il 403 from this IP. PUA literature waste kept until a Noga series exists." },
+  { operator: "NEPCO", iso3: "JOR", fuels: "solar,wind", collectStatus: "not-collecting", loaderKey: "jordan", wasteStatus: "unpublished", regionIds: "jordan", notes: "No hourly dashboard. PDF commentary is not a TSO series." },
+  { operator: "Taipower", iso3: "TWN", fuels: "mixed", collectStatus: "not-collecting", loaderKey: "taiwan", wasteStatus: "unpublished", regionIds: "taiwan", notes: "genary.txt geo-blocked from this IP. Relay from in-region IP required." },
+  { operator: "EMA / SP PowerGrid", iso3: "SGP", fuels: "solar", collectStatus: "not-collecting", loaderKey: "", wasteStatus: "unpublished", regionIds: "singapore", notes: "EMA TES / wholesale half-hourly not a public JSON from this IP." },
+  { operator: "IEMOP / NGCP", iso3: "PHL", fuels: "solar,wind", collectStatus: "live-tso", loaderKey: "philippines", wasteStatus: "unpublished", regionIds: "philippines-solar;philippines-wind", notes: "WESM RTD SCHED_MW ZIP is public. No available-capacity column. Waste unpublished." },
+  { operator: "EVN / NSMO / NLDC", iso3: "VNM", fuels: "solar", collectStatus: "not-collecting", loaderKey: "vietnam", wasteStatus: "unpublished", regionIds: "vietnam", notes: "nldc.evn.vn timed out from this IP. 4 TWh literature kept until a PDF relay writes CSV. 365 GWh 2020 is not T2." },
+  { operator: "NTDC / NPCC", iso3: "PAK", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "pakistan", wasteStatus: "unpublished", regionIds: "pakistan-wind;pakistan-solar", notes: "NEPRA NPMV 1.34 TWh is published missed volume — keep until NTDC series exists." },
+  { operator: "PGCB / BPDB", iso3: "BGD", fuels: "solar", collectStatus: "live-tso", loaderKey: "bangladesh", wasteStatus: "unpublished", regionIds: "bangladesh", notes: "PGCB hourly solar generation collected. Waste unpublished. Invented 0.1 TWh dropped." },
   { operator: "PREPA / LUMA / Genera", iso3: "PRI", fuels: "wind,solar", collectStatus: "relay-tso", loaderKey: "puerto-rico", wasteStatus: "unpublished", regionIds: "puerto-rico-wind;puerto-rico-solar", notes: "operationdata.prepa.pr.gov dataSource.js utility-scale PPOA SiteTotal MW. abed NordVPN on 403 → relay CSV. EIA-930 has no PR BA. Waste unpublished. Not T1a. Lake needs ≥24 snapshots before a diurnal is emitted." },
-  { operator: "Landsnet", iso3: "ISL", fuels: "hydro", collectStatus: "not-collecting", loaderKey: "", wasteStatus: "unpublished", regionIds: "iceland", notes: "iceland is T3 hydro modelled. Landsnet generation is not a public time series. Spill unpublished unless Orkustofnun publishes it." },
-  { operator: "Grid-India / RLDCs", iso3: "IND", fuels: "solar,wind", collectStatus: "not-collecting", loaderKey: "india-grid-india", wasteStatus: "unpublished", regionIds: "india-grid-india", notes: "abed is Starlink CHC, not an India PoP. SLDCs are subgrids only when their portal yields a series." },
+  { operator: "Landsnet", iso3: "ISL", fuels: "hydro", collectStatus: "not-collecting", loaderKey: "", wasteStatus: "unpublished", regionIds: "iceland", notes: "No public Landsnet time series. Keep Orkustofnun 5.3 TWh modelled spill until a TSO series exists." },
+  { operator: "Grid-India / RLDCs", iso3: "IND", fuels: "solar,wind", collectStatus: "relay-tso", loaderKey: "india-grid-india", wasteStatus: "unpublished", regionIds: "india-grid-india", notes: "CEA gen-re state CSVs summed. abed is not an India PoP. Not a substitute for SLDC subgrids." },
   { operator: "SGCC North", iso3: "CHN", fuels: "wind,solar,hydro", collectStatus: "no-public-series", loaderKey: "", wasteStatus: "unpublished", regionIds: "", notes: "No machine-readable dispatch. Provincial Ember×NEA is not this TSO." },
   { operator: "SGCC Central", iso3: "CHN", fuels: "wind,solar,hydro", collectStatus: "no-public-series", loaderKey: "", wasteStatus: "unpublished", regionIds: "", notes: "No machine-readable dispatch." },
   { operator: "SGCC East", iso3: "CHN", fuels: "wind,solar,hydro", collectStatus: "no-public-series", loaderKey: "", wasteStatus: "unpublished", regionIds: "", notes: "No machine-readable dispatch." },
@@ -103,7 +112,24 @@ function classify(id: string, tier: string, provenance: string | undefined): Pic
     return { collectStatus: "no-public-series", loaderKey: "tso-grid-markers", wasteStatus: "unpublished", notes: "Grid present; no public ops series wired." };
   }
   if (RELAY_TSO.has(id)) {
-    return { collectStatus: "relay-tso", loaderKey: id.startsWith("mexico") ? "mexico" : id.startsWith("colombia") ? "colombia" : id.startsWith("puerto-rico") ? "puerto-rico" : "argentina", wasteStatus: "unpublished", notes: "Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones." };
+    const loaderKey = id.startsWith("mexico")
+      ? "mexico"
+      : id.startsWith("colombia")
+        ? "colombia"
+        : id.startsWith("india")
+          ? "india-grid-india"
+          : id.startsWith("puerto-rico")
+            ? "puerto-rico"
+            : "argentina";
+    return { collectStatus: "relay-tso", loaderKey, wasteStatus: "unpublished", notes: "Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones." };
+  }
+  if (LIVE_UNPUBLISHED_GEN.has(id)) {
+    const loaderKey = id.startsWith("philippines")
+      ? "philippines"
+      : id.startsWith("dominican")
+        ? "dominican"
+        : id;
+    return { collectStatus: "live-tso", loaderKey, wasteStatus: "unpublished", notes: "TSO generation collected; waste unpublished." };
   }
   if (tier === "live" || tier === "live-domestic-anchored" || tier === "live-neighbour-anchored") {
     return { collectStatus: "live-tso", loaderKey: "", wasteStatus: "legacy-unspecified", notes: "Existing live waste or Path-B generation×rate." };
