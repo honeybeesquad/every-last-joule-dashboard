@@ -803,8 +803,8 @@ main table {
    a second copy animating forever in the header would compete with the
    globe for the same main thread that #1054 had to rescue. */
 .app-mark {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   display: block;
   flex-shrink: 0;
 }
@@ -913,6 +913,21 @@ main table {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+/* The lockup sits at the head of the sidebar now, not in the full-width
+   header: the headline stack reads as one column under the mark. */
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.app-brand .app-wordmark {
+  font-size: 19px;
 }
 
 .panel-left {
@@ -1265,63 +1280,40 @@ main table {
   font-weight: 400;
 }
 
-.hotspot-columns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px 16px;
+/* One ranked rail, all fuels together, replacing the three fuel columns.
+   The fuel is carried by the dot on each row and named in the legend under
+   the list, so the column headings are no longer doing work. */
+.rail-list {
   margin-top: 10px;
-}
-
-.hotspot-columns-three {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: min-content;
-  gap: 10px;
-}
-
-@media (max-width: 1100px) {
-  .hotspot-columns-three {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-@media (max-width: 700px) {
-  .hotspot-columns-three {
-    grid-template-columns: 1fr;
-  }
-}
-
-.hotspot-column {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-width: 0;
 }
 
-.hotspot-column-title {
+.rail-note {
+  margin: 12px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.rail-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+}
+
+.rail-legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  font-family: var(--font-mono);
   font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.6);
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.hotspot-column-subtitle {
-  font-size: 9.5px;
-  line-height: 1.25;
-  color: rgba(255,255,255,0.38);
-  margin: 3px 0 4px;
-  letter-spacing: 0.02em;
-  font-style: italic;
-}
-
-/* Truncation notice appended to the subtitle. Upright and tabular so the
-   figures read as data against the italic descriptor beside them. */
-.hotspot-column-count {
-  font-style: normal;
-  font-variant-numeric: tabular-nums;
+  color: var(--ink-muted);
+  white-space: nowrap;
 }
 
 .hotspot-list {
@@ -1490,13 +1482,6 @@ main table {
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
-}
-
-@media (max-width: 900px) {
-  .hotspot-columns {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
 }
 
 .hotspot-country {
