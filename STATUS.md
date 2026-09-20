@@ -52,6 +52,60 @@ and hydro arrays and then sums them, keeping only the annual ratio. Masking
 removes the impossible part (solar at night); it does not give wind and
 hydro their own shapes. Fixing that means carrying per-fuel profiles on
 `RegionData` and is a larger change.
+## Matte globe refresh — gold off the sphere, colour only where data is (2026-09-20)
+
+Branch `feat/matte-globe-refresh`. The globe read as one warm haze: sphere
+`#2d1f0e` under a gold radial day wash, country outlines at 35% gold, then
+`#ffd05a` solar pillars on top of it. Everything shared a hue, so the data was
+camouflaged against its own background. Removing the blur alone made it
+**worse** — the glow was carrying the light, so de-blooming only made the
+globe dimmer. The fix is to take the chroma off the sphere entirely.
+
+**Globe (`src/globe.js`).** The radial day wash is gone, but the light source
+is not: the sphere takes a flat `--globe-ocean` night fill with a flat
+`--globe-ocean-lit` daylit hemisphere painted over it and a
+`--globe-terminator` hairline along the boundary. Two flat fills and a hard
+edge, no gradient. A first pass dropped sphere lighting altogether and carried
+day/night on the land dots' hue alone; that was wrong — cream against amber is
+invisible at 1.8px, so you could not see which face was in daylight and
+therefore could not see why solar was curtailing where it was. Lit land is now
+brighter as well as a different hue (0.98 vs 0.82 alpha). Pillars are flat strokes,
+butt cap, no base-to-tip gradient, no blurred glow disc, no blurred tip dot;
+each pillar and region dot carries a `--globe-keyline` casing so fuel colour
+never merges into the land under it. Sun dimming removed — the land already
+states day from night, and dimming pillars by it too double-dimmed the night
+side and hid real curtailment. Only `qualityOpacity` and limb distance touch
+pillar opacity now.
+
+**Land-dot density now scales with the drawn size** (1.8° at ≥820px, floored
+there to bound the one-off `geoContains` filter). At a fixed 2.5° the
+continents dissolve into specks above ~700px — the live 1044px canvas was
+already past that, so this was a live legibility bug, not only a design change.
+
+**Surfaces (`src/style.css`).** `radial-gradient` 6→0, `linear-gradient` 7→0,
+`backdrop-filter` 3→0, `mask-image` 6→0, `box-shadow` 10→3 (the three left are
+solid rings and the focus indicator). Panel grounds go flat, the globe's two
+stacked bloom gradients go, tooltip glass becomes a flat panel with one
+hairline, and the side panels no longer fade to transparent or mask their own
+edges — a list ends instead of dissolving. New `--globe-ocean` and
+`--globe-keyline` in both themes; `--globe-dot-night` warm (`#f0bf7a`),
+`--globe-border` neutral.
+
+**Header mark.** The `●` placeholder is the real Spectrum mark, **still**
+variant. The loader already runs the animated one; a second copy animating
+forever would compete for the main thread that #1054 had to rescue. That
+answers the brand system's open question on where the motion lives: loader
+yes, persistent header no.
+
+**On-globe callouts were tried and removed** in the same branch. Labels named
+the largest curtailments on the visible face, but each label's `y` tracked its
+pillar while its `x` was pinned to a fixed gutter — so the globe turned, the
+pillar slid, the label did not, and it read as stuck to the panel. If it comes
+back, the label must track its pillar in both axes at a fixed offset along the
+outward normal. No callout code ships.
+
+No data, tier or region changes: `regions.ts` and `src/data/*` untouched,
+tier counts unmoved.
 
 ## Loading-screen mark: SMIL in an <img> froze under load (2026-09-20)
 

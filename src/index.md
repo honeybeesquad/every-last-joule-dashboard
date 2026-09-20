@@ -75,7 +75,7 @@ document.getElementById("app-root").innerHTML = `
   <div class="app-shell">
     <header class="app-header">
       <div class="app-title">
-        <span class="app-mark">●</span>
+        <img class="app-mark" src="/brand/mark-still.svg" alt="" width="22" height="22" decoding="async">
         <span class="app-wordmark">Every Last <span class="app-wordmark-accent">Joule</span></span>
         <span class="app-tag">Wasted Energy Database · <a class="app-tag-version" href="${feeds.zenodoVersion.recordUrl}" target="_blank" rel="noopener">v${feeds.zenodoVersion.version}</a></span>
       </div>
