@@ -1,43 +1,12 @@
 /**
- * Bangladesh solar curtailment loader — PGCB hourly generation page.
+ * Bangladesh solar — PGCB hourly generation page.
  *
- * WHAT IS MEASURED AND WHAT IS NOT (read this before changing anything):
+ * MEASURED  the 24-hour solar generation shape from erp.powergrid.gov.bd.
+ * UNPUBLISHED  waste. PGCB publishes generation, not curtailment, and
+ *              Bangladesh has no published national curtailment rate. The
+ *              previous 0.1 TWh/yr repo estimate is dropped — missing ≠ zero.
  *
- *   MEASURED  the 24-hour diurnal SHAPE. PGCB (the national transmission
- *             company) publishes a rolling ~48-hour table of hourly system
- *             generation by fuel, including a solar column, at
- *             erp.powergrid.gov.bd. That column is real, current, national
- *             metered generation and it is what shapes this region's profile.
- *
- *   MODELLED  the MAGNITUDE. PGCB publishes generation, NOT curtailment.
- *             Bangladesh has no published curtailment feed and no published
- *             national curtailment rate. The 0.1 TWh/yr annual anchor this
- *             loader scales to is the repo's own pre-existing estimate,
- *             carried over unchanged from the previous BPDB fallback. It is
- *             an estimate, not a measurement, and it is not cited to anyone.
- *
- * So the region stays `tier: "estimated"` / T3-modelled / modelled-fallback.
- * The gain over the fallback this replaces is that the profile is now the
- * shape of real Bangladeshi solar output instead of a synthetic bell curve;
- * the energy total is unchanged and still modelled. Do not describe this
- * loader as measured, live, or anchored.
- *
- * Method (this is the guide's blessed pattern for a percentage/rate applied
- * to generation — docs/methodology/tier-classification-guide.md, bad
- * conversion #3: pair the rate with the operator's own generation for the
- * same window and show the arithmetic):
- *
- *   1. Parse hourly solar generation MW from the PGCB table.
- *   2. Average it by UTC hour-of-day to get a 24-point shape.
- *   3. Scale that shape so it integrates to the 0.1 TWh/yr anchor. The
- *      scale factor IS the implied curtailment rate, and the loader reports
- *      it in `sourceNote` every build so an implausible anchor is visible
- *      rather than buried.
- *
- * The loader THROWS on any fetch, structure, or plausibility failure so
- * `withFallback` degrades to the committed last-good snapshot. It must never
- * emit a modelled shape while claiming to have read the page (the Maharashtra
- * precedent in STATUS.md).
+ * Stays `tier: "estimated"` / T3-modelled / official-lead. Not T1a.
  */
 
 import { readFileSync } from "node:fs";
@@ -45,21 +14,12 @@ import { request as httpsRequest } from "node:https";
 import type { TLSSocket } from "node:tls";
 import { pathToFileURL } from "node:url";
 
-import { latestCompleteUtcDayProfileGW, timeOfDayAverageGW } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
-import { applyUncertainty } from "../lib/uncertainty.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
+import { unpublishedGenerationRegion } from "../lib/waste-status.js";
 
 const REGION_ID = "bangladesh";
 const GENERATION_URL = "https://erp.powergrid.gov.bd/web/generations/view_generations_bn";
-
-/**
- * Annual solar curtailment anchor, TWh/yr. MODELLED — carried over unchanged
- * from the BPDB fallback this loader replaces, so this change moves no
- * dataset totals. Nobody published it; it is the repo's own estimate and it
- * wants a real citation (see the Follow-ups note on the PR that added this).
- */
-const ANNUAL_ANCHOR_TWH = 0.1;
 
 /** Bangladesh Standard Time is a flat UTC+6 with no daylight saving. */
 const BST_OFFSET_HOURS = 6;
@@ -313,78 +273,24 @@ export interface BuildOptions {
 
 /**
  * Turn measured hourly solar generation into the region record.
- *
- * The generation shape is rescaled so its annual integral equals
- * `ANNUAL_ANCHOR_TWH`. The scale factor is the curtailment rate the anchor
- * implies against the generation actually observed in this window; it is
- * reported in `sourceNote` so a wrong anchor shows up as an absurd rate
- * instead of hiding inside a plausible-looking curve.
+ * Waste is unpublished — do not scale generation to an invented curtailment
+ * anchor. The 0.1 TWh/yr figure this loader used to emit was the repo's own
+ * estimate, not a PGCB measurement.
  */
 export function buildBangladeshRegion(
   generationPoints: CurtailmentPoint[],
-  opts: BuildOptions = {},
+  _opts: BuildOptions = {},
 ): RegionData {
-  const now = opts.now?.() ?? new Date();
-
-  // Mean MW per UTC hour-of-day. Summing the 24 values gives mean MWh/day,
-  // and because it is a per-hour MEAN it is unaffected by the page's
-  // occasional duplicate or half-hour rows.
-  const shapeGW = timeOfDayAverageGW(generationPoints);
-  const meanDailyGenerationMWh = shapeGW.reduce((sum, gw) => sum + gw * 1000, 0);
-  if (!(meanDailyGenerationMWh > 0)) {
-    throw new Error("PGCB solar generation shape has zero area — cannot scale it to the annual anchor");
-  }
-
-  const targetDailyCurtailmentMWh = (ANNUAL_ANCHOR_TWH * 1_000_000) / 365;
-  const impliedRate = targetDailyCurtailmentMWh / meanDailyGenerationMWh;
-
-  const curtailmentPoints: CurtailmentPoint[] = generationPoints.map((p) => ({
-    utcTimestamp: p.utcTimestamp,
-    mw: p.mw * impliedRate,
-  }));
-
-  const profile = shapeGW.map((gw) => gw * impliedRate);
-
-  // `totalTWh` is a trailing-30-DAY total (src/lib/types.ts). It must NOT be
-  // `totalTWh30d(points)` here: PGCB's window is a rolling ~48 hours, so
-  // summing the points would report two days of energy in a field the whole
-  // dataset reads as thirty — roughly a 14x understatement. Deriving it from
-  // the emitted 24-hour curve instead keeps the number and the rendered
-  // profile in agreement by construction (the Mexico fix, STATUS 2026-08-20)
-  // and reproduces the `annualTWh * 30 / 365` convention the typical-profile
-  // builders use.
-  const totalTWh = (profile.reduce((sum, gw) => sum + gw, 0) * 30) / 1000;
-
   const windowStart = generationPoints[0].utcTimestamp;
   const windowEnd = generationPoints[generationPoints.length - 1].utcTimestamp;
   const observedPeakMW = Math.max(...generationPoints.map((p) => p.mw));
-
-  const sourceNote =
-    `MODELLED magnitude on a MEASURED shape. PGCB publishes hourly system generation by fuel ` +
-    `(erp.powergrid.gov.bd), not curtailment; Bangladesh publishes no curtailment feed and no ` +
-    `national curtailment rate. The 24-hour profile is the UTC hour-of-day mean of ` +
-    `${generationPoints.length} hourly PGCB solar-generation readings covering ${windowStart} to ` +
-    `${windowEnd} (peak ${observedPeakMW.toFixed(0)} MW), rescaled so it integrates to an ` +
-    `ESTIMATED ${ANNUAL_ANCHOR_TWH} TWh/yr curtailment anchor — the repo's own figure, unchanged ` +
-    `from the previous BPDB fallback and not attributable to any published source. Against the ` +
-    `generation in this window that anchor implies a ${(impliedRate * 100).toFixed(2)}% curtailment ` +
-    `rate; treat that as the number to challenge. Energy totals are therefore modelled, not measured.`;
-
-  const base: RegionData = {
-    regionId: REGION_ID,
-    profile,
-    // Null whenever the rolling window holds no gap-free UTC day, which
-    // happens routinely: PGCB drops the odd hour and sometimes files a
-    // half-hour row instead. Null is the honest answer, not a failure.
-    latestProfile: latestCompleteUtcDayProfileGW(curtailmentPoints),
-    totalTWh,
-    peakGW: Math.max(...profile),
-    lastUpdated: windowEnd,
-    lastSuccessAt: now.toISOString(),
-    sourceNote,
-  };
-
-  return applyUncertainty(base, { regionTier: "estimated", profileKind: "solar" });
+  const note =
+    `PGCB hourly solar generation (erp.powergrid.gov.bd), ${generationPoints.length} readings ` +
+    `${windowStart} to ${windowEnd} (peak ${observedPeakMW.toFixed(0)} MW). ` +
+    `Waste unpublished — PGCB publishes generation, not curtailment, and Bangladesh has no ` +
+    `published national curtailment rate. The previous 0.1 TWh/yr repo estimate is dropped. ` +
+    `Missing ≠ zero. Not T1a.`;
+  return unpublishedGenerationRegion(REGION_ID, "solar", generationPoints, note);
 }
 
 // ─── Fetch ──────────────────────────────────────────────────────────────────

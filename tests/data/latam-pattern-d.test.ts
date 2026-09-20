@@ -91,17 +91,15 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
   it("each new region has a matching STATIC_REGIONS entry with positive annualTWh and valid kind", () => {
     const statics = buildAllStatics();
     for (const id of NEW_LATAM_IDS) {
+      if (id === "dominican-republic") continue; // OC SENI unpublished generation loader
       const built = statics[id];
       expect(built, `missing STATIC_REGIONS entry ${id}`).toBeDefined();
-      // peakGW > 0 implies annualTWh > 0 (flat 24/7 = annualTWh*1000/8760).
       expect(built.peakGW).toBeGreaterThan(0);
       expect(built.profile.length).toBe(24);
-      // Every value finite and non-negative.
       for (const v of built.profile) {
         expect(Number.isFinite(v)).toBe(true);
         expect(v).toBeGreaterThanOrEqual(0);
       }
-      // T3-modelled envelope per the brief.
       expect(built.confidenceTier).toBe("T3-modelled");
     }
   });
@@ -125,19 +123,17 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     }
   });
 
-  it("aggregate annual anchor across the 13 new rows is ~2.15 TWh per the audit", () => {
-    // 0.4+0.2+0.1+0.3+0.2+0.1+0.1+0.5+0.003+0.05+0.1+0.05+0.05 ≈ 2.153 TWh.
-    // (Trinidad/Guyana/Suriname offshore-flare rows removed in the 2026-06-18 flare purge.)
-    // Jamaica revised 0.2→0.003 in Wave-5 calibration (2026-04-30): IEA/IDB 2024 found
-    // ≤3 GWh/yr actual curtailment (vs implausible 40% curtailment rate at 0.2 TWh).
-    // Sum the totalTWh × 365/30 to recover the annual anchor.
+  it("aggregate annual anchor across the remaining static LatAm rows is ~1.65 TWh", () => {
+    // 0.4+0.2+0.1+0.3+0.2+0.1+0.1+0.003+0.05+0.1+0.05+0.05 ≈ 1.653 TWh.
+    // dominican-republic 0.5 TWh invented waste moved to OC unpublished generation (2026-09-20).
     const statics = buildAllStatics();
     let annualSum = 0;
     for (const id of NEW_LATAM_IDS) {
+      if (id === "dominican-republic") continue;
       annualSum += statics[id].totalTWh * (365 / 30);
     }
-    expect(annualSum).toBeGreaterThan(2.05);
-    expect(annualSum).toBeLessThan(2.25);
+    expect(annualSum).toBeGreaterThan(1.55);
+    expect(annualSum).toBeLessThan(1.75);
   });
 
   it("all new region ids are kebab-case and unique within REGIONS", () => {
@@ -166,6 +162,7 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     // the resultant peakGW shape is sensible (positive, finite).
     const statics = buildAllStatics();
     for (const id of NEW_LATAM_IDS) {
+      if (id === "dominican-republic") continue;
       expect(Number.isFinite(statics[id].peakGW)).toBe(true);
       expect(statics[id].peakGW).toBeGreaterThan(0);
     }

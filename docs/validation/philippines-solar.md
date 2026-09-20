@@ -8,10 +8,11 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** PHL
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** IRENA Philippines RE Statistics 2024 anchor (~0.04 TWh/yr solar). IEMOP RTD endpoint (iemop.ph) probed — RTD carries SCHED_MW only (dispatch schedules), no available-capacity column, so curtailment cannot be measured from this feed. No published curtailment rate available from IEMOP/WESM. Held at estimated until IEMOP publishes explicit curtailment data or a machine-readable alternative appears.
+- **Source:** IEMOP WESM RTD SCHED_MW (public ZIP). Generation collected; no available-capacity column so waste unpublished.
 - **Source URL:** [https://www.iemop.ph/market-data/rtd-prices-and-schedules/](https://www.iemop.ph/market-data/rtd-prices-and-schedules/)
 - **Loader:** [`philippines.json.ts`](../../src/data/philippines.json.ts)
 - **Structural gap:** no
+- **Waste status:** unpublished. Missing ≠ zero. Live generation does not make waste T1a.
 
 ## Calibration
 

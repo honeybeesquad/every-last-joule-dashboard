@@ -97,6 +97,11 @@ export async function fetchText(url: string, opts: FetchJSONOptions = {}): Promi
   return withRetries(url, opts, (res) => res.text());
 }
 
+/** Fetch a binary body (ZIP, PDF) with retries. */
+export async function fetchBytes(url: string, opts: FetchJSONOptions = {}): Promise<Uint8Array> {
+  return withRetries(url, opts, async (res) => new Uint8Array(await res.arrayBuffer()));
+}
+
 /**
  * Fetch a URL via `node:https` forcing HTTP/1.1 via ALPN with a browser-style
  * TLS fingerprint. Used for Japanese utility portals that use Scutum WAF or

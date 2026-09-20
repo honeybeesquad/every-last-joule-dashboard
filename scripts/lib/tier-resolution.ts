@@ -203,7 +203,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   // Cuba's anchor reflects post-Hurricane-Ian grid stress (mixed-fuel
   // composite); flat profile, T3 envelope.
   cuba: "mixed",
-  "dominican-republic": "solar",
+  "dominican-republic": "mixed",
   "dominican-republic-wind": "wind",
   jamaica: "solar",
   barbados: "solar",

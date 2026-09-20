@@ -361,6 +361,8 @@ describe("regions", () => {
       "burundi", "equatorial-guinea",
       // 2026-09-20 unpublished grid markers (no public fuel split)
       "alaska-railbelt", "new-brunswick", "nunavut",
+      // OC SENI total-system generation; operator does not fuel-split
+      "dominican-republic",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();
@@ -783,7 +785,7 @@ describe("regions", () => {
     expect(colSolar?.kind).toBe("solar");
     expect(colSolar?.country).toBe("COL");
 
-    // Dominican Republic wind — 448 MW installed; estimated 0.3 TWh/yr
+    // Dominican Republic wind — OC does not fuel-split; unpublished empty row
     const drWind = REGIONS.find(r => r.id === "dominican-republic-wind");
     expect(drWind).toBeDefined();
     expect(drWind?.tier).toBe("estimated");

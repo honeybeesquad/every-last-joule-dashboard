@@ -42,7 +42,6 @@ export const TSO_GRID_MARKERS: ReadonlyArray<{
   { id: "new-caledonia", note: "Enercal: no hourly series wired. Grid present, waste unpublished.", profileKind: "solar" },
   { id: "french-polynesia", note: "EDT: no hourly series wired. Grid present, waste unpublished.", profileKind: "solar" },
   { id: "wallis-and-futuna", note: "EEWF: no hourly series wired. Grid present, waste unpublished.", profileKind: "solar" },
-  { id: "india-grid-india", note: "Grid-India national TSO. CEA gen-re is generation, not live SLDC dispatch. Waste unpublished until hourly instruction energy exists. Not a substitute for SLDC subgrids.", profileKind: "solar" },
 ];
 
 function run(): Record<string, RegionData> {

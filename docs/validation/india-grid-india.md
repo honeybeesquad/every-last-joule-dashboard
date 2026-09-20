@@ -8,9 +8,9 @@ Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Tech
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** Grid-India national TSO. CEA gen-re is generation, not live SLDC dispatch. Waste unpublished until hourly instruction energy exists. abed is not an India PoP. Not a substitute for SLDC subgrids.
+- **Source:** CEA gen-re daily state sheets (GJ/RJ/AP/TN/MH) summed as unpublished VRE generation. Waste unpublished until hourly instruction energy exists. Not a substitute for SLDC subgrids.
 - **Source URL:** [https://grid-india.in/](https://grid-india.in/)
-- **Loader:** _(see region source / TSO-grid completeness loaders)_
+- **Loader:** [`india-grid-india.json.ts`](../../src/data/india-grid-india.json.ts)
 - **Structural gap:** no
 - **Waste status:** unpublished unless the operator publishes a curtailment/spill series. Missing ≠ zero. Live generation does not make waste T1a.
 
