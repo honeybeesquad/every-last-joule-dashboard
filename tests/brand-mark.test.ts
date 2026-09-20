@@ -15,6 +15,8 @@ import {
   SPOKES,
   TICK_DUR,
   markAssets,
+  markLoaderCss,
+  markLoaderHtml,
   pillars,
   renderMark,
 } from "../scripts/lib/brand-mark.js";
@@ -35,14 +37,50 @@ describe("generated brand assets", () => {
     }
   });
 
-  it("ship the loader pair the stylesheet references", () => {
-    const css = readFileSync(join(SRC, "style.css"), "utf8");
-    const index = readFileSync(join(SRC, "index.md"), "utf8");
-    expect(index).toContain('src="./brand/mark-loop.svg"');
-    expect(css).toContain('url("./brand/mark-still.svg")');
+  it("still ship the SVG marks, which the avatars and any static use need", () => {
     expect(Object.keys(markAssets())).toEqual(
-      expect.arrayContaining(["brand/mark-loop.svg", "brand/mark-still.svg"]),
+      expect.arrayContaining([
+        "brand/mark-loop.svg",
+        "brand/mark-still.svg",
+        "brand/avatar-loop.svg",
+        "brand/avatar-still.svg",
+      ]),
     );
+  });
+
+  // The loading screen does NOT use those SVGs. SMIL inside an <img> is driven
+  // by the main thread, and on this screen the main thread is saturated by the
+  // data load — measured: during a 4s block the SVG rendered a bare disc the
+  // whole time, then snapped to a full ring. The loader mark is HTML elements
+  // and CSS transforms, which composite off-thread and keep running.
+  it("drives the loading screen from generated CSS, not from an <img>", () => {
+    const index = readFileSync(join(SRC, "index.md"), "utf8");
+    const css = readFileSync(join(SRC, "style.css"), "utf8");
+
+    expect(index).not.toContain("brand/mark-loop.svg");
+    expect(css).not.toContain("brand/mark-still.svg");
+    expect(index).toContain(markLoaderHtml());
+    expect(css).toContain(markLoaderCss());
+  });
+
+  it("gives every pillar its own keyframes, which is what syncs the reset", () => {
+    const css = markLoaderCss();
+    for (let i = 0; i < SPOKES; i++) {
+      expect(css).toContain(`@keyframes elj-p${i}{`);
+      expect(css).toContain(`@keyframes elj-t${i}{`);
+    }
+    // One shared period with no per-element delay: every pillar's cycle starts
+    // and restarts together. A shared keyframe plus animation-delay would shift
+    // each pillar's cycle boundary and smear the reset into a second wave.
+    expect(css).toContain(`animation-duration:${CYCLE}s`);
+    expect(css).not.toContain("animation-delay");
+  });
+
+  it("holds the full ring under prefers-reduced-motion", () => {
+    const css = markLoaderCss();
+    const block = css.slice(css.indexOf("@media (prefers-reduced-motion: reduce)"));
+    expect(block).toContain("animation:none");
+    expect(block).toContain("transform:scaleY(1)");
   });
 
   it("route every asset through config.dynamicPaths", () => {
@@ -154,6 +192,7 @@ describe("the loader wordmark's typeface", () => {
     expect(css).toContain(`url("/fonts/${FONT_FILE}")`);
     expect(css).toMatch(/font-family: "Schibsted Grotesk";[^\n]*font-weight: 400 900/);
     expect(css).toMatch(/\.loader-wordmark \{[^}]*"Schibsted Grotesk"/);
+    expect(css).toMatch(/\.loader-mark \{\n\s*font-size: 148px;/);
     // The lockup, as drawn: 700 weight, -0.01em, no uppercasing.
     expect(css).toMatch(/\.loader-wordmark \{[^}]*font-weight: 700/);
     expect(css).toMatch(/\.loader-wordmark \{[^}]*letter-spacing: -0\.01em/);

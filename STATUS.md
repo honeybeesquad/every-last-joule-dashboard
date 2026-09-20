@@ -3,6 +3,39 @@
 **Last verified against git:** 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk is now `--font-display` and `--font-body` in both themes, and the dashboard wordmark's italic serif "Joule" is gone; see the entry below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
+## Loading-screen mark: SMIL in an <img> froze under load (2026-09-20)
+
+Branch `fix/loader-mark-compositor`. Reported from production: the mark "ran
+the blue pillars and then stalled, then the page loaded".
+
+**Cause.** SMIL animation inside an `<img>` is driven by the **main thread**.
+On the loading screen the main thread is saturated — ~135 data files arriving,
+parsing, the globe initialising — so the mark advanced through the cyan arc
+(the first ~0.7s, before the load bites), froze, and only snapped to a full
+ring once the work finished. Measured side by side against a 4s synthetic
+block: the SMIL version rendered a bare disc for the entire block while a CSS
+version kept sweeping.
+
+**Fix.** The loading screen's mark is now HTML elements plus CSS transform and
+opacity animations, which are **composited off the main thread** and keep
+running no matter how busy the page is. Generated by `npm run brand:assets`
+into the `brand-mark:begin/end` markers in `src/style.css` (~28KB of CSS) and
+`src/index.md` (~1.2KB of markup); `tests/brand-mark.test.ts` fails if either
+drifts from the generator.
+
+**Why per-pillar keyframes.** Each pillar gets its own `@keyframes`, all
+sharing one 6.6s period with **no** `animation-delay`, so every cycle restarts
+for all 44 at the same instant while each pillar's own percentages place its
+rise, fall and tick. A shared keyframe plus a delay shifts each pillar's cycle
+boundary too, which smears the synchronised reset into a second wave.
+
+Geometry is in `em` (1em = the mark's diameter), so one `font-size` sizes it —
+148px desktop, 112px phones. `prefers-reduced-motion` now holds the full ring
+via `animation: none` instead of swapping in a still SVG. The SVG marks stay
+for the avatars and any static use, where no main thread is busy.
+
+**No tier moved.** No data file, loader or region record is touched.
+
 ## TSO-grid completeness — every control area, waste unpublished unless published (2026-09-20)
 
 Country T3 stubs are not TSO collection. This program adds operational generation (and waste only when the operator publishes it) for TSO/ISO/RTO/BA control areas.
