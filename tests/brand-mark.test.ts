@@ -152,12 +152,40 @@ describe("the loader wordmark's typeface", () => {
   it("declares the face against that path and uses it for the wordmark", () => {
     const css = readFileSync(join(SRC, "style.css"), "utf8");
     expect(css).toContain(`url("/fonts/${FONT_FILE}")`);
-    expect(css).toMatch(/font-family: "Schibsted Grotesk";[^\n]*font-weight: 400 700/);
+    expect(css).toMatch(/font-family: "Schibsted Grotesk";[^\n]*font-weight: 400 900/);
     expect(css).toMatch(/\.loader-wordmark \{[^}]*"Schibsted Grotesk"/);
     // The lockup, as drawn: 700 weight, -0.01em, no uppercasing.
     expect(css).toMatch(/\.loader-wordmark \{[^}]*font-weight: 700/);
     expect(css).toMatch(/\.loader-wordmark \{[^}]*letter-spacing: -0\.01em/);
     expect(css).not.toMatch(/\.loader-wordmark \{[^}]*text-transform/);
+  });
+
+  it("is the site face: both themes point --font-display and --font-body at it", () => {
+    const css = readFileSync(join(SRC, "style.css"), "utf8");
+    const display = [...css.matchAll(/--font-display:\s*([^;]+);/g)].map((m) => m[1].trim());
+    const body = [...css.matchAll(/--font-body:\s*([^;]+);/g)].map((m) => m[1].trim());
+    expect(display).toHaveLength(2); // Sunfire + Deepcurrent
+    expect(body).toHaveLength(2);
+    for (const stack of [...display, ...body]) {
+      expect(stack.startsWith('"Schibsted Grotesk"')).toBe(true);
+    }
+    // The instrument voice is untouched: figures and labels stay monospaced.
+    expect(css).toMatch(/--font-mono:\s*"IBM Plex Mono"/);
+  });
+
+  it("wires --font-display to the headings, which nothing read before", () => {
+    const css = readFileSync(join(SRC, "style.css"), "utf8");
+    expect(css).toMatch(/\.display-xl, \.display-lg, \.display,\n\s*h1, h2, h3, h4 \{\n\s*font-family: var\(--font-display\);/);
+    expect(css).toMatch(/font-weight: 400 900/); // --fw-black is 800; the axis must reach it
+  });
+
+  it("drops the italic serif accent from the wordmark", () => {
+    const css = readFileSync(join(SRC, "style.css"), "utf8");
+    const rule = css.slice(css.indexOf(".app-wordmark-accent {"));
+    const body = rule.slice(0, rule.indexOf("}"));
+    expect(body).not.toContain("Fraunces");
+    expect(body).not.toContain("italic");
+    expect(body).toContain("font-weight: 700");
   });
 
   it("logs its provenance, as every other self-hosted face does", () => {
