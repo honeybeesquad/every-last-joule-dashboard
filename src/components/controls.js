@@ -1,84 +1,81 @@
 /**
- * Mount a transport-style control bar (play/pause + speed chips) into
- * the given container element, bound to the supplied clock instance.
+ * The transport controls (play/pause, speed and "Now"), bound to the clock.
+ *
+ * Speeds are 1×, 4× and 8× plus Now, with 1× the default (redesign plan D4,
+ * decided 2026-09-23). 1× is 0.4 simulated hours a second: a day in a
+ * minute. Now snaps the clock to UTC and follows the wall clock; the page's
+ * `onNow` also turns the globe's follow-the-sun back on after a drag.
  */
-export function mountControls(container, clock) {
+export const SPEEDS = [1, 4, 8];
+
+const PLAY_ICON = `<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 1.5 L12 7 L3 12.5 Z" fill="currentColor"/></svg>`;
+const PAUSE_ICON = `<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false"><rect x="2.5" y="1.5" width="3.2" height="11" rx="0.8" fill="currentColor"/><rect x="8.3" y="1.5" width="3.2" height="11" rx="0.8" fill="currentColor"/></svg>`;
+
+export function mountControls(container, clock, { onNow } = {}) {
+  container.classList.add("ctl-row");
   container.innerHTML = `
-    <button class="ctl-play" aria-label="Play or pause">
-      <span class="ctl-play-icon"></span>
-    </button>
-    <div class="ctl-speed" role="group" aria-label="Playback speed">
-      ${[0.5, 1, 2, 4, 8].map((s) => `
-        <button class="ctl-speed-chip${s === 0.5 ? " is-active" : ""}" data-speed="${s}">${s}×</button>
+    <button type="button" class="ctl-play" aria-label="Play"></button>
+    <div class="seg ctl-speed" role="group" aria-label="Playback speed">
+      ${SPEEDS.map((s) => `
+        <button type="button" class="seg-btn ctl-speed-chip" data-speed="${s}" aria-pressed="false">${s}×</button>
       `).join("")}
-      <button class="ctl-speed-chip ctl-speed-chip-now" data-now title="Snap to current UTC and follow the wall clock">Now</button>
     </div>
-    <span class="ctl-utc num-tabular" aria-live="polite"></span>
+    <button type="button" class="ctl-now" data-now aria-pressed="false" title="Snap to current UTC and follow the wall clock">Now</button>
   `;
 
   const playBtn = container.querySelector(".ctl-play");
-  const playIcon = container.querySelector(".ctl-play-icon");
-  const speedChips = container.querySelectorAll(".ctl-speed-chip[data-speed]");
-  const nowChip = container.querySelector(".ctl-speed-chip[data-now]");
-  const allChips = container.querySelectorAll(".ctl-speed-chip");
-  const utcEl = container.querySelector(".ctl-utc");
+  const speedChips = container.querySelectorAll(".ctl-speed-chip");
+  const nowBtn = container.querySelector(".ctl-now");
 
-  function syncChipActive() {
-    if (clock.realTime) {
-      allChips.forEach((c) => c.classList.toggle("is-active", c === nowChip));
-      return;
-    }
-    allChips.forEach((c) => {
-      const speedAttr = c.dataset.speed;
-      const isActive = speedAttr != null && Number(speedAttr) === clock.speed;
-      c.classList.toggle("is-active", isActive);
+  function syncActive() {
+    // "Now" and a speed are exclusive: Now follows the wall clock, whatever
+    // speed was set before it.
+    nowBtn.setAttribute("aria-pressed", String(clock.realTime));
+    nowBtn.classList.toggle("is-active", clock.realTime);
+    speedChips.forEach((chip) => {
+      const on = !clock.realTime && Number(chip.dataset.speed) === clock.speed;
+      chip.setAttribute("aria-pressed", String(on));
+      chip.classList.toggle("is-active", on);
     });
   }
 
-  function refreshPlayIcon() {
-    // ⏸ (U+23F8) and ⏵ (U+23F5) are proper media-control glyphs that sit
-    // optically centred in modern system fonts, unlike the earlier ▐▐ / ▶
-    // which carried asymmetric bearings.
-    playIcon.textContent = clock.playing ? "⏸" : "⏵";
+  function refreshPlay() {
+    // A toggle button: the name stays "Play", pressed while playing.
+    playBtn.innerHTML = clock.playing ? PAUSE_ICON : PLAY_ICON;
     playBtn.setAttribute("aria-pressed", String(clock.playing));
   }
 
   playBtn.addEventListener("click", () => {
     if (clock.playing) clock.pause();
     else clock.play();
-    refreshPlayIcon();
+    refreshPlay();
   });
 
   speedChips.forEach((chip) => {
     chip.addEventListener("click", () => {
-      const speed = Number(chip.dataset.speed);
-      clock.setSpeed(speed);
-      // setSpeed() clears clock.realTime as a side effect; re-sync chip
-      // states from the clock so the Now chip drops `is-active`.
-      syncChipActive();
+      clock.setSpeed(Number(chip.dataset.speed));
+      // setSpeed() clears clock.realTime as a side effect.
+      syncActive();
     });
   });
 
-  nowChip.addEventListener("click", () => {
+  nowBtn.addEventListener("click", () => {
     clock.enableRealTime();
-    // enableRealTime() snaps the hour and emits, so the subscriber below
-    // will refresh the UTC readout. We still need to flip chip styling
-    // explicitly because clock state changes don't drive subscribers.
-    syncChipActive();
-    refreshPlayIcon();
+    onNow?.();
+    syncActive();
+    refreshPlay();
   });
 
-  clock.subscribe((hour) => {
-    const hh = String(Math.floor(hour)).padStart(2, "0");
-    const mm = String(Math.floor((hour % 1) * 60)).padStart(2, "0");
-    utcEl.textContent = `${hh}:${mm} UTC`;
-    refreshPlayIcon();
-    // Timeline scrub or external setSpeed can clear realTime without going
-    // through these click handlers — keep chip styling in sync on every
-    // emit so the active state is always truthful.
-    syncChipActive();
+  let lastPlaying = null;
+  let lastRealTime = null;
+  clock.subscribe(() => {
+    // A timeline scrub or an external setSpeed can change these without the
+    // clicks above; keep the controls truthful, but touch the DOM only when
+    // something changed (this runs on every frame while the clock plays).
+    if (clock.playing !== lastPlaying) { lastPlaying = clock.playing; refreshPlay(); }
+    if (clock.realTime !== lastRealTime) { lastRealTime = clock.realTime; syncActive(); }
   });
 
-  refreshPlayIcon();
-  syncChipActive();
+  refreshPlay();
+  syncActive();
 }

@@ -1,8 +1,35 @@
 # Every Last Joule - light and dark redesign: implementation spec
 
-> **STATUS: ACTIVE.** PR 1 (theme plumbing) is on branch `feat/light-dark-theme-plumbing`, in review as #1087. PRs 2-5 have not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
+> **STATUS: ACTIVE.** PR 1 (theme plumbing) is in review as #1087 on `feat/light-dark-theme-plumbing`. PR 2 (light desktop) is on `feat/light-almanac-desktop`, stacked on PR 1. PRs 3-5 have not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
 >
 > This is the handoff's SPEC.md (from `Claude outputs/elj-light-dark-handoff/`, untracked and never committed), copied in as the active plan on 2026-09-23. Paths like `mocks/`, `tokens/`, `reference/` and `screenshots/` are relative to that handoff folder, not to the repo. Edits since the copy: the decisions table in section 0 records the answers, section 7 records D6's answer, section 10 records PR status, and "PR 1 as built" below records where the build departs from, or adds to, the text.
+
+## PR 2 as built (2026-09-23)
+
+What PR 2 does beyond, or differently from, the sections below.
+
+1. **The hero caption has its own text.** Section 3.1 says the "Fig. 1" caption's text "is the `#caption-copy` content". `#caption-copy` is the footer's data-source credit, about 100 words, and nothing but the page reads it. It stays in the footer. The caption is the mock's figure caption, built from live values: the clock's time and the time window.
+2. **Chrome follows the mocks.** Nav labels are the mocks' "Regions" and "History". The "Wasted Energy Database" tag becomes the `v1.4.0 · DOI` pill, which still links to the Zenodo record. The stats run Curtailed, Network, Could support, as both boards order them, each with a long and a short label (the short one `aria-hidden`).
+3. **The selected label names its fuel in ink, beside a fuel swatch**, not in the fuel colour as the mock does: fuel colours are graphics-only on paper (hydro 3.7:1, solar 3.2:1). The region name links to `/region/<id>`.
+4. **Click selects, hover shows detail.** In light, a click or tap selects a needle (the ring and the label card). A mouse hover opens the detail card (`region-tooltip.js`, restyled as a paper card), which closes shortly after the pointer leaves both needle and card. In dark (still G1), a click opens the detail card, as before.
+5. **Needles are per fuel.** Section 6.1 says one needle per region record. A mixed record is split per fuel at the hour with the same `barsForUnit` split as the G1 pillars, so a mixed region's solar share still drops out at local night (STATUS, 2026-09-21). Records that share a location sit 4.5px apart.
+6. **Grids that publish no waste keep a mark:** a dashed ink ring, as G1 drew, so "unpublished" never reads as a measured zero. Neither the spec nor the mocks mention these.
+7. **The zoom slider stays**, quietly, in the globe cell's corner. The mocks draw none, but it is the keyboard route to zoom. The wheel and a pinch still zoom.
+8. **Rail and legend:**
+   - Rail values carry no visible unit, as in the mock. The unit stays in the DOM for screen readers, and truncated names carry a `title`.
+   - `#globe-legend` moves into the rail. It shows all four quality states (the mock shows two) and the three fuels (D5).
+9. **Dark is interim until PR 3:**
+   - It uses the same grid with dark tokens, the G1 globe and the stacked timeline.
+   - Its hero is capped at 132px, so it fits the 396px column.
+   - Its rail rows show the dock's bar instead of the needle glyph, and its legend keeps G1's dot key and "Brighter pillar", so the rail and legend never show a key the dark globe does not draw.
+   - The light label card hides in dark; the selection itself carries across.
+10. **Narrow screens are interim until PR 4:** below 1100px the parts stack in one column. Section 6.2's phone rule is brought forward: at ≤640px the light globe redraws once per hour change while the clock plays, not on every tick. That took a throttled phone from 50ms to 16.7ms a frame.
+11. **Performance:**
+    - Light draws on change: no loop while idle (0 draws in 2 seconds, paused).
+    - The dashboard pauses the globe off screen (`IntersectionObserver`).
+    - The timeline builds its 24-hour series once per time window instead of once per frame.
+    - Measured in Chrome with GPU at 1440×900, dpr 2: 16.7ms a frame both playing at 8× and dragging.
+    - Headless Chromium without a GPU is not a fair test: it spends about 40ms a frame in `drawImage` for the cached sea layer.
 
 ## PR 1 as built (2026-09-23)
 
@@ -39,15 +66,15 @@ Visual truth, in order: `mocks/*.html` (exact sizes, colours, spacing), then `sc
 
 ### Open - confirm with Simon before the PR that needs it
 
-Answers recorded 2026-09-23 for the four PR 1 needs. D4 and D5 are still open.
+All six answered 2026-09-23.
 
 | # | Question | Recommendation | Needed by |
 |---|---|---|---|
 | D1 | First-visit mode when nothing is stored | Follow `prefers-color-scheme` | PR 1. **Answered: follow the OS**, as recommended |
 | D2 | Stored `elj-theme` values `sunfire` / `deepcurrent` | Map both to `dark`. Both old themes were dark, so returning visitors keep a dark site | PR 1. **Answered: map both to dark**, as recommended |
 | D3 | This supersedes the 2026-09-20 "Brand face site-wide - Schibsted Grotesk" entry and brings back an italic serif "Joule" (light only). Does the page loader's lockup follow the mode too? | Yes. The loader uses the mode's wordmark and colours (the boot script sets `data-theme` before the loader paints) | PR 1. **Answered: yes**, as recommended |
-| D4 | Speed chips: the mocks show 1×, 4×, 8× and Now. `controls.js` has 0.5×, 1×, 2×, 4×, 8× and Now, default 0.5× | Use the mocks' three plus Now, default 1×. It is a behaviour change, so it needs a yes | PR 2 |
-| D5 | Quality encoding on the globe changes shape (section 6.1). The buckets and opacities in `region-quality.ts` do not change | Accept; update `#globe-legend` copy | PR 2 |
+| D4 | Speed chips: the mocks show 1×, 4×, 8× and Now. `controls.js` has 0.5×, 1×, 2×, 4×, 8× and Now, default 0.5× | Use the mocks' three plus Now, default 1×. It is a behaviour change, so it needs a yes | PR 2. **Answered: yes** |
+| D5 | Quality encoding on the globe changes shape (section 6.1). The buckets and opacities in `region-quality.ts` do not change | Accept; update `#globe-legend` copy | PR 2. **Answered: yes** |
 | D6 | The published files in `src/brand/` (still, loop, two avatars) | Leave them on the current colours. The site's own marks become token-driven (section 7) | PR 1. **Answered: regenerate them in the new dark (Horizon) palette**, not the recommendation. See section 7 |
 
 ### Not changing
@@ -366,7 +393,7 @@ Measured WCAG ratios (text needs 4.5:1, graphics 3:1):
 Each PR goes into `main` (never push to it), runs `npm run typecheck && npm test && npm run ci:gates`, updates `STATUS.md` in the same commit, and attaches screenshots at 1440×900 and 390×844 in both modes next to the matching mock. Describe the diff, not the plan (CLAUDE.md rule 1).
 
 1. **Theme plumbing.** Fonts, `themes.css`, boot script, two-state toggle, token reads in `theme-tokens.ts`, mark tokens in the generator (loader and inline header mark), the hard-coded colour audit, loader in both modes. Layout unchanged, but every page is legible in both modes. Needs D1, D2, D3, D6. **Status: built on `feat/light-dark-theme-plumbing`, in review as #1087 (see "PR 1 as built" at the top).**
-2. **Light desktop.** Almanac grid, engraved globe, small-multiples timeline, rail, legend, selected label. Needs D4, D5.
+2. **Light desktop.** Almanac grid, engraved globe, small-multiples timeline, rail, legend, selected label. Needs D4, D5. **Status: built on `feat/light-almanac-desktop`, stacked on PR 1 (see "PR 2 as built" at the top).**
 3. **Dark desktop.** Horizon stage, horizon globe, ribbon, glass dock.
 4. **Tablet and phone.** Both modes, the explorer, the dark bottom sheet, wrapping control rows, overflow checks.
 5. **Clean-up.** Remove the sunfire / deepcurrent names and unused faces (after a grep), archive the plan with a `STATUS: SHIPPED` banner.
