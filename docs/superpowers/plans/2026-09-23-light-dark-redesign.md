@@ -1,6 +1,6 @@
 # Every Last Joule - light and dark redesign: implementation spec
 
-> **STATUS: ACTIVE.** PR 1 (theme plumbing) is in review as #1087 on `feat/light-dark-theme-plumbing`. PR 2 (light desktop) is on `feat/light-almanac-desktop`, stacked on PR 1. PRs 3-5 have not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
+> **STATUS: ACTIVE.** PR 1 (theme plumbing) is in review as #1087 on `feat/light-dark-theme-plumbing`. PR 2 (light desktop) is in review as #1091 on `feat/light-almanac-desktop`, stacked on PR 1. PRs 3-5 have not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
 >
 > This is the handoff's SPEC.md (from `Claude outputs/elj-light-dark-handoff/`, untracked and never committed), copied in as the active plan on 2026-09-23. Paths like `mocks/`, `tokens/`, `reference/` and `screenshots/` are relative to that handoff folder, not to the repo. Edits since the copy: the decisions table in section 0 records the answers, section 7 records D6's answer, section 10 records PR status, and "PR 1 as built" below records where the build departs from, or adds to, the text.
 
@@ -393,7 +393,7 @@ Measured WCAG ratios (text needs 4.5:1, graphics 3:1):
 Each PR goes into `main` (never push to it), runs `npm run typecheck && npm test && npm run ci:gates`, updates `STATUS.md` in the same commit, and attaches screenshots at 1440×900 and 390×844 in both modes next to the matching mock. Describe the diff, not the plan (CLAUDE.md rule 1).
 
 1. **Theme plumbing.** Fonts, `themes.css`, boot script, two-state toggle, token reads in `theme-tokens.ts`, mark tokens in the generator (loader and inline header mark), the hard-coded colour audit, loader in both modes. Layout unchanged, but every page is legible in both modes. Needs D1, D2, D3, D6. **Status: built on `feat/light-dark-theme-plumbing`, in review as #1087 (see "PR 1 as built" at the top).**
-2. **Light desktop.** Almanac grid, engraved globe, small-multiples timeline, rail, legend, selected label. Needs D4, D5. **Status: built on `feat/light-almanac-desktop`, stacked on PR 1 (see "PR 2 as built" at the top).**
+2. **Light desktop.** Almanac grid, engraved globe, small-multiples timeline, rail, legend, selected label. Needs D4, D5. **Status: in review as #1091 on `feat/light-almanac-desktop`, stacked on PR 1 (see "PR 2 as built" at the top).**
 3. **Dark desktop.** Horizon stage, horizon globe, ribbon, glass dock.
 4. **Tablet and phone.** Both modes, the explorer, the dark bottom sheet, wrapping control rows, overflow checks.
 5. **Clean-up.** Remove the sunfire / deepcurrent names and unused faces (after a grep), archive the plan with a `STATUS: SHIPPED` banner.
