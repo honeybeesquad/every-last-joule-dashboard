@@ -1,12 +1,13 @@
 /**
  * The transport controls (play/pause, speed and "Now"), bound to the clock.
  *
- * Speeds are 1×, 4× and 8× plus Now, with 1× the default (redesign plan D4,
- * decided 2026-09-23). 1× is 0.4 simulated hours a second: a day in a
- * minute. Now snaps the clock to UTC and follows the wall clock; the page's
+ * Speeds are 0.5×, 1×, 4× and 8× plus Now, with 0.5× the default. The
+ * redesign (plan D4, 2026-09-23) cut 0.5× and defaulted to 1×; 0.5× came back
+ * on 2026-09-24 because 1× ran too fast to read. 1× is 0.4 simulated hours a
+ * second (a day in a minute), so 0.5× is a day in two minutes. Now snaps the clock to UTC and follows the wall clock; the page's
  * `onNow` also turns the globe's follow-the-sun back on after a drag.
  */
-export const SPEEDS = [1, 4, 8];
+export const SPEEDS = [0.5, 1, 4, 8];
 
 export const PLAY_ICON = `<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 1.5 L12 7 L3 12.5 Z" fill="currentColor"/></svg>`;
 export const PAUSE_ICON = `<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false"><rect x="2.5" y="1.5" width="3.2" height="11" rx="0.8" fill="currentColor"/><rect x="8.3" y="1.5" width="3.2" height="11" rx="0.8" fill="currentColor"/></svg>`;

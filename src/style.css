@@ -1756,7 +1756,7 @@ body:has(.app-shell) { max-width: none; }
   .rail { padding-top: 28px; }
 
   .app-timeline {
-    grid-template-columns: 180px minmax(0, 1fr) 224px;
+    grid-template-columns: 180px minmax(0, 1fr) 272px;
     grid-template-rows: auto 1fr;
     grid-template-areas:
       "label plot controls"
@@ -1771,7 +1771,7 @@ body:has(.app-shell) { max-width: none; }
   .timeline-controls { padding-top: 18px; }
   .timeline-controls .ctl-row { flex-wrap: nowrap; }
   .timeline-controls .seg { flex-wrap: nowrap; }
-  /* Play, three speeds and Now fit the 224px column at 10px padding. */
+  /* Play, four speeds (0.5× to 8×) and Now fit the 272px column at 10px padding. */
   :root[data-theme="light"] .ctl-speed .seg-btn { padding: 0 10px; }
 }
 

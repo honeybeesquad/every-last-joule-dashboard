@@ -7,10 +7,10 @@
 export function createClock(initialHourUtc) {
   const state = {
     hour: ((initialHourUtc % 24) + 24) % 24,
-    // 1× = 0.4 h/s = one minute per 24h loop, the default since the
-    // light/dark redesign (D4: speeds 1×, 4×, 8× and Now). 4× and 8× are for
-    // glancing at the whole cycle at a go.
-    speed: 1,
+    // 0.5× = 0.2 h/s = two minutes per 24h loop, the default: slow enough to
+    // read the pillars. 1× is a day in a minute; 4× and 8× are for glancing at
+    // the whole cycle at a go.
+    speed: 0.5,
     playing: true,
     // When true, the tick loop ignores `speed` and locks `hour` to the
     // actual wall-clock UTC each frame (≈ 0.000278 h/s). Lets viewers
