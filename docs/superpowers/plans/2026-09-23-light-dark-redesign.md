@@ -1,6 +1,6 @@
 # Every Last Joule - light and dark redesign: implementation spec
 
-> **STATUS: ACTIVE.** PR 1 (theme plumbing, #1087) and PR 2 (light desktop, #1091) merged on 2026-09-23. PR 3 (dark desktop) is in review on `feat/dark-horizon-desktop`. PRs 4-5 have not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
+> **STATUS: ACTIVE.** PR 1 (theme plumbing, #1087) and PR 2 (light desktop, #1091) merged on 2026-09-23. PR 3 (dark desktop) is in review as #1092 on `feat/dark-horizon-desktop`. PRs 4-5 have not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
 >
 > This is the handoff's SPEC.md (from `Claude outputs/elj-light-dark-handoff/`, untracked and never committed), copied in as the active plan on 2026-09-23. Paths like `mocks/`, `tokens/`, `reference/` and `screenshots/` are relative to that handoff folder, not to the repo. Edits since the copy: the decisions table in section 0 records the answers, section 7 records D6's answer, section 10 records PR status, and the "PR n as built" sections below record where the build departs from, or adds to, the text.
 
@@ -416,7 +416,7 @@ Each PR goes into `main` (never push to it), runs `npm run typecheck && npm test
 
 1. **Theme plumbing.** Fonts, `themes.css`, boot script, two-state toggle, token reads in `theme-tokens.ts`, mark tokens in the generator (loader and inline header mark), the hard-coded colour audit, loader in both modes. Layout unchanged, but every page is legible in both modes. Needs D1, D2, D3, D6. **Status: merged as #1087 (`9ef3f7ad`), 2026-09-23 (see "PR 1 as built" at the top).**
 2. **Light desktop.** Almanac grid, engraved globe, small-multiples timeline, rail, legend, selected label. Needs D4, D5. **Status: merged as #1091 (`3b272ec6`), 2026-09-23 (see "PR 2 as built" at the top).**
-3. **Dark desktop.** Horizon stage, horizon globe, ribbon, glass dock. **Status: in review on `feat/dark-horizon-desktop` (see "PR 3 as built" at the top).**
+3. **Dark desktop.** Horizon stage, horizon globe, ribbon, glass dock. **Status: in review as #1092 on `feat/dark-horizon-desktop` (see "PR 3 as built" at the top).**
 4. **Tablet and phone.** Both modes, the explorer, the dark bottom sheet, wrapping control rows, overflow checks.
 5. **Clean-up.** Remove the sunfire / deepcurrent names and unused faces (after a grep), archive the plan with a `STATUS: SHIPPED` banner.
 

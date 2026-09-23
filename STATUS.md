@@ -5,7 +5,7 @@
 
 ## Light/dark redesign, PR 3: dark desktop, the Horizon stage (2026-09-24)
 
-Branch `feat/dark-horizon-desktop`. The plan is
+Branch `feat/dark-horizon-desktop` (**#1092**). The plan is
 `docs/superpowers/plans/2026-09-23-light-dark-redesign.md`; its "PR 3 as
 built" section lists every departure from the spec.
 
