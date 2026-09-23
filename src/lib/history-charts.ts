@@ -129,7 +129,7 @@ function openSvg(box: Box, title: string, desc: string, className: string): stri
   );
 }
 
-/** Horizontal gridlines plus the y-axis value labels, in one pass. */
+/** Horizontal gridlines and the y-axis value labels in one pass, plus the unit label above them. */
 function yAxis(box: Box, max: number, format: (v: number) => string, unit: string): string {
   const plotHeight = box.height - box.padTop - box.padBottom;
   const rows = ticks(max)
@@ -141,9 +141,15 @@ function yAxis(box: Box, max: number, format: (v: number) => string, unit: strin
       );
     })
     .join("");
+  // The unit starts at the SVG's left edge. End-anchored at the ticks' right
+  // edge (padLeft - 6), its left edge fell at 40 minus its rendered width, and
+  // every unit here is wider than 40, so the viewBox clipped the front off
+  // each one ("GWh per month" read "MONTH"). A start anchor pins the left
+  // edge at x whatever width the font gives the text, which matters because
+  // the page loader runs under node and cannot measure it.
   return (
     rows +
-    `<text class="hc-axis-label" x="${n(box.padLeft - 6)}" y="${n(box.padTop - 10)}" text-anchor="end">${esc(unit)}</text>`
+    `<text class="hc-axis-label" x="0" y="${n(box.padTop - 10)}" text-anchor="start">${esc(unit)}</text>`
   );
 }
 
