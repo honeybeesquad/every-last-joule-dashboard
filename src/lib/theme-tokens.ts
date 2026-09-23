@@ -42,6 +42,14 @@ export interface GlobeTokens {
   keyline: string;
   /** Hex/colour for the degraded-feed amber warning ring (--quality-warning). */
   qualityWarning: string;
+  /** Sphere body gradient stops, lit side to shadow side (--globe-body-*). */
+  bodyHi: string;
+  bodyMid: string;
+  bodyLo: string;
+  /** "r,g,b" of the neutral land-dot tint (--globe-dot-neutral). */
+  dotNeutralRGB: string;
+  /** "r,g,b" of the brand colour, used for the halo and rim (--brand-rgb). */
+  brandRGB: string;
 }
 
 /** Read all globe-relevant tokens off the document element in one pass. */
@@ -57,5 +65,10 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
     terminator:   get("--globe-terminator") || "rgba(255,248,224,0.30)",
     keyline:      get("--globe-keyline")    || "#17110a",
     qualityWarning: get("--quality-warning") || "#f7931a",
+    bodyHi:  get("--globe-body-hi")  || "#4a3414",
+    bodyMid: get("--globe-body-mid") || "#1f160a",
+    bodyLo:  get("--globe-body-lo")  || "#0c0804",
+    dotNeutralRGB: parseHexToRGB(get("--globe-dot-neutral")) ?? "228,220,204",
+    brandRGB: (get("--brand-rgb") || "255, 208, 90").replace(/\s+/g, ""),
   };
 }
