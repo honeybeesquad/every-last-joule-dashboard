@@ -82,6 +82,22 @@ describe("readGlobeTokens: the redesign's globe tokens", () => {
     expect(readGlobeTokens(root).fuelTips).toEqual({ solar: "", wind: "", hydro: "" });
   });
 
+  it("reads the horizon's sky, stars and beam-tip tokens", () => {
+    root.style.setProperty("--surface-bg-3", "#05070B");
+    root.style.setProperty("--globe-star-rgb", "220, 235, 255");
+    root.style.setProperty("--fuel-solar-tip", "#FFE7B8");
+    root.style.setProperty("--fuel-wind-tip", "#DCE8FF");
+    root.style.setProperty("--fuel-hydro-tip", "#D2FFF6");
+    const t = readGlobeTokens(root);
+    expect(t.bg).toBe("#05070B");
+    expect(t.starRGB).toBe("220,235,255");
+    expect(t.fuelTips).toEqual({ solar: "#FFE7B8", wind: "#DCE8FF", hydro: "#D2FFF6" });
+  });
+
+  it("leaves the tips empty where a theme defines none, for the caller to tint", () => {
+    expect(readGlobeTokens(root).fuelTips).toEqual({ solar: "", wind: "", hydro: "" });
+  });
+
   it("never returns an empty string for a token a renderer would paint with", () => {
     const t = readGlobeTokens(root);
     for (const [key, value] of Object.entries(t)) expect(value, key).not.toBe("");
