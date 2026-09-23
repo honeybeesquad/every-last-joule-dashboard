@@ -4,12 +4,11 @@
  * Pure string functions: each takes already-aggregated numbers and returns an
  * SVG fragment. No DOM, no d3, no canvas — which is deliberate on three counts.
  *
- * 1. **Both themes for free.** Every fill and stroke is a `var(--…)` reference,
- *    resolved by the browser against whichever of Sunfire or Deep Current is
- *    active. There is nothing to re-read on `themechange`, so there is no
+ * 1. **Both modes for free.** Every fill and stroke is a `var(--…)` reference,
+ *    resolved by the browser against whichever of light or dark is active. There is nothing to re-read on `themechange`, so there is no
  *    listener to forget. `getFuelColor()` cannot be used here: it reads
  *    `getComputedStyle` and, in a page loader running under node, silently
- *    returns the Sunfire fallback hex — which would bake one theme's palette
+ *    returns its fallback hex — which would bake one palette
  *    into the markup. `FUEL_CSS_VAR` below is the same mapping `src/lib/fuel.ts`
  *    uses, referenced rather than resolved, and `tests/history-charts.test.ts`
  *    asserts the two stay in step.

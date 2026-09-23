@@ -24,8 +24,8 @@ export const FUEL_LABEL: Record<Fuel, string> = {
 
 /**
  * Per-fuel colour tokens. Themed at runtime via CSS custom properties so
- * that switching themes (Sunfire / Deepcurrent) re-colours every
- * canvas-painted surface.
+ * that switching mode (light / dark) re-colours every canvas-painted
+ * surface.
  */
 const FUEL_VAR: Record<Fuel, string> = {
   solar: "--fuel-solar",
@@ -34,7 +34,7 @@ const FUEL_VAR: Record<Fuel, string> = {
 };
 
 const FUEL_DEFAULT: Record<Fuel, string> = {
-  solar: "#ffd05a", // Sunfire default — used in SSR / non-DOM contexts only.
+  solar: "#ffd05a", // the paper figure's palette — used in SSR / non-DOM contexts only.
   wind:  "#67e8f9",
   hydro: "#b8cdff",
 };

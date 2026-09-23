@@ -7,7 +7,7 @@ footer: ""
 pager: false
 ---
 
-<div id="embed-root" class="embed-root" data-theme-scope="sunfire">
+<div id="embed-root" class="embed-root" data-theme-scope="embed">
   <div class="embed-stage">
     <div class="embed-globe-area">
       <canvas id="embed-globe-canvas" role="img"
@@ -28,10 +28,10 @@ pager: false
 </div>
 
 <style>
-  :root[data-theme="sunfire"] #embed-root {
-    /* Sunfire fuel tokens still resolve from the html element, but visible
-       text and the page surround use the da-ri.org Sunfire-paper palette so
-       this iframe blends into the consuming document. */
+  :root[data-theme="embed"] #embed-root {
+    /* The fuel tokens resolve from the html element (the embed block in
+       style.css), but visible text and the page surround use the da-ri.org
+       paper palette so this iframe blends into the consuming document. */
     --embed-bg: #F7F7F4;
     --embed-globe-bg: #0a0f24;
     --embed-fg: #1A2340;
@@ -152,10 +152,10 @@ pager: false
 </style>
 
 ```js
-// Force the Sunfire theme on this embed so fuel colour tokens resolve
+// Force the embed palette (style.css) on this page so fuel colour tokens resolve
 // regardless of any localStorage state inherited from a previous visit
 // to the parent dashboard. The embed has no theme switcher.
-document.documentElement.setAttribute("data-theme", "sunfire");
+document.documentElement.setAttribute("data-theme", "embed");
 ```
 
 ```js
