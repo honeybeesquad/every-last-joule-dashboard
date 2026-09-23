@@ -86,6 +86,48 @@ share" and "no curtailment" are different facts.
 Dead code removed with the columns: `HOTSPOT_LIST_LIMIT` and the
 `.hotspot-columns` / `-column` / `-title` / `-subtitle` / `-count` rules.
 
+## G1 "Lantern" globe - lit sphere, lit territory, sheath pillars (2026-09-23)
+
+Branch `feat/g1-lantern-globe`. The globe was redesigned on a concept canvas
+against the GitHub homepage globe as the reference, and this branch builds the
+chosen direction. It reverses two decisions from the matte refresh below on
+purpose: the sphere has gradients again (a body lit from the upper left, an
+outer glow and a thin bright rim), and the country outlines are gone - the land
+dots are the only surface texture.
+
+**Land.** A finer, hex-offset dot field (1.05-1.6 degree pitch by globe size,
+down from 1.8-2.5), built from a rasterised land mask instead of
+`d3.geoContains` per point, which is what used to floor the pitch. Day and
+night are carried by the dots themselves in seven brightness bands across a
+~23 degree soft terminator; the flat night/day ocean fills and the terminator
+hairline are removed. Unlit land uses a new neutral tint
+(`--globe-dot-neutral`) at 62% so day-side land cannot be mistaken for solar
+gold.
+
+**Lit territory.** Land dots around each curtailing region light up in its fuel
+colour; the patch radius is `1.5 + 3.4 * sqrt(GW)` degrees. A region with more
+than one fuel dithers: each dot picks a fuel by a fixed hash of its lon/lat
+(the Spectrum mark's formula), weighted by the fuel shares, so 70/30 wind/solar
+lights about 70% cyan and 30% gold. Recomputed when the hour (to 15 minutes),
+mode or data changes, not per frame. Logic in `src/lib/globe-surface.ts`, tested
+in `tests/globe-surface.test.ts`.
+
+**Pillars.** One bar per fuel per region, never stacked - the stacked composite
+branch is removed. Bars that share an anchor sit side by side a few pixels apart
+(well inside any country, unlike the 44px offset reverted in #62). Each bar is a
+bright core with a lighter tip, inside a translucent sheath, with a glow at the
+ground and at the tip. Height is foreshortened toward the limb
+(`0.35 + 0.65 * cos`) rather than faded to nothing, and mark sizes now scale with
+the globe radius. Confidence marks are unchanged in meaning and now sit at each
+bar's own base. No labels on the globe at rest.
+
+**Performance.** Headless Chromium, same machine, same data: phone viewport
+31 vs 21 frames/s on `main` (the 30fps cap is now reachable); desktop 22 vs 20.
+Glow is a pre-rendered sprite per fuel, and the dot field is 13 fills a frame.
+
+**Also affects** `src/embed/globe.md` (the paper iframe), which mounts the same
+renderer.
+
 ## Matte globe refresh — gold off the sphere, colour only where data is (2026-09-20)
 
 Branch `feat/matte-globe-refresh`. The globe read as one warm haze: sphere

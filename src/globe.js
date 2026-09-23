@@ -2,11 +2,14 @@ import * as d3 from "npm:d3";
 import * as topojson from "npm:topojson-client";
 import { regionGWAtHour, generationGWAtHour } from "./lib/calc.js";
 import { showsWastePillar, wasteStatusOf } from "./lib/waste-status.js";
-import { getRegionFuelColor } from "./lib/fuel.js";
+import { getRegionFuelColor, getFuelColor, fuelShareAtHour } from "./lib/fuel.js";
 import { readGlobeTokens } from "./lib/theme-tokens.js";
 import { buildPillarUnits } from "./lib/pillar-layout.js";
 import { qualityBucket, qualityOpacity, dotStyleFor } from "./lib/region-quality.js";
 import { wrapLongitude, easeOutCubic } from "./lib/globe-geo.js";
+import {
+  FUELS, BAND_ALPHA, dayBand, dotHash, assignTerritory, DotCellIndex, barsForUnit, tintHex,
+} from "./lib/globe-surface.js";
 
 // Locally-vendored world atlas: previously fetched from unpkg.com, which
 // added a third-party DNS + TLS handshake (~200–400ms on cellular) to
@@ -23,39 +26,69 @@ async function loadCountries(topologyUrl) {
   return countriesPromise;
 }
 
-// The land matrix is the globe's main texture, so its density has to track
-// how large the globe is actually drawn. At a fixed 2.5deg the dots spread
-// out and stop reading as a surface above roughly 700px — the continents
-// dissolve into scattered specks. Step is chosen once per mount from the
-// canvas size and floored at 1.8deg: finer than that the one-off
-// geoContains filter below costs more main-thread time than the extra
-// fidelity is worth.
+// The land matrix is the globe's only surface texture (the G1 "Lantern"
+// look, after the GitHub homepage globe): a fine, hex-offset field of small
+// dots. It is built from a raster land mask rather than d3.geoContains per
+// point, which is what used to floor the pitch at 1.8deg - rasterising the
+// atlas once and sampling it costs a few milliseconds at any pitch.
 function gridStepFor(size) {
-  if (size >= 820) return 1.8;
-  if (size >= 560) return 2.1;
-  return 2.5;
+  if (size >= 820) return 1.05;
+  if (size >= 560) return 1.2;
+  return 1.6;
 }
 
 function precomputeLandDots(countries, step) {
   const key = step.toFixed(2);
   const cached = landDotsByStep.get(key);
   if (cached) return cached;
-  const dots = [];
-  for (let lat = -80; lat <= 80; lat += step) {
-    const cos = Math.cos((lat * Math.PI) / 180);
-    const lonStep = step / Math.max(cos, 0.2);
-    for (let lon = -180; lon <= 180; lon += lonStep) {
-      dots.push([lon, lat]);
+  const W = 2048, H = 1024;
+  const mask = document.createElement("canvas");
+  mask.width = W;
+  mask.height = H;
+  const mctx = mask.getContext("2d", { willReadFrequently: true });
+  const eq = d3.geoEquirectangular().scale(W / (2 * Math.PI)).translate([W / 2, H / 2]);
+  mctx.beginPath();
+  d3.geoPath(eq, mctx)({ type: "GeometryCollection", geometries: countries.features.map((f) => f.geometry) });
+  mctx.fillStyle = "#fff";
+  mctx.fill();
+  const px = mctx.getImageData(0, 0, W, H).data;
+  const lons = [], lats = [];
+  let row = 0;
+  for (let lat = -58; lat <= 80; lat += step, row++) {
+    const cos = Math.max(Math.cos((lat * Math.PI) / 180), 0.15);
+    const lonStep = step / cos;
+    for (let lon = -180 + (row % 2 ? lonStep / 2 : 0); lon < 180; lon += lonStep) {
+      const x = Math.min(W - 1, Math.floor(((lon + 180) / 360) * W));
+      const y = Math.min(H - 1, Math.floor(((90 - lat) / 180) * H));
+      if (px[(y * W + x) * 4 + 3] > 127) {
+        lons.push(lon);
+        lats.push(lat);
+      }
     }
   }
-  const filtered = dots.filter(([lon, lat]) => {
-    for (const feature of countries.features) {
-      if (d3.geoContains(feature, [lon, lat])) return true;
-    }
-    return false;
-  });
-  landDotsByStep.set(key, filtered);
-  return filtered;
+  const n = lons.length;
+  const out = {
+    n,
+    lons: Float32Array.from(lons),
+    lats: Float32Array.from(lats),
+    hash: new Float32Array(n),
+    xyz: new Float32Array(n * 3),
+  };
+  for (let i = 0; i < n; i++) {
+    out.hash[i] = dotHash(lons[i], lats[i]);
+    const la = (lats[i] * Math.PI) / 180, lo = (lons[i] * Math.PI) / 180;
+    out.xyz[i * 3] = Math.cos(la) * Math.cos(lo);
+    out.xyz[i * 3 + 1] = Math.cos(la) * Math.sin(lo);
+    out.xyz[i * 3 + 2] = Math.sin(la);
+  }
+  out.cells = new DotCellIndex(out.lons, out.lats);
+  landDotsByStep.set(key, out);
+  return out;
+}
+
+function unitVec(lon, lat) {
+  const la = (lat * Math.PI) / 180, lo = (lon * Math.PI) / 180;
+  return [Math.cos(la) * Math.cos(lo), Math.cos(la) * Math.sin(lo), Math.sin(la)];
 }
 
 export async function mountGlobe(canvas, initial) {
@@ -94,9 +127,37 @@ export async function mountGlobe(canvas, initial) {
   }
 
   let tokens = readGlobeTokens(document.documentElement);
+  let fuelColor = {};
+  let fuelTip = {};
+  // Glow is a pre-rendered radial-gradient sprite per fuel, stamped with
+  // drawImage. One gradient object per theme instead of two per pillar per
+  // frame keeps ~450 glowing pillars inside the 30fps phone budget.
+  let glowSprite = {};
+  function makeGlow(hex) {
+    const c = document.createElement("canvas");
+    c.width = c.height = 64;
+    const g = c.getContext("2d");
+    const rgb = hex.replace("#", "").match(/../g).map((h) => parseInt(h, 16)).join(",");
+    const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, `rgba(${rgb},0.34)`);
+    grad.addColorStop(0.45, `rgba(${rgb},0.09)`);
+    grad.addColorStop(1, `rgba(${rgb},0)`);
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 64, 64);
+    return c;
+  }
+  function refreshFuelPaint() {
+    for (const f of FUELS) {
+      fuelColor[f] = getFuelColor(f);
+      fuelTip[f] = tintHex(fuelColor[f], 0.55);
+      glowSprite[f] = makeGlow(fuelColor[f]);
+    }
+  }
+  refreshFuelPaint();
 
   function refreshTokens() {
     tokens = readGlobeTokens(document.documentElement);
+    refreshFuelPaint();
     // Force a redraw so the next paint uses the new colours immediately.
     render();
   }
@@ -203,6 +264,75 @@ export async function mountGlobe(canvas, initial) {
   syncGlobeRect();
   window.addEventListener("resize", syncGlobeRect);
 
+  // --- Lit territory cache ---
+  // Which land dots glow in which fuel depends on every region's GW at the
+  // current hour, not on rotation, so it is recomputed only when the hour
+  // (to a quarter), the mode or the data changes - not every frame.
+  let territory = null;
+  let territoryKey = "";
+  function territoryFor(hour) {
+    const key = `${Math.round(hour * 4) / 4}|${state.mode}`;
+    if (territory && key === territoryKey && territory.regions === state.regions && territory.regionData === state.regionData) {
+      return territory.result;
+    }
+    const sources = [];
+    for (const r of state.regions) {
+      const data = state.regionData[r.id];
+      if (!data || !showsWastePillar(data)) continue;
+      const gw = Math.max(0, regionGWAtHour(data, hour, state.mode));
+      if (gw <= 0.01) continue;
+      for (const f of FUELS) {
+        const share = fuelShareAtHour(r, f, hour, data);
+        if (share > 0) sources.push({ lon: r.lon, lat: r.lat, gw: gw * share, fuel: f, radiusGW: gw });
+      }
+    }
+    const result = assignTerritory(dots.lons, dots.lats, dots.hash, sources, dots.cells);
+    territory = { result, regions: state.regions, regionData: state.regionData };
+    territoryKey = key;
+    return result;
+  }
+
+  function drawBaseDot(x, y, coreR, color, dotStyle) {
+    if (dotStyle === "hollow") {
+      // Estimated: outline ring only - nothing painted inside, because a
+      // filled dot is the cue for "measured".
+      ctx.strokeStyle = tokens.keyline;
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.arc(x, y, coreR + 0.9, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      ctx.arc(x, y, coreR, 0, Math.PI * 2);
+      ctx.stroke();
+      return;
+    }
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, coreR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = tokens.keyline;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    if (dotStyle === "ringed") {
+      ctx.strokeStyle = `rgba(${tokens.dotDayRGB}, 0.7)`;
+      ctx.lineWidth = 0.6;
+      ctx.beginPath();
+      ctx.arc(x, y, coreR + 2, 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (dotStyle === "degraded") {
+      ctx.save();
+      ctx.strokeStyle = tokens.qualityWarning;
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([2, 2]);
+      ctx.beginPath();
+      ctx.arc(x, y, coreR + 2.5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
   function render() {
     const renderNow = performance.now();
     const width = canvas.width / dpr;
@@ -210,12 +340,12 @@ export async function mountGlobe(canvas, initial) {
     const size = Math.min(width, height);
     if (!width || !height) return;
 
+    const R = size * 0.46 * state.zoomScale;
     const projection = d3.geoOrthographic()
-      .scale(size * 0.46 * state.zoomScale)
+      .scale(R)
       .translate([width / 2, height / 2])
       .clipAngle(90)
       .rotate(state.rotation);
-    const path = d3.geoPath(projection, ctx);
     const center = [-state.rotation[0], -state.rotation[1]];
     const hour = ((state.utcHour % 24) + 24) % 24;
     const sunLng = wrapLongitude((12 - hour) * 15);
@@ -224,79 +354,113 @@ export async function mountGlobe(canvas, initial) {
     const diff = now.getTime() - start;
     const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
     const sunLat = 23.45 * Math.sin((2 * Math.PI * (dayOfYear - 81)) / 365);
-    const antiSolarLng = wrapLongitude(sunLng + 180);
-    const sunScreen = projection([sunLng, sunLat]);
+    const cx = width / 2;
+    const cy = height / 2;
+    // Mark and dot sizes were tuned on a ~640px globe (R about 250).
+    const k = Math.max(0.8, Math.min(2.2, R / 250));
 
     ctx.save();
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // Night ocean first, then the daylit hemisphere painted flat on top of
-    // it and edged with a hairline at the terminator.
-    //
-    // The radial day wash this replaces tinted the whole sphere the same hue
-    // as the solar pillars, which is what made the globe read as one warm
-    // haze. But dropping it outright cost something real: with day and night
-    // carried only by the land dots' hue, there was no visible light source,
-    // so you could not see which face was in daylight — and therefore could
-    // not see why solar is curtailing where it is. Two flat fills and a hard
-    // edge give that back without a single gradient.
+    // --- Sphere: outer halo, lit body, shadow, then land, then rim. ---
+    // Day and night are no longer two flat ocean fills with a hairline. The
+    // body is lit from a fixed upper-left key light for form, and the actual
+    // sun position is carried by the land dots' brightness bands below - a
+    // soft ~23deg terminator instead of a hard edge that competed with data.
+    const haloR = R * 1.32;
+    const halo = ctx.createRadialGradient(cx, cy, R, cx, cy, haloR);
+    halo.addColorStop(0, `rgba(${tokens.brandRGB},0.22)`);
+    halo.addColorStop(0.18, `rgba(${tokens.brandRGB},0.07)`);
+    halo.addColorStop(1, `rgba(${tokens.brandRGB},0)`);
+    ctx.fillStyle = halo;
     ctx.beginPath();
-    path({ type: "Sphere" });
-    ctx.fillStyle = tokens.oceanHex;
+    ctx.arc(cx, cy, haloR, 0, Math.PI * 2);
     ctx.fill();
 
-    const dayHemisphere = d3.geoCircle().center([sunLng, sunLat]).radius(90)();
+    const body = ctx.createRadialGradient(cx - R * 0.28, cy - R * 0.36, 0, cx - R * 0.28, cy - R * 0.36, R * 1.5);
+    body.addColorStop(0, tokens.bodyHi);
+    body.addColorStop(0.55, tokens.bodyMid);
+    body.addColorStop(1, tokens.bodyLo);
+    ctx.fillStyle = body;
     ctx.beginPath();
-    path(dayHemisphere);
-    ctx.fillStyle = tokens.oceanLitHex;
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = tokens.terminator;
-    ctx.lineWidth = 1;
-    ctx.stroke();
 
-    const dotPx = size >= 820 ? 1.8 : 1.5;
-    const dotHalf = dotPx / 2;
-    for (const [lon, lat] of dots) {
-      const dist = d3.geoDistance([lon, lat], center);
-      if (dist > Math.PI / 2 - 0.02) continue;
-      const point = projection([lon, lat]);
-      if (!point) continue;
-      // Hard terminator rather than a falloff: a dot is lit or it is not.
-      // The unlit side stays warm and bright (amber, not grey) so the
-      // continents read across the whole face instead of fading out.
-      const solarAngle = d3.geoDistance([lon, lat], [sunLng, sunLat]);
-      const lit = Math.cos(solarAngle) > 0.12;
-      // Lit dots are brighter AND a different hue. Hue alone does not read at
-      // this dot size — cream against amber is invisible at 1.8px.
-      ctx.fillStyle = lit
-        ? `rgba(${tokens.dotDayRGB}, 0.98)`
-        : `rgba(${tokens.dotNightRGB}, 0.82)`;
-      ctx.fillRect(point[0] - dotHalf, point[1] - dotHalf, dotPx, dotPx);
+    const shade = ctx.createRadialGradient(cx + R * 0.44, cy + R * 0.4, 0, cx + R * 0.44, cy + R * 0.4, R * 1.4);
+    shade.addColorStop(0, "rgba(0,0,0,0.35)");
+    shade.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = shade;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.fill();
+
+    // --- Land dots: neutral brightness bands + lit territory. ---
+    // One path per bucket and one fill per bucket, so the whole field is
+    // 13 fills a frame whatever the dot count.
+    const terr = territoryFor(hour);
+    const cv = unitVec(center[0], center[1]);
+    const sv = unitVec(sunLng, sunLat);
+    const bandPaths = Array.from({ length: BAND_ALPHA.length }, () => new Path2D());
+    const terrPaths = FUELS.map(() => [new Path2D(), new Path2D()]);
+    const bandUsed = new Uint8Array(BAND_ALPHA.length);
+    const terrUsed = new Uint8Array(6);
+    for (let i = 0; i < dots.n; i++) {
+      const x3 = dots.xyz[i * 3], y3 = dots.xyz[i * 3 + 1], z3 = dots.xyz[i * 3 + 2];
+      const c = x3 * cv[0] + y3 * cv[1] + z3 * cv[2];
+      if (c < 0.02) continue;
+      const pt = projection([dots.lons[i], dots.lats[i]]);
+      if (!pt) continue;
+      const sc = Math.sqrt(c);
+      const f = terr.fuel[i];
+      if (f >= 0) {
+        const inner = terr.inner[i];
+        const r = (0.6 + 0.6 * sc) * k * (inner ? 1.3 : 1.1);
+        const p = terrPaths[f][inner];
+        p.moveTo(pt[0] + r, pt[1]);
+        p.arc(pt[0], pt[1], r, 0, Math.PI * 2);
+        terrUsed[f * 2 + inner] = 1;
+      } else {
+        const band = dayBand(x3 * sv[0] + y3 * sv[1] + z3 * sv[2]);
+        const r = (0.45 + 0.5 * sc) * k;
+        const p = bandPaths[band];
+        p.moveTo(pt[0] + r, pt[1]);
+        p.arc(pt[0], pt[1], r, 0, Math.PI * 2);
+        bandUsed[band] = 1;
+      }
     }
+    for (let b = 0; b < bandPaths.length; b++) {
+      if (!bandUsed[b]) continue;
+      ctx.fillStyle = `rgba(${tokens.dotNeutralRGB},${BAND_ALPHA[b]})`;
+      ctx.fill(bandPaths[b]);
+    }
+    for (let f = 0; f < FUELS.length; f++) {
+      for (let inner = 0; inner < 2; inner++) {
+        if (!terrUsed[f * 2 + inner]) continue;
+        ctx.globalAlpha = inner ? 1 : 0.85;
+        ctx.fillStyle = inner ? fuelTip[FUELS[f]] : fuelColor[FUELS[f]];
+        ctx.fill(terrPaths[f][inner]);
+      }
+    }
+    ctx.globalAlpha = 1;
 
+    // Fresnel rim: a thin bright edge rather than a stroked outline.
+    const rim = ctx.createRadialGradient(cx, cy, R * 0.88, cx, cy, R);
+    rim.addColorStop(0, `rgba(${tokens.brandRGB},0)`);
+    rim.addColorStop(0.875, `rgba(${tokens.brandRGB},0.14)`);
+    rim.addColorStop(1, `rgba(${tokens.brandRGB},0.40)`);
+    ctx.fillStyle = rim;
     ctx.beginPath();
-    path({
-      type: "GeometryCollection",
-      geometries: countries.features.map((feature) => feature.geometry)
-    });
-    ctx.strokeStyle = tokens.border;
-    ctx.lineWidth = 0.4;
-    ctx.stroke();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.fill();
 
-    ctx.beginPath();
-    path({ type: "Sphere" });
-    ctx.strokeStyle = tokens.border;
-    ctx.lineWidth = 0.8;
-    ctx.stroke();
-
+    // --- Pillars: one bar per fuel per region, never stacked. ---
     const pillarUnits = buildPillarUnitsForState();
     const visibleThisFrame = new Set();
 
     for (const unit of pillarUnits) {
       const group = unit.regions;
       const rep = group[0];
-      // Compute total GW across all members of this unit.
       const gwByRegion = group.map((r) => {
         const data = state.regionData[r.id];
         return data ? Math.max(0, regionGWAtHour(data, hour, state.mode)) : 0;
@@ -311,61 +475,37 @@ export async function mountGlobe(canvas, initial) {
       const showWaste = group.some((r) => showsWastePillar(state.regionData[r.id])) && totalWasteGW > 0.01;
       const showGen = unpublished || totalGenGW > 0.01;
       if (!showWaste && !showGen) continue;
-      const totalGW = showWaste ? totalWasteGW : Math.max(totalGenGW, unpublished ? 0.05 : 0);
 
       const dist = d3.geoDistance([rep.lon, rep.lat], center);
       if (dist > Math.PI / 2) continue;
       const point = projection([rep.lon, rep.lat]);
       if (!point) continue;
 
-      // Birth animation: first time a region crosses the horizon, scale it
-      // from 0 → 1 over BIRTH_MS so it emerges rather than snapping in.
       const repId = rep.id;
       visibleThisFrame.add(repId);
-      if (!pillarBirthTimes.has(repId)) {
-        pillarBirthTimes.set(repId, renderNow);
-      }
-      const birthT = easeOutCubic(
-        Math.min(1, (renderNow - pillarBirthTimes.get(repId)) / BIRTH_MS)
-      );
+      if (!pillarBirthTimes.has(repId)) pillarBirthTimes.set(repId, renderNow);
+      const birthT = easeOutCubic(Math.min(1, (renderNow - pillarBirthTimes.get(repId)) / BIRTH_MS));
 
-      // Anchor for this unit: original projection point shifted horizontally
-      // on screen by offsetPx so co-located wind/solar pairs render as
-      // adjacent tappable pillars 44px apart (WCAG 2.5.5).
       const anchorX = point[0] + unit.offsetPx;
       const anchorY = point[1];
-
       const visible = 1 - dist / (Math.PI / 2);
-      const weight = Math.sqrt(totalGW);
-      // Kept only as the radius of the selection ring; nothing is drawn with
-      // a blur any more.
-      const glowR = (4 + weight * 5) * birthT;
-      const coreR = (1.5 + weight * 0.8) * birthT;
-      const centreX = width / 2;
-      const centreY = height / 2;
-      // Sun dimming is gone. The land matrix already states day from night;
-      // dimming the pillars by it as well double-dimmed the night side and
-      // hid real curtailment. Confidence (qualityOpacity) and limb distance
-      // are the only things allowed to touch pillar opacity.
+      const cosC = Math.cos(dist);
+      // Foreshortening: a pillar near the limb is shorter, not splayed
+      // sideways, so it cannot out-shout one facing the viewer.
+      const foreshort = 0.35 + 0.65 * cosC;
+      const limbAlpha = 0.55 + 0.45 * visible;
 
-      // Dominant color for glow + core dot.
       const repData = state.regionData[rep.id];
       const domColor = getRegionFuelColor(rep, repData);
-
-      // Data-quality opacity: measured brightest → estimated dimmest.
-      // A degraded (stale >24h) live feed dims to estimated level; the amber
-      // dot-ring (drawn below) is the actual freshness alarm. Fuel hue on the
-      // pillar body is preserved in every state.
       const repBucket = qualityBucket(rep, repData);
       const repDegraded = repData?.sourceStatus === "degraded";
-      const repDotStyle = dotStyleFor(repBucket, repData?.sourceStatus);
-      const pillarAlpha = qualityOpacity(repDegraded ? "estimated" : repBucket);
+      const repAlpha = qualityOpacity(repDegraded ? "estimated" : repBucket);
 
       if (showGen) {
         const genWeight = Math.sqrt(Math.max(totalGenGW, unpublished ? 0.05 : 0));
         const genR = (5.5 + genWeight * 3.5) * birthT;
         ctx.save();
-        ctx.globalAlpha = pillarAlpha * visible * 0.55;
+        ctx.globalAlpha = repAlpha * visible * 0.55;
         ctx.strokeStyle = unpublished && totalGenGW <= 0.01 ? tokens.border : domColor;
         ctx.lineWidth = unpublished && totalGenGW <= 0.01 ? 1.1 : 1.7;
         if (unpublished && totalGenGW <= 0.01) ctx.setLineDash([2.5, 2.5]);
@@ -375,129 +515,88 @@ export async function mountGlobe(canvas, initial) {
         ctx.restore();
       }
 
-      // Outward direction from globe centre is anchored at the original
-      // projection point so all offset pillars within a bucket lean the
-      // same way (parallel bars 44px apart on screen).
-      let dx = point[0] - centreX;
-      let dy = point[1] - centreY;
-      const len = Math.sqrt(dx * dx + dy * dy);
-      if (showWaste && len > 0.1) {
-        dx /= len;
-        dy /= len;
-        const pillarH = (3 + weight * 48) * birthT;
-        const pillarW = 3;
+      let dx = point[0] - cx;
+      let dy = point[1] - cy;
+      const len = Math.hypot(dx, dy);
+      if (len > 0.1) { dx /= len; dy /= len; } else { dx = 0; dy = -1; }
+      const px = -dy, py = dx;
 
-        if (group.length === 1) {
-          // Single-fuel pillar: one flat stroke, butt cap, no base-to-tip
-          // gradient. The keyline underneath is what keeps a solar pillar
-          // legible where it crosses the lit (near-white) or unlit (amber)
-          // land — both are close enough to solar gold to swallow it.
-          const tipX = anchorX + dx * pillarH;
-          const tipY = anchorY + dy * pillarH;
-          ctx.globalAlpha = pillarAlpha * visible;
-          ctx.lineCap = "butt";
-          ctx.strokeStyle = tokens.keyline;
-          ctx.lineWidth = pillarW + 2.5;
-          ctx.beginPath();
-          ctx.moveTo(anchorX, anchorY);
-          ctx.lineTo(tipX, tipY);
-          ctx.stroke();
-          ctx.strokeStyle = domColor;
-          ctx.lineWidth = pillarW;
-          ctx.beginPath();
-          ctx.moveTo(anchorX, anchorY);
-          ctx.lineTo(tipX, tipY);
-          ctx.stroke();
-        } else {
-          // Stacked composite pillar: draw one segment per member, proportional to GW.
-          // Sort by GW descending so the largest fuel is at the base.
-          const segments = group
-            .map((r, i) => ({ region: r, gw: gwByRegion[i] }))
-            .filter((s) => s.gw > 0)
-            .sort((a, b) => b.gw - a.gw);
-          let segStart = 0;
-          for (const seg of segments) {
-            const segFrac = seg.gw / totalGW;
-            const segLen = pillarH * segFrac;
-            const segStartX = anchorX + dx * segStart;
-            const segStartY = anchorY + dy * segStart;
-            const segEndX = segStartX + dx * segLen;
-            const segEndY = segStartY + dy * segLen;
-            const segData = state.regionData[seg.region.id];
-            const segColor = getRegionFuelColor(seg.region, segData);
-            const segBucket = qualityBucket(seg.region, segData);
-            const segDegraded = segData?.sourceStatus === "degraded";
-            const segAlpha = qualityOpacity(segDegraded ? "estimated" : segBucket);
-            ctx.globalAlpha = segAlpha * visible;
-            ctx.lineCap = "butt";
-            ctx.strokeStyle = tokens.keyline;
-            ctx.lineWidth = pillarW + 2.5;
-            ctx.beginPath();
-            ctx.moveTo(segStartX, segStartY);
-            ctx.lineTo(segEndX, segEndY);
-            ctx.stroke();
-            ctx.strokeStyle = segColor;
-            ctx.lineWidth = pillarW;
-            ctx.beginPath();
-            ctx.moveTo(segStartX, segStartY);
-            ctx.lineTo(segEndX, segEndY);
-            ctx.stroke();
-            segStart += segLen;
-          }
-        }
-      }
+      if (showWaste) {
+        const bars = barsForUnit(group.map((r, i) => {
+          const data = state.regionData[r.id];
+          const share = {};
+          for (const f of FUELS) share[f] = showsWastePillar(data) ? fuelShareAtHour(r, f, hour, data) : 0;
+          return { gw: gwByRegion[i], share };
+        }));
+        const widths = bars.map((b) => Math.min(3.2, 1.2 + 0.75 * Math.sqrt(b.gw)) * Math.sqrt(k));
+        const gap = Math.max(...widths, 1) * 2.1 + 1;
+        bars.forEach((bar, bi) => {
+          const member = group[bar.member];
+          const mData = state.regionData[member.id];
+          const mBucket = qualityBucket(member, mData);
+          const mDegraded = mData?.sourceStatus === "degraded";
+          const alpha = qualityOpacity(mDegraded ? "estimated" : mBucket) * limbAlpha;
+          const dotStyle = dotStyleFor(mBucket, mData?.sourceStatus);
+          const weight = Math.sqrt(bar.gw);
+          const w = widths[bi];
+          const off = (bi - (bars.length - 1) / 2) * gap;
+          const bx = anchorX + px * off, by = anchorY + py * off;
+          const H = (3 + weight * 48) * birthT * foreshort * (0.4 + 0.45 * k);
+          const tx = bx + dx * H, ty = by + dy * H;
+          const col = fuelColor[bar.fuel], tip = fuelTip[bar.fuel];
 
-      ctx.globalAlpha = pillarAlpha * visible;
-      if (repDotStyle === "hollow") {
-        // Estimated: outline ring only, no fill — reads as "not measured".
-        // Nothing is painted inside it: a casing here would fill the dot in
-        // and destroy the one cue that says this number is modelled.
-        ctx.strokeStyle = tokens.keyline;
-        ctx.lineWidth = 0.8;
-        ctx.beginPath();
-        ctx.arc(anchorX, anchorY, coreR + 0.9, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.strokeStyle = domColor;
-        ctx.lineWidth = 1.1;
-        ctx.beginPath();
-        ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);
-        ctx.stroke();
+          ctx.globalAlpha = alpha;
+          // Ground glow.
+          const gR = (4 + 4.6 * weight) * (0.5 + 0.5 * cosC) * birthT * k;
+          ctx.drawImage(glowSprite[bar.fuel], bx - gR, by - gR, gR * 2, gR * 2);
+          // Sheath: translucent taper, the pillar's body of light.
+          const sh = w * 4.2;
+          ctx.globalAlpha = alpha * 0.26;
+          ctx.fillStyle = col;
+          ctx.beginPath();
+          ctx.moveTo(bx + px * sh / 2, by + py * sh / 2);
+          ctx.lineTo(tx + px * sh * 0.2, ty + py * sh * 0.2);
+          ctx.lineTo(tx - px * sh * 0.2, ty - py * sh * 0.2);
+          ctx.lineTo(bx - px * sh / 2, by - py * sh / 2);
+          ctx.closePath();
+          ctx.fill();
+          // Core, with the outer half in the lighter tip tint.
+          ctx.globalAlpha = alpha;
+          ctx.lineCap = "round";
+          ctx.strokeStyle = col;
+          ctx.lineWidth = w;
+          ctx.beginPath();
+          ctx.moveTo(bx, by);
+          ctx.lineTo(tx, ty);
+          ctx.stroke();
+          ctx.strokeStyle = tip;
+          ctx.lineWidth = Math.max(0.7, w * 0.45);
+          ctx.beginPath();
+          ctx.moveTo(bx + dx * H * 0.5, by + dy * H * 0.5);
+          ctx.lineTo(tx, ty);
+          ctx.stroke();
+          // Tip flare.
+          const tR = w * 2.2;
+          ctx.drawImage(glowSprite[bar.fuel], tx - tR, ty - tR, tR * 2, tR * 2);
+          ctx.fillStyle = tip;
+          ctx.beginPath();
+          ctx.arc(tx, ty, w * 0.9, 0, Math.PI * 2);
+          ctx.fill();
+          // Confidence mark at the bar's own base, in its own fuel.
+          const coreR = (1.5 + weight * 0.8) * birthT;
+          drawBaseDot(bx, by, coreR, col, dotStyle);
+        });
+        ctx.lineCap = "butt";
       } else {
-        // Measured / anchored / degraded: filled core in fuel hue.
-        ctx.fillStyle = domColor;
-        ctx.beginPath();
-        ctx.arc(anchorX, anchorY, coreR, 0, Math.PI * 2);
-        ctx.fill();
-        // Separation from the land comes from a hairline on the dot's own
-        // edge. It used to be a filled casing 1.1px wider, which on a 0.02 GW
-        // region added ~180% more area — a field of small regions (Japan has
-        // twelve) read as chunky dark blobs with a coloured pip in them.
-        ctx.strokeStyle = tokens.keyline;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        if (repDotStyle === "ringed") {
-          // Anchored: thin concentric ring around the filled core.
-          ctx.strokeStyle = tokens.dotDayRGB ? `rgba(${tokens.dotDayRGB}, 0.7)` : "rgba(255,248,224,0.7)";
-          ctx.lineWidth = 0.6;
-          ctx.beginPath();
-          ctx.arc(anchorX, anchorY, coreR + 2, 0, Math.PI * 2);
-          ctx.stroke();
-        } else if (repDotStyle === "degraded") {
-          // Stale live feed: amber dashed warning ring (the freshness alarm).
-          ctx.save();
-          ctx.strokeStyle = tokens.qualityWarning;
-          ctx.lineWidth = 1.2;
-          ctx.setLineDash([2, 2]);
-          ctx.beginPath();
-          ctx.arc(anchorX, anchorY, coreR + 2.5, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.restore();
-        }
+        // Generation-only unit (unpublished waste): base dot only.
+        ctx.globalAlpha = repAlpha * limbAlpha;
+        drawBaseDot(anchorX, anchorY, 1.5 * birthT, domColor, dotStyleFor(repBucket, repData?.sourceStatus));
       }
 
       if (rep.id === state.selectedRegionId) {
+        const glowR = (4 + Math.sqrt(totalWasteGW) * 5) * birthT;
         ctx.save();
-        ctx.globalAlpha = pillarAlpha * 0.9;
+        ctx.globalAlpha = repAlpha * 0.9;
         ctx.strokeStyle = "#7cb8ff";
         ctx.lineWidth = 2.2;
         ctx.setLineDash([]);
@@ -508,10 +607,6 @@ export async function mountGlobe(canvas, initial) {
       }
     }
 
-    // Update birth-animation state for next frame.
-    // Any region that was visible last frame but not this frame has rotated
-    // back over the horizon — remove its birth time so it re-animates on
-    // the next appearance.
     for (const id of pillarBirthTimes.keys()) {
       if (!visibleThisFrame.has(id)) pillarBirthTimes.delete(id);
     }

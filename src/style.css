@@ -182,6 +182,12 @@
   --globe-dot-day:       #fffdf2;
   --globe-dot-night:     #f0bf7a;
   --globe-border:        rgba(255, 248, 224, 0.16);
+  /* G1 Lantern sphere: body gradient lit from the upper left, and the neutral
+     land-dot tint (kept off cream so day-side land never reads as solar). */
+  --globe-body-hi:       #4a3414;
+  --globe-body-mid:      #1f160a;
+  --globe-body-lo:       #0c0804;
+  --globe-dot-neutral:   #e4dccc;
 
   /* state */
   --success:             #5eead4;
@@ -230,6 +236,10 @@
   --globe-dot-day:       #eaf6ff;
   --globe-dot-night:     #7fb4d8;
   --globe-border:        rgba(224, 240, 255, 0.16);
+  --globe-body-hi:       #17405e;
+  --globe-body-mid:      #0b1b2e;
+  --globe-body-lo:       #040a14;
+  --globe-dot-neutral:   #c8d6e4;
 
   --success:             #5eead4;
   --warning:             #ffb84d;
