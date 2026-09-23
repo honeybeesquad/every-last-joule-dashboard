@@ -2029,6 +2029,22 @@ main > h1:first-child {
   padding: 0;
 }
 
+/* Bare URLs, file paths and filenames are single unbroken runs wider than a
+   phone, and one of them was enough to lay /methodology out 446px wide at 375.
+   They turn up as link text, in inline code and in plain source strings
+   (region pages print `source:` text verbatim), so the whole doc column lets
+   a run break anywhere. `anywhere` rather than `break-word` because it also
+   lowers the run's min-content width, which is what lets the grid track
+   holding a source URL on /region/<id> shrink back to the viewport. Tables and
+   code blocks opt out: both already scroll sideways inside their own box, and
+   breaking their contents would squeeze them instead. */
+.methodology-doc {
+  overflow-wrap: anywhere;
+}
+.methodology-doc :is(table, pre) {
+  overflow-wrap: normal;
+}
+
 /* Tables */
 .methodology-doc table {
   width: 100%;
