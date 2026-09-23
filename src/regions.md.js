@@ -205,6 +205,10 @@ ${rows.map(row).join("\n")}
 
 \`\`\`js
 import { mountRegionDirectory } from "./components/region-directory.js";
+import { mountSiteChrome } from "./components/site-chrome.js";
+
+// The site header's mode switch and menu (src/lib/site-header.ts draws it).
+const unmountSiteChrome = mountSiteChrome();
 
 mountRegionDirectory({
   form: document.querySelector("#region-filter"),

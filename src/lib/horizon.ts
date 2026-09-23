@@ -38,6 +38,20 @@ export function horizonGeometry(W: number, H: number): HorizonGeometry {
   return { R, top, cx: 0.57 * W, cy: top + R };
 }
 
+/**
+ * Phone geometry (redesign plan 3.4): the horizon drawn into a band under the
+ * hero, 390 x 530 on a 390 x 844 screen, with R = 650, the limb's top 235px
+ * into the band and the centre mid-width. Scales with the band's size.
+ */
+export function horizonPhoneGeometry(W: number, H: number): HorizonGeometry {
+  const R = 650 * (W / 390);
+  const top = 235 * (H / 530);
+  return { R, top, cx: W / 2, cy: top + R };
+}
+
+/** The phone band's camera and scales (redesign plan 3.4). */
+export const HORIZON_PHONE = { lat0: -38, beam: 0.12, widthScale: 0.75, dotScale: 0.8 } as const;
+
 /** Beam height in units of R: 0.004 + K x sqrt(GW), K = 0.1 on desktop. */
 export function beamHeight(gw: number, K = 0.1): number {
   return 0.004 + K * Math.sqrt(Math.max(0, gw));

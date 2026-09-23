@@ -36,3 +36,9 @@ Treat the totals as a **lower bound**. Operators do not publish self-curtailment
 Each region's loader, calibration rate, seasonal multiplier, and fallback are in source. Rates are anchored to a 2024 figure from the relevant operator or regulator, cited on the methodology page. If a live upstream fails, a committed last-good snapshot is served and the tooltip badge switches from `live` to `cached`.
 
 </div>
+
+```js
+// The site header's mode switch and menu (src/lib/site-header.ts draws it).
+import { mountSiteChrome } from "./components/site-chrome.js";
+const unmountSiteChrome = mountSiteChrome();
+```

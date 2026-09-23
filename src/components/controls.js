@@ -8,8 +8,8 @@
  */
 export const SPEEDS = [1, 4, 8];
 
-const PLAY_ICON = `<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 1.5 L12 7 L3 12.5 Z" fill="currentColor"/></svg>`;
-const PAUSE_ICON = `<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false"><rect x="2.5" y="1.5" width="3.2" height="11" rx="0.8" fill="currentColor"/><rect x="8.3" y="1.5" width="3.2" height="11" rx="0.8" fill="currentColor"/></svg>`;
+export const PLAY_ICON = `<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 1.5 L12 7 L3 12.5 Z" fill="currentColor"/></svg>`;
+export const PAUSE_ICON = `<svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false"><rect x="2.5" y="1.5" width="3.2" height="11" rx="0.8" fill="currentColor"/><rect x="8.3" y="1.5" width="3.2" height="11" rx="0.8" fill="currentColor"/></svg>`;
 
 export function mountControls(container, clock, { onNow } = {}) {
   container.classList.add("ctl-row");

@@ -328,6 +328,12 @@ Both archives ship with the dataset and carry a DOI - see <a href="./about">Abou
 Figures 1 and 2 aggregate <code>curtailment_backfill.parquet</code> (${backfill.hourlyRows.toLocaleString("en-NZ")} hourly rows) by calendar month and year. Summing this page's annual totals reproduces <code>per_region_annual.parquet</code>, the rollup behind the paper's Figures 2 and 5, to six decimal places.
 
 </div>
+
+\`\`\`js
+// The site header's mode switch and menu (src/lib/site-header.ts draws it).
+import { mountSiteChrome } from "./components/site-chrome.js";
+const unmountSiteChrome = mountSiteChrome();
+\`\`\`
 `;
 
 process.stdout.write(out);
