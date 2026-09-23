@@ -5,7 +5,7 @@
 
 ## Doc pages laid out wider than a phone (2026-09-23)
 
-Branch `fix/doc-pages-phone-width`. CSS only (`src/style.css`). Measured on
+Branch `fix/doc-pages-phone-width` (**#1083**). CSS only (`src/style.css`). Measured on
 a production build of main at cf3c30cd. Some unbroken runs in the doc column
 had no break point: bare URLs as link text, file paths in inline `<code>`,
 and filenames in plain `source:` text. Those runs pushed the layout past the
@@ -33,6 +33,51 @@ scroller extends past `clientWidth`. A layout diff against the unpatched CSS
 on the same build shows no change at 1280 on any page, and no change to
 `/about` or `/regions` at any width. Check `scrollWidth` as well as element
 rects: text can overflow a box that itself fits (jeju's `li`).
+
+## Homepage laid out 409px wide on a 375px phone (2026-09-23)
+
+Branch `fix/phone-homepage-width`. CSS only (`src/style.css`). Reproduced on a
+production build of main at 9533fcb6: at 375×812 with touch emulation,
+`innerWidth` and `scrollWidth` read 409 once the page loaded. The header nav
+ran off the right edge and the globe was cut off. The 2026-09-10 UI entry
+below says "no horizontal overflow" at 375. That did not hold.
+
+**What set the width.** `.app-shell` is a one-column grid, so its column
+grows to fit its widest child's min-content width. Three rows were wider
+than the 253px a 375px phone had left:
+
+- `#timeline-controls` (play + six speed chips + UTC clock, a flex row with
+  no wrap): 347px. This one set the 409.
+- The globe zoom row: 302px. Framework's `input[type=range]{width:240px}`
+  (0,1,1) outranks `.globe-zoom-slider` (0,1,0), so the slider's 110px and
+  touch 140px rules never applied. The slider has always been 240px.
+- `.app-header-right` (theme toggle + nav in an inline-flex row with no
+  wrap): 276px.
+
+**Why only 253px.** Three gutters stacked at ≤640px: body `padding-inline: 4vw`,
+Framework's `#observablehq-center` 2rem margin, and the `.app-shell` padding.
+At 320px that left 198px, narrower than the speed chips alone (250px).
+
+**Fix.** Those three rows now wrap. `.ctl-play` no longer shrinks (it was
+squeezed to a 23px oval). The ≤900px slider width uses a scoped selector so
+it beats Framework's rule. Desktop keeps the 240px it has always shown, and
+the dead 110px and `(hover: none)` 140px rules are removed. At ≤640px the
+dashboard drops the body padding and the center margin, matched with
+`:has(.app-shell)`. Doc pages keep both. Framework's pager gets the shell's
+14px back. The ≤900px headline offset is −16px, matching the panel padding
+(was −24px). At ≤400px the timeline gap is 8px, so play and chips share a
+row at 320.
+
+**Verified** on a fresh production build, measuring
+`getBoundingClientRect()`. No element extends past `clientWidth` at 320, 375
+or 390 in Sunfire or Deep Current. `innerWidth` = `scrollWidth` = viewport
+width, and the globe canvas is 347px wide at 375. At 768 and 1440 there is no
+overflow and desktop is unchanged: header on one row, slider 240px, headline
+−24px.
+
+**Not fixed here.** `/methodology` lays out 446px wide at 375. Long unbroken
+URLs and an inline `<code>` span don't wrap. That is a separate bug on the doc
+pages, fixed by **#1083** (see the entry above).
 
 ## Fuel attribution stated three impossible things (2026-09-21)
 

@@ -47,7 +47,7 @@ Multiple AI-authored data PRs (e.g. #267) shipped descriptions claiming tier upg
 
 4. **Keep your own numbers consistent** across the `regions.ts` `source:` string, the loader constant, and the `SOURCE_NOTE`. Grep your own figures across the diff before pushing.
 
-5. **Run the gates locally before requesting review:** `npm run typecheck && npm test && npm run ci:tier-coherence && npm run ci:tally-golden && npm run ci:docs-drift`. Green proves structure, not prose — honesty (rule 3) is on you.
+5. **Run the gates locally before requesting review:** `npm run typecheck && npm test && npm run ci:gates` (`ci:gates` chains `ci:tier-coherence`, `ci:tally-golden`, `ci:docs-drift` and the other data gates). Green proves structure, not prose — honesty (rule 3) is on you.
 
 ## Things this repo expects you to know
 
