@@ -5,7 +5,7 @@
 
 ## /history chart unit labels clipped at the left edge (2026-09-23)
 
-Branch `fix/history-axis-unit-labels`. Chart code only
+Branch `fix/history-axis-unit-labels` (**#1088**). Chart code only
 (`src/lib/history-charts.ts`) plus a test. Reproduced on a production build
 of main at 7de9916a, in Sunfire and Deep Current, at 320, 375, 390 and 1280.
 All four `/history` figures lost the front of their y-axis unit label, not
