@@ -19,7 +19,10 @@ import { createClock } from "./components/clock.js";
 import { mountControls } from "./components/controls.js";
 import { mountModeToggle } from "./components/mode-toggle.js";
 import { mountUnitsToggle } from "./components/units-toggle.js";
-import { mountThemeToggle } from "./components/theme-toggle.js";
+import { mountSiteChrome } from "./components/site-chrome.js";
+import { mountExplorer } from "./components/explorer.js";
+import { mountSheet } from "./components/sheet.js";
+import { navLinksHTML, menuButtonHTML } from "./lib/site-header.js";
 import { mountTimeline } from "./components/timeline.js";
 import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { needleGlyph } from "./components/needle-glyph.js";
@@ -87,15 +90,9 @@ document.getElementById("app-root").innerHTML = `
         <span class="app-wordmark">Every Last <span class="app-wordmark-accent">Joule</span></span>
       </a>
       <div class="app-header-right">
-        <nav class="app-nav" aria-label="Primary">
-          <a href="./regions">Regions</a>
-          <a href="./history">History</a>
-          <a href="./methodology">Methodology</a>
-          <a href="./paper">Paper</a>
-          <a href="./about">About</a>
-          <a class="app-version" href="${feeds.zenodoVersion.recordUrl}" target="_blank" rel="noopener" title="Dataset v${feeds.zenodoVersion.version} on Zenodo">v${feeds.zenodoVersion.version} · DOI</a>
-        </nav>
+        <nav class="app-nav" id="app-nav" aria-label="Primary">${navLinksHTML({ base: ".", dataset: feeds.zenodoVersion })}</nav>
         <div id="theme-toggle-mount"></div>
+        ${menuButtonHTML()}
       </div>
     </header>
 
@@ -126,6 +123,11 @@ document.getElementById("app-root").innerHTML = `
       </div>
       <canvas id="globe-canvas" role="img" aria-label="Globe of curtailed renewable energy by region"></canvas>
       <div class="globe-selection" id="globe-selection" hidden></div>
+      <button type="button" class="explore-btn" id="explore-btn" aria-haspopup="dialog">Explore the globe</button>
+      <button type="button" class="explorer-close" id="explorer-close" aria-label="Close the globe">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <div class="explorer-bar" id="explorer-bar"></div>
       <div class="globe-zoom-controls" id="globe-zoom-controls" hidden>
         <span class="globe-zoom-label">Zoom</span>
         <input type="range" id="globe-zoom-slider"
@@ -135,6 +137,10 @@ document.getElementById("app-root").innerHTML = `
       </div>
     </section>
 
+    <div class="dock" id="dock">
+    <button type="button" class="sheet-handle" id="sheet-handle" aria-expanded="false" aria-controls="dock">
+      <span class="sheet-handle-bar" aria-hidden="true"></span><span class="sheet-handle-label">Timeline and largest curtailments</span>
+    </button>
     <section class="rail" aria-labelledby="hotspots-title">
       <div class="rail-head">
         <h2 class="rail-title" id="hotspots-title">Largest now</h2>
@@ -177,6 +183,7 @@ document.getElementById("app-root").innerHTML = `
         <div id="units-toggle"></div>
       </div>
     </section>
+    </div>
 
     <footer class="app-footer">
       <p class="caption" id="caption-copy">
@@ -707,18 +714,9 @@ mountUnitsToggle(document.getElementById("units-toggle"), {
   },
 });
 
-// Phones get the one-button form of the mode switch (a 44px target showing
-// the mode it switches to); wider screens get the sun/moon pill. Re-mounted
-// when the width crosses the breakpoint, so a rotated tablet swaps too.
-const themeToggleHost = document.getElementById("theme-toggle-mount");
-if (themeToggleHost) {
-  const phoneQuery = window.matchMedia("(max-width: 640px)");
-  let unmountThemeToggle = mountThemeToggle(themeToggleHost, { compact: phoneQuery.matches });
-  phoneQuery.addEventListener("change", (event) => {
-    unmountThemeToggle();
-    unmountThemeToggle = mountThemeToggle(themeToggleHost, { compact: event.matches });
-  });
-}
+// The header's mode switch (the sun/moon pill, or one 44px button on phones)
+// and its menu, which holds the nav below 960px. Shared with the doc pages.
+mountSiteChrome(document.getElementById("app-root"));
 
 const regionTooltip = mountRegionTooltip({
   clock,
@@ -774,6 +772,27 @@ if (zoomControls && zoomSlider) {
   zoomControls.hidden = false;
   zoomSlider.addEventListener("input", () => globe?.setZoom(parseFloat(zoomSlider.value) || 1));
 }
+
+// Phones (redesign plan 3.3, 3.4, 6.4): the globe is a static picture, and
+// "Explore the globe" opens it full screen. In dark the dock is a bottom
+// sheet under the horizon band.
+const phoneLayout = window.matchMedia("(max-width: 640px)");
+mountExplorer({
+  stage: document.querySelector(".globe-stage"),
+  trigger: document.getElementById("explore-btn"),
+  close: document.getElementById("explorer-close"),
+  bar: document.getElementById("explorer-bar"),
+  globe,
+  clock,
+  phoneQuery: phoneLayout,
+});
+const sheet = mountSheet({
+  dock: document.getElementById("dock"),
+  handle: document.getElementById("sheet-handle"),
+  isActive: () => phoneLayout.matches && document.documentElement.getAttribute("data-theme") === "dark",
+});
+phoneLayout.addEventListener("change", () => sheet.sync());
+window.addEventListener("themechange", () => sheet.sync());
 
 // Dismiss the loading screen now that the globe and all data are ready.
 const pageLoader = document.getElementById("page-loader");

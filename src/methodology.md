@@ -140,3 +140,9 @@ A peer review on 2026-04-25 surfaced a small set of corrections, landed 2026-04-
 *This page is the public methodology for* [everylastjoule.com](https://everylastjoule.com). *The companion essay is* [Every Last Joule: Bitcoin and curtailed renewable electricity](./paper). *Corrections: GitHub issues.*
 
 </div>
+
+```js
+// The site header's mode switch and menu (src/lib/site-header.ts draws it).
+import { mountSiteChrome } from "./components/site-chrome.js";
+const unmountSiteChrome = mountSiteChrome();
+```

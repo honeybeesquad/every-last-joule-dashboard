@@ -162,6 +162,12 @@ ${docBody}
 <p class="region-doc-foot">Current GW, 24-hour peak, 30-day TWh, and feed freshness for this region are on <a href="../">the globe</a>. Cite this page as <code>everylastjoule.com/region/${escapeHtml(region.id)}</code>. The dataset has a DOI; see <a href="../about">About</a>.</p>
 
 </div>
+
+\`\`\`js
+// The site header's mode switch and menu (src/lib/site-header.ts draws it).
+import { mountSiteChrome } from "../components/site-chrome.js";
+const unmountSiteChrome = mountSiteChrome();
+\`\`\`
 `;
 
 process.stdout.write(out);

@@ -1,8 +1,21 @@
 # Every Last Joule - light and dark redesign: implementation spec
 
-> **STATUS: ACTIVE.** PR 1 (theme plumbing, #1087) and PR 2 (light desktop, #1091) merged on 2026-09-23. PR 3 (dark desktop) is in review as #1092 on `feat/dark-horizon-desktop`. PRs 4-5 have not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
+> **STATUS: ACTIVE.** PR 1 (theme plumbing, #1087) and PR 2 (light desktop, #1091) merged on 2026-09-23. PR 3 (dark desktop) is in review as #1092 on `feat/dark-horizon-desktop`. PR 4 (tablet and phone) is in review as #1093 on `feat/redesign-tablet-phone`, stacked on PR 3. PR 5 has not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
 >
 > This is the handoff's SPEC.md (from `Claude outputs/elj-light-dark-handoff/`, untracked and never committed), copied in as the active plan on 2026-09-23. Paths like `mocks/`, `tokens/`, `reference/` and `screenshots/` are relative to that handoff folder, not to the repo. Edits since the copy: the decisions table in section 0 records the answers, section 7 records D6's answer, section 10 records PR status, and the "PR n as built" sections below record where the build departs from, or adds to, the text.
+
+## PR 4 as built (2026-09-24)
+
+What PR 4 does beyond, or differently from, the sections below.
+
+1. **The doc pages get the new header here.** Section 0 gives the other pages "the new header"; no PR in section 10 did. `observablehq.config.ts` puts it in Framework's `header` slot, built at build time by `src/lib/site-header.ts` from the same nav, pill and menu pieces the dashboard uses. The doc pages' DOI pill reads `dataset/CITATION.cff`; the dashboard's still reads the Zenodo loader. A JS block on each doc page mounts the mode switch and the menu (`src/components/site-chrome.js`). The pages' own "← Dashboard" row stays: page structure is unchanged. In dark the doc header keeps its rule; the dashboard's has none (it floats over the sky).
+2. **The menu applies below 960px**, not only on phones: the nav and the pill do not fit beside the lockup until about 960px. The nav keeps its place and landmark in the DOM; the menu is a panel under the header.
+3. **Light phone:** the stats follow the globe, as the board draws them, so on phones the hero is `display: contents` and its parts join the page's column. The figure caption is hidden on phones (the board has none; the legend keys the needles). Rows carry their " GW".
+4. **Dark phone:** the dock is a new wrapper (`#dock`), `display: contents` everywhere but the sheet. The two stats are the hero's own `dl`, fixed to the sheet's top rather than moved (one DOM). "Sichuan leads" is the rail's first row, restyled; its "est." tag stays, so it reads "Sichuan est. leads".
+5. **The dark phone band's geometry** scales from the board's: R = 650 × width / 390, the limb's top 235 × band height / 530, the centre at mid-width (the board's apex is there, not at 57%). The band runs from max(250px, 100svh − 530px) to the bottom.
+6. **The explorer** is the globe's own stage and canvas, fixed over the page. Dark uses the desktop horizon geometry there; the selection shows in a bottom card with no leader. The static phone globe draws no selection. Pinch zooms in light only.
+7. **Tablet:** light puts the rail's list and legend side by side, and stacks the timeline with its controls in a row. Dark stacks the two dock cards under the hero, with the desktop horizon behind; from 641px the stage's canvas takes only horizontal drags (`touch-action: pan-y`), so a vertical swipe scrolls on a touch tablet.
+8. **Performance:** outside the explorer, phones redraw the globe once per hour change in both modes (section 6.2 says so for light; the dark band is "static"). In the explorer the light globe plays in its `fast` mode. At 390×844 with 4× CPU throttling: the page 16.7ms a frame in both modes; the explorer 16.7ms in dark and 33.3ms in light while playing (at the 30 fps budget), 16.7ms while dragging.
 
 ## PR 3 as built (2026-09-24)
 
@@ -417,7 +430,7 @@ Each PR goes into `main` (never push to it), runs `npm run typecheck && npm test
 1. **Theme plumbing.** Fonts, `themes.css`, boot script, two-state toggle, token reads in `theme-tokens.ts`, mark tokens in the generator (loader and inline header mark), the hard-coded colour audit, loader in both modes. Layout unchanged, but every page is legible in both modes. Needs D1, D2, D3, D6. **Status: merged as #1087 (`9ef3f7ad`), 2026-09-23 (see "PR 1 as built" at the top).**
 2. **Light desktop.** Almanac grid, engraved globe, small-multiples timeline, rail, legend, selected label. Needs D4, D5. **Status: merged as #1091 (`3b272ec6`), 2026-09-23 (see "PR 2 as built" at the top).**
 3. **Dark desktop.** Horizon stage, horizon globe, ribbon, glass dock. **Status: in review as #1092 on `feat/dark-horizon-desktop` (see "PR 3 as built" at the top).**
-4. **Tablet and phone.** Both modes, the explorer, the dark bottom sheet, wrapping control rows, overflow checks.
+4. **Tablet and phone.** Both modes, the explorer, the dark bottom sheet, wrapping control rows, overflow checks. **Status: in review as #1093 on `feat/redesign-tablet-phone`, stacked on PR 3, with the doc pages' header (see "PR 4 as built" at the top).**
 5. **Clean-up.** Remove the sunfire / deepcurrent names and unused faces (after a grep), archive the plan with a `STATUS: SHIPPED` banner.
 
 ---

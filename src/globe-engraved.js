@@ -280,10 +280,13 @@ export function createEngravedRenderer() {
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.arc(sel.x, sel.y, 8.5 * sk, 0, Math.PI * 2); ctx.stroke();
       label = placeSelectionLabel(sel, { w: o.w, h: o.h, cx });
-      ctx.beginPath();
-      ctx.moveTo(label.leader[0][0], label.leader[0][1]);
-      for (let i = 1; i < label.leader.length; i++) ctx.lineTo(label.leader[i][0], label.leader[i][1]);
-      ctx.stroke();
+      // The explorer shows the selection in a bottom card: no leader.
+      if (o.leader !== false) {
+        ctx.beginPath();
+        ctx.moveTo(label.leader[0][0], label.leader[0][1]);
+        for (let i = 1; i < label.leader.length; i++) ctx.lineTo(label.leader[i][0], label.leader[i][1]);
+        ctx.stroke();
+      }
     }
     return { hits, label };
   }

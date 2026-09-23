@@ -11,7 +11,9 @@ import {
   FUELS, BAND_ALPHA, dayBand, dotHash, assignTerritory, DotCellIndex, barsForUnit, tintHex,
 } from "./lib/globe-surface.js";
 import { vec, subsolar, FOLLOW_SUN, wrapLon, D2R } from "./lib/globe-camera.js";
-import { HORIZON_DOT_PITCH, horizonGeometry, horizonTerritoryRadiusDeg } from "./lib/horizon.js";
+import {
+  HORIZON_DOT_PITCH, HORIZON_PHONE, horizonGeometry, horizonPhoneGeometry, horizonTerritoryRadiusDeg,
+} from "./lib/horizon.js";
 import { createEngravedRenderer } from "./globe-engraved.js";
 import { createHorizonRenderer } from "./globe-horizon.js";
 
@@ -131,6 +133,9 @@ export async function mountGlobe(canvas, initial) {
     lat0: FOLLOW_SUN.light.lat0,
     lon0: null,
     follow: true,
+    // Phones show a static globe; "Explore the globe" opens it full screen
+    // and interactive (src/components/explorer.js, redesign plan 6.4).
+    exploring: false,
   };
 
   const ZOOM_MIN = 0.5;
@@ -414,6 +419,11 @@ export async function mountGlobe(canvas, initial) {
   const lightRadius = () =>
     Math.min(canvas.width / dpr, canvas.height / dpr) * 0.43 * state.zoomScale;
 
+  // On a phone, outside the explorer, the globe is a static picture: no
+  // selection drawn on it, and (update() below) one draw per hour change.
+  const phoneStill = () => Boolean(phoneQuery?.matches) && !state.exploring;
+  const shownSelection = () => (phoneStill() ? null : state.selectedRegionId);
+
   // Where the label card must stay clear of at the bottom of the canvas: in
   // dark the glass dock sits over the canvas there. CSS sets it on the canvas
   // as --globe-label-clear; re-read on resize and theme change.
@@ -494,7 +504,7 @@ export async function mountGlobe(canvas, initial) {
       ctx, w: width, h: height, dpr, cx: width / 2, cy: height / 2, R: lightRadius(),
       lat0: state.lat0, lon0: state.lon0, sun, land, dots: lightDots, needles: marks, rings,
       inkRGB: tokens.inkRGB, paper: tokens.paper, warn: tokens.qualityWarning,
-      selectedId: state.selectedRegionId, fast, exact: !moving,
+      selectedId: shownSelection(), fast, exact: !moving, leader: !state.exploring,
     });
     ctx.restore();
     markHits = out.hits;
@@ -505,7 +515,8 @@ export async function mountGlobe(canvas, initial) {
   // stays put; the camera follows the sun until the visitor drags it, and a
   // drag turns longitude only. The backdrop and sprites are cached in the
   // renderer and the lit territory per quarter hour, so a frame is the dots
-  // and the beams.
+  // and the beams. On a phone, outside the explorer, it is the band under the
+  // hero (redesign plan 3.4); the explorer uses the desktop geometry.
   function renderDark() {
     const width = canvas.width / dpr;
     const height = canvas.height / dpr;
@@ -516,16 +527,19 @@ export async function mountGlobe(canvas, initial) {
     if (state.follow || state.lon0 == null) state.lon0 = wrapLon(sun.lon + FOLLOW_SUN.dark.lonOffset);
     if (!darkDots) darkDots = precomputeLandDots(countries, HORIZON_DOT_PITCH);
     const { marks, rings } = marksAt(hour);
-    const geo = horizonGeometry(width, height);
+    const band = phoneStill();
+    const geo = band ? horizonPhoneGeometry(width, height) : horizonGeometry(width, height);
+    const look = band ? HORIZON_PHONE : { lat0: FOLLOW_SUN.dark.lat0, beam: 0.1, widthScale: 1, dotScale: 1 };
 
     ctx.save();
     ctx.scale(dpr, dpr);
     const out = horizon.draw({
       ctx, w: width, h: height, dpr, R: geo.R, top: geo.top, cx: geo.cx,
-      lat0: FOLLOW_SUN.dark.lat0, lon0: state.lon0, sun,
+      lat0: look.lat0, lon0: state.lon0, sun,
       dots: darkDots, territory: darkTerritory(darkDots, hour),
       beams: marks, rings, t: tokens, fuel: fuelColor, tip: fuelTip,
-      selectedId: state.selectedRegionId, labelBottom: height - labelClear,
+      beam: look.beam, widthScale: look.widthScale, dotScale: look.dotScale,
+      selectedId: shownSelection(), labelBottom: height - labelClear, leader: !state.exploring,
     });
     ctx.restore();
     markHits = out.hits;
@@ -551,7 +565,7 @@ export async function mountGlobe(canvas, initial) {
 
   function placeSelection(label, hour) {
     if (!selectionEl) return;
-    const id = state.selectedRegionId;
+    const id = shownSelection();
     const region = label && id ? state.regions.find((r) => r.id === id) : null;
     if (!region) {
       selectionEl.hidden = true;
@@ -1213,18 +1227,31 @@ export async function mountGlobe(canvas, initial) {
   return {
     update(next) {
       // A clock tick, with nothing else changing, redraws light and dark only
-      // when it moves the picture. On phones the light globe draws once per
-      // hour change while the clock runs (redesign plan 6.2). Everywhere,
-      // "Now" follows the wall clock, which moves the sun 0.004 deg a second:
-      // a redraw every frame for that would be all cost, so ticks under 15 s
-      // of clock time wait. Every other change (mode, follow, data) draws at
-      // once, and G1 keeps its own loop.
+      // when it moves the picture. On a phone, outside the explorer, the globe
+      // draws once per hour change while the clock runs (redesign plan 6.2,
+      // 3.4); in the explorer the light globe plays in its `fast` mode.
+      // Everywhere, "Now" follows the wall clock, which moves the sun 0.004
+      // deg a second: a redraw every frame for that would be all cost, so
+      // ticks under 15 s of clock time wait. Every other change (mode,
+      // follow, data) draws at once, and G1 keeps its own loop.
       const clockOnly = Object.keys(next).every((k) => k === "utcHour" || (k === "mode" && next.mode === state.mode));
       const prev = lastDrawnHour;
       Object.assign(state, next);
       if (clockOnly && next.utcHour != null && prev != null && !usesG1()) {
-        if (isLight() && phoneQuery?.matches && Math.floor(next.utcHour) === Math.floor(prev)) return;
+        if (phoneStill() && Math.floor(next.utcHour) === Math.floor(prev)) return;
         if (Math.abs(next.utcHour - prev) < 1 / 240) return;
+        render({ fast: isLight() && Boolean(phoneQuery?.matches) });
+        return;
+      }
+      render();
+    },
+    /** Enter or leave the phone explorer (src/components/explorer.js). */
+    setExplorer(on) {
+      state.exploring = Boolean(on);
+      if (!state.exploring) {
+        state.dragging = false;
+        lightDrag = null;
+        canvas.classList.remove("is-dragging");
       }
       render();
     },

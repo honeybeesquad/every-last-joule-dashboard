@@ -1,7 +1,9 @@
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
+import { markStillHtml } from "./scripts/lib/brand-mark.js";
 import { REGIONS } from "./src/lib/regions.js";
+import { datasetVersionFromCitation, siteHeaderHTML } from "./src/lib/site-header.js";
 import { THEME_BOOT_SCRIPT } from "./src/lib/theme-boot.js";
 
 const fontFiles = readdirSync(join("src", "fonts"))
@@ -44,6 +46,18 @@ const socialMeta = [
   `<meta name="twitter:description" content="${OG_DESCRIPTION}">`,
   `<meta name="twitter:image" content="${OG_IMAGE}">`,
 ].join("");
+
+// The doc pages' header (redesign plan, section 0: the other pages "get the
+// new header"): built here so it is in each page's HTML before any script
+// runs. The dashboard draws its own (its mark is a generated block in
+// src/index.md), and the paper figure (/embed/) has none. The DOI pill reads
+// dataset/CITATION.cff; the dashboard's reads the Zenodo loader.
+const DATASET_VERSION = datasetVersionFromCitation(readFileSync(join("dataset", "CITATION.cff"), "utf8"));
+const HEADER_MARK = markStillHtml(30);
+const pageHeader = ({ path }: { path: string }) =>
+  path === "/" || path === "/index" || path.startsWith("/embed/")
+    ? null
+    : siteHeaderHTML({ path, dataset: DATASET_VERSION, markSvg: HEADER_MARK });
 
 export default {
   title: "Every Last Joule",
@@ -89,6 +103,7 @@ export default {
   // config is the only place we can guarantee script-before-CSS ordering.
   head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<script>${THEME_BOOT_SCRIPT}</script><link rel="stylesheet" href="./style.css"><script>(function(){var s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);})();</script>`,
   theme: "dark",
+  header: pageHeader,
   footer: "",
   toc: false,
   sidebar: false

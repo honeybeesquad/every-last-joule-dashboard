@@ -1037,8 +1037,9 @@ body:has(.app-shell) { max-width: none; }
 .app-lockup .app-mark { width: 26px; height: 26px; }
 .app-lockup .app-wordmark { font-size: 22px; line-height: 1; }
 :root[data-theme="dark"] .app-lockup .app-wordmark { font-size: 17px; }
-/* Dark's header floats over the sky: no rule (redesign plan 3.2, 3.4). */
-:root[data-theme="dark"] .app-header { border-bottom-color: transparent; }
+/* The dashboard's dark header floats over the sky: no rule (redesign plan
+   3.2, 3.4). The doc pages keep theirs. */
+:root[data-theme="dark"] .app-shell > .app-header { border-bottom-color: transparent; }
 
 .app-header-right {
   display: flex;
@@ -1841,32 +1842,18 @@ body:has(.app-shell) { max-width: none; }
   :root[data-theme="light"] .ctl-speed .seg-btn { padding: 0 10px; }
 }
 
-/* ---- Dark desktop: the Horizon stage ------------------------------------------------ */
-/* The first viewport is a stage (100svh, at least 720px): the globe canvas
-   fills it behind the header, the hero at (48, 128) and a glass dock 24px
-   in from the sides and bottom. The dock is the timeline (1fr) and the rail
-   (420px) side by side, each glass, joined along the rail's hairline. The
-   footer follows the stage. */
-@media (min-width: 1100px) {
-  :root[data-theme="dark"] .app-shell {
-    max-width: none;
-    padding: 0;
-    grid-template-columns: 24px minmax(0, 1fr) 420px 24px;
-    grid-template-rows: 76px auto minmax(24px, 1fr) 196px 24px auto;
-    grid-template-areas:
-      ". header header ."
-      ". hero hero ."
-      ". . . ."
-      ". timeline rail ."
-      ". . . ."
-      "footer footer footer footer";
-  }
-  :root[data-theme="dark"] .app-header { padding: 0 24px; }
+/* ---- Dark: the Horizon stage (tablet and desktop) ------------------------------ */
+/* From 641px the first viewport is a stage (100svh, at least 720px): the
+   globe canvas fills it behind the header and the hero, and the dock's two
+   glass cells sit at its foot (redesign plan 3.2, section 2). The footer
+   follows the stage. Desktop sets the cells side by side; tablet stacks
+   them. */
+@media (min-width: 641px) {
+  :root[data-theme="dark"] .app-shell { max-width: none; padding: 0; }
 
-  /* The stage: the globe's cell spans the header, hero, gap and dock rows,
-     and its height sets theirs (the 1fr row takes the slack). */
+  /* The stage: the globe's cell spans the stage's rows, and its height sets
+     theirs (a 1fr row takes the slack). */
   :root[data-theme="dark"] .globe-stage {
-    grid-area: 1 / 1 / 6 / -1;
     width: auto;
     height: auto;
     min-height: max(100svh, 720px);
@@ -1874,13 +1861,13 @@ body:has(.app-shell) { max-width: none; }
     max-height: none;
     justify-self: stretch;
   }
-  /* The label card keeps clear of the dock (196 + 24 + 12). */
-  :root[data-theme="dark"] #globe-canvas { --globe-label-clear: 232px; }
+  /* A vertical swipe on the stage scrolls the page; a horizontal drag turns
+     the globe. */
+  :root[data-theme="dark"] #globe-canvas { touch-action: pan-y; }
 
   :root[data-theme="dark"] .hero {
     width: min(600px, 100%);
     justify-self: start;
-    margin: 52px 0 0 24px;
     padding: 0;
   }
   /* The scrim that keeps the hero legible over bright beams: a 980 x 760
@@ -1897,7 +1884,7 @@ body:has(.app-shell) { max-width: none; }
     background: radial-gradient(closest-side, color-mix(in srgb, var(--surface-bg-3) 82%, transparent), transparent);
   }
   :root[data-theme="dark"] .hero-pct { margin: 20px 0 0 -8px; }
-  :root[data-theme="dark"] .hero .lead { max-width: 470px; margin-top: 24px; }
+  :root[data-theme="dark"] .hero .lead { max-width: 470px; margin-top: 24px; font-size: 18px; }
   :root[data-theme="dark"] .hero-stats { margin-top: 32px; }
 
   :root[data-theme="dark"] :is(.app-timeline, .rail) {
@@ -1907,10 +1894,9 @@ body:has(.app-shell) { max-width: none; }
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
     border: 1px solid var(--hairline);
+    border-radius: 20px;
   }
   :root[data-theme="dark"] .app-timeline {
-    border-right: 0;
-    border-radius: 20px 0 0 20px;
     grid-template-columns: minmax(0, 620px) minmax(24px, 1fr) auto;
     grid-template-rows: auto 1fr;
     grid-template-areas:
@@ -1932,10 +1918,10 @@ body:has(.app-shell) { max-width: none; }
     margin-top: 8px;
     padding-top: 0;
   }
+  :root[data-theme="dark"] .timeline-controls .ctl-row { flex-wrap: nowrap; }
 
   :root[data-theme="dark"] .rail {
     gap: 10px;
-    border-radius: 0 20px 20px 0;
     overflow-y: auto;
     scrollbar-width: thin;
   }
@@ -1944,22 +1930,546 @@ body:has(.app-shell) { max-width: none; }
   /* The dock lists five; the other five rows stay in the DOM for the modes
      and widths that show ten. */
   :root[data-theme="dark"] .hotspot-item:nth-child(n + 6) { display: none; }
+}
 
+/* Desktop: the dock's cells side by side, 196px tall, joined along the
+   rail's hairline; the hero at (48, 128). */
+@media (min-width: 1100px) {
+  :root[data-theme="dark"] .app-shell {
+    grid-template-columns: 24px minmax(0, 1fr) 420px 24px;
+    grid-template-rows: 76px auto minmax(24px, 1fr) 196px 24px auto;
+    grid-template-areas:
+      ". header header ."
+      ". hero hero ."
+      ". . . ."
+      ". timeline rail ."
+      ". . . ."
+      "footer footer footer footer";
+  }
+  :root[data-theme="dark"] .app-shell > .app-header { padding: 0 24px; }
+  :root[data-theme="dark"] .globe-stage { grid-area: 1 / 1 / 6 / -1; }
+  /* The label card keeps clear of the dock (196 + 24 + 12). */
+  :root[data-theme="dark"] #globe-canvas { --globe-label-clear: 232px; }
+  :root[data-theme="dark"] .hero { margin: 52px 0 0 24px; }
+  :root[data-theme="dark"] .app-timeline { border-right: 0; border-radius: 20px 0 0 20px; }
+  :root[data-theme="dark"] .rail { border-radius: 0 20px 20px 0; }
   :root[data-theme="dark"] .app-footer { padding: 16px 48px 24px; }
 }
 
-/* Narrow screens until the tablet and phone layouts (PR 4): one column. */
-@media (max-width: 1099px) {
-  .globe-stage { width: min(100%, 720px); }
-  .app-header-right { gap: 10px 16px; }
+/* Tablet: the dock splits into two stacked cards (section 2). */
+@media (min-width: 641px) and (max-width: 1099px) {
+  :root[data-theme="dark"] .app-shell {
+    grid-template-columns: 24px minmax(0, 1fr) 24px;
+    grid-template-rows: auto auto minmax(24px, 1fr) auto 12px auto 24px auto;
+    grid-template-areas:
+      ". header ."
+      ". hero ."
+      ". . ."
+      ". timeline ."
+      ". . ."
+      ". rail ."
+      ". . ."
+      "footer footer footer";
+  }
+  :root[data-theme="dark"] .globe-stage { grid-area: 1 / 1 / 8 / -1; }
+  /* The label card keeps clear of both cards. */
+  :root[data-theme="dark"] #globe-canvas { --globe-label-clear: 480px; }
+  :root[data-theme="dark"] .hero { margin: 40px 0 0; }
+  :root[data-theme="dark"] .app-footer { padding: 16px 24px 24px; }
+}
+
+/* Light tablet: hero and globe side by side, the rail and the timeline full
+   width below (section 2). */
+@media (min-width: 641px) and (max-width: 1099px) {
+  :root[data-theme="light"] .app-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "header header"
+      "hero globe"
+      "rail rail"
+      "timeline timeline"
+      "footer footer";
+    column-gap: 32px;
+    padding: 0 24px;
+  }
+  :root[data-theme="light"] .globe-stage { align-self: center; }
+  :root[data-theme="light"] .rail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 232px;
+    grid-template-areas: "head head" "note legend" "list legend" "more legend";
+    column-gap: 40px;
+    align-content: start;
+    padding-top: 28px;
+  }
+  :root[data-theme="light"] .rail-head { grid-area: head; }
+  :root[data-theme="light"] .hotspot-units-note { grid-area: note; }
+  :root[data-theme="light"] .hotspot-list { grid-area: list; }
+  :root[data-theme="light"] .rail-note { grid-area: more; }
+  :root[data-theme="light"] .globe-legend { grid-area: legend; align-self: start; margin-top: 0; }
+  :root[data-theme="light"] .timeline-controls { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+}
+
+/* ---- The header's menu (below 960px) ------------------------------------------------ */
+/* Below 960px the nav and the DOI pill do not fit beside the lockup, so they
+   move into a menu under the header; src/components/site-chrome.js opens it.
+   The nav keeps its place in the DOM and its landmark. */
+.app-menu-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.app-menu-btn:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.app-menu-btn svg { display: block; }
+.app-nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+@media (max-width: 960px) {
+  .app-header { flex-wrap: nowrap; }
+  .app-header-right { flex-wrap: nowrap; gap: 4px; }
+  .app-menu-btn { display: inline-flex; }
+  .app-nav { display: none; }
+  .app-header.is-menu-open .app-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    position: absolute;
+    top: calc(100% + 1px);
+    right: 0;
+    z-index: 40;
+    min-width: 232px;
+    padding: 6px 0;
+    background: var(--surface-raised);
+    border: 1px solid var(--hairline-strong);
+  }
+  :root[data-theme="dark"] .app-header.is-menu-open .app-nav {
+    background: var(--surface-panel);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border-color: var(--hairline);
+    border-radius: 12px;
+  }
+  .app-header.is-menu-open .app-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 18px;
+    font-size: 16px;
+  }
+  .app-header.is-menu-open .app-nav .app-version {
+    align-self: flex-start;
+    min-height: 0;
+    margin: 8px 18px 8px;
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+}
+
+/* ---- The doc pages' header ------------------------------------------------------------ */
+/* observablehq.config.ts puts src/lib/site-header.ts's header in Framework's
+   header slot, which is a fixed bar with a look of its own. Ours sits in the
+   page's flow, like the dashboard's, and reads the same .app-header rules. */
+#observablehq-header {
+  position: relative;
+  inset: auto;           /* Framework's left/right place its fixed bar; they would shift ours */
+  z-index: 30;
+  display: block;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+}
+:root:has(#observablehq-header) { scroll-padding-top: 2.5rem; }
+/* The header meets the top of the page, as the dashboard's does. */
+#observablehq-center:has(> #observablehq-header) { margin-top: 0; }
+#observablehq-header ~ #observablehq-main { margin-top: 0; }
+.site-header {
+  min-height: 64px;
+  padding: 0;
+  border-bottom: 1px solid var(--hairline);
+}
+@media (min-width: 1100px) {
+  .site-header { min-height: 76px; padding: 0 24px; }
 }
 @media (max-width: 640px) {
+  /* Edge to edge whatever gutters the page keeps, then the phone header's
+     own 16/20px, as the dashboard's. */
+  #observablehq-header { margin-inline: calc(50% - 50vw); }
+  .site-header { height: 64px; margin: 0 16px 0 20px; }
+}
+
+/* ---- Phones (≤640px), both modes ------------------------------------------------------ */
+.explore-btn,
+.explorer-close,
+.explorer-bar,
+.sheet-handle { display: none; }
+/* Outside the phone sheet the dock is only a wrapper: its sections are the
+   page grid's own items. */
+.dock { display: contents; }
+
+@media (max-width: 640px) {
   .app-shell { padding: 0 16px 0 20px; }
-  .app-nav { gap: 6px 16px; }
+  .app-shell > .app-header { height: 64px; min-height: 64px; padding: 0; gap: 8px; }
+  .app-lockup .app-wordmark { white-space: nowrap; }
   .hero-pct { font-size: var(--fs-hero); }
   .hero .lead { font-size: 16px; }
+  .globe-zoom-controls { display: none; }
+  /* The network hashrate is left out on phones, as both phone boards do. */
+  .hero-stats .stat:nth-child(2) { display: none; }
+
+  /* The phone globe is a picture, so a vertical swipe scrolls the page;
+     "Explore the globe" opens it full screen (section 6.4). */
+  #globe-canvas { pointer-events: none; touch-action: auto; cursor: default; }
+  .explore-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 2;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font: 500 14px/1 var(--font-body);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
   .timeline-fuels { grid-template-columns: minmax(0, 1fr); }
-  .timeline-controls .seg { max-width: 100%; }
+  /* The controls wrap: play, speeds and Now; then the time window and the
+     units, each full width. */
+  .timeline-controls { align-items: stretch; }
+  .timeline-controls > :is(#mode-toggle, #units-toggle) .seg { display: flex; width: 100%; }
+  .timeline-controls > :is(#mode-toggle, #units-toggle) .seg-btn { flex: 1 1 0; }
+}
+
+/* ---- Light phone (redesign plan 3.3) ----------------------------------------------- */
+@media (max-width: 640px) {
+  /* The hero's parts join the page's column so the stats can follow the
+     globe, as the board draws them. */
+  :root[data-theme="light"] .app-shell { display: flex; flex-direction: column; }
+  :root[data-theme="light"] .hero { display: contents; }
+  :root[data-theme="light"] :is(.hero-eyebrow, .hero-pct, .hero .lead) { order: 1; }
+  :root[data-theme="light"] .globe-stage { order: 2; }
+  :root[data-theme="light"] .hero-stats { order: 3; }
+  :root[data-theme="light"] .rail { order: 4; }
+  :root[data-theme="light"] .app-timeline { order: 5; }
+  :root[data-theme="light"] .app-footer { order: 6; }
+  /* The figure caption has no room on the board; the legend below keys the
+     needles. */
+  :root[data-theme="light"] .hero-caption { display: none; }
+
+  :root[data-theme="light"] .hero-eyebrow { display: flex; flex-wrap: wrap; margin-top: 22px; font-size: 11px; }
+  :root[data-theme="light"] .hero-eyebrow-time { display: inline; order: 1; }
+  :root[data-theme="light"] .hero-eyebrow-time::before { content: "\00a0·\00a0"; }
+  :root[data-theme="light"] .hero-pct { margin: 16px 0 0 -4px; }
+  :root[data-theme="light"] .hero .lead { margin-top: 16px; }
+
+  /* The globe bleeds past both edges: a (width + 30) square at (-15, -12)
+     in a figure 372/390 of the width tall. */
+  :root[data-theme="light"] .globe-stage {
+    width: auto;
+    height: calc(100vw * 372 / 390);
+    aspect-ratio: auto;
+    max-height: none;
+    margin: 34px -16px 0 -20px;
+    overflow: hidden;
+  }
+  :root[data-theme="light"] #globe-canvas {
+    inset: auto;
+    left: -15px;
+    top: -12px;
+    width: calc(100vw + 30px);
+    height: calc(100vw + 30px);
+  }
+  :root[data-theme="light"] .explore-btn {
+    right: 20px;
+    bottom: 6px;
+    border: 0;
+    background: var(--ink);
+    color: var(--surface-bg-3);
+  }
+
+  :root[data-theme="light"] .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 14px 0 0;
+    border-top: 1px solid var(--hairline-strong);
+    border-bottom: 1px solid var(--hairline);
+  }
+  :root[data-theme="light"] .hero-stats .stat {
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 4px;
+    min-width: 0;
+    padding: 10px 0;
+    border-top: 0;
+  }
+  :root[data-theme="light"] .hero-stats .stat:nth-child(3) { padding-left: 14px; border-left: 1px solid var(--hairline); }
+  :root[data-theme="light"] .stat-label { font-size: 12.5px; }
+
+  :root[data-theme="light"] .rail { padding-top: 18px; }
+  :root[data-theme="light"] .rail-title { font-size: 23px; }
+  :root[data-theme="light"] .hotspot-item {
+    grid-template-columns: 22px 26px minmax(0, 1fr) auto;
+    padding: 10px 0;
+    font-size: 15px;
+  }
+  :root[data-theme="light"] .hs-tag { font-size: 15px; }
+  :root[data-theme="light"] .hotspot-gw { font-size: 14px; }
+  /* The rows carry their unit on phones, as the board does. */
+  :root[data-theme="light"] .hs-unit { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
+}
+
+/* ---- Dark phone (redesign plan 3.4) ------------------------------------------------ */
+/* One screen: the header and the hero over the sky, the horizon in a band
+   under them, and the dock as a sheet fixed to the bottom (132px collapsed,
+   70% of the viewport open; src/components/sheet.js). The two stats ride at
+   the sheet's top. */
+@media (max-width: 640px) {
+  :root[data-theme="dark"] .app-shell {
+    --sheet-h: 132px;
+    display: block;
+    position: relative;
+  }
+  :root[data-theme="dark"] .app-shell:has(.dock.is-open) { --sheet-h: 70svh; }
+  :root[data-theme="dark"] .app-shell > .app-header { position: relative; z-index: 10; }
+
+  /* The hero fills the first screen, so the footer follows it. It opens no
+     stacking context: its stats sit in the sheet, above the glass. */
+  :root[data-theme="dark"] .hero {
+    z-index: auto;
+    min-height: calc(100svh - 64px);
+    padding: 16px 0 0;
+  }
+  :root[data-theme="dark"] :is(.hero-eyebrow, .hero-pct, .hero .lead) { position: relative; z-index: 1; }
+  :root[data-theme="dark"] .hero-eyebrow { font-size: 10px; }
+  :root[data-theme="dark"] .hero-eyebrow::before { width: 6px; height: 6px; margin-right: 8px; box-shadow: none; }
+  :root[data-theme="dark"] .hero-pct { margin: 14px 0 0 -5px; }
+  :root[data-theme="dark"] .hero .lead { margin-top: 16px; font-size: 15px; }
+
+  /* The band: from 314px on an 844px screen to the bottom (390 x 530). */
+  /* justify-self: stretch - box alignment applies to absolute boxes too, and
+     the base rule's `center` would shrink the band to its (empty) content. */
+  :root[data-theme="dark"] .globe-stage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: max(250px, calc(100svh - 530px));
+    height: min(530px, calc(100svh - 250px));
+    width: auto;
+    aspect-ratio: auto;
+    max-height: none;
+    margin: 0;
+    justify-self: stretch;
+    align-self: stretch;
+  }
+  :root[data-theme="dark"] .explore-btn {
+    left: 50%;
+    bottom: 190px;
+    transform: translateX(-50%);
+    padding: 0 18px;
+    border: 1px solid var(--hairline);
+    background: color-mix(in srgb, var(--surface-panel) 95%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: var(--ink);
+  }
+
+  :root[data-theme="dark"] .dock {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    z-index: 30;
+    height: var(--sheet-h);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 0 16px 14px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--surface-bg-3) 82%, transparent);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--hairline);
+    border-radius: 20px;
+    transition: height 220ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1));
+  }
+  :root[data-theme="dark"] .dock.is-open { overflow-y: auto; overscroll-behavior: contain; }
+  :root[data-theme="dark"] .dock:focus-visible { outline-offset: -2px; }
+  /* Room for the stats, which are the hero's and ride here. */
+  :root[data-theme="dark"] .dock::before { content: ""; order: 1; flex: none; height: 58px; }
+  :root[data-theme="dark"] .sheet-handle {
+    display: flex;
+    order: 0;
+    flex: none;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 24px;
+    padding: 10px 0 0;
+    border: 0;
+    background: transparent;
+    cursor: grab;
+    touch-action: none;
+  }
+  :root[data-theme="dark"] .sheet-handle-bar {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--ink-muted) 45%, transparent);
+  }
+  :root[data-theme="dark"] .sheet-handle-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  :root[data-theme="dark"] .hero-stats {
+    position: fixed;
+    left: 25px;
+    right: 25px;
+    bottom: calc(8px + var(--sheet-h) - 1px - 24px - 46px);
+    z-index: 31;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: 46px;
+    margin: 0;
+    transition: bottom 220ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1));
+  }
+  :root[data-theme="dark"] .hero-stats .stat { gap: 6px; padding: 0; }
+  :root[data-theme="dark"] .hero-stats .stat:nth-child(3) { padding-left: 16px; border-left-color: var(--hairline); }
+  :root[data-theme="dark"] .stat-label { font-size: 10px; }
+  :root[data-theme="dark"] .stat-value { font-size: 28px; }
+
+  /* Collapsed: the region that leads, under a hairline. */
+  :root[data-theme="dark"] .rail { order: 3; padding: 0; min-width: 0; }
+  :root[data-theme="dark"] .app-timeline { order: 2; padding: 16px 0 0; gap: 12px; }
+  :root[data-theme="dark"] .dock:not(.is-open) .app-timeline { display: none; }
+  :root[data-theme="dark"] .dock:not(.is-open) .rail > :not(.hotspot-list) { display: none; }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-list {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--hairline);
+  }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-list > :not(:first-child) { display: none; }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-item:first-child {
+    grid-template-columns: 8px minmax(0, 1fr) auto;
+    column-gap: 8px;
+  }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-item:first-child::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+  }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-item:first-child .hotspot-name::after { content: " leads"; }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-item:first-child .hs-bar { display: none; }
+  :root[data-theme="dark"] .hs-unit { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
+
+  /* Open: the ribbon and the controls, then the top ten and the legend. */
+  :root[data-theme="dark"] .dock.is-open .rail { gap: 10px; padding-top: 20px; }
+  :root[data-theme="dark"] .dock.is-open .rail-note { display: none; }
+  :root[data-theme="dark"] .dock.is-open .hotspot-item { grid-template-columns: minmax(0, 1fr) 72px 60px; }
+  :root[data-theme="dark"] .timeline-fuels { justify-content: flex-start; }
+
+  /* The page scrolls above the collapsed sheet. */
+  :root[data-theme="dark"] .app-footer { padding-bottom: calc(132px + 32px); }
+}
+
+/* ---- The explorer (phones, both modes; redesign plan 6.4) ------------------------ */
+/* The globe's own stage, fixed over the page (src/components/explorer.js).
+   `:root` lifts these over the phone layouts' mode-scoped rules. */
+html.is-exploring,
+html.is-exploring body { overflow: hidden; }
+:root .globe-stage.is-exploring {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  justify-self: stretch;
+  align-self: stretch;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: auto;
+  margin: 0;
+  overflow: hidden;
+  background: var(--surface-bg-3);
+}
+:root .globe-stage.is-exploring #globe-canvas {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+}
+.globe-stage.is-exploring .explore-btn { display: none; }
+.globe-stage.is-exploring .explorer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  right: 12px;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface-raised);
+  color: var(--ink);
+  cursor: pointer;
+}
+.globe-stage.is-exploring .explorer-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 3;
+  padding: 6px 16px 6px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface-raised);
+}
+:root[data-theme="dark"] .globe-stage.is-exploring :is(.explorer-close, .explorer-bar) {
+  border-color: var(--hairline);
+  background: var(--surface-panel);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+.explorer-bar .ctl-play { width: 44px; height: 44px; }
+.explorer-scrub { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.explorer-time { font: 11px/1.2 var(--font-mono); letter-spacing: 0.06em; color: var(--ink); }
+.explorer-range { width: 100%; margin: 0; accent-color: var(--ink); }
+:root[data-theme="dark"] .explorer-range { accent-color: var(--brand); }
+/* The selection is a card above the bar, not a label by its mark. */
+.globe-stage.is-exploring .globe-selection {
+  left: 12px !important;
+  right: 12px;
+  top: auto !important;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  width: auto;
 }
 
 /* =========================================================================
