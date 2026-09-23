@@ -5,8 +5,8 @@
 
 ## Light/dark redesign, PR 4: tablet and phone, the explorer, the doc pages' header (2026-09-24)
 
-Branch `feat/redesign-tablet-phone`, **stacked on PR 3 (#1092), which must
-merge first**. The plan is
+Branch `feat/redesign-tablet-phone` (**#1093**), **stacked on PR 3 (#1092),
+which must merge first**. The plan is
 `docs/superpowers/plans/2026-09-23-light-dark-redesign.md`; its "PR 4 as
 built" section lists every departure from the spec.
 
