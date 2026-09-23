@@ -24,19 +24,20 @@ function setUp() {
 
 const pressed = (el: Element | null) => el?.getAttribute("aria-pressed");
 
-describe("playback speeds (redesign plan D4, decided 2026-09-23)", () => {
-  it("offers 1x, 4x and 8x plus Now", () => {
-    expect(SPEEDS).toEqual([1, 4, 8]);
+describe("playback speeds (0.5× restored as the default 2026-09-24)", () => {
+  it("offers 0.5x, 1x, 4x and 8x plus Now", () => {
+    expect(SPEEDS).toEqual([0.5, 1, 4, 8]);
     const { host } = setUp();
     const chips = [...host.querySelectorAll(".ctl-speed-chip")].map((b) => b.textContent!.trim());
-    expect(chips).toEqual(["1×", "4×", "8×"]);
+    expect(chips).toEqual(["0.5×", "1×", "4×", "8×"]);
     expect(host.querySelector(".ctl-now")!.textContent!.trim()).toBe("Now");
   });
 
-  it("defaults to 1x", () => {
+  it("defaults to 0.5x", () => {
     const { host, clock } = setUp();
-    expect(clock.speed).toBe(1);
-    expect(pressed(host.querySelector(".ctl-speed-chip[data-speed='1']"))).toBe("true");
+    expect(clock.speed).toBe(0.5);
+    expect(pressed(host.querySelector(".ctl-speed-chip[data-speed='0.5']"))).toBe("true");
+    expect(pressed(host.querySelector(".ctl-speed-chip[data-speed='1']"))).toBe("false");
     expect(pressed(host.querySelector(".ctl-speed-chip[data-speed='4']"))).toBe("false");
   });
 
@@ -45,7 +46,7 @@ describe("playback speeds (redesign plan D4, decided 2026-09-23)", () => {
     (host.querySelector(".ctl-speed-chip[data-speed='8']") as HTMLButtonElement).click();
     expect(clock.speed).toBe(8);
     expect(pressed(host.querySelector(".ctl-speed-chip[data-speed='8']"))).toBe("true");
-    expect(pressed(host.querySelector(".ctl-speed-chip[data-speed='1']"))).toBe("false");
+    expect(pressed(host.querySelector(".ctl-speed-chip[data-speed='0.5']"))).toBe("false");
   });
 
   it("Now follows the wall clock, releases the speeds, and tells the page (follow-the-sun back on)", () => {
