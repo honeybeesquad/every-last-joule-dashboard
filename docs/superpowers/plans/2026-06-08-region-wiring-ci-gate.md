@@ -35,7 +35,7 @@ Expected: new branch created; no pre-existing `region-wiring` branch (if one exi
 git add docs/superpowers/specs/2026-06-08-region-wiring-ci-gate-design.md docs/superpowers/plans/2026-06-08-region-wiring-ci-gate.md
 git commit -m "docs: spec + plan for region↔wiring CI gate"
 ```
-Expected: commit succeeds (pre-commit hook runs `npm run lint` + `npm test`; both already green on `main`).
+Expected: commit succeeds (the pre-commit hook is a secret scanner only; it does not run lint or tests).
 
 ---
 
@@ -468,6 +468,6 @@ Expected: PR created. CI runs and the new `Region wiring` step passes.
 
 - **The one high-risk step is Task 2 Step 3/4** — moving the 230-line literal verbatim. Do not reformat or reorder it. The Denmark `fuelShare` IIFE, every `splitRegion(...)` call, the `...spread` entries, and key order must be preserved exactly. Task 2 Step 5/6 (integrity test + live mount) are what prove it was faithful.
 - **No snapshot writes in commits.** `npm run dev` (Task 2 Step 6) may rewrite `data/snapshots/last-good/*.json` from live fetches. Do NOT stage those — `git checkout -- data/snapshots/last-good/` before committing if they appear.
-- **Hooks:** every `git commit` runs `npm run lint` + `npm test`. If a hook fails, fix the cause and make a NEW commit — do not `--amend` or `--no-verify` (CLAUDE.md).
+- **Hooks:** the pre-commit hook is a secret scanner only (`.githooks/README.md`); it does not run lint or tests, so run `npm run typecheck && npm test && npm run ci:gates` yourself. If the hook fails, fix the cause and make a NEW commit — do not `--amend` or `--no-verify` (CLAUDE.md).
 - **If a snapshot is genuinely missing** for an assembly loader (Task 1 throws), STOP and surface it — that loader needs a committed snapshot before the gate can verify it.
 - **STATUS.md (CLAUDE.md protocol):** include a STATUS.md update in the Task 4 commit (or the PR) — add the new `ci:region-wiring` gate to the CI-gates list and note the `assembleRegionData` extraction under "What's shipped". Stale STATUS is treated as worse than none in this repo.

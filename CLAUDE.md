@@ -70,4 +70,5 @@ Multiple AI-authored data PRs (e.g. #267) shipped descriptions claiming tier upg
 - Never push directly to `main`/`master`.
 - Never force-push without explicit user approval.
 - Never reuse a branch name that has an open or recently-closed PR without surfacing that to the user first.
-- Hooks run on commit (`npm run lint`, `npm test`). If a hook fails, fix the cause and create a NEW commit. Do not `--amend` or `--no-verify`.
+- The only commit hook is `.githooks/pre-commit` (`core.hooksPath`, set by `npm install`), a secret scanner over the staged diff: burned keys plus API-key/token patterns. It does not run lint (there is no `lint` script) or tests, so run the local gates yourself: `npm run typecheck && npm test && npm run ci:gates`.
+- If the hook blocks a commit, fix the cause (remove the secret, or use a `REDACTED_FOR_FIXTURES` / `test-dummy` placeholder in fixtures) and create a NEW commit. Do not `--amend` or `--no-verify`; the only sanctioned bypass is the last-resort false-positive path in `.githooks/README.md`, with the reason in the commit message.
