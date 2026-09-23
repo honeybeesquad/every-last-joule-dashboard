@@ -142,11 +142,11 @@ describe("theme boot script", () => {
   });
 
   describe("the paper figure (/embed/globe)", () => {
-    it("keeps Sunfire whatever is stored or preferred", () => {
+    it("pins the embed palette whatever is stored or preferred", () => {
       window.history.replaceState({}, "", "/embed/globe");
       const os = fakeColorScheme(false);
       localStorage.setItem(THEME_STORAGE_KEY, "light");
-      expect(boot()).toBe("sunfire");
+      expect(boot()).toBe("embed");
       // ...and does not follow the OS afterwards.
       expect(os.listeners).toHaveLength(0);
     });

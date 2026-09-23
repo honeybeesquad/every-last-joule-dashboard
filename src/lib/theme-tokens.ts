@@ -80,7 +80,7 @@ export interface GlobeTokens {
   /** The page ground (--surface-bg-3): the dark globe's sky. */
   bg: string;
   /** Beam cores and tip glows in dark (--fuel-<fuel>-tip). "" where a theme
-   *  defines none (the Sunfire paper figure), and the caller tints instead. */
+   *  defines none (the paper figure's), and the caller tints instead. */
   fuelTips: { solar: string; wind: string; hydro: string };
 }
 
@@ -103,7 +103,7 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
     dotNeutralRGB: parseHexToRGB(get("--globe-dot-neutral")) ?? "228,220,204",
     brandRGB: (get("--brand-rgb") || "255, 208, 90").replace(/\s+/g, ""),
     // The redesign's tokens. Fallbacks are the dark (Horizon) values. The
-    // Sunfire-pinned paper figure defines none of the four globe-* ones and
+    // paper figure's palette defines none of the four globe-* ones and
     // never draws with them.
     ink:           get("--ink") || "#F2F5F9",
     inkRGB:        (get("--globe-ink-rgb") || "242, 245, 249").replace(/\s+/g, ""),

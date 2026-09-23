@@ -15,7 +15,7 @@
  * entry.
  *
  * The whole page is static markup. Charts are inline SVG coloured with
- * `var(--fuel-*)`, so they render correctly in both Sunfire and Deep Current
+ * `var(--fuel-*)`, so they render correctly in both light and dark
  * with no script and no `themechange` listener. Nothing here fetches anything.
  *
  * ---------------------------------------------------------------------------

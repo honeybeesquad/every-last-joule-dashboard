@@ -1,8 +1,18 @@
 # Every Last Joule - light and dark redesign: implementation spec
 
-> **STATUS: ACTIVE.** PR 1 (theme plumbing, #1087) and PR 2 (light desktop, #1091) merged on 2026-09-23. PR 3 (dark desktop) is in review as #1092 on `feat/dark-horizon-desktop`. PR 4 (tablet and phone) is in review as #1093 on `feat/redesign-tablet-phone`, stacked on PR 3. PR 5 has not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
+> **STATUS: SHIPPED.** All five PRs are built: PR 1 theme plumbing (#1087) and PR 2 light desktop (#1091) merged on 2026-09-23; PR 3 dark desktop (#1092), PR 4 tablet and phone (#1093) and PR 5 clean-up (#1094, which moved this file here) merge in that order, each stacked on the one before. This file is historical: the state of record is `STATUS.md` and git. Archived by PR 5 on 2026-09-24.
 >
 > This is the handoff's SPEC.md (from `Claude outputs/elj-light-dark-handoff/`, untracked and never committed), copied in as the active plan on 2026-09-23. Paths like `mocks/`, `tokens/`, `reference/` and `screenshots/` are relative to that handoff folder, not to the repo. Edits since the copy: the decisions table in section 0 records the answers, section 7 records D6's answer, section 10 records PR status, and the "PR n as built" sections below record where the build departs from, or adds to, the text.
+
+## PR 5 as built (2026-09-24)
+
+The clean-up.
+
+1. **"sunfire" is gone as a theme name.** The paper figure's palette block is now `:root[data-theme="embed"]`. The boot script pins `embed` on `/embed/` paths, and `src/embed/globe.md` sets the same, with identical tokens. So the figure's computed styles, and its pixels outside the canvas, are unchanged; this was checked against a build of PR 4. The old picker's stored values, `sunfire` and `deepcurrent`, still map to dark, because D2's returning visitors may hold them for years. The Deep Current block went in PR 1. Comments that named the two old themes as the site's now say light and dark.
+2. **Unused faces are deleted**: IBM Plex Sans and Mono, Schibsted Grotesk and the 16-file Gotham `.ttf` set. The deletion followed a grep and a browser check of which faces each page loads: the site loads Geist, Geist Mono and Newsreader, and the paper figure loads Fraunces and Inter. Fraunces and Inter stay. `src/fonts/SOURCES.md` lists the five that remain, and the figure's unused font tokens now name only faces it can load.
+3. **Dead CSS is removed.** A scan for class selectors that nothing in `src/` produces found `.display-xl`, `.display-lg`, `.display`, `.mono`, `.on-dark`, `.dot-brand`, `.dot-orange`, `.methodology-toc` and `.region-tooltip-source`. The legacy alias block (`--surface`, `--border`, `--fg-on-dark` and so on, read by nothing) is removed, as are the display type-scale tokens only those classes read. The stylesheet's heading still named the Stacked brand.
+4. **The `/regions` deck** said the dashboard "lists the top 50 per fuel". It lists the ten largest, across fuels, and it was already out of date before this redesign.
+5. **This plan is archived** with this banner.
 
 ## PR 4 as built (2026-09-24)
 
@@ -429,25 +439,25 @@ Each PR goes into `main` (never push to it), runs `npm run typecheck && npm test
 
 1. **Theme plumbing.** Fonts, `themes.css`, boot script, two-state toggle, token reads in `theme-tokens.ts`, mark tokens in the generator (loader and inline header mark), the hard-coded colour audit, loader in both modes. Layout unchanged, but every page is legible in both modes. Needs D1, D2, D3, D6. **Status: merged as #1087 (`9ef3f7ad`), 2026-09-23 (see "PR 1 as built" at the top).**
 2. **Light desktop.** Almanac grid, engraved globe, small-multiples timeline, rail, legend, selected label. Needs D4, D5. **Status: merged as #1091 (`3b272ec6`), 2026-09-23 (see "PR 2 as built" at the top).**
-3. **Dark desktop.** Horizon stage, horizon globe, ribbon, glass dock. **Status: in review as #1092 on `feat/dark-horizon-desktop` (see "PR 3 as built" at the top).**
-4. **Tablet and phone.** Both modes, the explorer, the dark bottom sheet, wrapping control rows, overflow checks. **Status: in review as #1093 on `feat/redesign-tablet-phone`, stacked on PR 3, with the doc pages' header (see "PR 4 as built" at the top).**
-5. **Clean-up.** Remove the sunfire / deepcurrent names and unused faces (after a grep), archive the plan with a `STATUS: SHIPPED` banner.
+3. **Dark desktop.** Horizon stage, horizon globe, ribbon, glass dock. **Status: #1092 on `feat/dark-horizon-desktop` (see "PR 3 as built" at the top).**
+4. **Tablet and phone.** Both modes, the explorer, the dark bottom sheet, wrapping control rows, overflow checks. **Status: #1093 on `feat/redesign-tablet-phone`, stacked on PR 3, with the doc pages' header (see "PR 4 as built" at the top).**
+5. **Clean-up.** Remove the sunfire / deepcurrent names and unused faces (after a grep), archive the plan with a `STATUS: SHIPPED` banner. **Status: #1094 on `chore/redesign-cleanup`, stacked on PR 4; it archived this file (see "PR 5 as built" at the top).**
 
 ---
 
 ## 11. Acceptance
 
-- [ ] Both modes at 1440×900 match `mocks/light-desktop.html` and `mocks/dark-desktop.html` in layout, type and colour, with live data in place of the snapshot.
-- [ ] Both modes at 390×844 match the phone mocks above the fold; below the fold follows 3.3 and 3.4.
-- [ ] Switching mode swaps layout and palette, keeps hour, selection, play state and camera longitude, and fires `themechange` once.
-- [ ] First visit follows the system setting; a stored choice wins; `sunfire` / `deepcurrent` become `dark`.
-- [ ] No flash of the wrong mode on load (boot script runs before `style.css`).
-- [ ] `scrollWidth === clientWidth` at 320, 375 and 390 on every page (the five doc pages plus all `/region/<id>` pages), both modes.
-- [ ] Quality encoding as in 6.1, in both modes, and the legend says so.
-- [ ] One label at most on the globe, and it tracks its region in both axes while the globe turns.
-- [ ] Frame budgets in section 8 hold; no animation loop runs while idle.
-- [ ] Reduced motion honoured everywhere in section 8.
-- [ ] Contrast pairs in section 9 hold; no new white literals in `style.css` outside the allowlist.
-- [ ] The generated mark blocks use only `--mark-*` variables (tested); the loader and header show the mode's mark and wordmark.
-- [ ] `embed/globe.md` looks exactly as before.
-- [ ] `ci:gates` passes with no golden file touched; `STATUS.md` updated per PR.
+- [x] Both modes at 1440×900 match `mocks/light-desktop.html` and `mocks/dark-desktop.html` in layout, type and colour, with live data in place of the snapshot. *(PR 2 (light) and PR 3 (dark), beside the mocks.)*
+- [x] Both modes at 390×844 match the phone mocks above the fold; below the fold follows 3.3 and 3.4. *(PR 4, beside both phone boards.)*
+- [x] Switching mode swaps layout and palette, keeps hour, selection, play state and camera longitude, and fires `themechange` once. *(PR 2 and PR 3 interaction runs.)*
+- [x] First visit follows the system setting; a stored choice wins; `sunfire` / `deepcurrent` become `dark`. *(PR 1, tests/theme-boot.test.ts.)*
+- [x] No flash of the wrong mode on load (boot script runs before `style.css`). *(PR 1, the boot script in head before the stylesheet.)*
+- [x] `scrollWidth === clientWidth` at 320, 375 and 390 on every page (the five doc pages plus all `/region/<id>` pages), both modes. *(every PR: 542 pages x 3 widths x 2 modes, 3,252 measurements.)*
+- [x] Quality encoding as in 6.1, in both modes, and the legend says so. *(PR 2 (needles and legend) and PR 3 (beams and legend).)*
+- [x] One label at most on the globe, and it tracks its region in both axes while the globe turns. *(PR 2 and PR 3; tests/needles.test.ts.)*
+- [x] Frame budgets in section 8 hold; no animation loop runs while idle. *(PR 2, PR 3 and PR 4 measurements.)*
+- [x] Reduced motion honoured everywhere in section 8. *(no autoplay, no loop, still marks, no view transition, no sheet animation.)*
+- [x] Contrast pairs in section 9 hold; no new white literals in `style.css` outside the allowlist. *(tests/theme-contrast.test.ts, tests/style-colour-literals.test.ts.)*
+- [x] The generated mark blocks use only `--mark-*` variables (tested); the loader and header show the mode's mark and wordmark. *(tests/brand-mark.test.ts.)*
+- [x] `embed/globe.md` looks exactly as before. *(every PR: 0 pixels differ outside the canvas.)*
+- [x] `ci:gates` passes with no golden file touched; `STATUS.md` updated per PR. *(every PR.)*

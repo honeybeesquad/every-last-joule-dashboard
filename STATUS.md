@@ -1,13 +1,53 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-09-24 (light/dark redesign PR 4, tablet and phone in both modes, the globe explorer, the dark bottom sheet and the doc pages' new header, stacked on PR 3; see the entries below). Also 2026-09-24 (light/dark redesign PR 3, dark desktop: the Horizon stage, horizon globe, ribbon and glass dock; PR 1 **#1087** and PR 2 **#1091** merged 2026-09-23; see the entries below). Also 2026-09-23 (light/dark redesign PR 2, light desktop: the Almanac grid, engraved globe and small-multiples timeline; see the entry below). Also 2026-09-23 (light/dark redesign PR 1, theme plumbing: the site's modes are now light (Almanac) and dark (Horizon), with Geist, Geist Mono and Newsreader; see the entries below). Also 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk became `--font-display` and `--font-body` in both themes; superseded 2026-09-23 by the redesign's faces, see the entries below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
+**Last verified against git:** 2026-09-24 (light/dark redesign PR 5, clean-up: the paper figure's palette renamed from "sunfire" to "embed", four unused faces and dead CSS deleted, the plan archived as shipped; stacked on PR 4; see the entries below). Also 2026-09-24 (light/dark redesign PR 4, tablet and phone in both modes, the globe explorer, the dark bottom sheet and the doc pages' new header, stacked on PR 3; see the entries below). Also 2026-09-24 (light/dark redesign PR 3, dark desktop: the Horizon stage, horizon globe, ribbon and glass dock; PR 1 **#1087** and PR 2 **#1091** merged 2026-09-23; see the entries below). Also 2026-09-23 (light/dark redesign PR 2, light desktop: the Almanac grid, engraved globe and small-multiples timeline; see the entry below). Also 2026-09-23 (light/dark redesign PR 1, theme plumbing: the site's modes are now light (Almanac) and dark (Horizon), with Geist, Geist Mono and Newsreader; see the entries below). Also 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk became `--font-display` and `--font-body` in both themes; superseded 2026-09-23 by the redesign's faces, see the entries below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
+
+## Light/dark redesign, PR 5: clean-up, and the redesign archived as shipped (2026-09-24)
+
+Branch `chore/redesign-cleanup` (**#1094**), **stacked on PR 4 (#1093), which
+is stacked on PR 3 (#1092); they merge in that order**. The plan is archived at
+`docs/superpowers/plans/archive/2026-09-23-light-dark-redesign.md` with a
+`STATUS: SHIPPED` banner; its "PR 5 as built" section lists the details.
+
+- **The paper figure's palette is `data-theme="embed"`, no longer
+  "sunfire".** The boot script, `src/embed/globe.md` and the token block in
+  `src/style.css` all use the new name, with identical tokens. The site's
+  modes are light and dark only. The old picker's stored `sunfire` and
+  `deepcurrent` values still map to dark (D2), because returning visitors
+  may hold them for years.
+- **Unused faces are deleted:** IBM Plex Sans and Mono, Schibsted Grotesk
+  and the 16 Gotham `.ttf` files, 21 files in all. Every page's loaded faces
+  were checked in a browser first: the site loads Geist, Geist Mono and
+  Newsreader, and the paper figure loads Fraunces and Inter, which stay.
+- **Dead CSS is removed:** nine classes nothing in `src/` produces
+  (`.display-xl`, `.display-lg`, `.display`, `.mono`, `.on-dark`, `.dot-brand`,
+  `.dot-orange`, `.methodology-toc`, `.region-tooltip-source`), the legacy
+  alias tokens that nothing read, and the display type-scale tokens only
+  those classes used.
+- **`/regions`** no longer says the dashboard lists "the top 50 per fuel". It
+  lists the ten largest, across fuels, and the line was already out of date
+  before the redesign.
+
+**Verified.**
+- **Gates:** `npm run typecheck && npm test && npm run ci:gates` all pass,
+  with no golden file touched.
+- **The paper figure is unchanged:** against a build of PR 4, 0 pixels
+  differ outside the canvas in either mode, and the G1 loop still runs.
+- **The site is unchanged:** against a build of PR 4, the dashboard and the
+  doc pages differ only within the same-build noise floor, at desktop and
+  phone widths in both modes.
+- **Overflow:** all 542 pages at 320, 375 and 390, both modes: 3,252
+  measurements, all fit.
+
+**Not changed.** No data file, loader, `regions.ts` entry or tier is
+touched.
 
 ## Light/dark redesign, PR 4: tablet and phone, the explorer, the doc pages' header (2026-09-24)
 
 Branch `feat/redesign-tablet-phone` (**#1093**), **stacked on PR 3 (#1092),
 which must merge first**. The plan is
-`docs/superpowers/plans/2026-09-23-light-dark-redesign.md`; its "PR 4 as
+`docs/superpowers/plans/archive/2026-09-23-light-dark-redesign.md`; its "PR 4 as
 built" section lists every departure from the spec.
 
 **Phones (≤640px).**
@@ -76,7 +116,7 @@ touched.
 ## Light/dark redesign, PR 3: dark desktop, the Horizon stage (2026-09-24)
 
 Branch `feat/dark-horizon-desktop` (**#1092**). The plan is
-`docs/superpowers/plans/2026-09-23-light-dark-redesign.md`; its "PR 3 as
+`docs/superpowers/plans/archive/2026-09-23-light-dark-redesign.md`; its "PR 3 as
 built" section lists every departure from the spec.
 
 **Layout.** At ≥1100px in dark the first viewport is a stage (100svh, at
@@ -158,7 +198,7 @@ touched.
 
 Branch `feat/light-almanac-desktop` (**#1091**, merged 2026-09-23 as
 `3b272ec6`). The plan is
-`docs/superpowers/plans/2026-09-23-light-dark-redesign.md`; its "PR 2 as
+`docs/superpowers/plans/archive/2026-09-23-light-dark-redesign.md`; its "PR 2 as
 built" section lists every departure from the spec.
 
 **Layout.** `src/index.md` renders one DOM, and CSS on `:root[data-theme]`
@@ -228,7 +268,7 @@ Branch `feat/light-dark-theme-plumbing` (**#1087**, merged 2026-09-23 as
 `9ef3f7ad`). The first of five PRs that build the
 approved light/dark redesign: light is **Almanac** (an engraved atlas on
 paper), dark is **Horizon** (the planet as a horizon). The active plan is
-`docs/superpowers/plans/2026-09-23-light-dark-redesign.md`, the handoff's spec
+`docs/superpowers/plans/archive/2026-09-23-light-dark-redesign.md`, the handoff's spec
 with the decisions and an "as built" list. **Layout is unchanged in this PR.**
 It replaces the theme system underneath the layout, so every page is legible
 in both modes before the layout PRs (2-4) start.

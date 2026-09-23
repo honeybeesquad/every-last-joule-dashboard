@@ -172,8 +172,8 @@ export async function mountGlobe(canvas, initial) {
   function refreshFuelPaint() {
     for (const f of FUELS) {
       fuelColor[f] = getFuelColor(f);
-      // The redesign's modes define their beam-tip colours as tokens; the
-      // Sunfire paper figure defines none and keeps its tint.
+      // The light and dark modes define their beam-tip colours as tokens;
+      // the paper figure's palette defines none and keeps its tint.
       fuelTip[f] = tokens.fuelTips?.[f] || tintHex(fuelColor[f], 0.55);
       glowSprite[f] = makeGlow(fuelColor[f]);
     }
@@ -188,8 +188,9 @@ export async function mountGlobe(canvas, initial) {
     readLabelClearance();
     // Light and dark share the camera longitude (state.lon0), so it carries
     // across the switch with the hour, selection and follow-the-sun
-    // (redesign plan 3.5); latitude is per mode. Only the Sunfire paper
-    // figure runs G1's idle loop, and a page never switches into it.
+    // (redesign plan 3.5); latitude is per mode. Only the paper figure
+    // (data-theme="embed") runs G1's idle loop, and a page never switches
+    // into it.
     if (usesG1()) startLoop();
     else stopLoop();
     // Force a redraw so the next paint uses the new colours immediately.
@@ -360,7 +361,7 @@ export async function mountGlobe(canvas, initial) {
   // ---------------------------------------------------------------------------
   // Which renderer: light mode draws the engraved "Almanac" globe
   // (src/globe-engraved.js), dark the "Horizon" (src/globe-horizon.js). The
-  // Sunfire-pinned paper figure (src/embed/globe.md) keeps the G1 renderer
+  // paper figure (src/embed/globe.md, data-theme="embed") keeps the G1 renderer
   // below: its look is part of a published artefact.
   // ---------------------------------------------------------------------------
   const themeOf = () => document.documentElement.getAttribute("data-theme");

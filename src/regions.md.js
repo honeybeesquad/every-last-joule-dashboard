@@ -164,7 +164,7 @@ pager: false
 
 # Every region in the dataset
 
-<p class="methodology-deck">All ${rows.length} regions in ${countries.length} countries, with tier, uncertainty band, and validation record. The dashboard lists the top 50 per fuel this hour; this page lists the rest, including zeros.</p>
+<p class="methodology-deck">All ${rows.length} regions in ${countries.length} countries, with tier, uncertainty band, and validation record. The dashboard lists the ten largest this hour; this page lists every region, including zeros.</p>
 
 </header>
 

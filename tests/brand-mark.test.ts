@@ -286,13 +286,15 @@ describe("the redesign's typefaces", () => {
   it("takes display weights from the mode, so Newsreader is not rendered at 800", () => {
     expect(token(modeBlock("light"), "--display-weight-strong")).toBe("400");
     expect(token(modeBlock("dark"), "--display-weight-strong")).toBe("600");
-    expect(css).toMatch(/\.display-xl \{[^}]*font-weight: var\(--display-weight-strong\)/);
-    expect(css).toMatch(/\.display-lg \{[^}]*font-weight: var\(--display-weight-strong\)/);
-    expect(css).toMatch(/\.display {4}\{[^}]*font-weight: var\(--display-weight-base\)/);
+    // The figures set in the display face: the hero % and the stat values.
+    expect(css).toMatch(/\n\.hero-pct \{[^}]*font-weight: var\(--display-weight-strong\)/);
+    expect(css).toMatch(/\n\.stat-value \{[^}]*font-weight: var\(--display-weight-strong\)/);
+    // No rule pins the old black weight.
+    expect(css).not.toMatch(/font-weight:\s*var\(--fw-black\)/);
   });
 
   it("wires --font-display to the headings", () => {
-    expect(css).toMatch(/\.display-xl, \.display-lg, \.display,\n\s*h1, h2, h3, h4 \{\n\s*font-family: var\(--font-display\);/);
+    expect(css).toMatch(/\nh1, h2, h3, h4 \{\n\s*font-family: var\(--font-display\);/);
   });
 
   it("draws the wordmark in the mode's face: italic serif 'Joule' in light, upright in dark (D3)", () => {

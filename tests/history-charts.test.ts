@@ -58,9 +58,9 @@ describe("axis helpers", () => {
 describe("theme safety", () => {
   // The whole reason these charts are built as strings rather than drawn with
   // getFuelColor() is that the page loader runs under node, where that
-  // function can only return the Sunfire fallback hex. A hex literal reaching
-  // the markup would freeze one theme's palette into the page and silently
-  // break Deep Current.
+  // function can only return its fallback hex. A hex literal reaching the
+  // markup would freeze one palette into the page and silently break the
+  // other mode.
   const charts = [
     monthlyStackChart({ months: MONTHS, series: SERIES, tierFraction: 0.15, title: "t", desc: "d" }),
     annualBarChart({ years: [2020, 2021], series: { wind: [1, 2], solar: [3, 4], hydro: [5, 6] }, tierFraction: 0.15, title: "t", desc: "d" }),

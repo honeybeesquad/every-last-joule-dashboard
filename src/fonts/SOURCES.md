@@ -1,23 +1,16 @@
 # Font sources
 
-All fonts in `src/fonts/*.woff2` (excluding the Gotham `.ttf` set, which has a separate licence) are SIL Open Font License (OFL) v1.1.
+All fonts in `src/fonts/` are SIL Open Font License (OFL) v1.1.
 
 | Family | Weights | Source |
 |---|---|---|
 | Fraunces | 400, 600, 800 | Google Fonts (https://fonts.google.com/specimen/Fraunces) |
 | Inter | 400, 500, 700 | Google Fonts (https://fonts.google.com/specimen/Inter) |
-| Spectral | 400, 500, 700 | Google Fonts (https://fonts.google.com/specimen/Spectral) |
-| Frank Ruhl Libre | 700, 900 | Google Fonts (https://fonts.google.com/specimen/Frank+Ruhl+Libre) |
-| IBM Plex Sans | 400, 500, 700 | Google Fonts (https://fonts.google.com/specimen/IBM+Plex+Sans) |
-| IBM Plex Mono | 500 | Google Fonts (https://fonts.google.com/specimen/IBM+Plex+Mono) |
-| Schibsted Grotesk | 400–700 (variable, latin subset) | Google Fonts (https://fonts.google.com/specimen/Schibsted+Grotesk) |
 | Geist | 100–900 (variable, latin subset) | npm `@fontsource-variable/geist` 5.3.0, file `geist-latin-wght-normal.woff2` (upstream: https://github.com/vercel/geist-font) |
 | Geist Mono | 100–900 (variable, latin subset) | npm `@fontsource-variable/geist-mono` 5.3.0, file `geist-mono-latin-wght-normal.woff2` |
 | Newsreader | 200–800, opsz 6–72 (variable, latin subset), roman + italic | npm `@fontsource-variable/newsreader` 5.3.0, files `newsreader-latin-opsz-normal.woff2` and `newsreader-latin-opsz-italic.woff2` (both carry wght and opsz) (upstream: https://fonts.google.com/specimen/Newsreader) |
 
-Fetched 2026-04-27; Schibsted Grotesk fetched 2026-09-20 from
-`https://fonts.gstatic.com/s/schibstedgrotesk/v7/Jqz55SSPQuCQF3t8uOwiUL-taUTtap9GayojdSFO.woff2`
-(one variable file, both weights). To refresh: re-run the curl block in `docs/superpowers/plans/2026-04-27-theme-system.md` Task 2 Step 1.
+Fraunces and Inter fetched 2026-04-27. To refresh: re-run the curl block in `docs/superpowers/plans/archive/2026-04-27-theme-system.md` Task 2 Step 1.
 
 Geist, Geist Mono and Newsreader fetched 2026-09-23 for the light/dark redesign,
 renamed to `Geist-Variable-latin.woff2`, `GeistMono-Variable-latin.woff2`,
@@ -32,11 +25,11 @@ and the `×` and `·` the controls use. SHA-256 as committed:
 6e4f2958c3a7c4a80acde4e5a679abe7e01bc1e30b92be3c7a8b696ef401d101  Newsreader-Variable-latin.woff2
 ```
 
-Once the redesign ships, IBM Plex Sans/Mono and Schibsted Grotesk are
-referenced by nothing on the dashboard. Fraunces and Inter stay:
-`src/embed/globe.md` (the DARI paper figure) sets both. Delete unused faces in
-a separate PR after a grep, not in the redesign PRs.
+Fraunces and Inter are the paper figure's faces: `src/embed/globe.md` (the
+DARI paper figure) sets both, and no other page loads them. The redesign's
+clean-up (2026-09-24) deleted the faces nothing loaded any more, after a
+check of what each page actually loads: IBM Plex Sans and Mono, Schibsted
+Grotesk, and the Gotham `.ttf` set (which had its own licence).
 
 License text: SIL Open Font License v1.1 — https://scripts.sil.org/OFL.
 
-The existing Gotham `.ttf` files (Stacked brand) are NOT covered by OFL and are governed by the parent project's licence; they remain in place during this PR but are no longer referenced once the theme system lands.
