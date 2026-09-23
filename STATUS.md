@@ -5,7 +5,7 @@
 
 ## Light/dark redesign, PR 1: theme plumbing (2026-09-23)
 
-Branch `feat/light-dark-theme-plumbing`. The first of five PRs that build the
+Branch `feat/light-dark-theme-plumbing` (**#1087**). The first of five PRs that build the
 approved light/dark redesign: light is **Almanac** (an engraved atlas on
 paper), dark is **Horizon** (the planet as a horizon). The active plan is
 `docs/superpowers/plans/2026-09-23-light-dark-redesign.md`, the handoff's spec
