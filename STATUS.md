@@ -3,6 +3,44 @@
 **Last verified against git:** 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk is now `--font-display` and `--font-body` in both themes, and the dashboard wordmark's italic serif "Joule" is gone; see the entry below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
+## /history Figure 4 labelled two gridlines with the wrong value (2026-09-23)
+
+Branch `fix/history-axis-tick-precision`. Chart code only
+(`src/lib/history-charts.ts`) plus tests; **#1088** listed it under "Not
+fixed here". Figure 4, "Summed `total_twh_30d` across the archive",
+labelled its y-axis 0, 13, 25, 38 and 50. Its gridlines sit at 0, 12.5, 25,
+37.5 and 50 TWh. Reproduced from the committed
+`data/historical/history-trends.json` on #1088's head, 3edca789, which
+merged as c06a09a2.
+
+**Cause.** `tickFormatter()` tried 0-3 decimals and kept the first precision
+whose labels were distinct. Figure 4's axis tops out at `niceMax(33.27)` =
+50, where whole numbers are already distinct, so it rounded 12.5 and 37.5.
+Its own doc example failed the same way: it printed 0 / 625 / 1250 / 1875 /
+2500 GWh in TWh as "0.0, 0.6, 1.3, 1.9, 2.5". The rule dates from the page's
+launch in **#934**.
+
+**Fix.** It now takes the fewest decimals, 0-3, at which every label reads
+back as its tick value, at one precision across the axis. A 1e-9 relative
+tolerance absorbs float noise in the tick values. Figure 4 reads 0.0, 12.5,
+25.0, 37.5, 50.0. If no precision up to 3 is exact, the old distinctness
+rule is the fallback. On a `niceMax` axis that only happens when the top
+gridline is below 1. Across 432 `niceMax` axes (maxima 1e-8 to 1e9, at scale
+1 and 1000), the new rule never uses fewer decimals than the old one. It
+changes only the 54 axes whose old labels were inexact.
+
+**Verified** on a production build (Node 24, `/history` loader rerun). The
+built `/history.html` differs from main's in Figure 4's five y-tick
+`<text>` elements only. Figures 1-3 still read 0 / 2500 / 5000 / 7500 /
+10000 GWh, 0 / 25 / 50 / 75 / 100 TWh and 0 / 125 / 250 / 375 / 500 regions.
+In headless Chromium, in both themes at 320, 375, 390 and 1280, every y-tick
+label on all four figures equals the value at its gridline. Figure 4's
+tick ink starts at x = 14 and touches no other text. The nearest is the unit
+label, 3.6 units above "50.0", as before. `/history` keeps `scrollWidth` =
+`clientWidth`. `tests/history-charts.test.ts` gains seven cases. The five
+that assert exact labels fail against main's code. The two that pin
+whole-number axes and the fallback pass on both.
+
 ## /history chart unit labels clipped at the left edge (2026-09-23)
 
 Branch `fix/history-axis-unit-labels` (**#1088**). Chart code only
@@ -40,8 +78,9 @@ the nearest is the top tick label, 3.6-5.2 units away. `/history` keeps
 start-anchored at x ≥ 0. All four fail against main's code.
 
 **Not fixed here.** Figure 4's y-axis ticks read "13" and "38" at the 12.5
-and 37.5 gridlines. `tickFormatter` stops at the first precision that gives
-distinct labels, and whole numbers do, so it rounds both.
+and 37.5 gridlines. `tickFormatter` stopped at the first precision that gave
+distinct labels, and whole numbers did, so it rounded both. Fixed on
+`fix/history-axis-tick-precision` (see the entry above).
 
 ## Doc pages laid out wider than a phone (2026-09-23)
 

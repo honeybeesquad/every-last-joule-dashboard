@@ -91,23 +91,37 @@ export function ticks(max: number, count = 4): number[] {
 }
 
 /**
- * Format axis ticks with just enough decimal places that no two adjacent
- * labels collapse into the same string.
+ * Format axis ticks with the fewest decimal places at which every label states
+ * its gridline's value exactly, at one precision across the axis.
  *
  * A fixed `Math.round` renders an axis of 0 / 625 / 1250 / 1875 / 2500 GWh as
- * "0, 1, 1, 2, 2" TWh, which is worse than no axis: it reads as a broken scale
- * and gives the wrong value for three of the five gridlines. Scaling up the
- * precision until the labels are distinct fixes it without hardcoding a
- * decimal count that would be wrong for a different range.
+ * "0, 1, 1, 2, 3" TWh, which is worse than no axis: it reads as a broken scale
+ * and gives the wrong value for four of the five gridlines. Distinct labels are
+ * not enough either. Stopping at the first precision whose labels merely
+ * differ printed that axis as "0.0, 0.6, 1.3, 1.9, 2.5", and the archive-total
+ * axis (0 / 12.5 / 25 / 37.5 / 50 TWh) as "0, 13, 25, 38, 50". Searching for an
+ * exact precision fixes both without hardcoding a decimal count that would be
+ * wrong for a different range.
+ *
+ * If no precision up to 3 decimals is exact, the labels fall back to the
+ * fewest decimals, up to 3, that keep them distinct. On a niceMax axis that
+ * only happens when the top gridline is below 1, e.g. 0.25 in steps of 0.0625.
  */
 export function tickFormatter(values: number[], scale = 1): (v: number) => string {
+  const format = (decimals: number) => (v: number) => (v / scale).toFixed(decimals);
+  // Float noise in a tick value (ticks(0.3)[3] is 0.22499999999999998) must
+  // not count as a rounded label. A rounded label on a niceMax axis is off by
+  // at least 1e-4 of the axis maximum, far outside this tolerance.
+  const tolerance = 1e-9 * Math.max(...values.map((v) => Math.abs(v / scale)));
   for (let decimals = 0; decimals <= 3; decimals++) {
-    const rendered = values.map((v) => (v / scale).toFixed(decimals));
-    if (new Set(rendered).size === rendered.length) {
-      return (v) => (v / scale).toFixed(decimals);
-    }
+    const label = format(decimals);
+    if (values.every((v) => Math.abs(Number(label(v)) - v / scale) <= tolerance)) return label;
   }
-  return (v) => (v / scale).toFixed(3);
+  for (let decimals = 0; decimals <= 3; decimals++) {
+    const rendered = values.map(format(decimals));
+    if (new Set(rendered).size === rendered.length) return format(decimals);
+  }
+  return format(3);
 }
 
 interface Box {
