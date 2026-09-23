@@ -3,18 +3,12 @@
    ========================================================================= */
 
 /* ---------- Theme system fonts (woff2, self-hosted, OFL) ---------- */
-/* Geist, Geist Mono and Newsreader — the light/dark redesign's faces
-   (2026-09-23). Body is Geist and labels are Geist Mono in both modes; the
-   display face is Newsreader in light and Geist in dark (the --font-* tokens
-   in each mode block). Variable latin subsets, OFL, logged in
-   src/fonts/SOURCES.md. Newsreader has an optical-size axis (opsz 6-72):
-   font-optical-sizing stays at its default (auto) so a large figure gets the
-   display cut and 13-15px italics get the text cut. Do not set
-   font-variation-settings: 'opsz' by hand. */
-@font-face { font-family: "Geist";      src: url("/fonts/Geist-Variable-latin.woff2") format("woff2");             font-weight: 100 900; font-style: normal; font-display: swap; }
-@font-face { font-family: "Geist Mono"; src: url("/fonts/GeistMono-Variable-latin.woff2") format("woff2");         font-weight: 100 900; font-style: normal; font-display: swap; }
-@font-face { font-family: "Newsreader"; src: url("/fonts/Newsreader-Variable-latin.woff2") format("woff2");        font-weight: 200 800; font-style: normal; font-display: swap; }
-@font-face { font-family: "Newsreader"; src: url("/fonts/Newsreader-Italic-Variable-latin.woff2") format("woff2"); font-weight: 200 800; font-style: italic; font-display: swap; }
+/* Schibsted Grotesk and IBM Plex Mono — the brand system's two faces, in both
+   modes (2026-09-24). Schibsted Grotesk is display and body (one variable
+   file, roman only: nothing on the site sets it in italic); IBM Plex Mono 500
+   is tabular figures and labels. Logged in src/fonts/SOURCES.md. */
+@font-face { font-family: "Schibsted Grotesk"; src: url("/fonts/SchibstedGrotesk-Variable.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono";     src: url("/fonts/IBMPlexMono-Medium.woff2")       format("woff2"); font-weight: 500;     font-style: normal; font-display: swap; }
 
 /* Fraunces and Inter: the paper figure's faces (src/embed/globe.md sets
    both). Nothing else on the site loads them. */
@@ -120,7 +114,8 @@
 }
 
 /* =========================================================================
-   LIGHT (Almanac) and DARK (Horizon) — the site's two modes.
+   LIGHT (Almanac layout, Daylight palette) and DARK (Horizon layout,
+   Nightgrid palette) — the site's two modes.
 
    data-theme="light" | "dark" on <html> selects the palette. The boot script
    in observablehq.config.ts (src/lib/theme-boot.ts) sets it before this sheet
@@ -128,9 +123,10 @@
    dark), and a first visit follows prefers-color-scheme.
 
    Token NAMES are the ones every rule already reads; tokens the redesign adds
-   are marked NEW. Values are from the light/dark redesign handoff
-   (tokens/themes.css, 2026-09-23); the WCAG pairs they were chosen for are
-   pinned by tests/theme-contrast.test.ts.
+   are marked NEW. The layouts are the light/dark redesign's (2026-09-23). The
+   colours are the Nightgrid + Daylight pair and the type is the brand system's
+   Schibsted Grotesk and IBM Plex Mono (2026-09-24). The WCAG pairs are pinned
+   by tests/theme-contrast.test.ts, which computes them from these values.
    ========================================================================= */
 
 :root {
@@ -140,88 +136,92 @@
   /* --quality-warning (#f7931a via --amber-500) stays in the base :root; light overrides it. */
 }
 
-/* ------------------------------------------------------------------ LIGHT · Almanac */
+/* ------------------------------------------------------------------ LIGHT · Almanac layout, Daylight palette */
 :root[data-theme="light"] {
   color-scheme: light;
 
-  /* brand: the sun disc of the mark. 3.2:1 on paper, so never small text on
-     paper; small accent text reads --brand-text (ink) instead. */
-  --brand:               #E4570E;
-  --brand-strong:        #B8430A;
-  --brand-subtle:        rgba(228, 87, 14, 0.10);
-  --brand-rgb:           228, 87, 14;
-  --brand-on:            #16150F;
-  --brand-text:          var(--ink);    /* NEW: accent that has to carry small text (links, eyebrows) */
+  /* brand: a deep gold that carries small text on paper (5.2:1). Full gold
+     (#ffd05a) is 1.3:1 on paper, so it never appears as text or a rule here. */
+  --brand:               #8a5a00;
+  --brand-strong:        #6e4700;
+  --brand-subtle:        rgba(138, 90, 0, 0.10);
+  --brand-rgb:           138, 90, 0;
+  --brand-on:            #fffbf0;
+  --brand-text:          var(--brand);  /* NEW: accent that has to carry small text (links, eyebrows) */
 
-  /* surfaces: one paper colour; hierarchy comes from rules, not fills */
-  --surface-bg-1:        #E7E3D9;       /* wells: slider track, skeletons */
-  --surface-bg-2:        #ECE9E0;
-  --surface-bg-3:        #F1EEE6;       /* page (html, body) */
-  --surface-raised:      #F1EEE6;       /* cards and tooltips: paper + 1px ink border */
-  --surface-panel:       rgba(241, 238, 230, 0.92);   /* NEW: sticky bars over content */
-  --hairline:            rgba(22, 21, 15, 0.18);
-  --hairline-strong:     #16150F;
+  /* surfaces: warm paper; hierarchy still comes from rules, not fills */
+  --surface-bg-1:        #ece2c8;       /* wells: slider track, skeletons */
+  --surface-bg-2:        #fffbf0;       /* a lighter sheet: Framework's alt background */
+  --surface-bg-3:        #f6f0e0;       /* page (html, body) */
+  --surface-raised:      #fffdf8;       /* cards and tooltips: paper + 1px ink border */
+  --surface-panel:       rgba(246, 240, 224, 0.92);   /* NEW: sticky bars over content */
+  --hairline:            rgba(11, 18, 29, 0.16);
+  --hairline-strong:     #0b121d;
 
-  /* foreground: all running text is ink. No grey body copy in this mode. */
-  --ink:                 #16150F;
-  --ink-muted:           #16150F;
-  --ink-soft:            rgba(22, 21, 15, 0.62);      /* disabled and tertiary only; 4.9:1 */
+  /* foreground: navy ink, the dark mode's ground. Muted copy is 7.6:1. */
+  --ink:                 #0b121d;
+  --ink-muted:           #484c50;
+  --ink-soft:            rgba(11, 18, 29, 0.62);      /* disabled and tertiary only; 5.1:1 */
 
-  --data-renewable:      #1D4ED8;
-  --data-renewable-tip:  #1D4ED8;
+  --data-renewable:      #08778d;
+  --data-renewable-tip:  #08778d;
 
-  /* fuels: orange, blue, teal - the same hue families as dark */
-  --fuel-solar:          #E4570E;
-  --fuel-wind:           #1D4ED8;
-  --fuel-hydro:          #0A8A76;
-  --fuel-solar-tip:      #E4570E;       /* NEW (tips = base in light) */
-  --fuel-wind-tip:       #1D4ED8;       /* NEW */
-  --fuel-hydro-tip:      #0A8A76;       /* NEW */
+  /* fuels: gold, cyan, violet - the same hue families as dark, darkened for
+     paper. Violet hydro keeps wind and hydro apart under deuteranopia. */
+  --fuel-solar:          #b07800;
+  --fuel-wind:           #08778d;
+  --fuel-hydro:          #7a4fd0;
+  --fuel-solar-tip:      #b07800;       /* NEW (tips = base in light) */
+  --fuel-wind-tip:       #08778d;       /* NEW */
+  --fuel-hydro-tip:      #7a4fd0;       /* NEW */
 
   /* engraved globe. Existing globe tokens are mapped so stragglers still read. */
-  --globe-ink-rgb:       22, 21, 15;    /* NEW: line screen, stipple, coastline, limb */
-  --globe-paper:         #F1EEE6;       /* NEW: land knock-out and needle halos */
-  --globe-ocean:         #F1EEE6;
-  --globe-ocean-lit:     #F1EEE6;
-  --globe-terminator:    rgba(22, 21, 15, 0.30);
-  --globe-keyline:       #F1EEE6;       /* the keyline IS the paper halo in light */
-  --globe-dot-day:       #16150F;
-  --globe-dot-night:     #16150F;
-  --globe-border:        rgba(22, 21, 15, 0.85);
-  --globe-body-hi:       #F1EEE6;
-  --globe-body-mid:      #F1EEE6;
-  --globe-body-lo:       #F1EEE6;
-  --globe-dot-neutral:   #16150F;
-  --globe-atmosphere-rgb: 22, 21, 15;   /* NEW, unused in light; defined so readers never get "" */
-  --globe-land-rgb:      22, 21, 15;    /* NEW, unused in light */
-  --globe-star-rgb:      22, 21, 15;    /* unused in light; the horizon's star field */
-  --bar-track:           rgba(22, 21, 15, 0.12);      /* rail bars' unfilled track */
+  --globe-ink-rgb:       11, 18, 29;    /* NEW: line screen, stipple, coastline, limb */
+  --globe-paper:         #f6f0e0;       /* NEW: land knock-out and needle halos */
+  --globe-ocean:         #f6f0e0;
+  --globe-ocean-lit:     #f6f0e0;
+  --globe-terminator:    rgba(11, 18, 29, 0.30);
+  --globe-keyline:       #f6f0e0;       /* the keyline IS the paper halo in light */
+  --globe-dot-day:       #0b121d;
+  --globe-dot-night:     #0b121d;
+  --globe-border:        rgba(11, 18, 29, 0.85);
+  --globe-body-hi:       #f6f0e0;
+  --globe-body-mid:      #f6f0e0;
+  --globe-body-lo:       #f6f0e0;
+  --globe-dot-neutral:   #0b121d;
+  --globe-atmosphere-rgb: 11, 18, 29;   /* NEW, unused in light; defined so readers never get "" */
+  --globe-land-rgb:      11, 18, 29;    /* NEW, unused in light */
+  --globe-star-rgb:      11, 18, 29;    /* unused in light; the horizon's star field */
+  --bar-track:           rgba(11, 18, 29, 0.12);      /* rail bars' unfilled track */
 
   /* state. The base :root --quality-warning (#f7931a) is 2.0:1 on paper, below the
      3:1 a stale ring needs, so light overrides it. Dark keeps the base value (8.8:1). */
-  --quality-warning:     #B45309;       /* 4.3:1 on paper */
-  --success:             #0A8A76;
-  --warning:             #B45309;
-  --danger:              #B91C1C;
+  --quality-warning:     #c2410c;       /* 4.5:1 on paper */
+  --success:             #0d6b63;
+  --warning:             #9a4a07;
+  --danger:              #b42318;
   --info:                var(--data-renewable);
 
-  /* mark (NEW): read by the loader mark and the inline header mark (brand-mark.ts) */
-  --mark-disc:           #E4570E;
-  --mark-lead:           #16150F;       /* first 26% of pillars (the curtailed share) */
-  --mark-rest:           #16150F;
-  --mark-rest-opacity:   0.22;
-  --mark-tick:           #16150F;       /* the tick each pillar fires as it drops */
+  /* mark (NEW): read by the loader mark and the inline header mark (brand-mark.ts).
+     The brand system's mark in a paper variant: the same gold and cyan, deep
+     enough that the disc (3.3:1) and the curtailed arc (3.6:1) hold on paper. */
+  --mark-disc:           #b07800;
+  --mark-lead:           #0b8aa3;       /* first 26% of pillars (the curtailed share) */
+  --mark-lead-opacity:   1;
+  --mark-rest:           #e6a020;
+  --mark-rest-opacity:   1;
+  --mark-tick:           #0b121d;       /* the tick each pillar fires as it drops */
   --mark-glow:           transparent;   /* no halo behind the disc on paper */
 
   /* type */
-  --font-display:        "Newsreader", Georgia, "Times New Roman", serif;
-  --font-body:           "Geist", "Helvetica Neue", Arial, sans-serif;
-  --font-mono:           "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-display:        "Schibsted Grotesk", Inter, -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-body:           "Schibsted Grotesk", Inter, -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --font-sans:           var(--font-body);
-  --display-weight-strong: 400;         /* hero % and stat figures */
-  --display-weight-base:   500;         /* h2 "Largest now", wordmark, selected label */
-  --display-tracking:    -0.04em;       /* NEW: hero only; -0.01em for 25-30px figures */
-  --display-leading:     0.9;           /* NEW */
+  --display-weight-strong: 800;         /* hero % and stat figures */
+  --display-weight-base:   700;         /* h2 "Largest now", wordmark, selected label */
+  --display-tracking:    -0.03em;       /* NEW: hero only; -0.01em for 25-30px figures */
+  --display-leading:     0.92;          /* NEW */
   --fs-hero:             clamp(112px, 10.84vw, 156px);   /* NEW: 156px at 1440 */
 
   /* Observable Framework's own chrome (bare links, the pager, form controls)
@@ -232,78 +232,83 @@
   --theme-background:       var(--surface-bg-3);
 }
 
-/* ------------------------------------------------------------------ DARK · Horizon */
+/* ------------------------------------------------------------------ DARK · Horizon layout, Nightgrid palette */
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --brand:               #FFB547;
-  --brand-strong:        #E89A2A;
-  --brand-subtle:        rgba(255, 181, 71, 0.16);   /* active segmented-control chip */
-  --brand-rgb:           255, 181, 71;
-  --brand-on:            #05070B;
-  --brand-text:          var(--brand);  /* NEW: amber is 11.5:1 on the dark ground */
+  --brand:               #ffd05a;
+  --brand-strong:        #e6a020;
+  --brand-subtle:        rgba(255, 208, 90, 0.16);   /* active segmented-control chip */
+  --brand-rgb:           255, 208, 90;
+  --brand-on:            #060a11;
+  --brand-text:          var(--brand);  /* NEW: gold is 13.6:1 on the dark ground */
 
-  --surface-bg-1:        #0B1220;
-  --surface-bg-2:        #070B12;
-  --surface-bg-3:        #05070B;       /* page; the globe backdrop paints over it */
-  --surface-raised:      #0B111A;
-  --surface-panel:       rgba(6, 9, 14, 0.74);       /* NEW: glass dock; pair with backdrop-filter: blur(18px) */
-  --hairline:            rgba(160, 200, 255, 0.16);
-  --hairline-strong:     rgba(160, 200, 255, 0.32);
+  --surface-bg-1:        #15202f;
+  --surface-bg-2:        #0b121d;
+  --surface-bg-3:        #060a11;       /* page; the globe backdrop paints over it */
+  --surface-raised:      #101a28;
+  --surface-panel:       rgba(6, 10, 17, 0.74);       /* NEW: glass dock; pair with backdrop-filter: blur(18px) */
+  --hairline:            rgba(255, 248, 224, 0.14);
+  --hairline-strong:     rgba(255, 248, 224, 0.30);
 
-  --ink:                 #F2F5F9;
-  --ink-muted:           #C3CEDB;       /* 12:1 on --surface-bg-3 */
-  --ink-soft:            rgba(195, 206, 219, 0.62);   /* 5.2:1 */
+  --ink:                 #fff8e0;
+  --ink-muted:           #c8c4b2;       /* 11.3:1 on --surface-bg-3 */
+  --ink-soft:            rgba(255, 248, 224, 0.60);   /* 6.9:1 */
 
-  --data-renewable:      #7AA8FF;
-  --data-renewable-tip:  #DCE8FF;
+  --data-renewable:      #67e8f9;
+  --data-renewable-tip:  #cffafe;
 
-  --fuel-solar:          #FFB547;
-  --fuel-wind:           #7AA8FF;
-  --fuel-hydro:          #3FE0C5;
-  --fuel-solar-tip:      #FFE7B8;       /* NEW */
-  --fuel-wind-tip:       #DCE8FF;       /* NEW */
-  --fuel-hydro-tip:      #D2FFF6;       /* NEW */
+  /* fuels: gold, cyan, violet. Violet, not periwinkle, keeps hydro apart from
+     wind under deuteranopia. */
+  --fuel-solar:          #ffd05a;
+  --fuel-wind:           #67e8f9;
+  --fuel-hydro:          #9d8cff;
+  --fuel-solar-tip:      #ffecb3;       /* NEW */
+  --fuel-wind-tip:       #cffafe;       /* NEW */
+  --fuel-hydro-tip:      #ddd6ff;       /* NEW */
 
   /* horizon globe */
-  --globe-ink-rgb:       242, 245, 249; /* NEW */
-  --globe-paper:         #05070B;       /* NEW */
-  --globe-atmosphere-rgb: 110, 190, 255; /* NEW */
-  --globe-land-rgb:      170, 200, 230; /* NEW */
-  --globe-star-rgb:      220, 235, 255; /* the horizon's star field */
-  --bar-track:           rgba(160, 200, 255, 0.12);   /* the dock's bar tracks (dark mock) */
-  --globe-ocean:         #07101C;
-  --globe-ocean-lit:     #0D2238;
-  --globe-terminator:    rgba(242, 245, 249, 0.30);
-  --globe-keyline:       #05070B;
-  --globe-dot-day:       #AAC8E6;
-  --globe-dot-night:     #5A7896;
-  --globe-border:        rgba(160, 200, 255, 0.16);
-  --globe-body-hi:       #04070D;       /* body gradient, centre to limb */
-  --globe-body-mid:      #07101C;
-  --globe-body-lo:       #0D2238;
-  --globe-dot-neutral:   #AAC8E6;
+  --globe-ink-rgb:       255, 248, 224; /* NEW */
+  --globe-paper:         #060a11;       /* NEW */
+  --globe-atmosphere-rgb: 120, 170, 235; /* NEW */
+  --globe-land-rgb:      207, 214, 223; /* NEW: cool, so day-side land never reads as solar */
+  --globe-star-rgb:      255, 248, 224; /* the horizon's star field */
+  --bar-track:           rgba(255, 248, 224, 0.12);   /* the dock's bar tracks (dark mock) */
+  --globe-ocean:         #0a1220;
+  --globe-ocean-lit:     #1b2b42;
+  --globe-terminator:    rgba(255, 248, 224, 0.30);
+  --globe-keyline:       #060a11;
+  --globe-dot-day:       #cfd6df;
+  --globe-dot-night:     #6f84a8;
+  --globe-border:        rgba(255, 248, 224, 0.16);
+  --globe-body-hi:       #04070c;       /* body gradient, centre to limb */
+  --globe-body-mid:      #0a1220;
+  --globe-body-lo:       #1b2b42;
+  --globe-dot-neutral:   #cfd6df;
 
-  --success:             #3FE0C5;
+  --success:             #5eead4;
   --warning:             #ffb84d;
   --danger:              #f87171;
   --info:                var(--data-renewable);
 
-  --mark-disc:           #FFB547;       /* NEW */
-  --mark-lead:           #F2F5F9;       /* NEW */
-  --mark-rest:           #F2F5F9;       /* NEW */
-  --mark-rest-opacity:   0.22;          /* NEW */
-  --mark-tick:           #FFFFFF;       /* NEW */
-  --mark-glow:           rgba(255, 181, 71, 0.28);   /* NEW: halo behind the disc */
+  /* mark: the brand system's, unchanged — gold disc, gold pillars at 55%, the
+     cyan curtailed share at 95%. The published SVGs use these (brand-mark.ts). */
+  --mark-disc:           #ffd05a;       /* NEW */
+  --mark-lead:           #67e8f9;       /* NEW */
+  --mark-lead-opacity:   0.95;          /* NEW */
+  --mark-rest:           #e6a020;       /* NEW */
+  --mark-rest-opacity:   0.55;          /* NEW */
+  --mark-tick:           #fff8e0;       /* NEW */
+  --mark-glow:           rgba(255, 208, 90, 0.28);   /* NEW: halo behind the disc */
 
-  --font-display:        "Geist", "Helvetica Neue", Arial, sans-serif;
-  --font-body:           "Geist", "Helvetica Neue", Arial, sans-serif;
-  --font-mono:           "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-display:        "Schibsted Grotesk", Inter, -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-body:           "Schibsted Grotesk", Inter, -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --font-sans:           var(--font-body);
-  --display-weight-strong: 600;
-  --display-weight-base:   500;
-  --display-tracking:    -0.06em;       /* NEW: hero only; -0.02em for 28-30px figures */
-  --display-leading:     0.9;           /* NEW */
+  --display-weight-strong: 800;
+  --display-weight-base:   700;
+  --display-tracking:    -0.03em;       /* NEW: hero only; -0.02em for 28-30px figures */
+  --display-leading:     0.92;          /* NEW */
   --fs-hero:             clamp(120px, 12.78vw, 184px);   /* NEW: 184px at 1440 */
 
   --theme-foreground:       var(--ink);
@@ -394,10 +399,10 @@
    tests/style-colour-literals.test.ts). */
 :root:not([data-theme]) { color-scheme: light dark; }
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme]), html:not([data-theme]) body { background: #F1EEE6; color: #16150F; }
+  :root:not([data-theme]), html:not([data-theme]) body { background: #f6f0e0; color: #0b121d; }
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]), html:not([data-theme]) body { background: #05070B; color: #F2F5F9; }
+  :root:not([data-theme]), html:not([data-theme]) body { background: #060a11; color: #fff8e0; }
 }
 
 
@@ -505,57 +510,57 @@ code {
 .loader-mark b{display:block;width:100%;height:100%;border-radius:0.008em;transform-origin:50% 100%;transform:scaleY(0);animation-duration:6.6s;animation-timing-function:linear;animation-iteration-count:infinite}
 .loader-mark i::after{content:"";position:absolute;left:0;top:-0.022em;width:100%;height:0.018em;border-radius:0.008em;background:var(--mark-tick);opacity:0;animation-duration:6.6s;animation-timing-function:cubic-bezier(.25,.6,.5,1);animation-iteration-count:infinite}
 .loader-mark .p0{height:0.1665em;transform-origin:50% 0;transform:rotate(0deg) translateY(-0.3665em)}
-.loader-mark .p0 b{background:var(--mark-lead);animation-name:elj-p0}
+.loader-mark .p0 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p0}
 .loader-mark .p0::after{animation-name:elj-t0}
 @keyframes elj-p0{0%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}7.576%,53.03%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}59.848%,100%{transform:scaleY(0)}}
 @keyframes elj-t0{0%,53.03%{transform:translateY(0);opacity:0}54.667%{opacity:0.95}66.667%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p1{height:0.237em;transform-origin:50% 0;transform:rotate(8.18deg) translateY(-0.437em)}
-.loader-mark .p1 b{background:var(--mark-lead);animation-name:elj-p1}
+.loader-mark .p1 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p1}
 .loader-mark .p1::after{animation-name:elj-t1}
 @keyframes elj-p1{0%,0.895%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}8.471%,53.719%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}60.537%,100%{transform:scaleY(0)}}
 @keyframes elj-t1{0%,53.719%{transform:translateY(0);opacity:0}55.355%{opacity:0.95}67.355%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p2{height:0.2262em;transform-origin:50% 0;transform:rotate(16.36deg) translateY(-0.4262em)}
-.loader-mark .p2 b{background:var(--mark-lead);animation-name:elj-p2}
+.loader-mark .p2 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p2}
 .loader-mark .p2::after{animation-name:elj-t2}
 @keyframes elj-p2{0%,1.791%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}9.366%,54.408%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}61.226%,100%{transform:scaleY(0)}}
 @keyframes elj-t2{0%,54.408%{transform:translateY(0);opacity:0}56.044%{opacity:0.95}68.044%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p3{height:0.2101em;transform-origin:50% 0;transform:rotate(24.55deg) translateY(-0.4101em)}
-.loader-mark .p3 b{background:var(--mark-lead);animation-name:elj-p3}
+.loader-mark .p3 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p3}
 .loader-mark .p3::after{animation-name:elj-t3}
 @keyframes elj-p3{0%,2.686%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}10.262%,55.096%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}61.915%,100%{transform:scaleY(0)}}
 @keyframes elj-t3{0%,55.096%{transform:translateY(0);opacity:0}56.733%{opacity:0.95}68.733%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p4{height:0.2314em;transform-origin:50% 0;transform:rotate(32.73deg) translateY(-0.4314em)}
-.loader-mark .p4 b{background:var(--mark-lead);animation-name:elj-p4}
+.loader-mark .p4 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p4}
 .loader-mark .p4::after{animation-name:elj-t4}
 @keyframes elj-p4{0%,3.581%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}11.157%,55.785%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}62.603%,100%{transform:scaleY(0)}}
 @keyframes elj-t4{0%,55.785%{transform:translateY(0);opacity:0}57.421%{opacity:0.95}69.421%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p5{height:0.1979em;transform-origin:50% 0;transform:rotate(40.91deg) translateY(-0.3979em)}
-.loader-mark .p5 b{background:var(--mark-lead);animation-name:elj-p5}
+.loader-mark .p5 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p5}
 .loader-mark .p5::after{animation-name:elj-t5}
 @keyframes elj-p5{0%,4.477%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}12.052%,56.474%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}63.292%,100%{transform:scaleY(0)}}
 @keyframes elj-t5{0%,56.474%{transform:translateY(0);opacity:0}58.11%{opacity:0.95}70.11%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p6{height:0.1811em;transform-origin:50% 0;transform:rotate(49.09deg) translateY(-0.3811em)}
-.loader-mark .p6 b{background:var(--mark-lead);animation-name:elj-p6}
+.loader-mark .p6 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p6}
 .loader-mark .p6::after{animation-name:elj-t6}
 @keyframes elj-p6{0%,5.372%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}12.948%,57.163%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}63.981%,100%{transform:scaleY(0)}}
 @keyframes elj-t6{0%,57.163%{transform:translateY(0);opacity:0}58.799%{opacity:0.95}70.799%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p7{height:0.1066em;transform-origin:50% 0;transform:rotate(57.27deg) translateY(-0.3066em)}
-.loader-mark .p7 b{background:var(--mark-lead);animation-name:elj-p7}
+.loader-mark .p7 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p7}
 .loader-mark .p7::after{animation-name:elj-t7}
 @keyframes elj-p7{0%,6.267%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}13.843%,57.851%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}64.669%,100%{transform:scaleY(0)}}
 @keyframes elj-t7{0%,57.851%{transform:translateY(0);opacity:0}59.488%{opacity:0.95}71.488%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p8{height:0.2292em;transform-origin:50% 0;transform:rotate(65.45deg) translateY(-0.4292em)}
-.loader-mark .p8 b{background:var(--mark-lead);animation-name:elj-p8}
+.loader-mark .p8 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p8}
 .loader-mark .p8::after{animation-name:elj-t8}
 @keyframes elj-p8{0%,7.163%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}14.738%,58.54%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}65.358%,100%{transform:scaleY(0)}}
 @keyframes elj-t8{0%,58.54%{transform:translateY(0);opacity:0}60.176%{opacity:0.95}72.176%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p9{height:0.0923em;transform-origin:50% 0;transform:rotate(73.64deg) translateY(-0.2923em)}
-.loader-mark .p9 b{background:var(--mark-lead);animation-name:elj-p9}
+.loader-mark .p9 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p9}
 .loader-mark .p9::after{animation-name:elj-t9}
 @keyframes elj-p9{0%,8.058%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}15.634%,59.229%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}66.047%,100%{transform:scaleY(0)}}
 @keyframes elj-t9{0%,59.229%{transform:translateY(0);opacity:0}60.865%{opacity:0.95}72.865%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p10{height:0.2115em;transform-origin:50% 0;transform:rotate(81.82deg) translateY(-0.4115em)}
-.loader-mark .p10 b{background:var(--mark-lead);animation-name:elj-p10}
+.loader-mark .p10 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p10}
 .loader-mark .p10::after{animation-name:elj-t10}
 @keyframes elj-p10{0%,8.953%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}16.529%,59.917%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}66.736%,100%{transform:scaleY(0)}}
 @keyframes elj-t10{0%,59.917%{transform:translateY(0);opacity:0}61.554%{opacity:0.95}73.554%,100%{transform:translateY(-0.062em);opacity:0}}
@@ -729,10 +734,8 @@ code {
 .loader-mark i::after{animation:none;opacity:0}}
 /* brand-mark:end */
 
-/* The loading screen's wordmark is the mode's lockup, the same as the one in
-   the header (see .app-wordmark): Newsreader 500 with an italic "Joule" in
-   light, Geist 600 upright in dark. The boot script sets data-theme before
-   this paints, so it never shows the other mode's lockup first. */
+/* The loading screen's wordmark is the same lockup as the one in the header
+   (see .app-wordmark). */
 .loader-wordmark {
   font-size: clamp(30px, 5vw, 40px);
   line-height: 1;
@@ -923,29 +926,20 @@ body:has(.app-shell) { max-width: none; }
   overflow: visible;
 }
 
-/* The wordmark lockup, per mode, shared by the header and the loading
-   screen: Newsreader 500 with "Joule" in italic 400 in light, Geist 600
-   upright in dark. "Joule" is ink in both; the brand colour lives in the
-   mark's disc. */
+/* The wordmark lockup, shared by the header and the loading screen, is the
+   brand system's in both modes: Schibsted Grotesk 700 at -0.01em, "Every
+   Last" in ink and "Joule" in the brand colour (--brand-text, the brand hue
+   that carries small text in each mode). */
 .app-wordmark,
 .loader-wordmark {
   font-family: var(--font-display);
   font-weight: var(--display-weight-base);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
   color: var(--ink);
 }
 .app-wordmark-accent,
 .loader-wordmark span {
-  font-style: italic;
-  font-weight: 400;
-}
-:root[data-theme="dark"] :is(.app-wordmark, .loader-wordmark) {
-  font-weight: var(--display-weight-strong);
-  letter-spacing: -0.02em;
-}
-:root[data-theme="dark"] :is(.app-wordmark-accent, .loader-wordmark span) {
-  font-style: normal;
-  font-weight: inherit;
+  color: var(--brand-text);
 }
 
 /* ---- Header: lockup left, nav + DOI pill + mode switch right ------------ */
@@ -972,8 +966,7 @@ body:has(.app-shell) { max-width: none; }
 }
 .app-lockup:hover { text-decoration: none; }
 .app-lockup .app-mark { width: 26px; height: 26px; }
-.app-lockup .app-wordmark { font-size: 22px; line-height: 1; }
-:root[data-theme="dark"] .app-lockup .app-wordmark { font-size: 17px; }
+.app-lockup .app-wordmark { font-size: 17px; line-height: 1; }
 /* The dashboard's dark header floats over the sky: no rule (redesign plan
    3.2, 3.4). The doc pages keep theirs. */
 :root[data-theme="dark"] .app-shell > .app-header { border-bottom-color: transparent; }
@@ -1039,7 +1032,6 @@ body:has(.app-shell) { max-width: none; }
   color: var(--ink);
 }
 .hero-pct-sign { font-style: normal; }
-:root[data-theme="light"] .hero-pct-sign { font-style: italic; letter-spacing: -0.02em; }
 
 .hero .lead {
   margin: 20px 0 0;
@@ -1156,10 +1148,13 @@ body:has(.app-shell) { max-width: none; }
   line-height: 1.5;
   color: var(--ink);
 }
+/* "Fig. 1" is an <em>; Schibsted Grotesk ships no italic, so it is a mono
+   label rather than a synthesised slant. */
 .hero-fig {
-  font-family: "Newsreader", Georgia, serif;
-  font-style: italic;
-  font-size: 15px;
+  font: 500 11px/1 var(--font-mono);
+  font-style: normal;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
 }
 /* The dark board has no figure caption (redesign plan 5). */
 :root[data-theme="dark"] .hero-caption { display: none; }
@@ -1243,7 +1238,7 @@ body:has(.app-shell) { max-width: none; }
 }
 .gs-name:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .gs-now { margin-top: 2px; font-size: 13px; }
-/* Dark: glass, as the dock; the name in Geist 500 20px (redesign plan 6.3). */
+/* Dark: glass, as the dock; the name in 500 20px (redesign plan 6.3). */
 :root[data-theme="dark"] .globe-selection {
   background: var(--surface-panel);
   -webkit-backdrop-filter: blur(18px);
@@ -1346,10 +1341,12 @@ body:has(.app-shell) { max-width: none; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* "est." and "stale" are <em>s set as mono labels (no synthesised italic). */
 .hs-tag {
-  font-family: "Newsreader", Georgia, serif;
-  font-style: italic;
-  font-size: 14px;
+  font: 400 11px/1 var(--font-mono);
+  font-style: normal;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .hs-bar { display: none; }
 /* Dark rows are the dock's (mocks/dark-desktop.html): name, a glowing bar
@@ -1743,8 +1740,7 @@ body:has(.app-shell) { max-width: none; }
   .app-header { min-height: 0; padding: 0; flex-wrap: nowrap; }
   .app-lockup { gap: 12px; }
   .app-lockup .app-mark { width: 30px; height: 30px; }
-  .app-lockup .app-wordmark { font-size: 26px; }
-  :root[data-theme="dark"] .app-lockup .app-wordmark { font-size: 18px; }
+  .app-lockup .app-wordmark { font-size: 18px; }
   .app-header-right { flex-wrap: nowrap; gap: 28px; }
   .app-nav { flex-wrap: nowrap; gap: 28px; }
 
@@ -2161,7 +2157,6 @@ body:has(.app-shell) { max-width: none; }
     padding: 10px 0;
     font-size: 15px;
   }
-  :root[data-theme="light"] .hs-tag { font-size: 15px; }
   :root[data-theme="light"] .hotspot-gw { font-size: 14px; }
   /* The rows carry their unit on phones, as the board does. */
   :root[data-theme="light"] .hs-unit { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
