@@ -746,6 +746,22 @@ body {
     padding-inline: 4vw;
   }
 
+  /* The dashboard brings its own gutter (.app-shell padding). Stacked on
+     the 4vw above and Framework's 2rem #observablehq-center margin it left
+     253px of a 375px phone, and 198px of a 320px one. Drop the two generic
+     gutters on the dashboard only; the doc pages keep theirs. */
+  body:has(.app-shell) {
+    padding-inline: 0;
+  }
+  #observablehq-center:has(.app-shell) {
+    margin-inline: 0;
+  }
+  /* Framework's "Next page" pager sits outside .app-shell; give it the
+     shell's phone gutter back so it does not touch the screen edge. */
+  #observablehq-center:has(.app-shell) > #observablehq-footer {
+    margin-inline: 14px;
+  }
+
   .display-xl {
     line-height: 1;
   }
@@ -785,6 +801,12 @@ main table {
   display: inline-flex;
   align-items: center;
   gap: 14px;
+  /* Theme toggle (151px) + gap + the nav's widest link is ~276px, wider than
+     a phone's content box. Without wrap this row set the page's minimum
+     width; with it the nav drops below the toggle. */
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  row-gap: 10px;
 }
 
 .app-title {
@@ -1053,8 +1075,11 @@ main table {
   flex-shrink: 0;
 }
 
+/* No width here: Framework's `input[type=range]{width:240px}` (0,1,1)
+   outranks a bare class, so the 110px this rule used to set never applied
+   and desktop has always shown 240px. The narrow-screen width below is
+   scoped to lift it past Framework's rule. */
 .globe-zoom-slider {
-  width: 110px;
   cursor: pointer;
   accent-color: rgba(255,255,255,0.65);
   opacity: 0.65;
@@ -1072,8 +1097,10 @@ main table {
   outline-offset: 2px;
 }
 
-@media (hover: none) {
-  .globe-zoom-slider {
+/* 240px + the "Zoom" label is ~286px, wider than a phone's content box, so
+   the zoom row set the page's minimum width. */
+@media (max-width: 900px) {
+  .globe-zoom-controls .globe-zoom-slider {
     width: 140px;
   }
 }
@@ -1710,6 +1737,11 @@ main > h1:first-child {
   display: flex;
   gap: 12px;
   align-items: center;
+  /* Play + six speed chips + the UTC clock is ~347px on a phone.
+     Unwrapped, this row set the phone page's minimum width (409px at a
+     375px viewport); wrapped, the clock drops to its own line. */
+  flex-wrap: wrap;
+  row-gap: 8px;
 }
 .ctl-play {
   width: 36px;
@@ -1726,6 +1758,7 @@ main > h1:first-child {
   justify-content: center;
   padding: 0;
   line-height: 1;
+  flex-shrink: 0;   /* a squeezed row was pressing the circle into a 23px oval */
   transition: background 140ms ease, transform 140ms ease;
 }
 .ctl-play:hover { transform: scale(1.04); }
@@ -1747,6 +1780,7 @@ main > h1:first-child {
 .ctl-speed {
   display: inline-flex;
   gap: 4px;
+  flex-wrap: wrap;   /* last resort below ~300px; normally one row */
 }
 .ctl-speed-chip {
   padding: 5px 10px;
@@ -1799,6 +1833,12 @@ main > h1:first-child {
   margin-left: -24px;
 }
 
+/* The -24px cancels .panel-left's desktop 24px padding. At <=900px that
+   padding is 16px, and -24px pushed the percentage 8px past the gutter. */
+@media (max-width: 900px) {
+  .stat-headline-row { margin-left: -16px; }
+}
+
 .ctl-utc {
   font-size: 12px;
   color: rgba(255,255,255,0.55);
@@ -1809,6 +1849,12 @@ main > h1:first-child {
 @media (max-width: 640px) {
   #timeline-canvas { height: 72px; }
   .ctl-play { width: 32px; height: 32px; }
+}
+
+/* 320px phones: play + gap + six chips was 294px against 292px of room, so
+   the play button wrapped onto a row of its own. */
+@media (max-width: 400px) {
+  #timeline-controls { column-gap: 8px; }
 }
 
 /* =========================================================================
