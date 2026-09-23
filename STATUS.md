@@ -5,7 +5,7 @@
 
 ## /history Figure 4 labelled two gridlines with the wrong value (2026-09-23)
 
-Branch `fix/history-axis-tick-precision`. Chart code only
+Branch `fix/history-axis-tick-precision` (**#1090**). Chart code only
 (`src/lib/history-charts.ts`) plus tests; **#1088** listed it under "Not
 fixed here". Figure 4, "Summed `total_twh_30d` across the archive",
 labelled its y-axis 0, 13, 25, 38 and 50. Its gridlines sit at 0, 12.5, 25,
@@ -79,8 +79,8 @@ start-anchored at x ≥ 0. All four fail against main's code.
 
 **Not fixed here.** Figure 4's y-axis ticks read "13" and "38" at the 12.5
 and 37.5 gridlines. `tickFormatter` stopped at the first precision that gave
-distinct labels, and whole numbers did, so it rounded both. Fixed on
-`fix/history-axis-tick-precision` (see the entry above).
+distinct labels, and whole numbers did, so it rounded both. Fixed by
+**#1090** (see the entry above).
 
 ## Doc pages laid out wider than a phone (2026-09-23)
 
