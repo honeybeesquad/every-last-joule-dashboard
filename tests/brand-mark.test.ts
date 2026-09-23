@@ -77,6 +77,7 @@ describe("generated brand assets", () => {
     }
     expect(markLoaderCss()).toContain("var(--mark-disc)");
     expect(markLoaderCss()).toContain("var(--mark-lead)");
+    expect(markLoaderCss()).toContain("var(--mark-lead-opacity)");
     expect(markLoaderCss()).toContain("var(--mark-rest)");
     expect(markLoaderCss()).toContain("var(--mark-rest-opacity)");
     expect(markLoaderCss()).toContain("var(--mark-tick)");
@@ -144,7 +145,7 @@ describe("mark geometry", () => {
     expect(ps.slice(firstRest).some((p) => p.curtailed)).toBe(false);
   });
 
-  it("draws the published SVGs in the dark (Horizon) mark palette (D6)", () => {
+  it("draws the published SVGs in the dark (Nightgrid) mark palette (D6)", () => {
     // src/brand/*.svg are static files with no document to read tokens from,
     // so their colours are literals, and this pins each one to the dark
     // block's token so the two cannot drift.
@@ -157,6 +158,7 @@ describe("mark geometry", () => {
 
     expect(token("--mark-disc")).toBe(MARK_SVG_PALETTE.disc);
     expect(token("--mark-lead")).toBe(MARK_SVG_PALETTE.lead);
+    expect(Number(token("--mark-lead-opacity"))).toBe(MARK_SVG_PALETTE.leadOpacity);
     expect(token("--mark-rest")).toBe(MARK_SVG_PALETTE.rest);
     expect(Number(token("--mark-rest-opacity"))).toBe(MARK_SVG_PALETTE.restOpacity);
     expect(token("--mark-tick")).toBe(MARK_SVG_PALETTE.tick);
@@ -226,18 +228,16 @@ describe("the sweep-and-release cycle", () => {
   });
 });
 
-// The faces of the light/dark redesign: Geist for body and Geist Mono for
-// labels in both modes; the display face (and with it the wordmark) is
-// Newsreader in light and Geist in dark. All self-hosted. `observable preview`
-// serves src/fonts under /_file/, so a preview check cannot prove the built
-// path; what makes /fonts/<file> resolve in the build is config.dynamicPaths,
-// which globs src/fonts for .woff2/.ttf. These pin that chain end to end.
-describe("the redesign's typefaces", () => {
+// The brand system's two faces, in both modes: Schibsted Grotesk for display,
+// body and the wordmark; IBM Plex Mono for figures and labels. Both
+// self-hosted. `observable preview` serves src/fonts under /_file/, so a
+// preview check cannot prove the built path; what makes /fonts/<file> resolve
+// in the build is config.dynamicPaths, which globs src/fonts for .woff2/.ttf.
+// These pin that chain end to end.
+describe("the brand typefaces", () => {
   const FACES = {
-    "Geist-Variable-latin.woff2": { family: "Geist", style: "normal", weights: "100 900" },
-    "GeistMono-Variable-latin.woff2": { family: "Geist Mono", style: "normal", weights: "100 900" },
-    "Newsreader-Variable-latin.woff2": { family: "Newsreader", style: "normal", weights: "200 800" },
-    "Newsreader-Italic-Variable-latin.woff2": { family: "Newsreader", style: "italic", weights: "200 800" },
+    "SchibstedGrotesk-Variable.woff2": { family: "Schibsted Grotesk", style: "normal", weights: "400 900" },
+    "IBMPlexMono-Medium.woff2": { family: "IBM Plex Mono", style: "normal", weights: "500" },
   } as const;
   const css = readFileSync(join(SRC, "style.css"), "utf8");
   const modeBlock = (mode: string) => {
@@ -246,7 +246,7 @@ describe("the redesign's typefaces", () => {
   };
   const token = (block: string, name: string) => block.match(new RegExp(`${name}:\\s*([^;]+);`))?.[1].trim() ?? "";
 
-  it("ships the four font files", () => {
+  it("ships the two font files", () => {
     for (const file of Object.keys(FACES)) {
       expect(statSync(join(SRC, "fonts", file)).size, file).toBeGreaterThan(10_000);
     }
@@ -262,7 +262,7 @@ describe("the redesign's typefaces", () => {
     expect(config).toContain("...fontFiles");
   });
 
-  it("declares each face against that path, with its full variable weight range", () => {
+  it("declares each face against that path, with its weight range", () => {
     for (const [file, face] of Object.entries(FACES)) {
       const rule = css.match(new RegExp(`@font-face \\{[^}]*url\\("/fonts/${file}"\\)[^}]*\\}`))?.[0];
       expect(rule, `no @font-face for ${file}`).toBeDefined();
@@ -272,20 +272,23 @@ describe("the redesign's typefaces", () => {
     }
   });
 
-  it("sets Newsreader display and Geist body in light, Geist for both in dark, Geist Mono labels in both", () => {
-    const light = modeBlock("light");
-    const dark = modeBlock("dark");
-    expect(token(light, "--font-display").startsWith('"Newsreader"')).toBe(true);
-    expect(token(dark, "--font-display").startsWith('"Geist"')).toBe(true);
-    for (const block of [light, dark]) {
-      expect(token(block, "--font-body").startsWith('"Geist"')).toBe(true);
-      expect(token(block, "--font-mono").startsWith('"Geist Mono"')).toBe(true);
+  it("sets Schibsted Grotesk display and body and IBM Plex Mono labels in both modes", () => {
+    for (const block of [modeBlock("light"), modeBlock("dark")]) {
+      expect(token(block, "--font-display").startsWith('"Schibsted Grotesk"')).toBe(true);
+      expect(token(block, "--font-body").startsWith('"Schibsted Grotesk"')).toBe(true);
+      expect(token(block, "--font-mono").startsWith('"IBM Plex Mono"')).toBe(true);
     }
   });
 
-  it("takes display weights from the mode, so Newsreader is not rendered at 800", () => {
-    expect(token(modeBlock("light"), "--display-weight-strong")).toBe("400");
-    expect(token(modeBlock("dark"), "--display-weight-strong")).toBe("600");
+  it("no longer declares or names the redesign's faces", () => {
+    expect(css).not.toMatch(/Geist|Newsreader/);
+  });
+
+  it("takes display weights from the mode tokens, not a pinned black weight", () => {
+    for (const mode of ["light", "dark"]) {
+      expect(token(modeBlock(mode), "--display-weight-strong")).toBe("800");
+      expect(token(modeBlock(mode), "--display-weight-base")).toBe("700");
+    }
     // The figures set in the display face: the hero % and the stat values.
     expect(css).toMatch(/\n\.hero-pct \{[^}]*font-weight: var\(--display-weight-strong\)/);
     expect(css).toMatch(/\n\.stat-value \{[^}]*font-weight: var\(--display-weight-strong\)/);
@@ -297,29 +300,36 @@ describe("the redesign's typefaces", () => {
     expect(css).toMatch(/\nh1, h2, h3, h4 \{\n\s*font-family: var\(--font-display\);/);
   });
 
-  it("draws the wordmark in the mode's face: italic serif 'Joule' in light, upright in dark (D3)", () => {
+  it("draws the brand system's wordmark in both modes: ink 'Every Last', brand-colour 'Joule', upright", () => {
     // One lockup rule for the header wordmark and the loading screen's, so
     // the two can never show different lockups.
     const lockup = css.match(/\.app-wordmark,\n\.loader-wordmark \{[^}]*\}/)?.[0] ?? "";
     expect(lockup).toContain("font-family: var(--font-display)");
+    expect(lockup).toContain("font-weight: var(--display-weight-base)");
+    expect(lockup).toContain("letter-spacing: -0.01em");
     expect(lockup).toContain("color: var(--ink)");
     const accent = css.match(/\.app-wordmark-accent,\n\.loader-wordmark span \{[^}]*\}/)?.[0] ?? "";
-    expect(accent).toContain("font-style: italic");
-    expect(accent).toContain("font-weight: 400");
-    const darkAccent =
-      css.match(/:root\[data-theme="dark"\] :is\(\.app-wordmark-accent, \.loader-wordmark span\) \{[^}]*\}/)?.[0] ?? "";
-    expect(darkAccent).toContain("font-style: normal");
-    // The loader's own rule sets size only; it no longer names a face.
+    expect(accent).toContain("color: var(--brand-text)");
+    expect(accent).not.toContain("italic");
+    // No per-mode lockup any more.
+    expect(css).not.toMatch(/:root\[data-theme="dark"\] :is\(\.app-wordmark/);
+    // The loader's own rule sets size only; it names no face.
     const loader = css.match(/\n\.loader-wordmark \{[^}]*\}/)?.[0] ?? "";
-    expect(loader).toContain("font-size"); // found the rule, so the next two are not vacuous
+    expect(loader).toContain("font-size"); // found the rule, so the next is not vacuous
     expect(loader).not.toContain("font-family");
-    expect(loader).not.toContain("Schibsted");
+  });
+
+  it("sets no <em> in a synthesised italic: Schibsted Grotesk ships no italic file", () => {
+    for (const cls of ["hero-pct-sign", "hero-fig", "hs-tag"]) {
+      const rule = css.match(new RegExp(`\\n\\.${cls} \\{[^}]*\\}`))?.[0] ?? "";
+      expect(rule, cls).toContain("font-style: normal");
+    }
   });
 
   it("logs their provenance, as every other self-hosted face does", () => {
     const sources = readFileSync(join(SRC, "fonts", "SOURCES.md"), "utf8");
     for (const file of Object.keys(FACES)) expect(sources).toContain(file);
-    expect(sources).toContain("@fontsource-variable/geist");
-    expect(sources).toContain("@fontsource-variable/newsreader");
+    expect(sources).toContain("fonts.google.com/specimen/Schibsted+Grotesk");
+    expect(sources).toContain("fonts.google.com/specimen/IBM+Plex+Mono");
   });
 });

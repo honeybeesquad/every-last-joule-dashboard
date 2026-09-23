@@ -102,16 +102,16 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
     bodyLo:  get("--globe-body-lo")  || "#0c0804",
     dotNeutralRGB: parseHexToRGB(get("--globe-dot-neutral")) ?? "228,220,204",
     brandRGB: (get("--brand-rgb") || "255, 208, 90").replace(/\s+/g, ""),
-    // The redesign's tokens. Fallbacks are the dark (Horizon) values. The
+    // The redesign's tokens. Fallbacks are the dark (Nightgrid) values. The
     // paper figure's palette defines none of the four globe-* ones and
     // never draws with them.
-    ink:           get("--ink") || "#F2F5F9",
-    inkRGB:        (get("--globe-ink-rgb") || "242, 245, 249").replace(/\s+/g, ""),
-    paper:         get("--globe-paper") || "#05070B",
-    atmosphereRGB: (get("--globe-atmosphere-rgb") || "110, 190, 255").replace(/\s+/g, ""),
-    landRGB:       (get("--globe-land-rgb") || "170, 200, 230").replace(/\s+/g, ""),
-    starRGB:       (get("--globe-star-rgb") || "220, 235, 255").replace(/\s+/g, ""),
-    bg:            get("--surface-bg-3") || "#05070B",
+    ink:           get("--ink") || "#fff8e0",
+    inkRGB:        (get("--globe-ink-rgb") || "255, 248, 224").replace(/\s+/g, ""),
+    paper:         get("--globe-paper") || "#060a11",
+    atmosphereRGB: (get("--globe-atmosphere-rgb") || "120, 170, 235").replace(/\s+/g, ""),
+    landRGB:       (get("--globe-land-rgb") || "207, 214, 223").replace(/\s+/g, ""),
+    starRGB:       (get("--globe-star-rgb") || "255, 248, 224").replace(/\s+/g, ""),
+    bg:            get("--surface-bg-3") || "#060a11",
     fuelTips: {
       solar: get("--fuel-solar-tip"),
       wind:  get("--fuel-wind-tip"),

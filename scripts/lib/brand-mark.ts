@@ -15,9 +15,11 @@
  *     CSS and markup carry only var(--mark-*) references, never a colour.
  *   - In the published SVGs (src/brand/*.svg), from MARK_SVG_PALETTE below:
  *     these files are served as static assets with no document to read custom
- *     properties from. They are drawn in the dark (Horizon) palette, decided
- *     in design review on 2026-09-23 (D6 in the redesign plan). The test pins
- *     every value to the dark block's tokens, so the two cannot drift.
+ *     properties from. They are drawn in the dark (Nightgrid) palette, which
+ *     is the brand system's mark: gold disc, gold pillars at 55%, the cyan
+ *     curtailed share at 95% (2026-09-24; D6 in the redesign plan put the
+ *     published SVGs on the dark palette). The test pins every value to the
+ *     dark block's tokens, so the two cannot drift.
  *
  * The heights are decorative, not data: a fixed hash, identical in every
  * asset, so the mark is always the same shape. It is a logo, not a chart —
@@ -27,22 +29,24 @@
 /** The published SVGs' palette: the dark block's --mark-* tokens, as literals. */
 export const MARK_SVG_PALETTE = {
   /** --mark-disc */
-  disc: "#FFB547",
-  /** --mark-lead: the curtailed share, drawn at full opacity */
-  lead: "#F2F5F9",
+  disc: "#ffd05a",
+  /** --mark-lead: the curtailed share */
+  lead: "#67e8f9",
+  /** --mark-lead-opacity */
+  leadOpacity: 0.95,
   /** --mark-rest */
-  rest: "#F2F5F9",
+  rest: "#e6a020",
   /** --mark-rest-opacity */
-  restOpacity: 0.22,
+  restOpacity: 0.55,
   /** --mark-tick */
-  tick: "#FFFFFF",
-  /** --mark-glow is this colour at glowOpacity: rgba(255, 181, 71, 0.28) */
-  glow: "#FFB547",
+  tick: "#fff8e0",
+  /** --mark-glow is this colour at glowOpacity: rgba(255, 208, 90, 0.28) */
+  glow: "#ffd05a",
   glowOpacity: 0.28,
   /** --brand-strong: the glow's mid stop, as the old gold avatar had */
-  glowMid: "#E89A2A",
+  glowMid: "#e6a020",
   /** --surface-bg-3: the avatars' round ground */
-  ground: "#05070B",
+  ground: "#060a11",
 } as const;
 
 /** Geometry, in the 1000×1000 user space every asset shares. */
@@ -130,7 +134,7 @@ function pillarGroup(p: Pillar, body: string): string {
 
 function pillarRect(p: Pillar, extra = ""): string {
   const fill = p.curtailed ? MARK_SVG_PALETTE.lead : MARK_SVG_PALETTE.rest;
-  const opacity = p.curtailed ? "1" : String(MARK_SVG_PALETTE.restOpacity);
+  const opacity = String(p.curtailed ? MARK_SVG_PALETTE.leadOpacity : MARK_SVG_PALETTE.restOpacity);
   return (
     `<rect x="${-PILLAR_W / 2}" y="${r(-p.length)}" width="${PILLAR_W}" height="${r(p.length)}"` +
     ` rx="${PILLAR_W / 2}" fill="${fill}" opacity="${opacity}">${extra}</rect>`
@@ -290,7 +294,7 @@ export function markLoaderCss(): string {
 
   pillars().forEach((p, i) => {
     const paint = p.curtailed
-      ? `background:var(--mark-lead)`
+      ? `background:var(--mark-lead);opacity:var(--mark-lead-opacity)`
       : `background:var(--mark-rest);opacity:var(--mark-rest-opacity)`;
     out.push(
       // The bar's top-centre sits on the mark's centre (left/top 50% plus the
@@ -342,7 +346,7 @@ export function markStillHtml(size = 26): string {
   }
   return (
     `<svg class="app-mark" viewBox="0 0 ${S} ${S}" width="${size}" height="${size}" aria-hidden="true" focusable="false">` +
-    `<g style="fill:var(--mark-lead)">${lead.join("")}</g>` +
+    `<g style="fill:var(--mark-lead);opacity:var(--mark-lead-opacity)">${lead.join("")}</g>` +
     `<g style="fill:var(--mark-rest);opacity:var(--mark-rest-opacity)">${rest.join("")}</g>` +
     `<circle cx="${S / 2}" cy="${S / 2}" r="${r(DISC_R)}" style="fill:var(--mark-disc)"/>` +
     `</svg>`

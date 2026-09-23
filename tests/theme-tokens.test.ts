@@ -43,39 +43,39 @@ describe("readGlobeTokens: the redesign's globe tokens", () => {
   const root = document.documentElement;
   afterEach(() => root.removeAttribute("style"));
 
-  it("reads the light (Almanac) values, normalising r,g,b triples", () => {
-    root.style.setProperty("--ink", "#16150F");
-    root.style.setProperty("--globe-ink-rgb", "22, 21, 15");
-    root.style.setProperty("--globe-paper", "#F1EEE6");
-    root.style.setProperty("--globe-atmosphere-rgb", "22, 21, 15");
-    root.style.setProperty("--globe-land-rgb", "22, 21, 15");
+  it("reads the light (Daylight) values, normalising r,g,b triples", () => {
+    root.style.setProperty("--ink", "#0b121d");
+    root.style.setProperty("--globe-ink-rgb", "11, 18, 29");
+    root.style.setProperty("--globe-paper", "#f6f0e0");
+    root.style.setProperty("--globe-atmosphere-rgb", "11, 18, 29");
+    root.style.setProperty("--globe-land-rgb", "11, 18, 29");
     const t = readGlobeTokens(root);
-    expect(t.ink).toBe("#16150F");
-    expect(t.inkRGB).toBe("22,21,15");
-    expect(t.paper).toBe("#F1EEE6");
-    expect(t.atmosphereRGB).toBe("22,21,15");
-    expect(t.landRGB).toBe("22,21,15");
+    expect(t.ink).toBe("#0b121d");
+    expect(t.inkRGB).toBe("11,18,29");
+    expect(t.paper).toBe("#f6f0e0");
+    expect(t.atmosphereRGB).toBe("11,18,29");
+    expect(t.landRGB).toBe("11,18,29");
   });
 
-  it("falls back to the dark (Horizon) values when the tokens are missing", () => {
+  it("falls back to the dark (Nightgrid) values when the tokens are missing", () => {
     const t = readGlobeTokens(root);
-    expect(t.ink).toBe("#F2F5F9");
-    expect(t.inkRGB).toBe("242,245,249");
-    expect(t.paper).toBe("#05070B");
-    expect(t.atmosphereRGB).toBe("110,190,255");
-    expect(t.landRGB).toBe("170,200,230");
+    expect(t.ink).toBe("#fff8e0");
+    expect(t.inkRGB).toBe("255,248,224");
+    expect(t.paper).toBe("#060a11");
+    expect(t.atmosphereRGB).toBe("120,170,235");
+    expect(t.landRGB).toBe("207,214,223");
   });
 
   it("reads the horizon's sky, stars and beam-tip tokens", () => {
-    root.style.setProperty("--surface-bg-3", "#05070B");
-    root.style.setProperty("--globe-star-rgb", "220, 235, 255");
-    root.style.setProperty("--fuel-solar-tip", "#FFE7B8");
-    root.style.setProperty("--fuel-wind-tip", "#DCE8FF");
-    root.style.setProperty("--fuel-hydro-tip", "#D2FFF6");
+    root.style.setProperty("--surface-bg-3", "#060a11");
+    root.style.setProperty("--globe-star-rgb", "255, 248, 224");
+    root.style.setProperty("--fuel-solar-tip", "#ffecb3");
+    root.style.setProperty("--fuel-wind-tip", "#cffafe");
+    root.style.setProperty("--fuel-hydro-tip", "#ddd6ff");
     const t = readGlobeTokens(root);
-    expect(t.bg).toBe("#05070B");
-    expect(t.starRGB).toBe("220,235,255");
-    expect(t.fuelTips).toEqual({ solar: "#FFE7B8", wind: "#DCE8FF", hydro: "#D2FFF6" });
+    expect(t.bg).toBe("#060a11");
+    expect(t.starRGB).toBe("255,248,224");
+    expect(t.fuelTips).toEqual({ solar: "#ffecb3", wind: "#cffafe", hydro: "#ddd6ff" });
   });
 
   it("leaves the tips empty where a theme defines none, for the caller to tint", () => {
