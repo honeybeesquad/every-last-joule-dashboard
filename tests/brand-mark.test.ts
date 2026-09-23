@@ -5,11 +5,10 @@ import { describe, it, expect } from "vitest";
 
 import {
   CYCLE,
-  CYAN,
-  CYAN_SHARE,
   FALL_START,
   FALL_WINDOW,
-  GOLD,
+  LEAD_SHARE,
+  MARK_SVG_PALETTE,
   RISE_DUR,
   RISE_WINDOW,
   SPOKES,
@@ -17,6 +16,7 @@ import {
   markAssets,
   markLoaderCss,
   markLoaderHtml,
+  markStillHtml,
   pillars,
   renderMark,
 } from "../scripts/lib/brand-mark.js";
@@ -63,6 +63,49 @@ describe("generated brand assets", () => {
     expect(css).toContain(markLoaderCss());
   });
 
+  // The loader and the header mark follow the light/dark mode through the
+  // --mark-* tokens. A colour literal in either generated block would pin one
+  // mode's colour into both.
+  it("colours the loader and the header mark only through --mark-* tokens", () => {
+    const blocks = { "loader CSS": markLoaderCss(), "loader HTML": markLoaderHtml(), "header mark": markStillHtml() };
+    for (const [name, text] of Object.entries(blocks)) {
+      expect(text, `${name} carries a hex colour`).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+      expect(text, `${name} carries an rgb() colour`).not.toMatch(/rgba?\(\s*\d/);
+      for (const [, name_] of text.matchAll(/var\((--[\w-]+)\)/g)) {
+        expect(name_, `${name} reads a non-mark token`).toMatch(/^--mark-/);
+      }
+    }
+    expect(markLoaderCss()).toContain("var(--mark-disc)");
+    expect(markLoaderCss()).toContain("var(--mark-lead)");
+    expect(markLoaderCss()).toContain("var(--mark-rest)");
+    expect(markLoaderCss()).toContain("var(--mark-rest-opacity)");
+    expect(markLoaderCss()).toContain("var(--mark-tick)");
+    expect(markLoaderCss()).toContain("var(--mark-glow)");
+  });
+
+  it("defines every --mark-* token the generated blocks read, in both modes", () => {
+    const css = readFileSync(join(SRC, "style.css"), "utf8");
+    const used = new Set(
+      [markLoaderCss(), markStillHtml()].flatMap((t) => [...t.matchAll(/var\((--mark-[\w-]+)\)/g)].map((m) => m[1])),
+    );
+    for (const mode of ["light", "dark"]) {
+      const start = css.indexOf(`:root[data-theme="${mode}"] {`);
+      const body = css.slice(start, css.indexOf("\n}", start));
+      for (const token of used) expect(body, `${mode} lacks ${token}`).toContain(`${token}:`);
+    }
+  });
+
+  it("puts the header's still mark inline, from the generator, not as an <img>", () => {
+    const index = readFileSync(join(SRC, "index.md"), "utf8");
+    // An SVG inside an <img> cannot read custom properties.
+    expect(index).not.toContain("/brand/mark-still.svg");
+    expect(index).toContain(markStillHtml());
+    const still = markStillHtml();
+    expect(still.match(/<rect/g) ?? []).toHaveLength(SPOKES);
+    expect(still).toContain('aria-hidden="true"'); // the wordmark beside it names the site
+    expect(still).not.toContain("animate");
+  });
+
   it("gives every pillar its own keyframes, which is what syncs the reset", () => {
     const css = markLoaderCss();
     for (let i = 0; i < SPOKES; i++) {
@@ -95,18 +138,39 @@ describe("mark geometry", () => {
   it("is the Spectrum mark: 44 pillars, 26% of them curtailed", () => {
     const ps = pillars();
     expect(ps).toHaveLength(SPOKES);
-    expect(ps.filter((p) => p.curtailed)).toHaveLength(Math.round(SPOKES * CYAN_SHARE));
+    expect(ps.filter((p) => p.curtailed)).toHaveLength(Math.round(SPOKES * LEAD_SHARE));
     // Curtailed pillars are one contiguous arc starting at 12 o'clock.
-    const firstGold = ps.findIndex((p) => !p.curtailed);
-    expect(ps.slice(firstGold).some((p) => p.curtailed)).toBe(false);
+    const firstRest = ps.findIndex((p) => !p.curtailed);
+    expect(ps.slice(firstRest).some((p) => p.curtailed)).toBe(false);
   });
 
-  it("uses the site's own colour tokens", () => {
-    // --brand and the Sunfire --fuel-wind default in src/style.css.
-    expect(GOLD).toBe("#ffd05a");
-    expect(CYAN).toBe("#67e8f9");
+  it("draws the published SVGs in the dark (Horizon) mark palette (D6)", () => {
+    // src/brand/*.svg are static files with no document to read tokens from,
+    // so their colours are literals, and this pins each one to the dark
+    // block's token so the two cannot drift.
     const css = readFileSync(join(SRC, "style.css"), "utf8");
-    expect(css).toContain(`--brand:               ${GOLD}`);
+    const start = css.indexOf(':root[data-theme="dark"] {');
+    const dark = css.slice(start, css.indexOf("\n}", start));
+    const token = (name: string) => dark.match(new RegExp(`${name}:\\s*([^;]+);`))?.[1].trim();
+    const hexToRgb = (hex: string) =>
+      [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(", ");
+
+    expect(token("--mark-disc")).toBe(MARK_SVG_PALETTE.disc);
+    expect(token("--mark-lead")).toBe(MARK_SVG_PALETTE.lead);
+    expect(token("--mark-rest")).toBe(MARK_SVG_PALETTE.rest);
+    expect(Number(token("--mark-rest-opacity"))).toBe(MARK_SVG_PALETTE.restOpacity);
+    expect(token("--mark-tick")).toBe(MARK_SVG_PALETTE.tick);
+    expect(token("--mark-glow")).toBe(`rgba(${hexToRgb(MARK_SVG_PALETTE.glow)}, ${MARK_SVG_PALETTE.glowOpacity})`);
+    expect(token("--brand-strong")).toBe(MARK_SVG_PALETTE.glowMid);
+    expect(token("--surface-bg-3")).toBe(MARK_SVG_PALETTE.ground);
+
+    // ...and those are the only colours in the files.
+    const allowed = new Set(Object.values(MARK_SVG_PALETTE).filter((v) => typeof v === "string").map((v) => String(v).toLowerCase()));
+    for (const [path, svg] of Object.entries(markAssets())) {
+      for (const [hex] of svg.matchAll(/#[0-9a-fA-F]{6}\b/g)) {
+        expect(allowed.has(hex.toLowerCase()), `${path} uses ${hex}`).toBe(true);
+      }
+    }
   });
 
   it("is deterministic — the same shape on every run", () => {
@@ -162,18 +226,30 @@ describe("the sweep-and-release cycle", () => {
   });
 });
 
-// The loading screen's wordmark is the lockup from the mark work — Schibsted
-// Grotesk 700 at -0.01em, mixed case, "Joule" in --brand — not the site's mono
-// caps. The face is self-hosted like every other one here. `observable preview`
+// The faces of the light/dark redesign: Geist for body and Geist Mono for
+// labels in both modes; the display face (and with it the wordmark) is
+// Newsreader in light and Geist in dark. All self-hosted. `observable preview`
 // serves src/fonts under /_file/, so a preview check cannot prove the built
 // path; what makes /fonts/<file> resolve in the build is config.dynamicPaths,
 // which globs src/fonts for .woff2/.ttf. These pin that chain end to end.
-describe("the loader wordmark's typeface", () => {
-  const FONT_FILE = "SchibstedGrotesk-Variable.woff2";
+describe("the redesign's typefaces", () => {
+  const FACES = {
+    "Geist-Variable-latin.woff2": { family: "Geist", style: "normal", weights: "100 900" },
+    "GeistMono-Variable-latin.woff2": { family: "Geist Mono", style: "normal", weights: "100 900" },
+    "Newsreader-Variable-latin.woff2": { family: "Newsreader", style: "normal", weights: "200 800" },
+    "Newsreader-Italic-Variable-latin.woff2": { family: "Newsreader", style: "italic", weights: "200 800" },
+  } as const;
+  const css = readFileSync(join(SRC, "style.css"), "utf8");
+  const modeBlock = (mode: string) => {
+    const start = css.indexOf(`:root[data-theme="${mode}"] {`);
+    return css.slice(start, css.indexOf("\n}", start));
+  };
+  const token = (block: string, name: string) => block.match(new RegExp(`${name}:\\s*([^;]+);`))?.[1].trim() ?? "";
 
-  it("ships the font file", () => {
-    const path = join(SRC, "fonts", FONT_FILE);
-    expect(statSync(path).size).toBeGreaterThan(10_000);
+  it("ships the four font files", () => {
+    for (const file of Object.keys(FACES)) {
+      expect(statSync(join(SRC, "fonts", file)).size, file).toBeGreaterThan(10_000);
+    }
   });
 
   it("is picked up by the config's src/fonts glob, so the build emits /fonts/<file>", () => {
@@ -181,60 +257,67 @@ describe("the loader wordmark's typeface", () => {
     const globbed = readdirSync(join(SRC, "fonts"))
       .filter((file) => file.endsWith(".ttf") || file.endsWith(".woff2"))
       .map((file) => `/fonts/${file}`);
-    expect(globbed).toContain(`/fonts/${FONT_FILE}`);
-
+    for (const file of Object.keys(FACES)) expect(globbed).toContain(`/fonts/${file}`);
     const config = readFileSync(join(process.cwd(), "observablehq.config.ts"), "utf8");
     expect(config).toContain("...fontFiles");
   });
 
-  it("declares the face against that path and uses it for the wordmark", () => {
-    const css = readFileSync(join(SRC, "style.css"), "utf8");
-    expect(css).toContain(`url("/fonts/${FONT_FILE}")`);
-    expect(css).toMatch(/font-family: "Schibsted Grotesk";[^\n]*font-weight: 400 900/);
-    expect(css).toMatch(/\.loader-wordmark \{[^}]*"Schibsted Grotesk"/);
-    expect(css).toMatch(/\.loader-mark \{\n\s*font-size: 148px;/);
-    // The lockup, as drawn: 700 weight, -0.01em, no uppercasing.
-    expect(css).toMatch(/\.loader-wordmark \{[^}]*font-weight: 700/);
-    expect(css).toMatch(/\.loader-wordmark \{[^}]*letter-spacing: -0\.01em/);
-    expect(css).not.toMatch(/\.loader-wordmark \{[^}]*text-transform/);
-  });
-
-  it("is the site face: both themes point --font-display and --font-body at it", () => {
-    const css = readFileSync(join(SRC, "style.css"), "utf8");
-    const display = [...css.matchAll(/--font-display:\s*([^;]+);/g)].map((m) => m[1].trim());
-    const body = [...css.matchAll(/--font-body:\s*([^;]+);/g)].map((m) => m[1].trim());
-    // Exactly two, because the site has exactly two themes since Triad was
-    // removed. This fails closed both ways on purpose: a new theme that does
-    // not declare the brand face trips it, and so does one that declares it
-    // in a stack this test has not seen.
-    const why = "add the brand face to the new theme's --font-display/--font-body stack";
-    expect(display, `Sunfire + Deepcurrent expected — ${why}`).toHaveLength(2);
-    expect(body, `Sunfire + Deepcurrent expected — ${why}`).toHaveLength(2);
-    for (const stack of [...display, ...body]) {
-      expect(stack.startsWith('"Schibsted Grotesk"')).toBe(true);
+  it("declares each face against that path, with its full variable weight range", () => {
+    for (const [file, face] of Object.entries(FACES)) {
+      const rule = css.match(new RegExp(`@font-face \\{[^}]*url\\("/fonts/${file}"\\)[^}]*\\}`))?.[0];
+      expect(rule, `no @font-face for ${file}`).toBeDefined();
+      expect(rule).toContain(`font-family: "${face.family}"`);
+      expect(rule).toContain(`font-weight: ${face.weights}`);
+      expect(rule).toContain(`font-style: ${face.style}`);
     }
-    // The instrument voice is untouched: figures and labels stay monospaced.
-    expect(css).toMatch(/--font-mono:\s*"IBM Plex Mono"/);
   });
 
-  it("wires --font-display to the headings, which nothing read before", () => {
-    const css = readFileSync(join(SRC, "style.css"), "utf8");
+  it("sets Newsreader display and Geist body in light, Geist for both in dark, Geist Mono labels in both", () => {
+    const light = modeBlock("light");
+    const dark = modeBlock("dark");
+    expect(token(light, "--font-display").startsWith('"Newsreader"')).toBe(true);
+    expect(token(dark, "--font-display").startsWith('"Geist"')).toBe(true);
+    for (const block of [light, dark]) {
+      expect(token(block, "--font-body").startsWith('"Geist"')).toBe(true);
+      expect(token(block, "--font-mono").startsWith('"Geist Mono"')).toBe(true);
+    }
+  });
+
+  it("takes display weights from the mode, so Newsreader is not rendered at 800", () => {
+    expect(token(modeBlock("light"), "--display-weight-strong")).toBe("400");
+    expect(token(modeBlock("dark"), "--display-weight-strong")).toBe("600");
+    expect(css).toMatch(/\.display-xl \{[^}]*font-weight: var\(--display-weight-strong\)/);
+    expect(css).toMatch(/\.display-lg \{[^}]*font-weight: var\(--display-weight-strong\)/);
+    expect(css).toMatch(/\.display {4}\{[^}]*font-weight: var\(--display-weight-base\)/);
+  });
+
+  it("wires --font-display to the headings", () => {
     expect(css).toMatch(/\.display-xl, \.display-lg, \.display,\n\s*h1, h2, h3, h4 \{\n\s*font-family: var\(--font-display\);/);
-    expect(css).toMatch(/font-weight: 400 900/); // --fw-black is 800; the axis must reach it
   });
 
-  it("drops the italic serif accent from the wordmark", () => {
-    const css = readFileSync(join(SRC, "style.css"), "utf8");
-    const rule = css.slice(css.indexOf(".app-wordmark-accent {"));
-    const body = rule.slice(0, rule.indexOf("}"));
-    expect(body).not.toContain("Fraunces");
-    expect(body).not.toContain("italic");
-    expect(body).toContain("font-weight: 700");
+  it("draws the wordmark in the mode's face: italic serif 'Joule' in light, upright in dark (D3)", () => {
+    // One lockup rule for the header wordmark and the loading screen's, so
+    // the two can never show different lockups.
+    const lockup = css.match(/\.app-wordmark,\n\.loader-wordmark \{[^}]*\}/)?.[0] ?? "";
+    expect(lockup).toContain("font-family: var(--font-display)");
+    expect(lockup).toContain("color: var(--ink)");
+    const accent = css.match(/\.app-wordmark-accent,\n\.loader-wordmark span \{[^}]*\}/)?.[0] ?? "";
+    expect(accent).toContain("font-style: italic");
+    expect(accent).toContain("font-weight: 400");
+    const darkAccent =
+      css.match(/:root\[data-theme="dark"\] :is\(\.app-wordmark-accent, \.loader-wordmark span\) \{[^}]*\}/)?.[0] ?? "";
+    expect(darkAccent).toContain("font-style: normal");
+    // The loader's own rule sets size only; it no longer names a face.
+    const loader = css.match(/\n\.loader-wordmark \{[^}]*\}/)?.[0] ?? "";
+    expect(loader).toContain("font-size"); // found the rule, so the next two are not vacuous
+    expect(loader).not.toContain("font-family");
+    expect(loader).not.toContain("Schibsted");
   });
 
-  it("logs its provenance, as every other self-hosted face does", () => {
+  it("logs their provenance, as every other self-hosted face does", () => {
     const sources = readFileSync(join(SRC, "fonts", "SOURCES.md"), "utf8");
-    expect(sources).toContain("Schibsted Grotesk");
-    expect(sources).toContain("schibstedgrotesk");
+    for (const file of Object.keys(FACES)) expect(sources).toContain(file);
+    expect(sources).toContain("@fontsource-variable/geist");
+    expect(sources).toContain("@fontsource-variable/newsreader");
   });
 });

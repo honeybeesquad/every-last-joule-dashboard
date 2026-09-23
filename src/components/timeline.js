@@ -64,11 +64,26 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     return PAD + (hour / 24) * plotW;
   }
 
+  // Canvas cannot read custom properties, so each paint reads the mode's
+  // tokens once. Re-run on themechange (below), which is what makes the
+  // chart follow the light/dark switch.
+  function readTokens() {
+    const cs = getComputedStyle(document.documentElement);
+    const get = (name, fallback) => cs.getPropertyValue(name).trim() || fallback;
+    return {
+      rule: get("--hairline-strong", "rgba(128,128,128,0.5)"),
+      label: get("--ink-soft", "rgba(128,128,128,0.8)"),
+      marker: get("--ink", "rgb(128,128,128)"),
+      mono: get("--font-mono", "ui-monospace, monospace"),
+    };
+  }
+
   function render() {
     const { series, maxTotal } = buildSamples();
     const w = canvas.width / dpr;
     const h = canvas.height / dpr;
     if (!w || !h) return;
+    const tokens = readTokens();
 
     ctx.save();
     ctx.scale(dpr, dpr);
@@ -113,7 +128,7 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     }
 
     // Crisp stroke on the total top line for definition.
-    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--hairline-strong").trim() || "rgba(255,255,255,0.16)";
+    ctx.strokeStyle = tokens.rule;
     ctx.lineWidth = 1;
     ctx.beginPath();
     for (let i = 0; i < n; i += 1) {
@@ -126,8 +141,8 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     ctx.stroke();
 
     // --- Hour ticks ---
-    ctx.fillStyle = "rgba(255,255,255,0.4)";
-    ctx.font = '10px "Gotham", system-ui, sans-serif';
+    ctx.fillStyle = tokens.label;
+    ctx.font = `10px ${tokens.mono}`;
     ctx.textAlign = "center";
     for (const hr of [0, 6, 12, 18]) {
       const x = xAt(hr, plotW);
@@ -141,7 +156,9 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock }) {
     const totalNow = bucketNow[0] + bucketNow[1] + bucketNow[2] + bucketNow[3];
     const cx = xAt(hourNow, plotW);
     const cy = yForGW(totalNow);
-    const markerColor = getComputedStyle(document.documentElement).getPropertyValue("--amber-500").trim() || "#f5a623";
+    // The playhead is ink in both modes: an ink line in light, near-white in
+    // dark, as the redesign draws it. Amber was 2.0:1 on paper.
+    const markerColor = tokens.marker;
     ctx.strokeStyle = markerColor;
     ctx.lineWidth = 1.4;
     ctx.beginPath();

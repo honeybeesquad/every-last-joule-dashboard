@@ -153,7 +153,7 @@ export function mountRegionTooltip({ clock, regionData, getMode, regions }) {
     const plotW = w - pad * 2;
     const plotH = h - pad * 2;
     const region = currentGroup?.[0];
-    const color = region ? colorFor(region) : "#14afac";
+    const color = region ? colorFor(region) : getFuelColor("hydro");
     // Fill
     const grad = ctx.createLinearGradient(0, pad, 0, h - pad);
     grad.addColorStop(0, color + "aa");

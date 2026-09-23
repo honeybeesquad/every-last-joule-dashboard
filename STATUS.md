@@ -1,7 +1,87 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk is now `--font-display` and `--font-body` in both themes, and the dashboard wordmark's italic serif "Joule" is gone; see the entry below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
+**Last verified against git:** 2026-09-23 (light/dark redesign PR 1, theme plumbing: the site's modes are now light (Almanac) and dark (Horizon), with Geist, Geist Mono and Newsreader; see the entry below). Also 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk became `--font-display` and `--font-body` in both themes; superseded 2026-09-23 by the redesign's faces, see the entries below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
+
+## Light/dark redesign, PR 1: theme plumbing (2026-09-23)
+
+Branch `feat/light-dark-theme-plumbing` (**#1087**). The first of five PRs that build the
+approved light/dark redesign: light is **Almanac** (an engraved atlas on
+paper), dark is **Horizon** (the planet as a horizon). The active plan is
+`docs/superpowers/plans/2026-09-23-light-dark-redesign.md`, the handoff's spec
+with the decisions and an "as built" list. **Layout is unchanged in this PR.**
+It replaces the theme system underneath the layout, so every page is legible
+in both modes before the layout PRs (2-4) start.
+
+**Two modes, not two themes.** `data-theme` is `light` or `dark`. The token
+blocks are the handoff's (`tokens/themes.css`), under the repo's own token
+names, plus one new token, `--brand-text`: ink in light and `--brand` in dark.
+Brand orange is 3.2:1 on paper, so small accent text (eyebrows, links, active
+chips) reads `--brand-text`. Deep Current is gone. **The Sunfire block stays,
+for `src/embed/globe.md` only.** The paper figure pins `data-theme="sunfire"`
+and must look as it did.
+
+**Boot script** (`src/lib/theme-boot.ts`, inlined in `<head>` before the
+stylesheet). Decisions from Simon, 2026-09-23:
+- **D1:** a first visit follows `prefers-color-scheme`, and keeps following
+  live OS changes until the visitor picks a mode. Following never writes to
+  storage.
+- **D2:** a stored `sunfire` or `deepcurrent` maps to `dark`.
+- **Embed:** `/embed/` paths get `sunfire` before first paint.
+
+The OS-follow listener is in the boot script, not the toggle, because the doc
+pages have no toggle.
+
+**Toggle.** A sun/moon radiogroup pill on desktop and one 44px button on
+phones (≤640px, the `compact` option). It fires one `themechange` per switch
+and cross-fades for 200ms through `document.startViewTransition`, except under
+reduced motion.
+
+**Faces.** Geist, Geist Mono and Newsreader are self-hosted (SHA-256 in
+`src/fonts/SOURCES.md`). Display is Newsreader in light and Geist in dark.
+Body is Geist and labels are Geist Mono in both modes. **This supersedes the
+2026-09-20 "Brand face site-wide" entry below.** The italic serif "Joule"
+returns in light only, and the loading screen's lockup follows the mode
+(D3).
+
+**Mark.** The loader's generated CSS now reads only `--mark-*` tokens. The
+header's still mark is a third generated block: inline SVG with token fills,
+because an `<img>` cannot read tokens. It stays in the sidebar until PR 2
+moves it. **D6 (Simon's call, against the handoff's recommendation):** the
+four published SVGs in `src/brand/` are regenerated in the dark (Horizon)
+palette. The transparent `mark-still.svg` and `mark-loop.svg` now assume a
+dark ground.
+
+**Colour audit.** At `7f9c8a14`, `src/style.css` had 70 `rgba(255,255,255,…)`
+literals and 64 hex colours outside the theme blocks. Both old themes were
+dark, so on paper those would have rendered white on white. Every one is now
+a token or a `color-mix()` of one.
+`tests/style-colour-literals.test.ts` fails on any colour literal outside a
+token definition, except a two-entry allowlist for the no-JS fallback.
+Observable Framework's `--theme-*` variables are mapped per mode, because its
+configured theme is still `dark`. In the canvas code, the selected-region
+ring reads `--ink` (was `#7cb8ff`). The timeline playhead reads `--ink` (was
+amber, 2.0:1 on paper), and its tick labels read `--font-mono` (they still
+named Gotham).
+
+**Verified.**
+- **Gates:** `npm run typecheck && npm test && npm run ci:gates` all pass.
+  The run covers 226 test files and 1,543 tests, and no golden file is
+  touched.
+- **Screenshots:** from a production build of this branch (`observable build`
+  from the local loader cache), of the dashboard, `/methodology` and the
+  loading screen at 1440×900 and 390×844 in both modes.
+- **Overflow:** all 542 built pages (the dashboard, the five doc pages and all 536 `/region/<id>` pages) at 320, 375 and 390, in both modes, with touch emulation: 3,252 measurements, and `scrollWidth` equals `clientWidth` on every one. No element outside a table or chart scroller extends past `clientWidth`.
+- **Embed:** `/embed/globe` was loaded from the same build with this branch's
+  stylesheet and with `main`'s. Every computed style and globe token matched,
+  and the first paint was `sunfire` whatever was stored. Outside the globe
+  canvas, 0 pixels differed. Inside it, `main` against this branch differed
+  by 7,958 px, the same size as the 8,144 px between two runs of this branch
+  (the globe animates in real time).
+
+**Not changed.** No data file, loader, `regions.ts` entry or tier is touched,
+and `ci:tally-golden` passes without a golden edit. `src/embed/globe.md` is
+unchanged. The structure of every page is unchanged.
 
 ## /history chart unit labels clipped at the left edge (2026-09-23)
 
@@ -377,6 +457,8 @@ those two is the failure this whole program exists to avoid.
 
 ## Brand face site-wide — Schibsted Grotesk (2026-09-20)
 
+> **Superseded 2026-09-23** by the light/dark redesign (PR 1 entry at the top): the display face is now Newsreader in light and Geist in dark, body is Geist and labels are Geist Mono, and the italic serif "Joule" is back in light. The Schibsted Grotesk file stays until the unused-face clean-up.
+
 Branch `feat/brand-face-site-wide`, **stacked on `feat/animated-mark-loader`**
 (PR #1049) because it needs the font file that PR adds. Follow-up 1 of
 issue #1050.
@@ -415,6 +497,8 @@ stay for it.
 **No tier moved.** No data file, loader or region record is touched.
 
 ## Animated brand mark on the page loader (2026-09-20)
+
+> **Colours superseded 2026-09-23** (light/dark redesign PR 1): the loader and the header mark now read `--mark-*` tokens and follow the mode, and the published SVGs in `src/brand/` are regenerated in the dark (Horizon) palette. The geometry, timing and the CSS-transform mechanism below are unchanged. The loader wordmark is now the mode's lockup, not Schibsted Grotesk.
 
 Branch `feat/animated-mark-loader`. The loading screen's centre mark was a `●`
 glyph on a 1.6s opacity pulse. It is now the **Spectrum mark** — 44 pillars
