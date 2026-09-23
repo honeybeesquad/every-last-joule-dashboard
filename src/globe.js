@@ -49,6 +49,8 @@ function precomputeLandDots(countries, step) {
   const eq = d3.geoEquirectangular().scale(W / (2 * Math.PI)).translate([W / 2, H / 2]);
   mctx.beginPath();
   d3.geoPath(eq, mctx)({ type: "GeometryCollection", geometries: countries.features.map((f) => f.geometry) });
+  // Offscreen mask: only the alpha channel is read back, so the colour is
+  // irrelevant and the same in both modes.
   mctx.fillStyle = "#fff";
   mctx.fill();
   const px = mctx.getImageData(0, 0, W, H).data;
@@ -387,6 +389,8 @@ export async function mountGlobe(canvas, initial) {
     ctx.arc(cx, cy, R, 0, Math.PI * 2);
     ctx.fill();
 
+    // A shadow darkens whatever it falls on, in either mode, so black is
+    // theme-neutral here: on paper it reads as the sphere's shaded side.
     const shade = ctx.createRadialGradient(cx + R * 0.44, cy + R * 0.4, 0, cx + R * 0.44, cy + R * 0.4, R * 1.4);
     shade.addColorStop(0, "rgba(0,0,0,0.35)");
     shade.addColorStop(1, "rgba(0,0,0,0)");
@@ -597,7 +601,7 @@ export async function mountGlobe(canvas, initial) {
         const glowR = (4 + Math.sqrt(totalWasteGW) * 5) * birthT;
         ctx.save();
         ctx.globalAlpha = repAlpha * 0.9;
-        ctx.strokeStyle = "#7cb8ff";
+        ctx.strokeStyle = tokens.ink;
         ctx.lineWidth = 2.2;
         ctx.setLineDash([]);
         ctx.beginPath();

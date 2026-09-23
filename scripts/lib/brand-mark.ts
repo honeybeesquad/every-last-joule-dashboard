@@ -1,34 +1,54 @@
 /**
- * brand-mark.ts — the Every Last Joule mark, as generated SVG.
+ * brand-mark.ts — the Every Last Joule mark, as generated SVG, HTML and CSS.
  *
- * One radial histogram: 44 pillars standing off a gold disc, the first 26%
- * of them cyan (the curtailed share). The geometry here is the single source
- * of truth for every rendered brand asset — the page loader's animated mark,
- * the still used under `prefers-reduced-motion`, and the social avatars.
- * `scripts/build/build-mark-assets.ts` writes them; `tests/brand-mark.test.ts`
- * fails if a committed file has drifted from what this module renders.
+ * One radial histogram: 44 pillars standing off a disc, the first 26% of them
+ * the "lead" (the curtailed share). The geometry here is the single source of
+ * truth for every rendered brand asset — the page loader's animated mark, the
+ * header's still mark, and the published SVGs (the marks and the social
+ * avatars). `scripts/build/build-mark-assets.ts` writes them;
+ * `tests/brand-mark.test.ts` fails if a committed file has drifted from what
+ * this module renders.
  *
- * Colours are the site's own tokens, not new ones: GOLD is `--brand`
- * (#ffd05a), GOLD_DIM is `--brand-strong`, CYAN is the Sunfire `--fuel-wind`
- * default. They are literals here because these files are built once and
- * served as static assets, with no document to read custom properties from.
+ * Colour comes from two places:
+ *   - On the site (the loader and the header), from the --mark-* tokens in
+ *     src/style.css, so the mark follows the light/dark mode. The generated
+ *     CSS and markup carry only var(--mark-*) references, never a colour.
+ *   - In the published SVGs (src/brand/*.svg), from MARK_SVG_PALETTE below:
+ *     these files are served as static assets with no document to read custom
+ *     properties from. They are drawn in the dark (Horizon) palette, decided
+ *     in design review on 2026-09-23 (D6 in the redesign plan). The test pins
+ *     every value to the dark block's tokens, so the two cannot drift.
  *
  * The heights are decorative, not data: a fixed hash, identical in every
  * asset, so the mark is always the same shape. It is a logo, not a chart —
  * nothing here claims to plot a region.
  */
 
-export const GOLD = "#ffd05a";
-export const GOLD_DIM = "#e6a020";
-export const CYAN = "#67e8f9";
-export const CYAN_TIP = "#cffafe";
-export const GOLD_TIP = "#ffe9a8";
-export const GROUND = "#0a0703";
+/** The published SVGs' palette: the dark block's --mark-* tokens, as literals. */
+export const MARK_SVG_PALETTE = {
+  /** --mark-disc */
+  disc: "#FFB547",
+  /** --mark-lead: the curtailed share, drawn at full opacity */
+  lead: "#F2F5F9",
+  /** --mark-rest */
+  rest: "#F2F5F9",
+  /** --mark-rest-opacity */
+  restOpacity: 0.22,
+  /** --mark-tick */
+  tick: "#FFFFFF",
+  /** --mark-glow is this colour at glowOpacity: rgba(255, 181, 71, 0.28) */
+  glow: "#FFB547",
+  glowOpacity: 0.28,
+  /** --brand-strong: the glow's mid stop, as the old gold avatar had */
+  glowMid: "#E89A2A",
+  /** --surface-bg-3: the avatars' round ground */
+  ground: "#05070B",
+} as const;
 
 /** Geometry, in the 1000×1000 user space every asset shares. */
 export const S = 1000;
 export const SPOKES = 44;
-export const CYAN_SHARE = 0.26;
+export const LEAD_SHARE = 0.26;
 export const DISC_R = 0.15 * S;
 export const INNER_R = 0.2 * S;
 export const REACH = 0.24 * S;
@@ -75,7 +95,7 @@ function hash(i: number): number {
 }
 
 export function pillars(count = SPOKES): Pillar[] {
-  const cut = Math.round(count * CYAN_SHARE);
+  const cut = Math.round(count * LEAD_SHARE);
   return Array.from({ length: count }, (_, i) => {
     const t = i / count;
     return {
@@ -109,8 +129,8 @@ function pillarGroup(p: Pillar, body: string): string {
 }
 
 function pillarRect(p: Pillar, extra = ""): string {
-  const fill = p.curtailed ? CYAN : GOLD_DIM;
-  const opacity = p.curtailed ? "0.95" : "0.55";
+  const fill = p.curtailed ? MARK_SVG_PALETTE.lead : MARK_SVG_PALETTE.rest;
+  const opacity = p.curtailed ? "1" : String(MARK_SVG_PALETTE.restOpacity);
   return (
     `<rect x="${-PILLAR_W / 2}" y="${r(-p.length)}" width="${PILLAR_W}" height="${r(p.length)}"` +
     ` rx="${PILLAR_W / 2}" fill="${fill}" opacity="${opacity}">${extra}</rect>`
@@ -139,7 +159,7 @@ function scaleAnimation(p: Pillar): string {
 }
 
 function tick(p: Pillar): string {
-  const fill = p.curtailed ? CYAN_TIP : GOLD_TIP;
+  const fill = MARK_SVG_PALETTE.tick;
   const start = at(p.fallAt);
   const lit = at(p.fallAt + TICK_DUR * 0.12);
   const gone = at(p.fallAt + TICK_DUR);
@@ -157,18 +177,19 @@ function tick(p: Pillar): string {
 }
 
 function disc(): string {
-  return `<circle cx="${S / 2}" cy="${S / 2}" r="${r(DISC_R)}" fill="${GOLD}"/>`;
+  return `<circle cx="${S / 2}" cy="${S / 2}" r="${r(DISC_R)}" fill="${MARK_SVG_PALETTE.disc}"/>`;
 }
 
 /** The dark round ground an avatar needs; the loader sits on the page itself. */
 function ground(): string {
+  const { glow, glowOpacity, glowMid, ground: fill } = MARK_SVG_PALETTE;
   return (
     `<defs><radialGradient id="glow" cx="50%" cy="50%" r="50%">` +
-    `<stop offset="0%" stop-color="${GOLD}" stop-opacity="0.28"/>` +
-    `<stop offset="55%" stop-color="${GOLD_DIM}" stop-opacity="0.09"/>` +
-    `<stop offset="100%" stop-color="${GOLD}" stop-opacity="0"/>` +
+    `<stop offset="0%" stop-color="${glow}" stop-opacity="${glowOpacity}"/>` +
+    `<stop offset="55%" stop-color="${glowMid}" stop-opacity="0.09"/>` +
+    `<stop offset="100%" stop-color="${glow}" stop-opacity="0"/>` +
     `</radialGradient></defs>` +
-    `<circle cx="${S / 2}" cy="${S / 2}" r="${S / 2}" fill="${GROUND}"/>` +
+    `<circle cx="${S / 2}" cy="${S / 2}" r="${S / 2}" fill="${fill}"/>` +
     `<circle cx="${S / 2}" cy="${S / 2}" r="${S / 2}" fill="url(#glow)"/>`
   );
 }
@@ -242,6 +263,11 @@ export function markLoaderHtml(): string {
  * Every length is in `em`, where 1em is the mark's diameter — so the whole
  * thing scales from a single font-size (148px on desktop, 112px on phones)
  * with no wrapper transform to fight the layout.
+ *
+ * Every colour is a var(--mark-*) token, so the mark follows the light/dark
+ * mode with no second copy; the boot script sets data-theme before this
+ * paints. The glow is a box-shadow on ::before, which paints behind the
+ * pillars; --mark-glow is transparent in light.
  */
 export function markLoaderCss(): string {
   const out: string[] = [];
@@ -249,21 +275,23 @@ export function markLoaderCss(): string {
 
   out.push(
     `.loader-mark{position:relative;width:1em;height:1em;flex-shrink:0;line-height:0}`,
+    `.loader-mark::before{content:"";position:absolute;left:50%;top:50%;width:${em(DISC_R * 2)};height:${em(DISC_R * 2)};` +
+      `margin:${em(-DISC_R)} 0 0 ${em(-DISC_R)};border-radius:50%;box-shadow:0 0 ${em(300)} ${em(80)} var(--mark-glow)}`,
     `.loader-mark u{position:absolute;left:50%;top:50%;width:${em(DISC_R * 2)};height:${em(DISC_R * 2)};` +
-      `margin:${em(-DISC_R)} 0 0 ${em(-DISC_R)};border-radius:50%;background:${GOLD}}`,
+      `margin:${em(-DISC_R)} 0 0 ${em(-DISC_R)};border-radius:50%;background:var(--mark-disc)}`,
     `.loader-mark i{position:absolute;left:50%;top:50%;width:${em(PILLAR_W)};margin-left:${em(-PILLAR_W / 2)}}`,
     `.loader-mark b{display:block;width:100%;height:100%;border-radius:${em(PILLAR_W / 2)};` +
       `transform-origin:50% 100%;transform:scaleY(0);animation-duration:${CYCLE}s;` +
       `animation-timing-function:linear;animation-iteration-count:infinite}`,
     `.loader-mark i::after{content:"";position:absolute;left:0;top:${em(-TICK_H - 4)};width:100%;` +
-      `height:${em(TICK_H)};border-radius:${em(PILLAR_W / 2)};opacity:0;animation-duration:${CYCLE}s;` +
+      `height:${em(TICK_H)};border-radius:${em(PILLAR_W / 2)};background:var(--mark-tick);opacity:0;animation-duration:${CYCLE}s;` +
       `animation-timing-function:cubic-bezier(.25,.6,.5,1);animation-iteration-count:infinite}`,
   );
 
   pillars().forEach((p, i) => {
-    const fill = p.curtailed ? CYAN : GOLD_DIM;
-    const alpha = p.curtailed ? "0.95" : "0.55";
-    const tickFill = p.curtailed ? CYAN_TIP : GOLD_TIP;
+    const paint = p.curtailed
+      ? `background:var(--mark-lead)`
+      : `background:var(--mark-rest);opacity:var(--mark-rest-opacity)`;
     out.push(
       // The bar's top-centre sits on the mark's centre (left/top 50% plus the
       // negative margin), so that is the pivot: `50% 0`. Anything else rotates
@@ -271,8 +299,8 @@ export function markLoaderCss(): string {
       // Composed right-to-left: lift the bar out to its radius, then rotate.
       `.loader-mark .p${i}{height:${em(p.length)};transform-origin:50% 0;` +
         `transform:rotate(${r(p.angle)}deg) translateY(${em(-INNER_R - p.length)})}`,
-      `.loader-mark .p${i} b{background:${fill};opacity:${alpha};animation-name:elj-p${i}}`,
-      `.loader-mark .p${i}::after{background:${tickFill};animation-name:elj-t${i}}`,
+      `.loader-mark .p${i} b{${paint};animation-name:elj-p${i}}`,
+      `.loader-mark .p${i}::after{animation-name:elj-t${i}}`,
       // Easing is declared inside the keyframe that STARTS each segment, which
       // is how the A6 curves survive: ease-out on the way up, ease-in down.
       // (A stop at 0% would repeat as "0%,0%" for the first pillar.)
@@ -294,6 +322,31 @@ export function markLoaderCss(): string {
     `.loader-mark i::after{animation:none;opacity:0}}`,
   );
   return out.join("\n");
+}
+
+/**
+ * The header's still mark: inline SVG whose fills are the --mark-* tokens, so
+ * it follows the mode. An SVG in an <img> cannot read custom properties, which
+ * is why this is not /brand/mark-still.svg. Decorative (aria-hidden): the
+ * wordmark beside it names the site. Written between the brand-mark-still
+ * markers in src/index.md.
+ */
+export function markStillHtml(size = 26): string {
+  const lead: string[] = [];
+  const rest: string[] = [];
+  for (const p of pillars()) {
+    const bar =
+      `<g transform="rotate(${r(p.angle)} ${S / 2} ${S / 2}) translate(${S / 2} ${r(S / 2 - INNER_R)})">` +
+      `<rect x="${-PILLAR_W / 2}" y="${r(-p.length)}" width="${PILLAR_W}" height="${r(p.length)}" rx="${PILLAR_W / 2}"/></g>`;
+    (p.curtailed ? lead : rest).push(bar);
+  }
+  return (
+    `<svg class="app-mark" viewBox="0 0 ${S} ${S}" width="${size}" height="${size}" aria-hidden="true" focusable="false">` +
+    `<g style="fill:var(--mark-lead)">${lead.join("")}</g>` +
+    `<g style="fill:var(--mark-rest);opacity:var(--mark-rest-opacity)">${rest.join("")}</g>` +
+    `<circle cx="${S / 2}" cy="${S / 2}" r="${r(DISC_R)}" style="fill:var(--mark-disc)"/>` +
+    `</svg>`
+  );
 }
 
 /** Every generated asset, keyed by its path under `src/`. */

@@ -22,12 +22,23 @@
 @font-face { font-family: "Gotham"; src: url("/fonts/Gotham-UltraItalic.ttf") format("truetype");  font-weight: 900; font-style: italic; font-display: swap; }
 
 /* ---------- Theme system fonts (woff2, self-hosted, OFL) ---------- */
-/* Schibsted Grotesk — the brand face from the mark work (the lockup on the
-   Pair board: 700, -0.01em, mixed case, "Joule" in gold). One variable file,
-   latin subset; the axis runs 400–900, which is why --fw-black (800) renders
-   rather than clamping. Every region name in regions.ts is inside latin-1,
-   so no latin-ext file is needed. This is now the site face: both themes
-   point --font-display and --font-body at it. */
+/* Geist, Geist Mono and Newsreader — the light/dark redesign's faces
+   (2026-09-23). Body is Geist and labels are Geist Mono in both modes; the
+   display face is Newsreader in light and Geist in dark (the --font-* tokens
+   in each mode block). Variable latin subsets, OFL, logged in
+   src/fonts/SOURCES.md. Newsreader has an optical-size axis (opsz 6-72):
+   font-optical-sizing stays at its default (auto) so a large figure gets the
+   display cut and 13-15px italics get the text cut. Do not set
+   font-variation-settings: 'opsz' by hand. */
+@font-face { font-family: "Geist";      src: url("/fonts/Geist-Variable-latin.woff2") format("woff2");             font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("/fonts/GeistMono-Variable-latin.woff2") format("woff2");         font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url("/fonts/Newsreader-Variable-latin.woff2") format("woff2");        font-weight: 200 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url("/fonts/Newsreader-Italic-Variable-latin.woff2") format("woff2"); font-weight: 200 800; font-style: italic; font-display: swap; }
+
+/* Schibsted Grotesk — the brand face from the mark work, and the site face
+   from 2026-09-20 until the light/dark redesign replaced it with the faces
+   above. Only the Sunfire block (the paper figure's) still names it; the
+   unused-face clean-up after the redesign removes it. The axis runs 400–900. */
 @font-face { font-family: "Schibsted Grotesk"; src: url("/fonts/SchibstedGrotesk-Variable.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: swap; }
 
 @font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-Regular.woff2")     format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
@@ -45,10 +56,12 @@
 @font-face { font-family: "IBM Plex Mono";   src: url("/fonts/IBMPlexMono-Medium.woff2")   format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
 
 /* =========================================================================
-   THEME SYSTEM — three data-theme blocks. Sunfire is the default.
-   Tokens shared across themes (spacing, radii, type scale, motion) live in :root.
-   Per-theme tokens (colour, fonts, weight/letter-spacing baselines) live in
-   :root[data-theme="<name>"] blocks below.
+   THEME SYSTEM — two modes, light and dark, as data-theme blocks.
+   Tokens shared across modes (spacing, radii, type scale, motion) live in :root.
+   Per-mode tokens (colour, fonts, weight/letter-spacing baselines) live in
+   :root[data-theme="light"] and :root[data-theme="dark"] below. Every colour a
+   rule paints comes from a token; tests/style-colour-literals.test.ts fails on
+   a colour literal anywhere else in this sheet.
    ========================================================================= */
 
 :root {
@@ -78,13 +91,11 @@
   --ls-caps: 0.12em;
 
   /* ============ ACCENT (theme-invariant) ============ */
-  /* Bitcoin-orange accent used by .mode-btn-active border/text and the
-     rgba(247,147,26,…) background on the same element. Single source of
-     truth so the active mode toggle renders correctly. */
+  /* Bitcoin orange. Now only the base of --quality-warning below. */
   --amber-500: #f7931a;
   /* Stale-feed (degraded) alarm ring on globe pillars + the legend swatch.
-     Amber reads as "caution" against both dark themes; inherits to both
-     since it lives in the base :root. */
+     Amber reads as "caution" on the dark ground (8.8:1). It is 2.0:1 on
+     paper, under the 3:1 a ring needs, so the light block overrides it. */
   --quality-warning: var(--amber-500);
 
   /* ============ SPACING ============ */
@@ -141,6 +152,207 @@
   --fw-ultra: 900;
 }
 
+/* =========================================================================
+   LIGHT (Almanac) and DARK (Horizon) — the site's two modes.
+
+   data-theme="light" | "dark" on <html> selects the palette. The boot script
+   in observablehq.config.ts (src/lib/theme-boot.ts) sets it before this sheet
+   loads: a stored choice wins, the old picker's "sunfire" / "deepcurrent" map
+   to dark, and a first visit follows prefers-color-scheme.
+
+   Token NAMES are the ones every rule already reads; tokens the redesign adds
+   are marked NEW. Values are from the light/dark redesign handoff
+   (tokens/themes.css, 2026-09-23); the WCAG pairs they were chosen for are
+   pinned by tests/theme-contrast.test.ts.
+   ========================================================================= */
+
+:root {
+  /* NEW, theme-invariant */
+  --ls-label: 0.08em;                 /* mono uppercase labels, both modes */
+  --fs-label: 11px;
+  /* --quality-warning (#f7931a via --amber-500) stays in the base :root; light overrides it. */
+}
+
+/* ------------------------------------------------------------------ LIGHT · Almanac */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* brand: the sun disc of the mark. 3.2:1 on paper, so never small text on
+     paper; small accent text reads --brand-text (ink) instead. */
+  --brand:               #E4570E;
+  --brand-strong:        #B8430A;
+  --brand-subtle:        rgba(228, 87, 14, 0.10);
+  --brand-rgb:           228, 87, 14;
+  --brand-on:            #16150F;
+  --brand-text:          var(--ink);    /* NEW: accent that has to carry small text (links, eyebrows) */
+
+  /* surfaces: one paper colour; hierarchy comes from rules, not fills */
+  --surface-bg-1:        #E7E3D9;       /* wells: slider track, skeletons */
+  --surface-bg-2:        #ECE9E0;
+  --surface-bg-3:        #F1EEE6;       /* page (html, body) */
+  --surface-raised:      #F1EEE6;       /* cards and tooltips: paper + 1px ink border */
+  --surface-panel:       rgba(241, 238, 230, 0.92);   /* NEW: sticky bars over content */
+  --hairline:            rgba(22, 21, 15, 0.18);
+  --hairline-strong:     #16150F;
+
+  /* foreground: all running text is ink. No grey body copy in this mode. */
+  --ink:                 #16150F;
+  --ink-muted:           #16150F;
+  --ink-soft:            rgba(22, 21, 15, 0.62);      /* disabled and tertiary only; 4.9:1 */
+
+  --data-renewable:      #1D4ED8;
+  --data-renewable-tip:  #1D4ED8;
+
+  /* fuels: orange, blue, teal - the same hue families as dark */
+  --fuel-solar:          #E4570E;
+  --fuel-wind:           #1D4ED8;
+  --fuel-hydro:          #0A8A76;
+  --fuel-solar-tip:      #E4570E;       /* NEW (tips = base in light) */
+  --fuel-wind-tip:       #1D4ED8;       /* NEW */
+  --fuel-hydro-tip:      #0A8A76;       /* NEW */
+
+  /* engraved globe. Existing globe tokens are mapped so stragglers still read. */
+  --globe-ink-rgb:       22, 21, 15;    /* NEW: line screen, stipple, coastline, limb */
+  --globe-paper:         #F1EEE6;       /* NEW: land knock-out and needle halos */
+  --globe-ocean:         #F1EEE6;
+  --globe-ocean-lit:     #F1EEE6;
+  --globe-terminator:    rgba(22, 21, 15, 0.30);
+  --globe-keyline:       #F1EEE6;       /* the keyline IS the paper halo in light */
+  --globe-dot-day:       #16150F;
+  --globe-dot-night:     #16150F;
+  --globe-border:        rgba(22, 21, 15, 0.85);
+  --globe-body-hi:       #F1EEE6;
+  --globe-body-mid:      #F1EEE6;
+  --globe-body-lo:       #F1EEE6;
+  --globe-dot-neutral:   #16150F;
+  --globe-atmosphere-rgb: 22, 21, 15;   /* NEW, unused in light; defined so readers never get "" */
+  --globe-land-rgb:      22, 21, 15;    /* NEW, unused in light */
+
+  /* state. The base :root --quality-warning (#f7931a) is 2.0:1 on paper, below the
+     3:1 a stale ring needs, so light overrides it. Dark keeps the base value (8.8:1). */
+  --quality-warning:     #B45309;       /* 4.3:1 on paper */
+  --success:             #0A8A76;
+  --warning:             #B45309;
+  --danger:              #B91C1C;
+  --info:                var(--data-renewable);
+
+  /* mark (NEW): read by the loader mark and the inline header mark (brand-mark.ts) */
+  --mark-disc:           #E4570E;
+  --mark-lead:           #16150F;       /* first 26% of pillars (the curtailed share) */
+  --mark-rest:           #16150F;
+  --mark-rest-opacity:   0.22;
+  --mark-tick:           #16150F;       /* the tick each pillar fires as it drops */
+  --mark-glow:           transparent;   /* no halo behind the disc on paper */
+
+  /* type */
+  --font-display:        "Newsreader", Georgia, "Times New Roman", serif;
+  --font-body:           "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:           "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-sans:           var(--font-body);
+  --display-weight-strong: 400;         /* hero % and stat figures */
+  --display-weight-base:   500;         /* h2 "Largest now", wordmark, selected label */
+  --display-tracking:    -0.04em;       /* NEW: hero only; -0.01em for 25-30px figures */
+  --display-leading:     0.9;           /* NEW */
+  --fs-hero:             clamp(112px, 10.84vw, 156px);   /* NEW: 156px at 1440 */
+
+  /* Observable Framework's own chrome (bare links, the pager, form controls)
+     reads these; its theme is "dark", so without this they stay dark-on-paper. */
+  --theme-foreground:       var(--ink);
+  --theme-foreground-focus: var(--brand-text);
+  --theme-background-b:     var(--surface-bg-2);
+  --theme-background:       var(--surface-bg-3);
+}
+
+/* ------------------------------------------------------------------ DARK · Horizon */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --brand:               #FFB547;
+  --brand-strong:        #E89A2A;
+  --brand-subtle:        rgba(255, 181, 71, 0.16);   /* active segmented-control chip */
+  --brand-rgb:           255, 181, 71;
+  --brand-on:            #05070B;
+  --brand-text:          var(--brand);  /* NEW: amber is 11.5:1 on the dark ground */
+
+  --surface-bg-1:        #0B1220;
+  --surface-bg-2:        #070B12;
+  --surface-bg-3:        #05070B;       /* page; the globe backdrop paints over it */
+  --surface-raised:      #0B111A;
+  --surface-panel:       rgba(6, 9, 14, 0.74);       /* NEW: glass dock; pair with backdrop-filter: blur(18px) */
+  --hairline:            rgba(160, 200, 255, 0.16);
+  --hairline-strong:     rgba(160, 200, 255, 0.32);
+
+  --ink:                 #F2F5F9;
+  --ink-muted:           #C3CEDB;       /* 12:1 on --surface-bg-3 */
+  --ink-soft:            rgba(195, 206, 219, 0.62);   /* 5.2:1 */
+
+  --data-renewable:      #7AA8FF;
+  --data-renewable-tip:  #DCE8FF;
+
+  --fuel-solar:          #FFB547;
+  --fuel-wind:           #7AA8FF;
+  --fuel-hydro:          #3FE0C5;
+  --fuel-solar-tip:      #FFE7B8;       /* NEW */
+  --fuel-wind-tip:       #DCE8FF;       /* NEW */
+  --fuel-hydro-tip:      #D2FFF6;       /* NEW */
+
+  /* horizon globe */
+  --globe-ink-rgb:       242, 245, 249; /* NEW */
+  --globe-paper:         #05070B;       /* NEW */
+  --globe-atmosphere-rgb: 110, 190, 255; /* NEW */
+  --globe-land-rgb:      170, 200, 230; /* NEW */
+  --globe-ocean:         #07101C;
+  --globe-ocean-lit:     #0D2238;
+  --globe-terminator:    rgba(242, 245, 249, 0.30);
+  --globe-keyline:       #05070B;
+  --globe-dot-day:       #AAC8E6;
+  --globe-dot-night:     #5A7896;
+  --globe-border:        rgba(160, 200, 255, 0.16);
+  --globe-body-hi:       #04070D;       /* body gradient, centre to limb */
+  --globe-body-mid:      #07101C;
+  --globe-body-lo:       #0D2238;
+  --globe-dot-neutral:   #AAC8E6;
+
+  --success:             #3FE0C5;
+  --warning:             #ffb84d;
+  --danger:              #f87171;
+  --info:                var(--data-renewable);
+
+  --mark-disc:           #FFB547;       /* NEW */
+  --mark-lead:           #F2F5F9;       /* NEW */
+  --mark-rest:           #F2F5F9;       /* NEW */
+  --mark-rest-opacity:   0.22;          /* NEW */
+  --mark-tick:           #FFFFFF;       /* NEW */
+  --mark-glow:           rgba(255, 181, 71, 0.28);   /* NEW: halo behind the disc */
+
+  --font-display:        "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-body:           "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:           "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-sans:           var(--font-body);
+  --display-weight-strong: 600;
+  --display-weight-base:   500;
+  --display-tracking:    -0.06em;       /* NEW: hero only; -0.02em for 28-30px figures */
+  --display-leading:     0.9;           /* NEW */
+  --fs-hero:             clamp(120px, 12.78vw, 184px);   /* NEW: 184px at 1440 */
+
+  --theme-foreground:       var(--ink);
+  --theme-foreground-focus: var(--brand-text);
+  --theme-background-b:     var(--surface-bg-2);
+  --theme-background:       var(--surface-bg-3);
+}
+
+/* Phone hero sizes (the mocks are 390 wide). */
+@media (max-width: 640px) {
+  :root[data-theme="light"] { --fs-hero: clamp(92px, 30.2vw, 118px); }
+  :root[data-theme="dark"]  { --fs-hero: clamp(92px, 29.7vw, 116px); }
+}
+
+/* ------------------------------------------------------------------ SUNFIRE · the paper figure only
+   src/embed/globe.md (the globe the DARI paper iframes) pins data-theme="sunfire"
+   and its look is part of a published artefact, so this block stays exactly as it
+   was when Sunfire was the site theme. The boot script pins it on /embed/ paths
+   too, so the figure never paints a mode first. Nothing else sets "sunfire": a
+   stored "sunfire" from the old theme picker maps to dark. */
 :root[data-theme="sunfire"] {
   /* brand identity */
   --brand:               #ffd05a;
@@ -204,79 +416,26 @@
   --display-weight-base:   600;
 }
 
-:root[data-theme="deepcurrent"] {
-  --brand:               #64d8ff;
-  --brand-strong:        #38b0d8;
-  --brand-subtle:        rgba(100, 216, 255, 0.10);
-  --brand-rgb:           100, 216, 255;
-  --brand-on:            #061018;
-
-  --surface-bg-1:        #0a1828;
-  --surface-bg-2:        #060f1a;
-  --surface-bg-3:        #030810;
-  --surface-raised:      #0d1e30;
-  --hairline:            rgba(180, 220, 255, 0.08);
-  --hairline-strong:     rgba(180, 220, 255, 0.16);
-
-  --ink:                 #e0f0ff;
-  --ink-muted:           rgba(224, 240, 255, 0.65);
-  --ink-soft:            rgba(224, 240, 255, 0.40);
-
-  --data-renewable:      #64d8ff;
-  --data-renewable-tip:  #b0ecff;
-
-  --fuel-solar:          #ffb845;
-  --fuel-wind:           #64d8ff;
-  --fuel-hydro:          #b4a0f0;
-
-  --globe-ocean:         #0a1018;
-  --globe-ocean-lit:     #17283a;
-  --globe-terminator:    rgba(224, 240, 255, 0.30);
-  --globe-keyline:       #060a10;
-  --globe-dot-day:       #eaf6ff;
-  --globe-dot-night:     #7fb4d8;
-  --globe-border:        rgba(224, 240, 255, 0.16);
-  --globe-body-hi:       #17405e;
-  --globe-body-mid:      #0b1b2e;
-  --globe-body-lo:       #040a14;
-  --globe-dot-neutral:   #c8d6e4;
-
-  --success:             #5eead4;
-  --warning:             #ffb84d;
-  --danger:              #f87171;
-  --info:                var(--data-renewable);
-
-  --font-display:        "Schibsted Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --font-body:           "Schibsted Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --font-sans:           var(--font-body);
-  --display-weight-strong: 700;
-  --display-weight-base:   500;
+/* No-JS / pre-boot fallback. The boot script sets data-theme before first
+   paint, so this only shows if it never runs. Without data-theme no token
+   block applies, which is why these four literals are the one place this
+   sheet paints a colour that is not a token (allowlisted in
+   tests/style-colour-literals.test.ts). */
+:root:not([data-theme]) { color-scheme: light dark; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]), html:not([data-theme]) body { background: #F1EEE6; color: #16150F; }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]), html:not([data-theme]) body { background: #05070B; color: #F2F5F9; }
 }
 
-/* Fallback: if no boot script runs (SSR-rendered intermediate, e.g. Observable's
-   initial document before our inline <head> script), default to Sunfire so the
-   page is never unstyled. */
-:root:not([data-theme]) {
-  color-scheme: dark;
-}
-:root:not([data-theme]),
-html:not([data-theme]) body {
-  /* paint at least the page chrome with hardcoded Sunfire values */
-  background: #0a0703;
-  color: #fff8e0;
-}
-
-/* Backwards-compatibility aliases for legacy palette tokens still referenced
-   by non-chrome rules (data panels, globe, chart elements). Aliases route to
-   the active theme's brand/ink so they compile correctly in both themes. */
+/* Backwards-compatibility aliases for legacy palette names. Each routes to
+   the active mode's token, so a straggler rule resolves in both modes.
+   `--white` and `--slate-800` are gone: every rule that read them now reads
+   --ink / --brand-on directly, and "white" naming near-black ink in light
+   would mislead. */
 :root {
-  --slate-800: var(--surface-bg-1);
-  --white:     var(--ink);
   --btc-orange: #d83923;
-  /* `--surface` / `--border` were used in light-on-light contexts that no
-     longer exist; map them to dark equivalents so any straggler rule
-     doesn't render white-on-white. */
   --surface:           var(--surface-raised);
   --surface-raised-bg: var(--surface-raised);
   --surface-sunken:    var(--surface-bg-2);
@@ -310,9 +469,11 @@ h1, h2, h3, h4 {
   margin: 0;
 }
 
-.display-xl { font-size: var(--fs-display-xl); font-weight: var(--fw-black); line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
-.display-lg { font-size: var(--fs-display-lg); font-weight: var(--fw-black); line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
-.display    { font-size: var(--fs-display);    font-weight: var(--fw-bold);  line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
+/* Weights come from the mode: the light display face is Newsreader, whose
+   figures are drawn at 400, and a fixed --fw-black would render it at 800. */
+.display-xl { font-size: var(--fs-display-xl); font-weight: var(--display-weight-strong); line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
+.display-lg { font-size: var(--fs-display-lg); font-weight: var(--display-weight-strong); line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
+.display    { font-size: var(--fs-display);    font-weight: var(--display-weight-base);   line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
 
 h1 { font-size: var(--fs-h1); font-weight: var(--fw-bold); }
 h2 { font-size: var(--fs-h2); font-weight: var(--fw-bold); }
@@ -321,9 +482,6 @@ h4 { font-size: var(--fs-h4); font-weight: var(--fw-medium); }
 
 p { margin: 0; text-wrap: pretty; }
 p.lead  { font-size: var(--fs-body-lg); color: var(--ink-muted); line-height: 1.5; }
-/* On the dark app shell the slate-500 token is nearly invisible — use a
-   lighter tint that reads clearly against the dark background. */
-.app-shell p.lead { color: rgba(255,255,255,0.72); }
 p.small { font-size: var(--fs-body-sm); }
 
 .eyebrow {
@@ -331,7 +489,7 @@ p.small { font-size: var(--fs-body-sm); }
   font-weight: var(--fw-bold);
   letter-spacing: var(--ls-caps);
   text-transform: uppercase;
-  color: var(--brand);
+  color: var(--brand-text);
 }
 
 .caption { font-size: var(--fs-caption); color: var(--ink-muted); }
@@ -396,228 +554,229 @@ code, .mono {
 
 /* brand-mark:begin — generated, do not edit */
 .loader-mark{position:relative;width:1em;height:1em;flex-shrink:0;line-height:0}
-.loader-mark u{position:absolute;left:50%;top:50%;width:0.3em;height:0.3em;margin:-0.15em 0 0 -0.15em;border-radius:50%;background:#ffd05a}
+.loader-mark::before{content:"";position:absolute;left:50%;top:50%;width:0.3em;height:0.3em;margin:-0.15em 0 0 -0.15em;border-radius:50%;box-shadow:0 0 0.3em 0.08em var(--mark-glow)}
+.loader-mark u{position:absolute;left:50%;top:50%;width:0.3em;height:0.3em;margin:-0.15em 0 0 -0.15em;border-radius:50%;background:var(--mark-disc)}
 .loader-mark i{position:absolute;left:50%;top:50%;width:0.016em;margin-left:-0.008em}
 .loader-mark b{display:block;width:100%;height:100%;border-radius:0.008em;transform-origin:50% 100%;transform:scaleY(0);animation-duration:6.6s;animation-timing-function:linear;animation-iteration-count:infinite}
-.loader-mark i::after{content:"";position:absolute;left:0;top:-0.022em;width:100%;height:0.018em;border-radius:0.008em;opacity:0;animation-duration:6.6s;animation-timing-function:cubic-bezier(.25,.6,.5,1);animation-iteration-count:infinite}
+.loader-mark i::after{content:"";position:absolute;left:0;top:-0.022em;width:100%;height:0.018em;border-radius:0.008em;background:var(--mark-tick);opacity:0;animation-duration:6.6s;animation-timing-function:cubic-bezier(.25,.6,.5,1);animation-iteration-count:infinite}
 .loader-mark .p0{height:0.1665em;transform-origin:50% 0;transform:rotate(0deg) translateY(-0.3665em)}
-.loader-mark .p0 b{background:#67e8f9;opacity:0.95;animation-name:elj-p0}
-.loader-mark .p0::after{background:#cffafe;animation-name:elj-t0}
+.loader-mark .p0 b{background:var(--mark-lead);animation-name:elj-p0}
+.loader-mark .p0::after{animation-name:elj-t0}
 @keyframes elj-p0{0%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}7.576%,53.03%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}59.848%,100%{transform:scaleY(0)}}
 @keyframes elj-t0{0%,53.03%{transform:translateY(0);opacity:0}54.667%{opacity:0.95}66.667%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p1{height:0.237em;transform-origin:50% 0;transform:rotate(8.18deg) translateY(-0.437em)}
-.loader-mark .p1 b{background:#67e8f9;opacity:0.95;animation-name:elj-p1}
-.loader-mark .p1::after{background:#cffafe;animation-name:elj-t1}
+.loader-mark .p1 b{background:var(--mark-lead);animation-name:elj-p1}
+.loader-mark .p1::after{animation-name:elj-t1}
 @keyframes elj-p1{0%,0.895%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}8.471%,53.719%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}60.537%,100%{transform:scaleY(0)}}
 @keyframes elj-t1{0%,53.719%{transform:translateY(0);opacity:0}55.355%{opacity:0.95}67.355%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p2{height:0.2262em;transform-origin:50% 0;transform:rotate(16.36deg) translateY(-0.4262em)}
-.loader-mark .p2 b{background:#67e8f9;opacity:0.95;animation-name:elj-p2}
-.loader-mark .p2::after{background:#cffafe;animation-name:elj-t2}
+.loader-mark .p2 b{background:var(--mark-lead);animation-name:elj-p2}
+.loader-mark .p2::after{animation-name:elj-t2}
 @keyframes elj-p2{0%,1.791%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}9.366%,54.408%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}61.226%,100%{transform:scaleY(0)}}
 @keyframes elj-t2{0%,54.408%{transform:translateY(0);opacity:0}56.044%{opacity:0.95}68.044%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p3{height:0.2101em;transform-origin:50% 0;transform:rotate(24.55deg) translateY(-0.4101em)}
-.loader-mark .p3 b{background:#67e8f9;opacity:0.95;animation-name:elj-p3}
-.loader-mark .p3::after{background:#cffafe;animation-name:elj-t3}
+.loader-mark .p3 b{background:var(--mark-lead);animation-name:elj-p3}
+.loader-mark .p3::after{animation-name:elj-t3}
 @keyframes elj-p3{0%,2.686%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}10.262%,55.096%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}61.915%,100%{transform:scaleY(0)}}
 @keyframes elj-t3{0%,55.096%{transform:translateY(0);opacity:0}56.733%{opacity:0.95}68.733%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p4{height:0.2314em;transform-origin:50% 0;transform:rotate(32.73deg) translateY(-0.4314em)}
-.loader-mark .p4 b{background:#67e8f9;opacity:0.95;animation-name:elj-p4}
-.loader-mark .p4::after{background:#cffafe;animation-name:elj-t4}
+.loader-mark .p4 b{background:var(--mark-lead);animation-name:elj-p4}
+.loader-mark .p4::after{animation-name:elj-t4}
 @keyframes elj-p4{0%,3.581%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}11.157%,55.785%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}62.603%,100%{transform:scaleY(0)}}
 @keyframes elj-t4{0%,55.785%{transform:translateY(0);opacity:0}57.421%{opacity:0.95}69.421%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p5{height:0.1979em;transform-origin:50% 0;transform:rotate(40.91deg) translateY(-0.3979em)}
-.loader-mark .p5 b{background:#67e8f9;opacity:0.95;animation-name:elj-p5}
-.loader-mark .p5::after{background:#cffafe;animation-name:elj-t5}
+.loader-mark .p5 b{background:var(--mark-lead);animation-name:elj-p5}
+.loader-mark .p5::after{animation-name:elj-t5}
 @keyframes elj-p5{0%,4.477%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}12.052%,56.474%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}63.292%,100%{transform:scaleY(0)}}
 @keyframes elj-t5{0%,56.474%{transform:translateY(0);opacity:0}58.11%{opacity:0.95}70.11%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p6{height:0.1811em;transform-origin:50% 0;transform:rotate(49.09deg) translateY(-0.3811em)}
-.loader-mark .p6 b{background:#67e8f9;opacity:0.95;animation-name:elj-p6}
-.loader-mark .p6::after{background:#cffafe;animation-name:elj-t6}
+.loader-mark .p6 b{background:var(--mark-lead);animation-name:elj-p6}
+.loader-mark .p6::after{animation-name:elj-t6}
 @keyframes elj-p6{0%,5.372%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}12.948%,57.163%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}63.981%,100%{transform:scaleY(0)}}
 @keyframes elj-t6{0%,57.163%{transform:translateY(0);opacity:0}58.799%{opacity:0.95}70.799%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p7{height:0.1066em;transform-origin:50% 0;transform:rotate(57.27deg) translateY(-0.3066em)}
-.loader-mark .p7 b{background:#67e8f9;opacity:0.95;animation-name:elj-p7}
-.loader-mark .p7::after{background:#cffafe;animation-name:elj-t7}
+.loader-mark .p7 b{background:var(--mark-lead);animation-name:elj-p7}
+.loader-mark .p7::after{animation-name:elj-t7}
 @keyframes elj-p7{0%,6.267%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}13.843%,57.851%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}64.669%,100%{transform:scaleY(0)}}
 @keyframes elj-t7{0%,57.851%{transform:translateY(0);opacity:0}59.488%{opacity:0.95}71.488%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p8{height:0.2292em;transform-origin:50% 0;transform:rotate(65.45deg) translateY(-0.4292em)}
-.loader-mark .p8 b{background:#67e8f9;opacity:0.95;animation-name:elj-p8}
-.loader-mark .p8::after{background:#cffafe;animation-name:elj-t8}
+.loader-mark .p8 b{background:var(--mark-lead);animation-name:elj-p8}
+.loader-mark .p8::after{animation-name:elj-t8}
 @keyframes elj-p8{0%,7.163%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}14.738%,58.54%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}65.358%,100%{transform:scaleY(0)}}
 @keyframes elj-t8{0%,58.54%{transform:translateY(0);opacity:0}60.176%{opacity:0.95}72.176%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p9{height:0.0923em;transform-origin:50% 0;transform:rotate(73.64deg) translateY(-0.2923em)}
-.loader-mark .p9 b{background:#67e8f9;opacity:0.95;animation-name:elj-p9}
-.loader-mark .p9::after{background:#cffafe;animation-name:elj-t9}
+.loader-mark .p9 b{background:var(--mark-lead);animation-name:elj-p9}
+.loader-mark .p9::after{animation-name:elj-t9}
 @keyframes elj-p9{0%,8.058%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}15.634%,59.229%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}66.047%,100%{transform:scaleY(0)}}
 @keyframes elj-t9{0%,59.229%{transform:translateY(0);opacity:0}60.865%{opacity:0.95}72.865%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p10{height:0.2115em;transform-origin:50% 0;transform:rotate(81.82deg) translateY(-0.4115em)}
-.loader-mark .p10 b{background:#67e8f9;opacity:0.95;animation-name:elj-p10}
-.loader-mark .p10::after{background:#cffafe;animation-name:elj-t10}
+.loader-mark .p10 b{background:var(--mark-lead);animation-name:elj-p10}
+.loader-mark .p10::after{animation-name:elj-t10}
 @keyframes elj-p10{0%,8.953%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}16.529%,59.917%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}66.736%,100%{transform:scaleY(0)}}
 @keyframes elj-t10{0%,59.917%{transform:translateY(0);opacity:0}61.554%{opacity:0.95}73.554%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p11{height:0.1011em;transform-origin:50% 0;transform:rotate(90deg) translateY(-0.3011em)}
-.loader-mark .p11 b{background:#e6a020;opacity:0.55;animation-name:elj-p11}
-.loader-mark .p11::after{background:#ffe9a8;animation-name:elj-t11}
+.loader-mark .p11 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p11}
+.loader-mark .p11::after{animation-name:elj-t11}
 @keyframes elj-p11{0%,9.848%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}17.424%,60.606%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}67.424%,100%{transform:scaleY(0)}}
 @keyframes elj-t11{0%,60.606%{transform:translateY(0);opacity:0}62.242%{opacity:0.95}74.242%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p12{height:0.0833em;transform-origin:50% 0;transform:rotate(98.18deg) translateY(-0.2833em)}
-.loader-mark .p12 b{background:#e6a020;opacity:0.55;animation-name:elj-p12}
-.loader-mark .p12::after{background:#ffe9a8;animation-name:elj-t12}
+.loader-mark .p12 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p12}
+.loader-mark .p12::after{animation-name:elj-t12}
 @keyframes elj-p12{0%,10.744%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}18.32%,61.295%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}68.113%,100%{transform:scaleY(0)}}
 @keyframes elj-t12{0%,61.295%{transform:translateY(0);opacity:0}62.931%{opacity:0.95}74.931%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p13{height:0.2308em;transform-origin:50% 0;transform:rotate(106.36deg) translateY(-0.4308em)}
-.loader-mark .p13 b{background:#e6a020;opacity:0.55;animation-name:elj-p13}
-.loader-mark .p13::after{background:#ffe9a8;animation-name:elj-t13}
+.loader-mark .p13 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p13}
+.loader-mark .p13::after{animation-name:elj-t13}
 @keyframes elj-p13{0%,11.639%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}19.215%,61.983%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}68.802%,100%{transform:scaleY(0)}}
 @keyframes elj-t13{0%,61.983%{transform:translateY(0);opacity:0}63.62%{opacity:0.95}75.62%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p14{height:0.1054em;transform-origin:50% 0;transform:rotate(114.55deg) translateY(-0.3054em)}
-.loader-mark .p14 b{background:#e6a020;opacity:0.55;animation-name:elj-p14}
-.loader-mark .p14::after{background:#ffe9a8;animation-name:elj-t14}
+.loader-mark .p14 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p14}
+.loader-mark .p14::after{animation-name:elj-t14}
 @keyframes elj-p14{0%,12.534%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}20.11%,62.672%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}69.49%,100%{transform:scaleY(0)}}
 @keyframes elj-t14{0%,62.672%{transform:translateY(0);opacity:0}64.309%{opacity:0.95}76.309%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p15{height:0.1943em;transform-origin:50% 0;transform:rotate(122.73deg) translateY(-0.3943em)}
-.loader-mark .p15 b{background:#e6a020;opacity:0.55;animation-name:elj-p15}
-.loader-mark .p15::after{background:#ffe9a8;animation-name:elj-t15}
+.loader-mark .p15 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p15}
+.loader-mark .p15::after{animation-name:elj-t15}
 @keyframes elj-p15{0%,13.43%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}21.006%,63.361%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}70.179%,100%{transform:scaleY(0)}}
 @keyframes elj-t15{0%,63.361%{transform:translateY(0);opacity:0}64.997%{opacity:0.95}76.997%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p16{height:0.0899em;transform-origin:50% 0;transform:rotate(130.91deg) translateY(-0.2899em)}
-.loader-mark .p16 b{background:#e6a020;opacity:0.55;animation-name:elj-p16}
-.loader-mark .p16::after{background:#ffe9a8;animation-name:elj-t16}
+.loader-mark .p16 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p16}
+.loader-mark .p16::after{animation-name:elj-t16}
 @keyframes elj-p16{0%,14.325%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}21.901%,64.05%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}70.868%,100%{transform:scaleY(0)}}
 @keyframes elj-t16{0%,64.05%{transform:translateY(0);opacity:0}65.686%{opacity:0.95}77.686%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p17{height:0.1381em;transform-origin:50% 0;transform:rotate(139.09deg) translateY(-0.3381em)}
-.loader-mark .p17 b{background:#e6a020;opacity:0.55;animation-name:elj-p17}
-.loader-mark .p17::after{background:#ffe9a8;animation-name:elj-t17}
+.loader-mark .p17 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p17}
+.loader-mark .p17::after{animation-name:elj-t17}
 @keyframes elj-p17{0%,15.22%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}22.796%,64.738%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}71.556%,100%{transform:scaleY(0)}}
 @keyframes elj-t17{0%,64.738%{transform:translateY(0);opacity:0}66.375%{opacity:0.95}78.375%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p18{height:0.2149em;transform-origin:50% 0;transform:rotate(147.27deg) translateY(-0.4149em)}
-.loader-mark .p18 b{background:#e6a020;opacity:0.55;animation-name:elj-p18}
-.loader-mark .p18::after{background:#ffe9a8;animation-name:elj-t18}
+.loader-mark .p18 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p18}
+.loader-mark .p18::after{animation-name:elj-t18}
 @keyframes elj-p18{0%,16.116%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}23.691%,65.427%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}72.245%,100%{transform:scaleY(0)}}
 @keyframes elj-t18{0%,65.427%{transform:translateY(0);opacity:0}67.063%{opacity:0.95}79.063%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p19{height:0.1103em;transform-origin:50% 0;transform:rotate(155.45deg) translateY(-0.3103em)}
-.loader-mark .p19 b{background:#e6a020;opacity:0.55;animation-name:elj-p19}
-.loader-mark .p19::after{background:#ffe9a8;animation-name:elj-t19}
+.loader-mark .p19 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p19}
+.loader-mark .p19::after{animation-name:elj-t19}
 @keyframes elj-p19{0%,17.011%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}24.587%,66.116%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}72.934%,100%{transform:scaleY(0)}}
 @keyframes elj-t19{0%,66.116%{transform:translateY(0);opacity:0}67.752%{opacity:0.95}79.752%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p20{height:0.1615em;transform-origin:50% 0;transform:rotate(163.64deg) translateY(-0.3615em)}
-.loader-mark .p20 b{background:#e6a020;opacity:0.55;animation-name:elj-p20}
-.loader-mark .p20::after{background:#ffe9a8;animation-name:elj-t20}
+.loader-mark .p20 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p20}
+.loader-mark .p20::after{animation-name:elj-t20}
 @keyframes elj-p20{0%,17.906%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}25.482%,66.804%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}73.623%,100%{transform:scaleY(0)}}
 @keyframes elj-t20{0%,66.804%{transform:translateY(0);opacity:0}68.441%{opacity:0.95}80.441%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p21{height:0.17em;transform-origin:50% 0;transform:rotate(171.82deg) translateY(-0.37em)}
-.loader-mark .p21 b{background:#e6a020;opacity:0.55;animation-name:elj-p21}
-.loader-mark .p21::after{background:#ffe9a8;animation-name:elj-t21}
+.loader-mark .p21 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p21}
+.loader-mark .p21::after{animation-name:elj-t21}
 @keyframes elj-p21{0%,18.802%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}26.377%,67.493%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}74.311%,100%{transform:scaleY(0)}}
 @keyframes elj-t21{0%,67.493%{transform:translateY(0);opacity:0}69.129%{opacity:0.95}81.129%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p22{height:0.1543em;transform-origin:50% 0;transform:rotate(180deg) translateY(-0.3543em)}
-.loader-mark .p22 b{background:#e6a020;opacity:0.55;animation-name:elj-p22}
-.loader-mark .p22::after{background:#ffe9a8;animation-name:elj-t22}
+.loader-mark .p22 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p22}
+.loader-mark .p22::after{animation-name:elj-t22}
 @keyframes elj-p22{0%,19.697%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}27.273%,68.182%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}75%,100%{transform:scaleY(0)}}
 @keyframes elj-t22{0%,68.182%{transform:translateY(0);opacity:0}69.818%{opacity:0.95}81.818%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p23{height:0.0811em;transform-origin:50% 0;transform:rotate(188.18deg) translateY(-0.2811em)}
-.loader-mark .p23 b{background:#e6a020;opacity:0.55;animation-name:elj-p23}
-.loader-mark .p23::after{background:#ffe9a8;animation-name:elj-t23}
+.loader-mark .p23 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p23}
+.loader-mark .p23::after{animation-name:elj-t23}
 @keyframes elj-p23{0%,20.592%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}28.168%,68.871%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}75.689%,100%{transform:scaleY(0)}}
 @keyframes elj-t23{0%,68.871%{transform:translateY(0);opacity:0}70.507%{opacity:0.95}82.507%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p24{height:0.0816em;transform-origin:50% 0;transform:rotate(196.36deg) translateY(-0.2816em)}
-.loader-mark .p24 b{background:#e6a020;opacity:0.55;animation-name:elj-p24}
-.loader-mark .p24::after{background:#ffe9a8;animation-name:elj-t24}
+.loader-mark .p24 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p24}
+.loader-mark .p24::after{animation-name:elj-t24}
 @keyframes elj-p24{0%,21.488%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}29.063%,69.559%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}76.377%,100%{transform:scaleY(0)}}
 @keyframes elj-t24{0%,69.559%{transform:translateY(0);opacity:0}71.196%{opacity:0.95}83.196%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p25{height:0.1209em;transform-origin:50% 0;transform:rotate(204.55deg) translateY(-0.3209em)}
-.loader-mark .p25 b{background:#e6a020;opacity:0.55;animation-name:elj-p25}
-.loader-mark .p25::after{background:#ffe9a8;animation-name:elj-t25}
+.loader-mark .p25 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p25}
+.loader-mark .p25::after{animation-name:elj-t25}
 @keyframes elj-p25{0%,22.383%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}29.959%,70.248%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}77.066%,100%{transform:scaleY(0)}}
 @keyframes elj-t25{0%,70.248%{transform:translateY(0);opacity:0}71.884%{opacity:0.95}83.884%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p26{height:0.1784em;transform-origin:50% 0;transform:rotate(212.73deg) translateY(-0.3784em)}
-.loader-mark .p26 b{background:#e6a020;opacity:0.55;animation-name:elj-p26}
-.loader-mark .p26::after{background:#ffe9a8;animation-name:elj-t26}
+.loader-mark .p26 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p26}
+.loader-mark .p26::after{animation-name:elj-t26}
 @keyframes elj-p26{0%,23.278%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}30.854%,70.937%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}77.755%,100%{transform:scaleY(0)}}
 @keyframes elj-t26{0%,70.937%{transform:translateY(0);opacity:0}72.573%{opacity:0.95}84.573%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p27{height:0.0787em;transform-origin:50% 0;transform:rotate(220.91deg) translateY(-0.2787em)}
-.loader-mark .p27 b{background:#e6a020;opacity:0.55;animation-name:elj-p27}
-.loader-mark .p27::after{background:#ffe9a8;animation-name:elj-t27}
+.loader-mark .p27 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p27}
+.loader-mark .p27::after{animation-name:elj-t27}
 @keyframes elj-p27{0%,24.174%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}31.749%,71.625%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}78.444%,100%{transform:scaleY(0)}}
 @keyframes elj-t27{0%,71.625%{transform:translateY(0);opacity:0}73.262%{opacity:0.95}85.262%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p28{height:0.1325em;transform-origin:50% 0;transform:rotate(229.09deg) translateY(-0.3325em)}
-.loader-mark .p28 b{background:#e6a020;opacity:0.55;animation-name:elj-p28}
-.loader-mark .p28::after{background:#ffe9a8;animation-name:elj-t28}
+.loader-mark .p28 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p28}
+.loader-mark .p28::after{animation-name:elj-t28}
 @keyframes elj-p28{0%,25.069%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}32.645%,72.314%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}79.132%,100%{transform:scaleY(0)}}
 @keyframes elj-t28{0%,72.314%{transform:translateY(0);opacity:0}73.95%{opacity:0.95}85.95%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p29{height:0.1971em;transform-origin:50% 0;transform:rotate(237.27deg) translateY(-0.3971em)}
-.loader-mark .p29 b{background:#e6a020;opacity:0.55;animation-name:elj-p29}
-.loader-mark .p29::after{background:#ffe9a8;animation-name:elj-t29}
+.loader-mark .p29 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p29}
+.loader-mark .p29::after{animation-name:elj-t29}
 @keyframes elj-p29{0%,25.964%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}33.54%,73.003%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}79.821%,100%{transform:scaleY(0)}}
 @keyframes elj-t29{0%,73.003%{transform:translateY(0);opacity:0}74.639%{opacity:0.95}86.639%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p30{height:0.0784em;transform-origin:50% 0;transform:rotate(245.45deg) translateY(-0.2784em)}
-.loader-mark .p30 b{background:#e6a020;opacity:0.55;animation-name:elj-p30}
-.loader-mark .p30::after{background:#ffe9a8;animation-name:elj-t30}
+.loader-mark .p30 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p30}
+.loader-mark .p30::after{animation-name:elj-t30}
 @keyframes elj-p30{0%,26.86%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}34.435%,73.691%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}80.51%,100%{transform:scaleY(0)}}
 @keyframes elj-t30{0%,73.691%{transform:translateY(0);opacity:0}75.328%{opacity:0.95}87.328%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p31{height:0.2381em;transform-origin:50% 0;transform:rotate(253.64deg) translateY(-0.4381em)}
-.loader-mark .p31 b{background:#e6a020;opacity:0.55;animation-name:elj-p31}
-.loader-mark .p31::after{background:#ffe9a8;animation-name:elj-t31}
+.loader-mark .p31 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p31}
+.loader-mark .p31::after{animation-name:elj-t31}
 @keyframes elj-p31{0%,27.755%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}35.331%,74.38%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}81.198%,100%{transform:scaleY(0)}}
 @keyframes elj-t31{0%,74.38%{transform:translateY(0);opacity:0}76.017%{opacity:0.95}88.017%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p32{height:0.0806em;transform-origin:50% 0;transform:rotate(261.82deg) translateY(-0.2806em)}
-.loader-mark .p32 b{background:#e6a020;opacity:0.55;animation-name:elj-p32}
-.loader-mark .p32::after{background:#ffe9a8;animation-name:elj-t32}
+.loader-mark .p32 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p32}
+.loader-mark .p32::after{animation-name:elj-t32}
 @keyframes elj-p32{0%,28.65%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}36.226%,75.069%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}81.887%,100%{transform:scaleY(0)}}
 @keyframes elj-t32{0%,75.069%{transform:translateY(0);opacity:0}76.705%{opacity:0.95}88.705%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p33{height:0.1235em;transform-origin:50% 0;transform:rotate(270deg) translateY(-0.3235em)}
-.loader-mark .p33 b{background:#e6a020;opacity:0.55;animation-name:elj-p33}
-.loader-mark .p33::after{background:#ffe9a8;animation-name:elj-t33}
+.loader-mark .p33 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p33}
+.loader-mark .p33::after{animation-name:elj-t33}
 @keyframes elj-p33{0%,29.545%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}37.121%,75.758%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}82.576%,100%{transform:scaleY(0)}}
 @keyframes elj-t33{0%,75.758%{transform:translateY(0);opacity:0}77.394%{opacity:0.95}89.394%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p34{height:0.2207em;transform-origin:50% 0;transform:rotate(278.18deg) translateY(-0.4207em)}
-.loader-mark .p34 b{background:#e6a020;opacity:0.55;animation-name:elj-p34}
-.loader-mark .p34::after{background:#ffe9a8;animation-name:elj-t34}
+.loader-mark .p34 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p34}
+.loader-mark .p34::after{animation-name:elj-t34}
 @keyframes elj-p34{0%,30.441%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}38.017%,76.446%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}83.264%,100%{transform:scaleY(0)}}
 @keyframes elj-t34{0%,76.446%{transform:translateY(0);opacity:0}78.083%{opacity:0.95}90.083%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p35{height:0.0938em;transform-origin:50% 0;transform:rotate(286.36deg) translateY(-0.2938em)}
-.loader-mark .p35 b{background:#e6a020;opacity:0.55;animation-name:elj-p35}
-.loader-mark .p35::after{background:#ffe9a8;animation-name:elj-t35}
+.loader-mark .p35 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p35}
+.loader-mark .p35::after{animation-name:elj-t35}
 @keyframes elj-p35{0%,31.336%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}38.912%,77.135%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}83.953%,100%{transform:scaleY(0)}}
 @keyframes elj-t35{0%,77.135%{transform:translateY(0);opacity:0}78.771%{opacity:0.95}90.771%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p36{height:0.1667em;transform-origin:50% 0;transform:rotate(294.55deg) translateY(-0.3667em)}
-.loader-mark .p36 b{background:#e6a020;opacity:0.55;animation-name:elj-p36}
-.loader-mark .p36::after{background:#ffe9a8;animation-name:elj-t36}
+.loader-mark .p36 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p36}
+.loader-mark .p36::after{animation-name:elj-t36}
 @keyframes elj-p36{0%,32.231%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}39.807%,77.824%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}84.642%,100%{transform:scaleY(0)}}
 @keyframes elj-t36{0%,77.824%{transform:translateY(0);opacity:0}79.46%{opacity:0.95}91.46%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p37{height:0.1209em;transform-origin:50% 0;transform:rotate(302.73deg) translateY(-0.3209em)}
-.loader-mark .p37 b{background:#e6a020;opacity:0.55;animation-name:elj-p37}
-.loader-mark .p37::after{background:#ffe9a8;animation-name:elj-t37}
+.loader-mark .p37 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p37}
+.loader-mark .p37::after{animation-name:elj-t37}
 @keyframes elj-p37{0%,33.127%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}40.702%,78.512%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}85.331%,100%{transform:scaleY(0)}}
 @keyframes elj-t37{0%,78.512%{transform:translateY(0);opacity:0}80.149%{opacity:0.95}92.149%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p38{height:0.1653em;transform-origin:50% 0;transform:rotate(310.91deg) translateY(-0.3653em)}
-.loader-mark .p38 b{background:#e6a020;opacity:0.55;animation-name:elj-p38}
-.loader-mark .p38::after{background:#ffe9a8;animation-name:elj-t38}
+.loader-mark .p38 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p38}
+.loader-mark .p38::after{animation-name:elj-t38}
 @keyframes elj-p38{0%,34.022%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}41.598%,79.201%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}86.019%,100%{transform:scaleY(0)}}
 @keyframes elj-t38{0%,79.201%{transform:translateY(0);opacity:0}80.837%{opacity:0.95}92.837%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p39{height:0.1516em;transform-origin:50% 0;transform:rotate(319.09deg) translateY(-0.3516em)}
-.loader-mark .p39 b{background:#e6a020;opacity:0.55;animation-name:elj-p39}
-.loader-mark .p39::after{background:#ffe9a8;animation-name:elj-t39}
+.loader-mark .p39 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p39}
+.loader-mark .p39::after{animation-name:elj-t39}
 @keyframes elj-p39{0%,34.917%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}42.493%,79.89%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}86.708%,100%{transform:scaleY(0)}}
 @keyframes elj-t39{0%,79.89%{transform:translateY(0);opacity:0}81.526%{opacity:0.95}93.526%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p40{height:0.1945em;transform-origin:50% 0;transform:rotate(327.27deg) translateY(-0.3945em)}
-.loader-mark .p40 b{background:#e6a020;opacity:0.55;animation-name:elj-p40}
-.loader-mark .p40::after{background:#ffe9a8;animation-name:elj-t40}
+.loader-mark .p40 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p40}
+.loader-mark .p40::after{animation-name:elj-t40}
 @keyframes elj-p40{0%,35.813%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}43.388%,80.579%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}87.397%,100%{transform:scaleY(0)}}
 @keyframes elj-t40{0%,80.579%{transform:translateY(0);opacity:0}82.215%{opacity:0.95}94.215%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p41{height:0.1794em;transform-origin:50% 0;transform:rotate(335.45deg) translateY(-0.3794em)}
-.loader-mark .p41 b{background:#e6a020;opacity:0.55;animation-name:elj-p41}
-.loader-mark .p41::after{background:#ffe9a8;animation-name:elj-t41}
+.loader-mark .p41 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p41}
+.loader-mark .p41::after{animation-name:elj-t41}
 @keyframes elj-p41{0%,36.708%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}44.284%,81.267%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}88.085%,100%{transform:scaleY(0)}}
 @keyframes elj-t41{0%,81.267%{transform:translateY(0);opacity:0}82.904%{opacity:0.95}94.904%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p42{height:0.148em;transform-origin:50% 0;transform:rotate(343.64deg) translateY(-0.348em)}
-.loader-mark .p42 b{background:#e6a020;opacity:0.55;animation-name:elj-p42}
-.loader-mark .p42::after{background:#ffe9a8;animation-name:elj-t42}
+.loader-mark .p42 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p42}
+.loader-mark .p42::after{animation-name:elj-t42}
 @keyframes elj-p42{0%,37.603%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}45.179%,81.956%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}88.774%,100%{transform:scaleY(0)}}
 @keyframes elj-t42{0%,81.956%{transform:translateY(0);opacity:0}83.592%{opacity:0.95}95.592%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p43{height:0.109em;transform-origin:50% 0;transform:rotate(351.82deg) translateY(-0.309em)}
-.loader-mark .p43 b{background:#e6a020;opacity:0.55;animation-name:elj-p43}
-.loader-mark .p43::after{background:#ffe9a8;animation-name:elj-t43}
+.loader-mark .p43 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p43}
+.loader-mark .p43::after{animation-name:elj-t43}
 @keyframes elj-p43{0%,38.499%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}46.074%,82.645%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}89.463%,100%{transform:scaleY(0)}}
 @keyframes elj-t43{0%,82.645%{transform:translateY(0);opacity:0}84.281%{opacity:0.95}96.281%,100%{transform:translateY(-0.062em);opacity:0}}
 @media (prefers-reduced-motion: reduce){
@@ -625,18 +784,14 @@ code, .mono {
 .loader-mark i::after{animation:none;opacity:0}}
 /* brand-mark:end */
 
+/* The loading screen's wordmark is the mode's lockup, the same as the one in
+   the header (see .app-wordmark): Newsreader 500 with an italic "Joule" in
+   light, Geist 600 upright in dark. The boot script sets data-theme before
+   this paints, so it never shows the other mode's lockup first. */
 .loader-wordmark {
-  font-family: "Schibsted Grotesk", var(--font-body, system-ui), sans-serif;
   font-size: clamp(30px, 5vw, 40px);
-  font-weight: 700;
-  letter-spacing: -0.01em;
   line-height: 1;
-  color: #fff8e0;
   margin-top: 14px;
-}
-
-.loader-wordmark span {
-  color: var(--brand);
 }
 
 /* Determinate rail. One file resolved is one step, which is the only
@@ -647,7 +802,7 @@ code, .mono {
   width: min(220px, 60vw);
   height: 2px;
   border-radius: 1px;
-  background: rgba(255, 248, 224, 0.09);
+  background: var(--hairline);
   overflow: hidden;
   margin-top: 4px;
 }
@@ -667,7 +822,7 @@ code, .mono {
 .loader-counter {
   font-size: 10px;
   letter-spacing: 0.08em;
-  color: rgba(255, 248, 224, 0.32);
+  color: var(--ink-soft);
   font-family: var(--font-mono, monospace);
   /* Source names run long ("National Grid ESO — Balancing Mechanism"), so the
      line wraps and stays centred rather than running off a phone screen. */
@@ -678,12 +833,12 @@ code, .mono {
 }
 
 .loader-counter #loader-n {
-  color: rgba(255, 248, 224, 0.72);
+  color: var(--ink-muted);
   font-weight: 600;
 }
 
 .loader-counter #loader-total {
-  color: rgba(255, 248, 224, 0.48);
+  color: var(--ink-soft);
 }
 
 /* The source that just landed, in place of the old five-row terminal.
@@ -691,25 +846,22 @@ code, .mono {
    the line does not sit with a dangling middot. */
 .loader-source {
   text-transform: uppercase;
-  color: rgba(255, 248, 224, 0.42);
+  color: var(--ink-soft);
   transition: opacity 0.2s ease-out;
 }
 
 .loader-source:not(:empty)::before {
   content: "·";
   margin: 0 0.5em;
-  color: rgba(255, 248, 224, 0.22);
+  color: var(--ink-soft);
 }
 
 @media (max-width: 520px) {
   .loader-mark { font-size: 112px; }
 }
 
-/* Dashboard body - always dark.
-   Target html as well as body so mobile overscroll shows dark chrome, not the
-   white fallback that the Stacked base sheet applies to html.
-   Gradient stops are intentionally darker than --slate-800 (#161718) for depth;
-   the start (#0f1517) is brand-shifted for cool chrome feel. */
+/* Page ground, in both modes. Target html as well as body so mobile
+   overscroll shows the mode's page colour, not a fallback. */
 html,
 body {
   background: var(--surface-bg-3);
@@ -741,8 +893,11 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 3px;
+  /* Ink in both modes (15.8:1 on paper, 18.4:1 on the dark ground). The
+     brand colour only just clears a focus indicator's 3:1 on paper, and
+     not on its own brand-subtle fills. */
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
   border-radius: var(--r-sm);
 }
 
@@ -827,31 +982,40 @@ main table {
 
 /* The Spectrum mark, static. The loader runs the animated version once;
    a second copy animating forever in the header would compete with the
-   globe for the same main thread that #1054 had to rescue. */
+   globe for the same main thread that #1054 had to rescue. It is inline SVG
+   (generated between the brand-mark-still markers in src/index.md) rather
+   than an <img>, because an <img> cannot read the --mark-* tokens. */
 .app-mark {
   width: 26px;
   height: 26px;
   display: block;
   flex-shrink: 0;
+  overflow: visible;
 }
 
-.app-wordmark {
-  font-weight: 800;
-  font-size: 16px;
-  letter-spacing: 0.04em;
+/* The wordmark lockup, per mode, shared by the header and the loading
+   screen: Newsreader 500 with "Joule" in italic 400 in light, Geist 600
+   upright in dark. "Joule" is ink in both; the brand colour lives in the
+   mark's disc. */
+.app-wordmark,
+.loader-wordmark {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight-base);
+  letter-spacing: -0.015em;
   color: var(--ink);
 }
-
-/* "Joule" on the wordmark. This was an italic Fraunces accent carried over
-   from the Ledger redesign; it is now upright brand face at 700, which is the
-   lockup as drawn on the design canvas and what the loading screen shows two
-   seconds earlier. It still picks up --brand, so it tints gold on Sunfire and
-   blue on Deepcurrent. Reverting is this rule alone. */
-.app-wordmark-accent {
-  font-weight: 700;
-  color: var(--brand);
-  letter-spacing: -0.01em;
-  margin-left: 1px;
+.app-wordmark-accent,
+.loader-wordmark span {
+  font-style: italic;
+  font-weight: 400;
+}
+:root[data-theme="dark"] :is(.app-wordmark, .loader-wordmark) {
+  font-weight: var(--display-weight-strong);
+  letter-spacing: -0.02em;
+}
+:root[data-theme="dark"] :is(.app-wordmark-accent, .loader-wordmark span) {
+  font-style: normal;
+  font-weight: inherit;
 }
 
 .app-tag {
@@ -877,7 +1041,7 @@ main table {
 
 .app-tag .app-tag-version:hover,
 .app-tag .app-tag-version:focus-visible {
-  color: var(--brand);
+  color: var(--brand-text);
   border-bottom-color: var(--brand);
 }
 
@@ -1065,7 +1229,7 @@ main table {
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.58);
+  color: var(--ink-soft);
 }
 
 /* Zoom control row — right-hand end of .globe-overlay. */
@@ -1080,7 +1244,7 @@ main table {
   font-size: 10px;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.40);
+  color: var(--ink-soft);
   user-select: none;
   flex-shrink: 0;
 }
@@ -1091,7 +1255,7 @@ main table {
    scoped to lift it past Framework's rule. */
 .globe-zoom-slider {
   cursor: pointer;
-  accent-color: rgba(255,255,255,0.65);
+  accent-color: var(--ink-muted);
   opacity: 0.65;
   transition: opacity 0.15s;
 }
@@ -1103,7 +1267,7 @@ main table {
 }
 
 .globe-zoom-slider:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 
@@ -1124,11 +1288,10 @@ main table {
   z-index: 100;
   width: 260px;
   padding: 12px 14px 10px;
-  background: rgba(16, 22, 26, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface-raised);
   border-radius: 12px;
   border: 1px solid var(--hairline-strong);
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--ink);
   font-size: 12px;
   line-height: 1.4;
   pointer-events: auto;
@@ -1148,7 +1311,7 @@ main table {
   right: 8px;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--ink-soft);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
@@ -1157,8 +1320,8 @@ main table {
   transition: background 120ms, color 120ms;
 }
 .region-tooltip-close:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.9);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink);
 }
 
 .region-tooltip-header {
@@ -1176,7 +1339,7 @@ main table {
 .region-tooltip-name {
   font-size: 14px;
   font-weight: 600;
-  color: var(--white);
+  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1185,7 +1348,7 @@ main table {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--ink-soft);
   margin-top: 1px;
 }
 
@@ -1202,10 +1365,10 @@ main table {
   font-size: 12px;
 }
 .region-tooltip-stat > span:first-child {
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--ink-soft);
 }
 .region-tooltip-stat > span:last-child {
-  color: var(--white);
+  color: var(--ink);
   font-weight: 500;
 }
 
@@ -1220,10 +1383,10 @@ main table {
 .region-tooltip-source {
   font-size: 11px;
   padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--hairline);
 }
 .region-tooltip-source a {
-  color: var(--brand);
+  color: var(--brand-text);
   text-decoration: none;
 }
 .region-tooltip-source a:hover {
@@ -1236,11 +1399,11 @@ main table {
   align-items: center;
   gap: 8px;
   padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--hairline);
   font-size: 11px;
 }
 .region-tooltip-footer a {
-  color: var(--brand);
+  color: var(--brand-text);
   text-decoration: none;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1250,23 +1413,23 @@ main table {
 .region-tooltip-footer a:hover { text-decoration: underline; }
 
 .region-tooltip-freshness-live {
-  color: #3fc1be;
+  color: var(--success);
   font-size: 10.5px;
   white-space: nowrap;
 }
 .region-tooltip-freshness-cached {
-  color: #f5c542;
+  color: var(--warning);
   font-size: 10.5px;
   white-space: nowrap;
 }
 .region-tooltip-freshness-degraded {
-  color: #ff7a59;
+  color: var(--quality-warning);
   font-size: 10.5px;
   white-space: nowrap;
 }
 .region-tooltip-freshness-modeled,
 .region-tooltip-freshness-anchored {
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--ink-soft);
   font-size: 10.5px;
   white-space: nowrap;
 }
@@ -1275,7 +1438,7 @@ main table {
   margin-top: 4px;
   font-size: 10px;
   line-height: 1.35;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--ink-soft);
 }
 
 .region-tooltip-fuel-swatch {
@@ -1296,18 +1459,18 @@ main table {
 .stat-value {
   font-size: 22px;
   font-weight: 700;
-  color: var(--white);
+  color: var(--ink);
 }
 
 .stat-unit {
   font-size: 13px;
-  color: rgba(255,255,255,0.55);
+  color: var(--ink-soft);
   font-weight: 400;
 }
 
 .stat-secondary {
   font-size: 13px;
-  color: rgba(255,255,255,0.45);
+  color: var(--ink-soft);
   font-weight: 400;
 }
 
@@ -1359,7 +1522,7 @@ main table {
   min-height: 36px;
   /* Thin scrollbar — Firefox */
   scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.18) transparent;
+  scrollbar-color: color-mix(in srgb, var(--ink) 18%, transparent) transparent;
 }
 
 /* Thin scrollbar — WebKit (Chrome, Safari, Edge) */
@@ -1370,16 +1533,16 @@ main table {
   background: transparent;
 }
 .hotspot-list::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.18);
+  background: color-mix(in srgb, var(--ink) 18%, transparent);
   border-radius: 2px;
 }
 .hotspot-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.32);
+  background: color-mix(in srgb, var(--ink) 32%, transparent);
 }
 
 .hotspot-list:empty::after {
   content: "—";
-  color: rgba(255,255,255,0.25);
+  color: var(--ink-soft);
   font-size: 12px;
   padding: 4px 0;
 }
@@ -1413,15 +1576,15 @@ main table {
   row-gap: 1px;
   align-items: start;
   font-size: 11.5px;
-  color: rgba(255,255,255,0.82);
+  color: var(--ink-muted);
   padding: 5px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 6%, transparent);
 }
 
 .hotspot-gap-row {
   list-style: none;
   padding: 8px 0 4px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+  border-top: 1px dashed var(--hairline);
   margin-top: 6px;
 }
 
@@ -1451,14 +1614,14 @@ main table {
   white-space: normal;
   overflow-wrap: anywhere;
   line-height: 1.2;
-  color: var(--white);
+  color: var(--ink);
   font-weight: 500;
 }
 
 .hotspot-gw {
   grid-column: 2;
   grid-row: 2;
-  color: rgba(255,255,255,0.62);
+  color: var(--ink-muted);
   font-size: 10.5px;
   font-weight: 400;
   letter-spacing: 0.02em;
@@ -1477,11 +1640,11 @@ main table {
   list-style: none;
   margin-top: 10px;
   padding: 8px 0 4px;
-  border-top: 1px dashed rgba(255,255,255,0.14);
+  border-top: 1px dashed var(--hairline);
   font-size: 9.5px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.38);
+  color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1492,7 +1655,7 @@ main table {
 
 .hotspot-gw-unavailable {
   font-style: italic;
-  color: rgba(255,255,255,0.5);
+  color: var(--ink-soft);
 }
 
 /* Explains what the share view is measuring and what it deliberately leaves
@@ -1501,8 +1664,8 @@ main table {
   margin: 4px 0 6px;
   font-size: 10px;
   line-height: 1.45;
-  color: rgba(255,255,255,0.5);
-  border-left: 2px solid var(--amber-500);
+  color: var(--ink-soft);
+  border-left: 2px solid var(--warning);
   padding-left: 8px;
 }
 
@@ -1516,14 +1679,14 @@ main table {
 }
 
 .hotspot-country {
-  color: rgba(255,255,255,0.45);
+  color: var(--ink-soft);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .hotspot-gw {
-  color: var(--white);
+  color: var(--ink);
   font-weight: 500;
 }
 
@@ -1561,9 +1724,9 @@ main table {
   display: flex;
   gap: 14px;
   padding-top: 14px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--hairline);
   font-size: 11px;
-  color: rgba(255,255,255,0.6);
+  color: var(--ink-muted);
 }
 
 .legend-item {
@@ -1574,27 +1737,27 @@ main table {
 
 .app-footer {
   padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--hairline);
   position: relative;
   z-index: 10;
   background: var(--surface-bg-3);
 }
 
 .app-footer .caption {
-  color: rgba(255,255,255,0.55);
+  color: var(--ink-soft);
   font-size: 11.5px;
   line-height: 1.6;
   max-width: 1100px;
 }
 
 .app-footer .caption strong {
-  color: rgba(255,255,255,0.75);
+  color: var(--ink-muted);
   font-weight: 500;
   letter-spacing: 0.03em;
 }
 
 .app-footer .caption a {
-  color: var(--brand);
+  color: var(--brand-text);
   text-decoration: none;
 }
 .app-footer .caption a:hover { text-decoration: underline; }
@@ -1714,7 +1877,7 @@ main > h1:first-child {
   flex-direction: column;
   gap: 10px;
   padding: 16px 0 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--hairline);
   margin-top: 8px;
   position: relative;  /* needed for z-index to apply */
   z-index: 10;         /* layers above the fixed globe canvas (z-index: 0) */
@@ -1727,7 +1890,7 @@ main > h1:first-child {
 }
 .timeline-header .caption {
   font-size: 11px;
-  color: rgba(255,255,255,0.45);
+  color: var(--ink-soft);
   letter-spacing: 0.04em;
 }
 #timeline-canvas {
@@ -1758,8 +1921,8 @@ main > h1:first-child {
   height: 36px;
   border-radius: 50%;
   background: var(--brand);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--slate-800);
+  border: 1px solid var(--hairline);
+  color: var(--brand-on);
   cursor: pointer;
   font-weight: 700;
   font-size: 16px;
@@ -1773,8 +1936,8 @@ main > h1:first-child {
 }
 .ctl-play:hover { transform: scale(1.04); }
 .ctl-play[aria-pressed="true"] {
-  background: rgba(255,255,255,0.08);
-  color: var(--white);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink);
 }
 .ctl-play-icon {
   display: inline-block;
@@ -1797,16 +1960,16 @@ main > h1:first-child {
   font-size: 11px;
   font-weight: 600;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.6);
+  border: 1px solid var(--hairline);
+  color: var(--ink-muted);
   border-radius: 6px;
   cursor: pointer;
   font-family: inherit;
 }
 .ctl-speed-chip.is-active {
-  background: rgba(var(--brand-rgb),0.2);
+  background: var(--brand-subtle);
   border-color: var(--brand);
-  color: var(--brand);
+  color: var(--brand-text);
 }
 .mode-toggle {
   display: inline-flex;
@@ -1818,8 +1981,8 @@ main > h1:first-child {
   font-size: 11px;
   font-weight: 600;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.6);
+  border: 1px solid var(--hairline);
+  color: var(--ink-muted);
   cursor: pointer;
   font-family: inherit;
 }
@@ -1830,9 +1993,9 @@ main > h1:first-child {
   border-radius: 2px 6px 6px 2px;
 }
 .mode-btn-active {
-  background: rgba(247,147,26,0.18);
-  border-color: var(--amber-500);
-  color: var(--amber-500);
+  background: var(--brand-subtle);
+  border-color: var(--brand);
+  color: var(--brand-text);
 }
 
 /* Headline row — flex container for pct readout */
@@ -1851,7 +2014,7 @@ main > h1:first-child {
 
 .ctl-utc {
   font-size: 12px;
-  color: rgba(255,255,255,0.55);
+  color: var(--ink-soft);
   letter-spacing: 0.04em;
 }
 
@@ -1882,19 +2045,21 @@ main > h1:first-child {
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(var(--brand-rgb),0.85);
+  color: var(--brand-text);
   text-decoration: none;
   transition: color 0.15s;
 }
 .page-back-nav a:hover {
-  color: rgba(var(--brand-rgb),1);
+  color: var(--brand-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .methodology-doc {
   max-width: 780px;
   margin: 0 auto;
   padding: 24px 32px 96px;
-  color: rgba(255,255,255,0.85);
+  color: var(--ink);
   font-size: 15px;
   line-height: 1.68;
 }
@@ -1902,7 +2067,7 @@ main > h1:first-child {
 .methodology-doc .methodology-header {
   padding-bottom: 28px;
   margin-bottom: 44px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid var(--hairline);
 }
 
 .methodology-doc .methodology-eyebrow {
@@ -1910,7 +2075,7 @@ main > h1:first-child {
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--brand, #ffd05a);
+  color: var(--brand-text);
   margin-bottom: 14px;
 }
 
@@ -1920,7 +2085,7 @@ main > h1:first-child {
   letter-spacing: -0.02em;
   line-height: 1.12;
   margin: 0 0 18px;
-  color: var(--white);
+  color: var(--ink);
   border-bottom: none;
   padding-bottom: 0;
 }
@@ -1928,7 +2093,7 @@ main > h1:first-child {
 .methodology-doc .methodology-deck {
   font-size: 18px;
   line-height: 1.55;
-  color: rgba(255,255,255,0.75);
+  color: var(--ink-muted);
   max-width: 680px;
   margin: 0 0 20px;
 }
@@ -1941,17 +2106,17 @@ main > h1:first-child {
 }
 .methodology-doc .methodology-toc a {
   font-size: 12px;
-  color: rgba(255,255,255,0.58);
+  color: var(--ink-muted);
   text-decoration: none;
   padding: 5px 11px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--hairline);
   transition: background 140ms, color 140ms, border-color 140ms;
 }
 .methodology-doc .methodology-toc a:hover {
-  background: rgba(var(--brand-rgb),0.08);
-  color: var(--white);
-  border-color: rgba(var(--brand-rgb),0.35);
+  background: var(--brand-subtle);
+  color: var(--ink);
+  border-color: var(--brand);
 }
 
 .methodology-doc h2 {
@@ -1960,36 +2125,43 @@ main > h1:first-child {
   letter-spacing: -0.005em;
   margin: 56px 0 16px;
   padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  color: var(--white);
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink);
 }
 
 .methodology-doc h3 {
   font-size: 16px;
   font-weight: 600;
   margin: 32px 0 8px;
-  color: rgba(255,255,255,0.9);
+  color: var(--ink);
 }
 
 .methodology-doc p {
   margin: 0 0 16px;
-  color: rgba(255,255,255,0.82);
+  color: var(--ink-muted);
 }
 
 .methodology-doc strong {
-  color: var(--white);
+  color: var(--ink);
   font-weight: 600;
 }
 
 .methodology-doc a {
-  color: var(--brand, #ffd05a);
+  color: var(--brand-text);
   text-decoration: none;
-  border-bottom: 1px solid rgba(63,193,190,0.35);
+  border-bottom: 1px solid var(--hairline-strong);
   transition: border-color 140ms, color 140ms;
 }
 .methodology-doc a:hover {
-  color: var(--white);
-  border-bottom-color: var(--brand, #ffd05a);
+  color: var(--ink);
+  border-bottom-color: var(--brand);
+}
+/* Framework wraps each heading's text in a self-link
+   (.observablehq-header-anchor). That is navigation, not a reference, so it
+   takes no link rule: with one, every heading on the doc pages was
+   underlined. */
+.methodology-doc a.observablehq-header-anchor {
+  border-bottom: 0;
 }
 
 .methodology-doc ul,
@@ -1999,10 +2171,10 @@ main > h1:first-child {
 }
 .methodology-doc li {
   margin-bottom: 8px;
-  color: rgba(255,255,255,0.82);
+  color: var(--ink-muted);
 }
 .methodology-doc li::marker {
-  color: rgba(255,255,255,0.4);
+  color: var(--ink-soft);
 }
 
 .methodology-doc code {
@@ -2010,13 +2182,13 @@ main > h1:first-child {
   font-size: 13px;
   padding: 2px 6px;
   border-radius: 4px;
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.9);
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
 }
 
 .methodology-doc pre {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  border: 1px solid var(--hairline);
   border-radius: 6px;
   padding: 14px 16px;
   overflow-x: auto;
@@ -2056,7 +2228,7 @@ main > h1:first-child {
 .methodology-doc td {
   text-align: left;
   padding: 9px 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid var(--hairline);
   vertical-align: top;
 }
 .methodology-doc th {
@@ -2064,14 +2236,14 @@ main > h1:first-child {
   text-transform: uppercase;
   font-size: 10.5px;
   letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.55);
-  border-bottom: 1px solid rgba(255,255,255,0.18);
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--hairline-strong);
 }
 .methodology-doc td {
-  color: rgba(255,255,255,0.78);
+  color: var(--ink-muted);
 }
 .methodology-doc tr:hover td {
-  background: rgba(255,255,255,0.02);
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
 }
 
 /* Callout boxes */
@@ -2090,13 +2262,13 @@ main > h1:first-child {
   line-height: 1.65;
 }
 .methodology-doc .methodology-callout-abstract p {
-  color: rgba(255,255,255,0.88);
+  color: var(--ink);
 }
 
 /* Horizontal rules */
 .methodology-doc hr {
   border: none;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid var(--hairline);
   margin: 40px 0;
 }
 
@@ -2109,11 +2281,11 @@ main > h1:first-child {
 }
 .methodology-doc h2[id="references"] + ul li {
   padding: 7px 0;
-  border-bottom: 1px dotted rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.72);
+  border-bottom: 1px dotted var(--hairline);
+  color: var(--ink-muted);
 }
 .methodology-doc h2[id="references"] + ul li strong {
-  color: rgba(255,255,255,0.92);
+  color: var(--ink);
   font-weight: 500;
 }
 
@@ -2121,7 +2293,7 @@ main > h1:first-child {
 .methodology-doc p em:only-child {
   display: inline-block;
   font-size: 13px;
-  color: rgba(255,255,255,0.52);
+  color: var(--ink-soft);
   font-style: italic;
   line-height: 1.5;
 }
@@ -2136,39 +2308,77 @@ main > h1:first-child {
   .methodology-doc h2 { font-size: 20px; margin-top: 40px; }
 }
 
-/* ============ THEME TOGGLE ============ */
+/* ============ THEME TOGGLE ============
+   Two looks, one component (src/components/theme-toggle.js). Desktop: a
+   34px pill holding a sun and a moon, the active one filled with ink and its
+   icon drawn in the page colour. Phones (the `compact` option): one 44px
+   round button showing the mode it switches TO. Icons stroke in currentColor.
+   Focus uses the global :focus-visible ring. */
 .theme-toggle {
   display: inline-flex;
+  align-items: center;
   gap: 2px;
+  height: 34px;
   padding: 3px;
-  border: 1px solid var(--hairline);
+  box-sizing: border-box;
+  border: 1px solid var(--hairline-strong);
   border-radius: 999px;
-  background: var(--surface-raised);
 }
+:root[data-theme="dark"] .theme-toggle { border-color: var(--hairline); }
 .theme-toggle button {
-  font: 500 11px / 1 var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 6px 12px;
-  border-radius: 999px;
+  width: 40px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: 0;
+  border-radius: 999px;
   background: transparent;
-  color: var(--ink-muted);
+  color: var(--ink);
   cursor: pointer;
   transition: background 140ms ease, color 140ms ease;
 }
-.theme-toggle button:hover { color: var(--ink); }
+.theme-toggle button:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
 .theme-toggle button[aria-checked="true"] {
-  background: var(--brand-subtle);
-  color: var(--brand);
+  background: var(--ink);
+  color: var(--surface-bg-3);
 }
-.theme-toggle button:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
+.theme-toggle svg { display: block; flex-shrink: 0; }
+
+.theme-toggle--compact {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  justify-content: center;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.theme-toggle--compact:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+
+/* Switching mode cross-fades where the browser has view transitions. The
+   toggle skips the transition under prefers-reduced-motion. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 200ms;
 }
 
-@media (max-width: 640px) {
-  .theme-toggle button { padding: 5px 9px; }
+/* Links in light are ink with an underline: the brand colour is 3.2:1 on
+   paper, too low for small text. Dark keeps amber (11.5:1) without one. */
+:root[data-theme="light"] :is(.page-back-nav a, .app-footer .caption a, .region-tooltip-source a, .region-tooltip-footer a) {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* State labels in the region card are small text. In light, --success and
+   --warning fall under 4.5:1 on paper, so the labels go ink; the words
+   ("live", "cached", "degraded") carry the state either way. */
+:root[data-theme="light"] :is(.region-tooltip-freshness-live, .region-tooltip-freshness-cached, .region-tooltip-freshness-degraded) {
+  color: var(--ink);
 }
 
 /* ============ GLOBE QUALITY LEGEND ============ */
@@ -2213,7 +2423,7 @@ main > h1:first-child {
    table styling, and both theme token sets already apply. Nothing here
    introduces a colour value: every rule reads --ink / --ink-muted /
    --ink-soft / --hairline / --brand-rgb / --surface-*, which
-   :root[data-theme="sunfire"] and :root[data-theme="deepcurrent"] both
+   :root[data-theme="light"] and :root[data-theme="dark"] both
    define. Quality dots reuse the .ql-dot vocabulary from the globe legend
    above, so a reader sees the same mark in both places. */
 

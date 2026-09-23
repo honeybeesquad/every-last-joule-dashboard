@@ -2,6 +2,7 @@ import { readdirSync } from "node:fs";
 import { join } from "node:path";
 
 import { REGIONS } from "./src/lib/regions.js";
+import { THEME_BOOT_SCRIPT } from "./src/lib/theme-boot.js";
 
 const fontFiles = readdirSync(join("src", "fonts"))
   .filter((file) => file.endsWith(".ttf") || file.endsWith(".woff2"))
@@ -81,12 +82,12 @@ export default {
   // disables pinch-zoom — bad for accessibility and mobile readability.
   // We emit our own viewport tag later in the head to override it.
   //
-  // The inline boot script must appear before style.css (which contains the
-  // [data-theme] rules) to prevent a flash of unstyled/wrong-theme content.
-  // Observable Framework hoists front-matter scripts in src/index.md to
-  // after stylesheets, so the head config is the only place we can
-  // guarantee script-before-CSS ordering.
-  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<script>(function(){try{var t=localStorage.getItem("elj-theme");if(t!=="sunfire"&&t!=="deepcurrent")t="sunfire";document.documentElement.setAttribute("data-theme",t);}catch(e){document.documentElement.setAttribute("data-theme","sunfire");}}());</script><link rel="stylesheet" href="./style.css"><script>(function(){var s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);})();</script>`,
+  // The inline boot script picks light or dark (src/lib/theme-boot.ts) and
+  // must appear before style.css (which contains the [data-theme] rules) to
+  // prevent a flash of the wrong mode. Observable Framework hoists
+  // front-matter scripts in src/index.md to after stylesheets, so the head
+  // config is the only place we can guarantee script-before-CSS ordering.
+  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<script>${THEME_BOOT_SCRIPT}</script><link rel="stylesheet" href="./style.css"><script>(function(){var s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);})();</script>`,
   theme: "dark",
   footer: "",
   toc: false,

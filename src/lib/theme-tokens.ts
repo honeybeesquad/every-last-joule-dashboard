@@ -50,6 +50,17 @@ export interface GlobeTokens {
   dotNeutralRGB: string;
   /** "r,g,b" of the brand colour, used for the halo and rim (--brand-rgb). */
   brandRGB: string;
+  /** Page ink (--ink): the selected-region ring, in both modes. */
+  ink: string;
+  /** "r,g,b" the light (engraved) globe draws its line screen, stipple,
+   *  coastline and limb in (--globe-ink-rgb). */
+  inkRGB: string;
+  /** Paper colour: the light globe's land knock-out and needle halos (--globe-paper). */
+  paper: string;
+  /** "r,g,b" of the dark (horizon) globe's atmosphere (--globe-atmosphere-rgb). */
+  atmosphereRGB: string;
+  /** "r,g,b" of the dark globe's land dots (--globe-land-rgb). */
+  landRGB: string;
 }
 
 /** Read all globe-relevant tokens off the document element in one pass. */
@@ -70,5 +81,13 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
     bodyLo:  get("--globe-body-lo")  || "#0c0804",
     dotNeutralRGB: parseHexToRGB(get("--globe-dot-neutral")) ?? "228,220,204",
     brandRGB: (get("--brand-rgb") || "255, 208, 90").replace(/\s+/g, ""),
+    // The redesign's tokens. Fallbacks are the dark (Horizon) values. The
+    // Sunfire-pinned paper figure defines none of the four globe-* ones and
+    // never draws with them.
+    ink:           get("--ink") || "#F2F5F9",
+    inkRGB:        (get("--globe-ink-rgb") || "242, 245, 249").replace(/\s+/g, ""),
+    paper:         get("--globe-paper") || "#05070B",
+    atmosphereRGB: (get("--globe-atmosphere-rgb") || "110, 190, 255").replace(/\s+/g, ""),
+    landRGB:       (get("--globe-land-rgb") || "170, 200, 230").replace(/\s+/g, ""),
   };
 }
