@@ -18,6 +18,20 @@ export function parseHexToRGB(hex: string): string | null {
   return `${r},${g},${b}`;
 }
 
+/**
+ * "r,g,b" from a CSS colour string as getComputedStyle returns it: "#rrggbb",
+ * "rgb(r, g, b)" or "rgba(r, g, b, a)" (the alpha is dropped). Canvas code
+ * uses it to draw a token's hue at its own alpha, e.g. the timeline's grid in
+ * the hairline hue. Null for anything else.
+ */
+export function cssRGB(value: string): string | null {
+  if (typeof value !== "string") return null;
+  const hex = parseHexToRGB(value);
+  if (hex) return hex;
+  const m = /^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*[\d.]+\s*)?\)$/i.exec(value.trim());
+  return m ? `${m[1]},${m[2]},${m[3]}` : null;
+}
+
 /** Tokens needed by `globe.js`. Strings as they appear in CSS — caller
  *  decides whether to use directly (rgba), parse (hex), or treat as a
  *  linear-gradient sentinel (some themes ship `--night-overlay` as a
@@ -61,6 +75,13 @@ export interface GlobeTokens {
   atmosphereRGB: string;
   /** "r,g,b" of the dark globe's land dots (--globe-land-rgb). */
   landRGB: string;
+  /** "r,g,b" of the dark globe's star field (--globe-star-rgb). */
+  starRGB: string;
+  /** The page ground (--surface-bg-3): the dark globe's sky. */
+  bg: string;
+  /** Beam cores and tip glows in dark (--fuel-<fuel>-tip). "" where a theme
+   *  defines none (the Sunfire paper figure), and the caller tints instead. */
+  fuelTips: { solar: string; wind: string; hydro: string };
 }
 
 /** Read all globe-relevant tokens off the document element in one pass. */
@@ -89,5 +110,12 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
     paper:         get("--globe-paper") || "#05070B",
     atmosphereRGB: (get("--globe-atmosphere-rgb") || "110, 190, 255").replace(/\s+/g, ""),
     landRGB:       (get("--globe-land-rgb") || "170, 200, 230").replace(/\s+/g, ""),
+    starRGB:       (get("--globe-star-rgb") || "220, 235, 255").replace(/\s+/g, ""),
+    bg:            get("--surface-bg-3") || "#05070B",
+    fuelTips: {
+      solar: get("--fuel-solar-tip"),
+      wind:  get("--fuel-wind-tip"),
+      hydro: get("--fuel-hydro-tip"),
+    },
   };
 }

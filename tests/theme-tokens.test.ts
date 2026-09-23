@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { describe, it, expect, afterEach } from "vitest";
-import { parseHexToRGB, readGlobeTokens } from "../src/lib/theme-tokens";
+import { cssRGB, parseHexToRGB, readGlobeTokens } from "../src/lib/theme-tokens";
 
 describe("parseHexToRGB", () => {
   it("converts a 6-char hex with leading # to a comma-separated rgb tuple", () => {
@@ -21,6 +21,21 @@ describe("parseHexToRGB", () => {
     expect(parseHexToRGB("")).toBeNull();
     expect(parseHexToRGB("#abc")).toBeNull();      // 3-char form not supported
     expect(parseHexToRGB("#12345678")).toBeNull(); // 8-char form not supported
+  });
+});
+
+describe("cssRGB", () => {
+  it("reads hex, rgb() and rgba() as computed styles return them", () => {
+    expect(cssRGB("#A0C8FF")).toBe("160,200,255");
+    expect(cssRGB("rgb(22, 21, 15)")).toBe("22,21,15");
+    expect(cssRGB("rgba(160, 200, 255, 0.16)")).toBe("160,200,255");
+    expect(cssRGB(" rgba(160,200,255,0.16) ")).toBe("160,200,255");
+  });
+
+  it("returns null for anything else", () => {
+    expect(cssRGB("")).toBeNull();
+    expect(cssRGB("var(--ink)")).toBeNull();
+    expect(cssRGB("color-mix(in srgb, red 50%, blue)")).toBeNull();
   });
 });
 
@@ -49,6 +64,22 @@ describe("readGlobeTokens: the redesign's globe tokens", () => {
     expect(t.paper).toBe("#05070B");
     expect(t.atmosphereRGB).toBe("110,190,255");
     expect(t.landRGB).toBe("170,200,230");
+  });
+
+  it("reads the horizon's sky, stars and beam-tip tokens", () => {
+    root.style.setProperty("--surface-bg-3", "#05070B");
+    root.style.setProperty("--globe-star-rgb", "220, 235, 255");
+    root.style.setProperty("--fuel-solar-tip", "#FFE7B8");
+    root.style.setProperty("--fuel-wind-tip", "#DCE8FF");
+    root.style.setProperty("--fuel-hydro-tip", "#D2FFF6");
+    const t = readGlobeTokens(root);
+    expect(t.bg).toBe("#05070B");
+    expect(t.starRGB).toBe("220,235,255");
+    expect(t.fuelTips).toEqual({ solar: "#FFE7B8", wind: "#DCE8FF", hydro: "#D2FFF6" });
+  });
+
+  it("leaves the tips empty where a theme defines none, for the caller to tint", () => {
+    expect(readGlobeTokens(root).fuelTips).toEqual({ solar: "", wind: "", hydro: "" });
   });
 
   it("never returns an empty string for a token a renderer would paint with", () => {
