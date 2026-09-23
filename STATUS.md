@@ -5,8 +5,8 @@
 
 ## Light/dark redesign, PR 5: clean-up, and the redesign archived as shipped (2026-09-24)
 
-Branch `chore/redesign-cleanup`, **stacked on PR 4 (#1093), which is
-stacked on PR 3 (#1092); they merge in that order**. The plan is archived at
+Branch `chore/redesign-cleanup` (**#1094**), **stacked on PR 4 (#1093), which
+is stacked on PR 3 (#1092); they merge in that order**. The plan is archived at
 `docs/superpowers/plans/archive/2026-09-23-light-dark-redesign.md` with a
 `STATUS: SHIPPED` banner; its "PR 5 as built" section lists the details.
 

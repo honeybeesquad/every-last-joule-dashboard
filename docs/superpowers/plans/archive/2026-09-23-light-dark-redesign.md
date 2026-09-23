@@ -1,6 +1,6 @@
 # Every Last Joule - light and dark redesign: implementation spec
 
-> **STATUS: SHIPPED.** All five PRs are built: PR 1 theme plumbing (#1087) and PR 2 light desktop (#1091) merged on 2026-09-23; PR 3 dark desktop (#1092), PR 4 tablet and phone (#1093) and PR 5 clean-up (the PR that moved this file here) merge in that order, each stacked on the one before. This file is historical: the state of record is `STATUS.md` and git. Archived by PR 5 on 2026-09-24.
+> **STATUS: SHIPPED.** All five PRs are built: PR 1 theme plumbing (#1087) and PR 2 light desktop (#1091) merged on 2026-09-23; PR 3 dark desktop (#1092), PR 4 tablet and phone (#1093) and PR 5 clean-up (#1094, which moved this file here) merge in that order, each stacked on the one before. This file is historical: the state of record is `STATUS.md` and git. Archived by PR 5 on 2026-09-24.
 >
 > This is the handoff's SPEC.md (from `Claude outputs/elj-light-dark-handoff/`, untracked and never committed), copied in as the active plan on 2026-09-23. Paths like `mocks/`, `tokens/`, `reference/` and `screenshots/` are relative to that handoff folder, not to the repo. Edits since the copy: the decisions table in section 0 records the answers, section 7 records D6's answer, section 10 records PR status, and the "PR n as built" sections below record where the build departs from, or adds to, the text.
 
@@ -441,7 +441,7 @@ Each PR goes into `main` (never push to it), runs `npm run typecheck && npm test
 2. **Light desktop.** Almanac grid, engraved globe, small-multiples timeline, rail, legend, selected label. Needs D4, D5. **Status: merged as #1091 (`3b272ec6`), 2026-09-23 (see "PR 2 as built" at the top).**
 3. **Dark desktop.** Horizon stage, horizon globe, ribbon, glass dock. **Status: #1092 on `feat/dark-horizon-desktop` (see "PR 3 as built" at the top).**
 4. **Tablet and phone.** Both modes, the explorer, the dark bottom sheet, wrapping control rows, overflow checks. **Status: #1093 on `feat/redesign-tablet-phone`, stacked on PR 3, with the doc pages' header (see "PR 4 as built" at the top).**
-5. **Clean-up.** Remove the sunfire / deepcurrent names and unused faces (after a grep), archive the plan with a `STATUS: SHIPPED` banner. **Status: the PR that archived this file, stacked on PR 4 (see "PR 5 as built" at the top).**
+5. **Clean-up.** Remove the sunfire / deepcurrent names and unused faces (after a grep), archive the plan with a `STATUS: SHIPPED` banner. **Status: #1094 on `chore/redesign-cleanup`, stacked on PR 4; it archived this file (see "PR 5 as built" at the top).**
 
 ---
 
