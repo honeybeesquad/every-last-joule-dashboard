@@ -756,18 +756,20 @@ body {
     padding-inline: 4vw;
   }
 
-  /* The dashboard brings its own gutter (.app-shell padding). Stacked on
-     the 4vw above and Framework's 2rem #observablehq-center margin it left
-     253px of a 375px phone, and 198px of a 320px one. Drop the two generic
-     gutters on the dashboard only; the doc pages keep theirs. */
-  body:has(.app-shell) {
+  /* The dashboard and the doc pages each bring their own gutter
+     (.app-shell padding; .methodology-doc's 18px phone padding). Stacked on
+     the 4vw above and Framework's 2rem #observablehq-center margin, the
+     dashboard had 253px of a 375px phone and the doc pages' text 245px
+     (198px and 194px at 320). Drop the two generic gutters on both. */
+  body:has(.app-shell, .methodology-doc) {
     padding-inline: 0;
   }
-  #observablehq-center:has(.app-shell) {
+  #observablehq-center:has(.app-shell, .methodology-doc) {
     margin-inline: 0;
   }
   /* Framework's "Next page" pager sits outside .app-shell; give it the
-     shell's phone gutter back so it does not touch the screen edge. */
+     shell's phone gutter back so it does not touch the screen edge. The doc
+     pages' pager is handled with .methodology-doc's own padding below. */
   #observablehq-center:has(.app-shell) > #observablehq-footer {
     margin-inline: 14px;
   }
@@ -2130,6 +2132,13 @@ main > h1:first-child {
   .methodology-doc {
     padding: 16px 18px 64px;
     font-size: 14.5px;
+  }
+  /* The back link and Framework's pager sit outside .methodology-doc. Give
+     them its 18px so all three start on one line; otherwise "← Dashboard"
+     starts 14px right of the text and the pager 18px left of it. */
+  .page-back-nav { padding-inline: 18px; }
+  #observablehq-center:has(.methodology-doc) > #observablehq-footer {
+    margin-inline: 18px;
   }
   .methodology-doc h1 { font-size: 32px; }
   .methodology-doc .methodology-deck { font-size: 16px; }
