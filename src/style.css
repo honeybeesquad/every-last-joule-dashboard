@@ -227,6 +227,8 @@
   --globe-dot-neutral:   #16150F;
   --globe-atmosphere-rgb: 22, 21, 15;   /* NEW, unused in light; defined so readers never get "" */
   --globe-land-rgb:      22, 21, 15;    /* NEW, unused in light */
+  --globe-star-rgb:      22, 21, 15;    /* unused in light; the horizon's star field */
+  --bar-track:           rgba(22, 21, 15, 0.12);      /* rail bars' unfilled track */
 
   /* state. The base :root --quality-warning (#f7931a) is 2.0:1 on paper, below the
      3:1 a stale ring needs, so light overrides it. Dark keeps the base value (8.8:1). */
@@ -301,6 +303,8 @@
   --globe-paper:         #05070B;       /* NEW */
   --globe-atmosphere-rgb: 110, 190, 255; /* NEW */
   --globe-land-rgb:      170, 200, 230; /* NEW */
+  --globe-star-rgb:      220, 235, 255; /* the horizon's star field */
+  --bar-track:           rgba(160, 200, 255, 0.12);   /* the dock's bar tracks (dark mock) */
   --globe-ocean:         #07101C;
   --globe-ocean-lit:     #0D2238;
   --globe-terminator:    rgba(242, 245, 249, 0.30);
@@ -946,8 +950,10 @@ main table {
 
    Light desktop (≥1100px) is the Almanac board (mocks/light-desktop.html):
    hero 396 | globe | 34 | rail 234, with the timeline band below and the
-   footer after the fold. Until the dark (PR 3) and tablet/phone (PR 4)
-   layouts land, dark uses the same grid and narrower screens stack.
+   footer after the fold. Dark desktop is the Horizon stage
+   (mocks/dark-desktop.html): the globe fills the first viewport behind the
+   hero and a glass dock. Until the tablet and phone layouts (PR 4) land,
+   narrower screens stack in both modes.
    ========================================================================= */
 
 /* The dashboard owns its gutters at every width: lift Framework's 1440px
@@ -1031,6 +1037,8 @@ body:has(.app-shell) { max-width: none; }
 .app-lockup .app-mark { width: 26px; height: 26px; }
 .app-lockup .app-wordmark { font-size: 22px; line-height: 1; }
 :root[data-theme="dark"] .app-lockup .app-wordmark { font-size: 17px; }
+/* Dark's header floats over the sky: no rule (redesign plan 3.2, 3.4). */
+:root[data-theme="dark"] .app-header { border-bottom-color: transparent; }
 
 .app-header-right {
   display: flex;
@@ -1120,8 +1128,21 @@ body:has(.app-shell) { max-width: none; }
   font-size: 14px;
   color: var(--ink);
 }
-.stat-label .label-short,
+/* Per-mode wording: .label-long is the accessible text, which light shows;
+   .label-short is dark's, aria-hidden so an accessible name never changes
+   with the mode (redesign plan 3). Dark keeps the long text for screen
+   readers only. */
 .label-short { display: none; }
+:root[data-theme="dark"] .label-short { display: inline; }
+:root[data-theme="dark"] .label-long {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 .stat-value {
   margin: 0;
   display: flex;
@@ -1140,6 +1161,55 @@ body:has(.app-shell) { max-width: none; }
   letter-spacing: 0;
   color: var(--ink-muted);
 }
+
+/* Dark hero (mocks/dark-desktop.html): the eyebrow is the brand colour, led
+   by a glowing dot and the live time; the lead is muted; the three stats sit
+   in one row of hairline-divided cells with short Mono labels. */
+:root[data-theme="dark"] .hero-eyebrow { font-size: 11px; color: var(--brand-text); }
+:root[data-theme="dark"] .hero-eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 10px;
+  vertical-align: 1px;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 10px var(--brand);
+}
+:root[data-theme="dark"] .hero-eyebrow-time { display: inline; }
+:root[data-theme="dark"] .hero-eyebrow-time::after { content: " · "; }
+:root[data-theme="dark"] .hero .lead { line-height: 1.5; color: var(--ink-muted); }
+:root[data-theme="dark"] .hero-stats {
+  display: flex;
+  flex-wrap: wrap;           /* one row from 360px up; wraps on the narrowest phones */
+  row-gap: 16px;
+  margin: 28px 0 0 -22px;
+  border-bottom: 0;
+}
+:root[data-theme="dark"] .hero-stats .stat {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  padding: 0 22px;
+  border-top: 0;
+  border-left: 1px solid transparent;
+}
+:root[data-theme="dark"] .hero-stats .stat + .stat { border-left-color: var(--hairline); }
+:root[data-theme="dark"] .stat-label {
+  font: 400 11px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+:root[data-theme="dark"] .stat-value {
+  font-family: var(--font-body);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+:root[data-theme="dark"] .stat-unit { font-size: 11px; }
 
 .hero-caption {
   margin: 18px 0 0;
@@ -1220,7 +1290,9 @@ body:has(.app-shell) { max-width: none; }
    graphics-only on paper (hydro 3.7:1, solar 3.2:1). */
 .gs-fuel { display: inline-flex; align-items: center; gap: 5px; }
 .gs-fuel .dot { width: 7px; height: 7px; }
-.gs-name {
+/* Ink, like the hover card's name: Framework's a[href] rule would paint it
+   the link colour, which is amber in dark. */
+.globe-selection .gs-name {
   display: block;
   margin-top: 4px;
   font-family: var(--font-display);
@@ -1233,8 +1305,15 @@ body:has(.app-shell) { max-width: none; }
 }
 .gs-name:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .gs-now { margin-top: 2px; font-size: 13px; }
-:root[data-theme="dark"] .globe-selection { border-color: var(--hairline); border-radius: 12px; }
-:root[data-theme="dark"] .gs-name { font-size: 20px; }
+/* Dark: glass, as the dock; the name in Geist 500 20px (redesign plan 6.3). */
+:root[data-theme="dark"] .globe-selection {
+  background: var(--surface-panel);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border-color: var(--hairline);
+  border-radius: 12px;
+}
+:root[data-theme="dark"] .gs-name { font-family: var(--font-body); font-weight: 500; font-size: 20px; }
 
 /* Zoom: the wheel and a pinch zoom the globe everywhere; the slider is the
    keyboard route. The light board draws no zoom control, so it sits quietly
@@ -1249,6 +1328,8 @@ body:has(.app-shell) { max-width: none; }
   gap: 8px;
 }
 .globe-zoom-controls[hidden] { display: none; }
+/* The horizon has no zoom: its geometry is fixed to the stage. */
+:root[data-theme="dark"] .globe-zoom-controls { display: none; }
 .globe-zoom-label {
   font: 10px/1 var(--font-mono);
   letter-spacing: 0.1em;
@@ -1333,17 +1414,31 @@ body:has(.app-shell) { max-width: none; }
   font-size: 14px;
 }
 .hs-bar { display: none; }
-/* Dark rows carry a bar, as the dark dock draws them, not the needle: the
-   dark globe (G1, until the dark redesign) has no needles, and the rail
-   should not show one key while the legend shows another. */
-:root[data-theme="dark"] .hotspot-item { grid-template-columns: 20px minmax(0, 1fr) 64px auto; }
-:root[data-theme="dark"] .hs-needle { display: none; }
+/* Dark rows are the dock's (mocks/dark-desktop.html): name, a glowing bar
+   and the value. The beams carry no needle, so neither does the list; the
+   est. and stale tags stay, as the list's words for what the beams show by
+   shape (WCAG 1.4.1). */
+:root[data-theme="dark"] .hotspot-list { border-bottom: 0; }
+:root[data-theme="dark"] .hotspot-item {
+  grid-template-columns: minmax(0, 1fr) 110px 52px;
+  column-gap: 12px;
+  min-height: 25px;
+  padding: 0;
+  border-top: 0;
+  font-size: 14px;
+}
+:root[data-theme="dark"] :is(.hs-rank, .hs-needle) { display: none; }
+:root[data-theme="dark"] .hs-tag {
+  font: 400 10px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
 :root[data-theme="dark"] .hs-bar {
   display: block;
   height: 3px;
   border-radius: 2px;
-  background: color-mix(in srgb, var(--ink) 12%, transparent);
-  overflow: hidden;
+  background: var(--bar-track);
 }
 :root[data-theme="dark"] .hs-bar > span {
   display: block;
@@ -1351,11 +1446,13 @@ body:has(.app-shell) { max-width: none; }
   min-width: 4px;
   border-radius: 2px;
   background: currentColor;
+  box-shadow: 0 0 10px currentColor;
 }
 :root[data-theme="dark"] .hotspot-item > .hs-bar { color: inherit; }
 :root[data-theme="dark"] .hotspot-item.fuel-solar > .hs-bar { color: var(--fuel-solar); }
 :root[data-theme="dark"] .hotspot-item.fuel-wind > .hs-bar { color: var(--fuel-wind); }
 :root[data-theme="dark"] .hotspot-item.fuel-hydro > .hs-bar { color: var(--fuel-hydro); }
+:root[data-theme="dark"] .hotspot-gw { font-size: 12px; }
 .hotspot-gw {
   font: 13px/1 var(--font-mono);
   text-align: right;
@@ -1413,10 +1510,31 @@ body:has(.app-shell) { max-width: none; }
 }
 .rail-all { color: var(--ink); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
 :root[data-theme="dark"] .rail-all { color: var(--brand-text); text-decoration: none; }
+/* Dark names the whole directory in the head instead ("All N", the count
+   /regions lists); light keeps "N more curtailing · All regions" below. */
+.rail-all-head { display: none; }
+:root[data-theme="dark"] .rail-all-head {
+  display: inline;
+  font: 400 11px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+:root[data-theme="dark"] .rail-all-head:hover { text-decoration: underline; text-underline-offset: 3px; }
+:root[data-theme="dark"] .rail-time { display: none; }
+:root[data-theme="dark"] .rail-title {
+  font: 400 11px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
-/* The legend (#globe-legend). The needle glyphs are the light globe's key;
-   dark keeps the G1 globe, and with it the dot key and "brighter pillar",
-   until the dark redesign. */
+/* The legend (#globe-legend): each mode keys its own marks. Light lists the
+   needle glyphs and the fuels. Dark says "brighter beam = higher confidence"
+   (measured 1, anchored 0.8, estimated 0.62) and keys the two shape cues,
+   the estimated beam's dashed core and the stale feed's dashed ring; its
+   fuels are keyed in the dock's timeline header. */
 .globe-legend {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1432,12 +1550,26 @@ body:has(.app-shell) { max-width: none; }
   min-width: 0;
 }
 .legend-needle { display: block; line-height: 0; color: var(--fuel-solar); }
+.legend-beam { display: none; line-height: 0; color: var(--fuel-solar); }
+.beam-glyph { display: block; overflow: visible; }
+.beam-glyph-stale { stroke: var(--quality-warning); }
 .legend-fuel .dot { width: 9px; height: 9px; }
-.legend-quality .ql-dot { display: none; }
-.legend-caption { display: none; grid-column: 1 / -1; font: 10.5px/1.3 var(--font-mono); color: var(--ink-soft); }
-:root[data-theme="dark"] .legend-quality .legend-needle { display: none; }
-:root[data-theme="dark"] .legend-quality .ql-dot { display: inline-block; width: 10px; height: 10px; }
-:root[data-theme="dark"] .legend-caption { display: block; }
+.legend-caption { display: none; }
+:root[data-theme="dark"] .globe-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: 0;
+  font: 400 10px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+:root[data-theme="dark"] .legend-caption { display: block; order: -1; }
+:root[data-theme="dark"] :is(.legend-needle, .legend-fuel, .legend-measured, .legend-anchored) { display: none; }
+:root[data-theme="dark"] .legend-beam { display: block; }
+:root[data-theme="dark"] .legend-item { gap: 5px; }
 
 /* ---- Timeline band ----------------------------------------------------------- */
 .app-timeline {
@@ -1509,10 +1641,37 @@ body:has(.app-shell) { max-width: none; }
   cursor: ew-resize;
   touch-action: pan-y;
 }
-/* Dark keeps the stacked chart for now, which draws its own hour ticks. */
-:root[data-theme="dark"] .timeline-hours { display: none; }
-:root[data-theme="dark"] .timeline-plot { padding-top: 0; }
-:root[data-theme="dark"] #timeline-canvas { height: 96px; }
+/* Dark: the ribbon, its hour labels below it, and the fuel key as a row of
+   glowing dots (mocks/dark-desktop.html). The canvas carries 8px of
+   headroom for the playhead above the 80px chart. */
+:root[data-theme="dark"] .app-timeline { border-top: 0; }
+:root[data-theme="dark"] .timeline-label { letter-spacing: 0.08em; }
+:root[data-theme="dark"] .timeline-fuels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+:root[data-theme="dark"] .timeline-fuel { min-height: 0; border-bottom: 0; }
+:root[data-theme="dark"] .timeline-fuel-name {
+  gap: 7px;
+  font: 400 11px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+:root[data-theme="dark"] .timeline-fuel .dot--solar { box-shadow: 0 0 8px var(--fuel-solar); }
+:root[data-theme="dark"] .timeline-fuel .dot--wind { box-shadow: 0 0 8px var(--fuel-wind); }
+:root[data-theme="dark"] .timeline-fuel .dot--hydro { box-shadow: 0 0 8px var(--fuel-hydro); }
+:root[data-theme="dark"] .timeline-fuel-gw { display: none; }
+:root[data-theme="dark"] .timeline-plot { padding: 0 0 20px; }
+:root[data-theme="dark"] .timeline-hours {
+  top: auto;
+  bottom: 0;
+  font-size: 10px;
+  color: var(--ink-muted);
+}
+:root[data-theme="dark"] .timeline-hours span:is(:nth-child(1), :nth-child(5)) { transform: translateX(-50%); }
+:root[data-theme="dark"] #timeline-canvas { height: 88px; margin-top: -8px; }
 
 .timeline-controls {
   grid-area: controls;
@@ -1546,7 +1705,13 @@ body:has(.app-shell) { max-width: none; }
   cursor: pointer;
 }
 .ctl-play svg { display: block; }
-:root[data-theme="dark"] .ctl-play { background: var(--brand); color: var(--brand-on); }
+:root[data-theme="dark"] .ctl-play {
+  width: 44px;
+  height: 44px;
+  background: var(--brand);
+  color: var(--brand-on);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--brand) 40%, transparent);
+}
 
 .seg {
   display: inline-flex;
@@ -1559,7 +1724,7 @@ body:has(.app-shell) { max-width: none; }
   border: 1px solid var(--hairline-strong);
   border-radius: 17px;
 }
-:root[data-theme="dark"] .seg { border-color: var(--hairline); }
+:root[data-theme="dark"] .seg { border-color: var(--hairline); padding: 4px; }
 .seg-btn,
 .ctl-now {
   height: 28px;
@@ -1581,11 +1746,19 @@ body:has(.app-shell) { max-width: none; }
   background: var(--brand-subtle);
   color: var(--brand-text);
 }
+/* Dark controls speak Mono 10.5 uppercase (redesign plan 3.2). */
+:root[data-theme="dark"] :is(.seg-btn, .ctl-now) {
+  height: 26px;
+  padding: 0 11px;
+  font: 400 10.5px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 .ctl-now {
   height: 34px;
   border: 1px solid var(--hairline-strong);
 }
-:root[data-theme="dark"] .ctl-now { border-color: var(--hairline); }
+:root[data-theme="dark"] .ctl-now { height: 34px; border-color: var(--hairline); }
 .ctl-now[aria-pressed="true"] {
   background: var(--ink);
   color: var(--surface-bg-3);
@@ -1665,11 +1838,114 @@ body:has(.app-shell) { max-width: none; }
   .timeline-controls .ctl-row { flex-wrap: nowrap; }
   .timeline-controls .seg { flex-wrap: nowrap; }
   /* Play, three speeds and Now fit the 224px column at 10px padding. */
-  .ctl-speed .seg-btn { padding: 0 10px; }
+  :root[data-theme="light"] .ctl-speed .seg-btn { padding: 0 10px; }
+}
 
-  /* Dark keeps this grid until its own stage lands (PR 3); its 184px hero
-     would overrun the 396px column, so it steps down here meanwhile. */
-  :root[data-theme="dark"] .hero-pct { font-size: min(var(--fs-hero), 132px); }
+/* ---- Dark desktop: the Horizon stage ------------------------------------------------ */
+/* The first viewport is a stage (100svh, at least 720px): the globe canvas
+   fills it behind the header, the hero at (48, 128) and a glass dock 24px
+   in from the sides and bottom. The dock is the timeline (1fr) and the rail
+   (420px) side by side, each glass, joined along the rail's hairline. The
+   footer follows the stage. */
+@media (min-width: 1100px) {
+  :root[data-theme="dark"] .app-shell {
+    max-width: none;
+    padding: 0;
+    grid-template-columns: 24px minmax(0, 1fr) 420px 24px;
+    grid-template-rows: 76px auto minmax(24px, 1fr) 196px 24px auto;
+    grid-template-areas:
+      ". header header ."
+      ". hero hero ."
+      ". . . ."
+      ". timeline rail ."
+      ". . . ."
+      "footer footer footer footer";
+  }
+  :root[data-theme="dark"] .app-header { padding: 0 24px; }
+
+  /* The stage: the globe's cell spans the header, hero, gap and dock rows,
+     and its height sets theirs (the 1fr row takes the slack). */
+  :root[data-theme="dark"] .globe-stage {
+    grid-area: 1 / 1 / 6 / -1;
+    width: auto;
+    height: auto;
+    min-height: max(100svh, 720px);
+    aspect-ratio: auto;
+    max-height: none;
+    justify-self: stretch;
+  }
+  /* The label card keeps clear of the dock (196 + 24 + 12). */
+  :root[data-theme="dark"] #globe-canvas { --globe-label-clear: 232px; }
+
+  :root[data-theme="dark"] .hero {
+    width: min(600px, 100%);
+    justify-self: start;
+    margin: 52px 0 0 24px;
+    padding: 0;
+  }
+  /* The scrim that keeps the hero legible over bright beams: a 980 x 760
+     box at (-200, -120) on the page, fading from the ground colour. */
+  :root[data-theme="dark"] .hero::before {
+    content: "";
+    position: absolute;
+    left: -248px;
+    top: -248px;
+    width: 980px;
+    height: 760px;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--surface-bg-3) 82%, transparent), transparent);
+  }
+  :root[data-theme="dark"] .hero-pct { margin: 20px 0 0 -8px; }
+  :root[data-theme="dark"] .hero .lead { max-width: 470px; margin-top: 24px; }
+  :root[data-theme="dark"] .hero-stats { margin-top: 32px; }
+
+  :root[data-theme="dark"] :is(.app-timeline, .rail) {
+    min-width: 0;
+    padding: 18px 24px;
+    background: var(--surface-panel);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border: 1px solid var(--hairline);
+  }
+  :root[data-theme="dark"] .app-timeline {
+    border-right: 0;
+    border-radius: 20px 0 0 20px;
+    grid-template-columns: minmax(0, 620px) minmax(24px, 1fr) auto;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "label label fuels"
+      "plot . controls";
+    column-gap: 0;
+    row-gap: 18px;
+    align-content: start;
+    overflow: hidden;
+  }
+  :root[data-theme="dark"] .timeline-fuels { justify-self: end; align-self: center; }
+  /* The plot keeps its own height (ribbon + hour labels 6px under it)
+     rather than stretching down the dock with the controls column. */
+  :root[data-theme="dark"] .timeline-plot { padding-top: 0; align-self: start; }
+  :root[data-theme="dark"] .timeline-controls {
+    align-self: start;
+    align-items: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 0;
+  }
+
+  :root[data-theme="dark"] .rail {
+    gap: 10px;
+    border-radius: 0 20px 20px 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  :root[data-theme="dark"] .rail-head { padding-bottom: 0; }
+  :root[data-theme="dark"] .rail-note { display: none; }
+  /* The dock lists five; the other five rows stay in the DOM for the modes
+     and widths that show ten. */
+  :root[data-theme="dark"] .hotspot-item:nth-child(n + 6) { display: none; }
+
+  :root[data-theme="dark"] .app-footer { padding: 16px 48px 24px; }
 }
 
 /* Narrow screens until the tablet and phone layouts (PR 4): one column. */
@@ -1858,8 +2134,7 @@ body:has(.app-shell) { max-width: none; }
 }
 
 /* The detail card in light: paper, a 1px ink rule and no shadow, the name
-   in the display face (redesign plan 6.1). Dark keeps this card until the
-   dark redesign turns it to glass. */
+   in the display face (redesign plan 6.1). */
 :root[data-theme="light"] .region-tooltip {
   border: 1px solid var(--hairline-strong);
   border-radius: 0;
@@ -1869,6 +2144,15 @@ body:has(.app-shell) { max-width: none; }
   font-weight: var(--display-weight-base);
   font-size: 20px;
   line-height: 1.15;
+}
+
+/* Dark: glass, like the dock (redesign plan 6.1). */
+:root[data-theme="dark"] .region-tooltip {
+  background: var(--surface-panel);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
 }
 
 /* Fuel dots: coloured from the fuel tokens at paint time, so they always
@@ -2276,8 +2560,8 @@ main > h1:first-child {
 }
 
 /* ============ QUALITY DOTS ============
-   The G1 globe's base-dot vocabulary: the dark legend (until the dark
-   redesign) and the region pages (/regions, /region/<id>) use it. */
+   The G1 globe's base-dot vocabulary, which the region pages (/regions,
+   /region/<id>) use. The dashboard's legend keys its own marks. */
 .ql-dot {
   display: inline-block; width: 12px; height: 12px; border-radius: 50%;
   flex: 0 0 auto; box-sizing: border-box;
@@ -2295,8 +2579,7 @@ main > h1:first-child {
    introduces a colour value: every rule reads --ink / --ink-muted /
    --ink-soft / --hairline / --brand-rgb / --surface-*, which
    :root[data-theme="light"] and :root[data-theme="dark"] both
-   define. Quality dots reuse the .ql-dot vocabulary from the globe legend
-   above, so a reader sees the same mark in both places. */
+   define. Quality dots use the .ql-dot vocabulary above. */
 
 .page-back-sep { color: var(--ink-soft); margin: 0 6px; }
 

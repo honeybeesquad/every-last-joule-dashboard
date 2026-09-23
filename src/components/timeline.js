@@ -1,7 +1,7 @@
 import { regionGWAtHour } from "../lib/calc.js";
 import { FUEL_ORDER, FUEL_LABEL, fuelShareAtHour, getFuelColor } from "../lib/fuel.js";
+import { cssRGB } from "../lib/theme-tokens.js";
 
-const PAD = 14;
 const SAMPLES_PER_HOUR = 4; // 96 samples across 24h for smooth curves
 
 // Light (Almanac): three unstacked rows on one shared scale, so the fuels
@@ -10,9 +10,16 @@ const ROW_H = 26;
 const ROW_GAP = 8;
 const TOP = 6; // room for the playhead's overhang
 
-/** Catmull-Rom-style smooth path through points, as the reference draws. */
-function smoothPath(ctx, pts) {
-  ctx.moveTo(pts[0][0], pts[0][1]);
+// Dark (Horizon): one stacked ribbon, 80px tall under 8px of headroom for
+// the playhead (redesign plan 3.2; the handoff's drawRibbon).
+const RIBBON_TOP = 8;
+const RIBBON_STACK = ["hydro", "wind", "solar"]; // bottom to top
+
+/** Catmull-Rom-style smooth path through points, as the reference draws.
+ *  `cont` continues the current path (lineTo) instead of starting one. */
+function smoothPath(ctx, pts, cont = false) {
+  if (cont) ctx.lineTo(pts[0][0], pts[0][1]);
+  else ctx.moveTo(pts[0][0], pts[0][1]);
   for (let i = 0; i < pts.length - 1; i++) {
     const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
     ctx.bezierCurveTo(
@@ -33,7 +40,7 @@ function hexA(hex, a) {
 /**
  * Mount the 24-hour timeline for curtailed renewable energy by fuel, with a
  * movable marker at the clock's hour; scrubs on pointer interaction; loops
- * at UTC 24. Light mode draws small multiples, dark the stacked area.
+ * at UTC 24. Light mode draws small multiples, dark the stacked ribbon.
  * `fuelsEl` (optional) gets one row per fuel with its GW at the clock's hour.
  */
 export function mountTimeline(canvas, { regions, regionData, cbeci, clock, fuelsEl = null }) {
@@ -108,13 +115,13 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock, fuels
   function readTokens() {
     const cs = getComputedStyle(document.documentElement);
     const get = (name, fallback) => cs.getPropertyValue(name).trim() || fallback;
+    const inkRGB = get("--globe-ink-rgb", "128, 128, 128").replace(/\s+/g, "");
     return {
-      rule: get("--hairline-strong", "rgba(128,128,128,0.5)"),
-      label: get("--ink-soft", "rgba(128,128,128,0.8)"),
       ink: get("--ink", "rgb(128,128,128)"),
-      inkRGB: get("--globe-ink-rgb", "128, 128, 128").replace(/\s+/g, ""),
+      inkRGB,
+      // The ribbon's hour grid is drawn in the hairline's hue at its own alphas.
+      gridRGB: cssRGB(get("--hairline", "")) ?? inkRGB,
       paper: get("--surface-bg-3", "rgb(128,128,128)"),
-      mono: get("--font-mono", "ui-monospace, monospace"),
     };
   }
 
@@ -151,59 +158,45 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock, fuels
     ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, bottom + 2); ctx.stroke();
   }
 
-  /** Dark (until the dark redesign's ribbon): the stacked area. */
-  function drawStacked(w, h, { series, maxTotal, n }, hourNow, tokens) {
-    const plotW = w - PAD * 2;
-    const plotH = h - PAD * 2;
-    const baseY = h - PAD;
-    const xAt = (hour) => PAD + (hour / 24) * plotW;
-    const yForGW = (gw) => PAD + plotH - (gw / maxTotal) * plotH;
-    // Running stack: cumulative[i] is the bottom edge (in GW) of the NEXT layer.
-    const cumulative = new Array(n).fill(0);
-    for (let f = 0; f < FUEL_ORDER.length; f += 1) {
-      const colorHex = getFuelColor(FUEL_ORDER[f]);
-      const grad = ctx.createLinearGradient(0, PAD, 0, baseY);
-      grad.addColorStop(0, hexA(colorHex, 0.67));
-      grad.addColorStop(1, hexA(colorHex, 0.13));
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      for (let i = 0; i < n; i += 1) {
-        const x = xAt(i / SAMPLES_PER_HOUR);
-        const y = yForGW(cumulative[i] + series[f][i]);
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      for (let i = n - 1; i >= 0; i -= 1) ctx.lineTo(xAt(i / SAMPLES_PER_HOUR), yForGW(cumulative[i]));
-      ctx.closePath();
-      ctx.fill();
-      for (let i = 0; i < n; i += 1) cumulative[i] += series[f][i];
+  /** Dark: hydro at the bottom, then wind, then solar, stacked to the total.
+   *  The playhead and its dot are ink, as in light. */
+  function drawRibbon(w, h, { series, maxTotal, n }, hourNow, tokens) {
+    const k = (h - RIBBON_TOP) / (maxTotal * 1.04);
+    const X = (i) => (i === n ? w : (i / n) * w);
+    for (let hh = 0; hh <= 24; hh += 3) {
+      const x = Math.round((hh / 24) * (w - 1)) + 0.5;
+      ctx.strokeStyle = `rgba(${tokens.gridRGB},${hh % 6 === 0 ? 0.22 : 0.08})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x, RIBBON_TOP); ctx.lineTo(x, h); ctx.stroke();
     }
-    // Crisp stroke on the total top line for definition.
-    ctx.strokeStyle = tokens.rule;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let i = 0; i < n; i += 1) {
-      const x = xAt(i / SAMPLES_PER_HOUR);
-      const y = yForGW(cumulative[i]);
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    let lower = new Array(n + 1).fill(0);
+    for (const fuel of RIBBON_STACK) {
+      const f = FUEL_ORDER.indexOf(fuel);
+      if (f < 0) continue;
+      const color = getFuelColor(fuel);
+      const vals = [...series[f], series[f][0]];
+      const upper = lower.map((v, i) => v + vals[i]);
+      const topEdge = upper.map((v, i) => [X(i), h - v * k]);
+      // The lower edge is the layer below's smoothed top, so layers meet.
+      const bottomEdge = lower.map((v, i) => [X(i), h - v * k]).reverse();
+      const grad = ctx.createLinearGradient(0, RIBBON_TOP, 0, h);
+      grad.addColorStop(0, hexA(color, 0.85));
+      grad.addColorStop(1, hexA(color, 0.18));
+      ctx.beginPath(); smoothPath(ctx, topEdge); smoothPath(ctx, bottomEdge, true); ctx.closePath();
+      ctx.fillStyle = grad; ctx.fill();
+      ctx.beginPath(); smoothPath(ctx, topEdge);
+      ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke();
+      lower = upper;
     }
-    ctx.stroke();
-    // Hour ticks.
-    ctx.fillStyle = tokens.label;
-    ctx.font = `10px ${tokens.mono}`;
-    ctx.textAlign = "center";
-    for (const hr of [0, 6, 12, 18]) {
-      const x = xAt(hr);
-      ctx.fillRect(x - 0.5, h - PAD + 1, 1, 4);
-      ctx.fillText(`${String(hr).padStart(2, "0")}`, x, h - PAD + 14);
-    }
-    // The playhead is ink in both modes (amber was 2.0:1 on paper).
-    const totalNow = seriesAt(hourNow).reduce((s, v) => s + v, 0);
-    const cx = xAt(hourNow);
-    ctx.strokeStyle = tokens.ink;
-    ctx.lineWidth = 1.4;
-    ctx.beginPath(); ctx.moveTo(cx, PAD); ctx.lineTo(cx, h - PAD); ctx.stroke();
+    const x = (hourNow / 24) * n;
+    const a = Math.floor(x) % n, t = x - Math.floor(x);
+    let total = 0;
+    for (let f = 0; f < FUEL_ORDER.length; f += 1) total += series[f][a] * (1 - t) + series[f][(a + 1) % n] * t;
+    const px = (hourNow / 24) * w;
+    ctx.strokeStyle = tokens.ink; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, h); ctx.stroke();
     ctx.fillStyle = tokens.ink;
-    ctx.beginPath(); ctx.arc(cx, yForGW(totalNow), 4.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(px, h - total * k, 4.5, 0, Math.PI * 2); ctx.fill();
   }
 
   function render() {
@@ -221,7 +214,7 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock, fuels
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, w, h);
     if (isLight()) drawSmallMultiples(w, h, s, hourNow, tokens);
-    else drawStacked(w, h, s, hourNow, tokens);
+    else drawRibbon(w, h, s, hourNow, tokens);
     ctx.restore();
   }
 
@@ -233,10 +226,10 @@ export function mountTimeline(canvas, { regions, regionData, cbeci, clock, fuels
   }
 
   function scrubFromPointer(event) {
+    // Both charts span the canvas edge to edge.
     const rect = canvas.getBoundingClientRect();
-    const inset = isLight() ? 0 : PAD;
-    const plotWidth = Math.max(1, rect.width - inset * 2);
-    const x = Math.max(0, Math.min(plotWidth, event.clientX - rect.left - inset));
+    const plotWidth = Math.max(1, rect.width);
+    const x = Math.max(0, Math.min(plotWidth, event.clientX - rect.left));
     const hour = (x / plotWidth) * 24;
     clock.pause();
     clock.scrub(hour % 24);

@@ -1,8 +1,30 @@
 # Every Last Joule - light and dark redesign: implementation spec
 
-> **STATUS: ACTIVE.** PR 1 (theme plumbing) is in review as #1087 on `feat/light-dark-theme-plumbing`. PR 2 (light desktop) is in review as #1091 on `feat/light-almanac-desktop`, stacked on PR 1. PRs 3-5 have not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
+> **STATUS: ACTIVE.** PR 1 (theme plumbing, #1087) and PR 2 (light desktop, #1091) merged on 2026-09-23. PR 3 (dark desktop) is in review as #1092 on `feat/dark-horizon-desktop`. PRs 4-5 have not started. Keep this file current as each PR lands; archive it with a `STATUS: SHIPPED` banner in PR 5.
 >
-> This is the handoff's SPEC.md (from `Claude outputs/elj-light-dark-handoff/`, untracked and never committed), copied in as the active plan on 2026-09-23. Paths like `mocks/`, `tokens/`, `reference/` and `screenshots/` are relative to that handoff folder, not to the repo. Edits since the copy: the decisions table in section 0 records the answers, section 7 records D6's answer, section 10 records PR status, and "PR 1 as built" below records where the build departs from, or adds to, the text.
+> This is the handoff's SPEC.md (from `Claude outputs/elj-light-dark-handoff/`, untracked and never committed), copied in as the active plan on 2026-09-23. Paths like `mocks/`, `tokens/`, `reference/` and `screenshots/` are relative to that handoff folder, not to the repo. Edits since the copy: the decisions table in section 0 records the answers, section 7 records D6's answer, section 10 records PR status, and the "PR n as built" sections below record where the build departs from, or adds to, the text.
+
+## PR 3 as built (2026-09-24)
+
+What PR 3 does beyond, or differently from, the sections below.
+
+1. **The canvas fills the stage, not the viewport.** Section 3.2's diagram says the canvas is "fixed, inset 0". The same section says it is "fixed to" the stage, the dock sits at the bottom of the stage, and the footer follows the stage. So the globe cell spans the stage's grid rows (100svh, at least 720px) and the canvas is absolute inside it; it scrolls away with the stage, and the off-screen pause stops it drawing there.
+2. **The dock is two glass cells, not one wrapper.** The timeline and the rail stay separate sections (one DOM, every ID kept). Each is glass; they join along the rail's hairline, which is the mock's divider. PR 4's tablet layout splits them into two cards.
+3. **"Now" is in the dark controls.** The dark mock draws play + 1×/4×/8× only. D4 decided "1×, 4×, 8× + Now", and Now is how a visitor gets follow-the-sun back after a drag, so it stays: a pill after the speeds, in the dock's Mono style.
+4. **The dark legend keys the shapes.** The mock's dock says only "Brighter beam = higher confidence". Section 11 asks for the legend to say how quality is drawn in both modes, so the line also keys the estimated beam's dashed core ("est.") and the stale feed's dashed ring ("stale"), with small beam glyphs. The four-state needle legend stays light's.
+5. **"est." and "stale" tags stay in the dark rows.** The mock shows names only. The tags are the list's non-colour statement of what the beams show by shape and brightness (section 6.1, WCAG 1.4.1).
+6. **"All N" counts what `/regions` lists** (every region in the dataset, `REGIONS.length`, 536 at this commit), not the lead's count of regions that publish waste. In the mock both were 444. The link goes to the directory, so it names the directory's count; light keeps "N more curtailing · All regions".
+7. **No zoom in dark.** The horizon's geometry is fixed to the stage (section 6.3). The wheel scrolls the page there (the canvas fills the first viewport, so a wheel handler would trap it), pinch does nothing, and the zoom slider is hidden.
+8. **The selected card's leader.** Section 6.3 describes the dark selection as the beam at full brightness, an ink ring at the tip and a glass card. The card sits off the tip, as in light, so the same 1px ink leader joins them. The card keeps clear of the dock (`--globe-label-clear`) and flips side at the globe's centre line, as light's does at its disc centre.
+9. **The name in the label card is ink in both modes.** Framework's `a[href]` rule made it amber (dark's link colour).
+10. **Unpublished grids** get the same faint dashed ring as in light, on the ground.
+11. **Ribbon.** The reference draws the playhead in `#fff` and the grid in a literal blue. The build reads `--ink` and the hairline token's hue (`cssRGB`). The ribbon keeps 620px at most and shrinks with the dock.
+12. **Performance:**
+    - Dark draws on change, like light.
+    - Light and dark also skip clock ticks under 15 s of clock time. "Now" follows the wall clock, which moves the sun 0.004° a second; a redraw a frame for that was all cost. At 1× a tick is 24 s of clock time, so playback still draws every frame.
+    - The lit territory is cached per quarter hour, the backdrop and sprites per size and tokens.
+    - Measured in Chrome with GPU at dpr 2: 16.7ms a frame at 1440×900 and 1920×1080, playing at 1× and 8× and dragging, with no long tasks. Paused and "Now": 0 draws.
+13. **Narrow dark is interim until PR 4:** below 1100px dark stacks in one column like light, with the horizon drawn in the globe cell.
 
 ## PR 2 as built (2026-09-23)
 
@@ -392,9 +414,9 @@ Measured WCAG ratios (text needs 4.5:1, graphics 3:1):
 
 Each PR goes into `main` (never push to it), runs `npm run typecheck && npm test && npm run ci:gates`, updates `STATUS.md` in the same commit, and attaches screenshots at 1440×900 and 390×844 in both modes next to the matching mock. Describe the diff, not the plan (CLAUDE.md rule 1).
 
-1. **Theme plumbing.** Fonts, `themes.css`, boot script, two-state toggle, token reads in `theme-tokens.ts`, mark tokens in the generator (loader and inline header mark), the hard-coded colour audit, loader in both modes. Layout unchanged, but every page is legible in both modes. Needs D1, D2, D3, D6. **Status: built on `feat/light-dark-theme-plumbing`, in review as #1087 (see "PR 1 as built" at the top).**
-2. **Light desktop.** Almanac grid, engraved globe, small-multiples timeline, rail, legend, selected label. Needs D4, D5. **Status: in review as #1091 on `feat/light-almanac-desktop`, stacked on PR 1 (see "PR 2 as built" at the top).**
-3. **Dark desktop.** Horizon stage, horizon globe, ribbon, glass dock.
+1. **Theme plumbing.** Fonts, `themes.css`, boot script, two-state toggle, token reads in `theme-tokens.ts`, mark tokens in the generator (loader and inline header mark), the hard-coded colour audit, loader in both modes. Layout unchanged, but every page is legible in both modes. Needs D1, D2, D3, D6. **Status: merged as #1087 (`9ef3f7ad`), 2026-09-23 (see "PR 1 as built" at the top).**
+2. **Light desktop.** Almanac grid, engraved globe, small-multiples timeline, rail, legend, selected label. Needs D4, D5. **Status: merged as #1091 (`3b272ec6`), 2026-09-23 (see "PR 2 as built" at the top).**
+3. **Dark desktop.** Horizon stage, horizon globe, ribbon, glass dock. **Status: in review as #1092 on `feat/dark-horizon-desktop` (see "PR 3 as built" at the top).**
 4. **Tablet and phone.** Both modes, the explorer, the dark bottom sheet, wrapping control rows, overflow checks.
 5. **Clean-up.** Remove the sunfire / deepcurrent names and unused faces (after a grep), archive the plan with a `STATUS: SHIPPED` banner.
 

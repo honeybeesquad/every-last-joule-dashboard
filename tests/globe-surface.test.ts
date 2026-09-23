@@ -77,6 +77,32 @@ describe("assignTerritory", () => {
     const b = assignTerritory(L, A, H, src, idx);
     expect(Array.from(a.fuel)).toEqual(Array.from(b.fuel));
   });
+
+  it("takes its reach from the radius it is given (the horizon's is smaller)", () => {
+    const { L, A, H, idx } = grid();
+    const src = [{ lon: 90, lat: 30, gw: 1, fuel: "wind" as const }];
+    const lit = (r: { fuel: Int8Array }) => r.fuel.reduce((n, f) => n + (f >= 0 ? 1 : 0), 0);
+    const wide = assignTerritory(L, A, H, src, idx);
+    const narrow = assignTerritory(L, A, H, src, idx, () => 2);
+    expect(lit(narrow)).toBeGreaterThan(0);
+    expect(lit(narrow)).toBeLessThan(lit(wide));
+    for (let i = 0; i < L.length; i++) {
+      const d = Math.hypot((L[i] - 90) * Math.cos((30 * Math.PI) / 180), A[i] - 30);
+      if (d > 2.2) expect(narrow.fuel[i]).toBe(-1);
+    }
+  });
+
+  it("reports each dot's strength: 1 - d/r from its nearest region, 0 when unlit", () => {
+    const { L, A, H, idx } = grid();
+    const r = assignTerritory(L, A, H, [{ lon: 90, lat: 30, gw: 1, fuel: "solar" }], idx, () => 4);
+    const centre = [...L].findIndex((lo, i) => lo === 90 && A[i] === 30);
+    expect(r.strength[centre]).toBeCloseTo(1, 6);
+    for (let i = 0; i < L.length; i++) {
+      if (r.fuel[i] < 0) expect(r.strength[i]).toBe(0);
+      else expect(r.strength[i]).toBeGreaterThan(0);
+      expect(r.inner[i]).toBe(r.strength[i] > 0.5 ? 1 : 0);
+    }
+  });
 });
 
 describe("barsForUnit", () => {

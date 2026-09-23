@@ -23,6 +23,7 @@ import { mountThemeToggle } from "./components/theme-toggle.js";
 import { mountTimeline } from "./components/timeline.js";
 import { mountRegionTooltip } from "./components/region-tooltip.js";
 import { needleGlyph } from "./components/needle-glyph.js";
+import { beamGlyph } from "./components/beam-glyph.js";
 import { hotspotRow, RAIL_LIST_LIMIT } from "./components/rail-rows.js";
 import { qualityBucket } from "./lib/region-quality.js";
 import { aggregateAtHour, ehsFromGW } from "./lib/calc.js";
@@ -138,6 +139,7 @@ document.getElementById("app-root").innerHTML = `
       <div class="rail-head">
         <h2 class="rail-title" id="hotspots-title">Largest now</h2>
         <span class="rail-time num-tabular" id="rail-time">UTC —</span>
+        <a class="rail-all-head" href="./regions">All ${REGIONS.length}</a>
       </div>
       <p class="hotspot-units-note" id="hotspot-units-note" hidden></p>
       <ol class="hotspot-list rail-list" id="hotspot-list"></ol>
@@ -146,23 +148,24 @@ document.getElementById("app-root").innerHTML = `
         ${[
           ["measured", false, "Measured", "live feed"],
           ["anchored", false, "Anchored", "published annual"],
-          ["estimated", false, "Estimated", "modelled"],
-          ["measured", true, "Stale feed", "more than 24 h old"],
-        ].map(([bucket, stale, label, detail]) => `
-          <span class="legend-item legend-quality" title="${label}: ${detail}">
+          ["estimated", false, "Estimated", "modelled", "est."],
+          ["measured", true, "Stale feed", "more than 24 h old", "stale"],
+        ].map(([bucket, stale, label, detail, short]) => `
+          <span class="legend-item legend-quality legend-${stale ? "stale" : bucket}" title="${label}: ${detail}">
             <span class="legend-needle">${needleGlyph({ bucket, stale, width: 22 })}</span>
-            <span class="ql-dot ql-${stale ? "degraded" : bucket}" aria-hidden="true"></span>${label}
+            <span class="legend-beam">${beamGlyph({ bucket, stale })}</span>
+            ${short ? `<span class="label-long">${label}</span><span class="label-short" aria-hidden="true">${short}</span>` : label}
           </span>`).join("")}
         ${FUEL_ORDER.map((fuel) => `
           <span class="legend-item legend-fuel" title="${FUEL_SUBTITLE[fuel]}">
             <span class="dot dot--${fuel}" aria-hidden="true"></span>${FUEL_LABEL[fuel]}
           </span>`).join("")}
-        <span class="legend-caption">Brighter pillar = higher confidence</span>
+        <span class="legend-caption">Brighter beam = higher confidence</span>
       </div>
     </section>
 
     <section class="app-timeline" aria-label="24-hour timeline">
-      <div class="timeline-label" id="timeline-label">By fuel · 30-day avg</div>
+      <div class="timeline-label" id="timeline-label"><span class="label-long" id="timeline-label-light">By fuel · 30-day avg</span><span class="label-short" id="timeline-label-dark" aria-hidden="true">Global curtailment · 24 h · 30-day average</span></div>
       <ol class="timeline-fuels" id="timeline-fuels"></ol>
       <div class="timeline-plot">
         <div class="timeline-hours" aria-hidden="true"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></div>
@@ -554,7 +557,8 @@ function renderAt(hour) {
   document.getElementById("rail-time").textContent = `UTC ${hh}:${mm}`;
   document.getElementById("figure-caption").textContent =
     `Curtailment by region at ${hh}:${mm} UTC, ${words.long}. Needle length scales with the square root of GW.`;
-  document.getElementById("timeline-label").textContent = `By fuel · ${words.short}`;
+  document.getElementById("timeline-label-light").textContent = `By fuel · ${words.short}`;
+  document.getElementById("timeline-label-dark").textContent = `Global curtailment · 24 h · ${words.long}`;
 
   document.getElementById("gw-readout").innerHTML =
     `${renewableGW.toFixed(1)} <span class="stat-unit">GW</span>`;
@@ -723,10 +727,9 @@ const regionTooltip = mountRegionTooltip({
   regions: REGIONS,
 });
 
-// In light mode a click selects a needle (the label card on the globe) and a
-// mouse hover opens the detail card, which closes a moment after the pointer
-// leaves both the needle and the card. In dark (the G1 globe, until the dark
-// redesign) a click opens the detail card, as before.
+// In both modes a click selects a needle or beam (the label card on the
+// globe) and a mouse hover opens the detail card, which closes a moment after
+// the pointer leaves both the mark and the card.
 let hoverOpened = false;
 let hoverCloseTimer = null;
 function closeHoverCardSoon() {
@@ -751,11 +754,6 @@ globe = await mountGlobe(canvas, {
   selectionEl: document.getElementById("globe-selection"),
   describe: true,
   pauseOffscreen: true,
-  onRegionClick(region, anchor) {
-    hoverOpened = false;
-    if (region) regionTooltip.show(region, anchor);
-    else regionTooltip.hide();
-  },
   onRegionHover(region, anchor) {
     if (region) {
       clearTimeout(hoverCloseTimer);

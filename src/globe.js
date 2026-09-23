@@ -11,7 +11,9 @@ import {
   FUELS, BAND_ALPHA, dayBand, dotHash, assignTerritory, DotCellIndex, barsForUnit, tintHex,
 } from "./lib/globe-surface.js";
 import { vec, subsolar, FOLLOW_SUN, wrapLon, D2R } from "./lib/globe-camera.js";
+import { HORIZON_DOT_PITCH, horizonGeometry, horizonTerritoryRadiusDeg } from "./lib/horizon.js";
 import { createEngravedRenderer } from "./globe-engraved.js";
+import { createHorizonRenderer } from "./globe-horizon.js";
 
 // Locally-vendored world atlas: previously fetched from unpkg.com, which
 // added a third-party DNS + TLS handshake (~200–400ms on cellular) to
@@ -165,30 +167,26 @@ export async function mountGlobe(canvas, initial) {
   function refreshFuelPaint() {
     for (const f of FUELS) {
       fuelColor[f] = getFuelColor(f);
-      fuelTip[f] = tintHex(fuelColor[f], 0.55);
+      // The redesign's modes define their beam-tip colours as tokens; the
+      // Sunfire paper figure defines none and keeps its tint.
+      fuelTip[f] = tokens.fuelTips?.[f] || tintHex(fuelColor[f], 0.55);
       glowSprite[f] = makeGlow(fuelColor[f]);
     }
   }
   refreshFuelPaint();
 
-  let lastModeLight = document.documentElement.getAttribute("data-theme") === "light";
   function refreshTokens() {
     tokens = readGlobeTokens(document.documentElement);
     refreshFuelPaint();
     engraved.reset();
-    const light = isLight();
-    if (light !== lastModeLight) {
-      // The camera longitude carries across the switch (redesign plan 3.5);
-      // latitude is per mode. G1 looks at lon = -rotation[0].
-      if (light) {
-        if (!state.follow) state.lon0 = wrapLon(-state.rotation[0]);
-      } else if (state.lon0 != null) {
-        state.rotation[0] = wrapLongitude(-state.lon0);
-      }
-      lastModeLight = light;
-      if (light) stopLoop();
-      else startLoop();
-    }
+    horizon.reset();
+    readLabelClearance();
+    // Light and dark share the camera longitude (state.lon0), so it carries
+    // across the switch with the hour, selection and follow-the-sun
+    // (redesign plan 3.5); latitude is per mode. Only the Sunfire paper
+    // figure runs G1's idle loop, and a page never switches into it.
+    if (usesG1()) startLoop();
+    else stopLoop();
     // Force a redraw so the next paint uses the new colours immediately.
     render();
   }
@@ -267,6 +265,7 @@ export async function mountGlobe(canvas, initial) {
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
+    readLabelClearance();
     render();
   }
 
@@ -278,13 +277,7 @@ export async function mountGlobe(canvas, initial) {
   // Which land dots glow in which fuel depends on every region's GW at the
   // current hour, not on rotation, so it is recomputed only when the hour
   // (to a quarter), the mode or the data changes - not every frame.
-  let territory = null;
-  let territoryKey = "";
-  function territoryFor(hour) {
-    const key = `${Math.round(hour * 4) / 4}|${state.mode}`;
-    if (territory && key === territoryKey && territory.regions === state.regions && territory.regionData === state.regionData) {
-      return territory.result;
-    }
+  function territorySources(hour) {
     const sources = [];
     for (const r of state.regions) {
       const data = state.regionData[r.id];
@@ -296,11 +289,27 @@ export async function mountGlobe(canvas, initial) {
         if (share > 0) sources.push({ lon: r.lon, lat: r.lat, gw: gw * share, fuel: f, radiusGW: gw });
       }
     }
-    const result = assignTerritory(dots.lons, dots.lats, dots.hash, sources, dots.cells);
-    territory = { result, regions: state.regions, regionData: state.regionData };
-    territoryKey = key;
-    return result;
+    return sources;
   }
+
+  /** A territory cache per dot field: recomputed only when the hour (to a
+   *  quarter), the time window or the data changes. */
+  function territoryCache(radiusDeg) {
+    let cached = null;
+    return (field, hour) => {
+      const key = `${Math.round(hour * 4) / 4}|${state.mode}`;
+      if (cached && cached.key === key && cached.field === field &&
+          cached.regions === state.regions && cached.regionData === state.regionData) {
+        return cached.result;
+      }
+      const result = assignTerritory(field.lons, field.lats, field.hash, territorySources(hour), field.cells, radiusDeg);
+      cached = { key, field, result, regions: state.regions, regionData: state.regionData };
+      return result;
+    };
+  }
+  const g1Territory = territoryCache(undefined);
+  const darkTerritory = territoryCache(horizonTerritoryRadiusDeg);
+  const territoryFor = (hour) => g1Territory(dots, hour);
 
   function drawBaseDot(x, y, coreR, color, dotStyle) {
     if (dotStyle === "hollow") {
@@ -345,10 +354,14 @@ export async function mountGlobe(canvas, initial) {
 
   // ---------------------------------------------------------------------------
   // Which renderer: light mode draws the engraved "Almanac" globe
-  // (src/globe-engraved.js); dark, and the Sunfire-pinned paper figure, keep
-  // the G1 renderer below until the dark redesign replaces it.
+  // (src/globe-engraved.js), dark the "Horizon" (src/globe-horizon.js). The
+  // Sunfire-pinned paper figure (src/embed/globe.md) keeps the G1 renderer
+  // below: its look is part of a published artefact.
   // ---------------------------------------------------------------------------
-  const isLight = () => document.documentElement.getAttribute("data-theme") === "light";
+  const themeOf = () => document.documentElement.getAttribute("data-theme");
+  const isLight = () => themeOf() === "light";
+  const isDark = () => themeOf() === "dark";
+  const usesG1 = () => !isLight() && !isDark();
 
   // Off-screen pause (the dashboard asks for it; the paper figure does not):
   // no drawing while the canvas is scrolled away, one draw on the way back.
@@ -367,9 +380,11 @@ export async function mountGlobe(canvas, initial) {
     if (!visible) { dirty = true; return; }
     if (isLight()) {
       renderLight(opts);
+    } else if (isDark()) {
+      renderDark();
     } else {
-      // The label card is the light globe's; G1 marks a selection with its
-      // own ring. The selection itself carries across the switch.
+      // The label card belongs to the redesign's globes; G1 marks a
+      // selection with its own ring.
       if (selectionEl) selectionEl.hidden = true;
       renderG1();
     }
@@ -377,17 +392,17 @@ export async function mountGlobe(canvas, initial) {
   }
 
   // ---------------------------------------------------------------------------
-  // Light: the engraved globe. It draws on change (clock ticks, drags,
-  // resizes, theme, selection), never on an idle animation loop: the site had
-  // to rescue its main thread once already (#1054). While the camera moves it
-  // reuses the cached line screen within 0.25 deg and, when dragging, draws
-  // in `fast` mode; one exact frame follows once the motion stops.
+  // Light and dark draw on change (clock ticks, drags, resizes, theme,
+  // selection), never on an idle animation loop: the site had to rescue its
+  // main thread once already (#1054).
   // ---------------------------------------------------------------------------
   const engraved = createEngravedRenderer();
+  const horizon = createHorizonRenderer();
   const phoneQuery = window.matchMedia?.("(max-width: 640px)");
   let lastDrawnHour = null;
   let lightDots = null;
-  let lightHits = [];
+  let darkDots = null;
+  let markHits = [];
   let lastLightDrawAt = 0;
   let settleTimer = null;
   const regionVec = new Map();
@@ -399,27 +414,23 @@ export async function mountGlobe(canvas, initial) {
   const lightRadius = () =>
     Math.min(canvas.width / dpr, canvas.height / dpr) * 0.43 * state.zoomScale;
 
-  function renderLight({ fast = false } = {}) {
-    const width = canvas.width / dpr;
-    const height = canvas.height / dpr;
-    if (!width || !height) return;
-    lastDrawnHour = state.utcHour;
-    const now = performance.now();
-    const moving = fast || now - lastLightDrawAt < 60;
-    lastLightDrawAt = now;
-    clearTimeout(settleTimer);
-    if (moving) settleTimer = setTimeout(() => render(), 160);
+  // Where the label card must stay clear of at the bottom of the canvas: in
+  // dark the glass dock sits over the canvas there. CSS sets it on the canvas
+  // as --globe-label-clear; re-read on resize and theme change.
+  let labelClear = 0;
+  function readLabelClearance() {
+    labelClear = parseFloat(getComputedStyle(canvas).getPropertyValue("--globe-label-clear")) || 0;
+  }
 
-    const hour = ((state.utcHour % 24) + 24) % 24;
-    const sun = subsolar(new Date(), hour);
-    if (state.follow || state.lon0 == null) state.lon0 = wrapLon(sun.lon + FOLLOW_SUN.light.lonOffset);
-    if (!lightDots) lightDots = precomputeLandDots(countries, 0.8);
-
-    // One needle per fuel per region record, never stacked (the same
-    // barsForUnit split as the G1 pillars, so a mixed region's solar share
-    // drops out at local night). Records that share a location sit a few
-    // pixels apart. Grids that publish no waste get a dashed ring instead.
-    const needles = [];
+  /**
+   * What both renderers draw at an hour: one mark (needle or beam) per fuel
+   * per region record, never stacked - the same barsForUnit split as the G1
+   * pillars, so a mixed region's solar share drops out at local night.
+   * Records that share a location sit a few pixels apart. Grids that publish
+   * no waste get a dashed ring instead.
+   */
+  function marksAt(hour) {
+    const marks = [];
     const rings = [];
     for (const unit of buildPillarUnitsForState()) {
       const group = unit.regions;
@@ -441,9 +452,10 @@ export async function mountGlobe(canvas, initial) {
       bars.forEach((bar, bi) => {
         const member = group[bar.member];
         const mData = data[bar.member];
-        needles.push({
+        marks.push({
           id: member.id,
           v: vecFor(member),
+          fuel: bar.fuel,
           color: fuelColor[bar.fuel],
           bucket: qualityBucket(member, mData),
           stale: mData?.sourceStatus === "degraded",
@@ -452,19 +464,82 @@ export async function mountGlobe(canvas, initial) {
         });
       });
     }
+    return { marks, rings };
+  }
+
+  // Light: the engraved globe. While the camera moves it reuses the cached
+  // line screen within 0.25 deg and, when dragging, draws in `fast` mode; one
+  // exact frame follows once the motion stops.
+  function renderLight({ fast = false } = {}) {
+    const width = canvas.width / dpr;
+    const height = canvas.height / dpr;
+    if (!width || !height) return;
+    lastDrawnHour = state.utcHour;
+    const now = performance.now();
+    const moving = fast || now - lastLightDrawAt < 60;
+    lastLightDrawAt = now;
+    clearTimeout(settleTimer);
+    if (moving) settleTimer = setTimeout(() => render(), 160);
+
+    const hour = ((state.utcHour % 24) + 24) % 24;
+    const sun = subsolar(new Date(), hour);
+    if (state.follow || state.lon0 == null) state.lon0 = wrapLon(sun.lon + FOLLOW_SUN.light.lonOffset);
+    if (!lightDots) lightDots = precomputeLandDots(countries, 0.8);
+    const { marks, rings } = marksAt(hour);
 
     ctx.save();
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
     const out = engraved.draw({
       ctx, w: width, h: height, dpr, cx: width / 2, cy: height / 2, R: lightRadius(),
-      lat0: state.lat0, lon0: state.lon0, sun, land, dots: lightDots, needles, rings,
+      lat0: state.lat0, lon0: state.lon0, sun, land, dots: lightDots, needles: marks, rings,
       inkRGB: tokens.inkRGB, paper: tokens.paper, warn: tokens.qualityWarning,
       selectedId: state.selectedRegionId, fast, exact: !moving,
     });
     ctx.restore();
-    lightHits = out.hits;
+    markHits = out.hits;
     placeSelection(out.label, hour);
+  }
+
+  // Dark: the horizon (redesign plan 6.3). Latitude is fixed so the horizon
+  // stays put; the camera follows the sun until the visitor drags it, and a
+  // drag turns longitude only. The backdrop and sprites are cached in the
+  // renderer and the lit territory per quarter hour, so a frame is the dots
+  // and the beams.
+  function renderDark() {
+    const width = canvas.width / dpr;
+    const height = canvas.height / dpr;
+    if (!width || !height) return;
+    lastDrawnHour = state.utcHour;
+    const hour = ((state.utcHour % 24) + 24) % 24;
+    const sun = subsolar(new Date(), hour);
+    if (state.follow || state.lon0 == null) state.lon0 = wrapLon(sun.lon + FOLLOW_SUN.dark.lonOffset);
+    if (!darkDots) darkDots = precomputeLandDots(countries, HORIZON_DOT_PITCH);
+    const { marks, rings } = marksAt(hour);
+    const geo = horizonGeometry(width, height);
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    const out = horizon.draw({
+      ctx, w: width, h: height, dpr, R: geo.R, top: geo.top, cx: geo.cx,
+      lat0: FOLLOW_SUN.dark.lat0, lon0: state.lon0, sun,
+      dots: darkDots, territory: darkTerritory(darkDots, hour),
+      beams: marks, rings, t: tokens, fuel: fuelColor, tip: fuelTip,
+      selectedId: state.selectedRegionId, labelBottom: height - labelClear,
+    });
+    ctx.restore();
+    markHits = out.hits;
+    placeSelection(out.label, hour);
+  }
+
+  /** Degrees of camera longitude per pixel of horizontal drag. In dark the
+   *  land at the limb's top (latitude lat0 + 90) moves with the pointer. */
+  function lonPerPixel() {
+    if (isDark()) {
+      const R = horizonGeometry(canvas.width / dpr, canvas.height / dpr).R;
+      return 1 / (R * Math.cos((FOLLOW_SUN.dark.lat0 + 90) * D2R)) / D2R;
+    }
+    return 1 / lightRadius() / D2R;
   }
 
   // The selected region's label card: DOM (so its name can link to the
@@ -517,11 +592,11 @@ export async function mountGlobe(canvas, initial) {
     selectionEl.hidden = false;
   }
 
-  function hitLight(clientX, clientY) {
+  function hitMark(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
     const px = clientX - rect.left, py = clientY - rect.top;
     let best = null, bestD = Infinity;
-    for (const hit of lightHits) {
+    for (const hit of markHits) {
       const d = Math.hypot(hit.x - px, hit.y - py);
       if (d < hit.r && d < bestD) { best = hit; bestD = d; }
     }
@@ -533,7 +608,7 @@ export async function mountGlobe(canvas, initial) {
   let hoverId = null;
   function hoverAt(event) {
     if (typeof initial.onRegionHover !== "function") return;
-    const hit = event && event.pointerType === "mouse" ? hitLight(event.clientX, event.clientY) : null;
+    const hit = event && event.pointerType === "mouse" ? hitMark(event.clientX, event.clientY) : null;
     const id = hit?.id ?? null;
     canvas.style.cursor = id ? "pointer" : "";
     if (id === hoverId) return;
@@ -899,9 +974,9 @@ export async function mountGlobe(canvas, initial) {
       const pts = [...pointerPositions.values()];
       pinchInitDist = Math.hypot(pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]);
       pinchInitZoom = state.zoomScale;
-    } else if (isLight()) {
-      // Light: a drag only starts once the pointer has travelled, so a tap
-      // stays a tap; the camera is (lat0, lon0) rather than G1's rotation.
+    } else if (!usesG1()) {
+      // Light and dark: a drag only starts once the pointer has travelled, so
+      // a tap stays a tap; the camera is (lat0, lon0) rather than G1's rotation.
       isPinching = false;
       activePointerId = event.pointerId;
       downX = event.clientX;
@@ -923,13 +998,15 @@ export async function mountGlobe(canvas, initial) {
 
   canvas.addEventListener("pointermove", (event) => {
     if (!pointerPositions.has(event.pointerId)) {
-      if (isLight()) hoverAt(event);
+      if (!usesG1()) hoverAt(event);
       return;
     }
     pointerPositions.set(event.pointerId, [event.clientX, event.clientY]);
 
     if (isPinching && pointerPositions.size >= 2) {
-      // Update pinch zoom.
+      // Update pinch zoom. The horizon has no zoom: its geometry is fixed to
+      // the stage (redesign plan 6.3).
+      if (isDark()) return;
       const pts = [...pointerPositions.values()];
       const dist = Math.hypot(pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]);
       if (pinchInitDist > 0) {
@@ -940,7 +1017,7 @@ export async function mountGlobe(canvas, initial) {
       return;
     }
 
-    if (isLight()) {
+    if (!usesG1()) {
       const drag = lightDrag;
       if (!drag || event.pointerId !== activePointerId) return;
       const tx = event.clientX - drag.x, ty = event.clientY - drag.y;
@@ -952,9 +1029,9 @@ export async function mountGlobe(canvas, initial) {
         canvas.classList.add("is-dragging");
         hoverAt(null);
       }
-      const R = lightRadius();
-      state.lon0 = wrapLon(drag.lon0 - tx / R / D2R);
-      state.lat0 = Math.max(-60, Math.min(70, drag.lat0 + ty / R / D2R));
+      state.lon0 = wrapLon(drag.lon0 - tx * lonPerPixel());
+      // Dark turns longitude only, so the horizon stays put.
+      if (isLight()) state.lat0 = Math.max(-60, Math.min(70, drag.lat0 + ty / lightRadius() / D2R));
       render({ fast: true });
       return;
     }
@@ -988,7 +1065,7 @@ export async function mountGlobe(canvas, initial) {
           lastY = remPos[1];
           downX = remPos[0];
           downY = remPos[1];
-          if (isLight()) {
+          if (!usesG1()) {
             lightDrag = { x: remPos[0], y: remPos[1], lon0: state.lon0 ?? 0, lat0: state.lat0, moved: false };
           } else {
             state.dragging = true;
@@ -1002,9 +1079,10 @@ export async function mountGlobe(canvas, initial) {
 
     if (activePointerId !== event.pointerId && !wasTracked) return;
 
-    if (isLight()) {
-      // Light: a pointerup that never became a drag is a tap. It selects the
-      // needle under it (again: deselects), or clears the selection.
+    if (!usesG1()) {
+      // Light and dark: a pointerup that never became a drag is a tap. It
+      // selects the needle or beam under it (again: deselects), or clears
+      // the selection.
       const drag = lightDrag;
       lightDrag = null;
       activePointerId = null;
@@ -1012,7 +1090,7 @@ export async function mountGlobe(canvas, initial) {
       canvas.classList.remove("is-dragging");
       if (canvas.hasPointerCapture?.(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
       if (drag && !drag.moved && event.type === "pointerup" && !suppressNextClick) {
-        const hit = hitLight(event.clientX, event.clientY);
+        const hit = hitMark(event.clientX, event.clientY);
         state.selectedRegionId = hit && hit.id !== state.selectedRegionId ? hit.id : null;
         initial.onSelect?.(state.selectedRegionId);
       }
@@ -1051,12 +1129,15 @@ export async function mountGlobe(canvas, initial) {
     if ((state.dragging || isPinching) && event.buttons === 0) {
       releasePointer(event);
     }
-    if (isLight() && !pointerPositions.has(event.pointerId)) hoverAt(null);
+    if (!usesG1() && !pointerPositions.has(event.pointerId)) hoverAt(null);
   });
 
   // Scroll-wheel zoom (desktop trackpad + mouse wheel).
   // Named reference so destroy() can remove it.
   function onWheel(event) {
+    // The horizon has no zoom, and its canvas fills the stage: there the
+    // wheel scrolls the page.
+    if (isDark()) return;
     event.preventDefault();
     // Normalise delta across deltaMode values (0=pixels, 1=lines, 2=pages).
     // Cap page-mode at 200 pixel-equivalent to avoid a single event zooming
@@ -1092,7 +1173,7 @@ export async function mountGlobe(canvas, initial) {
   const tick = (now) => {
     rafId = null;
     if (document.hidden) return; // visibilitychange will resume us
-    if (isLight()) return;       // the engraved globe draws on change, not per frame
+    if (!usesG1()) return;       // light and dark draw on change, not per frame
     if (now - lastFrameTs >= targetFrameMs) {
       if (!state.dragging && now >= autoResumeAt) {
         // Cap delta to 50ms: prevents GC pauses / scheduling hiccups from
@@ -1108,7 +1189,7 @@ export async function mountGlobe(canvas, initial) {
   };
 
   function startLoop() {
-    if (rafId != null || prefersReducedMotion || isLight()) return;
+    if (rafId != null || prefersReducedMotion || !usesG1()) return;
     lastFrameTs = 0;
     rafId = requestAnimationFrame(tick);
   }
@@ -1117,7 +1198,7 @@ export async function mountGlobe(canvas, initial) {
     rafId = null;
   }
 
-  if (prefersReducedMotion || isLight()) {
+  if (prefersReducedMotion || !usesG1()) {
     render();
   } else {
     startLoop();
@@ -1131,14 +1212,20 @@ export async function mountGlobe(canvas, initial) {
 
   return {
     update(next) {
-      // On phones the light globe draws once per hour change while the clock
-      // runs (redesign plan 6.2): a clock tick inside the same hour, with
-      // nothing else changing, is not a reason to redraw. Every other change
-      // (mode, follow, data) still draws at once.
+      // A clock tick, with nothing else changing, redraws light and dark only
+      // when it moves the picture. On phones the light globe draws once per
+      // hour change while the clock runs (redesign plan 6.2). Everywhere,
+      // "Now" follows the wall clock, which moves the sun 0.004 deg a second:
+      // a redraw every frame for that would be all cost, so ticks under 15 s
+      // of clock time wait. Every other change (mode, follow, data) draws at
+      // once, and G1 keeps its own loop.
       const clockOnly = Object.keys(next).every((k) => k === "utcHour" || (k === "mode" && next.mode === state.mode));
-      const sameHour = next.utcHour != null && Math.floor(next.utcHour) === Math.floor(lastDrawnHour ?? -1);
+      const prev = lastDrawnHour;
       Object.assign(state, next);
-      if (clockOnly && sameHour && isLight() && phoneQuery?.matches) return;
+      if (clockOnly && next.utcHour != null && prev != null && !usesG1()) {
+        if (isLight() && phoneQuery?.matches && Math.floor(next.utcHour) === Math.floor(prev)) return;
+        if (Math.abs(next.utcHour - prev) < 1 / 240) return;
+      }
       render();
     },
     zoomIn()  { applyZoom(1.25); },
