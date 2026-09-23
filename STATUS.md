@@ -83,6 +83,46 @@ named Gotham).
 and `ci:tally-golden` passes without a golden edit. `src/embed/globe.md` is
 unchanged. The structure of every page is unchanged.
 
+## /history chart unit labels clipped at the left edge (2026-09-23)
+
+Branch `fix/history-axis-unit-labels` (**#1088**). Chart code only
+(`src/lib/history-charts.ts`) plus a test. Reproduced on a production build
+of main at 7de9916a, in Sunfire and Deep Current, at 320, 375, 390 and 1280.
+All four `/history` figures lost the front of their y-axis unit label, not
+only the two first reported:
+
+- Figure 1 read "MONTH" of "GWh per month".
+- Figure 2 read "R YEAR" of "TWh per year".
+- Figure 3 read "CHIVE" of "regions in the archive", with 40% of the R.
+- Figure 4 read "MMED" of "TWh / 30 d, summed", with half the U.
+
+**Cause.** `yAxis()` end-anchored the unit at `padLeft - 6`, x = 40, so its
+left edge sat at 40 minus its rendered width. The units render 87-153
+viewBox units wide (10px uppercase Schibsted Grotesk), so 47-113 units of
+each ran left of x = 0 and the SVG clipped them. The label has been placed
+this way since the page launched in **#934**. The light/dark work did not
+cause it.
+
+**Fix.** The label is now start-anchored at x = 0, the SVG's left edge, at
+the same height as before. Its left edge no longer depends on the rendered
+text width, which the page loader cannot measure under node. The built
+`/history.html` differs from main's in those four `<text>` elements only, so
+no data and no other geometry moved. `.hc-scroll > svg { min-width: 560px }`
+is unchanged: below that width each figure still pans inside its own
+scroller.
+
+**Verified** in headless Chromium on a production build (Node 24, `/history`
+loader rerun), in both themes at 320, 375, 390 and 1280. Each unit label
+renders in full. Its ink starts at x = 0.2-0.8 and touches no other text;
+the nearest is the top tick label, 3.6-5.2 units away. `/history` keeps
+`scrollWidth` = `clientWidth` at all four widths. New cases in
+`tests/history-charts.test.ts`, one per chart, fail if a unit label is not
+start-anchored at x ≥ 0. All four fail against main's code.
+
+**Not fixed here.** Figure 4's y-axis ticks read "13" and "38" at the 12.5
+and 37.5 gridlines. `tickFormatter` stops at the first precision that gives
+distinct labels, and whole numbers do, so it rounds both.
+
 ## Doc pages laid out wider than a phone (2026-09-23)
 
 Branch `fix/doc-pages-phone-width` (**#1083**). CSS only (`src/style.css`). Measured on

@@ -91,6 +91,32 @@ describe("theme safety", () => {
   });
 });
 
+describe("y-axis unit label", () => {
+  // The unit used to be end-anchored at the tick labels' right edge, x = 40.
+  // Its left edge was then 40 minus its rendered width, and every unit here is
+  // wider than that, so the viewBox clipped the front off each one: production
+  // showed "MONTH" of "GWh per month" and "R YEAR" of "TWh per year". Only a
+  // start anchor fixes the left edge at x whatever the font renders; the page
+  // loader runs under node, which cannot measure the width.
+  const cases: Array<[string, string, string]> = [
+    ["monthlyStackChart", monthlyStackChart({ months: MONTHS, series: SERIES, tierFraction: 0.15, title: "t", desc: "d" }), "GWh per month"],
+    ["annualBarChart", annualBarChart({ years: [2020, 2021], series: { wind: [1, 2], solar: [3, 4], hydro: [5, 6] }, tierFraction: 0.15, title: "t", desc: "d" }), "TWh per year"],
+    ["coverageChart", coverageChart({ days: ["2026-04-23", "2026-05-01"], coverage: { T1a: [1, 2], T3: [3, 4] }, cutoverDay: "2026-05-01", title: "t", desc: "d" }), "regions in the archive"],
+    ["archiveTotalChart", archiveTotalChart({ days: ["2026-04-23", "2026-05-01"], totals: [29.1, 32.1], cutoverDay: "2026-05-01", title: "t", desc: "d" }), "TWh / 30 d, summed"],
+  ];
+
+  it.each(cases)("%s: the unit label cannot start left of x=0", (_chart, svg, unit) => {
+    const labels = [...svg.matchAll(/<text class="hc-axis-label"([^>]*)>([^<]*)<\/text>/g)];
+    expect(labels).toHaveLength(1);
+    const [, attrs, text] = labels[0];
+    expect(text).toBe(unit);
+    // No anchor attribute means SVG's default, start. End or middle puts the
+    // left edge at x minus a width only the browser knows.
+    expect(attrs.match(/\btext-anchor="([a-z]+)"/)?.[1] ?? "start").toBe("start");
+    expect(Number(attrs.match(/\bx="(-?[\d.]+)"/)?.[1])).toBeGreaterThanOrEqual(0);
+  });
+});
+
 describe("monthlyStackChart", () => {
   const svg = monthlyStackChart({
     months: MONTHS,
