@@ -26,6 +26,7 @@ Bitcoin operator and researcher in New Zealand. Runs Stackr. Writes for the Digi
 - **Substack** — *Simon to provide*
 - **Book pre-order** — *TBD*
 - **Contact / corrections** — [simon@collins.nu](mailto:simon@collins.nu)
+- **Privacy** — [what this site collects](./privacy)
 
 ## The dashboard
 
