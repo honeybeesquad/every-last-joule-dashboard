@@ -693,7 +693,7 @@ const timeline = mountTimeline(document.getElementById("timeline-canvas"), {
   regions: REGIONS, regionData, cbeci: feeds.cbeci, clock,
   fuelsEl: document.getElementById("timeline-fuels"),
 });
-// "Now" snaps the clock to UTC and turns follow-the-sun back on after a drag.
+// "Now" snaps the clock to UTC and puts the globe back on the sun, undoing a drag's turn.
 mountControls(document.getElementById("timeline-controls"), clock, {
   onNow: () => globe?.update({ follow: true }),
 });
