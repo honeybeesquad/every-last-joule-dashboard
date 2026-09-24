@@ -1917,7 +1917,7 @@ body:has(.app-shell) { max-width: none; }
   :root[data-theme="dark"] .app-shell > .app-header { padding: 0 24px; }
   :root[data-theme="dark"] .globe-stage { grid-area: 1 / 1 / 6 / -1; }
   /* The label card keeps clear of the dock (196 + 24 + 12). */
-  :root[data-theme="dark"] #globe-canvas { --globe-label-clear: 232px; }
+  :root[data-theme="dark"] #globe-canvas { --globe-label-clear: 232px; --globe-top-clear: 76px; }
   :root[data-theme="dark"] .hero { margin: 52px 0 0 24px; }
   :root[data-theme="dark"] .app-timeline { border-right: 0; border-radius: 20px 0 0 20px; }
   :root[data-theme="dark"] .rail { border-radius: 0 20px 20px 0; }
@@ -1941,7 +1941,7 @@ body:has(.app-shell) { max-width: none; }
   }
   :root[data-theme="dark"] .globe-stage { grid-area: 1 / 1 / 8 / -1; }
   /* The label card keeps clear of both cards. */
-  :root[data-theme="dark"] #globe-canvas { --globe-label-clear: 480px; }
+  :root[data-theme="dark"] #globe-canvas { --globe-label-clear: 480px; --globe-top-clear: 76px; }
   :root[data-theme="dark"] .hero { margin: 40px 0 0; }
   :root[data-theme="dark"] .app-footer { padding: 16px 24px 24px; }
 }

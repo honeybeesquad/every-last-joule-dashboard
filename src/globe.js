@@ -12,8 +12,9 @@ import {
 } from "./lib/globe-surface.js";
 import { vec, subsolar, FOLLOW_SUN, wrapLon, D2R } from "./lib/globe-camera.js";
 import {
-  HORIZON_DOT_PITCH, HORIZON_PHONE, HORIZON_LAT_RANGE, borderAlpha, clampView, horizonGeometry,
-  horizonPhoneGeometry, horizonTerritoryRadiusDeg, viewGeometry, zoomViewAt,
+  HORIZON_DOT_PITCH, HORIZON_FULL_LAT0, HORIZON_PHONE, HORIZON_LAT_RANGE, borderAlpha, clampView,
+  horizonFullGeometry, horizonGeometry, horizonPhoneGeometry, horizonTerritoryRadiusDeg, minZoom,
+  viewGeometry, zoomOutBlend, zoomViewAt,
 } from "./lib/horizon.js";
 import { createEngravedRenderer } from "./globe-engraved.js";
 import { createHorizonRenderer } from "./globe-horizon.js";
@@ -435,9 +436,14 @@ export async function mountGlobe(canvas, initial) {
   // Where the label card must stay clear of at the bottom of the canvas: in
   // dark the glass dock sits over the canvas there. CSS sets it on the canvas
   // as --globe-label-clear; re-read on resize and theme change.
+  // --globe-top-clear is the header's height over the canvas, which the
+  // zoomed-out whole globe keeps clear of.
   let labelClear = 0;
+  let topClear = 0;
   function readLabelClearance() {
-    labelClear = parseFloat(getComputedStyle(canvas).getPropertyValue("--globe-label-clear")) || 0;
+    const cs = getComputedStyle(canvas);
+    labelClear = parseFloat(cs.getPropertyValue("--globe-label-clear")) || 0;
+    topClear = parseFloat(cs.getPropertyValue("--globe-top-clear")) || 0;
   }
 
   /**
@@ -538,20 +544,28 @@ export async function mountGlobe(canvas, initial) {
     if (!darkDots) darkDots = precomputeLandDots(countries, HORIZON_DOT_PITCH);
     const { marks, rings } = marksAt(hour);
     const band = phoneStill();
-    const base = band ? horizonPhoneGeometry(width, height) : horizonGeometry(width, height);
-    const view = band ? { zoom: 1, tx: 0, ty: 0 } : (state.darkView = clampView(state.darkView, width, height));
-    const geo = viewGeometry(base, view);
+    const frame = band ? null : darkFrame(width, height);
+    const base = band ? horizonPhoneGeometry(width, height) : frame.base;
+    const view = band ? { zoom: 1, tx: 0, ty: 0 } : (state.darkView = clampView(state.darkView, width, height, frame.zMin));
+    const geo = viewGeometry(base, view, frame?.full);
     // Zoomed in, beams grow more slowly than the land (so they do not swamp
-    // it), dots grow a little, and the borders fade in.
+    // it) and dots grow a little. Zoomed out, beams and dots shrink more
+    // slowly than the globe, so both still read on the whole sphere. Either
+    // way the borders fade in.
     const z = view.zoom;
-    const look = band ? HORIZON_PHONE
-      : { lat0: state.darkLat0, beam: 0.1 / Math.sqrt(z), widthScale: 1, dotScale: Math.min(1.8, Math.pow(z, 0.35)) };
+    const look = band ? HORIZON_PHONE : {
+      lat0: darkLat0At(z),
+      beam: z > 1 ? 0.1 / Math.sqrt(z) : 0.1 * Math.pow(z, -0.3),
+      widthScale: 1,
+      dotScale: z > 1 ? Math.min(1.8, Math.pow(z, 0.35)) : Math.max(0.65, Math.pow(z, 0.3)),
+    };
+    const bAlpha = band ? 0 : borderAlpha(z, frame.zMin);
 
     ctx.save();
     ctx.scale(dpr, dpr);
     const out = horizon.draw({
       ctx, w: width, h: height, dpr, R: geo.R, top: geo.top, cx: geo.cx, skyTop: base.top,
-      borders: z > 1 ? borderLines() : null, borderAlpha: borderAlpha(z),
+      borders: bAlpha > 0 ? borderLines() : null, borderAlpha: bAlpha,
       lat0: look.lat0, lon0: state.lon0, sun,
       dots: darkDots, territory: darkTerritory(darkDots, hour),
       beams: marks, rings, t: tokens, fuel: fuelColor, tip: fuelTip,
@@ -576,10 +590,26 @@ export async function mountGlobe(canvas, initial) {
     return borderCache;
   }
 
+  /** The horizon, the whole globe and the zoom that reaches it, for a W x H stage. */
+  function darkFrame(w, h) {
+    const base = horizonGeometry(w, h);
+    const full = horizonFullGeometry(w, h, topClear, labelClear);
+    return { base, full, zMin: minZoom(base, full) };
+  }
+
+  /** Camera latitude at a zoom: the visitor's tilt, turning toward the
+   *  whole globe's north-up view as the zoom goes out. */
+  function darkLat0At(zoom) {
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    const s = zoomOutBlend(zoom, darkFrame(w, h).zMin);
+    return Math.max(-85, Math.min(85, state.darkLat0 + s * (HORIZON_FULL_LAT0 - FOLLOW_SUN.dark.lat0)));
+  }
+
   /** The dark globe's geometry as drawn now (not the phone band). */
   function darkGeometry() {
     const w = canvas.width / dpr, h = canvas.height / dpr;
-    return viewGeometry(horizonGeometry(w, h), state.darkView);
+    const frame = darkFrame(w, h);
+    return viewGeometry(frame.base, clampView(state.darkView, w, h, frame.zMin), frame.full);
   }
 
   /**
@@ -599,10 +629,11 @@ export async function mountGlobe(canvas, initial) {
     const x = (clientX - rect.left - g.cx) / g.R, y = (clientY - rect.top - g.cy) / g.R;
     const r2 = x * x + y * y;
     // Off the globe (in the sky) the drag takes the horizon's crest.
-    let depth = 0, lat = state.darkLat0 + 90;
+    const lat0 = darkLat0At(state.darkView.zoom);
+    let depth = 0, lat = lat0 + 90;
     if (r2 < 1) {
       depth = Math.sqrt(1 - r2);
-      const p = state.darkLat0 * D2R;
+      const p = lat0 * D2R;
       // The pointer's ground point: x e - y n + depth f, z component only.
       lat = Math.asin(Math.max(-1, Math.min(1, -y * Math.cos(p) + depth * Math.sin(p)))) / D2R;
     }
@@ -619,12 +650,12 @@ export async function mountGlobe(canvas, initial) {
     const rect = canvas.getBoundingClientRect();
     const mx = clientX == null ? w * 0.57 : clientX - rect.left;
     const my = clientY == null ? h * 0.62 : clientY - rect.top;
-    const next = zoomViewAt(state.darkView, factor, mx, my, w, h);
+    const next = zoomViewAt(state.darkView, factor, mx, my, w, h, darkFrame(w, h).zMin);
     if (next.zoom === state.darkView.zoom && next.tx === state.darkView.tx && next.ty === state.darkView.ty) return;
     state.darkView = next;
     // Zooming in holds the camera, as a drag does, so the land being looked
     // at does not turn away with the sun; "Now" and resetView follow again.
-    if (next.zoom > 1) state.follow = false;
+    if (next.zoom !== 1) state.follow = false;
     viewChanged();
     render();
   }
@@ -634,7 +665,9 @@ export async function mountGlobe(canvas, initial) {
     return v.zoom === 1 && v.tx === 0 && v.ty === 0 && state.darkLat0 === FOLLOW_SUN.dark.lat0 && state.follow;
   }
   function viewChanged() {
-    initial.onViewChange?.({ zoom: state.darkView.zoom, home: isHomeView() });
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    const zMin = w && h ? darkFrame(w, h).zMin : 1;
+    initial.onViewChange?.({ zoom: state.darkView.zoom, minZoom: zMin, home: isHomeView() });
   }
 
   // The selected region's label card: DOM (so its name can link to the

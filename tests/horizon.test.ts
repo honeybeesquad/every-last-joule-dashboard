@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   HORIZON_DOT_PITCH, HORIZON_ZOOM_MAX, MIN_GW_BEAM, beamHeight, beamOpacity, beamSpan, beamWidth, borderAlpha,
-  clampView, horizonGeometry, horizonTerritoryRadiusDeg, landDotAlpha, tintDotAlpha, viewGeometry, zoomViewAt,
+  clampView, horizonFullGeometry, horizonGeometry, minZoom, zoomOutBlend, horizonTerritoryRadiusDeg, landDotAlpha, tintDotAlpha, viewGeometry, zoomViewAt,
 } from "../src/lib/horizon";
 import { camera, ortho, vec } from "../src/lib/globe-camera";
 import { territoryRadiusDeg } from "../src/lib/globe-surface";
@@ -150,5 +150,58 @@ describe("the visitor's view (zoom)", () => {
     expect(borderAlpha(1.75)).toBeCloseTo(0.15, 9);
     expect(borderAlpha(2.5)).toBe(0.3);
     expect(borderAlpha(HORIZON_ZOOM_MAX)).toBe(0.3);
+  });
+});
+
+describe("zooming out to the whole globe", () => {
+  const W = 1440, H = 900;
+  const base = horizonGeometry(W, H);
+  const full = horizonFullGeometry(W, H, 76, 232);
+  const zMin = minZoom(base, full);
+
+  it("fits the whole globe between the header and the dock, right of the hero", () => {
+    expect(full.cy - full.R).toBeGreaterThanOrEqual(76);
+    expect(full.cy + full.R).toBeLessThanOrEqual(H - 232);
+    expect(full.cx + full.R).toBeLessThanOrEqual(W - 32);
+    expect(full.cx - full.R).toBeGreaterThan(0.4 * W);
+  });
+
+  it("centres it on a narrow stage", () => {
+    const g = horizonFullGeometry(390, 844);
+    expect(g.cx).toBe(195);
+    expect(g.R).toBeLessThanOrEqual(0.47 * 0.92 * 390 + 1e-9);
+  });
+
+  it("reaches the whole globe at the minimum zoom, and the horizon at 1", () => {
+    expect(zMin).toBeCloseTo(full.R / base.R, 12);
+    expect(viewGeometry(base, { zoom: zMin, tx: 0, ty: 0 }, full)).toEqual({ ...full, top: full.cy - full.R });
+    expect(viewGeometry(base, { zoom: 1, tx: 0, ty: 0 }, full)).toEqual(base);
+  });
+
+  it("lifts the globe steadily as it shrinks", () => {
+    let lastCy = Infinity, lastR = Infinity;
+    for (let z = 1; z >= zMin; z -= 0.05) {
+      const g = viewGeometry(base, { zoom: z, tx: 0, ty: 0 }, full);
+      expect(g.cy).toBeLessThanOrEqual(lastCy);
+      expect(g.R).toBeLessThanOrEqual(lastR);
+      lastCy = g.cy; lastR = g.R;
+    }
+    expect(zoomOutBlend(1, zMin)).toBe(0);
+    expect(zoomOutBlend(zMin, zMin)).toBe(1);
+  });
+
+  it("stops at the whole globe and drops any magnified offset below 1", () => {
+    const zoomedIn = zoomViewAt({ zoom: 1, tx: 0, ty: 0 }, 3, 900, 600, W, H, zMin);
+    const out = zoomViewAt(zoomedIn, 1 / 1000, 900, 600, W, H, zMin);
+    expect(out).toEqual({ zoom: zMin, tx: 0, ty: 0 });
+    // Back up through 1 magnifies from the plain stage.
+    const up = zoomViewAt(out, 2 / zMin, 900, 600, W, H, zMin);
+    expect(up.zoom).toBeCloseTo(2, 9);
+    expect(900 * up.zoom + up.tx).toBeCloseTo(900, 9);
+  });
+
+  it("draws borders on the whole globe too", () => {
+    expect(borderAlpha(1, zMin)).toBe(0);
+    expect(borderAlpha(zMin, zMin)).toBe(0.22);
   });
 });

@@ -67,37 +67,84 @@ export const HORIZON_ZOOM_MAX = 8;
  *  from the Southern Ocean to the Arctic to the horizon or just below it. */
 export const HORIZON_LAT_RANGE: readonly [number, number] = [-85, 25];
 
-/** The geometry a view draws at: the base geometry magnified about the stage's origin, then offset. */
-export function viewGeometry(base: HorizonGeometry, view: HorizonView): HorizonGeometry {
+/** Camera latitude of the whole-globe view: north up and tilted toward the viewer, as the light globe. */
+export const HORIZON_FULL_LAT0 = 20;
+
+/**
+ * The whole globe, which zooming out reaches: a sphere that fits the stage
+ * between `clearTop` (the header) and `clearBottom` (the dock). On a wide
+ * stage it sits right of the hero; narrower, it is centred.
+ */
+export function horizonFullGeometry(W: number, H: number, clearTop = 0, clearBottom = 0): HorizonGeometry {
+  const avail = Math.max(120, H - clearTop - clearBottom);
+  const wide = W >= 1100;
+  const R = 0.47 * Math.min(avail, wide ? 0.58 * W : 0.92 * W);
+  const cx = wide ? Math.min(0.66 * W, W - R - 32) : W / 2;
+  const cy = clearTop + avail / 2;
+  return { R, top: cy - R, cx, cy };
+}
+
+/** The zoom at which the view is the whole globe: its radius over the horizon's. */
+export function minZoom(base: HorizonGeometry, full: HorizonGeometry): number {
+  return Math.min(1, full.R / base.R);
+}
+
+/** How far a zoom below 1 has gone toward the whole globe: 0 at the horizon, 1 at the whole globe. */
+export function zoomOutBlend(zoom: number, zMin: number): number {
+  if (zoom >= 1 || zMin >= 1) return 0;
+  return Math.max(0, Math.min(1, (1 - zoom) / (1 - zMin)));
+}
+
+/**
+ * The geometry a view draws at. Above 1 it is the base geometry magnified
+ * about the stage's origin, then offset. Below 1 the globe shrinks
+ * (R = base.R x zoom) while its centre rises from below the stage to the
+ * whole globe's, so zooming out lifts the planet off the horizon.
+ */
+export function viewGeometry(base: HorizonGeometry, view: HorizonView, full?: HorizonGeometry): HorizonGeometry {
+  if (view.zoom < 1 && full) {
+    const s = zoomOutBlend(view.zoom, minZoom(base, full));
+    const R = base.R * view.zoom;
+    const cx = base.cx + (full.cx - base.cx) * s;
+    const cy = base.cy + (full.cy - base.cy) * s;
+    return { R, top: cy - R, cx, cy };
+  }
   const R = base.R * view.zoom;
   const top = base.top * view.zoom + view.ty;
   return { R, top, cx: base.cx * view.zoom + view.tx, cy: top + R };
 }
 
 /**
- * Keep a view inside a W x H stage: zoom in [1, HORIZON_ZOOM_MAX], and the
- * magnified stage picture still covering the stage, so a view at zoom 1 is
- * always home.
+ * Keep a view inside a W x H stage: zoom in [zMin, HORIZON_ZOOM_MAX], and a
+ * magnified picture still covering the stage. At or below zoom 1 there is
+ * no offset, so a view at 1 is always home.
  */
-export function clampView(view: HorizonView, W: number, H: number): HorizonView {
-  const zoom = Math.max(1, Math.min(HORIZON_ZOOM_MAX, view.zoom));
+export function clampView(view: HorizonView, W: number, H: number, zMin = 1): HorizonView {
+  const zoom = Math.max(zMin, Math.min(HORIZON_ZOOM_MAX, view.zoom));
+  if (zoom <= 1) return { zoom, tx: 0, ty: 0 };
   const clamp = (t: number, size: number) => Math.max(size - size * zoom, Math.min(0, t));
   return { zoom, tx: clamp(view.tx, W), ty: clamp(view.ty, H) };
 }
 
-/** Zoom by `factor` about the stage point (mx, my), which stays where it is (within the clamp). */
-export function zoomViewAt(view: HorizonView, factor: number, mx: number, my: number, W: number, H: number): HorizonView {
-  const zoom = Math.max(1, Math.min(HORIZON_ZOOM_MAX, view.zoom * factor));
-  const k = zoom / view.zoom;
-  return clampView({ zoom, tx: mx - (mx - view.tx) * k, ty: my - (my - view.ty) * k }, W, H);
+/** Zoom by `factor` about the stage point (mx, my), which stays where it is above zoom 1 (within the clamp). */
+export function zoomViewAt(
+  view: HorizonView, factor: number, mx: number, my: number, W: number, H: number, zMin = 1,
+): HorizonView {
+  const zoom = Math.max(zMin, Math.min(HORIZON_ZOOM_MAX, view.zoom * factor));
+  // Crossing up through 1, magnify from the unmagnified stage.
+  const from = view.zoom < 1 ? { zoom: 1, tx: 0, ty: 0 } : view;
+  const k = zoom / from.zoom;
+  return clampView({ zoom, tx: mx - (mx - from.tx) * k, ty: my - (my - from.ty) * k }, W, H, zMin);
 }
 
 /**
- * Country borders fade in as the view zooms: none at home (the stage keeps
- * its designed look), full strength from zoom 2.5.
+ * Country borders: none at home (the stage keeps its designed look). They
+ * fade in zooming in (full from 2.5) and zooming out (full at the whole
+ * globe, a little fainter, as the lines are denser there).
  */
-export function borderAlpha(zoom: number): number {
-  return Math.round(0.3 * Math.max(0, Math.min(1, (zoom - 1) / 1.5)) * 100) / 100;
+export function borderAlpha(zoom: number, zMin = 1): number {
+  const a = zoom >= 1 ? 0.3 * Math.min(1, (zoom - 1) / 1.5) : 0.22 * zoomOutBlend(zoom, zMin);
+  return Math.round(a * 100) / 100;
 }
 
 /** The phone band's camera and scales (redesign plan 3.4). */
