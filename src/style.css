@@ -1864,8 +1864,11 @@ body:has(.app-shell) { max-width: none; }
     border: 1px solid var(--hairline);
     border-radius: 20px;
   }
+  /* The ribbon takes whatever width the dock leaves beside the controls,
+     so a wider or narrower screen stretches or squashes the chart, not the
+     gap between them. */
   :root[data-theme="dark"] .app-timeline {
-    grid-template-columns: minmax(0, 620px) minmax(24px, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) 32px auto;
     grid-template-rows: auto 1fr;
     grid-template-areas:
       "label label fuels"
