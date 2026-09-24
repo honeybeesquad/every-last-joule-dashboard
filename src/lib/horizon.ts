@@ -145,6 +145,18 @@ export function zoomViewAt(
 }
 
 /**
+ * Whether a plain wheel over the globe should zoom it (true) or pass through
+ * and scroll the page (false): it passes through once the zoom is at its
+ * limit in the wheel's direction, so scrolling down past the whole globe
+ * carries on down the page. deltaY > 0 (scrolling down) zooms out.
+ */
+export function wheelZooms(zoom: number, zMin: number, deltaY: number): boolean {
+  if (deltaY > 0) return zoom > zMin + 1e-6;
+  if (deltaY < 0) return zoom < HORIZON_ZOOM_MAX - 1e-6;
+  return false;
+}
+
+/**
  * Country borders: none at home (the stage keeps its designed look). They
  * fade in zooming in (full from 2.5) and zooming out (full at the whole
  * globe, a little fainter, as the lines are denser there).

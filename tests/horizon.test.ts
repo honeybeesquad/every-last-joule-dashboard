@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   HORIZON_DOT_PITCH, HORIZON_HOME_ZOOM, HORIZON_ZOOM_MAX, MIN_GW_BEAM, beamHeight, beamOpacity, beamSpan, beamWidth, borderAlpha,
-  clampView, horizonFullGeometry, horizonGeometry, minZoom, zoomOutBlend, horizonTerritoryRadiusDeg, landDotAlpha, tintDotAlpha, viewGeometry, zoomViewAt,
+  clampView, horizonFullGeometry, wheelZooms, horizonGeometry, minZoom, zoomOutBlend, horizonTerritoryRadiusDeg, landDotAlpha, tintDotAlpha, viewGeometry, zoomViewAt,
 } from "../src/lib/horizon";
 import { camera, ortho, vec } from "../src/lib/globe-camera";
 import { territoryRadiusDeg } from "../src/lib/globe-surface";
@@ -209,5 +209,15 @@ describe("zooming out to the whole globe", () => {
   it("draws borders on the whole globe too", () => {
     expect(borderAlpha(1, zMin)).toBe(0);
     expect(borderAlpha(zMin, zMin)).toBe(0.22);
+  });
+});
+
+describe("the wheel over the globe", () => {
+  it("zooms until the limit in its direction, then lets the page scroll", () => {
+    expect(wheelZooms(0.5, 0.2, 40)).toBe(true);
+    expect(wheelZooms(0.2, 0.2, 40)).toBe(false);
+    expect(wheelZooms(0.2, 0.2, -40)).toBe(true);
+    expect(wheelZooms(HORIZON_ZOOM_MAX, 0.2, -40)).toBe(false);
+    expect(wheelZooms(1, 0.2, 0)).toBe(false);
   });
 });

@@ -14,7 +14,7 @@ import { vec, subsolar, FOLLOW_SUN, wrapLon, D2R } from "./lib/globe-camera.js";
 import {
   HORIZON_DOT_PITCH, HORIZON_FULL_LAT0, HORIZON_HOME_ZOOM, HORIZON_PHONE, HORIZON_LAT_RANGE, borderAlpha, clampView,
   horizonFullGeometry, horizonGeometry, horizonPhoneGeometry, horizonTerritoryRadiusDeg, minZoom,
-  viewGeometry, zoomOutBlend, zoomViewAt,
+  viewGeometry, wheelZooms, zoomOutBlend, zoomViewAt,
 } from "./lib/horizon.js";
 import { createEngravedRenderer } from "./globe-engraved.js";
 import { createHorizonRenderer } from "./globe-horizon.js";
@@ -648,6 +648,13 @@ export async function mountGlobe(canvas, initial) {
       lon: 1 / (g.R * Math.max(0.25, Math.abs(Math.cos(lat * D2R)))) / D2R,
       lat: 1 / (g.R * Math.max(0.35, depth)) / D2R,
     };
+  }
+
+  /** Whether a client point is over the dark globe's disc (not the sky around it). */
+  function overDarkGlobe(clientX, clientY) {
+    const g = darkGeometry();
+    const rect = canvas.getBoundingClientRect();
+    return Math.hypot(clientX - rect.left - g.cx, clientY - rect.top - g.cy) < g.R;
   }
 
   /** Zoom the dark globe by `factor` about a client point (the stage's middle when omitted). */
@@ -1296,14 +1303,27 @@ export async function mountGlobe(canvas, initial) {
   // Scroll-wheel zoom (desktop trackpad + mouse wheel).
   // Named reference so destroy() can remove it.
   function onWheel(event) {
-    // The horizon's canvas fills the first screen, so a plain wheel scrolls
-    // the page; Ctrl/Cmd + wheel (and a trackpad pinch, which browsers send
-    // as Ctrl + wheel) zooms about the pointer.
+    // Dark: Ctrl/Cmd + wheel (and a trackpad pinch, which browsers send as
+    // Ctrl + wheel) zooms about the pointer anywhere on the canvas. A plain
+    // wheel or two-finger scroll zooms only with the pointer over the globe
+    // itself: the canvas fills the first screen, so over the sky it scrolls
+    // the page, and at the zoom's limit it passes through (scrolling down
+    // past the whole globe carries on down the page).
     if (isDark()) {
-      if (!(event.ctrlKey || event.metaKey) || phoneStill()) return;
-      event.preventDefault();
+      if (phoneStill()) return;
       const px = event.deltaMode === 1 ? event.deltaY * 20 : event.deltaMode === 2 ? event.deltaY * 400 : event.deltaY;
-      zoomDark(Math.pow(0.99, Math.max(-60, Math.min(60, px))), event.clientX, event.clientY);
+      if (event.ctrlKey || event.metaKey) {
+        event.preventDefault();
+        zoomDark(Math.pow(0.99, Math.max(-60, Math.min(60, px))), event.clientX, event.clientY);
+        return;
+      }
+      if (!overDarkGlobe(event.clientX, event.clientY)) return;
+      const w = canvas.width / dpr, h = canvas.height / dpr;
+      if (!wheelZooms(state.darkView.zoom, darkFrame(w, h).zMin, px)) return;
+      event.preventDefault();
+      // Gentler than a pinch: a mouse notch (~100px) zooms about 26%, and a
+      // trackpad's stream of small deltas zooms smoothly.
+      zoomDark(Math.pow(0.997, Math.max(-100, Math.min(100, px))), event.clientX, event.clientY);
       return;
     }
     event.preventDefault();

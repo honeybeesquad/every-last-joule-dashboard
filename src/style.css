@@ -1263,7 +1263,7 @@ body:has(.app-shell) { max-width: none; }
 .globe-zoom-controls[hidden] { display: none; }
 :root[data-theme="dark"] .globe-zoom-controls { display: none; }
 
-/* Dark: the horizon zooms with a pinch, Ctrl + scroll or these buttons, a
+/* Dark: the globe zooms with a scroll over it, a pinch or these buttons, a
    glass column at the stage's right, under the header and clear of the dock.
    Phones zoom in the explorer, with a pinch. */
 .horizon-view { display: none; }
