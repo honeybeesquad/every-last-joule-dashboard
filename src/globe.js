@@ -12,7 +12,8 @@ import {
 } from "./lib/globe-surface.js";
 import { vec, subsolar, FOLLOW_SUN, wrapLon, D2R } from "./lib/globe-camera.js";
 import {
-  HORIZON_DOT_PITCH, HORIZON_PHONE, horizonGeometry, horizonPhoneGeometry, horizonTerritoryRadiusDeg,
+  HORIZON_DOT_PITCH, HORIZON_PHONE, HORIZON_LAT_RANGE, borderAlpha, clampView, horizonGeometry,
+  horizonPhoneGeometry, horizonTerritoryRadiusDeg, viewGeometry, zoomViewAt,
 } from "./lib/horizon.js";
 import { createEngravedRenderer } from "./globe-engraved.js";
 import { createHorizonRenderer } from "./globe-horizon.js";
@@ -32,6 +33,8 @@ async function loadAtlas(topologyUrl) {
         // Merged land for the engraved globe's knock-out and coastline: the
         // countries layer would also draw every border.
         land: topojson.feature(topology, topology.objects.land),
+        // Every border and coast once, for the horizon when zoomed in.
+        borders: topojson.mesh(topology, topology.objects.countries),
       }));
   }
   return atlasPromise;
@@ -106,7 +109,7 @@ function unitVec(lon, lat) {
 
 export async function mountGlobe(canvas, initial) {
   const ctx = canvas.getContext("2d");
-  const { countries, land } = await loadAtlas(initial.topologyUrl);
+  const { countries, land, borders } = await loadAtlas(initial.topologyUrl);
   const mountSize = Math.min(canvas.clientWidth || 0, canvas.clientHeight || 0) || 720;
   const dots = precomputeLandDots(countries, gridStepFor(mountSize));
   // Cap DPR lower on narrow viewports — a 1.5x render on a 360px-wide
@@ -136,6 +139,10 @@ export async function mountGlobe(canvas, initial) {
     // Phones show a static globe; "Explore the globe" opens it full screen
     // and interactive (src/components/explorer.js, redesign plan 6.4).
     exploring: false,
+    // Dark's own view: a zoom about the pointer, and the camera latitude a
+    // vertical drag tilts. The phone band ignores both; the explorer uses them.
+    darkLat0: FOLLOW_SUN.dark.lat0,
+    darkView: { zoom: 1, tx: 0, ty: 0 },
   };
 
   const ZOOM_MIN = 0.5;
@@ -512,9 +519,11 @@ export async function mountGlobe(canvas, initial) {
     placeSelection(out.label, hour);
   }
 
-  // Dark: the horizon (redesign plan 6.3). Latitude is fixed so the horizon
-  // stays put; the camera follows the sun until the visitor drags it, and a
-  // drag turns longitude only. The backdrop and sprites are cached in the
+  // Dark: the horizon (redesign plan 6.3). The camera follows the sun until
+  // the visitor drags or zooms. A sideways drag turns longitude, a vertical
+  // one tilts the globe (state.darkLat0) so any latitude can come to the
+  // horizon, and a zoom magnifies the stage about the pointer
+  // (state.darkView), with country borders fading in. The backdrop and sprites are cached in the
   // renderer and the lit territory per quarter hour, so a frame is the dots
   // and the beams. On a phone, outside the explorer, it is the band under the
   // hero (redesign plan 3.4); the explorer uses the desktop geometry.
@@ -529,13 +538,20 @@ export async function mountGlobe(canvas, initial) {
     if (!darkDots) darkDots = precomputeLandDots(countries, HORIZON_DOT_PITCH);
     const { marks, rings } = marksAt(hour);
     const band = phoneStill();
-    const geo = band ? horizonPhoneGeometry(width, height) : horizonGeometry(width, height);
-    const look = band ? HORIZON_PHONE : { lat0: FOLLOW_SUN.dark.lat0, beam: 0.1, widthScale: 1, dotScale: 1 };
+    const base = band ? horizonPhoneGeometry(width, height) : horizonGeometry(width, height);
+    const view = band ? { zoom: 1, tx: 0, ty: 0 } : (state.darkView = clampView(state.darkView, width, height));
+    const geo = viewGeometry(base, view);
+    // Zoomed in, beams grow more slowly than the land (so they do not swamp
+    // it), dots grow a little, and the borders fade in.
+    const z = view.zoom;
+    const look = band ? HORIZON_PHONE
+      : { lat0: state.darkLat0, beam: 0.1 / Math.sqrt(z), widthScale: 1, dotScale: Math.min(1.8, Math.pow(z, 0.35)) };
 
     ctx.save();
     ctx.scale(dpr, dpr);
     const out = horizon.draw({
-      ctx, w: width, h: height, dpr, R: geo.R, top: geo.top, cx: geo.cx,
+      ctx, w: width, h: height, dpr, R: geo.R, top: geo.top, cx: geo.cx, skyTop: base.top,
+      borders: z > 1 ? borderLines() : null, borderAlpha: borderAlpha(z),
       lat0: look.lat0, lon0: state.lon0, sun,
       dots: darkDots, territory: darkTerritory(darkDots, hour),
       beams: marks, rings, t: tokens, fuel: fuelColor, tip: fuelTip,
@@ -547,14 +563,78 @@ export async function mountGlobe(canvas, initial) {
     placeSelection(out.label, hour);
   }
 
-  /** Degrees of camera longitude per pixel of horizontal drag. In dark the
-   *  land at the limb's top (latitude lat0 + 90) moves with the pointer. */
-  function lonPerPixel() {
-    if (isDark()) {
-      const R = horizonGeometry(canvas.width / dpr, canvas.height / dpr).R;
-      return 1 / (R * Math.cos((FOLLOW_SUN.dark.lat0 + 90) * D2R)) / D2R;
+  /** Border and coast polylines as unit vectors, built on first zoom. */
+  let borderCache = null;
+  function borderLines() {
+    if (!borderCache) {
+      borderCache = borders.coordinates.map((line) => {
+        const out = new Float32Array(line.length * 3);
+        line.forEach(([lon, lat], i) => out.set(vec(lat, lon), i * 3));
+        return out;
+      });
     }
-    return 1 / lightRadius() / D2R;
+    return borderCache;
+  }
+
+  /** The dark globe's geometry as drawn now (not the phone band). */
+  function darkGeometry() {
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    return viewGeometry(horizonGeometry(w, h), state.darkView);
+  }
+
+  /**
+   * Degrees of camera longitude and latitude per pixel of drag. In light the
+   * globe's centre moves with the pointer. In dark the land under the pointer
+   * does, as nearly as a turn about the pole allows: longitude by the radius
+   * of its latitude circle, a tilt by how squarely it faces the viewer (land
+   * at the horizon barely moves up or down when the globe tilts).
+   */
+  function dragRates(clientX, clientY) {
+    if (!isDark()) {
+      const r = 1 / lightRadius() / D2R;
+      return { lon: r, lat: r };
+    }
+    const g = darkGeometry();
+    const rect = canvas.getBoundingClientRect();
+    const x = (clientX - rect.left - g.cx) / g.R, y = (clientY - rect.top - g.cy) / g.R;
+    const r2 = x * x + y * y;
+    // Off the globe (in the sky) the drag takes the horizon's crest.
+    let depth = 0, lat = state.darkLat0 + 90;
+    if (r2 < 1) {
+      depth = Math.sqrt(1 - r2);
+      const p = state.darkLat0 * D2R;
+      // The pointer's ground point: x e - y n + depth f, z component only.
+      lat = Math.asin(Math.max(-1, Math.min(1, -y * Math.cos(p) + depth * Math.sin(p)))) / D2R;
+    }
+    return {
+      lon: 1 / (g.R * Math.max(0.25, Math.abs(Math.cos(lat * D2R)))) / D2R,
+      lat: 1 / (g.R * Math.max(0.35, depth)) / D2R,
+    };
+  }
+
+  /** Zoom the dark globe by `factor` about a client point (the stage's middle when omitted). */
+  function zoomDark(factor, clientX, clientY) {
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    if (!w || !h) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = clientX == null ? w * 0.57 : clientX - rect.left;
+    const my = clientY == null ? h * 0.62 : clientY - rect.top;
+    const next = zoomViewAt(state.darkView, factor, mx, my, w, h);
+    if (next.zoom === state.darkView.zoom && next.tx === state.darkView.tx && next.ty === state.darkView.ty) return;
+    state.darkView = next;
+    // Zooming in holds the camera, as a drag does, so the land being looked
+    // at does not turn away with the sun; "Now" and resetView follow again.
+    if (next.zoom > 1) state.follow = false;
+    viewChanged();
+    render();
+  }
+
+  function isHomeView() {
+    const v = state.darkView;
+    return v.zoom === 1 && v.tx === 0 && v.ty === 0 && state.darkLat0 === FOLLOW_SUN.dark.lat0 && state.follow;
+  }
+  function viewChanged() {
+    initial.onViewChange?.({ zoom: state.darkView.zoom, home: isHomeView() });
   }
 
   // The selected region's label card: DOM (so its name can link to the
@@ -972,8 +1052,16 @@ export async function mountGlobe(canvas, initial) {
   let pinchInitDist = 0;
   let pinchInitZoom = 1;
   let isPinching = false;
+  let pinchLast = 0;
   // Prevent the last-finger lift after a pinch from firing onRegionClick.
   let suppressNextClick = false;
+
+  function newDrag(x, y) {
+    return {
+      x, y, lon0: state.lon0 ?? 0, lat0: isDark() ? state.darkLat0 : state.lat0,
+      rates: dragRates(x, y), moved: false,
+    };
+  }
 
   canvas.addEventListener("pointerdown", (event) => {
     event.preventDefault();
@@ -989,6 +1077,7 @@ export async function mountGlobe(canvas, initial) {
       const pts = [...pointerPositions.values()];
       pinchInitDist = Math.hypot(pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]);
       pinchInitZoom = state.zoomScale;
+      pinchLast = pinchInitDist;
     } else if (!usesG1()) {
       // Light and dark: a drag only starts once the pointer has travelled, so
       // a tap stays a tap; the camera is (lat0, lon0) rather than G1's rotation.
@@ -996,7 +1085,7 @@ export async function mountGlobe(canvas, initial) {
       activePointerId = event.pointerId;
       downX = event.clientX;
       downY = event.clientY;
-      lightDrag = { x: event.clientX, y: event.clientY, lon0: state.lon0 ?? 0, lat0: state.lat0, moved: false };
+      lightDrag = newDrag(event.clientX, event.clientY);
     } else {
       // Single-pointer drag start (existing behaviour).
       isPinching = false;
@@ -1019,11 +1108,16 @@ export async function mountGlobe(canvas, initial) {
     pointerPositions.set(event.pointerId, [event.clientX, event.clientY]);
 
     if (isPinching && pointerPositions.size >= 2) {
-      // Update pinch zoom. The horizon has no zoom: its geometry is fixed to
-      // the stage (redesign plan 6.3).
-      if (isDark()) return;
+      // Update pinch zoom. The horizon zooms about the fingers' midpoint.
       const pts = [...pointerPositions.values()];
       const dist = Math.hypot(pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]);
+      if (isDark()) {
+        if (pinchLast > 0 && !phoneStill()) {
+          zoomDark(dist / pinchLast, (pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2);
+        }
+        pinchLast = dist;
+        return;
+      }
       if (pinchInitDist > 0) {
         state.zoomScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, pinchInitZoom * (dist / pinchInitDist)));
         initial.onZoomChange?.(state.zoomScale); // keep slider in sync with pinch
@@ -1044,9 +1138,15 @@ export async function mountGlobe(canvas, initial) {
         canvas.classList.add("is-dragging");
         hoverAt(null);
       }
-      state.lon0 = wrapLon(drag.lon0 - tx * lonPerPixel());
-      // Dark turns longitude only, so the horizon stays put.
-      if (isLight()) state.lat0 = Math.max(-60, Math.min(70, drag.lat0 + ty / lightRadius() / D2R));
+      state.lon0 = wrapLon(drag.lon0 - tx * drag.rates.lon);
+      if (isLight()) {
+        state.lat0 = Math.max(-60, Math.min(70, drag.lat0 + ty * drag.rates.lat));
+      } else if (!phoneStill()) {
+        // Dark tilts: pulling down brings the land beyond the horizon over it.
+        const [lo, hi] = HORIZON_LAT_RANGE;
+        state.darkLat0 = Math.max(lo, Math.min(hi, drag.lat0 + ty * drag.rates.lat));
+      }
+      if (isDark()) viewChanged();
       render({ fast: true });
       return;
     }
@@ -1081,7 +1181,7 @@ export async function mountGlobe(canvas, initial) {
           downX = remPos[0];
           downY = remPos[1];
           if (!usesG1()) {
-            lightDrag = { x: remPos[0], y: remPos[1], lon0: state.lon0 ?? 0, lat0: state.lat0, moved: false };
+            lightDrag = newDrag(remPos[0], remPos[1]);
           } else {
             state.dragging = true;
             canvas.classList.add("is-dragging");
@@ -1150,9 +1250,16 @@ export async function mountGlobe(canvas, initial) {
   // Scroll-wheel zoom (desktop trackpad + mouse wheel).
   // Named reference so destroy() can remove it.
   function onWheel(event) {
-    // The horizon has no zoom, and its canvas fills the stage: there the
-    // wheel scrolls the page.
-    if (isDark()) return;
+    // The horizon's canvas fills the first screen, so a plain wheel scrolls
+    // the page; Ctrl/Cmd + wheel (and a trackpad pinch, which browsers send
+    // as Ctrl + wheel) zooms about the pointer.
+    if (isDark()) {
+      if (!(event.ctrlKey || event.metaKey) || phoneStill()) return;
+      event.preventDefault();
+      const px = event.deltaMode === 1 ? event.deltaY * 20 : event.deltaMode === 2 ? event.deltaY * 400 : event.deltaY;
+      zoomDark(Math.pow(0.99, Math.max(-60, Math.min(60, px))), event.clientX, event.clientY);
+      return;
+    }
     event.preventDefault();
     // Normalise delta across deltaMode values (0=pixels, 1=lines, 2=pages).
     // Cap page-mode at 200 pixel-equivalent to avoid a single event zooming
@@ -1163,6 +1270,22 @@ export async function mountGlobe(canvas, initial) {
     applyZoom(Math.pow(0.999, pixels));
   }
   canvas.addEventListener("wheel", onWheel, { passive: false });
+
+  // Safari sends a trackpad pinch as gesture events, not Ctrl + wheel.
+  let gestureScale = 1;
+  function onGestureStart(event) {
+    if (!isDark() || phoneStill()) return;
+    event.preventDefault();
+    gestureScale = 1;
+  }
+  function onGestureChange(event) {
+    if (!isDark() || phoneStill()) return;
+    event.preventDefault();
+    zoomDark(event.scale / gestureScale, event.clientX, event.clientY);
+    gestureScale = event.scale;
+  }
+  canvas.addEventListener("gesturestart", onGestureStart);
+  canvas.addEventListener("gesturechange", onGestureChange);
 
   resize();
 
@@ -1238,6 +1361,7 @@ export async function mountGlobe(canvas, initial) {
       const clockOnly = Object.keys(next).every((k) => k === "utcHour" || (k === "mode" && next.mode === state.mode));
       const prev = lastDrawnHour;
       Object.assign(state, next);
+      if ("follow" in next) viewChanged();
       if (clockOnly && next.utcHour != null && prev != null && !usesG1()) {
         if (phoneStill() && Math.floor(next.utcHour) === Math.floor(prev)) return;
         if (Math.abs(next.utcHour - prev) < 1 / 240) return;
@@ -1256,9 +1380,17 @@ export async function mountGlobe(canvas, initial) {
       }
       render();
     },
-    zoomIn()  { applyZoom(1.25); },
-    zoomOut() { applyZoom(1 / 1.25); },
+    zoomIn()  { if (isDark()) zoomDark(1.5); else applyZoom(1.25); },
+    zoomOut() { if (isDark()) zoomDark(1 / 1.5); else applyZoom(1 / 1.25); },
     resetZoom() { state.zoomScale = 1.0; initial.onZoomChange?.(1.0); render(); },
+    /** Dark: back to the stage's view - no zoom, the home tilt, following the sun. */
+    resetView() {
+      state.darkView = { zoom: 1, tx: 0, ty: 0 };
+      state.darkLat0 = FOLLOW_SUN.dark.lat0;
+      state.follow = true;
+      viewChanged();
+      render();
+    },
     setZoom(s) { applyZoom(s / state.zoomScale); },
     destroy() {
       stopLoop();
@@ -1269,6 +1401,8 @@ export async function mountGlobe(canvas, initial) {
       document.removeEventListener("visibilitychange", onVisibility);
       resizeObserver.disconnect();
       canvas.removeEventListener("wheel", onWheel);
+      canvas.removeEventListener("gesturestart", onGestureStart);
+      canvas.removeEventListener("gesturechange", onGestureChange);
     }
   };
 }

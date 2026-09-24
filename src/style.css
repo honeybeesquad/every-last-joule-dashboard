@@ -1261,8 +1261,43 @@ body:has(.app-shell) { max-width: none; }
   gap: 8px;
 }
 .globe-zoom-controls[hidden] { display: none; }
-/* The horizon has no zoom: its geometry is fixed to the stage. */
 :root[data-theme="dark"] .globe-zoom-controls { display: none; }
+
+/* Dark: the horizon zooms with a pinch, Ctrl + scroll or these buttons, a
+   glass column at the stage's right, under the header and clear of the dock.
+   Phones zoom in the explorer, with a pinch. */
+.horizon-view { display: none; }
+@media (min-width: 641px) {
+  :root[data-theme="dark"] .horizon-view:not([hidden]) {
+    position: absolute;
+    top: 96px;
+    right: 24px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    background: var(--surface-panel);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    overflow: hidden;
+  }
+}
+.horizon-view button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.horizon-view button + button { border-top: 1px solid var(--hairline); }
+.horizon-view button:hover:not(:disabled) { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.horizon-view button:disabled { color: var(--ink-soft); opacity: 0.5; cursor: default; }
+.horizon-view button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
 .globe-zoom-label {
   font: 10px/1 var(--font-mono);
   letter-spacing: 0.1em;
