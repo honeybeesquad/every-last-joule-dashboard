@@ -130,7 +130,7 @@ document.getElementById("app-root").innerHTML = `
       <div class="explorer-bar" id="explorer-bar"></div>
       <div class="horizon-view" id="horizon-view" role="group" aria-label="Globe view" hidden>
         <button type="button" data-view="in" aria-label="Zoom in" title="Zoom in (or pinch, or Ctrl + scroll)"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button>
-        <button type="button" data-view="out" aria-label="Zoom out" title="Zoom out" disabled><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 8h10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button>
+        <button type="button" data-view="out" aria-label="Zoom out" title="Zoom out to the whole globe (or pinch, or Ctrl + scroll)"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 8h10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button>
         <button type="button" data-view="reset" aria-label="Reset the view" title="Reset the view" disabled><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3.2 8a4.8 4.8 0 1 0 1.4-3.4M3.2 2.6v2.6h2.6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
       <div class="globe-zoom-controls" id="globe-zoom-controls" hidden>
@@ -769,8 +769,8 @@ globe = await mountGlobe(canvas, {
     }
   },
   onZoomChange: (scale) => { if (zoomSlider) zoomSlider.value = String(scale.toFixed(3)); },
-  onViewChange: ({ zoom, home }) => {
-    horizonView.querySelector('[data-view="out"]').disabled = zoom <= 1;
+  onViewChange: ({ zoom, minZoom, home }) => {
+    horizonView.querySelector('[data-view="out"]').disabled = zoom <= minZoom + 1e-6;
     horizonView.querySelector('[data-view="in"]').disabled = zoom >= 8;
     horizonView.querySelector('[data-view="reset"]').disabled = home;
   },
