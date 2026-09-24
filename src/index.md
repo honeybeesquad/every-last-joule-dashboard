@@ -129,8 +129,8 @@ document.getElementById("app-root").innerHTML = `
       </button>
       <div class="explorer-bar" id="explorer-bar"></div>
       <div class="horizon-view" id="horizon-view" role="group" aria-label="Globe view" hidden>
-        <button type="button" data-view="in" aria-label="Zoom in" title="Zoom in (or pinch, or Ctrl + scroll)"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button>
-        <button type="button" data-view="out" aria-label="Zoom out" title="Zoom out to the whole globe (or pinch, or Ctrl + scroll)"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 8h10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button>
+        <button type="button" data-view="in" aria-label="Zoom in" title="Zoom in (or scroll over the globe, or pinch)"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button>
+        <button type="button" data-view="out" aria-label="Zoom out" title="Zoom out to the whole globe (or scroll over the globe, or pinch)"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3 8h10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></button>
         <button type="button" data-view="reset" aria-label="Reset the view" title="Reset the view" disabled><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M3.2 8a4.8 4.8 0 1 0 1.4-3.4M3.2 2.6v2.6h2.6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
       <div class="globe-zoom-controls" id="globe-zoom-controls" hidden>
@@ -748,7 +748,7 @@ regionTooltip.element.addEventListener("pointerenter", () => clearTimeout(hoverC
 regionTooltip.element.addEventListener("pointerleave", () => { if (hoverOpened) closeHoverCardSoon(); });
 
 const zoomSlider = document.getElementById("globe-zoom-slider");
-// Dark's zoom buttons (the horizon also zooms with a pinch or Ctrl + scroll).
+// Dark's zoom buttons (the globe also zooms with a scroll over it, or a pinch).
 const horizonView = document.getElementById("horizon-view");
 globe = await mountGlobe(canvas, {
   regions: REGIONS,
