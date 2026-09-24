@@ -10,15 +10,15 @@
  *
  * Side-effects on activation:
  *   1. Sets document.documentElement's data-theme.
- *   2. Persists to localStorage["elj-theme"]. From then on the page stops
- *      following the OS setting (see src/lib/theme-boot.ts).
+ *   2. Persists to localStorage["elj-theme"], so the next visit opens in it
+ *      rather than the default dark (see src/lib/theme-boot.ts).
  *   3. Dispatches one `themechange` CustomEvent on `window` with
  *      `{ detail: { theme } }`.
  * Where the browser has document.startViewTransition and the visitor has not
  * asked for reduced motion, the switch cross-fades (200ms, style.css).
  *
  * The component also listens for `themechange` itself, so it stays in step
- * when the mode changes from elsewhere (the boot script following the OS).
+ * when the mode changes from elsewhere.
  *
  * Returns a cleanup function that removes the rendered DOM and listeners.
  */

@@ -13,9 +13,10 @@
  *     map to "dark": both old themes were dark, so returning visitors keep a
  *     dark site. The mapped value counts as a choice, so it is not overridden
  *     by the OS. (Visitors may hold them for years; the mapping stays.)
- *   - Nothing stored: follow prefers-color-scheme, and keep following live
- *     changes to it without writing to storage. The first time the visitor
- *     picks a mode (the toggle writes storage) the page stops following.
+ *   - Nothing stored: dark. Dark (Horizon) is the site's default look, so a
+ *     first visit opens in it whatever the OS prefers (changed 2026-09-24;
+ *     D1 had it follow prefers-color-scheme). Nothing is written to storage
+ *     until the visitor picks a mode with the toggle.
  *   - /embed/ pages get "embed": src/embed/globe.md is the figure the DARI
  *     paper iframes, and its look is part of that published artefact (the
  *     embed block in style.css). Pinning it here, not only in the page's own
@@ -33,12 +34,5 @@ if(/^\\/embed\\//.test(location.pathname)){d.setAttribute("data-theme","embed");
 function stored(){var v=null;try{v=localStorage.getItem(K);}catch(e){}
 if(v==="sunfire"||v==="deepcurrent")v="dark";
 return v==="light"||v==="dark"?v:null;}
-var mq=window.matchMedia?window.matchMedia("(prefers-color-scheme: dark)"):null;
-d.setAttribute("data-theme",stored()||(mq&&mq.matches?"dark":"light"));
-if(mq&&mq.addEventListener)mq.addEventListener("change",function(e){
-if(stored())return;
-var t=e.matches?"dark":"light";
-if(d.getAttribute("data-theme")===t)return;
-d.setAttribute("data-theme",t);
-window.dispatchEvent(new CustomEvent("themechange",{detail:{theme:t}}));});
+d.setAttribute("data-theme",stored()||"dark");
 }());`;

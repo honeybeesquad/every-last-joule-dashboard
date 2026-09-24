@@ -6,9 +6,9 @@ import config from "../observablehq.config";
 
 // The boot script is the first thing every page runs. These run the exact
 // string observablehq.config.ts inlines into <head>, against a fake
-// prefers-color-scheme, so D1 (first visit follows the OS), D2 (the old
-// "sunfire"/"deepcurrent" values map to dark) and the paper figure's pin are
-// all pinned to what ships.
+// prefers-color-scheme, so the dark default (a first visit is dark whatever
+// the OS prefers), D2 (the old "sunfire"/"deepcurrent" values map to dark)
+// and the paper figure's pin are all pinned to what ships.
 
 type Listener = (e: { matches: boolean }) => void;
 
@@ -47,74 +47,56 @@ describe("theme boot script", () => {
     localStorage.clear();
   });
 
-  describe("first visit, nothing stored (D1)", () => {
-    it("follows an OS preference for dark", () => {
-      fakeColorScheme(true);
+  describe("first visit, nothing stored: dark by default", () => {
+    it.each([true, false])("is dark when the OS prefers dark=%s", (prefersDark) => {
+      fakeColorScheme(prefersDark);
       expect(boot()).toBe("dark");
     });
 
-    it("follows an OS preference for light", () => {
-      fakeColorScheme(false);
-      expect(boot()).toBe("light");
-    });
-
-    it("is light where matchMedia does not exist", () => {
+    it("is dark where matchMedia does not exist", () => {
       const original = window.matchMedia;
       Object.defineProperty(window, "matchMedia", { value: undefined, configurable: true, writable: true });
       try {
-        expect(boot()).toBe("light");
+        expect(boot()).toBe("dark");
       } finally {
         Object.defineProperty(window, "matchMedia", { value: original, configurable: true, writable: true });
       }
     });
 
-    it("keeps following live OS changes, without writing to storage", () => {
+    it("does not follow later OS changes, and writes nothing to storage", () => {
       const os = fakeColorScheme(false);
-      expect(boot()).toBe("light");
-      const events: string[] = [];
-      const listener = (e: Event) => events.push((e as CustomEvent).detail.theme);
-      window.addEventListener("themechange", listener);
+      expect(boot()).toBe("dark");
       os.set(true);
-      window.removeEventListener("themechange", listener);
+      os.set(false);
+      expect(os.listeners).toHaveLength(0);
       expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
-      expect(events).toEqual(["dark"]);
       expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull();
-    });
-
-    it("stops following once the visitor picks a mode", () => {
-      const os = fakeColorScheme(false);
-      boot();
-      localStorage.setItem(THEME_STORAGE_KEY, "light"); // what the toggle writes
-      os.set(true);
-      expect(document.documentElement.getAttribute("data-theme")).toBe("light");
     });
   });
 
   describe("a stored choice", () => {
-    it.each(["light", "dark"])("%s wins over the OS", (stored) => {
+    it.each(["light", "dark"])("%s wins over the default and the OS", (stored) => {
       fakeColorScheme(stored === "light");
       localStorage.setItem(THEME_STORAGE_KEY, stored);
       expect(boot()).toBe(stored);
     });
 
-    it("is not overridden by a later OS change", () => {
-      const os = fakeColorScheme(true);
-      localStorage.setItem(THEME_STORAGE_KEY, "dark");
-      boot();
-      os.set(false);
-      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+    it("light wins even when the OS prefers dark", () => {
+      fakeColorScheme(true);
+      localStorage.setItem(THEME_STORAGE_KEY, "light");
+      expect(boot()).toBe("light");
     });
 
-    it("that is not a mode falls back to the OS", () => {
-      fakeColorScheme(true);
+    it("that is not a mode falls back to dark", () => {
+      fakeColorScheme(false);
       localStorage.setItem(THEME_STORAGE_KEY, "vellum");
       expect(boot()).toBe("dark");
     });
 
-    it("that cannot be read (storage blocked) falls back to the OS", () => {
+    it("that cannot be read (storage blocked) falls back to dark", () => {
       fakeColorScheme(false);
       vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => { throw new Error("SecurityError"); });
-      expect(boot()).toBe("light");
+      expect(boot()).toBe("dark");
     });
   });
 
@@ -123,14 +105,6 @@ describe("theme boot script", () => {
       fakeColorScheme(false);
       localStorage.setItem(THEME_STORAGE_KEY, old);
       expect(boot()).toBe("dark");
-    });
-
-    it("counts as a choice, so the OS does not take over", () => {
-      const os = fakeColorScheme(true);
-      localStorage.setItem(THEME_STORAGE_KEY, "sunfire");
-      boot();
-      os.set(false);
-      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
     });
 
     it("is read, not rewritten", () => {
@@ -147,14 +121,13 @@ describe("theme boot script", () => {
       const os = fakeColorScheme(false);
       localStorage.setItem(THEME_STORAGE_KEY, "light");
       expect(boot()).toBe("embed");
-      // ...and does not follow the OS afterwards.
       expect(os.listeners).toHaveLength(0);
     });
 
     it("only pins /embed/ paths", () => {
       window.history.replaceState({}, "", "/methodology");
       fakeColorScheme(false);
-      expect(boot()).toBe("light");
+      expect(boot()).toBe("dark");
     });
   });
 });
