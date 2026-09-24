@@ -120,7 +120,7 @@
    data-theme="light" | "dark" on <html> selects the palette. The boot script
    in observablehq.config.ts (src/lib/theme-boot.ts) sets it before this sheet
    loads: a stored choice wins (a value the old theme picker stored maps to
-   dark), and a first visit follows prefers-color-scheme.
+   dark), and a first visit gets dark, whatever the OS prefers.
 
    Token NAMES are the ones every rule already reads; tokens the redesign adds
    are marked NEW. The layouts are the light/dark redesign's (2026-09-23). The
@@ -394,16 +394,11 @@
 
 /* No-JS / pre-boot fallback. The boot script sets data-theme before first
    paint, so this only shows if it never runs. Without data-theme no token
-   block applies, which is why these four literals are the one place this
+   block applies, which is why these two literals are the one place this
    sheet paints a colour that is not a token (allowlisted in
-   tests/style-colour-literals.test.ts). */
-:root:not([data-theme]) { color-scheme: light dark; }
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]), html:not([data-theme]) body { background: #f6f0e0; color: #0b121d; }
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]), html:not([data-theme]) body { background: #060a11; color: #fff8e0; }
-}
+   tests/style-colour-literals.test.ts). Dark, the site's default mode. */
+:root:not([data-theme]) { color-scheme: dark; }
+:root:not([data-theme]), html:not([data-theme]) body { background: #060a11; color: #fff8e0; }
 
 
 /* ============ SEMANTIC ELEMENT STYLES ============ */
