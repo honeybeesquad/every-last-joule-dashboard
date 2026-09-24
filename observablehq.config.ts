@@ -103,6 +103,13 @@ export default {
   // config is the only place we can guarantee script-before-CSS ordering.
   head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<script>${THEME_BOOT_SCRIPT}</script><link rel="stylesheet" href="./style.css"><script>(function(){var s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);})();</script>`,
   theme: "dark",
+  // Left unset, Framework adds a Google Fonts stylesheet for Source Serif 4
+  // (plus a preconnect to fonts.gstatic.com) to every page, so each visit
+  // sent the visitor's IP address to Google. No page renders in that face:
+  // Framework's `body { font: … var(--serif) }` is its only use, and
+  // src/style.css sets body's font-family to the self-hosted faces in
+  // src/fonts. Keep this empty; add faces there, never from a font CDN.
+  globalStylesheets: [],
   header: pageHeader,
   footer: "",
   toc: false,

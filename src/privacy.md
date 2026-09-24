@@ -25,7 +25,7 @@ Every Last Joule (everylastjoule.com) is run by Simon Collins in New Zealand. Se
 - **Your light or dark choice.** If you use the mode switch, your browser saves that choice on your device (in local storage, under `elj-theme`). It is never sent to us.
 - **Email you send.** If you email us, we keep your message and address so we can reply and act on it.
 
-That is the complete list. The site has no newsletter signup and no form that sends information anywhere. The region filter on the [Regions](./regions) page runs in your browser. Apart from one font stylesheet requested from Google Fonts (see below), the site's fonts, map data and scripts load from this domain. There are no advertising or cross-site trackers.
+That is the complete list. The site has no newsletter signup and no form that sends information anywhere. The region filter on the [Regions](./regions) page runs in your browser. The site's fonts, map data and scripts all load from this domain. There are no advertising or cross-site trackers.
 
 ## How it is used
 
@@ -36,7 +36,6 @@ That is the complete list. The site has no newsletter signup and no form that se
 ## Who else handles it
 
 - **Vercel Inc.** hosts the site and runs the visit statistics. See [Vercel's privacy policy](https://vercel.com/legal/privacy-policy) and [how Web Analytics handles data](https://vercel.com/docs/analytics/privacy-policy).
-- **Google Fonts.** Each page requests a font stylesheet from Google's servers (a default of the framework the site is built with), so your browser sends Google your IP address, your browser details and the address of the page. Google says the font service sets no cookies, and that it does not use this information to profile visitors or target advertising. See the [Google Fonts privacy FAQ](https://fonts.google.com/faq).
 - **Our email provider** stores email you send us.
 - **Social media platforms.** Every Last Joule publishes posts to its own social media accounts, including on Meta's platforms. If you follow, like or comment there, the platform handles your information under its own privacy policy.
 - **Other sites.** The site links to grid operators, regulators, GitHub, Zenodo and others. Once you follow a link, that site's own policy applies.
