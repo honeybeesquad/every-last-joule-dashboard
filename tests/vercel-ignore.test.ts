@@ -107,6 +107,9 @@ describe("vercel-ignore.sh", () => {
       ["src/index.md"],
       ["src/embed/globe.md"],
       ["STATUS.md", "src/paper.md"],
+      // Validation docs: the /region/<id> pages render them.
+      ["docs/validation/cyprus.md"],
+      ["docs/validation/cyprus.md", "STATUS.md"],
       ["src/lib/calc.ts"],
       ["docs/methodology/uncertainty.md", "src/lib/calc.ts"],
       // Markdown outside the repo root and docs/ may be a build input, so it builds.

@@ -6,32 +6,34 @@
 ## Vercel build skip: page-copy PRs deploy again (2026-09-24)
 
 Branch `fix/vercel-ignore-page-markdown`. `scripts/build/vercel-ignore.sh`,
-the Ignored Build Step from #967, excluded `*.md`. In a plain git pathspec
-`*` also matches `/`, so the exclusion covered the Framework page sources
-under `src/` (`about.md`, `methodology.md`, `index.md`, `paper.md`,
-`privacy.md`, `embed/globe.md`) as well as `STATUS.md` and `README.md`. A PR that changed
-only page copy was skipped and went live with the next 3-hourly deploy-hook
-rebuild. That happened once since #967: #979 (`src/methodology.md` only).
-The exclusion is now `:(exclude,glob)*.md`, which matches root markdown
-only. `docs/`, `data/historical`, `data/history`, `data/snapshots` and
-`data/relay` are still skipped.
+the Ignored Build Step from #967, skipped two kinds of site change:
 
-Side effect: markdown elsewhere (`dataset/`, `scripts/`, `.githooks/`,
-`data/source-verified-floor/`) now builds too. None of it is a build input,
-so it costs an extra build on the rare PR that touches only those files.
-Replayed over the 129 `main` commits since #967, the old script skipped 97
-and the new one skips 95: #979 now builds, and so does #982
-(`dataset/README.md`).
+- **Page sources under `src/`.** It excluded `*.md`, and in a plain git
+  pathspec `*` also matches `/`, so the exclusion covered `src/about.md`,
+  `methodology.md`, `index.md`, `paper.md`, `privacy.md` and
+  `embed/globe.md` as well as `STATUS.md` and `README.md`. A PR that changed
+  only page copy was skipped and went live with the next 3-hourly
+  deploy-hook rebuild. That happened once since #967: #979
+  (`src/methodology.md` only). The exclusion is now `:(exclude,glob)*.md`,
+  which matches root markdown only.
+- **`docs/validation/<id>.md`.** `src/region/[id].md.js` and
+  `src/sitemap.xml.js` read these to render `/region/<id>`, but all of
+  `docs` was excluded. A pathspec can't re-include what an exclusion drops,
+  so the script now builds whenever `docs/validation` changes, before the
+  exclusion check. It's the only part of `docs/` the build reads. No
+  validation-only PR had landed since #967.
+
+The rest of `docs/`, plus `data/historical`, `data/history`,
+`data/snapshots` and `data/relay`, are still skipped. Side effect: markdown
+in `dataset/`, `scripts/`, `.githooks/` and `data/source-verified-floor/` now
+builds too. None of it is a build input, so it costs an extra build on the
+rare PR that touches only those files. Replaying the 130 `main` commits
+since #967 through both scripts, the old one skipped 97 and the new one
+skips 95: #979 now builds, and so does #982 (`dataset/README.md`).
 
 **Verified:** new `tests/vercel-ignore.test.ts` runs the script against a
-throwaway git repo (18 cases). Six fail against the old script, and all 18
-pass against the new one. Gates pass (1,683 tests).
-
-**Open:** `docs/validation/<id>.md` is a build input too.
-`src/region/[id].md.js` and `src/sitemap.xml.js` read it to render
-`/region/<id>`, but `docs` is still excluded, so a PR that edits only
-validation docs is skipped the same way. None has landed since #967. Not
-changed here.
+throwaway git repo (20 cases). Eight fail against the old script, and all 20
+pass against the new one. Gates pass (1,685 tests).
 
 **Not changed:** no data, loader, `regions.ts` entry or tier.
 
@@ -1186,8 +1188,8 @@ Vercel builds were 14–17 min when every upstream answered and **failed at the 
   seconds when healthy, bounded by the deadline when not. Per-zone fallback unchanged.
 - `vercel.json` `ignoreCommand` (`scripts/build/vercel-ignore.sh`) skips builds whose only changes are
   `data/history`, `data/snapshots` or docs — the automated snapshot/relay merges — while deploy-hook
-  redeploys always build. (2026-09-24: its `*.md` exclusion also skipped page-copy PRs under `src/`;
-  narrowed to root markdown, see "Vercel build skip" above.) Expected: ~16 min → ~4–5 min per deploy with a hard ceiling, ~4 fewer builds/day.
+  redeploys always build. (2026-09-24: it also skipped page-copy PRs under `src/` and
+  `docs/validation`; fixed, see "Vercel build skip" above.) Expected: ~16 min → ~4–5 min per deploy with a hard ceiling, ~4 fewer builds/day.
 - Follow-up: `aemo.json.ts` and `aemo-per-plant.json.ts` each download the same 30 daily NEMWEB zips
   (84 s + 123 s serial); sharing one download would remove the next-largest cost.
 
