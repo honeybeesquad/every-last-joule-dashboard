@@ -49,6 +49,57 @@ export function horizonPhoneGeometry(W: number, H: number): HorizonGeometry {
   return { R, top, cx: W / 2, cy: top + R };
 }
 
+/**
+ * The visitor's view of the horizon: a magnification of the stage picture,
+ * screen = base x zoom + (tx, ty), and the camera latitude a vertical drag
+ * tilts. Home is zoom 1, no offset, FOLLOW_SUN.dark.lat0.
+ */
+export interface HorizonView {
+  zoom: number;
+  tx: number;
+  ty: number;
+}
+
+export const HORIZON_ZOOM_MAX = 8;
+
+/** Camera latitudes a vertical drag can tilt to. The horizon's crest is at
+ *  lat0 + 90 on the camera's meridian, so this range brings every latitude
+ *  from the Southern Ocean to the Arctic to the horizon or just below it. */
+export const HORIZON_LAT_RANGE: readonly [number, number] = [-85, 25];
+
+/** The geometry a view draws at: the base geometry magnified about the stage's origin, then offset. */
+export function viewGeometry(base: HorizonGeometry, view: HorizonView): HorizonGeometry {
+  const R = base.R * view.zoom;
+  const top = base.top * view.zoom + view.ty;
+  return { R, top, cx: base.cx * view.zoom + view.tx, cy: top + R };
+}
+
+/**
+ * Keep a view inside a W x H stage: zoom in [1, HORIZON_ZOOM_MAX], and the
+ * magnified stage picture still covering the stage, so a view at zoom 1 is
+ * always home.
+ */
+export function clampView(view: HorizonView, W: number, H: number): HorizonView {
+  const zoom = Math.max(1, Math.min(HORIZON_ZOOM_MAX, view.zoom));
+  const clamp = (t: number, size: number) => Math.max(size - size * zoom, Math.min(0, t));
+  return { zoom, tx: clamp(view.tx, W), ty: clamp(view.ty, H) };
+}
+
+/** Zoom by `factor` about the stage point (mx, my), which stays where it is (within the clamp). */
+export function zoomViewAt(view: HorizonView, factor: number, mx: number, my: number, W: number, H: number): HorizonView {
+  const zoom = Math.max(1, Math.min(HORIZON_ZOOM_MAX, view.zoom * factor));
+  const k = zoom / view.zoom;
+  return clampView({ zoom, tx: mx - (mx - view.tx) * k, ty: my - (my - view.ty) * k }, W, H);
+}
+
+/**
+ * Country borders fade in as the view zooms: none at home (the stage keeps
+ * its designed look), full strength from zoom 2.5.
+ */
+export function borderAlpha(zoom: number): number {
+  return Math.round(0.3 * Math.max(0, Math.min(1, (zoom - 1) / 1.5)) * 100) / 100;
+}
+
 /** The phone band's camera and scales (redesign plan 3.4). */
 export const HORIZON_PHONE = { lat0: -38, beam: 0.12, widthScale: 0.75, dotScale: 0.8 } as const;
 

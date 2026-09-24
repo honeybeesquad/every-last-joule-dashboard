@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
-  HORIZON_DOT_PITCH, MIN_GW_BEAM, beamHeight, beamOpacity, beamSpan, beamWidth, horizonGeometry,
-  horizonTerritoryRadiusDeg, landDotAlpha, tintDotAlpha,
+  HORIZON_DOT_PITCH, HORIZON_ZOOM_MAX, MIN_GW_BEAM, beamHeight, beamOpacity, beamSpan, beamWidth, borderAlpha,
+  clampView, horizonGeometry, horizonTerritoryRadiusDeg, landDotAlpha, tintDotAlpha, viewGeometry, zoomViewAt,
 } from "../src/lib/horizon";
 import { camera, ortho, vec } from "../src/lib/globe-camera";
 import { territoryRadiusDeg } from "../src/lib/globe-surface";
@@ -108,5 +108,47 @@ describe("lit territory and land dots", () => {
   it("brighten land on the day side and lit dots near their region", () => {
     expect(landDotAlpha(1, 1)).toBeGreaterThan(landDotAlpha(0, 1));
     expect(tintDotAlpha(1, 1)).toBeGreaterThan(tintDotAlpha(0, 1));
+  });
+});
+
+describe("the visitor's view (zoom)", () => {
+  const W = 1440, H = 900;
+  const home = { zoom: 1, tx: 0, ty: 0 };
+  const base = horizonGeometry(W, H);
+
+  it("draws the stage's own geometry at home", () => {
+    expect(viewGeometry(base, home)).toEqual(base);
+  });
+
+  it("keeps the point under the pointer where it is", () => {
+    const v = zoomViewAt(home, 2, 700, 600, W, H);
+    expect(v.zoom).toBe(2);
+    // The base point (700, 600) maps to itself.
+    expect(700 * v.zoom + v.tx).toBeCloseTo(700, 9);
+    expect(600 * v.zoom + v.ty).toBeCloseTo(600, 9);
+    const g = viewGeometry(base, v);
+    expect(g.R).toBeCloseTo(2 * base.R, 9);
+    expect(g.cy - g.top).toBeCloseTo(g.R, 9);
+  });
+
+  it("comes back home when zoomed out, whatever path it took", () => {
+    let v = zoomViewAt(home, 3, 100, 800, W, H);
+    v = zoomViewAt(v, 1.7, 1300, 120, W, H);
+    v = zoomViewAt(v, 1 / 100, 20, 20, W, H);
+    expect(v).toEqual({ zoom: 1, tx: 0, ty: 0 });
+  });
+
+  it("stops at the zoom limits and never uncovers the stage", () => {
+    expect(zoomViewAt(home, 1000, 0, 0, W, H).zoom).toBe(HORIZON_ZOOM_MAX);
+    expect(zoomViewAt(home, 0.5, 0, 0, W, H)).toEqual(home);
+    const v = clampView({ zoom: 2, tx: 500, ty: -5000 }, W, H);
+    expect(v).toEqual({ zoom: 2, tx: 0, ty: -H });
+  });
+
+  it("fades the borders in: none at home, full from zoom 2.5", () => {
+    expect(borderAlpha(1)).toBe(0);
+    expect(borderAlpha(1.75)).toBeCloseTo(0.15, 9);
+    expect(borderAlpha(2.5)).toBe(0.3);
+    expect(borderAlpha(HORIZON_ZOOM_MAX)).toBe(0.3);
   });
 });

@@ -16,6 +16,8 @@
  *      territory, which globe.js computes with globe-surface.ts (dithered for
  *      mixed regions, recomputed per quarter hour). Batched into alpha
  *      buckets, so the whole field is a few dozen fills.
+ *   2b. Country borders, only when the visitor has zoomed in: faint ink
+ *      lines that fade in with the zoom (borderAlpha in lib/horizon.ts).
  *   3. Grids that publish no waste: a faint dashed ring on the ground, as the
  *      light globe draws, so "unpublished" never reads as a measured zero.
  *   4. Beams, additive, smallest first: a wide faint glow, a sheath and a
@@ -64,7 +66,9 @@ export function createHorizonRenderer() {
 
   function backdropFor(o) {
     const { w, h, dpr, R, top, cx, t } = o;
-    const key = [w, h, dpr, R, top, cx, t.bg, t.atmosphereRGB, t.bodyHi, t.bodyMid, t.bodyLo, t.starRGB].join("|");
+    // Stars stay in the stage's sky however the view zooms.
+    const skyTop = o.skyTop ?? top;
+    const key = [w, h, dpr, R, top, cx, skyTop, t.bg, t.atmosphereRGB, t.bodyHi, t.bodyMid, t.bodyLo, t.starRGB].join("|");
     if (backdrop?.key === key) return backdrop.canvas;
     const canvas = backdrop?.canvas ?? document.createElement("canvas");
     canvas.width = Math.round(w * dpr);
@@ -80,7 +84,7 @@ export function createHorizonRenderer() {
     for (let i = 0; i < stars; i++) {
       g.fillStyle = `rgba(${t.starRGB},${0.12 + starHash(i * 5) * 0.35})`;
       g.beginPath();
-      g.arc(starHash(i * 3 + 1) * w, starHash(i * 7 + 2) * (top + 30), 0.25 + starHash(i * 11) * 0.65, 0, Math.PI * 2);
+      g.arc(starHash(i * 3 + 1) * w, starHash(i * 7 + 2) * (skyTop + 30), 0.25 + starHash(i * 11) * 0.65, 0, Math.PI * 2);
       g.fill();
     }
 
@@ -152,7 +156,9 @@ export function createHorizonRenderer() {
    *      rings: [{ v, gen }],
    *      t: readGlobeTokens() output, fuel: { solar, wind, hydro } colours,
    *      tip: { solar, wind, hydro } colours,
-   *      selectedId, beam (K), widthScale, dotScale, labelBottom, leader }
+   *      selectedId, beam (K), widthScale, dotScale, labelBottom, leader,
+   *      skyTop, borders: [Float32Array of unit vectors x,y,z,...] | null,
+   *      borderAlpha }
    * `offset` (px, perpendicular to the beam) separates records that share a
    * location; `labelBottom` keeps the label card clear of the dock.
    */
@@ -205,6 +211,26 @@ export function createHorizonRenderer() {
         ctx.fillStyle = hexA(fuel[FUELS[Math.floor(k / TINT_BUCKETS)]], (k % TINT_BUCKETS) / 10);
       }
       ctx.fill(paths[b]);
+    }
+
+    // 2b. country borders, when zoomed in
+    if (o.borders && o.borderAlpha > 0) {
+      const p = new Path2D();
+      for (const line of o.borders) {
+        let pen = false;
+        for (let i = 0; i < line.length; i += 3) {
+          const vx = line[i], vy = line[i + 1], vz = line[i + 2];
+          if (vx * fx + vy * fy + vz * fz <= 0) { pen = false; continue; }
+          const px = cx + (vx * ex + vy * ey + vz * ez) * R;
+          const py = cy - (vx * nx + vy * ny + vz * nz) * R;
+          if (pen) p.lineTo(px, py); else p.moveTo(px, py);
+          pen = true;
+        }
+      }
+      ctx.strokeStyle = `rgba(${t.inkRGB},${o.borderAlpha})`;
+      ctx.lineWidth = 0.7;
+      ctx.lineJoin = "round";
+      ctx.stroke(p);
     }
 
     // 3. grids that publish no waste
