@@ -5,7 +5,7 @@
  * redesign (plan D4, 2026-09-23) cut 0.5× and defaulted to 1×; 0.5× came back
  * on 2026-09-24 because 1× ran too fast to read. 1× is 0.4 simulated hours a
  * second (a day in a minute), so 0.5× is a day in two minutes. Now snaps the clock to UTC and follows the wall clock; the page's
- * `onNow` also turns the globe's follow-the-sun back on after a drag.
+ * `onNow` also puts the globe back on the sun, undoing a drag's turn.
  */
 export const SPEEDS = [0.5, 1, 4, 8];
 

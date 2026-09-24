@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  HORIZON_DOT_PITCH, HORIZON_ZOOM_MAX, MIN_GW_BEAM, beamHeight, beamOpacity, beamSpan, beamWidth, borderAlpha,
+  HORIZON_DOT_PITCH, HORIZON_HOME_ZOOM, HORIZON_ZOOM_MAX, MIN_GW_BEAM, beamHeight, beamOpacity, beamSpan, beamWidth, borderAlpha,
   clampView, horizonFullGeometry, horizonGeometry, minZoom, zoomOutBlend, horizonTerritoryRadiusDeg, landDotAlpha, tintDotAlpha, viewGeometry, zoomViewAt,
 } from "../src/lib/horizon";
 import { camera, ortho, vec } from "../src/lib/globe-camera";
@@ -198,6 +198,12 @@ describe("zooming out to the whole globe", () => {
     const up = zoomViewAt(out, 2 / zMin, 900, 600, W, H, zMin);
     expect(up.zoom).toBeCloseTo(2, 9);
     expect(900 * up.zoom + up.tx).toBeCloseTo(900, 9);
+  });
+
+  it("opens two zoom-out steps from the horizon, between it and the whole globe", () => {
+    expect(HORIZON_HOME_ZOOM).toBeCloseTo((1 / 1.5) ** 2, 12);
+    expect(HORIZON_HOME_ZOOM).toBeGreaterThan(zMin);
+    expect(HORIZON_HOME_ZOOM).toBeLessThan(1);
   });
 
   it("draws borders on the whole globe too", () => {

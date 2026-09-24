@@ -12,7 +12,7 @@ import {
 } from "./lib/globe-surface.js";
 import { vec, subsolar, FOLLOW_SUN, wrapLon, D2R } from "./lib/globe-camera.js";
 import {
-  HORIZON_DOT_PITCH, HORIZON_FULL_LAT0, HORIZON_PHONE, HORIZON_LAT_RANGE, borderAlpha, clampView,
+  HORIZON_DOT_PITCH, HORIZON_FULL_LAT0, HORIZON_HOME_ZOOM, HORIZON_PHONE, HORIZON_LAT_RANGE, borderAlpha, clampView,
   horizonFullGeometry, horizonGeometry, horizonPhoneGeometry, horizonTerritoryRadiusDeg, minZoom,
   viewGeometry, zoomOutBlend, zoomViewAt,
 } from "./lib/horizon.js";
@@ -130,21 +130,26 @@ export async function mountGlobe(canvas, initial) {
     dragging: false,
     zoomScale: 1.0,
     selectedRegionId: null,
-    // Light mode's engraved globe has its own camera. It follows the sun
-    // until the visitor drags it (redesign plan 6.1); "Now" turns following
-    // back on through update({ follow: true }). Longitude carries across a
-    // mode switch; latitude is per mode.
+    // Light and dark cameras follow the sun, so the globe turns as the clock
+    // plays (redesign plan 6.1). A drag holds it while the pointer is down;
+    // on release it follows again from where it was left, `lonShift` degrees
+    // from the sun. "Now" (update({ follow: true })) and resetView clear the
+    // shift. Longitude carries across a mode switch; latitude is per mode.
     lat0: FOLLOW_SUN.light.lat0,
     lon0: null,
     follow: true,
+    lonShift: 0,
     // Phones show a static globe; "Explore the globe" opens it full screen
     // and interactive (src/components/explorer.js, redesign plan 6.4).
     exploring: false,
     // Dark's own view: a zoom about the pointer, and the camera latitude a
     // vertical drag tilts. The phone band ignores both; the explorer uses them.
     darkLat0: FOLLOW_SUN.dark.lat0,
-    darkView: { zoom: 1, tx: 0, ty: 0 },
+    darkView: { zoom: HORIZON_HOME_ZOOM, tx: 0, ty: 0 },
   };
+  // The sun-following longitude the last frame drew at, before the shift:
+  // a drag's release measures its shift from it.
+  let followBase = 0;
 
   const ZOOM_MIN = 0.5;
   const ZOOM_MAX = 4.0;
@@ -507,7 +512,8 @@ export async function mountGlobe(canvas, initial) {
 
     const hour = ((state.utcHour % 24) + 24) % 24;
     const sun = subsolar(new Date(), hour);
-    if (state.follow || state.lon0 == null) state.lon0 = wrapLon(sun.lon + FOLLOW_SUN.light.lonOffset);
+    followBase = sun.lon + FOLLOW_SUN.light.lonOffset;
+    if (state.follow || state.lon0 == null) state.lon0 = wrapLon(followBase + state.lonShift);
     if (!lightDots) lightDots = precomputeLandDots(countries, 0.8);
     const { marks, rings } = marksAt(hour);
 
@@ -540,7 +546,8 @@ export async function mountGlobe(canvas, initial) {
     lastDrawnHour = state.utcHour;
     const hour = ((state.utcHour % 24) + 24) % 24;
     const sun = subsolar(new Date(), hour);
-    if (state.follow || state.lon0 == null) state.lon0 = wrapLon(sun.lon + FOLLOW_SUN.dark.lonOffset);
+    followBase = sun.lon + FOLLOW_SUN.dark.lonOffset;
+    if (state.follow || state.lon0 == null) state.lon0 = wrapLon(followBase + state.lonShift);
     if (!darkDots) darkDots = precomputeLandDots(countries, HORIZON_DOT_PITCH);
     const { marks, rings } = marksAt(hour);
     const band = phoneStill();
@@ -653,16 +660,16 @@ export async function mountGlobe(canvas, initial) {
     const next = zoomViewAt(state.darkView, factor, mx, my, w, h, darkFrame(w, h).zMin);
     if (next.zoom === state.darkView.zoom && next.tx === state.darkView.tx && next.ty === state.darkView.ty) return;
     state.darkView = next;
-    // Zooming in holds the camera, as a drag does, so the land being looked
-    // at does not turn away with the sun; "Now" and resetView follow again.
-    if (next.zoom !== 1) state.follow = false;
     viewChanged();
     render();
   }
 
   function isHomeView() {
     const v = state.darkView;
-    return v.zoom === 1 && v.tx === 0 && v.ty === 0 && state.darkLat0 === FOLLOW_SUN.dark.lat0 && state.follow;
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    const home = w && h ? clampView({ zoom: HORIZON_HOME_ZOOM, tx: 0, ty: 0 }, w, h, darkFrame(w, h).zMin).zoom : HORIZON_HOME_ZOOM;
+    return Math.abs(v.zoom - home) < 1e-9 && v.tx === 0 && v.ty === 0 &&
+      state.darkLat0 === FOLLOW_SUN.dark.lat0 && state.follow && state.lonShift === 0;
   }
   function viewChanged() {
     const w = canvas.width / dpr, h = canvas.height / dpr;
@@ -1167,7 +1174,7 @@ export async function mountGlobe(canvas, initial) {
         if (Math.hypot(tx, ty) < CLICK_MAX_TRAVEL_PX) return;
         drag.moved = true;
         state.dragging = true;
-        state.follow = false; // dragging turns follow-the-sun off; "Now" turns it back on
+        state.follow = false; // held while dragging; the release follows again, shifted
         canvas.classList.add("is-dragging");
         hoverAt(null);
       }
@@ -1234,6 +1241,12 @@ export async function mountGlobe(canvas, initial) {
       const drag = lightDrag;
       lightDrag = null;
       activePointerId = null;
+      if (drag?.moved) {
+        // Follow the sun again from where the drag left the globe.
+        state.lonShift = wrapLon(state.lon0 - followBase);
+        state.follow = true;
+        if (isDark()) viewChanged();
+      }
       state.dragging = false;
       canvas.classList.remove("is-dragging");
       if (canvas.hasPointerCapture?.(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
@@ -1393,6 +1406,7 @@ export async function mountGlobe(canvas, initial) {
       // follow, data) draws at once, and G1 keeps its own loop.
       const clockOnly = Object.keys(next).every((k) => k === "utcHour" || (k === "mode" && next.mode === state.mode));
       const prev = lastDrawnHour;
+      if (next.follow === true) state.lonShift = 0;
       Object.assign(state, next);
       if ("follow" in next) viewChanged();
       if (clockOnly && next.utcHour != null && prev != null && !usesG1()) {
@@ -1416,9 +1430,10 @@ export async function mountGlobe(canvas, initial) {
     zoomIn()  { if (isDark()) zoomDark(1.5); else applyZoom(1.25); },
     zoomOut() { if (isDark()) zoomDark(1 / 1.5); else applyZoom(1 / 1.25); },
     resetZoom() { state.zoomScale = 1.0; initial.onZoomChange?.(1.0); render(); },
-    /** Dark: back to the stage's view - no zoom, the home tilt, following the sun. */
+    /** Dark: back to the opening view - the home zoom and tilt, following the sun. */
     resetView() {
-      state.darkView = { zoom: 1, tx: 0, ty: 0 };
+      state.darkView = { zoom: HORIZON_HOME_ZOOM, tx: 0, ty: 0 };
+      state.lonShift = 0;
       state.darkLat0 = FOLLOW_SUN.dark.lat0;
       state.follow = true;
       viewChanged();

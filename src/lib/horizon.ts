@@ -52,7 +52,7 @@ export function horizonPhoneGeometry(W: number, H: number): HorizonGeometry {
 /**
  * The visitor's view of the horizon: a magnification of the stage picture,
  * screen = base x zoom + (tx, ty), and the camera latitude a vertical drag
- * tilts. Home is zoom 1, no offset, FOLLOW_SUN.dark.lat0.
+ * tilts. Home is HORIZON_HOME_ZOOM, no offset, FOLLOW_SUN.dark.lat0.
  */
 export interface HorizonView {
   zoom: number;
@@ -61,6 +61,13 @@ export interface HorizonView {
 }
 
 export const HORIZON_ZOOM_MAX = 8;
+
+/**
+ * The zoom the dashboard opens at: two steps of the zoom-out button from the
+ * horizon, so the globe has lifted most of the way off the stage's floor
+ * and whole countries read, with the horizon's curve still framing it.
+ */
+export const HORIZON_HOME_ZOOM = 4 / 9;
 
 /** Camera latitudes a vertical drag can tilt to. The horizon's crest is at
  *  lat0 + 90 on the camera's meridian, so this range brings every latitude
