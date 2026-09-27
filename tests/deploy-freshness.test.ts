@@ -99,8 +99,18 @@ describe("assessFreshness", () => {
     const feeds = [...productionLike(FROZEN_LIVE_AT), feed("data/dominican.abc.json", 1, "live", "2026-09-28T03:00:00.000Z")];
     const a = assessFreshness({ builtAt: null, feeds, now: LAST_CAPTURE });
     expect(a.futureStamped).toEqual(["data/dominican.abc.json-0"]);
-    expect(a.liveCount).toBe(197);
+    // Still a live region: it counts toward the floor, only its stamp is ignored.
+    expect(a.liveCount).toBe(198);
+    expect(a.liveMedianAt).toBe(FROZEN_LIVE_AT);
     expect(a.stale).toBe(true);
+  });
+
+  it("ignores a future stamp on a record that is not live", () => {
+    // A modelled record's lastSuccessAt is a calibration date, not a fetch time.
+    const feeds = [...productionLike(FROZEN_LIVE_AT), feed("data/modelled.abc.json", 1, "cached", "2026-12-31T00:00:00.000Z")];
+    const a = assessFreshness({ builtAt: null, feeds, now: LAST_CAPTURE });
+    expect(a.futureStamped).toEqual([]);
+    expect(a.liveCount).toBe(197);
   });
 
   it("treats data of unknown age as stale", () => {

@@ -86,7 +86,10 @@ export interface FreshnessAssessment {
   liveMedianAgeHours: number | null;
   /** Feeds with live regions whose newest live stamp is past the threshold. */
   staleLiveFeeds: StaleFeed[];
-  /** Region ids stamped more than FUTURE_TOLERANCE_HOURS ahead of now. */
+  /**
+   * Live region ids stamped more than FUTURE_TOLERANCE_HOURS ahead of now:
+   * counted as live, left out of the median and the per-feed newest stamp.
+   */
   futureStamped: string[];
   stale: boolean;
   /** Why it is stale; empty when fresh. */
@@ -121,14 +124,16 @@ export function assessFreshness(input: {
     let newestLive = Number.NEGATIVE_INFINITY;
     for (const record of feed.records) {
       recordCount += 1;
+      if (record.sourceStatus !== "live") continue;
+      liveCount += 1;
       const t = record.lastSuccessAt ? Date.parse(record.lastSuccessAt) : Number.NaN;
-      if (Number.isFinite(t) && t > futureLimit) {
+      if (!Number.isFinite(t)) continue;
+      // Still live, but the stamp is never evidence of freshness. Same rule as
+      // _live_success_times in scripts/append_history.py.
+      if (t > futureLimit) {
         futureStamped.push(record.regionId);
         continue;
       }
-      if (record.sourceStatus !== "live") continue;
-      liveCount += 1;
-      if (!Number.isFinite(t)) continue;
       liveTimes.push(t);
       newestLive = Math.max(newestLive, t);
     }
@@ -223,7 +228,7 @@ export function renderFreshnessReport(a: FreshnessAssessment, baseUrl: string, n
   }
   if (a.futureStamped.length) {
     lines.push(
-      `**Warning:** ${a.futureStamped.length} region record(s) carry a lastSuccessAt more than ${FUTURE_TOLERANCE_HOURS} h in the future and were left out: ${a.futureStamped.slice(0, LIST_LIMIT).join(", ")}.`,
+      `**Warning:** ${a.futureStamped.length} live region record(s) carry a lastSuccessAt more than ${FUTURE_TOLERANCE_HOURS} h in the future. They count as live but are left out of the median: ${a.futureStamped.slice(0, LIST_LIMIT).join(", ")}.`,
       "",
     );
   }

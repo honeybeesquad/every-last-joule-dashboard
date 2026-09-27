@@ -88,7 +88,9 @@ returned 403. So the evidence is Vercel's own cancel reason, not the script's
 - `data-refresh.yml`: waits until main's head is past the window before the
   hook, then waits for a fresh build to go live and **fails** when none does
   within 30 min (`scripts/ci/check-deploy-freshness.ts wait`). history-append
-  now runs after the new build is live.
+  now runs after the new build is live. The job checks main's head again after
+  each wait (at most three), and its 90-min timeout covers the worst case of
+  about 81 min.
 - Build stamp: `src/data/build-info.json.ts` emits
   `data/build-info.<hash>.json` (`builtAt`, `commit`, `ref`, `env`,
   `staleAfterHours: 26`), registered as `buildInfo` (dashboard chrome,
@@ -104,10 +106,27 @@ returned 403. So the evidence is Vercel's own cancel reason, not the script's
   over 26 h old, or fewer than 100 regions are live. The first stale run opens
   one `auto-stale-deploy` issue and fails; later runs refresh its body; the
   first fresh run closes it. It ignores feeds with no live regions: about 20
-  modelled feeds carry calibration dates up to 2.7 years old.
+  modelled feeds carry calibration dates up to 2.7 years old. A run that
+  cannot read the page, or any data file it references, after one retry
+  fails without opening the issue. A live region stamped in the future counts
+  as live but stays out of the median, as in `append_history.py`.
 - `scripts/append_history.py`: fails, writing nothing, when the deployment is
   over 26 h old; writes nothing when the deployment is the one the last
   capture recorded. 6 new pytest cases.
+
+**Code review (27 Sep).** A review of the branch raised ten points, and four
+are fixed here. The freshness check no longer drops a data file it cannot
+read, which could have raised a false "fallback corpus" alarm. The refresh
+job re-checks main's head after each wait and has room for its worst case.
+A live region with a future stamp now counts toward the live floor. The other
+six were not changed:
+- The 15-min grace in `wait`: it passes only when a build went live within
+  15 min before the hook, so production is fresh either way.
+- `withFallback` for the build stamp: it makes no request, like 20 other
+  loaders, and a fallback would serve an old `builtAt`.
+- The CBECI fallback in the footer: unreachable while every build ships the
+  stamp, and harmless.
+- Two efficiency points and one design point, listed under Follow-ups.
 
 **Copy.** Hero: "curtailed, spilled, or zero-priced across 444 of the 536
 regions we track". Both numbers were right (published-waste regions against
@@ -116,7 +135,12 @@ the About deck say "zero-priced" instead of "constrained-off". Pinned in
 `tests/waste-status-count.test.ts`.
 
 **Verified.** `npm run typecheck && npm test && npm run ci:gates` pass
-(1,702 tests, 39 new), and the 28 append-history pytest cases pass (6 new).
+(1,703 tests, 40 new), `npm run validate` passes, and the 28 append-history
+pytest cases pass (6 new). After the review fixes, `check` was run against a
+local site with one data file missing (it exits 1: "could not read 1 of 3 data
+files") and with every file present (it answers), and the pre-hook loop was
+run with `gh` and `sleep` stubbed (one wait; three waits then a warning;
+none).
 `scripts/ci/check-deploy-freshness.ts` was run against local copies of a
 frozen and a fresh deployment: `check` called the frozen one stale and the
 fresh one fresh, and `wait` failed on the frozen one and passed on the fresh
@@ -141,6 +165,13 @@ new build to go live* step should pass.
 - `dominican-republic` stamps `lastSuccessAt` a day ahead (OC SENI's schedule
   runs to 23:00 AST). Both freshness checks ignore future stamps.
 - GitHub ran only 3 to 5 of the 8 daily refresh crons on 24–27 Sep.
+- From the code review, not blocking: `deploy-freshness.yml` and
+  `data-refresh.yml` run a full `npm ci` only to run `tsx` on two scripts;
+  `check` fetches the build stamp twice; and `same_deployment_as_last_capture`
+  turns the whole parquet into Python dicts on every run.
+- If the commit-age test in `vercel-ignore.sh` misbehaves, the simpler design
+  is to stop skipping automation pushes: about 6 more builds a day (63 over
+  18–27 Sep), and no timing to keep in step.
 
 ## Dark is the default mode (2026-09-24)
 

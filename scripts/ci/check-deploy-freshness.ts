@@ -7,7 +7,9 @@
  *   check              .github/workflows/deploy-freshness.yml, hourly.
  *                      Writes `stale=true|false` and `title` to $GITHUB_OUTPUT,
  *                      the markdown report to --report (and the job summary).
- *                      Exits 0 whenever it could answer, 1 when it could not.
+ *                      Exits 0 whenever it could answer, 1 when it could not,
+ *                      including when any data file stays unreadable after
+ *                      one retry.
  *
  *   wait --after ISO   .github/workflows/data-refresh.yml, after the deploy
  *                      hook. Polls until production serves a build newer than
@@ -31,6 +33,7 @@ import {
 } from "../lib/deploy-freshness.js";
 
 const REQUEST_TIMEOUT_MS = 20_000;
+const RETRY_PAUSE_MS = 3_000;
 /**
  * `wait` accepts a build that began up to this long before the hook: a push
  * build already running when the hook fired is just as fresh, and Vercel may
@@ -54,8 +57,20 @@ async function get(url: string): Promise<Response> {
   return res;
 }
 
+/** Runs `read` again after a pause if it fails: one timeout or 5xx is not an answer. */
+async function withRetry<T>(read: () => Promise<T>): Promise<T> {
+  try {
+    return await read();
+  } catch {
+    await new Promise((resolve) => setTimeout(resolve, RETRY_PAUSE_MS));
+    return read();
+  }
+}
+
+const getJson = (url: string): Promise<unknown> => withRetry(async () => (await get(url)).json());
+
 async function fetchManifest(base: string): Promise<string[]> {
-  const html = await (await get(`${base}/?cb=${Date.now()}`)).text();
+  const html = await withRetry(async () => (await get(`${base}/?cb=${Date.now()}`)).text());
   const paths = manifestPaths(html);
   if (paths.length === 0) throw new Error(`${base}/ references no data/*.json files`);
   return paths;
@@ -64,7 +79,7 @@ async function fetchManifest(base: string): Promise<string[]> {
 async function fetchBuiltAt(base: string, paths: string[]): Promise<string | null> {
   const path = buildInfoPath(paths);
   if (!path) return null;
-  const info = (await (await get(`${base}/_file/${path}`)).json()) as { builtAt?: unknown };
+  const info = (await getJson(`${base}/_file/${path}`)) as { builtAt?: unknown };
   return typeof info.builtAt === "string" ? info.builtAt : null;
 }
 
@@ -78,20 +93,27 @@ function writeOutput(name: string, value: string): void {
 async function check(base: string, opts: Record<string, string>): Promise<number> {
   const now = new Date();
   const paths = await fetchManifest(base);
-  const builtAt = await fetchBuiltAt(base, paths).catch((err: Error) => {
-    console.error(`warn: build stamp unreadable: ${err.message}`);
-    return null;
-  });
+  const builtAt = await fetchBuiltAt(base, paths);
+  // A file the page references but this run cannot read leaves the answer
+  // unknown. Dropping it would shrink the live count and could raise a false
+  // "fallback corpus" alarm, so the run fails instead.
+  const unreadable: string[] = [];
   const feeds: FeedRecords[] = (
     await mapWithConcurrency(paths, 8, async (path) => {
       try {
-        return { path, records: regionRecords(await (await get(`${base}/_file/${path}`)).json()) };
+        return { path, records: regionRecords(await getJson(`${base}/_file/${path}`)) };
       } catch (err) {
-        console.error(`warn: ${path}: ${(err as Error).message}`);
+        unreadable.push((err as Error).message);
         return { path, records: [] };
       }
     })
   ).filter((f) => f.records.length > 0);
+  if (unreadable.length > 0) {
+    const shown = unreadable.slice(0, 5).join("; ");
+    throw new Error(
+      `could not read ${unreadable.length} of ${paths.length} data files, so this run cannot tell whether production is fresh: ${shown}${unreadable.length > 5 ? "; …" : ""}`,
+    );
+  }
 
   const assessment = assessFreshness({ builtAt, feeds, now });
   const { title, body } = renderFreshnessReport(assessment, base, now);

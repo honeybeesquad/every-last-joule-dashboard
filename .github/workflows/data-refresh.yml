@@ -45,7 +45,10 @@ env:
 jobs:
   trigger-rebuild:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Worst case: install (~2 min), three 16-min waits for main's head to age,
+    # then the 30-min wait for the build: about 81 min. At 60, GitHub could
+    # cancel the job before the wait step fails with its explanation.
+    timeout-minutes: 90
     permissions:
       contents: read
     steps:
@@ -67,12 +70,19 @@ jobs:
           # hook's build as that commit's push and could skip it. Wait until
           # main's head is older than the window. Bounded, and it never blocks
           # the refresh: anything unreadable just proceeds to the hook.
+          # It checks again after every wait, so a commit that lands during
+          # one is seen; at most three waits, then the hook goes anyway and the
+          # next step reports a skipped build.
           need=$(( (PUSH_WINDOW_MIN + 1) * 60 ))
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4; do
             committed=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .commit.committer.date 2>/dev/null) || break
             committed_s=$(date -d "$committed" +%s 2>/dev/null) || break
             age=$(( $(date +%s) - committed_s ))
             if [ "$age" -ge "$need" ]; then break; fi
+            if [ "$attempt" -eq 4 ]; then
+              echo "::warning::main's head is still ${age}s old after three waits; Vercel may skip this hook's build as a push."
+              break
+            fi
             pause=$(( need - age > need ? need : need - age ))
             echo "main's head is ${age}s old; waiting ${pause}s"
             sleep "$pause"
