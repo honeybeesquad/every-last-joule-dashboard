@@ -72,6 +72,12 @@ returned 403. So the evidence is Vercel's own cancel reason, not the script's
   `data/build-info.<hash>.json`. Git deployments have no file tree, and the
   preview is behind Vercel Authentication. The preview does not test the
   hook path either: a branch's first push builds under either script.
+- The new script's push-skip path works on Vercel. The ignore step cancelled
+  the docs-only push of `21d6ab4`, which added this block, 7 min after the
+  commit and 4 s into the build (`dpl_7qZJxvmSupnwwavoPwR8Wc85n2bU`). Its
+  subject is not an automation one, so only the diff test could skip it, and
+  only against `cf11f0f`: the previous SHA is the branch's own last good
+  build. The hook path is still untested on Vercel.
 
 **Fix (this branch).**
 - `vercel-ignore.sh`: a head older than 15 min (`PUSH_WINDOW_MIN`) cannot be
@@ -117,7 +123,8 @@ fresh one fresh, and `wait` failed on the frozen one and passed on the fresh
 one. The stale notice was looked at with the real `style.css` at 1440 and 390 px
 in both modes: hidden, it takes no space. **Not verified here:** a full local
 build (this sandbox cannot reach cdn.jsdelivr.net for Framework's `npm:d3`),
-and the new ignore step on Vercel (the old one's skips are confirmed above).
+and the new ignore step's hook path on Vercel (the old script's skips and the
+new one's push skip are confirmed above).
 The first scheduled refresh after merge is the real test: its *Wait for the
 new build to go live* step should pass.
 
