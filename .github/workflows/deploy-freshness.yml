@@ -1,0 +1,88 @@
+name: Deployment freshness
+
+# Hourly: is production serving a recent build? From 2026-09-24 to 27 it
+# served one build (04:42 UTC, 24 Sep) while every workflow stayed green:
+# health-check.yml reads each region's sourceStatus, which a build stamps once
+# and never revisits, and data-refresh.yml counted Vercel's 201 as success.
+# This check reads the two clocks that move only when a build lands, the
+# build stamp (data/build-info.<hash>.json) and the live regions' own
+# lastSuccessAt, and calls production stale when either is over 26 h old
+# (DEPLOY_STALE_AFTER_HOURS, src/lib/freshness.ts) or when fewer than 100
+# regions are live. The logic is scripts/lib/deploy-freshness.ts, tested in
+# tests/deploy-freshness.test.ts.
+#
+# One alarm per incident, not 24 a day: the run that finds production stale
+# with no open `auto-stale-deploy` issue opens one and fails, so GitHub emails
+# once. While it stays stale, later runs refresh that issue's body without
+# failing; the first fresh run closes it. A run that cannot reach the site
+# fails every time.
+
+on:
+  schedule:
+    - cron: "37 * * * *"   # offset from data-refresh (:15) and health-check (:45)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: deploy-freshness
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Check production freshness
+        id: fresh
+        run: npx tsx scripts/ci/check-deploy-freshness.ts check --report "$RUNNER_TEMP/freshness.md"
+
+      - name: Open or refresh the stale-deployment issue
+        id: issue
+        if: steps.fresh.outputs.stale == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ steps.fresh.outputs.title }}
+        run: |
+          set -euo pipefail
+          gh label create auto-stale-deploy --color "d93f0b" \
+            --description "Production is serving stale data (deploy-freshness.yml)" 2>/dev/null || true
+          existing=$(gh issue list --label auto-stale-deploy --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --title "$TITLE" --body-file "$RUNNER_TEMP/freshness.md"
+            echo "Refreshed issue #$existing"
+            echo "opened=false" >> "$GITHUB_OUTPUT"
+          else
+            gh issue create --title "$TITLE" --body-file "$RUNNER_TEMP/freshness.md" --label auto-stale-deploy
+            echo "opened=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Close the stale-deployment issue once fresh
+        if: steps.fresh.outputs.stale == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for n in $(gh issue list --label auto-stale-deploy --state open --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "Closed by deploy-freshness.yml: production data is fresh again. $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          done
+
+      - name: Fail the run that opened the issue
+        if: steps.issue.outputs.opened == 'true'
+        env:
+          TITLE: ${{ steps.fresh.outputs.title }}
+        run: |
+          echo "::error::$TITLE"
+          exit 1

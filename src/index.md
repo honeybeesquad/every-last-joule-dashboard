@@ -37,6 +37,7 @@ import { curtailmentShare, shareUnavailable, formatShare } from "./lib/generatio
 import { splitRegion } from "./lib/split-region.js";
 import { finalizeRegionData } from "./lib/region-data-finalize.js";
 import { countPublishedWasteRegions } from "./lib/waste-status.js";
+import { deployFreshness, formatAge, formatUtcStamp } from "./lib/freshness.js";
 import { mountGlobe } from "./globe.js";
 
 // The "Largest now" rail shows RAIL_LIST_LIMIT (10) rows ranked across every
@@ -72,11 +73,11 @@ const FUEL_SUBTITLE = {
 // count silently desyncs (this happened: a stale 132 against the real 135
 // entries fired the mop-up-on-last-file logic three files early and the
 // counter overshot to "468 / 459 regions"). Not every entry is a single
-// canonical region — CBECI, Anchor data and Version metadata are non-region
-// payloads, and "Static regions" bundles several regions into one file — so
-// the per-file share is a smoothed approximation of progress, not a literal
-// region tally, but it still lands on exactly REGIONS.length once every file
-// has resolved.
+// canonical region — CBECI, Anchor data, Version metadata and the Build stamp
+// are non-region payloads, and "Static regions" bundles several regions into
+// one file — so the per-file share is a smoothed approximation of progress,
+// not a literal region tally, but it still lands on exactly REGIONS.length
+// once every file has resolved.
 initLoaderProgress(REGIONS.length, DATA_LOADERS.length);
 const feeds = await loadDataFiles(DATA_LOADERS, trackFile);
 
@@ -99,7 +100,8 @@ document.getElementById("app-root").innerHTML = `
     <section class="hero" aria-label="Headline">
       <div class="eyebrow hero-eyebrow"><span class="hero-eyebrow-time" id="hero-time"></span><span class="hero-eyebrow-text">Hashrate this waste could cover</span></div>
       <div class="hero-pct num-tabular" id="pct-readout" aria-live="polite" aria-atomic="true">—%</div>
-      <p class="lead" id="lead-copy">of the Bitcoin network could run on renewable energy that grids wasted on an average day — curtailed, spilled, or constrained-off across <span id="region-count" aria-live="polite" aria-atomic="true">—</span> regions. Lower bound: what operators publish.</p>
+      <p class="lead" id="lead-copy">of the Bitcoin network could run on renewable energy that grids wasted on an average day — curtailed, spilled, or zero-priced across <span id="region-count" aria-live="polite" aria-atomic="true">—</span> of the ${REGIONS.length} regions we track. Lower bound: what operators publish.</p>
+      <p class="data-stale-notice" id="data-stale-notice" role="status" hidden></p>
       <dl class="hero-stats">
         <div class="stat">
           <dt class="stat-label" id="gw-label"><span class="label-long">Curtailed this hour</span><span class="label-short" aria-hidden="true">Curtailed now</span></dt>
@@ -523,7 +525,32 @@ finalizeRegionData(regionData, REGIONS);
   const countEl = document.getElementById("region-count");
   if (countEl) countEl.textContent = String(liveRegionCount);
 }
-document.getElementById("refreshed-at").textContent = feeds.cbeci.lastUpdated;
+// When this deployment's data was built. Every region carries its own
+// lastSuccessAt, but a build stamps those once and never revisits them, so a
+// deployment that stops rebuilding still reads "live" region by region. From
+// 24 to 27 Sep 2026 the site served one build for three days and nothing on
+// the page said so. The build stamp is the one clock that moves only when a
+// build lands; the CBECI feed's time (the old source of this line) is the
+// fallback for a deployment made before the stamp existed.
+{
+  const builtAt = feeds.buildInfo?.builtAt ?? feeds.cbeci?.lastUpdated ?? null;
+  const { ageHours, stale } = deployFreshness(builtAt, new Date());
+  const stamp = builtAt ? formatUtcStamp(builtAt) : null;
+  const refreshedEl = document.getElementById("refreshed-at");
+  if (refreshedEl && stamp && ageHours !== null) {
+    const time = document.createElement("time");
+    time.dateTime = new Date(builtAt).toISOString();
+    time.textContent = stamp;
+    refreshedEl.replaceChildren(time, ` (${formatAge(ageHours)})`);
+  }
+  const notice = document.getElementById("data-stale-notice");
+  if (notice && stale) {
+    notice.textContent = stamp && ageHours !== null
+      ? `Stale data: last updated ${formatAge(ageHours)} (${stamp}). The site normally refreshes every few hours.`
+      : "Stale data: this build carries no readable update time, so the figures may be out of date.";
+    notice.hidden = false;
+  }
+}
 
 const now = new Date();
 const initialHour = now.getUTCHours() + now.getUTCMinutes() / 60;

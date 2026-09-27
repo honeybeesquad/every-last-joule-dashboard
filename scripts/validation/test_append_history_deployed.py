@@ -493,3 +493,95 @@ def test_default_dashboard_url_is_overridable_via_env(monkeypatch):
     assert os.environ.get("ELJ_DASHBOARD_URL", append_history.DEFAULT_DASHBOARD_URL).rstrip("/") == (
         "https://staging.example.test"
     )
+
+
+# ---------------------------------------------------------------------------
+# Deployment freshness: a frozen deployment fails, an unchanged one is skipped
+# ---------------------------------------------------------------------------
+
+def _live_row(region_id: str, last_success_at: str, status: str = "live") -> dict:
+    return {"region_id": region_id, "source_status": status, "last_success_at": last_success_at}
+
+
+def test_assert_deployment_fresh_accepts_a_recent_build():
+    now = dt.datetime(2026, 9, 24, 9, 0, tzinfo=dt.timezone.utc)
+    rows = [_live_row(f"r{i}", "2026-09-24T04:43:02.275Z") for i in range(5)]
+    append_history.assert_deployment_fresh(rows, now)  # ~4 h old: no raise
+
+
+def test_assert_deployment_fresh_rejects_the_24_to_27_september_freeze():
+    now = dt.datetime(2026, 9, 27, 16, 55, 36, tzinfo=dt.timezone.utc)
+    rows = [_live_row(f"r{i}", "2026-09-24T04:43:02.275Z") for i in range(5)]
+    with pytest.raises(append_history.DeployedFetchError, match="stale"):
+        append_history.assert_deployment_fresh(rows, now)
+
+
+def test_assert_deployment_fresh_rejects_a_build_with_no_live_region():
+    now = dt.datetime(2026, 9, 24, 9, 0, tzinfo=dt.timezone.utc)
+    rows = [_live_row(f"r{i}", "2026-09-24T04:43:02.275Z", status="cached") for i in range(5)]
+    with pytest.raises(append_history.DeployedFetchError, match="age is unknown"):
+        append_history.assert_deployment_fresh(rows, now)
+
+
+def test_assert_deployment_fresh_does_not_count_a_future_stamp_as_fresh():
+    # dominican-republic stamps OC SENI's scheduled day ahead.
+    now = dt.datetime(2026, 9, 27, 16, 55, 36, tzinfo=dt.timezone.utc)
+    rows = [_live_row(f"r{i}", "2026-09-24T04:43:02.275Z") for i in range(5)]
+    rows += [_live_row("dominican-republic", "2026-09-28T03:00:00.000Z")] * 6
+    with pytest.raises(append_history.DeployedFetchError, match="stale"):
+        append_history.assert_deployment_fresh(rows, now)
+
+
+def _deployed_site(n_regions: int, last_success_at: str):
+    index_html = "".join(
+        f'<script src="data/region-{i}.abcabc{i}.json"></script>' for i in range(n_regions)
+    ).encode()
+    files = {}
+    for i in range(n_regions):
+        payload = _make_region_payload(f"region-{i}")
+        payload["lastSuccessAt"] = last_success_at
+        files[f"data/region-{i}.abcabc{i}.json"] = json.dumps(payload).encode()
+    return index_html, files
+
+
+def _patch_small_site(monkeypatch, tmp_path, last_success_at: str, n_regions: int = 5):
+    index_html, files = _deployed_site(n_regions, last_success_at)
+    monkeypatch.setattr(append_history, "_http_get", _stub_http_get(index_html, files))
+    monkeypatch.setattr(append_history, "MIN_MANIFEST_FILES", n_regions)
+    monkeypatch.setattr(append_history, "MIN_REGION_RECORDS", n_regions)
+    history = tmp_path / "curtailment_history.parquet"
+    monkeypatch.setattr(append_history, "HISTORY_FILE", history)
+    return history
+
+
+def _iso(hours_ago: float) -> str:
+    t = dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=hours_ago)
+    return t.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+
+def test_main_exits_nonzero_and_writes_nothing_for_a_stale_deployment(tmp_path, monkeypatch):
+    history = _patch_small_site(monkeypatch, tmp_path, _iso(84))
+    with pytest.raises(SystemExit) as exc_info:
+        append_history.main()
+    assert exc_info.value.code != 0
+    assert not history.exists()
+
+
+def test_main_appends_a_new_build_then_skips_it_the_second_time(tmp_path, monkeypatch, capsys):
+    import pyarrow.parquet as pq
+
+    history = _patch_small_site(monkeypatch, tmp_path, _iso(2))
+    append_history.main()
+    first = pq.read_table(history)
+    assert first.num_rows == 5
+    before = history.read_bytes()
+
+    # Same deployment still live at the next capture: nothing to add.
+    append_history.main()
+    assert history.read_bytes() == before
+    assert "Writing nothing" in capsys.readouterr().out
+
+    # A new build (new lastSuccessAt) is appended.
+    _patch_small_site(monkeypatch, tmp_path, _iso(0.5))
+    append_history.main()
+    assert pq.read_table(history).num_rows == 10

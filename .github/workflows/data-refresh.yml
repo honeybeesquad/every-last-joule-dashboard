@@ -1,12 +1,21 @@
 name: Scheduled data refresh
 
-# Triggers a Vercel rebuild on a fixed schedule.  Vercel's build environment
-# already has EIA_API_KEY and ENTSOE_API_TOKEN configured as Project
-# Environment Variables, so each rebuild re-runs every data loader and
-# captures the freshest numbers before redeploying.  Loaders run ~8-wide via
-# scripts/build/prefetch-loaders.ts with a 3-minute per-loader deadline, so a
-# build is bounded by the slowest loader (~4-5 min), not the sum (16 min
-# serial, and 46-min failures when an upstream stalled — 2026-09-10).
+# Triggers a Vercel rebuild on a fixed schedule, then waits for it to go live.
+# Vercel's build environment already has EIA_API_KEY and ENTSOE_API_TOKEN
+# configured as Project Environment Variables, so each rebuild re-runs every
+# data loader and captures the freshest numbers before redeploying.  Loaders
+# run ~8-wide via scripts/build/prefetch-loaders.ts with a 3-minute per-loader
+# deadline, so a build is bounded by the slowest loader (~4-5 min), not the
+# sum (16 min serial, and 46-min failures when an upstream stalled —
+# 2026-09-10).
+#
+# A 201 from the hook only means Vercel queued a deployment, not that it
+# built one. From 2026-09-24 to 27 scripts/build/vercel-ignore.sh skipped
+# every hook build, and this job reported success each time while production
+# served the 24 Sep build. So the job now waits for a fresh build to go live
+# and FAILS when none does (scripts/ci/check-deploy-freshness.ts wait). A red
+# run here means production did not refresh. history-append.yml runs only
+# after a green run, so it captures the new build rather than the old one.
 #
 # The Deploy Hook URL is stored as repo secret VERCEL_DEPLOY_HOOK.  It is a
 # POST-only URL; anyone with it can trigger a rebuild.  Rotate via the
@@ -18,16 +27,63 @@ on:
     # spike and timed so daily-publisher regions (ONS Brazil, NREA Egypt,
     # etc.) have their latest files available.  At ~5 build-minutes per
     # deploy × 8 deploys/day = ~40 min/day, well under Hobby's 100 hr/mo.
+    # GitHub runs scheduled jobs late and drops some: 3 to 5 of the 8 ran
+    # per day on 24–27 Sep 2026. deploy-freshness.yml alarms at 26 h.
     - cron: "15 */3 * * *"
   workflow_dispatch: {}
+
+# A refresh that is still waiting for its build must not overlap the next.
+concurrency:
+  group: data-refresh
+  cancel-in-progress: false
+
+env:
+  # vercel-ignore.sh reads a head younger than this as a fresh push and may
+  # skip it. Keep in step with window_min in scripts/build/vercel-ignore.sh.
+  PUSH_WINDOW_MIN: 15
 
 jobs:
   trigger-rebuild:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
     steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Let a just-merged commit age past the push window
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # If an automation commit merged moments ago, Vercel would read this
+          # hook's build as that commit's push and could skip it. Wait until
+          # main's head is older than the window. Bounded, and it never blocks
+          # the refresh: anything unreadable just proceeds to the hook.
+          need=$(( (PUSH_WINDOW_MIN + 1) * 60 ))
+          for attempt in 1 2 3; do
+            committed=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .commit.committer.date 2>/dev/null) || break
+            committed_s=$(date -d "$committed" +%s 2>/dev/null) || break
+            age=$(( $(date +%s) - committed_s ))
+            if [ "$age" -ge "$need" ]; then break; fi
+            pause=$(( need - age > need ? need : need - age ))
+            echo "main's head is ${age}s old; waiting ${pause}s"
+            sleep "$pause"
+          done
+          exit 0
+
       - name: POST Vercel deploy hook
+        id: hook
         run: |
           set -euo pipefail
+          echo "at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
           response=$(curl -sS -X POST "$VERCEL_DEPLOY_HOOK" \
             -w "\nHTTP_STATUS=%{http_code}\n" \
             --max-time 30)
@@ -37,6 +93,11 @@ jobs:
             echo "Deploy hook returned non-success status: $status" >&2
             exit 1
           fi
-          echo "Vercel rebuild triggered."
+          echo "Vercel accepted the deploy hook."
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+
+      - name: Wait for the new build to go live
+        env:
+          HOOK_AT: ${{ steps.hook.outputs.at }}
+        run: npx tsx scripts/ci/check-deploy-freshness.ts wait --after "$HOOK_AT" --timeout-min 30
