@@ -62,7 +62,7 @@ import re
 import sys
 import urllib.error
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 try:
@@ -579,6 +579,87 @@ def _make_row(ts: str, region_id: str, data: dict) -> dict:
     return row
 
 
+# ---------------------------------------------------------------------------
+# DEPLOYMENT FRESHNESS — the second half of the CRITICAL GUARD.
+# ---------------------------------------------------------------------------
+# The size guard stops a thin fetch. It cannot see a deployment that stopped
+# rebuilding: from 2026-09-24 to 27 production served one build (04:42 UTC,
+# 24 Sep) and this script appended it 19 times, each under a new
+# build_timestamp. Between 2026-09-11 and 27, 75 of 92 captures re-stamped a
+# deployment already in the archive: the phantom-history failure the module
+# docstring describes, reached through the deployed site instead of the
+# committed corpus. So:
+#   - a deployment whose live regions' median lastSuccessAt is more than
+#     STALE_AFTER_HOURS old fails the run (exit 1) and writes nothing;
+#   - a deployment identical to the last capture (same live regions, same
+#     lastSuccessAt) writes nothing and exits 0: there is nothing new to add.
+# Keep STALE_AFTER_HOURS in lock-step with DEPLOY_STALE_AFTER_HOURS in
+# src/lib/freshness.ts, and FUTURE_TOLERANCE with FUTURE_TOLERANCE_HOURS in
+# scripts/lib/deploy-freshness.ts.
+STALE_AFTER_HOURS = 26
+FUTURE_TOLERANCE = timedelta(hours=1)
+
+
+def _live_success_times(rows: list[dict], now: datetime) -> list[datetime]:
+    """lastSuccessAt of every live row, leaving out stamps in the future (a
+    loader bug, never evidence of freshness)."""
+    times = []
+    for row in rows:
+        if row.get("source_status") != "live":
+            continue
+        t = _parse_iso8601(row.get("last_success_at"))
+        if t is not None and t <= now + FUTURE_TOLERANCE:
+            times.append(t)
+    return sorted(times)
+
+
+def assert_deployment_fresh(rows: list[dict], now: datetime) -> None:
+    """Raise DeployedFetchError unless the deployed build is recent."""
+    times = _live_success_times(rows, now)
+    if not times:
+        raise DeployedFetchError(
+            "no live region in the deployed build carries a readable "
+            "lastSuccessAt, so its age is unknown. Writing nothing."
+        )
+    median = times[(len(times) - 1) // 2]
+    age_hours = (now - median).total_seconds() / 3600
+    if age_hours > STALE_AFTER_HOURS:
+        raise DeployedFetchError(
+            f"the deployed build is stale: its live regions' median "
+            f"lastSuccessAt is {median.isoformat()}, {age_hours:.0f} h ago "
+            f"(limit {STALE_AFTER_HOURS} h). Production has not rebuilt; "
+            f"appending would re-stamp old data as a new capture. Writing "
+            f"nothing. See .github/workflows/deploy-freshness.yml."
+        )
+
+
+def _live_signature(rows: list[dict]) -> frozenset[tuple[str, str]]:
+    return frozenset(
+        (str(r.get("region_id")), str(r.get("last_success_at")))
+        for r in rows
+        if r.get("source_status") == "live"
+    )
+
+
+def same_deployment_as_last_capture(existing: pa.Table, rows: list[dict]) -> bool:
+    """True when `rows` are the build the archive's latest deployed-build
+    capture already recorded. Every build restamps its live regions'
+    lastSuccessAt, so an identical live signature means the same build."""
+    needed = {"build_timestamp", "region_id", "source_status", "last_success_at", "capture_source"}
+    if not needed <= set(existing.schema.names):
+        return False
+    deployed = [
+        r for r in existing.select(sorted(needed)).to_pylist()
+        if r["capture_source"] == CAPTURE_SOURCE_DEPLOYED
+    ]
+    if not deployed:
+        return False
+    latest = max(r["build_timestamp"] for r in deployed)
+    previous = _live_signature([r for r in deployed if r["build_timestamp"] == latest])
+    current = _live_signature(rows)
+    return bool(current) and current == previous
+
+
 def main() -> None:
     now = datetime.now(timezone.utc).replace(microsecond=0)
     base_url = os.environ.get("ELJ_DASHBOARD_URL", DEFAULT_DASHBOARD_URL).rstrip("/")
@@ -586,6 +667,7 @@ def main() -> None:
 
     try:
         rows = build_rows(now, base_url)
+        assert_deployment_fresh(rows, now)
     except DeployedFetchError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         sys.exit(1)
@@ -610,6 +692,13 @@ def main() -> None:
         # how the pre-existing capture_source-less rows get promoted rather
         # than requiring every historical partition to be rewritten again.
         existing = pq.read_table(HISTORY_FILE)
+        if same_deployment_as_last_capture(existing, rows):
+            print(
+                "The deployed build is the one the last capture recorded "
+                "(same live regions, same lastSuccessAt). Appending it again "
+                "would re-stamp unchanged data as a new capture. Writing nothing."
+            )
+            return
         if "capture_source" not in existing.schema.names:
             print(
                 "  note: existing history file predates the capture_source "

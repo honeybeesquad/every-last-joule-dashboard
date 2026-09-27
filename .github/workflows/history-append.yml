@@ -8,6 +8,11 @@ name: Historical snapshot append
 # deployed dashboard's current region payloads (https://everylastjoule.com
 # by default, overridable via ELJ_DASHBOARD_URL), builds a flat row per
 # region, and appends it to data/historical/curtailment_history.parquet.
+# data-refresh.yml succeeds only once its new build is live, so the capture
+# it triggers is of that build. The script writes nothing when the deployment
+# is the one the last capture recorded, and fails (writing nothing) when the
+# deployment is more than 26 h old: from 2026-09-24 to 27 it re-stamped one
+# frozen build 19 times. See "DEPLOYMENT FRESHNESS" in scripts/append_history.py.
 # Before 2026-08-19 this workflow read the repository's committed
 # data/snapshots/last-good/*.json fallback corpus instead — see the
 # capture_source column and dataset/SCHEMA.md § "Parquet rolling history"

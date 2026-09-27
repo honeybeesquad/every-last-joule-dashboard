@@ -1,10 +1,28 @@
 #!/usr/bin/env bash
 # Vercel "Ignored Build Step". Exit 0 = skip this build; exit 1 = build.
 #
-# Skips commits whose only changes are the automated corpus updates —
-# data/historical (history parquet, relay CSVs, heartbeat), data/snapshots,
-# docs. The 3-hourly deploy hook rebuilds everything anyway, and a deploy hook
-# or a redeploy of an already-deployed commit always builds.
+# Skips a PUSH of a commit whose only changes since the last deployment are
+# the automated corpus updates — data/historical (history parquet, relay CSVs,
+# heartbeat), data/snapshots, docs. Everything else builds, and above all the
+# scheduled deploy hook must build: it is the only thing that refreshes the
+# live data.
+#
+# 2026-09-24 → 27: the hook was being skipped. Vercel gives this step no signal
+# that a build came from a deploy hook, and VERCEL_GIT_PREVIOUS_SHA is the last
+# SUCCESSFUL deployment. Once an automation commit's push build was skipped,
+# every hook built that same head against that same previous SHA, saw an
+# automation-only diff, and was skipped too, so production stayed on the
+# 04:42 UTC 24 Sep build for three days while every workflow reported
+# success. From #967 (2026-09-11) on, data only refreshed after a code PR
+# merged. See STATUS.md, "Scheduled rebuilds were being skipped".
+#
+# A push build starts within a minute or two of its commit; a deploy hook
+# builds a head that is usually hours old. So a commit older than
+# PUSH_WINDOW_MIN cannot be its own push build: build it. The data-refresh
+# workflow waits until main's head is older than this window before it
+# calls the hook, so a hook never looks like a push. Misreading the other way
+# (a push build that waited in Vercel's queue past the window) costs one
+# extra build, never a skipped refresh.
 #
 # Known trade-off: the Colombia loader reads data/historical/colombia-
 # vertimientos-daily.csv as its fallback when the XM API is empty, so a
@@ -14,15 +32,29 @@ set -u
 prev="${VERCEL_GIT_PREVIOUS_SHA:-}"
 cur="${VERCEL_GIT_COMMIT_SHA:-}"
 msg="${VERCEL_GIT_COMMIT_MESSAGE:-}"
+# Keep in step with PUSH_WINDOW_MIN in .github/workflows/data-refresh.yml.
+window_min="${PUSH_WINDOW_MIN:-15}"
+# Test seam: tests/vercel-ignore.test.ts pins "now".
+now="${VERCEL_IGNORE_NOW:-$(date +%s)}"
 
-# Redeploy / deploy hook / first deploy: build.
+# Redeploy / first deploy: build.
 if [ -z "$prev" ] || [ -z "$cur" ] || [ "$prev" = "$cur" ]; then exit 1; fi
 
-# Precise test when both commits are in the clone.
+# Deploy hook or dashboard redeploy of an older head: build. An unreadable
+# commit time also builds; when in doubt, never skip.
+committed="$(git log -1 --format=%ct "$cur" 2>/dev/null || true)"
+case "$committed" in ''|*[!0-9]*) exit 1 ;; esac
+age=$(( now - committed ))
+if [ "$age" -gt $(( window_min * 60 )) ]; then
+  echo "vercel-ignore: $cur is $(( age / 60 )) min old, so this is not its push build (deploy hook or redeploy) — building"
+  exit 1
+fi
+
+# A fresh push. Precise test when both commits are in the clone.
 if git cat-file -e "$prev^{commit}" 2>/dev/null && git cat-file -e "$cur^{commit}" 2>/dev/null; then
   if git diff --quiet "$prev" "$cur" -- . \
       ':(exclude)data/historical' ':(exclude)data/history' ':(exclude)data/snapshots' ':(exclude)data/relay' ':(exclude)docs' ':(exclude)*.md'; then
-    echo "vercel-ignore: only history/snapshot/doc changes since $prev — skipping build"
+    echo "vercel-ignore: fresh push with only history/snapshot/doc changes since $prev — skipping build"
     exit 0
   fi
   exit 1
@@ -31,6 +63,6 @@ fi
 # Shallow clone fallback: go by the squash-commit subject the automation uses.
 case "$msg" in
   "chore(history): append daily snapshot"*|"chore(data): pull relay CSVs"*)
-    echo "vercel-ignore: automation commit — skipping build"; exit 0 ;;
+    echo "vercel-ignore: fresh automation push — skipping build"; exit 0 ;;
 esac
 exit 1

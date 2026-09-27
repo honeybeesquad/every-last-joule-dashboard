@@ -8,7 +8,7 @@
 
 # About
 
-<p class="methodology-deck">An open database of renewable electricity that never reached a customer — curtailed, spilled, or constrained-off. Sourced from grid operators and regulators. Updated every few hours.</p>
+<p class="methodology-deck">An open database of renewable electricity that never reached a customer — curtailed, spilled, or zero-priced. Sourced from grid operators and regulators. Updated every few hours.</p>
 
 </header>
 

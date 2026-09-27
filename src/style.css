@@ -1036,6 +1036,21 @@ body:has(.app-shell) { max-width: none; }
   color: var(--ink-muted);
 }
 
+/* Shown only when the build stamp is older than DEPLOY_STALE_AFTER_HOURS
+   (src/lib/freshness.ts); hidden, it takes no space in any layout. The mark
+   is .hotspot-units-note's warning rule, and the words are ink, because
+   --warning falls under 4.5:1 on paper. No `display` here: it would beat
+   the `hidden` attribute. */
+.data-stale-notice {
+  margin: 12px 0 0;
+  max-width: none;
+  padding-left: 10px;
+  border-left: 3px solid var(--warning);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
 .hero-stats {
   margin: 24px 0 0;
   border-bottom: 1px solid var(--hairline);
@@ -1848,6 +1863,7 @@ body:has(.app-shell) { max-width: none; }
   }
   :root[data-theme="dark"] .hero-pct { margin: 20px 0 0 -8px; }
   :root[data-theme="dark"] .hero .lead { max-width: 470px; margin-top: 24px; font-size: 18px; }
+  :root[data-theme="dark"] .data-stale-notice { max-width: 470px; }
   :root[data-theme="dark"] .hero-stats { margin-top: 32px; }
 
   :root[data-theme="dark"] :is(.app-timeline, .rail) {
@@ -2123,7 +2139,7 @@ body:has(.app-shell) { max-width: none; }
      globe, as the board draws them. */
   :root[data-theme="light"] .app-shell { display: flex; flex-direction: column; }
   :root[data-theme="light"] .hero { display: contents; }
-  :root[data-theme="light"] :is(.hero-eyebrow, .hero-pct, .hero .lead) { order: 1; }
+  :root[data-theme="light"] :is(.hero-eyebrow, .hero-pct, .hero .lead, .data-stale-notice) { order: 1; }
   :root[data-theme="light"] .globe-stage { order: 2; }
   :root[data-theme="light"] .hero-stats { order: 3; }
   :root[data-theme="light"] .rail { order: 4; }
@@ -2216,7 +2232,7 @@ body:has(.app-shell) { max-width: none; }
     min-height: calc(100svh - 64px);
     padding: 16px 0 0;
   }
-  :root[data-theme="dark"] :is(.hero-eyebrow, .hero-pct, .hero .lead) { position: relative; z-index: 1; }
+  :root[data-theme="dark"] :is(.hero-eyebrow, .hero-pct, .hero .lead, .data-stale-notice) { position: relative; z-index: 1; }
   :root[data-theme="dark"] .hero-eyebrow { font-size: 10px; }
   :root[data-theme="dark"] .hero-eyebrow::before { width: 6px; height: 6px; margin-right: 8px; box-shadow: none; }
   :root[data-theme="dark"] .hero-pct { margin: 14px 0 0 -5px; }

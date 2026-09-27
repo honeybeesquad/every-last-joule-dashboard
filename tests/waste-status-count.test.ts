@@ -77,4 +77,33 @@ describe("the claims that carry a region count", () => {
     expect(og).toContain("${REGIONS.length}");
     expect(og).not.toMatch(/\b\d{3}\s+grid/); // no hardcoded "459 grid regions"
   });
+
+  it("the lead copy puts the published-waste count beside the roster size", () => {
+    // "444 regions" on the hero beside "All 536" and "536 tracked regions"
+    // read as a contradiction. Both numbers are right; the sentence now says
+    // how they relate.
+    const index = readFileSync(join(root, "src/index.md"), "utf8");
+    const lead = index.slice(index.indexOf('id="lead-copy"'), index.indexOf("</p>", index.indexOf('id="lead-copy"')));
+    expect(lead).toContain('id="region-count"');
+    expect(lead).toContain("of the ${REGIONS.length} regions we track");
+  });
+});
+
+describe("the approved wording for what the dataset counts", () => {
+  const root = process.cwd();
+  const claims: Array<[string, string]> = [
+    ["src/index.md", 'id="lead-copy"'],
+    ["observablehq.config.ts", "const OG_DESCRIPTION"],
+    ["src/about.md", 'class="methodology-deck"'],
+  ];
+
+  it.each(claims)("%s says curtailed, spilled, or zero-priced", (file, marker) => {
+    const text = readFileSync(join(root, file), "utf8");
+    const at = text.indexOf(marker);
+    expect(at, `${marker} not found in ${file}`).toBeGreaterThan(-1);
+    // A claim ends at its paragraph's </p> or its template literal's closing `;.
+    const claim = text.slice(at, at + text.slice(at).search(/<\/p>|`;/));
+    expect(claim.toLowerCase()).toContain("curtailed, spilled, or zero-priced");
+    expect(claim).not.toContain("constrained-off");
+  });
 });

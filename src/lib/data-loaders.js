@@ -39,15 +39,17 @@
  *          asserts that pairing, which is what makes a rotation unrepresentable.
  *   file   The FileAttachment. Lazy: nothing is fetched until `.json()`.
  *   label  Human-readable source name shown in the dashboard loading terminal.
- *   embed  Set `false` to keep an entry off `/embed/globe`. Only `zenodoVersion`
- *          is exempt: it is dashboard chrome (the version badge), not a region,
- *          and it is a live Zenodo fetch the embed must not block on.
+ *   embed  Set `false` to keep an entry off `/embed/globe`. Only dashboard
+ *          chrome is exempt: `zenodoVersion` (the version badge, a live Zenodo
+ *          fetch the embed must not block on) and `buildInfo` (the build stamp
+ *          behind the footer's "Last refreshed" and the stale-data notice).
  *
- * NOT EVERY ENTRY IS ONE REGION. `cbeci`, `anchor` and `zenodoVersion` are
- * non-region payloads, and `statics` bundles many regions into one file. The
- * loading terminal's per-file share is therefore a smoothed approximation of
- * progress, not a literal region tally — but because its denominator is
- * `DATA_LOADERS.length` it still lands on exactly `REGIONS.length`.
+ * NOT EVERY ENTRY IS ONE REGION. `cbeci`, `anchor`, `zenodoVersion` and
+ * `buildInfo` are non-region payloads, and `statics` bundles many regions into
+ * one file. The loading terminal's per-file share is therefore a smoothed
+ * approximation of progress, not a literal region tally — but because its
+ * denominator is `DATA_LOADERS.length` it still lands on exactly
+ * `REGIONS.length`.
  */
 
 import { FileAttachment } from "observablehq:stdlib";
@@ -202,6 +204,7 @@ export const DATA_LOADERS = [
   { key: "sichuan",             file: FileAttachment("../data/sichuan.json"),              label: "Sichuan" },
   { key: "guangxi",             file: FileAttachment("../data/guangxi.json"),              label: "Guangxi" },
   { key: "zenodoVersion",       file: FileAttachment("../data/zenodo-version.json"),       label: "Version metadata", embed: false },
+  { key: "buildInfo",           file: FileAttachment("../data/build-info.json"),           label: "Build stamp", embed: false },
 ];
 
 /**

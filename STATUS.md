@@ -1,7 +1,177 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-09-24 (dark is the default mode: a first visit opens dark whatever the OS prefers; see the entry below). Also 2026-09-24 (no Google Fonts request: `globalStylesheets: []`, and `/privacy` no longer names Google; see the entry below). Also 2026-09-24 (`/privacy` page for the Meta app review; see the entry below). Also 2026-09-24 (dark globe zooms with a plain scroll over it; see the entry below). Also 2026-09-24 (dark timeline ribbon stretches to the dock's width; see the entry below). Also 2026-09-24 (dark globe opens zoomed out, and keeps turning after a drag; see the entry below). Also 2026-09-24 (dark globe zooms out to the whole sphere; see the entry below). Also 2026-09-24 (dark globe zoom, tilt and borders; see the entry below). Also 2026-09-24 (0.5× playback restored as the default speed; see the D4 line in the redesign entry). Also 2026-09-24 (Nightgrid + Daylight: both modes recoloured, set in the brand system's Schibsted Grotesk and IBM Plex Mono, and the mark back in its gold and cyan; stacked on PR 5; see the entry below). Also 2026-09-24 (light/dark redesign PR 5, clean-up: the paper figure's palette renamed from "sunfire" to "embed", four unused faces and dead CSS deleted, the plan archived as shipped; stacked on PR 4; see the entries below). Also 2026-09-24 (light/dark redesign PR 4, tablet and phone in both modes, the globe explorer, the dark bottom sheet and the doc pages' new header, stacked on PR 3; see the entries below). Also 2026-09-24 (light/dark redesign PR 3, dark desktop: the Horizon stage, horizon globe, ribbon and glass dock; PR 1 **#1087** and PR 2 **#1091** merged 2026-09-23; see the entries below). Also 2026-09-23 (light/dark redesign PR 2, light desktop: the Almanac grid, engraved globe and small-multiples timeline; see the entry below). Also 2026-09-23 (light/dark redesign PR 1, theme plumbing: the site's modes are now light (Almanac) and dark (Horizon), with Geist, Geist Mono and Newsreader; see the entries below). Also 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk became `--font-display` and `--font-body` in both themes; superseded 2026-09-23 by the redesign's faces, see the entries below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
+**Last verified against git:** 2026-09-27 (scheduled rebuilds were being skipped: production served one build from 04:42 UTC on 24 Sep to at least 27 Sep while every workflow stayed green, which Vercel's deployment records confirm; fix and freshness alarms merged in **#1134**; see the entry below). Also 2026-09-24 (dark is the default mode: a first visit opens dark whatever the OS prefers; see the entry below). Also 2026-09-24 (no Google Fonts request: `globalStylesheets: []`, and `/privacy` no longer names Google; see the entry below). Also 2026-09-24 (`/privacy` page for the Meta app review; see the entry below). Also 2026-09-24 (dark globe zooms with a plain scroll over it; see the entry below). Also 2026-09-24 (dark timeline ribbon stretches to the dock's width; see the entry below). Also 2026-09-24 (dark globe opens zoomed out, and keeps turning after a drag; see the entry below). Also 2026-09-24 (dark globe zooms out to the whole sphere; see the entry below). Also 2026-09-24 (dark globe zoom, tilt and borders; see the entry below). Also 2026-09-24 (0.5× playback restored as the default speed; see the D4 line in the redesign entry). Also 2026-09-24 (Nightgrid + Daylight: both modes recoloured, set in the brand system's Schibsted Grotesk and IBM Plex Mono, and the mark back in its gold and cyan; stacked on PR 5; see the entry below). Also 2026-09-24 (light/dark redesign PR 5, clean-up: the paper figure's palette renamed from "sunfire" to "embed", four unused faces and dead CSS deleted, the plan archived as shipped; stacked on PR 4; see the entries below). Also 2026-09-24 (light/dark redesign PR 4, tablet and phone in both modes, the globe explorer, the dark bottom sheet and the doc pages' new header, stacked on PR 3; see the entries below). Also 2026-09-24 (light/dark redesign PR 3, dark desktop: the Horizon stage, horizon globe, ribbon and glass dock; PR 1 **#1087** and PR 2 **#1091** merged 2026-09-23; see the entries below). Also 2026-09-23 (light/dark redesign PR 2, light desktop: the Almanac grid, engraved globe and small-multiples timeline; see the entry below). Also 2026-09-23 (light/dark redesign PR 1, theme plumbing: the site's modes are now light (Almanac) and dark (Horizon), with Geist, Geist Mono and Newsreader; see the entries below). Also 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk became `--font-display` and `--font-body` in both themes; superseded 2026-09-23 by the redesign's faces, see the entries below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
+
+## Scheduled rebuilds were being skipped; production froze 24–27 Sep (2026-09-27)
+
+**#1134**, merged 2026-09-27 from `claude/hopeful-mendel-b9z2lc`. Production
+served the 24 Sep build until the merge; the merge's own push build refreshes
+the data.
+
+**What production showed** (Simon's weekday checks of the live site):
+byte-identical feeds on 25 and 28 Sep NZ time, 30.68 GW, 209% of the network,
+917.56 EH/s, CBECI `lastUpdated` 2026-09-24T04:42:46.349Z.
+
+**Root cause: `scripts/build/vercel-ignore.sh` (#967, 2026-09-11) skipped the
+scheduled deploy hook.** Its comment said a deploy hook "always builds"; the
+code built only when `VERCEL_GIT_PREVIOUS_SHA` was empty or equal to the head.
+Vercel sets that variable to the last *successful* deployment and gives the
+step no signal that a build came from a hook. Once an automation commit's push
+build was skipped, every hook built that head against the same previous SHA,
+saw an automation-only diff and skipped. `data-refresh.yml` counted Vercel's
+201 as success, and `health-check.yml` reads per-region `sourceStatus`, which a
+build stamps once, so both stayed green.
+
+**Evidence.**
+- Replaying the old script over git history and the Actions run times: the
+  last build is the 04:42 UTC 24 Sep hook, whose head was `0b50224` (#1108,
+  the last code merge). Every push and hook after it skips against previous
+  SHA `0b50224`. The replay also reproduces the 21–22 Sep freeze.
+- `curtailment_history.parquet` is captured from the live site: 19 captures
+  from 24 Sep 06:50 to 27 Sep 16:55 UTC are identical, and all 197 live
+  records carry `lastSuccessAt` between 04:42:43 and 04:44:07 on 24 Sep. Since
+  #967: 17 distinct deployments in 92 captures, against 58 in 70 before.
+  Freezes of 89 h (11–14 Sep) and 86 h (15–18 Sep) went unnoticed because
+  code merges kept restarting the data.
+- Upstreams and keys are not the cause: every keyed source (EIA, ENTSO-E,
+  netztransparenz, ERCOT) was live in the last build, and no build has
+  contacted an upstream since.
+
+**Confirmed on Vercel (read-only, 27 Sep).** The Vercel connector could read
+deployment records but not build logs: its grant had no team scope, so logs
+returned 403. So the evidence is Vercel's own cancel reason, not the script's
+"skipping build" line.
+- 72 production deployments from 23 Sep 00:00 to 27 Sep 21:35 UTC: 23
+  `READY` and 49 `CANCELED`. The last `READY` one is
+  `dpl_J9ayPxrvKsbebbukNAcPP1ze3KBH`, created at 04:42:33 UTC on 24 Sep on
+  `0b50224`, and it still served everylastjoule.com at 21:35 UTC on 27 Sep.
+  All 40 production deployments after it carry Vercel's Ignored Build Step
+  `errorLink` and stopped 3–7 s after they started. A full build usually
+  takes 4–7 min.
+- The connector shows hook builds as `source: git`, the same as pushes. Each
+  of the 21 data-refresh cron runs in that window matches the production
+  deployment that Vercel created 9–25 s later on the same head. Two built
+  (23 Sep 16:52 and 24 Sep 04:42): each head was a code merge that had
+  already built, so the previous SHA equalled the head. The ignore step
+  skipped 18, including all 16 from 24 Sep 11:39 to 27 Sep 21:18. One
+  (23 Sep 04:40) has no ignore-step link: it sat in the queue behind a
+  19-minute build, and Vercel built the newer #1084 push instead.
+- That #1084 push was history-only, yet it built. This fits a previous SHA
+  fixed when the deployment is created: `f15999f`'s build had not finished,
+  so the previous SHA was still `1216d18`. A replay should take the previous
+  SHA at creation time.
+- No redeploy on 27 Sep: all 15 deployments that day are `source: git`, no
+  data-refresh or history-append run was started by hand, and production
+  stayed on the 24 Sep build. The four hook builds (05:13, 11:57, 16:55 and
+  21:18 UTC) each rebuilt a head that already had a cancelled push build.
+  #1130 (07:15) came from history-append's 02:00 UTC cron, which ran
+  5 h 14 min late, so no hook preceded it.
+- The PR branch's preview, `dpl_2pszVStw7BKpGy8QwVZ52Z2vt3jm` on `cf11f0f`, is
+  `READY` (built 20:55–21:02 UTC). **Not verified:** that it emitted
+  `data/build-info.<hash>.json`. Git deployments have no file tree, and the
+  preview is behind Vercel Authentication. The preview does not test the
+  hook path either: a branch's first push builds under either script.
+- The new script's push-skip path works on Vercel. The ignore step cancelled
+  the docs-only push of `21d6ab4`, which added this block, 7 min after the
+  commit and 4 s into the build (`dpl_7qZJxvmSupnwwavoPwR8Wc85n2bU`). Its
+  subject is not an automation one, so only the diff test could skip it, and
+  only against `cf11f0f`: the previous SHA is the branch's own last good
+  build. The hook path is still untested on Vercel.
+
+**Fix (#1134).**
+- `vercel-ignore.sh`: a head older than 15 min (`PUSH_WINDOW_MIN`) cannot be
+  its own push build, so it builds; only a fresh automation or docs push is
+  skipped. `tests/vercel-ignore.test.ts` (10 cases, 4 of which fail against
+  the old script). Replayed over 18–27 Sep: 40 of 40 hooks build, and 63 of 63
+  automation pushes still skip.
+- `data-refresh.yml`: waits until main's head is past the window before the
+  hook, then waits for a fresh build to go live and **fails** when none does
+  within 30 min (`scripts/ci/check-deploy-freshness.ts wait`). history-append
+  now runs after the new build is live. The job checks main's head again after
+  each wait (at most three), and its 90-min timeout covers the worst case of
+  about 81 min.
+- Build stamp: `src/data/build-info.json.ts` emits
+  `data/build-info.<hash>.json` (`builtAt`, `commit`, `ref`, `env`,
+  `staleAfterHours: 26`), registered as `buildInfo` (dashboard chrome,
+  `embed: false`).
+- Dashboard: the footer reads, for example, "Last refreshed 24 Sep 2026, 04:42
+  UTC (3 days ago)" from the stamp (falling back to CBECI's time), and a
+  notice under the lead, hidden until the stamp is over 26 h old, says the
+  data is stale.
+  `DEPLOY_STALE_AFTER_HOURS` and the formatters are in
+  `src/lib/freshness.ts`.
+- `deploy-freshness.yml` (hourly, logic in `scripts/lib/deploy-freshness.ts`):
+  stale when the build stamp or the live regions' median `lastSuccessAt` is
+  over 26 h old, or fewer than 100 regions are live. The first stale run opens
+  one `auto-stale-deploy` issue and fails; later runs refresh its body; the
+  first fresh run closes it. It ignores feeds with no live regions: about 20
+  modelled feeds carry calibration dates up to 2.7 years old. A run that
+  cannot read the page, or any data file it references, after one retry
+  fails without opening the issue. A live region stamped in the future counts
+  as live but stays out of the median, as in `append_history.py`.
+- `scripts/append_history.py`: fails, writing nothing, when the deployment is
+  over 26 h old; writes nothing when the deployment is the one the last
+  capture recorded. 6 new pytest cases.
+
+**Code review (27 Sep).** A review of the branch raised ten points, and four
+are fixed here. The freshness check no longer drops a data file it cannot
+read, which could have raised a false "fallback corpus" alarm. The refresh
+job re-checks main's head after each wait and has room for its worst case.
+A live region with a future stamp now counts toward the live floor. The other
+six were not changed:
+- The 15-min grace in `wait`: it passes only when a build went live within
+  15 min before the hook, so production is fresh either way.
+- `withFallback` for the build stamp: it makes no request, like 20 other
+  loaders, and a fallback would serve an old `builtAt`.
+- The CBECI fallback in the footer: unreachable while every build ships the
+  stamp, and harmless.
+- Two efficiency points and one design point, listed under Follow-ups.
+
+**Copy.** Hero: "curtailed, spilled, or zero-priced across 444 of the 536
+regions we track". Both numbers were right (published-waste regions against
+the roster); the sentence now says how they relate. The meta description and
+the About deck say "zero-priced" instead of "constrained-off". Pinned in
+`tests/waste-status-count.test.ts`.
+
+**Verified.** `npm run typecheck && npm test && npm run ci:gates` pass
+(1,703 tests, 40 new), `npm run validate` passes, and the 28 append-history
+pytest cases pass (6 new). After the review fixes, `check` was run against a
+local site with one data file missing (it exits 1: "could not read 1 of 3 data
+files") and with every file present (it answers), and the pre-hook loop was
+run with `gh` and `sleep` stubbed (one wait; three waits then a warning;
+none).
+`scripts/ci/check-deploy-freshness.ts` was run against local copies of a
+frozen and a fresh deployment: `check` called the frozen one stale and the
+fresh one fresh, and `wait` failed on the frozen one and passed on the fresh
+one. The stale notice was looked at with the real `style.css` at 1440 and 390 px
+in both modes: hidden, it takes no space. **Not verified here:** a full local
+build (this sandbox cannot reach cdn.jsdelivr.net for Framework's `npm:d3`),
+and the new ignore step's hook path on Vercel (the old script's skips and the
+new one's push skip are confirmed above).
+The first scheduled refresh after merge is the real test: its *Wait for the
+new build to go live* step should pass.
+
+**Not changed.** No data file, `regions.ts` entry or tier.
+
+**Follow-ups.**
+- The archive holds about 75 re-stamped captures since 11 Sep (same
+  deployment, new `build_timestamp`). Flag or drop them before the next
+  dataset release.
+- `health-check.yml`'s issue #822 has been open since 20 Aug with 144 comments:
+  about 200 structurally `cached` records against a threshold of 10. Split
+  modelled or static records from real fallbacks, or retire it for
+  `deploy-freshness.yml`.
+- `dominican-republic` stamps `lastSuccessAt` a day ahead (OC SENI's schedule
+  runs to 23:00 AST). Both freshness checks ignore future stamps.
+- GitHub ran only 3 to 5 of the 8 daily refresh crons on 24–27 Sep.
+- From the code review, not blocking: `deploy-freshness.yml` and
+  `data-refresh.yml` run a full `npm ci` only to run `tsx` on two scripts;
+  `check` fetches the build stamp twice; and `same_deployment_as_last_capture`
+  turns the whole parquet into Python dicts on every run.
+- If the commit-age test in `vercel-ignore.sh` misbehaves, the simpler design
+  is to stop skipping automation pushes: about 6 more builds a day (63 over
+  18–27 Sep), and no timing to keep in step.
 
 ## Dark is the default mode (2026-09-24)
 
