@@ -21,9 +21,10 @@ name: Scheduled data refresh
 # often: it ran 2 to 6 of these 8 slots a day in September 2026, hours late.
 # Each run pings the check in repo secret HC_PING_URL: /start first, then
 # success only once the new build is live and passes the freshness check (at
-# least 100 live regions), otherwise /fail. Healthchecks emails when no
-# success ping arrives within the check's period plus grace, so a refresh
-# that never runs is caught too (scripts/ci/ping-healthchecks.sh).
+# least 100 live regions), otherwise /fail. Healthchecks emails at once on a
+# /fail, and when no success ping arrives within the check's period plus
+# grace, so a refresh that never runs is caught too
+# (scripts/ci/ping-healthchecks.sh).
 #
 # The Deploy Hook URL is stored as repo secret VERCEL_DEPLOY_HOOK.  It is a
 # POST-only URL; anyone with it can trigger a rebuild.  Rotate via the
@@ -55,8 +56,8 @@ jobs:
   trigger-rebuild:
     runs-on: ubuntu-latest
     # Worst case: install (~2 min), three 16-min waits for main's head to age,
-    # the 30-min wait for the build, then about a minute to check it: about
-    # 82 min. At 60, GitHub could cancel the job before the wait step fails
+    # the 30-min wait for the build, then up to 5 min to check it: about
+    # 85 min. At 60, GitHub could cancel the job before the wait step fails
     # with its explanation.
     timeout-minutes: 90
     permissions:
@@ -123,17 +124,20 @@ jobs:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
 
       - name: Wait for the new build to go live
+        id: wait
         env:
           HOOK_AT: ${{ steps.hook.outputs.at }}
         run: npx tsx scripts/ci/check-deploy-freshness.ts wait --after "$HOOK_AT" --timeout-min 30
 
       - name: Check the new build's data
         id: quality
-        # The new build is live by now; this asks whether it is any good (at
-        # least 100 live regions, live stamps under 26 h). A bad answer fails
-        # the Healthchecks ping below, not this job, so history-append.yml
-        # still captures what production now serves.
+        # The new build is live by now; this asks whether it is any good: at
+        # least 100 live regions, and the live regions' median lastSuccessAt
+        # under 26 h. A bad or missing answer fails the Healthchecks ping
+        # below, not this job, so history-append.yml still captures what
+        # production now serves. It normally takes seconds.
         continue-on-error: true
+        timeout-minutes: 5
         run: npx tsx scripts/ci/check-deploy-freshness.ts check --report "$RUNNER_TEMP/freshness.md"
 
       - name: Tell Healthchecks.io how the refresh went
@@ -141,6 +145,8 @@ jobs:
         env:
           HC_PING_URL: ${{ secrets.HC_PING_URL }}
           JOB_STATUS: ${{ job.status }}
+          HOOK: ${{ steps.hook.outcome }}
+          WAIT: ${{ steps.wait.outcome }}
           QUALITY: ${{ steps.quality.outcome }}
           STALE: ${{ steps.quality.outputs.stale }}
           TITLE: ${{ steps.quality.outputs.title }}

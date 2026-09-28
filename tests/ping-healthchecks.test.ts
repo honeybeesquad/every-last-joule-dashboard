@@ -46,6 +46,7 @@ exit "\${STUB_EXIT:-0}"
 afterEach(() => rmSync(dir, { recursive: true, force: true }));
 
 function run(mode: string, env: Record<string, string> = {}) {
+  rmSync(calls, { recursive: true, force: true }); // each run reports only its own pings
   const r = spawnSync("bash", [SCRIPT, mode], {
     encoding: "utf8",
     env: {
@@ -72,13 +73,26 @@ function run(mode: string, env: Record<string, string> = {}) {
   return { status: r.status, stdout: r.stdout, stderr: r.stderr, pings };
 }
 
-const good = { JOB_STATUS: "success", QUALITY: "success", STALE: "false", TITLE: "Production data is fresh" };
+const good = {
+  JOB_STATUS: "success",
+  HOOK: "success",
+  WAIT: "success",
+  QUALITY: "success",
+  STALE: "false",
+  TITLE: "Production data is fresh",
+};
+/** A run that failed before the freshness check wrote its report. */
+const failed = (env: Record<string, string>) => ({ ...good, QUALITY: "skipped", STALE: "", TITLE: "", REPORT: join(dir, "none.md"), ...env });
 
 describe("ping-healthchecks.sh start", () => {
   it("pings /start with the run's URL", () => {
     const r = run("start");
     expect(r.status).toBe(0);
     expect(r.pings).toEqual([{ url: `${HC}/start`, body: `Refresh started: ${RUN}` }]);
+  });
+
+  it("drops a trailing slash from the secret", () => {
+    expect(run("start", { HC_PING_URL: `${HC}/` }).pings[0].url).toBe(`${HC}/start`);
   });
 });
 
@@ -91,9 +105,16 @@ describe("ping-healthchecks.sh outcome", () => {
     expect(r.pings[0].body).toBe(`Production data is fresh\n\n| Live region records | 197 of 530 (floor 100) |\n\n${RUN}`);
   });
 
-  it("fails the check when no new build went live", () => {
-    const r = run("outcome", { ...good, JOB_STATUS: "failure", QUALITY: "skipped", STALE: "", TITLE: "" });
-    expect(r.pings).toEqual([{ url: `${HC}/fail`, body: `No new build went live, or the deploy hook failed: ${RUN}` }]);
+  it("fails the check, naming the step, when the refresh failed", () => {
+    const cases: [Record<string, string>, string][] = [
+      [{ JOB_STATUS: "failure", HOOK: "success", WAIT: "failure" }, "Vercel accepted the deploy hook, but no new build went live within 30 min."],
+      [{ JOB_STATUS: "failure", HOOK: "failure", WAIT: "skipped" }, "The Vercel deploy hook failed."],
+      [{ JOB_STATUS: "failure", HOOK: "skipped", WAIT: "skipped" }, "The refresh failed before it reached the deploy hook (setup or install)."],
+      [{ JOB_STATUS: "cancelled", HOOK: "success", WAIT: "cancelled" }, "The refresh was cancelled or timed out before it finished."],
+    ];
+    for (const [env, reason] of cases) {
+      expect(run("outcome", failed(env)).pings).toEqual([{ url: `${HC}/fail`, body: `${reason}\n\n${RUN}` }]);
+    }
   });
 
   it("fails the check when the new build's data could not be read back", () => {
@@ -118,11 +139,6 @@ describe("ping-healthchecks.sh outcome", () => {
     expect(r.pings[0].body).toContain("gave no answer");
   });
 
-  it("sends nothing for a cancelled run", () => {
-    const r = run("outcome", { ...good, JOB_STATUS: "cancelled" });
-    expect(r.status).toBe(0);
-    expect(r.pings).toEqual([]);
-  });
 });
 
 describe("ping-healthchecks.sh never fails the refresh", () => {
@@ -138,7 +154,7 @@ describe("ping-healthchecks.sh never fails the refresh", () => {
   it("warns and exits 0 when Healthchecks cannot be reached", () => {
     const r = run("outcome", { ...good, STUB_EXIT: "22" });
     expect(r.status).toBe(0);
-    expect(r.stdout).toContain("::warning::Could not reach Healthchecks.io");
+    expect(r.stdout).toContain("::warning::Could not ping Healthchecks.io");
   });
 
   it("rejects an unknown mode", () => {

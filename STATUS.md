@@ -23,22 +23,25 @@ first 23 hours, so the alarm stopped whenever the refresh did.
 - `scripts/ci/ping-healthchecks.sh` pings the check in repo secret
   `HC_PING_URL`: `/start` when a refresh begins, then success only when a new
   build went live and passed the freshness check (at least 100 live regions,
-  live stamps under 26 h), otherwise `/fail` with the reason and the report.
-  Healthchecks emails when no success ping arrives within the check's period
-  plus grace, so a refresh that never runs is caught too. Without the secret
-  the pings are skipped; the script never fails the job. Tested in
-  `tests/ping-healthchecks.test.ts`.
+  and the live regions' median `lastSuccessAt` under 26 h). Anything else,
+  including a cancelled or timed-out run, gets `/fail` with the reason and
+  any report. Healthchecks emails at once on a `/fail`, and when no success
+  ping arrives within the check's period plus grace, so a refresh that never
+  runs is caught too. Without the secret the pings are skipped; the script
+  never fails the job. Tested in `tests/ping-healthchecks.test.ts`, and the
+  workflow lines it depends on in `tests/data-refresh-workflow.test.ts`.
 - `data-refresh.yml` calls it first and last, and reads the new build back
-  with `check-deploy-freshness.ts check` after the wait step. A stale build
-  fails the ping, not the job, so `history-append.yml` still captures what
-  production serves.
+  with `check-deploy-freshness.ts check` after the wait step (5 min limit). A
+  stale build fails the ping, not the job, so `history-append.yml` still
+  captures what production serves.
 - `deploy-freshness.yml`: `cancel-in-progress: false`, the follow-up from the
   entry below.
 
-**Owner setup.** A Healthchecks.io check with period 3 h and grace 9 h, which
-emails after 12 h without a good refresh, until the `abed` clock runs; then
-grace 3 h. Repo secret `HC_PING_URL` is the check's ping URL. **Not verified
-yet:** a real ping and the email path, which need the secret.
+**Owner setup.** A Healthchecks.io check with period 3 h and grace 9 h, so 12
+h without a success ping emails, until the `abed` clock runs; then grace 3 h.
+A failed or stale run emails at once either way. Repo secret `HC_PING_URL` is
+the check's ping URL. **Not verified yet:** a real ping and the email path,
+which need the secret.
 
 **Not changed.** No data file, `regions.ts` entry or tier.
 

@@ -3,23 +3,28 @@
 # (.github/workflows/data-refresh.yml), so the alarm does not depend on
 # GitHub's scheduler: in September 2026 it ran 2 to 6 of the 8 daily refresh
 # slots, hours late, and the hourly deploy-freshness.yml 3 times in its first
-# 23 hours. Healthchecks emails when no success ping arrives within the
-# check's period plus grace, so a refresh that never starts is caught too.
+# 23 hours.
 #
 #   ping-healthchecks.sh start     first thing in a run: /start
 #   ping-healthchecks.sh outcome   last thing, whatever happened before:
 #     success  the job succeeded and the new build passed the freshness check
-#     /fail    anything else, with the reason, the report and the run's URL
-#     nothing  the run was cancelled; the check's grace period covers it
+#     /fail    anything else, including a cancelled or timed-out run, with
+#              the reason, the freshness report if any, and the run's URL
 #
-# `outcome` reads JOB_STATUS (success, failure or cancelled), QUALITY (the
-# freshness check step's outcome), STALE and TITLE (its outputs) and REPORT
-# (the report's path). The script never fails the job: with no HC_PING_URL,
-# or when Healthchecks cannot be reached, it prints a note and exits 0.
+# Healthchecks emails at once on a /fail, and when no success ping has arrived
+# within the check's period plus grace, so a refresh that never runs is caught
+# too.
+#
+# `outcome` reads JOB_STATUS (success, failure or cancelled), HOOK and WAIT
+# (the deploy hook and wait steps' outcomes), QUALITY (the freshness check
+# step's outcome), STALE and TITLE (its outputs) and REPORT (the report's
+# path). The script never fails the job: with no HC_PING_URL, or when
+# Healthchecks cannot be reached, it prints a note and exits 0.
 set -uo pipefail
 
 mode=${1:-}
 url=${HC_PING_URL:-}
+url=${url%/} # a trailing slash would turn /start into //start, a 404
 curl_bin=${HC_CURL:-curl} # tests substitute a stub
 run_url="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY:-}/actions/runs/${GITHUB_RUN_ID:-}"
 
@@ -38,15 +43,22 @@ fi
 
 # ping <suffix> <body>: POST the body to the check, or warn and carry on.
 ping() {
-  if printf '%s' "$2" | "$curl_bin" -fsS -m 10 --retry 3 -o /dev/null --data-binary @- "$url$1"; then
+  if printf '%s' "$2" | "$curl_bin" -fsS -m 10 --retry 3 --retry-connrefused -o /dev/null --data-binary @- "$url$1"; then
     echo "Pinged Healthchecks: ${1:-success}."
   else
-    echo "::warning::Could not reach Healthchecks.io. It alerts anyway if no success ping follows."
+    echo "::warning::Could not ping Healthchecks.io${1:+ ($1)}; check the HC_PING_URL secret. The check alerts anyway if no success ping follows."
   fi
 }
 
-report() {
-  cat "${REPORT:-/dev/null}" 2>/dev/null
+# body <headline>: the headline, the freshness report if there is one, the run.
+body() {
+  local report
+  report=$(cat "${REPORT:-/dev/null}" 2>/dev/null)
+  if [ -n "$report" ]; then
+    printf '%s\n\n%s\n\n%s' "$1" "$report" "$run_url"
+  else
+    printf '%s\n\n%s' "$1" "$run_url"
+  fi
 }
 
 if [ "$mode" = start ]; then
@@ -55,19 +67,28 @@ if [ "$mode" = start ]; then
 fi
 
 status=${JOB_STATUS:-}
-title=${TITLE:-}
-if [ "$status" = cancelled ]; then
-  echo "The run was cancelled, so no ping. The check's grace period covers it."
-elif [ "$status" != success ]; then
-  ping /fail "No new build went live, or the deploy hook failed: $run_url"
+if [ "$status" != success ]; then
+  if [ "$status" = cancelled ]; then
+    reason="The refresh was cancelled or timed out before it finished."
+  elif [ "${HOOK:-}" = failure ]; then
+    reason="The Vercel deploy hook failed."
+  elif [ "${HOOK:-}" != success ]; then
+    reason="The refresh failed before it reached the deploy hook (setup or install)."
+  elif [ "${WAIT:-}" = failure ]; then
+    reason="Vercel accepted the deploy hook, but no new build went live within 30 min."
+  else
+    reason="The refresh failed."
+  fi
+  ping /fail "$(body "$reason")"
 elif [ "${QUALITY:-}" != success ]; then
-  ping /fail "A new build went live, but its data could not be read back to check it: $run_url"
+  ping /fail "$(body "A new build went live, but its data could not be read back to check it.")"
 elif [ "${STALE:-}" = true ]; then
-  echo "::warning::${title:-The new build failed the freshness check.}"
-  ping /fail "$(printf '%s\n\n%s\n\n%s' "${title:-The new build failed the freshness check.}" "$(report)" "$run_url")"
+  headline=${TITLE:-The new build failed the freshness check.}
+  echo "::warning::$headline"
+  ping /fail "$(body "$headline")"
 elif [ "${STALE:-}" = false ]; then
-  ping "" "$(printf '%s\n\n%s\n\n%s' "${title:-Production data is fresh}" "$(report)" "$run_url")"
+  ping "" "$(body "${TITLE:-Production data is fresh}")"
 else
-  ping /fail "The freshness check gave no answer: $run_url"
+  ping /fail "$(body "The freshness check gave no answer.")"
 fi
 exit 0
