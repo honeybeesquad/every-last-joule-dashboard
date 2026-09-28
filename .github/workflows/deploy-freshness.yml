@@ -16,6 +16,10 @@ name: Deployment freshness
 # once. While it stays stale, later runs refresh that issue's body without
 # failing; the first fresh run closes it. A run that cannot reach the site
 # fails every time.
+#
+# This check runs on GitHub's scheduler, which ran it 3 times in its first 23
+# hours, so it cannot be the only alarm. The one that does not depend on that
+# scheduler is the Healthchecks.io ping in data-refresh.yml.
 
 on:
   schedule:
@@ -26,9 +30,12 @@ permissions:
   contents: read
   issues: write
 
+# Queue rather than cancel: with cancel-in-progress, a dispatch that overlaps
+# a scheduled run could cancel the run that opens the stale issue, and its
+# failure email with it.
 concurrency:
   group: deploy-freshness
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   check:

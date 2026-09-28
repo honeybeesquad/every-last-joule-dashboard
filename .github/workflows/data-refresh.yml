@@ -17,6 +17,14 @@ name: Scheduled data refresh
 # run here means production did not refresh. history-append.yml runs only
 # after a green run, so it captures the new build rather than the old one.
 #
+# The alarm is Healthchecks.io, because GitHub's scheduler is what fails most
+# often: it ran 2 to 6 of these 8 slots a day in September 2026, hours late.
+# Each run pings the check in repo secret HC_PING_URL: /start first, then
+# success only once the new build is live and passes the freshness check (at
+# least 100 live regions), otherwise /fail. Healthchecks emails when no
+# success ping arrives within the check's period plus grace, so a refresh
+# that never runs is caught too (scripts/ci/ping-healthchecks.sh).
+#
 # The Deploy Hook URL is stored as repo secret VERCEL_DEPLOY_HOOK.  It is a
 # POST-only URL; anyone with it can trigger a rebuild.  Rotate via the
 # Vercel dashboard if it leaks.
@@ -28,7 +36,8 @@ on:
     # etc.) have their latest files available.  At ~5 build-minutes per
     # deploy × 8 deploys/day = ~40 min/day, well under Hobby's 100 hr/mo.
     # GitHub runs scheduled jobs late and drops some: 3 to 5 of the 8 ran
-    # per day on 24–27 Sep 2026. deploy-freshness.yml alarms at 26 h.
+    # per day on 24–27 Sep 2026. Healthchecks.io alarms when no good refresh
+    # lands in time (see above); deploy-freshness.yml at 26 h.
     - cron: "15 */3 * * *"
   workflow_dispatch: {}
 
@@ -46,13 +55,19 @@ jobs:
   trigger-rebuild:
     runs-on: ubuntu-latest
     # Worst case: install (~2 min), three 16-min waits for main's head to age,
-    # then the 30-min wait for the build: about 81 min. At 60, GitHub could
-    # cancel the job before the wait step fails with its explanation.
+    # the 30-min wait for the build, then about a minute to check it: about
+    # 82 min. At 60, GitHub could cancel the job before the wait step fails
+    # with its explanation.
     timeout-minutes: 90
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
+
+      - name: Tell Healthchecks.io a refresh has started
+        env:
+          HC_PING_URL: ${{ secrets.HC_PING_URL }}
+        run: bash scripts/ci/ping-healthchecks.sh start
 
       - uses: actions/setup-node@v4
         with:
@@ -111,3 +126,23 @@ jobs:
         env:
           HOOK_AT: ${{ steps.hook.outputs.at }}
         run: npx tsx scripts/ci/check-deploy-freshness.ts wait --after "$HOOK_AT" --timeout-min 30
+
+      - name: Check the new build's data
+        id: quality
+        # The new build is live by now; this asks whether it is any good (at
+        # least 100 live regions, live stamps under 26 h). A bad answer fails
+        # the Healthchecks ping below, not this job, so history-append.yml
+        # still captures what production now serves.
+        continue-on-error: true
+        run: npx tsx scripts/ci/check-deploy-freshness.ts check --report "$RUNNER_TEMP/freshness.md"
+
+      - name: Tell Healthchecks.io how the refresh went
+        if: always()
+        env:
+          HC_PING_URL: ${{ secrets.HC_PING_URL }}
+          JOB_STATUS: ${{ job.status }}
+          QUALITY: ${{ steps.quality.outcome }}
+          STALE: ${{ steps.quality.outputs.stale }}
+          TITLE: ${{ steps.quality.outputs.title }}
+          REPORT: ${{ runner.temp }}/freshness.md
+        run: bash scripts/ci/ping-healthchecks.sh outcome
