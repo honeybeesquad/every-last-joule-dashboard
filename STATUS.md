@@ -38,9 +38,9 @@ first 23 hours, so the alarm stopped whenever the refresh did.
   fails the ping, not the job, so `history-append.yml` still captures what
   production serves. Every step now has a time limit, so a hang fails its
   step and the ping says whether it was before the hook, at the hook or in
-  the wait; the job's limit (150 min, above the steps' 141) is a backstop.
+  the wait; the job's limit (160 min, well above the steps' 141) is a backstop.
   The push-window wait is best-effort: if it times out, the refresh goes on
-  to the hook.
+  to the hook. Neither ping step can stop or fail a refresh.
 - `deploy-freshness.yml`: `cancel-in-progress: false`, the follow-up from the
   entry below.
 

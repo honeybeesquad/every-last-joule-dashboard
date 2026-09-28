@@ -41,10 +41,18 @@ describe("data-refresh.yml and the Healthchecks.io alarm", () => {
     expect(start.text).toContain("HC_PING_URL: ${{ secrets.HC_PING_URL }}");
   });
 
-  it("gives every step a time limit, and the job a limit above their sum", () => {
+  it("gives every step a time limit, and the job a limit well above their sum", () => {
     const limits = steps.map(stepLimit);
     const job = number(WORKFLOW, /\n {4}timeout-minutes: (\d+)/, "job timeout-minutes");
-    expect(job).toBeGreaterThan(limits.reduce((a, b) => a + b, 0));
+    // Room for job set-up and the post steps, which count against the job's
+    // limit but have none of their own.
+    expect(job).toBeGreaterThanOrEqual(limits.reduce((a, b) => a + b, 0) + 15);
+  });
+
+  it("never lets a Healthchecks ping stop or fail the refresh", () => {
+    for (const needle of ["ping-healthchecks.sh start", "ping-healthchecks.sh outcome"]) {
+      expect(step(needle).text).toContain("continue-on-error: true");
+    }
   });
 
   it("lets the push-window wait finish its three waits, and fall through to the hook if it cannot", () => {

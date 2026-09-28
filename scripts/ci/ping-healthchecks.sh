@@ -72,8 +72,10 @@ fi
 
 status=${JOB_STATUS:-}
 if [ "$status" != success ]; then
-  if [ "$status" = cancelled ]; then
-    reason="The refresh was cancelled, by hand or by the job's time limit."
+  if [ "$status" = cancelled ] && [ "${HOOK:-}" = success ]; then
+    reason="The refresh was cancelled, by hand or by the job's time limit, after Vercel accepted the deploy hook, so a new build may still go live."
+  elif [ "$status" = cancelled ]; then
+    reason="The refresh was cancelled, by hand or by the job's time limit, before the deploy hook."
   elif [ "${HOOK:-}" = failure ]; then
     reason="The Vercel deploy hook failed."
   elif [ "${HOOK:-}" != success ]; then
@@ -85,7 +87,7 @@ if [ "$status" != success ]; then
   fi
   ping /fail "$(body "$reason")"
 elif [ "${QUALITY:-}" != success ]; then
-  ping /fail "$(body "A new build went live, but its data could not be read back to check it.")"
+  ping /fail "$(body "A new build went live, but checking its data failed or timed out.")"
 elif [ "${STALE:-}" = true ]; then
   headline=${TITLE:-The new build failed the freshness check.}
   echo "::warning::$headline"

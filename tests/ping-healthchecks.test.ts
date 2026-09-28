@@ -118,17 +118,24 @@ describe("ping-healthchecks.sh outcome", () => {
       [{ JOB_STATUS: "failure", HOOK: "skipped", WAIT: "skipped" }, "The refresh failed before it reached the deploy hook."],
       [{ JOB_STATUS: "failure", HOOK: "success", WAIT: "success" }, "The refresh failed."],
       // job.status cannot tell a cancel by hand from the job's time limit.
-      [{ JOB_STATUS: "cancelled", HOOK: "success", WAIT: "cancelled" }, "The refresh was cancelled, by hand or by the job's time limit."],
+      [
+        { JOB_STATUS: "cancelled", HOOK: "success", WAIT: "cancelled" },
+        "The refresh was cancelled, by hand or by the job's time limit, after Vercel accepted the deploy hook, so a new build may still go live.",
+      ],
+      [
+        { JOB_STATUS: "cancelled", HOOK: "skipped", WAIT: "skipped" },
+        "The refresh was cancelled, by hand or by the job's time limit, before the deploy hook.",
+      ],
     ];
     for (const [env, reason] of cases) {
       expect(run("outcome", failed(env)).pings).toEqual([{ url: `${HC}/fail`, body: `${reason}\n\n${RUN}` }]);
     }
   });
 
-  it("fails the check when the new build's data could not be read back", () => {
+  it("fails the check when checking the new build's data failed or timed out", () => {
     const r = run("outcome", { ...good, QUALITY: "failure", STALE: "", TITLE: "" });
     expect(r.pings[0].url).toBe(`${HC}/fail`);
-    expect(r.pings[0].body).toContain("could not be read back");
+    expect(r.pings[0].body).toContain("checking its data failed or timed out");
   });
 
   it("fails the check, with the report, when the new build is stale", () => {
