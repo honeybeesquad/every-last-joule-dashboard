@@ -135,7 +135,7 @@ Not verified anywhere: whether prebuilt production deployments queue behind a ru
 
 | PR | State |
 | --- | --- |
-| PR 1: alarm off GitHub | Built on `claude/refresh-alarm-healthchecks` (28 Sep). Simon has a Healthchecks.io account; the check and the `HC_PING_URL` secret come next. |
+| PR 1: alarm off GitHub | **#1142**, built 28 Sep on `claude/refresh-alarm-healthchecks`. Simon has a Healthchecks.io account; the check and the `HC_PING_URL` secret come next. |
 | PR 2: abed clock | Not started. Needs a fine-grained PAT on abed and the timer installed there. |
 | PR 3: build in Actions | Not started. Needs a Vercel token, the project's ids and Simon's OK to turn off git builds for `main`. |
 | PR 4: remove the old machinery | Not started; after PR 3 has run cleanly. |
