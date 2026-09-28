@@ -1,0 +1,150 @@
+# Data-refresh and deploy pipeline: design plan (everylastjoule.com)
+
+> **STATUS: ACTIVE.** Simon approved this plan on 28 Sep 2026 ("Let's run fable's plan"). PR 1 (the Healthchecks.io alarm) is the first to ship; section 10 records each PR's state and where the build departs from the text. The state of record is `STATUS.md` and git.
+
+Written by a Claude Fable planning agent, 28 Sep 2026, read-only: nothing was dispatched, deployed, posted or changed. Reviewed by the main session before hand-over; see the notes directly below. The Vercel account and project ids that the draft quoted are left out of this copy: read them from the Vercel project's settings when PR 3 needs them.
+
+## Review notes (main session, 28 Sep, 21:25 UTC)
+
+- **One error, corrected below.** The plan said 36 of the last 40 production deployments were cancelled, "all automation or docs pushes since #1134, as designed". Checked against the Vercel API: 31 of those 36 date from the 24-27 Sep freeze. Since #1134 merged there have been 11 production deployments: 5 READY (the merge build and the 05:17, 08:24, 13:46 and 21:12 refreshes) and 6 CANCELED, all automation or docs pushes, as designed. The plan's "about six a day" cancellation figure is right.
+- **Checked:** abed's July outage. `docs/ops/abed-capture-service.md` records that the tunnel died on 27 Jul, went unnoticed for three weeks and lost 21 days of capture.
+- **Since this was written:** the 21:12 UTC scheduled refresh (about 3 h late) built dpl_BybQQARYps1eQzJAmj3TnBCAXE3z, READY at about 21:19. History append #1141 followed, and Vercel skipped its push build as designed.
+- **Still unverified** (listed in section 8): Vercel Hobby's cron limit, the Healthchecks and Cloudflare free tiers, and whether GitHub's runners reach every upstream that Vercel's builders do. Each gets checked before the PR that depends on it.
+- **Order:** this puts the clock before the build move, the reverse of the main session's hypothesis. Agreed: the scheduler causes the daily 5-8 h gaps and the clock is a small change; the build move is bigger and does not fix the scheduler.
+
+## 1. Recommendation
+
+Do three things, in this order, and drop the "second clock only" framing: (1) move the alarm to Healthchecks.io, pinged only after a run has verified that production serves a new build with enough live regions; (2) add a gap-filling clock on abed that dispatches `data-refresh` when production's build stamp is over 3 h 15 min old, keeping GitHub `schedule` as the fallback, and never routing the alarm through abed; (3) build in GitHub Actions and deploy the output with `vercel deploy --prebuilt --prod`, with Vercel's git builds for `main` off, which deletes the deploy hook, the ignore heuristic, the aging wait and the log blindness. Keep data inside the build; stay on Vercel Hobby. The hypothesis is right on (a), (b) and (d); on (c) abed beats a new vendor for now, Vercel Cron is ruled out (once a day on Hobby), and a Cloudflare Worker is the fallback if abed's measured uptime is poor.
+
+## 2. Failure modes in today's chain
+
+| Link | How it fails | Evidence | Blast radius | Detected today? |
+| --- | --- | --- | --- | --- |
+| GitHub `schedule` for data-refresh (`15 */3`) | Runs start 1-3 h late and 2-4 of 8 slots are dropped; the 00:15, 06:15 and 12:15 slots almost never run | 79 scheduled runs 3-10 and 19-28 Sep: mean lateness 102 min, max 179 min; 2-6 runs/day, mode 5; 11-19 Sep: 4-5/day. Gaps of 5.3 h and 6.7 h are routine, and 21:17 to 05:17 and 05:17 to 13:46 on 27-28 Sep (8 h and 8.5 h). GitHub docs: "can be delayed during periods of high loads... some queued jobs may be dropped" | Data 5-8.5 h old for hours every day | No, below 26 h |
+| Hourly `schedule` for deploy-freshness (`37 * * * *`) | Mostly dropped | 3 runs in 23 slots since merge (01:09, 07:35, 15:58 on 28 Sep). The 6-hourly health-check ran 4/4 per day; the daily crons ran daily but 2.5-5.8 h late | The alarm is silent exactly when the refresh is | No: a missing run is silent |
+| Pre-hook aging wait (three 16-min waits) | Adds up to 48 min while automation commits keep landing; `PUSH_WINDOW_MIN` must stay in step with `window_min` in the shell script | `data-refresh.yml` lines 65-90; `vercel-ignore.sh` line 36 | Latency only | Warning line only |
+| Deploy hook POST | 201 means queued, not built; returns a job id, not a deployment id; the URL is a bearer secret | 24-27 Sep freeze; Vercel docs: response `{job:{id,state:"PENDING"}}` | Silent no-op until #1134 | Since #1134: the wait step |
+| Ignored Build Step (`vercel-ignore.sh`) | Heuristic on commit age and previous-SHA; a skipped build cannot be told from a queued one; the fallback path after three waits can still be skipped | Of the last 40 production deployments when this was written, 36 were `CANCELED` by the ignored build step: 31 during the 24-27 Sep freeze and 5 automation or docs pushes since #1134, as designed *(corrected on review)* | Skipped refresh; noisy deployment list | Wait step fails after 30 min, GitHub emails |
+| Vercel Hobby single build slot and auto-cancel of older queued builds | A hook build queues behind or is superseded by a push build | 23 Sep 04:40 hook built #1084 instead; #1134's merge build queued 135 s | Late or lost refresh | Wait step accepts any build within 15 min of the hook |
+| Loaders and keys | Deadline or upstream failure serves the last-good corpus as `cached`/`degraded`; an expired EIA or ENTSO-E key looks the same; the build stays green | `resilient.ts` fallback; 129-308 live records per build observed | Quiet quality drop | deploy-freshness (`liveCount < 100`) when it runs; health-check is noisy (#822, 144 comments) |
+| Build logs | Vercel connector returns 403 for logs and team scope | Re-confirmed today (`get_project` with slug: 403; deployments readable in personal scope) | Slow diagnosis; the job infers success by polling production | n/a |
+| Production probe (`wait`) | Polls through the CDN with cache-busting; 30-min timeout; an alias failure looks like a skipped build | `check-deploy-freshness.ts` | A red run | Yes |
+| history-append | `workflow_run` after a green refresh is prompt; the 02:00 safety cron ran 06:43-07:48; `AUTOMATION_TOKEN` expiry stops the PRs | Run list; the workflow header | Archive gaps | No |
+| Relay chain (abed, relay repo, relay-pull 19:15, auto-merge, next refresh) | abed's tunnel died silently for three weeks in July; the relay CSV is read at build time only | `abed-capture-service.md`; `colombia.json.ts` | Colombia, India, PR degrade truthfully | relay-freshness (daily, 48 h heartbeat) |
+| deploy-freshness `cancel-in-progress: true` | A dispatch that overlaps a cron run cancels the run that would open the issue | Workflow line 31 | Lost alert | No |
+| Secrets (`VERCEL_DEPLOY_HOOK`, `AUTOMATION_TOKEN`, `RELAY_DEPLOY_KEY`, API keys on Vercel) | Rotation or expiry degrades quietly | Secret-rotation runbook | Varies | Partly, via liveCount |
+| 60-day inactivity rule | GitHub disables schedules in a public repo after 60 days without activity | GitHub docs | Only if the bots stop committing | No |
+| Dashboard stale notice | 26 h threshold, only seen by a visitor | `src/index.md` lines 535-553 | Last resort | Visitor-only |
+
+## 3. Targets
+
+- Production build stamp under 3.5 h old for 95% of hours (today about 65-70%, estimated from the five-run pattern with 5-7 h gaps); under 6 h for 99.5%.
+- Longest undetected staleness 6 h (today 26 h nominal, unbounded in practice because the alarm shares the scheduler).
+- Alert within 1 h of the threshold by email; under one false alarm a month.
+- Dispatch to fresh production under 10 min (today 6.5 min when the hook builds; up to 54 min with the aging waits).
+- Zero cancelled production deployments a day (today about six); Vercel build minutes for production near zero.
+- Build p50 under 8 min (Vercel today: 276 s, 348 s, 393 s on a 2-vCPU container).
+- Cost ceiling: no recurring spend; one new account (Healthchecks.io); Cloudflare only if abed fails its uptime bar.
+- Honesty unchanged: `sourceStatus`, tiers, the footer stamp and the notice keep reading real fetch and build times.
+
+## 4. Options
+
+**A. Second clock only (the earlier proposal).** Removes nothing in the chain. Adds a PAT on abed, a timer and a script. Cost nil; effort small. Risks: abed's uptime is unknown (heartbeat 27 Sep 10:30 UTC, ok); the hook, ignore step and 201 problem stay; dispatching deploy-freshness from abed puts the alarm on the same host as the clock. Needs: a fine-grained PAT (this repo, Actions read and write) on abed.
+
+**B. Alarm fix only (Healthchecks.io dead-man's switch).** Removes the alarm's dependence on GitHub's scheduler and on abed. Adds one account, one secret (`HC_PING_URL`), three curl steps. Cost nil (free tier: 20 checks, email alerts; secondary sources). Effort tiny. Risk: it fixes nothing by itself; gaps stay 5-8 h. Needs: an account and the secret.
+
+**C. Build in Actions, deploy prebuilt.** Removes the deploy hook and its secret, `vercel-ignore.sh` and its tests, the aging wait, `VERCEL_GIT_PREVIOUS_SHA` semantics, queued or superseded hook builds, the cancelled push deployments (about six a day since #1134) and the log blindness (logs live in the Actions run). Adds `VERCEL_TOKEN` (account-scoped), `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, a pinned Vercel CLI devDependency, `git.deploymentEnabled: {"main": false}` in `vercel.json`, a `push`-to-main trigger so merges still deploy, and a `build-info` fallback to `GITHUB_SHA` because `--prebuilt` deployments get no Vercel system env vars. Cost nil (Actions is free for public repos; about 10 min x 8-10 runs a day). Effort 1-2 days including a preflight. Risks: GitHub runner egress may reach fewer upstreams than Vercel's builders (measure before cut-over); the token can deploy any project on the account (expiry, rotation); previews for branches stay on Vercel; the "Scheduled data refresh" name binds history-append's `workflow_run`. Does not fix the scheduler. Needs: token and secrets, and sign-off to turn off git builds for main.
+
+**D. External primary clock.** Vercel Cron: once a day on Hobby with hour-level timing, so not a 3 h clock (secondary source). Cloudflare Worker cron: free tier allows it, reliable, about 40 lines, but a new vendor holding a PAT. abed systemd timer: already exists, FOSS, unknown uptime, becomes visible through its own Healthchecks check. Recommendation: abed first; Cloudflare if abed's check shows under 95% uptime in a month. Cheap experiment worth a week: a second cron line (`45 1-22/3 * * *`) with an early exit when production is under 2 h old; expect little, since hourly crons here run 13% of the time.
+
+**E. Data out of the build (object storage read at runtime).** Saves the page build and a deployment per refresh (about 2 min). Adds a storage vendor, versioned prefixes to keep immutable snapshots, a rewrite of the `FileAttachment` contract in `src/lib/data-loaders.js` and both pages, cache-control handling, and a separate data stamp so the footer stays truthful. Verdict: not now; revisit only if build time or deployment count becomes the constraint.
+
+**F. Refinements I would add.** Make the refresh job's own verification assert quality, not just recency: reuse `assessFreshness` after the deploy so the Healthchecks ping means "new build live, at least 100 live regions, median `lastSuccessAt` under 26 h". Demote deploy-freshness to daily and retire health-check's issue. Upload `dist/data/*.json` as a run artifact (free, immutable, 30-90 days) as a second provenance trail; the history capture keeps reading production, which is what visitors saw.
+
+**G. Vercel Pro.** $20 per member per month buys 12 concurrent builds, more build resources and per-minute crons (secondary sources). It changes nothing about GitHub's scheduler or the ignore heuristic, and a Vercel cron would still need a function holding a PAT. Not worth it; stay on Hobby (confirm the non-commercial condition holds).
+
+## 5. Recommended target design
+
+```
+clocks (any one suffices)              build and deploy (one Actions job)          truth and alarm
+GitHub schedule 15 */3 ------+
+abed timer, hourly:          +--> workflow_dispatch --> deploy.yml:               everylastjoule.com
+  stamp > 3h15m -> dispatch  |    (also push to main)  npm ci                        ^
+merge to main / owner -------+                         vercel pull --environment=production
+                                                       vercel build --prod             |
+                                                         (prefetch 8-wide, observable) |
+                                                       vercel deploy --prebuilt --prod +
+                                                       verify: stamp newer, liveCount >= 100
+                                                       ping hc-ping.com/<uuid> ----> Healthchecks.io
+                                                       artifact: dist/data/*.json     no ping in 6 h -> email
+history-append (workflow_run on green) <---------------------+
+```
+
+Vercel git builds for `main` off; branch previews unchanged. abed pings its own check (period 1 h, grace 2 h): when abed is down, GitHub's schedule still gives 4-6 refreshes a day, the abed check emails at low priority, and the production check still guards the 6 h bound. When GitHub Actions is down, nothing refreshes and Healthchecks emails within 6 h.
+
+## 6. Migration, smallest risk reduction first
+
+**PR 1: alarm off GitHub.** In `data-refresh.yml`, add `curl -fsS -m 10 --retry 3 "$HC_PING_URL/start"` before the hook, `"$HC_PING_URL"` after the wait step (default `if: success()`), `"$HC_PING_URL/fail"` with `if: failure()`. Extend `check-deploy-freshness.ts wait` to run `assessFreshness` on the new build and exit 1 when `stale`. Set `cancel-in-progress: false` in `deploy-freshness.yml`. Owner sign-off: Healthchecks.io account, check "elj-production-refresh" (period 3 h, grace 3 h), repo secret `HC_PING_URL`. Verify: the next green run shows a ping; shorten the grace to 5 min once after a run to prove the email path, then restore it. Rollback: delete the steps.
+
+**PR 2: gap-filling clock on abed.** Add `scripts/ops/refresh-if-stale.sh` (versioned): fetch `/`, read the `data/build-info.<hash>.json` path, compare `builtAt` with now; if older than 3 h 15 min and no `data-refresh` run is queued or in progress (`GET .../actions/runs?status=in_progress`), `POST .../actions/workflows/data-refresh.yml/dispatches` with `{"ref":"main"}`; then ping its own check. Add `docs/ops/abed-refresh-clock.md` with the unit and timer (`OnCalendar=hourly`, `Persistent=true`, `RandomizedDelaySec=300`). Optional in the same PR: the second cron line with an early exit. Owner sign-off: fine-grained PAT (repo only, Actions read and write, one-year expiry) at `~/.config/elj/github-token` on abed, mode 600; install the timer; second Healthchecks check. Verify: `systemctl list-timers`; a run with `event: workflow_dispatch` appears; over three days the longest gap between READY production builds is at most 4 h. Rollback: `systemctl disable --now`, revoke the PAT.
+
+**PR 3: build in Actions, deploy prebuilt.** Rewrite `data-refresh.yml` in place (keep the name "Scheduled data refresh" so `history-append.yml` line 52 still binds): triggers `schedule`, `workflow_dispatch` (input `target: preview|production`), `push` to main with `paths-ignore` for `data/historical/curtailment_history.parquet`, `docs/**`, `**.md`. Steps: checkout, setup-node 24, `npm ci`, `npx vercel pull --yes --environment=production`, `npx vercel build --prod` (runs `npm run build`: prefetch, `observable build`, the JSON gate, with the pulled API keys), local assessment of `dist/data/*.json` with `regionRecords` and `assessFreshness` (fail early on a fallback-corpus build, no auth needed), `npx vercel deploy --prebuilt --prod --archive=tgz`, then `wait --after <run start>` against everylastjoule.com, then the ping; `upload-artifact` of `dist/data`; `timeout-minutes: 30`; concurrency group `data-refresh`, no cancel. `src/data/build-info.json.ts`: fall back to `GITHUB_SHA`, `GITHUB_REF_NAME` and `"production"` under `GITHUB_ACTIONS`, add `builtBy`, with tests. `vercel.json`: add `"git": {"deploymentEnabled": {"main": false}}`. `package.json`: pin `vercel` as a devDependency. Preflight from the branch with `target: preview` (or build only): compare liveCount and per-region `sourceStatus` with production's current build; proceed only if liveCount is at least 95% of production's and no keyed source (EIA, ENTSO-E, netztransparenz, ERCOT) is lost; check `/particle` rewrite, `/region/<id>` clean URLs and `/_file/data/...` on the preview. Owner sign-off: Vercel token with expiry, secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` (from the project's settings), and approval to turn off main's git builds. Verify: the merge deploys through Actions and the footer reads the new stamp with `builtBy: github-actions`; history-append captures it. Rollback: revert the `vercel.json` line and the workflow; the hook URL stays valid until PR 4.
+
+**PR 4: remove the old machinery, align the docs.** Delete `scripts/build/vercel-ignore.sh`, `tests/vercel-ignore.test.ts`, `ignoreCommand` (or keep a plain `git diff --quiet HEAD^ HEAD -- . ':(exclude)docs' ':(exclude)*.md'` for previews), `PUSH_WINDOW_MIN` and the aging wait; owner deletes the `VERCEL_DEPLOY_HOOK` secret and the hook in Vercel. deploy-freshness to daily (`37 3 * * *`); retire or narrow health-check (#822). Update STATUS.md, the CLAUDE.md line about "the ignore step or the build", `docs/sense-check-report.md` ("GitHub Actions builds and deploys about every three hours"), `src/lib/freshness.ts` comment. Verify: `npm run typecheck && npm test && npm run ci:gates`; `grep -rn VERCEL_DEPLOY_HOOK` is empty. Rollback: revert.
+
+**PR 5 (optional, after a week of logs).** From the prefetch "slowest" summaries, decide whether daily publishers deserve a per-loader TTL via `actions/cache` of `src/.observablehq/cache/data/<target>` keyed by UTC date; `lastSuccessAt` stays the real fetch time, so the label stays truthful. Only if p50 build exceeds 8 min or an upstream asks for fewer hits.
+
+## 7. What to measure after each step
+
+- Baseline now: scheduled runs a day and lateness (Actions API); READY builds a day and longest gap (Vercel list or parquet `build_timestamp`); cancelled deployments a day; liveCount per build; run start to fresh production.
+- PR 1: one ping per green refresh; alerts fire exactly when the gap exceeds 6 h; zero false alarms in two weeks.
+- PR 2: runs a day by event (`schedule` vs `workflow_dispatch`); longest gap at most 4 h over seven days; abed check uptime; for the cron experiment, scheduled runs a day before and after.
+- PR 3: job duration p50 and p95 (target 10 min); liveCount against the Vercel-era median of 192; per-region status diff on the preflight; cancelled production deployments a day at zero; deploy failures; parquet distinct deployments a day unchanged.
+- PR 4: gates green; no hook references.
+- Monthly: share of hours under 3.5 h, longest gap, alerts, build p50.
+
+## 8. Verified and assumed
+
+Verified by reading: every workflow under `.github/workflows/`, `scripts/build/vercel-ignore.sh`, `scripts/build/prefetch-loaders.ts`, `scripts/ci/check-deploy-freshness.ts`, `scripts/lib/deploy-freshness.ts`, `scripts/append_history.py` (header), `src/lib/resilient.ts`, `src/lib/freshness.ts`, `src/data/build-info.json.ts`, `src/index.md` (notice), `vercel.json`, `package.json`, `docs/ops/abed-capture-service.md`, `data/historical/abed-heartbeat.json`, the STATUS entry. The 141-loader count matches `src/data/*.json.ts`.
+
+Verified through the GitHub API (read-only): data-refresh runs 846-965 (3-28 Sep) with the lateness and per-day figures above; deploy-freshness 3 runs; health-check 4 a day at 40-90 min late; relay-pull and relay-freshness daily, 2.5-3 h late; history-append's 02:00 cron at 06:43-07:48; the 28 Sep 13:46 run reached fresh production in 6.5 min.
+
+Verified through the Vercel API (personal scope): 40 latest production deployments, 4 READY and 36 CANCELED by the ignored build step (31 of the 36 from the 24-27 Sep freeze, *corrected on review*); build durations 276 s, 348 s, 393 s, one queued 135 s; the project's settings: Node 24.x, region iad1, SSO protection on all but custom domains. Team-scoped calls and logs still 403.
+
+Verified from GitHub's docs source (github/docs via code search): "The `schedule` event can be delayed during periods of high loads... some queued jobs may be dropped" (`data/reusables/actions/schedule-delay.md`); the 60-day inactivity rule (`events-that-trigger-workflows.md`).
+
+Verified from Vercel docs snippets (Vercel docs search tool): `vercel deploy --prebuilt` deploys `.vercel/output` and system environment variables are unavailable (docs/cli/deploy); `vercel build --prod`, `--yes` (docs/cli/build); `vercel pull --environment=production` (docs/cli/pull); `git.deploymentEnabled` as a per-branch map with unspecified branches defaulting to true (docs/project-configuration/git-configuration); `github.autoJobCancelation`; the deploy hook response and `?buildCache=false` (docs/deploy-hooks); `VERCEL_GIT_PREVIOUS_SHA` is the last successful deployment (docs/environment-variables/system-environment-variables).
+
+Secondary sources only (vercel.com, docs.github.com, healthchecks.io and developers.cloudflare.com are blocked from this sandbox; Vercel's URL fetcher serves deployments only): Hobby 100 deployments a day, one concurrent build, 45-min build cap, 2 vCPU; Pro $20 per member per month with 12 concurrent builds; Hobby crons once a day with hour-level timing; Actions free and unlimited on standard runners for public repos; Healthchecks.io free tier of 20 checks with email; Cloudflare Workers free tier of 3 cron triggers per Worker and 100k requests a day.
+
+Not verified anywhere: whether prebuilt production deployments queue behind a running Vercel build on Hobby; whether CLI deployments carry git metadata in Vercel's list; whether GitHub-hosted runner egress reaches every upstream Vercel's builders reach; Healthchecks webhook availability on the free tier; the exact PAT permission name for `workflow_dispatch` (Actions write, standard but not re-read); abed's uptime beyond one heartbeat.
+
+## 9. Open questions for the owner
+
+1. abed as the primary external clock with a PAT stored on it, or a Cloudflare account now?
+2. Hosted Healthchecks.io (free) rather than self-hosting it on abed, which would put clock and alarm on one host?
+3. A personal Vercel token can deploy every project on the account: acceptable with expiry and rotation, or do you want the site in its own team?
+4. Confirm Hobby's non-commercial condition holds, since the plan leans harder on Hobby.
+5. Should relay-pull merges deploy at once (about one extra build a day) or wait for the next refresh?
+6. Keep Vercel building branch previews, with or without an ignore step?
+7. Keep the 3 h cadence, and park per-loader TTLs until the Actions logs show which loaders are slow?
+8. Retire health-check (#822) once the refresh job enforces the live floor?
+9. Run the second-cron-line experiment for a week, or skip it?
+
+## 10. Progress, and where the build departs from the text
+
+| PR | State |
+| --- | --- |
+| PR 1: alarm off GitHub | **#1142**, built 28 Sep on `claude/refresh-alarm-healthchecks`. Simon has a Healthchecks.io account; the check and the `HC_PING_URL` secret come next. |
+| PR 2: abed clock | Not started. Needs a fine-grained PAT on abed and the timer installed there. |
+| PR 3: build in Actions | Not started. Needs a Vercel token, the project's ids and Simon's OK to turn off git builds for `main`. |
+| PR 4: remove the old machinery | Not started; after PR 3 has run cleanly. |
+
+**PR 1 as built.**
+- The ping logic lives in `scripts/ci/ping-healthchecks.sh`, tested in `tests/ping-healthchecks.test.ts` with a stub for curl, rather than as inline workflow steps. With no `HC_PING_URL` it skips every ping, so the PR is safe to merge before the secret exists.
+- `/start` goes first thing in the run, after checkout, rather than just before the hook, so the check sees the whole run.
+- The quality check fails the ping, not the job. After the wait step, the job runs `check-deploy-freshness.ts check` on the new build (at least 100 live regions, and the live regions' median `lastSuccessAt` under 26 h), with a 20-minute limit, and pings success or `/fail` with the report. The plan had `wait` exit 1 on a stale build. That would also stop `history-append.yml`, which runs only after a green refresh, from capturing what production then serves. `wait` is unchanged.
+- Every step has a time limit (install 10 min, the push-window waits 55, the wait for the build 35, the check 20, the rest 2 to 10; 141 in all), so a hang fails its step and the `/fail` says where: before the hook, at the hook or in the wait. The job's own limit, 160, is a backstop. Both ping steps have `continue-on-error`, so the alarm can never stop or fail a refresh. The push-window wait has `continue-on-error`, so if it times out the refresh still goes on to the hook, as its comment always promised.
+- A cancelled run sends `/fail` too. `job.status` cannot tell a cancel by hand from the job's time limit, and an alarm should err towards alerting, so cancelling a refresh by hand also emails. The grace period covers what the script cannot report: a run that never starts, and a failed checkout, where the script cannot run.
+- `tests/data-refresh-workflow.test.ts` pins the workflow lines the script depends on (step ids, `if: always()`, `continue-on-error`, the `outcome` fields), which no other test reads.
+- The check's timing departs from section 6 until PR 2 is live: period 3 h and grace 9 h, so 12 h without a success ping emails. A `/fail` emails at once either way. GitHub's scheduler alone left gaps of 7 to 8.5 h three times on 27-28 Sep, so a 6 h bound would email often, for a cause already known. Once the abed clock runs, set grace to 3 h (6 h in all).
