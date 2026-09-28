@@ -19,8 +19,8 @@ one, so the alarm never depends on `abed`: success when it did its job,
 `/fail` when it could not read production, could not dispatch, or found a
 refresh whose state has not changed for 3 h (stuck, which another dispatch
 would only queue behind). The token file must hold the token alone, and
-messages are scrubbed of it before the log or the ping sees them. `--dry-run`
-also checks that GitHub accepts the token for reading. Standard library only; 25 unittest cases in
+failure messages are scrubbed of it before the log or the ping sees them. `--dry-run`
+also checks that GitHub accepts the token for reading. Standard library only; 26 unittest cases in
 `scripts/ops/test_refresh_if_stale.py`, run under `npm test` by
 `tests/refresh-if-stale.test.ts` (CI has no pytest).
 

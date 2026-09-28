@@ -185,28 +185,30 @@ def decide(built_at: dt.datetime, now: dt.datetime, running: bool | None, max_ag
 
 
 def _read_secret(path: Path) -> str | None:
+    """A one-value config file, or None if it is missing or empty. Bytes that
+    are not UTF-8 become U+FFFD rather than an exception."""
     try:
-        value = path.read_text().strip()
+        value = path.read_text(encoding="utf-8", errors="replace").strip()
     except OSError:
         return None
     return value or None
 
 
-def _read_token() -> str | None:
-    """The GitHub token, which must be the file's only content."""
-    token = _read_secret(TOKEN_FILE)
-    if token is not None and not all(33 <= ord(ch) <= 126 for ch in token):
+def _valid_token(secret: str | None) -> str | None:
+    """The token, which must be the token file's only content."""
+    if secret is not None and not all(33 <= ord(ch) <= 126 for ch in secret):
         # Never echo it: a label line or a stray character would otherwise
         # reach the log and the clock's ping inside a header error.
         raise ClockError(f"{TOKEN_FILE} must hold the token alone, on one line")
-    return token
+    return secret
 
 
-def _redact(text: str) -> str:
-    """Blank out anything from the token file that found its way into a message."""
-    secret = _read_secret(TOKEN_FILE)
-    for part in sorted({secret, *secret.split()} if secret else (), key=len, reverse=True):
-        if len(part) >= 8:
+def _redact(text: str, secret: str | None) -> str:
+    """Blank out the token file's contents, and any token-length piece of them."""
+    if not secret:
+        return text
+    for part in sorted({secret, *secret.split()}, key=len, reverse=True):
+        if len(part) >= 20:  # GitHub tokens are 40 characters or more; labels are shorter
             text = text.replace(part, "<token>")
     return text
 
@@ -232,10 +234,11 @@ def _age(delta: dt.timedelta) -> str:
 
 def run(now: dt.datetime | None = None, dry_run: bool = False) -> int:
     now = now or dt.datetime.now(dt.timezone.utc)
+    secret = _read_secret(TOKEN_FILE)  # read once: checked below, and scrubbed from any failure
     try:
         built_at = production_built_at()
         age = now - built_at
-        token = _read_token()
+        token = _valid_token(secret)
         if dry_run:
             check_token(token)
         # Ask GitHub about runs only when production is overdue.
@@ -253,7 +256,7 @@ def run(now: dt.datetime | None = None, dry_run: bool = False) -> int:
             dispatch_refresh(token)
             message = f"Production built {_age(age)} ago; dispatched {WORKFLOW}."
     except ClockError as err:
-        message = _redact(f"Could not do its job: {err}")
+        message = _redact(f"Could not do its job: {err}", secret)
         print(message, file=sys.stderr)
         if not dry_run:
             ping_clock_check("/fail", message)

@@ -36,7 +36,7 @@ WORKFLOW = f"https://api.github.com/repos/{clock.REPO}/actions/workflows/data-re
 RUNS = f"{WORKFLOW}/runs"
 DISPATCH = f"{WORKFLOW}/dispatches"
 CLOCK_PING = "https://hc-ping.com/test-dummy-clock"
-TOKEN = "test-dummy-token"
+TOKEN = "test-dummy-token-0123456789abcdef0123"  # token-length, so the scrub applies
 
 
 def stamp(hours_ago: float) -> str:
@@ -240,12 +240,28 @@ class ClockTest(unittest.TestCase):
         self.assertIn("is queued, unchanged since", err)
 
     def test_a_token_file_with_more_than_the_token_is_refused_without_echoing_it(self):
-        self.token_file.write_text(f"my PAT\n{TOKEN}\n")
-        code, fake, out, err = self.run_clock(production(stamp(4)) + [("POST", CLOCK_PING + "/fail", (200, b"OK"))])
+        # The guard's own message never holds the token, before any scrubbing.
+        with self.assertRaises(clock.ClockError) as refused:
+            clock._valid_token(f"github-token\n{TOKEN}")
+        self.assertNotIn(TOKEN, str(refused.exception))
+        # And through a whole run: nothing reaches GitHub, the log or the ping,
+        # and the file's name stays readable.
+        self.token_file.write_text(f"github-token\n{TOKEN}\n")
+        code, fake, out, err = self.run_clock(production(stamp(1)) + [("POST", CLOCK_PING + "/fail", (200, b"OK"))])
         self.assertEqual(code, 1)
-        self.assertIn("must hold the token alone", err)
+        self.assertIn("github-token must hold the token alone", err)
         self.assertNotIn(TOKEN, out + err + "".join(self.ping_bodies(fake, "/fail")))
         self.assertEqual(fake.to("https://api.github.com"), [])
+
+    def test_a_token_file_that_is_not_utf8_fails_cleanly(self):
+        self.token_file.write_bytes(b"\xff\xfe" + TOKEN.encode())
+        code, fake, _, err = self.run_clock(production(stamp(1)) + [("POST", CLOCK_PING + "/fail", (200, b"OK"))])
+        self.assertEqual(code, 1)
+        self.assertIn("must hold the token alone", err)
+        # With production unreadable too, the /fail still goes out, with its reason.
+        code, fake, _, err = self.run_clock([("GET", f"{SITE}/?cb=", (503, b"")), ("POST", CLOCK_PING + "/fail", (200, b"OK"))])
+        self.assertEqual(code, 1)
+        self.assertIn("HTTP 503", self.ping_bodies(fake, "/fail")[0])
 
     def test_a_token_in_an_error_message_is_blanked_out(self):
         leaky = [("POST", DISPATCH, ValueError(f"Invalid header value b'Bearer {TOKEN}'"))]
