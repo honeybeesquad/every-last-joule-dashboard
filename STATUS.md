@@ -18,9 +18,11 @@ or not at all. It pings its own Healthchecks.io check, not the production
 one, so the alarm never depends on `abed`: success when it did its job,
 `/fail` when it could not read production, could not dispatch, or found a
 refresh whose state has not changed for 3 h (stuck, which another dispatch
-would only queue behind). `--dry-run` also checks that GitHub accepts the
-token for reading. Standard library only; 22 unittest cases in `scripts/ops/test_refresh_if_stale.py`,
-run under `npm test` by `tests/refresh-if-stale.test.ts` (CI has no pytest).
+would only queue behind). The token file must hold the token alone, and
+messages are scrubbed of it before the log or the ping sees them. `--dry-run`
+also checks that GitHub accepts the token for reading. Standard library only; 25 unittest cases in
+`scripts/ops/test_refresh_if_stale.py`, run under `npm test` by
+`tests/refresh-if-stale.test.ts` (CI has no pytest).
 
 **Follow-up.** When GitHub's cron is late rather than dropped, its run can
 land soon after a clock dispatch and build again. A scheduled run could skip

@@ -188,7 +188,7 @@ class ClockTest(unittest.TestCase):
         routes = production(stamp(4)) + runs("queued", created_hours_ago=4) + [("POST", CLOCK_PING + "/fail", (200, b"OK"))]
         code, fake, _, err = self.run_clock(routes)
         self.assertEqual(code, 1)
-        self.assertIn("has been queued since", err)
+        self.assertIn("is queued, unchanged since", err)
         self.assertIn("https://github.com/run/0", self.ping_bodies(fake, "/fail")[0])
         self.assertEqual(fake.to(DISPATCH), [])
 
@@ -223,11 +223,36 @@ class ClockTest(unittest.TestCase):
         self.assertEqual(len(fake.to(RUNS)), 1)
         self.assertIn("HTTP 401", err)
 
-    def test_a_rate_limit_is_retried(self):
+    def test_a_429_or_408_is_retried_once_then_reported(self):
         for status in (429, 408):
             routes = production(stamp(4)) + [("GET", RUNS, (status, b"")), ("POST", CLOCK_PING + "/fail", (200, b"OK"))]
-            _, fake, _, _ = self.run_clock(routes)
+            code, fake, _, _ = self.run_clock(routes)
             self.assertEqual(len(fake.to(RUNS)), 2, status)
+            self.assertEqual(code, 1, status)
+            self.assertEqual(fake.to(DISPATCH), [], status)
+            self.assertIn(f"HTTP {status}", self.ping_bodies(fake, "/fail")[0])
+
+    def test_a_run_without_updated_at_is_timed_from_created_at(self):
+        listed = [{"status": "queued", "created_at": stamp(4), "html_url": "https://github.com/run/0"}]
+        routes = production(stamp(4)) + [("GET", RUNS, (200, json.dumps({"workflow_runs": listed}).encode())), ("POST", CLOCK_PING + "/fail", (200, b"OK"))]
+        code, _, _, err = self.run_clock(routes)
+        self.assertEqual(code, 1)
+        self.assertIn("is queued, unchanged since", err)
+
+    def test_a_token_file_with_more_than_the_token_is_refused_without_echoing_it(self):
+        self.token_file.write_text(f"my PAT\n{TOKEN}\n")
+        code, fake, out, err = self.run_clock(production(stamp(4)) + [("POST", CLOCK_PING + "/fail", (200, b"OK"))])
+        self.assertEqual(code, 1)
+        self.assertIn("must hold the token alone", err)
+        self.assertNotIn(TOKEN, out + err + "".join(self.ping_bodies(fake, "/fail")))
+        self.assertEqual(fake.to("https://api.github.com"), [])
+
+    def test_a_token_in_an_error_message_is_blanked_out(self):
+        leaky = [("POST", DISPATCH, ValueError(f"Invalid header value b'Bearer {TOKEN}'"))]
+        code, fake, _, err = self.run_clock(production(stamp(4)) + runs("completed") + leaky + [("POST", CLOCK_PING + "/fail", (200, b"OK"))])
+        self.assertEqual(code, 1)
+        self.assertNotIn(TOKEN, err + "".join(self.ping_bodies(fake, "/fail")))
+        self.assertIn("<token>", err)
 
     def test_a_malformed_url_is_not_retried(self):
         routes = [("GET", f"{SITE}/?cb=", ValueError("unknown url type")), ("POST", CLOCK_PING + "/fail", (200, b"OK"))]

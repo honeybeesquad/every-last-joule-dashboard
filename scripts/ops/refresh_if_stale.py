@@ -48,7 +48,8 @@ MAX_AGE = dt.timedelta(hours=3, minutes=15)
 # run in its concurrency group, so a run whose state has not changed for this
 # long is stuck.
 STUCK_AFTER = dt.timedelta(hours=3)
-# Answers worth one more try: rate limits and request timeouts, besides 5xx.
+# Answers worth one more try, besides 5xx: a request timeout and Too Many
+# Requests. GitHub's usual rate-limit answer is a 403, which stays final.
 RETRY_STATUSES = {408, 429}
 TIMEOUT_S = 20
 RETRY_PAUSE_S = 3
@@ -57,7 +58,9 @@ USER_AGENT = "elj-refresh-clock (+https://github.com/honeybeesquad/every-last-jo
 MANIFEST_RE = re.compile(r"data/[a-z0-9-]+\.[a-f0-9]+\.json")
 BUILD_INFO_RE = re.compile(r"^data/build-info\.[a-f0-9]+\.json$")
 # What a request can raise besides an HTTP status: DNS, refused or reset
-# connections, timeouts, a truncated body, a malformed URL in a config file.
+# connections, timeouts, a truncated body, and a URL or header urllib cannot
+# use (ValueError). _get_ok does not retry a ValueError: it fails the same way
+# every time.
 NETWORK_ERRORS = (urllib.error.URLError, OSError, http.client.HTTPException, ValueError)
 
 
@@ -81,7 +84,7 @@ def _get_ok(url: str, headers: dict[str, str] | None = None) -> bytes:
     for attempt in (1, 2):
         try:
             status, body = _http("GET", url, headers)
-        except ValueError as err:  # a malformed URL or header fails the same way every time
+        except ValueError as err:  # a URL or header urllib cannot use fails the same way every time
             raise ClockError(f"{url}: {type(err).__name__}: {err}") from err
         except NETWORK_ERRORS as err:
             last = f"{type(err).__name__}: {err}"
@@ -131,8 +134,9 @@ def refresh_running(token: str | None, now: dt.datetime, repo: str = REPO) -> bo
     A run whose state has not changed for STUCK_AFTER raises ClockError:
     dispatching another would queue behind it, and reporting success would
     hide it. The age runs from updated_at, not created_at: a run that waited
-    its turn in the concurrency group, or an old run re-run by hand, keeps
-    its created_at but is not stuck.
+    its turn in the concurrency group, or a recent run re-run by hand, keeps
+    its created_at but is not stuck. Only the 10 newest runs are read, so a
+    re-run of an older one is not seen at all.
     """
     url = f"https://api.github.com/repos/{repo}/actions/workflows/{WORKFLOW}/runs?per_page=10"
     try:
@@ -147,7 +151,7 @@ def refresh_running(token: str | None, now: dt.datetime, repo: str = REPO) -> bo
     stuck = [u for u in unfinished if now - u[1] > STUCK_AFTER]
     if stuck:
         status, since, link = stuck[0]
-        raise ClockError(f"a data-refresh run has been {status} since {since.isoformat()}, over {STUCK_AFTER} ago: {link}")
+        raise ClockError(f"a data-refresh run is {status}, unchanged since {since.isoformat()}, over {STUCK_AFTER} ago: {link}")
     return bool(unfinished)
 
 
@@ -188,6 +192,25 @@ def _read_secret(path: Path) -> str | None:
     return value or None
 
 
+def _read_token() -> str | None:
+    """The GitHub token, which must be the file's only content."""
+    token = _read_secret(TOKEN_FILE)
+    if token is not None and not all(33 <= ord(ch) <= 126 for ch in token):
+        # Never echo it: a label line or a stray character would otherwise
+        # reach the log and the clock's ping inside a header error.
+        raise ClockError(f"{TOKEN_FILE} must hold the token alone, on one line")
+    return token
+
+
+def _redact(text: str) -> str:
+    """Blank out anything from the token file that found its way into a message."""
+    secret = _read_secret(TOKEN_FILE)
+    for part in sorted({secret, *secret.split()} if secret else (), key=len, reverse=True):
+        if len(part) >= 8:
+            text = text.replace(part, "<token>")
+    return text
+
+
 def ping_clock_check(suffix: str, message: str) -> None:
     """Ping this clock's own check; a failed ping never changes the outcome."""
     url = _read_secret(CLOCK_CHECK_FILE)
@@ -212,7 +235,7 @@ def run(now: dt.datetime | None = None, dry_run: bool = False) -> int:
     try:
         built_at = production_built_at()
         age = now - built_at
-        token = _read_secret(TOKEN_FILE)
+        token = _read_token()
         if dry_run:
             check_token(token)
         # Ask GitHub about runs only when production is overdue.
@@ -230,7 +253,7 @@ def run(now: dt.datetime | None = None, dry_run: bool = False) -> int:
             dispatch_refresh(token)
             message = f"Production built {_age(age)} ago; dispatched {WORKFLOW}."
     except ClockError as err:
-        message = f"Could not do its job: {err}"
+        message = _redact(f"Could not do its job: {err}")
         print(message, file=sys.stderr)
         if not dry_run:
             ping_clock_check("/fail", message)
