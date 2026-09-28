@@ -71,8 +71,12 @@ def production(built_at: str) -> list[tuple[str, str, object]]:
     ]
 
 
-def runs(*statuses: str, created_hours_ago: float = 0.5) -> list[tuple[str, str, object]]:
-    listed = [{"status": s, "created_at": stamp(created_hours_ago), "html_url": f"https://github.com/run/{i}"} for i, s in enumerate(statuses)]
+def runs(*statuses: str, created_hours_ago: float = 0.5, updated_hours_ago: float | None = None) -> list[tuple[str, str, object]]:
+    updated = created_hours_ago if updated_hours_ago is None else updated_hours_ago
+    listed = [
+        {"status": s, "created_at": stamp(created_hours_ago), "updated_at": stamp(updated), "html_url": f"https://github.com/run/{i}"}
+        for i, s in enumerate(statuses)
+    ]
     return [("GET", RUNS, (200, json.dumps({"workflow_runs": listed}).encode()))]
 
 
@@ -188,6 +192,16 @@ class ClockTest(unittest.TestCase):
         self.assertIn("https://github.com/run/0", self.ping_bodies(fake, "/fail")[0])
         self.assertEqual(fake.to(DISPATCH), [])
 
+    def test_a_run_that_waited_its_turn_or_was_rerun_is_not_stuck(self):
+        # Created long ago, but its state changed recently: it waited behind
+        # another run in the concurrency group, or someone re-ran it.
+        for created, updated in ((3.5, 0.7), (5, 0.02)):
+            routes = production(stamp(4)) + runs("in_progress", created_hours_ago=created, updated_hours_ago=updated) + ACCEPT_PING
+            code, fake, out, _ = self.run_clock(routes)
+            self.assertEqual(code, 0, (created, updated))
+            self.assertIn("already queued or running", out)
+            self.assertEqual(fake.to(DISPATCH), [])
+
     def test_a_malformed_run_list_fails_the_clock_check(self):
         for payload in ({"workflow_runs": None}, {"workflow_runs": ["x"]}, {"message": "Bad credentials"}):
             routes = production(stamp(4)) + [("GET", RUNS, (200, json.dumps(payload).encode())), ("POST", CLOCK_PING + "/fail", (200, b"OK"))]
@@ -209,6 +223,19 @@ class ClockTest(unittest.TestCase):
         self.assertEqual(len(fake.to(RUNS)), 1)
         self.assertIn("HTTP 401", err)
 
+    def test_a_rate_limit_is_retried(self):
+        for status in (429, 408):
+            routes = production(stamp(4)) + [("GET", RUNS, (status, b"")), ("POST", CLOCK_PING + "/fail", (200, b"OK"))]
+            _, fake, _, _ = self.run_clock(routes)
+            self.assertEqual(len(fake.to(RUNS)), 2, status)
+
+    def test_a_malformed_url_is_not_retried(self):
+        routes = [("GET", f"{SITE}/?cb=", ValueError("unknown url type")), ("POST", CLOCK_PING + "/fail", (200, b"OK"))]
+        code, fake, _, err = self.run_clock(routes)
+        self.assertEqual(code, 1)
+        self.assertEqual(len(fake.to(f"{SITE}/?cb=")), 1)
+        self.assertIn("ValueError", err)
+
     def test_a_malformed_ping_url_does_not_change_the_outcome(self):
         code, _, _, err = self.run_clock(production(stamp(1)) + [("POST", CLOCK_PING, ValueError("unknown url type"))])
         self.assertEqual(code, 0)
@@ -217,7 +244,7 @@ class ClockTest(unittest.TestCase):
     def test_dry_run_checks_the_token_but_neither_dispatches_nor_pings(self):
         code, fake, out, _ = self.run_clock(production(stamp(4)) + runs("completed") + TOKEN_WORKS, dry_run=True)
         self.assertEqual(code, 0)
-        self.assertIn("would dispatch data-refresh.yml (dry run). The GitHub token works.", out)
+        self.assertIn("would dispatch data-refresh.yml (dry run). GitHub accepts the token for reading", out)
         self.assertEqual(len([c for c in fake.calls if c[1] == WORKFLOW]), 1)
         self.assertEqual([c for c in fake.calls if c[0] == "POST"], [])
 

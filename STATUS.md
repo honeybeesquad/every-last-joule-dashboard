@@ -17,9 +17,9 @@ and no `data-refresh.yml` run is queued or in progress, it dispatches one on
 or not at all. It pings its own Healthchecks.io check, not the production
 one, so the alarm never depends on `abed`: success when it did its job,
 `/fail` when it could not read production, could not dispatch, or found a
-refresh unfinished after 3 h (stuck, which another dispatch would only queue
-behind). `--dry-run` also checks that GitHub accepts the token. Standard
-library only; 19 unittest cases in `scripts/ops/test_refresh_if_stale.py`,
+refresh whose state has not changed for 3 h (stuck, which another dispatch
+would only queue behind). `--dry-run` also checks that GitHub accepts the
+token for reading. Standard library only; 22 unittest cases in `scripts/ops/test_refresh_if_stale.py`,
 run under `npm test` by `tests/refresh-if-stale.test.ts` (CI has no pytest).
 
 **Follow-up.** When GitHub's cron is late rather than dropped, its run can

@@ -44,8 +44,12 @@ CLOCK_CHECK_FILE = CONFIG / "hc-clock-url"  # this clock's own Healthchecks ping
 
 # The refresh runs every 3 h; a build this much older than that is overdue.
 MAX_AGE = dt.timedelta(hours=3, minutes=15)
-# data-refresh.yml's job limit is 160 min, so a run unfinished after this is stuck.
+# data-refresh.yml's job limit is 160 min, and a run waits at most one such
+# run in its concurrency group, so a run whose state has not changed for this
+# long is stuck.
 STUCK_AFTER = dt.timedelta(hours=3)
+# Answers worth one more try: rate limits and request timeouts, besides 5xx.
+RETRY_STATUSES = {408, 429}
 TIMEOUT_S = 20
 RETRY_PAUSE_S = 3
 USER_AGENT = "elj-refresh-clock (+https://github.com/honeybeesquad/every-last-joule-dashboard)"
@@ -72,18 +76,20 @@ def _http(method: str, url: str, headers: dict[str, str] | None = None, body: by
 
 
 def _get_ok(url: str, headers: dict[str, str] | None = None) -> bytes:
-    """GET, retried once after a pause on a network error or 5xx; a 4xx is final."""
+    """GET, retried once after a pause on a network error, 5xx, 408 or 429; other 4xx are final."""
     last = ""
     for attempt in (1, 2):
         try:
             status, body = _http("GET", url, headers)
+        except ValueError as err:  # a malformed URL or header fails the same way every time
+            raise ClockError(f"{url}: {type(err).__name__}: {err}") from err
         except NETWORK_ERRORS as err:
             last = f"{type(err).__name__}: {err}"
         else:
             if status == 200:
                 return body
             last = f"HTTP {status}"
-            if status < 500:
+            if status < 500 and status not in RETRY_STATUSES:
                 break
         if attempt == 1:
             time.sleep(RETRY_PAUSE_S)
@@ -122,24 +128,35 @@ def _github_headers(token: str | None) -> dict[str, str]:
 def refresh_running(token: str | None, now: dt.datetime, repo: str = REPO) -> bool:
     """Whether a data-refresh run is queued, waiting or in progress.
 
-    A run still unfinished after STUCK_AFTER raises ClockError: dispatching
-    another would queue behind it, and reporting success would hide it.
+    A run whose state has not changed for STUCK_AFTER raises ClockError:
+    dispatching another would queue behind it, and reporting success would
+    hide it. The age runs from updated_at, not created_at: a run that waited
+    its turn in the concurrency group, or an old run re-run by hand, keeps
+    its created_at but is not stuck.
     """
     url = f"https://api.github.com/repos/{repo}/actions/workflows/{WORKFLOW}/runs?per_page=10"
     try:
         runs = json.loads(_get_ok(url, _github_headers(token)))["workflow_runs"]
-        unfinished = [(run["status"], _parse_time(run["created_at"]), run.get("html_url", "")) for run in runs if run["status"] != "completed"]
+        unfinished = [
+            (run["status"], _parse_time(run.get("updated_at") or run["created_at"]), run.get("html_url", ""))
+            for run in runs
+            if run["status"] != "completed"
+        ]
     except (ValueError, KeyError, TypeError, AttributeError) as err:
         raise ClockError(f"{url}: unreadable run list ({err})") from err
     stuck = [u for u in unfinished if now - u[1] > STUCK_AFTER]
     if stuck:
-        status, created, link = stuck[0]
-        raise ClockError(f"a data-refresh run has been {status} since {created.isoformat()}, over {STUCK_AFTER} ago: {link}")
+        status, since, link = stuck[0]
+        raise ClockError(f"a data-refresh run has been {status} since {since.isoformat()}, over {STUCK_AFTER} ago: {link}")
     return bool(unfinished)
 
 
 def check_token(token: str | None, repo: str = REPO) -> None:
-    """For --dry-run: the token exists and GitHub accepts it for this workflow."""
+    """For --dry-run: the token exists and GitHub accepts it to read this workflow.
+
+    A read cannot prove the right to dispatch; the first real dispatch does,
+    and a 403 there fails the clock check with the reason.
+    """
     if token is None:
         raise ClockError(f"there is no GitHub token in {TOKEN_FILE}")
     _get_ok(f"https://api.github.com/repos/{repo}/actions/workflows/{WORKFLOW}", _github_headers(token))
@@ -218,7 +235,7 @@ def run(now: dt.datetime | None = None, dry_run: bool = False) -> int:
         if not dry_run:
             ping_clock_check("/fail", message)
         return 1
-    print(message + (" The GitHub token works." if dry_run else ""))
+    print(message + (" GitHub accepts the token for reading; the first real dispatch confirms it can dispatch." if dry_run else ""))
     if not dry_run:
         ping_clock_check("", message)
     return 0

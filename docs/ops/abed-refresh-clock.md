@@ -19,7 +19,7 @@ clock fills the gaps; GitHub's cron stays as the fallback.
   than 3 h 15 min old and no `data-refresh.yml` run is queued or in progress, it
   dispatches one on `main`. Then it pings its own Healthchecks.io check: success when it
   did its job, `/fail` when it could not read production, could not dispatch, or found a
-  refresh unfinished after 3 h.
+  refresh whose state has not changed for 3 h.
 - **Schedule:** `scripts/ops/systemd/elj-refresh-clock.service` (oneshot, as `simon`) and
   `elj-refresh-clock.timer` (hourly, up to 5 min of jitter, `Persistent=true`).
 - **Secrets**, in `~/.config/elj/` (mode 700, files 600), never in the repo:
@@ -56,8 +56,9 @@ not run on abed, so the clock and the alarm never share a failure domain.
    ```
 
    It prints the build's age and whether it would dispatch, and checks that GitHub
-   accepts the token. A dry run neither dispatches nor pings; it exits 1 if anything is
-   wrong.
+   accepts the token for reading. A dry run neither dispatches nor pings; it exits 1 if
+   anything is wrong. A read cannot prove the token may dispatch: the first real
+   dispatch does, and a 403 there fails the clock check with the reason.
 5. **Install the timer:**
 
    ```bash
@@ -94,7 +95,7 @@ cron run as `schedule`. The clock's Healthchecks check shows each run's message.
   `~/.config/elj/github-token`.
 - **Production cannot be read from abed:** the clock does not dispatch (it cannot tell),
   and its check goes down with the error.
-- **A refresh is stuck** (queued or running for over 3 h): the clock does not dispatch
+- **A refresh is stuck** (queued or running with no change for over 3 h): the clock does not dispatch
   behind it, and its check goes down with the run's link. Cancel the stuck run in
   GitHub's Actions tab.
 - **Refreshes keep failing:** the clock dispatches again each hour while production stays
