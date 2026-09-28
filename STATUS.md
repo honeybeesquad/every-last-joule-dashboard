@@ -7,7 +7,7 @@
 
 **#1134**, merged 2026-09-27 from `claude/hopeful-mendel-b9z2lc`. Production
 served the 24 Sep build until the merge; the merge's own push build refreshes
-the data.
+the data. Checked in production on 28 Sep: see **After the merge** below.
 
 **What production showed** (Simon's weekday checks of the live site):
 byte-identical feeds on 25 and 28 Sep NZ time, 30.68 GW, 209% of the network,
@@ -148,9 +148,8 @@ one. The stale notice was looked at with the real `style.css` at 1440 and 390 px
 in both modes: hidden, it takes no space. **Not verified here:** a full local
 build (this sandbox cannot reach cdn.jsdelivr.net for Framework's `npm:d3`),
 and the new ignore step's hook path on Vercel (the old script's skips and the
-new one's push skip are confirmed above).
-The first scheduled refresh after merge is the real test: its *Wait for the
-new build to go live* step should pass.
+new one's push skip are confirmed above). Production has since built the site
+in full and run the hook path: see **After the merge**.
 
 **Not changed.** No data file, `regions.ts` entry or tier.
 
@@ -164,7 +163,12 @@ new build to go live* step should pass.
   `deploy-freshness.yml`.
 - `dominican-republic` stamps `lastSuccessAt` a day ahead (OC SENI's schedule
   runs to 23:00 AST). Both freshness checks ignore future stamps.
-- GitHub ran only 3 to 5 of the 8 daily refresh crons on 24–27 Sep.
+- GitHub ran only 3 to 5 of the 8 daily refresh crons on 24–27 Sep, and
+  almost no scheduled job overnight on 27–28 Sep. Give the refresh and the
+  alarm a second clock: a timer on `abed` that runs
+  `gh workflow run data-refresh.yml` every 3 h and
+  `gh workflow run deploy-freshness.yml` hourly, with a token that can start
+  workflows. A manual dispatch does not wait on GitHub's cron queue.
 - From the code review, not blocking: `deploy-freshness.yml` and
   `data-refresh.yml` run a full `npm ci` only to run `tsx` on two scripts;
   `check` fetches the build stamp twice; and `same_deployment_as_last_capture`
