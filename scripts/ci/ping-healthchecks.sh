@@ -11,9 +11,10 @@
 #     /fail    anything else, with the reason, the freshness report if any,
 #              and the run's URL. That includes a cancelled run: job.status
 #              cannot tell a cancel by hand from the job's time limit, and an
-#              alarm should err towards alerting. The reason says how far the
-#              run got: before the hook, during it, after Vercel accepted it,
-#              or after the new build went live.
+#              alarm should err towards alerting. When the run itself did not
+#              succeed, a line with each step's outcome (hook, wait, check)
+#              follows the reason, so the alert shows how far the run got
+#              without guessing.
 #
 # Healthchecks emails at once on a /fail, and when no success ping has arrived
 # within the check's period plus grace. That second path also covers what
@@ -73,18 +74,10 @@ if [ "$mode" = start ]; then
 fi
 
 status=${JOB_STATUS:-}
+outcomes="Steps: deploy hook ${HOOK:-not run}, wait ${WAIT:-not run}, freshness check ${QUALITY:-not run}."
 if [ "$status" != success ]; then
   if [ "$status" = cancelled ]; then
-    cancelled="The refresh was cancelled, by hand or by the job's time limit,"
-    if [ "${WAIT:-}" = success ]; then
-      reason="$cancelled after the new build went live but before its data was checked."
-    elif [ "${HOOK:-}" = success ]; then
-      reason="$cancelled after Vercel accepted the deploy hook, so a new build may still go live."
-    elif [ "${HOOK:-}" = cancelled ]; then
-      reason="$cancelled while the deploy hook was being sent, so Vercel may still have queued a build."
-    else
-      reason="$cancelled before the deploy hook."
-    fi
+    reason="The refresh was cancelled, by hand or by the job's time limit."
   elif [ "${HOOK:-}" = failure ]; then
     reason="The Vercel deploy hook failed."
   elif [ "${HOOK:-}" != success ]; then
@@ -94,9 +87,9 @@ if [ "$status" != success ]; then
   else
     reason="The refresh failed."
   fi
-  ping /fail "$(body "$reason")"
+  ping /fail "$(body "$reason"$'\n'"$outcomes")"
 elif [ "${QUALITY:-}" != success ]; then
-  ping /fail "$(body "A new build went live, but the freshness check could not reach an answer (data files it could not read, or its time limit).")"
+  ping /fail "$(body "A new build went live, but the freshness check did not finish with an answer; the run's log says why."$'\n'"$outcomes")"
 elif [ "${STALE:-}" = true ]; then
   headline=${TITLE:-The new build failed the freshness check.}
   echo "::warning::$headline"
