@@ -11,10 +11,11 @@
 #     /fail    anything else, with the reason, the freshness report if any,
 #              and the run's URL. That includes a cancelled run: job.status
 #              cannot tell a cancel by hand from the job's time limit, and an
-#              alarm should err towards alerting. When the run itself did not
-#              succeed, a line with each step's outcome (hook, wait, check)
-#              follows the reason, so the alert shows how far the run got
-#              without guessing.
+#              alarm should err towards alerting. When the run did not
+#              succeed, or the check ended without an answer, a line with
+#              each step's result follows the reason (the check's verdict,
+#              fresh or stale, when it has one), so the alert shows how far
+#              the run got without guessing.
 #
 # Healthchecks emails at once on a /fail, and when no success ping has arrived
 # within the check's period plus grace. That second path also covers what
@@ -74,7 +75,25 @@ if [ "$mode" = start ]; then
 fi
 
 status=${JOB_STATUS:-}
-outcomes="Steps: deploy hook ${HOOK:-not run}, wait ${WAIT:-not run}, freshness check ${QUALITY:-not run}."
+# The check step succeeds whenever it reaches an answer, stale or not, so
+# report its verdict rather than the step's outcome.
+case "${QUALITY:-}" in
+  success)
+    case "${STALE:-}" in
+      true) check=stale ;;
+      false) check=fresh ;;
+      *) check="no answer" ;;
+    esac
+    ;;
+  "") check="not run" ;;
+  *) check=$QUALITY ;;
+esac
+outcomes="Steps: deploy hook: ${HOOK:-not run}; wait: ${WAIT:-not run}; freshness check: $check."
+# Once the hook may have reached Vercel and no new build was seen, one may
+# still go live.
+if { [ "${HOOK:-}" = success ] || [ "${HOOK:-}" = cancelled ]; } && [ "${WAIT:-}" != success ]; then
+  outcomes="$outcomes"$'\n'"Vercel may still build and put live the deployment the hook asked for."
+fi
 if [ "$status" != success ]; then
   if [ "$status" = cancelled ]; then
     reason="The refresh was cancelled, by hand or by the job's time limit."

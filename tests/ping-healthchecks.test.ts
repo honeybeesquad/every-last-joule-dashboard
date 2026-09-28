@@ -82,6 +82,7 @@ const good = {
   TITLE: "Production data is fresh",
 };
 const CANCELLED = "The refresh was cancelled, by hand or by the job's time limit.";
+const MAY_GO_LIVE = "Vercel may still build and put live the deployment the hook asked for.";
 /** A run that failed before the freshness check wrote its report. */
 const failed = (env: Record<string, string>) => ({ ...good, QUALITY: "skipped", STALE: "", TITLE: "", REPORT: join(dir, "none.md"), ...env });
 
@@ -123,18 +124,32 @@ describe("ping-healthchecks.sh outcome", () => {
       [{ JOB_STATUS: "cancelled", HOOK: "failure", WAIT: "skipped" }, CANCELLED],
     ];
     for (const [env, reason] of cases) {
-      const steps = `Steps: deploy hook ${env.HOOK}, wait ${env.WAIT}, freshness check skipped.`;
-      expect(run("outcome", failed(env)).pings).toEqual([{ url: `${HC}/fail`, body: `${reason}\n${steps}\n\n${RUN}` }]);
+      const steps = `Steps: deploy hook: ${env.HOOK}; wait: ${env.WAIT}; freshness check: skipped.`;
+      const hookMayHaveLanded = env.HOOK === "success" || env.HOOK === "cancelled";
+      const note = hookMayHaveLanded && env.WAIT !== "success" ? `\n${MAY_GO_LIVE}` : "";
+      expect(run("outcome", failed(env)).pings).toEqual([{ url: `${HC}/fail`, body: `${reason}\n${steps}${note}\n\n${RUN}` }]);
     }
   });
 
-  it("states each step's outcome rather than guessing how far a cancelled run got", () => {
-    // Cancelled after the check had written its report: the alert shows
-    // the finished check and the report, not a claim that it never ran.
-    const r = run("outcome", { ...good, JOB_STATUS: "cancelled" });
-    expect(r.pings[0].url).toBe(`${HC}/fail`);
+  it("says a build may still go live once the hook may have reached Vercel", () => {
+    const body = run("outcome", failed({ JOB_STATUS: "cancelled", HOOK: "success", WAIT: "cancelled" })).pings[0].body;
+    expect(body).toBe(`${CANCELLED}\nSteps: deploy hook: success; wait: cancelled; freshness check: skipped.\n${MAY_GO_LIVE}\n\n${RUN}`);
+  });
+
+  it("gives the check's verdict, not its step outcome, for a run cancelled after the check", () => {
+    const fresh = run("outcome", { ...good, JOB_STATUS: "cancelled" }).pings[0];
+    expect(fresh.url).toBe(`${HC}/fail`);
+    expect(fresh.body).toBe(
+      `${CANCELLED}\nSteps: deploy hook: success; wait: success; freshness check: fresh.\n\n| Live region records | 197 of 530 (floor 100) |\n\n${RUN}`,
+    );
+    const stale = run("outcome", { ...good, JOB_STATUS: "cancelled", STALE: "true" }).pings[0];
+    expect(stale.body).toContain("freshness check: stale.");
+  });
+
+  it("says 'not run' for a step whose outcome is missing", () => {
+    const r = run("outcome", { JOB_STATUS: "failure", REPORT: join(dir, "none.md") });
     expect(r.pings[0].body).toBe(
-      `${CANCELLED}\nSteps: deploy hook success, wait success, freshness check success.\n\n| Live region records | 197 of 530 (floor 100) |\n\n${RUN}`,
+      `The refresh failed before it reached the deploy hook.\nSteps: deploy hook: not run; wait: not run; freshness check: not run.\n\n${RUN}`,
     );
   });
 
@@ -142,7 +157,7 @@ describe("ping-healthchecks.sh outcome", () => {
     const r = run("outcome", { ...good, QUALITY: "failure", STALE: "", TITLE: "" });
     expect(r.pings[0].url).toBe(`${HC}/fail`);
     expect(r.pings[0].body).toContain("the freshness check did not finish with an answer; the run's log says why.");
-    expect(r.pings[0].body).toContain("freshness check failure.");
+    expect(r.pings[0].body).toContain("freshness check: failure.");
   });
 
   it("fails the check, with the report, when the new build is stale", () => {
