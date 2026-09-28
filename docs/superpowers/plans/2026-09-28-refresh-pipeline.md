@@ -136,8 +136,8 @@ Not verified anywhere: whether prebuilt production deployments queue behind a ru
 | PR | State |
 | --- | --- |
 | PR 1: alarm off GitHub | **#1142**, merged 28 Sep. Simon has a Healthchecks.io account; the check and the `HC_PING_URL` secret come next. |
-| PR 2: abed clock | **#1143**, built 28 Sep on `claude/refresh-clock-abed`. Runs once Simon installs it on abed with a fine-grained PAT (`docs/ops/abed-refresh-clock.md`). |
-| PR 3: build in Actions | Not started. Needs a Vercel token, the project's ids and Simon's OK to turn off git builds for `main`. |
+| PR 2: abed clock | **#1143**, merged 28 Sep. Runs once Simon installs it on abed with a fine-grained PAT (`docs/ops/abed-refresh-clock.md`). |
+| PR 3: build in Actions | Changed to a build on Vercel through the CLI (below). 3a, the trial workflow, is **#1145** (`claude/vercel-cli-trial`); needs `VERCEL_TOKEN`. 3b, the switch, follows a passing trial. |
 | PR 4: remove the old machinery | Not started; after PR 3 has run cleanly. |
 
 **PR 1 as built.**
@@ -157,3 +157,9 @@ Not verified anywhere: whether prebuilt production deployments queue behind a ru
 - It reads the token file once per run and uses the token only for GitHub calls. A missing token fails the clock check only when a dispatch is due, and the public run list is read without one; a malformed token file (more than the token, or not UTF-8) fails every run, without echoing it. Failure messages are scrubbed of the file's contents before the log or the ping sees them. `--dry-run` decides and prints without dispatching or pinging, and checks that GitHub accepts the token for reading; the first real dispatch confirms it can dispatch.
 - The optional second cron line is left out: hourly crons here ran 13% of the time.
 - Follow-up: when GitHub's cron is late rather than dropped, its run can land soon after a clock dispatch and build again. A scheduled run could skip when production was built under 2 h ago; not done here, because it changes `data-refresh.yml` and what its ping means.
+
+**PR 3 changed: the build stays on Vercel.**
+- Every production API key on Vercel (EIA, ENTSO-E, Netztransparenz, ERCOT) is a "sensitive" variable (checked through the Vercel API on 28 Sep). Vercel never hands those back, `vercel pull` included, so the `vercel pull` + `vercel build` + `--prebuilt` path in section 6 would build without keys and fall back. Copying them into GitHub secrets would mean fetching six more credentials from their providers (only EIA's is a GitHub secret today) and keeping two copies of each.
+- Instead, Actions starts the build on Vercel with the CLI: `vercel deploy --prod --logs` (CLI 60.1.3). The keys stay on Vercel, the build runs on the same machines as today, so GitHub runners' network reach no longer matters, and the build log and the result come back into the Actions run. The deploy hook, the ignore-step guessing and the push-window wait can still go in 3b and PR 4.
+- 3a is a manual trial workflow, `.github/workflows/vercel-cli-trial.yml`. It builds production with `--skip-domain` (nothing goes live), then `scripts/ci/compare-trial-deploy.ts` compares its data with production's region by region and feed by feed; the trial is read through `vercel curl`, because deployment URLs sit behind Vercel Authentication. It fails below 95% of production's live records, below 100 live records in all, or when a keyed feed live in production has no live region in the trial, since a small keyed source (ERCOT is two regions) hardly moves the total. The 22 keyed feeds are found in the source: loaders that read one of the seven sensitive keys, or import a `src/lib` module that does. Unkeyed feeds are left out of that test, because many are one flaky region. Production is read after the trial, and read again if a refresh went live mid-read (its old hashed files 404). It needs one secret, `VERCEL_TOKEN`; the account and project ids are written into the workflow, since they are identifiers, not credentials.
+- Unknown until the trial runs: whether Vercel runs the ignore step for CLI deployments, how long an upload of the checkout takes, and whether `vercel curl` (beta) reads every file.
