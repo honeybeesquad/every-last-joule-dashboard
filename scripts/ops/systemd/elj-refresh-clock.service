@@ -1,0 +1,13 @@
+# Every Last Joule: dispatch a data refresh when production is overdue.
+# Installed on abed; see docs/ops/abed-refresh-clock.md.
+[Unit]
+Description=Every Last Joule refresh clock: dispatch data-refresh.yml when production is overdue
+Documentation=https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/docs/ops/abed-refresh-clock.md
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=simon
+ExecStart=/usr/bin/python3 /home/simon/code/every-last-joule-dashboard/scripts/ops/refresh_if_stale.py
+TimeoutStartSec=180

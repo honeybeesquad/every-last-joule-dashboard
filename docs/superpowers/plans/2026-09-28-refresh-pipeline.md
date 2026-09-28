@@ -135,8 +135,8 @@ Not verified anywhere: whether prebuilt production deployments queue behind a ru
 
 | PR | State |
 | --- | --- |
-| PR 1: alarm off GitHub | **#1142**, built 28 Sep on `claude/refresh-alarm-healthchecks`. Simon has a Healthchecks.io account; the check and the `HC_PING_URL` secret come next. |
-| PR 2: abed clock | Not started. Needs a fine-grained PAT on abed and the timer installed there. |
+| PR 1: alarm off GitHub | **#1142**, merged 28 Sep. Simon has a Healthchecks.io account; the check and the `HC_PING_URL` secret come next. |
+| PR 2: abed clock | Built 28 Sep on `claude/refresh-clock-abed`. Runs once Simon installs it on abed with a fine-grained PAT (`docs/ops/abed-refresh-clock.md`). |
 | PR 3: build in Actions | Not started. Needs a Vercel token, the project's ids and Simon's OK to turn off git builds for `main`. |
 | PR 4: remove the old machinery | Not started; after PR 3 has run cleanly. |
 
@@ -148,3 +148,10 @@ Not verified anywhere: whether prebuilt production deployments queue behind a ru
 - A cancelled run sends `/fail` too. `job.status` cannot tell a cancel by hand from the job's time limit, and an alarm should err towards alerting, so cancelling a refresh by hand also emails. The grace period covers what the script cannot report: a run that never starts, and a failed checkout, where the script cannot run.
 - `tests/data-refresh-workflow.test.ts` pins the workflow lines the script depends on (step ids, `if: always()`, `continue-on-error`, the `outcome` fields), which no other test reads.
 - The check's timing departs from section 6 until PR 2 is live: period 3 h and grace 9 h, so 12 h without a success ping emails. A `/fail` emails at once either way. GitHub's scheduler alone left gaps of 7 to 8.5 h three times on 27-28 Sep, so a 6 h bound would email often, for a cause already known. Once the abed clock runs, set grace to 3 h (6 h in all).
+
+**PR 2 as built.**
+- The clock is `scripts/ops/refresh_if_stale.py`, Python standard library only, rather than a shell script: abed may lack `jq`, and the JSON and date handling are clearer. Its 13 unittest cases run under `npm test` through `tests/refresh-if-stale.test.ts`, because CI has no pytest.
+- It finds a queued or running refresh by listing the last 10 `data-refresh.yml` runs and looking for any status other than `completed`: one call that also catches `queued`, `waiting`, `pending` and `requested`, which `?status=in_progress` alone would miss.
+- The systemd unit and timer are files in the repo (`scripts/ops/systemd/`), copied to `/etc/systemd/system/`; the runbook is `docs/ops/abed-refresh-clock.md`.
+- It reads the token only for GitHub calls. A missing token fails the clock check only when a dispatch is due, and the public run list is read without one. `--dry-run` decides and prints without dispatching or pinging.
+- The optional second cron line is left out: hourly crons here ran 13% of the time.
