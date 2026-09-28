@@ -32,6 +32,8 @@ export interface DeploymentComparison {
   lostLive: string[];
   /** Region ids live in the trial, not live (or missing) in production. */
   gainedLive: string[];
+  /** Keyed feeds with live regions in production: the ones the feed test checks. */
+  keyedLiveInProduction: number;
   /** Keyed feeds with live regions in production and none in the trial. */
   lostKeyedFeeds: string[];
   ok: boolean;
@@ -50,13 +52,27 @@ export function feedName(path: string): string {
  * map a file's base name to its source.
  */
 export function keyedFeeds(loaders: ReadonlyMap<string, string>, libs: ReadonlyMap<string, string>): Set<string> {
-  const keyedLibs = [...libs].filter(([, src]) => KEY_ENV_RE.test(src)).map(([name]) => name.replace(/\.ts$/, ""));
-  const importsKeyedLib = keyedLibs.length
-    ? new RegExp(`lib/(?:${keyedLibs.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(?:\\.js)?["']`)
-    : null;
+  const escape = (n: string) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // A module is keyed if it reads a key or imports a keyed module, at any
+  // depth: grow the set until nothing new joins.
+  const keyedLibs = new Set([...libs].filter(([, src]) => KEY_ENV_RE.test(src)).map(([name]) => name.replace(/\.ts$/, "")));
+  const importsKeyed = () =>
+    keyedLibs.size ? new RegExp(`(?:lib|\\.)/(?:${[...keyedLibs].map(escape).join("|")})(?:\\.js)?["']`) : null;
+  for (let grew = true; grew; ) {
+    grew = false;
+    const re = importsKeyed();
+    for (const [name, src] of libs) {
+      const base = name.replace(/\.ts$/, "");
+      if (!keyedLibs.has(base) && re?.test(src)) {
+        keyedLibs.add(base);
+        grew = true;
+      }
+    }
+  }
+  const re = importsKeyed();
   const keyed = new Set<string>();
   for (const [file, src] of loaders) {
-    if (KEY_ENV_RE.test(src) || importsKeyedLib?.test(src)) keyed.add(`data/${file.replace(/\.json\.ts$/, "")}`);
+    if (KEY_ENV_RE.test(src) || re?.test(src)) keyed.add(`data/${file.replace(/\.json\.ts$/, "")}`);
   }
   return keyed;
 }
@@ -106,6 +122,7 @@ export function compareDeployments(
     minLive,
     lostLive: [...prod.regions].filter((id) => !next.regions.has(id)).sort(),
     gainedLive: [...next.regions].filter((id) => !prod.regions.has(id)).sort(),
+    keyedLiveInProduction: [...prod.feeds].filter((f) => opts.keyed.has(f)).length,
     lostKeyedFeeds,
     ok: reasons.length === 0,
     reasons,
@@ -123,12 +140,12 @@ function list(ids: string[]): string {
 /** Markdown for the job summary. */
 export function renderComparison(
   c: DeploymentComparison,
-  labels: { production: string; trial: string; productionBuiltAt: string | null; trialBuiltAt: string | null; keyedFeeds: number },
+  labels: { production: string; trial: string; productionBuiltAt: string | null; trialBuiltAt: string | null },
 ): string {
   const share = c.productionLive === 0 ? "production has none" : `${(c.ratio * 100).toFixed(1)}% of production's ${c.productionLive}`;
   const head = c.ok
     ? [
-        `**Pass:** the trial has ${c.trialLive} live records, ${share} (floors: ${(c.minRatio * 100).toFixed(0)}% and ${c.minLive} records), and each of the ${labels.keyedFeeds} keyed feeds live in production is live in it.`,
+        `**Pass:** the trial has ${c.trialLive} live records, ${share} (floors: ${(c.minRatio * 100).toFixed(0)}% and ${c.minLive} records), and each of the ${c.keyedLiveInProduction} keyed feeds live in production is live in it.`,
       ]
     : ["**Fail:**", ...c.reasons.map((r) => `- ${r}`)];
   return [

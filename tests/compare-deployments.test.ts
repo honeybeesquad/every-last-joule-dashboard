@@ -56,12 +56,36 @@ describe("keyedFeeds", () => {
     ]);
     expect([...keyedFeeds(loaders, libs)].sort()).toEqual(["data/caiso", "data/ercot", "data/germany-curtailment", "data/norway"]);
   });
+
+  it("follows keyed modules through other src/lib modules, at any depth", () => {
+    const libs = new Map([
+      ["eia-iso.ts", "process.env.EIA_API_KEY"],
+      ["eia-rto.ts", 'import { x } from "./eia-iso.js";'],
+      ["eia-deep.ts", "import { y } from './eia-rto.js';"],
+      ["plain.ts", "export const z = 1;"],
+    ]);
+    const loaders = new Map([
+      ["deep.json.ts", 'import { f } from "../lib/eia-deep.js";'],
+      ["plain.json.ts", 'import { z } from "../lib/plain.js";'],
+    ]);
+    expect([...keyedFeeds(loaders, libs)]).toEqual(["data/deep"]);
+  });
 });
 
 describe("compareDeployments", () => {
   it("passes a trial with the same live records and feeds", () => {
     const c = compareDeployments(deployment(PROD), deployment(TRIAL), { keyed });
-    expect(c).toMatchObject({ productionLive: 153, trialLive: 153, ratio: 1, lostLive: [], gainedLive: [], lostKeyedFeeds: [], ok: true, reasons: [] });
+    expect(c).toMatchObject({
+      productionLive: 153,
+      trialLive: 153,
+      ratio: 1,
+      lostLive: [],
+      gainedLive: [],
+      keyedLiveInProduction: 3,
+      lostKeyedFeeds: [],
+      ok: true,
+      reasons: [],
+    });
   });
 
   it("fails a trial that lost a large keyed source, and names it", () => {
@@ -122,13 +146,12 @@ describe("renderComparison", () => {
     trial: "https://trial.vercel.app",
     productionBuiltAt: "2026-09-28T23:02:42.508Z",
     trialBuiltAt: null,
-    keyedFeeds: 22,
   };
 
   it("says pass with both counts and the floors actually applied", () => {
     const pass = renderComparison(compareDeployments(deployment(PROD), deployment(TRIAL), { keyed, minRatio: 0.9, minLive: 50 }), labels);
     expect(pass).toContain(
-      "**Pass:** the trial has 153 live records, 100.0% of production's 153 (floors: 90% and 50 records), and each of the 22 keyed feeds live in production is live in it.",
+      "**Pass:** the trial has 153 live records, 100.0% of production's 153 (floors: 90% and 50 records), and each of the 3 keyed feeds live in production is live in it.",
     );
     expect(pass).toContain("| Build stamp | 2026-09-28T23:02:42.508Z | none |");
   });
@@ -138,6 +161,12 @@ describe("renderComparison", () => {
     expect(fail).toContain("**Fail:**\n- The trial has 28.1% of production's live records (floor 95%).");
     expect(fail).toContain("**Keyed feeds live in production with no live region in the trial (1):** `data/entsoe`");
     expect(fail).toContain("and 70 more");
+  });
+
+  it("counts only the keyed feeds production actually has live", () => {
+    const c = compareDeployments(deployment(PROD, { ercot: live("ercot", 2, "cached") }), deployment(TRIAL), { keyed });
+    expect(c.keyedLiveInProduction).toBe(2);
+    expect(renderComparison(c, labels)).toContain("each of the 2 keyed feeds live in production");
   });
 
   it("says so when production has no live records", () => {

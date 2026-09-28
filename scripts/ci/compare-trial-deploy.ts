@@ -71,7 +71,12 @@ function withBudget(read: Reader, deadline: number): Reader {
 
 async function readProduction(path: string): Promise<string> {
   const url = path === "/" ? `${PRODUCTION}/?cb=${Date.now()}` : `${PRODUCTION}${path}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(PRODUCTION_TIMEOUT_MS), headers: { "cache-control": "no-cache" } });
+  let res: Response;
+  try {
+    res = await fetch(url, { signal: AbortSignal.timeout(PRODUCTION_TIMEOUT_MS), headers: { "cache-control": "no-cache" } });
+  } catch (e) {
+    throw new Error(`${url}: ${(e as Error).message}`);
+  }
   if (!res.ok) throw new HttpError(`${url}: HTTP ${res.status}`, res.status);
   return res.text();
 }
@@ -171,10 +176,15 @@ async function main(): Promise<number> {
   // Production: retry a network error or 5xx, not a 4xx. Trial: vercel curl
   // gives no status, so retry any failure.
   const productionRetryable = (e: unknown) => !(e instanceof HttpError) || e.status >= 500;
-  const [prod, next] = await Promise.all([
-    readDeployment(withBudget(withRetry(readProduction, productionRetryable), deadline)),
-    readDeployment(withBudget(withRetry(trialReader(trial, token), () => true), deadline)),
-  ]);
+  const readProd = withBudget(withRetry(readProduction, productionRetryable), deadline);
+  const next = await readDeployment(withBudget(withRetry(trialReader(trial, token), () => true), deadline));
+  // Production last, so a refresh going live mid-read is less likely; if one
+  // did (its old hashed files now 404), read the new deployment once more.
+  let prod = await readDeployment(readProd);
+  if (prod.unreadable.some((m) => m.includes("HTTP 404"))) {
+    console.log("Production changed while it was being read (a hashed file 404ed); reading it again.");
+    prod = await readDeployment(readProd);
+  }
   const unreadable = [...prod.unreadable.map((m) => `production: ${m}`), ...next.unreadable.map((m) => `trial: ${m}`)];
   if (unreadable.length > 0) {
     throw new Error(`could not read ${unreadable.length} file(s), so there is no comparison: ${unreadable.slice(0, 5).join("; ")}`);
@@ -186,7 +196,6 @@ async function main(): Promise<number> {
     trial,
     productionBuiltAt: prod.builtAt,
     trialBuiltAt: next.builtAt,
-    keyedFeeds: keyed.size,
   });
   console.log(body);
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Trial against production\n\n${body}\n`);

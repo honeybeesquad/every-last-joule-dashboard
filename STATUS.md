@@ -23,7 +23,8 @@ ignore-step guessing can still go.
 builds production on Vercel with `--skip-domain`, so nothing goes live, then
 `scripts/ci/compare-trial-deploy.ts` compares the trial's data with
 production's region by region (the trial read through `vercel curl`, which
-passes Vercel Authentication), within a 15-minute budget. It fails when the
+passes Vercel Authentication), within a 15-minute budget; production is read
+last, and again if a refresh went live mid-read. It fails when the
 trial has under 95% of production's live records, under 100 in all, or no
 live region in a keyed feed that production has live: the 22 loaders that
 read an EIA, ENTSO-E, Netztransparenz or ERCOT key, found in the source.
