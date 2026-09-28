@@ -65,6 +65,17 @@ Multiple AI-authored data PRs (e.g. #267) shipped descriptions claiming tier upg
 - **Cloud vs local:** research and data work — long source pulls, calendar-year recomputes, gate runs, docs — runs in cloud sessions by default; the repo, CI and Vercel secrets all live on GitHub/Vercel, so nothing is lost. Use a local session only for tasks that need home-lab network egress: `abed`'s NordVPN Indian exit (India SLDCs), the Flaresolverr proxy (TSOC), the Colombia relay producer.
 - **Preserving uncommitted work:** before any "start from a clean baseline" action, confirm the tree is really clean with a git command you have seen return output. `git status` showing nothing is not evidence.
 
+## Merging PRs (added 2026-09-28)
+
+Merge your own PR into `main` when all of these hold. Do not leave it for the user to merge.
+
+- **You know what it is for**, and its description matches its diff (rule 1 under "Writing data PRs").
+- **It is useful and additive:** it adds or corrects, and removes nothing the user did not ask to remove. A PR that deletes, reverts or rewrites existing work is not additive: ask first.
+- **A Claude code review of its final head passes:** run the `code-review` skill, fix what it finds, and review again until nothing blocking is left. Say what the review found in the PR description.
+- **Required CI (`verify`) is green** on that head, and there is no merge conflict.
+
+Squash-merge, pinned to the head you reviewed, so a later push cannot slip in unreviewed. Merging to `main` deploys to production, so the review applies to docs and workflow PRs too.
+
 ## Safety rails
 
 - Never push directly to `main`/`master`.
