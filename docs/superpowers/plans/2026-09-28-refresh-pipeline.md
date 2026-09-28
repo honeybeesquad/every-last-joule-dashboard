@@ -137,7 +137,7 @@ Not verified anywhere: whether prebuilt production deployments queue behind a ru
 | --- | --- |
 | PR 1: alarm off GitHub | **#1142**, merged 28 Sep. Simon has a Healthchecks.io account; the check and the `HC_PING_URL` secret come next. |
 | PR 2: abed clock | **#1143**, merged 28 Sep. Runs once Simon installs it on abed with a fine-grained PAT (`docs/ops/abed-refresh-clock.md`). |
-| PR 3: build in Actions | Changed to a build on Vercel through the CLI (below). 3a, the trial workflow, built 28 Sep on `claude/vercel-cli-trial`; needs `VERCEL_TOKEN`. 3b, the switch, follows a passing trial. |
+| PR 3: build in Actions | Changed to a build on Vercel through the CLI (below). 3a, the trial workflow, is **#1145** (`claude/vercel-cli-trial`); needs `VERCEL_TOKEN`. 3b, the switch, follows a passing trial. |
 | PR 4: remove the old machinery | Not started; after PR 3 has run cleanly. |
 
 **PR 1 as built.**
