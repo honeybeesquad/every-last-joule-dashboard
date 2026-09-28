@@ -75,23 +75,24 @@ if [ "$mode" = start ]; then
 fi
 
 status=${JOB_STATUS:-}
-# The check step succeeds whenever it reaches an answer, stale or not, so
-# report its verdict rather than the step's outcome.
-case "${QUALITY:-}" in
-  success)
-    case "${STALE:-}" in
-      true) check=stale ;;
-      false) check=fresh ;;
-      *) check="no answer" ;;
+# The check's verdict whenever it reached one (its step succeeds for a stale
+# build too), otherwise how its step ended.
+case "${STALE:-}" in
+  true) check="stale (${TITLE:-no title})" ;;
+  false) check=fresh ;;
+  *)
+    case "${QUALITY:-}" in
+      "") check="not run" ;;
+      success) check="no answer" ;;
+      *) check=$QUALITY ;;
     esac
     ;;
-  "") check="not run" ;;
-  *) check=$QUALITY ;;
 esac
 outcomes="Steps: deploy hook: ${HOOK:-not run}; wait: ${WAIT:-not run}; freshness check: $check."
-# Once the hook may have reached Vercel and no new build was seen, one may
-# still go live.
-if { [ "${HOOK:-}" = success ] || [ "${HOOK:-}" = cancelled ]; } && [ "${WAIT:-}" != success ]; then
+# Once the hook step has run, its request may have reached Vercel even if the
+# step failed (a timeout after Vercel accepted it), so while no new build has
+# been seen, one may still go live.
+if [ -n "${HOOK:-}" ] && [ "${HOOK:-}" != skipped ] && [ "${WAIT:-}" != success ]; then
   outcomes="$outcomes"$'\n'"Vercel may still build and put live the deployment the hook asked for."
 fi
 if [ "$status" != success ]; then
@@ -116,6 +117,6 @@ elif [ "${STALE:-}" = true ]; then
 elif [ "${STALE:-}" = false ]; then
   ping "" "$(body "${TITLE:-Production data is fresh}")"
 else
-  ping /fail "$(body "The freshness check gave no answer.")"
+  ping /fail "$(body "The freshness check gave no answer."$'\n'"$outcomes")"
 fi
 exit 0
