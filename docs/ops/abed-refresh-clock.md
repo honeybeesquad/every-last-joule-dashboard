@@ -18,7 +18,8 @@ clock fills the gaps; GitHub's cron stays as the fallback.
   build stamp (`data/build-info.<hash>.json`, the stamp the footer shows). If it is more
   than 3 h 15 min old and no `data-refresh.yml` run is queued or in progress, it
   dispatches one on `main`. Then it pings its own Healthchecks.io check: success when it
-  did its job, `/fail` when it could not read production or could not dispatch.
+  did its job, `/fail` when it could not read production, could not dispatch, or found a
+  refresh unfinished after 3 h.
 - **Schedule:** `scripts/ops/systemd/elj-refresh-clock.service` (oneshot, as `simon`) and
   `elj-refresh-clock.timer` (hourly, up to 5 min of jitter, `Persistent=true`).
 - **Secrets**, in `~/.config/elj/` (mode 700, files 600), never in the repo:
@@ -45,15 +46,18 @@ not run on abed, so the clock and the alarm never share a failure domain.
    (umask 077; cat > ~/.config/elj/hc-clock-url)
    ```
 
-4. **Update the clone and try it without side effects:**
+4. **Update the clone and try it without side effects.** STATUS records a clone at
+   `~/code/every-last-joule-dashboard`; if it is missing, make one first with
+   `git clone https://github.com/honeybeesquad/every-last-joule-dashboard.git ~/code/every-last-joule-dashboard`.
 
    ```bash
    cd ~/code/every-last-joule-dashboard && git pull
    python3 scripts/ops/refresh_if_stale.py --dry-run
    ```
 
-   It prints the build's age and whether it would dispatch. A dry run neither dispatches
-   nor pings.
+   It prints the build's age and whether it would dispatch, and checks that GitHub
+   accepts the token. A dry run neither dispatches nor pings; it exits 1 if anything is
+   wrong.
 5. **Install the timer:**
 
    ```bash
@@ -90,6 +94,9 @@ cron run as `schedule`. The clock's Healthchecks check shows each run's message.
   `~/.config/elj/github-token`.
 - **Production cannot be read from abed:** the clock does not dispatch (it cannot tell),
   and its check goes down with the error.
+- **A refresh is stuck** (queued or running for over 3 h): the clock does not dispatch
+  behind it, and its check goes down with the run's link. Cancel the stuck run in
+  GitHub's Actions tab.
 - **Refreshes keep failing:** the clock dispatches again each hour while production stays
   overdue and nothing is running; the production check has already emailed.
 

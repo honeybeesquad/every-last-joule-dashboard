@@ -10,4 +10,5 @@ After=network-online.target
 Type=oneshot
 User=simon
 ExecStart=/usr/bin/python3 /home/simon/code/every-last-joule-dashboard/scripts/ops/refresh_if_stale.py
-TimeoutStartSec=180
+# Well above the script's own worst case (about 3 min of timeouts and one retry).
+TimeoutStartSec=300

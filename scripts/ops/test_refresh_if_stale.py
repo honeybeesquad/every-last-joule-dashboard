@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import contextlib
 import datetime as dt
+import http.client
 import importlib.util
 import io
 import json
@@ -31,8 +32,9 @@ spec.loader.exec_module(clock)
 
 NOW = dt.datetime(2026, 9, 28, 21, 0, tzinfo=dt.timezone.utc)
 SITE = clock.SITE
-RUNS = f"https://api.github.com/repos/{clock.REPO}/actions/workflows/data-refresh.yml/runs"
-DISPATCH = f"https://api.github.com/repos/{clock.REPO}/actions/workflows/data-refresh.yml/dispatches"
+WORKFLOW = f"https://api.github.com/repos/{clock.REPO}/actions/workflows/data-refresh.yml"
+RUNS = f"{WORKFLOW}/runs"
+DISPATCH = f"{WORKFLOW}/dispatches"
 CLOCK_PING = "https://hc-ping.com/test-dummy-clock"
 TOKEN = "test-dummy-token"
 
@@ -69,12 +71,15 @@ def production(built_at: str) -> list[tuple[str, str, object]]:
     ]
 
 
-def runs(*statuses: str) -> list[tuple[str, str, object]]:
-    return [("GET", RUNS, (200, json.dumps({"workflow_runs": [{"status": s} for s in statuses]}).encode()))]
+def runs(*statuses: str, created_hours_ago: float = 0.5) -> list[tuple[str, str, object]]:
+    listed = [{"status": s, "created_at": stamp(created_hours_ago), "html_url": f"https://github.com/run/{i}"} for i, s in enumerate(statuses)]
+    return [("GET", RUNS, (200, json.dumps({"workflow_runs": listed}).encode()))]
 
 
 ACCEPT_DISPATCH = [("POST", DISPATCH, (204, b""))]
 ACCEPT_PING = [("POST", CLOCK_PING, (200, b"OK"))]
+# After RUNS and DISPATCH in a route list: the workflow URL is their prefix.
+TOKEN_WORKS = [("GET", WORKFLOW, (200, b"{}"))]
 
 
 class ClockTest(unittest.TestCase):
@@ -107,13 +112,14 @@ class ClockTest(unittest.TestCase):
     def test_finds_the_build_stamp(self):
         self.assertEqual(clock.build_info_path('x "data/build-info.0af3.json" y'), "data/build-info.0af3.json")
         self.assertIsNone(clock.build_info_path('registerFile("data/build-info-old.0af3.json")'))
+        self.assertIsNone(clock.build_info_path('registerFile("data/cbeci.9f8e.json")'))
 
     def test_decides_by_age_then_by_runs(self):
         at_limit = NOW - clock.MAX_AGE
-        self.assertEqual(clock.decide(at_limit, NOW, active=None), "fresh")
+        self.assertEqual(clock.decide(at_limit, NOW, running=None), "fresh")
         just_over = at_limit - dt.timedelta(minutes=1)
-        self.assertEqual(clock.decide(just_over, NOW, active=True), "running")
-        self.assertEqual(clock.decide(just_over, NOW, active=False), "dispatch")
+        self.assertEqual(clock.decide(just_over, NOW, running=True), "running")
+        self.assertEqual(clock.decide(just_over, NOW, running=False), "dispatch")
 
     def test_fresh_production_leaves_github_alone(self):
         code, fake, out, _ = self.run_clock(production(stamp(1)) + ACCEPT_PING)
@@ -174,10 +180,55 @@ class ClockTest(unittest.TestCase):
         self.assertNotIn("Authorization", headers)  # the run list is public
         self.assertEqual(fake.to(DISPATCH), [])
 
-    def test_dry_run_neither_dispatches_nor_pings(self):
-        code, fake, out, _ = self.run_clock(production(stamp(4)) + runs("completed"), dry_run=True)
+    def test_a_refresh_stuck_for_over_3_h_fails_the_clock_check(self):
+        routes = production(stamp(4)) + runs("queued", created_hours_ago=4) + [("POST", CLOCK_PING + "/fail", (200, b"OK"))]
+        code, fake, _, err = self.run_clock(routes)
+        self.assertEqual(code, 1)
+        self.assertIn("has been queued since", err)
+        self.assertIn("https://github.com/run/0", self.ping_bodies(fake, "/fail")[0])
+        self.assertEqual(fake.to(DISPATCH), [])
+
+    def test_a_malformed_run_list_fails_the_clock_check(self):
+        for payload in ({"workflow_runs": None}, {"workflow_runs": ["x"]}, {"message": "Bad credentials"}):
+            routes = production(stamp(4)) + [("GET", RUNS, (200, json.dumps(payload).encode())), ("POST", CLOCK_PING + "/fail", (200, b"OK"))]
+            code, _, _, err = self.run_clock(routes)
+            self.assertEqual(code, 1, payload)
+            self.assertIn("unreadable run list", err, payload)
+
+    def test_a_truncated_body_is_retried_then_reported(self):
+        routes = [("GET", f"{SITE}/?cb=", http.client.IncompleteRead(b"")), ("POST", CLOCK_PING + "/fail", (200, b"OK"))]
+        code, fake, _, err = self.run_clock(routes)
+        self.assertEqual(code, 1)
+        self.assertEqual(len(fake.to(f"{SITE}/?cb=")), 2)
+        self.assertIn("IncompleteRead", err)
+
+    def test_a_4xx_is_final_and_not_retried(self):
+        routes = production(stamp(4)) + [("GET", RUNS, (401, b"")), ("POST", CLOCK_PING + "/fail", (200, b"OK"))]
+        code, fake, _, err = self.run_clock(routes)
+        self.assertEqual(code, 1)
+        self.assertEqual(len(fake.to(RUNS)), 1)
+        self.assertIn("HTTP 401", err)
+
+    def test_a_malformed_ping_url_does_not_change_the_outcome(self):
+        code, _, _, err = self.run_clock(production(stamp(1)) + [("POST", CLOCK_PING, ValueError("unknown url type"))])
         self.assertEqual(code, 0)
-        self.assertIn("would dispatch data-refresh.yml (dry run)", out)
+        self.assertIn("could not ping the clock's Healthchecks check: ValueError", err)
+
+    def test_dry_run_checks_the_token_but_neither_dispatches_nor_pings(self):
+        code, fake, out, _ = self.run_clock(production(stamp(4)) + runs("completed") + TOKEN_WORKS, dry_run=True)
+        self.assertEqual(code, 0)
+        self.assertIn("would dispatch data-refresh.yml (dry run). The GitHub token works.", out)
+        self.assertEqual(len([c for c in fake.calls if c[1] == WORKFLOW]), 1)
+        self.assertEqual([c for c in fake.calls if c[0] == "POST"], [])
+
+    def test_dry_run_fails_on_a_missing_or_refused_token(self):
+        code, _, _, err = self.run_clock(production(stamp(1)) + [("GET", WORKFLOW, (401, b""))], dry_run=True)
+        self.assertEqual(code, 1)
+        self.assertIn("HTTP 401", err)
+        self.token_file.unlink()
+        code, fake, _, err = self.run_clock(production(stamp(1)), dry_run=True)
+        self.assertEqual(code, 1)
+        self.assertIn("no GitHub token", err)
         self.assertEqual([c for c in fake.calls if c[0] == "POST"], [])
 
     def test_without_a_clock_check_there_are_no_pings(self):
