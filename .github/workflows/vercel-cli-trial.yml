@@ -1,0 +1,81 @@
+name: Vercel CLI build trial
+
+# Step 3 of the refresh-pipeline plan (docs/superpowers/plans/
+# 2026-09-28-refresh-pipeline.md), trial only; run it by hand. It builds
+# production on Vercel through the CLI, the way the refresh will once it
+# stops using the deploy hook, but with --skip-domain: the build gets
+# production's settings and API keys, and nothing goes live. Then it compares
+# the trial's data with production's, region by region.
+#
+# Why the build stays on Vercel: every production API key there (EIA,
+# ENTSO-E, Netztransparenz, ERCOT) is a "sensitive" variable, which Vercel
+# never hands back, so a build in Actions (vercel pull, then --prebuilt)
+# would run without keys and fall back.
+#
+# Needs repo secret VERCEL_TOKEN. Changes nothing in production; the trial
+# deployment stays in Vercel's list, unassigned to any domain.
+
+on:
+  workflow_dispatch: {}
+
+concurrency:
+  group: vercel-cli-trial
+  cancel-in-progress: false
+
+env:
+  # Which Vercel account and project to build: identifiers, not credentials.
+  VERCEL_ORG_ID: team_dChOGCQaLAx3BjIpDs33mFFf
+  VERCEL_PROJECT_ID: prj_khErTAybZwU4g3lPTnnTDztoKJz4
+
+jobs:
+  trial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        timeout-minutes: 5
+
+      - uses: actions/setup-node@v4
+        timeout-minutes: 10
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install the Vercel CLI
+        timeout-minutes: 5
+        run: npm install --global vercel@60.1.3
+
+      # Before npm ci, so the upload is the checkout alone.
+      - name: Build production on Vercel without going live
+        id: build
+        timeout-minutes: 30
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::Repo secret VERCEL_TOKEN is not set."
+            exit 1
+          fi
+          # The deployment URL goes to stdout; the build log (--logs) to stderr.
+          url=$(vercel deploy --prod --skip-domain --logs --yes --token "$VERCEL_TOKEN" | tail -n 1)
+          case "$url" in
+            https://*) ;;
+            *) echo "::error::vercel deploy printed no deployment URL"; exit 1 ;;
+          esac
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Trial deployment (not live): $url"
+          vercel inspect "$url" --token "$VERCEL_TOKEN"
+
+      - name: Install dependencies
+        timeout-minutes: 10
+        run: npm ci --no-audit --no-fund
+
+      - name: Compare the trial with production
+        timeout-minutes: 15
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          TRIAL_URL: ${{ steps.build.outputs.url }}
+        run: npx tsx scripts/ci/compare-trial-deploy.ts --trial "$TRIAL_URL"
