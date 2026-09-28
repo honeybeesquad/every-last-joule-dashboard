@@ -81,6 +81,7 @@ const good = {
   STALE: "false",
   TITLE: "Production data is fresh",
 };
+const CANCELLED = "The refresh was cancelled, by hand or by the job's time limit,";
 /** A run that failed before the freshness check wrote its report. */
 const failed = (env: Record<string, string>) => ({ ...good, QUALITY: "skipped", STALE: "", TITLE: "", REPORT: join(dir, "none.md"), ...env });
 
@@ -117,14 +118,20 @@ describe("ping-healthchecks.sh outcome", () => {
       [{ JOB_STATUS: "failure", HOOK: "failure", WAIT: "skipped" }, "The Vercel deploy hook failed."],
       [{ JOB_STATUS: "failure", HOOK: "skipped", WAIT: "skipped" }, "The refresh failed before it reached the deploy hook."],
       [{ JOB_STATUS: "failure", HOOK: "success", WAIT: "success" }, "The refresh failed."],
-      // job.status cannot tell a cancel by hand from the job's time limit.
+      // job.status cannot tell a cancel by hand from the job's time limit;
+      // the reason says how far the run got.
+      [{ JOB_STATUS: "cancelled", HOOK: "skipped", WAIT: "skipped" }, `${CANCELLED} before the deploy hook.`],
       [
-        { JOB_STATUS: "cancelled", HOOK: "success", WAIT: "cancelled" },
-        "The refresh was cancelled, by hand or by the job's time limit, after Vercel accepted the deploy hook, so a new build may still go live.",
+        { JOB_STATUS: "cancelled", HOOK: "cancelled", WAIT: "skipped" },
+        `${CANCELLED} while the deploy hook was being sent, so Vercel may still have queued a build.`,
       ],
       [
-        { JOB_STATUS: "cancelled", HOOK: "skipped", WAIT: "skipped" },
-        "The refresh was cancelled, by hand or by the job's time limit, before the deploy hook.",
+        { JOB_STATUS: "cancelled", HOOK: "success", WAIT: "cancelled" },
+        `${CANCELLED} after Vercel accepted the deploy hook, so a new build may still go live.`,
+      ],
+      [
+        { JOB_STATUS: "cancelled", HOOK: "success", WAIT: "success" },
+        `${CANCELLED} after the new build went live but before its data was checked.`,
       ],
     ];
     for (const [env, reason] of cases) {
@@ -132,10 +139,10 @@ describe("ping-healthchecks.sh outcome", () => {
     }
   });
 
-  it("fails the check when checking the new build's data failed or timed out", () => {
+  it("fails the check when the freshness check could not reach an answer", () => {
     const r = run("outcome", { ...good, QUALITY: "failure", STALE: "", TITLE: "" });
     expect(r.pings[0].url).toBe(`${HC}/fail`);
-    expect(r.pings[0].body).toContain("checking its data failed or timed out");
+    expect(r.pings[0].body).toContain("the freshness check could not reach an answer");
   });
 
   it("fails the check, with the report, when the new build is stale", () => {
