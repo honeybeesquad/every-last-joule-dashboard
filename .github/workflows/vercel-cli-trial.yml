@@ -18,8 +18,10 @@ name: Vercel CLI build trial
 on:
   workflow_dispatch: {}
 
+# The refresh's group: a trial and a refresh never build production on
+# Vercel at the same time (one build slot on Hobby).
 concurrency:
-  group: vercel-cli-trial
+  group: data-refresh
   cancel-in-progress: false
 
 env:
@@ -67,7 +69,7 @@ jobs:
           esac
           echo "url=$url" >> "$GITHUB_OUTPUT"
           echo "Trial deployment (not live): $url"
-          vercel inspect "$url" --token "$VERCEL_TOKEN"
+          vercel inspect "$url" --token "$VERCEL_TOKEN" || echo "::warning::vercel inspect failed; the build itself succeeded."
 
       - name: Install dependencies
         timeout-minutes: 10
