@@ -5,15 +5,19 @@
 # slots, hours late, and the hourly deploy-freshness.yml 3 times in its first
 # 23 hours.
 #
-#   ping-healthchecks.sh start     first thing in a run: /start
+#   ping-healthchecks.sh start     first thing after checkout: /start
 #   ping-healthchecks.sh outcome   last thing, whatever happened before:
 #     success  the job succeeded and the new build passed the freshness check
-#     /fail    anything else, including a cancelled or timed-out run, with
-#              the reason, the freshness report if any, and the run's URL
+#     /fail    it failed, or the new build failed the check or could not be
+#              read, with the reason, the freshness report if any, and the
+#              run's URL
+#     nothing  someone cancelled the run by hand (every long step has its own
+#              time limit, so a hang fails its step rather than the job)
 #
 # Healthchecks emails at once on a /fail, and when no success ping has arrived
-# within the check's period plus grace, so a refresh that never runs is caught
-# too.
+# within the check's period plus grace. That second path also covers what
+# this script cannot report: a run that never starts, a failed checkout, a
+# cancelled run.
 #
 # `outcome` reads JOB_STATUS (success, failure or cancelled), HOOK and WAIT
 # (the deploy hook and wait steps' outcomes), QUALITY (the freshness check
@@ -23,8 +27,10 @@
 set -uo pipefail
 
 mode=${1:-}
-url=${HC_PING_URL:-}
-url=${url%/} # a trailing slash would turn /start into //start, a 404
+# A pasted secret can carry whitespace or a trailing slash, which would turn
+# /start into //start, a 404.
+url=$(printf '%s' "${HC_PING_URL:-}" | tr -d '[:space:]')
+while [ "${url%/}" != "$url" ]; do url=${url%/}; done
 curl_bin=${HC_CURL:-curl} # tests substitute a stub
 run_url="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY:-}/actions/runs/${GITHUB_RUN_ID:-}"
 
@@ -46,7 +52,7 @@ ping() {
   if printf '%s' "$2" | "$curl_bin" -fsS -m 10 --retry 3 --retry-connrefused -o /dev/null --data-binary @- "$url$1"; then
     echo "Pinged Healthchecks: ${1:-success}."
   else
-    echo "::warning::Could not ping Healthchecks.io${1:+ ($1)}; check the HC_PING_URL secret. The check alerts anyway if no success ping follows."
+    echo "::warning::Could not ping Healthchecks.io${1:+ ($1)}: an outage, or a wrong HC_PING_URL secret if this repeats. The check alerts anyway if no success ping follows."
   fi
 }
 
@@ -67,15 +73,15 @@ if [ "$mode" = start ]; then
 fi
 
 status=${JOB_STATUS:-}
-if [ "$status" != success ]; then
-  if [ "$status" = cancelled ]; then
-    reason="The refresh was cancelled or timed out before it finished."
-  elif [ "${HOOK:-}" = failure ]; then
+if [ "$status" = cancelled ]; then
+  echo "The run was cancelled by hand, so no ping. The check's grace period covers it."
+elif [ "$status" != success ]; then
+  if [ "${HOOK:-}" = failure ]; then
     reason="The Vercel deploy hook failed."
   elif [ "${HOOK:-}" != success ]; then
-    reason="The refresh failed before it reached the deploy hook (setup or install)."
+    reason="The refresh failed before it reached the deploy hook."
   elif [ "${WAIT:-}" = failure ]; then
-    reason="Vercel accepted the deploy hook, but no new build went live within 30 min."
+    reason="Vercel accepted the deploy hook, but the wait step failed: no new build went live in time, or the wait itself broke."
   else
     reason="The refresh failed."
   fi

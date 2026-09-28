@@ -91,8 +91,11 @@ describe("ping-healthchecks.sh start", () => {
     expect(r.pings).toEqual([{ url: `${HC}/start`, body: `Refresh started: ${RUN}` }]);
   });
 
-  it("drops a trailing slash from the secret", () => {
-    expect(run("start", { HC_PING_URL: `${HC}/` }).pings[0].url).toBe(`${HC}/start`);
+  it("drops whitespace and trailing slashes from the secret, on every ping", () => {
+    for (const pasted of [`${HC}/`, `${HC}//`, ` ${HC}\n`]) {
+      expect(run("start", { HC_PING_URL: pasted }).pings[0].url).toBe(`${HC}/start`);
+      expect(run("outcome", { ...good, HC_PING_URL: pasted }).pings[0].url).toBe(HC);
+    }
   });
 });
 
@@ -107,10 +110,13 @@ describe("ping-healthchecks.sh outcome", () => {
 
   it("fails the check, naming the step, when the refresh failed", () => {
     const cases: [Record<string, string>, string][] = [
-      [{ JOB_STATUS: "failure", HOOK: "success", WAIT: "failure" }, "Vercel accepted the deploy hook, but no new build went live within 30 min."],
+      [
+        { JOB_STATUS: "failure", HOOK: "success", WAIT: "failure" },
+        "Vercel accepted the deploy hook, but the wait step failed: no new build went live in time, or the wait itself broke.",
+      ],
       [{ JOB_STATUS: "failure", HOOK: "failure", WAIT: "skipped" }, "The Vercel deploy hook failed."],
-      [{ JOB_STATUS: "failure", HOOK: "skipped", WAIT: "skipped" }, "The refresh failed before it reached the deploy hook (setup or install)."],
-      [{ JOB_STATUS: "cancelled", HOOK: "success", WAIT: "cancelled" }, "The refresh was cancelled or timed out before it finished."],
+      [{ JOB_STATUS: "failure", HOOK: "skipped", WAIT: "skipped" }, "The refresh failed before it reached the deploy hook."],
+      [{ JOB_STATUS: "failure", HOOK: "success", WAIT: "success" }, "The refresh failed."],
     ];
     for (const [env, reason] of cases) {
       expect(run("outcome", failed(env)).pings).toEqual([{ url: `${HC}/fail`, body: `${reason}\n\n${RUN}` }]);
@@ -139,6 +145,14 @@ describe("ping-healthchecks.sh outcome", () => {
     expect(r.pings[0].body).toContain("gave no answer");
   });
 
+  it("sends nothing for a run cancelled by hand", () => {
+    // A hang fails its step (each long step has a time limit), so a
+    // cancelled job is a person's choice, left to the grace period.
+    const r = run("outcome", failed({ JOB_STATUS: "cancelled", HOOK: "success", WAIT: "cancelled" }));
+    expect(r.status).toBe(0);
+    expect(r.pings).toEqual([]);
+    expect(r.stdout).toContain("cancelled by hand");
+  });
 });
 
 describe("ping-healthchecks.sh never fails the refresh", () => {

@@ -32,6 +32,12 @@ describe("data-refresh.yml and the Healthchecks.io alarm", () => {
     expect(start.text).toContain("HC_PING_URL: ${{ secrets.HC_PING_URL }}");
   });
 
+  it("gives every long step its own time limit, so a hang fails a step, not the job", () => {
+    for (const needle of ["npm ci", "age past the push window", "id: wait", "id: quality"]) {
+      expect(step(needle).text).toMatch(/\n {8}timeout-minutes: \d+/);
+    }
+  });
+
   it("checks the new build after the wait, without failing the job, within a time limit", () => {
     const quality = step("id: quality");
     expect(step("id: wait").index).toBeLessThan(quality.index);

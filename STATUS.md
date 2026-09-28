@@ -23,17 +23,21 @@ first 23 hours, so the alarm stopped whenever the refresh did.
 - `scripts/ci/ping-healthchecks.sh` pings the check in repo secret
   `HC_PING_URL`: `/start` when a refresh begins, then success only when a new
   build went live and passed the freshness check (at least 100 live regions,
-  and the live regions' median `lastSuccessAt` under 26 h). Anything else,
-  including a cancelled or timed-out run, gets `/fail` with the reason and
-  any report. Healthchecks emails at once on a `/fail`, and when no success
-  ping arrives within the check's period plus grace, so a refresh that never
-  runs is caught too. Without the secret the pings are skipped; the script
-  never fails the job. Tested in `tests/ping-healthchecks.test.ts`, and the
-  workflow lines it depends on in `tests/data-refresh-workflow.test.ts`.
+  and the live regions' median `lastSuccessAt` under 26 h). A failed run, or
+  a new build that fails the check or cannot be read, gets `/fail` with the
+  reason and any report. Healthchecks emails at once on a `/fail`, and when
+  no success ping arrives within the check's period plus grace. That second
+  path covers what the script cannot report: a run that never starts, a
+  failed checkout, a run cancelled by hand. Without the secret the pings are
+  skipped; the script never fails the job. Tested in
+  `tests/ping-healthchecks.test.ts`, and the workflow lines it depends on in
+  `tests/data-refresh-workflow.test.ts`.
 - `data-refresh.yml` calls it first and last, and reads the new build back
-  with `check-deploy-freshness.ts check` after the wait step (5 min limit). A
-  stale build fails the ping, not the job, so `history-append.yml` still
-  captures what production serves.
+  with `check-deploy-freshness.ts check` after the wait step. A stale build
+  fails the ping, not the job, so `history-append.yml` still captures what
+  production serves. Every long step now has its own time limit, so a hang
+  fails its step, and the ping names it; the job's limit (130 min) is a
+  backstop.
 - `deploy-freshness.yml`: `cancel-in-progress: false`, the follow-up from the
   entry below.
 

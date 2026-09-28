@@ -55,11 +55,13 @@ env:
 jobs:
   trigger-rebuild:
     runs-on: ubuntu-latest
-    # Worst case: install (~2 min), three 16-min waits for main's head to age,
-    # the 30-min wait for the build, then up to 5 min to check it: about
-    # 85 min. At 60, GitHub could cancel the job before the wait step fails
-    # with its explanation.
-    timeout-minutes: 90
+    # Every long step has its own time limit, so a hang fails that step and
+    # the Healthchecks ping reports it with a reason. The limits add up to
+    # about 120 min (install 10, the push-window waits 55, the wait for the
+    # build 35, the check 15, plus checkout, the hook and the pings), so the
+    # job's own limit is only a backstop. A cancelled job is then someone
+    # cancelling it by hand, which sends no ping.
+    timeout-minutes: 130
     permissions:
       contents: read
     steps:
@@ -76,9 +78,12 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        timeout-minutes: 10
         run: npm ci --no-audit --no-fund
 
       - name: Let a just-merged commit age past the push window
+        # Three 16-min waits at most, plus the gh api calls between them.
+        timeout-minutes: 55
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -125,6 +130,8 @@ jobs:
 
       - name: Wait for the new build to go live
         id: wait
+        # 30 min of polling, plus its last poll's fetches and sleep.
+        timeout-minutes: 35
         env:
           HOOK_AT: ${{ steps.hook.outputs.at }}
         run: npx tsx scripts/ci/check-deploy-freshness.ts wait --after "$HOOK_AT" --timeout-min 30
@@ -135,9 +142,11 @@ jobs:
         # least 100 live regions, and the live regions' median lastSuccessAt
         # under 26 h. A bad or missing answer fails the Healthchecks ping
         # below, not this job, so history-append.yml still captures what
-        # production now serves. It normally takes seconds.
+        # production now serves. It normally takes seconds; the limit covers
+        # its worst case, about 143 files 8 at a time, each up to 43 s with
+        # its retry.
         continue-on-error: true
-        timeout-minutes: 5
+        timeout-minutes: 15
         run: npx tsx scripts/ci/check-deploy-freshness.ts check --report "$RUNNER_TEMP/freshness.md"
 
       - name: Tell Healthchecks.io how the refresh went
