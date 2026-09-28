@@ -55,24 +55,26 @@ env:
 jobs:
   trigger-rebuild:
     runs-on: ubuntu-latest
-    # Every long step has its own time limit, so a hang fails that step and
-    # the Healthchecks ping reports it with a reason. The limits add up to
-    # about 120 min (install 10, the push-window waits 55, the wait for the
-    # build 35, the check 15, plus checkout, the hook and the pings), so the
-    # job's own limit is only a backstop. A cancelled job is then someone
-    # cancelling it by hand, which sends no ping.
-    timeout-minutes: 130
+    # Every step has its own time limit, so a hang fails that step and the
+    # Healthchecks ping says where: before the hook, at the hook or in the
+    # wait. The job's limit sits above their sum, which
+    # tests/data-refresh-workflow.test.ts checks, so it is only a backstop. A
+    # cancelled job, by hand or by that backstop, also sends /fail.
+    timeout-minutes: 150
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        timeout-minutes: 5
 
       - name: Tell Healthchecks.io a refresh has started
+        timeout-minutes: 2
         env:
           HC_PING_URL: ${{ secrets.HC_PING_URL }}
         run: bash scripts/ci/ping-healthchecks.sh start
 
       - uses: actions/setup-node@v4
+        timeout-minutes: 10
         with:
           node-version: "24"
           cache: npm
@@ -82,8 +84,11 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Let a just-merged commit age past the push window
-        # Three 16-min waits at most, plus the gh api calls between them.
+        # Three waits of PUSH_WINDOW_MIN + 1 at most, plus the gh api calls
+        # between them. Best-effort: if it times out, the refresh still goes
+        # on to the hook.
         timeout-minutes: 55
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -112,6 +117,7 @@ jobs:
 
       - name: POST Vercel deploy hook
         id: hook
+        timeout-minutes: 2
         run: |
           set -euo pipefail
           echo "at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
@@ -142,15 +148,16 @@ jobs:
         # least 100 live regions, and the live regions' median lastSuccessAt
         # under 26 h. A bad or missing answer fails the Healthchecks ping
         # below, not this job, so history-append.yml still captures what
-        # production now serves. It normally takes seconds; the limit covers
-        # its worst case, about 143 files 8 at a time, each up to 43 s with
-        # its retry.
+        # production now serves. It normally takes seconds. Its worst case is
+        # about 15 min: the page, the build stamp, then about 143 data files
+        # 8 at a time, each read up to 43 s with its retry.
         continue-on-error: true
-        timeout-minutes: 15
+        timeout-minutes: 20
         run: npx tsx scripts/ci/check-deploy-freshness.ts check --report "$RUNNER_TEMP/freshness.md"
 
       - name: Tell Healthchecks.io how the refresh went
         if: always()
+        timeout-minutes: 2
         env:
           HC_PING_URL: ${{ secrets.HC_PING_URL }}
           JOB_STATUS: ${{ job.status }}

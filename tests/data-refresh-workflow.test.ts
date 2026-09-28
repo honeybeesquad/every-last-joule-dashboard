@@ -2,10 +2,11 @@
  * .github/workflows/data-refresh.yml wiring for the Healthchecks.io alarm.
  * tests/ping-healthchecks.test.ts covers the script; these tests pin the
  * workflow lines it depends on, which nothing else reads. A renamed step id,
- * a dropped continue-on-error, or `outcome` swapped for `conclusion` would
- * turn a stale build into a success ping or a red refresh without failing
- * any other test. The repo has no YAML parser, so this reads the steps as
- * text blocks.
+ * a dropped continue-on-error, `outcome` swapped for `conclusion`, or a step
+ * limit that no longer covers its step would turn a stale build into a
+ * success ping, a red refresh, or a hang the ping cannot name, without
+ * failing any other test. The repo has no YAML parser, so this reads the
+ * steps as text blocks.
  */
 
 import { readFileSync } from "node:fs";
@@ -24,6 +25,14 @@ function step(needle: string): { index: number; text: string } {
   return { index, text: steps[index] };
 }
 
+function number(text: string, re: RegExp, what: string): number {
+  const m = text.match(re);
+  if (!m) throw new Error(`data-refresh.yml: no ${what}`);
+  return Number(m[1]);
+}
+
+const stepLimit = (text: string) => number(text, /\n {8}timeout-minutes: (\d+)/, "step timeout-minutes");
+
 describe("data-refresh.yml and the Healthchecks.io alarm", () => {
   it("pings /start after checkout and before the deploy hook", () => {
     const start = step("ping-healthchecks.sh start");
@@ -32,17 +41,29 @@ describe("data-refresh.yml and the Healthchecks.io alarm", () => {
     expect(start.text).toContain("HC_PING_URL: ${{ secrets.HC_PING_URL }}");
   });
 
-  it("gives every long step its own time limit, so a hang fails a step, not the job", () => {
-    for (const needle of ["npm ci", "age past the push window", "id: wait", "id: quality"]) {
-      expect(step(needle).text).toMatch(/\n {8}timeout-minutes: \d+/);
-    }
+  it("gives every step a time limit, and the job a limit above their sum", () => {
+    const limits = steps.map(stepLimit);
+    const job = number(WORKFLOW, /\n {4}timeout-minutes: (\d+)/, "job timeout-minutes");
+    expect(job).toBeGreaterThan(limits.reduce((a, b) => a + b, 0));
   });
 
-  it("checks the new build after the wait, without failing the job, within a time limit", () => {
+  it("lets the push-window wait finish its three waits, and fall through to the hook if it cannot", () => {
+    const pushWindow = step("age past the push window");
+    const windowMin = number(WORKFLOW, /\n {2}PUSH_WINDOW_MIN: (\d+)/, "PUSH_WINDOW_MIN");
+    expect(stepLimit(pushWindow.text)).toBeGreaterThanOrEqual(3 * (windowMin + 1) + 3);
+    expect(pushWindow.text).toContain("continue-on-error: true");
+  });
+
+  it("lets the wait step finish its polling", () => {
+    const wait = step("id: wait");
+    const polling = number(wait.text, /--timeout-min (\d+)/, "--timeout-min");
+    expect(stepLimit(wait.text)).toBeGreaterThanOrEqual(polling + 3);
+  });
+
+  it("checks the new build after the wait, without failing the job", () => {
     const quality = step("id: quality");
     expect(step("id: wait").index).toBeLessThan(quality.index);
     expect(quality.text).toContain("continue-on-error: true");
-    expect(quality.text).toMatch(/timeout-minutes: \d+/);
     expect(quality.text).toContain('check-deploy-freshness.ts check --report "$RUNNER_TEMP/freshness.md"');
   });
 

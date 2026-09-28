@@ -8,16 +8,14 @@
 #   ping-healthchecks.sh start     first thing after checkout: /start
 #   ping-healthchecks.sh outcome   last thing, whatever happened before:
 #     success  the job succeeded and the new build passed the freshness check
-#     /fail    it failed, or the new build failed the check or could not be
-#              read, with the reason, the freshness report if any, and the
-#              run's URL
-#     nothing  someone cancelled the run by hand (every long step has its own
-#              time limit, so a hang fails its step rather than the job)
+#     /fail    anything else, with the reason, the freshness report if any,
+#              and the run's URL. That includes a cancelled run: job.status
+#              cannot tell a cancel by hand from the job's time limit, and an
+#              alarm should err towards alerting.
 #
 # Healthchecks emails at once on a /fail, and when no success ping has arrived
 # within the check's period plus grace. That second path also covers what
-# this script cannot report: a run that never starts, a failed checkout, a
-# cancelled run.
+# this script cannot report: a run that never starts, a failed checkout.
 #
 # `outcome` reads JOB_STATUS (success, failure or cancelled), HOOK and WAIT
 # (the deploy hook and wait steps' outcomes), QUALITY (the freshness check
@@ -73,10 +71,10 @@ if [ "$mode" = start ]; then
 fi
 
 status=${JOB_STATUS:-}
-if [ "$status" = cancelled ]; then
-  echo "The run was cancelled by hand, so no ping. The check's grace period covers it."
-elif [ "$status" != success ]; then
-  if [ "${HOOK:-}" = failure ]; then
+if [ "$status" != success ]; then
+  if [ "$status" = cancelled ]; then
+    reason="The refresh was cancelled, by hand or by the job's time limit."
+  elif [ "${HOOK:-}" = failure ]; then
     reason="The Vercel deploy hook failed."
   elif [ "${HOOK:-}" != success ]; then
     reason="The refresh failed before it reached the deploy hook."

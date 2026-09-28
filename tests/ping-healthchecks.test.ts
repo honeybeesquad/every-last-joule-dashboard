@@ -117,6 +117,8 @@ describe("ping-healthchecks.sh outcome", () => {
       [{ JOB_STATUS: "failure", HOOK: "failure", WAIT: "skipped" }, "The Vercel deploy hook failed."],
       [{ JOB_STATUS: "failure", HOOK: "skipped", WAIT: "skipped" }, "The refresh failed before it reached the deploy hook."],
       [{ JOB_STATUS: "failure", HOOK: "success", WAIT: "success" }, "The refresh failed."],
+      // job.status cannot tell a cancel by hand from the job's time limit.
+      [{ JOB_STATUS: "cancelled", HOOK: "success", WAIT: "cancelled" }, "The refresh was cancelled, by hand or by the job's time limit."],
     ];
     for (const [env, reason] of cases) {
       expect(run("outcome", failed(env)).pings).toEqual([{ url: `${HC}/fail`, body: `${reason}\n\n${RUN}` }]);
@@ -143,15 +145,6 @@ describe("ping-healthchecks.sh outcome", () => {
     const r = run("outcome", { ...good, STALE: "" });
     expect(r.pings[0].url).toBe(`${HC}/fail`);
     expect(r.pings[0].body).toContain("gave no answer");
-  });
-
-  it("sends nothing for a run cancelled by hand", () => {
-    // A hang fails its step (each long step has a time limit), so a
-    // cancelled job is a person's choice, left to the grace period.
-    const r = run("outcome", failed({ JOB_STATUS: "cancelled", HOOK: "success", WAIT: "cancelled" }));
-    expect(r.status).toBe(0);
-    expect(r.pings).toEqual([]);
-    expect(r.stdout).toContain("cancelled by hand");
   });
 });
 
