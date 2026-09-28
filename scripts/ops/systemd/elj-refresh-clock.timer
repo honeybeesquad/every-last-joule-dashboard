@@ -1,0 +1,12 @@
+# Hourly, a few minutes' jitter; Persistent catches a run missed while abed
+# was off. See docs/ops/abed-refresh-clock.md.
+[Unit]
+Description=Hourly run of the Every Last Joule refresh clock
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target
