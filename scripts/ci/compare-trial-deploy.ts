@@ -9,42 +9,80 @@
  *
  * Deployment URLs sit behind Vercel Authentication, so the trial is read with
  * `vercel curl` (the Vercel CLI on PATH, VERCEL_TOKEN in the environment);
- * production is read directly. Every read is retried once. Writes the
- * comparison to stdout and the job summary. Exits 1 when the comparison
- * fails, or when any file cannot be read, since then there is no answer.
+ * production is read directly. A trial read is retried once, a production
+ * read once on a network error or 5xx, all within a 15-minute budget. The
+ * keyed feeds are found in the source (scripts/lib/compare-deployments.ts).
+ * Writes the comparison to stdout and the job summary. Exits 1 when the
+ * comparison fails, or when any file cannot be read, since then there is no
+ * answer.
  */
 import { spawn } from "node:child_process";
-import { appendFileSync } from "node:fs";
-import { pathToFileURL } from "node:url";
+import { appendFileSync, readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { mapWithConcurrency } from "../../src/lib/concurrency.js";
-import { compareDeployments, renderComparison } from "../lib/compare-deployments.js";
+import { compareDeployments, keyedFeeds, renderComparison } from "../lib/compare-deployments.js";
 import { buildInfoPath, manifestPaths, regionRecords, type FeedRecords } from "../lib/deploy-freshness.js";
 
 const PRODUCTION = (process.env.ELJ_DASHBOARD_URL ?? "https://everylastjoule.com").replace(/\/+$/, "");
-const REQUEST_TIMEOUT_MS = 30_000;
+const ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "..", "..");
+const PRODUCTION_TIMEOUT_MS = 30_000;
+// A trial read is a whole CLI process (start-up, auth, then the download).
+const TRIAL_TIMEOUT_MS = 60_000;
 const RETRY_PAUSE_MS = 3_000;
+// Past this, reads fail at once, so the step reports what it could not read
+// before its own time limit (20 min) cuts it off.
+const BUDGET_MS = 15 * 60_000;
 // Each trial read is a `vercel curl` process, so keep a few at a time.
 const CONCURRENCY = 4;
 
 type Reader = (path: string) => Promise<string>;
 
-/** Runs `read` again after a pause if it fails: one timeout or 5xx is not an answer. */
-function withRetry(read: Reader): Reader {
+class HttpError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
+/** Retries once after a pause when `retryable` says so; reports both errors if the retry fails too. */
+function withRetry(read: Reader, retryable: (err: unknown) => boolean): Reader {
   return async (path) => {
     try {
       return await read(path);
-    } catch {
+    } catch (first) {
+      if (!retryable(first)) throw first;
       await new Promise((resolve) => setTimeout(resolve, RETRY_PAUSE_MS));
-      return read(path);
+      try {
+        return await read(path);
+      } catch (second) {
+        throw new Error(`${(first as Error).message}; retry: ${(second as Error).message}`);
+      }
     }
   };
 }
 
+function withBudget(read: Reader, deadline: number): Reader {
+  return (path) =>
+    Date.now() > deadline ? Promise.reject(new Error(`${path}: not read, over the ${BUDGET_MS / 60_000}-minute budget`)) : read(path);
+}
+
 async function readProduction(path: string): Promise<string> {
   const url = path === "/" ? `${PRODUCTION}/?cb=${Date.now()}` : `${PRODUCTION}${path}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS), headers: { "cache-control": "no-cache" } });
-  if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
+  const res = await fetch(url, { signal: AbortSignal.timeout(PRODUCTION_TIMEOUT_MS), headers: { "cache-control": "no-cache" } });
+  if (!res.ok) throw new HttpError(`${url}: HTTP ${res.status}`, res.status);
   return res.text();
+}
+
+/** The keyed feeds, from the loaders and the src/lib modules they import. */
+function keyedFeedsFromSource(): Set<string> {
+  const read = (dir: string, suffix: string) =>
+    new Map(readdirSync(join(ROOT, dir)).filter((f) => f.endsWith(suffix)).map((f) => [f, readFileSync(join(ROOT, dir, f), "utf8")]));
+  const keyed = keyedFeeds(read("src/data", ".json.ts"), read("src/lib", ".ts"));
+  if (keyed.size === 0) throw new Error("found no loader that needs an API key, so the keyed-feed test would pass anything");
+  return keyed;
 }
 
 function trialReader(deployment: string, token: string): Reader {
@@ -66,8 +104,8 @@ function trialReader(deployment: string, token: string): Reader {
       // would keep 'close' from ever firing.
       const timer = setTimeout(() => {
         child.kill("SIGKILL");
-        settle(() => reject(new Error(`vercel curl ${path}: no answer in ${REQUEST_TIMEOUT_MS / 1000} s`)));
-      }, REQUEST_TIMEOUT_MS);
+        settle(() => reject(new Error(`vercel curl ${path}: no answer in ${TRIAL_TIMEOUT_MS / 1000} s`)));
+      }, TRIAL_TIMEOUT_MS);
       child.stdout.on("data", (d) => (out += d));
       child.stderr.on("data", (d) => (err += d));
       child.on("error", (e) => settle(() => reject(new Error(`vercel curl ${path}: ${e.message}`))));
@@ -128,21 +166,27 @@ async function main(): Promise<number> {
   const token = process.env.VERCEL_TOKEN;
   if (!trial || !token) throw new Error("usage: VERCEL_TOKEN=... compare-trial-deploy.ts --trial <deployment-url>");
 
+  const keyed = keyedFeedsFromSource();
+  const deadline = Date.now() + BUDGET_MS;
+  // Production: retry a network error or 5xx, not a 4xx. Trial: vercel curl
+  // gives no status, so retry any failure.
+  const productionRetryable = (e: unknown) => !(e instanceof HttpError) || e.status >= 500;
   const [prod, next] = await Promise.all([
-    readDeployment(withRetry(readProduction)),
-    readDeployment(withRetry(trialReader(trial, token))),
+    readDeployment(withBudget(withRetry(readProduction, productionRetryable), deadline)),
+    readDeployment(withBudget(withRetry(trialReader(trial, token), () => true), deadline)),
   ]);
   const unreadable = [...prod.unreadable.map((m) => `production: ${m}`), ...next.unreadable.map((m) => `trial: ${m}`)];
   if (unreadable.length > 0) {
     throw new Error(`could not read ${unreadable.length} file(s), so there is no comparison: ${unreadable.slice(0, 5).join("; ")}`);
   }
 
-  const comparison = compareDeployments(prod.feeds, next.feeds);
+  const comparison = compareDeployments(prod.feeds, next.feeds, { keyed });
   const body = renderComparison(comparison, {
     production: PRODUCTION,
     trial,
     productionBuiltAt: prod.builtAt,
     trialBuiltAt: next.builtAt,
+    keyedFeeds: keyed.size,
   });
   console.log(body);
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Trial against production\n\n${body}\n`);

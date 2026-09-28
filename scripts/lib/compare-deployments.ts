@@ -1,33 +1,39 @@
 /**
- * Compares two deployments' region records: which regions and feeds are live
- * in one and not the other. The pure half of scripts/ci/compare-trial-deploy.ts,
- * the step 3 trial of docs/superpowers/plans/2026-09-28-refresh-pipeline.md.
+ * Compares two deployments' region records: which regions are live in one
+ * and not the other, and whether every keyed feed still has live regions.
+ * The pure half of scripts/ci/compare-trial-deploy.ts, the step 3 trial of
+ * docs/superpowers/plans/2026-09-28-refresh-pipeline.md.
  *
  * A loader that lacks its API key does not fail the build: it falls back and
  * stamps its regions `cached`. So whether a build had its keys shows in which
  * regions are live, not in whether it succeeded. A small keyed source (ERCOT
- * is two regions) hardly moves the total, so the trial also fails when any
- * feed live in production has no live region at all.
+ * is two regions) hardly moves the total, so the trial also fails when a
+ * keyed feed live in production has no live region at all. Unkeyed feeds are
+ * left out of that test: many are one flaky region, and churn is normal.
  */
 import { MIN_LIVE_RECORDS, type FeedRecords } from "./deploy-freshness.js";
 
-/** A trial below this share of production's live regions fails. */
+/** A trial below this share of production's live records fails. */
 export const MIN_LIVE_RATIO = 0.95;
 
+/** The Vercel variables a loader needs a key from (all "sensitive" there). */
+export const KEY_ENV_RE = /EIA_API_KEY|ENTSOE_API_TOKEN|NETZTRANSPARENZ_CLIENT_(?:ID|SECRET)|ERCOT_(?:USERNAME|PASSWORD|API_KEY)/;
+
 export interface DeploymentComparison {
+  /** Live records, counted as scripts/lib/deploy-freshness.ts counts them. */
   productionLive: number;
   trialLive: number;
-  /** trialLive / productionLive; 0 when production has none. */
+  /** trialLive / productionLive; 1 when production has none, so the floor decides. */
   ratio: number;
   minRatio: number;
-  /** The trial also needs at least this many live regions, whatever production has. */
+  /** The trial needs at least this many live records, whatever production has. */
   minLive: number;
-  /** Live in production, not live (or missing) in the trial. */
+  /** Region ids live in production, not live (or missing) in the trial. */
   lostLive: string[];
-  /** Live in the trial, not live (or missing) in production. */
+  /** Region ids live in the trial, not live (or missing) in production. */
   gainedLive: string[];
-  /** Feeds (loader names) with live regions in production and none in the trial. */
-  lostFeeds: string[];
+  /** Keyed feeds with live regions in production and none in the trial. */
+  lostKeyedFeeds: string[];
   ok: boolean;
   /** Why it failed; empty when ok. */
   reasons: string[];
@@ -38,51 +44,69 @@ export function feedName(path: string): string {
   return path.replace(/\.[a-f0-9]+\.json$/, "");
 }
 
-function live(feeds: readonly FeedRecords[]): { regions: Set<string>; feeds: Set<string> } {
+/**
+ * Loader names (data/<name>) that need a key: the loader reads one of the
+ * key variables, or imports a src/lib module that does. `loaders` and `libs`
+ * map a file's base name to its source.
+ */
+export function keyedFeeds(loaders: ReadonlyMap<string, string>, libs: ReadonlyMap<string, string>): Set<string> {
+  const keyedLibs = [...libs].filter(([, src]) => KEY_ENV_RE.test(src)).map(([name]) => name.replace(/\.ts$/, ""));
+  const importsKeyedLib = keyedLibs.length
+    ? new RegExp(`lib/(?:${keyedLibs.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(?:\\.js)?["']`)
+    : null;
+  const keyed = new Set<string>();
+  for (const [file, src] of loaders) {
+    if (KEY_ENV_RE.test(src) || importsKeyedLib?.test(src)) keyed.add(`data/${file.replace(/\.json\.ts$/, "")}`);
+  }
+  return keyed;
+}
+
+function tally(feeds: readonly FeedRecords[]): { records: number; regions: Set<string>; feeds: Set<string> } {
+  let records = 0;
   const regions = new Set<string>();
   const liveFeeds = new Set<string>();
   for (const feed of feeds) {
     for (const record of feed.records) {
-      if (record.sourceStatus === "live") {
-        regions.add(record.regionId);
-        liveFeeds.add(feedName(feed.path));
-      }
+      if (record.sourceStatus !== "live") continue;
+      records += 1;
+      regions.add(record.regionId);
+      liveFeeds.add(feedName(feed.path));
     }
   }
-  return { regions, feeds: liveFeeds };
+  return { records, regions, feeds: liveFeeds };
 }
 
 export function compareDeployments(
   production: readonly FeedRecords[],
   trial: readonly FeedRecords[],
-  opts: { minRatio?: number; minLive?: number } = {},
+  opts: { keyed: ReadonlySet<string>; minRatio?: number; minLive?: number },
 ): DeploymentComparison {
   const minRatio = opts.minRatio ?? MIN_LIVE_RATIO;
   const minLive = opts.minLive ?? MIN_LIVE_RECORDS;
-  const prod = live(production);
-  const next = live(trial);
-  const ratio = prod.regions.size === 0 ? 0 : next.regions.size / prod.regions.size;
-  const lostFeeds = [...prod.feeds].filter((f) => !next.feeds.has(f)).sort();
+  const prod = tally(production);
+  const next = tally(trial);
+  const ratio = prod.records === 0 ? 1 : next.records / prod.records;
+  const lostKeyedFeeds = [...prod.feeds].filter((f) => opts.keyed.has(f) && !next.feeds.has(f)).sort();
 
   const reasons: string[] = [];
   if (ratio < minRatio) {
-    reasons.push(`The trial has ${(ratio * 100).toFixed(1)}% of production's live regions (floor ${(minRatio * 100).toFixed(0)}%).`);
+    reasons.push(`The trial has ${(ratio * 100).toFixed(1)}% of production's live records (floor ${(minRatio * 100).toFixed(0)}%).`);
   }
-  if (next.regions.size < minLive) {
-    reasons.push(`The trial has ${next.regions.size} live regions (floor ${minLive}), so it served its fallback corpus.`);
+  if (next.records < minLive) {
+    reasons.push(`The trial has ${next.records} live records (floor ${minLive}), so it served its fallback corpus.`);
   }
-  if (lostFeeds.length > 0) {
-    reasons.push(`${lostFeeds.length} feed(s) live in production have no live region in the trial, the sign of a missing API key.`);
+  if (lostKeyedFeeds.length > 0) {
+    reasons.push(`${lostKeyedFeeds.length} keyed feed(s) live in production have no live region in the trial: a missing or rejected API key.`);
   }
   return {
-    productionLive: prod.regions.size,
-    trialLive: next.regions.size,
+    productionLive: prod.records,
+    trialLive: next.records,
     ratio,
     minRatio,
     minLive,
     lostLive: [...prod.regions].filter((id) => !next.regions.has(id)).sort(),
     gainedLive: [...next.regions].filter((id) => !prod.regions.has(id)).sort(),
-    lostFeeds,
+    lostKeyedFeeds,
     ok: reasons.length === 0,
     reasons,
   };
@@ -99,11 +123,13 @@ function list(ids: string[]): string {
 /** Markdown for the job summary. */
 export function renderComparison(
   c: DeploymentComparison,
-  labels: { production: string; trial: string; productionBuiltAt: string | null; trialBuiltAt: string | null },
+  labels: { production: string; trial: string; productionBuiltAt: string | null; trialBuiltAt: string | null; keyedFeeds: number },
 ): string {
-  const pct = (c.ratio * 100).toFixed(1);
+  const share = c.productionLive === 0 ? "production has none" : `${(c.ratio * 100).toFixed(1)}% of production's ${c.productionLive}`;
   const head = c.ok
-    ? [`**Pass:** the trial has ${c.trialLive} live regions, ${pct}% of production's ${c.productionLive} (floors: ${(c.minRatio * 100).toFixed(0)}% and ${c.minLive} regions), and every feed live in production is live in it.`]
+    ? [
+        `**Pass:** the trial has ${c.trialLive} live records, ${share} (floors: ${(c.minRatio * 100).toFixed(0)}% and ${c.minLive} records), and each of the ${labels.keyedFeeds} keyed feeds live in production is live in it.`,
+      ]
     : ["**Fail:**", ...c.reasons.map((r) => `- ${r}`)];
   return [
     ...head,
@@ -112,14 +138,14 @@ export function renderComparison(
     "| --- | --- | --- |",
     `| Deployment | ${labels.production} | ${labels.trial} |`,
     `| Build stamp | ${labels.productionBuiltAt ?? "none"} | ${labels.trialBuiltAt ?? "none"} |`,
-    `| Live regions | ${c.productionLive} | ${c.trialLive} |`,
+    `| Live records | ${c.productionLive} | ${c.trialLive} |`,
     "",
-    `**Feeds live in production with no live region in the trial (${c.lostFeeds.length}):** ${list(c.lostFeeds)}`,
+    `**Keyed feeds live in production with no live region in the trial (${c.lostKeyedFeeds.length}):** ${list(c.lostKeyedFeeds)}`,
     "",
-    `**Live in production, not in the trial (${c.lostLive.length}):** ${list(c.lostLive)}`,
+    `**Regions live in production, not in the trial (${c.lostLive.length}):** ${list(c.lostLive)}`,
     "",
-    `**Live in the trial, not in production (${c.gainedLive.length}):** ${list(c.gainedLive)}`,
+    `**Regions live in the trial, not in production (${c.gainedLive.length}):** ${list(c.gainedLive)}`,
     "",
-    "Upstreams move between builds, so a few regions in either list are normal; a feed missing wholesale is not.",
+    "Upstreams move between builds, so a few regions in either list are normal; a keyed feed missing wholesale is not.",
   ].join("\n");
 }

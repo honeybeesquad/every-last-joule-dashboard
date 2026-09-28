@@ -18,10 +18,11 @@ name: Vercel CLI build trial
 on:
   workflow_dispatch: {}
 
-# The refresh's group: a trial and a refresh never build production on
-# Vercel at the same time (one build slot on Hobby).
+# Its own group: sharing data-refresh's would let a trial replace a queued
+# refresh (GitHub keeps one pending run per group). A refresh whose build
+# queues behind a trial's on Vercel waits a few minutes; its wait allows 30.
 concurrency:
-  group: data-refresh
+  group: vercel-cli-trial
   cancel-in-progress: false
 
 env:
@@ -76,7 +77,7 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Compare the trial with production
-        timeout-minutes: 15
+        timeout-minutes: 20
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           TRIAL_URL: ${{ steps.build.outputs.url }}

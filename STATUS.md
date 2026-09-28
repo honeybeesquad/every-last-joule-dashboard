@@ -23,13 +23,13 @@ ignore-step guessing can still go.
 builds production on Vercel with `--skip-domain`, so nothing goes live, then
 `scripts/ci/compare-trial-deploy.ts` compares the trial's data with
 production's region by region (the trial read through `vercel curl`, which
-passes Vercel Authentication), retrying each read once. It fails when the
-trial has under 95% of production's live regions, under 100 in all, or no
-live region in a feed that production has live (the sign of a missing key:
-ERCOT is only two regions), and lists what differs. Logic in
+passes Vercel Authentication), within a 15-minute budget. It fails when the
+trial has under 95% of production's live records, under 100 in all, or no
+live region in a keyed feed that production has live: the 22 loaders that
+read an EIA, ENTSO-E, Netztransparenz or ERCOT key, found in the source.
+ERCOT is only two regions, so its loss would barely move the total. Logic in
 `scripts/lib/compare-deployments.ts`, tested in
-`tests/compare-deployments.test.ts`. The trial shares the refresh's
-concurrency group, so the two never build on Vercel at once.
+`tests/compare-deployments.test.ts`.
 
 **Next.** Simon adds `VERCEL_TOKEN`; the trial runs; if it passes, step 3b
 switches `data-refresh.yml` from the hook to the CLI and turns off Vercel's
