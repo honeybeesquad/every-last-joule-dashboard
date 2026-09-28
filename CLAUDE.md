@@ -69,13 +69,13 @@ Multiple AI-authored data PRs (e.g. #267) shipped descriptions claiming tier upg
 
 Merge a PR into `main` yourself when all of these hold. Do not leave it for the user to merge.
 
-- **It is yours, and you know what it is for:** this session opened it, or the user asked you to drive it, and its description matches its diff (rule 1 under "Writing data PRs"). Never merge a PR only because it looks green: the user or another session may still be working on it.
+- **It is yours, and you know what it is for:** this session opened it (its description ends with this session's `Claude-Session` link) or the user asked you to drive it, and its description matches its diff (rule 1 under "Writing data PRs"). Check this rather than trusting memory or a compaction summary. Never merge a PR only because it looks green: the user or another session may still be working on it.
 - **It is useful and additive:** it adds or fixes, and does not remove, revert or overwrite work that the user or another session made. A change to a tier, a headline figure or the dataset's totals needs the user's sign-off however it is framed (rules 2 and 3 under "Writing data PRs").
-- **A Claude code review of its final head passes:** run the `code-review` skill, which reviews in a separate context. Every finding blocks until you fix it or show with evidence that it is wrong; the PR description says which. Review again after fixing.
-- **CI is green on that head, with no conflict:** `verify` passes. If `main` has since moved by anything other than automation commits (history appends, relay pulls), merge `main` into the branch and let CI run again.
+- **A Claude code review of its final head passes:** run the `code-review` skill, which reviews in a separate context. A finding about correctness, honesty or a rule in this file blocks until you fix it or show with evidence that it is wrong. Style, cleanup and design suggestions do not block: list them as follow-ups. After fixing, review once more; that pass blocks only on problems in the fixes. The PR description says what the reviews found and what you did.
+- **CI is green on that head, with no conflict:** `verify` passes. If `main` has since moved by anything other than automation commits (history appends, relay pulls), merge `main` into the branch and let CI run again, and review again if the merge needed conflict resolution.
 - **The ship-time rules are met:** `STATUS.md` is updated when the PR ships work, and a shipped plan is archived (see above).
 
-Squash-merge, pinned to the reviewed head (`gh pr merge --squash --match-head-commit <sha>`), so a later push cannot slip in unreviewed. The rule covers docs and workflow PRs too: a workflow change runs on its next trigger, and a code change deploys to production when it merges (the ignore step skips docs-only pushes).
+Squash-merge, pinned to the reviewed head so a later push cannot slip in unreviewed: `gh pr merge --squash --match-head-commit <sha>`, or `merge_method: squash` with `expectedHeadSha` in the GitHub MCP merge tool. After merging a change to a workflow, the ignore step or the build, watch its first real run, and fix it straight away if it misbehaves.
 
 ## Safety rails
 
