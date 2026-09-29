@@ -89,13 +89,14 @@ case "${STALE:-}" in
     ;;
 esac
 outcomes="Steps: deploy: ${DEPLOY:-not run}; wait: ${WAIT:-not run}; freshness check: $check."
-# A deploy step that failed or was cancelled may already have started a build
-# on Vercel (a timeout or a cancel while the CLI waited), and a production
-# build goes live when it finishes. It may equally have failed before any
-# build (a missing or expired token) or with it (a build error), so the note
-# is conditional and says where to look.
+# A deploy step that failed or was cancelled may have stopped while Vercel was
+# still building (a timeout or a cancel while the CLI waited), and a
+# production build goes live when it finishes. It may equally have failed
+# before any build (a missing or expired token) or because the build failed.
+# The CLI prints an Inspect line once the deployment exists, and a build
+# error as the build ends, so the note says how to tell.
 if [ "${DEPLOY:-}" = failure ] || [ "${DEPLOY:-}" = cancelled ]; then
-  outcomes="$outcomes"$'\n'"If Vercel had started a build (the deploy step's log shows its Inspect line), it may still finish and go live."
+  outcomes="$outcomes"$'\n'"If the deploy step stopped while Vercel was still building (its log has an Inspect line and no build error), that build may still finish and go live."
 fi
 if [ "$status" != success ]; then
   if [ "$status" = cancelled ]; then

@@ -41,17 +41,26 @@ function pathsIgnore(): string[] {
   return [...block[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
 }
 
-/** A GitHub path filter as a RegExp: `**` matches anything, `*` anything but `/`. */
+/**
+ * A GitHub path filter as a RegExp, for the syntax paths-ignore uses here:
+ * `*` matches anything but `/`, `**` anything, and `**\/` zero or more
+ * directories. GitHub's `?`, `+`, `[]` and `!` mean something else, so they
+ * throw rather than match wrongly.
+ */
 function globToRegExp(glob: string): RegExp {
+  if (/[?+[\]!]/.test(glob)) throw new Error(`globToRegExp does not handle ${glob}`);
   let re = "";
   for (let i = 0; i < glob.length; i++) {
-    if (glob[i] !== "*") {
-      re += glob[i].replace(/[.+?^${}()|[\]\\]/g, "\\$&");
-    } else if (glob[i + 1] === "*") {
+    if (glob.startsWith("**/", i)) {
+      re += "(?:.*/)?";
+      i += 2;
+    } else if (glob.startsWith("**", i)) {
       re += ".*";
       i++;
-    } else {
+    } else if (glob[i] === "*") {
       re += "[^/]*";
+    } else {
+      re += glob[i].replace(/[.^${}()|\\]/g, "\\$&");
     }
   }
   return new RegExp(`^${re}$`);
@@ -127,11 +136,18 @@ describe("data-refresh.yml runs on pushes to main, but not on the automation's o
   });
 
   it("reads path filters the way GitHub does", () => {
+    // GitHub's filter cheat sheet: `*` stops at `/`, `**` does not, and `**/`
+    // also matches no directory at all.
     expect(ignored("src/index.md", ["*.md"])).toBe(false);
     expect(ignored("src/index.md", ["src/*.md"])).toBe(true);
     expect(ignored("src/pages/a.md", ["src/*.md"])).toBe(false);
-    expect(ignored("src/pages/a.md", ["src/**/*.md", "**.md"])).toBe(true);
+    expect(ignored("src/pages/a.md", ["src/**/*.md"])).toBe(true);
+    expect(ignored("src/pages/a.md", ["**.md"])).toBe(true);
+    expect(ignored("docs/README.md", ["docs/**/*.md"])).toBe(true);
+    expect(ignored("README.md", ["**/README.md"])).toBe(true);
+    expect(ignored("vercel.json", ["**/*.json"])).toBe(true);
     expect(ignored("data/historical", ["data/historical/**"])).toBe(false);
+    expect(() => ignored("page.js", ["*.jsx?"])).toThrow();
   });
 
   it("keeps one deploy at a time, in a group a branch run cannot share", () => {

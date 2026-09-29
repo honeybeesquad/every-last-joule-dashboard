@@ -82,7 +82,8 @@ const good = {
   TITLE: "Production data is fresh",
 };
 const CANCELLED = "The refresh was cancelled, by hand or by the job's time limit.";
-const MAY_GO_LIVE = "If Vercel had started a build (the deploy step's log shows its Inspect line), it may still finish and go live.";
+const MAY_GO_LIVE =
+  "If the deploy step stopped while Vercel was still building (its log has an Inspect line and no build error), that build may still finish and go live.";
 /** A run that failed before the freshness check wrote its report. */
 const failed = (env: Record<string, string>) => ({ ...good, QUALITY: "skipped", STALE: "", TITLE: "", REPORT: join(dir, "none.md"), ...env });
 
