@@ -19,8 +19,8 @@ export interface FetchJSONOptions {
  * 46-minute failed build (2026-09-10).
  *
  * LOADER_FETCH_TIMEOUT_MS is read like LOADER_DEADLINE_MS: 0 means no
- * per-request timeout (a request then waits until withFallback's deadline
- * stops it), and a blank value means unset.
+ * per-request timeout (a request then runs until withFallback's deadline
+ * stops it, if that is on), and a blank value means unset.
  */
 function envInt(name: string, fallback: number): number {
   const raw = process.env[name];

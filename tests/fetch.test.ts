@@ -1,8 +1,8 @@
 /**
  * src/lib/fetch.ts's per-request timeout. LOADER_FETCH_TIMEOUT_MS=0 used to
- * reach setTimeout(abort, 0), which aborted every request at once, so every
- * loader fell back to its snapshot. It now means no timeout, as 0 means off
- * for LOADER_DEADLINE_MS and LOADER_HARD_CAP_MS.
+ * reach setTimeout(abort, 0), which aborted every request on the default
+ * timeout at once. It now means no timeout, as 0 means off for
+ * LOADER_DEADLINE_MS and LOADER_HARD_CAP_MS.
  */
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";

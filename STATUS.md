@@ -8,10 +8,11 @@
 **#1168**, from `claude/fetch-timeout-zero`: the follow-up that #1155 noted. #1155 made
 0 mean "off" for `LOADER_DEADLINE_MS` and `LOADER_HARD_CAP_MS`, but `src/lib/fetch.ts`
 still took `LOADER_FETCH_TIMEOUT_MS=0` as a 0 ms timeout, and `setTimeout(abort, 0)`
-stopped every request before it could answer, so every loader would have fallen back to
-its last-good snapshot. It now reads the knob with `msFromEnv`
+stopped every request on the default timeout before it could answer, so the loaders that
+rely on it would have fallen back to their last-good snapshots (a loader that passes its
+own `timeoutMs` was unaffected). It now reads the knob with `msFromEnv`
 (`src/lib/loader-deadline.ts`), as the other two are read: 0 means no per-request
-timeout (a request then waits until `withFallback`'s deadline stops it), a blank value
+timeout (a request then runs until `withFallback`'s deadline stops it, if that is on), a blank value
 means unset, and a value past setTimeout's limit is cut to it. A call's own
 `timeoutMs: 0` means none too. `tests/fetch.test.ts` (new, 5 tests) runs requests against
 a local server that answers after 150 ms; four fail against the old code.
