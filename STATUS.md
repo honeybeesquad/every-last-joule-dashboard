@@ -44,6 +44,16 @@ same text, says so and records the dropped anchor and why. The 17 validation
 docs' Source lines follow, and the TSO-grid roster CSV is regenerated (17 rows
 now `tso-grid-markers`). `docs/known-limitations.md` §16 gets a dated note.
 
+**Region pages for markers.** The region page took its tier gloss, ±40%
+envelope and provenance gloss from `regions.ts` alone, so every grid
+marker's page said "a typical-shape profile is scaled to … an anchor" above a
+label saying its waste is unpublished. For the 17 that was true before this
+change and false after it; the 25 markers from 2026-09-20 already had it.
+`src/region/[id].md.js` now says there is no waste figure and no envelope for
+all 42. The marker list moved to `src/lib/tso-grid-markers.ts`, data only, so
+the page loader (plain Node) can read it; the loader and the roster import it
+from there. `tests/region-pages.test.ts` renders ghana, kauai and algeria.
+
 **Kept from the approved list of 37 (20 regions).** The approved list was a
 first pass, and a closer look kept these:
 - central-african-republic and liberia (hydro) and equatorial-guinea (mixed)
@@ -74,6 +84,11 @@ to 4.42 and from 1.65 to 1.05 TWh/yr.
   waste with solar-shaped profiles.
 - `STATIC_PROFILE_KIND` still lists Nigeria and other solar regions as `mixed`
   (no tier effect).
+- Grids that collect generation but publish no waste (EIA balancing areas
+  such as `tva-solar`, ENTSO unpublished zones, `dominican-republic`, PREPA)
+  still show the modelled tier gloss and ±40% envelope on their region page.
+  Their status sits in several loaders' configs, so the page needs one source
+  of served waste status.
 
 ## Nigeria's region page described an unwired probe, not its data (2026-09-29)
 

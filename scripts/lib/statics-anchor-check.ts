@@ -16,7 +16,9 @@
  * rounds to 0.01 TWh, so a recorded value stands for up to half a unit more.
  * A recorded zero proves nothing: for small grids the reference records no
  * solar at all where the operator lists a few MW of PV (Djibouti, East Timor,
- * Haiti), so zero often means "not reported".
+ * Haiti), so zero often means "not reported". A claim spanning several fuels
+ * is untestable when any of them is missing, since a partial sum would
+ * understate the country's generation.
  */
 import type { Region } from "../../src/lib/types.js";
 
@@ -55,7 +57,7 @@ export interface AnchorGroup {
   fuels: Fuel[];
   regionIds: string[];
   anchorTWh: number;
-  /** Null when the reference has no value for any of the fuels. */
+  /** Null when the reference lacks a value for any of the fuels. */
   generationTWh: number | null;
   years: number[];
 }
@@ -84,12 +86,13 @@ export function anchorGroups(
       const values = fuels
         .map((fuel) => generation.countries[region.country]?.[fuel] ?? null)
         .filter((v): v is FuelValue => v !== null);
+      const complete = values.length === fuels.length;
       group = {
         country: region.country,
         fuels,
         regionIds: [],
         anchorTWh: 0,
-        generationTWh: values.length ? values.reduce((sum, v) => sum + v.twh, 0) : null,
+        generationTWh: complete ? values.reduce((sum, v) => sum + v.twh, 0) : null,
         years: [...new Set(values.map((v) => v.year))].sort(),
       };
       groups.set(key, group);

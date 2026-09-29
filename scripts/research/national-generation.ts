@@ -66,9 +66,12 @@ async function main(): Promise<void> {
   };
   const codeCol = col("code");
   const yearCol = col("year");
+  const fuelCols = (Object.entries(COLUMNS) as [Fuel, string][]).map(([fuel, name]) => [fuel, col(name)] as const);
   const wanted = new Set(REGIONS.map((r) => r.country));
   const series = new Map<string, Record<Fuel, Map<number, number | null>>>();
   for (const line of lines.slice(1)) {
+    // The rows are split on commas; a quoted field would shift every column after it.
+    if (line.includes('"')) throw new Error(`OWID CSV has a quoted field, which this parser does not handle: ${line.slice(0, 80)}`);
     const f = line.split(",");
     const code = f[codeCol];
     if (!wanted.has(code)) continue;
@@ -78,8 +81,8 @@ async function main(): Promise<void> {
       series
         .set(code, Object.fromEntries(Object.keys(COLUMNS).map((k) => [k, new Map()])) as Record<Fuel, Map<number, number | null>>)
         .get(code)!;
-    for (const [fuel, name] of Object.entries(COLUMNS) as [Fuel, string][]) {
-      const raw = f[col(name)];
+    for (const [fuel, i] of fuelCols) {
+      const raw = f[i];
       bucket[fuel].set(year, raw === "" || raw === undefined ? null : Number(raw));
     }
   }

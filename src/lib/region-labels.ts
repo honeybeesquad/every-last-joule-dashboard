@@ -64,6 +64,17 @@ export const PROVENANCE_GLOSS: Record<SourceProvenance, string> = {
     "There is no verified upstream link. The snapshot is a typical-shape profile scaled to an anchor, or otherwise estimated.",
 };
 
+/**
+ * Grids in src/lib/tso-grid-markers.ts carry no waste figure, so the tier's
+ * usual gloss ("a typical-shape profile is scaled to … an anchor"), its ±
+ * envelope and the modelled-fallback gloss would describe a figure that
+ * does not exist. The region page shows these instead.
+ */
+export const MARKER_TIER_GLOSS =
+  "No waste figure. No curtailment series is collected for this grid and none is modelled, so the globe shows it as a grid marker without a waste pillar.";
+export const MARKER_UNCERTAINTY_GLOSS = "No waste figure, so there is no envelope to publish.";
+export const MARKER_PROVENANCE_GLOSS = "There is no verified upstream link, and no waste figure is served for this grid.";
+
 /** Display label for the waste modality. */
 export const KIND_LABEL: Record<RegionKind, string> = {
   solar: "Solar",
