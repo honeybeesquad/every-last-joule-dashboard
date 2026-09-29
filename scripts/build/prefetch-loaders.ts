@@ -15,8 +15,9 @@
  * loader name so Vercel logs stay readable. A loader that exits non-zero or
  * exceeds the hard cap writes nothing — Framework will then run it itself,
  * serially, and fail the build exactly as it does today. This script never
- * fails the build on its own. Like Framework, it skips loaders the site does
- * not read (scripts/lib/referenced-loaders.ts), and deletes their cache files;
+ * fails the build on its own. It empties the data cache first, so no older
+ * output can stand in for a loader it skips or that fails. Like Framework, it
+ * skips loaders the site does not read (scripts/lib/referenced-loaders.ts);
  * if it cannot tell which those are, it runs every loader.
  *
  * KNOBS (env):
@@ -29,7 +30,7 @@
  */
 import { spawn } from "node:child_process";
 import { createWriteStream } from "node:fs";
-import { mkdir, rename, stat, unlink } from "node:fs/promises";
+import { mkdir, rename, rm, stat, unlink } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { mapWithConcurrency } from "../../src/lib/concurrency.js";
 import { listLoaders, readSiteSources, selectLoaders, type Loader } from "../lib/referenced-loaders.js";
@@ -121,6 +122,10 @@ async function main(): Promise<void> {
     console.error("prefetch-loaders: SKIP_PREFETCH=1, leaving loaders to observable build");
     return;
   }
+  // Framework's build serves any file it finds in the cache without running
+  // its loader, so start empty: a loader that is skipped or fails here must
+  // leave nothing behind for Framework to take as fresh.
+  await rm(CACHE_DIR, { recursive: true, force: true });
   const { run: loaders, skip, fallback } = selectLoaders(listLoaders(DATA_DIR), () => readSiteSources(ROOT));
   const t0 = Date.now();
   console.error(
@@ -129,9 +134,6 @@ async function main(): Promise<void> {
       (skip.length ? `; skipping ${skip.length} that no page reads: ${skip.map((l) => l.name).join(", ")}` : ""),
   );
   if (fallback) console.error(`prefetch-loaders: running every loader, because ${fallback}`);
-  // If a page does read a skipped loader after all, Framework must run it
-  // fresh rather than find an older run's output in the cache.
-  await Promise.all(skip.map((l) => unlink(join(CACHE_DIR, l.target)).catch(() => {})));
   const results = await mapWithConcurrency(loaders, CONCURRENCY, runLoader);
   const wall = Date.now() - t0;
   const sum = results.reduce((s, r) => s + r.ms, 0);

@@ -28,24 +28,24 @@ It has been disabled since April, and no page has referenced its file since
   region comes from `statics.json`); in run 36501200671's full build log it
   failed 30 niggrid fetches.
 
-**Credentials: nothing to renew, and nothing uses them now.** Both logs show
-`[ercot-native] token acquired` before the failure, so the password login with
-`ERCOT_USERNAME` and `ERCOT_PASSWORD` works. The product lookup, which sends
-`ERCOT_API_KEY`, passed too: its failure would read `product lookup HTTP …`.
-Vercel lists all three as production-only sensitive variables, created on
-2026-04-23 and not changed since, so the April password was still accepted on
-29 Sep. After this fix no build reads them, so nothing will notice if they
-expire.
+**Credentials: nothing to renew.** Both logs show `[ercot-native] token
+acquired` before the failure, so the password login with `ERCOT_USERNAME` and
+`ERCOT_PASSWORD` works. The product lookup, which sends `ERCOT_API_KEY`, passed
+too: its failure would read `product lookup HTTP …`. Vercel lists all three as
+production-only sensitive variables, created on 2026-04-23 and not changed
+since, so the April password was still accepted on 29 Sep. After this fix a
+build reads them only if the prefetch falls back to running every loader, so
+nothing will notice if they expire.
 
 **Owner action (Simon).** This changes the "rotate ERCOT ×3" item under "Still
-outstanding". If native ERCOT is not coming back, delete `ERCOT_USERNAME`,
-`ERCOT_PASSWORD` and `ERCOT_API_KEY` from the Vercel project's Production
-environment variables: they are a real account's login, kept for a loader no
-build runs. If it is coming back, rotate them at `apiexplorer.ercot.com` as that
-item says, and decide where the probe will run: `.env.local` on this machine no
-longer holds them, and `api.ercot.com` answers local requests with Incapsula's
-403. `docs/ops/secret-rotation-runbook.md` said the three live in `.env.local`
-only; it now names Vercel too.
+outstanding", but rotation stays the fix: deleting a copy does not invalidate
+the password, and its plaintext copy in `.env.local` went missing on an unknown
+date (see the 2026-09-10 entry). Change the password and regenerate the key at
+`apiexplorer.ercot.com`, or close the account if native ERCOT is not coming
+back; in that case also delete `ERCOT_USERNAME`, `ERCOT_PASSWORD` and
+`ERCOT_API_KEY` from the Vercel project's Production environment variables.
+`docs/ops/secret-rotation-runbook.md` says where they live and how to check a
+new password without running the probe.
 
 **The 400.** ERCOT rejects the third request, the report data call:
 `<artifact endpoint>?postDatetimeFrom=…&postDatetimeTo=…&size=5000` with
@@ -56,9 +56,9 @@ NP6-915-CD, has no `postDatetimeFrom` parameter (report endpoints filter on
 `postedDatetimeFrom`), and gives every timestamp filter as
 `yyyy-MM-ddTH24:mm:ss`, without milliseconds or `Z`. Which part ERCOT rejects
 is unconfirmed: the loader writes ERCOT's reply only to a diagnostics file on
-the build machine, and a request from a local checkout gets Incapsula's 403
-before it reaches the API. In April the same call returned 404. Details are in
-`docs/data-source-log.md`.
+the build machine, and from a local checkout here `api.ercot.com` answers with
+Incapsula's 403, with or without credentials. In April the same call returned
+404. Details are in `docs/data-source-log.md`.
 
 **Fix.** `scripts/build/prefetch-loaders.ts` now runs only the loaders the site
 reads, as `observable build` does: 141 of 143, the same 141 whose files
@@ -66,46 +66,44 @@ production serves. `scripts/lib/referenced-loaders.ts` finds them by searching
 `observablehq.config.ts` and the pages and modules under `src/` for
 `data/<file>`, tested in `tests/referenced-loaders.test.ts`. If the search
 fails, or finds none of the loaders, the prefetch runs them all, as before. It
-deletes a skipped loader's cache file, so a loader the search misses runs fresh
-in `observable build` rather than shipping an older output. ercot-native and
+empties Framework's data cache first, so a loader it skips, or one that fails,
+never leaves an older output for `observable build` to ship. ercot-native and
 nigeria stop running, and the build log names them as skipped.
 
 **Not changed.** No data file, `regions.ts` entry or tier. The probe stays in
-the repo, unrun, with its request as it is. The April decision keeps it off
-until ERCOT publishes timestamped curtailment, or SCED fields enough to derive
-it defensibly (`docs/data-source-log.md`), and a probe that worked would stamp
-an unvalidated HDL − GEN series `live`. `docs/data-source-log.md` records the
-400 and what a revival needs.
+the repo with its request as it is; no page reads its file, so no build runs
+it. The April decision was to keep it off "until the US-runner probe
+identifies a direct report with timestamped curtailment or enough SCED fields
+to defensibly derive it" (`docs/data-source-log.md`). As written, a working
+probe would stamp `live` an HDL − GEN series split 66/34 west/east by a fixed
+placeholder.
 
-**Corrections to older entries**, each marked where it stands:
-- The step 3 trial entry: its comparison counts ERCOT as two keyed regions, but
-  they are ercot-native's, which production never has live, so it cannot check
-  the ERCOT credentials (the comment in `scripts/lib/compare-deployments.ts`
-  said the same). Its "Next" still waited for the rerun, which ran on 29 Sep
-  (run 36504999233) and passed.
-- The "Build time" entry: the prefetch also ran the loaders no page reads.
-- The 2026-09-06 curtailment-share entry: it counted ERCOT-native among the
-  sources that measure curtailment, though it has no region and has never
-  produced data.
-- The 2026-09-10 secret-rotation entry: Vercel holds five of the six variables
-  it names, not six; there is no `ERCOT_PRODUCT_ID`.
+**Corrections to older entries**, each marked in place: the step 3 trial
+entry (the ERCOT feed its comparison checks is the EIA-keyed `data/ercot`,
+four regions; the ERCOT credentials feed only ercot-native, which it never
+sees; its rerun, 36504999233, passed), the "Build time" entry (the prefetch
+also ran loaders no page reads), the 2026-09-06 curtailment-share entry
+(ERCOT-native is not a source that measures curtailment), and the 2026-09-10
+secret-rotation entry (five of the six variables it says remain in Vercel do;
+and the ERCOT regions never depended on the ERCOT credentials).
+`scripts/lib/compare-deployments.ts`'s comment is corrected too.
 
 **Follow-ups.**
 - The ercot-native last-good snapshot labels its EIA-proxy seed `T1-live-TSO`
   and `official-lead`, and `data/historical/version-history.csv` carries it as
   two rows in every release since 1.0.0. They are not dashboard regions. The
   next release should decide whether to keep them; past releases' rows stay.
-- The review of this fix found two older build bugs, left for their own PRs.
-  `runLoader` in the prefetch can end the process on a spawn, disk or rename
-  error, failing the build its header says it never fails, and
-  `LOADER_DEADLINE_MS=0` turns off the children's deadline while the prefetch
-  still logs 180 s. `scripts/build/vercel-ignore.sh`'s `':(exclude)*.md'` also
-  matches every `src/**/*.md` page, so a push that changes only a page skips its
-  build.
+- The review of this fix found two older prefetch bugs, left for their own PR:
+  `runLoader` can end the process on a spawn, disk or rename error, failing the
+  build its header says it never fails, and `LOADER_DEADLINE_MS=0` turns off
+  the children's deadline while the prefetch still logs 180 s. It also found
+  `scripts/build/vercel-ignore.sh`'s `':(exclude)*.md'` skipping page-only
+  pushes, which **#1153** has since fixed.
 - `/region/nigeria` shows `regions.ts`'s source string, which describes the
   unwired Niggrid loader and a "~0.05 TWh/yr" anchor. The served data is
   `statics.json`'s, anchored at 0.5 TWh/yr. The tier label (T3-modelled) is
   right; the source prose is not.
+
 ## The ignore step builds site pages and validation records (2026-09-29)
 
 **#1153**, from `claude/vercel-ignore-site-pages`. It supersedes **#1106**
@@ -175,9 +173,10 @@ trial has under 95% of production's live records, under 100 in all, or no
 live region in a keyed feed that production has live: the 22 loaders that
 read an EIA, ENTSO-E, Netztransparenz or ERCOT key, found in the source.
 ERCOT is only two regions, so its loss would barely move the total.
-(Correction, 29 Sep: those two regions are ercot-native's, which production
-never has live, so this test cannot check the ERCOT credentials; see the
-ERCOT-native entry above.) Logic in
+(Correction, 29 Sep: the ERCOT feed this test checks is `data/ercot`, keyed by
+the EIA key and served as four regions. The ERCOT credentials feed only
+ercot-native, which production never serves, so this test cannot check them;
+see the ERCOT-native entry above.) Logic in
 `scripts/lib/compare-deployments.ts`, tested in
 `tests/compare-deployments.test.ts`.
 
@@ -1677,7 +1676,7 @@ Live-site copy now says **459 regions, renewables only**. The old OG card and RE
 
 **Verified in production, not assumed.** A direct `fuel-type-data` request with the new key returned HTTP 200 and 716 hourly AZPS wind rows through `2026-09-10T06`. All 16 EIA loaders were then run against it and returned `sourceStatus: live` across all 34 regions. Production was swept before and after (385 regions each time): **zero status regressions**, EIA **34/34 live** with every timestamp advancing `10:31Z → 16:38Z` on the first scheduled rebuild after the key was saved, ENTSO-E unchanged at 53/54, Norway 8/8. The 16:38Z production build log (2454 lines) contains **zero `HTTP 401`**, zero genuine `403` (the single match is a content hash in `china-shandong.cdd5e403.json`), **zero `falling back to cached snapshot`**, and no `EIA_API_KEY not set`. **The old `DH9J…` key is unused but NOT revoked:** EIA has no self-serve revocation, so killing it takes an email to EIA Open Data support. Rotation makes the leaked copy worthless to this project, which is the fix the runbook actually prescribes; the optional history scrub remains undone.
 
-**`.env.local` was absent, not malformed.** The runbook's Step 2 no longer describes reality: the file was already absent when the checkout was inventoried on 2026-09-09, *before* its move off `~/Desktop` (`ls -a | grep '^\.env'` returned nothing — recorded under "Housekeeping notes" in `docs/research/2026-09-09-session-handoff.md`), and `mv` preserves dotfiles, so the move did not remove it; when it went missing is not known. `.vercel/` was likewise absent before the move. It has been rebuilt clean from `.env.example` with the rotated EIA key only. **`ERCOT_API_KEY`/`_USERNAME`/`_PASSWORD`/`_PRODUCT_ID`, `NETZTRANSPARENZ_CLIENT_ID`/`_SECRET` and `DEEPSEEK_API_KEY` are no longer on that machine.** The first six remain in Vercel Production (correction, 2026-09-29: five; Vercel has no `ERCOT_PRODUCT_ID`), so **production is unaffected and no deployed region is degraded by this** — the 2026-09-10 build log shows Netztransparenz fetching 573 renewable-curtailment rows for 2026-08 — but local builds of the ERCOT and eight German regions will serve last-good snapshots until those values are restored. Incidentally this satisfies SEC-2 ("get the sensitive creds off an unencrypted disk file") more completely than the runbook intended, by accident rather than design.
+**`.env.local` was absent, not malformed.** The runbook's Step 2 no longer describes reality: the file was already absent when the checkout was inventoried on 2026-09-09, *before* its move off `~/Desktop` (`ls -a | grep '^\.env'` returned nothing — recorded under "Housekeeping notes" in `docs/research/2026-09-09-session-handoff.md`), and `mv` preserves dotfiles, so the move did not remove it; when it went missing is not known. `.vercel/` was likewise absent before the move. It has been rebuilt clean from `.env.example` with the rotated EIA key only. **`ERCOT_API_KEY`/`_USERNAME`/`_PASSWORD`/`_PRODUCT_ID`, `NETZTRANSPARENZ_CLIENT_ID`/`_SECRET` and `DEEPSEEK_API_KEY` are no longer on that machine.** The first six remain in Vercel Production (correction, 2026-09-29: five; Vercel has no `ERCOT_PRODUCT_ID`), so **production is unaffected and no deployed region is degraded by this** — the 2026-09-10 build log shows Netztransparenz fetching 573 renewable-curtailment rows for 2026-08 — but local builds of the ERCOT and eight German regions will serve last-good snapshots until those values are restored (correction, 2026-09-29: only the eight German regions; the ERCOT regions use the EIA key, and the ERCOT credentials feed only the disabled ercot-native probe). Incidentally this satisfies SEC-2 ("get the sensitive creds off an unencrypted disk file") more completely than the runbook intended, by accident rather than design.
 
 **ENTSO-E rotation deferred — a decision, not an omission.** The Transparency Platform's own news feed records a Web API service disruption on 01/09, a migration to new infrastructure on 08/09, that migration **rolled back** the same day, and "progress on restoring Transparency Platform service" still in flight on 09/09. Against that, the runbook rates `ENTSOE_API_TOKEN` **Low**: free, read-only, and — unlike the EIA key — **never committed to git history**. It existed only in the `.env.local` that is now gone, so there is no evidence of exposure at all. The live token is demonstrably healthy: 53 of 54 ENTSO-E zones plus all 8 Norway zones read `live` in both sweeps, and the build log shows the ENTSO-E loader succeeding (94.9 kB). The one exception, `north-macedonia-wind`, fails upstream — `B19 returned zero data`, not an auth error — and was already degraded before this work. Regeneration is irreversible and kills the working token on the spot, and the 2026-06-17 incident was itself ENTSO-E dropping a token server-side, so handing a working credential back to a platform mid-restoration is the wrong trade this week. **Revisit once ENTSO-E declares the migration complete.**
 
@@ -2419,7 +2418,7 @@ Also cleaned this session: 16 merged remote branches + 4 session branches delete
 - **Region pages — the three things deliberately left out (2026-09-06).** (a) **No link from the dashboard.** Nothing on `/` points at `/regions` or `/region/<id>`; the surfaces are reachable only by URL and via `sitemap.xml`. `src/index.md` was being rewritten in parallel when they shipped, so the hotspot rows were left alone — wiring a hotspot row to `./region/<id>` and adding a "Provenance and validation" link to `src/components/region-tooltip.js` are the two obvious follow-ups. (b) **No `<link rel="canonical">` or per-page `<meta name="description">`.** Front-matter `head` *replaces* the config `head` (Framework's `getHtml`), which would drop the no-FOUC theme boot script, so per-page meta needs `head` in `observablehq.config.ts` to become a `({path}) => string` function. Worth doing before these URLs are cited. (c) **Region ids are now citable URLs.** `/region/<id>` is public and ids do get renamed here — `india-north` and `japan` already have — so a rename now breaks an external link. That needs a redirect policy; `redirects` in `vercel.json` is the cheap version.
 - **🔁 Refactor session in flight (2026-06-17) — full ledger + next steps in `docs/research/2026-06-17-refactor-session-handoff.md`.** Lighter-deps: #230 (react-dom) merged; #233 (@vercel/analytics+react) ready. Page dedup: #234 extracts `finalizeRegionData` (and makes embed's integrity check non-fatal). Globe split Step 1: #235 (`globe-geo.ts` pure helpers); plan in `docs/research/2026-06-17-globe-split-plan.md`.
 - ✅ **`embed/globe.md` region drift — RESOLVED 2026-09-06** (see the 2026-09-06 entry at the top). The embed was indeed broken in production, but not for the reason this bullet predicted: the integrity check has been non-fatal since #234, and the visible break was a missing comma introduced on 2026-08-21. Drift is now closed by exact `regionData` parity with `src/index.md`, enforced by `tests/globe-drift.test.ts`. **Still outstanding from the hand-off doc:** the shared `buildRegionData()` extraction, and replacing the positional `Promise.all` destructuring in both pages with a name-keyed map — the pattern that caused the 3-month silent region-swap described in the 2026-09-06 entry.
-- **⚠️ Rotate leaked/at-risk secrets (audit SEC-1/2/3, confirmed live 2026-06-16).** **SEC-1 done 2026-09-10** — `EIA_API_KEY` rotated and verified live in production across all 34 EIA regions; the leaked key is unused but **not revoked** (EIA has no self-serve revocation — email EIA Open Data support to kill it). **ENTSO-E deferred 2026-09-10** while the Transparency Platform finishes the infrastructure migration it rolled back on 08/09; that token rates Low and was never in git history. **Still outstanding: the ERCOT username/password/key and the DeepSeek key.** None were committed to history, and they are no longer in `.env.local` (which did not survive the 2026-09-10 checkout move), but ERCOT ×3 remain in Vercel Production and should still be rotated at `apiexplorer.ercot.com`. (2026-09-29: since #1150 no build reads them; if native ERCOT is not coming back, delete them from Vercel instead. See the ERCOT-native entry at the top.) Severity ranking + per-secret rotation steps + history-scrub procedure: `docs/ops/secret-rotation-runbook.md`; placeholder template: `.env.example`. The optional git-history scrub is still undone.
+- **⚠️ Rotate leaked/at-risk secrets (audit SEC-1/2/3, confirmed live 2026-06-16).** **SEC-1 done 2026-09-10** — `EIA_API_KEY` rotated and verified live in production across all 34 EIA regions; the leaked key is unused but **not revoked** (EIA has no self-serve revocation — email EIA Open Data support to kill it). **ENTSO-E deferred 2026-09-10** while the Transparency Platform finishes the infrastructure migration it rolled back on 08/09; that token rates Low and was never in git history. **Still outstanding: the ERCOT username/password/key and the DeepSeek key.** None were committed to history, and they are no longer in `.env.local` (it was already gone when the checkout was inventoried on 2026-09-09, before the move; see the 2026-09-10 entry), but ERCOT ×3 remain in Vercel Production and should still be rotated at `apiexplorer.ercot.com`. (2026-09-29: since #1150 no build needs them. Rotating is still the fix, or closing the account if native ERCOT is not coming back, in which case also delete them from Vercel. See the ERCOT-native entry at the top.) Severity ranking + per-secret rotation steps + history-scrub procedure: `docs/ops/secret-rotation-runbook.md`; placeholder template: `.env.example`. The optional git-history scrub is still undone.
 - **Colombia data-spine — next steps + open decisions:** see the handoff `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md`. Tracks: (A) hardening — backfill history, weekly prev-month refresh, retire Britta, object-storage sync; (B) siting — coordinate crosswalk, pick curtailment signal, write Spec 3; (C) trivial batch — flare expansion, bad-conversions gate (needs 80%/100% decision), EIA fixture test. **Security: rotate the abed login password** (exposed in the 2026-06-07 transcript; SSH is key-based so it won't lock the agent out).
 - **Recalibrate north-macedonia-solar anchor** — current 0.02 TWh/yr static (IRENA RCS 2025, 833 MW end-2024 basis) is a known underestimate; NMK hit ~1.2 GW by end-2025 with solar already moving power-exchange prices. Revisit if a machine-readable MEPSO/exchange curtailment source appears. (serbia-solar 0.007 TWh/yr is fine — curtailment genuinely negligible at 241–318 MW per USEA 2022.)
 - **1 stash left for review** (`stash@{0}`, formerly `{5}`: `chore/paper-post-council-edits` — a `docs/paper/03-data-records.md` rewrite, −69/+25). The other 5 (snapshot/tally churn from already-shipped branches + a superseded `src/style.css` tweak) were dropped 2026-06-16. Review and apply-or-drop the paper stash when convenient.
