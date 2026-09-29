@@ -23,7 +23,7 @@ Takeaway: **rotating a key makes the leaked copy worthless** — that's the actu
 ## Step 1 — Rotate each secret (do the account-credential ones first)
 
 - **ERCOT** (`apiexplorer.ercot.com` developer portal): change the account password, regenerate the subscription/API key, and update `ERCOT_PASSWORD` + `ERCOT_API_KEY` in Vercel Production (and in `.env.local` if you rebuild it). Only the disabled native-ERCOT probe reads them, and builds skip it since #1150. If native ERCOT is not coming back, closing the account retires the login too; then delete the three from Vercel as well.
-- **DeepSeek** (`platform.deepseek.com` → API keys): delete the old key, create a new one, update `DEEPSEEK_API_KEY`. (Not used by the build — consider just deleting it from `.env.local`.)
+- **DeepSeek** (`platform.deepseek.com` → API keys): delete the old key, create a new one, update `DEEPSEEK_API_KEY`. (Not used by the build, and `.env.local`, which held it, is gone, so deleting the key in the dashboard is enough.)
 - **ENTSO-E** (`transparency.entsoe.eu` → My Account Settings → Web Api Security Token): regenerate, update `ENTSOE_API_TOKEN`.
 - **EIA** (`eia.gov/opendata/register.php`): EIA has **no self-serve revocation dashboard** — re-register to get a new key, switch `.env.local` to it, and stop using the old one. The leaked key may stay technically valid; impact is limited to rate-quota abuse on a free public-data endpoint. If you want it truly killed, email EIA Open Data support.
 - **Vercel JWT** (`.vercel/.env.production.local`): `rm .vercel/.env.production.local` then `vercel logout && vercel login`. It's short-lived and regenerated on next pull.
@@ -58,17 +58,20 @@ npm run build      # loaders pick up new tokens (or fall back cleanly)
 git log -p -S 'THE_OLD_EIA_KEY' --all   # after a rewrite: should return nothing
 ```
 
-A build no longer checks the ERCOT values: builds skip the only loader that reads them. Check a new ERCOT password with a direct token request, which touches nothing in the repo. It prints `200` when the login works and `400` when ERCOT's sign-in service rejects it:
+A build no longer checks the ERCOT values: builds skip the only loader that reads them. Check a new ERCOT password with a direct token request, which touches nothing in the repo. It prints `200` when the login works and `400` when ERCOT's sign-in service rejects it (an empty username or password also gets `400`). The password is read without echo and sent through standard input, so it stays out of shell history and the process list:
 
 ```bash
-curl -sS -o /dev/null -w '%{http_code}\n' -X POST \
+printf 'ERCOT username: '; read -r ERCOT_USERNAME
+printf 'ERCOT password: '; read -rs ERCOT_PASSWORD; echo
+printf '%s' "$ERCOT_PASSWORD" | curl -sS -o /dev/null -w '%{http_code}\n' -X POST \
   'https://ercotb2c.b2clogin.com/ercotb2c.onmicrosoft.com/B2C_1_PUBAPI-ROPC-FLOW/oauth2/v2.0/token' \
   --data-urlencode grant_type=password \
   --data-urlencode "username=$ERCOT_USERNAME" \
-  --data-urlencode "password=$ERCOT_PASSWORD" \
+  --data-urlencode password@- \
   --data-urlencode 'scope=openid fec253ea-0d06-4272-a5e6-b478baeecd70 offline_access' \
   --data-urlencode client_id=fec253ea-0d06-4272-a5e6-b478baeecd70 \
   --data-urlencode response_type=id_token
+unset ERCOT_PASSWORD
 ```
 
 Don't run `src/data/ercot-native.json.ts` for this: it rewrites tracked files under `data/snapshots/`. The subscription key can only be checked against `api.ercot.com`, which answered this project's NZ checkout with Incapsula's 403 and let Vercel's US build machines through.
