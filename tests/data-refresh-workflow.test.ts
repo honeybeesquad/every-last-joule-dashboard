@@ -1,12 +1,12 @@
 /**
- * .github/workflows/data-refresh.yml wiring for the Healthchecks.io alarm.
- * tests/ping-healthchecks.test.ts covers the script; these tests pin the
- * workflow lines it depends on, which nothing else reads. A renamed step id,
- * a dropped continue-on-error, `outcome` swapped for `conclusion`, or a step
- * limit that no longer covers its step would turn a stale build into a
- * success ping, a red refresh, or a hang the ping cannot name, without
- * failing any other test. The repo has no YAML parser, so this reads the
- * steps as text blocks.
+ * .github/workflows/data-refresh.yml wiring: the Vercel CLI deploy, the push
+ * trigger and the Healthchecks.io alarm. tests/ping-healthchecks.test.ts
+ * covers the script; these tests pin the workflow lines it depends on, which
+ * nothing else reads. A renamed step id, a dropped continue-on-error,
+ * `outcome` swapped for `conclusion`, or a step limit that no longer covers
+ * its step would turn a stale build into a success ping, a red refresh, or a
+ * hang the ping cannot name, without failing any other test. The repo has no
+ * YAML parser, so this reads the steps as text blocks.
  */
 
 import { readFileSync } from "node:fs";
@@ -14,10 +14,11 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const WORKFLOW = readFileSync(join(__dirname, "..", ".github", "workflows", "data-refresh.yml"), "utf8");
+const WORKFLOWS = join(__dirname, "..", ".github", "workflows");
+const WORKFLOW = readFileSync(join(WORKFLOWS, "data-refresh.yml"), "utf8");
 
 /** The job's steps in order, each as its block of text. */
-const steps = WORKFLOW.split(/\n(?= {6}- )/).slice(1);
+const steps = WORKFLOW.slice(WORKFLOW.indexOf("\n    steps:\n")).split(/\n(?= {6}- )/).slice(1);
 
 function step(needle: string): { index: number; text: string } {
   const index = steps.findIndex((s) => s.includes(needle));
@@ -33,11 +34,82 @@ function number(text: string, re: RegExp, what: string): number {
 
 const stepLimit = (text: string) => number(text, /\n {8}timeout-minutes: (\d+)/, "step timeout-minutes");
 
+/** The push trigger's paths-ignore patterns. */
+function pathsIgnore(): string[] {
+  const block = WORKFLOW.match(/\n {2}push:\n {4}branches: \[main\]\n {4}paths-ignore:\n((?: {6}- "[^"]+"\n)+)/);
+  if (!block) throw new Error("data-refresh.yml: no push trigger on main with paths-ignore");
+  return [...block[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+}
+
+/** GitHub's path filters: `*` stays within a directory, a trailing `/**` takes the rest. */
+function ignored(path: string, patterns: string[]): boolean {
+  return patterns.some((p) => (p.endsWith("/**") ? path.startsWith(p.slice(0, -2)) : !path.includes("/") && new RegExp(`^${p.replace(".", "\\.").replace("*", "[^/]*")}$`).test(path)));
+}
+
+describe("data-refresh.yml deploys through the Vercel CLI", () => {
+  it("installs the pinned CLI, then deploys the checkout before npm ci", () => {
+    const deploy = step("id: deploy");
+    expect(step("npm install --global vercel@").index).toBeLessThan(deploy.index);
+    expect(deploy.index).toBeLessThan(step("run: npm ci").index);
+    expect(deploy.text).toContain("vercel deploy --prod --logs --yes");
+  });
+
+  it("gives the CLI its token only from the environment", () => {
+    // `vercel curl` hands an unknown flag to curl (trial run 36501200671); the
+    // deploy takes the token the same way, so the flag never reaches a log.
+    const deploy = step("id: deploy");
+    expect(deploy.text).toContain("VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}");
+    expect(deploy.text).not.toMatch(/--token|\s-t\s/);
+  });
+
+  it("has no deploy hook and no push-window wait left", () => {
+    expect(WORKFLOW).not.toContain("VERCEL_DEPLOY_HOOK:");
+    expect(WORKFLOW).not.toContain("PUSH_WINDOW_MIN:");
+  });
+
+  it("waits for a build made after the deploy started", () => {
+    const wait = step("id: wait");
+    expect(step("id: deploy").index).toBeLessThan(wait.index);
+    expect(wait.text).toContain("DEPLOY_AT: ${{ steps.deploy.outputs.at }}");
+    expect(wait.text).toContain('wait --after "$DEPLOY_AT"');
+    const polling = number(wait.text, /--timeout-min (\d+)/, "--timeout-min");
+    expect(stepLimit(wait.text)).toBeGreaterThanOrEqual(polling + 3);
+  });
+});
+
+describe("data-refresh.yml runs on pushes to main, but not on the automation's own", () => {
+  it("ignores every path the history and relay workflows commit, so a capture cannot start another refresh", () => {
+    const patterns = pathsIgnore();
+    for (const file of ["history-append.yml", "colombia-relay-pull.yml"]) {
+      const text = readFileSync(join(WORKFLOWS, file), "utf8");
+      // Each `git add` with its continuation lines, and history-append's FILE="…".
+      const commands = [...text.matchAll(/git add((?:[^\n]*\\\n)*[^\n]*)|FILE="([^"]+)"/g)].map((m) => m[1] ?? m[2]);
+      const added = commands.flatMap((c) => c.match(/data\/[\w./-]+/g) ?? []);
+      expect(added.length, `${file}: found no committed paths`).toBeGreaterThan(0);
+      for (const path of added) expect(ignored(path, patterns), `${file} commits ${path}`).toBe(true);
+    }
+  });
+
+  it("still deploys a change to the site's own pages and code", () => {
+    const patterns = pathsIgnore();
+    for (const path of ["src/methodology.md", "src/index.md", "src/lib/regions.ts", "src/data/entsoe.json.ts", "vercel.json", "package-lock.json"]) {
+      expect(ignored(path, patterns), path).toBe(false);
+    }
+    for (const path of ["STATUS.md", "docs/ops/abed-refresh-clock.md", "data/snapshots/last-good/ercot-native.json"]) {
+      expect(ignored(path, patterns), path).toBe(true);
+    }
+  });
+
+  it("keeps one deploy at a time", () => {
+    expect(WORKFLOW).toMatch(/\nconcurrency:\n {2}group: data-refresh\n {2}cancel-in-progress: false\n/);
+  });
+});
+
 describe("data-refresh.yml and the Healthchecks.io alarm", () => {
-  it("pings /start after checkout and before the deploy hook", () => {
+  it("pings /start after checkout and before the deploy", () => {
     const start = step("ping-healthchecks.sh start");
     expect(step("actions/checkout").index).toBeLessThan(start.index);
-    expect(start.index).toBeLessThan(step("id: hook").index);
+    expect(start.index).toBeLessThan(step("id: deploy").index);
     expect(start.text).toContain("HC_PING_URL: ${{ secrets.HC_PING_URL }}");
   });
 
@@ -55,19 +127,6 @@ describe("data-refresh.yml and the Healthchecks.io alarm", () => {
     }
   });
 
-  it("lets the push-window wait finish its three waits, and fall through to the hook if it cannot", () => {
-    const pushWindow = step("age past the push window");
-    const windowMin = number(WORKFLOW, /\n {2}PUSH_WINDOW_MIN: (\d+)/, "PUSH_WINDOW_MIN");
-    expect(stepLimit(pushWindow.text)).toBeGreaterThanOrEqual(3 * (windowMin + 1) + 3);
-    expect(pushWindow.text).toContain("continue-on-error: true");
-  });
-
-  it("lets the wait step finish its polling", () => {
-    const wait = step("id: wait");
-    const polling = number(wait.text, /--timeout-min (\d+)/, "--timeout-min");
-    expect(stepLimit(wait.text)).toBeGreaterThanOrEqual(polling + 3);
-  });
-
   it("checks the new build after the wait, without failing the job", () => {
     const quality = step("id: quality");
     expect(step("id: wait").index).toBeLessThan(quality.index);
@@ -82,7 +141,7 @@ describe("data-refresh.yml and the Healthchecks.io alarm", () => {
     for (const line of [
       "HC_PING_URL: ${{ secrets.HC_PING_URL }}",
       "JOB_STATUS: ${{ job.status }}",
-      "HOOK: ${{ steps.hook.outcome }}",
+      "DEPLOY: ${{ steps.deploy.outcome }}",
       "WAIT: ${{ steps.wait.outcome }}",
       "QUALITY: ${{ steps.quality.outcome }}",
       "STALE: ${{ steps.quality.outputs.stale }}",

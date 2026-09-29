@@ -18,9 +18,13 @@ import { DEPLOY_STALE_AFTER_HOURS } from "../lib/freshness.js";
 export interface BuildInfo {
   /** ISO-8601 UTC time the build's loaders ran. */
   builtAt: string;
-  /** Commit Vercel built, or null outside Vercel. */
+  /**
+   * Commit Vercel built, or null outside Vercel. Vercel's VERCEL_GIT_* first;
+   * for a CLI deployment, which may carry none, the ELJ_BUILD_* build
+   * variables that .github/workflows/data-refresh.yml passes.
+   */
   commit: string | null;
-  /** Branch Vercel built, or null outside Vercel. */
+  /** Branch Vercel built, or null outside Vercel; same sources as `commit`. */
   ref: string | null;
   /** Vercel's "production" | "preview" | "development", else "local". */
   env: string;
@@ -31,8 +35,8 @@ export interface BuildInfo {
 export function buildInfo(env: NodeJS.ProcessEnv = process.env, now: Date = new Date()): BuildInfo {
   return {
     builtAt: now.toISOString(),
-    commit: env.VERCEL_GIT_COMMIT_SHA || null,
-    ref: env.VERCEL_GIT_COMMIT_REF || null,
+    commit: env.VERCEL_GIT_COMMIT_SHA || env.ELJ_BUILD_COMMIT || null,
+    ref: env.VERCEL_GIT_COMMIT_REF || env.ELJ_BUILD_REF || null,
     env: env.VERCEL_ENV || "local",
     staleAfterHours: DEPLOY_STALE_AFTER_HOURS,
   };

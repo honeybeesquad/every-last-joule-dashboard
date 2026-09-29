@@ -1,21 +1,32 @@
 name: Scheduled data refresh
 
-# Triggers a Vercel rebuild on a fixed schedule, then waits for it to go live.
-# Vercel's build environment already has EIA_API_KEY and ENTSOE_API_TOKEN
-# configured as Project Environment Variables, so each rebuild re-runs every
-# data loader and captures the freshest numbers before redeploying.  Loaders
-# run ~8-wide via scripts/build/prefetch-loaders.ts with a 3-minute per-loader
-# deadline, so a build is bounded by the slowest loader (~4-5 min), not the
-# sum (16 min serial, and 46-min failures when an upstream stalled —
-# 2026-09-10).
+# Builds production on Vercel and puts it live, on a fixed schedule and on
+# every push to main that changes the site, then checks the new build. The
+# name stays "Scheduled data refresh": history-append.yml's workflow_run
+# trigger names it.
 #
-# A 201 from the hook only means Vercel queued a deployment, not that it
-# built one. From 2026-09-24 to 27 scripts/build/vercel-ignore.sh skipped
-# every hook build, and this job reported success each time while production
-# served the 24 Sep build. So the job now waits for a fresh build to go live
-# and FAILS when none does (scripts/ci/check-deploy-freshness.ts wait). A red
-# run here means production did not refresh. history-append.yml runs only
-# after a green run, so it captures the new build rather than the old one.
+# Since step 3b of docs/superpowers/plans/2026-09-28-refresh-pipeline.md
+# (29 Sep 2026) the job deploys with the Vercel CLI (`vercel deploy --prod`).
+# The build still runs on Vercel, where the production API keys live: every
+# one is a "sensitive" variable that Vercel never hands back, so the build
+# cannot move into Actions. The CLI waits for the build and returns its result
+# and log to this run. Vercel's own git builds for main are off (vercel.json,
+# git.deploymentEnabled), so production changes only through this workflow;
+# pull-request previews still build on Vercel as before. Each build re-runs
+# every data loader, ~8-wide via scripts/build/prefetch-loaders.ts with a
+# 3-minute per-loader deadline, so it is bounded by the slowest loader.
+#
+# Before step 3b a deploy hook asked Vercel for a build and the job had to
+# infer the result: from 2026-09-24 to 27 scripts/build/vercel-ignore.sh
+# skipped every hook build while the job reported success (STATUS.md,
+# "Scheduled rebuilds were being skipped"). A CLI deployment carries no .git,
+# so the ignore step cannot skip it (trial run 36501200671).
+#
+# After the deploy the job confirms from outside, as a visitor sees it, that
+# production serves a build made after this run started deploying, then
+# checks that build's data (scripts/ci/check-deploy-freshness.ts).
+# history-append.yml runs only after a green run, so it captures the new
+# build.
 #
 # The alarm is Healthchecks.io, because GitHub's scheduler is what fails most
 # often: it ran 2 to 6 of these 8 slots a day in September 2026, hours late.
@@ -26,42 +37,66 @@ name: Scheduled data refresh
 # grace, so a refresh that never runs is caught too
 # (scripts/ci/ping-healthchecks.sh).
 #
-# The Deploy Hook URL is stored as repo secret VERCEL_DEPLOY_HOOK.  It is a
-# POST-only URL; anyone with it can trigger a rebuild.  Rotate via the
-# Vercel dashboard if it leaks.
+# Repo secret VERCEL_TOKEN is the one credential every production deploy
+# depends on, code merges included. It can deploy and change every project in
+# its Vercel team, so rotate it in Vercel (Account Settings, Tokens) if it
+# leaks, and before it expires. A missing, expired or revoked token fails the
+# deploy step, and the /fail ping says so.
+#
+# Rollback: revert the step 3b pull request. That restores the deploy hook
+# step and Vercel's git builds for main; repo secret VERCEL_DEPLOY_HOOK stays
+# until step 4 removes it.
 
 on:
   schedule:
     # Every 3 hours at :15 past the hour — spaced off the common :00 cron
     # spike and timed so daily-publisher regions (ONS Brazil, NREA Egypt,
-    # etc.) have their latest files available.  At ~5 build-minutes per
-    # deploy × 8 deploys/day = ~40 min/day, well under Hobby's 100 hr/mo.
+    # etc.) have their latest files available.  At ~7 build-minutes per
+    # deploy × 8 deploys/day, well under Hobby's 100 hr/mo.
     # GitHub runs scheduled jobs late and drops some: 3 to 5 of the 8 ran
     # per day on 24–27 Sep 2026. Healthchecks.io alarms when no good refresh
-    # lands in time (see above); deploy-freshness.yml at 26 h.
+    # lands in time (see above); abed's refresh clock fills the gaps
+    # (docs/ops/abed-refresh-clock.md); deploy-freshness.yml alarms at 26 h.
     - cron: "15 */3 * * *"
   workflow_dispatch: {}
+  # Code merges go live through this workflow now that Vercel's git builds for
+  # main are off. A push that changes only the data the automation commits
+  # (history and relay CSVs in data/historical, the last-good fallback corpus
+  # in data/snapshots), docs, or Markdown at the repo root waits for the next
+  # refresh, as the Vercel ignore step left such pushes before. Deploying on
+  # the automation's pushes would also loop: refresh, history capture, push,
+  # refresh. Pages under src/ are site content, so they do deploy.
+  push:
+    branches: [main]
+    paths-ignore:
+      - "data/historical/**"
+      - "data/snapshots/**"
+      - "docs/**"
+      - "*.md"
 
-# A refresh that is still waiting for its build must not overlap the next.
+# One deploy at a time: a refresh or a merge that is still deploying must not
+# overlap the next. GitHub keeps one pending run per group, the newest, so a
+# burst of pushes deploys once after the current run, not once each. A pending
+# run that is replaced never starts, so it sends no ping.
 concurrency:
   group: data-refresh
   cancel-in-progress: false
 
 env:
-  # vercel-ignore.sh reads a head younger than this as a fresh push and may
-  # skip it. Keep in step with window_min in scripts/build/vercel-ignore.sh.
-  PUSH_WINDOW_MIN: 15
+  # Which Vercel team and project to deploy: identifiers, not credentials.
+  VERCEL_ORG_ID: team_dChOGCQaLAx3BjIpDs33mFFf
+  VERCEL_PROJECT_ID: prj_khErTAybZwU4g3lPTnnTDztoKJz4
 
 jobs:
-  trigger-rebuild:
+  deploy:
     runs-on: ubuntu-latest
     # Every step has its own time limit, so a hang fails that step and the
-    # Healthchecks ping says where: before the hook, at the hook or in the
-    # wait. The job's limit sits well above their sum, which
+    # Healthchecks ping says where: before the deploy, in it, or in the wait.
+    # The job's limit sits well above their sum, which
     # tests/data-refresh-workflow.test.ts checks, leaving room for job set-up
     # and the post steps, so it is only a backstop. A cancelled job, by hand
     # or by that backstop, also sends /fail.
-    timeout-minutes: 160
+    timeout-minutes: 120
     permissions:
       contents: read
     steps:
@@ -82,68 +117,53 @@ jobs:
           node-version: "24"
           cache: npm
 
+      - name: Install the Vercel CLI
+        timeout-minutes: 5
+        run: npm install --global vercel@60.1.3
+
+      # Before npm ci, so the upload is the checkout alone.
+      - name: Build and deploy production on Vercel
+        id: deploy
+        # Hobby builds one deployment at a time, so this can queue behind a
+        # pull request's preview build; the build itself took 6 to 7 min in
+        # the step 3a trials.
+        timeout-minutes: 35
+        env:
+          # The CLI reads the token from the environment; it is never a flag.
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::Repo secret VERCEL_TOKEN is not set."
+            exit 1
+          fi
+          echo "at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+          # The deployment URL goes to stdout; the build log (--logs) to
+          # stderr. The build stamp takes the commit and branch from the two
+          # build variables when Vercel sets no VERCEL_GIT_* variables, as for
+          # a CLI deployment it may not (src/data/build-info.json.ts).
+          url=$(vercel deploy --prod --logs --yes \
+            --build-env "ELJ_BUILD_COMMIT=$GITHUB_SHA" \
+            --build-env "ELJ_BUILD_REF=$GITHUB_REF_NAME" | tail -n 1)
+          case "$url" in
+            https://*) ;;
+            *) echo "::error::vercel deploy printed no deployment URL"; exit 1 ;;
+          esac
+          echo "Production deployment: $url"
+
       - name: Install dependencies
         timeout-minutes: 10
         run: npm ci --no-audit --no-fund
 
-      - name: Let a just-merged commit age past the push window
-        # Three waits of PUSH_WINDOW_MIN + 1 at most, plus the gh api calls
-        # between them. Best-effort: if it times out, the refresh still goes
-        # on to the hook.
-        timeout-minutes: 55
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          # If an automation commit merged moments ago, Vercel would read this
-          # hook's build as that commit's push and could skip it. Wait until
-          # main's head is older than the window. Bounded, and it never blocks
-          # the refresh: anything unreadable just proceeds to the hook.
-          # It checks again after every wait, so a commit that lands during
-          # one is seen; at most three waits, then the hook goes anyway and the
-          # next step reports a skipped build.
-          need=$(( (PUSH_WINDOW_MIN + 1) * 60 ))
-          for attempt in 1 2 3 4; do
-            committed=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .commit.committer.date 2>/dev/null) || break
-            committed_s=$(date -d "$committed" +%s 2>/dev/null) || break
-            age=$(( $(date +%s) - committed_s ))
-            if [ "$age" -ge "$need" ]; then break; fi
-            if [ "$attempt" -eq 4 ]; then
-              echo "::warning::main's head is still ${age}s old after three waits; Vercel may skip this hook's build as a push."
-              break
-            fi
-            pause=$(( need - age > need ? need : need - age ))
-            echo "main's head is ${age}s old; waiting ${pause}s"
-            sleep "$pause"
-          done
-          exit 0
-
-      - name: POST Vercel deploy hook
-        id: hook
-        timeout-minutes: 2
-        run: |
-          set -euo pipefail
-          echo "at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
-          response=$(curl -sS -X POST "$VERCEL_DEPLOY_HOOK" \
-            -w "\nHTTP_STATUS=%{http_code}\n" \
-            --max-time 30)
-          echo "$response"
-          status=$(printf '%s\n' "$response" | awk -F= '/^HTTP_STATUS=/{print $2}')
-          if [ "$status" != "201" ] && [ "$status" != "200" ]; then
-            echo "Deploy hook returned non-success status: $status" >&2
-            exit 1
-          fi
-          echo "Vercel accepted the deploy hook."
-        env:
-          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
-
-      - name: Wait for the new build to go live
+      - name: Confirm production serves the new build
         id: wait
-        # 30 min of polling, plus its last poll's fetches and sleep.
-        timeout-minutes: 35
+        # The CLI returns once the deployment is live, so this normally passes
+        # on its first poll. 10 min of polling, plus its last poll's fetches
+        # and sleep.
+        timeout-minutes: 13
         env:
-          HOOK_AT: ${{ steps.hook.outputs.at }}
-        run: npx tsx scripts/ci/check-deploy-freshness.ts wait --after "$HOOK_AT" --timeout-min 30
+          DEPLOY_AT: ${{ steps.deploy.outputs.at }}
+        run: npx tsx scripts/ci/check-deploy-freshness.ts wait --after "$DEPLOY_AT" --timeout-min 10
 
       - name: Check the new build's data
         id: quality
@@ -166,7 +186,7 @@ jobs:
         env:
           HC_PING_URL: ${{ secrets.HC_PING_URL }}
           JOB_STATUS: ${{ job.status }}
-          HOOK: ${{ steps.hook.outcome }}
+          DEPLOY: ${{ steps.deploy.outcome }}
           WAIT: ${{ steps.wait.outcome }}
           QUALITY: ${{ steps.quality.outcome }}
           STALE: ${{ steps.quality.outputs.stale }}
