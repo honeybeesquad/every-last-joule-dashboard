@@ -30,8 +30,8 @@
 # its fallback when the XM API is empty, other loaders read their CSVs there,
 # and /history reads history-trends.json. So a relay-pull merge, or any push
 # that changes only data/historical, is picked up by the next scheduled
-# rebuild (<= 3 h) rather than immediately. Snapshot merges (last-good corpus)
-# are likewise fallback-only.
+# rebuild (about every 3 h) rather than immediately. Snapshot merges
+# (last-good corpus) are likewise fallback-only.
 set -u
 prev="${VERCEL_GIT_PREVIOUS_SHA:-}"
 cur="${VERCEL_GIT_COMMIT_SHA:-}"

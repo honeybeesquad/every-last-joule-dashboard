@@ -27,11 +27,11 @@ changed. Markdown elsewhere now builds too (`dataset/`, `scripts/`,
 cost is an occasional extra build. Unchanged: deploy hooks and redeploys,
 automation commits (`data/historical/*`) and the shallow-clone fallback.
 `tests/vercel-ignore.test.ts` goes from 10 to 28 tests, of which 9 fail
-against the old script. Comments only: the script's trade-off note now says
-that `data/historical` holds build inputs too (loader CSVs, and
-`history-trends.json` for `/history`), so a push that changes only those still
-waits for the next scheduled build. Step 4 of the refresh-pipeline plan no
-longer suggests the old pathspec for previews.
+against the old script. Comments and the plan only: the script's trade-off
+note now says that `data/historical` holds build inputs too (loader CSVs, and
+`history-trends.json` for `/history`), so a push that changes only those
+still waits for the next scheduled build. Step 4 of the refresh-pipeline plan
+no longer suggests the old pathspec, or a `HEAD^ HEAD` diff, for previews.
 
 **Replay.** Each of the 172 first-parent `main` commits since #967, run as a
 fresh push against its parent: the old script skips 131, the new one 129.
