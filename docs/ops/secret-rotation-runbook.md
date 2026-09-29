@@ -12,7 +12,7 @@ The audit rated SEC-1 "high" because it's a *leaked* credential. By **blast radi
 
 | Secret | Where exposed | Impact if abused | Real priority |
 |---|---|---|---|
-| `ERCOT_USERNAME` / `ERCOT_PASSWORD` / `ERCOT_API_KEY` | `.env.local` only (gitignored, **not** in git history) | Real account login | **Highest** — these are account credentials |
+| `ERCOT_USERNAME` / `ERCOT_PASSWORD` / `ERCOT_API_KEY` | Vercel Production (sensitive, set 2026-04-23), and `.env.local` until that file went missing (found absent 2026-09-09); **not** in git history. No build reads them since #1150 | Real account login | **Highest** — these are account credentials |
 | `DEEPSEEK_API_KEY` | `.env.local` only | Paid LLM API → $ if abused | High (cost) |
 | `EIA_API_KEY` | **Leaked in git history** (test fixtures, redacted from HEAD in `b9c63c4`) | Free, read-only, rate-limited public-data key | Medium — wide exposure, tiny impact |
 | `ENTSOE_API_TOKEN` | `.env.local` only | Free, read-only public-data token | Low |
@@ -22,7 +22,7 @@ Takeaway: **rotating a key makes the leaked copy worthless** — that's the actu
 
 ## Step 1 — Rotate each secret (do the account-credential ones first)
 
-- **ERCOT** (`apiexplorer.ercot.com` developer portal): change the account password, regenerate the subscription/API key, update `ERCOT_PASSWORD` + `ERCOT_API_KEY` in `.env.local`.
+- **ERCOT** (`apiexplorer.ercot.com` developer portal): change the account password, regenerate the subscription/API key, update `ERCOT_PASSWORD` + `ERCOT_API_KEY` in `.env.local` and in Vercel Production. Only the disabled native-ERCOT probe reads them, and no build has run it since #1150; if native ERCOT is not coming back, delete the three from Vercel instead of rotating them.
 - **DeepSeek** (`platform.deepseek.com` → API keys): delete the old key, create a new one, update `DEEPSEEK_API_KEY`. (Not used by the build — consider just deleting it from `.env.local`.)
 - **ENTSO-E** (`transparency.entsoe.eu` → My Account Settings → Web Api Security Token): regenerate, update `ENTSOE_API_TOKEN`.
 - **EIA** (`eia.gov/opendata/register.php`): EIA has **no self-serve revocation dashboard** — re-register to get a new key, switch `.env.local` to it, and stop using the old one. The leaked key may stay technically valid; impact is limited to rate-quota abuse on a free public-data endpoint. If you want it truly killed, email EIA Open Data support.
@@ -57,3 +57,5 @@ Because the only history-leaked key is the low-impact EIA one, **rotation alone 
 npm run build      # loaders pick up new tokens (or fall back cleanly)
 git log -p -S 'THE_OLD_EIA_KEY' --all   # after a rewrite: should return nothing
 ```
+
+A build does not check the ERCOT values: no loader it runs reads them. To check a new ERCOT password, run `npx tsx src/data/ercot-native.json.ts` with the three set and look for `token acquired`; outside Vercel's build machines the API calls after the token get Incapsula's 403.
