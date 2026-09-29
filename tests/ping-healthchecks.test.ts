@@ -84,7 +84,8 @@ const good = {
 const CANCELLED = "The refresh was cancelled, by hand or by the job's time limit.";
 const MAY_GO_LIVE =
   "Whether a build may still go live: open the Inspect link in the deploy step's log (none means no build started). " +
-  "Queued, Initializing or Building goes live when it finishes; Ready is live already; Error or Canceled never will.";
+  "If everylastjoule.com is among its domains, it is live; if it is Queued, Initializing or Building, it goes live when it finishes; " +
+  "otherwise it will not go live by itself.";
 /** A run that failed before the freshness check wrote its report. */
 const failed = (env: Record<string, string>) => ({ ...good, QUALITY: "skipped", STALE: "", TITLE: "", REPORT: join(dir, "none.md"), ...env });
 
