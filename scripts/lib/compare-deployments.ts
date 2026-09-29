@@ -6,10 +6,13 @@
  *
  * A loader that lacks its API key does not fail the build: it falls back and
  * stamps its regions `cached`. So whether a build had its keys shows in which
- * regions are live, not in whether it succeeded. A small keyed source (ERCOT
- * is two regions) hardly moves the total, so the trial also fails when a
- * keyed feed live in production has no live region at all. Unkeyed feeds are
- * left out of that test: many are one flaky region, and churn is normal.
+ * regions are live, not in whether it succeeded. A key that feeds few regions
+ * (Netztransparenz feeds only germany-curtailment) hardly moves the total, so
+ * the trial also fails when a keyed feed live in production has no live
+ * region at all. Unkeyed feeds are left out of that test: many are one flaky
+ * region, and churn is normal. The ERCOT credentials feed only ercot-native,
+ * which no page reads, so production never has it live and this test cannot
+ * check them.
  */
 import { MIN_LIVE_RECORDS, type FeedRecords } from "./deploy-freshness.js";
 

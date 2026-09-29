@@ -13,7 +13,7 @@ name: Scheduled data refresh
 # and log to this run. Vercel's own git builds for main are off (vercel.json,
 # git.deploymentEnabled), so production changes only through this workflow;
 # pull-request previews still build on Vercel as before. Each build re-runs
-# every data loader, ~8-wide via scripts/build/prefetch-loaders.ts with a
+# every data loader the site reads, ~8-wide via scripts/build/prefetch-loaders.ts with a
 # 3-minute per-loader deadline, so it is bounded by the slowest loader.
 #
 # Before step 3b a deploy hook asked Vercel for a build and the job had to
