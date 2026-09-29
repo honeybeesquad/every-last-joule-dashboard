@@ -14,107 +14,33 @@
  * src/.observablehq/cache/<target>; stderr passes through prefixed with the
  * loader name so Vercel logs stay readable. A loader that exits non-zero or
  * exceeds the hard cap writes nothing — Framework will then run it itself,
- * serially, and fail the build exactly as it does today. This script never
- * fails the build on its own. Like Framework, it skips loaders the site does
+ * serially, and fail the build exactly as it does today. So does one that
+ * cannot start or whose output cannot be written: scripts/lib/prefetch-runner.ts
+ * turns every such error into a failed loader. This script never fails the
+ * build on its own. Like Framework, it skips loaders the site does
  * not read (scripts/lib/referenced-loaders.ts), and deletes their cache files;
  * if it cannot tell which those are, it runs every loader.
  *
  * KNOBS (env):
  *   LOADER_CONCURRENCY      parallel loaders           default 8
- *   LOADER_DEADLINE_MS      withFallback live budget   default 180000 (see src/lib/resilient.ts)
- *   LOADER_HARD_CAP_MS      kill a loader after this   default LOADER_DEADLINE_MS + 120000
+ *   LOADER_DEADLINE_MS      withFallback live budget   default 180000; 0 turns it off (see src/lib/loader-deadline.ts)
+ *   LOADER_HARD_CAP_MS      stop a loader after this   default LOADER_DEADLINE_MS + 120000; none when the deadline is off
  *   LOADER_FETCH_TIMEOUT_MS per-request timeout        default here 15000 (library default 30000)
  *   LOADER_FETCH_RETRIES    per-request retries        default here 1     (library default 3)
  *   SKIP_PREFETCH=1         do nothing (Framework runs loaders serially as before)
  */
-import { spawn } from "node:child_process";
-import { createWriteStream } from "node:fs";
-import { mkdir, rename, stat, unlink } from "node:fs/promises";
+import { unlink } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { mapWithConcurrency } from "../../src/lib/concurrency.js";
-import { listLoaders, readSiteSources, selectLoaders, type Loader } from "../lib/referenced-loaders.js";
+import { describeKnobs, loaderEnv, readKnobs, runLoader } from "../lib/prefetch-runner.js";
+import { listLoaders, readSiteSources, selectLoaders } from "../lib/referenced-loaders.js";
 
 const ROOT = process.cwd();
 const SRC = join(ROOT, "src");
 const DATA_DIR = join(SRC, "data");
 const CACHE_DIR = join(SRC, ".observablehq", "cache", "data");
 const TSX = join(ROOT, "node_modules", ".bin", "tsx");
-
-const envInt = (name: string, fallback: number) => {
-  const n = Number(process.env[name]);
-  return Number.isFinite(n) && n > 0 ? n : fallback;
-};
-const CONCURRENCY = envInt("LOADER_CONCURRENCY", 8);
-const DEADLINE_MS = envInt("LOADER_DEADLINE_MS", 180_000);
-const HARD_CAP_MS = envInt("LOADER_HARD_CAP_MS", DEADLINE_MS + 120_000);
-
-interface Result {
-  name: string;
-  target: string;
-  ms: number;
-  status: "ok" | "failed" | "killed";
-  code: number | null;
-  bytes: number;
-}
-
-function runLoader(loader: Loader): Promise<Result> {
-  return new Promise(async (resolve) => {
-    const outPath = join(CACHE_DIR, loader.target);
-    const tmpPath = `${outPath}.${process.pid}.tmp`;
-    await mkdir(CACHE_DIR, { recursive: true });
-    const out = createWriteStream(tmpPath, { highWaterMark: 1024 * 1024 });
-    const started = Date.now();
-    let killed = false;
-
-    const child = spawn(TSX, [loader.file], {
-      cwd: ROOT,
-      env: {
-        LOADER_FETCH_TIMEOUT_MS: "15000",
-        LOADER_FETCH_RETRIES: "1",
-        LOADER_DEADLINE_MS: String(DEADLINE_MS),
-        ...process.env,
-      },
-      stdio: ["ignore", "pipe", "pipe"],
-      windowsHide: true,
-    });
-    child.stdout.pipe(out);
-
-    let carry = "";
-    child.stderr.setEncoding("utf8");
-    child.stderr.on("data", (chunk: string) => {
-      carry += chunk;
-      const lines = carry.split("\n");
-      carry = lines.pop() ?? "";
-      for (const line of lines) if (line.trim()) process.stderr.write(`[${loader.name}] ${line}\n`);
-    });
-
-    const cap = setTimeout(() => {
-      killed = true;
-      process.stderr.write(`[${loader.name}] exceeded hard cap ${HARD_CAP_MS / 1000}s — killing\n`);
-      child.kill("SIGKILL");
-    }, HARD_CAP_MS);
-
-    child.on("close", async (code) => {
-      clearTimeout(cap);
-      if (carry.trim()) process.stderr.write(`[${loader.name}] ${carry}\n`);
-      await new Promise<void>((r) => out.end(r));
-      const ms = Date.now() - started;
-      if (killed || code !== 0) {
-        await unlink(tmpPath).catch(() => {});
-        resolve({ name: loader.name, target: loader.target, ms, status: killed ? "killed" : "failed", code, bytes: 0 });
-        return;
-      }
-      const bytes = (await stat(tmpPath)).size;
-      if (bytes === 0) {
-        await unlink(tmpPath).catch(() => {});
-        resolve({ name: loader.name, target: loader.target, ms, status: "failed", code, bytes });
-        return;
-      }
-      await rename(tmpPath, outPath);
-      resolve({ name: loader.name, target: loader.target, ms, status: "ok", code, bytes });
-    });
-  });
-}
+const KNOBS = readKnobs(process.env);
 
 async function main(): Promise<void> {
   if (process.env.SKIP_PREFETCH === "1") {
@@ -124,15 +50,18 @@ async function main(): Promise<void> {
   const { run: loaders, skip, fallback } = selectLoaders(listLoaders(DATA_DIR), () => readSiteSources(ROOT));
   const t0 = Date.now();
   console.error(
-    `prefetch-loaders: ${loaders.length} loaders, ${CONCURRENCY} at a time, ` +
-      `deadline ${DEADLINE_MS / 1000}s, hard cap ${HARD_CAP_MS / 1000}s → ${relative(ROOT, CACHE_DIR)}` +
+    `prefetch-loaders: ${loaders.length} loaders, ${describeKnobs(KNOBS)} → ${relative(ROOT, CACHE_DIR)}` +
       (skip.length ? `; skipping ${skip.length} that no page reads: ${skip.map((l) => l.name).join(", ")}` : ""),
   );
   if (fallback) console.error(`prefetch-loaders: running every loader, because ${fallback}`);
   // If a page does read a skipped loader after all, Framework must run it
   // fresh rather than find an older run's output in the cache.
   await Promise.all(skip.map((l) => unlink(join(CACHE_DIR, l.target)).catch(() => {})));
-  const results = await mapWithConcurrency(loaders, CONCURRENCY, runLoader);
+  const env = loaderEnv(process.env, KNOBS);
+  const log = (line: string) => process.stderr.write(`${line}\n`);
+  const results = await mapWithConcurrency(loaders, KNOBS.concurrency, (loader) =>
+    runLoader(loader, { cacheDir: CACHE_DIR, command: TSX, cwd: ROOT, env, hardCapMs: KNOBS.hardCapMs, log }),
+  );
   const wall = Date.now() - t0;
   const sum = results.reduce((s, r) => s + r.ms, 0);
 
