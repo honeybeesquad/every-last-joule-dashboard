@@ -521,15 +521,16 @@ describe("the prefetch script", () => {
     expect(cached(root, "deadline.json")).toBe('"180000"');
   }, 30_000);
 
-  it("stops its loaders when it is interrupted", async () => {
+  it.skipIf(process.platform === "win32")("stops its loaders when it is interrupted", async () => {
     // Loaders run in process groups of their own, which a terminal's Ctrl-C
-    // does not reach, so the prefetch must pass it on.
+    // does not reach, so the prefetch must pass it on. Like a terminal, send
+    // SIGINT to the prefetch's whole process group, tsx included.
     const pidFile = scratch("pid");
     const root = project({ stuck: `${writePid(pidFile)} ${STAY}` }, true);
-    const prefetchRun = spawn(process.execPath, [TSX_CLI, SCRIPT], { cwd: root, env, stdio: "ignore" });
+    const prefetchRun = spawn(process.execPath, [TSX_CLI, SCRIPT], { cwd: root, env, stdio: "ignore", detached: true });
     const exited = new Promise<number | null>((resolve) => prefetchRun.on("close", (code) => resolve(code)));
     const pid = await pidFrom(pidFile);
-    prefetchRun.kill("SIGINT");
+    process.kill(-prefetchRun.pid!, "SIGINT");
     expect(await exited).toBe(130);
     expect(await gone(pid)).toBe(true);
   }, 30_000);

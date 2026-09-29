@@ -13,15 +13,17 @@ When nothing goes wrong, the build behaves as before.
 
 **What was wrong.** The script's header says that it never fails the build on its own.
 Running it against scratch projects on Node 24.20 and 26.8 showed four problems:
-- **Errors ended the build.** A missing tsx, a cache path that is a file (`ENOTDIR`), or a
-  cache file whose name a directory holds (`EISDIR`) each ended the prefetch with exit
-  code 1, which fails `prebuild`. `runLoader` listened for no `'error'` event on the tsx
-  process or the output file, and nothing caught a failed `mkdir`, `stat` or `rename`.
+- **Errors ended the build.** A missing tsx, a cache directory that could not be created
+  (`ENOTDIR`, `EACCES`), or a cache file whose name a directory holds (`EISDIR`) each
+  ended the prefetch with exit code 1, which fails `prebuild`. `runLoader` listened for
+  no `'error'` event on the tsx process or the output file, and nothing caught a failed
+  `mkdir`, `stat` or `rename`. (Since #1150 empties the cache first, a file in the cache
+  path stops the prefetch at that step instead, with exit code 0, before any loader runs.)
 - **Or an error vanished.** When `mkdir` had just created the cache directory, Node
   dropped that loader's missing-tsx error instead of throwing it, and the loader never
-  settled. With one or two loaders the prefetch waited out the 300 s hard cap and then
-  exited 0 without its summary; with 8 or more, as in a real build, the other loaders'
-  errors ended it with exit code 1 first.
+  settled. With a single loader the prefetch waited out the 300 s hard cap and then
+  exited 0 without its summary; with more, as in a real build, the other loaders' errors
+  ended it with exit code 1 first.
 - **The hard cap stopped nothing.** It sent SIGKILL to tsx, but tsx runs each loader in a
   second node process, which survived and held the output pipes open. The prefetch
   waited until the loader exited on its own, then threw its output away.
@@ -33,8 +35,9 @@ Running it against scratch projects on Node 24.20 and 26.8 showed four problems:
 **What changed.**
 - `scripts/lib/prefetch-runner.ts` (new) runs each loader. An error at any step ends that
   loader as `failed`, with the reason in the build log, and Framework runs it itself.
-  Each loader runs in a process group of its own. The hard cap sends SIGTERM to the
-  group; if the run has not finished 5 s later, it sends SIGKILL and stops waiting. The
+  On Linux and macOS each loader runs in a process group of its own. The hard cap
+  sends SIGTERM to the group; if the run has not finished 5 s later, it sends SIGKILL
+  and stops waiting. The
   terminal's Ctrl-C no longer reaches the groups, so a prefetch that is itself stopped
   (SIGINT, SIGTERM or SIGHUP) kills them first.
 - The cap frees the prefetch, not the build: `observable build` reruns a loader that the

@@ -11,8 +11,8 @@
  * WHY: until 2026-09-29 a missing tsx, or a cache file the run could not
  * create, measure or rename, ended the prefetch with exit code 1, which fails
  * `prebuild` and the Vercel build. (For a loader whose run had just created
- * the cache directory, Node dropped the missing-tsx error instead; with only
- * one or two loaders, the prefetch then waited out the hard cap and exited 0
+ * the cache directory, Node dropped the missing-tsx error instead; with a
+ * single loader, the prefetch then waited out the hard cap and exited 0
  * without its summary.) And the hard cap SIGKILLed only tsx: the node process
  * that tsx starts to run the loader kept the output pipes open, so the
  * prefetch waited for a stuck loader until it exited on its own.
