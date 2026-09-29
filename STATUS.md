@@ -55,15 +55,25 @@ run sent Healthchecks a success ping.
 - **Deploy steps** took 4.5 to 8 min.
 - **No loop:** six history captures (#1156 to #1161) landed on `main`, and none started a refresh.
 - **Live region records,** in run order: 197 of 530, 193, 197, 141 of 512, 177, 197, all above the floor of 100.
-  The history parquet shows both dips were upstream feeds, not the pipeline. The 13:02 build lacked 18 ENTSO-E
-  regions altogether (Albania, Austria, Bosnia, Kosovo, Latvia, Lithuania, Malta, Montenegro, Sweden SE1 and SE2),
-  and 56 more fell out of live. The 17:03 build lost 20 US regions whose loaders read the EIA API (ERCOT, BPA, MISO and others).
-  Both recovered by the next build. A region missing from a build outright, rather than marked cached, may deserve
-  a look.
+  Three dips, each gone by the next build (the build logs and the history parquet):
+  - **08:04:** four regions `degraded`, AZPS and BPA solar and wind. The log the CLI returned starts after the data
+    loaders, so it does not say why.
+  - **13:02:** ENTSO-E was slow, and the pipeline's fallback decided what production served. Its requests timed out
+    zone by zone, then the loader (`src/data/entsoe.json.ts`) hit `withFallback`'s 180 s deadline and fell back to
+    `data/snapshots/last-good/entsoe.json`. That snapshot holds 54 of the loader's 72 zones, every one last
+    successful on 17 Jun. So those 54 served June data, marked `degraded`, and the 18 zones it lacks (Albania,
+    Austria, Kosovo, Latvia, Lithuania, Malta, Sweden SE1 and SE2, and Bosnia's and Montenegro's solar and wind)
+    left the build altogether; they had been `cached`, not live. Norway NO3's two regions also fell back
+    (`src/data/norway.json.ts`). Live fell by 56.
+  - **17:03:** nine US loaders that read the EIA API gave up after 31 s and fell back to their last-good snapshots,
+    so 20 regions (AZPS, BPA, ERCOT east and west, IPCO, ISO-NE rest, MISO, NYISO rest, PACE, PACW) stayed in the
+    build, marked `degraded`.
+  - **Follow-up:** every ENTSO-E fallback, per zone or whole loader, reads that June snapshot. Refresh it, so a slow
+    ENTSO-E does not drop 18 zones and serve three-month-old data for the rest.
 - **Vercel made no git build of `main`.** Its deployment list, read through the Vercel connector, holds one
   production deployment per refresh, each created within seconds of its deploy step starting, with the commit it
-  deployed. There is no deployment for the merge push or the six history pushes, and the history branch's previews
-  were all cancelled. So `git.deploymentEnabled.main: false` works.
+  deployed. None was created by the merge push or the six history pushes themselves, and the history branch's
+  previews were all cancelled. So `git.deploymentEnabled.main: false` works.
 - **Not checked from here:** the build stamp's `commit` field (this sandbox's proxy blocks everylastjoule.com).
 
 **Next.** Step 4: remove the deploy hook and `VERCEL_DEPLOY_HOOK`, `vercel-ignore.sh` and the `ignoreCommand`, and
@@ -254,8 +264,11 @@ h without a success ping emails, until the `abed` clock runs; then grace 3 h.
 A failed or stale run emails at once either way. Repo secret `HC_PING_URL` is
 the check's ping URL. **Not verified yet:** a real ping and the email path,
 which need the secret. *Since verified:* the first real ping on 28 Sep (run
-36495671759); Healthchecks' test notification reached Simon's email on 28 Sep;
-every refresh on 29 Sep pinged success. No real `/fail` has happened yet.
+36495671759); Healthchecks' test notification ("DOWN | TEST") reached Simon's
+Gmail at about 22:57 UTC on 28 Sep, as the Cowork session that sent it
+reported and Simon relayed; every refresh on 29 Sep pinged success. No real
+`/fail` has happened yet. *29 Sep:* the grace change waits until the clock has
+run for a day (runbook step 6; see the step 3b entry's "Next").
 
 **Not changed.** No data file, `regions.ts` entry or tier.
 

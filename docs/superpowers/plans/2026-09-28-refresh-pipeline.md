@@ -119,6 +119,8 @@ Secondary sources only (vercel.com, docs.github.com, healthchecks.io and develop
 
 Not verified anywhere: whether prebuilt production deployments queue behind a running Vercel build on Hobby; whether CLI deployments carry git metadata in Vercel's list; whether GitHub-hosted runner egress reaches every upstream Vercel's builders reach; Healthchecks webhook availability on the free tier; the exact PAT permission name for `workflow_dispatch` (Actions write, standard but not re-read); abed's uptime beyond one heartbeat.
 
+*29 Sep:* CLI deployments do carry git metadata in Vercel's list: each of step 3b's production deployments, read through the Vercel connector, has `githubCommitSha` and `githubCommitRef`.
+
 ## 9. Open questions for the owner
 
 1. abed as the primary external clock with a PAT stored on it, or a Cloudflare account now?
@@ -147,7 +149,7 @@ Not verified anywhere: whether prebuilt production deployments queue behind a ru
 - Every step has a time limit (install 10 min, the push-window waits 55, the wait for the build 35, the check 20, the rest 2 to 10; 141 in all), so a hang fails its step and the `/fail` says where: before the hook, at the hook or in the wait. The job's own limit, 160, is a backstop. Both ping steps have `continue-on-error`, so the alarm can never stop or fail a refresh. The push-window wait has `continue-on-error`, so if it times out the refresh still goes on to the hook, as its comment always promised.
 - A cancelled run sends `/fail` too. `job.status` cannot tell a cancel by hand from the job's time limit, and an alarm should err towards alerting, so cancelling a refresh by hand also emails. The grace period covers what the script cannot report: a run that never starts, and a failed checkout, where the script cannot run.
 - `tests/data-refresh-workflow.test.ts` pins the workflow lines the script depends on (step ids, `if: always()`, `continue-on-error`, the `outcome` fields), which no other test reads.
-- The check's timing departs from section 6 until PR 2 is live: period 3 h and grace 9 h, so 12 h without a success ping emails. A `/fail` emails at once either way. GitHub's scheduler alone left gaps of 7 to 8.5 h three times on 27-28 Sep, so a 6 h bound would email often, for a cause already known. Once the abed clock runs, set grace to 3 h (6 h in all).
+- The check's timing departs from section 6 until PR 2 is live: period 3 h and grace 9 h, so 12 h without a success ping emails. A `/fail` emails at once either way. GitHub's scheduler alone left gaps of 7 to 8.5 h three times on 27-28 Sep, so a 6 h bound would email often, for a cause already known. Once the abed clock runs, set grace to 3 h (6 h in all). *29 Sep:* once it has run for a day, as runbook step 6 says (`docs/ops/abed-refresh-clock.md`).
 
 **PR 2 as built.**
 - The clock is `scripts/ops/refresh_if_stale.py`, Python standard library only, rather than a shell script: abed may lack `jq`, and the JSON and date handling are clearer. Its 26 unittest cases run under `npm test` through `tests/refresh-if-stale.test.ts`, because CI has no pytest.
