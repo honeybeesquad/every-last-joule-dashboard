@@ -1,17 +1,17 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import type { RegionData, RegionTier, SourceStatus } from "./types.js";
 import { REGIONS } from "./regions.js";
 import { applyUncertainty } from "./uncertainty.js";
 import { stampSourceProvenance, sourceProvenanceForRegion } from "./source-provenance.js";
 import { abortInflightFetches } from "./fetch.js";
-import { DEFAULT_LOADER_DEADLINE_MS, loaderDeadlineMs } from "./loader-deadline.js";
+import { loaderDeadlineMs } from "./loader-deadline.js";
 
 export const DEFAULT_STALENESS_THRESHOLD_HOURS = 24;
 
 // The deadline's default and its LOADER_DEADLINE_MS parser live in
 // ./loader-deadline.ts, which the build's loader prefetch shares.
-export { DEFAULT_LOADER_DEADLINE_MS };
+export { DEFAULT_LOADER_DEADLINE_MS } from "./loader-deadline.js";
 
 export class LoaderDeadlineError extends Error {
   constructor(message: string) {
@@ -302,10 +302,19 @@ export async function withFallback<T>(
     tagged = stampLive(tagged, now.toISOString());
     tagged = stampSourceProvenance(tagged);
 
+    // Whole or not at all: the build's prefetch can stop a loader mid-write,
+    // and a truncated snapshot would break the next run's fallback.
+    const tmpPath = `${cachePath}.${process.pid}.tmp`;
     try {
       mkdirSync(cacheDir, { recursive: true });
-      writeFileSync(cachePath, JSON.stringify(tagged));
+      writeFileSync(tmpPath, JSON.stringify(tagged));
+      renameSync(tmpPath, cachePath);
     } catch (writeErr) {
+      try {
+        rmSync(tmpPath, { force: true });
+      } catch {
+        // Left behind; the next successful write replaces the snapshot anyway.
+      }
       console.error(
         `[${cacheName}] snapshot write failed (non-fatal): ${(writeErr as Error).message}`,
       );

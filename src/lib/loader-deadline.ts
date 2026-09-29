@@ -12,12 +12,21 @@
  */
 export const DEFAULT_LOADER_DEADLINE_MS = 180_000;
 
+/** The longest delay setTimeout keeps; Node fires a longer one after 1 ms. */
+export const MAX_TIMER_MS = 2 ** 31 - 1;
+
 /**
- * LOADER_DEADLINE_MS in ms. Unset, empty, or anything but a finite number of
- * 0 or more gives the default; 0 means no deadline.
+ * A duration in ms from the environment. Unset, blank, or anything but a
+ * finite number of 0 or more gives `fallback`; 0 means none; anything longer
+ * than MAX_TIMER_MS is cut to it.
  */
-export function loaderDeadlineMs(raw: string | undefined): number {
-  if (raw === undefined || raw === "") return DEFAULT_LOADER_DEADLINE_MS;
+export function msFromEnv(raw: string | undefined, fallback: number): number {
+  if (raw === undefined || raw.trim() === "") return fallback;
   const n = Number(raw);
-  return Number.isFinite(n) && n >= 0 ? n : DEFAULT_LOADER_DEADLINE_MS;
+  return Number.isFinite(n) && n >= 0 ? Math.min(n, MAX_TIMER_MS) : fallback;
+}
+
+/** LOADER_DEADLINE_MS in ms; 0 means no deadline. */
+export function loaderDeadlineMs(raw: string | undefined): number {
+  return msFromEnv(raw, DEFAULT_LOADER_DEADLINE_MS);
 }

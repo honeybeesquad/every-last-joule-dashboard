@@ -24,15 +24,16 @@
  * KNOBS (env):
  *   LOADER_CONCURRENCY      parallel loaders           default 8
  *   LOADER_DEADLINE_MS      withFallback live budget   default 180000; 0 turns it off (see src/lib/loader-deadline.ts)
- *   LOADER_HARD_CAP_MS      stop a loader after this   default LOADER_DEADLINE_MS + 120000; none when the deadline is off
+ *   LOADER_HARD_CAP_MS      stop a loader after this   default LOADER_DEADLINE_MS + 120000, none when the deadline is off; 0 turns it off
  *   LOADER_FETCH_TIMEOUT_MS per-request timeout        default here 15000 (library default 30000)
  *   LOADER_FETCH_RETRIES    per-request retries        default here 1     (library default 3)
  *   SKIP_PREFETCH=1         do nothing (Framework runs loaders serially as before)
  */
 import { unlink } from "node:fs/promises";
+import { constants } from "node:os";
 import { join, relative } from "node:path";
 import { mapWithConcurrency } from "../../src/lib/concurrency.js";
-import { describeKnobs, loaderEnv, readKnobs, runLoader } from "../lib/prefetch-runner.js";
+import { describeKnobs, loaderEnv, readKnobs, runLoader, signalRunning } from "../lib/prefetch-runner.js";
 import { listLoaders, readSiteSources, selectLoaders } from "../lib/referenced-loaders.js";
 
 const ROOT = process.cwd();
@@ -57,6 +58,14 @@ async function main(): Promise<void> {
   // If a page does read a skipped loader after all, Framework must run it
   // fresh rather than find an older run's output in the cache.
   await Promise.all(skip.map((l) => unlink(join(CACHE_DIR, l.target)).catch(() => {})));
+  // Each loader runs in a process group of its own, out of reach of the
+  // terminal's Ctrl-C, so stop them all before going.
+  for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"] as const) {
+    process.once(signal, () => {
+      signalRunning("SIGKILL");
+      process.exit(128 + constants.signals[signal]);
+    });
+  }
   const env = loaderEnv(process.env, KNOBS);
   const log = (line: string) => process.stderr.write(`${line}\n`);
   const results = await mapWithConcurrency(loaders, KNOBS.concurrency, (loader) =>

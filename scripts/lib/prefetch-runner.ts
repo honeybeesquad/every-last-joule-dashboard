@@ -10,12 +10,12 @@
  *
  * WHY: until 2026-09-29 a missing tsx, or a cache file the run could not
  * create, measure or rename, ended the prefetch with exit code 1, which fails
- * `prebuild` and the Vercel build. When the run had just created the cache
- * directory, Node dropped the missing-tsx error instead (Node 24 and 26), so
- * the loader waited out the 300 s hard cap and the prefetch then exited 0
- * without its summary. And the hard cap SIGKILLed only tsx: the node process
- * tsx starts to run the loader kept the output pipes open, so a stuck loader
- * held the prefetch until it exited.
+ * `prebuild` and the Vercel build. (For a loader whose run had just created
+ * the cache directory, Node dropped the missing-tsx error instead; with only
+ * one or two loaders, the prefetch then waited out the hard cap and exited 0
+ * without its summary.) And the hard cap SIGKILLed only tsx: the node process
+ * that tsx starts to run the loader kept the output pipes open, so the
+ * prefetch waited for a stuck loader until it exited on its own.
  */
 import { spawn, type ChildProcess, type SpawnOptions } from "node:child_process";
 import { mkdir, open, rename, stat, unlink } from "node:fs/promises";
@@ -23,7 +23,7 @@ import { join } from "node:path";
 import type { Writable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 
-import { loaderDeadlineMs } from "../../src/lib/loader-deadline.js";
+import { loaderDeadlineMs, MAX_TIMER_MS, msFromEnv } from "../../src/lib/loader-deadline.js";
 import type { Loader } from "./referenced-loaders.js";
 
 export interface PrefetchKnobs {
@@ -45,18 +45,19 @@ function positive(raw: string | undefined): number | undefined {
 }
 
 /**
- * The knobs, from the environment. LOADER_DEADLINE_MS goes through the
- * loaders' own parser, so 0 turns the deadline off here as it does in them.
- * Without a deadline there is no default hard cap: stopping a loader would
- * only make `observable build` run it again, alone and still without one.
- * LOADER_HARD_CAP_MS sets a cap either way.
+ * The knobs, from the environment. The deadline and the hard cap are read as
+ * the loaders read LOADER_DEADLINE_MS (src/lib/loader-deadline.ts), so 0
+ * turns either off. Without a deadline there is no default hard cap: stopping
+ * a loader would only make `observable build` run it again, alone and still
+ * without one. LOADER_HARD_CAP_MS sets a cap either way.
  */
 export function readKnobs(env: NodeJS.ProcessEnv): PrefetchKnobs {
   const deadlineMs = loaderDeadlineMs(env.LOADER_DEADLINE_MS);
+  const defaultCapMs = deadlineMs > 0 ? Math.min(deadlineMs + HARD_CAP_MARGIN_MS, MAX_TIMER_MS) : 0;
   return {
     concurrency: positive(env.LOADER_CONCURRENCY) ?? 8,
     deadlineMs,
-    hardCapMs: positive(env.LOADER_HARD_CAP_MS) ?? (deadlineMs > 0 ? deadlineMs + HARD_CAP_MARGIN_MS : 0),
+    hardCapMs: msFromEnv(env.LOADER_HARD_CAP_MS, defaultCapMs),
   };
 }
 
@@ -64,7 +65,7 @@ export function readKnobs(env: NodeJS.ProcessEnv): PrefetchKnobs {
 export function describeKnobs({ concurrency, deadlineMs, hardCapMs }: PrefetchKnobs): string {
   return [
     `${concurrency} at a time`,
-    deadlineMs > 0 ? `deadline ${deadlineMs / 1000}s` : "no deadline (LOADER_DEADLINE_MS=0)",
+    deadlineMs > 0 ? `deadline ${deadlineMs / 1000}s` : "no deadline",
     hardCapMs > 0 ? `hard cap ${hardCapMs / 1000}s` : "no hard cap",
   ].join(", ");
 }
@@ -87,7 +88,12 @@ export interface LoaderResult {
   target: string;
   ms: number;
   status: "ok" | "failed" | "killed";
-  /** The loader's exit code; null when it did not start, a signal ended it, or it was left running. */
+  /**
+   * The exit code of the process the prefetch started. Through tsx, a loader
+   * that a signal ended shows as 128 plus the signal's number (143 for
+   * SIGTERM). Null when it did not start, a signal ended tsx itself, or the
+   * run stopped waiting for it.
+   */
   code: number | null;
   bytes: number;
 }
@@ -130,6 +136,36 @@ export interface RunOptions {
 
 const KILL_GRACE_MS = 5_000;
 
+/** Longest stderr line passed on whole; a longer one goes out in pieces. */
+const MAX_LINE = 64 * 1024;
+
+/**
+ * On POSIX each loader runs in a process group of its own, and signals go to
+ * the whole group. tsx runs the loader in a second node process, which a
+ * signal to tsx alone can miss, and a loader may start processes of its own.
+ */
+const GROUPS = process.platform !== "win32";
+
+/** The loaders running now, by the pid of the process the prefetch started. */
+const running = new Set<number>();
+
+function sendSignal(pid: number, signal: NodeJS.Signals): void {
+  try {
+    process.kill(GROUPS ? -pid : pid, signal);
+  } catch {
+    // Every process in it has exited.
+  }
+}
+
+/**
+ * Signal every loader still running. For when the prefetch itself is
+ * stopped: the loaders' process groups are out of reach of the terminal's
+ * Ctrl-C.
+ */
+export function signalRunning(signal: NodeJS.Signals): void {
+  for (const pid of running) sendSignal(pid, signal);
+}
+
 const reason = (err: unknown): string => (err instanceof Error ? err.message : String(err));
 
 /**
@@ -151,12 +187,14 @@ export async function runLoader(loader: Loader, options: RunOptions): Promise<Lo
     code,
     bytes,
   });
-  const discard = async () => {
+  const fail = async (status: "failed" | "killed", code: number | null, why?: string) => {
+    if (why) say(why);
     try {
       await io.unlink(tmpPath);
     } catch {
       // Never created, or already gone.
     }
+    return result(status, code);
   };
 
   let out: Writable;
@@ -164,30 +202,20 @@ export async function runLoader(loader: Loader, options: RunOptions): Promise<Lo
     await io.mkdir(options.cacheDir);
     out = await io.openOutput(tmpPath);
   } catch (err) {
-    say(`not run: ${reason(err)}`);
-    await discard();
-    return result("failed", null);
+    return fail("failed", null, `not run: ${reason(err)}`);
   }
 
   const run = await runChild(loader, out, options, io, say);
-  if (run.problem) say(run.problem);
   if (run.killed || run.problem || run.code !== 0) {
-    await discard();
-    return result(run.killed ? "killed" : "failed", run.code);
+    return fail(run.killed ? "killed" : "failed", run.code, run.problem);
   }
   try {
     const bytes = await io.size(tmpPath);
-    if (bytes === 0) {
-      say("wrote nothing");
-      await discard();
-      return result("failed", run.code);
-    }
+    if (bytes === 0) return await fail("failed", run.code, "wrote nothing");
     await io.rename(tmpPath, outPath);
     return result("ok", run.code, bytes);
   } catch (err) {
-    say(`output not cached: ${reason(err)}`);
-    await discard();
-    return result("failed", run.code);
+    return fail("failed", run.code, `output not cached: ${reason(err)}`);
   }
 }
 
@@ -227,6 +255,7 @@ function runChild(
       if (settled) return;
       settled = true;
       for (const timer of timers) clearTimeout(timer);
+      if (child?.pid !== undefined) running.delete(child.pid);
       if (carry.trim()) say(carry);
       // Stop reading pipes that a process left running may still hold open.
       child?.stdout?.destroy();
@@ -237,19 +266,14 @@ function runChild(
       resolve({ code, killed, problem });
     };
     const signal = (name: NodeJS.Signals) => {
-      try {
-        child?.kill(name);
-      } catch {
-        // Already gone.
-      }
+      if (child?.pid !== undefined) sendSignal(child.pid, name);
     };
-    // tsx passes SIGTERM on to the node process that runs the loader. A
-    // SIGKILL would stop tsx alone and leave that process holding the pipes,
-    // so it comes only after the grace period, and then the run stops waiting.
+    // SIGTERM lets the loader exit cleanly. If it has not finished by the end
+    // of the grace period, SIGKILL its process group and stop waiting. The
+    // timer is armed first, so the signal can never outrun it.
     const stop = () => {
-      if (stopping) return;
+      if (stopping || settled) return;
       stopping = true;
-      signal("SIGTERM");
       const graceMs = options.killGraceMs ?? KILL_GRACE_MS;
       timers.push(
         setTimeout(() => {
@@ -258,6 +282,7 @@ function runChild(
           settle();
         }, graceMs),
       );
+      signal("SIGTERM");
     };
 
     try {
@@ -266,15 +291,16 @@ function runChild(
         env: options.env,
         stdio: ["ignore", "pipe", "pipe"],
         windowsHide: true,
+        detached: GROUPS,
       });
     } catch (err) {
       problem = `could not start: ${reason(err)}`;
       settle();
       return;
     }
+    if (child.pid !== undefined) running.add(child.pid);
 
-    // Emitted, instead of 'spawn', when the loader cannot start (tsx is
-    // missing), and when a signal cannot be sent.
+    // Emitted, instead of 'spawn', when the loader cannot start (tsx is missing).
     child.on("error", (err) => {
       if (settled) return;
       problem ??= child?.pid === undefined ? `could not start: ${reason(err)}` : reason(err);
@@ -295,6 +321,7 @@ function runChild(
         },
         (err) => {
           written = true;
+          // settle() destroys the streams, which rejects this pipeline.
           if (settled) return;
           problem ??= `could not write its output: ${reason(err)}`;
           if (exited) settle();
@@ -308,10 +335,18 @@ function runChild(
     if (child.stderr) {
       child.stderr.setEncoding("utf8");
       child.stderr.on("data", (chunk: string) => {
-        carry += chunk;
-        const lines = carry.split("\n");
-        carry = lines.pop() ?? "";
-        for (const line of lines) if (line.trim()) say(line);
+        const end = chunk.lastIndexOf("\n");
+        if (end === -1) {
+          carry += chunk;
+        } else {
+          const lines = (carry + chunk.slice(0, end)).split("\n");
+          carry = chunk.slice(end + 1);
+          for (const line of lines) if (line.trim()) say(line);
+        }
+        if (carry.length > MAX_LINE) {
+          say(carry);
+          carry = "";
+        }
       });
       // A broken stderr pipe loses log lines, not output.
       child.stderr.on("error", () => {});
@@ -319,11 +354,16 @@ function runChild(
 
     if (options.hardCapMs > 0) {
       timers.push(
-        setTimeout(() => {
-          killed = true;
-          say(`exceeded hard cap ${options.hardCapMs / 1000}s; stopping it`);
-          stop();
-        }, options.hardCapMs),
+        setTimeout(
+          () => {
+            // A loader that has exited is done, however long its output takes to flush.
+            if (exited) return;
+            killed = true;
+            say(`exceeded hard cap ${options.hardCapMs / 1000}s; stopping it`);
+            stop();
+          },
+          Math.min(options.hardCapMs, MAX_TIMER_MS),
+        ),
       );
     }
   });
