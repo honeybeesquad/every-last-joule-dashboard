@@ -1,6 +1,6 @@
 # Validation — Nigeria (`nigeria`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** NGA
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** Niggrid TCN live generation profile (niggrid.org/GenerationProfile2) × 0.15% calibrated solar curtailment rate (TCN/Ember 2024 anchor ~0.05 TWh/yr Nigeria solar curtailment). Shape proxy: total grid generation — Nigeria has negligible utility solar. Fallback: typical solar profile.
-- **Source URL:** [https://niggrid.org/GenerationProfile2](https://niggrid.org/GenerationProfile2)
-- **Loader:** [`nigeria.json.ts`](../../src/data/nigeria.json.ts)
+- **Source:** Ember Nigeria 2024 + TCN Grid Stability Report 2024 (solar curtailment from TCN frequency-instability; Niger Delta gas flaring excluded). Typical solar profile scaled to a 0.5 TWh/yr anchor that covers daytime solar tripping only; no live feed. Unverified: the anchor is about four times Nigeria's total 2024 solar generation of 0.13 TWh (Our World in Data, from Ember and the Energy Institute).
+- **Source URL:** [https://www.tcn.org.ng/](https://www.tcn.org.ng/)
+- **Loader:** [`statics.json.ts`](../../src/data/statics.json.ts) (the `nigeria` entry; `nigeria.json.ts` is an unwired probe that no page reads)
 - **Structural gap:** no
 
 ## Calibration
@@ -41,7 +41,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: [`nigeria.json.ts`](../../src/data/nigeria.json.ts)
+- Loader source: [`statics.json.ts`](../../src/data/statics.json.ts)
 - Backfill archive: `data/historical/backfill/*_nigeria_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

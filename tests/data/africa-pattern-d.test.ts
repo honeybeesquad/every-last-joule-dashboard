@@ -228,6 +228,21 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     expect(nigeria?.source).toMatch(/TCN/);
   });
 
+  it("Nigeria's regions.ts source cites and quotes the statics anchor the dashboard serves", () => {
+    // /region/nigeria prints this string. From #267 until 2026-09-29 it
+    // described src/data/nigeria.json.ts, a Niggrid probe at ~0.05 TWh/yr that
+    // no page reads, while the dashboard served this statics entry at
+    // 0.5 TWh/yr. Re-anchoring Nigeria means updating the prose too.
+    const nigeria = REGIONS.find((r) => r.id === "nigeria");
+    const served = buildAllStatics().nigeria;
+    const servedAnnualTWh = served.totalTWh * (365 / 30);
+    const quotedTWhPerYr = [...(nigeria?.source ?? "").matchAll(/(\d+(?:\.\d+)?) TWh\/yr/g)].map((m) => Number(m[1]));
+    expect(quotedTWhPerYr).toContainEqual(expect.closeTo(servedAnnualTWh, 6));
+    const citation = nigeria?.source.split(" (")[0] ?? "";
+    expect(citation.length).toBeGreaterThan(0);
+    expect(served.sourceNote).toContain(citation);
+  });
+
   it("does NOT add the 5 existing African T3 statics again (egypt/ethiopia/kenya/morocco/namibia)", () => {
     // Out-of-scope per the brief constraints. Existing rows must remain
     // untouched at their pre-Phase-2.7 line numbers.

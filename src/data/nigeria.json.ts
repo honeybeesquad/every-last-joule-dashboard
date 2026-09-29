@@ -1,3 +1,11 @@
+/**
+ * UNWIRED PROBE: no page or `src/lib/data-loaders.js` row reads
+ * `data/nigeria.json`, so nothing here reaches the dashboard. Nigeria's served
+ * data is the `nigeria` entry in `statics.json.ts` (typical solar profile,
+ * 0.5 TWh/yr), and `regions.ts` describes that. The ~0.05 TWh/yr anchor and
+ * 0.15% rate below are this probe's alone. Proposed for deletion: see the
+ * 2026-09-29 Nigeria entry in STATUS.md.
+ */
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
