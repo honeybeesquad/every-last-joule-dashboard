@@ -5,8 +5,7 @@
 
 ## Seventeen statics anchors dropped: each claimed at least the country's generation of its fuel (2026-09-29)
 
-**#1154**, from `claude/statics-anchor-sweep`, stacked on #1152 (then #1151,
-#1150).
+**#1154**, from `claude/statics-anchor-sweep`.
 Approved by the owner on 29 Sep. **The dataset's totals change**: modelled
 waste falls by 4.45 TWh/yr and 17 fewer regions show a waste figure. No tier
 moves; the tier counts match the golden file.
