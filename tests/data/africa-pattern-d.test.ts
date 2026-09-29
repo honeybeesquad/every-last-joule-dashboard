@@ -231,8 +231,9 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
   it("Nigeria's regions.ts source cites and quotes the statics anchor the dashboard serves", () => {
     // /region/nigeria prints this string. From #267 until 2026-09-29 it
     // described src/data/nigeria.json.ts, a Niggrid probe at ~0.05 TWh/yr that
-    // no page reads, while the dashboard served this statics entry at
-    // 0.5 TWh/yr. Re-anchoring Nigeria means updating the prose too.
+    // no page read (deleted 2026-09-29), while the dashboard served this
+    // statics entry at 0.5 TWh/yr. Re-anchoring Nigeria means updating the
+    // prose too.
     const nigeria = REGIONS.find((r) => r.id === "nigeria");
     const served = buildAllStatics().nigeria;
     const servedAnnualTWh = served.totalTWh * (365 / 30);
