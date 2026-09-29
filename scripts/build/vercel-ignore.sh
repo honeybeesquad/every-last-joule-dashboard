@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 # Vercel "Ignored Build Step". Exit 0 = skip this build; exit 1 = build.
 #
+# Since step 3b of docs/superpowers/plans/2026-09-28-refresh-pipeline.md
+# (29 Sep 2026), production deploys through the Vercel CLI from
+# .github/workflows/data-refresh.yml and Vercel's git builds for main are off
+# (vercel.json), so this step runs only for pull-request preview builds; a CLI
+# deployment carries no .git, so it would build here anyway. Step 4 removes
+# this script. What follows describes the hook era.
+#
 # Skips a PUSH of a commit whose only changes since the last deployment are
 # the automated corpus updates — data/historical (history parquet, relay CSVs,
 # heartbeat), data/snapshots — and prose: docs/ and Markdown at the repo root.
@@ -36,7 +43,7 @@ set -u
 prev="${VERCEL_GIT_PREVIOUS_SHA:-}"
 cur="${VERCEL_GIT_COMMIT_SHA:-}"
 msg="${VERCEL_GIT_COMMIT_MESSAGE:-}"
-# Keep in step with PUSH_WINDOW_MIN in .github/workflows/data-refresh.yml.
+# data-refresh.yml waited on this window before step 3b; it no longer does.
 window_min="${PUSH_WINDOW_MIN:-15}"
 # Test seam: tests/vercel-ignore.test.ts pins "now".
 now="${VERCEL_IGNORE_NOW:-$(date +%s)}"
