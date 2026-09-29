@@ -21,6 +21,15 @@ describe("buildInfo", () => {
     });
   });
 
+  it("takes the commit and branch from the workflow's build variables when Vercel sets none", () => {
+    // A CLI deployment from data-refresh.yml may carry no VERCEL_GIT_* variables.
+    const env = { ELJ_BUILD_COMMIT: "e22a0d3a867d3f0f7bde625d30d573d5a1387668", ELJ_BUILD_REF: "main", VERCEL_ENV: "production" };
+    expect(buildInfo(env, NOW)).toMatchObject({ commit: "e22a0d3a867d3f0f7bde625d30d573d5a1387668", ref: "main", env: "production" });
+    // Vercel's own variables win when both are set.
+    const both = { ...env, VERCEL_GIT_COMMIT_SHA: "0b502240bbffcaadcfd0e650511b5b84d583267c", VERCEL_GIT_COMMIT_REF: "main" };
+    expect(buildInfo(both, NOW).commit).toBe("0b502240bbffcaadcfd0e650511b5b84d583267c");
+  });
+
   it("says local, with no commit, outside Vercel", () => {
     expect(buildInfo({}, NOW)).toMatchObject({ commit: null, ref: null, env: "local" });
   });

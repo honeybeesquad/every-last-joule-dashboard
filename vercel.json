@@ -16,5 +16,10 @@
       "destination": "https://every-last-particle.vercel.app/particle"
     }
   ],
-  "ignoreCommand": "bash scripts/build/vercel-ignore.sh"
+  "ignoreCommand": "bash scripts/build/vercel-ignore.sh",
+  "git": {
+    "deploymentEnabled": {
+      "main": false
+    }
+  }
 }
