@@ -136,7 +136,7 @@ Not verified anywhere: whether prebuilt production deployments queue behind a ru
 | PR | State |
 | --- | --- |
 | PR 1: alarm off GitHub | **#1142**, merged 28 Sep. The check and the `HC_PING_URL` secret exist; the first real ping went through on 28 Sep (run 36495671759). |
-| PR 2: abed clock | **#1143**, merged 28 Sep. Running on abed: on 29 Sep, `workflow_dispatch` refreshes at 08:04, 13:02 and 17:03 UTC, a few minutes past the hour once production was over 3 h 15 min old, match its timer and rule (`docs/ops/abed-refresh-clock.md`). The check's grace can now come down to 3 h. |
+| PR 2: abed clock | **#1143**, merged 28 Sep. Very likely running on abed: on 29 Sep, `workflow_dispatch` refreshes at 08:04, 13:02 and 17:03 UTC, each at the first hourly check after production passed 3 h 15 min old, match its timer and rule; its own Healthchecks check would confirm it (`docs/ops/abed-refresh-clock.md`). The production check's grace comes down to 3 h once the clock has run for a day. |
 | PR 3: build in Actions | Changed to a build on Vercel through the CLI (below). 3a, the trial workflow, is **#1145** (`claude/vercel-cli-trial`), merged 28 Sep; its first real run built production, and its comparison failed on a `vercel curl` flag, fixed in **#1147**; the fixed trial passed on 29 Sep. 3b, the switch, is **#1149** (`claude/refresh-deploys-through-cli`), merged 29 Sep; its first day ran six refreshes through the CLI, all green with success pings. |
 | PR 4: remove the old machinery | Not started; after PR 3 has run cleanly. |
 
