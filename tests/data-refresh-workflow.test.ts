@@ -44,10 +44,10 @@ function pathsIgnore(): string[] {
   if (!start || start.index === undefined) throw new Error("data-refresh.yml: no push trigger on main with paths-ignore");
   const patterns: string[] = [];
   for (const line of WORKFLOW.slice(start.index + start[0].length).split("\n")) {
-    if (line.trim() === "") continue;
-    if (!line.startsWith("      ")) break; // the list ends where its indentation does
     const text = line.trim();
-    if (text.startsWith("#")) continue;
+    // YAML allows blank lines and comments at any indent inside the list.
+    if (text === "" || text.startsWith("#")) continue;
+    if (!line.startsWith("      ")) break; // the list ends where its indentation does
     const m = text.match(/^- "([^"]+)"$/);
     if (!m) throw new Error(`data-refresh.yml: paths-ignore entries must be "double-quoted" for this test: ${text}`);
     patterns.push(m[1]);

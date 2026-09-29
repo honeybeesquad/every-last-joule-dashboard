@@ -97,7 +97,7 @@ outcomes="Steps: deploy: ${DEPLOY:-not run}; wait: ${WAIT:-not run}; freshness c
 # builds too), but the deployment's status on Vercel can: the CLI prints its
 # Inspect link once the deployment exists.
 if [ "${DEPLOY:-}" = failure ] || [ "${DEPLOY:-}" = cancelled ]; then
-  outcomes="$outcomes"$'\n'"Whether a build may still go live: open the Inspect link in the deploy step's log (none means no build started). Queued or Building goes live when it finishes; Ready is live already; Error or Canceled never will."
+  outcomes="$outcomes"$'\n'"Whether a build may still go live: open the Inspect link in the deploy step's log (none means no build started). Queued, Initializing or Building goes live when it finishes; Ready is live already; Error or Canceled never will."
 fi
 if [ "$status" != success ]; then
   if [ "$status" = cancelled ]; then
