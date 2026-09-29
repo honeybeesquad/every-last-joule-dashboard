@@ -101,7 +101,11 @@ async function main(): Promise<void> {
     countries,
   };
   const path = join(process.cwd(), "data", "national-generation.json");
-  writeFileSync(path, JSON.stringify(out, null, 2) + "\n");
+  // One country per line, so a refresh reviews as a line diff per country.
+  const { countries: byCountry, ...meta } = out;
+  const head = JSON.stringify(meta, null, 2).replace(/\n}$/, ",\n");
+  const rows = Object.entries(byCountry).map(([code, fuels]) => `    ${JSON.stringify(code)}: ${JSON.stringify(fuels)}`);
+  writeFileSync(path, `${head}  "countries": {\n${rows.join(",\n")}\n  }\n}\n`);
   console.log(`wrote ${path}: ${Object.keys(countries).length} countries; no OWID data for ${missing.length} (${missing.join(", ")})`);
 }
 
