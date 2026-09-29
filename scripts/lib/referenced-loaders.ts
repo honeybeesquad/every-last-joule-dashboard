@@ -4,18 +4,16 @@
  *
  * Framework runs a loader only when the site asks for its file: a
  * FileAttachment or an asset in a page or module, or a path in the config's
- * dynamicPaths. A loader nothing asks for never runs in a build, so running it
- * in the prefetch only adds its network calls and failures to the build log.
+ * dynamicPaths. A loader nothing asks for never runs in a build.
  *
  * The test is textual: a loader counts as read when "data/<file>" appears,
  * as a whole file name, in observablehq.config.ts or in a page or module
  * under src/ outside src/data. It errs towards running a loader (a mention in
  * a comment counts), and it cannot see a path built at run time, such as
  * `data/${id}.json` in a page loader. Framework runs any referenced loader
- * the prefetch left out itself, one at a time, and the prefetch deletes a
- * skipped loader's cache file so that an old output cannot stand in for it.
+ * the prefetch left out itself, one at a time.
  */
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 export interface Loader {
@@ -27,7 +25,10 @@ export interface Loader {
   target: string;
 }
 
-/** The loaders Framework recognises in `dataDir`: `x.json.ts` writes `x.json`. */
+/**
+ * The loader files in `dataDir`, as the prefetch has always matched them:
+ * `x.json.ts` writes `x.json`. (All of this site's loaders are .ts.)
+ */
 export function listLoaders(dataDir: string): Loader[] {
   return readdirSync(dataDir)
     .filter((f) => /\.[a-z0-9]+\.(ts|js|mjs)$/.test(f))
@@ -40,21 +41,20 @@ export function listLoaders(dataDir: string): Loader[] {
 
 /**
  * "data/" as a whole path segment, then the file name up to the first
- * character that cannot be part of one: a quote, bracket, space, comma and so
+ * character that ends one here: a slash, quote, bracket, space, comma and so
  * on. That covers FileAttachment calls in any quotes, markdown images, srcset
  * lists and unquoted attributes. The lookbehind keeps "metadata/x.json" from
  * reading as "data/x.json". The whole name is compared with each loader's, so
  * "data/ercot-native.json" never counts as "ercot.json", and a loader's own
  * source, "data/ercot.json.ts", counts as neither.
  */
-const REFERENCE_RE = /(?<![\w.-])data\/([^\s"'`\\()<>[\]{},;:?#|*=]+)/g;
+const REFERENCE_RE = /(?<![\w.-])data\/([^\s"'`\\()<>[\]{},;:?#|*=/]+)/g;
 
 /** The data file names ("ercot.json") that these sources mention. */
 export function referencedFiles(sources: Iterable<string>): Set<string> {
   const files = new Set<string>();
   for (const source of sources) {
-    // A trailing full stop ends a sentence, not a file name.
-    for (const match of source.matchAll(REFERENCE_RE)) files.add(match[1].replace(/\.+$/, ""));
+    for (const match of source.matchAll(REFERENCE_RE)) files.add(match[1]);
   }
   return files;
 }
@@ -62,21 +62,52 @@ export function referencedFiles(sources: Iterable<string>): Set<string> {
 /** The files Framework parses for references: pages, page loaders, modules. */
 const SOURCE_RE = /\.(?:md|html|js|jsx|mjs|ts|tsx)$/;
 
+const isEnoent = (err: unknown) => (err as NodeJS.ErrnoException)?.code === "ENOENT";
+
 /**
- * The text of the site's config and of every page and module under
- * `root/src`, leaving out the loaders in src/data (a loader naming its own
- * output is not a reader) and Framework's cache.
+ * The paths under `srcDir` that Framework would visit, walked the way its
+ * visitFiles does: `.observablehq` is skipped at any depth, symlinks are
+ * followed, and a file that vanishes mid-walk is ignored. The top-level `data`
+ * directory is skipped too, because a loader naming its own output is not a
+ * reader.
  */
+function sourcePaths(srcDir: string): string[] {
+  const paths: string[] = [];
+  const visited = new Set<number>();
+  const queue = [srcDir];
+  for (const path of queue) {
+    try {
+      const status = statSync(path);
+      if (status.isDirectory()) {
+        if (visited.has(status.ino)) continue;
+        visited.add(status.ino);
+        for (const entry of readdirSync(path)) {
+          if (entry === ".observablehq" || (path === srcDir && entry === "data")) continue;
+          queue.push(join(path, entry));
+        }
+      } else if (SOURCE_RE.test(path)) {
+        paths.push(path);
+      }
+    } catch (err) {
+      if (!isEnoent(err)) throw err;
+    }
+  }
+  return paths;
+}
+
+/** The text of the site's config and of every page and module under `root/src`. */
 export function readSiteSources(root: string): string[] {
-  const src = join(root, "src");
-  const pages = readdirSync(src, { recursive: true, withFileTypes: true })
-    .filter((entry) => entry.isFile() && SOURCE_RE.test(entry.name))
-    .map((entry) => join(entry.parentPath, entry.name))
-    .filter((path) => !path.startsWith(join(src, "data/")) && !path.startsWith(join(src, ".observablehq/")));
   const configs = ["observablehq.config.ts", "observablehq.config.js"]
     .map((name) => join(root, name))
     .filter((path) => existsSync(path));
-  return [...configs, ...pages].map((path) => readFileSync(path, "utf8"));
+  return [...configs, ...sourcePaths(join(root, "src"))].flatMap((path) => {
+    try {
+      return [readFileSync(path, "utf8")];
+    } catch (err) {
+      if (isEnoent(err)) return [];
+      throw err;
+    }
+  });
 }
 
 export interface Selection {

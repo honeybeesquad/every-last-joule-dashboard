@@ -12,17 +12,17 @@ The audit rated SEC-1 "high" because it's a *leaked* credential. By **blast radi
 
 | Secret | Where exposed | Impact if abused | Real priority |
 |---|---|---|---|
-| `ERCOT_USERNAME` / `ERCOT_PASSWORD` / `ERCOT_API_KEY` | Vercel Production (sensitive, set 2026-04-23), and `.env.local` until that file went missing (found absent 2026-09-09); **not** in git history. No build reads them since #1150 | Real account login | **Highest** — these are account credentials |
-| `DEEPSEEK_API_KEY` | `.env.local` only | Paid LLM API → $ if abused | High (cost) |
+| `ERCOT_USERNAME` / `ERCOT_PASSWORD` / `ERCOT_API_KEY` | Vercel Production (sensitive, set 2026-04-23), and `.env.local` until that file went missing (found absent 2026-09-09); **not** in git history. Since #1150 builds skip the only loader that reads them | Real account login | **Highest** — these are account credentials |
+| `DEEPSEEK_API_KEY` | `.env.local` only, until that file went missing (found absent 2026-09-09) | Paid LLM API → $ if abused | High (cost) |
 | `EIA_API_KEY` | **Leaked in git history** (test fixtures, redacted from HEAD in `b9c63c4`) | Free, read-only, rate-limited public-data key | Medium — wide exposure, tiny impact |
-| `ENTSOE_API_TOKEN` | `.env.local` only | Free, read-only public-data token | Low |
+| `ENTSOE_API_TOKEN` | Vercel Production and Development; `.env.local` until that file went missing (found absent 2026-09-09) | Free, read-only public-data token | Low |
 | Vercel OIDC JWT (`.vercel/.env.production.local`) | local file | Short-lived (hours); likely already expired | Low |
 
-Takeaway: **rotating a key makes the leaked copy worthless** — that's the actual fix; history-rewrite (below) is optional cleanup. The genuinely sensitive items (ERCOT login, DeepSeek) were *not* committed to history; they only sit unencrypted on disk, so the urgent action there is "move to a password manager," not "rewrite history."
+Takeaway: **rotating a key makes the leaked copy worthless** — that's the actual fix; history-rewrite (below) is optional cleanup. The genuinely sensitive items (ERCOT login, DeepSeek) were *not* committed to history; they only sit unencrypted on disk, so the urgent action there is "move to a password manager," not "rewrite history." (2026-09-29: that disk copy went missing from a checkout then on iCloud-synced `~/Desktop`, found absent on 2026-09-09, and the ERCOT login is also in Vercel Production; rotation remains the fix.)
 
 ## Step 1 — Rotate each secret (do the account-credential ones first)
 
-- **ERCOT** (`apiexplorer.ercot.com` developer portal): change the account password, regenerate the subscription/API key, update `ERCOT_PASSWORD` + `ERCOT_API_KEY` in `.env.local` and in Vercel Production. Only the disabled native-ERCOT probe reads them, and no build has run it since #1150; if native ERCOT is not coming back, delete the three from Vercel instead of rotating them.
+- **ERCOT** (`apiexplorer.ercot.com` developer portal): change the account password, regenerate the subscription/API key, and update `ERCOT_PASSWORD` + `ERCOT_API_KEY` in Vercel Production (and in `.env.local` if you rebuild it). Only the disabled native-ERCOT probe reads them, and builds skip it since #1150. If native ERCOT is not coming back, closing the account retires the login too; then delete the three from Vercel as well.
 - **DeepSeek** (`platform.deepseek.com` → API keys): delete the old key, create a new one, update `DEEPSEEK_API_KEY`. (Not used by the build — consider just deleting it from `.env.local`.)
 - **ENTSO-E** (`transparency.entsoe.eu` → My Account Settings → Web Api Security Token): regenerate, update `ENTSOE_API_TOKEN`.
 - **EIA** (`eia.gov/opendata/register.php`): EIA has **no self-serve revocation dashboard** — re-register to get a new key, switch `.env.local` to it, and stop using the old one. The leaked key may stay technically valid; impact is limited to rate-quota abuse on a free public-data endpoint. If you want it truly killed, email EIA Open Data support.
@@ -58,4 +58,17 @@ npm run build      # loaders pick up new tokens (or fall back cleanly)
 git log -p -S 'THE_OLD_EIA_KEY' --all   # after a rewrite: should return nothing
 ```
 
-A build does not check the ERCOT values: no loader it runs reads them. To check a new ERCOT password, run `npx tsx src/data/ercot-native.json.ts` with the three set and look for `token acquired`; outside Vercel's build machines the API calls after the token get Incapsula's 403.
+A build no longer checks the ERCOT values: builds skip the only loader that reads them. Check a new ERCOT password with a direct token request, which touches nothing in the repo. It prints `200` when the login works and `400` when ERCOT's sign-in service rejects it:
+
+```bash
+curl -sS -o /dev/null -w '%{http_code}\n' -X POST \
+  'https://ercotb2c.b2clogin.com/ercotb2c.onmicrosoft.com/B2C_1_PUBAPI-ROPC-FLOW/oauth2/v2.0/token' \
+  --data-urlencode grant_type=password \
+  --data-urlencode "username=$ERCOT_USERNAME" \
+  --data-urlencode "password=$ERCOT_PASSWORD" \
+  --data-urlencode 'scope=openid fec253ea-0d06-4272-a5e6-b478baeecd70 offline_access' \
+  --data-urlencode client_id=fec253ea-0d06-4272-a5e6-b478baeecd70 \
+  --data-urlencode response_type=id_token
+```
+
+Don't run `src/data/ercot-native.json.ts` for this: it rewrites tracked files under `data/snapshots/`. The subscription key can only be checked against `api.ercot.com`, which answered this project's NZ checkout with Incapsula's 403 and let Vercel's US build machines through.

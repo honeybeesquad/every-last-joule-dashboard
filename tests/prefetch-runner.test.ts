@@ -13,7 +13,7 @@
  * still alive.
  */
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { Writable } from "node:stream";
@@ -476,13 +476,20 @@ describe("the prefetch script", () => {
     expect(stderr).toContain("0 cached, 2 left for observable build: a(failed), b(failed)");
   }, 30_000);
 
-  it("exits 0 with its summary when the cache directory cannot be made", () => {
+  // A read-only parent lets the prefetch empty the cache (there is nothing to
+  // remove) but not create it again. Root ignores the permission, so skip there.
+  it.skipIf(process.getuid?.() === 0)("exits 0 with its summary when the cache directory cannot be made", () => {
     const root = project({ a: 'process.stdout.write("{}");' }, true);
-    put(join(root, "src", ".observablehq", "cache"), "a file where a directory should be");
-    const { status, signal, stderr } = prefetch(root, { LOADER_HARD_CAP_MS: "5000" });
-    expect({ status, signal }).toEqual({ status: 0, signal: null });
-    expect(stderr).toMatch(/\[a\] not run: ENOTDIR/);
-    expect(stderr).toContain("0 cached, 1 left for observable build: a(failed)");
+    const parent = join(root, "src", ".observablehq");
+    mkdirSync(parent, { mode: 0o555 });
+    try {
+      const { status, signal, stderr } = prefetch(root, { LOADER_HARD_CAP_MS: "5000" });
+      expect({ status, signal }).toEqual({ status: 0, signal: null });
+      expect(stderr).toMatch(/\[a\] not run: EACCES/);
+      expect(stderr).toContain("0 cached, 1 left for observable build: a(failed)");
+    } finally {
+      chmodSync(parent, 0o755);
+    }
   }, 30_000);
 
   it("runs loaders with the deadline it logs, 0 included", () => {

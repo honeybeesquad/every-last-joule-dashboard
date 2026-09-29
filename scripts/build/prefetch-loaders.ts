@@ -17,8 +17,9 @@
  * serially, and fail the build exactly as it does today. So does one that
  * cannot start or whose output cannot be written: scripts/lib/prefetch-runner.ts
  * turns every such error into a failed loader. This script never fails the
- * build on its own. Like Framework, it skips loaders the site does
- * not read (scripts/lib/referenced-loaders.ts), and deletes their cache files;
+ * build on its own. It empties the data cache first, so no older output can
+ * stand in for a loader it skips or that fails. Like Framework, it skips
+ * loaders the site does not read (scripts/lib/referenced-loaders.ts);
  * if it cannot tell which those are, it runs every loader.
  *
  * KNOBS (env):
@@ -29,7 +30,7 @@
  *   LOADER_FETCH_RETRIES    per-request retries        default here 1     (library default 3)
  *   SKIP_PREFETCH=1         do nothing (Framework runs loaders serially as before)
  */
-import { unlink } from "node:fs/promises";
+import { rm } from "node:fs/promises";
 import { constants } from "node:os";
 import { join, relative } from "node:path";
 import { mapWithConcurrency } from "../../src/lib/concurrency.js";
@@ -48,6 +49,10 @@ async function main(): Promise<void> {
     console.error("prefetch-loaders: SKIP_PREFETCH=1, leaving loaders to observable build");
     return;
   }
+  // Framework's build serves any file it finds in the cache without running
+  // its loader, so start empty: a loader that is skipped or fails here must
+  // leave nothing behind for Framework to take as fresh.
+  await rm(CACHE_DIR, { recursive: true, force: true });
   const { run: loaders, skip, fallback } = selectLoaders(listLoaders(DATA_DIR), () => readSiteSources(ROOT));
   const t0 = Date.now();
   console.error(
@@ -55,9 +60,6 @@ async function main(): Promise<void> {
       (skip.length ? `; skipping ${skip.length} that no page reads: ${skip.map((l) => l.name).join(", ")}` : ""),
   );
   if (fallback) console.error(`prefetch-loaders: running every loader, because ${fallback}`);
-  // If a page does read a skipped loader after all, Framework must run it
-  // fresh rather than find an older run's output in the cache.
-  await Promise.all(skip.map((l) => unlink(join(CACHE_DIR, l.target)).catch(() => {})));
   // Each loader runs in a process group of its own, out of reach of the
   // terminal's Ctrl-C, so stop them all before going.
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"] as const) {
