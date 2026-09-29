@@ -42,9 +42,9 @@ paper or dataset file carries the old string or the 0.05 figure;
 quote a TWh/yr figure in `regions.ts`, and all four match what is served.
 
 **`nigeria.json.ts`: proposed for deletion, the owner's call.** It stays for
-now, marked as unwired, and after #1150 no build runs it. The case for
-deleting it, with `tests/data/nigeria.test.ts`, which only exercises its
-fallback:
+now, marked as unwired, and since #1150 the build's prefetch skips it. The
+case for deleting it, with `tests/data/nigeria.test.ts`, which only
+exercises its fallback:
 - It has never served data: no page or registry row has read
   `data/nigeria.json` since #267 added it.
 - Its scrape fails. niggrid serves the form, but answers the probe's postback
