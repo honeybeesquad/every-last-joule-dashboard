@@ -51,10 +51,11 @@ describe("referencedFiles", () => {
     expect(refs.has("ercot.json")).toBe(false);
     expect(refs.has("x.json")).toBe(false);
     expect(refs.has("y.json")).toBe(false);
+    expect(referencedFiles(['FileAttachment("../data/ercot.json")']).has("ercot-native.json")).toBe(false);
   });
 
-  it("does not take a sentence's full stop as part of the name", () => {
-    expect(referencedFiles(["See data/prose.json."]).has("prose.json")).toBe(true);
+  it("reads the last data/ segment of a path that passes through data/ twice", () => {
+    expect(referencedFiles(['FileAttachment("../data/../data/twice.json")']).has("twice.json")).toBe(true);
   });
 });
 
@@ -73,11 +74,12 @@ describe("readSiteSources", () => {
     put("src/region/[id].md.js", 'process.stdout.write(`FileAttachment("../data/page-loader.json")`)');
     put("src/data/self.json.ts", 'writeFileSync("data/self.json", out);');
     put("src/.observablehq/cache/index.md", 'FileAttachment("data/stale.json")');
+    put("src/embed/.observablehq/page.md", 'FileAttachment("../data/nested-cache.json")');
     put("src/brand/mark.svg", "<text>data/svg.json</text>");
   });
   afterAll(() => rmSync(root, { recursive: true, force: true }));
 
-  it("reads the config, pages, page loaders and modules, and skips the loaders and Framework's cache", () => {
+  it("reads the config, pages, page loaders and modules, and skips the loaders and Framework's caches", () => {
     expect([...referencedFiles(readSiteSources(root))].sort()).toEqual([
       "config.json",
       "module.json",
@@ -136,5 +138,18 @@ describe("the site's own loaders", () => {
 
   it("skips only the loader no page reads: the disabled ERCOT probe", () => {
     expect(selection.skip.map((l) => l.target)).toEqual(["ercot-native.json"]);
+  });
+
+  it("keeps no loader alive by a mention alone: each one it prefetches is attached somewhere", () => {
+    // The search above also counts a bare "data/x.json" in a comment or in
+    // prose. Today every prefetched loader is a FileAttachment as well, so a
+    // new loader kept running only by a mention shows up here.
+    const attached = new Set<string>();
+    for (const source of readSiteSources(ROOT)) {
+      for (const m of source.matchAll(/FileAttachment\(\s*["'`](?:\.{1,2}\/)*data\/([^"'`]+)["'`]\s*\)/g)) {
+        attached.add(m[1]);
+      }
+    }
+    expect(selection.run.map((l) => l.target).filter((target) => !attached.has(target))).toEqual([]);
   });
 });
