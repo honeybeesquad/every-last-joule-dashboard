@@ -11,10 +11,14 @@ refresh-pipeline plan, which Simon approved on 29 Sep once the trial passed
 explicitly.
 
 **What changed.**
-- **The refresh deploys.** `.github/workflows/data-refresh.yml` runs `vercel deploy --prod --logs` (CLI 60.1.3,
-  `VERCEL_TOKEN` from the environment) instead of calling the deploy hook. The build still runs on Vercel with the
-  production keys. The CLI waits for it and returns its result and log to the run, so the job no longer infers a build
-  from a 201. The push-window wait is gone: a CLI deployment carries no `.git`, so the ignore step cannot skip it.
+- **The refresh deploys.** `.github/workflows/data-refresh.yml` runs `vercel deploy --prod --force --with-cache
+  --logs` (CLI 60.1.3, `VERCEL_TOKEN` from the environment) instead of calling the deploy hook. `--force` makes an
+  unchanged `main` rebuild, where Vercel could otherwise hand back the previous deployment of the same files. The
+  build still runs on Vercel with the production keys. The CLI waits for it and returns its result and log to the run,
+  so the job no longer infers a build from a 201. The push-window wait is gone: a CLI deployment carries no `.git`,
+  so the ignore step cannot skip it.
+- **Only `main`, and only its head.** The job runs only for `main`, so a run started by hand on a branch cannot put
+  it live. It checks out `main`'s head when it starts, so a re-run of an old run cannot put an older `main` back.
 - **Merges deploy through the same workflow.** It now also runs on pushes to `main`. A push that changes only
   `data/historical`, `data/snapshots`, `docs/` or root Markdown waits for the next refresh. Those are the
   automation's commits (history captures, relay CSVs), which would otherwise loop. A test checks every path

@@ -41,17 +41,43 @@ function pathsIgnore(): string[] {
   return [...block[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
 }
 
-/** GitHub's path filters: `*` stays within a directory, a trailing `/**` takes the rest. */
-function ignored(path: string, patterns: string[]): boolean {
-  return patterns.some((p) => (p.endsWith("/**") ? path.startsWith(p.slice(0, -2)) : !path.includes("/") && new RegExp(`^${p.replace(".", "\\.").replace("*", "[^/]*")}$`).test(path)));
+/** A GitHub path filter as a RegExp: `**` matches anything, `*` anything but `/`. */
+function globToRegExp(glob: string): RegExp {
+  let re = "";
+  for (let i = 0; i < glob.length; i++) {
+    if (glob[i] !== "*") {
+      re += glob[i].replace(/[.+?^${}()|[\]\\]/g, "\\$&");
+    } else if (glob[i + 1] === "*") {
+      re += ".*";
+      i++;
+    } else {
+      re += "[^/]*";
+    }
+  }
+  return new RegExp(`^${re}$`);
 }
 
+const ignored = (path: string, patterns: string[]) => patterns.some((p) => globToRegExp(p).test(path));
+
 describe("data-refresh.yml deploys through the Vercel CLI", () => {
-  it("installs the pinned CLI, then deploys the checkout before npm ci", () => {
+  it("installs dependencies and the pinned CLI, then deploys", () => {
+    // npm ci first, so a registry failure stops the run before production
+    // changes; the CLI never uploads node_modules.
     const deploy = step("id: deploy");
+    expect(step("run: npm ci").index).toBeLessThan(deploy.index);
     expect(step("npm install --global vercel@").index).toBeLessThan(deploy.index);
-    expect(deploy.index).toBeLessThan(step("run: npm ci").index);
-    expect(deploy.text).toContain("vercel deploy --prod --logs --yes");
+    expect(deploy.text).toContain("vercel deploy --prod --force --with-cache --logs --yes");
+  });
+
+  it("deploys main only, as main's head when the job starts", () => {
+    // A run by hand on a branch must not put the branch live, and a re-run of
+    // an old run must not put an older main back.
+    expect(WORKFLOW).toMatch(/\n {2}deploy:\n(?: {4}#[^\n]*\n)* {4}if: github\.ref == 'refs\/heads\/main'\n/);
+    expect(step("actions/checkout").text).toMatch(/\n {8}with:\n {10}ref: main\n/);
+    const deploy = step("id: deploy").text;
+    expect(deploy).toContain("commit=$(git rev-parse HEAD)");
+    expect(deploy).toContain('--build-env "ELJ_BUILD_COMMIT=$commit"');
+    expect(deploy).not.toContain("GITHUB_SHA");
   });
 
   it("gives the CLI its token only from the environment", () => {
@@ -100,8 +126,16 @@ describe("data-refresh.yml runs on pushes to main, but not on the automation's o
     }
   });
 
-  it("keeps one deploy at a time", () => {
-    expect(WORKFLOW).toMatch(/\nconcurrency:\n {2}group: data-refresh\n {2}cancel-in-progress: false\n/);
+  it("reads path filters the way GitHub does", () => {
+    expect(ignored("src/index.md", ["*.md"])).toBe(false);
+    expect(ignored("src/index.md", ["src/*.md"])).toBe(true);
+    expect(ignored("src/pages/a.md", ["src/*.md"])).toBe(false);
+    expect(ignored("src/pages/a.md", ["src/**/*.md", "**.md"])).toBe(true);
+    expect(ignored("data/historical", ["data/historical/**"])).toBe(false);
+  });
+
+  it("keeps one deploy at a time, in a group a branch run cannot share", () => {
+    expect(WORKFLOW).toMatch(/\nconcurrency:\n {2}group: data-refresh-\$\{\{ github\.ref \}\}\n {2}cancel-in-progress: false\n/);
   });
 
   it("is the only thing that deploys main: Vercel's git builds for main are off", () => {

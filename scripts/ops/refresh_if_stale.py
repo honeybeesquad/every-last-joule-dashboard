@@ -44,7 +44,7 @@ CLOCK_CHECK_FILE = CONFIG / "hc-clock-url"  # this clock's own Healthchecks ping
 
 # The refresh runs every 3 h; a build this much older than that is overdue.
 MAX_AGE = dt.timedelta(hours=3, minutes=15)
-# data-refresh.yml's job limit is 160 min, and a run waits at most one such
+# data-refresh.yml's job limit is 120 min, and a run waits at most one such
 # run in its concurrency group, so a run whose state has not changed for this
 # long is stuck.
 STUCK_AFTER = dt.timedelta(hours=3)
