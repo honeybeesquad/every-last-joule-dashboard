@@ -93,10 +93,11 @@ outcomes="Steps: deploy: ${DEPLOY:-not run}; wait: ${WAIT:-not run}; freshness c
 # still building (a timeout or a cancel while the CLI waited), and a
 # production build goes live when it finishes. It may equally have failed
 # before any build (a missing or expired token) or because the build failed.
-# The CLI prints an Inspect line once the deployment exists, and a build
-# error as the build ends, so the note says how to tell.
+# The log alone cannot tell these apart (loaders log fetch failures in healthy
+# builds too), but the deployment's status on Vercel can: the CLI prints its
+# Inspect link once the deployment exists.
 if [ "${DEPLOY:-}" = failure ] || [ "${DEPLOY:-}" = cancelled ]; then
-  outcomes="$outcomes"$'\n'"If the deploy step stopped while Vercel was still building (its log has an Inspect line and no build error), that build may still finish and go live."
+  outcomes="$outcomes"$'\n'"Whether a build may still go live: open the Inspect link in the deploy step's log (none means no build started). Queued or Building goes live when it finishes; Ready is live already; Error or Canceled never will."
 fi
 if [ "$status" != success ]; then
   if [ "$status" = cancelled ]; then

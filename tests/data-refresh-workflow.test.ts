@@ -34,24 +34,38 @@ function number(text: string, re: RegExp, what: string): number {
 
 const stepLimit = (text: string) => number(text, /\n {8}timeout-minutes: (\d+)/, "step timeout-minutes");
 
-/** The push trigger's paths-ignore patterns. */
+/**
+ * The push trigger's paths-ignore patterns: every line of the list, so an
+ * entry this reader cannot parse (a single-quoted negation, say) fails the
+ * test instead of dropping out of it.
+ */
 function pathsIgnore(): string[] {
-  const block = WORKFLOW.match(/\n {2}push:\n {4}branches: \[main\]\n {4}paths-ignore:\n((?: {6}- "[^"]+"\n)+)/);
-  if (!block) throw new Error("data-refresh.yml: no push trigger on main with paths-ignore");
-  return [...block[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  const start = WORKFLOW.match(/\n {2}push:\n {4}branches: \[main\]\n {4}paths-ignore:\n/);
+  if (!start || start.index === undefined) throw new Error("data-refresh.yml: no push trigger on main with paths-ignore");
+  const patterns: string[] = [];
+  for (const line of WORKFLOW.slice(start.index + start[0].length).split("\n")) {
+    if (line.trim() === "") continue;
+    if (!line.startsWith("      ")) break; // the list ends where its indentation does
+    const text = line.trim();
+    if (text.startsWith("#")) continue;
+    const m = text.match(/^- "([^"]+)"$/);
+    if (!m) throw new Error(`data-refresh.yml: paths-ignore entries must be "double-quoted" for this test: ${text}`);
+    patterns.push(m[1]);
+  }
+  return patterns;
 }
 
 /**
  * A GitHub path filter as a RegExp, for the syntax paths-ignore uses here:
- * `*` matches anything but `/`, `**` anything, and `**\/` zero or more
- * directories. GitHub's `?`, `+`, `[]` and `!` mean something else, so they
+ * `*` matches anything but `/`, `**` anything, and `**\/` at the start of a
+ * segment zero or more directories. GitHub's `?`, `+`, `[]` and `!` mean something else, so they
  * throw rather than match wrongly.
  */
 function globToRegExp(glob: string): RegExp {
   if (/[?+[\]!]/.test(glob)) throw new Error(`globToRegExp does not handle ${glob}`);
   let re = "";
   for (let i = 0; i < glob.length; i++) {
-    if (glob.startsWith("**/", i)) {
+    if (glob.startsWith("**/", i) && (i === 0 || glob[i - 1] === "/")) {
       re += "(?:.*/)?";
       i += 2;
     } else if (glob.startsWith("**", i)) {
@@ -146,8 +160,15 @@ describe("data-refresh.yml runs on pushes to main, but not on the automation's o
     expect(ignored("docs/README.md", ["docs/**/*.md"])).toBe(true);
     expect(ignored("README.md", ["**/README.md"])).toBe(true);
     expect(ignored("vercel.json", ["**/*.json"])).toBe(true);
+    expect(ignored("xREADME.md", ["**/README.md"])).toBe(false);
+    expect(ignored("docs/hello.md", ["**/docs/**"])).toBe(true);
+    expect(ignored("mydocs/a.md", ["**/docs/**"])).toBe(false);
+    expect(ignored("srcx.md", ["src**/x.md"])).toBe(false);
+    expect(ignored("src/a/x.md", ["src**/x.md"])).toBe(true);
     expect(ignored("data/historical", ["data/historical/**"])).toBe(false);
-    expect(() => ignored("page.js", ["*.jsx?"])).toThrow();
+    for (const unsupported of ["*.jsx?", "!README.md", "[CB]at", "*.js+"]) {
+      expect(() => ignored("page.js", [unsupported]), unsupported).toThrow();
+    }
   });
 
   it("keeps one deploy at a time, in a group a branch run cannot share", () => {
