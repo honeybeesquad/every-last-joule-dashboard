@@ -45,8 +45,8 @@ quote a TWh/yr figure in `regions.ts`, and all four match what is served.
 marked it as an unwired probe. **#1152**, from `claude/nigeria-probe-delete`,
 deleted it, with `tests/data/nigeria.test.ts`, which only exercised its
 fallback, and `scripts/backfill/nigeria/backfill_nigeria.py`, which scraped
-the same page, is referenced by nothing, and left no output in the repo.
-Why:
+the same page. No script, workflow or CI step ran it, and it left no output
+in the repo. Why:
 - It never served data: no page or registry row read `data/nigeria.json`
   after #267 added it.
 - Its scrape failed. niggrid served the form, but answered the probe's
