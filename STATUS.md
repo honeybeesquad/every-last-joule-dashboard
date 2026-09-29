@@ -7,8 +7,8 @@
 
 **#1149**, from `claude/refresh-deploys-through-cli`: step 3b of the
 refresh-pipeline plan, which Simon approved on 29 Sep once the trial passed
-(the entry below). He approved the `vercel.json` change separately and
-explicitly.
+(the step 3 trial entry below). He approved the `vercel.json` change
+separately and explicitly.
 
 **What changed.**
 - **The refresh deploys.** `.github/workflows/data-refresh.yml` runs `vercel deploy --prod --force --with-cache
@@ -20,10 +20,13 @@ explicitly.
 - **Only `main`, and only its head.** The job runs only for `main`, so a run started by hand on a branch cannot put
   it live. It checks out `main`'s head when it starts, so a re-run of an old run cannot put an older `main` back.
 - **Merges deploy through the same workflow.** It now also runs on pushes to `main`, and leaves for the next refresh
-  the same pushes the ignore step skipped as #1153 left it: ones that change only `data/historical`,
-  `data/snapshots`, `docs/` other than `docs/validation`, or root Markdown. Those include the automation's commits
-  (history captures, relay CSVs), which would otherwise loop; a test checks every path `history-append.yml` and the
-  relay pull commit. `docs/validation`, which the region pages embed, and the pages under `src/` deploy.
+  the kinds of push the ignore step skipped as #1153 left it: ones that change only `data/historical` (the
+  automation's history captures and relay CSVs, and other build inputs there), `data/snapshots`, `docs/` other than
+  `docs/validation`, or root Markdown. Deploying on the automation's commits would loop; a test checks every path
+  `history-append.yml` and the relay pull commit. `docs/validation`, which the region pages embed, and the pages
+  under `src/` deploy. One difference: the ignore step compared a push with the last successful deployment, so a
+  docs-only push after a failed deploy built the failed change as well; GitHub's filter sees only the push, so that
+  change now waits for the next refresh.
 - **Vercel's own git builds for `main` are off.** `vercel.json` sets `git.deploymentEnabled.main: false`.
   Pull-request previews still build on Vercel, and the ignore step still runs for them until step 4.
 - **The wait.** `check-deploy-freshness.ts wait` accepts only a build made after the deploy started. The hook era's
@@ -79,7 +82,9 @@ only `docs/validation` has landed since #967.
 **Follow-up for #1149.** It turns off git builds for `main`, so this step
 will run only for previews until step 4 removes it. Its new `push` trigger
 ignores `docs/**`, so after it merges a push that changes only
-`docs/validation` will wait for the next scheduled refresh.
+`docs/validation` will wait for the next scheduled refresh. *Resolved in
+#1149 before it merged:* its trigger is an ordered `paths` list that takes
+`docs/validation/**` back, so such a push deploys.
 
 **Not changed.** No data file, `regions.ts` entry, tier, golden file,
 workflow or `vercel.json`.
@@ -136,7 +141,7 @@ Automation secret, and creates one if the project has none.
 197 live records in the trial and in production (a git build from the same
 hour), each of the 19 keyed feeds live in production live in the trial, and
 no region different. `vercel curl` read every file in 89 s. Step 3b followed
-(**#1149**, the entry above).
+(**#1149**, the step 3b entry above).
 
 **Not changed.** No data file, `regions.ts` entry or tier, and no existing
 workflow.

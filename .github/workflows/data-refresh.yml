@@ -60,17 +60,21 @@ on:
     - cron: "15 */3 * * *"
   workflow_dispatch: {}
   # Code merges go live through this workflow now that Vercel's git builds for
-  # main are off. The same pushes wait for the next refresh as the Vercel
-  # ignore step left waiting (scripts/build/vercel-ignore.sh, as #1153 left
-  # it): ones that change only the data the automation commits (history and
-  # relay CSVs in data/historical, the last-good fallback corpus in
-  # data/snapshots), docs, or Markdown at the repo root. Deploying on the
-  # automation's pushes would also loop: refresh, history capture, push,
-  # refresh. docs/validation is the one part of docs/ the build reads (the
-  # region pages embed it), and pages under src/ are site content, so both
-  # deploy. GitHub's `paths-ignore` cannot take a path back, so this is an
-  # ordered `paths` list: a later pattern overrides an earlier one, and `*`
-  # stops at `/`, so "!*.md" drops Markdown at the repo root only.
+  # main are off. The kinds of push the Vercel ignore step left for the next
+  # refresh (scripts/build/vercel-ignore.sh, as #1153 left it) still wait:
+  # ones that change only data/historical (the history captures and relay
+  # CSVs the automation commits, and other build inputs kept there),
+  # data/snapshots (the last-good fallback corpus), docs, or Markdown at the
+  # repo root. Deploying on the automation's pushes would also loop: refresh,
+  # history capture, push, refresh. docs/validation is the one part of docs/
+  # the build reads (the region pages embed it), and pages under src/ are site
+  # content, so both deploy. One difference: the ignore step compared a push
+  # with the last successful deployment, so a docs-only push after a failed
+  # deploy built the failed change too; this filter sees only the push, so
+  # that change waits for the next refresh. GitHub's `paths-ignore` cannot
+  # take a path back, so this is an ordered `paths` list: a later pattern
+  # overrides an earlier one, and `*` stops at `/`, so "!*.md" drops Markdown
+  # at the repo root only.
   push:
     branches: [main]
     paths:
