@@ -32,7 +32,7 @@ Requires Node 20 (`nvm use`).
 
 CI runs `typecheck`, `test`, `validate`, and `tally:tiers` on every push and PR — see [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
-Live data loaders need free upstream API tokens (`ENTSOE_TOKEN`, `EIA_API_KEY`, `ELEXON_API_KEY`, optional `ERCOT_*` bundle); see [`docs/data-source-log.md`](docs/data-source-log.md). Without them the build still succeeds — every loader wraps its fetch in [`src/lib/resilient.ts::withFallback`](src/lib/resilient.ts), which serves the last-good committed snapshot from `data/snapshots/last-good/`.
+Live data loaders need free upstream API tokens (`EIA_API_KEY`, `ENTSOE_API_TOKEN`, `NETZTRANSPARENZ_CLIENT_ID` and `_SECRET`; optionally `ESIOS_API_TOKEN` and `DATA_GO_KR_SERVICE_KEY`); the `ERCOT_*` bundle feeds only the disabled native-ERCOT probe, which builds do not run. See [`docs/data-source-log.md`](docs/data-source-log.md). Without them the build still succeeds — every loader wraps its fetch in [`src/lib/resilient.ts::withFallback`](src/lib/resilient.ts), which serves the last-good committed snapshot from `data/snapshots/last-good/`.
 
 ## Repository layout
 

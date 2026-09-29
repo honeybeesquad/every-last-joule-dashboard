@@ -1,16 +1,16 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-09-29 (the "HTTP 400" from `ercot-native` in the trial's build logs is a disabled probe that the loader prefetch ran, not lost data: production's ERCOT regions are live through EIA, the ERCOT credentials work, and the prefetch now skips loaders no page reads, **#1150**; see the entry below). Also 2026-09-29 (step 3 trial's first runs: the CLI build worked, in 7 min, and was not skipped; the comparison failed on a `vercel curl` flag, fixed in **#1147**; see the step 3 trial entry below). Also 2026-09-28 (step 3 trial, **#1145**: production built on Vercel through the CLI without going live, and compared with production; manual only, needs `VERCEL_TOKEN`; see the entry below). Also 2026-09-28 (a refresh clock for `abed`, step 2 of the refresh-pipeline plan, **#1143**: it dispatches a refresh when production is over 3 h 15 min old; runs once installed there; see the entry below). Also 2026-09-28 (the refresh alarm moves to Healthchecks.io, off GitHub's scheduler: step 1 of the refresh-pipeline plan, **#1142**, merged; see the entry below). Also 2026-09-28 (sessions merge their own PRs once reviewed and green: `CLAUDE.md` "Merging PRs", **#1140**; see the entry below). Also 2026-09-28 (the #1134 fix in production: a refresh run by hand built the hook deployment of a skipped automation commit, which the old script skipped, the case that froze production; see "After the merge" in the entry below). Also 2026-09-27 (scheduled rebuilds were being skipped: production served one build from 04:42 UTC on 24 Sep to at least 27 Sep while every workflow stayed green, which Vercel's deployment records confirm; fix and freshness alarms merged in **#1134**; see the entry below). Also 2026-09-24 (dark is the default mode: a first visit opens dark whatever the OS prefers; see the entry below). Also 2026-09-24 (no Google Fonts request: `globalStylesheets: []`, and `/privacy` no longer names Google; see the entry below). Also 2026-09-24 (`/privacy` page for the Meta app review; see the entry below). Also 2026-09-24 (dark globe zooms with a plain scroll over it; see the entry below). Also 2026-09-24 (dark timeline ribbon stretches to the dock's width; see the entry below). Also 2026-09-24 (dark globe opens zoomed out, and keeps turning after a drag; see the entry below). Also 2026-09-24 (dark globe zooms out to the whole sphere; see the entry below). Also 2026-09-24 (dark globe zoom, tilt and borders; see the entry below). Also 2026-09-24 (0.5× playback restored as the default speed; see the D4 line in the redesign entry). Also 2026-09-24 (Nightgrid + Daylight: both modes recoloured, set in the brand system's Schibsted Grotesk and IBM Plex Mono, and the mark back in its gold and cyan; stacked on PR 5; see the entry below). Also 2026-09-24 (light/dark redesign PR 5, clean-up: the paper figure's palette renamed from "sunfire" to "embed", four unused faces and dead CSS deleted, the plan archived as shipped; stacked on PR 4; see the entries below). Also 2026-09-24 (light/dark redesign PR 4, tablet and phone in both modes, the globe explorer, the dark bottom sheet and the doc pages' new header, stacked on PR 3; see the entries below). Also 2026-09-24 (light/dark redesign PR 3, dark desktop: the Horizon stage, horizon globe, ribbon and glass dock; PR 1 **#1087** and PR 2 **#1091** merged 2026-09-23; see the entries below). Also 2026-09-23 (light/dark redesign PR 2, light desktop: the Almanac grid, engraved globe and small-multiples timeline; see the entry below). Also 2026-09-23 (light/dark redesign PR 1, theme plumbing: the site's modes are now light (Almanac) and dark (Horizon), with Geist, Geist Mono and Newsreader; see the entries below). Also 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk became `--font-display` and `--font-body` in both themes; superseded 2026-09-23 by the redesign's faces, see the entries below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
+**Last verified against git:** 2026-09-29 (the "HTTP 400" from `ercot-native` in the trial's build logs is a disabled probe that the loader prefetch ran, not lost data: production's ERCOT regions are live through EIA, the ERCOT credentials work but no build needs them now, and the prefetch runs only loaders the site reads, **#1150**; see the entry below). Also 2026-09-29 (step 3 trial's first runs: the CLI build worked, in 7 min, and was not skipped; the comparison failed on a `vercel curl` flag, fixed in **#1147**; see the step 3 trial entry below). Also 2026-09-28 (step 3 trial, **#1145**: production built on Vercel through the CLI without going live, and compared with production; manual only, needs `VERCEL_TOKEN`; see the entry below). Also 2026-09-28 (a refresh clock for `abed`, step 2 of the refresh-pipeline plan, **#1143**: it dispatches a refresh when production is over 3 h 15 min old; runs once installed there; see the entry below). Also 2026-09-28 (the refresh alarm moves to Healthchecks.io, off GitHub's scheduler: step 1 of the refresh-pipeline plan, **#1142**, merged; see the entry below). Also 2026-09-28 (sessions merge their own PRs once reviewed and green: `CLAUDE.md` "Merging PRs", **#1140**; see the entry below). Also 2026-09-28 (the #1134 fix in production: a refresh run by hand built the hook deployment of a skipped automation commit, which the old script skipped, the case that froze production; see "After the merge" in the entry below). Also 2026-09-27 (scheduled rebuilds were being skipped: production served one build from 04:42 UTC on 24 Sep to at least 27 Sep while every workflow stayed green, which Vercel's deployment records confirm; fix and freshness alarms merged in **#1134**; see the entry below). Also 2026-09-24 (dark is the default mode: a first visit opens dark whatever the OS prefers; see the entry below). Also 2026-09-24 (no Google Fonts request: `globalStylesheets: []`, and `/privacy` no longer names Google; see the entry below). Also 2026-09-24 (`/privacy` page for the Meta app review; see the entry below). Also 2026-09-24 (dark globe zooms with a plain scroll over it; see the entry below). Also 2026-09-24 (dark timeline ribbon stretches to the dock's width; see the entry below). Also 2026-09-24 (dark globe opens zoomed out, and keeps turning after a drag; see the entry below). Also 2026-09-24 (dark globe zooms out to the whole sphere; see the entry below). Also 2026-09-24 (dark globe zoom, tilt and borders; see the entry below). Also 2026-09-24 (0.5× playback restored as the default speed; see the D4 line in the redesign entry). Also 2026-09-24 (Nightgrid + Daylight: both modes recoloured, set in the brand system's Schibsted Grotesk and IBM Plex Mono, and the mark back in its gold and cyan; stacked on PR 5; see the entry below). Also 2026-09-24 (light/dark redesign PR 5, clean-up: the paper figure's palette renamed from "sunfire" to "embed", four unused faces and dead CSS deleted, the plan archived as shipped; stacked on PR 4; see the entries below). Also 2026-09-24 (light/dark redesign PR 4, tablet and phone in both modes, the globe explorer, the dark bottom sheet and the doc pages' new header, stacked on PR 3; see the entries below). Also 2026-09-24 (light/dark redesign PR 3, dark desktop: the Horizon stage, horizon globe, ribbon and glass dock; PR 1 **#1087** and PR 2 **#1091** merged 2026-09-23; see the entries below). Also 2026-09-23 (light/dark redesign PR 2, light desktop: the Almanac grid, engraved globe and small-multiples timeline; see the entry below). Also 2026-09-23 (light/dark redesign PR 1, theme plumbing: the site's modes are now light (Almanac) and dark (Horizon), with Geist, Geist Mono and Newsreader; see the entries below). Also 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk became `--font-display` and `--font-body` in both themes; superseded 2026-09-23 by the redesign's faces, see the entries below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
 
 ## ERCOT-native's "HTTP 400" is a disabled probe, not lost data (2026-09-29)
 
 **#1150**, from `claude/ercot-native-400`. Both step 3 trial builds (runs 36501200671 and
 36504999233) logged `[ercot-native] live fetch failed after 1.1s: HTTP 400 Bad
-Request`, then fell back to the last-good snapshot. That loader,
-`src/data/ercot-native.json.ts`, is the v0.5 probe of ERCOT's own API. It has
-been disabled since April, and no page has referenced its file since **#84**
-(2026-05-10). The dashboard's ERCOT data never came from it.
+Request` (1.0s in the second), then fell back to the last-good snapshot. That
+loader, `src/data/ercot-native.json.ts`, is the v0.5 probe of ERCOT's own API.
+It has been disabled since April, and no page has referenced its file since
+**#84** (2026-05-10). The dashboard's ERCOT data never came from it.
 
 - **Production's ERCOT is live.** The dashboard's four ERCOT regions come from
   `ercot.json`, the EIA-based loader, which uses the EIA key, not the ERCOT
@@ -28,48 +28,80 @@ been disabled since April, and no page has referenced its file since **#84**
   region comes from `statics.json`); in run 36501200671's full build log it
   failed 30 niggrid fetches.
 
-**Credentials: nothing to renew.** Both logs show `[ercot-native] token
-acquired` before the failure, so the password login with `ERCOT_USERNAME` and
-`ERCOT_PASSWORD` works. The product lookup, which sends `ERCOT_API_KEY`, passed
-too: its failure would read `product lookup HTTP …`. If the password expires
-later, the log will read `token HTTP 400 Bad Request`.
+**Credentials: nothing to renew, and nothing uses them now.** Both logs show
+`[ercot-native] token acquired` before the failure, so the password login with
+`ERCOT_USERNAME` and `ERCOT_PASSWORD` works. The product lookup, which sends
+`ERCOT_API_KEY`, passed too: its failure would read `product lookup HTTP …`.
+Vercel lists all three as production-only sensitive variables, created on
+2026-04-23 and not changed since, so the April password was still accepted on
+29 Sep. After this fix no build reads them, so nothing will notice if they
+expire.
+
+**Owner action (Simon).** This changes the "rotate ERCOT ×3" item under "Still
+outstanding". If native ERCOT is not coming back, delete `ERCOT_USERNAME`,
+`ERCOT_PASSWORD` and `ERCOT_API_KEY` from the Vercel project's Production
+environment variables: they are a real account's login, kept for a loader no
+build runs. If it is coming back, rotate them at `apiexplorer.ercot.com` as that
+item says, and decide where the probe will run: `.env.local` on this machine no
+longer holds them, and `api.ercot.com` answers local requests with Incapsula's
+403. `docs/ops/secret-rotation-runbook.md` said the three live in `.env.local`
+only; it now names Vercel too.
 
 **The 400.** ERCOT rejects the third request, the report data call:
 `<artifact endpoint>?postDatetimeFrom=…&postDatetimeTo=…&size=5000` with
-`toISOString()` timestamps. Nothing in ERCOT's published spec
-(`ercot/api-specs`, February 2024) takes `postDatetimeFrom`. Report endpoints
-call it `postedDatetimeFrom`, every timestamp filter is `yyyy-MM-ddTH24:mm:ss`
-with no milliseconds or `Z`, and NP6-915-CD has no endpoint at all. Which part
-ERCOT rejects is unconfirmed. The loader writes ERCOT's reply only to a
-diagnostics file on the build machine, and from a local checkout
-`api.ercot.com` answers every request with Incapsula's 403, with or without
-credentials. In April the same call returned 404.
+`toISOString()` timestamps. Vercel sets no `ERCOT_PRODUCT_ID`, so the product
+was the default, NP6-915-CD, and its live lookup returned that endpoint.
+ERCOT's published spec (`ercot/api-specs`, February 2024) does not list
+NP6-915-CD, has no `postDatetimeFrom` parameter (report endpoints filter on
+`postedDatetimeFrom`), and gives every timestamp filter as
+`yyyy-MM-ddTH24:mm:ss`, without milliseconds or `Z`. Which part ERCOT rejects
+is unconfirmed: the loader writes ERCOT's reply only to a diagnostics file on
+the build machine, and a request from a local checkout gets Incapsula's 403
+before it reaches the API. In April the same call returned 404. Details are in
+`docs/data-source-log.md`.
 
-**Fix.** `scripts/build/prefetch-loaders.ts` now runs only the loaders whose
-file a page or module references, as `observable build` does. The check is in
-`scripts/lib/referenced-loaders.ts`, tested in `tests/referenced-loaders.test.ts`.
-It keeps 141 of 143 loaders, the same 141 whose files production serves.
-ercot-native and nigeria stop running, and the build log names them as
-skipped. The probe stays in the repo and still runs by hand.
+**Fix.** `scripts/build/prefetch-loaders.ts` now runs only the loaders the site
+reads, as `observable build` does: 141 of 143, the same 141 whose files
+production serves. `scripts/lib/referenced-loaders.ts` finds them by searching
+`observablehq.config.ts` and the pages and modules under `src/` for
+`data/<file>`, tested in `tests/referenced-loaders.test.ts`. If the search
+fails, or finds none of the loaders, the prefetch runs them all, as before. It
+deletes a skipped loader's cache file, so a loader the search misses runs fresh
+in `observable build` rather than shipping an older output. ercot-native and
+nigeria stop running, and the build log names them as skipped.
 
-**Not changed.** No data file, `regions.ts` entry or tier. The probe's request
-stays as it is: HDL − GEN from NP6-915-CD split 66/34 is not a defensible
-curtailment series (`docs/known-limitations.md` §8), and a probe that ran would
-stamp that guess `live`. `docs/data-source-log.md` records the 400 and what a
-revival needs.
+**Not changed.** No data file, `regions.ts` entry or tier. The probe stays in
+the repo, unrun, with its request as it is. The April decision keeps it off
+until ERCOT publishes timestamped curtailment, or SCED fields enough to derive
+it defensibly (`docs/data-source-log.md`), and a probe that worked would stamp
+an unvalidated HDL − GEN series `live`. `docs/data-source-log.md` records the
+400 and what a revival needs.
 
-**Corrections.** The step 3 trial entry below counted ERCOT as two keyed regions
-in the comparison. The ERCOT credentials feed only ercot-native, which
-production never has live, so the comparison cannot check them. That sentence
-and the comment in `scripts/lib/compare-deployments.ts` now say so. The "Build
-time" entry's "Semantics are Framework's own" did not hold for unread loaders
-until this fix.
+**Corrections to older entries**, each marked where it stands:
+- The step 3 trial entry: its comparison counts ERCOT as two keyed regions, but
+  they are ercot-native's, which production never has live, so it cannot check
+  the ERCOT credentials (the comment in `scripts/lib/compare-deployments.ts`
+  said the same). Its "Next" still waited for the rerun, which ran on 29 Sep
+  (run 36504999233) and passed.
+- The "Build time" entry: the prefetch also ran the loaders no page reads.
+- The 2026-09-06 curtailment-share entry: it counted ERCOT-native among the
+  sources that measure curtailment, though it has no region and has never
+  produced data.
+- The 2026-09-10 secret-rotation entry: Vercel holds five of the six variables
+  it names, not six; there is no `ERCOT_PRODUCT_ID`.
 
 **Follow-ups.**
 - The ercot-native last-good snapshot labels its EIA-proxy seed `T1-live-TSO`
   and `official-lead`, and `data/historical/version-history.csv` carries it as
   two rows in every release since 1.0.0. They are not dashboard regions. The
   next release should decide whether to keep them; past releases' rows stay.
+- The review of this fix found two older build bugs, left for their own PRs.
+  `runLoader` in the prefetch can end the process on a spawn, disk or rename
+  error, failing the build its header says it never fails, and
+  `LOADER_DEADLINE_MS=0` turns off the children's deadline while the prefetch
+  still logs 180 s. `scripts/build/vercel-ignore.sh`'s `':(exclude)*.md'` also
+  matches every `src/**/*.md` page, so a push that changes only a page skips its
+  build.
 - `/region/nigeria` shows `regions.ts`'s source string, which describes the
   unwired Niggrid loader and a "~0.05 TWh/yr" anchor. The served data is
   `statics.json`'s, anchored at 0.5 TWh/yr. The tier label (T3-modelled) is
@@ -100,9 +132,9 @@ last, and again if a refresh went live mid-read. It fails when the
 trial has under 95% of production's live records, under 100 in all, or no
 live region in a keyed feed that production has live: the 22 loaders that
 read an EIA, ENTSO-E, Netztransparenz or ERCOT key, found in the source.
-ERCOT's EIA-based feed is only four regions, so its loss would barely move the
-total. (Correction, 29 Sep: the ERCOT credentials feed only ercot-native, which
-production never has live, so this test cannot check them; see the
+ERCOT is only two regions, so its loss would barely move the total.
+(Correction, 29 Sep: those two regions are ercot-native's, which production
+never has live, so this test cannot check the ERCOT credentials; see the
 ERCOT-native entry above.) Logic in
 `scripts/lib/compare-deployments.ts`, tested in
 `tests/compare-deployments.test.ts`.
@@ -127,7 +159,9 @@ Automation secret, and creates one if the project has none.
 
 **Next.** The trial runs again once #1147 merges; if it passes, step 3b
 switches `data-refresh.yml` from the hook to the CLI and turns off Vercel's
-git builds for `main`.
+git builds for `main`. (29 Sep: it ran again as run 36504999233 and passed:
+"the trial has 197 live records, 100.0% of production's 197 … and each of the
+19 keyed feeds live in production is live in it.")
 
 **Not changed.** No data file, `regions.ts` entry or tier, and no existing
 workflow.
@@ -1601,7 +1635,7 @@ Live-site copy now says **459 regions, renewables only**. The old OG card and RE
 
 **Verified in production, not assumed.** A direct `fuel-type-data` request with the new key returned HTTP 200 and 716 hourly AZPS wind rows through `2026-09-10T06`. All 16 EIA loaders were then run against it and returned `sourceStatus: live` across all 34 regions. Production was swept before and after (385 regions each time): **zero status regressions**, EIA **34/34 live** with every timestamp advancing `10:31Z → 16:38Z` on the first scheduled rebuild after the key was saved, ENTSO-E unchanged at 53/54, Norway 8/8. The 16:38Z production build log (2454 lines) contains **zero `HTTP 401`**, zero genuine `403` (the single match is a content hash in `china-shandong.cdd5e403.json`), **zero `falling back to cached snapshot`**, and no `EIA_API_KEY not set`. **The old `DH9J…` key is unused but NOT revoked:** EIA has no self-serve revocation, so killing it takes an email to EIA Open Data support. Rotation makes the leaked copy worthless to this project, which is the fix the runbook actually prescribes; the optional history scrub remains undone.
 
-**`.env.local` was absent, not malformed.** The runbook's Step 2 no longer describes reality: the file was already absent when the checkout was inventoried on 2026-09-09, *before* its move off `~/Desktop` (`ls -a | grep '^\.env'` returned nothing — recorded under "Housekeeping notes" in `docs/research/2026-09-09-session-handoff.md`), and `mv` preserves dotfiles, so the move did not remove it; when it went missing is not known. `.vercel/` was likewise absent before the move. It has been rebuilt clean from `.env.example` with the rotated EIA key only. **`ERCOT_API_KEY`/`_USERNAME`/`_PASSWORD`/`_PRODUCT_ID`, `NETZTRANSPARENZ_CLIENT_ID`/`_SECRET` and `DEEPSEEK_API_KEY` are no longer on that machine.** The first six remain in Vercel Production, so **production is unaffected and no deployed region is degraded by this** — the 2026-09-10 build log shows Netztransparenz fetching 573 renewable-curtailment rows for 2026-08 — but local builds of the ERCOT and eight German regions will serve last-good snapshots until those values are restored. Incidentally this satisfies SEC-2 ("get the sensitive creds off an unencrypted disk file") more completely than the runbook intended, by accident rather than design.
+**`.env.local` was absent, not malformed.** The runbook's Step 2 no longer describes reality: the file was already absent when the checkout was inventoried on 2026-09-09, *before* its move off `~/Desktop` (`ls -a | grep '^\.env'` returned nothing — recorded under "Housekeeping notes" in `docs/research/2026-09-09-session-handoff.md`), and `mv` preserves dotfiles, so the move did not remove it; when it went missing is not known. `.vercel/` was likewise absent before the move. It has been rebuilt clean from `.env.example` with the rotated EIA key only. **`ERCOT_API_KEY`/`_USERNAME`/`_PASSWORD`/`_PRODUCT_ID`, `NETZTRANSPARENZ_CLIENT_ID`/`_SECRET` and `DEEPSEEK_API_KEY` are no longer on that machine.** The first six remain in Vercel Production (correction, 2026-09-29: five; Vercel has no `ERCOT_PRODUCT_ID`), so **production is unaffected and no deployed region is degraded by this** — the 2026-09-10 build log shows Netztransparenz fetching 573 renewable-curtailment rows for 2026-08 — but local builds of the ERCOT and eight German regions will serve last-good snapshots until those values are restored. Incidentally this satisfies SEC-2 ("get the sensitive creds off an unencrypted disk file") more completely than the runbook intended, by accident rather than design.
 
 **ENTSO-E rotation deferred — a decision, not an omission.** The Transparency Platform's own news feed records a Web API service disruption on 01/09, a migration to new infrastructure on 08/09, that migration **rolled back** the same day, and "progress on restoring Transparency Platform service" still in flight on 09/09. Against that, the runbook rates `ENTSOE_API_TOKEN` **Low**: free, read-only, and — unlike the EIA key — **never committed to git history**. It existed only in the `.env.local` that is now gone, so there is no evidence of exposure at all. The live token is demonstrably healthy: 53 of 54 ENTSO-E zones plus all 8 Norway zones read `live` in both sweeps, and the build log shows the ENTSO-E loader succeeding (94.9 kB). The one exception, `north-macedonia-wind`, fails upstream — `B19 returned zero data`, not an auth error — and was already degraded before this work. Regeneration is irreversible and kills the working token on the spot, and the 2026-06-17 incident was itself ENTSO-E dropping a token server-side, so handing a working credential back to a platform mid-restoration is the wrong trade this week. **Revisit once ENTSO-E declares the migration complete.**
 
@@ -1718,6 +1752,8 @@ curtailment. Of 459 regions:
   redispatch), Colombia (XM `VertEner`), Brazil-NE (ONS constrained-off), Ireland (EirGrid dispatch-down),
   Chile (CEN reductions), CAISO (OASIS `SLD_REN_CURTAIL`), Uruguay (ADME), ERCOT-native (HDL−GEN), the
   AEMO **state** aggregates, and India-Maharashtra (MSLDC). Measured numerator, no honest denominator.
+  (Correction, 2026-09-29: ERCOT-native is a disabled probe with no region among the 459, and it has never
+  produced data; see the ERCOT-native entry at the top.)
 - **22 region ids have both**, and only those show a share.
 
 **The 22.** The 10 Japanese OCCTO area CSVs (12 ids) publish 太陽光/風力発電実績 (measured generation)
@@ -1778,7 +1814,7 @@ not the tail of a UI change. **No tier moved**, `scripts/ci/golden/tier-counts.j
   pulls ENTSO-E A75 per TSO purely to weight the wind/solar split; ERCOT-native reads `GEN` inside
   `HDL − GEN`; Brazil-NE reads `val_geracaoreferencia` but skips unconstrained rows, so its sum would be a
   constrained-intervals-only denominator. Each could reach `measured-independent` with loader work and an
-  upstream-semantics check.
+  upstream-semantics check. (2026-09-29: not ERCOT-native, which serves no region; see the correction above.)
 - The AEMO **state** aggregates measure curtailment but would need a generation denominator covering the
   whole state, not just the 241 units in `AEMO_UNIT_MAP`. Deliberately left without a share.
 - Refresh the Japanese snapshots and re-baseline `ci:magnitude-golden` for the seasonal drop.
@@ -2341,7 +2377,7 @@ Also cleaned this session: 16 merged remote branches + 4 session branches delete
 - **Region pages — the three things deliberately left out (2026-09-06).** (a) **No link from the dashboard.** Nothing on `/` points at `/regions` or `/region/<id>`; the surfaces are reachable only by URL and via `sitemap.xml`. `src/index.md` was being rewritten in parallel when they shipped, so the hotspot rows were left alone — wiring a hotspot row to `./region/<id>` and adding a "Provenance and validation" link to `src/components/region-tooltip.js` are the two obvious follow-ups. (b) **No `<link rel="canonical">` or per-page `<meta name="description">`.** Front-matter `head` *replaces* the config `head` (Framework's `getHtml`), which would drop the no-FOUC theme boot script, so per-page meta needs `head` in `observablehq.config.ts` to become a `({path}) => string` function. Worth doing before these URLs are cited. (c) **Region ids are now citable URLs.** `/region/<id>` is public and ids do get renamed here — `india-north` and `japan` already have — so a rename now breaks an external link. That needs a redirect policy; `redirects` in `vercel.json` is the cheap version.
 - **🔁 Refactor session in flight (2026-06-17) — full ledger + next steps in `docs/research/2026-06-17-refactor-session-handoff.md`.** Lighter-deps: #230 (react-dom) merged; #233 (@vercel/analytics+react) ready. Page dedup: #234 extracts `finalizeRegionData` (and makes embed's integrity check non-fatal). Globe split Step 1: #235 (`globe-geo.ts` pure helpers); plan in `docs/research/2026-06-17-globe-split-plan.md`.
 - ✅ **`embed/globe.md` region drift — RESOLVED 2026-09-06** (see the 2026-09-06 entry at the top). The embed was indeed broken in production, but not for the reason this bullet predicted: the integrity check has been non-fatal since #234, and the visible break was a missing comma introduced on 2026-08-21. Drift is now closed by exact `regionData` parity with `src/index.md`, enforced by `tests/globe-drift.test.ts`. **Still outstanding from the hand-off doc:** the shared `buildRegionData()` extraction, and replacing the positional `Promise.all` destructuring in both pages with a name-keyed map — the pattern that caused the 3-month silent region-swap described in the 2026-09-06 entry.
-- **⚠️ Rotate leaked/at-risk secrets (audit SEC-1/2/3, confirmed live 2026-06-16).** **SEC-1 done 2026-09-10** — `EIA_API_KEY` rotated and verified live in production across all 34 EIA regions; the leaked key is unused but **not revoked** (EIA has no self-serve revocation — email EIA Open Data support to kill it). **ENTSO-E deferred 2026-09-10** while the Transparency Platform finishes the infrastructure migration it rolled back on 08/09; that token rates Low and was never in git history. **Still outstanding: the ERCOT username/password/key and the DeepSeek key.** None were committed to history, and they are no longer in `.env.local` (which did not survive the 2026-09-10 checkout move), but ERCOT ×3 remain in Vercel Production and should still be rotated at `apiexplorer.ercot.com`. Severity ranking + per-secret rotation steps + history-scrub procedure: `docs/ops/secret-rotation-runbook.md`; placeholder template: `.env.example`. The optional git-history scrub is still undone.
+- **⚠️ Rotate leaked/at-risk secrets (audit SEC-1/2/3, confirmed live 2026-06-16).** **SEC-1 done 2026-09-10** — `EIA_API_KEY` rotated and verified live in production across all 34 EIA regions; the leaked key is unused but **not revoked** (EIA has no self-serve revocation — email EIA Open Data support to kill it). **ENTSO-E deferred 2026-09-10** while the Transparency Platform finishes the infrastructure migration it rolled back on 08/09; that token rates Low and was never in git history. **Still outstanding: the ERCOT username/password/key and the DeepSeek key.** None were committed to history, and they are no longer in `.env.local` (which did not survive the 2026-09-10 checkout move), but ERCOT ×3 remain in Vercel Production and should still be rotated at `apiexplorer.ercot.com`. (2026-09-29: since #1150 no build reads them; if native ERCOT is not coming back, delete them from Vercel instead. See the ERCOT-native entry at the top.) Severity ranking + per-secret rotation steps + history-scrub procedure: `docs/ops/secret-rotation-runbook.md`; placeholder template: `.env.example`. The optional git-history scrub is still undone.
 - **Colombia data-spine — next steps + open decisions:** see the handoff `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md`. Tracks: (A) hardening — backfill history, weekly prev-month refresh, retire Britta, object-storage sync; (B) siting — coordinate crosswalk, pick curtailment signal, write Spec 3; (C) trivial batch — flare expansion, bad-conversions gate (needs 80%/100% decision), EIA fixture test. **Security: rotate the abed login password** (exposed in the 2026-06-07 transcript; SSH is key-based so it won't lock the agent out).
 - **Recalibrate north-macedonia-solar anchor** — current 0.02 TWh/yr static (IRENA RCS 2025, 833 MW end-2024 basis) is a known underestimate; NMK hit ~1.2 GW by end-2025 with solar already moving power-exchange prices. Revisit if a machine-readable MEPSO/exchange curtailment source appears. (serbia-solar 0.007 TWh/yr is fine — curtailment genuinely negligible at 241–318 MW per USEA 2022.)
 - **1 stash left for review** (`stash@{0}`, formerly `{5}`: `chore/paper-post-council-edits` — a `docs/paper/03-data-records.md` rewrite, −69/+25). The other 5 (snapshot/tally churn from already-shipped branches + a superseded `src/style.css` tweak) were dropped 2026-06-16. Review and apply-or-drop the paper stash when convenient.

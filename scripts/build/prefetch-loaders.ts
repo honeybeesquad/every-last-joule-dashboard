@@ -1,8 +1,8 @@
 #!/usr/bin/env tsx
 /**
- * Run every Observable data loader under src/data/ concurrently and hand the
- * results to Framework's cache, so `observable build` finds them fresh and
- * skips its own execution.
+ * Run the Observable data loaders under src/data/ that the site reads,
+ * concurrently, and hand the results to Framework's cache, so
+ * `observable build` finds them fresh and skips its own execution.
  *
  * WHY: Framework 1.13 runs data loaders one at a time. On 2026-09-10 a
  * successful production build spent 14.7 min in loaders whose durations summed
@@ -15,9 +15,9 @@
  * loader name so Vercel logs stay readable. A loader that exits non-zero or
  * exceeds the hard cap writes nothing — Framework will then run it itself,
  * serially, and fail the build exactly as it does today. This script never
- * fails the build on its own. Like Framework, it runs only the loaders whose
- * file a page or module references (scripts/lib/referenced-loaders.ts): the
- * rest would only add their network calls and failures to the build log.
+ * fails the build on its own. Like Framework, it skips loaders the site does
+ * not read (scripts/lib/referenced-loaders.ts), and deletes their cache files;
+ * if it cannot tell which those are, it runs every loader.
  *
  * KNOBS (env):
  *   LOADER_CONCURRENCY      parallel loaders           default 8
@@ -29,10 +29,10 @@
  */
 import { spawn } from "node:child_process";
 import { createWriteStream } from "node:fs";
-import { mkdir, readdir, rename, stat, unlink } from "node:fs/promises";
+import { mkdir, rename, stat, unlink } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { mapWithConcurrency } from "../../src/lib/concurrency.js";
-import { readPageSources, referencedFiles } from "../lib/referenced-loaders.js";
+import { listLoaders, readSiteSources, selectLoaders, type Loader } from "../lib/referenced-loaders.js";
 
 const ROOT = process.cwd();
 const SRC = join(ROOT, "src");
@@ -57,19 +57,7 @@ interface Result {
   bytes: number;
 }
 
-/** `x.json.ts` → target `data/x.json`. Only Framework-recognised loaders. */
-async function listLoaders(): Promise<Array<{ file: string; name: string; target: string }>> {
-  const entries = await readdir(DATA_DIR);
-  return entries
-    .filter((f) => /\.[a-z0-9]+\.(ts|js|mjs)$/.test(f))
-    .map((f) => {
-      const target = f.replace(/\.(ts|js|mjs)$/, "");
-      return { file: join(DATA_DIR, f), name: target.replace(/\.[a-z0-9]+$/, ""), target };
-    })
-    .sort((a, b) => a.name.localeCompare(b.name));
-}
-
-function runLoader(loader: { file: string; name: string; target: string }): Promise<Result> {
+function runLoader(loader: Loader): Promise<Result> {
   return new Promise(async (resolve) => {
     const outPath = join(CACHE_DIR, loader.target);
     const tmpPath = `${outPath}.${process.pid}.tmp`;
@@ -133,21 +121,17 @@ async function main(): Promise<void> {
     console.error("prefetch-loaders: SKIP_PREFETCH=1, leaving loaders to observable build");
     return;
   }
-  const referenced = referencedFiles(readPageSources(SRC));
-  const all = await listLoaders();
-  const loaders = all.filter((l) => referenced.has(l.target));
-  const unread = all.filter((l) => !referenced.has(l.target));
+  const { run: loaders, skip, fallback } = selectLoaders(listLoaders(DATA_DIR), () => readSiteSources(ROOT));
   const t0 = Date.now();
   console.error(
     `prefetch-loaders: ${loaders.length} loaders, ${CONCURRENCY} at a time, ` +
-      `deadline ${DEADLINE_MS / 1000}s, hard cap ${HARD_CAP_MS / 1000}s → ${relative(ROOT, CACHE_DIR)}`,
+      `deadline ${DEADLINE_MS / 1000}s, hard cap ${HARD_CAP_MS / 1000}s → ${relative(ROOT, CACHE_DIR)}` +
+      (skip.length ? `; skipping ${skip.length} that no page reads: ${skip.map((l) => l.name).join(", ")}` : ""),
   );
-  if (unread.length) {
-    console.error(
-      `prefetch-loaders: not running ${unread.length} loader(s) that no page reads, as observable build does not: ` +
-        unread.map((l) => l.name).join(", "),
-    );
-  }
+  if (fallback) console.error(`prefetch-loaders: running every loader, because ${fallback}`);
+  // If a page does read a skipped loader after all, Framework must run it
+  // fresh rather than find an older run's output in the cache.
+  await Promise.all(skip.map((l) => unlink(join(CACHE_DIR, l.target)).catch(() => {})));
   const results = await mapWithConcurrency(loaders, CONCURRENCY, runLoader);
   const wall = Date.now() - t0;
   const sum = results.reduce((s, r) => s + r.ms, 0);
