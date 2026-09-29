@@ -1,6 +1,6 @@
 # Validation — Ghana (`ghana`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** GHA
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** Ember Ghana 2024 (GRIDCo TSO; Akosombo hydro + PV)
+- **Source:** No curtailment series collected; grid present, waste unpublished. Its former 0.2 TWh/yr anchor (Ember Ghana 2024) was 1.2× Ghana's 2024 solar generation of 0.17 TWh (Our World in Data, from Ember and the Energy Institute), so it was dropped on 2026-09-29.
 - **Source URL:** [https://www.gridcogh.com/](https://www.gridcogh.com/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

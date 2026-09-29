@@ -23,9 +23,12 @@ import {
   searchHaystack,
 } from "../src/lib/region-filter";
 import {
+  MARKER_TIER_GLOSS,
+  TIER_GLOSS,
   uncertaintyBandCaveat,
   uncertaintyBandPercent,
 } from "../src/lib/region-labels";
+import { TSO_GRID_MARKER_IDS } from "../src/lib/tso-grid-markers";
 
 const ROOT = join(__dirname, "..");
 const DOCS = join(ROOT, VALIDATION_DOC_DIR);
@@ -156,6 +159,22 @@ describe("escapeHtml", () => {
     expect(escapeHtml(`<a href="x">O'Neil & co</a>`)).toBe(
       "&lt;a href=&quot;x&quot;&gt;O&#39;Neil &amp; co&lt;/a&gt;",
     );
+  });
+});
+
+describe("grid marker pages", () => {
+  it("say there is no waste figure instead of describing a modelled anchor and envelope", () => {
+    // ghana became a marker on 2026-09-29; kauai has been one since 2026-09-20.
+    for (const id of ["ghana", "kauai"]) {
+      expect(TSO_GRID_MARKER_IDS.has(id)).toBe(true);
+      const html = renderRegionPage(id);
+      expect(html).toContain(escapeHtml(MARKER_TIER_GLOSS));
+      expect(html).not.toContain(escapeHtml(TIER_GLOSS.estimated));
+      expect(html).not.toContain("of peak GW");
+    }
+    const modelled = renderRegionPage("algeria");
+    expect(modelled).toContain(escapeHtml(TIER_GLOSS.estimated));
+    expect(modelled).toContain("of peak GW");
   });
 });
 

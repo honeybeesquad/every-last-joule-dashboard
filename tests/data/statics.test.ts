@@ -59,7 +59,9 @@ describe("static regions", () => {
     // off statics onto ENTSO/EIA unpublished loaders. 135 − 6 = 129.
     // 2026-09-20: OC SENI unpublished generation moved dominican-republic +
     // dominican-republic-wind off statics. 129 − 2 = 127.
-    expect(Object.keys(data).length).toBe(127);
+    // 2026-09-29: 17 anchors at or above the country's recorded generation of
+    // their fuel moved to tso-grid-markers (waste unpublished). 127 − 17 = 110.
+    expect(Object.keys(data).length).toBe(110);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -102,7 +104,8 @@ describe("static regions", () => {
     // 2026-06-18: flare purge removed 37 flare statics from the research pool. 176 − 37 = 139.
     // 2026-09-20: removed 6 canonical statics (austria/tva/malta/lithuania/latvia/albania). 139 − 6 = 133.
     // 2026-09-20: dominican-republic + dominican-republic-wind moved to OC loader. 133 − 2 = 131.
-    expect(Object.keys(researchData).length).toBe(131);
+    // 2026-09-29: 17 anchors moved to tso-grid-markers (waste unpublished). 131 − 17 = 114.
+    expect(Object.keys(researchData).length).toBe(114);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
@@ -118,12 +121,12 @@ describe("static regions", () => {
       "hawaii-island",
       "russia-murmansk-wind",
       // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27).
-      "guatemala",
+      // guatemala → tso-grid-markers (2026-09-29: anchor at or above national generation)
       "el-salvador",
-      "nicaragua",
+      // nicaragua → tso-grid-markers (2026-09-29: anchor at or above national generation)
       "costa-rica",
       "panama",
-      "guatemala-siepac",
+      // guatemala-siepac → tso-grid-markers (2026-09-29: anchor at or above national generation)
       "cuba",
       "jamaica",
       "barbados",
@@ -134,22 +137,22 @@ describe("static regions", () => {
       // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27).
       "algeria",
       "angola",
-      "benin",
-      "botswana",
+      // benin → tso-grid-markers (2026-09-29: anchor at or above national generation)
+      // botswana → tso-grid-markers (2026-09-29: anchor at or above national generation)
       "burkina-faso",
       "cabo-verde",
       "cameroon",
       "congo-drc",
-      "cote-divoire",
-      "eswatini",
+      // cote-divoire → tso-grid-markers (2026-09-29: anchor at or above national generation)
+      // eswatini → tso-grid-markers (2026-09-29: anchor at or above national generation)
       "gabon",
-      "ghana",
+      // ghana → tso-grid-markers (2026-09-29: anchor at or above national generation)
       "madagascar",
       "malawi",
       "mauritania",
       "mauritius",
       "mozambique",
-      "nigeria",
+      // nigeria → tso-grid-markers (2026-09-29: anchor at or above national generation)
       "rwanda",
       "senegal",
       "tanzania",
@@ -168,9 +171,9 @@ describe("static regions", () => {
       "haiti",
       "kyrgyzstan",
       "lebanon",
-      "libya",
+      // libya → tso-grid-markers (2026-09-29: anchor at or above national generation)
       "mali",
-      "niger",
+      // niger → tso-grid-markers (2026-09-29: anchor at or above national generation)
       "north-korea",
       "singapore",
       "syria",

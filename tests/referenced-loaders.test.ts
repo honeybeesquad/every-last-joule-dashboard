@@ -136,8 +136,8 @@ describe("the site's own loaders", () => {
     expect(attached.filter((file) => !prefetched.has(file))).toEqual([]);
   });
 
-  it("skips only the loaders no page reads: the disabled ERCOT probe and the unwired Nigeria loader", () => {
-    expect(selection.skip.map((l) => l.target)).toEqual(["ercot-native.json", "nigeria.json"]);
+  it("skips only the loader no page reads: the disabled ERCOT probe", () => {
+    expect(selection.skip.map((l) => l.target)).toEqual(["ercot-native.json"]);
   });
 
   it("keeps no loader alive by a mention alone: each one it prefetches is attached somewhere", () => {

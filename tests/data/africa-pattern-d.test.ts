@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { REGIONS } from "../../src/lib/regions";
 import { buildAllStatics } from "../../src/data/statics.json";
+import { TSO_GRID_MARKERS, buildTsoGridMarkers } from "../../src/data/tso-grid-markers.json";
 
 /**
  * Phase-2.7 Pattern-D — Africa bulk-add coverage test.
@@ -58,6 +59,15 @@ const NEW_AFRICA_IDS = [
   "zambia",
   "zimbabwe",
 ] as const;
+
+/**
+ * 2026-09-29: six of these anchors were at or above the country's recorded
+ * solar generation (scripts/lib/statics-anchor-check.ts), so their waste was
+ * dropped and they became tso-grid-markers with waste unpublished. The
+ * statics checks below cover the rest.
+ */
+const MARKER_IDS = new Set(TSO_GRID_MARKERS.map((m) => m.id));
+const STATIC_AFRICA_IDS = NEW_AFRICA_IDS.filter((id) => !MARKER_IDS.has(id));
 
 const SKIPPED_AUDIT_IDS = [] as const;
 
@@ -135,9 +145,9 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     }
   });
 
-  it("each new region has a matching STATIC_REGIONS entry with positive annualTWh and valid kind", () => {
+  it("each new region still in statics has a matching STATIC_REGIONS entry with positive annualTWh and valid kind", () => {
     const statics = buildAllStatics();
-    for (const id of NEW_AFRICA_IDS) {
+    for (const id of STATIC_AFRICA_IDS) {
       const built = statics[id];
       expect(built, `missing STATIC_REGIONS entry ${id}`).toBeDefined();
       // peakGW > 0 implies annualTWh > 0 (flat 24/7 = annualTWh*1000/8760).
@@ -155,7 +165,7 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
 
   it("solar-kind STATIC_REGIONS rows produce a non-flat diurnal profile peaking inside [0, 24]", () => {
     const statics = buildAllStatics();
-    const solarIds = NEW_AFRICA_IDS.filter((id) => {
+    const solarIds = STATIC_AFRICA_IDS.filter((id) => {
       const region = REGIONS.find((r) => r.id === id)!;
       return region.kind === "solar";
     });
@@ -172,7 +182,7 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
 
   it("wind-kind STATIC_REGIONS rows produce a profile (Mauritania)", () => {
     const statics = buildAllStatics();
-    const windIds = NEW_AFRICA_IDS.filter((id) => {
+    const windIds = STATIC_AFRICA_IDS.filter((id) => {
       const region = REGIONS.find((r) => r.id === id)!;
       return region.kind === "wind";
     });
@@ -184,7 +194,7 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     }
   });
 
-  it("aggregate annual anchor across the 26 new rows is ~5.2 TWh per the audit", () => {
+  it("aggregate annual anchor across the rows still in statics is ~4.4 TWh", () => {
     // 0.4+0.2+0.05+0.05+0.1+0.05+0.1+0.5+0.1+0.05+0.05+0.2+0.05+0.05+0.1+
     // 0.05+0.3+0.5+0.05+0.3+0.5+0.05+0.4+0.2+0.5+0.3 = 5.2 TWh.
     // Nigeria revised 7.0→0.5 TWh in Wave-5 (2026-04-30): the 7 TWh composite
@@ -195,13 +205,16 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     // seasonal entries carry a seasonal factor so this approximation is
     // ±20% — none of the Africa batch uses hydro-seasonal, so the sum is
     // exact except for floating-point error).
+    // 2026-09-29: benin 0.05, botswana 0.05, cote-divoire 0.1, eswatini 0.05,
+    // ghana 0.2 and nigeria 0.5 dropped as at or above national solar
+    // generation. The 32 listed ids summed to ~5.37; the 26 left sum to 4.42.
     const statics = buildAllStatics();
     let annualSum = 0;
-    for (const id of NEW_AFRICA_IDS) {
+    for (const id of STATIC_AFRICA_IDS) {
       annualSum += statics[id].totalTWh * (365 / 30);
     }
-    expect(annualSum).toBeGreaterThan(4.9);
-    expect(annualSum).toBeLessThan(5.5);
+    expect(annualSum).toBeGreaterThan(4.3);
+    expect(annualSum).toBeLessThan(4.55);
   });
 
   it("all new region ids are kebab-case and unique within REGIONS", () => {
@@ -218,6 +231,9 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     // with a diurnal solar profile (peakHourUtc 11, Nigeria at 8.5°E).
     // The Niger Delta flare component is noted in the source but is a separate
     // flat-baseload signal not captured in this T3-static entry.
+    // 2026-09-29: that 0.5 TWh/yr was 3.8× Nigeria's recorded 2024 solar
+    // generation, so it was dropped. Nigeria is now an unpublished grid marker
+    // whose label names the dropped Ember + TCN anchor.
     const nigeria = REGIONS.find((r) => r.id === "nigeria");
     expect(nigeria).toBeDefined();
     expect(nigeria?.kind).toBe("solar");
@@ -226,6 +242,19 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     expect(nigeria?.lon).toBe(8.5);
     expect(nigeria?.source).toMatch(/Ember/);
     expect(nigeria?.source).toMatch(/TCN/);
+  });
+
+  it("the six anchors dropped on 2026-09-29 are served as unpublished grid markers", () => {
+    expect(NEW_AFRICA_IDS.filter((id) => MARKER_IDS.has(id))).toEqual([
+      "benin", "botswana", "cote-divoire", "eswatini", "ghana", "nigeria",
+    ]);
+    const statics = buildAllStatics();
+    const markers = buildTsoGridMarkers();
+    for (const id of NEW_AFRICA_IDS.filter((id) => MARKER_IDS.has(id))) {
+      expect(statics[id], `${id} still in statics`).toBeUndefined();
+      expect(markers[id].wasteStatus).toBe("unpublished");
+      expect(markers[id].totalTWh).toBe(0);
+    }
   });
 
   it("does NOT add the 5 existing African T3 statics again (egypt/ethiopia/kenya/morocco/namibia)", () => {
