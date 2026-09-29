@@ -63,7 +63,11 @@ hard cap 300s` (run 36504999233). That line reads the same whether `LOADER_DEADL
 is unset or 0, nothing in the repo sets it, and the Vercel connector here cannot list the
 project's variables. If it is unset, production builds do what they did before. If the
 first build after the merge logs "no deadline", it is 0 in Vercel, and loaders there
-have run without a deadline all along.
+have run without a deadline all along. *29 Sep, later:* it is not 0. Production run
+36572293601's 13:02 build logged `[entsoe] live fetch failed after 180.1s: live fetch
+exceeded 180s deadline`, which `withFallback` prints only when a 180 s deadline fires, so
+production's loaders ran with one and the "all along" case is ruled out (see the step 3b
+entry's first day).
 
 **Not changed.** No data file, `regions.ts` entry or tier. `withFallback`'s deadline
 handling is unchanged except for blank and out-of-range values.
