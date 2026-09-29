@@ -15,7 +15,9 @@
  * loader name so Vercel logs stay readable. A loader that exits non-zero or
  * exceeds the hard cap writes nothing — Framework will then run it itself,
  * serially, and fail the build exactly as it does today. This script never
- * fails the build on its own.
+ * fails the build on its own. Like Framework, it runs only the loaders whose
+ * file a page or module references (scripts/lib/referenced-loaders.ts): the
+ * rest would only add their network calls and failures to the build log.
  *
  * KNOBS (env):
  *   LOADER_CONCURRENCY      parallel loaders           default 8
@@ -30,6 +32,7 @@ import { createWriteStream } from "node:fs";
 import { mkdir, readdir, rename, stat, unlink } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { mapWithConcurrency } from "../../src/lib/concurrency.js";
+import { readPageSources, referencedFiles } from "../lib/referenced-loaders.js";
 
 const ROOT = process.cwd();
 const SRC = join(ROOT, "src");
@@ -130,12 +133,21 @@ async function main(): Promise<void> {
     console.error("prefetch-loaders: SKIP_PREFETCH=1, leaving loaders to observable build");
     return;
   }
-  const loaders = await listLoaders();
+  const referenced = referencedFiles(readPageSources(SRC));
+  const all = await listLoaders();
+  const loaders = all.filter((l) => referenced.has(l.target));
+  const unread = all.filter((l) => !referenced.has(l.target));
   const t0 = Date.now();
   console.error(
     `prefetch-loaders: ${loaders.length} loaders, ${CONCURRENCY} at a time, ` +
       `deadline ${DEADLINE_MS / 1000}s, hard cap ${HARD_CAP_MS / 1000}s → ${relative(ROOT, CACHE_DIR)}`,
   );
+  if (unread.length) {
+    console.error(
+      `prefetch-loaders: not running ${unread.length} loader(s) that no page reads, as observable build does not: ` +
+        unread.map((l) => l.name).join(", "),
+    );
+  }
   const results = await mapWithConcurrency(loaders, CONCURRENCY, runLoader);
   const wall = Date.now() - t0;
   const sum = results.reduce((s, r) => s + r.ms, 0);
