@@ -237,7 +237,7 @@ Argentina,ARG,wind,relay-tso,argentina,unpublished,argentina,Relay CSV / geobloc
 Uruguay,URY,wind,live-tso,,legacy-unspecified,uruguay,Existing live waste or Path-B generation×rate.
 Paraguay,PRY,hydro,not-collecting,statics,unpublished,paraguay,Country/T3 stub — Ember/IRENA is not TSO collection.
 Colombia,COL,hydro,live-tso,,legacy-unspecified,colombia,Existing live waste or Path-B generation×rate.
-Colombia Wind,COL,wind,not-collecting,statics,unpublished,colombia-wind,Country/T3 stub — Ember/IRENA is not TSO collection.
+Colombia Wind,COL,wind,no-public-series,tso-grid-markers,unpublished,colombia-wind,Grid present; no public ops series wired.
 Colombia Solar,COL,solar,not-collecting,statics,unpublished,colombia-solar,Country/T3 stub — Ember/IRENA is not TSO collection.
 Mexico Solar,MEX,solar,relay-tso,mexico,unpublished,mexico-solar,Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones.
 Mexico Wind,MEX,wind,relay-tso,mexico,unpublished,mexico-wind,Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones.
@@ -289,9 +289,9 @@ Brunei,BRN,solar,not-collecting,statics,unpublished,brunei,Country/T3 stub — E
 Haiti,HTI,solar,not-collecting,statics,unpublished,haiti,Country/T3 stub — Ember/IRENA is not TSO collection.
 Kyrgyzstan,KGZ,hydro,not-collecting,statics,unpublished,kyrgyzstan,Country/T3 stub — Ember/IRENA is not TSO collection.
 Lebanon,LBN,solar,not-collecting,statics,unpublished,lebanon,Country/T3 stub — Ember/IRENA is not TSO collection.
-Libya,LBY,solar,not-collecting,statics,unpublished,libya,Country/T3 stub — Ember/IRENA is not TSO collection.
+Libya,LBY,solar,no-public-series,tso-grid-markers,unpublished,libya,Grid present; no public ops series wired.
 Mali,MLI,solar,not-collecting,statics,unpublished,mali,Country/T3 stub — Ember/IRENA is not TSO collection.
-Niger,NER,solar,not-collecting,statics,unpublished,niger,Country/T3 stub — Ember/IRENA is not TSO collection.
+Niger,NER,solar,no-public-series,tso-grid-markers,unpublished,niger,Grid present; no public ops series wired.
 North Korea,PRK,solar,not-collecting,statics,unpublished,north-korea,Country/T3 stub — Ember/IRENA is not TSO collection.
 Singapore,SGP,solar,not-collecting,statics,unpublished,singapore,Country/T3 stub — Ember/IRENA is not TSO collection.
 Syria,SYR,solar,not-collecting,statics,unpublished,syria,Country/T3 stub — Ember/IRENA is not TSO collection.
@@ -317,7 +317,7 @@ Papua New Guinea,PNG,hydro,not-collecting,statics,unpublished,papua-new-guinea,C
 Solomon Islands,SLB,solar,not-collecting,statics,unpublished,solomon-islands,Country/T3 stub — Ember/IRENA is not TSO collection.
 Sierra Leone,SLE,hydro,not-collecting,statics,unpublished,sierra-leone,Country/T3 stub — Ember/IRENA is not TSO collection.
 Somalia,SOM,solar,not-collecting,statics,unpublished,somalia,Country/T3 stub — Ember/IRENA is not TSO collection.
-South Sudan,SSD,solar,not-collecting,statics,unpublished,south-sudan,Country/T3 stub — Ember/IRENA is not TSO collection.
+South Sudan,SSD,solar,no-public-series,tso-grid-markers,unpublished,south-sudan,Grid present; no public ops series wired.
 São Tomé & Príncipe,STP,solar,not-collecting,statics,unpublished,sao-tome,Country/T3 stub — Ember/IRENA is not TSO collection.
 Seychelles,SYC,solar,not-collecting,statics,unpublished,seychelles,Country/T3 stub — Ember/IRENA is not TSO collection.
 Chad,TCD,solar,not-collecting,statics,unpublished,chad,Country/T3 stub — Ember/IRENA is not TSO collection.
@@ -344,11 +344,11 @@ Palau,PLW,solar,not-collecting,statics,unpublished,palau,Country/T3 stub — Emb
 Tonga,TON,solar,not-collecting,statics,unpublished,tonga,Country/T3 stub — Ember/IRENA is not TSO collection.
 Tuvalu,TUV,solar,not-collecting,statics,unpublished,tuvalu,Country/T3 stub — Ember/IRENA is not TSO collection.
 Sri Lanka,LKA,mixed,not-collecting,statics,unpublished,sri-lanka,Country/T3 stub — Ember/IRENA is not TSO collection.
-Sudan,SDN,solar,not-collecting,statics,unpublished,sudan,Country/T3 stub — Ember/IRENA is not TSO collection.
-Venezuela,VEN,wind,not-collecting,statics,unpublished,venezuela,Country/T3 stub — Ember/IRENA is not TSO collection.
-Laos,LAO,solar,not-collecting,statics,unpublished,laos,Country/T3 stub — Ember/IRENA is not TSO collection.
+Sudan,SDN,solar,no-public-series,tso-grid-markers,unpublished,sudan,Grid present; no public ops series wired.
+Venezuela,VEN,wind,no-public-series,tso-grid-markers,unpublished,venezuela,Grid present; no public ops series wired.
+Laos,LAO,solar,no-public-series,tso-grid-markers,unpublished,laos,Grid present; no public ops series wired.
 Cambodia,KHM,solar,not-collecting,statics,unpublished,cambodia,Country/T3 stub — Ember/IRENA is not TSO collection.
-Myanmar,MMR,solar,not-collecting,statics,unpublished,myanmar,Country/T3 stub — Ember/IRENA is not TSO collection.
+Myanmar,MMR,solar,no-public-series,tso-grid-markers,unpublished,myanmar,Grid present; no public ops series wired.
 Honduras,HND,solar,not-collecting,statics,unpublished,honduras,Country/T3 stub — Ember/IRENA is not TSO collection.
 Jeju (S. Korea),KOR,wind,not-collecting,statics,unpublished,jeju,Country/T3 stub — Ember/IRENA is not TSO collection.
 Western Australia Solar (SWIS),AUS,solar,live-tso,,legacy-unspecified,wa-swis-solar,Existing live waste or Path-B generation×rate.
@@ -405,12 +405,12 @@ Austria Solar,AUT,solar,live-tso,entsoe,unpublished,austria-solar,ENTSO-E A75 ge
 Russia (Murmansk),RUS,wind,not-collecting,statics,legacy-unspecified,russia-murmansk-wind,T2 annual waste anchor. Not hourly TSO collection.
 TVA Wind,USA,wind,live-tso,eia-vre-bas,unpublished,tva-wind,EIA-930 generation; BA publishes no curtailment rate.
 TVA Solar,USA,solar,live-tso,eia-vre-bas,unpublished,tva-solar,EIA-930 generation; BA publishes no curtailment rate.
-Guatemala,GTM,solar,not-collecting,statics,unpublished,guatemala,Country/T3 stub — Ember/IRENA is not TSO collection.
+Guatemala,GTM,solar,no-public-series,tso-grid-markers,unpublished,guatemala,Grid present; no public ops series wired.
 El Salvador,SLV,solar,not-collecting,statics,unpublished,el-salvador,Country/T3 stub — Ember/IRENA is not TSO collection.
-Nicaragua,NIC,solar,not-collecting,statics,unpublished,nicaragua,Country/T3 stub — Ember/IRENA is not TSO collection.
+Nicaragua,NIC,solar,no-public-series,tso-grid-markers,unpublished,nicaragua,Grid present; no public ops series wired.
 Costa Rica,CRI,hydro,not-collecting,statics,unpublished,costa-rica,Country/T3 stub — Ember/IRENA is not TSO collection.
 Panama,PAN,solar,not-collecting,statics,unpublished,panama,Country/T3 stub — Ember/IRENA is not TSO collection.
-Central America (SIEPAC),GTM,solar,not-collecting,statics,unpublished,guatemala-siepac,Country/T3 stub — Ember/IRENA is not TSO collection.
+Central America (SIEPAC),GTM,solar,no-public-series,tso-grid-markers,unpublished,guatemala-siepac,Grid present; no public ops series wired.
 Cuba,CUB,mixed,not-collecting,statics,unpublished,cuba,Country/T3 stub — Ember/IRENA is not TSO collection.
 Dominican Republic,DOM,mixed,live-tso,dominican,unpublished,dominican-republic,TSO generation collected; waste unpublished.
 Dominican Republic Wind,DOM,wind,live-tso,dominican,unpublished,dominican-republic-wind,TSO generation collected; waste unpublished.
@@ -421,22 +421,22 @@ Ecuador,ECU,hydro,not-collecting,statics,unpublished,ecuador,Country/T3 stub —
 French Guiana,GUF,solar,not-collecting,statics,unpublished,french-guiana,Country/T3 stub — Ember/IRENA is not TSO collection.
 Algeria,DZA,solar,not-collecting,statics,unpublished,algeria,Country/T3 stub — Ember/IRENA is not TSO collection.
 Angola,AGO,solar,not-collecting,statics,unpublished,angola,Country/T3 stub — Ember/IRENA is not TSO collection.
-Benin,BEN,solar,not-collecting,statics,unpublished,benin,Country/T3 stub — Ember/IRENA is not TSO collection.
-Botswana,BWA,solar,not-collecting,statics,unpublished,botswana,Country/T3 stub — Ember/IRENA is not TSO collection.
+Benin,BEN,solar,no-public-series,tso-grid-markers,unpublished,benin,Grid present; no public ops series wired.
+Botswana,BWA,solar,no-public-series,tso-grid-markers,unpublished,botswana,Grid present; no public ops series wired.
 Burkina Faso,BFA,solar,not-collecting,statics,unpublished,burkina-faso,Country/T3 stub — Ember/IRENA is not TSO collection.
 Cabo Verde,CPV,solar,not-collecting,statics,unpublished,cabo-verde,Country/T3 stub — Ember/IRENA is not TSO collection.
 Cameroon,CMR,hydro,not-collecting,statics,unpublished,cameroon,Country/T3 stub — Ember/IRENA is not TSO collection.
 DR Congo,COD,hydro,not-collecting,statics,unpublished,congo-drc,Country/T3 stub — Ember/IRENA is not TSO collection.
-Cote d'Ivoire,CIV,solar,not-collecting,statics,unpublished,cote-divoire,Country/T3 stub — Ember/IRENA is not TSO collection.
-Eswatini,SWZ,solar,not-collecting,statics,unpublished,eswatini,Country/T3 stub — Ember/IRENA is not TSO collection.
+Cote d'Ivoire,CIV,solar,no-public-series,tso-grid-markers,unpublished,cote-divoire,Grid present; no public ops series wired.
+Eswatini,SWZ,solar,no-public-series,tso-grid-markers,unpublished,eswatini,Grid present; no public ops series wired.
 Gabon,GAB,hydro,not-collecting,statics,unpublished,gabon,Country/T3 stub — Ember/IRENA is not TSO collection.
-Ghana,GHA,solar,not-collecting,statics,unpublished,ghana,Country/T3 stub — Ember/IRENA is not TSO collection.
+Ghana,GHA,solar,no-public-series,tso-grid-markers,unpublished,ghana,Grid present; no public ops series wired.
 Madagascar,MDG,hydro,not-collecting,statics,unpublished,madagascar,Country/T3 stub — Ember/IRENA is not TSO collection.
 Malawi,MWI,hydro,not-collecting,statics,unpublished,malawi,Country/T3 stub — Ember/IRENA is not TSO collection.
 Mauritania,MRT,wind,not-collecting,statics,unpublished,mauritania,Country/T3 stub — Ember/IRENA is not TSO collection.
 Mauritius,MUS,solar,not-collecting,statics,unpublished,mauritius,Country/T3 stub — Ember/IRENA is not TSO collection.
 Mozambique,MOZ,hydro,not-collecting,statics,unpublished,mozambique,Country/T3 stub — Ember/IRENA is not TSO collection.
-Nigeria,NGA,solar,not-collecting,statics,unpublished,nigeria,Country/T3 stub — Ember/IRENA is not TSO collection.
+Nigeria,NGA,solar,no-public-series,tso-grid-markers,unpublished,nigeria,Grid present; no public ops series wired.
 Rwanda,RWA,mixed,not-collecting,statics,unpublished,rwanda,Country/T3 stub — Ember/IRENA is not TSO collection.
 Senegal,SEN,solar,not-collecting,statics,unpublished,senegal,Country/T3 stub — Ember/IRENA is not TSO collection.
 Tanzania,TZA,hydro,not-collecting,statics,unpublished,tanzania,Country/T3 stub — Ember/IRENA is not TSO collection.

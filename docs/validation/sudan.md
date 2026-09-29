@@ -1,6 +1,6 @@
 # Validation — Sudan (`sudan`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** SDN
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** IRENA RE Statistics 2024 (utility solar deployed; ongoing conflict introduces data uncertainty); modelled curtailment ~2% per regional default
+- **Source:** No curtailment series collected; grid present, waste unpublished. Its former 0.2 TWh/yr anchor (IRENA RE Statistics 2024) was 1.2× Sudan's 2024 solar generation of 0.16 TWh (Our World in Data, from Ember and the Energy Institute), so it was dropped on 2026-09-29.
 - **Source URL:** [https://www.irena.org/Data/Energy-Profiles](https://www.irena.org/Data/Energy-Profiles)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

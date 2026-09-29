@@ -1,6 +1,6 @@
 # Validation — Botswana (`botswana`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** BWA
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** IRENA Botswana 2024 (BPC; SAPP member; Mmadinare PV)
+- **Source:** No curtailment series collected; grid present, waste unpublished. Its former 0.05 TWh/yr anchor (IRENA Botswana 2024, held at a 0.05 TWh/yr coverage floor) was 5× Botswana's 2024 solar generation of 0.01 TWh (Our World in Data, from Ember and the Energy Institute), so it was dropped on 2026-09-29.
 - **Source URL:** [https://www.bpc.bw/](https://www.bpc.bw/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
