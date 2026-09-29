@@ -4,7 +4,9 @@
  * scheduled deploy hook whenever main's head was an automation commit, which
  * froze production on the 24 Sep 04:42 UTC build for three days while every
  * workflow reported success. These tests replay that sequence in a throwaway
- * repo with pinned commit times.
+ * repo with pinned commit times. They also pin which paths a fresh push may
+ * skip: the step's `*.md` exclusion matched at any depth, so #979's push of
+ * one page (src/methodology.md) was skipped. The path cases come from #1106.
  */
 
 import { execFileSync, spawnSync } from "node:child_process";
@@ -30,13 +32,20 @@ function git(args: string[], env: Record<string, string> = {}): string {
   }).trim();
 }
 
-function commit(name: string, when: number, file: string, content: string, message: string): void {
-  mkdirSync(join(repo, file, ".."), { recursive: true });
-  writeFileSync(join(repo, file), content);
+/** Write each file, commit at `when`, and return the commit's SHA. */
+function commitFiles(when: number, files: Record<string, string>, message: string): string {
+  for (const [file, content] of Object.entries(files)) {
+    mkdirSync(join(repo, file, ".."), { recursive: true });
+    writeFileSync(join(repo, file), content);
+  }
   git(["add", "-A"]);
   const date = `@${when} +0000`;
   git(["commit", "-q", "-m", message], { GIT_AUTHOR_DATE: date, GIT_COMMITTER_DATE: date });
-  sha[name] = git(["rev-parse", "HEAD"]);
+  return git(["rev-parse", "HEAD"]);
+}
+
+function commit(name: string, when: number, file: string, content: string, message: string): void {
+  sha[name] = commitFiles(when, { [file]: content }, message);
   at[name] = when;
 }
 
@@ -57,6 +66,24 @@ function decide(opts: { prev?: string; cur?: string; msg?: string; now: number }
   if (r.status === 1) return "build";
   throw new Error(`vercel-ignore.sh exited ${r.status}: ${r.stderr}`);
 }
+
+/**
+ * A fresh push on top of the feature commit, with one commit per list of
+ * paths, each editing those files. Returns the ignore step's decision.
+ */
+function freshPush(...commits: (readonly string[])[]): "build" | "skip" {
+  git(["checkout", "-q", "--detach", sha.feature]);
+  let when = at.feature;
+  let msg = "";
+  for (const paths of commits) {
+    when += 60;
+    msg = `edit ${paths.join(", ")}`;
+    commitFiles(when, Object.fromEntries(paths.map((path) => [path, `${when}\n`])), msg);
+  }
+  return decide({ prev: sha.feature, cur: git(["rev-parse", "HEAD"]), msg, now: when + 40 });
+}
+
+const label = (paths: readonly string[]) => [paths.join(" + "), paths] as const;
 
 const HISTORY_MSG = "chore(history): append daily snapshot (#1110)";
 
@@ -93,6 +120,50 @@ describe("vercel-ignore.sh", () => {
 
   it("builds a fresh push that changes code", () => {
     expect(decide({ prev: sha.feature, cur: sha.code, msg: "fix(ui): something", now: at.code + 40 })).toBe("build");
+  });
+
+  describe("which paths a fresh push may skip", () => {
+    it.each(
+      [
+        ["STATUS.md"],
+        ["README.md", "CLAUDE.md"],
+        ["docs/notes.md"],
+        ["docs/methodology/uncertainty.md", "STATUS.md"],
+        // What the history and relay automation commit.
+        ["data/historical/curtailment_history.parquet"],
+        ["data/historical/colombia-vertimientos-daily.csv", "data/historical/abed-heartbeat.json"],
+        ["data/history/2026/09/24.parquet"],
+        ["data/snapshots/last-good/caiso.json"],
+        ["data/relay/colombia.csv"],
+      ].map(label),
+    )("skips %s", (_label, paths) => {
+      expect(freshPush(paths)).toBe("skip");
+    });
+
+    it.each(
+      [
+        // Site pages: Framework builds every Markdown file under src/.
+        ["src/methodology.md"],
+        ["src/index.md"],
+        ["src/embed/globe.md"],
+        // /region/<id> embeds its validation record, and the sitemap reads it.
+        ["docs/validation/cyprus.md"],
+        // A page or a record alongside prose that alone would skip.
+        ["STATUS.md", "src/about.md"],
+        ["docs/methodology/uncertainty.md", "src/methodology.md"],
+        ["docs/validation/cyprus.md", "STATUS.md"],
+        // Markdown outside the repo root and docs/: an extra build costs less than a stale page.
+        ["dataset/README.md"],
+      ].map(label),
+    )("builds %s", (_label, paths) => {
+      expect(freshPush(paths)).toBe("build");
+    });
+
+    it("judges a push of several commits by everything they change", () => {
+      expect(freshPush(["docs/notes.md"], ["STATUS.md"])).toBe("skip");
+      expect(freshPush(["docs/notes.md"], ["src/methodology.md"])).toBe("build");
+      expect(freshPush(["src/methodology.md"], ["data/historical/curtailment_history.parquet"])).toBe("build");
+    });
   });
 
   it("builds the scheduled deploy hook when main's head is an automation commit (the 24–27 Sep freeze)", () => {
