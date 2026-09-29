@@ -323,30 +323,47 @@ describe.concurrent("the hard cap", () => {
     expect(await gone(pid)).toBe(true);
   });
 
-  it("stops waiting, and kills them, when a process the loader started keeps its pipes open", async ({ expect }) => {
-    // A child of the loader that ignores SIGTERM and holds stdout and stderr:
-    // 'close' never comes, so the run must give up after the grace period,
-    // and the SIGKILL to the loader's process group reaches the child too.
-    const pidFile = scratch("pid");
-    const orphan = `const fs = require("fs"); process.on("SIGTERM", () => {});
+  /** A loader that starts a child which ignores SIGTERM and shares its stdout and stderr. */
+  const parentOf = (name: string, pidFile: string, childOptions: string) => {
+    const child = `const fs = require("fs"); process.on("SIGTERM", () => {});
       fs.writeFileSync(${JSON.stringify(`${pidFile}.part`)}, String(process.pid));
       fs.renameSync(${JSON.stringify(`${pidFile}.part`)}, ${JSON.stringify(pidFile)});
       setTimeout(() => {}, 20_000);`;
-    const pending = run(
-      loader(
-        "parent",
-        `import { spawn } from "node:child_process";
-         spawn(process.execPath, ["-e", ${JSON.stringify(orphan)}], { stdio: "inherit" });
-         ${STAY}`,
-      ),
-      { hardCapMs: 1_000, killGraceMs: 300 },
+    return loader(
+      name,
+      `import { spawn } from "node:child_process";
+       spawn(process.execPath, ["-e", ${JSON.stringify(child)}], ${childOptions});
+       ${STAY}`,
     );
-    const orphanPid = await pidFrom(pidFile);
+  };
+
+  it("kills the processes a loader started along with it", async ({ expect }) => {
+    // The child survives SIGTERM and holds the pipes; the SIGKILL to the
+    // loader's process group after the grace period reaches it too.
+    const pidFile = scratch("pid");
+    const pending = run(parentOf("parent", pidFile, '{ stdio: "inherit" }'), { hardCapMs: 1_000, killGraceMs: 300 });
+    const childPid = await pidFrom(pidFile);
     const { result, lines, elapsed } = await pending;
     expect(result.status).toBe("killed");
     expect(lines.at(-1)).toBe("[parent] not finished 0.3s after SIGTERM; sent SIGKILL and stopped waiting");
     expect(elapsed).toBeLessThan(5_000);
-    expect(await gone(orphanPid)).toBe(true);
+    expect(await gone(childPid)).toBe(true);
+  });
+
+  it("stops waiting when a process outside the loader's group keeps its pipes open", async ({ expect }) => {
+    // A detached child is in a group of its own, which no signal of the
+    // prefetch reaches, so 'close' never comes: the run must give up.
+    const pidFile = scratch("pid");
+    const pending = run(parentOf("escapee", pidFile, '{ stdio: "inherit", detached: true }'), {
+      hardCapMs: 1_000,
+      killGraceMs: 300,
+    });
+    const childPid = await pidFrom(pidFile);
+    const { result, lines, elapsed } = await pending;
+    expect(result.status).toBe("killed");
+    expect(lines.at(-1)).toBe("[escapee] not finished 0.3s after SIGTERM; sent SIGKILL and stopped waiting");
+    expect(elapsed).toBeLessThan(5_000);
+    expect(alive(childPid)).toBe(true);
   });
 
   it("through tsx, reaches the node process that runs the loader", async ({ expect }) => {

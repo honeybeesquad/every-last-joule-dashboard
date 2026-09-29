@@ -49,7 +49,7 @@ Running it against scratch projects on Node 24.20 and 26.8 showed four problems:
   `LOADER_HARD_CAP_MS` goes through it too, so 0 turns the cap off.
 - `withFallback` writes its last-good snapshot to a temporary file and renames it, so a
   loader stopped mid-write cannot leave a truncated snapshot for the next fallback.
-- `tests/prefetch-runner.test.ts` (new, 44 tests) covers each failure with real child
+- `tests/prefetch-runner.test.ts` (new, 45 tests) covers each failure with real child
   processes and injected faults, the hard cap through real tsx, the knobs, and the
   script run against scratch projects; three of its script tests fail against the old
   script. `tests/resilient.test.ts` gains two tests that hold `withFallback` to the
