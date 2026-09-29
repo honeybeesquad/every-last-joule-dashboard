@@ -43,10 +43,10 @@ quote a TWh/yr figure in `regions.ts`, and all four match what is served.
 
 **`nigeria.json.ts`: deleted, with the owner's approval (29 Sep).** #1151
 marked it as an unwired probe. **#1152**, from `claude/nigeria-probe-delete`,
-deleted it, with `tests/data/nigeria.test.ts`,
-which only exercised its fallback, and
-`scripts/backfill/nigeria/backfill_nigeria.py`, which scraped the same page
-and never produced output. Why:
+deleted it, with `tests/data/nigeria.test.ts`, which only exercised its
+fallback, and `scripts/backfill/nigeria/backfill_nigeria.py`, which scraped
+the same page, is referenced by nothing, and left no output in the repo.
+Why:
 - It never served data: no page or registry row read `data/nigeria.json`
   after #267 added it.
 - Its scrape failed. niggrid served the form, but answered the probe's
@@ -65,9 +65,11 @@ and never produced output. Why:
 
 The prefetch now finds 142 loaders and skips only ercot-native, as
 `tests/referenced-loaders.test.ts` now expects. Git keeps all three files.
-niggrid does publish hourly generation, so a Nigeria generation grid (waste
+niggrid's Generation Profile page is meant to give hourly generation by
+plant, though no one here has seen that table: the one postback tried on
+29 Sep got the site-error page. A Nigeria generation grid (waste
 unpublished, as the TSO-grid work did for the Dominican Republic) would be a
-new loader, not a revival of this one.
+new loader built on that page once it answers, not a revival of this one.
 
 **Follow-ups (need the owner).**
 - **The 0.5 TWh/yr anchor looks too high.** It is about four times Nigeria's
