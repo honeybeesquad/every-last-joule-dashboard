@@ -71,7 +71,7 @@ export const PROVENANCE_GLOSS: Record<SourceProvenance, string> = {
  * does not exist. The region page shows these instead.
  */
 export const MARKER_TIER_GLOSS =
-  "No waste figure. No curtailment series is collected for this grid and none is modelled, so the globe shows it as a grid marker without a waste pillar.";
+  "No waste figure: no curtailment series is collected for this grid and none is modelled, so the globe shows it as a grid marker without a waste pillar. The T3 label only records that nothing here is measured.";
 export const MARKER_UNCERTAINTY_GLOSS = "No waste figure, so there is no envelope to publish.";
 export const MARKER_PROVENANCE_GLOSS = "There is no verified upstream link, and no waste figure is served for this grid.";
 
