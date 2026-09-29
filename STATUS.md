@@ -70,12 +70,16 @@ run sent Healthchecks a success ping.
     build, marked `degraded`.
   - **Follow-up:** every loader that fell back to its last-good snapshot that day read one months old: ENTSO-E's
     from 17 Jun, Norway's from 13 May, the US loaders' from 25 Apr to 16 Jun. No automation commits these
-    snapshots; a build writes fresh ones only into its own checkout, which Vercel discards. Refreshing them is a
-    data PR of its own: they are also `ci:magnitude-golden`'s input, and a refresh was tried and reverted over
-    seasonal swings (the Japanese-share entry; see also "Gate hazard confirmed"). Not every fallback reads a
-    snapshot: `eia-vre-bas` answers a failed EIA-930 balancing authority with an empty record (15 at 17:03), and
-    CAISO falls back to an EIA proxy. Separately, the ENTSO-E loader's whole-loader fallback could keep the 18
-    zones its snapshot lacks, as its per-zone fallback already does.
+    snapshots; a build writes fresh ones only into its own checkout, which Vercel discards. Keep them fresh, so a
+    slow feed does not serve months-old data. All but AZPS's, IPCO's, PACE's and PACW's (tier `anchored`, which
+    the gate skips) are also `ci:magnitude-golden`'s input, and a refresh of the Japanese snapshots was tried and
+    reverted over seasonal swings (the "Curtailment share + units toggle" entry, 2026-09-06), so a refresh needs
+    the gate's baseline in the same change. Separately, the ENTSO-E loader's whole-loader fallback could keep the
+    18 zones its snapshot lacks, as its per-zone fallback already does.
+  - **In every run's log, dip or not:** `eia-vre-bas` found no wind or solar rows for SPA ("feed appears retired
+    or renamed") and published two empty records for it, `cached` with a fresh `lastSuccessAt`, as it does for
+    every balancing authority whose fetch fails (16 at 17:03). A feed that looks dead reads as current: a
+    follow-up. `ercot-native` got HTTP 400 and read its 25 Apr snapshot, and CAISO fell back to its EIA proxy.
 - **Vercel made no git build of `main`.** Its deployment list, read through the Vercel connector, holds one
   production deployment per refresh, each created within seconds of its deploy step starting, with the commit it
   deployed. None was created by the merge push or the six history pushes themselves, and the history branch's
