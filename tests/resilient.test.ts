@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { withFallback } from "../src/lib/resilient";
@@ -314,6 +314,41 @@ describe("withFallback loader deadline", () => {
     const { fetchText } = await import("../src/lib/fetch");
     await withFallback<RegionData>(name, () => new Promise(() => {}), { now: () => now, deadlineMs: 20 });
     await expect(fetchText("http://127.0.0.1:9/never", { retries: 0, timeoutMs: 5000 })).rejects.toThrow(/deadline/);
+  });
+
+  // The build's prefetch reads LOADER_DEADLINE_MS with the same parser
+  // (src/lib/loader-deadline.ts) and logs what it finds; these hold
+  // withFallback to that reading.
+  it("reads its deadline from LOADER_DEADLINE_MS", async () => {
+    vi.stubEnv("LOADER_DEADLINE_MS", "20");
+    try {
+      const t0 = Date.now();
+      const result = await withFallback<RegionData>(name, () => new Promise(() => {}), { now: () => now });
+      expect(Date.now() - t0).toBeLessThan(2000);
+      expect(result.sourceStatus).toBe("cached");
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+
+  it("takes LOADER_DEADLINE_MS=0 as no deadline at all", async () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    vi.stubEnv("LOADER_DEADLINE_MS", "0");
+    try {
+      // Live after 200 s; the default deadline would have served the snapshot at 180 s.
+      const pending = withFallback<RegionData>(
+        name,
+        () => new Promise((resolve) => setTimeout(() => resolve({ ...cached, totalTWh: 5 }), 200_000)),
+        { now: () => now },
+      );
+      await vi.advanceTimersByTimeAsync(200_000);
+      const result = await pending;
+      expect(result.sourceStatus).toBe("live");
+      expect(result.totalTWh).toBe(5);
+    } finally {
+      vi.useRealTimers();
+      vi.unstubAllEnvs();
+    }
   });
 
   it("rethrows the deadline error when there is no snapshot to fall back to", async () => {
