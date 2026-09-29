@@ -103,6 +103,12 @@ describe("data-refresh.yml runs on pushes to main, but not on the automation's o
   it("keeps one deploy at a time", () => {
     expect(WORKFLOW).toMatch(/\nconcurrency:\n {2}group: data-refresh\n {2}cancel-in-progress: false\n/);
   });
+
+  it("is the only thing that deploys main: Vercel's git builds for main are off", () => {
+    // Otherwise every merge builds twice, and the two race for production.
+    const vercel = JSON.parse(readFileSync(join(__dirname, "..", "vercel.json"), "utf8"));
+    expect(vercel.git?.deploymentEnabled?.main).toBe(false);
+  });
 });
 
 describe("data-refresh.yml and the Healthchecks.io alarm", () => {
