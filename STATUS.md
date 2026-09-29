@@ -56,8 +56,8 @@ run sent Healthchecks a success ping.
 - **No loop:** six history captures (#1156 to #1161) landed on `main`, and none started a refresh.
 - **Live region records,** in run order: 197 of 530, 193, 197, 141 of 512, 177, 197, all above the floor of 100.
   Three dips, each gone by the next build (the build logs and the history parquet):
-  - **08:04:** four regions `degraded`, AZPS and BPA solar and wind. The log the CLI returned starts after the data
-    loaders, so it does not say why.
+  - **08:04:** four regions `degraded`, AZPS and BPA solar and wind. The EIA API answered BPA's loader with HTTP
+    504 and timed out AZPS's, so both fell back to their last-good snapshots.
   - **13:02:** ENTSO-E was slow, and the pipeline's fallback decided what production served. Its requests timed out
     zone by zone, then the loader (`src/data/entsoe.json.ts`) hit `withFallback`'s 180 s deadline and fell back to
     `data/snapshots/last-good/entsoe.json`. That snapshot holds 54 of the loader's 72 zones, every one last
@@ -68,8 +68,11 @@ run sent Healthchecks a success ping.
   - **17:03:** nine US loaders that read the EIA API gave up after 31 s and fell back to their last-good snapshots,
     so 20 regions (AZPS, BPA, ERCOT east and west, IPCO, ISO-NE rest, MISO, NYISO rest, PACE, PACW) stayed in the
     build, marked `degraded`.
-  - **Follow-up:** every ENTSO-E fallback, per zone or whole loader, reads that June snapshot. Refresh it, so a slow
-    ENTSO-E does not drop 18 zones and serve three-month-old data for the rest.
+  - **Follow-up:** every fallback that day served a committed last-good snapshot months old: ENTSO-E's from 17 Jun,
+    Norway's from 13 May, the US loaders' from 25 Apr to 16 Jun. No automation commits them; a build writes fresh
+    ones only into its own checkout, which Vercel discards. Keep them fresh, so a slow feed does not serve
+    months-old data. Separately, the ENTSO-E loader's whole-loader fallback could keep the 18 zones its snapshot
+    lacks, as its per-zone fallback already does.
 - **Vercel made no git build of `main`.** Its deployment list, read through the Vercel connector, holds one
   production deployment per refresh, each created within seconds of its deploy step starting, with the commit it
   deployed. None was created by the merge push or the six history pushes themselves, and the history branch's
