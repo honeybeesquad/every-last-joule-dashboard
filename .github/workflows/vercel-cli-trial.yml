@@ -25,7 +25,8 @@ on:
 
 # Its own group: sharing data-refresh's would let a trial replace a queued
 # refresh (GitHub keeps one pending run per group). A refresh whose build
-# queues behind a trial's on Vercel waits a few minutes; its wait allows 30.
+# queues behind a trial's on Vercel waits a few minutes; its deploy step
+# allows 35.
 concurrency:
   group: vercel-cli-trial
   cancel-in-progress: false

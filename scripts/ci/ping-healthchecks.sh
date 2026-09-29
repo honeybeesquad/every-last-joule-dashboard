@@ -21,8 +21,8 @@
 # within the check's period plus grace. That second path also covers what
 # this script cannot report: a run that never starts, a failed checkout.
 #
-# `outcome` reads JOB_STATUS (success, failure or cancelled), HOOK and WAIT
-# (the deploy hook and wait steps' outcomes), QUALITY (the freshness check
+# `outcome` reads JOB_STATUS (success, failure or cancelled), DEPLOY and WAIT
+# (the Vercel deploy and wait steps' outcomes), QUALITY (the freshness check
 # step's outcome), STALE and TITLE (its outputs) and REPORT (the report's
 # path). The script never fails the job: with no HC_PING_URL, or when
 # Healthchecks cannot be reached, it prints a note and exits 0.
@@ -88,22 +88,29 @@ case "${STALE:-}" in
     esac
     ;;
 esac
-outcomes="Steps: deploy hook: ${HOOK:-not run}; wait: ${WAIT:-not run}; freshness check: $check."
-# Once the hook step has run, its request may have reached Vercel even if the
-# step failed (a timeout after Vercel accepted it), so while no new build has
-# been seen, one may still go live.
-if [ -n "${HOOK:-}" ] && [ "${HOOK:-}" != skipped ] && [ "${WAIT:-}" != success ]; then
-  outcomes="$outcomes"$'\n'"Vercel may still build and put live the deployment the hook asked for."
+outcomes="Steps: deploy: ${DEPLOY:-not run}; wait: ${WAIT:-not run}; freshness check: $check."
+# A deploy step that failed or was cancelled may have stopped while Vercel was
+# still building (a timeout or a cancel while the CLI waited), and a
+# production build that finishes then may still take the domain. It may
+# equally have failed before any build (a missing or expired token) or because
+# the build failed. The log alone cannot tell these apart (loaders log fetch
+# failures in healthy builds too), but the deployment on Vercel can: the CLI
+# prints its Inspect link once the deployment exists. What production serves
+# is a question for the site, not a deployment's status: a Ready deployment
+# may never have got the domain (an alias error), or may have lost it to a
+# newer one. The footer's "Last refreshed" time is the live build's stamp.
+if [ "${DEPLOY:-}" = failure ] || [ "${DEPLOY:-}" = cancelled ]; then
+  outcomes="$outcomes"$'\n'"To see whether its build still may go live: open the Inspect link in the deploy step's log (none means no build started); Queued, Initializing or Building may, so look again when it finishes. To see what production serves now, read \"Last refreshed\" in everylastjoule.com's footer."
 fi
 if [ "$status" != success ]; then
   if [ "$status" = cancelled ]; then
     reason="The refresh was cancelled, by hand or by the job's time limit."
-  elif [ "${HOOK:-}" = failure ]; then
-    reason="The Vercel deploy hook failed."
-  elif [ "${HOOK:-}" != success ]; then
-    reason="The refresh failed before it reached the deploy hook."
+  elif [ "${DEPLOY:-}" = failure ]; then
+    reason="The Vercel deploy failed; the deploy step's log says why."
+  elif [ "${DEPLOY:-}" != success ]; then
+    reason="The refresh failed before it reached the deploy."
   elif [ "${WAIT:-}" = failure ]; then
-    reason="Vercel accepted the deploy hook, but the wait step failed: no new build went live in time, or the wait itself broke."
+    reason="Vercel reported the deploy live, but production did not serve the new build in time, or the wait itself broke."
   else
     reason="The refresh failed."
   fi

@@ -11,11 +11,14 @@
  *                      including when any data file stays unreadable after
  *                      one retry.
  *
- *   wait --after ISO   .github/workflows/data-refresh.yml, after the deploy
- *                      hook. Polls until production serves a build newer than
- *                      ISO; exits 1 on timeout. From 24 to 27 Sep 2026 Vercel
- *                      answered every hook with 201 and built nothing, and the
- *                      refresh job reported success each time.
+ *   wait --after ISO   .github/workflows/data-refresh.yml, after the deploy.
+ *                      Polls until production serves a build made after ISO,
+ *                      the moment the deploy started; exits 1 on timeout. The
+ *                      deploy step already waits for Vercel, so this confirms
+ *                      it from outside, as a visitor sees it. (From 24 to 27
+ *                      Sep 2026, before the CLI deploy, Vercel answered every
+ *                      deploy hook with 201 and built nothing, and the refresh
+ *                      job reported success each time.)
  *
  * Options: --base URL (default $ELJ_DASHBOARD_URL or https://everylastjoule.com),
  * --timeout-min N (wait, default 30), --interval-sec N (wait, default 45).
@@ -34,12 +37,6 @@ import {
 
 const REQUEST_TIMEOUT_MS = 20_000;
 const RETRY_PAUSE_MS = 3_000;
-/**
- * `wait` accepts a build that began up to this long before the hook: a push
- * build already running when the hook fired is just as fresh, and Vercel may
- * serve it instead of queueing a second one.
- */
-const WAIT_GRACE_MS = 15 * 60_000;
 
 function parseArgs(argv: string[]): { mode: string; opts: Record<string, string> } {
   const [mode = "", ...rest] = argv;
@@ -127,9 +124,11 @@ async function check(base: string, opts: Record<string, string>): Promise<number
 }
 
 async function wait(base: string, opts: Record<string, string>): Promise<number> {
-  const hookAt = Date.parse(opts.after ?? "");
-  if (!Number.isFinite(hookAt)) throw new Error("wait needs --after <ISO time>");
-  const after = hookAt - WAIT_GRACE_MS;
+  // Only a build made after the deploy started counts. The hook-era grace for
+  // a push build that raced the hook went with the hook: git builds for main
+  // are off, so every production build now comes from this workflow.
+  const after = Date.parse(opts.after ?? "");
+  if (!Number.isFinite(after)) throw new Error("wait needs --after <ISO time>");
   const timeoutMs = Number(opts["timeout-min"] ?? 30) * 60_000;
   const intervalMs = Number(opts["interval-sec"] ?? 45) * 1000;
   const deadline = Date.now() + timeoutMs;
@@ -143,7 +142,7 @@ async function wait(base: string, opts: Record<string, string>): Promise<number>
       const builtAt = await fetchBuiltAt(base, paths);
       if (builtAt !== null) {
         if (Date.parse(builtAt) > after) {
-          console.log(`Fresh build live: built ${builtAt}; the hook fired at ${new Date(hookAt).toISOString()}.`);
+          console.log(`Fresh build live: built ${builtAt}; the deploy started at ${new Date(after).toISOString()}.`);
           return 0;
         }
         console.log(`Production still serves the build from ${builtAt}; waiting.`);
@@ -163,9 +162,8 @@ async function wait(base: string, opts: Record<string, string>): Promise<number>
   }
 
   console.log(
-    `::error::No new build went live within ${timeoutMs / 60_000} min of the deploy hook. ` +
-      "Vercel accepted the hook, but the build was skipped (Ignored Build Step, scripts/build/vercel-ignore.sh), " +
-      "failed, or is stuck. Check Vercel → Deployments. Production keeps serving the previous build meanwhile.",
+    `::error::${base} did not serve a build made after ${new Date(after).toISOString()} within ${timeoutMs / 60_000} min. ` +
+      "Check Vercel → Deployments and the production domain's assignment. Production keeps serving the previous build meanwhile.",
   );
   return 1;
 }

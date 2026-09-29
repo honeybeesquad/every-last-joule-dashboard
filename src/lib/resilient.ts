@@ -1,22 +1,17 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, renameSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import type { RegionData, RegionTier, SourceStatus } from "./types.js";
 import { REGIONS } from "./regions.js";
 import { applyUncertainty } from "./uncertainty.js";
 import { stampSourceProvenance, sourceProvenanceForRegion } from "./source-provenance.js";
 import { abortInflightFetches } from "./fetch.js";
+import { loaderDeadlineMs } from "./loader-deadline.js";
 
 export const DEFAULT_STALENESS_THRESHOLD_HOURS = 24;
 
-/**
- * Wall-clock budget for one loader's live fetch. Past it, withFallback aborts
- * every in-flight request and serves the last-good snapshot — the deploy gets
- * a "cached" region instead of a dead build. 2026-09-10: ENTSO-E stalled and
- * its loader alone needed 109 min (126 s × 52 zones), so production builds
- * died at Vercel's 45-minute limit twice in one morning. Override per call
- * with `deadlineMs`, globally with LOADER_DEADLINE_MS; 0 disables.
- */
-export const DEFAULT_LOADER_DEADLINE_MS = 180_000;
+// The deadline's default and its LOADER_DEADLINE_MS parser live in
+// ./loader-deadline.ts, which the build's loader prefetch shares.
+export { DEFAULT_LOADER_DEADLINE_MS } from "./loader-deadline.js";
 
 export class LoaderDeadlineError extends Error {
   constructor(message: string) {
@@ -26,10 +21,7 @@ export class LoaderDeadlineError extends Error {
 }
 
 function deadlineFromEnv(): number {
-  const raw = process.env.LOADER_DEADLINE_MS;
-  if (raw === undefined || raw === "") return DEFAULT_LOADER_DEADLINE_MS;
-  const n = Number(raw);
-  return Number.isFinite(n) && n >= 0 ? n : DEFAULT_LOADER_DEADLINE_MS;
+  return loaderDeadlineMs(process.env.LOADER_DEADLINE_MS);
 }
 
 async function raceDeadline<T>(work: Promise<T>, deadlineMs: number, cacheName: string): Promise<T> {
@@ -310,10 +302,19 @@ export async function withFallback<T>(
     tagged = stampLive(tagged, now.toISOString());
     tagged = stampSourceProvenance(tagged);
 
+    // Whole or not at all: the build's prefetch can stop a loader mid-write,
+    // and a truncated snapshot would break the next run's fallback.
+    const tmpPath = `${cachePath}.${process.pid}.tmp`;
     try {
       mkdirSync(cacheDir, { recursive: true });
-      writeFileSync(cachePath, JSON.stringify(tagged));
+      writeFileSync(tmpPath, JSON.stringify(tagged));
+      renameSync(tmpPath, cachePath);
     } catch (writeErr) {
+      try {
+        rmSync(tmpPath, { force: true });
+      } catch {
+        // Left behind; the next successful write replaces the snapshot anyway.
+      }
       console.error(
         `[${cacheName}] snapshot write failed (non-fatal): ${(writeErr as Error).message}`,
       );
