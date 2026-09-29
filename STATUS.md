@@ -44,8 +44,8 @@ it cannot read the commit time, and it builds. `--skip-domain` kept the trial
 off everylastjoule.com, but Vercel pointed the project's team-scoped
 `*.vercel.app` address at it, which sits behind Vercel Authentication like
 every generated address. The comparison then failed before it read anything:
-`vercel curl` hands every flag it does not know to curl itself, `--token`
-included (CLI 60.1.3). **#1147** takes the token from `VERCEL_TOKEN` in the
+`vercel curl` hands every flag it does not know to curl itself, the token
+flag too (CLI 60.1.3). **#1147** takes the token from `VERCEL_TOKEN` in the
 environment, which the CLI reads, and pins the arguments in a test. Reading
 the trial through `vercel curl` uses the project's Protection Bypass for
 Automation secret, and creates one if the project has none.

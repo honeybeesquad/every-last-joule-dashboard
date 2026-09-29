@@ -9,8 +9,8 @@ describe("trialCurlArgs", () => {
   const separator = args.indexOf("--");
 
   it("never passes the token as a flag: vercel curl would hand it to curl", () => {
-    // The first trial run (29 Sep) failed with "curl: option --token: is
-    // unknown"; the CLI reads VERCEL_TOKEN from the environment instead.
+    // The first real run (36501200671, 29 Sep) failed because curl rejected
+    // the token flag; the CLI reads VERCEL_TOKEN from the environment instead.
     expect(args.some((a) => a.startsWith("--token") || a === "-t")).toBe(false);
   });
 

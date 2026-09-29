@@ -91,11 +91,12 @@ function keyedFeedsFromSource(): Set<string> {
 }
 
 /**
- * The `vercel curl` arguments for one trial read. No --token: `vercel curl`
- * hands every flag it does not know, --token included, to curl itself (CLI
- * 60.1.3; the first trial run failed on it), and the CLI reads VERCEL_TOKEN
- * from the environment. After `--`, curl's own flags: quiet unless something
- * fails, and an HTTP error fails the read instead of returning its page.
+ * The `vercel curl` arguments for one trial read. No token flag: `vercel curl`
+ * hands every flag it does not know to curl itself, the token flag too (CLI
+ * 60.1.3; the first real run, 36501200671, failed on it), and the CLI reads
+ * VERCEL_TOKEN from the environment. After `--`, curl's own flags: quiet
+ * unless something fails, and an HTTP error fails the read instead of
+ * returning its page.
  * With no bypass secret supplied, `vercel curl` uses the project's Protection
  * Bypass for Automation secret, and creates one if the project has none.
  */
