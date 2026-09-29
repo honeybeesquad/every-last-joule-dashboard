@@ -11,10 +11,11 @@ when #1134 rewrote the script; it is closed unmerged.
 
 **The bug.** `scripts/build/vercel-ignore.sh` (#967) skips a fresh push when
 every change is on its exclusion list. `':(exclude)*.md'` matched at any
-depth, because `*` in a git pathspec also matches `/`. So a push that changed
-only a page under `src/` was skipped, and the page waited for the next
-scheduled build: #979 (`src/methodology.md`, 2026-09-11). `':(exclude)docs'`
-also covered `docs/validation/`, which the build reads:
+depth, because `*` in a git pathspec also matches `/`, so a push that changed
+only a page under `src/` was skipped. That happened once: #979
+(`src/methodology.md`, 11 Sep) was "Canceled by Ignored Build Step", and its
+page went live 16 minutes later only because #983's push build carried #981's
+code change. `':(exclude)docs'` also covered `docs/validation/`, which the build reads:
 `src/region/[id].md.js` embeds each record in `/region/<id>`, and
 `src/sitemap.xml.js` reads it for `lastmod`. The code review of #1150 found
 the `*.md` half again.
@@ -26,7 +27,11 @@ changed. Markdown elsewhere now builds too (`dataset/`, `scripts/`,
 cost is an occasional extra build. Unchanged: deploy hooks and redeploys,
 automation commits (`data/historical/*`) and the shallow-clone fallback.
 `tests/vercel-ignore.test.ts` goes from 10 to 28 tests, of which 9 fail
-against the old script.
+against the old script. Comments only: the script's trade-off note now says
+that `data/historical` holds build inputs too (loader CSVs, and
+`history-trends.json` for `/history`), so a push that changes only those still
+waits for the next scheduled build. Step 4 of the refresh-pipeline plan no
+longer suggests the old pathspec for previews.
 
 **Replay.** Each of the 172 first-parent `main` commits since #967, run as a
 fresh push against its parent: the old script skips 131, the new one 129.

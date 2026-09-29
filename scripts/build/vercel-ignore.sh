@@ -25,10 +25,13 @@
 # (a push build that waited in Vercel's queue past the window) costs one
 # extra build, never a skipped refresh.
 #
-# Known trade-off: the Colombia loader reads data/historical/colombia-
-# vertimientos-daily.csv as its fallback when the XM API is empty, so a
-# relay-pull merge is picked up by the next scheduled rebuild (<= 3 h) rather
-# than immediately. Snapshot merges (last-good corpus) are likewise fallback-only.
+# Known trade-off: data/historical holds build inputs as well as the history
+# corpus. The Colombia loader reads colombia-vertimientos-daily.csv there as
+# its fallback when the XM API is empty, other loaders read their CSVs there,
+# and /history reads history-trends.json. So a relay-pull merge, or any push
+# that changes only data/historical, is picked up by the next scheduled
+# rebuild (<= 3 h) rather than immediately. Snapshot merges (last-good corpus)
+# are likewise fallback-only.
 set -u
 prev="${VERCEL_GIT_PREVIOUS_SHA:-}"
 cur="${VERCEL_GIT_COMMIT_SHA:-}"
@@ -56,7 +59,7 @@ fi
 # The Markdown exclusion has glob magic, so its `*` stops at `/` and only root
 # files (README.md, STATUS.md, ...) are excluded. Plain ':(exclude)*.md'
 # matched at any depth, so from #967 a push that changed only pages under src/
-# was skipped: #979 (src/methodology.md) waited for the next scheduled build.
+# was skipped, as #979's (src/methodology.md) was on 11 Sep.
 # docs/validation is the one part of docs/ the build reads: src/region/[id].md.js
 # embeds docs/validation/<id>.md in /region/<id>, and src/sitemap.xml.js reads
 # it for lastmod. A pathspec cannot re-include what an exclusion drops, so it
