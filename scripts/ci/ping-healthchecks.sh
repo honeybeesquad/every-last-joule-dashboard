@@ -91,15 +91,15 @@ esac
 outcomes="Steps: deploy: ${DEPLOY:-not run}; wait: ${WAIT:-not run}; freshness check: $check."
 # A deploy step that failed or was cancelled may have stopped while Vercel was
 # still building (a timeout or a cancel while the CLI waited), and a
-# production build goes live when it finishes. It may equally have failed
-# before any build (a missing or expired token) or because the build failed.
-# The log alone cannot tell these apart (loaders log fetch failures in healthy
-# builds too), but the deployment on Vercel can: the CLI prints its Inspect
-# link once the deployment exists. The rule covers every status, including a
-# Ready deployment whose production domain was never assigned (an alias
-# error) and one Vercel has Blocked.
+# production build that finishes then may still take the domain. It may
+# equally have failed before any build (a missing or expired token) or because
+# the build failed. The log alone cannot tell these apart (loaders log fetch
+# failures in healthy builds too), but the deployment on Vercel can: the CLI
+# prints its Inspect link once the deployment exists. A status alone is not
+# enough either: a Ready deployment may never have got the domain (an alias
+# error), or may have had it and lost it to a newer deployment.
 if [ "${DEPLOY:-}" = failure ] || [ "${DEPLOY:-}" = cancelled ]; then
-  outcomes="$outcomes"$'\n'"Whether a build may still go live: open the Inspect link in the deploy step's log (none means no build started). If everylastjoule.com is among its domains, it is live; if it is Queued, Initializing or Building, it goes live when it finishes; otherwise it will not go live by itself."
+  outcomes="$outcomes"$'\n'"To see whether its build went live or still may: open the Inspect link in the deploy step's log (none means no build started). Queued, Initializing or Building may still go live, so look again when it finishes. Otherwise it is live only if everylastjoule.com is among its domains; if not, it failed, or a newer deployment has since replaced it."
 fi
 if [ "$status" != success ]; then
   if [ "$status" = cancelled ]; then
