@@ -1,6 +1,6 @@
 import { REGIONS } from "./regions.js";
 import { EIA_VRE_BA_CONFIGS } from "../data/eia-vre-bas.json.js";
-import { TSO_GRID_MARKERS } from "../data/tso-grid-markers.json.js";
+import { TSO_GRID_MARKERS } from "./tso-grid-markers.js";
 
 export type CollectStatus =
   | "live-tso"
