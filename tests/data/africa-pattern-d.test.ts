@@ -235,8 +235,9 @@ describe("Phase-2.7 Pattern-D Africa bulk-add", () => {
     // 0.5 TWh/yr. Re-anchoring Nigeria means updating the prose too.
     const nigeria = REGIONS.find((r) => r.id === "nigeria");
     const served = buildAllStatics().nigeria;
-    const servedAnnualTWh = +(served.totalTWh * (365 / 30)).toFixed(3);
-    expect(nigeria?.source).toContain(`${servedAnnualTWh} TWh/yr`);
+    const servedAnnualTWh = served.totalTWh * (365 / 30);
+    const quotedTWhPerYr = [...(nigeria?.source ?? "").matchAll(/(\d+(?:\.\d+)?) TWh\/yr/g)].map((m) => Number(m[1]));
+    expect(quotedTWhPerYr).toContainEqual(expect.closeTo(servedAnnualTWh, 6));
     const citation = nigeria?.source.split(" (")[0] ?? "";
     expect(citation.length).toBeGreaterThan(0);
     expect(served.sourceNote).toContain(citation);

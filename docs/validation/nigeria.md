@@ -8,7 +8,7 @@ Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** NGA
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** Ember Nigeria 2024 + TCN Grid Stability Report 2024 (solar curtailment from TCN frequency-instability; Niger Delta gas flaring excluded). Typical solar profile scaled to a 0.5 TWh/yr anchor that covers daytime solar tripping only; no live feed.
+- **Source:** Ember Nigeria 2024 + TCN Grid Stability Report 2024 (solar curtailment from TCN frequency-instability; Niger Delta gas flaring excluded). Typical solar profile scaled to a 0.5 TWh/yr anchor that covers daytime solar tripping only; no live feed. Unverified: the anchor is about four times Nigeria's total 2024 solar generation of 0.13 TWh (Our World in Data, from Ember and the Energy Institute).
 - **Source URL:** [https://www.tcn.org.ng/](https://www.tcn.org.ng/)
 - **Loader:** [`statics.json.ts`](../../src/data/statics.json.ts) (the `nigeria` entry; `nigeria.json.ts` is an unwired probe that no page reads)
 - **Structural gap:** no
