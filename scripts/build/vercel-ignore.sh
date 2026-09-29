@@ -3,9 +3,10 @@
 #
 # Skips a PUSH of a commit whose only changes since the last deployment are
 # the automated corpus updates — data/historical (history parquet, relay CSVs,
-# heartbeat), data/snapshots, docs. Everything else builds, and above all the
-# scheduled deploy hook must build: it is the only thing that refreshes the
-# live data.
+# heartbeat), data/snapshots — and prose: docs/ and Markdown at the repo root.
+# Everything else builds, including the site pages under src/ and the
+# docs/validation records the region pages embed, and above all the scheduled
+# deploy hook must build: it is the only thing that refreshes the live data.
 #
 # 2026-09-24 → 27: the hook was being skipped. Vercel gives this step no signal
 # that a build came from a deploy hook, and VERCEL_GIT_PREVIOUS_SHA is the last
@@ -51,9 +52,19 @@ if [ "$age" -gt $(( window_min * 60 )) ]; then
 fi
 
 # A fresh push. Precise test when both commits are in the clone.
+#
+# The Markdown exclusion has glob magic, so its `*` stops at `/` and only root
+# files (README.md, STATUS.md, ...) are excluded. Plain ':(exclude)*.md'
+# matched at any depth, so from #967 a push that changed only pages under src/
+# was skipped: #979 (src/methodology.md) waited for the next scheduled build.
+# docs/validation is the one part of docs/ the build reads: src/region/[id].md.js
+# embeds docs/validation/<id>.md in /region/<id>, and src/sitemap.xml.js reads
+# it for lastmod. A pathspec cannot re-include what an exclusion drops, so it
+# has its own check.
 if git cat-file -e "$prev^{commit}" 2>/dev/null && git cat-file -e "$cur^{commit}" 2>/dev/null; then
+  if ! git diff --quiet "$prev" "$cur" -- docs/validation; then exit 1; fi
   if git diff --quiet "$prev" "$cur" -- . \
-      ':(exclude)data/historical' ':(exclude)data/history' ':(exclude)data/snapshots' ':(exclude)data/relay' ':(exclude)docs' ':(exclude)*.md'; then
+      ':(exclude)data/historical' ':(exclude)data/history' ':(exclude)data/snapshots' ':(exclude)data/relay' ':(exclude)docs' ':(exclude,glob)*.md'; then
     echo "vercel-ignore: fresh push with only history/snapshot/doc changes since $prev — skipping build"
     exit 0
   fi
