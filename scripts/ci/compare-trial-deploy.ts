@@ -8,8 +8,8 @@
  *   npx tsx scripts/ci/compare-trial-deploy.ts --trial <deployment-url>
  *
  * Deployment URLs sit behind Vercel Authentication, so the trial is read with
- * `vercel curl` (the Vercel CLI on PATH, VERCEL_TOKEN in the environment);
- * production is read directly. A trial read is retried once, a production
+ * `vercel curl` (the Vercel CLI on PATH, VERCEL_TOKEN in the environment;
+ * see trialCurlArgs); production is read directly. A trial read is retried once, a production
  * read once on a network error or 5xx, all within a 15-minute budget. The
  * keyed feeds are found in the source (scripts/lib/compare-deployments.ts).
  * Writes the comparison to stdout and the job summary. Exits 1 when the
@@ -90,10 +90,23 @@ function keyedFeedsFromSource(): Set<string> {
   return keyed;
 }
 
+/**
+ * The `vercel curl` arguments for one trial read. No --token: `vercel curl`
+ * hands every flag it does not know, --token included, to curl itself (CLI
+ * 60.1.3; the first trial run failed on it), and the CLI reads VERCEL_TOKEN
+ * from the environment. After `--`, curl's own flags: quiet unless something
+ * fails, and an HTTP error fails the read instead of returning its page.
+ * With no bypass secret supplied, `vercel curl` uses the project's Protection
+ * Bypass for Automation secret, and creates one if the project has none.
+ */
+export function trialCurlArgs(path: string, deployment: string): string[] {
+  return ["curl", path, "--deployment", deployment, "--yes", "--", "--silent", "--show-error", "--fail"];
+}
+
 function trialReader(deployment: string, token: string): Reader {
   return (path) =>
     new Promise((resolve, reject) => {
-      const child = spawn("vercel", ["curl", path, "--deployment", deployment, "--token", token, "--yes"], {
+      const child = spawn("vercel", trialCurlArgs(path, deployment), {
         stdio: ["ignore", "pipe", "pipe"],
       });
       let out = "";

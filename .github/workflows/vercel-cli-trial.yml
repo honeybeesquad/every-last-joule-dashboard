@@ -12,8 +12,13 @@ name: Vercel CLI build trial
 # never hands back, so a build in Actions (vercel pull, then --prebuilt)
 # would run without keys and fall back.
 #
-# Needs repo secret VERCEL_TOKEN. Changes nothing in production; the trial
-# deployment stays in Vercel's list, unassigned to any domain.
+# Needs repo secret VERCEL_TOKEN. Changes nothing a visitor sees:
+# --skip-domain keeps the trial off everylastjoule.com, though Vercel still
+# points its generated *.vercel.app addresses at it, the project's
+# team-scoped one included, and all of those sit behind Vercel
+# Authentication. Reading the trial with `vercel curl` uses the project's
+# Protection Bypass for Automation secret, and creates one if the project
+# has none (Vercel: Settings, Deployment Protection).
 
 on:
   workflow_dispatch: {}
