@@ -22,9 +22,10 @@ not.
 **Fix.**
 - `src/lib/regions.ts`: the `nigeria` source now gives `statics.json`'s
   citation (Ember Nigeria 2024 + TCN Grid Stability Report 2024), its typical
-  solar profile and its 0.5 TWh/yr anchor. It ends "Unverified: the anchor is
-  about four times Nigeria's total 2024 solar generation of 0.13 TWh", as the
-  Rajasthan label names its conflicting figure (#1011). `sourceUrl` is
+  solar profile and its 0.5 TWh/yr anchor, then says the anchor is unverified:
+  about four times Nigeria's total 2024 solar generation of 0.13 TWh (Our World
+  in Data, from Ember and the Energy Institute). The Rajasthan label names its
+  conflicting figure the same way (#1011). `sourceUrl` is
   `https://www.tcn.org.ng/` again, its value before #267.
 - `docs/validation/nigeria.md`: the Source and Source URL lines match
   `regions.ts`, checked against the generator's own parse, and the Loader
@@ -35,14 +36,15 @@ not.
 - `src/data/nigeria.json.ts`: a comment only, marking it an unwired probe
   whose 0.05 TWh/yr is not the dataset's figure.
 
-**Nothing else quotes the old text.** No golden file, gate, methodology page, paper or
-dataset file carries the old string or the 0.05 figure; `ci:docs-drift`
-compares only a doc's Tier line. Four other statics regions quote a TWh/yr
-figure in `regions.ts`, and all four match what is served.
+**Nothing else quotes the old text.** No golden file, gate, methodology page,
+paper or dataset file carries the old string or the 0.05 figure;
+`ci:docs-drift` compares only a doc's Tier line. Four other statics regions
+quote a TWh/yr figure in `regions.ts`, and all four match what is served.
 
 **`nigeria.json.ts`: proposed for deletion, the owner's call.** It stays for
-now, marked as unwired, and after #1150 no build runs it. The case for deleting it, with
-`tests/data/nigeria.test.ts`, which only exercises its fallback:
+now, marked as unwired, and after #1150 no build runs it. The case for
+deleting it, with `tests/data/nigeria.test.ts`, which only exercises its
+fallback:
 - It has never served data: no page or registry row has read
   `data/nigeria.json` since #267 added it.
 - Its scrape fails. niggrid serves the form, but answers the probe's postback
