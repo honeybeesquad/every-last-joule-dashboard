@@ -35,13 +35,13 @@ function number(text: string, re: RegExp, what: string): number {
 const stepLimit = (text: string) => number(text, /\n {8}timeout-minutes: (\d+)/, "step timeout-minutes");
 
 /**
- * The push trigger's paths-ignore patterns: every line of the list, so an
- * entry this reader cannot parse (a single-quoted negation, say) fails the
- * test instead of dropping out of it.
+ * The push trigger's `paths` patterns, in order: every line of the list, so an
+ * entry this reader cannot parse (a single-quoted one, say) fails the test
+ * instead of dropping out of it.
  */
-function pathsIgnore(): string[] {
-  const start = WORKFLOW.match(/\n {2}push:\n {4}branches: \[main\]\n {4}paths-ignore:\n/);
-  if (!start || start.index === undefined) throw new Error("data-refresh.yml: no push trigger on main with paths-ignore");
+function pathsFilter(): string[] {
+  const start = WORKFLOW.match(/\n {2}push:\n {4}branches: \[main\]\n {4}paths:\n/);
+  if (!start || start.index === undefined) throw new Error("data-refresh.yml: no push trigger on main with a paths list");
   const patterns: string[] = [];
   for (const line of WORKFLOW.slice(start.index + start[0].length).split("\n")) {
     const text = line.trim();
@@ -49,17 +49,18 @@ function pathsIgnore(): string[] {
     if (text === "" || text.startsWith("#")) continue;
     if (!line.startsWith("      ")) break; // the list ends where its indentation does
     const m = text.match(/^- "([^"]+)"$/);
-    if (!m) throw new Error(`data-refresh.yml: paths-ignore entries must be "double-quoted" for this test: ${text}`);
+    if (!m) throw new Error(`data-refresh.yml: paths entries must be "double-quoted" for this test: ${text}`);
     patterns.push(m[1]);
   }
   return patterns;
 }
 
 /**
- * A GitHub path filter as a RegExp, for the syntax paths-ignore uses here:
- * `*` matches anything but `/`, `**` anything, and `**\/` at the start of a
- * segment zero or more directories. GitHub's `?`, `+`, `[]` and `!` mean something else, so they
- * throw rather than match wrongly.
+ * A GitHub path pattern as a RegExp, for the syntax the trigger uses here: `*`
+ * matches anything but `/`, `**` anything, and `**\/` at the start of a
+ * segment zero or more directories. GitHub's `?`, `+` and `[]` mean something
+ * else, so they throw rather than match wrongly; a leading `!` is for
+ * `triggers` to handle.
  */
 function globToRegExp(glob: string): RegExp {
   if (/[?+[\]!]/.test(glob)) throw new Error(`globToRegExp does not handle ${glob}`);
@@ -80,7 +81,21 @@ function globToRegExp(glob: string): RegExp {
   return new RegExp(`^${re}$`);
 }
 
-const ignored = (path: string, patterns: string[]) => patterns.some((p) => globToRegExp(p).test(path));
+const matches = (path: string, glob: string) => globToRegExp(glob).test(path);
+
+/**
+ * Whether a push that changes only `path` runs the workflow, by GitHub's rule
+ * for an ordered `paths` list: the last pattern that matches decides, and one
+ * that starts with `!` excludes.
+ */
+function triggers(path: string, patterns: string[]): boolean {
+  let included = false;
+  for (const p of patterns) {
+    const negated = p.startsWith("!");
+    if (matches(path, negated ? p.slice(1) : p)) included = !negated;
+  }
+  return included;
+}
 
 describe("data-refresh.yml deploys through the Vercel CLI", () => {
   it("installs dependencies and the pinned CLI, then deploys", () => {
@@ -128,46 +143,67 @@ describe("data-refresh.yml deploys through the Vercel CLI", () => {
 
 describe("data-refresh.yml runs on pushes to main, but not on the automation's own", () => {
   it("ignores every path the history and relay workflows commit, so a capture cannot start another refresh", () => {
-    const patterns = pathsIgnore();
+    const patterns = pathsFilter();
     for (const file of ["history-append.yml", "colombia-relay-pull.yml"]) {
       const text = readFileSync(join(WORKFLOWS, file), "utf8");
       // Each `git add` with its continuation lines, and history-append's FILE="…".
       const commands = [...text.matchAll(/git add((?:[^\n]*\\\n)*[^\n]*)|FILE="([^"]+)"/g)].map((m) => m[1] ?? m[2]);
       const added = commands.flatMap((c) => c.match(/data\/[\w./-]+/g) ?? []);
       expect(added.length, `${file}: found no committed paths`).toBeGreaterThan(0);
-      for (const path of added) expect(ignored(path, patterns), `${file} commits ${path}`).toBe(true);
+      for (const path of added) expect(triggers(path, patterns), `${file} commits ${path}`).toBe(false);
     }
   });
 
-  it("still deploys a change to the site's own pages and code", () => {
-    const patterns = pathsIgnore();
-    for (const path of ["src/methodology.md", "src/index.md", "src/lib/regions.ts", "src/data/entsoe.json.ts", "vercel.json", "package-lock.json"]) {
-      expect(ignored(path, patterns), path).toBe(false);
+  it("still deploys a change to the site's pages, code and validation records", () => {
+    // docs/validation is the one part of docs/ the build reads: the region
+    // pages embed it (src/region/[id].md.js) and the sitemap reads it (#1153).
+    const patterns = pathsFilter();
+    for (const path of [
+      "src/methodology.md",
+      "src/index.md",
+      "src/lib/regions.ts",
+      "src/data/entsoe.json.ts",
+      "docs/validation/caiso.md",
+      "vercel.json",
+      "package-lock.json",
+    ]) {
+      expect(triggers(path, patterns), path).toBe(true);
     }
-    for (const path of ["STATUS.md", "docs/ops/abed-refresh-clock.md", "data/snapshots/last-good/ercot-native.json"]) {
-      expect(ignored(path, patterns), path).toBe(true);
+    for (const path of ["STATUS.md", "docs/ops/abed-refresh-clock.md", "docs/methodology/uncertainty.md", "data/snapshots/last-good/ercot-native.json"]) {
+      expect(triggers(path, patterns), path).toBe(false);
     }
   });
 
-  it("reads path filters the way GitHub does", () => {
+  it("reads an ordered paths list the way GitHub does", () => {
+    const list = ["**", "!docs/**", "docs/validation/**", "!*.md"];
+    expect(triggers("docs/validation/x.md", list)).toBe(true);
+    expect(triggers("docs/ops/x.md", list)).toBe(false);
+    expect(triggers("README.md", list)).toBe(false);
+    expect(triggers("src/a.md", list)).toBe(true);
+    expect(triggers("src/a.md", ["src/**", "!**.md"])).toBe(false);
+    expect(triggers("src/a.md", ["!**.md", "src/**"])).toBe(true);
+    expect(triggers("x.ts", ["!x.ts"])).toBe(false);
+  });
+
+  it("reads path patterns the way GitHub does", () => {
     // GitHub's filter cheat sheet: `*` stops at `/`, `**` does not, and `**/`
     // also matches no directory at all.
-    expect(ignored("src/index.md", ["*.md"])).toBe(false);
-    expect(ignored("src/index.md", ["src/*.md"])).toBe(true);
-    expect(ignored("src/pages/a.md", ["src/*.md"])).toBe(false);
-    expect(ignored("src/pages/a.md", ["src/**/*.md"])).toBe(true);
-    expect(ignored("src/pages/a.md", ["**.md"])).toBe(true);
-    expect(ignored("docs/README.md", ["docs/**/*.md"])).toBe(true);
-    expect(ignored("README.md", ["**/README.md"])).toBe(true);
-    expect(ignored("vercel.json", ["**/*.json"])).toBe(true);
-    expect(ignored("xREADME.md", ["**/README.md"])).toBe(false);
-    expect(ignored("docs/hello.md", ["**/docs/**"])).toBe(true);
-    expect(ignored("mydocs/a.md", ["**/docs/**"])).toBe(false);
-    expect(ignored("srcx.md", ["src**/x.md"])).toBe(false);
-    expect(ignored("src/a/x.md", ["src**/x.md"])).toBe(true);
-    expect(ignored("data/historical", ["data/historical/**"])).toBe(false);
+    expect(matches("src/index.md", "*.md")).toBe(false);
+    expect(matches("src/index.md", "src/*.md")).toBe(true);
+    expect(matches("src/pages/a.md", "src/*.md")).toBe(false);
+    expect(matches("src/pages/a.md", "src/**/*.md")).toBe(true);
+    expect(matches("src/pages/a.md", "**.md")).toBe(true);
+    expect(matches("docs/README.md", "docs/**/*.md")).toBe(true);
+    expect(matches("README.md", "**/README.md")).toBe(true);
+    expect(matches("vercel.json", "**/*.json")).toBe(true);
+    expect(matches("xREADME.md", "**/README.md")).toBe(false);
+    expect(matches("docs/hello.md", "**/docs/**")).toBe(true);
+    expect(matches("mydocs/a.md", "**/docs/**")).toBe(false);
+    expect(matches("srcx.md", "src**/x.md")).toBe(false);
+    expect(matches("src/a/x.md", "src**/x.md")).toBe(true);
+    expect(matches("data/historical", "data/historical/**")).toBe(false);
     for (const unsupported of ["*.jsx?", "!README.md", "[CB]at", "*.js+"]) {
-      expect(() => ignored("page.js", [unsupported]), unsupported).toThrow();
+      expect(() => matches("page.js", unsupported), unsupported).toThrow();
     }
   });
 

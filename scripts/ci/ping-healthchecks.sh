@@ -95,11 +95,12 @@ outcomes="Steps: deploy: ${DEPLOY:-not run}; wait: ${WAIT:-not run}; freshness c
 # equally have failed before any build (a missing or expired token) or because
 # the build failed. The log alone cannot tell these apart (loaders log fetch
 # failures in healthy builds too), but the deployment on Vercel can: the CLI
-# prints its Inspect link once the deployment exists. A status alone is not
-# enough either: a Ready deployment may never have got the domain (an alias
-# error), or may have had it and lost it to a newer deployment.
+# prints its Inspect link once the deployment exists. What production serves
+# is a question for the site, not a deployment's status: a Ready deployment
+# may never have got the domain (an alias error), or may have lost it to a
+# newer one. The footer's "Last refreshed" time is the live build's stamp.
 if [ "${DEPLOY:-}" = failure ] || [ "${DEPLOY:-}" = cancelled ]; then
-  outcomes="$outcomes"$'\n'"To see whether its build went live or still may: open the Inspect link in the deploy step's log (none means no build started). Queued, Initializing or Building may still go live, so look again when it finishes. Otherwise it is live only if everylastjoule.com is among its domains; if not, it failed, or a newer deployment has since replaced it."
+  outcomes="$outcomes"$'\n'"To see whether its build still may go live: open the Inspect link in the deploy step's log (none means no build started); Queued, Initializing or Building may, so look again when it finishes. To see what production serves now, read \"Last refreshed\" in everylastjoule.com's footer."
 fi
 if [ "$status" != success ]; then
   if [ "$status" = cancelled ]; then
