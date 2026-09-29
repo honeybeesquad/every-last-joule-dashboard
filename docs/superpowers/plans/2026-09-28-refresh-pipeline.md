@@ -1,6 +1,6 @@
 # Data-refresh and deploy pipeline: design plan (everylastjoule.com)
 
-> **STATUS: ACTIVE.** Simon approved this plan on 28 Sep 2026 ("Let's run fable's plan"). PR 1 (the Healthchecks.io alarm) is the first to ship; section 10 records each PR's state and where the build departs from the text. The state of record is `STATUS.md` and git.
+> **STATUS: ACTIVE.** Simon approved this plan on 28 Sep 2026 ("Let's run fable's plan"). PRs 1 to 3 have shipped or are in review; section 10 records each PR's state and where the build departs from the text. The state of record is `STATUS.md` and git.
 
 Written by a Claude Fable planning agent, 28 Sep 2026, read-only: nothing was dispatched, deployed, posted or changed. Reviewed by the main session before hand-over; see the notes directly below. The Vercel account and project ids that the draft quoted are left out of this copy: read them from the Vercel project's settings when PR 3 needs them.
 
@@ -135,9 +135,9 @@ Not verified anywhere: whether prebuilt production deployments queue behind a ru
 
 | PR | State |
 | --- | --- |
-| PR 1: alarm off GitHub | **#1142**, merged 28 Sep. Simon has a Healthchecks.io account; the check and the `HC_PING_URL` secret come next. |
+| PR 1: alarm off GitHub | **#1142**, merged 28 Sep. The check and the `HC_PING_URL` secret exist; the first real ping went through on 28 Sep (run 36495671759). |
 | PR 2: abed clock | **#1143**, merged 28 Sep. Runs once Simon installs it on abed with a fine-grained PAT (`docs/ops/abed-refresh-clock.md`). |
-| PR 3: build in Actions | Changed to a build on Vercel through the CLI (below). 3a, the trial workflow, is **#1145** (`claude/vercel-cli-trial`), merged 28 Sep; its first real run built production, and its comparison failed on a `vercel curl` flag, fixed in **#1147**. 3b, the switch, follows a passing trial. |
+| PR 3: build in Actions | Changed to a build on Vercel through the CLI (below). 3a, the trial workflow, is **#1145** (`claude/vercel-cli-trial`), merged 28 Sep; its first real run built production, and its comparison failed on a `vercel curl` flag, fixed in **#1147**; the fixed trial passed on 29 Sep. 3b, the switch, is **#1149** (`claude/refresh-deploys-through-cli`). |
 | PR 4: remove the old machinery | Not started; after PR 3 has run cleanly. |
 
 **PR 1 as built.**
@@ -169,4 +169,15 @@ Not verified anywhere: whether prebuilt production deployments queue behind a ru
   - `--logs` streamed the build log only up to about its 1,000th line, the last region page; the rest is on Vercel. 3b's job log may be partial too.
   - The comparison failed before it read anything: `vercel curl` hands every flag it does not know to curl itself, the token flag too, and the CLI reads `VERCEL_TOKEN` from the environment instead (**#1147**). `vercel curl` reads a protected deployment with the project's Protection Bypass for Automation secret, and creates one if the project has none.
   - In the build log, `ercot-native`'s live fetch failed with HTTP 400 and fell back to its snapshot. Whether production builds show the same is for the comparison to say: ERCOT is a keyed feed.
-- Still unknown until the fixed trial runs: whether `vercel curl` (beta) reads every file, and the comparison's verdict.
+- The fixed trial passed (29 Sep, run 36504999233): 197 live records in the trial and in production, a git build from the same hour; each of the 19 keyed feeds live in production live in the trial; no region different. `vercel curl` read every file in 89 s. Since no region differed, whatever ERCOT native did in that build, production's git build did the same, so the HTTP 400 in the first run's log is not a CLI-build problem.
+
+**PR 3b as built (#1149).**
+- `data-refresh.yml` deploys with `vercel deploy --prod --logs --yes` (CLI 60.1.3, installed globally and pinned, not a devDependency, which Vercel's own `npm install` would then pull into every build). It passes the token through the environment, never as a flag, and deploys before `npm ci`, so the upload is the checkout alone. The deploy hook step and the push-window wait are gone: the trial showed a CLI deployment carries no `.git`, so the ignore step cannot skip it.
+- It also runs on pushes to `main`, with `paths-ignore` for `data/historical/**`, `data/snapshots/**`, `docs/**` and root `*.md`. That is the ignore step's list, less the two directories that do not exist (`data/history`, `data/relay`). The automation's commits land in those paths, and `tests/data-refresh-workflow.test.ts` checks every path `history-append.yml` and the relay pull commit, so a history capture cannot start another refresh. One change from the ignore step: its `*.md` matched at any depth (git pathspec), so a push touching only the site's pages under `src/` could be skipped; GitHub's `*.md` matches the repo root only, so those pages deploy.
+- `vercel.json` sets `git.deploymentEnabled.main: false`, which Simon approved separately. Pull-request previews still build on Vercel, and the ignore step still runs for them until PR 4.
+- The workflow keeps its name, "Scheduled data refresh", which `history-append.yml`'s `workflow_run` names. The job is now `deploy`. Step limits add up to 102 min under a job limit of 120.
+- `check-deploy-freshness.ts wait` accepts only a build made after the deploy started. The 15-minute grace for a push build racing the hook went with the hook.
+- The build stamp's commit and branch fall back to `ELJ_BUILD_COMMIT` and `ELJ_BUILD_REF`, which the deploy passes with `--build-env`, in case Vercel sets no `VERCEL_GIT_*` variables for a CLI deployment. That is not known yet: the trial's stamp sits behind Vercel Authentication.
+- Healthchecks `/fail` messages name the deploy step. When that step failed or was cancelled, the message adds that a build it started on Vercel may still finish and go live.
+- `history-append.yml` still follows every green refresh, so a merge's deploy is captured too.
+- Rollback: revert #1149. `VERCEL_DEPLOY_HOOK` stays until PR 4.
