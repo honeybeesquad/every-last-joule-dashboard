@@ -68,11 +68,14 @@ run sent Healthchecks a success ping.
   - **17:03:** nine US loaders that read the EIA API gave up after 31 s and fell back to their last-good snapshots,
     so 20 regions (AZPS, BPA, ERCOT east and west, IPCO, ISO-NE rest, MISO, NYISO rest, PACE, PACW) stayed in the
     build, marked `degraded`.
-  - **Follow-up:** every fallback that day served a committed last-good snapshot months old: ENTSO-E's from 17 Jun,
-    Norway's from 13 May, the US loaders' from 25 Apr to 16 Jun. No automation commits them; a build writes fresh
-    ones only into its own checkout, which Vercel discards. Keep them fresh, so a slow feed does not serve
-    months-old data. Separately, the ENTSO-E loader's whole-loader fallback could keep the 18 zones its snapshot
-    lacks, as its per-zone fallback already does.
+  - **Follow-up:** every loader that fell back to its last-good snapshot that day read one months old: ENTSO-E's
+    from 17 Jun, Norway's from 13 May, the US loaders' from 25 Apr to 16 Jun. No automation commits these
+    snapshots; a build writes fresh ones only into its own checkout, which Vercel discards. Refreshing them is a
+    data PR of its own: they are also `ci:magnitude-golden`'s input, and a refresh was tried and reverted over
+    seasonal swings (the Japanese-share entry; see also "Gate hazard confirmed"). Not every fallback reads a
+    snapshot: `eia-vre-bas` answers a failed EIA-930 balancing authority with an empty record (15 at 17:03), and
+    CAISO falls back to an EIA proxy. Separately, the ENTSO-E loader's whole-loader fallback could keep the 18
+    zones its snapshot lacks, as its per-zone fallback already does.
 - **Vercel made no git build of `main`.** Its deployment list, read through the Vercel connector, holds one
   production deployment per refresh, each created within seconds of its deploy step starting, with the commit it
   deployed. None was created by the merge push or the six history pushes themselves, and the history branch's
