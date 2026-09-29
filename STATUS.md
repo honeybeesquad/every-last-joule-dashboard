@@ -5,9 +5,9 @@
 
 ## Nigeria's region page described an unwired probe, not its data (2026-09-29)
 
-**#1151**, from `claude/nigeria-source-string`, stacked on #1150. **Nothing the
-dataset computes changes**: Nigeria stays `estimated` (T3-modelled) and is still served
-from `statics.json` at 0.5 TWh/yr.
+**#1151**, from `claude/nigeria-source-string`. **Nothing the dataset computes
+changes**: Nigeria stays `estimated` (T3-modelled) and is still served from
+`statics.json` at 0.5 TWh/yr.
 
 **What was wrong.** `/region/nigeria` prints the `source` and `sourceUrl` of
 its `regions.ts` entry. Since **#267** (2026-06-21) they described
