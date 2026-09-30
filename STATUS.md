@@ -21,8 +21,8 @@ effect. (a) was built; (b) was not.
 - **The stop.** `run` in `src/data/entsoe.json.ts` is now the exported `collectEntsoeZones(budget)`. At the stop it
   aborts its open requests, starts no others, and answers each zone it did not finish as it already answered a failed
   zone: the last-good record, `cached` under 24 h old and `degraded` past that, keeping its own `lastSuccessAt`; or, for
-  an `allowEmpty` zone with none, an unpublished marker whose note says it was not fetched. `loadEntsoe()` and the tag
-  functions are exported so a test can run the real loader.
+  an `allowEmpty` zone with none, an unpublished marker whose note says it was not fetched. `loadEntsoe()` is exported
+  so a test can run the real loader.
 - **A failed request is not an empty answer** (`src/lib/entsoe.ts`). It used to come back as zero points. So an
   `allowEmpty` zone whose requests failed was returned as a fresh "A75 empty in-window" record, which would also have
   replaced real last-good data with zeros once the snapshot holds it, and `netherlands-wind` (two technologies) was
