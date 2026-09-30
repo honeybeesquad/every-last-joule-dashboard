@@ -1,9 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-09-20 (TSO-grid completeness: unpublished wasteStatus + EIA/ENTSO generation-only + missing-grid markers. T1 unchanged. Austria APG left T2. T3 rose with unpublished TSO grids and markers. This is grid-completeness, not a waste T1 promotion.).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-09-30 (spa-wind and spa-solar removed: EIA-930 carries only hydro for Southwestern Power Administration, so there was no wind or solar to collect. T3 327 -> 325, total 536 -> 534. No region changed tier; both had wasteStatus unpublished and no generation, so no total moves.). Before that 2026-09-20 (TSO-grid completeness: unpublished wasteStatus + EIA/ENTSO generation-only + missing-grid markers. T1 unchanged. Austria APG left T2. T3 rose with unpublished TSO grids and markers. This is grid-completeness, not a waste T1 promotion.).",
   "T1a": 160,
   "T1b": 26,
   "T1c": 1,
   "T2": 22,
-  "T3": 327,
-  "total": 536
+  "T3": 325,
+  "total": 534
 }

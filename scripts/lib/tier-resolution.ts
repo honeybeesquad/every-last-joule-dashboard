@@ -393,8 +393,6 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "epe-solar": "solar",
   "aeci-wind": "wind",
   "aeci-solar": "solar",
-  "spa-wind": "wind",
-  "spa-solar": "solar",
   "sceg-wind": "wind",
   "sceg-solar": "solar",
   "sweden-se1-wind": "wind",

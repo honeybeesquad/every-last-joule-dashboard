@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 550,
+  "totalValidationDocs": 548,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 543,
-  "pctCited": 1.27,
+  "docsNotCiting": 541,
+  "pctCited": 1.28,
   "perDocCitations": [
     {
       "file": "aeci-solar.md",
@@ -2405,16 +2405,6 @@
     },
     {
       "file": "south-sudan.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "spa-solar.md",
-      "cited": false,
-      "matchedPatterns": []
-    },
-    {
-      "file": "spa-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
