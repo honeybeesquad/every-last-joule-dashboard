@@ -149,6 +149,30 @@ function technologyNote(technologies: readonly EntsoeTechnologySpec[]): string {
     .join(" + ");
 }
 
+/**
+ * Why a request failed, for the log. undici reports a network failure as just
+ * "fetch failed" and keeps the reason (ECONNRESET, ENOTFOUND, a connect
+ * timeout) in `cause`. A host with several addresses fails as an AggregateError
+ * with no message of its own, its reasons in `errors` and a `code`. A fetch
+ * error's message also names the request URL, and the URL carries the API token.
+ */
+function describeFailure(err: unknown): string {
+  if (!(err instanceof Error)) return String(err) || "unknown error";
+  const cause = err.cause instanceof Error ? causeText(err.cause) : undefined;
+  const message = cause && cause !== err.message ? `${err.message} (${cause})` : err.message;
+  // Never empty: the caller tells a failed request from an answered one by whether this is set.
+  return (message || err.name).replace(/securityToken=[^&\s)]*/g, "securityToken=[REDACTED]");
+}
+
+function causeText(cause: Error): string | undefined {
+  if (cause.message) return cause.message;
+  if (cause instanceof AggregateError) {
+    const inner = [...new Set(cause.errors.map((e) => (e instanceof Error ? e.message : String(e))).filter(Boolean))];
+    if (inner.length > 0) return inner.join("; ");
+  }
+  return (cause as { code?: string }).code;
+}
+
 export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData> {
   const token = process.env.ENTSOE_API_TOKEN;
   if (!token) throw new Error("ENTSOE_API_TOKEN not set");
@@ -158,7 +182,8 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
   const fmt = (d: Date) => d.toISOString().replace(/[-:T]/g, "").slice(0, 12);
   const technologies = normalizeTechnologies(zone);
 
-  const series = await Promise.all(technologies.map(async (technology) => {
+  type TechnologyResult = { technology: EntsoeTechnologySpec; points: CurtailmentPoint[]; error?: string };
+  const series = await Promise.all(technologies.map(async (technology): Promise<TechnologyResult> => {
     const params = new URLSearchParams({
       securityToken: token,
       documentType: "A75",
@@ -177,10 +202,23 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
       }
       return { technology, points };
     } catch (err) {
-      console.warn(`ENTSO-E ${zone.id} ${technology.psrType} fetch failed; continuing`, err);
-      return { technology, points: [] };
+      return { technology, points: [], error: describeFailure(err) };
     }
   }));
+
+  // A request that failed is not an empty answer. Both used to come back here
+  // as zero points, so an allowEmpty zone whose requests failed was returned as
+  // a fresh "A75 empty in-window" record, and a zone that lost one of its
+  // technologies as a live record of the rest: on 29 Sep 2026 netherlands-wind's
+  // B18 request timed out at 13:04:55 and the zone was built live from B19
+  // alone (that run was then cut off at the deadline, so production did not
+  // serve it). A zone is fetched in full or it fails, and the loader falls back
+  // on the zone's last-good record. An empty answer still is one: ENTSO-E
+  // replies "no data" with HTTP 200, not with an error.
+  const failures = series.flatMap((s) => (s.error === undefined ? [] : [`${s.technology.psrType} request failed: ${s.error}`]));
+  if (failures.length > 0) {
+    throw new Error(`ENTSO-E ${zone.id}: ${failures.join("; ")}`);
+  }
 
   const summed = new Map<string, { mw: number; intervalHours: number | undefined }>();
   const fuelTotals: Partial<Record<EntsoeFuel, number>> = {};

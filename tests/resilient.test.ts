@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { withFallback } from "../src/lib/resilient";
+import { DEFAULT_LOADER_DEADLINE_MS, softStopMs } from "../src/lib/loader-deadline";
+import { withFallback, type LoaderBudget } from "../src/lib/resilient";
 import type { RegionData } from "../src/lib/types";
 
 const CACHE_DIR = join(process.cwd(), "data", "snapshots", "last-good");
@@ -282,6 +283,12 @@ describe("withFallback loader deadline", () => {
     writeFileSync(cachePath, JSON.stringify(cached));
   });
 
+  // The snapshot is not a region: ci:tier-coherence fails on one left in
+  // data/snapshots/last-good, so no test may be the last one by luck.
+  afterEach(() => {
+    rmSync(cachePath, { force: true });
+  });
+
   it("serves the last-good snapshot when fetchFn outlives the deadline", async () => {
     const never = () => new Promise<RegionData>(() => {});
     const t0 = Date.now();
@@ -356,5 +363,53 @@ describe("withFallback loader deadline", () => {
     await expect(
       withFallback<RegionData>(name, () => new Promise(() => {}), { now: () => now, deadlineMs: 20 }),
     ).rejects.toThrow(/deadline/);
+  });
+
+  // A loader that can return part of its work stops itself at softStopMs of
+  // this budget (the ENTSO-E loader does); withFallback hands it the numbers.
+  it("hands the loader the deadline it runs under and when it started", async () => {
+    let seen: LoaderBudget | undefined;
+    const before = Date.now();
+    await withFallback<RegionData>(
+      name,
+      async (budget) => {
+        seen = budget;
+        return { ...cached, totalTWh: 3 };
+      },
+      { now: () => now, deadlineMs: 5_000 },
+    );
+    expect(seen?.deadlineMs).toBe(5_000);
+    expect(seen?.startedAt).toBeGreaterThanOrEqual(before);
+    expect(seen?.startedAt).toBeLessThanOrEqual(Date.now());
+  });
+
+  it("hands the loader LOADER_DEADLINE_MS, and 0 when the deadline is off", async () => {
+    const budgets: number[] = [];
+    const load = async (budget: LoaderBudget) => {
+      budgets.push(budget.deadlineMs);
+      return { ...cached };
+    };
+    vi.stubEnv("LOADER_DEADLINE_MS", "42000");
+    try {
+      await withFallback<RegionData>(name, load, { now: () => now });
+      vi.stubEnv("LOADER_DEADLINE_MS", "0");
+      await withFallback<RegionData>(name, load, { now: () => now });
+    } finally {
+      vi.unstubAllEnvs();
+    }
+    expect(budgets).toEqual([42_000, 0]);
+  });
+});
+
+describe("softStopMs", () => {
+  it("is 90% of the deadline, so a loader stops with the rest in reserve", () => {
+    expect(softStopMs(180_000)).toBe(162_000);
+    expect(softStopMs(DEFAULT_LOADER_DEADLINE_MS)).toBe(162_000);
+    expect(softStopMs(20)).toBe(18);
+  });
+
+  it("is 0, meaning no stop, exactly when there is no deadline", () => {
+    expect(softStopMs(0)).toBe(0);
+    expect(softStopMs(1)).toBe(1); // never rounds a real deadline down to "none"
   });
 });

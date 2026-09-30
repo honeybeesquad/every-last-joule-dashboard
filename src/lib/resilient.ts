@@ -20,6 +20,20 @@ export class LoaderDeadlineError extends Error {
   }
 }
 
+/**
+ * What withFallback tells the loader it runs: the wall-clock budget it holds
+ * it to. A loader that can return part of its work (ENTSO-E, zone by zone)
+ * stops itself at `softStopMs(deadlineMs)` after `startedAt` and returns what
+ * it has; past `deadlineMs` withFallback discards the work and serves the
+ * snapshot whole. Loaders that do not take the argument are unaffected.
+ */
+export interface LoaderBudget {
+  /** The deadline in ms; 0 when there is none. */
+  deadlineMs: number;
+  /** Date.now() when withFallback started the loader. */
+  startedAt: number;
+}
+
 function deadlineFromEnv(): number {
   return loaderDeadlineMs(process.env.LOADER_DEADLINE_MS);
 }
@@ -281,7 +295,7 @@ function stampCached<T>(value: T, now: Date, thresholdHours: number): T {
 
 export async function withFallback<T>(
   cacheName: string,
-  fetchFn: () => Promise<T>,
+  fetchFn: (budget: LoaderBudget) => Promise<T>,
   opts: WithFallbackOptions<T> = {},
 ): Promise<T> {
   if (!/^[a-z0-9][a-z0-9-]*$/.test(cacheName)) {
@@ -296,7 +310,7 @@ export async function withFallback<T>(
   const startedAt = Date.now();
 
   try {
-    const fresh = await raceDeadline(fetchFn(), deadlineMs, cacheName);
+    const fresh = await raceDeadline(fetchFn({ deadlineMs, startedAt }), deadlineMs, cacheName);
     let tagged = opts.tagLive ? opts.tagLive(fresh) : fresh;
     if (opts.regionTier) tagged = enrichWithTier(tagged, opts.regionTier);
     tagged = stampLive(tagged, now.toISOString());

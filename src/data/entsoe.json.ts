@@ -1,7 +1,9 @@
 import { readFileSync } from "node:fs";
 import { mapWithConcurrency } from "../lib/concurrency.js";
 import { join } from "node:path";
-import { withFallback } from "../lib/resilient.js";
+import { abortInflightFetches } from "../lib/fetch.js";
+import { softStopMs } from "../lib/loader-deadline.js";
+import { DEFAULT_STALENESS_THRESHOLD_HOURS, withFallback, type LoaderBudget } from "../lib/resilient.js";
 import type { RegionData } from "../lib/types.js";
 import { unpublishedEmptyRegion } from "../lib/waste-status.js";
 import {
@@ -527,97 +529,162 @@ export const ZONES = [
 export const parseEntsoeXml = parseEntsoeXmlImpl;
 export const buildZoneData = buildZoneDataImpl;
 
-const run = async (): Promise<Record<string, RegionData>> => {
+const FAILED_NOTE = "ENTSO-E fetch failed with no last-good cache; waste unpublished.";
+const NOT_REACHED_NOTE =
+  "ENTSO-E was not fetched before the loader's time budget ran out, and there is no last-good cache; waste unpublished.";
+
+/**
+ * One record per zone, fetched a few at a time.
+ *
+ * A zone whose requests did not all answer keeps its last-good record (cached,
+ * or degraded past 24 h); an allowEmpty zone with none becomes an unpublished
+ * marker; any other zone with none fails the loader. The loader stops itself
+ * at `softStopMs` of the budget withFallback gives it, aborts every request
+ * still open, and treats the zones it did not finish the same way, so a slow
+ * ENTSO-E costs those zones their freshness and nothing else.
+ *
+ * On 2026-09-29 (run 36572293601) requests timed out zone by zone and the
+ * loader hit withFallback's 180 s deadline. withFallback threw away every zone
+ * fetched by then and served the 54-zone snapshot from 17 Jun as `degraded`,
+ * dropping the 18 zones that snapshot lacks.
+ */
+export async function collectEntsoeZones(
+  budget: LoaderBudget = { deadlineMs: 0, startedAt: Date.now() },
+): Promise<Record<string, RegionData>> {
+  // Every request needs it. Failing here, before any zone, lets withFallback
+  // serve the snapshot whole, as it did when every zone failed on it.
+  if (!process.env.ENTSOE_API_TOKEN) throw new Error("ENTSOE_API_TOKEN not set");
+
   const cachePath = join(process.cwd(), "data", "snapshots", "last-good", "entsoe.json");
   let previous: Record<string, RegionData> = {};
   try {
     previous = JSON.parse(readFileSync(cachePath, "utf-8")) as Record<string, RegionData>;
   } catch { /* no previous cache */ }
 
-  let anySuccess = false;
+  let fetched = 0; // zones whose requests all answered
+  let keptLastGood = 0; // zones that kept their last-good record
+  let markers = 0; // allowEmpty zones with none, made unpublished markers
+
+  const fallback = (zone: (typeof ZONES)[number], note: string): RegionData => {
+    const prev = previous[zone.id];
+    if (!prev) {
+      if ("allowEmpty" in zone && zone.allowEmpty) {
+        markers++;
+        return unpublishedEmptyRegion(zone.id, `${zone.sourceNote} ${note}`);
+      }
+      throw new Error(`ENTSO-E zone ${zone.id} failed and no cached data available`);
+    }
+    keptLastGood++;
+    const lastSuccessAt = prev.lastSuccessAt ?? prev.lastUpdated ?? "";
+    const ageHours = lastSuccessAt
+      ? (Date.now() - new Date(lastSuccessAt).getTime()) / 3_600_000
+      : Infinity;
+    return { ...prev, sourceStatus: ageHours > DEFAULT_STALENESS_THRESHOLD_HOURS ? "degraded" : "cached" };
+  };
+
+  let stopped = false;
+  const stopAfterMs = softStopMs(budget.deadlineMs);
+  const stopTimer = stopAfterMs > 0
+    ? setTimeout(() => {
+        stopped = true;
+        // Every request still open is this loader's: nothing else runs in its process.
+        abortInflightFetches(`entsoe stopped at its ${stopAfterMs / 1000}s budget`);
+      }, Math.max(0, budget.startedAt + stopAfterMs - Date.now()))
+    : undefined;
 
   // Zones are fetched a few at a time. Serially, a stalled ENTSO-E API costs
   // (timeout × attempts) per zone — 126 s × 52 zones on 2026-09-10, past
-  // Vercel's 45-minute build limit. Per-zone fallback semantics are unchanged:
-  // a failed zone reuses its previous record (cached/degraded by age), and a
-  // failed zone with no previous record still fails the whole loader.
+  // Vercel's 45-minute build limit.
   const zoneConcurrency = Number(process.env.ENTSOE_ZONE_CONCURRENCY) || 6;
-  const perZone = await mapWithConcurrency(ZONES, zoneConcurrency, async (zone): Promise<RegionData> => {
-    if (zone.technologies.length === 0) {
-      // Zones where structural spill is excluded per methodology.
-      // Preserve previous cache if available; otherwise emit honest zero.
-      return previous[zone.id] ?? {
-        regionId: zone.id,
-        profile: Array(24).fill(0),
-        latestProfile: null,
-        totalTWh: 0,
-        peakGW: 0,
-        lastUpdated: new Date().toISOString(),
-        lastSuccessAt: new Date().toISOString(),
-        sourceNote: zone.sourceNote,
-        wasteStatus: "unpublished",
-        generationProfile: Array(24).fill(0),
-        generationTotalTWh: 0,
-      };
-    }
-    try {
-      const data = await fetchEntsoeZone(zone);
-      anySuccess = true;
-      return data;
-    } catch (err) {
-      console.warn(`ENTSO-E zone ${zone.id} failed: ${(err as Error).message}`);
-      const prev = previous[zone.id];
-      if (!prev) {
-        if ("allowEmpty" in zone && zone.allowEmpty) {
-          return unpublishedEmptyRegion(
-            zone.id,
-            `${zone.sourceNote} ENTSO-E fetch failed with no last-good cache; waste unpublished.`,
-          );
-        }
-        throw new Error(`ENTSO-E zone ${zone.id} failed and no cached data available`);
+  let perZone: RegionData[];
+  try {
+    perZone = await mapWithConcurrency(ZONES, zoneConcurrency, async (zone): Promise<RegionData> => {
+      if (zone.technologies.length === 0) {
+        // Zones where structural spill is excluded per methodology.
+        // Preserve previous cache if available; otherwise emit honest zero.
+        return previous[zone.id] ?? {
+          regionId: zone.id,
+          profile: Array(24).fill(0),
+          latestProfile: null,
+          totalTWh: 0,
+          peakGW: 0,
+          lastUpdated: new Date().toISOString(),
+          lastSuccessAt: new Date().toISOString(),
+          sourceNote: zone.sourceNote,
+          wasteStatus: "unpublished",
+          generationProfile: Array(24).fill(0),
+          generationTotalTWh: 0,
+        };
       }
-      const lastSuccessAt = prev.lastSuccessAt ?? prev.lastUpdated ?? "";
-      const ageHours = lastSuccessAt
-        ? (Date.now() - new Date(lastSuccessAt).getTime()) / 3_600_000
-        : Infinity;
-      return { ...prev, sourceStatus: ageHours > 24 ? "degraded" : "cached" };
-    }
-  });
-  const out: Record<string, RegionData> = {};
-  ZONES.forEach((zone, i) => { out[zone.id] = perZone[i]; });
-
-  if (!anySuccess) {
-    throw new Error("All ENTSO-E zones failed");
+      if (stopped) return fallback(zone, NOT_REACHED_NOTE);
+      try {
+        const data = await fetchEntsoeZone(zone);
+        fetched++;
+        return data;
+      } catch (err) {
+        console.warn(`ENTSO-E zone ${zone.id} failed: ${(err as Error).message}`);
+        return fallback(zone, FAILED_NOTE);
+      }
+    });
+  } finally {
+    clearTimeout(stopTimer);
   }
 
+  if (stopped) {
+    console.error(
+      `ENTSO-E stopped at ${stopAfterMs / 1000}s of its ${budget.deadlineMs / 1000}s budget: ${fetched} zones fetched, ` +
+        `${keptLastGood} kept from the last-good snapshot, ${markers} unpublished markers`,
+    );
+  } else if (fetched === 0) {
+    // Zones that fall back are still served, and this line is where the outage
+    // shows. A throw stood here ("All ENTSO-E zones failed") until the allowEmpty
+    // zones began counting a failed request as an answer on 20 Sep, which left it
+    // reachable only by a missing token, now checked first. Throwing would serve
+    // the snapshot whole and drop the unpublished markers it lacks.
+    console.error(
+      `ENTSO-E answered no zone: serving the last-good snapshot for ${keptLastGood} zones and ${markers} unpublished markers`,
+    );
+  }
+
+  const out: Record<string, RegionData> = {};
+  ZONES.forEach((zone, i) => { out[zone.id] = perZone[i]; });
   return out;
-};
+}
+
+/** Keep the status a zone's own fallback stamped; only zones fetched fresh become live. */
+function tagZonesLive(r: Record<string, RegionData>): Record<string, RegionData> {
+  const tagged: Record<string, RegionData> = {};
+  for (const [k, v] of Object.entries(r)) {
+    // Preserve "cached"/"degraded" stamped by per-zone fallback in
+    // collectEntsoeZones(); only promote truly-live zones to "live".
+    tagged[k] = {
+      ...v,
+      sourceStatus: (v.sourceStatus === "cached" || v.sourceStatus === "degraded")
+        ? v.sourceStatus
+        : "live",
+    };
+  }
+  return tagged;
+}
+
+function tagZonesCached(c: Record<string, RegionData>): Record<string, RegionData> {
+  const tagged: Record<string, RegionData> = {};
+  for (const [k, v] of Object.entries(c)) tagged[k] = { ...v, sourceStatus: "cached" };
+  return tagged;
+}
+
+export function loadEntsoe(): Promise<Record<string, RegionData>> {
+  return withFallback<Record<string, RegionData>>("entsoe", collectEntsoeZones, {
+    regionTier: "live" as const,
+    tagLive: tagZonesLive,
+    tagCached: tagZonesCached,
+  });
+}
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback<Record<string, RegionData>>("entsoe", run, {
-    regionTier: "live" as const,
-    tagLive: (r) => {
-      const tagged: Record<string, RegionData> = {};
-      for (const [k, v] of Object.entries(r)) {
-        // Preserve "cached"/"degraded" stamped by per-zone fallback in run();
-        // only promote truly-live zones to "live".
-        tagged[k] = {
-          ...v,
-          sourceStatus: (v.sourceStatus === "cached" || v.sourceStatus === "degraded")
-            ? v.sourceStatus
-            : "live",
-        };
-      }
-      return tagged;
-    },
-    tagCached: (c) => {
-      const tagged: Record<string, RegionData> = {};
-      for (const [k, v] of Object.entries(c)) tagged[k] = { ...v, sourceStatus: "cached" };
-      return tagged;
-    },
-  })
+  loadEntsoe()
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("entsoe loader failed", err);
