@@ -122,7 +122,10 @@ describe("regions", () => {
     // nothing in magnitude. Owner chose removal over repointing to SWPW. 461 − 2 = 459.
     // 2026-09-20: TSO-grid completeness. Replaced florida/tva/austria/lithuania/latvia
     // (−5) with unpublished EIA/ENTSO fuels + missing-grid markers (+82). 459 + 77 = 536.
-    expect(REGIONS.length).toBe(536);
+    // 2026-09-30: removed spa-wind + spa-solar — EIA-930 carries only hydro for
+    // Southwestern Power Administration (no wind or solar row at any hour), so
+    // there was nothing to collect. 536 − 2 = 534.
+    expect(REGIONS.length).toBe(534);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -330,7 +333,8 @@ describe("regions", () => {
     // 2026-08-19: wacm removal was T2 not T3.
     // 2026-09-20: TSO-grid completeness unpublished grids. 249 − 4 (florida/tva/lithuania/latvia)
     // + 82 new T3 = 327.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(327);
+    // 2026-09-30: spa-wind + spa-solar removed (hydro-only BA). 327 − 2 = 325.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(325);
   });
 
   it("has 22 anchored regions (6 flat-profile + 16 EIA-930 US BAs)", () => {

@@ -65,7 +65,7 @@
     "sourceStatus": {
       "type": ["string", "null"],
       "enum": ["live", "cached", "degraded", null],
-      "description": "Per-fetch freshness. Whether the last fetch was fresh (live), a recent withFallback snapshot (cached), or a stale withFallback snapshot beyond the configured staleness threshold (degraded). Distinct from sourceProvenance, which records what kind of upstream link the region has."
+      "description": "Per-fetch freshness. Whether the last fetch was fresh (live), a recent withFallback snapshot (cached), or a stale withFallback snapshot beyond the configured staleness threshold (degraded). A loader that publishes its own fallback per record (eia-vre-bas) also marks a record degraded when it stands in for a failed fetch: a copy of the last-good record of any age, or a record with no generation series; both keep the time of the last real fetch, or 1970-01-01T00:00:00.000Z when there is none. Distinct from sourceProvenance, which records what kind of upstream link the region has."
     },
     "sourceProvenance": {
       "type": "string",
@@ -126,7 +126,7 @@
     "wasteStatus": {
       "type": "string",
       "enum": ["measured", "measured-zero", "unpublished"],
-      "description": "Whether profile is TSO-published waste. measured = operator publishes a curtailment/spill/constraint series. measured-zero = that series is zero in the window (still needs the zero-allowlist when live-tier). unpublished = generation (or grid presence) is collected and the operator does not publish waste; profile is zeros and must not be read as a finding. Absent on legacy snapshots."
+      "description": "Whether profile is TSO-published waste. measured = operator publishes a curtailment/spill/constraint series. measured-zero = that series is zero in the window (still needs the zero-allowlist when live-tier). unpublished = generation (or grid presence) is collected and the operator does not publish waste; profile is zeros and must not be read as a finding. Such a record carries generationProfile, except one that stands in for a fetch that failed with no usable earlier copy (sourceStatus degraded, no generationProfile): it is published but does not belong in a committed snapshot, and scripts/validate-snapshots.ts rejects it there. Absent on legacy snapshots."
     }
   },
   "additionalProperties": false

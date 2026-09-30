@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { parseEiaIsoRegionPerFuel, type EIAResponse, type EiaIsoConfig } from "../../src/lib/eia-iso";
 import { EIA_VRE_BA_CONFIGS } from "../../src/data/eia-vre-bas.json";
 import { generationGWAtHour } from "../../src/lib/calc";
+import { REGIONS } from "../../src/lib/regions";
 import { isTsoCollected, showsWastePillar, unpublishedEmptyRegion } from "../../src/lib/waste-status";
 
 function makeEia(value: number): EIAResponse {
@@ -38,6 +39,22 @@ describe("unpublished EIA-930 VRE BAs", () => {
     const ids = EIA_VRE_BA_CONFIGS.map((c) => c.regionId);
     expect(ids).toEqual(expect.arrayContaining(["tva", "fpl", "fpc", "tec", "swpw", "nevp"]));
     expect(EIA_VRE_BA_CONFIGS.every((c) => c.wasteMode === "unpublished")).toBe(true);
+  });
+
+  it("does not list SPA: EIA-930 carries only hydro for it, so it has no wind or solar to collect", () => {
+    // Checked against EIA-930 on 30 Sep 2026: SPA's hourly fuel-type rows are all
+    // WAT (hydro), and a query for its WND or SUN rows over 2015-2026 returns
+    // none. Listed, it hit the retired-feed guard in eia-iso.ts on every build.
+    expect(EIA_VRE_BA_CONFIGS.map((c) => c.regionId)).not.toContain("spa");
+    expect(REGIONS.filter((r) => r.id.startsWith("spa-"))).toEqual([]);
+  });
+
+  it("has a wind and a solar region for every listed BA", () => {
+    const ids = new Set(REGIONS.map((r) => r.id));
+    for (const config of EIA_VRE_BA_CONFIGS) {
+      expect(ids.has(`${config.regionId}-wind`), `${config.regionId}-wind`).toBe(true);
+      expect(ids.has(`${config.regionId}-solar`), `${config.regionId}-solar`).toBe(true);
+    }
   });
 });
 

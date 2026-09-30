@@ -216,6 +216,9 @@ export interface RegionData {
    * Whether `profile` is TSO-published waste. See `WasteStatus`.
    * TSO-collected grids with unpublished waste keep `profile` as zeros and
    * must emit `generationProfile` — never copy generation into `profile`.
+   * The one exception is a record standing in for a fetch that failed with no
+   * usable earlier copy: `sourceStatus: "degraded"`, no series (see
+   * `src/data/eia-vre-bas.json.ts`).
    */
   wasteStatus?: WasteStatus;
 }

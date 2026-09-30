@@ -493,8 +493,6 @@ El Paso Electric Wind,USA,wind,live-tso,eia-vre-bas,unpublished,epe-wind,EIA-930
 El Paso Electric Solar,USA,solar,live-tso,eia-vre-bas,unpublished,epe-solar,EIA-930 generation; BA publishes no curtailment rate.
 Associated Electric Cooperative Wind,USA,wind,live-tso,eia-vre-bas,unpublished,aeci-wind,EIA-930 generation; BA publishes no curtailment rate.
 Associated Electric Cooperative Solar,USA,solar,live-tso,eia-vre-bas,unpublished,aeci-solar,EIA-930 generation; BA publishes no curtailment rate.
-Southwestern Power Administration Wind,USA,wind,live-tso,eia-vre-bas,unpublished,spa-wind,EIA-930 generation; BA publishes no curtailment rate.
-Southwestern Power Administration Solar,USA,solar,live-tso,eia-vre-bas,unpublished,spa-solar,EIA-930 generation; BA publishes no curtailment rate.
 Dominion Energy South Carolina Wind,USA,wind,live-tso,eia-vre-bas,unpublished,sceg-wind,EIA-930 generation; BA publishes no curtailment rate.
 Dominion Energy South Carolina Solar,USA,solar,live-tso,eia-vre-bas,unpublished,sceg-solar,EIA-930 generation; BA publishes no curtailment rate.
 Sweden SE1 Wind,SWE,wind,live-tso,entsoe,unpublished,sweden-se1-wind,ENTSO-E A75 generation; waste unpublished.
