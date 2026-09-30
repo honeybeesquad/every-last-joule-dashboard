@@ -149,6 +149,11 @@ function technologyNote(technologies: readonly EntsoeTechnologySpec[]): string {
     .join(" + ");
 }
 
+/** A fetch error's message names the request URL, and the URL carries the API token. */
+function withoutToken(message: string): string {
+  return message.replace(/securityToken=[^&\s)]*/g, "securityToken=[REDACTED]");
+}
+
 export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData> {
   const token = process.env.ENTSOE_API_TOKEN;
   if (!token) throw new Error("ENTSOE_API_TOKEN not set");
@@ -158,7 +163,8 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
   const fmt = (d: Date) => d.toISOString().replace(/[-:T]/g, "").slice(0, 12);
   const technologies = normalizeTechnologies(zone);
 
-  const series = await Promise.all(technologies.map(async (technology) => {
+  type TechnologyResult = { technology: EntsoeTechnologySpec; points: CurtailmentPoint[]; error?: string };
+  const series = await Promise.all(technologies.map(async (technology): Promise<TechnologyResult> => {
     const params = new URLSearchParams({
       securityToken: token,
       documentType: "A75",
@@ -177,10 +183,22 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
       }
       return { technology, points };
     } catch (err) {
-      console.warn(`ENTSO-E ${zone.id} ${technology.psrType} fetch failed; continuing`, err);
-      return { technology, points: [] };
+      return { technology, points: [], error: withoutToken(err instanceof Error ? err.message : String(err)) };
     }
   }));
+
+  // A request that failed is not an empty answer. Both used to come back here
+  // as zero points, so an allowEmpty zone whose requests failed went out as a
+  // fresh "A75 empty in-window" record, and a zone that lost one of its
+  // technologies went out as a live record of the rest: on 29 Sep 2026
+  // netherlands-wind's B18 request timed out and the zone still went out live,
+  // from B19 alone. A zone is fetched in full or it fails, and the loader
+  // falls back on the zone's last-good record. An empty answer still is one:
+  // ENTSO-E replies "no data" with HTTP 200, not with an error.
+  const failures = series.flatMap((s) => (s.error ? [`${s.technology.psrType} request failed: ${s.error}`] : []));
+  if (failures.length > 0) {
+    throw new Error(`ENTSO-E ${zone.id}: ${failures.join("; ")}`);
+  }
 
   const summed = new Map<string, { mw: number; intervalHours: number | undefined }>();
   const fuelTotals: Partial<Record<EntsoeFuel, number>> = {};

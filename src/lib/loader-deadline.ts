@@ -30,3 +30,18 @@ export function msFromEnv(raw: string | undefined, fallback: number): number {
 export function loaderDeadlineMs(raw: string | undefined): number {
   return msFromEnv(raw, DEFAULT_LOADER_DEADLINE_MS);
 }
+
+/**
+ * When a loader that can return part of its work should stop and return it:
+ * this share of the deadline. That leaves the rest in reserve for the requests
+ * it aborts to unwind (one still in a retry backoff finishes it first, a few
+ * seconds at most) and for withFallback's own stamping and snapshot write. At
+ * the deadline itself withFallback throws the loader's work away and serves the
+ * last-good snapshot whole (ENTSO-E, 29 Sep 2026: 180.1 s, and every zone
+ * fetched before it lost). 0 when there is no deadline.
+ */
+const SOFT_STOP_SHARE = 0.9;
+
+export function softStopMs(deadlineMs: number): number {
+  return deadlineMs > 0 ? Math.max(1, Math.floor(deadlineMs * SOFT_STOP_SHARE)) : 0;
+}
