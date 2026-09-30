@@ -149,8 +149,16 @@ function technologyNote(technologies: readonly EntsoeTechnologySpec[]): string {
     .join(" + ");
 }
 
-/** A fetch error's message names the request URL, and the URL carries the API token. */
-function withoutToken(message: string): string {
+/**
+ * Why a request failed, for the log. undici reports a network failure as just
+ * "fetch failed" and keeps the reason (ECONNRESET, ENOTFOUND, a connect
+ * timeout) in `cause`. A fetch error's message also names the request URL, and
+ * the URL carries the API token.
+ */
+function describeFailure(err: unknown): string {
+  if (!(err instanceof Error)) return String(err);
+  const cause = err.cause instanceof Error ? err.cause.message : undefined;
+  const message = cause && cause !== err.message ? `${err.message} (${cause})` : err.message;
   return message.replace(/securityToken=[^&\s)]*/g, "securityToken=[REDACTED]");
 }
 
@@ -183,18 +191,19 @@ export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData>
       }
       return { technology, points };
     } catch (err) {
-      return { technology, points: [], error: withoutToken(err instanceof Error ? err.message : String(err)) };
+      return { technology, points: [], error: describeFailure(err) };
     }
   }));
 
   // A request that failed is not an empty answer. Both used to come back here
-  // as zero points, so an allowEmpty zone whose requests failed went out as a
-  // fresh "A75 empty in-window" record, and a zone that lost one of its
-  // technologies went out as a live record of the rest: on 29 Sep 2026
-  // netherlands-wind's B18 request timed out and the zone still went out live,
-  // from B19 alone. A zone is fetched in full or it fails, and the loader
-  // falls back on the zone's last-good record. An empty answer still is one:
-  // ENTSO-E replies "no data" with HTTP 200, not with an error.
+  // as zero points, so an allowEmpty zone whose requests failed was returned as
+  // a fresh "A75 empty in-window" record, and a zone that lost one of its
+  // technologies as a live record of the rest: on 29 Sep 2026 netherlands-wind's
+  // B18 request timed out at 13:04:55 and the zone was built live from B19
+  // alone (that run was then cut off at the deadline, so production did not
+  // serve it). A zone is fetched in full or it fails, and the loader falls back
+  // on the zone's last-good record. An empty answer still is one: ENTSO-E
+  // replies "no data" with HTTP 200, not with an error.
   const failures = series.flatMap((s) => (s.error ? [`${s.technology.psrType} request failed: ${s.error}`] : []));
   if (failures.length > 0) {
     throw new Error(`ENTSO-E ${zone.id}: ${failures.join("; ")}`);

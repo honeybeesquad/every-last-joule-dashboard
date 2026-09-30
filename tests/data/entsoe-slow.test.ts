@@ -32,7 +32,8 @@ const JUNE = "2026-06-17T04:11:31.459Z"; // when every zone in the committed sna
 const LAST_GOOD_TWH = 1.5; // a value no fetch of the fixture produces
 
 // `slow:<ms>` answers like "fast", after that long, unless the request is aborted first.
-type Behaviour = "fast" | "hang" | "empty" | "http500" | `slow:${number}`;
+// `reset` fails like undici does on a network error: "fetch failed", with the reason in `cause`.
+type Behaviour = "fast" | "hang" | "empty" | "http500" | "reset" | `slow:${number}`;
 type Zone = (typeof ZONES)[number];
 
 const key = (domain: string, psrType: string) => `${domain}|${psrType}`;
@@ -119,6 +120,9 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
       if (how === "empty") return Promise.resolve(new Response(NO_DATA_XML));
       if (how === "http500") {
         return Promise.resolve(new Response("upstream error", { status: 500, statusText: "Internal Server Error" }));
+      }
+      if (how === "reset") {
+        return Promise.reject(Object.assign(new TypeError("fetch failed"), { cause: new Error("read ECONNRESET") }));
       }
       // Like a real fetch, "hang" never answers and "slow" answers late; both reject when the signal aborts.
       return new Promise<Response>((resolve, reject) => {
@@ -302,6 +306,28 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
       expect(said(errored)).not.toMatch(/stopped at/);
     });
 
+    it("returns before the deadline under the library's default knobs, when the stop lands in a retry backoff", async () => {
+      // SKIP_PREFETCH=1 and a plain `observable build` run without the prefetch's
+      // knobs: 30 s per request, three retries, backoffs of 1, 2 and 3 s.
+      vi.stubEnv("LOADER_FETCH_TIMEOUT_MS", "");
+      vi.stubEnv("LOADER_FETCH_RETRIES", "");
+      // A zone that hangs costs 126 s. The second batch starts at 126 s, times out at
+      // 156 s and sleeps 1 s: a stop at 90% of 174 s, 156.6 s, lands in that backoff.
+      vi.stubEnv("LOADER_DEADLINE_MS", "174000");
+      writeSnapshot(junesSnapshot());
+      setBehaviour("hang", (_z, i) => i >= 10);
+
+      const run = await runFor(175_000);
+      const result = await run.done;
+
+      // A request in its backoff finishes it before the loader can return: 157 s, not 156.6 s.
+      expect(run.elapsed()).toBeGreaterThan(156_600);
+      expect(run.elapsed()).toBeLessThanOrEqual(156_600 + 3_000);
+      expect(said(errored)).toMatch(/ENTSO-E stopped at 156\.6s of its 174s budget/);
+      expect(Object.keys(result)).toHaveLength(ZONES.length);
+      expect(requests.filter((r) => r.at > run.started + 156_600)).toEqual([]);
+    });
+
     // One answer that takes 200 s, past a stop at 162 s and the deadline at 180 s.
     // Requests are allowed 1000 s so that only the loader's own budget can end it.
     const oneAnswerAt200s = () => {
@@ -382,6 +408,16 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
       expect(result["kosovo-wind"].wasteStatus).toBe("unpublished");
       expect(result["kosovo-wind"].sourceNote).toMatch(/A75 empty in-window/);
       expect(said(warned)).not.toMatch(/zone kosovo-wind failed/);
+    });
+
+    it("says why a network request failed, not just that it did", async () => {
+      writeSnapshot(junesSnapshot());
+      setBehaviour("reset", byId("spain-wind"));
+
+      const result = await (await runFor(60_000)).done;
+
+      expect(said(warned)).toMatch(/zone spain-wind failed: ENTSO-E spain-wind: B19 request failed: fetch failed \(read ECONNRESET\)/);
+      expect(result["spain-wind"].sourceStatus).toBe("degraded"); // and the zone still falls back
     });
 
     it("never writes the API token into a failure message", async () => {

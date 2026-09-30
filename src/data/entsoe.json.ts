@@ -652,7 +652,7 @@ export async function collectEntsoeZones(
 }
 
 /** Keep the status a zone's own fallback stamped; only zones fetched fresh become live. */
-export function tagZonesLive(r: Record<string, RegionData>): Record<string, RegionData> {
+function tagZonesLive(r: Record<string, RegionData>): Record<string, RegionData> {
   const tagged: Record<string, RegionData> = {};
   for (const [k, v] of Object.entries(r)) {
     // Preserve "cached"/"degraded" stamped by per-zone fallback in
@@ -667,7 +667,7 @@ export function tagZonesLive(r: Record<string, RegionData>): Record<string, Regi
   return tagged;
 }
 
-export function tagZonesCached(c: Record<string, RegionData>): Record<string, RegionData> {
+function tagZonesCached(c: Record<string, RegionData>): Record<string, RegionData> {
   const tagged: Record<string, RegionData> = {};
   for (const [k, v] of Object.entries(c)) tagged[k] = { ...v, sourceStatus: "cached" };
   return tagged;
