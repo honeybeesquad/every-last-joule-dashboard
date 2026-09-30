@@ -8,10 +8,12 @@
  * error messages, and a keyed API takes its credential in the query string
  * (EIA api_key, ENTSO-E securityToken, KPX serviceKey), so those messages
  * reached the public build log and, from the South Korea loader, a served
- * sourceNote. They now carry the URL through redactUrl.
+ * sourceNote. They now carry the URL through redactUrl, and an error that
+ * fetch itself raises with the URL in it is rebuilt the same way.
  */
 import { createServer, type IncomingMessage, type RequestOptions, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
+import { inspect } from "node:util";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -24,6 +26,7 @@ import {
   redactUrl,
   resetFetchDeadlineForTests,
 } from "../src/lib/fetch.js";
+import { isNotFoundError } from "../src/lib/japan-area-csv.js";
 import { MAX_TIMER_MS } from "../src/lib/loader-deadline.js";
 
 // fetchHttp1Bytes dials port 443 over TLS and ignores the URL's own port, so a
@@ -49,13 +52,16 @@ const KPX_KEY = "test-dummy-kpx-service-key";
 let server: Server;
 let baseUrl: string;
 let slowUrl: string;
+const statusRequests: string[] = [];
 
 beforeAll(async () => {
-  // /status/<code> answers at once with that status. Any other path answers
-  // after 150 ms: slower than an immediate abort, well inside any real timeout.
+  // /status/<code> answers at once with that status, and is counted. Any other
+  // path answers after 150 ms: slower than an immediate abort, well inside any
+  // real timeout.
   server = createServer((req, res) => {
     const status = /^\/status\/(\d{3})/.exec(req.url ?? "")?.[1];
     if (status) {
+      statusRequests.push(req.url ?? "");
       res.statusCode = Number(status);
       res.end("refused");
       return;
@@ -162,9 +168,9 @@ describe("redactUrl", () => {
   it("reads a long run of ? or & in linear time", () => {
     // With ? allowed inside a name, 100,000 of them took seconds: each one started a match that scanned the rest.
     for (const run of ["?", "&"]) {
-      const url = `https://x.test/a${run.repeat(100_000)}b`;
+      const long = `https://x.test/a${run.repeat(100_000)}b`;
       const started = performance.now();
-      expect(redactUrl(url)).toBe(url);
+      expect(redactUrl(long)).toBe(long);
       expect(performance.now() - started).toBeLessThan(1000);
     }
   });
@@ -202,10 +208,12 @@ describe("error messages quote the URL without its credential", () => {
     expect(err.stack).not.toContain(EIA_KEY);
   });
 
-  it("names the last failed attempt, not only the first, once retries are spent", async () => {
+  it("once retries are spent: three attempts, and the error after the last one is redacted", async () => {
+    const before = statusRequests.length;
     const err = await failureOf(
       fetchJSON(`${baseUrl}/status/500?securityToken=${ENTSOE_TOKEN}`, { retries: 2, backoffBaseMs: 1 }),
     );
+    expect(statusRequests.length - before).toBe(3);
     expect(err.message).toBe(`HTTP 500 Internal Server Error for ${baseUrl}/status/500?securityToken=REDACTED`);
   });
 
@@ -229,9 +237,12 @@ describe("error messages quote the URL without its credential", () => {
       expect(err.stack).not.toContain(KPX_KEY);
     });
 
-    it("keeps the 'HTTP 404 ' prefix that isNotFoundError reads", async () => {
-      const err = await failureOf(fetchHttp1Bytes(`https://kpx.test/status/404?serviceKey=${KPX_KEY}`, 2000));
-      expect(err.message).toBe("HTTP 404 for https://kpx.test/status/404?serviceKey=REDACTED");
+    it("keeps the 'HTTP 404 ' prefix that isNotFoundError reads, and only for a 404", async () => {
+      const missing = await failureOf(fetchHttp1Bytes(`https://kpx.test/status/404?serviceKey=${KPX_KEY}`, 2000));
+      expect(missing.message).toBe("HTTP 404 for https://kpx.test/status/404?serviceKey=REDACTED");
+      expect(isNotFoundError(missing)).toBe(true);
+      const refused = await failureOf(fetchHttp1Bytes(`https://kpx.test/status/403?serviceKey=${KPX_KEY}`, 2000));
+      expect(isNotFoundError(refused)).toBe(false);
     });
 
     it("on a timeout", async () => {
@@ -239,5 +250,33 @@ describe("error messages quote the URL without its credential", () => {
       expect(err.message).toBe("timeout after 40ms for https://kpx.test/slow?serviceKey=REDACTED");
       expect(err.stack).not.toContain(KPX_KEY);
     });
+  });
+});
+
+describe("an error fetch itself raises with the URL in it", () => {
+  it("is rebuilt with the URL through redactUrl: a base constant that came out undefined", async () => {
+    const err = await failureOf(fetchJSON(`undefined?api_key=${EIA_KEY}&frequency=hourly`, { retries: 0 }));
+    expect(err.name).toBe("TypeError");
+    expect(err.message).toContain("undefined?api_key=REDACTED&frequency=hourly");
+    // The message, the stack, and any cause that would hold the URL too.
+    expect(inspect(err, { depth: 6 })).not.toContain(EIA_KEY);
+  });
+
+  it("is kept as it was when the URL has no credential to mask", async () => {
+    const err = await failureOf(fetchJSON("undefined?frequency=hourly", { retries: 0 }));
+    expect(err.name).toBe("TypeError");
+    expect(err.cause).toBeInstanceOf(Error); // a rebuilt error would have none
+  });
+
+  it("leaves a network failure alone, cause included", async () => {
+    // A port nothing listens on, so the connection is refused.
+    const closed = createServer();
+    await new Promise<void>((resolve) => closed.listen(0, "127.0.0.1", resolve));
+    const { port } = closed.address() as AddressInfo;
+    await new Promise<void>((resolve) => closed.close(() => resolve()));
+
+    const err = await failureOf(fetchJSON(`http://127.0.0.1:${port}/x?api_key=${EIA_KEY}`, { retries: 0 }));
+    expect(err.cause).toBeInstanceOf(Error);
+    expect(inspect(err, { depth: 6 })).not.toContain(EIA_KEY);
   });
 });

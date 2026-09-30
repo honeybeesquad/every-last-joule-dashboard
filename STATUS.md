@@ -25,30 +25,41 @@ of the URL as it was (`…?api_key=REDACTED&frequency=hourly`). The four message
 URL through it and are otherwise unchanged, so `isNotFoundError`
 (`src/lib/japan-area-csv.ts`), which reads the `HTTP 404 ` prefix, still matches. No
 loader changed: the EIA ISO, ERCOT, CAISO, Norway, ENTSO-E, Cyprus and South Korea loaders
-all reach these messages through `fetch.ts`. `tests/fetch.test.ts` gains 28 tests (20 of
-`redactUrl`; 8 of the messages: an HTTP error from each of `fetchJSON`, `fetchText` and
-`fetchBytes`, the last of several attempts, `fetch skipped`, and `fetchHttp1Bytes`'s HTTP
-error, 404 and timeout), each with a `test-dummy` key, and `tests/data/south-korea.test.ts`
-one (a failed KPX request keeps the `serviceKey` out of the served note and the log). All
-29 fail against the old `fetch.ts`. With dummy keys and a stubbed 403 the old file printed
-all three keys through `withFallback`, an EIA ISO loader and `fetchEntsoeZone`, and
-published `serviceKey=<key>` in the South Korea note; the new one prints none of them.
+all reach these messages through `fetch.ts`. The errors `fetch` itself raises for a URL it
+cannot use ("Failed to parse URL from <url>", as for a base constant that came out
+undefined) quote the URL whole too, so `withRetries` rebuilds such an error with the URL
+through `redactUrl` (same message and name, no cause); any other error, a network failure
+with its cause included, and an error for a URL with nothing to mask are kept as they are.
+`tests/fetch.test.ts` gains 31 tests (20 of `redactUrl`; 8 of the messages: an HTTP error
+from each of `fetchJSON`, `fetchText` and `fetchBytes`, three attempts and then the last
+error, `fetch skipped`, and `fetchHttp1Bytes`'s HTTP error, 404 and timeout; 3 of the
+rebuilt error), every credential in them a `test-dummy` value, and
+`tests/data/south-korea.test.ts` one (a failed KPX request keeps the `serviceKey` out of the
+served note and the log). 30 of the 32 fail against the old `fetch.ts`; the other two pin
+what the fix must keep (the error for a keyless URL, and a network failure's cause). With
+dummy keys and a stubbed 403 the old file printed all three keys through `withFallback`, an
+EIA ISO loader and `fetchEntsoeZone`, and published `serviceKey=<key>` in the South Korea
+note; the new one prints none of them.
 
 **Not changed.** `describeFetchFailure` in `src/data/eia-vre-bas.json.ts` is the stopgap
 in the still-open **#1174**, and stays as it is there: once #1174 has merged, its `api_key`
 regex is redundant and the function can shrink to the length cap, with its tests in
-`tests/data/eia-vre-bas-failure.test.ts`. Native `fetch` errors for a malformed URL
-(`Failed to parse URL from <url>`, and the one for a URL with `user:pass@`) still quote it:
-they come from `fetch`, not `fetch.ts`, and need a URL our own code built wrongly, where a
-refused connection, a DNS failure and a timeout carry no URL (probed on Node 26; the repo
-runs 24). Only the query string is read: a credential in the path or in `user:pass@` is not
-masked, and no loader sends one there (ESIOS sends its token in a header and
-netztransparenz its secret in a POST body). `src/lib/resilient.ts` and the loaders' own
-`err.message` prints are untouched: they print what `fetch.ts` now redacts. Loaders that
-format their own message from a URL without `fetch.ts` (AEMO, Chile, Uruguay, Ontario,
-WA-SWIS, Brazil-NE, and Germany curtailment's log line) carry no credential parameter
-today; one that adds a keyed URL should call `redactUrl`. No data file, `regions.ts` entry
-or tier.
+`tests/data/eia-vre-bas-failure.test.ts`. Only the query string is read: a credential in
+the path or in `user:pass@` is not masked (`fetch` refuses the latter and quotes it), nor is
+one under a name that does not end in `key`, `token`, `secret` or `password` (`appid`,
+`auth`, `sig`); no loader sends either (ESIOS sends its token in a header and
+netztransparenz its secret in a POST body). A refused connection, a DNS failure and a
+timeout carry no URL (probed on Node 26; the repo runs 24). `fetchHttp1Bytes`'s own
+`new URL(url)` throws "Invalid URL" with the URL in its `input` property; its only callers
+are the keyless Japan loaders. The mask also hides a malformed credential that the old
+message showed (surrounding quotes, a trailing newline, the text `undefined`):
+`EIA_API_KEY` and `ENTSOE_API_TOKEN` are read untrimmed, so a bad value now reads
+`REDACTED` like a good one. `src/lib/resilient.ts` and the loaders' own `err.message`
+prints are untouched: they print what `fetch.ts` now redacts. Loaders that format their own
+message from a URL without `fetch.ts` (AEMO, Chile, Uruguay, Ontario, WA-SWIS, Brazil-NE,
+and Germany curtailment's log line) carry no credential parameter today; one that adds a
+keyed URL should call `redactUrl`, and add its parameter's name to `CREDENTIAL_PARAM` if
+that name does not end in one of the four words. No data file, `regions.ts` entry or tier.
 
 ## `LOADER_FETCH_TIMEOUT_MS=0` means no per-request timeout (2026-09-30)
 

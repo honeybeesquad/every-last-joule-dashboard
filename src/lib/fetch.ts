@@ -72,10 +72,29 @@ const CREDENTIAL_PARAM = /([?&][^=&#?\s]*(?:key|token|secret|password)=)[^&#]+/g
  * credential in the query string, and a failing loader's message reaches the
  * build log, which is public, and from the South Korea loader a served
  * sourceNote. The rest of the URL is left as it was. Only the query string is
- * read: a credential in the path or in `user:pass@` is not masked.
+ * read: a credential in the path or in `user:pass@` is not masked, nor is one
+ * under a name outside CREDENTIAL_PARAM (`appid`, `auth`, `sig`), one in a `;`
+ * separated parameter or one percent-encoded. Add the name to CREDENTIAL_PARAM
+ * when a loader's API uses one.
  */
 export function redactUrl(url: string | URL): string {
   return String(url).replace(CREDENTIAL_PARAM, "$1REDACTED");
+}
+
+/**
+ * `fetch` quotes the URL itself, whole, when it cannot make a request of one
+ * ("Failed to parse URL from <url>": a base constant that came out undefined,
+ * say), which puts the key back in the message. Such an error is replaced by one
+ * with the same message and name, the URL through redactUrl, and no cause (the
+ * cause holds the URL too). Any other error is kept as it is, so a network
+ * failure keeps its cause, and so is one for a URL with nothing to mask.
+ */
+function redactQuotedUrl(err: unknown, url: string): unknown {
+  const shown = redactUrl(url);
+  if (shown === url || !(err instanceof Error) || !err.message.includes(url)) return err;
+  const redacted = new Error(err.message.split(url).join(shown));
+  redacted.name = err.name;
+  return redacted;
 }
 
 async function withRetries<T>(
@@ -105,7 +124,7 @@ async function withRetries<T>(
       const data = await read(res);
       return data;
     } catch (err) {
-      lastErr = err;
+      lastErr = redactQuotedUrl(err, url);
       if (deadlineTripped) break;
       if (attempt < retries) {
         await new Promise((r) => setTimeout(r, backoffBaseMs * (attempt + 1)));
