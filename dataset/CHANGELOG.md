@@ -4,6 +4,12 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Removed
+- **`spa-wind` and `spa-solar`**, 2026-09-30 ([#1174](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/1174)). EIA-930 carries only hydro for Southwestern Power Administration, so there was no wind or solar to collect. Regions 536 → 534; golden `scripts/ci/golden/tier-counts.json`: **T1a 160, T1b 26, T1c 1, T2 22, T3 325**. No waste or generation figure moves.
+
+### Changed
+- **`sourceStatus: "degraded"` also marks a record standing in for a failed fetch** in the `eia-vre-bas` loader: a copy of the last-good record of any age, or a record with no `generationProfile`. Before, a failed balancing authority was published as 24 hours of zero generation with `sourceStatus: "cached"` and `lastSuccessAt` set to the build time. See `SCHEMA.md` (`sourceStatus`, `wasteStatus`).
+
 ## [1.4.0] — 2026-09-19
 
 First renewables-only deposit. Version DOI [10.5281/zenodo.22837934](https://doi.org/10.5281/zenodo.22837934). v1.3.2 (`10.5281/zenodo.20570864`, 385 regions, includes associated-gas flaring) remains the previous mint and is not rewritten. Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) now resolves here.

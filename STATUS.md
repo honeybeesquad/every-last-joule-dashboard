@@ -3,130 +3,105 @@
 **Last verified against git:** 2026-09-30 (a failed EIA-930 balancing authority is published degraded, not as current zeros, and SPA, which EIA-930 carries as hydro only, is removed: roster 536 → 534, T3 327 → 325, **#1174**; see the entry below). Also 2026-09-30 (`LOADER_FETCH_TIMEOUT_MS=0` now means no per-request timeout, where it aborted every request at once, **#1168**; see the entry below). Also 2026-09-29 (step 3b's first day: six refreshes through the CLI, all green with success pings; three dispatches match the abed clock's timer and rule; Vercel made no git build of `main`; see the step 3b entry below). Also 2026-09-29 (#1155 in production: its first two builds went live with 197 of 530 region records live, as before, and the second logged the prefetch's `deadline 180s, hard cap 300s`; Vercel sets no `LOADER_*` variable; see the loader prefetch entry). Also 2026-09-29 (seventeen statics anchors dropped because each claimed at least the country's recorded generation of its fuel: modelled waste falls 4.45 TWh/yr, 17 regions become unpublished grid markers, no tier moves, and a test keeps every statics anchor below national generation, **#1154**; see the statics-anchor entry below). Also 2026-09-29 (the unwired Nigeria probe, its test and its niggrid backfill script deleted with the owner's approval, **#1152**; see the Nigeria entry below). Also 2026-09-29 (`/region/nigeria` described the unwired Niggrid probe at "~0.05 TWh/yr" while the dashboard serves `statics.json` at 0.5 TWh/yr; the source prose and link now describe the served data and mark its anchor unverified, with the tier and the data unchanged, **#1151**; see the Nigeria entry below). Also 2026-09-29 (the loader prefetch no longer fails or stalls a build on its own errors: an error fails only its loader, the hard cap now stops the loader's whole process group, and `LOADER_DEADLINE_MS=0` means no deadline in the prefetch as it does in the loaders, **#1155**; see the entry below). Also 2026-09-29 (the "HTTP 400" from `ercot-native` in the trial's build logs is a disabled probe that the loader prefetch ran, not lost data: production's ERCOT regions are live through EIA, the ERCOT credentials work but no build needs them now, and the prefetch runs only loaders the site reads, **#1150**; see the entry below). Also 2026-09-29 (step 3b, **#1149**: production deploys through the Vercel CLI from `data-refresh.yml`, on the 3-hourly schedule and on each push to `main` that changes the site; Vercel's own git builds for `main` are off; the fixed 3a trial passed first, 197 of 197 live records and all 19 keyed feeds; see the entry below). Also 2026-09-29 (the ignore step builds a push that changes only site pages or validation records; its `*.md` exclusion matched at any depth; **#1153**, see the entry below). Also 2026-09-29 (step 3 trial's first runs: the CLI build worked, in 7 min, and was not skipped; the comparison failed on a `vercel curl` flag, fixed in **#1147**; see the step 3 trial entry below). Also 2026-09-28 (step 3 trial, **#1145**: production built on Vercel through the CLI without going live, and compared with production; manual only, needs `VERCEL_TOKEN`; see the entry below). Also 2026-09-28 (a refresh clock for `abed`, step 2 of the refresh-pipeline plan, **#1143**: it dispatches a refresh when production is over 3 h 15 min old; runs once installed there, which by 29 Sep it appears to be, see the step 3b entry; see the entry below). Also 2026-09-28 (the refresh alarm moves to Healthchecks.io, off GitHub's scheduler: step 1 of the refresh-pipeline plan, **#1142**, merged; see the entry below). Also 2026-09-28 (sessions merge their own PRs once reviewed and green: `CLAUDE.md` "Merging PRs", **#1140**; see the entry below). Also 2026-09-28 (the #1134 fix in production: a refresh run by hand built the hook deployment of a skipped automation commit, which the old script skipped, the case that froze production; see "After the merge" in the entry below). Also 2026-09-27 (scheduled rebuilds were being skipped: production served one build from 04:42 UTC on 24 Sep to at least 27 Sep while every workflow stayed green, which Vercel's deployment records confirm; fix and freshness alarms merged in **#1134**; see the entry below). Also 2026-09-24 (dark is the default mode: a first visit opens dark whatever the OS prefers; see the entry below). Also 2026-09-24 (no Google Fonts request: `globalStylesheets: []`, and `/privacy` no longer names Google; see the entry below). Also 2026-09-24 (`/privacy` page for the Meta app review; see the entry below). Also 2026-09-24 (dark globe zooms with a plain scroll over it; see the entry below). Also 2026-09-24 (dark timeline ribbon stretches to the dock's width; see the entry below). Also 2026-09-24 (dark globe opens zoomed out, and keeps turning after a drag; see the entry below). Also 2026-09-24 (dark globe zooms out to the whole sphere; see the entry below). Also 2026-09-24 (dark globe zoom, tilt and borders; see the entry below). Also 2026-09-24 (0.5× playback restored as the default speed; see the D4 line in the redesign entry). Also 2026-09-24 (Nightgrid + Daylight: both modes recoloured, set in the brand system's Schibsted Grotesk and IBM Plex Mono, and the mark back in its gold and cyan; stacked on PR 5; see the entry below). Also 2026-09-24 (light/dark redesign PR 5, clean-up: the paper figure's palette renamed from "sunfire" to "embed", four unused faces and dead CSS deleted, the plan archived as shipped; stacked on PR 4; see the entries below). Also 2026-09-24 (light/dark redesign PR 4, tablet and phone in both modes, the globe explorer, the dark bottom sheet and the doc pages' new header, stacked on PR 3; see the entries below). Also 2026-09-24 (light/dark redesign PR 3, dark desktop: the Horizon stage, horizon globe, ribbon and glass dock; PR 1 **#1087** and PR 2 **#1091** merged 2026-09-23; see the entries below). Also 2026-09-23 (light/dark redesign PR 2, light desktop: the Almanac grid, engraved globe and small-multiples timeline; see the entry below). Also 2026-09-23 (light/dark redesign PR 1, theme plumbing: the site's modes are now light (Almanac) and dark (Horizon), with Geist, Geist Mono and Newsreader; see the entries below). Also 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk became `--font-display` and `--font-body` in both themes; superseded 2026-09-23 by the redesign's faces, see the entries below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
 **Active branch:** `main` (production: `.github/workflows/data-refresh.yml` deploys it to everylastjoule.com through the Vercel CLI every 3 h and on each push that changes the site; Vercel's own git builds for `main` are off since step 3b, **#1149**)
 
-## A failed EIA-930 balancing authority no longer passes for a current one; SPA removed (2026-09-30)
+## A failed EIA-930 balancing authority is published degraded, not as current zeros; SPA removed (2026-09-30)
 
 **#1174**, from `claude/vre-ba-failed-fetch-honesty`. **The roster shrinks by
 two regions, which needs the owner's sign-off:** T3 327 → 325 and total
 536 → 534 in `scripts/ci/golden/tier-counts.json`, and the dashboard's
 "regions we track" copy falls with it (it reads `REGIONS.length`). No region
-changes tier, no waste figure changes (both regions were
-`wasteStatus: "unpublished"`), and no generation figure changes (SPA
-published none).
+changes tier, no waste or generation figure changes (SPA published none). The
+fix changes what is published, the served JSON and the history rows, not what
+the main globes draw: see the follow-ups.
 
 **What was wrong.** `src/data/eia-vre-bas.json.ts` caught every failed fetch
-of a balancing authority (BA) and published `unpublishedEmptyRegion` for it:
-24 hours of zero generation. `withFallback` then treated the loader as
-having succeeded and, for a modelled record with no status, set
-`sourceStatus: "cached"` and `lastSuccessAt` to the build time
-(`stampLive`). A failed BA looked like a working one whose generation was
-zero.
-- **29 Sep, 17:03 UTC build (run 36602248741):** 16 of 19 BAs failed. 15
-  (`tva` to `epe`, 30 records) hit "This operation was aborted", the
-  per-request timeout (the build sets 15 s and one retry). SPA failed the
-  retired-feed guard in `src/lib/eia-iso.ts`. The loader took 137.7 s of its
-  180 s deadline.
-- **Nothing showed it.** Read from the code: each BA is one dashed
-  generation ring, drawn even at zero, with no status, and the grid cannot be
-  hovered or selected, so `sourceNote` (which held the error) has no screen.
-  No pillar (waste is unpublished). The region page reads only `regions.ts`
-  and the validation doc. No curtailment share (no `generationBasis`), and no
-  total sums generation. The history parquet's columns
-  (`scripts/append_history.py`) are status, times, waste and tier, so a
-  failed row can differ from a good one only in `last_updated`. Monitoring saw
-  nothing: the freshness checks read live records only, and `health-check.yml`
-  counts every cached or degraded record alike. For these records `degraded`
-  would show nowhere on the main globes, where only needles and beams carry
-  it; on `/embed/globe` it draws the amber ring round the base dot.
-- **The last-good snapshot was poisoned.** `data/snapshots/last-good/eia-vre-bas.json`
-  held 38 of 38 such records. #1053 committed a run made without
-  `EIA_API_KEY`, and `withFallback` writes whatever a loader returns as the
-  new last-good.
+of a balancing authority (BA) and published 24 hours of zero generation for it.
+`withFallback` then stamped the record `sourceStatus: "cached"` with
+`lastSuccessAt` = the build time (`stampLive`), so a failed BA looked like a
+working one whose generation was zero. On 29 Sep (run 36602248741) 15 of the 16
+BAs from `tva` to `epe` (all but `ldwp`) timed out, at the build's 15 s request
+timeout, and SPA hit the retired-feed guard. Nothing showed it: rings carry no
+status, the grids cannot be hovered, and monitoring could not tell them apart
+(the PR description has the trace). The committed last-good snapshot was 38 of
+38 such records: #1053 committed a run made without `EIA_API_KEY`, and
+`withFallback` writes whatever a loader returns as the new last-good.
 
-**Fix.** A BA whose fetch fails is published as its last-good copy or, when
-there is none, as records with no generation. Never as zero generation.
+**Fix (`src/data/eia-vre-bas.json.ts`).** Each record of a failed BA is
+published as its last-good copy or, with none usable, without a generation
+series. Never as a zero the failure path invents.
 - Both are `degraded` whatever their age (`cached` already means "modelled
-  record built this run"), so `stampLive` leaves them alone, and both keep
-  the time of the last real fetch. The copy keeps its own; a record that was
-  never fetched gets `1970-01-01T00:00:00.000Z`, the repo's "unknown time"
-  (`coerceLastSuccessAt`), which parses, so `withFallback`'s cache path also
-  reads it as ancient instead of stamping the build time.
-- A copy needs a real 24-point series for both fuels, fetched within 30 days
-  (the series is a trailing 30-day window, so an older copy describes one that
-  has rolled off) and not dated in the future. Its note keeps the original
-  text and appends one failure mark, not one per build. A zero series
-  recorded under the old "generation fetch failed (" note is not served.
-- The no-series record keeps `wasteStatus: "unpublished"` and waste zeros as
-  every record of this loader has, drops `generationProfile` and
-  `generationTotalTWh` (unknown, not zero), and does not count as
-  TSO-collected. The readers I found (`calc.ts`, `isTsoCollected`, the
-  tooltip) treat a missing series as 0 GW or as none, and
-  `validate-snapshots.ts` rejects one in a committed snapshot.
-- The reason is redacted before it goes into the served `sourceNote` or the
-  log: `fetchJSON`'s HTTP errors quote the request URL, and its query string
-  carries `EIA_API_KEY`. No key has leaked (the production payload, the
-  committed snapshot and the last 14 refresh-run logs hold none), but any
-  HTTP error from EIA would have written it into the served JSON.
-- One warning per build: `N of 18 balancing authorities failed this build: id
-  (last-good | unavailable), ...`. The loader exports `buildEiaVreBasData` and
-  `loadEiaVreBas`, with test seams for the fetch, the last-good record and
-  the clock.
-- `data/snapshots/last-good/eia-vre-bas.json` is regenerated from a real
-  EIA-930 run on 30 Sep: 36 records with real series, totals within a few per
-  cent of production's previous build. A test fails if the committed
-  snapshot holds a failure, lacks a series or lists other ids.
+  record built this run") and keep the time of the last real fetch; a record
+  with no usable copy gets `UNKNOWN_TIME`, the epoch (now exported from
+  `src/lib/freshness.ts`).
+- A copy needs a real 24-point series fetched within 30 days (the series is a
+  trailing 30-day window) and not after now. A zero series recorded under the
+  old "generation fetch failed (" note is not served.
+- A record with no usable copy keeps `wasteStatus: "unpublished"` and waste
+  zeros and drops `generationProfile` (unknown, not zero). That departs from
+  "unpublished records emit a series", so `dataset/SCHEMA.md`, the JSON schema
+  and `types.ts` now say so; `validate-snapshots.ts` still rejects one in a
+  committed snapshot, which is wanted. `degraded` also now means such a
+  record: `SCHEMA.md`, the schema and `CHANGELOG.md` say so.
+- When withFallback serves the whole snapshot (the loader runs past its
+  deadline, or every BA fails) `loadEiaVreBas` gives every record the same rules
+  and sets `stalenessThresholdHours: 0`, so no copy is ever `cached`. A run in
+  which every BA failed throws, as the ENTSO-E and Norway loaders do, so it is
+  never stored as the new last-good.
+- The failure reason has `api_key=` redacted before it reaches a served note or
+  the log (`fetchJSON`'s HTTP errors quote the request URL).
+- `data/snapshots/last-good/eia-vre-bas.json` is regenerated from a real run on
+  30 Sep (36 records, totals within a few per cent of production). A test fails
+  if it holds a failure, lacks a series or lists other ids.
 
-**SPA is hydro only.** Checked against the EIA-930 API on 30 Sep 2026. `SPA`
-is a respondent, and its hourly `fuel-type-data` rows for 30 Aug to 30 Sep
-are 725, all `WAT`. A query for `WND` or `SUN` over 2015-07-01 to 2026-09-30
-returns none. Its daily rows are `WAT` (2019-01-01 to 2026-09-28) and `OTH`
-(to 2024-06-13), plus one block, 3 to 13 Jun 2024, in which seven fuel codes
-(`COL`, `NG`, `NUC`, `OIL`, `OTH`, `SUN`, `WND`) carry the same daily number
-(31,713 MWh on 5 Jun) while `WAT` differs. That is a fill artefact: the
-hourly rows for the same day are `WAT` only. So the feed is alive and has
-never had wind or solar, and the retired-feed message SPA drew every build
-was wrong. Removed, as the WACM regions were (#795): the two `regions.ts`
-entries, their `tier-resolution` lines and validation docs, the roster and
-bad-conversion generated files, the snapshot records, the golden counts and
-the count claims in `src/methodology.md`, `docs/methodology/uncertainty.md`
-and the "Live HEAD" line of `dataset/README.md`.
+**SPA is hydro only.** EIA-930 API, 30 Sep 2026: its hourly rows for the last
+30 days are 725, all `WAT`, and a query for `WND` or `SUN` over 2015 to 2026
+returns none. Its daily route has one block (3 to 13 Jun 2024) where seven fuel
+codes carry the same number, a fill artefact the hourly rows do not have. So the
+feed is alive and never had wind or solar, and the retired-feed message it drew
+every build was wrong (the message in `src/lib/eia-iso.ts` no longer says so).
+Removed as WACM was (#795): the `regions.ts`, `tier-resolution` and validation
+doc entries, the generated roster and bad-conversion files, the golden counts
+and the count claims in `src/methodology.md`, `docs/methodology/uncertainty.md`
+and `dataset/README.md`.
 
 **Verified.** `npm run typecheck && npm test && npm run ci:gates` and
-`npm run validate` pass. Each part of the fix is load-bearing: with the
-`degraded` stamp removed 6 tests fail, and 1 or 2 fail with the key
-redaction, the 30-day cap, the future-date guard, the legacy-note guard or
-the redact-before-truncate order removed. The snapshot test fails on #1053's
-file. A local build with four failed BAs (two served from last-good, two with
-none) loaded the dashboard with no console error about an eia-vre-bas region
-and 3,783 links valid; the copy read "428 of the 534 regions we track".
+`npm run validate` pass. Removing each part of the fix fails a test (4 for the
+two status stamps, 4 for an all-failed run that resolves, 3 each for the age cap
+and the whole-snapshot rules, 1 or 2 for the other guards). Against the real EIA
+API with a dummy key (every request an HTTP 403) the notes carried
+`api_key=REDACTED`, the key appeared in no output or log, all 36 records were
+`degraded` with the snapshot's series, and the snapshot file was left as it was.
 
 **Follow-ups.**
-- The last-good copy is a stopgap. It reads the committed snapshot, and no
-  build commits that back (its only commit is #1053's, then this one), so it
-  serves a failed BA for 30 days after someone last refreshed the file, then
-  falls to the no-series record: from 30 Oct 2026 for the snapshot in this PR.
-  To refresh it, run `npx tsx src/data/eia-vre-bas.json.ts > /dev/null` with
-  `EIA_API_KEY` set and commit `data/snapshots/last-good/eia-vre-bas.json`;
-  the snapshot test refuses a run in which a BA failed.
-- A failed BA is still invisible on the main dashboard: rings carry no
-  status. A stale or unavailable ring style is a design decision.
-- No alarm. `health-check.yml` counts cached and degraded together (about
-  200 records are structurally cached, #822), and the freshness check reads
-  live records only. A count of degraded eia-vre-bas records would flag an
-  EIA outage; how noisy that should be is the owner's call.
-- The same defect, unfixed: ENTSO-E `allowEmpty` zones
-  (`src/data/entsoe.json.ts`) and Argentina's last fallback publish
-  `unpublishedEmptyRegion` on a failed fetch with a current stamp and no
-  `degraded`.
-- `src/lib/fetch.ts` quotes the request URL in HTTP errors, and
-  `withFallback` logs them, so a keyed URL (`api_key=`, `securityToken=`)
-  can reach a log or a served note wherever a loader passes `err.message`
-  on. This change redacts only this loader.
-- 12 BA and fuel pairs (`fpl-wind`, `aeci-solar` and ten more) are published
-  as zero generation with `lastUpdated` set to the build time, and a note
-  saying generation was collected. That is what `parseEiaIsoRegionPerFuel`
-  does when EIA returns no rows for a fuel; three (`fpl` wind, `aeci` solar,
-  `sceg` wind) were checked against the API and have none. It is structural,
-  not a failure, but it looks the same.
+- The last-good copy is a stopgap. It reads the committed snapshot and no build
+  commits that back, so it serves a failed BA for 30 days after someone last
+  refreshed the file (to 30 Oct 2026 for this one), then falls to the no-series
+  record. To refresh: run `npx tsx src/data/eia-vre-bas.json.ts > /dev/null`
+  with `EIA_API_KEY` set and commit the snapshot; its test refuses a run in
+  which a BA failed.
+- A failed BA is still invisible on the main dashboard: rings carry no status,
+  and `degraded` shows only as the amber ring on `/embed/globe`. A stale or
+  unavailable ring style is a design decision. The tooltip would print
+  "modeled · 1970" for a record with no usable copy if these grids were ever
+  hoverable.
+- No alarm: `health-check.yml` counts cached and degraded alike (about 200
+  records are structurally cached, #822) and the freshness check reads live
+  records only. Whether a count of degraded eia-vre-bas records should page is
+  the owner's call.
+- The same defect remains in ENTSO-E `allowEmpty` zones and Argentina's last
+  fallback: `unpublishedEmptyRegion` on a failed fetch, with a current stamp and
+  no `degraded`.
+- `src/lib/fetch.ts` quotes the request URL in HTTP errors and `withFallback`
+  logs them, so a keyed URL (`api_key=`, `securityToken=`, `serviceKey=`) can
+  reach a log, and in `south-korea.json.ts` (dormant: its key is configured
+  nowhere) a served note, wherever a loader passes `err.message` on. This
+  change redacts only this loader.
+- Zero generation is still published where this change does not reach: 12 BA
+  and fuel pairs (`fpl-wind`, `aeci-solar` and ten more; three checked against
+  the API) are zero series stamped with the build time, which is what
+  `eia-iso.ts` does when EIA returns no rows for a fuel. A transient empty
+  answer for one fuel looks the same, overwrites that fuel's good copy, and
+  could later be served as a copy. A BA whose feed stops but still returns older
+  rows passes as current until its window empties.
 - 15 of 19 BAs timed out in one build (15 s a request, one retry, 4 BAs at a
   time). Why EIA was slow is not known.
 

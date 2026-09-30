@@ -381,10 +381,13 @@ export function buildEiaIsoRegionPerFuel(config: EiaIsoConfig) {
     // (The wacm-wind / wacm-solar regions themselves were removed 2026-08-19 —
     // the owner chose removal over repointing to SWPW — but this guard and its
     // history stay, since other EIA-930 respondents can retire the same way.)
+    // Empty rows do not always mean a dead feed: SPA reports only hydro, and
+    // drew this error on every build until it was removed on 2026-09-30.
     if (windRaw.response.data.length === 0 && solarRaw.response.data.length === 0) {
       throw new Error(
         `EIA respondent ${config.respondent} returned no wind or solar rows for the window — ` +
-        `feed appears retired or renamed (check whether the BA code is still valid)`,
+        `the BA code may be retired or renamed (check it is still valid), ` +
+        `or the BA may report neither fuel (a hydro-only BA does not)`,
       );
     }
 

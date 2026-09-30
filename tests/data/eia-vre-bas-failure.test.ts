@@ -1,33 +1,37 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   EIA_VRE_BA_CONFIGS,
   LAST_GOOD_MAX_AGE_DAYS,
-  NEVER_FETCHED_AT,
   buildEiaVreBasData,
   describeFetchFailure,
   loadEiaVreBas,
 } from "../../src/data/eia-vre-bas.json";
 import { parseEiaIsoRegionPerFuel, type EIAResponse, type EiaIsoConfig } from "../../src/lib/eia-iso";
+import { resetFetchDeadlineForTests } from "../../src/lib/fetch";
+import { UNKNOWN_TIME } from "../../src/lib/freshness";
 import { findRegionDataIntegrityIssues } from "../../src/lib/region-data-integrity";
 import { REGIONS } from "../../src/lib/regions";
 import type { RegionData } from "../../src/lib/types";
-import { isTsoCollected, showsWastePillar } from "../../src/lib/waste-status";
+import { isTsoCollected, showsWastePillar, unpublishedEmptyRegion } from "../../src/lib/waste-status";
 
-// The failure these tests pin: on 29 Sep 2026 15 balancing authorities timed
-// out and the loader published all 30 of their records as zero-generation,
-// `cached`, and stamped with the build time (withFallback stamps a modelled
-// record "cached" with `lastSuccessAt` = now). Nothing told them from a BA that
+// The failure these tests pin: on 29 Sep 2026 15 balancing authorities (BAs)
+// timed out and the loader published their records as zero-generation, `cached`
+// and stamped with the build time (withFallback stamps a modelled record with no
+// status "cached" at `lastSuccessAt` = now). Nothing told them from a BA that
 // had worked.
 
 const NOW = new Date("2026-09-30T06:00:00.000Z");
 const HOUR_MS = 3_600_000;
 const DAY_MS = 24 * HOUR_MS;
 const iso = (msBeforeNow: number) => new Date(NOW.getTime() - msBeforeNow).toISOString();
+const now = () => NOW;
 
-const ALL_IDS = EIA_VRE_BA_CONFIGS.flatMap((c) => [`${c.regionId}-wind`, `${c.regionId}-solar`]);
+const BAS = EIA_VRE_BA_CONFIGS.map((c) => c.regionId);
+const ALL_IDS = BAS.flatMap((id) => [`${id}-wind`, `${id}-solar`]);
 
 /** One day of hourly EIA-930 rows at a constant level. */
 function eia(fueltype: "WND" | "SUN", respondent: string, mw: number): EIAResponse {
@@ -46,7 +50,7 @@ function eia(fueltype: "WND" | "SUN", respondent: string, mw: number): EIARespon
 
 /** A BA that works; each BA gets its own level so a record shows which BA it came from. */
 async function working(config: EiaIsoConfig) {
-  const level = 100 + EIA_VRE_BA_CONFIGS.findIndex((c) => c.regionId === config.regionId) * 10;
+  const level = 100 + BAS.indexOf(config.regionId) * 10;
   return parseEiaIsoRegionPerFuel(config, eia("WND", config.respondent, level), eia("SUN", config.respondent, level * 2));
 }
 
@@ -57,21 +61,29 @@ const failing = (...failed: string[]) => async (config: EiaIsoConfig) => {
 
 /** What withFallback would have written to last-good after a build at `fetchedAt`. */
 async function snapshotFrom(fetchedAt: string): Promise<Record<string, RegionData>> {
-  const built = await buildEiaVreBasData({ fetchPair: working, lastGood: {}, now: () => NOW });
+  const built = await buildEiaVreBasData({ fetchPair: working, lastGood: {}, now });
   return Object.fromEntries(
     Object.entries(built).map(([id, r]) => [id, { ...r, sourceStatus: "cached" as const, lastSuccessAt: fetchedAt }]),
   );
 }
 
-afterEach(() => {
-  vi.restoreAllMocks();
+const warned = () => vi.mocked(console.warn).mock.calls.flat().join("\n");
+
+beforeEach(() => {
+  vi.spyOn(console, "warn").mockImplementation(() => {});
+  vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
-describe("a BA whose fetch failed, with a last-good copy", () => {
+afterEach(() => {
+  vi.restoreAllMocks();
+  resetFetchDeadlineForTests();
+});
+
+describe("a record whose BA fetch failed, with a last-good copy", () => {
   it("serves the copy as degraded and keeps the time of the fetch that made it", async () => {
     const fetchedAt = iso(3 * HOUR_MS);
     const lastGood = await snapshotFrom(fetchedAt);
-    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now: () => NOW });
+    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now });
 
     for (const id of ["tva-wind", "tva-solar"]) {
       expect(out[id].sourceStatus).toBe("degraded");
@@ -86,25 +98,18 @@ describe("a BA whose fetch failed, with a last-good copy", () => {
     }
   });
 
-  it("is degraded at any age, since `cached` already means a record built this run", async () => {
-    const lastGood = await snapshotFrom(iso(HOUR_MS));
-    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now: () => NOW });
-    expect(out["tva-solar"].sourceStatus).toBe("degraded");
-  });
-
   it("leaves the BAs that worked as this build's records", async () => {
     const lastGood = await snapshotFrom(iso(3 * HOUR_MS));
-    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now: () => NOW });
-    const fresh = await buildEiaVreBasData({ fetchPair: working, lastGood: {}, now: () => NOW });
+    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now });
+    const fresh = await buildEiaVreBasData({ fetchPair: working, lastGood: {}, now });
     for (const id of ALL_IDS.filter((id) => !id.startsWith("tva-"))) {
       expect(out[id]).toEqual(fresh[id]);
-      expect(out[id].sourceNote).not.toContain("fetch failed");
     }
   });
 
   it("serves the same copy again after another failure, without stacking notes or refreshing its time", async () => {
     const fetchedAt = iso(6 * HOUR_MS);
-    const first = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: await snapshotFrom(fetchedAt), now: () => NOW });
+    const first = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: await snapshotFrom(fetchedAt), now });
     const later = new Date(NOW.getTime() + 3 * HOUR_MS);
     const second = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: first, now: () => later });
 
@@ -115,39 +120,97 @@ describe("a BA whose fetch failed, with a last-good copy", () => {
 
   it("stops serving a copy older than the window it summarises", async () => {
     const justInside = await snapshotFrom(iso(LAST_GOOD_MAX_AGE_DAYS * DAY_MS - HOUR_MS));
-    const inside = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: justInside, now: () => NOW });
+    const inside = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: justInside, now });
     expect(inside["tva-solar"].generationProfile).toBeDefined();
 
     const justOutside = await snapshotFrom(iso(LAST_GOOD_MAX_AGE_DAYS * DAY_MS + HOUR_MS));
-    const outside = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: justOutside, now: () => NOW });
+    const outside = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: justOutside, now });
     expect(outside["tva-solar"].generationProfile).toBeUndefined();
-    expect(outside["tva-solar"].lastSuccessAt).toBe(NEVER_FETCHED_AT);
+    expect(outside["tva-solar"].lastSuccessAt).toBe(UNKNOWN_TIME);
   });
 
-  it("does not serve a copy dated in the future", async () => {
-    const lastGood = await snapshotFrom(new Date(NOW.getTime() + 6 * HOUR_MS).toISOString());
-    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now: () => NOW });
+  it("does not serve a copy dated after now", async () => {
+    const lastGood = await snapshotFrom(new Date(NOW.getTime() + 60_000).toISOString());
+    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now });
     expect(out["tva-solar"].generationProfile).toBeUndefined();
   });
 
-  it("needs a usable copy of both fuels, or serves neither", async () => {
-    const lastGood = await snapshotFrom(iso(3 * HOUR_MS));
+  it("serves each record's own copy: a missing solar copy does not cost the wind copy", async () => {
+    const fetchedAt = iso(3 * HOUR_MS);
+    const lastGood = await snapshotFrom(fetchedAt);
     delete lastGood["tva-solar"];
-    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now: () => NOW });
+    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now });
+
+    expect(out["tva-wind"].generationProfile).toEqual(lastGood["tva-wind"].generationProfile);
+    expect(out["tva-wind"].lastSuccessAt).toBe(fetchedAt);
+    expect(out["tva-solar"].generationProfile).toBeUndefined();
+    expect(out["tva-solar"].sourceNote).toContain("no usable earlier copy of this record");
+  });
+
+  it("ignores a last-good record that is not shaped like one", async () => {
+    const lastGood = await snapshotFrom(iso(HOUR_MS));
+    const wind = lastGood["tva-wind"] as unknown as Record<string, unknown>;
+    wind.sourceNote = 5;
+    const solar = lastGood["tva-solar"] as unknown as { generationProfile: (number | null)[] };
+    solar.generationProfile = [...solar.generationProfile.slice(0, 23), null];
+
+    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now });
     expect(out["tva-wind"].generationProfile).toBeUndefined();
     expect(out["tva-solar"].generationProfile).toBeUndefined();
   });
+
+  it("does not serve a zero series that an older run recorded under a failure note", async () => {
+    // The shape committed in #1053: every BA failed (no key), and the zeros went
+    // into last-good stamped as a success.
+    const zeros = (id: string): RegionData => ({
+      ...unpublishedEmptyRegion(
+        id,
+        "EIA-930 TVA generation fetch failed (EIA_API_KEY not set); waste unpublished.",
+        iso(2 * HOUR_MS),
+      ),
+      sourceStatus: "cached",
+    });
+    const lastGood = { "tva-wind": zeros("tva-wind"), "tva-solar": zeros("tva-solar") };
+    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now });
+    expect(out["tva-solar"].generationProfile).toBeUndefined();
+  });
+
+  it("carries the reason without the API key", async () => {
+    // Every BA but tva answers with an HTTP error that quotes the keyed URL.
+    const leaky = async (config: EiaIsoConfig) => {
+      if (config.regionId === "tva") return working(config);
+      throw new Error(
+        "HTTP 429 Too Many Requests for https://api.eia.gov/v2/electricity/rto/fuel-type-data/data/?api_key=test-dummy-key-0123456789&frequency=hourly",
+      );
+    };
+    const out = await buildEiaVreBasData({ fetchPair: leaky, lastGood: await snapshotFrom(iso(HOUR_MS)), now });
+    const noLastGood = await buildEiaVreBasData({ fetchPair: leaky, lastGood: {}, now });
+
+    const published = JSON.stringify([out, noLastGood]) + warned();
+    expect(published).not.toContain("test-dummy-key-0123456789");
+    expect(out["fpl-solar"].sourceNote).toContain("api_key=REDACTED");
+    expect(noLastGood["fpl-solar"].sourceNote).toContain("api_key=REDACTED");
+  });
+
+  it("says nothing about fetches that were skipped after a deadline", async () => {
+    const skipped = async (config: EiaIsoConfig) => {
+      if (config.regionId === "tva") throw new Error("fetch skipped: loader deadline (https://api.eia.gov/v2/x)");
+      return working(config);
+    };
+    await buildEiaVreBasData({ fetchPair: skipped, lastGood: {}, now });
+    expect(warned()).not.toContain("tva");
+  });
 });
 
-describe("a BA whose fetch failed, with nothing to serve", () => {
-  it("publishes records with no generation, marked degraded and never fetched", async () => {
-    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: {}, now: () => NOW });
+describe("a record whose BA fetch failed, with nothing to serve", () => {
+  it("publishes records with no generation, marked degraded and of unknown time", async () => {
+    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: {}, now });
 
     for (const id of ["tva-wind", "tva-solar"]) {
       const record = out[id];
       expect(record.sourceStatus).toBe("degraded");
-      expect(record.lastSuccessAt).toBe(NEVER_FETCHED_AT);
-      expect(record.lastUpdated).toBe(NEVER_FETCHED_AT);
+      expect(record.lastSuccessAt).toBe(UNKNOWN_TIME);
+      expect(record.lastUpdated).toBe(UNKNOWN_TIME);
       // Unknown, not zero: a zero series would claim a measurement of no output.
       expect(record.generationProfile).toBeUndefined();
       expect(record.generationTotalTWh).toBeUndefined();
@@ -156,60 +219,147 @@ describe("a BA whose fetch failed, with nothing to serve", () => {
       expect(record.wasteStatus).toBe("unpublished");
       expect(showsWastePillar(record)).toBe(false);
       expect(record.sourceNote).toContain("fetch failed this build (This operation was aborted)");
-      expect(record.sourceNote).toContain("no usable earlier copy (none, or older than 30 days)");
+      expect(record.sourceNote).toContain("no usable earlier copy of this record");
     }
   });
 
   it("still carries what the dashboard needs of every record", async () => {
-    const out = await buildEiaVreBasData({ fetchPair: failing(...EIA_VRE_BA_CONFIGS.map((c) => c.regionId)), lastGood: {}, now: () => NOW });
+    const out = await buildEiaVreBasData({ fetchPair: failing(...BAS.slice(1)), lastGood: {}, now });
     const wanted = REGIONS.filter((r) => ALL_IDS.includes(r.id));
     expect(findRegionDataIntegrityIssues(out, wanted)).toEqual({ missing: [], extra: [], malformed: [], mismatchedId: [] });
-    expect(out["tva-solar"].confidenceTier).toBe("T3-modelled");
+    expect(out["fpl-solar"].confidenceTier).toBe("T3-modelled");
   });
 
   it("is not taken for a last-good copy on the next failure", async () => {
-    const first = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: {}, now: () => NOW });
-    const second = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: first, now: () => NOW });
+    const first = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: {}, now });
+    const second = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood: first, now });
     expect(second["tva-solar"].generationProfile).toBeUndefined();
-    expect(second["tva-solar"].lastSuccessAt).toBe(NEVER_FETCHED_AT);
+    expect(second["tva-solar"].lastSuccessAt).toBe(UNKNOWN_TIME);
+  });
+});
+
+describe("when every BA fails", () => {
+  it("fails the run, naming the first reason, so a failure is never stored as the new last-good", async () => {
+    await expect(
+      buildEiaVreBasData({ fetchPair: failing(...BAS), lastGood: await snapshotFrom(iso(HOUR_MS)), now }),
+    ).rejects.toThrow("All 18 EIA-930 balancing authorities failed (first error: This operation was aborted)");
+  });
+});
+
+describe("with the snapshot on disk, as the build runs the loader", () => {
+  let cwd: string;
+  const snapshotPath = () => join(cwd, "data", "snapshots", "last-good", "eia-vre-bas.json");
+  const writeSnapshot = (contents: unknown) => {
+    mkdirSync(join(cwd, "data", "snapshots", "last-good"), { recursive: true });
+    writeFileSync(snapshotPath(), typeof contents === "string" ? contents : JSON.stringify(contents));
+  };
+
+  beforeEach(() => {
+    cwd = mkdtempSync(join(tmpdir(), "elj-eia-vre-bas-"));
+    // withFallback and the loader both read and write under process.cwd().
+    vi.spyOn(process, "cwd").mockReturnValue(cwd);
   });
 
-  it("does not serve a zero series that an older run recorded under a failure note", async () => {
-    // The shape committed in #1053: every BA failed (no key), and the zeros went
-    // into last-good stamped as a success.
-    const zeros = (id: string): RegionData => ({
-      regionId: id,
-      profile: Array(24).fill(0),
-      latestProfile: null,
-      totalTWh: 0,
-      peakGW: 0,
-      lastUpdated: iso(2 * HOUR_MS),
-      lastSuccessAt: iso(2 * HOUR_MS),
-      sourceNote: "EIA-930 TVA generation fetch failed (EIA_API_KEY not set); waste unpublished.",
-      sourceStatus: "cached",
-      wasteStatus: "unpublished",
-      generationProfile: Array(24).fill(0),
-      generationTotalTWh: 0,
-    });
-    const lastGood = { "tva-wind": zeros("tva-wind"), "tva-solar": zeros("tva-solar") };
-    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), lastGood, now: () => NOW });
+  afterEach(() => {
+    rmSync(cwd, { recursive: true, force: true });
+  });
+
+  it("keeps a failed BA degraded at its last real time, and stamps the others with this build", async () => {
+    const fetchedAt = iso(5 * HOUR_MS);
+    writeSnapshot(await snapshotFrom(fetchedAt));
+
+    const out = await loadEiaVreBas({ fetchPair: failing("tva"), now });
+
+    // The bug: withFallback's stampLive turned these into `cached` at NOW.
+    for (const id of ["tva-wind", "tva-solar"]) {
+      expect(out[id].sourceStatus).toBe("degraded");
+      expect(out[id].lastSuccessAt).toBe(fetchedAt);
+    }
+    for (const id of ALL_IDS.filter((id) => !id.startsWith("tva-"))) {
+      expect(out[id].sourceStatus).toBe("cached");
+      expect(out[id].lastSuccessAt).toBe(NOW.toISOString());
+    }
+    expect(JSON.parse(readFileSync(snapshotPath(), "utf8"))).toEqual(out);
+  });
+
+  it("does not let a failed BA pass for current when there is no copy either", async () => {
+    const out = await loadEiaVreBas({ fetchPair: failing("tva"), now });
+    for (const id of ["tva-wind", "tva-solar"]) {
+      expect(out[id].sourceStatus).toBe("degraded");
+      expect(out[id].lastSuccessAt).toBe(UNKNOWN_TIME);
+      expect(out[id].generationProfile).toBeUndefined();
+    }
+  });
+
+  it("serves the snapshot's copies when every BA fails, and leaves the file as it was", async () => {
+    await loadEiaVreBas({ fetchPair: working, now });
+    const before = readFileSync(snapshotPath(), "utf8");
+
+    const next = new Date(NOW.getTime() + 3 * HOUR_MS);
+    const out = await loadEiaVreBas({ fetchPair: failing(...BAS), now: () => next });
+
+    for (const id of ALL_IDS) {
+      expect(out[id].sourceStatus).toBe("degraded");
+      expect(out[id].lastSuccessAt).toBe(NOW.toISOString());
+      expect(out[id].generationProfile).toBeDefined();
+      expect(out[id].sourceNote).toContain("All 18 EIA-930 balancing authorities failed");
+    }
+    expect(readFileSync(snapshotPath(), "utf8")).toBe(before);
+  });
+
+  it("serves no series for a snapshot older than the cap when every BA fails, and leaves the file as it was", async () => {
+    writeSnapshot(await snapshotFrom(iso((LAST_GOOD_MAX_AGE_DAYS + 1) * DAY_MS)));
+    const before = readFileSync(snapshotPath(), "utf8");
+
+    const out = await loadEiaVreBas({ fetchPair: failing(...BAS), now });
+
+    for (const id of ALL_IDS) {
+      expect(out[id].sourceStatus).toBe("degraded");
+      expect(out[id].generationProfile).toBeUndefined();
+    }
+    expect(readFileSync(snapshotPath(), "utf8")).toBe(before);
+  });
+
+  it("fails as every loader does when every BA fails and there is no snapshot", async () => {
+    await expect(loadEiaVreBas({ fetchPair: failing(...BAS), now })).rejects.toThrow("All 18 EIA-930 balancing authorities failed");
+  });
+
+  it("gives a loader that runs past its deadline the same rules, and never labels a copy `cached`", async () => {
+    const lastGood = await snapshotFrom(iso(HOUR_MS));
+    for (const id of ["tva-wind", "tva-solar"]) lastGood[id].lastSuccessAt = iso((LAST_GOOD_MAX_AGE_DAYS + 1) * DAY_MS);
+    writeSnapshot(lastGood);
+    const before = readFileSync(snapshotPath(), "utf8");
+
+    const out = await loadEiaVreBas({ fetchPair: () => new Promise<never>(() => {}), now, deadlineMs: 20 });
+
+    // An hour-old copy: withFallback's own age rule would call it `cached`.
+    expect(out["fpl-solar"].sourceStatus).toBe("degraded");
+    expect(out["fpl-solar"].generationProfile).toEqual(lastGood["fpl-solar"].generationProfile);
+    expect(out["fpl-solar"].lastSuccessAt).toBe(iso(HOUR_MS));
+    expect(out["fpl-solar"].sourceNote).toContain("the loader ran past its deadline");
+    // A copy past the cap is not served here either.
+    expect(out["tva-solar"].sourceStatus).toBe("degraded");
+    expect(out["tva-solar"].generationProfile).toBeUndefined();
+    expect(readFileSync(snapshotPath(), "utf8")).toBe(before);
+  });
+
+  it("warns about a snapshot it cannot read and publishes stand-ins", async () => {
+    writeSnapshot("<<<<<<< HEAD\n{}");
+    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), now });
+    expect(warned()).toContain("ignoring the last-good snapshot, which cannot be read");
     expect(out["tva-solar"].generationProfile).toBeUndefined();
   });
 
-  it("carries the reason without the API key", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    const leaky = async () => {
-      throw new Error(
-        "HTTP 429 Too Many Requests for https://api.eia.gov/v2/electricity/rto/fuel-type-data/data/?api_key=test-dummy-key-0123456789&frequency=hourly",
-      );
-    };
-    const out = await buildEiaVreBasData({ fetchPair: leaky, lastGood: await snapshotFrom(iso(HOUR_MS)), now: () => NOW });
-    const noLastGood = await buildEiaVreBasData({ fetchPair: leaky, lastGood: {}, now: () => NOW });
+  it("treats a snapshot that is not an object as empty", async () => {
+    writeSnapshot("null");
+    const out = await buildEiaVreBasData({ fetchPair: failing("tva"), now });
+    expect(out["tva-solar"].generationProfile).toBeUndefined();
+    expect(out["fpl-solar"].generationProfile).toBeDefined();
+  });
 
-    const published = JSON.stringify([out, noLastGood]) + warn.mock.calls.flat().join("\n");
-    expect(published).not.toContain("test-dummy-key-0123456789");
-    expect(out["tva-solar"].sourceNote).toContain("api_key=REDACTED");
-    expect(noLastGood["tva-solar"].sourceNote).toContain("api_key=REDACTED");
+  it("does not warn when there is no snapshot", async () => {
+    await buildEiaVreBasData({ fetchPair: failing("tva"), now });
+    expect(warned()).not.toContain("cannot be read");
   });
 });
 
@@ -223,7 +373,7 @@ describe("describeFetchFailure", () => {
     );
   });
 
-  it("redacts before it truncates, so a cut cannot leave part of a key", () => {
+  it("stays within 200 characters with the key redacted, when the cut falls right after `api_key=`", () => {
     const long = `${"x".repeat(180)} https://x/?api_key=test-dummy-abcdefghijklmnopqrstuvwxyz`;
     const described = describeFetchFailure(new Error(long));
     expect(described).not.toContain("test-dummy");
@@ -235,76 +385,17 @@ describe("describeFetchFailure", () => {
   });
 });
 
-describe("through withFallback, as the build runs the loader", () => {
-  function tmpCwd(): string {
-    const dir = mkdtempSync(join(tmpdir(), "elj-eia-vre-bas-"));
-    vi.spyOn(process, "cwd").mockReturnValue(dir);
-    return dir;
-  }
-  const snapshotPath = (cwd: string) => join(cwd, "data", "snapshots", "last-good", "eia-vre-bas.json");
-
-  it("keeps a failed BA degraded at its last real time, and stamps the others with this build", async () => {
-    const cwd = tmpCwd();
-    try {
-      const fetchedAt = iso(5 * HOUR_MS);
-      mkdirSync(join(cwd, "data", "snapshots", "last-good"), { recursive: true });
-      writeFileSync(snapshotPath(cwd), JSON.stringify(await snapshotFrom(fetchedAt)));
-
-      const out = await loadEiaVreBas({ fetchPair: failing("tva"), now: () => NOW });
-
-      // The bug: withFallback's stampLive turned these into `cached` at NOW.
-      for (const id of ["tva-wind", "tva-solar"]) {
-        expect(out[id].sourceStatus).toBe("degraded");
-        expect(out[id].lastSuccessAt).toBe(fetchedAt);
-      }
-      for (const id of ALL_IDS.filter((id) => !id.startsWith("tva-"))) {
-        expect(out[id].sourceStatus).toBe("cached");
-        expect(out[id].lastSuccessAt).toBe(NOW.toISOString());
-      }
-      expect(JSON.parse(readFileSync(snapshotPath(cwd), "utf8"))).toEqual(out);
-    } finally {
-      rmSync(cwd, { recursive: true, force: true });
-    }
-  });
-
-  it("does not let a failed BA pass for current when it has no copy either", async () => {
-    const cwd = tmpCwd();
-    try {
-      const out = await loadEiaVreBas({ fetchPair: failing("tva"), now: () => NOW });
-      for (const id of ["tva-wind", "tva-solar"]) {
-        expect(out[id].sourceStatus).toBe("degraded");
-        expect(out[id].lastSuccessAt).toBe(NEVER_FETCHED_AT);
-        expect(out[id].generationProfile).toBeUndefined();
-      }
-    } finally {
-      rmSync(cwd, { recursive: true, force: true });
-    }
-  });
-
-  it("survives every BA failing on the next build: copies keep their own times", async () => {
-    const cwd = tmpCwd();
-    try {
-      await loadEiaVreBas({ fetchPair: failing(), now: () => NOW });
-      const next = new Date(NOW.getTime() + 3 * HOUR_MS);
-      const out = await loadEiaVreBas({ fetchPair: failing(...EIA_VRE_BA_CONFIGS.map((c) => c.regionId)), now: () => next });
-      for (const id of ALL_IDS) {
-        expect(out[id].sourceStatus).toBe("degraded");
-        expect(out[id].lastSuccessAt).toBe(NOW.toISOString());
-        expect(out[id].generationProfile).toBeDefined();
-      }
-    } finally {
-      rmSync(cwd, { recursive: true, force: true });
-    }
-  });
-});
-
 describe("the committed last-good snapshot", () => {
   // #1053 committed a snapshot of a run with no EIA_API_KEY: 38 of 38 records
-  // were failures, stamped as a success. withFallback overwrites this file on
-  // any local build, so a careless `git add` can commit one again.
-  const snapshot = JSON.parse(
-    readFileSync(join(process.cwd(), "data", "snapshots", "last-good", "eia-vre-bas.json"), "utf8"),
-  ) as Record<string, RegionData>;
+  // were failures, stamped as a success. A local build rewrites this file, so a
+  // careless `git add` can commit one again. Read in a hook, not at collection,
+  // so a missing file fails these tests and not the file's other tests.
+  let snapshot: Record<string, RegionData>;
+
+  beforeAll(() => {
+    const path = fileURLToPath(new URL("../../data/snapshots/last-good/eia-vre-bas.json", import.meta.url));
+    snapshot = JSON.parse(readFileSync(path, "utf8"));
+  });
 
   it("holds a record for each listed BA's wind and solar, and nothing else", () => {
     expect(Object.keys(snapshot).sort()).toEqual([...ALL_IDS].sort());
@@ -314,12 +405,11 @@ describe("the committed last-good snapshot", () => {
     for (const [id, record] of Object.entries(snapshot)) {
       expect(record.sourceNote, id).not.toContain("fetch failed");
       expect(record.sourceStatus, id).not.toBe("degraded");
-      expect(Array.isArray(record.generationProfile) && record.generationProfile.length === 24, `${id} has a series`).toBe(true);
+      expect(isTsoCollected(record), `${id} has a series`).toBe(true);
     }
-    // A BA can have no wind, or no solar, but not neither.
-    for (const config of EIA_VRE_BA_CONFIGS) {
-      const total = (snapshot[`${config.regionId}-wind`].generationTotalTWh ?? 0) + (snapshot[`${config.regionId}-solar`].generationTotalTWh ?? 0);
-      expect(total, `${config.regionId} generation`).toBeGreaterThan(0);
-    }
+    // Some BAs report no wind or solar, and a BA can have an empty window, but
+    // not all of them at once.
+    const total = Object.values(snapshot).reduce((sum, r) => sum + (r.generationTotalTWh ?? 0), 0);
+    expect(total).toBeGreaterThan(0);
   });
 });

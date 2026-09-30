@@ -51,8 +51,9 @@ export function qualityOpacity(bucket: QualityBucket): number {
 }
 
 /**
- * Base-dot style. A `degraded` sourceStatus (live feed >24h stale) overrides
- * the bucket dot with the amber-ring alarm; live/cached use the bucket dot.
+ * Base-dot style. A `degraded` sourceStatus (a feed >24h stale, or a record
+ * standing in for a failed fetch) overrides the bucket dot with the amber-ring
+ * alarm; live/cached use the bucket dot.
  */
 export function dotStyleFor(bucket: QualityBucket, sourceStatus?: string | null): DotStyle {
   if (sourceStatus === "degraded") return "degraded";

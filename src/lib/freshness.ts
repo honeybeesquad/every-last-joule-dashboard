@@ -27,8 +27,14 @@ export function relayFreshness(
   return ageMs > thresholdDays * 24 * 60 * 60 * 1000 ? "degraded" : "live";
 }
 
+/**
+ * The repo's stand-in for a time nothing is known about: the epoch. It parses,
+ * so anything that ages a record by it reads the record as ancient.
+ */
+export const UNKNOWN_TIME = "1970-01-01T00:00:00.000Z";
+
 /** Convert source anchor labels such as "2024" or "2025-Q1" to ISO timestamps. */
-export function coerceLastSuccessAt(value: string, fallback = "1970-01-01T00:00:00.000Z"): string {
+export function coerceLastSuccessAt(value: string, fallback = UNKNOWN_TIME): string {
   const year = value.match(/^(\d{4})$/);
   if (year) return `${year[1]}-01-01T00:00:00.000Z`;
 
