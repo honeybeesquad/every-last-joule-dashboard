@@ -1,8 +1,10 @@
 import { request as httpsRequest, type RequestOptions as HttpsRequestOptions } from "node:https";
 
+import { MAX_TIMER_MS, msFromEnv } from "./loader-deadline.js";
+
 export interface FetchJSONOptions {
   headers?: Record<string, string>;
-  timeoutMs?: number;      // default LOADER_FETCH_TIMEOUT_MS, else 30000
+  timeoutMs?: number;      // default LOADER_FETCH_TIMEOUT_MS, else 30000; 0 means none
   retries?: number;        // default LOADER_FETCH_RETRIES, else 3
   backoffBaseMs?: number;  // default 1000 (linear backoff)
   method?: string;
@@ -15,6 +17,10 @@ export interface FetchJSONOptions {
  * last-good snapshot to fall back to and a deploy must not wait on a dead
  * upstream: 30 s × 4 attempts per URL is what turned an ENTSO-E stall into a
  * 46-minute failed build (2026-09-10).
+ *
+ * LOADER_FETCH_TIMEOUT_MS is read like LOADER_DEADLINE_MS: 0 means no
+ * per-request timeout (a request then runs until withFallback's deadline
+ * stops it, if that is on), and a blank value means unset.
  */
 function envInt(name: string, fallback: number): number {
   const raw = process.env[name];
@@ -22,7 +28,7 @@ function envInt(name: string, fallback: number): number {
   const n = Number(raw);
   return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
-export const DEFAULT_TIMEOUT_MS = () => envInt("LOADER_FETCH_TIMEOUT_MS", 30000);
+export const DEFAULT_TIMEOUT_MS = () => msFromEnv(process.env.LOADER_FETCH_TIMEOUT_MS, 30000);
 export const DEFAULT_RETRIES = () => envInt("LOADER_FETCH_RETRIES", 3);
 
 /**
@@ -67,7 +73,8 @@ async function withRetries<T>(
     if (deadlineTripped) throw new Error(`fetch skipped: ${deadlineTripped} (${url})`);
     const controller = new AbortController();
     inflight.add(controller);
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    // 0 means no timeout; setTimeout(…, 0) would abort every request at once.
+    const timer = timeoutMs > 0 ? setTimeout(() => controller.abort(), Math.min(timeoutMs, MAX_TIMER_MS)) : undefined;
     try {
       const res = await fetch(url, { method, headers, body, signal: controller.signal });
       if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} for ${url}`.trimEnd());
