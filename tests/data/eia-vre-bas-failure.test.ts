@@ -156,7 +156,7 @@ describe("a BA whose fetch failed, with nothing to serve", () => {
       expect(record.wasteStatus).toBe("unpublished");
       expect(showsWastePillar(record)).toBe(false);
       expect(record.sourceNote).toContain("fetch failed this build (This operation was aborted)");
-      expect(record.sourceNote).toContain("no earlier copy to serve");
+      expect(record.sourceNote).toContain("no usable earlier copy (none, or older than 30 days)");
     }
   });
 

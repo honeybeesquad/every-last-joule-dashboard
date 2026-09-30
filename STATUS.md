@@ -100,6 +100,13 @@ none) loaded the dashboard with no console error about an eia-vre-bas region
 and 3,783 links valid; the copy read "428 of the 534 regions we track".
 
 **Follow-ups.**
+- The last-good copy is a stopgap. It reads the committed snapshot, and no
+  build commits that back (its only commit is #1053's, then this one), so it
+  serves a failed BA for 30 days after someone last refreshed the file, then
+  falls to the no-series record: from 30 Oct 2026 for the snapshot in this PR.
+  To refresh it, run `npx tsx src/data/eia-vre-bas.json.ts > /dev/null` with
+  `EIA_API_KEY` set and commit `data/snapshots/last-good/eia-vre-bas.json`;
+  the snapshot test refuses a run in which a BA failed.
 - A failed BA is still invisible on the main dashboard: rings carry no
   status. A stale or unavailable ring style is a design decision.
 - No alarm. `health-check.yml` counts cached and degraded together (about

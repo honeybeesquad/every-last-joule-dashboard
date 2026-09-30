@@ -136,8 +136,8 @@ function staleCopy(prev: RegionData, reason: string): RegionData {
  */
 function unavailable(regionId: string, respondent: string, reason: string): RegionData {
   const note =
-    `EIA-930 ${respondent}: fetch failed this build (${reason}) and there is no earlier copy to serve, ` +
-    `so no generation is shown. wasteStatus unpublished — missing ≠ zero.`;
+    `EIA-930 ${respondent}: fetch failed this build (${reason}) and there is no usable earlier copy ` +
+    `(none, or older than ${LAST_GOOD_MAX_AGE_DAYS} days), so no generation is shown. wasteStatus unpublished — missing ≠ zero.`;
   const { generationProfile: _series, generationTotalTWh: _total, ...noSeries } =
     unpublishedEmptyRegion(regionId, note, NEVER_FETCHED_AT);
   return { ...noSeries, sourceStatus: "degraded" };
@@ -204,7 +204,7 @@ export async function buildEiaVreBasData(deps: EiaVreBasDeps = {}): Promise<Reco
           `[eia-vre-bas] ${config.regionId}: EIA-930 ${config.respondent} fetch failed (${reason}); ` +
             (served === "last-good"
               ? "serving the last-good copy, marked degraded."
-              : "no last-good copy, so its records carry no generation and are marked degraded."),
+              : "no usable last-good copy, so its records carry no generation and are marked degraded."),
         );
         return { pair: stampEstimated(pair), served };
       }
