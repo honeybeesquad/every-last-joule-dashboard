@@ -152,14 +152,24 @@ function technologyNote(technologies: readonly EntsoeTechnologySpec[]): string {
 /**
  * Why a request failed, for the log. undici reports a network failure as just
  * "fetch failed" and keeps the reason (ECONNRESET, ENOTFOUND, a connect
- * timeout) in `cause`. A fetch error's message also names the request URL, and
- * the URL carries the API token.
+ * timeout) in `cause`. A host with several addresses fails as an AggregateError
+ * with no message of its own, its reasons in `errors` and a `code`. A fetch
+ * error's message also names the request URL, and the URL carries the API token.
  */
 function describeFailure(err: unknown): string {
   if (!(err instanceof Error)) return String(err);
-  const cause = err.cause instanceof Error ? err.cause.message : undefined;
+  const cause = err.cause instanceof Error ? causeText(err.cause) : undefined;
   const message = cause && cause !== err.message ? `${err.message} (${cause})` : err.message;
   return message.replace(/securityToken=[^&\s)]*/g, "securityToken=[REDACTED]");
+}
+
+function causeText(cause: Error): string | undefined {
+  if (cause.message) return cause.message;
+  if (cause instanceof AggregateError) {
+    const inner = [...new Set(cause.errors.map((e) => (e instanceof Error ? e.message : String(e))).filter(Boolean))];
+    if (inner.length > 0) return inner.join("; ");
+  }
+  return (cause as { code?: string }).code;
 }
 
 export async function fetchEntsoeZone(zone: EntsoeZoneSpec): Promise<RegionData> {

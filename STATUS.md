@@ -28,7 +28,8 @@ effect. (a) was built; (b) was not.
   replaced real last-good data with zeros once the snapshot holds it, and `netherlands-wind` (two technologies) was
   built `live` from B19 alone when its B18 request timed out at 13:04:55 on 29 Sep (that run was then cut off at the
   deadline, so production did not serve it). Either now falls back on the zone's last-good record. ENTSO-E's own "no data" answer (HTTP 200) is still an empty record. A failure is logged once per zone,
-  with the reason undici keeps in `cause` ("fetch failed (read ECONNRESET)"), and without the API token.
+  with the reason undici keeps in `cause` ("fetch failed (read ECONNRESET)", or the inner errors of an
+  `AggregateError` from a host with several addresses), and without the API token.
 - **The all-zones-failed throw is gone.** Since 20 Sep the `allowEmpty` zones counted a failed request as an answer, so
   the throw could only fire on a missing token. Counting failures honestly would have made it fire on every total
   outage, and `withFallback` would then have served the snapshot whole and dropped the 18 again. A missing token is now
@@ -42,9 +43,9 @@ the zone was not fetched, or that the fetch failed, and does not say the A75 was
 which six do in every healthy run, still gets the "A75 empty in-window" record, as before.)
 
 **Checked.**
-- 23 tests in `tests/data/entsoe-slow.test.ts` run the real loader (72 zones, `withFallback`'s stamping, the fetch
+- 25 tests in `tests/data/entsoe-slow.test.ts` run the real loader (72 zones, `withFallback`'s stamping, the fetch
   layer's timeouts, retries and aborts) against a stubbed `fetch`, fake timers and the prefetch's knobs (15 s per request,
-  one retry). 13 of them fail against a fresh checkout of `main` (4a94f97c), through a shim that exports its `run` under the new
+  one retry). 15 of them fail against a fresh checkout of `main` (4a94f97c), through a shim that exports its `run` under the new
   names; the other 10 describe behaviour that is unchanged.
   `tests/resilient.test.ts` adds 4, and its snapshot is now removed after each test, because `ci:tier-coherence` fails on
   one left in `data/snapshots/last-good`.
@@ -52,18 +53,18 @@ which six do in every healthy run, still gets the "A75 empty in-window" record, 
   (`LOADER_DEADLINE_MS=15000`, in a temp directory with a copy of the snapshot). `main`: 15 s, 54 zones, all `degraded`,
   `malta` missing, `spain-wind` `degraded`. Here: stopped at 13.5 s of 15 s, 72 zones (12 live, 42 last-good `degraded`,
   18 markers), `spain-wind` live.
-- Five healthy refreshes on 29 Sep (08:04, 09:44, 17:03, 18:02, 22:11) logged no failed ENTSO-E request and no failed
-  zone, and six zones answering "no data" each time, so failing a zone on a failed request changes nothing in a healthy
-  build.
-- `npm run typecheck`, `npm test` (248 files, 1867 tests) and `npm run ci:gates` exit 0, with `ci:tally-golden` and
+- Five refreshes on 29 Sep in which ENTSO-E answered normally (08:04, 09:44, 17:03, 18:02, 22:11) logged no failed
+  ENTSO-E request and no failed zone, and six zones answering "no data" each time, so failing a zone on a failed
+  request changes nothing when ENTSO-E answers normally. (08:04 and 17:03 had EIA fallbacks, which are other loaders.)
+- `npm run typecheck`, `npm test` (248 files, 1869 tests) and `npm run ci:gates` exit 0, with `ci:tally-golden` and
   `ci:magnitude-golden` unchanged.
 - **Not seen in production yet.** The stop shows in a build log as `ENTSO-E stopped at 162s of its 180s budget: N zones
   fetched, M kept from the last-good snapshot, K unpublished markers`, and only when ENTSO-E stalls.
 
 **Trade-offs.**
 - A run that would have finished between 162 s and 180 s is now cut at 162 s, and the zones it had not finished keep
-  their last-good records for that build. Healthy runs take well under that: two refreshes after the incident took
-  38.8 s and 17.5 s.
+  their last-good records for that build. When ENTSO-E answers normally the loader takes well under that: two
+  refreshes after the incident took 38.8 s and 17.5 s.
 - A stall or total outage now returns instead of throwing, so `withFallback` writes the snapshot in the build's own
   checkout with the fallback records and the markers (stamped `lastSuccessAt` now, though never fetched). On Vercel
   that checkout is discarded. On a machine that keeps it, `data/snapshots/last-good/entsoe.json` is rewritten and a

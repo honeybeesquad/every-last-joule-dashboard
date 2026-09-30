@@ -31,9 +31,21 @@ const INCIDENT = new Date("2026-09-29T13:02:57.000Z"); // when the refresh start
 const JUNE = "2026-06-17T04:11:31.459Z"; // when every zone in the committed snapshot last succeeded
 const LAST_GOOD_TWH = 1.5; // a value no fetch of the fixture produces
 
+// How undici fails on a network error: "fetch failed", with the reason in `cause`. A host with several
+// addresses fails as an AggregateError with no message of its own; some causes carry only a code.
+const REJECTIONS = {
+  reset: () => Object.assign(new TypeError("fetch failed"), { cause: new Error("read ECONNRESET") }),
+  refused: () =>
+    Object.assign(new TypeError("fetch failed"), {
+      cause: Object.assign(
+        new AggregateError([new Error("connect ECONNREFUSED ::1:443"), new Error("connect ECONNREFUSED 192.0.2.1:443")], ""),
+        { code: "ECONNREFUSED" },
+      ),
+    }),
+  codeOnly: () => Object.assign(new TypeError("fetch failed"), { cause: Object.assign(new Error(""), { code: "ENOTFOUND" }) }),
+};
 // `slow:<ms>` answers like "fast", after that long, unless the request is aborted first.
-// `reset` fails like undici does on a network error: "fetch failed", with the reason in `cause`.
-type Behaviour = "fast" | "hang" | "empty" | "http500" | "reset" | `slow:${number}`;
+type Behaviour = "fast" | "hang" | "empty" | "http500" | keyof typeof REJECTIONS | `slow:${number}`;
 type Zone = (typeof ZONES)[number];
 
 const key = (domain: string, psrType: string) => `${domain}|${psrType}`;
@@ -121,9 +133,7 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
       if (how === "http500") {
         return Promise.resolve(new Response("upstream error", { status: 500, statusText: "Internal Server Error" }));
       }
-      if (how === "reset") {
-        return Promise.reject(Object.assign(new TypeError("fetch failed"), { cause: new Error("read ECONNRESET") }));
-      }
+      if (how in REJECTIONS) return Promise.reject(REJECTIONS[how as keyof typeof REJECTIONS]());
       // Like a real fetch, "hang" never answers and "slow" answers late; both reject when the signal aborts.
       return new Promise<Response>((resolve, reject) => {
         const timer = how === "hang" ? undefined : setTimeout(() => resolve(new Response(GERMANY_XML)), Number(how.slice("slow:".length)));
@@ -410,14 +420,18 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
       expect(said(warned)).not.toMatch(/zone kosovo-wind failed/);
     });
 
-    it("says why a network request failed, not just that it did", async () => {
+    it.each([
+      ["reset", "spain-wind", "fetch failed (read ECONNRESET)"],
+      ["refused", "portugal-wind", "fetch failed (connect ECONNREFUSED ::1:443; connect ECONNREFUSED 192.0.2.1:443)"],
+      ["codeOnly", "finland-wind", "fetch failed (ENOTFOUND)"],
+    ] as const)("says why a network request failed (%s), not just that it did", async (how, zone, expected) => {
       writeSnapshot(junesSnapshot());
-      setBehaviour("reset", byId("spain-wind"));
+      setBehaviour(how, byId(zone));
 
       const result = await (await runFor(60_000)).done;
 
-      expect(said(warned)).toMatch(/zone spain-wind failed: ENTSO-E spain-wind: B19 request failed: fetch failed \(read ECONNRESET\)/);
-      expect(result["spain-wind"].sourceStatus).toBe("degraded"); // and the zone still falls back
+      expect(said(warned)).toContain(`zone ${zone} failed: ENTSO-E ${zone}: B19 request failed: ${expected}`);
+      expect(result[zone].sourceStatus).toBe("degraded"); // and the zone still falls back
     });
 
     it("never writes the API token into a failure message", async () => {
