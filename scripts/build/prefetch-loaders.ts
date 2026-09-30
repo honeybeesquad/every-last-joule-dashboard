@@ -26,7 +26,7 @@
  *   LOADER_CONCURRENCY      parallel loaders           default 8
  *   LOADER_DEADLINE_MS      withFallback live budget   default 180000; 0 turns it off (see src/lib/loader-deadline.ts)
  *   LOADER_HARD_CAP_MS      stop a loader after this   default LOADER_DEADLINE_MS + 120000, none when the deadline is off; 0 turns it off
- *   LOADER_FETCH_TIMEOUT_MS per-request timeout        default here 15000 (library default 30000)
+ *   LOADER_FETCH_TIMEOUT_MS per-request timeout        default here 15000 (library default 30000); 0 turns it off
  *   LOADER_FETCH_RETRIES    per-request retries        default here 1     (library default 3)
  *   SKIP_PREFETCH=1         do nothing (Framework runs loaders serially as before)
  */
