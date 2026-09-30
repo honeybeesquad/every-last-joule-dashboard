@@ -54,6 +54,30 @@ export function resetFetchDeadlineForTests(): void {
   inflight.clear();
 }
 
+/**
+ * A query parameter whose value is a credential: its name, compared without
+ * case, ends in key, token, secret or password. That takes in every keyed API
+ * the loaders call (EIA `api_key`, ENTSO-E `securityToken`, KPX `serviceKey`)
+ * and the usual others (`access_token`, `subscription-key`, `client_secret`).
+ * The value runs to the next `&` or `#`, whitespace or not, so a malformed one
+ * is masked whole. An empty value has nothing to mask. A name stops at `?` as
+ * well as `&`: `?` starts a match too, so a long run of them would otherwise be
+ * scanned once per `?`, which is quadratic.
+ */
+const CREDENTIAL_PARAM = /([?&][^=&#?\s]*(?:key|token|secret|password)=)[^&#]+/gi;
+
+/**
+ * `url` with the value of each credential query parameter replaced by
+ * REDACTED, for an error message or a log line. A keyed API takes its
+ * credential in the query string, and a failing loader's message reaches the
+ * build log, which is public, and from the South Korea loader a served
+ * sourceNote. The rest of the URL is left as it was. Only the query string is
+ * read: a credential in the path or in `user:pass@` is not masked.
+ */
+export function redactUrl(url: string | URL): string {
+  return String(url).replace(CREDENTIAL_PARAM, "$1REDACTED");
+}
+
 async function withRetries<T>(
   url: string,
   opts: FetchJSONOptions,
@@ -70,14 +94,14 @@ async function withRetries<T>(
 
   let lastErr: unknown;
   for (let attempt = 0; attempt <= retries; attempt++) {
-    if (deadlineTripped) throw new Error(`fetch skipped: ${deadlineTripped} (${url})`);
+    if (deadlineTripped) throw new Error(`fetch skipped: ${deadlineTripped} (${redactUrl(url)})`);
     const controller = new AbortController();
     inflight.add(controller);
     // 0 means no timeout; setTimeout(…, 0) would abort every request at once.
     const timer = timeoutMs > 0 ? setTimeout(() => controller.abort(), Math.min(timeoutMs, MAX_TIMER_MS)) : undefined;
     try {
       const res = await fetch(url, { method, headers, body, signal: controller.signal });
-      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} for ${url}`.trimEnd());
+      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} for ${redactUrl(url)}`.trimEnd());
       const data = await read(res);
       return data;
     } catch (err) {
@@ -156,7 +180,7 @@ export function fetchHttp1Bytes(url: string, timeoutMs: number): Promise<Uint8Ar
       (res) => {
         if (!res.statusCode || res.statusCode < 200 || res.statusCode >= 300) {
           res.resume();
-          reject(new Error(`HTTP ${res.statusCode ?? "?"} for ${url}`));
+          reject(new Error(`HTTP ${res.statusCode ?? "?"} for ${redactUrl(url)}`));
           return;
         }
         const chunks: Buffer[] = [];
@@ -168,7 +192,7 @@ export function fetchHttp1Bytes(url: string, timeoutMs: number): Promise<Uint8Ar
         res.on("error", reject);
       },
     );
-    req.on("timeout", () => req.destroy(new Error(`timeout after ${timeoutMs}ms for ${url}`)));
+    req.on("timeout", () => req.destroy(new Error(`timeout after ${timeoutMs}ms for ${redactUrl(url)}`)));
     req.on("error", reject);
     req.end();
   });
