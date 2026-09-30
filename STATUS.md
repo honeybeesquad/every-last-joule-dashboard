@@ -43,9 +43,9 @@ the zone was not fetched, or that the fetch failed, and does not say the A75 was
 which six do in every healthy run, still gets the "A75 empty in-window" record, as before.)
 
 **Checked.**
-- 25 tests in `tests/data/entsoe-slow.test.ts` run the real loader (72 zones, `withFallback`'s stamping, the fetch
+- 26 tests in `tests/data/entsoe-slow.test.ts` run the real loader (72 zones, `withFallback`'s stamping, the fetch
   layer's timeouts, retries and aborts) against a stubbed `fetch`, fake timers and the prefetch's knobs (15 s per request,
-  one retry). 15 of them fail against a fresh checkout of `main` (4a94f97c), through a shim that exports its `run` under the new
+  one retry). 16 of them fail against a fresh checkout of `main` (4a94f97c), through a shim that exports its `run` under the new
   names; the other 10 describe behaviour that is unchanged.
   `tests/resilient.test.ts` adds 4, and its snapshot is now removed after each test, because `ci:tier-coherence` fails on
   one left in `data/snapshots/last-good`.
@@ -56,7 +56,7 @@ which six do in every healthy run, still gets the "A75 empty in-window" record, 
 - Five refreshes on 29 Sep in which ENTSO-E answered normally (08:04, 09:44, 17:03, 18:02, 22:11) logged no failed
   ENTSO-E request and no failed zone, and six zones answering "no data" each time, so failing a zone on a failed
   request changes nothing when ENTSO-E answers normally. (08:04 and 17:03 had EIA fallbacks, which are other loaders.)
-- `npm run typecheck`, `npm test` (248 files, 1869 tests) and `npm run ci:gates` exit 0, with `ci:tally-golden` and
+- `npm run typecheck`, `npm test` (248 files, 1870 tests) and `npm run ci:gates` exit 0, with `ci:tally-golden` and
   `ci:magnitude-golden` unchanged.
 - **Not seen in production yet.** The stop shows in a build log as `ENTSO-E stopped at 162s of its 180s budget: N zones
   fetched, M kept from the last-good snapshot, K unpublished markers`, and only when ENTSO-E stalls.

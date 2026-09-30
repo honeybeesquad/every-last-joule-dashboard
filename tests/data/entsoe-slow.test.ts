@@ -43,6 +43,7 @@ const REJECTIONS = {
       ),
     }),
   codeOnly: () => Object.assign(new TypeError("fetch failed"), { cause: Object.assign(new Error(""), { code: "ENOTFOUND" }) }),
+  noMessage: () => new Error(""),
 };
 // `slow:<ms>` answers like "fast", after that long, unless the request is aborted first.
 type Behaviour = "fast" | "hang" | "empty" | "http500" | keyof typeof REJECTIONS | `slow:${number}`;
@@ -424,6 +425,7 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
       ["reset", "spain-wind", "fetch failed (read ECONNRESET)"],
       ["refused", "portugal-wind", "fetch failed (connect ECONNREFUSED ::1:443; connect ECONNREFUSED 192.0.2.1:443)"],
       ["codeOnly", "finland-wind", "fetch failed (ENOTFOUND)"],
+      ["noMessage", "poland-wind", "Error"], // still a failure, though its own description is empty
     ] as const)("says why a network request failed (%s), not just that it did", async (how, zone, expected) => {
       writeSnapshot(junesSnapshot());
       setBehaviour(how, byId(zone));
