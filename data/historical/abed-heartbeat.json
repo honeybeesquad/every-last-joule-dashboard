@@ -1,7 +1,7 @@
 {
   "host": "abed",
-  "at": "2026-10-02T10:30:04Z",
+  "at": "2026-10-03T10:30:05Z",
   "ok": false,
-  "lake_newest_age_hours": 49,
-  "issues": ["lake is stale: newest parquet is 49h old (threshold 48h)"]
+  "lake_newest_age_hours": 73,
+  "issues": ["lake is stale: newest parquet is 73h old (threshold 48h)"]
 }
