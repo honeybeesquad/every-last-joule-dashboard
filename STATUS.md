@@ -1484,6 +1484,44 @@ named Gotham).
 and `ci:tally-golden` passes without a golden edit. `src/embed/globe.md` is
 unchanged. The structure of every page is unchanged.
 
+## /history Figure 4 labelled two gridlines with the wrong value (2026-09-23)
+
+Branch `fix/history-axis-tick-precision` (**#1090**). Chart code only
+(`src/lib/history-charts.ts`) plus tests; **#1088** listed it under "Not
+fixed here". Figure 4, "Summed `total_twh_30d` across the archive",
+labelled its y-axis 0, 13, 25, 38 and 50. Its gridlines sit at 0, 12.5, 25,
+37.5 and 50 TWh. Reproduced from the committed
+`data/historical/history-trends.json` on #1088's head, 3edca789, which
+merged as c06a09a2.
+
+**Cause.** `tickFormatter()` tried 0-3 decimals and kept the first precision
+whose labels were distinct. Figure 4's axis tops out at `niceMax(33.27)` =
+50, where whole numbers are already distinct, so it rounded 12.5 and 37.5.
+Its own doc example failed the same way: it printed 0 / 625 / 1250 / 1875 /
+2500 GWh in TWh as "0.0, 0.6, 1.3, 1.9, 2.5". The rule dates from the page's
+launch in **#934**.
+
+**Fix.** It now takes the fewest decimals, 0-3, at which every label reads
+back as its tick value, at one precision across the axis. A 1e-9 relative
+tolerance absorbs float noise in the tick values. Figure 4 reads 0.0, 12.5,
+25.0, 37.5, 50.0. If no precision up to 3 is exact, the old distinctness
+rule is the fallback. On a `niceMax` axis that only happens when the top
+gridline is below 1. Across 432 `niceMax` axes (maxima 1e-8 to 1e9, at scale
+1 and 1000), the new rule never uses fewer decimals than the old one. It
+changes only the 54 axes whose old labels were inexact.
+
+**Verified** on a production build (Node 24, `/history` loader rerun). The
+built `/history.html` differs from main's in Figure 4's five y-tick
+`<text>` elements only. Figures 1-3 still read 0 / 2500 / 5000 / 7500 /
+10000 GWh, 0 / 25 / 50 / 75 / 100 TWh and 0 / 125 / 250 / 375 / 500 regions.
+In headless Chromium, in both themes at 320, 375, 390 and 1280, every y-tick
+label on all four figures equals the value at its gridline. Figure 4's
+tick ink starts at x = 14 and touches no other text. The nearest is the unit
+label, 3.6 units above "50.0", as before. `/history` keeps `scrollWidth` =
+`clientWidth`. `tests/history-charts.test.ts` gains seven cases. The five
+that assert exact labels fail against main's code. The two that pin
+whole-number axes and the fallback pass on both.
+
 ## /history chart unit labels clipped at the left edge (2026-09-23)
 
 Branch `fix/history-axis-unit-labels` (**#1088**). Chart code only
@@ -1521,8 +1559,9 @@ the nearest is the top tick label, 3.6-5.2 units away. `/history` keeps
 start-anchored at x ≥ 0. All four fail against main's code.
 
 **Not fixed here.** Figure 4's y-axis ticks read "13" and "38" at the 12.5
-and 37.5 gridlines. `tickFormatter` stops at the first precision that gives
-distinct labels, and whole numbers do, so it rounds both.
+and 37.5 gridlines. `tickFormatter` stopped at the first precision that gave
+distinct labels, and whole numbers did, so it rounded both. Fixed by
+**#1090** (see the entry above).
 
 ## Doc pages laid out wider than a phone (2026-09-23)
 
