@@ -1524,6 +1524,29 @@ start-anchored at x ≥ 0. All four fail against main's code.
 and 37.5 gridlines. `tickFormatter` stops at the first precision that gives
 distinct labels, and whole numbers do, so it rounds both.
 
+## Doc-page phone gutters collapsed to one (2026-09-23)
+
+Branch `fix/doc-page-gutters`. CSS only (`src/style.css`). This is the
+follow-up to #1083. At ≤640px the doc pages stacked three gutters on each
+side: the body's `padding-inline: 4vw`, Framework's 2rem
+`#observablehq-center` margin, and `.methodology-doc`'s own 18px. Text started
+65px from each edge, leaving a 245px column at 375 and 194px at 320. #1082
+had already dropped the first two on the dashboard.
+
+**Fix.** The `:has(.app-shell)` rules from #1082 now also match
+`.methodology-doc`, so the doc's 18px is the only gutter left. The back link
+and Framework's pager sit outside `.methodology-doc`, and at ≤700px they now
+get the same 18px. Before this, "← Dashboard" kept its 32px desktop padding
+and started 14px right of the text, and the pager started 18px left of it.
+
+**Verified** by swapping the CSS into a production build (HTML matches main).
+At 320, 375, 390 and 640 the text, back link, pager and region provenance
+panel are all 18px from both edges. At 641–700 all of them sit at 50px.
+Every region page and all five doc pages were swept at 320, 375 and 390, in
+both themes: `scrollWidth` = `clientWidth` on every one. A layout diff against
+main shows no change at 768 or 1280 on any page. **Unchanged:** above 700px
+the pager still sits 32px left of the text (desktop rules, not touched here).
+
 ## Doc pages laid out wider than a phone (2026-09-23)
 
 Branch `fix/doc-pages-phone-width` (**#1083**). CSS only (`src/style.css`). Measured on
