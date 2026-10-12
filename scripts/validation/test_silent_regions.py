@@ -95,22 +95,42 @@ def test_static_anchor_never_alerts():
 def test_cached_record_keeps_its_own_age():
     # A `cached` record carries the time its reading was taken, so a feed that
     # serves an 11-day-old reading as `cached` is still silent.
+    history = [hist(24 * 11, "mexico-solar", "live", 24 * 11)]
     current = {"mexico-solar": rec("cached", ago(24 * 11))}
-    report = silent_regions.find_silent({"mexico-solar"}, current, [], NOW)
+    report = silent_regions.find_silent({"mexico-solar"}, current, history, NOW)
     assert ids(report) == ["mexico-solar"]
 
 
 def test_silent_beyond_lookback_drops_out():
+    # The documented cost of the window: a feed dead for longer than LOOKBACK
+    # no longer qualifies.
     days = silent_regions.LOOKBACK.days + 1
     history = [hist(24 * days, "gone", "live", 24 * days)]
     report = silent_regions.find_silent({"gone"}, {}, history, NOW)
     assert ids(report) == []
 
 
-def test_history_builds_older_than_lookback_are_ignored():
-    days = silent_regions.LOOKBACK.days + 1
-    # An old build that (wrongly) carried a recent-looking timestamp.
-    history = [(ago(24 * days), "a", "live", ago(1))]
+def test_build_time_stamps_older_than_lookback_do_not_qualify():
+    # A modelled region stamped with each build's time before Sep 2026, and
+    # dated by its anchor since: not a feed.
+    days = silent_regions.LOOKBACK.days + 5
+    history = [hist(24 * days, "china-x", "cached", 24 * days)]
+    history += [(ago(h), "china-x", "cached", "2026-06-01T00:00:00.000Z") for h in (48, 3)]
+    report = silent_regions.find_silent({"china-x"}, {}, history, NOW)
+    assert ids(report) == []
+
+
+def test_re_dated_static_anchor_never_alerts():
+    # An annual anchor re-dated to 1 Oct in a data PR, then served unchanged.
+    history = [(ago(h), "anchor", "cached", "2026-10-01T00:00:00.000Z") for h in (200, 30, 3)]
+    current = {"anchor": rec("cached", "2026-10-01T00:00:00.000Z")}
+    report = silent_regions.find_silent({"anchor"}, current, history, NOW)
+    assert ids(report) == []
+
+
+def test_reading_stamped_after_its_build_is_ignored():
+    # A history row whose reading is a day newer than its build is skew.
+    history = [(ago(48), "a", "live", ago(20))]
     report = silent_regions.find_silent({"a"}, {}, history, NOW)
     assert ids(report) == []
 

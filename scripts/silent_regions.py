@@ -21,17 +21,23 @@ parseable `lastSuccessAt`; that timestamp is when the reading was taken.
 `degraded` already means "serving a last-good record older than its
 freshness window", so its `lastSuccessAt` is old news and is ignored.
 
-A region **updates** if it had a fresh reading taken within LOOKBACK, in the
-current build or in any build in data/historical/curtailment_history.parquet.
-Static anchors (an annual figure stamped `2026-06-01`) never qualify, so
-they can't trip the alert.
+A region **updates** if a capture in the last LOOKBACK days carried a fresh
+reading taken within SILENT_AFTER of that capture's build: the current build,
+or a build in data/historical/curtailment_history.parquet. A static anchor
+(an annual figure stamped `2026-06-01`, or re-dated in a data PR) is never
+that close to the build serving it, so it can't trip the alert.
+
+Why a window: until Aug-Sep 2026 withFallback stamped modelled regions with
+the build time, so older captures make ~50 modelled regions (the China
+provincials among them) look like feeds. The cost: a feed silent for longer
+than LOOKBACK stops qualifying and drops out of the alert, and the issue can
+close with that feed still dead. It will have been flagged for a month by
+then.
 
 A region updates and is **silent** when its newest fresh reading is older
 than SILENT_AFTER (24 h), whether it is still in the build as `degraded` or
-gone from the build altogether. A region silent for longer than LOOKBACK
-stops qualifying as updating and drops out of the alert; that is the
-trade-off for not flagging static anchors, and 30 days is long enough that
-nobody should still be finding out from this check.
+gone from the build altogether. health-check.yml runs every 6 h, so the
+issue opens 24 to 30 h after a region's last fresh reading.
 
 Only ids on the roster (src/lib/regions.ts) are judged. Roster ids absent
 from the current build are listed separately for information.
@@ -51,9 +57,17 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SILENT_AFTER = timedelta(hours=24)
 LOOKBACK = timedelta(days=30)
+# Clock skew between a loader's stamp and the build or check that carries it.
+SKEW = timedelta(minutes=5)
+
+
+_APPEND_HISTORY = None
 
 
 def _load_append_history():
+    global _APPEND_HISTORY
+    if _APPEND_HISTORY is not None:
+        return _APPEND_HISTORY
     spec = importlib.util.spec_from_file_location(
         "append_history", REPO_ROOT / "scripts" / "append_history.py"
     )
@@ -61,19 +75,13 @@ def _load_append_history():
     module = importlib.util.module_from_spec(spec)
     sys.modules["append_history"] = module
     spec.loader.exec_module(module)
+    _APPEND_HISTORY = module
     return module
 
 
 def parse_ts(value: object) -> datetime | None:
-    if not isinstance(value, str) or not value:
-        return None
-    try:
-        ts = datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError:
-        return None
-    if ts.tzinfo is None:
-        ts = ts.replace(tzinfo=timezone.utc)
-    return ts
+    # Same parser append_history uses to write the timestamps this reads.
+    return _load_append_history()._parse_iso8601(value)
 
 
 def fresh_reading_at(status: object, last_success_at: object) -> datetime | None:
@@ -109,30 +117,33 @@ def find_silent(
     current: region_id -> deployed record (sourceStatus, lastSuccessAt).
     history_rows: (build_timestamp, region_id, source_status, last_success_at).
     """
-    since = now - LOOKBACK
     newest: dict[str, datetime] = {}
+    updates: set[str] = set()
 
-    def see(region_id: str, ts: datetime | None) -> None:
-        # A reading stamped in the future is clock skew, not freshness.
-        if ts is None or ts > now + timedelta(minutes=5):
+    def see(region_id: str, reading: datetime | None, built: datetime | None) -> None:
+        # A reading stamped after its build, or after now, is clock skew.
+        if reading is None or built is None or reading > built + SKEW or reading > now + SKEW:
             return
-        if region_id not in newest or ts > newest[region_id]:
-            newest[region_id] = ts
+        if built - reading <= SILENT_AFTER:
+            updates.add(region_id)
+        if region_id not in newest or reading > newest[region_id]:
+            newest[region_id] = reading
 
+    since = now - LOOKBACK
     for build_ts, region_id, status, last_success_at in history_rows:
         built = parse_ts(build_ts)
         if built is None or built < since:
             continue
-        see(region_id, fresh_reading_at(status, last_success_at))
+        see(region_id, fresh_reading_at(status, last_success_at), built)
 
     for region_id, record in current.items():
-        see(region_id, fresh_reading_at(record.get("sourceStatus"), record.get("lastSuccessAt")))
+        see(region_id, fresh_reading_at(record.get("sourceStatus"), record.get("lastSuccessAt")), now)
 
     silent = []
     for region_id in sorted(roster):
-        last = newest.get(region_id)
-        if last is None or last < since:
-            continue  # never updates (static anchor), or silent beyond LOOKBACK
+        if region_id not in updates:
+            continue  # no fresh reading near its build in LOOKBACK: an anchor, never shipped, or long dead
+        last = newest[region_id]
         if now - last > SILENT_AFTER:
             record = current.get(region_id)
             silent.append(

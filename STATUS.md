@@ -17,10 +17,14 @@ the hero still said 536 and no alert told anyone).
   "curtailed, spilled, or zero-priced" are unchanged. `REGIONS.length` stays as the roster size, here, in "All 536"
   and in the OG description.
 - **Silent-region alert.** `scripts/silent_regions.py`, run by `health-check.yml` every 6 h, judges every roster id
-  against the deployed build and the committed history. A region **updates** if it had a fresh reading (a record not
-  `degraded`, dated by its `lastSuccessAt`) in the last 30 days; it is **silent** once its newest fresh reading is more
-  than 24 h old, whether it is still in the build as `degraded` or gone from it. Static anchors (stamped `2026-06-01`)
-  never qualify. A silent region opens or updates one `auto-silent` issue, separate from the `auto-health` issue
+  against the deployed build and the committed history. A region **updates** if some capture ever carried a fresh
+  reading (a record not `degraded`, dated by its `lastSuccessAt`) taken within 24 h of that capture's build; it is
+  **silent** once its newest fresh reading is more than 24 h old, whether it is still in the build as `degraded` or gone
+  from it, judged over captures from the last 30 days. Static anchors, including one re-dated in a data PR, never sit
+  that close to their build, so they never qualify. The window is needed because until Aug–Sep withFallback stamped
+  modelled regions with the build time: over the whole history ~50 of them (China provincials) qualify as feeds. Its
+  cost: a feed dead for over 30 days drops out and the issue can close with it still dead. The check runs every 6 h, so an issue
+  opens 24 to 30 h after a region's last fresh reading. A silent region opens or updates one `auto-silent` issue, separate from the `auto-health` issue
   (#822), which sits over its threshold most of the time; the issue closes itself when none are silent. Tests:
   `npm run test:silent-regions` (14, pytest; not in CI, like `test:coverage-audit`).
 - **First run against production (13 Oct, ~09:00 UTC)** found 5 silent: `japan-okinawa` (81 h, `degraded`),
@@ -29,7 +33,7 @@ the hero still said 536 and no alert told anyone).
 - **Roster ids no deployed build carries.** 10 ids in `regions.ts` appear in no history capture since 28 Sep:
   `denmark-east-*`, `denmark-west-*`, `gb-england-wales-*`, `gb-scotland-*` (wind and solar each),
   `iso-ne-maine-vermont`, `nyiso-zones-d-e`. They never alert (they never had a fresh reading) and are listed in the
-  issue body as absent. Not investigated here.
+  issue body as absent, and only when some other region is silent. Not investigated here.
 
 **Depends on #1173 for the ENTSO-E markers.** Before #1173, a stalled ENTSO-E run drops the 18 zones, which this
 counts correctly. With #1173, they come back as unpublished markers, and #1173 now stamps those `degraded`, not
