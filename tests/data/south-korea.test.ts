@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { inspect } from "node:util";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildSouthKoreaData, parseKpxPvItems } from "../../src/data/south-korea.json";
 
 // Anchored constants (must stay in sync with src/data/south-korea.json.ts).
@@ -48,5 +49,39 @@ describe("south-korea loader", () => {
     });
     expect(points[0].utcTimestamp).toBe("2026-09-19T03:00:00.000Z");
     expect(points[0].mw).toBe(1500);
+  });
+});
+
+describe("south-korea loader: a KPX request that fails", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  // data.go.kr takes the service key in the query string, fetchJSON quotes the
+  // request URL in its error, and the loader publishes that error in both
+  // regions' served sourceNote and logs it.
+  it("neither publishes nor logs the service key", async () => {
+    const key = "test-dummy-kpx-service-key";
+    vi.stubEnv("DATA_GO_KR_SERVICE_KEY", key);
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("denied", { status: 403, statusText: "Forbidden" })));
+    const logged = vi.spyOn(console, "error").mockImplementation(() => {});
+    // fetchJSON waits a second between its two tries.
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+
+    const pending = buildSouthKoreaData();
+    await vi.runAllTimersAsync();
+    const { solar, wind } = await pending;
+
+    for (const region of [solar, wind]) {
+      expect(region.sourceNote).toContain(
+        "HTTP 403 Forbidden for https://apis.data.go.kr/B552115/PvAmountByLocHr/getPvAmountByLocHr?serviceKey=REDACTED&pageNo=1",
+      );
+      expect(region.sourceNote).not.toContain(key);
+    }
+    expect(logged).toHaveBeenCalled();
+    expect(inspect(logged.mock.calls, { depth: 5 })).not.toContain(key);
   });
 });
