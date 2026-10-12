@@ -104,7 +104,9 @@ effect. (a) was built; (b) was not.
 
 **Labels.** Fetched before the stop: `live` (`cached` for the 18, which are estimated-tier, as `withFallback` always
 stamps them). Last-good record under 24 h old: `cached`. Older: `degraded`, still dated by its own `lastSuccessAt`, so
-June stays June. A marker made by the fallback: `wasteStatus: "unpublished"`, zero generation, never `live`; its note says
+June stays June. A marker made by the fallback: `wasteStatus: "unpublished"`, zero generation, `degraded` (not the
+`cached` an estimated-tier zone otherwise gets, because nothing was fetched and its `lastSuccessAt` is only the time it
+was made; added 13 Oct so a marker can't pass for a fresh reading in a count of regions reporting); its note says
 the zone was not fetched, or that the fetch failed, and does not say the A75 was empty. (A zone ENTSO-E answers empty,
 which six do in every healthy run, still gets the "A75 empty in-window" record, as before.)
 

@@ -570,7 +570,12 @@ export async function collectEntsoeZones(
     if (!prev) {
       if ("allowEmpty" in zone && zone.allowEmpty) {
         markers++;
-        return unpublishedEmptyRegion(zone.id, `${zone.sourceNote} ${note}`);
+        // `degraded`, not the `cached` an estimated-tier zone otherwise gets:
+        // nothing was fetched, and the marker's lastSuccessAt is only the time
+        // it was made. A `cached` marker read as a fresh reading to anything
+        // counting regions that report (the dashboard's reporting figure,
+        // scripts/silent_regions.py), which hid exactly the outage it stands in for.
+        return { ...unpublishedEmptyRegion(zone.id, `${zone.sourceNote} ${note}`), sourceStatus: "degraded" };
       }
       throw new Error(`ENTSO-E zone ${zone.id} failed and no cached data available`);
     }

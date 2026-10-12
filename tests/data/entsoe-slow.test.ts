@@ -246,7 +246,8 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
         expect(r.totalTWh, zone.id).toBe(0);
         expect(r.generationTotalTWh, zone.id).toBe(0);
         // Never "live": nothing was fetched. Never a claim that ENTSO-E's answer was empty.
-        expect(r.sourceStatus, zone.id).not.toBe("live");
+        // `degraded`, not `cached`: a marker is not a fresh reading.
+        expect(r.sourceStatus, zone.id).toBe("degraded");
         expect(r.sourceNote, zone.id).toMatch(/not fetched before the loader's time budget ran out/);
         expect(r.sourceNote, zone.id).not.toMatch(/empty in-window/);
       }
@@ -407,6 +408,7 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
 
       expect(result.malta.wasteStatus).toBe("unpublished");
       expect(result.malta.sourceNote).toMatch(/fetch failed with no last-good cache/);
+      expect(result.malta.sourceStatus).toBe("degraded");
       expect(result.malta.sourceNote).not.toMatch(/empty in-window/);
     });
 
@@ -418,6 +420,7 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
 
       expect(result["kosovo-wind"].wasteStatus).toBe("unpublished");
       expect(result["kosovo-wind"].sourceNote).toMatch(/A75 empty in-window/);
+      expect(result["kosovo-wind"].sourceStatus).not.toBe("degraded"); // an answer, not a failure
       expect(said(warned)).not.toMatch(/zone kosovo-wind failed/);
     });
 
@@ -460,7 +463,10 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
       for (const zone of ZONES.filter((z) => !isAllowEmpty(z) && withTechnologies(z))) {
         expect(result[zone.id].sourceStatus, zone.id).toBe("degraded");
       }
-      for (const zone of ZONES.filter(isAllowEmpty)) expect(result[zone.id].wasteStatus, zone.id).toBe("unpublished");
+      for (const zone of ZONES.filter(isAllowEmpty)) {
+        expect(result[zone.id].wasteStatus, zone.id).toBe("unpublished");
+        expect(result[zone.id].sourceStatus, zone.id).toBe("degraded");
+      }
       expect(said(errored)).toMatch(/ENTSO-E answered no zone/);
     });
 
