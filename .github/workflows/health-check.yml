@@ -289,3 +289,68 @@ jobs:
           for n in $open; do
             gh issue close "$n" --comment "Auto-closed: health metrics back within threshold (freshness-degraded < 10, zero < 5)."
           done
+
+      # ── Silent regions ────────────────────────────────────────────────
+      # A region that normally updates but has had no fresh reading for
+      # more than 24 h, whether it is in the build as `degraded` or gone
+      # from it. Separate from the counts above, which sit over threshold
+      # most of the time and never noticed regions missing from the build
+      # (the 18 ENTSO-E zones, 29 Sep–12 Oct 2026). Rule and trade-offs:
+      # scripts/silent_regions.py.
+      - name: Set up Python (silent-region check)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: scripts/requirements.txt
+
+      - name: Install silent-region check dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Find regions silent for more than 24 hours
+        id: silent
+        run: python scripts/silent_regions.py
+
+      - name: Open or update the silent-regions issue
+        if: fromJSON(steps.silent.outputs.silent) > 0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SILENT: ${{ steps.silent.outputs.silent }}
+          SILENT_LIST: ${{ steps.silent.outputs.silent_list }}
+          ABSENT: ${{ steps.silent.outputs.absent }}
+          ABSENT_LIST: ${{ steps.silent.outputs.absent_list }}
+          ROSTER: ${{ steps.silent.outputs.roster }}
+        run: |
+          gh label create auto-silent \
+            --color "d93f0b" \
+            --description "Auto-generated: a region with no fresh reading for over 24 h" \
+            2>/dev/null || true
+          title="[silent] ${SILENT} region(s) with no fresh reading for over 24 h"
+          body=$(cat <<BODY
+          Health check at $(date -u +"%Y-%m-%dT%H:%M:%SZ"): ${SILENT} of the ${ROSTER} roster regions normally update but have had no fresh reading (a record that is not \`degraded\`) for more than 24 hours.
+
+          ${SILENT_LIST}
+
+          Roster regions absent from the current build (${ABSENT}; informational, a region alerts only once it has gone 24 h without a fresh reading): ${ABSENT_LIST}
+
+          **Where to look:** the newest \`data-refresh\` run's log. A loader that overran its deadline logs \`live fetch exceeded\`; an auth failure logs \`HTTP 401\`. The rule is in \`scripts/silent_regions.py\`.
+
+          This issue closes itself when a later check finds no silent region.
+          BODY
+          )
+          existing=$(gh issue list --label "auto-silent" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --title "$title"
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body" --label "auto-silent"
+          fi
+
+      - name: Close the silent-regions issue when none are silent
+        if: fromJSON(steps.silent.outputs.silent) == 0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for n in $(gh issue list --label "auto-silent" --state open --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "Auto-closed: no region has gone 24 h without a fresh reading."
+          done
