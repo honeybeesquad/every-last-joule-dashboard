@@ -19,7 +19,8 @@
   "ignoreCommand": "bash scripts/build/vercel-ignore.sh",
   "git": {
     "deploymentEnabled": {
-      "main": false
+      "main": false,
+      "automation/*": false
     }
   }
 }
