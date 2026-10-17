@@ -37,6 +37,7 @@
     "ci:deploy-freshness": "tsx scripts/ci/check-deploy-freshness.ts check",
     "ci:gates": "npm run ci:loader-stdout-safety && npm run ci:tier-coherence && npm run ci:source-provenance-coherence && npm run ci:source-provenance-self-test && npm run ci:tally-golden && npm run ci:magnitude-self-test && npm run ci:magnitude-golden && npm run ci:docs-drift && npm run ci:methodology-counts && npm run ci:tier-count-docs && npm run ci:bad-conversions-stub && npm run ci:tso-grid-roster",
     "lint:coverage-audit": "python3 scripts/validation/lint_coverage_audit.py data/coverage-audit/2026-04-26-world.csv data/coverage-audit/2026-06-10-granularity-and-gaps.csv",
+    "test:silent-regions": "python3 -m pytest scripts/validation/test_silent_regions.py -v",
     "test:coverage-audit": "python3 -m pytest scripts/validation/test_coverage_audit_schema.py scripts/validation/test_lint_coverage_audit.py scripts/validation/test_merge_coverage_audit.py -v",
     "data:refresh": "observable build",
     "scorecard": "tsx scripts/scorecard.ts",

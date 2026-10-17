@@ -37,6 +37,7 @@ import { curtailmentShare, shareUnavailable, formatShare } from "./lib/generatio
 import { splitRegion } from "./lib/split-region.js";
 import { finalizeRegionData } from "./lib/region-data-finalize.js";
 import { countPublishedWasteRegions } from "./lib/waste-status.js";
+import { countReportingRegions } from "./lib/region-reporting.js";
 import { deployFreshness, formatAge, formatUtcStamp } from "./lib/freshness.js";
 import { mountGlobe } from "./globe.js";
 
@@ -100,7 +101,7 @@ document.getElementById("app-root").innerHTML = `
     <section class="hero" aria-label="Headline">
       <div class="eyebrow hero-eyebrow"><span class="hero-eyebrow-time" id="hero-time"></span><span class="hero-eyebrow-text">Hashrate this waste could cover</span></div>
       <div class="hero-pct num-tabular" id="pct-readout" aria-live="polite" aria-atomic="true">—%</div>
-      <p class="lead" id="lead-copy">of the Bitcoin network could run on renewable energy that grids wasted on an average day — curtailed, spilled, or zero-priced across <span id="region-count" aria-live="polite" aria-atomic="true">—</span> of the ${REGIONS.length} regions we track. Lower bound: what operators publish.</p>
+      <p class="lead" id="lead-copy">of the Bitcoin network could run on renewable energy that grids wasted on an average day — curtailed, spilled, or zero-priced across <span id="region-count" aria-live="polite" aria-atomic="true">—</span> of the ${REGIONS.length} regions we track (<span id="regions-reporting" title="Regions with data in this update. A region whose source failed, or that is missing from the update, does not count.">—</span> reporting). Lower bound: what operators publish.</p>
       <p class="data-stale-notice" id="data-stale-notice" role="status" hidden></p>
       <dl class="hero-stats">
         <div class="stat">
@@ -524,6 +525,13 @@ finalizeRegionData(regionData, REGIONS);
   const liveRegionCount = countPublishedWasteRegions(regionData, REGIONS);
   const countEl = document.getElementById("region-count");
   if (countEl) countEl.textContent = String(liveRegionCount);
+  // Regions with data in this build, next to the roster's size: a loader
+  // that falls back wholesale shows here (429 to 454 on the ENTSO-E
+  // fallback builds of Oct 2026, about 500 to 526 otherwise), not in
+  // REGIONS.length. See
+  // countReportingRegions in src/lib/region-reporting.ts.
+  const reportingEl = document.getElementById("regions-reporting");
+  if (reportingEl) reportingEl.textContent = String(countReportingRegions(regionData, REGIONS));
 }
 // When this deployment's data was built. Every region carries its own
 // lastSuccessAt, but a build stamps those once and never revisits them, so a
