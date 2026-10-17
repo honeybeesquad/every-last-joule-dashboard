@@ -14,6 +14,7 @@ import {
   monthlyStackChart,
   niceMax,
   sparkArea,
+  tickFormatter,
   ticks,
 } from "../src/lib/history-charts.ts";
 
@@ -52,6 +53,56 @@ describe("axis helpers", () => {
 
   it("escapes markup-significant characters", () => {
     expect(esc(`a & b < c > d "e"`)).toBe("a &amp; b &lt; c &gt; d &quot;e&quot;");
+  });
+});
+
+describe("tickFormatter", () => {
+  // Each label must read back as its gridline's value. Distinct labels are not
+  // enough: stopping at the first precision whose labels differed printed the
+  // /history archive-total axis (0 / 12.5 / 25 / 37.5 / 50) as "0, 13, 25, 38, 50".
+  const labels = (values: number[], scale = 1) => values.map(tickFormatter(values, scale));
+
+  it("prints half-steps at one decimal across the whole axis, not rounded", () => {
+    expect(labels([0, 12.5, 25, 37.5, 50])).toEqual(["0.0", "12.5", "25.0", "37.5", "50.0"]);
+  });
+
+  it("keeps whole numbers on an axis they already state exactly", () => {
+    // Figures 1-3 on /history: GWh per month, TWh per year (from GWh), regions.
+    expect(labels([0, 2500, 5000, 7500, 10000])).toEqual(["0", "2500", "5000", "7500", "10000"]);
+    expect(labels([0, 25000, 50000, 75000, 100000], 1000)).toEqual(["0", "25", "50", "75", "100"]);
+    expect(labels([0, 125, 250, 375, 500])).toEqual(["0", "125", "250", "375", "500"]);
+  });
+
+  it("chooses the precision after converting units", () => {
+    // 0 / 625 / 1250 / 1875 / 2500 GWh in TWh. Distinctness alone stopped at
+    // "0.0, 0.6, 1.3, 1.9, 2.5", three gridlines misstated.
+    expect(labels([0, 625, 1250, 1875, 2500], 1000)).toEqual(["0.000", "0.625", "1.250", "1.875", "2.500"]);
+  });
+
+  it("states every gridline exactly on any niceMax axis that tops out at 1 or more", () => {
+    for (const scale of [1, 1000]) {
+      for (let exponent = 0; exponent <= 7; exponent++) {
+        for (const mantissa of [1, 1.3, 2, 2.2, 2.5, 3.1, 5, 6.1, 9.9]) {
+          const max = niceMax(mantissa * 10 ** exponent * scale);
+          const values = ticks(max);
+          labels(values, scale).forEach((label, i) => {
+            expect(Math.abs(Number(label) - values[i] / scale)).toBeLessThanOrEqual((1e-9 * max) / scale);
+          });
+        }
+      }
+    }
+  });
+
+  it("does not mistake float noise in a tick value for a rounded label", () => {
+    // Without a tolerance no precision would count as exact, and the
+    // distinctness fallback would print this axis as "0.00, 0.07, 0.15, 0.22, 0.30".
+    expect(ticks(0.3)[3]).toBe(0.22499999999999998);
+    expect(labels(ticks(0.3))).toEqual(["0.000", "0.075", "0.150", "0.225", "0.300"]);
+  });
+
+  it("falls back to the fewest distinct decimals when no precision up to 3 is exact", () => {
+    // 0.25 in steps of 0.0625 needs four decimals.
+    expect(labels(ticks(0.25))).toEqual(["0.00", "0.06", "0.13", "0.19", "0.25"]);
   });
 });
 
@@ -234,6 +285,19 @@ describe("archiveTotalChart", () => {
     expect(svg).toContain("hc-total--archive");
     expect(svg).toContain('class="hc-rule"');
     expect(svg).toContain("Counter-example.");
+  });
+
+  it("labels the 12.5 and 37.5 gridlines as 12.5 and 37.5, not 13 and 38", () => {
+    // /history's Figure 4 at 2026-09-23: the series peaks at 33.27 TWh, so the axis tops out at 50.
+    const svg = archiveTotalChart({
+      days: ["2026-08-18", "2026-08-19"],
+      totals: [29.18, 33.27],
+      cutoverDay: "2026-08-19",
+      title: "t",
+      desc: "d",
+    });
+    const yLabels = [...svg.matchAll(/<text class="hc-tick hc-tick--y"[^>]*>([^<]*)<\/text>/g)].map((m) => m[1]);
+    expect(yLabels).toEqual(["0.0", "12.5", "25.0", "37.5", "50.0"]);
   });
 
   it("tolerates a missing cutover without drawing a rule at index zero", () => {
