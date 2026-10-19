@@ -256,7 +256,7 @@ Tohoku Wind (Japan),JPN,wind,live-tso,,legacy-unspecified,japan-tohoku-wind,Exis
 Vietnam,VNM,solar,not-collecting,statics,unpublished,vietnam,Country/T3 stub — Ember/IRENA is not TSO collection.
 Thailand,THA,solar,not-collecting,statics,unpublished,thailand,Country/T3 stub — Ember/IRENA is not TSO collection.
 Rajasthan,IND,solar,not-collecting,,unpublished,india-rajasthan,Authoritative operator exists; live path not producing usable waste.
-Gujarat,IND,solar,not-collecting,,unpublished,india-gujarat,Authoritative operator exists; live path not producing usable waste.
+Gujarat,IND,solar,not-collecting,statics,legacy-unspecified,india-gujarat,T2 annual waste anchor. Not hourly TSO collection.
 Tamil Nadu,IND,wind,not-collecting,,unpublished,india-tamil-nadu,Authoritative operator exists; live path not producing usable waste.
 Karnataka,IND,solar,not-collecting,,unpublished,india-karnataka,Authoritative operator exists; live path not producing usable waste.
 Andhra Pradesh,IND,solar,not-collecting,,unpublished,india-andhra-pradesh,Authoritative operator exists; live path not producing usable waste.
