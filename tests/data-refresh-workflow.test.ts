@@ -174,6 +174,15 @@ describe("data-refresh.yml runs on pushes to main, but not on the automation's o
     }
   });
 
+  it("copies Bangalore NLDC Gujarat CSVs in colombia-relay-pull.yml", () => {
+    const text = readFileSync(join(WORKFLOWS, "colombia-relay-pull.yml"), "utf8");
+    expect(text).toContain("bangalore-nldc-push.sh");
+    expect(text).toContain("india-gujarat-nldc-curtailed-daily.csv");
+    expect(text).toContain("india-nldc-remc-vre-daily.csv");
+    expect(text).toMatch(/cp \/tmp\/relay\/india-gujarat-nldc-curtailed-daily\.csv/);
+    expect(text).toMatch(/cp \/tmp\/relay\/india-nldc-remc-vre-daily\.csv/);
+  });
+
   it("reads an ordered paths list the way GitHub does", () => {
     const list = ["**", "!docs/**", "docs/validation/**", "!*.md"];
     expect(triggers("docs/validation/x.md", list)).toBe(true);
