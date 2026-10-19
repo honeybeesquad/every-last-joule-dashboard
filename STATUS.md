@@ -17,7 +17,7 @@ Not done, and not claimed: no T1a, no Karnataka instruction-PDF energy, no Rajas
 
 On `feat/india-nldc-remc-daily`. Population change: T2 22→23, T3 333→332, total 542. Not T1a.
 
-`india-gujarat` now plots Grid-India NLDC REMC daily VRE PDFs (`DAILY_VRE_REPORT`): **1.285 TWh** across 601 published days (2025-01-01 → 2026-10-16, 211 nonzero), annualised to **~0.78 TWh/yr** (944.7 GWh solar + 340.5 GWh wind). The 30-day dashboard figure is that annualised total × 30/365. Profile is flat 24/7 — daily MU, not an hourly series. `sourceProvenance: verified`.
+`india-gujarat` now plots Grid-India NLDC REMC daily VRE PDFs (`DAILY_VRE_REPORT`): **1.291 TWh** across 602 published days (2025-01-01 → 2026-10-18, 212 nonzero), annualised to **~0.78 TWh/yr** (950.7 GWh solar + 340.5 GWh wind). The 30-day dashboard figure is that annualised total × 30/365. Profile is flat 24/7 — daily MU, not an hourly series. `sourceProvenance: verified`. The extra day versus the T2 promotion snapshot is 2026-10-18 (5.98 GWh solar); 2026-10-17 is unpublished.
 
 This replaces CEA×Ember ~1.4 TWh/yr (~46 TWh solar × 3%), which overstated the measured NLDC series by ~1.8×. The CEA generation CSV remains in the Grid-India unpublished sum; it is no longer this region's waste source.
 
@@ -25,7 +25,7 @@ Parser notes: 2025-01–2025-05 PDFs list Wind MU / Solar MU / Wind MW / Solar M
 
 Not done, and not claimed: no T1a, no Karnataka instruction-PDF energy, Maharashtra stays T2 on MSLDC (NLDC Maharashtra ~67 GWh/yr vs MSLDC ~27 GWh/yr — different publication), Rajasthan is T2 on the RRVPNL PDF floor (not NLDC). `india-grid-india` is not T2'd from a national NLDC sum. Tamil Nadu / Karnataka / Andhra NLDC RE State rows are near-zero and are not treated as complete SLDC coverage. GSLDC DSM / REC / "certificates blocked" pages are not curtailment.
 
-The Grid-India CDN TLS-resets from GitHub/Vercel. Daily refresh of the committed Gujarat CSV is the Bangalore droplet (`docs/ops/bangalore-nldc-push.sh`, 02:00 UTC) → `every-last-joule-data-relay` → `colombia-relay-pull.yml`. First Bangalore push landed 2026-10-19 (relay `0793597`, 602 days through 2026-10-18, 1.291 TWh, ~0.78 TWh/yr). Until that workflow copies the new day, the dashboard annualises the committed snapshot through 2026-10-16.
+The Grid-India CDN TLS-resets from GitHub/Vercel. Daily refresh of the committed Gujarat CSV is the Bangalore droplet (`docs/ops/bangalore-nldc-push.sh`, 02:00 UTC) → `every-last-joule-data-relay` → `colombia-relay-pull.yml`. First Bangalore push landed 2026-10-19 (relay `0793597`, 602 days through 2026-10-18, 1.291 TWh, ~0.78 TWh/yr). The dashboard CSV now includes 2026-10-18 (5.98 GWh solar). A full `colombia-relay-pull.yml` dispatch was not merged: Britta's CEA `*-gen-daily.csv` copies still carry the 2025-10-14 Excel serial (45944 GWh) and truncate ~60 later days.
 
 
 ## India nationwide CEA residual: 17 named states + east + rest (2026-10-19)
