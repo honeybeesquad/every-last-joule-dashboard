@@ -42,6 +42,11 @@ STATE_LABELS: dict[str, str] = {
     "punjab": "Punjab",
     "odisha": "Odisha",
     "chhattisgarh": "Chhattisgarh",
+    "kerala": "Kerala",
+    "haryana": "Haryana",
+    "assam": "Assam",
+    "himachal-pradesh": "Himachal Pradesh",
+    "uttarakhand": "Uttarakhand",
 }
 
 # Leftover india-east region: Eastern residual solar excluding Odisha
@@ -51,6 +56,26 @@ EAST_RESIDUAL_LABELS: tuple[str, ...] = (
     "West Bengal",
     "Jharkhand",
     "Sikkim",
+)
+
+# india-rest: remaining CEA State-Wise rows that are not a named dashboard
+# state and not in the Eastern residual. English fragments match bilingual
+# labels ("केरल / Kerala"). Do not include All India / Total / region headers.
+REST_RESIDUAL_LABELS: tuple[str, ...] = (
+    "Chandigarh",
+    "Delhi",
+    "Jammu and Kashmir",
+    "Ladakh",
+    "Daman & Diu",
+    "Dadra & Nagar Haveli",
+    "Goa",
+    "Pondicherry",
+    "Arunachal Pradesh",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Tripura",
 )
 
 Cell = Union[str, float]
@@ -209,7 +234,7 @@ def sum_generation(parts: Mapping[str, Mapping[str, float]]) -> dict[str, float]
 
 
 def parse_xlsx_bytes(data: bytes) -> dict[str, dict[str, float]]:
-    """Return {state_key: {wind_gwh, solar_gwh}} including residual `east`."""
+    """Return {state_key: {wind_gwh, solar_gwh}} including `east` and `rest`."""
     zf = zipfile.ZipFile(BytesIO(data))
     shared = parse_shared_strings(zf)
     sheet_paths = sorted(
@@ -230,5 +255,10 @@ def parse_xlsx_bytes(data: bytes) -> dict[str, dict[str, float]]:
         )
         if east_parts:
             states["east"] = sum_generation(east_parts)
+        rest_parts = extract_named_generation(
+            rows, REST_RESIDUAL_LABELS, wind_col=wind_col, solar_col=solar_col
+        )
+        if rest_parts:
+            states["rest"] = sum_generation(rest_parts)
         return states
     return {}

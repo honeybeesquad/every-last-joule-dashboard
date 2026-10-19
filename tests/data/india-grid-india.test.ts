@@ -12,6 +12,6 @@ describe("india-grid-india CEA CSVs", () => {
     expect(row.generationProfile).toHaveLength(24);
     expect(row.confidenceTier).toBe("T3-modelled");
     expect(row.sourceNote).toMatch(/not a substitute for SLDC/);
-    expect(row.sourceNote).toMatch(/12 of 12/);
+    expect(row.sourceNote).toMatch(/19 of 19/);
   });
 });

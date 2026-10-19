@@ -25,6 +25,9 @@ def test_header_aware_columns_skip_cumulative():
         2: {0: "राजस्थान / Rajasthan", 1: 57.11, 2: 239.64, 5: 561.0, 6: 4200.0},
         3: {0: "कर्नाटक / Karnataka", 1: 12.0, 2: 80.0, 5: 200.0, 6: 1500.0},
         4: {0: "बिहार / Bihar", 1: 0.0, 2: 1.5, 5: 0.0, 6: 40.0},
+        5: {0: "केरल / Kerala", 1: 0.4, 2: 1.2, 5: 10.0, 6: 80.0},
+        6: {0: "गोआ / Goa", 1: 0.0, 2: 0.05, 5: 0.0, 6: 1.0},
+        7: {0: "सम्पूर्ण भारत / All India", 1: 200.0, 2: 800.0, 5: 4000.0, 6: 20000.0},
     }
     wind_col, solar_col = cea.find_wind_solar_columns(rows)
     assert (wind_col, solar_col) == (1, 2)
@@ -33,10 +36,17 @@ def test_header_aware_columns_skip_cumulative():
     )
     assert states["rajasthan"] == {"wind_gwh": 57.11, "solar_gwh": 239.64}
     assert "karnataka" in states
+    assert states["kerala"] == {"wind_gwh": 0.4, "solar_gwh": 1.2}
     east = cea.extract_named_generation(
         rows, cea.EAST_RESIDUAL_LABELS, wind_col=wind_col, solar_col=solar_col
     )
     assert east["Bihar"]["solar_gwh"] == 1.5
+    rest = cea.extract_named_generation(
+        rows, cea.REST_RESIDUAL_LABELS, wind_col=wind_col, solar_col=solar_col
+    )
+    assert rest["Goa"]["solar_gwh"] == 0.05
+    assert "All India" not in rest
+    assert "Kerala" not in rest
 
 
 def test_layout_b_state_code_and_serial_are_not_energy():

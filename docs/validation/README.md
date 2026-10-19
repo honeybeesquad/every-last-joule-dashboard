@@ -226,10 +226,15 @@ Last generated: 2026-08-20
 | Hungary Wind | live | wind | 0 | [hungary-wind](./hungary-wind.md) |
 | Indonesia | estimated | solar | 0 | [indonesia](./indonesia.md) |
 | Andhra Pradesh | estimated | solar | 0 | [india-andhra-pradesh](./india-andhra-pradesh.md) |
+| Assam | estimated | solar | 0 | [india-assam](./india-assam.md) |
 | Chhattisgarh | estimated | solar | 0 | [india-chhattisgarh](./india-chhattisgarh.md) |
 | India East | estimated | solar | 0 | [india-east](./india-east.md) |
+| India rest | estimated | solar | 0 | [india-rest](./india-rest.md) |
 | Gujarat | estimated | solar | 0 | [india-gujarat](./india-gujarat.md) |
+| Haryana | estimated | solar | 0 | [india-haryana](./india-haryana.md) |
+| Himachal Pradesh | estimated | solar | 0 | [india-himachal-pradesh](./india-himachal-pradesh.md) |
 | Karnataka | estimated | solar | 0 | [india-karnataka](./india-karnataka.md) |
+| Kerala | estimated | mixed | 0 | [india-kerala](./india-kerala.md) |
 | Madhya Pradesh | estimated | solar | 0 | [india-madhya-pradesh](./india-madhya-pradesh.md) |
 | Maharashtra | anchored | mixed | 0 | [india-maharashtra](./india-maharashtra.md) |
 | Odisha | estimated | solar | 0 | [india-odisha](./india-odisha.md) |
@@ -238,6 +243,7 @@ Last generated: 2026-08-20
 | Tamil Nadu | estimated | wind | 0 | [india-tamil-nadu](./india-tamil-nadu.md) |
 | Telangana | estimated | mixed | 0 | [india-telangana](./india-telangana.md) |
 | Uttar Pradesh | estimated | solar | 0 | [india-uttar-pradesh](./india-uttar-pradesh.md) |
+| Uttarakhand | estimated | solar | 0 | [india-uttarakhand](./india-uttarakhand.md) |
 | Ireland (Republic) Solar | live | solar | 0 | [ireland-republic-solar](./ireland-republic-solar.md) |
 | Ireland (Republic) Wind | live | wind | 0 | [ireland-republic-wind](./ireland-republic-wind.md) |
 | Iran | estimated | solar | 0 | [iran](./iran.md) |

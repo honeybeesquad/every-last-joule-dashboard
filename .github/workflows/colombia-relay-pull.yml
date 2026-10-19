@@ -61,7 +61,8 @@ jobs:
           # India (copy only if present in relay repo)
           for state in rajasthan gujarat tamil-nadu andhra-pradesh maharashtra \
                        karnataka madhya-pradesh telangana uttar-pradesh punjab \
-                       odisha chhattisgarh east; do
+                       odisha chhattisgarh kerala haryana assam himachal-pradesh \
+                       uttarakhand east rest; do
             src="/tmp/relay/india-${state}-gen-daily.csv"
             dst="data/historical/india-${state}-gen-daily.csv"
             if [ -f "$src" ]; then

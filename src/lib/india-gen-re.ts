@@ -16,8 +16,15 @@ export const CURTAILMENT_RATES: Record<string, { primaryFuel: "solar" | "wind" |
   "india-punjab":         { primaryFuel: "solar", rate: 0.01 },
   "india-odisha":         { primaryFuel: "solar", rate: 0.01 },
   "india-chhattisgarh":   { primaryFuel: "solar", rate: 0.01 },
+  "india-kerala":         { primaryFuel: "mixed", rate: 0.01 },
+  "india-haryana":        { primaryFuel: "solar", rate: 0.01 },
+  "india-assam":          { primaryFuel: "solar", rate: 0.01 },
+  "india-himachal-pradesh": { primaryFuel: "solar", rate: 0.01 },
+  "india-uttarakhand":    { primaryFuel: "solar", rate: 0.01 },
   // Residual Eastern Region excluding Odisha (Bihar + West Bengal + Jharkhand + Sikkim).
   "india-east":           { primaryFuel: "solar", rate: 0.01 },
+  // Remaining CEA State-Wise rows (UTs + leftover NE states). Not All India.
+  "india-rest":           { primaryFuel: "solar", rate: 0.01 },
 };
 
 // State ID → Hindi+English row label used in CEA State-Wise Excel sheet.
@@ -35,6 +42,11 @@ export const STATE_LABEL_MAP: Record<string, string> = {
   "india-punjab":         "पंजाब / Punjab",
   "india-odisha":         "ओडिशा / Odisha",
   "india-chhattisgarh":   "छत्तीसगढ़ / Chhattisgarh",
+  "india-kerala":         "केरल / Kerala",
+  "india-haryana":        "हरियाणा / Haryana",
+  "india-assam":          "असम / Assam",
+  "india-himachal-pradesh": "हिमाचल प्रदेश / Himachal Pradesh",
+  "india-uttarakhand":    "उत्तराखंड / Uttarakhand",
 };
 
 interface CsvRow { date: string; windGwh: number; solarGwh: number; }

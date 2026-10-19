@@ -268,6 +268,12 @@ Uttar Pradesh,IND,solar,not-collecting,,unpublished,india-uttar-pradesh,Authorit
 Punjab,IND,solar,not-collecting,,unpublished,india-punjab,Authoritative operator exists; live path not producing usable waste.
 Odisha,IND,solar,not-collecting,,unpublished,india-odisha,Authoritative operator exists; live path not producing usable waste.
 Chhattisgarh,IND,solar,not-collecting,,unpublished,india-chhattisgarh,Authoritative operator exists; live path not producing usable waste.
+Kerala,IND,mixed,not-collecting,,unpublished,india-kerala,Authoritative operator exists; live path not producing usable waste.
+Haryana,IND,solar,not-collecting,,unpublished,india-haryana,Authoritative operator exists; live path not producing usable waste.
+Assam,IND,solar,not-collecting,,unpublished,india-assam,Authoritative operator exists; live path not producing usable waste.
+Himachal Pradesh,IND,solar,not-collecting,,unpublished,india-himachal-pradesh,Authoritative operator exists; live path not producing usable waste.
+Uttarakhand,IND,solar,not-collecting,,unpublished,india-uttarakhand,Authoritative operator exists; live path not producing usable waste.
+India rest,IND,solar,not-collecting,,unpublished,india-rest,Authoritative operator exists; live path not producing usable waste.
 Cyprus,CYP,solar,not-collecting,statics,unpublished,cyprus,Country/T3 stub — Ember/IRENA is not TSO collection.
 Ethiopia,ETH,hydro,not-collecting,statics,unpublished,ethiopia,Country/T3 stub — Ember/IRENA is not TSO collection.
 Kenya,KEN,hydro,not-collecting,statics,unpublished,kenya,Country/T3 stub — Ember/IRENA is not TSO collection.
