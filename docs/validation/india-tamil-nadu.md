@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** wind
-- **Source:** TNSLDC (Tamil Nadu State Load Despatch Centre / TANTRANSCO) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: tnsldc.com timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader emits T3-modelled typical-shape calibrated to POSOCO South Region 2024 (~1.0 TWh/yr wind curtailment; India's largest wind state).
+- **Source:** TNSLDC (Tamil Nadu State Load Despatch Centre / TANTRANSCO) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: tnsldc.com timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader uses CEA gen-re daily Excel × Ember India 2024 5% rate (≈1.2 TWh/yr at ~24 TWh/yr wind, trailing 365 days to 2026-10-15). Hourly shape is synthetic. Not a measured TSO series.
 - **Source URL:** [https://www.tantransco.org/](https://www.tantransco.org/)
 - **Loader:** [`india-tamil-nadu.json.ts`](../../src/data/india-tamil-nadu.json.ts)
 - **Structural gap:** no

@@ -14,8 +14,10 @@ export const CURTAILMENT_RATES: Record<string, { primaryFuel: "solar" | "wind" |
   "india-telangana":      { primaryFuel: "mixed", rate: 0.02 },
   "india-uttar-pradesh":  { primaryFuel: "solar", rate: 0.01 },
   "india-punjab":         { primaryFuel: "solar", rate: 0.01 },
-  "india-odisha":         { primaryFuel: "wind",  rate: 0.01 },
+  "india-odisha":         { primaryFuel: "solar", rate: 0.01 },
   "india-chhattisgarh":   { primaryFuel: "solar", rate: 0.01 },
+  // Residual Eastern Region excluding Odisha (Bihar + West Bengal + Jharkhand + Sikkim).
+  "india-east":           { primaryFuel: "solar", rate: 0.01 },
 };
 
 // State ID → Hindi+English row label used in CEA State-Wise Excel sheet.
@@ -37,6 +39,13 @@ export const STATE_LABEL_MAP: Record<string, string> = {
 
 interface CsvRow { date: string; windGwh: number; solarGwh: number; }
 
+/** Per-state daily GWh cap. Excel serial 45944 (2025-10-14) is ~45 TWh if treated as energy. */
+export const MAX_PLAUSIBLE_DAILY_GWH = 400;
+
+export function isPlausibleDailyGwh(value: number): boolean {
+  return Number.isFinite(value) && value >= 0 && value <= MAX_PLAUSIBLE_DAILY_GWH;
+}
+
 function parseCsv(text: string): CsvRow[] {
   const lines = text.trim().split("\n");
   if (lines.length < 2) return [];
@@ -52,7 +61,7 @@ function parseCsv(text: string): CsvRow[] {
       windGwh:  parseFloat(cols[windIdx])  || 0,
       solarGwh: parseFloat(cols[solarIdx]) || 0,
     };
-  }).filter(r => r.date.length > 0);
+  }).filter(r => r.date.length > 0 && isPlausibleDailyGwh(r.windGwh) && isPlausibleDailyGwh(r.solarGwh));
 }
 
 /**

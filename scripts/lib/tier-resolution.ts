@@ -134,7 +134,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "india-telangana": "mixed",
   "india-uttar-pradesh": "solar",
   "india-punjab": "solar",
-  "india-odisha": "wind",
+  "india-odisha": "solar",
   "india-chhattisgarh": "solar",
   indonesia: "solar",
   iran: "solar",

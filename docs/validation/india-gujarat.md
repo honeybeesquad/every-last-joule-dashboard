@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** GSLDC (Gujarat State Load Despatch Centre / GETCO) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: sldc.gujarat.gov.in timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader uses live CEA daily generation × Ember 2024 rate 3% / (1−rate) (≈2.4 TWh/yr at current 77 TWh/yr solar generation); supersedes the older ~1.0 TWh/yr POSOCO anchor.
+- **Source:** GSLDC (Gujarat State Load Despatch Centre / GETCO) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: sldc.gujarat.gov.in timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader uses live CEA daily generation × Ember 2024 rate 3% / (1−rate) (≈1.4 TWh/yr at ~46 TWh/yr solar, trailing 365 days to 2026-10-15); supersedes the older ~1.0 TWh/yr POSOCO anchor. The previous ~77 TWh solar denominator included a 2025-10-14 Excel serial-date parse error.
 - **Source URL:** [https://www.sldcguj.com/](https://www.sldcguj.com/)
 - **Loader:** [`india-gujarat.json.ts`](../../src/data/india-gujarat.json.ts)
 - **Structural gap:** no
