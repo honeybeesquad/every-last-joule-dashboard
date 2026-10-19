@@ -4,8 +4,9 @@ name: Relay pull (Colombia + India + Peru + PREPA)
 # (written by Britta cron / abed) and commits them into data/historical/.
 #
 # Colombia: runs ~19:15 UTC daily (45 min after Britta's 18:30 UTC push window).
-# India:    gen-re.cea.gov.in daily Excel; Britta fetches at 06:30 UTC; GA runs
-#           after Colombia pull to pick up both in one build.
+# India:    gen-re.cea.gov.in daily Excel; Britta fetches at 06:30 UTC.
+#           Gujarat T2 NLDC REMC daily MU: Bangalore droplet fetches at 02:00 UTC
+#           (docs/ops/bangalore-nldc-push.sh) into the same relay repo.
 # Peru:     COES per-plant generation (www.coes.org.pe); Britta fetches weekly
 #           (Mondays) — COES publishes monthly with a ~2-3wk lag. Estimated tier.
 #           CSV unchanged most days, so the diff guard below makes this a no-op.
@@ -87,6 +88,16 @@ jobs:
                data/historical/puerto-rico-genera.csv
           fi
 
+          # Gujarat T2 — Grid-India NLDC REMC daily MU (Bangalore droplet)
+          if [ -f /tmp/relay/india-gujarat-nldc-curtailed-daily.csv ]; then
+            cp /tmp/relay/india-gujarat-nldc-curtailed-daily.csv \
+               data/historical/india-gujarat-nldc-curtailed-daily.csv
+          fi
+          if [ -f /tmp/relay/india-nldc-remc-vre-daily.csv ]; then
+            cp /tmp/relay/india-nldc-remc-vre-daily.csv \
+               data/historical/india-nldc-remc-vre-daily.csv
+          fi
+
       - name: Open / refresh auto-merge PR
         env:
           GH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
@@ -100,6 +111,8 @@ jobs:
                   data/historical/india-tamil-nadu-gen-daily.csv \
                   data/historical/india-andhra-pradesh-gen-daily.csv \
                   data/historical/india-maharashtra-gen-daily.csv \
+                  data/historical/india-gujarat-nldc-curtailed-daily.csv \
+                  data/historical/india-nldc-remc-vre-daily.csv \
                   data/historical/peru-coes-per-plant.csv \
                   data/historical/puerto-rico-genera.csv \
                   data/historical/abed-heartbeat.json \

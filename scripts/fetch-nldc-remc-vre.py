@@ -45,6 +45,7 @@ import re
 import ssl
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.request
 from collections import defaultdict
@@ -237,7 +238,9 @@ def fetch_manifest() -> list[dict]:
     )
     with urllib.request.urlopen(req, timeout=60, context=ssl_ctx()) as resp:
         payload = json.loads(resp.read().decode())
-    rows = payload if isinstance(payload, list) else payload.get("data") or payload.get("result") or []
+    rows = payload if isinstance(payload, list) else (
+        payload.get("retData") or payload.get("data") or payload.get("result") or []
+    )
     if not rows:
         raise SystemExit(f"empty Grid-India manifest: keys={list(payload)[:8] if isinstance(payload, dict) else type(payload)}")
     return rows
@@ -258,11 +261,21 @@ def fetch_pdfs(dest: Path) -> int:
             skip += 1
             continue
         req = urllib.request.Request(CDN + rel, headers={"User-Agent": "every-last-joule-dashboard/relay"})
-        try:
-            with urllib.request.urlopen(req, timeout=60, context=ssl_ctx()) as resp:
-                body = resp.read()
-        except urllib.error.HTTPError as e:
-            print(f"FAIL {e.code} {name}", file=sys.stderr)
+        body = None
+        for attempt in range(1, 4):
+            try:
+                with urllib.request.urlopen(req, timeout=60, context=ssl_ctx()) as resp:
+                    body = resp.read()
+                break
+            except urllib.error.HTTPError as e:
+                print(f"FAIL {e.code} {name}", file=sys.stderr)
+                body = None
+                break
+            except (urllib.error.URLError, TimeoutError, OSError) as e:
+                print(f"retry {attempt}/3 {name}: {type(e).__name__}", file=sys.stderr)
+                body = None
+                time.sleep(2 * attempt)
+        if body is None:
             fail += 1
             continue
         if not body.startswith(b"%PDF"):
