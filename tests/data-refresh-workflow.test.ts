@@ -183,6 +183,12 @@ describe("data-refresh.yml runs on pushes to main, but not on the automation's o
     expect(text).toMatch(/cp \/tmp\/relay\/india-nldc-remc-vre-daily\.csv/);
   });
 
+  it("copies a CEA gen-daily file only through the overwrite guard", () => {
+    const text = readFileSync(join(WORKFLOWS, "colombia-relay-pull.yml"), "utf8");
+    expect(text).toContain('python3 scripts/relay/accept_india_gen_daily.py "$src" "$dst"');
+    expect(text).not.toContain('cp "$src" "$dst"');
+  });
+
   it("reads an ordered paths list the way GitHub does", () => {
     const list = ["**", "!docs/**", "docs/validation/**", "!*.md"];
     expect(triggers("docs/validation/x.md", list)).toBe(true);
