@@ -125,7 +125,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   // (Sci-Data integrity); flip back to `tier: "live"` plus remove these
   // entries once each loader's live path is actually wired up.
   "india-rajasthan": "flat",  // T2 measured RRVPNL PDF event energy; not a 24h series, so not a solar archetype
-  "india-gujarat": "solar",
+  "india-gujarat": "flat",    // T2 measured NLDC REMC daily MU; daily energy only, no intraday shape claimed
   "india-karnataka": "solar",
   "india-andhra-pradesh": "solar",
   "india-tamil-nadu": "wind",
