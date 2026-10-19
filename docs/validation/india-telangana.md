@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** mixed
-- **Source:** CEA gen-re.cea.gov.in daily Excel — Ramagundam solar + wind corridor. T3-modelled fallback calibrated to Ember India 2024 (~0.2 TWh/yr mixed curtailment). Loader reads committed CEA CSV when available.
+- **Source:** CEA gen-re.cea.gov.in daily Excel × Ember India 2024 2% rate (≈0.17 TWh/yr at ~8.0 TWh/yr solar + 0.28 TWh/yr wind, trailing 365 days to 2026-10-15). Hourly shape is synthetic. Not a measured TSO series.
 - **Source URL:** [https://gen-re.cea.gov.in/](https://gen-re.cea.gov.in/)
 - **Loader:** [`india-telangana.json.ts`](../../src/data/india-telangana.json.ts)
 - **Structural gap:** no
