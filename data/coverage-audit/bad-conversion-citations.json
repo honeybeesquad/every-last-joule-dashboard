@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 550,
+  "totalValidationDocs": 556,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 543,
-  "pctCited": 1.27,
+  "docsNotCiting": 549,
+  "pctCited": 1.26,
   "perDocCitations": [
     {
       "file": "aeci-solar.md",
@@ -1224,6 +1224,11 @@
       ]
     },
     {
+      "file": "india-assam.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "india-chhattisgarh.md",
       "cited": false,
       "matchedPatterns": []
@@ -1246,11 +1251,26 @@
       ]
     },
     {
+      "file": "india-haryana.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-himachal-pradesh.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "india-karnataka.md",
       "cited": true,
       "matchedPatterns": [
         "bad[\\s-]conversions?\\s+check"
       ]
+    },
+    {
+      "file": "india-kerala.md",
+      "cited": false,
+      "matchedPatterns": []
     },
     {
       "file": "india-madhya-pradesh.md",
@@ -1287,6 +1307,11 @@
       ]
     },
     {
+      "file": "india-rest.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "india-south.md",
       "cited": false,
       "matchedPatterns": []
@@ -1305,6 +1330,11 @@
     },
     {
       "file": "india-uttar-pradesh.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "india-uttarakhand.md",
       "cited": false,
       "matchedPatterns": []
     },

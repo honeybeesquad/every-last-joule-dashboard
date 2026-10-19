@@ -5,9 +5,10 @@ Bootstrap / repair India CEA gen-re daily generation CSVs.
 Fetches daily Excel reports from gen-re.cea.gov.in and writes:
   data/historical/india-<state>-gen-daily.csv  (date,wind_gwh,solar_gwh)
 
-Covers the 12 dashboard states plus the india-east residual (Bihar + West
-Bengal + Jharkhand + Sikkim). Header-aware: Wind then Solar columns, reject
-Excel serial dates and other implausible daily GWh values.
+Covers the 17 named dashboard states plus india-east (Bihar + West Bengal +
+Jharkhand + Sikkim) and india-rest (remaining CEA State-Wise rows).
+Header-aware: Wind then Solar columns, reject Excel serial dates and other
+implausible daily GWh values.
 
 Usage:
   python3 scripts/bootstrap-india-gen-re.py
@@ -38,7 +39,7 @@ from india_cea_excel import (  # noqa: E402
 
 DATA_DIR = os.path.join(REPO_ROOT, "data", "historical")
 CEA_BASE = "https://gen-re.cea.gov.in/public/uploads/dailyReport/excel"
-CSV_KEYS = tuple(list(STATE_LABELS.keys()) + ["east"])
+CSV_KEYS = tuple(list(STATE_LABELS.keys()) + ["east", "rest"])
 USER_AGENT = "EveryLastJoule/1.0 (research; gen-re backfill)"
 DEFAULT_START = date(2025, 5, 9)
 

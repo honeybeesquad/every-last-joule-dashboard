@@ -1,9 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-09-20 (TSO-grid completeness: unpublished wasteStatus + EIA/ENTSO generation-only + missing-grid markers. T1 unchanged. Austria APG left T2. T3 rose with unpublished TSO grids and markers. This is grid-completeness, not a waste T1 promotion.).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-10-19 (India nationwide CEA residual: Kerala, Haryana, Assam, Himachal Pradesh, Uttarakhand, india-rest. T3 327→333, total 536→542. T1/T2 unchanged. Modelled CEA×Ember, not T1a.).",
   "T1a": 160,
   "T1b": 26,
   "T1c": 1,
   "T2": 22,
-  "T3": 327,
-  "total": 536
+  "T3": 333,
+  "total": 542
 }

@@ -39,11 +39,12 @@ describe("CEA daily GWh plausibility", () => {
 });
 
 describe("committed India CEA CSVs", () => {
-  it("has 12 dashboard states plus the east residual, none carrying 45944", () => {
+  it("has 17 named states plus east and rest residuals, none carrying 45944", () => {
     const keys = [
       "rajasthan", "gujarat", "tamil-nadu", "andhra-pradesh", "maharashtra",
       "karnataka", "madhya-pradesh", "telangana", "uttar-pradesh", "punjab",
-      "odisha", "chhattisgarh", "east",
+      "odisha", "chhattisgarh", "kerala", "haryana", "assam",
+      "himachal-pradesh", "uttarakhand", "east", "rest",
     ];
     for (const key of keys) {
       const path = join(HIST, `india-${key}-gen-daily.csv`);
@@ -74,6 +75,14 @@ describe("committed India CEA CSVs", () => {
     expect(tot).not.toBeNull();
     expect(tot!.windTWh).toBe(0);
     expect(tot!.solarTWh).toBeGreaterThan(0.4);
+  });
+
+  it("india-rest is a leftover residual, not All-India", () => {
+    const tot = readStateCsvTotal(join(HIST, "india-rest-gen-daily.csv"), 365);
+    expect(tot).not.toBeNull();
+    expect(tot!.solarTWh).toBeGreaterThan(0.05);
+    expect(tot!.solarTWh).toBeLessThan(0.2);
+    expect(tot!.windTWh).toBe(0);
   });
 
   it("Karnataka CSV is present so the loader is not on the 0.5 TWh stub", () => {
