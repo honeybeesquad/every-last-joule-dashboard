@@ -1,66 +1,68 @@
 import { pathToFileURL, fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
-import { readStateCsvTotal, readStateSldcCurtailment, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
+import { readStateSldcCurtailment } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-gujarat";
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const CSV_PATH = join(__dirname, "../../data/historical/india-gujarat-gen-daily.csv");
-const CSV_SLDC_PATH = join(__dirname, "../../data/historical/india-gujarat-sldc-curtailed-daily.csv");
-const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
+const CSV_NLDC_PATH = join(__dirname, "../../data/historical/india-gujarat-nldc-curtailed-daily.csv");
 
 async function run(): Promise<RegionData> {
-  const sldc = readStateSldcCurtailment(CSV_SLDC_PATH, 90);
-  if (sldc !== null) {
-    const rawWindowTWh = sldc.solarCurtailedTWh + sldc.windCurtailedTWh;
-    const annualizedTWh = rawWindowTWh * 365 / sldc.windowDays;
-    const base = buildTypicalSolarRegion(
-      REGION_ID,
-      6.5,
-      annualizedTWh,
-      `GSLDC (Gujarat State Load Despatch Centre) direct curtailment — ${sldc.nRows}-day CSV, ` +
-      `trailing-90-day solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh + wind ${sldc.windCurtailedTWh.toFixed(2)} TWh curtailed; ` +
-      `annualised to ${annualizedTWh.toFixed(2)} TWh/yr (× 365 / ${sldc.nRows} rows). ` +
-      `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
-      new Date().getFullYear().toString(),
-    );
-    return { ...base, confidenceTier: "T1a-live-tso" as const, sourceProvenance: "verified" };
+  // Annualise across the entire published NLDC REMC record, not a trailing
+  // 90 days. Daily MU is bursty — Oct 2026 had 4–6 GWh solar days next to
+  // zeros — so a short window annualises to wildly different answers.
+  // The full record is also what T2 asks for: a measured annual total.
+  const nldc = readStateSldcCurtailment(CSV_NLDC_PATH, Number.MAX_SAFE_INTEGER);
+  if (nldc !== null) {
+    const recordTWh = nldc.solarCurtailedTWh + nldc.windCurtailedTWh;
+    const annualizedTWh = recordTWh * 365 / nldc.windowDays;
+    // Flat 24/7 profile: NLDC publishes daily energy with no intraday
+    // breakdown, so any diurnal shape here would be invented. Flat is the
+    // honest "we know the total, not the shape" position and is what routes
+    // this region to T2-annual-calibrated.
+    const flatGW = (annualizedTWh * 1000) / 8760;
+    const base: RegionData = {
+      regionId: REGION_ID,
+      profile: Array(24).fill(flatGW),
+      latestProfile: null,
+      totalTWh: annualizedTWh * (30 / 365),
+      peakGW: flatGW,
+      lastUpdated: nldc.latestDate,
+      lastSuccessAt: new Date(nldc.latestDate).toISOString(),
+      sourceProvenance: "verified",
+      sourceNote:
+        `Grid-India NLDC REMC daily VRE reports — MEASURED RE State wind+solar ` +
+        `curtailment (MU; 1 MU = 1 GWh) from the first table ("VRE Curtailment ` +
+        `Details due to real time system constraints"), parsed from the published ` +
+        `DD.MM.YYYY_NLDC_REMC_REPORT series. ${nldc.windowDays} published days: solar ` +
+        `${(nldc.solarCurtailedTWh * 1000).toFixed(2)} GWh + wind ` +
+        `${(nldc.windCurtailedTWh * 1000).toFixed(2)} GWh, annualised to ` +
+        `${(annualizedTWh * 1000).toFixed(1)} GWh/yr. Latest published day: ${nldc.latestDate}. ` +
+        `NOT a live feed — daily PDFs in arrears, CDN reachable from India only. ` +
+        `Not GSLDC DSM / REC / "certificates blocked" pages (those are not ` +
+        `operational curtailment). Emergency TRAS Down table excluded (often MW ` +
+        `with 0 MU). Flat 24/7 profile: the source gives daily energy only, so no ` +
+        `intraday shape is claimed.`,
+      fuelShare: recordTWh > 0
+        ? { solar: nldc.solarCurtailedTWh / recordTWh, wind: nldc.windCurtailedTWh / recordTWh }
+        : { solar: 1, wind: 0 },
+    };
+    return applyUncertainty(base, { regionTier: "anchored", profileKind: "flat" });
   }
 
-  const csv = readStateCsvTotal(CSV_PATH, 365);
-
-  if (csv !== null) {
-    const curtailedTWh = computeCurtailedEnergy(csv.solarTWh, CURTAILMENT.rate);
-    const base = buildTypicalSolarRegion(
-      REGION_ID,
-      6.5,
-      curtailedTWh,
-      `CEA gen-re.cea.gov.in daily Excel, State-Wise sheet (${csv.nRows}-day CSV; trailing-365-day solar ${csv.solarTWh.toFixed(2)} TWh). ` +
-      `Annual curtailed energy = CEA generation × Ember India 2024 rate ${(CURTAILMENT.rate * 100).toFixed(0)}% / (1 − rate) = ${curtailedTWh.toFixed(2)} TWh. ` +
-      `Hourly shape is synthetic. Only the generation denominator is from a primary official source.`,
-      new Date().getFullYear().toString(),
-    );
-    return { ...base, sourceProvenance: "official-lead" };
-  }
-
-  // No CSV yet — T3 modelled fallback
-  const base = buildTypicalSolarRegion(
-    REGION_ID,
-    6.5,
-    1.0,
-    `No CEA CSV present; T3-modelled fallback calibrated to POSOCO/Ember India 2024 (~1.0 TWh/yr solar curtailment, Gujarat Khavda-Kutch transmission bottlenecks).`,
-    "2024",
+  throw new Error(
+    "india-gujarat: NLDC REMC curtailment CSV missing — refusing to emit a T3-modelled " +
+    "profile under the region's canonical anchored (T2) tier. " +
+    "Regenerate with scripts/fetch-nldc-remc-vre.py.",
   );
-  return applyUncertainty(base, { regionTier: "estimated", profileKind: "solar" });
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
+  withFallback(REGION_ID, () => run(), { regionTier: "anchored" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("india-gujarat loader failed", err);

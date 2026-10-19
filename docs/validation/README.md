@@ -230,7 +230,7 @@ Last generated: 2026-08-20
 | Chhattisgarh | estimated | solar | 0 | [india-chhattisgarh](./india-chhattisgarh.md) |
 | India East | estimated | solar | 0 | [india-east](./india-east.md) |
 | India rest | estimated | solar | 0 | [india-rest](./india-rest.md) |
-| Gujarat | estimated | solar | 0 | [india-gujarat](./india-gujarat.md) |
+| Gujarat | anchored | solar | 0 | [india-gujarat](./india-gujarat.md) |
 | Haryana | estimated | solar | 0 | [india-haryana](./india-haryana.md) |
 | Himachal Pradesh | estimated | solar | 0 | [india-himachal-pradesh](./india-himachal-pradesh.md) |
 | Karnataka | estimated | solar | 0 | [india-karnataka](./india-karnataka.md) |
