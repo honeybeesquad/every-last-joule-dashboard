@@ -24309,3 +24309,45 @@ date,layout,entity_kind,entity_name,region_id,wind_max_mw,wind_curtailed_gwh,sol
 2026-10-16,mw_mu,re_state,Tamil Nadu,india-tamil-nadu,0,0.0000,0,0.0000
 2026-10-16,mw_mu,re_state,Telengana,india-telangana,0,0.0000,0,0.0000
 2026-10-16,mw_mu,re_state,UP,india-uttar-pradesh,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,BHADLA3,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Bachau,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Bhadla,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Bhadla2,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Bhuj,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Bhuj_2,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Bikaner,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,FATEHGARH4,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Fatehgarh,,2,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Fatehgarh1,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,GADAG,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,GANDHAR,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,HIRIYUR,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Indore,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,KAWAS,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,KOPPAL,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Karur,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Khandwa,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Khavda,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Kurnool,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,NPKunta,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Neemuch,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Pachora,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Pavagada,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Pugalur,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,RAMGARH,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Radhaneshda,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Raipur,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Rewa,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,ists_station,Solapur,,0,0.0000,0,0.0000
+2026-10-18,mw_mu,re_state,Andhra Pradesh,india-andhra-pradesh,0,0.0000,0,0.0000
+2026-10-18,mw_mu,re_state,Chattisgarh,india-chhattisgarh,0,0.0000,0,0.0000
+2026-10-18,mw_mu,re_state,Gujarat,india-gujarat,0,0.0000,1972,5.9800
+2026-10-18,mw_mu,re_state,Karnataka,india-karnataka,0,0.0000,0,0.0000
+2026-10-18,mw_mu,re_state,Kerala,india-kerala,0,0.0000,0,0.0000
+2026-10-18,mw_mu,re_state,Madhya Pradesh,india-madhya-pradesh,0,0.0000,0,0.0000
+2026-10-18,mw_mu,re_state,Maharashtra,india-maharashtra,0,0.0000,0,0.0000
+2026-10-18,mw_mu,re_state,Punjab,india-punjab,0,0.0000,0,0.0000
+2026-10-18,mw_mu,re_state,Rajasthan,india-rajasthan,35,0.1370,1050,3.1870
+2026-10-18,mw_mu,re_state,Tamil Nadu,india-tamil-nadu,0,0.0000,0,0.0000
+2026-10-18,mw_mu,re_state,Telengana,india-telangana,0,0.0000,0,0.0000
+2026-10-18,mw_mu,re_state,UP,india-uttar-pradesh,0,0.0000,0,0.0000

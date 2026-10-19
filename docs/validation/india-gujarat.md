@@ -8,7 +8,7 @@ Last updated: 2026-10-19 · Grid-India NLDC REMC daily VRE MU · Paper section: 
 - **Country:** IND
 - **Tier:** anchored
 - **Kind:** solar
-- **Source:** Grid-India NLDC REMC daily VRE reports — MEASURED RE State wind+solar curtailment (MU) from the first table (real-time system constraints). 1.285 TWh across 601 published days (2025-01-01 → 2026-10-16); ~0.78 TWh/yr annualised. Daily PDFs, not a live feed, hence T2 not T1. Flat 24/7 profile: daily energy only. GSLDC DSM/REC pages are not this series. Supersedes CEA×Ember ~1.4 TWh/yr.
+- **Source:** Grid-India NLDC REMC daily VRE reports — MEASURED RE State wind+solar curtailment (MU) from the first table (real-time system constraints). 1.291 TWh across 602 published days (2025-01-01 → 2026-10-18); ~0.78 TWh/yr annualised. Daily PDFs, not a live feed, hence T2 not T1. Flat 24/7 profile: daily energy only. GSLDC DSM/REC pages are not this series. Supersedes CEA×Ember ~1.4 TWh/yr.
 - **Source URL:** [https://grid-india.in/](https://grid-india.in/)
 - **Loader:** [`india-gujarat.json.ts`](../../src/data/india-gujarat.json.ts)
 - **Structural gap:** no
@@ -35,7 +35,7 @@ Last updated: 2026-10-19 · Grid-India NLDC REMC daily VRE MU · Paper section: 
 <!-- BEGIN MANUAL -->
 - **Generation source:** unused for this region's waste. CEA gen-re daily Excel remains in the Grid-India unpublished generation sum.
 - **Curtailment energy:** NLDC RE State Gujarat row, 1 MU = 1 GWh
-- **Annualisation:** `record_TWh × 365 / published_days` (601 days, including zeros)
+- **Annualisation:** `record_TWh × 365 / published_days` (602 days, including zeros)
 <!-- END MANUAL -->
 ## Multi-year backfill annual totals
 
@@ -45,15 +45,15 @@ Last updated: 2026-10-19 · Grid-India NLDC REMC daily VRE MU · Paper section: 
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** ~0.78 TWh/yr annualised from 1.285 TWh / 601 NLDC days
+- **TSO annual curtailment (latest published):** ~0.78 TWh/yr annualised from 1.291 TWh / 602 NLDC days
 - **Ember annual:** ~1.4 TWh/yr (CEA solar × 3% / (1−3%), superseded)
 - **IRENA annual:** —
 - **Other:** —
 
 
 <!-- BEGIN MANUAL -->
-- **NLDC published energy:** 1285.2 GWh (340.5 wind + 944.7 solar) across 601 days, 2025-01-01 → 2026-10-16
-- **Annualised:** ~780.5 GWh/yr
+- **NLDC published energy:** 1291.1 GWh (340.5 wind + 950.7 solar) across 602 days, 2025-01-01 → 2026-10-18
+- **Annualised:** ~782.8 GWh/yr
 - **Superseded Ember estimate:** ~1.4 TWh/yr (~1.8× the measured NLDC series)
 <!-- END MANUAL -->
 <!-- BEGIN MANUAL -->

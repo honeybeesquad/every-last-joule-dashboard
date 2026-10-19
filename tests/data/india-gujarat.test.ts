@@ -32,7 +32,7 @@ describe("india-gujarat loader", () => {
 
   it("magnitude matches the measured NLDC record, not the old Ember-rate estimate", async () => {
     const data = await buildIndiaGujaratData();
-    // Measured: 1285 GWh across 601 published days -> ~780 GWh/yr.
+    // Measured: 1291 GWh across 602 published days -> ~783 GWh/yr.
     // The superseded CEA×Ember 3% path emitted ~1.41 TWh/yr (~1.8× high).
     const annualisedGwh = data.totalTWh * (365 / 30) * 1000;
     expect(annualisedGwh).toBeGreaterThan(600);
@@ -59,7 +59,7 @@ describe("india-gujarat NLDC CSV", () => {
   it("covers the published NLDC window including zeros", () => {
     expect(rows.length).toBeGreaterThanOrEqual(600);
     expect(rows[0].date).toBe("2025-01-01");
-    expect(rows[rows.length - 1].date).toBe("2026-10-16");
+    expect(rows[rows.length - 1].date).toBe("2026-10-18");
     expect(rows.some((r) => r.wind + r.solar === 0)).toBe(true);
     expect(rows.some((r) => r.wind + r.solar > 0)).toBe(true);
   });

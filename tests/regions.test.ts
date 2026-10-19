@@ -347,7 +347,7 @@ describe("regions", () => {
     // retired 2026-04-01, permanently 0.0 TWh/30d). 18 EIA-930 US BAs -> 16. 25 -> 23.
     // 2026-09-20: Austria APG left T2 (generation unpublished on ENTSO A75). 23 -> 22.
     // 2026-10-19: india-gujarat promoted estimated -> anchored on measured
-    // Grid-India NLDC REMC daily VRE MU (1.285 TWh / 601 days, ~0.78 TWh/yr). 22 -> 23.
+    // Grid-India NLDC REMC daily VRE MU (1.291 TWh / 602 days, ~0.78 TWh/yr). 22 -> 23.
     // 2026-10-19: india-rajasthan promoted estimated -> anchored on measured
     // RRVPNL re-curtailment PDFs (0.052 TWh Jan–May 2026, not annualised). 23 -> 24.
     expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(24);
