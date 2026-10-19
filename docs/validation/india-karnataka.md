@@ -8,8 +8,8 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** KSLDC (Karnataka State Load Despatch Centre) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: ksldc.in returns HTTP 200 but is a login-gated dashboard (username/password form). No public data paths — all sub-paths return 404. T1 blocked: authenticated portal only. Loader emits T3-modelled typical-shape calibrated to POSOCO South Region 2024 (~0.5 TWh/yr Karnataka solar curtailment).
-- **Source URL:** [https://ksldc.in/](https://ksldc.in/)
+- **Source:** CEA gen-re.cea.gov.in daily Excel × Ember India 2024 2% rate (≈0.36 TWh/yr at ~18 TWh/yr solar, trailing 365 days to 2026-10-15). KSLDC (ksldc.in) is login-gated — not the live source. Instruction PDFs still lack an energy denominator (item 3). Hourly shape is synthetic. Not a measured TSO series.
+- **Source URL:** [https://gen-re.cea.gov.in/](https://gen-re.cea.gov.in/)
 - **Loader:** [`india-karnataka.json.ts`](../../src/data/india-karnataka.json.ts)
 - **Structural gap:** no
 
@@ -20,7 +20,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Tier:** estimated
 - **Source provenance:** `official-lead` — KSLDC publishes a live dashboard and curtailment PDFs (and is *not* geoblocked, unlike other Indian SLDCs), but the parser is not yet implemented. The energy-denominator gap on the older instruction PDFs is the load-bearing reason for `official-lead` rather than `verified`: an instruction percentage is not energy without a paired generation total — see bad-conversions checklist item 3. Until the parser ships AND the energy denominator is resolved, the loader emits a typical-shape T3 fallback. (See [tier-classification-guide.md#source-provenance-orthogonal-to-tier](../methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier).)
 - **Kind:** solar
-- **Source:** KSLDC (Karnataka State Load Despatch Centre) — real-time dashboard and curtailment PDFs at ksldc.in. Probed successfully in April 2026 coverage audit; parser not yet implemented. Loader currently emits T3-modelled typical-shape calibrated to POSOCO South Region 2024 (~0.5 TWh/yr Karnataka solar curtailment). Will be promoted to T1a-live-tso when the parser ships.
+- **Source:** CEA gen-re.cea.gov.in daily Excel × Ember India 2024 2% rate. KSLDC (ksldc.in) is login-gated — not the live source. Instruction PDFs still lack an energy denominator (item 3). Will be promoted to T1a-live-tso only when an SLDC energy series exists. The previous 0.5 TWh POSOCO stub is no longer plotted.
 - **Source URL:** [https://ksldc.in/](https://ksldc.in/)
 - **Loader:** [`india-karnataka.json.ts`](../../src/data/india-karnataka.json.ts)
 - **Structural gap:** yes

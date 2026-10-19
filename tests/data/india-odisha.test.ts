@@ -12,11 +12,11 @@ describe("india-odisha loader", () => {
     expect(data.confidenceTier).toBe("T3-modelled");
   });
 
-  it("wind profile peaks in afternoon (UTC 09-10)", async () => {
+  it("solar profile peaks around UTC 06-07 (Odisha ~84°E local noon)", async () => {
     const data = await buildIndiaOdishaData();
     const peakHour = data.profile.indexOf(Math.max(...data.profile));
-    expect(peakHour).toBeGreaterThanOrEqual(8);
-    expect(peakHour).toBeLessThanOrEqual(11);
+    expect(peakHour).toBeGreaterThanOrEqual(5);
+    expect(peakHour).toBeLessThanOrEqual(8);
   });
 
   it("uncertainty bounds reflect ±40% T3 envelope", async () => {

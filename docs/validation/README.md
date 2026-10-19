@@ -232,7 +232,7 @@ Last generated: 2026-08-20
 | Karnataka | estimated | solar | 0 | [india-karnataka](./india-karnataka.md) |
 | Madhya Pradesh | estimated | solar | 0 | [india-madhya-pradesh](./india-madhya-pradesh.md) |
 | Maharashtra | anchored | mixed | 0 | [india-maharashtra](./india-maharashtra.md) |
-| Odisha | estimated | wind | 0 | [india-odisha](./india-odisha.md) |
+| Odisha | estimated | solar | 0 | [india-odisha](./india-odisha.md) |
 | Punjab | estimated | solar | 0 | [india-punjab](./india-punjab.md) |
 | Rajasthan | estimated | solar | 0 | [india-rajasthan](./india-rajasthan.md) |
 | Tamil Nadu | estimated | wind | 0 | [india-tamil-nadu](./india-tamil-nadu.md) |
