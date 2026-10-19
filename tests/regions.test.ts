@@ -334,10 +334,11 @@ describe("regions", () => {
     // + 82 new T3 = 327.
     // 2026-10-19: India nationwide CEA residual (+6 estimated). 327 + 6 = 333.
     // 2026-10-19: india-gujarat T3 → T2 on NLDC REMC daily MU. 333 - 1 = 332.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(332);
+    // 2026-10-19: india-rajasthan T3 → T2 on RRVPNL PDFs. 332 - 1 = 331.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(331);
   });
 
-  it("has 23 anchored regions (7 flat-profile + 16 EIA-930 US BAs)", () => {
+  it("has 24 anchored regions (8 flat-profile + 16 EIA-930 US BAs)", () => {
     // 2026-08-03: india-maharashtra promoted estimated -> anchored on measured
     // MSLDC Monthly Curtailment Reports (33.28 GWh across 15 published months).
     // T2 rather than T1 because MSLDC publishes monthly, lags 1-2 months and
@@ -347,7 +348,9 @@ describe("regions", () => {
     // 2026-09-20: Austria APG left T2 (generation unpublished on ENTSO A75). 23 -> 22.
     // 2026-10-19: india-gujarat promoted estimated -> anchored on measured
     // Grid-India NLDC REMC daily VRE MU (1.285 TWh / 601 days, ~0.78 TWh/yr). 22 -> 23.
-    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(23);
+    // 2026-10-19: india-rajasthan promoted estimated -> anchored on measured
+    // RRVPNL re-curtailment PDFs (0.052 TWh Jan–May 2026, not annualised). 23 -> 24.
+    expect(REGIONS.filter(r => r.tier === "anchored").length).toBe(24);
   });
 
   it("keeps remaining mixed rows explicit so no new bundled curtailment slips in", () => {

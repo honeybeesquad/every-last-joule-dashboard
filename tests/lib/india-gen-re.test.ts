@@ -3,8 +3,11 @@ import { readFileSync, writeFileSync, unlinkSync } from "fs";
 import { join } from "path";
 import {
   computeCurtailedEnergy,
+  inclusiveUtcDaySpan,
   isPlausibleDailyGwh,
   MAX_PLAUSIBLE_DAILY_GWH,
+  RAJASTHAN_RRVPNL_REPORT_WINDOW,
+  readRrvpnlCurtailmentEvents,
   readStateCsvTotal,
 } from "../../src/lib/india-gen-re.js";
 
@@ -89,5 +92,28 @@ describe("committed India CEA CSVs", () => {
     const tot = readStateCsvTotal(join(HIST, "india-karnataka-gen-daily.csv"), 365);
     expect(tot).not.toBeNull();
     expect(tot!.solarTWh).toBeGreaterThan(10);
+  });
+});
+
+describe("RRVPNL Rajasthan event CSV", () => {
+  it("Jan–May 2026 report window is 151 calendar days, not a year", () => {
+    expect(inclusiveUtcDaySpan(
+      RAJASTHAN_RRVPNL_REPORT_WINDOW.start,
+      RAJASTHAN_RRVPNL_REPORT_WINDOW.end,
+    )).toBe(151);
+  });
+
+  it("sums the committed 0.052 TWh floor without annualising", () => {
+    const ev = readRrvpnlCurtailmentEvents(
+      join(HIST, "india-rajasthan-rrvpnl-curtailed-events.csv"),
+    );
+    expect(ev).not.toBeNull();
+    expect(ev!.nRows).toBe(75);
+    expect(ev!.nManual).toBe(52);
+    expect(ev!.windowDays).toBe(151);
+    const total = ev!.solarCurtailedTWh + ev!.windCurtailedTWh;
+    expect(total).toBeCloseTo(0.052326832, 8);
+    expect(ev!.solarCurtailedTWh / total).toBeGreaterThan(0.95);
+    expect(ev!.latestDate).toBe("2026-05-06");
   });
 });

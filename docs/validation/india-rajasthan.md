@@ -1,22 +1,22 @@
 # Validation — Rajasthan (`india-rajasthan`)
 
-Last updated: 2026-09-15 · Honesty pass on the CEA×Ember vs RRVPNL PDF gap (#964)
+Last updated: 2026-10-19 · T2 on RRVPNL PDF event energy (#964)
 
 ## Source
 
 - **Region id:** `india-rajasthan`
 - **Country:** IND
-- **Tier:** estimated
+- **Tier:** anchored
 - **Kind:** solar
-- **Source:** CEA gen-re.cea.gov.in daily Excel × Ember India 2024 6% rate (≈4.6 TWh/yr at ~71 TWh/yr solar, trailing 365 days to 2026-10-15). Hourly shape is synthetic. RRVPNL SLDC (sldc.rajasthan.gov.in) is login-gated (HTTP 403) — not the live source. Official RRVPNL re-curtailment PDFs for Jan–May 2026 sum to 0.052 TWh, >50× below this modelled anchor (issue #964). A 2025-10-14 Excel serial-date parser bug had inflated the solar denominator by ~46 TWh; that row is repaired. Not a measured TSO series.
-- **Source URL:** [https://gen-re.cea.gov.in/](https://gen-re.cea.gov.in/)
+- **Source:** RRVPNL (Rajasthan SLDC) re-curtailment PDFs — MEASURED Relief-MW × duration event energy. 0.052 TWh in the Jan–May 2026 published reports (75 rows, 52 medium-confidence manual-from-scan). Dashboard 30-day figure spreads that floor across the 151-day report window; not annualised to a TWh/yr. Monthly PDFs, not a live feed, hence T2 not T1. Flat 24/7 profile: events are not an hourly series. Supersedes CEA×Ember ~4.6 TWh/yr, which overstated this floor by ~50× (issue #964).
+- **Source URL:** [https://sldc.rajasthan.gov.in/rrvpnl/re-curtailment](https://sldc.rajasthan.gov.in/rrvpnl/re-curtailment)
 - **Loader:** [`india-rajasthan.json.ts`](../../src/data/india-rajasthan.json.ts)
 - **Structural gap:** no
 
 
 <!-- BEGIN MANUAL -->
-- **Methodology note:** T2-annual-calibrated (generation denominator from CEA official source; curtailment rate modelled from Ember India 2024). Tier bucket stays T3 until tier-resolution.ts gains a T2-static path.
-- **Source provenance:** `official-lead` — generation denominator from CEA official daily Excel; curtailment rate modelled from Ember India 2024. The dashboard does **not** plot RRVPNL instruction energy.
+- **Methodology note:** T2-annual-calibrated (measured RRVPNL re-curtailment PDF event energy; 30-day figure spreads 0.052 TWh across the 151-day Jan–May 2026 report window). Not T1a — monthly PDFs, not a live feed. Not annualised to a TWh/yr.
+- **Source provenance:** `verified` — event energy is published by RRVPNL; 52 of 75 rows are medium-confidence manual-from-scan of official image-only PDFs.
 <!-- END MANUAL -->
 ## Calibration
 
@@ -25,10 +25,10 @@ Last updated: 2026-09-15 · Honesty pass on the CEA×Ember vs RRVPNL PDF gap (#9
 
 
 <!-- BEGIN MANUAL -->
-- **Generation source:** CEA gen-re.cea.gov.in daily Excel, State-Wise sheet, Solar Energy (MU) column
-- **Curtailment rate:** ~6% solar — Ember India 2024 state-level estimate
-- **Formula:** `annual_curtailed_TWh = annual_generation_TWh × 0.06 / (1 − 0.06)`
-- **Ember convention:** rate expressed as fraction of potential (curtailed / (generated + curtailed))
+- **Energy source:** RRVPNL `re-curtailment` PDFs, `Relief MW × duration hours`
+- **Committed extraction:** `data/historical/india-rajasthan-rrvpnl-curtailed-events.csv` (75 rows, 0.052327 TWh, 52 `manual_from_scanned_pdf`)
+- **30-day dashboard figure:** `0.052327 × 30 / 151` — report-window rate, not a TWh/yr
+- **Superseded path:** CEA generation × Ember India 2024 6% (~4.6 TWh/yr) is no longer plotted
 <!-- END MANUAL -->
 ## Multi-year backfill annual totals
 
@@ -45,22 +45,20 @@ Last updated: 2026-09-15 · Honesty pass on the CEA×Ember vs RRVPNL PDF gap (#9
 
 
 <!-- BEGIN MANUAL -->
-- **TSO annual (not used in production):** research extraction of RRVPNL `re-curtailment` PDFs — **0.052 TWh for Jan–May 2026** (0.050 solar / 0.002 wind; 75 rows, 52 manual-from-scan). Not annualised. Issue [#964](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/964).
-- **CEA annual generation (trailing 365 days from CSV):** ~71 TWh solar (loader `sourceNote`; the previous ~98 TWh included Excel serial 45944 as energy)
-- **Ember curtailment rate:** ~6% solar (Ember India 2024)
-- **Dashboard modelled curtailment:** ≈4.6 TWh/yr
-- **Fallback anchor (no CSV):** 3.5 TWh/yr solar (older Ember-anchor, superseded 2026-08-20 when CEA CSV is present)
+- **TSO published floor (plotted):** RRVPNL `re-curtailment` PDFs — **0.052 TWh for Jan–May 2026** (0.050 solar / 0.002 wind; 75 rows, 52 manual-from-scan). Not annualised. Issue [#964](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/964).
+- **Dashboard 30-day:** ≈0.010 TWh (`0.052 × 30 / 151`)
+- **Superseded CEA×Ember modelled annual:** ≈4.6 TWh/yr (~71 TWh solar × 6% / 0.94). The previous ~6.3 TWh/yr included Excel serial 45944 as energy.
 <!-- END MANUAL -->
 <!-- BEGIN MANUAL -->
 ## Bad-conversions check
 
 | # | Item | Verdict | Reason |
 |---|------|---------|--------|
-| 1 | DSM / deviation values used as curtailment | no | Ember curtailment rate applied to CEA generation; neither figure is a deviation/scheduling settlement |
-| 2 | Capacity-at-risk MW used as curtailed energy MWh | no | CEA data is MU (= GWh, energy), not MW (capacity) |
-| 3 | Instruction percentage without a generation denominator | no | Ember rate applied to actual generation TWh from CEA; denominator is explicit and official |
-| 4 | Blank or dash treated as zero | no | Missing daily rows use `withFallback` to prior anchor; CSV rows with no report date are simply absent, not zeroed |
-| 5 | Modelled fallback labelled as verified measurement | partial | `sourceNote` states the 4.6 TWh/yr is CEA generation × Ember 6%, and that RRVPNL PDFs (0.052 TWh Jan–May 2026) are not what the dashboard plots. Region `sourceUrl` is now `gen-re.cea.gov.in`, not the SLDC portal. |
+| 1 | DSM / deviation values used as curtailment | no | Energy is `Relief MW × duration hours` from RRVPNL event tables, not a DSM/deviation settlement |
+| 2 | Capacity-at-risk MW used as curtailed energy MWh | no | Each row multiplies relief MW by duration hours to get MWh |
+| 3 | Instruction percentage without a generation denominator | no | Source is event energy, not an instruction % |
+| 4 | Blank or dash treated as zero | no | February/Nov/Dec image-only reports are OCR-reviewed as no obvious rows, not audited zeroes; they sit inside the 151-day window without invented daily NIL rows |
+| 5 | Modelled fallback labelled as verified measurement | no | Dashboard plots the RRVPNL PDF floor. CEA×Ember ~4.6 TWh/yr is named as the superseded estimate. 52 of 75 rows remain medium-confidence manual-from-scan |
 <!-- END MANUAL -->
 ## Discrepancy analysis
 
@@ -68,21 +66,21 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 
 <!-- BEGIN MANUAL -->
-The dashboard plots CEA generation × Ember 6%, not RRVPNL instructions. The official PDF floor for five months of 2026 is **>50× below** that modelled annual. Caveats on the PDF side: 52 of 75 rows are manual-from-scan; February/Nov/Dec image-only reports were OCR-reviewed as no obvious rows, not audited zeroes; the extractor uses `Relief MW × duration`, which may undercount if the report layout is not energy. Caveat on the dashboard side: a national/regional Ember rate is applied uniformly to Rajasthan. The modelled annual moved 6.3 → 4.6 TWh/yr because a 2025-10-14 Excel serial-date parse error (~46 TWh of fake solar) was repaired, not because the RRVPNL PDF floor was swapped in.
+The dashboard plots the RRVPNL PDF floor (0.052 TWh over Jan–May 2026), not CEA×Ember. That floor is **>50× below** the superseded modelled annual (~4.6 TWh/yr). Caveats: 52 of 75 rows are manual-from-scan; February/Nov/Dec image-only reports were OCR-reviewed as no obvious rows, not audited zeroes; `Relief MW × duration` may undercount if a report layout is not energy; the 30-day figure is the floor × 30/151, not a TWh/yr. The modelled annual had moved 6.3 → 4.6 TWh/yr earlier because a 2025-10-14 Excel serial-date parse error (~46 TWh of fake solar) was repaired.
 <!-- END MANUAL -->
 ## Known limitations
 
 <!-- BEGIN MANUAL -->
-- **The plotted 4.6 TWh/yr is modelled (CEA × Ember 6%), not RRVPNL measured curtailment.** Official `re-curtailment` PDFs for Jan–May 2026 extract to 0.052 TWh — >50× below. That floor is not annualised and is not swapped in as the headline. The 6.3 TWh/yr figure was the same modelled path with a corrupt 2025-10-14 row.
-- Curtailment rate (6%) is Ember's national/regional estimate applied uniformly to Rajasthan; actual rate varies by season (summer peak curtailment) and grid conditions
-- Hourly shape remains synthetic (typical solar profile centred on 06:30 UTC)
-- The RRVPNL SLDC portal (`sldc.rajasthan.gov.in`) remains login-gated / 403 from unauthenticated clients; T1a promotion is still gated on a working Indian-IP fetch of instruction energy, not on this modelled path
+- **The plotted figure is a five-month PDF floor, not a calendar-year total.** 0.052 TWh in published Jan–May 2026 reports; 30-day dashboard energy is that floor × 30/151. Not annualised. 52 of 75 rows are medium-confidence manual-from-scan.
+- Hourly shape is flat 24/7: the source is event energy, not a 24-hour series. A solar typical-shape would have kept this in T3.
+- The RRVPNL listing (`sldc.rajasthan.gov.in/rrvpnl/re-curtailment`) still 403s/times out from non-Indian IPs; later-2026 PDFs are not in this sample. Not T1a.
+- Grid-India NLDC daily VRE reports and third-party aggregators of them are not this region's source.
 <!-- END MANUAL -->
 ## Links
 
 - Loader source: [`india-rajasthan.json.ts`](../../src/data/india-rajasthan.json.ts)
 <!-- BEGIN MANUAL -->
-- Research (May 2026, not production): official RRVPNL `re-curtailment` PDF extraction — [`rajasthan-curtailment-reconciliation.mjs`](../../scripts/research/rajasthan-curtailment-reconciliation.mjs); status [`2026-05-07-rajasthan-source-elevation-status.md`](../research/2026-05-07-rajasthan-source-elevation-status.md); Jan–May 2026 extraction [`2026-05-07-rajasthan-curtailment-2026-01-2026-02-2026-03-2026-04-2026-05.md`](../research/2026-05-07-rajasthan-curtailment-2026-01-2026-02-2026-03-2026-04-2026-05.md) (75 rows, 0.052 TWh, 52 manual-from-scan); listing inventory [`2026-05-07-rajasthan-curtailment-listing-inventory-2025-01-2026-05.md`](../research/2026-05-07-rajasthan-curtailment-listing-inventory-2025-01-2026-05.md); February OCR review [`2026-05-07-rajasthan-february-ocr-review.md`](../research/2026-05-07-rajasthan-february-ocr-review.md); India source discovery [`2026-05-07-india-curtailment-source-discovery.md`](../research/2026-05-07-india-curtailment-source-discovery.md).
+- Production CSV: [`india-rajasthan-rrvpnl-curtailed-events.csv`](../../data/historical/india-rajasthan-rrvpnl-curtailed-events.csv). Research extraction: [`rajasthan-curtailment-reconciliation.mjs`](../../scripts/research/rajasthan-curtailment-reconciliation.mjs); status [`2026-05-07-rajasthan-source-elevation-status.md`](../research/2026-05-07-rajasthan-source-elevation-status.md); Jan–May 2026 report [`2026-05-07-rajasthan-curtailment-2026-01-2026-02-2026-03-2026-04-2026-05.md`](../research/2026-05-07-rajasthan-curtailment-2026-01-2026-02-2026-03-2026-04-2026-05.md); listing inventory [`2026-05-07-rajasthan-curtailment-listing-inventory-2025-01-2026-05.md`](../research/2026-05-07-rajasthan-curtailment-listing-inventory-2025-01-2026-05.md); February OCR review [`2026-05-07-rajasthan-february-ocr-review.md`](../research/2026-05-07-rajasthan-february-ocr-review.md).
 <!-- END MANUAL -->
 - Backfill archive: `data/historical/backfill/*_india-rajasthan_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
