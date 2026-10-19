@@ -128,6 +128,105 @@ function parseSldcCsv(text: string): SldcCurtailmentRow[] {
 }
 
 /**
+ * Inclusive UTC calendar-day count between two YYYY-MM-DD dates.
+ * Used as the published-window denominator so a partial report set is not
+ * annualised (Rajasthan: Jan–May 2026 = 151 days).
+ */
+export function inclusiveUtcDaySpan(start: string, end: string): number {
+  const a = Date.parse(`${start}T00:00:00Z`);
+  const b = Date.parse(`${end}T00:00:00Z`);
+  if (!Number.isFinite(a) || !Number.isFinite(b) || b < a) {
+    throw new Error(`inclusiveUtcDaySpan: invalid range ${start} → ${end}`);
+  }
+  return Math.round((b - a) / 86_400_000) + 1;
+}
+
+/** Jan–May 2026 RRVPNL re-curtailment report set. Not a calendar year. */
+export const RAJASTHAN_RRVPNL_REPORT_WINDOW = {
+  start: "2026-01-01",
+  end: "2026-05-31",
+} as const;
+
+export interface RrvpnlCurtailmentEvents {
+  solarCurtailedTWh: number;
+  windCurtailedTWh: number;
+  nRows: number;
+  nManual: number;
+  latestDate: string;
+  windowDays: number;
+}
+
+interface RrvpnlEventRow {
+  date: string;
+  fuel: "solar" | "wind";
+  curtailedMwh: number;
+  extractionMethod: string;
+}
+
+function parseRrvpnlEventsCsv(text: string): RrvpnlEventRow[] {
+  const lines = text.trim().split("\n");
+  if (lines.length < 2) return [];
+  const header = lines[0].split(",");
+  const dateIdx = header.indexOf("date");
+  const fuelIdx = header.indexOf("fuel");
+  const mwhIdx = header.indexOf("curtailed_mwh");
+  const methodIdx = header.indexOf("extraction_method");
+  if (dateIdx < 0 || fuelIdx < 0 || mwhIdx < 0 || methodIdx < 0) return [];
+  const out: RrvpnlEventRow[] = [];
+  for (const line of lines.slice(1)) {
+    const cols = line.split(",");
+    const fuelRaw = (cols[fuelIdx] ?? "").trim();
+    if (fuelRaw !== "solar" && fuelRaw !== "wind") continue;
+    const date = (cols[dateIdx] ?? "").trim();
+    const curtailedMwh = parseFloat(cols[mwhIdx] ?? "");
+    if (!date || !Number.isFinite(curtailedMwh) || curtailedMwh < 0) continue;
+    out.push({
+      date,
+      fuel: fuelRaw,
+      curtailedMwh,
+      extractionMethod: (cols[methodIdx] ?? "").trim(),
+    });
+  }
+  return out;
+}
+
+/**
+ * Sum committed RRVPNL event energy. Returns null if the file is missing
+ * or has no usable rows. Does not annualise; `windowDays` is the published
+ * report-set calendar span, not the event-row count.
+ */
+export function readRrvpnlCurtailmentEvents(
+  csvPath: string,
+  window: { start: string; end: string } = RAJASTHAN_RRVPNL_REPORT_WINDOW,
+): RrvpnlCurtailmentEvents | null {
+  let text: string;
+  try {
+    text = readFileSync(csvPath, "utf-8");
+  } catch {
+    return null;
+  }
+  const rows = parseRrvpnlEventsCsv(text);
+  if (rows.length === 0) return null;
+  rows.sort((a, b) => a.date.localeCompare(b.date));
+  let solarMwh = 0;
+  let windMwh = 0;
+  let nManual = 0;
+  for (const r of rows) {
+    if (r.fuel === "solar") solarMwh += r.curtailedMwh;
+    else windMwh += r.curtailedMwh;
+    if (r.extractionMethod === "manual_from_scanned_pdf") nManual += 1;
+  }
+  return {
+    solarCurtailedTWh: solarMwh / 1_000_000,
+    windCurtailedTWh: windMwh / 1_000_000,
+    nRows: rows.length,
+    nManual,
+    latestDate: rows[rows.length - 1].date,
+    windowDays: inclusiveUtcDaySpan(window.start, window.end),
+  };
+}
+
+/**
  * Read SLDC curtailment CSV and sum trailing-N-day curtailed energy.
  * Returns null if the file is missing or has fewer than 30 rows.
  * When non-null, the caller should emit regionTier: "live" and sourceProvenance: "verified".

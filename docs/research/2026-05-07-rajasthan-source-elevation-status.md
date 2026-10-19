@@ -2,6 +2,8 @@
 
 Date: 2026-05-07
 
+**Production 2026-10-19:** the dashboard now plots this Jan–May 2026 floor as T2 (`india-rajasthan`, not annualised). The extraction caveats below still apply (52 medium-confidence rows; incomplete listing crawl; `Relief MW × duration` semantic). Do not read the May “Do Not Do Yet” list as current production policy.
+
 ## Bottom Line
 
 Rajasthan SLDC/RRVPNL is a high-value source-elevation candidate, but it should remain in the research/audit lane for now. The current work establishes a source-verified event-energy floor for a partial Jan-May 2026 sample, not a calendar-year estimate and not a production replacement for the existing T3 fallback.

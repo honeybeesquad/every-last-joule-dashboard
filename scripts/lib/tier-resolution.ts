@@ -124,7 +124,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   // `tier: "estimated"` on 2026-05-03 to make tier honesty match emitted data
   // (Sci-Data integrity); flip back to `tier: "live"` plus remove these
   // entries once each loader's live path is actually wired up.
-  "india-rajasthan": "solar",
+  "india-rajasthan": "flat",  // T2 measured RRVPNL PDF event energy; not a 24h series, so not a solar archetype
   "india-gujarat": "solar",
   "india-karnataka": "solar",
   "india-andhra-pradesh": "solar",

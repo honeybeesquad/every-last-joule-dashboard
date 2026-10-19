@@ -1,9 +1,9 @@
 {
-  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-10-19 (India nationwide CEA residual: Kerala, Haryana, Assam, Himachal Pradesh, Uttarakhand, india-rest. T3 327→333, total 536→542. T1/T2 unchanged. Modelled CEA×Ember, not T1a.).",
+  "$comment": "Golden tier-bucket counts. Update ONLY when intentionally adding/moving regions. Last touched: 2026-10-19 (india-rajasthan T3→T2 on RRVPNL PDF event energy, not annualised. T2 22→23, T3 333→332, total 542. Not T1a.). Previously 2026-10-19 (India nationwide CEA residual: Kerala, Haryana, Assam, Himachal Pradesh, Uttarakhand, india-rest. T3 327→333, total 536→542. T1/T2 unchanged. Modelled CEA×Ember, not T1a.).",
   "T1a": 160,
   "T1b": 26,
   "T1c": 1,
-  "T2": 22,
-  "T3": 333,
+  "T2": 23,
+  "T3": 332,
   "total": 542
 }
