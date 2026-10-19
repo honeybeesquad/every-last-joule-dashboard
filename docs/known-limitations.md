@@ -80,7 +80,7 @@ See `data/coverage-audit/2026-04-26-world.csv` and the digest at `docs/coverage-
 
 The ENTSO-E loader now has cited 2024 anchors for Germany, the Netherlands, Poland, and Greece, documented in `docs/methodology/entsoe-rates.md`. The same audit did not find public 2023/2024 curtailed-energy totals for Portugal, Finland, Romania, Italy's north/south/Sardinia bidding-zone split, Sweden, Hungary, Bulgaria, or Lithuania/Baltics. Spain has public REE and IEA integration evidence but no exact annual curtailed-energy value extracted from an open source in this pass. Those constants remain illustrative rate proxies, not measured curtailment series.
 
-ENTSO-E's A77 "Curtailed Renewable Energy" API product is the preferred upgrade path. Until each zone is tested for complete A77 coverage and reconciled to operator annual reports, these remaining ENTSO-E estimates should be read as floor/ceiling placeholders rather than publication-grade national statistics.
+ENTSO-E A77 is the unavailability document (planned and forced plant outages), not a curtailment product, so it is not an upgrade path for these rates. Until each zone is reconciled to an operator curtailment series, these remaining ENTSO-E estimates should be read as floor/ceiling placeholders rather than publication-grade national statistics.
 
 ### 16. Phase-2.7 Pattern-D anchor-metadata sweep — Latin-America + Africa batches landed
 

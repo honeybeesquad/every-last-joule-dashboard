@@ -216,7 +216,8 @@ export const STATIC_REGIONS: Record<string, StaticSpec> = {
   azerbaijan: { annualTWh: 0.2, kind: "mixed", localSolarPeakUTC: 8.7, source: "IRENA Azerbaijan 2024 (AZERENERGY); oil+gas+solar+wind; growing RE)", reportDate: "2024" },
   bahrain: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 8.6, source: "IRENA Bahrain 2024 (EWA); gas+solar; small high-Temperature grid)", reportDate: "2024" },
   georgia: { annualTWh: 0.2, kind: "mixed", localSolarPeakUTC: 8.0, source: "IRENA Georgia 2024 (GSE); hydro+solar+wind; ENTSO-E synchronisation ongoing; UTC+4 → solar noon ≈ UTC 08:00)", reportDate: "2024" },
-  jordan: { annualTWh: 0.5, kind: "solar", localSolarPeakUTC: 10, source: "IRENA Jordan 2024 (NEPCO; solar+wind+gas; high VRE penetration). peakHourUtc 10: Jordan at 36°E → solar noon ≈ UTC 09:36. Previous value of 3.0 was wrong (was UTC timezone offset, not solar noon hour).", reportDate: "2025" },
+  // jordan removed: regions.ts says waste unpublished. The 0.5 TWh/yr anchor
+  // was winning the page spread over the Jordan loader.
   kyrgyzstan: { annualTWh: 0.1, kind: "hydro", source: "IRENA Kyrgyzstan 2024 (NEK); hydro+solar; CASA-1000 candidate)", reportDate: "2024" },
   lebanon: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 9.6, source: "IRENA Lebanon 2024 (EDL); severe crisis; diesel+solar+hydro; small grid)", reportDate: "2024" },
   palestine: { annualTWh: 0.08, kind: "solar", localSolarPeakUTC: 9.7, source: "IRENA Renewable Capacity Statistics 2025 (Palestinian Energy Authority; ~120 MW installed PV, West Bank dominant; provisional 0.08 TWh/yr Pattern-D floor — no published curtailment metric; conflict context acknowledged in sourceNote)", reportDate: "2024" },

@@ -333,9 +333,9 @@ const regionData = {
   // malta reverted live→estimated 2026-05-11; flows from `...statics`.
   montenegro: feeds.entsoe.montenegro,
   "north-macedonia-wind": feeds.entsoe["north-macedonia-wind"],
-  "north-macedonia-solar": feeds.entsoe["north-macedonia-solar"],
+  // north-macedonia-solar and serbia-solar are estimated statics. ENTSO-E no
+  // longer emits them; a lookup here was undefined until the statics spread.
   "serbia-wind": feeds.entsoe["serbia-wind"],
-  "serbia-solar": feeds.entsoe["serbia-solar"],
   "slovakia-wind": feeds.entsoe["slovakia-wind"],
   "slovakia-solar": feeds.entsoe["slovakia-solar"],
   "slovenia-wind": feeds.entsoe["slovenia-wind"],
