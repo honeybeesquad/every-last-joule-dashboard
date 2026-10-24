@@ -424,6 +424,11 @@ export async function mountGlobe(canvas, initial) {
   let markHits = [];
   let lastLightDrawAt = 0;
   let settleTimer = null;
+  // Needles rise from the ground as they appear. The frames are requested
+  // only while one is still rising, so there is still no idle loop.
+  const NEEDLE_RISE_MS = 650;
+  const reducedMotionQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+  let riseFrame = null;
   const regionVec = new Map();
   function vecFor(region) {
     let v = regionVec.get(region.id);
@@ -525,9 +530,13 @@ export async function mountGlobe(canvas, initial) {
       lat0: state.lat0, lon0: state.lon0, sun, land, dots: lightDots, needles: marks, rings,
       inkRGB: tokens.inkRGB, paper: tokens.paper, warn: tokens.qualityWarning,
       selectedId: shownSelection(), fast, exact: !moving, leader: !state.exploring,
+      now, rise: reducedMotionQuery?.matches ? 0 : NEEDLE_RISE_MS,
     });
     ctx.restore();
     markHits = out.hits;
+    if (out.rising && riseFrame == null) {
+      riseFrame = requestAnimationFrame(() => { riseFrame = null; if (isLight()) render(); });
+    }
     placeSelection(out.label, hour);
   }
 
@@ -1462,6 +1471,7 @@ export async function mountGlobe(canvas, initial) {
     setZoom(s) { applyZoom(s / state.zoomScale); },
     destroy() {
       stopLoop();
+      if (riseFrame != null) cancelAnimationFrame(riseFrame);
       clearTimeout(settleTimer);
       clearTimeout(describeTimer);
       io?.disconnect();
