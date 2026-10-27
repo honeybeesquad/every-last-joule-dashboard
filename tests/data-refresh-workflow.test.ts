@@ -231,6 +231,13 @@ describe("data-refresh.yml runs on pushes to main, but not on the automation's o
     const vercel = JSON.parse(readFileSync(join(__dirname, "..", "vercel.json"), "utf8"));
     expect(vercel.git?.deploymentEnabled?.main).toBe(false);
   });
+
+  it("Vercel does not deploy the automation PR branches, so its bot posts no comment on them", () => {
+    // Each comment emailed the PR's author (Simon, via AUTOMATION_TOKEN),
+    // several times a day; vercel-ignore.sh skipped those builds anyway.
+    const vercel = JSON.parse(readFileSync(join(__dirname, "..", "vercel.json"), "utf8"));
+    expect(vercel.git?.deploymentEnabled?.["automation/*"]).toBe(false);
+  });
 });
 
 describe("data-refresh.yml and the Healthchecks.io alarm", () => {
