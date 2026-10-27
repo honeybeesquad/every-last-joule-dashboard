@@ -3,12 +3,18 @@ import { join } from "path";
 import { pathToFileURL } from "url";
 import { fetchJSON } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
+import { relayFreshness, RELAY_STALENESS_THRESHOLD_DAYS } from "../lib/freshness.js";
 import { timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { unpublishedEmptyRegion } from "../lib/waste-status.js";
 
 const REGION_ID = "argentina";
+
+/** CAMMESA cdsrenovables rows are 5-minute wind MW. Omitting this made each row an hour (12×). */
+export const CAMMESA_INTERVAL_HOURS = 5 / 60;
+/** A shorter file is a shape extended to 30 days, not a 30-day sum. Same cutoff as unpublishedGenerationRegion. */
+const SHORT_WINDOW_DAYS = 25;
 
 const CAMMESA_RENEWABLES_URL =
   "https://cdsrenovables.cammesa.com/exhisto/RenovablesService/GetChartTotalTRDataSource/";
@@ -45,7 +51,8 @@ async function fetchCammesaRenewablesForDate(date: Date): Promise<CammesaRenewab
 }
 
 /**
- * Fetch CAMMESA wind curtailment for the last N days via the live API.
+ * Fetch CAMMESA wind generation (eolica MW) for the last N days via the live API.
+ * Waste stays unpublished: restricciones need a registered agent.
  */
 async function fetchCammesaWindCurtailment(days: number): Promise<CurtailmentPoint[]> {
   const points: CurtailmentPoint[] = [];
@@ -70,7 +77,11 @@ async function fetchCammesaWindCurtailment(days: number): Promise<CurtailmentPoi
 
         const windMw = pt.eolica || 0;
         if (windMw > 0) {
-          points.push({ utcTimestamp: utcTs, mw: Math.max(0, windMw) });
+          points.push({
+            utcTimestamp: utcTs,
+            mw: Math.max(0, windMw),
+            intervalHours: CAMMESA_INTERVAL_HOURS,
+          });
         }
       } catch {
         // Skip bad timestamps
@@ -101,7 +112,7 @@ function readCsvData(): CurtailmentPoint[] | null {
       const eolicaMw = parseFloat(cols[1]);
       if (!Number.isFinite(eolicaMw) || eolicaMw <= 0) continue;
 
-      points.push({ utcTimestamp: utcTs, mw: eolicaMw });
+      points.push({ utcTimestamp: utcTs, mw: eolicaMw, intervalHours: CAMMESA_INTERVAL_HOURS });
     }
 
     if (points.length < 24) return null;
@@ -111,33 +122,85 @@ function readCsvData(): CurtailmentPoint[] | null {
   }
 }
 
+function windowSpanDays(points: CurtailmentPoint[]): number {
+  let min = Infinity;
+  let max = -Infinity;
+  for (const p of points) {
+    const t = Date.parse(p.utcTimestamp);
+    if (!Number.isFinite(t)) continue;
+    if (t < min) min = t;
+    if (t > max) max = t;
+  }
+  if (!Number.isFinite(min) || max < min) return 0;
+  return (max - min) / 86_400_000;
+}
+
+function latestTimestamp(points: CurtailmentPoint[]): string {
+  let max = -Infinity;
+  let iso = points[0]?.utcTimestamp ?? new Date().toISOString();
+  for (const p of points) {
+    const t = Date.parse(p.utcTimestamp);
+    if (t > max) {
+      max = t;
+      iso = p.utcTimestamp;
+    }
+  }
+  return iso;
+}
+
+/**
+ * 30-day generation TWh. A window of at least 25 days sums MW × 5 minutes.
+ * A shorter file (the committed June relay is about six days) uses the
+ * diurnal mean extended across 30 days, so the short file is not filed as
+ * the whole month and is not counted as if each 5-minute row were an hour.
+ */
+export function argentinaGenerationTWh(points: CurtailmentPoint[]): number {
+  const stamped = points.map((p) => ({
+    ...p,
+    intervalHours: p.intervalHours ?? CAMMESA_INTERVAL_HOURS,
+  }));
+  if (windowSpanDays(stamped) >= SHORT_WINDOW_DAYS) return totalTWh30d(stamped);
+  const profile = timeOfDayAverageGW(stamped);
+  return (profile.reduce((sum, gw) => sum + gw, 0) * 30) / 1000;
+}
+
+function regionFromGeneration(points: CurtailmentPoint[], sourceNote: string): RegionData {
+  const lastTs = latestTimestamp(points);
+  const spanDays = windowSpanDays(points);
+  const short = spanDays < SHORT_WINDOW_DAYS;
+  const note = short
+    ? `${sourceNote} Window is ${spanDays.toFixed(1)} days, so generationTotalTWh is the observed diurnal mean extended across 30 days, not a sum of the short file.`
+    : sourceNote;
+  const result: RegionData = {
+    regionId: REGION_ID,
+    profile: Array(24).fill(0),
+    latestProfile: null,
+    totalTWh: 0,
+    peakGW: 0,
+    lastUpdated: lastTs,
+    lastSuccessAt: lastTs,
+    sourceNote: note,
+    sourceStatus: relayFreshness(lastTs, new Date(), RELAY_STALENESS_THRESHOLD_DAYS),
+    wasteStatus: "unpublished",
+    generationProfile: timeOfDayAverageGW(points),
+    generationTotalTWh: argentinaGenerationTWh(points),
+  };
+  return applyUncertainty(result, { regionTier: "estimated" });
+}
+
 async function run({ probe = true } = {}): Promise<RegionData> {
   // 1. Try live CAMMESA API (only works from Argentine IPs)
   if (probe) {
     try {
       const points = await fetchCammesaWindCurtailment(30);
       if (points.length > 0) {
-        const lastTs = points[points.length - 1].utcTimestamp;
-        const sourceNote =
+        const lastTs = latestTimestamp(points);
+        return regionFromGeneration(
+          points,
           `CAMMESA live wind generation (cdsrenovables.cammesa.com). ` +
-          `Waste unpublished — restricciones need agent registration. ` +
-          `${points.length} points across 30 days. Latest: ${lastTs}.`;
-
-        const result: RegionData = {
-          regionId: REGION_ID,
-          profile: Array(24).fill(0),
-          latestProfile: null,
-          totalTWh: 0,
-          peakGW: 0,
-          lastUpdated: lastTs,
-          lastSuccessAt: new Date().toISOString(),
-          sourceNote,
-          wasteStatus: "unpublished",
-          generationProfile: timeOfDayAverageGW(points),
-          generationTotalTWh: totalTWh30d(points),
-        };
-
-        return applyUncertainty(result, { regionTier: "estimated" });
+            `Waste unpublished — restricciones need agent registration. ` +
+            `${points.length} points. Latest: ${lastTs}.`,
+        );
       }
     } catch (err) {
       console.error(`[argentina] CAMMESA live fetch failed: ${(err as Error).message}`);
@@ -148,26 +211,12 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   // 2. Try committed CSV (relay data from Abed, available at Vercel build time)
   const csvPoints = readCsvData();
   if (csvPoints && csvPoints.length > 0) {
-    const lastTs = csvPoints[csvPoints.length - 1].utcTimestamp;
-    const sourceNote =
+    const lastTs = latestTimestamp(csvPoints);
+    return regionFromGeneration(
+      csvPoints,
       `CAMMESA relay CSV (argentina-cammesa.csv, ${csvPoints.length} points). ` +
-      `Generation measured. Waste unpublished — live API geoblocked. Latest: ${lastTs}.`;
-
-    const result: RegionData = {
-      regionId: REGION_ID,
-      profile: Array(24).fill(0),
-      latestProfile: null,
-      totalTWh: 0,
-      peakGW: 0,
-      lastUpdated: lastTs,
-      lastSuccessAt: lastTs,
-      sourceNote,
-      wasteStatus: "unpublished",
-      generationProfile: timeOfDayAverageGW(csvPoints),
-      generationTotalTWh: totalTWh30d(csvPoints),
-    };
-
-    return applyUncertainty(result, { regionTier: "estimated" });
+        `Generation measured. Waste unpublished — live API geoblocked. Latest: ${lastTs}.`,
+    );
   }
 
   // 3. Fallback: typical wind profile for Patagonia

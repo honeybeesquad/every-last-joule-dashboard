@@ -1,48 +1,90 @@
 #!/usr/bin/env python3
 """
-Bootstrap India CEA gen-re daily generation CSVs.
+Bootstrap / repair India CEA gen-re daily generation CSVs.
 
-Fetches 365 days of daily Excel reports from gen-re.cea.gov.in and writes:
-  data/historical/india-<state>-gen-daily.csv  (columns: date,wind_gwh,solar_gwh)
+Fetches daily Excel reports from gen-re.cea.gov.in and writes:
+  data/historical/india-<state>-gen-daily.csv  (date,wind_gwh,solar_gwh)
 
-Run once locally before committing CSVs. Rate-limited to ~2 req/s.
-Skips dates with no report (weekends, public holidays) gracefully.
+Covers the 17 named dashboard states plus india-east (Bihar + West Bengal +
+Jharkhand + Sikkim) and india-rest (remaining CEA State-Wise rows).
+Header-aware: Wind then Solar columns, reject Excel serial dates and other
+implausible daily GWh values.
 
 Usage:
-  cd /Users/simoncollins/code/every-last-joule-dashboard
   python3 scripts/bootstrap-india-gen-re.py
+  python3 scripts/bootstrap-india-gen-re.py --start 2025-05-09 --end 2026-10-15
 """
 
+from __future__ import annotations
+
+import argparse
+import csv
 import os
 import sys
 import time
-import zipfile
-import urllib.request
 import urllib.error
-import xml.etree.ElementTree as ET
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, timedelta
-from io import BytesIO
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_DIR   = os.path.join(REPO_ROOT, "data", "historical")
-CEA_BASE   = "https://gen-re.cea.gov.in/public/uploads/dailyReport/excel"
+sys.path.insert(0, os.path.join(REPO_ROOT, "scripts", "lib"))
 
-# Hindi+English row labels from sharedStrings.xml (confirmed from Report-2026-05-07.xlsx)
-STATE_LABELS = {
-    "rajasthan":      "Rajasthan",
-    "gujarat":        "Gujarat",
-    "tamil-nadu":     "Tamil Nadu",
-    "andhra-pradesh": "Andhra Pradesh",
-    "maharashtra":    "Maharashtra",
-}
+from india_cea_excel import (  # noqa: E402
+    MAX_DAILY_GWH,
+    STATE_LABELS,
+    is_plausible_daily_gwh,
+    parse_xlsx_bytes,
+)
 
-RATE_LIMIT_S = 0.5  # 2 requests per second max
+DATA_DIR = os.path.join(REPO_ROOT, "data", "historical")
+CEA_BASE = "https://gen-re.cea.gov.in/public/uploads/dailyReport/excel"
+CSV_KEYS = tuple(list(STATE_LABELS.keys()) + ["east", "rest"])
+USER_AGENT = "EveryLastJoule/1.0 (research; gen-re backfill)"
+DEFAULT_START = date(2025, 5, 9)
 
 
-def fetch_excel(report_date: date) -> bytes | None:
+def csv_path(key: str) -> str:
+    return os.path.join(DATA_DIR, f"india-{key}-gen-daily.csv")
+
+
+def load_existing(path: str) -> dict[str, tuple[float, float]]:
+    if not os.path.exists(path):
+        return {}
+    out: dict[str, tuple[float, float]] = {}
+    with open(path, newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            ds = (row.get("date") or "").strip()
+            try:
+                wind = float(row.get("wind_gwh") or 0)
+                solar = float(row.get("solar_gwh") or 0)
+            except ValueError:
+                continue
+            if not ds:
+                continue
+            if not is_plausible_daily_gwh(wind) or not is_plausible_daily_gwh(solar):
+                continue
+            out[ds] = (wind, solar)
+    return out
+
+
+def write_csv(path: str, rows: dict[str, tuple[float, float]]) -> None:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", newline="") as f:
+        f.write("date,wind_gwh,solar_gwh\n")
+        for ds in sorted(rows):
+            wind, solar = rows[ds]
+            f.write(f"{ds},{wind:.3f},{solar:.3f}\n")
+    os.replace(tmp, path)
+
+
+def fetch_excel(report_date: date, timeout: int = 25) -> bytes | None:
     url = f"{CEA_BASE}/Report-{report_date.isoformat()}.xlsx"
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     try:
-        with urllib.request.urlopen(url, timeout=20) as resp:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
             if resp.status == 200:
                 return resp.read()
     except urllib.error.HTTPError as e:
@@ -54,191 +96,90 @@ def fetch_excel(report_date: date) -> bytes | None:
     return None
 
 
-def parse_shared_strings(zf: zipfile.ZipFile) -> list[str]:
-    try:
-        with zf.open("xl/sharedStrings.xml") as f:
-            tree = ET.parse(f)
-        root = tree.getroot()
-        ns = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
-        strings = []
-        for si in root.findall("x:si", ns):
-            # Collect all <t> text within the si element (handles rich text runs)
-            text = "".join(t.text or "" for t in si.findall(".//x:t", ns))
-            strings.append(text)
-        return strings
-    except KeyError:
-        return []
-
-
-def col_letter_to_index(col: str) -> int:
-    """Convert Excel column letter(s) to 0-based index (A=0, B=1, ...)."""
-    result = 0
-    for ch in col.upper():
-        result = result * 26 + (ord(ch) - ord("A") + 1)
-    return result - 1
-
-
-def parse_state_wise_sheet(zf: zipfile.ZipFile, shared: list[str]) -> dict[str, dict[str, float]]:
-    """
-    Parse all sheets, find the State-Wise sheet, extract wind+solar GWh per state.
-    Returns {state_key: {wind_gwh: float, solar_gwh: float}}.
-
-    State-Wise sheet columns (Today's generation section):
-      Col A (or similar): State label (shared string index)
-      Col B: Wind Energy (MU)
-      Col C: Solar Energy (MU)
-    """
-    ns = {"x": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
-
-    # Find all sheet XML paths
-    sheet_paths = sorted(
-        [n for n in zf.namelist() if n.startswith("xl/worksheets/sheet") and n.endswith(".xml")]
-    )
-
-    for sheet_path in sheet_paths:
-        with zf.open(sheet_path) as f:
-            tree = ET.parse(f)
-        root = tree.getroot()
-
-        # Build row→{col_index: value} map
-        rows: dict[int, dict[int, str | float]] = {}
-        for row_el in root.findall(".//x:row", ns):
-            r = int(row_el.get("r", 0))
-            row_data: dict[int, str | float] = {}
-            for cell in row_el.findall("x:c", ns):
-                ref = cell.get("r", "")
-                # Extract column letters
-                col_str = "".join(ch for ch in ref if ch.isalpha())
-                col_idx = col_letter_to_index(col_str)
-                cell_type = cell.get("t", "")
-                v_el = cell.find("x:v", ns)
-                if v_el is None or v_el.text is None:
-                    continue
-                if cell_type == "s":
-                    # Shared string
-                    idx = int(v_el.text)
-                    row_data[col_idx] = shared[idx] if idx < len(shared) else ""
-                else:
-                    try:
-                        row_data[col_idx] = float(v_el.text)
-                    except ValueError:
-                        row_data[col_idx] = v_el.text
-            if row_data:
-                rows[r] = row_data
-
-        # Look for state labels in this sheet
-        results: dict[str, dict[str, float]] = {}
-        for row_num, row_data in rows.items():
-            for col_idx, val in row_data.items():
-                if not isinstance(val, str):
-                    continue
-                for state_key, english_name in STATE_LABELS.items():
-                    if english_name in val:
-                        # Found a state row. Wind is typically col B (idx 1), Solar col C (idx 2)
-                        # relative to the label column. Try absolute cols first.
-                        wind_gwh  = 0.0
-                        solar_gwh = 0.0
-                        # Scan numeric columns in this row
-                        numeric_cols = sorted(
-                            [(c, v) for c, v in row_data.items() if isinstance(v, float)],
-                            key=lambda x: x[0],
-                        )
-                        if len(numeric_cols) >= 2:
-                            wind_gwh  = numeric_cols[0][1]
-                            solar_gwh = numeric_cols[1][1]
-                        results[state_key] = {"wind_gwh": wind_gwh, "solar_gwh": solar_gwh}
-
-        if results:
-            return results
-
-    return {}
-
-
-def load_existing_dates(csv_path: str) -> set[str]:
-    if not os.path.exists(csv_path):
-        return set()
-    dates = set()
-    with open(csv_path) as f:
-        for i, line in enumerate(f):
-            if i == 0:
-                continue  # header
-            parts = line.strip().split(",")
-            if parts:
-                dates.add(parts[0])
-    return dates
-
-
-def main():
-    today = date.today()
-    start = today - timedelta(days=365)
-
-    # Load existing rows per state to allow resuming
-    existing: dict[str, set[str]] = {}
-    csv_handles: dict[str, object] = {}
-    for state in STATE_LABELS:
-        csv_path = os.path.join(DATA_DIR, f"india-{state}-gen-daily.csv")
-        existing[state] = load_existing_dates(csv_path)
-        # Open in append mode; write header if empty
-        mode = "a"
-        csv_handles[state] = open(csv_path, mode, newline="")
-        if not existing[state]:
-            csv_handles[state].write("date,wind_gwh,solar_gwh\n")
-
-    total = (today - start).days
-    fetched = skipped = errors = 0
-
+def daterange(start: date, end: date):
     d = start
-    while d < today:
-        ds = d.isoformat()
+    while d <= end:
+        yield d
         d += timedelta(days=1)
 
-        # Skip if all states already have this date
-        if all(ds in existing[s] for s in STATE_LABELS):
-            skipped += 1
-            continue
 
-        data = fetch_excel(date.fromisoformat(ds))
-        time.sleep(RATE_LIMIT_S)
+def parse_args() -> argparse.Namespace:
+    today = date.today()
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--start", type=date.fromisoformat, default=DEFAULT_START)
+    p.add_argument("--end", type=date.fromisoformat, default=today)
+    p.add_argument("--workers", type=int, default=6)
+    p.add_argument(
+        "--force-refetch",
+        action="store_true",
+        help="Re-fetch dates even when every CSV already has a plausible row.",
+    )
+    return p.parse_args()
 
-        if data is None:
-            print(f"  {ds}: no report (weekend/holiday)")
-            continue
 
-        try:
-            zf = zipfile.ZipFile(BytesIO(data))
-            shared = parse_shared_strings(zf)
-            state_data = parse_state_wise_sheet(zf, shared)
-        except Exception as e:
-            errors += 1
-            print(f"  {ds}: parse error — {e}", file=sys.stderr)
-            continue
+def main() -> int:
+    args = parse_args()
+    if args.end < args.start:
+        print("end must be on or after start", file=sys.stderr)
+        return 2
 
-        if not state_data:
-            errors += 1
-            print(f"  {ds}: no state data found", file=sys.stderr)
-            continue
+    existing: dict[str, dict[str, tuple[float, float]]] = {
+        key: load_existing(csv_path(key)) for key in CSV_KEYS
+    }
 
-        fetched += 1
-        found_states = list(state_data.keys())
-        for state, vals in state_data.items():
-            if ds not in existing[state]:
-                csv_handles[state].write(
-                    f"{ds},{vals['wind_gwh']:.3f},{vals['solar_gwh']:.3f}\n"
-                )
-                existing[state].add(ds)
+    missing: list[date] = []
+    for d in daterange(args.start, args.end):
+        ds = d.isoformat()
+        if args.force_refetch or any(ds not in existing[key] for key in CSV_KEYS):
+            missing.append(d)
 
-        pct = ((fetched + skipped) / total * 100)
-        print(f"  {ds}: {found_states} [{pct:.0f}%]")
+    print(
+        f"CEA gen-re backfill {args.start} → {args.end}: "
+        f"{len(missing)} dates to fetch, cap={MAX_DAILY_GWH:g} GWh/day, "
+        f"workers={args.workers}"
+    )
 
-    for fh in csv_handles.values():
-        fh.close()
+    fetched = no_report = errors = 0
+    if missing:
+        with ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:
+            futs = {pool.submit(fetch_excel, d): d for d in missing}
+            for fut in as_completed(futs):
+                d = futs[fut]
+                ds = d.isoformat()
+                try:
+                    blob = fut.result()
+                except Exception as e:
+                    errors += 1
+                    print(f"  {ds}: worker error — {e}", file=sys.stderr)
+                    continue
+                if blob is None:
+                    no_report += 1
+                    continue
+                try:
+                    state_data = parse_xlsx_bytes(blob)
+                except Exception as e:
+                    errors += 1
+                    print(f"  {ds}: parse error — {e}", file=sys.stderr)
+                    continue
+                if len(state_data) < 3:
+                    errors += 1
+                    print(f"  {ds}: no state data found", file=sys.stderr)
+                    continue
+                fetched += 1
+                for key, vals in state_data.items():
+                    if key not in existing:
+                        continue
+                    existing[key][ds] = (vals["wind_gwh"], vals["solar_gwh"])
+                print(f"  {ds}: {sorted(state_data)} ({len(state_data)} rows)")
+                time.sleep(0.05)
 
-    print(f"\nDone. fetched={fetched} skipped={skipped} errors={errors}")
-    for state in STATE_LABELS:
-        csv_path = os.path.join(DATA_DIR, f"india-{state}-gen-daily.csv")
-        n = len(existing[state])
-        print(f"  {state}: {n} rows → {csv_path}")
+    for key in CSV_KEYS:
+        write_csv(csv_path(key), existing[key])
+        print(f"  {key}: {len(existing[key])} rows → {csv_path(key)}")
+
+    print(f"\nDone. fetched={fetched} no_report={no_report} errors={errors}")
+    return 0 if errors == 0 or fetched > 0 else 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

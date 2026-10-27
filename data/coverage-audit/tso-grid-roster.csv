@@ -255,19 +255,25 @@ Tohoku Solar (Japan),JPN,solar,live-tso,,legacy-unspecified,japan-tohoku-solar,E
 Tohoku Wind (Japan),JPN,wind,live-tso,,legacy-unspecified,japan-tohoku-wind,Existing live waste or Path-B generation×rate.
 Vietnam,VNM,solar,not-collecting,statics,unpublished,vietnam,Country/T3 stub — Ember/IRENA is not TSO collection.
 Thailand,THA,solar,not-collecting,statics,unpublished,thailand,Country/T3 stub — Ember/IRENA is not TSO collection.
-Rajasthan,IND,solar,not-collecting,,unpublished,india-rajasthan,Authoritative operator exists; live path not producing usable waste.
-Gujarat,IND,solar,not-collecting,,unpublished,india-gujarat,Authoritative operator exists; live path not producing usable waste.
+Rajasthan,IND,solar,not-collecting,statics,legacy-unspecified,india-rajasthan,T2 annual waste anchor. Not hourly TSO collection.
+Gujarat,IND,solar,not-collecting,statics,legacy-unspecified,india-gujarat,T2 annual waste anchor. Not hourly TSO collection.
 Tamil Nadu,IND,wind,not-collecting,,unpublished,india-tamil-nadu,Authoritative operator exists; live path not producing usable waste.
 Karnataka,IND,solar,not-collecting,,unpublished,india-karnataka,Authoritative operator exists; live path not producing usable waste.
 Andhra Pradesh,IND,solar,not-collecting,,unpublished,india-andhra-pradesh,Authoritative operator exists; live path not producing usable waste.
 Maharashtra,IND,mixed,not-collecting,statics,legacy-unspecified,india-maharashtra,T2 annual waste anchor. Not hourly TSO collection.
-India East,IND,solar,not-collecting,statics,unpublished,india-east,Country/T3 stub — Ember/IRENA is not TSO collection.
+India East,IND,solar,not-collecting,,unpublished,india-east,Authoritative operator exists; live path not producing usable waste.
 Madhya Pradesh,IND,solar,not-collecting,,unpublished,india-madhya-pradesh,Authoritative operator exists; live path not producing usable waste.
 Telangana,IND,mixed,not-collecting,,unpublished,india-telangana,Authoritative operator exists; live path not producing usable waste.
 Uttar Pradesh,IND,solar,not-collecting,,unpublished,india-uttar-pradesh,Authoritative operator exists; live path not producing usable waste.
 Punjab,IND,solar,not-collecting,,unpublished,india-punjab,Authoritative operator exists; live path not producing usable waste.
-Odisha,IND,wind,not-collecting,,unpublished,india-odisha,Authoritative operator exists; live path not producing usable waste.
+Odisha,IND,solar,not-collecting,,unpublished,india-odisha,Authoritative operator exists; live path not producing usable waste.
 Chhattisgarh,IND,solar,not-collecting,,unpublished,india-chhattisgarh,Authoritative operator exists; live path not producing usable waste.
+Kerala,IND,mixed,not-collecting,,unpublished,india-kerala,Authoritative operator exists; live path not producing usable waste.
+Haryana,IND,solar,not-collecting,,unpublished,india-haryana,Authoritative operator exists; live path not producing usable waste.
+Assam,IND,solar,not-collecting,,unpublished,india-assam,Authoritative operator exists; live path not producing usable waste.
+Himachal Pradesh,IND,solar,not-collecting,,unpublished,india-himachal-pradesh,Authoritative operator exists; live path not producing usable waste.
+Uttarakhand,IND,solar,not-collecting,,unpublished,india-uttarakhand,Authoritative operator exists; live path not producing usable waste.
+India rest,IND,solar,not-collecting,,unpublished,india-rest,Authoritative operator exists; live path not producing usable waste.
 Cyprus,CYP,solar,not-collecting,statics,unpublished,cyprus,Country/T3 stub — Ember/IRENA is not TSO collection.
 Ethiopia,ETH,hydro,not-collecting,statics,unpublished,ethiopia,Country/T3 stub — Ember/IRENA is not TSO collection.
 Kenya,KEN,hydro,not-collecting,statics,unpublished,kenya,Country/T3 stub — Ember/IRENA is not TSO collection.

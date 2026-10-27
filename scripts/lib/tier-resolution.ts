@@ -124,8 +124,8 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   // `tier: "estimated"` on 2026-05-03 to make tier honesty match emitted data
   // (Sci-Data integrity); flip back to `tier: "live"` plus remove these
   // entries once each loader's live path is actually wired up.
-  "india-rajasthan": "solar",
-  "india-gujarat": "solar",
+  "india-rajasthan": "flat",  // T2 measured RRVPNL PDF event energy; not a 24h series, so not a solar archetype
+  "india-gujarat": "flat",    // T2 measured NLDC REMC daily MU; daily energy only, no intraday shape claimed
   "india-karnataka": "solar",
   "india-andhra-pradesh": "solar",
   "india-tamil-nadu": "wind",
@@ -134,8 +134,14 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "india-telangana": "mixed",
   "india-uttar-pradesh": "solar",
   "india-punjab": "solar",
-  "india-odisha": "wind",
+  "india-odisha": "solar",
   "india-chhattisgarh": "solar",
+  "india-kerala": "mixed",
+  "india-haryana": "solar",
+  "india-assam": "solar",
+  "india-himachal-pradesh": "solar",
+  "india-uttarakhand": "solar",
+  "india-rest": "solar",
   indonesia: "solar",
   iran: "solar",
   "iraq-mainland": "solar",

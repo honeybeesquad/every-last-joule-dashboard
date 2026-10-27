@@ -3,6 +3,12 @@ import { assertCanonicalRegionData } from "./region-data-integrity.js";
 import { maskSolarNight } from "./solar-mask.js";
 import { applyUncertainty } from "./uncertainty.js";
 
+function isUniformProfile(profile: readonly number[]): boolean {
+  if (profile.length === 0) return false;
+  const first = profile[0];
+  return profile.every((value) => value === first);
+}
+
 /**
  * Shared region-data finalize pipeline, factored out of the duplicated tails of
  * `src/index.md` and `src/embed/globe.md`. The two copies had already drifted:
@@ -56,6 +62,11 @@ export function finalizeRegionData(
     if (region.kind !== "solar") continue;
     const data = regionData[region.id];
     if (!data?.profile) continue;
+    // A uniform profile is the loader saying it has energy and no hours
+    // (Gujarat NLDC, Rajasthan PDF). Zeroing local night would invent a
+    // solar day and drop the wind inside that flat total. A peaked series
+    // still loses its night floor.
+    if (isUniformProfile(data.profile)) continue;
     data.profile = maskSolarNight(data.profile, region.lon);
     if (Array.isArray(data.latestProfile)) {
       data.latestProfile = maskSolarNight(data.latestProfile, region.lon);

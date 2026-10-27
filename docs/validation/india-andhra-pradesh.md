@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** APTRANSCO / APSLDC (Andhra Pradesh Transmission Corporation Ltd / State Load Despatch Centre) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: apsldc.in timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader uses live CEA daily generation × Ember 2024 rate 3% / (1−rate) (≈1.7 TWh/yr at current 54 TWh/yr solar generation); supersedes the older ~0.4 TWh/yr POSOCO anchor.
+- **Source:** APTRANSCO / APSLDC (Andhra Pradesh Transmission Corporation Ltd / State Load Despatch Centre) — probed 2026-05-09 from Indian-IP Bangalore DO droplet: apsldc.in timed out (no response). Site not publicly reachable even from Indian IPs. T1 blocked. Loader uses live CEA daily generation × Ember 2024 rate 3% / (1−rate) (≈0.35 TWh/yr at ~11 TWh/yr solar, trailing 365 days to 2026-10-15); supersedes the older ~0.4 TWh/yr POSOCO anchor. The previous ~54 TWh solar denominator included a 2025-10-14 Excel serial-date parse error.
 - **Source URL:** [https://sldc.aptransco.co.in/](https://sldc.aptransco.co.in/)
 - **Loader:** [`india-andhra-pradesh.json.ts`](../../src/data/india-andhra-pradesh.json.ts)
 - **Structural gap:** no

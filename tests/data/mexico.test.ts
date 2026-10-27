@@ -21,7 +21,8 @@ describe("mexico loader", () => {
       expect(r.generationProfile).toHaveLength(24);
       expect(r.generationTotalTWh).toBeGreaterThan(0);
       expect(r.confidenceTier).toBe("T3-modelled");
-      expect(r.sourceStatus).toBe("cached");
+      // Committed CENACE file ends 2026-05-31, past the 4-day relay threshold.
+      expect(r.sourceStatus).toBe("degraded");
       expect(r.sourceProvenance).toBe("official-lead");
     }
     expect(data.solar.generationTotalTWh).toBeGreaterThan(0);

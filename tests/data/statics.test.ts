@@ -61,7 +61,9 @@ describe("static regions", () => {
     // dominican-republic-wind off statics. 129 − 2 = 127.
     // 2026-09-29: 17 anchors at or above the country's recorded generation of
     // their fuel moved to tso-grid-markers (waste unpublished). 127 − 17 = 110.
-    expect(Object.keys(data).length).toBe(110);
+    // 2026-10-19: jordan removed — waste unpublished, and the static was
+    // overwriting the loader. 110 − 1 = 109.
+    expect(Object.keys(data).length).toBe(109);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -105,7 +107,8 @@ describe("static regions", () => {
     // 2026-09-20: removed 6 canonical statics (austria/tva/malta/lithuania/latvia/albania). 139 − 6 = 133.
     // 2026-09-20: dominican-republic + dominican-republic-wind moved to OC loader. 133 − 2 = 131.
     // 2026-09-29: 17 anchors moved to tso-grid-markers (waste unpublished). 131 − 17 = 114.
-    expect(Object.keys(researchData).length).toBe(114);
+    // 2026-10-19: jordan removed (waste unpublished). 114 − 1 = 113.
+    expect(Object.keys(researchData).length).toBe(113);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
