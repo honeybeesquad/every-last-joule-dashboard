@@ -11,8 +11,10 @@ Vercel for GitHub had posted a "1 Skipped Deployment" comment on every `automati
 Simon's account, so GitHub emailed him each comment as the thread's author. With no deployment there is no comment.
 Nothing is lost: `scripts/build/vercel-ignore.sh` already skipped those builds, and the only required check is
 `verify`. Other branches keep their previews and comments. Vercel documents the glob form (minimatch) under
-`git.deploymentEnabled`. **Not verified yet:** the first automation PR after this merges should carry no `vercel[bot]`
-comment and no Vercel status. **Not changed:** no data, loader, `regions.ts` entry or tier.
+`git.deploymentEnabled`. **Verified 2026-10-27:** #1443, the first `automation/history-snapshot` PR after the merge
+(opened 01:07 UTC), carries no `vercel[bot]` comment and no Vercel status, where #1442 had both, and it auto-merged
+on `verify`. No `automation/relay-pull` PR has run since, so that branch is covered by the same glob but not yet seen.
+**Not changed:** no data, loader, `regions.ts` entry or tier.
 
 ## CEA relay pull refuses a poisoned gen-daily copy (2026-10-19)
 
