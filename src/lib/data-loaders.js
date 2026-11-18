@@ -137,6 +137,7 @@ export const DATA_LOADERS = [
   { key: "malaysia",            file: FileAttachment("../data/malaysia.json"),             label: "Malaysia" },
   { key: "philippines",         file: FileAttachment("../data/philippines.json"),          label: "Philippines" },
   { key: "dominican",           file: FileAttachment("../data/dominican.json"),            label: "Dominican Republic OC SENI" },
+  { key: "edfSei",              file: FileAttachment("../data/edf-sei.json"),              label: "EDF SEI island grids" },
   { key: "spainIslands",        file: FileAttachment("../data/spain-islands.json"),        label: "Spain islands REData" },
   { key: "southKorea",          file: FileAttachment("../data/south-korea.json"),          label: "South Korea" },
   { key: "russiaMainland",      file: FileAttachment("../data/russia-mainland.json"),      label: "Russia" },

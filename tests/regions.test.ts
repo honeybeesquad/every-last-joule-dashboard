@@ -129,7 +129,9 @@ describe("regions", () => {
     // 2026-11-18: Spain's island systems on REE REData daily generation
     // (canary-islands-wind, canary-islands-solar, balearic-islands-solar).
     // Waste unpublished. 545 + 3 = 548. T3, not T1a.
-    expect(REGIONS.length).toBe(548);
+    // 2026-11-18: corsica added on the EDF SEI real-time generation loader
+    // (waste unpublished). 548 + 1 = 549. T3, not T1a.
+    expect(REGIONS.length).toBe(549);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -344,7 +346,8 @@ describe("regions", () => {
     // 2026-11-18: quebec-wind added (T3). 333 + 1 = 334.
     // 2026-11-18: Canary Islands wind + solar, Balearic Islands solar (REE REData
     // daily generation, waste unpublished). 334 + 3 = 337.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(337);
+    // 2026-11-18: corsica added (EDF SEI generation, waste unpublished). 337 + 1 = 338.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(338);
   });
 
   it("has 24 anchored regions (8 flat-profile + 16 EIA-930 US BAs)", () => {
@@ -381,6 +384,9 @@ describe("regions", () => {
       "alaska-railbelt", "new-brunswick", "nunavut",
       // OC SENI total-system generation; operator does not fuel-split
       "dominican-republic",
+      // EDF SEI islands: one row per island carrying solar + wind + hydro
+      // generation summed. No curtailment is bundled: waste is unpublished.
+      "corsica", "reunion", "guadeloupe", "martinique", "french-guiana",
     ]);
 
     const mixedIds = REGIONS.filter((r) => r.kind === "mixed").map((r) => r.id).sort();

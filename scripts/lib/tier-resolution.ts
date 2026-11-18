@@ -216,7 +216,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   barbados: "solar",
   bolivia: "solar",
   ecuador: "mixed",
-  "french-guiana": "solar",
+  "french-guiana": "mixed",
   // Phase-2.7 Pattern-D — Africa bulk-add (2026-04-27).
   // 26 net-new T3-modelled statics. Map value mirrors the StaticSpec.kind
   // collapse done inside `buildStaticRegion` (hydro→mixed for tier
@@ -439,9 +439,10 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   macau: "solar",
   "malaysia-sarawak": "hydro-seasonal",
   "malaysia-sabah": "solar",
-  reunion: "solar",
-  martinique: "solar",
-  guadeloupe: "solar",
+  reunion: "mixed",
+  martinique: "mixed",
+  guadeloupe: "mixed",
+  corsica: "mixed",
   "new-caledonia": "solar",
   "french-polynesia": "solar",
   "wallis-and-futuna": "solar",
