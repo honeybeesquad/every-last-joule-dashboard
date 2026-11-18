@@ -1,6 +1,6 @@
 # Validation — Benin (`benin`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** BEN
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** IRENA Benin 2024 (SBEE; imports ~80% via WAPP)
+- **Source:** No curtailment series collected; grid present, waste unpublished. Its former 0.05 TWh/yr anchor (IRENA Benin 2024) was 1.2× Benin's 2024 solar generation of 0.04 TWh (Our World in Data, from Ember and the Energy Institute), so it was dropped on 2026-09-29.
 - **Source URL:** [https://sbee.bj/](https://sbee.bj/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

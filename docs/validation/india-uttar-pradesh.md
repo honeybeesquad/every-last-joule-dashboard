@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** CEA gen-re.cea.gov.in daily Excel — Bundelkhand + Bundelkhand solar corridor. T3-modelled fallback calibrated to Ember India 2024 (~0.15 TWh/yr solar curtailment). Loader reads committed CEA CSV when available.
+- **Source:** CEA gen-re.cea.gov.in daily Excel × Ember India 2024 1% rate (≈0.054 TWh/yr at ~5.4 TWh/yr solar, trailing 365 days to 2026-10-15). Hourly shape is synthetic. Not a measured TSO series.
 - **Source URL:** [https://gen-re.cea.gov.in/](https://gen-re.cea.gov.in/)
 - **Loader:** [`india-uttar-pradesh.json.ts`](../../src/data/india-uttar-pradesh.json.ts)
 - **Structural gap:** no

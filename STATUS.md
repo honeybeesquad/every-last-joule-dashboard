@@ -1,7 +1,1133 @@
 # STATUS — single source of truth for "where is the project right now"
 
-**Last verified against git:** 2026-09-24 (dark is the default mode: a first visit opens dark whatever the OS prefers; see the entry below). Also 2026-09-24 (no Google Fonts request: `globalStylesheets: []`, and `/privacy` no longer names Google; see the entry below). Also 2026-09-24 (`/privacy` page for the Meta app review; see the entry below). Also 2026-09-24 (dark globe zooms with a plain scroll over it; see the entry below). Also 2026-09-24 (dark timeline ribbon stretches to the dock's width; see the entry below). Also 2026-09-24 (dark globe opens zoomed out, and keeps turning after a drag; see the entry below). Also 2026-09-24 (dark globe zooms out to the whole sphere; see the entry below). Also 2026-09-24 (dark globe zoom, tilt and borders; see the entry below). Also 2026-09-24 (0.5× playback restored as the default speed; see the D4 line in the redesign entry). Also 2026-09-24 (Nightgrid + Daylight: both modes recoloured, set in the brand system's Schibsted Grotesk and IBM Plex Mono, and the mark back in its gold and cyan; stacked on PR 5; see the entry below). Also 2026-09-24 (light/dark redesign PR 5, clean-up: the paper figure's palette renamed from "sunfire" to "embed", four unused faces and dead CSS deleted, the plan archived as shipped; stacked on PR 4; see the entries below). Also 2026-09-24 (light/dark redesign PR 4, tablet and phone in both modes, the globe explorer, the dark bottom sheet and the doc pages' new header, stacked on PR 3; see the entries below). Also 2026-09-24 (light/dark redesign PR 3, dark desktop: the Horizon stage, horizon globe, ribbon and glass dock; PR 1 **#1087** and PR 2 **#1091** merged 2026-09-23; see the entries below). Also 2026-09-23 (light/dark redesign PR 2, light desktop: the Almanac grid, engraved globe and small-multiples timeline; see the entry below). Also 2026-09-23 (light/dark redesign PR 1, theme plumbing: the site's modes are now light (Almanac) and dark (Horizon), with Geist, Geist Mono and Newsreader; see the entries below). Also 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk became `--font-display` and `--font-body` in both themes; superseded 2026-09-23 by the redesign's faces, see the entries below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
-**Active branch:** `main` (Vercel production branch; auto-deploys to everylastjoule.com)
+**Last verified against git:** 2026-11-18 (Inner Mongolia source labels corrected to a Mengxi-only rate; no data change). Also 2026-11-18 (`qatar` and `kuwait` added as unpublished TSO-grid markers, golden T3 331→333 / total 542→544, no waste figure; Inner Mongolia Mengxi/Mengdong split investigated and not done; see the entry below). Also 2026-10-27 (Vercel no longer deploys, or comments on, the `automation/*` PR branches; see the entry below). Also 2026-10-19 (CEA relay pull refuses a gen-daily copy that carries Excel serial 45944 or drops a committed day. No tier move. See the CEA relay guard entry). Also 2026-10-19 (feed honesty: Argentina CAMMESA 5-minute generation, Jordan/Israel/Vietnam waste unpublished, flat solar profiles kept, Mexico relay freshness. No tier moves. See the feed-honesty entry below). Also 2026-10-19 (Bangalore NLDC relay: droplet cron at 02:00 UTC pushes Gujarat T2 CSVs into `every-last-joule-data-relay`; `colombia-relay-pull.yml` copies them. No tier move. See the Gujarat NLDC entry). Also 2026-10-19 (`india-rajasthan` T3→T2 on RRVPNL PDF event energy, 0.052 TWh Jan–May 2026 not annualised, golden T2 23→24 / T3 332→331 / total 542, not T1a, stacked on Gujarat T2 already on main. See the Rajasthan T2 entry below). Also 2026-10-19 (`india-gujarat` T3→T2 on Grid-India NLDC REMC daily VRE MU, 1.285 TWh / 601 days ~0.78 TWh/yr annualised, golden T2 22→23 / T3 333→332 / total 542, not T1a. See the Gujarat NLDC entry below). Also 2026-10-19 (India nationwide CEA residual: Kerala, Haryana, Assam, Himachal Pradesh, Uttarakhand and `india-rest` added as T3 official-lead CEA×Ember regions, golden T3 327→333 / total 536→542, not T1a. See the India CEA entry below). Also 2026-10-19 (India CEA coverage: the 12 dashboard states plus an Eastern residual now have header-aware gen-re CSVs through 2026-10-15; a 2025-10-14 Excel serial-date parse error that added ~46 TWh of fake solar to every existing state sheet is repaired; Karnataka/MP/TG/UP/Punjab/Odisha/Chhattisgarh exit the no-CSV T3 stubs; Grid-India sums all 12 sheets; india-east no longer double-counts Odisha. No tier moves. See the India CEA entry below). Also 2026-10-01 (error messages from `src/lib/fetch.ts` no longer quote a keyed URL's credential: a failed EIA, ENTSO-E or KPX request put its key into the build log and, for South Korea, a served note, and `redactUrl` now masks it at the source, **#1179**; see the entry below). Also 2026-09-30 (the ENTSO-E loader stops at 90% of `withFallback`'s deadline and returns the zones it fetched, falling back zone by zone for the rest, and a failed request no longer passes for an empty answer, **#1173**; see the entry below). Also 2026-09-30 (`LOADER_FETCH_TIMEOUT_MS=0` now means no per-request timeout, where it aborted every request at once, **#1168**; see the entry below). Also 2026-09-29 (step 3b's first day: six refreshes through the CLI, all green with success pings; three dispatches match the abed clock's timer and rule; Vercel made no git build of `main`; see the step 3b entry below). Also 2026-09-29 (#1155 in production: its first two builds went live with 197 of 530 region records live, as before, and the second logged the prefetch's `deadline 180s, hard cap 300s`; Vercel sets no `LOADER_*` variable; see the loader prefetch entry). Also 2026-09-29 (seventeen statics anchors dropped because each claimed at least the country's recorded generation of its fuel: modelled waste falls 4.45 TWh/yr, 17 regions become unpublished grid markers, no tier moves, and a test keeps every statics anchor below national generation, **#1154**; see the statics-anchor entry below). Also 2026-09-29 (the unwired Nigeria probe, its test and its niggrid backfill script deleted with the owner's approval, **#1152**; see the Nigeria entry below). Also 2026-09-29 (`/region/nigeria` described the unwired Niggrid probe at "~0.05 TWh/yr" while the dashboard serves `statics.json` at 0.5 TWh/yr; the source prose and link now describe the served data and mark its anchor unverified, with the tier and the data unchanged, **#1151**; see the Nigeria entry below). Also 2026-09-29 (the loader prefetch no longer fails or stalls a build on its own errors: an error fails only its loader, the hard cap now stops the loader's whole process group, and `LOADER_DEADLINE_MS=0` means no deadline in the prefetch as it does in the loaders, **#1155**; see the entry below). Also 2026-09-29 (the "HTTP 400" from `ercot-native` in the trial's build logs is a disabled probe that the loader prefetch ran, not lost data: production's ERCOT regions are live through EIA, the ERCOT credentials work but no build needs them now, and the prefetch runs only loaders the site reads, **#1150**; see the entry below). Also 2026-09-29 (step 3b, **#1149**: production deploys through the Vercel CLI from `data-refresh.yml`, on the 3-hourly schedule and on each push to `main` that changes the site; Vercel's own git builds for `main` are off; the fixed 3a trial passed first, 197 of 197 live records and all 19 keyed feeds; see the entry below). Also 2026-09-29 (the ignore step builds a push that changes only site pages or validation records; its `*.md` exclusion matched at any depth; **#1153**, see the entry below). Also 2026-09-29 (step 3 trial's first runs: the CLI build worked, in 7 min, and was not skipped; the comparison failed on a `vercel curl` flag, fixed in **#1147**; see the step 3 trial entry below). Also 2026-09-28 (step 3 trial, **#1145**: production built on Vercel through the CLI without going live, and compared with production; manual only, needs `VERCEL_TOKEN`; see the entry below). Also 2026-09-28 (a refresh clock for `abed`, step 2 of the refresh-pipeline plan, **#1143**: it dispatches a refresh when production is over 3 h 15 min old; runs once installed there, which by 29 Sep it appears to be, see the step 3b entry; see the entry below). Also 2026-09-28 (the refresh alarm moves to Healthchecks.io, off GitHub's scheduler: step 1 of the refresh-pipeline plan, **#1142**, merged; see the entry below). Also 2026-09-28 (sessions merge their own PRs once reviewed and green: `CLAUDE.md` "Merging PRs", **#1140**; see the entry below). Also 2026-09-28 (the #1134 fix in production: a refresh run by hand built the hook deployment of a skipped automation commit, which the old script skipped, the case that froze production; see "After the merge" in the entry below). Also 2026-09-27 (scheduled rebuilds were being skipped: production served one build from 04:42 UTC on 24 Sep to at least 27 Sep while every workflow stayed green, which Vercel's deployment records confirm; fix and freshness alarms merged in **#1134**; see the entry below). Also 2026-09-24 (dark is the default mode: a first visit opens dark whatever the OS prefers; see the entry below). Also 2026-09-24 (no Google Fonts request: `globalStylesheets: []`, and `/privacy` no longer names Google; see the entry below). Also 2026-09-24 (`/privacy` page for the Meta app review; see the entry below). Also 2026-09-24 (dark globe zooms with a plain scroll over it; see the entry below). Also 2026-09-24 (dark timeline ribbon stretches to the dock's width; see the entry below). Also 2026-09-24 (dark globe opens zoomed out, and keeps turning after a drag; see the entry below). Also 2026-09-24 (dark globe zooms out to the whole sphere; see the entry below). Also 2026-09-24 (dark globe zoom, tilt and borders; see the entry below). Also 2026-09-24 (0.5× playback restored as the default speed; see the D4 line in the redesign entry). Also 2026-09-24 (Nightgrid + Daylight: both modes recoloured, set in the brand system's Schibsted Grotesk and IBM Plex Mono, and the mark back in its gold and cyan; stacked on PR 5; see the entry below). Also 2026-09-24 (light/dark redesign PR 5, clean-up: the paper figure's palette renamed from "sunfire" to "embed", four unused faces and dead CSS deleted, the plan archived as shipped; stacked on PR 4; see the entries below). Also 2026-09-24 (light/dark redesign PR 4, tablet and phone in both modes, the globe explorer, the dark bottom sheet and the doc pages' new header, stacked on PR 3; see the entries below). Also 2026-09-24 (light/dark redesign PR 3, dark desktop: the Horizon stage, horizon globe, ribbon and glass dock; PR 1 **#1087** and PR 2 **#1091** merged 2026-09-23; see the entries below). Also 2026-09-23 (light/dark redesign PR 2, light desktop: the Almanac grid, engraved globe and small-multiples timeline; see the entry below). Also 2026-09-23 (light/dark redesign PR 1, theme plumbing: the site's modes are now light (Almanac) and dark (Horizon), with Geist, Geist Mono and Newsreader; see the entries below). Also 2026-09-20 (TSO-grid completeness — `wasteStatus` + unpublished generation grids. Golden T1a 160, T1b 26, T1c 1, T2 22, T3 327, total 536. This is a **grid-completeness** program, distinct from the 2026-06 comprehensiveness waste-depth program. Also 2026-09-20 (brand face site-wide — Schibsted Grotesk became `--font-display` and `--font-body` in both themes; superseded 2026-09-23 by the redesign's faces, see the entries below. Also 2026-09-20 (page-loader brand mark — the loading screen's pulsing bullet is now the animated Spectrum mark; assets generated and committed under `src/brand/`, see the entry below. Also 2026-09-19 (v1.4.0 version DOI `10.5281/zenodo.22837934` recorded after mint. Also 2026-09-19 (v1.4.0 dataset bump — metadata unpinned from v1.3.2; GitHub release `v1.4.0` published. Also 2026-09-18 (paper and methodology reframe on `docs/paper-and-methodology-reframe` — public methodology, DARI essay, Scientific Data drafts, and `docs/dari/paper.html` now describe live HEAD: 459 regions, renewables only. Also 2026-09-15 (Rajasthan source label now names CEA×Ember 6.3 TWh vs RRVPNL PDF 0.052 TWh — issue #964; Colombia vertimientos CSV current through 2026-09-13, #620 closed. Also 2026-09-14 (tier-count prose gated — `ci:tier-count-docs` **#1003** covers the four documents #981 did not, and fixed `live-data-paths.md`'s 66-vs-160 T1a claim; see the entry below. Also 2026-09-11 (public copy rewrite **#968** — Claudish slogans gone from About/dashboard/paper; live site says 459 regions, renewables-only. See the Copy entry below. Also 2026-09-10 (secret rotation — EIA key rotated and SEC-1 closed; ENTSO-E token deliberately deferred while the Transparency Platform migration is unstable; see the "Secret rotation" entry below). Also 2026-09-10 (loader prefetch + deadline — Vercel builds were serial and uncapped; see the "Build time" entry below. Also 2026-09-10 (globe overlay + paper figure — **#966**). Also 2026-09-06 (curtailment-share metric + units toggle - the dashboard can now express curtailment as a share of generation, but only for the 22 region ids where that is not circular; see the "Curtailment share" entry below. Also 2026-09-06 (Cyprus - a four-month-old decorative TSOC probe replaced with a measured ENTSO-E shape, and PR #280's solar→wind flip disproved; see the Cyprus entry below. Also 2026-09-06 (loader registry - the positional loader wiring that caused the 3-month rotation is gone; both pages now derive their fetch list and payload record from one keyed registry, `src/lib/data-loaders.js`. See the "Loader registry" entry below. Also 2026-09-06 (AEMO per-plant emission gap - 7 of the 10 named plants were being dropped by a noise floor and a 12x energy-unit error; see the 2026-09-06 entry below. Also 2026-09-06 (embed/globe production break - a missing comma killed the paper iframe, and a 3-month-old loader-order rotation was serving six regions the wrong data on the live dashboard too; see the 2026-09-06 entry below. Previously 2026-09-05 (zero-allowlist expiry review - CI had failed every run since 2026-09-01 on an expired review gate, not on breakage; see the 2026-09-05 entry below. Previously 2026-08-20 (honesty / data-label fixes — see the 2026-08-20 entry below: T3-modelled regions no longer stamped `live` [PR #812]; Mexico profile now integrates to its anchor; paper `sourceStatus` description corrected. Earlier 2026-08-19 sweep: the rolling Parquet history was never a time series (**PR #787**), South Africa dead on a stale Eskom URL (**PR #785**), health-alert allowlist incomplete (**PR #784**), `abed` XM capture failing nightly since 2026-08-09 (**PR #786**). Germany creds are **resolved** — they have been in Vercel Production since 2026-08-01. Colombia vertimientos CSV is current through 2026-09-13 ([#620](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/620) closed 2026-08-19; last pull **#1009**); the EIA key was **rotated 2026-09-10** (**#975**, SEC-1 closed) and no longer does. Previously 2026-07-17: ENTSO-E token 401 fixed, NZ hydro **#470**, Node 20→24 **#487**. Previously 2026-06-25: **#313** Germany measured curtailment; Spain ESIOS parked. Previously: 2026-06-24 data-accuracy sprint #290–#298 + comprehensiveness program #301/#305/#306; #163/#149; #128–#132)))))
+**Active branch:** `main` (production: `.github/workflows/data-refresh.yml` deploys it to everylastjoule.com through the Vercel CLI every 3 h and on each push that changes the site; Vercel's own git builds for `main` are off since step 3b, **#1149**)
+
+## Relay pull unblocked: the Gujarat NLDC test no longer pins an end date (2026-11-18)
+
+On `fix/gujarat-nldc-test-unpin`. `tests/data/india-gujarat.test.ts` required the Gujarat NLDC CSV to end on exactly
+2026-10-18. The Bangalore droplet regenerates the file daily, one day longer each run, so from 2026-10-21 every refresh of the
+`automation/relay-pull` PR ([#1399](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/1399)) failed
+`verify` while `colombia-relay-pull.yml` itself ran green. Nothing from the relay reached `main` for four weeks:
+Colombia vertimientos, the abed heartbeat and the Gujarat NLDC CSVs all sat in that PR. The test now pins a floor
+(last date ≥ 2026-10-18), a ceiling (no later than tomorrow) and ISO dates in strictly increasing order, so a rewind, truncation, future date or duplicate
+day still fails it. Separately, abed's relay clone had stopped pushing on 2026-11-04 (a rebase with no git identity,
+once the droplet became a second writer); that was repaired on abed the same day and is outside this diff.
+**Not changed:** no data, loader, `regions.ts` entry or tier.
+
+## Qatar and Kuwait unpublished grid markers; Mengxi/Mengdong not split (2026-11-18)
+
+On `claude/sharp-lovelace-395b93`. Population change: T3 331→333, total 542→544. T1/T2 unchanged. No waste figure.
+
+- `qatar` (Kahramaa) and `kuwait` (MEW) are wave-4 unpublished grid markers in `src/lib/tso-grid-markers.ts`: solar, zero waste profile, `wasteStatus: "unpublished"`, T3 `estimated` / `modelled-fallback`. The roster's Kahramaa row now names `qatar`, and a new `MEW Kuwait` row names `kuwait`.
+- Both ids meant flare-gas regions in dataset v1.2.0–v1.3.2 and were purged by #242. Neither parquet history (`curtailment_history`, `curtailment_backfill`) carries a row under either id, so the solar marker does not mix with old flare rows. Anyone comparing against v1.3.2 should know the id changed meaning.
+- **Inner Mongolia not split.** The monitoring centre publishes 蒙西/蒙东 utilisation, but no published by-fuel generation split exists for a trailing year (calendar 2024 only, ≥6 MW plants, secondary source, scope unreconciled). The regions are unchanged. See `docs/research/2026-11-18-inner-mongolia-mengxi-mengdong-split.md`. The served rate (95.4% wind / 94.7% solar) is already Mengxi-only in `scripts/refresh-china.ts`. Unverified snippets give Mengxi full-year 2024 as 93.7% / 93.7%, so whether the rate needs revising is open, pending a first-hand read and owner sign-off.
+- **Labels only (same day, follow-up PR):** the `inner-mongolia-wind`/`-solar` `source` strings, validation docs and served `sourceNote` (via `scripts/refresh-china.ts`, `data/china-anchors.json` and the last-good snapshot) now say the rate is Mengxi-only on whole-province generation. The loader's hardcoded 8.0 / 4.6 TWh/yr fallback note no longer claims NEA as its source. That fallback is used only without a `data/china-anchors.json` row. Served data, anchor and tier are unchanged. The research note's first version, which called 95.4% a whole-province rate, is corrected.
+
+## Vercel stays quiet on the automation PRs (2026-10-27)
+
+**#1308**, from `claude/vercel-quiet-automation-prs`. `vercel.json` adds `"automation/*": false` to `git.deploymentEnabled`.
+Vercel for GitHub had posted a "1 Skipped Deployment" comment on every `automation/history-snapshot` and
+`automation/relay-pull` PR (four to six a day by late October). Those PRs are opened with `AUTOMATION_TOKEN` under
+Simon's account, so GitHub emailed him each comment as the thread's author. With no deployment there is no comment.
+Nothing is lost: `scripts/build/vercel-ignore.sh` already skipped those builds, and the only required check is
+`verify`. Other branches keep their previews and comments. Vercel documents the glob form (minimatch) under
+`git.deploymentEnabled`. **Verified 2026-10-27:** #1443, the first `automation/history-snapshot` PR after the merge
+(opened 01:07 UTC), carries no `vercel[bot]` comment and no Vercel status, where #1442 had both, and it auto-merged
+on `verify`. No `automation/relay-pull` PR has run since, so that branch is covered by the same glob but not yet seen.
+**Not changed:** no data, loader, `regions.ts` entry or tier.
+
+## CEA relay pull refuses a poisoned gen-daily copy (2026-10-19)
+
+On `fix/india-cea-relay-overwrite-guard`. No tier move. Golden unchanged.
+
+`colombia-relay-pull.yml` copied Britta's `india-*-gen-daily.csv` whenever the relay had the file. Those copies still store Excel serial 45944 as solar on 2025-10-14 and end ~60 days before the committed series. A full dispatch on 2026-10-19 opened [#1365](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/1365) with that regression and was closed. The pull now runs `scripts/relay/accept_india_gen_daily.py`: a daily value outside 0–400 GWh, or a date the dashboard already has and the relay file lacks, leaves the committed CSV in place. A longer plausible file still copies. Colombia, Peru, PREPA, and the Bangalore NLDC CSVs are unchanged.
+
+## Feed honesty: Argentina interval, unpublished waste, flat solar profiles (2026-10-19)
+
+On `fix/feed-honesty-argentina-jordan`. No tier moves. Golden stays 542 / T1a 160 / T1b 26 / T1c 1 / T2 24 / T3 331.
+
+- Argentina CAMMESA `eolica` is 5-minute MW. `intervalHours` is 5/60, so a 30-day window is no longer counted as twelve times the energy. A file shorter than 25 days (the committed June window) scales the diurnal mean to 30 days and says so. `sourceStatus` is `relayFreshness` (4 days); the June file is `degraded`. Waste stays unpublished.
+- Jordan's 0.5 TWh/yr static is deleted. It was winning the page spread over the loader. Jordan, Israel, and Vietnam emit unpublished waste (zero profile). Their `source` strings already said waste was unpublished. Served waste falls by the old 0.5 + 1.2 + 4 TWh/yr anchors (~0.47 TWh over 30 days). Statics canonical count 110 → 109.
+- `serbia-solar` and `north-macedonia-solar` are no longer looked up on ENTSO-E before the statics spread. A test rejects any explicit key written before `...feeds.statics` that statics also emits.
+- The solar night mask skips a profile whose 24 hours are equal, so Gujarat and Rajasthan keep the flat series their loaders wrote. A peaked solar profile is still zeroed at local night.
+- Mexico CENACE generation stamps `relayFreshness` instead of a hardcoded `cached`. The committed file ends 2026-05-31, so it reads `degraded`. Generation totals are unchanged.
+- Docs: `totalTWh` is `sum(profile GW) × 30 / 1000`. ENTSO-E A75 is generation; Germany's measured waste is netztransparenz. A77 is plant outages, not a curtailment product.
+
+India fuel drops (Tamil Nadu solar, Karnataka / Andhra Pradesh / Madhya Pradesh wind) and the SLDC `T1a` stamp stay with the India session.
+
+## Rajasthan T2 on RRVPNL PDF energy, not annualised (2026-10-19)
+
+On `feat/india-rajasthan-t2-rrvpnl`, stacked on Gujarat T2 (#1361) already on `main`. Population change: T2 23→24, T3 332→331, total 542. Not T1a.
+
+`india-rajasthan` now plots the committed RRVPNL `re-curtailment` PDF floor: **0.052 TWh** across Jan–May 2026 (75 event rows, 52 medium-confidence manual-from-scan, 0.050 solar / 0.002 wind). The 30-day dashboard figure is that floor × 30/151 (≈0.010 TWh/30d). The source string does **not** annualise to a TWh/yr. Profile is flat 24/7 — events are not an hourly series. `sourceProvenance: verified`. Issue [#964](https://github.com/honeybeesquad/every-last-joule-dashboard/issues/964).
+
+This replaces CEA×Ember ~4.6 TWh/yr (~71 TWh solar × 6%), which overstated the published floor by ~50×. The CEA generation CSV remains in the Grid-India sum; it is no longer this region's waste source.
+
+Not done, and not claimed: no T1a, no Karnataka instruction-PDF energy, no Rajasthan PDF annualisation, Maharashtra stays T2 on MSLDC, Gujarat stays T2 on NLDC REMC daily MU (not RRVPNL). NLDC Rajasthan ~0.28 TWh/yr is a research remainder and is not this region's source.
+
+## Gujarat T2 on Grid-India NLDC REMC daily MU (2026-10-19)
+
+On `feat/india-nldc-remc-daily`. Population change: T2 22→23, T3 333→332, total 542. Not T1a.
+
+`india-gujarat` now plots Grid-India NLDC REMC daily VRE PDFs (`DAILY_VRE_REPORT`): **1.291 TWh** across 602 published days (2025-01-01 → 2026-10-18, 212 nonzero), annualised to **~0.78 TWh/yr** (950.7 GWh solar + 340.5 GWh wind). The 30-day dashboard figure is that annualised total × 30/365. Profile is flat 24/7 — daily MU, not an hourly series. `sourceProvenance: verified`. The extra day versus the T2 promotion snapshot is 2026-10-18 (5.98 GWh solar); 2026-10-17 is unpublished.
+
+This replaces CEA×Ember ~1.4 TWh/yr (~46 TWh solar × 3%), which overstated the measured NLDC series by ~1.8×. The CEA generation CSV remains in the Grid-India unpublished sum; it is no longer this region's waste source.
+
+Parser notes: 2025-01–2025-05 PDFs list Wind MU / Solar MU / Wind MW / Solar MW; from 2025-06 the columns are Wind MW / Wind MU / Solar MW / Solar MU. The first table only (real-time system constraints). Emergency TRAS Down is excluded. ISTS station rows are not summed into the state. Duplicate PDFs for the same operating day are dropped.
+
+Not done, and not claimed: no T1a, no Karnataka instruction-PDF energy, Maharashtra stays T2 on MSLDC (NLDC Maharashtra ~67 GWh/yr vs MSLDC ~27 GWh/yr — different publication), Rajasthan is T2 on the RRVPNL PDF floor (not NLDC). `india-grid-india` is not T2'd from a national NLDC sum. Tamil Nadu / Karnataka / Andhra NLDC RE State rows are near-zero and are not treated as complete SLDC coverage. GSLDC DSM / REC / "certificates blocked" pages are not curtailment.
+
+The Grid-India CDN TLS-resets from GitHub/Vercel. Daily refresh of the committed Gujarat CSV is the Bangalore droplet (`docs/ops/bangalore-nldc-push.sh`, 02:00 UTC) → `every-last-joule-data-relay` → `colombia-relay-pull.yml`. First Bangalore push landed 2026-10-19 (relay `0793597`, 602 days through 2026-10-18, 1.291 TWh, ~0.78 TWh/yr). The dashboard CSV now includes 2026-10-18 (5.98 GWh solar). A full `colombia-relay-pull.yml` dispatch was closed (#1365): Britta's CEA `*-gen-daily.csv` copies still carry the 2025-10-14 Excel serial (45944 GWh) and truncate ~60 later days. The pull now refuses that copy.
+
+
+## India nationwide CEA residual: 17 named states + east + rest (2026-10-19)
+
+On `feat/india-nationwide-cea`. Population change: T3 327→333, total 536→542. T1/T2 unchanged. Not T1a.
+
+CEA All-India wind+solar for Oct 2025–Sep 2026 is ~305 TWh. The previous 12 dashboard states covered ~99%. This adds the leftover named VRE states and a residual of remaining CEA State-Wise rows:
+
+| Region | Trailing-365 solar (to 2026-10-15) | Wind | Ember rate | Modelled waste |
+|---|---|---|---|---|
+| Kerala | 0.47 TWh | 0.13 TWh | 1% mixed | ≈0.006 TWh/yr |
+| Haryana | 0.41 TWh | 0 | 1% | ≈0.004 TWh/yr |
+| Assam | 0.36 TWh | 0 | 1% | ≈0.004 TWh/yr |
+| Uttarakhand | 0.18 TWh | 0 | 1% | ≈0.002 TWh/yr |
+| Himachal Pradesh | 0.13 TWh | 0 | 1% | ≈0.001 TWh/yr |
+| India rest | 0.087 TWh | 0 | 1% | ≈0.0009 TWh/yr |
+
+`india-rest` is Chandigarh, Delhi, J&K, Ladakh, Goa, Pondicherry, Daman & Diu, Dadra & Nagar Haveli, Arunachal Pradesh, Manipur, Meghalaya, Mizoram, Nagaland, Tripura. It is not All India. Grid-India now sums 19 CEA sheets (17 named + east + rest) as unpublished generation.
+
+Karnataka validation MANUAL copies no longer describe the retired 0.5 TWh POSOCO stub as the plotted series.
+
+## India CEA coverage: 12 states wired, 45944 serial-date row repaired (2026-10-19)
+
+Shipped as **#1355**. No tier moves, no golden change, no new regions in that PR.
+
+CEA All-India wind+solar for Oct 2025–Sep 2026 is ~305 TWh. The 12 dashboard states covered ~99% of that. The leftover 0.6% (Kerala, Haryana, Assam, Himachal, Uttarakhand and near-zero UTs) is now in the nationwide residual entry above. Bihar is inside `india-east` rather than uncovered.
+
+What was broken, and what this changes:
+
+1. **Excel serial 45944.** The 2025-10-14 workbook used a State / State Code / Date / Wind / Solar layout. The old positional parser stored the date serial as solar GWh (~45.9 TWh) on every existing state CSV. Rajasthan's plotted CEA×Ember 6% path moved **6.3 → 4.6 TWh/yr** (~71 TWh solar, not ~98). Gujarat 2.4→1.4, Andhra Pradesh 1.7→0.35. The RRVPNL 0.052 TWh Jan–May 2026 PDF floor is still not annualised and is still not what the dashboard plots (issue #964).
+2. **Seven loaders had no CSV.** Karnataka, Madhya Pradesh, Telangana, Uttar Pradesh, Punjab, Odisha and Chhattisgarh were already in `regions.ts` and `data-loaders.js` but emitted the no-CSV T3 stubs (Karnataka last-good still said "No KSLDC CSV" at 0.5 TWh). Each now has 470 CEA days, 2025-05-09 → 2026-10-15.
+3. **Odisha was labelled wind with zero CEA wind.** Once the CSV landed, `computeCurtailedEnergy(csv.windTWh)` would have emitted 0. Kind and profile are solar; ~0.57 TWh solar × 1% ≈ 0.006 TWh/yr.
+4. **`india-east` double-counted Odisha.** The 0.2 TWh ERLDC stub is replaced by CEA residual Eastern solar excluding Odisha (Bihar + West Bengal + Jharkhand + Sikkim) × 1% ≈ 0.006 TWh/yr.
+5. **Grid-India summed 5 of 12 state sheets.** It now sums all 12. Waste stays unpublished.
+6. **Relay pull / bootstrap only knew 5 states.** Both now copy/write the 12 states plus `india-east`. Parser is header-aware (first Wind, first Solar, skip cumulative) and rejects daily values > 400 GWh.
+
+Not done, and not claimed in that PR: no T1a, no Karnataka instruction-PDF energy, no Rajasthan PDF annualisation, Maharashtra stays T2 on MSLDC. The leftover named states landed in the nationwide residual entry above.
+
+## `fetch.ts` error messages no longer quote a keyed URL's credential (2026-10-01)
+
+**#1179**, from `claude/redact-fetch-error-urls`. `src/lib/fetch.ts` put the whole request
+URL into four error messages: `HTTP <status> <text> for <url>` and `fetch skipped:
+<reason> (<url>)` in `withRetries` (behind `fetchJSON`, `fetchText` and `fetchBytes`), and
+`HTTP <status> for <url>` and `timeout after <n>ms for <url>` in `fetchHttp1Bytes`. EIA's
+`api_key`, ENTSO-E's `securityToken` and KPX's `serviceKey` travel in the query string, so
+a failing keyed request carried its key into `withFallback`'s `live fetch failed` line (in
+the build log, which `vercel deploy --logs` copies into the public Actions log), into the
+loaders' own warnings (the EIA ISO loaders, ERCOT, CAISO, Norway, ENTSO-E, Cyprus) and,
+from `src/data/south-korea.json.ts`, into a served `sourceNote`. Nothing had leaked: the
+30 Sep review of #1174 found no key in the last 14 refresh-run logs, a timeout is a native
+"This operation was aborted" with no URL, and `DATA_GO_KR_SERVICE_KEY` is configured
+nowhere (a Korean-identity key was not obtainable; see the South Korea entry below), so
+the served note was one environment variable from a public leak.
+
+`redactUrl` (new, exported) replaces the value of each query parameter whose name ends in
+`key`, `token`, `secret` or `password`, in any case, with `REDACTED`, and leaves the rest
+of the URL as it was (`…?api_key=REDACTED&frequency=hourly`). The four messages pass their
+URL through it and are otherwise unchanged, so `isNotFoundError`
+(`src/lib/japan-area-csv.ts`), which reads the `HTTP 404 ` prefix, still matches. No
+loader changed: the EIA ISO, ERCOT, CAISO, Norway, ENTSO-E, Cyprus and South Korea loaders
+all reach these messages through `fetch.ts`. The errors `fetch` itself raises for a URL it
+cannot use ("Failed to parse URL from <url>", as for a base constant that came out
+undefined) quote the URL whole too, so `withRetries` rebuilds such an error with the URL
+through `redactUrl` (same message and name, no cause); any other error, a network failure
+with its cause included, and an error for a URL with nothing to mask are kept as they are.
+`tests/fetch.test.ts` gains 31 tests (20 of `redactUrl`; 8 of the messages: an HTTP error
+from each of `fetchJSON`, `fetchText` and `fetchBytes`, three attempts and then the last
+error, `fetch skipped`, and `fetchHttp1Bytes`'s HTTP error, 404 and timeout; 3 of the
+rebuilt error), every credential in them a `test-dummy` value, and
+`tests/data/south-korea.test.ts` one (a failed KPX request keeps the `serviceKey` out of the
+served note and the log). 30 of the 32 fail against the old `fetch.ts`; the other two pin
+what the fix must keep (the error for a keyless URL, and a network failure's cause). With
+dummy keys and a stubbed 403 the old file printed all three keys through `withFallback`, an
+EIA ISO loader and `fetchEntsoeZone`, and published `serviceKey=<key>` in the South Korea
+note; the new one prints none of them.
+
+**Not changed.** `describeFetchFailure` in `src/data/eia-vre-bas.json.ts` is the stopgap
+in the still-open **#1174**, and stays as it is there: once #1174 has merged, its `api_key`
+regex is redundant and the function can shrink to the length cap, with its tests in
+`tests/data/eia-vre-bas-failure.test.ts`. Only the query string is read: a credential in
+the path or in `user:pass@` is not masked (`fetch` refuses the latter and quotes it), nor is
+one under a name that does not end in `key`, `token`, `secret` or `password` (`appid`,
+`auth`, `sig`); no loader sends either (ESIOS sends its token in a header and
+netztransparenz its secret in a POST body). A refused connection, a DNS failure and a
+timeout carry no URL (probed on Node 26; the repo runs 24). `fetchHttp1Bytes`'s own
+`new URL(url)` throws "Invalid URL" with the URL in its `input` property; its only callers
+are the keyless Japan loaders. The mask also hides a malformed credential that the old
+message showed (surrounding quotes, a trailing newline, the text `undefined`):
+`EIA_API_KEY` and `ENTSOE_API_TOKEN` are read untrimmed, so a bad value now reads
+`REDACTED` like a good one. `src/lib/resilient.ts` and the loaders' own `err.message`
+prints are untouched: they print what `fetch.ts` now redacts. Loaders that format their own
+message from a URL without `fetch.ts` (AEMO, Chile, Uruguay, Ontario, WA-SWIS, Brazil-NE,
+and Germany curtailment's log line) carry no credential parameter today; one that adds a
+keyed URL should call `redactUrl`, and add its parameter's name to `CREDENTIAL_PARAM` if
+that name does not end in one of the four words. No data file, `regions.ts` entry or tier.
+
+## The ENTSO-E loader stops before its deadline and keeps the zones it fetched (2026-09-30)
+
+**#1173**, from `claude/entsoe-stop-before-deadline`: the follow-up the step 3b entry's 13:02 incident left. No data file,
+`regions.ts` entry, tier or golden file changes, and the committed snapshot is untouched.
+
+**It recurred while this sat open.** `curtailment_history.parquet` has six builds from 29 Sep to 12 Oct with all 18
+`allowEmpty` zones missing and `spain-wind` dated 17 Jun: 29 Sep 13:10, 2 Oct 13:08, 7 Oct 18:09, 8 Oct 14:12, and
+12 Oct 14:09 and 18:12 UTC. The `data-refresh` logs for 7 Oct 18:01, 8 Oct 14:04 and both 12 Oct runs each read
+`live fetch exceeded 180s deadline`. Those 50 refresh logs (6 to 12 Oct) hold no `HTTP 401` and no `HTTP 429`, so it
+is ENTSO-E answering slowly, not the token or a rate limit. The builds between recovered on their own, because the
+loader re-fetches a 30-day window on every build; there is no gap to backfill. A social count of 518 instead of 536
+on 13 Oct read one of these builds.
+
+**The choice.** (b), filling the zones a whole-loader fallback lacks with unpublished markers, restores the 18 but
+still serves all 54 zones as June `degraded`, including ones ENTSO-E had just answered. (a), stopping the loader itself,
+keeps the zones it fetched, gives every other zone its own last-good record and label, and keeps the 18 as a side
+effect. (a) was built; (b) was not.
+
+**What changed.**
+- **The budget.** `withFallback` passes its loader a `LoaderBudget { deadlineMs, startedAt }` (`src/lib/resilient.ts`).
+  No other loader takes it: 40 call sites pass a named function and 39 of those take no parameter, and every other
+  call site passes a `() =>` arrow. `softStopMs(deadlineMs)` (`src/lib/loader-deadline.ts`) is 90% of the deadline, 162 s
+  of 180 s.
+- **The stop.** `run` in `src/data/entsoe.json.ts` is now the exported `collectEntsoeZones(budget)`. At the stop it
+  aborts its open requests, starts no others, and answers each zone it did not finish as it already answered a failed
+  zone: the last-good record, `cached` under 24 h old and `degraded` past that, keeping its own `lastSuccessAt`; or, for
+  an `allowEmpty` zone with none, an unpublished marker whose note says it was not fetched. `loadEntsoe()` is exported
+  so a test can run the real loader.
+- **A failed request is not an empty answer** (`src/lib/entsoe.ts`). It used to come back as zero points. So an
+  `allowEmpty` zone whose requests failed was returned as a fresh "A75 empty in-window" record, which would also have
+  replaced real last-good data with zeros once the snapshot holds it, and `netherlands-wind` (two technologies) was
+  built `live` from B19 alone when its B18 request timed out at 13:04:55 on 29 Sep (that run was then cut off at the
+  deadline, so production did not serve it). Either now falls back on the zone's last-good record. ENTSO-E's own "no data" answer (HTTP 200) is still an empty record. A failure is logged once per zone,
+  with the reason undici keeps in `cause` ("fetch failed (read ECONNRESET)", or the inner errors of an
+  `AggregateError` from a host with several addresses), and without the API token.
+- **The all-zones-failed throw is gone.** Since 20 Sep the `allowEmpty` zones counted a failed request as an answer, so
+  the throw could only fire on a missing token. Counting failures honestly would have made it fire on every total
+  outage, and `withFallback` would then have served the snapshot whole and dropped the 18 again. A missing token is now
+  checked first and fails at once, with the same result as before. When no zone answers, the loader serves every
+  last-good record and marker and logs `ENTSO-E answered no zone`.
+
+**Labels.** Fetched before the stop: `live` (`cached` for the 18, which are estimated-tier, as `withFallback` always
+stamps them). Last-good record under 24 h old: `cached`. Older: `degraded`, still dated by its own `lastSuccessAt`, so
+June stays June. A marker made by the fallback: `wasteStatus: "unpublished"`, zero generation, `degraded` (not the
+`cached` an estimated-tier zone otherwise gets, because nothing was fetched and its `lastSuccessAt` is only the time it
+was made; added 13 Oct so a marker can't pass for a fresh reading in a count of regions reporting); its note says
+the zone was not fetched, or that the fetch failed, and does not say the A75 was empty. (A zone ENTSO-E answers empty,
+which six do in every healthy run, still gets the "A75 empty in-window" record, as before.)
+
+**Checked.**
+- 26 tests in `tests/data/entsoe-slow.test.ts` run the real loader (72 zones, `withFallback`'s stamping, the fetch
+  layer's timeouts, retries and aborts) against a stubbed `fetch`, fake timers and the prefetch's knobs (15 s per request,
+  one retry). 16 of them fail against a fresh checkout of `main` (4a94f97c), through a shim that exports its `run` under the new
+  names; the other 10 describe behaviour that is unchanged.
+  `tests/resilient.test.ts` adds 4, and its snapshot is now removed after each test, because `ci:tier-coherence` fails on
+  one left in `data/snapshots/last-good`.
+- The loader run as a real process with a preloaded `fetch` that answers ten zones and then stalls
+  (`LOADER_DEADLINE_MS=15000`, in a temp directory with a copy of the snapshot). `main`: 15 s, 54 zones, all `degraded`,
+  `malta` missing, `spain-wind` `degraded`. Here: stopped at 13.5 s of 15 s, 72 zones (12 live, 42 last-good `degraded`,
+  18 markers), `spain-wind` live.
+- Five refreshes on 29 Sep in which ENTSO-E answered normally (08:04, 09:44, 17:03, 18:02, 22:11) logged no failed
+  ENTSO-E request and no failed zone, and six zones answering "no data" each time, so failing a zone on a failed
+  request changes nothing when ENTSO-E answers normally. (08:04 and 17:03 had EIA fallbacks, which are other loaders.)
+- `npm run typecheck`, `npm test` (248 files, 1870 tests) and `npm run ci:gates` exit 0, with `ci:tally-golden` and
+  `ci:magnitude-golden` unchanged.
+- **Not seen in production yet.** The stop shows in a build log as `ENTSO-E stopped at 162s of its 180s budget: N zones
+  fetched, M kept from the last-good snapshot, K unpublished markers`, and only when ENTSO-E stalls.
+
+**Trade-offs.**
+- A run that would have finished between 162 s and 180 s is now cut at 162 s, and the zones it had not finished keep
+  their last-good records for that build. When ENTSO-E answers normally the loader takes well under that: two
+  refreshes after the incident took 38.8 s and 17.5 s.
+- A stall or total outage now returns instead of throwing, so `withFallback` writes the snapshot in the build's own
+  checkout with the fallback records and the markers (stamped `lastSuccessAt` now, though never fetched). On Vercel
+  that checkout is discarded. On a machine that keeps it, `data/snapshots/last-good/entsoe.json` is rewritten and a
+  later fallback reads those markers as last-good. A fast total outage already did this from 20 Sep, when the
+  `allowEmpty` zones landed (#1053); a slow one is what changed.
+
+**Follow-up.**
+- A zone with no last-good record that is not `allowEmpty` still fails the loader, and `withFallback` then serves the
+  snapshot whole: the incident again, and the case (b) would cover. None exists today, since the 54 zones in the snapshot
+  are exactly the non-`allowEmpty` ones, and a test now fails if one is added without a record. A new zone needs
+  `allowEmpty` or a last-good record, which is a data PR (read "Gate hazard confirmed" below first).
+- `src/data/norway.json.ts` fell back for NO3 in the same run and could take the budget the same way.
+- The stop aborts through `abortInflightFetches`, the latch `withFallback` uses at its own deadline. It stays tripped
+  for the rest of the process, which is safe because Observable and the prefetch run each loader as its own process. A
+  scoped `AbortSignal` option on `fetchText` would let a loader stop without it.
+- The token redaction is in `src/lib/entsoe.ts` only. `withRetries` (`src/lib/fetch.ts`) puts the whole request URL in
+  every error message, so `norway.json.ts`, `germany-curtailment.json.ts` and `cyprus.json.ts`, which build the same
+  `securityToken` URLs, still log it where their failures are printed; redacting in `withRetries` would cover all.
+- The snapshot is still from 17 Jun (the step 3b entry's follow-up); refreshing it is a data PR of its own.
+- `bosnia-and-herzegovina` and `montenegro` (no technologies) are stamped `live` on every build from a stored record,
+  whatever ENTSO-E does. Unchanged here.
+
+## `LOADER_FETCH_TIMEOUT_MS=0` means no per-request timeout (2026-09-30)
+
+**#1168**, from `claude/fetch-timeout-zero`: the follow-up that #1155 noted. #1155 made
+0 mean "off" for `LOADER_DEADLINE_MS` and `LOADER_HARD_CAP_MS`, but `src/lib/fetch.ts`
+still took `LOADER_FETCH_TIMEOUT_MS=0` as a 0 ms timeout, and `setTimeout(abort, 0)`
+stopped every request on the default timeout before it could answer, so the loaders that
+rely on it would have fallen back to their last-good snapshots (a loader that passes its
+own `timeoutMs` was unaffected). It now reads the knob with `msFromEnv`
+(`src/lib/loader-deadline.ts`), as the other two are read: 0 means no per-request
+timeout (a request then runs until `withFallback`'s deadline stops it, if that is on), a blank value
+means unset, and a value past setTimeout's limit is cut to it. A call's own
+`timeoutMs: 0` means none too. `tests/fetch.test.ts` (new, 5 tests) runs requests against
+a local server that answers after 150 ms; four fail against the old code.
+
+**Not changed.** Nothing sets the knob: Vercel has no `LOADER_*` variable, so builds keep
+15 s per request (the prefetch's default) and the library keeps 30 s.
+`LOADER_FETCH_RETRIES` keeps its own reading, where 0 means a single attempt.
+`fetchHttp1Bytes` (the Japan loaders) takes its timeout from its caller. No data file,
+`regions.ts` entry or tier.
+
+## Seventeen statics anchors dropped: each claimed at least the country's generation of its fuel (2026-09-29)
+
+**#1154**, from `claude/statics-anchor-sweep`.
+Approved by the owner on 29 Sep. **The dataset's totals change**: modelled
+waste falls by 4.45 TWh/yr and 17 fewer regions show a waste figure. No tier
+moves; the tier counts match the golden file.
+
+**The test.** A statics anchor says that much energy of one fuel was curtailed
+each year. `scripts/lib/statics-anchor-check.ts` compares it with the
+country's recorded generation of that fuel, from `data/national-generation.json`
+(Our World in Data, from Ember and the Energy Institute; fetched 29 Sep by
+`scripts/research/national-generation.ts`). Curtailment equal to generation
+means half the fuel's potential output was thrown away, which no national grid
+reports. The claim is the region's public `kind`, and regions in one country
+that claim the same fuel are summed. Only recorded, non-zero generation
+counts. The reference rounds to 0.01 TWh, so an anchor must reach generation
+plus 0.005 TWh. A recorded zero is untestable: Djibouti, East Timor and Haiti
+list MW of PV yet record no solar, so for small grids zero usually means "not
+reported". A zero after non-zero years is a gap: Lesotho's hydro reads 0.39 to
+0.54 TWh for 2016–2022, then 0.
+
+**Dropped: 17 regions, 4.45 TWh/yr,** each shown as its anchor over recorded
+2024 generation: venezuela (wind, 25×), libya (20×), colombia-wind (10×),
+botswana, cote-divoire and south-sudan (5×), nigeria (3.8×), nicaragua (3.3×),
+laos (2.2×), guatemala with guatemala-siepac (1.8× together), eswatini,
+myanmar and niger (1.7×), benin, sudan and ghana (1.2×). All but
+colombia-wind cited an IRENA or Ember country page, which reports capacity and
+generation, not curtailment. Botswana's own note put measured curtailment near
+zero and held 0.05 TWh/yr "for coverage completeness". colombia-wind was an
+estimated split added on top of XM's measured system-wide spill, which stays
+on the `colombia` region.
+
+**How.** The 17 move from `src/data/statics.json.ts` (a pointer line each) to
+`src/data/tso-grid-markers.json.ts`, the 2026-09-20 mechanism for grids with
+no collected series: `wasteStatus: "unpublished"`, no waste pillar, tier
+unchanged. Each `regions.ts` source, and the served marker note, which is the
+same text, says so and records the dropped anchor and why. The 17 validation
+docs' Source lines follow, and the TSO-grid roster CSV is regenerated (17 rows
+now `tso-grid-markers`). `docs/known-limitations.md` §16 gets a dated note.
+
+**Region pages for markers.** The region page took its tier gloss, ±40%
+envelope and provenance gloss from `regions.ts` alone, so every grid
+marker's page said "a typical-shape profile is scaled to … an anchor" above a
+label saying its waste is unpublished. For the 17 that was true before this
+change and false after it; the 25 markers from 2026-09-20 already had it.
+`src/region/[id].md.js` now says there is no waste figure and no envelope for
+all 42. The marker list moved to `src/lib/tso-grid-markers.ts`, data only, so
+the page loader (plain Node) can read it; the loader and the roster import it
+from there. `tests/region-pages.test.ts` renders ghana, kauai and algeria.
+
+**Kept from the approved list of 37 (20 regions).** The approved list was a
+first pass, and a closer look kept these:
+- central-african-republic and liberia (hydro) and equatorial-guinea (mixed)
+  pass under their public kind; their served profiles are solar-shaped.
+- lesotho's recorded zero is a gap in the series.
+- 12 regions with recorded zero solar are untestable: chad, comoros, djibouti,
+  dominica, east-timor, gambia, grenada, guinea-bissau, haiti, sao-tome,
+  st-vincent, turkmenistan.
+- brunei, mauritania, syria and vanuatu are within rounding of their
+  generation.
+
+**Gate.** `tests/data/statics-anchor-vs-generation.test.ts` fails if any
+statics anchor is contradicted, if the untestable regions differ from an
+explicit list (the 12 above plus 8 microstates with no data), if a dropped
+region is back in statics or its served note differs from its label, or if any
+marker's label does not say unpublished. It fails on the old statics
+(checked). `tests/data/statics.test.ts` counts fall from 127 to 110 (default)
+and 131 to 114 (research pool). The Africa and Latin-America Pattern-D suites
+skip the moved ids, pin which moved, and their aggregates fall from about 5.37
+to 4.42 and from 1.65 to 1.05 TWh/yr.
+
+**Follow-ups (need the owner).**
+- The 20 kept regions above need a look by hand. Another 23 imply 25–50%
+  curtailment (Iceland's 5.3 TWh/yr hydro spill is most of that), and most
+  remaining anchors cite IRENA pages with no curtailment figure: a provenance
+  question, not settled here.
+- central-african-republic, liberia and equatorial-guinea claim hydro or mixed
+  waste with solar-shaped profiles.
+- `STATIC_PROFILE_KIND` still lists Nigeria and other solar regions as `mixed`
+  (no tier effect).
+- Grids that collect generation but publish no waste (EIA balancing areas
+  such as `tva-solar`, ENTSO unpublished zones, `dominican-republic`, PREPA)
+  still show the modelled tier gloss and ±40% envelope on their region page.
+  Their status sits in several loaders' configs, so the page needs one source
+  of served waste status.
+
+## Nigeria's region page described an unwired probe, not its data (2026-09-29)
+
+**#1151**, from `claude/nigeria-source-string`. **Nothing the dataset computes
+changes**: Nigeria stays `estimated` (T3-modelled) and is still served from
+`statics.json` at 0.5 TWh/yr.
+
+**What was wrong.** `/region/nigeria` prints the `source` and `sourceUrl` of
+its `regions.ts` entry. Since **#267** (2026-06-21) they described
+`src/data/nigeria.json.ts`, a scrape of Niggrid's generation profile × 0.15%
+with a "~0.05 TWh/yr" anchor, and linked niggrid.org. No page has ever read
+that loader's file. Production serves Nigeria from `statics.json.ts`: a typical
+solar profile scaled to 0.5 TWh/yr, ten times the figure the page quoted
+(production on 29 Sep: 0.041 TWh over 30 days, T3-modelled,
+`modelled-fallback`). The tier label was right; the prose and the link were
+not.
+
+**Fix.**
+- `src/lib/regions.ts`: the `nigeria` source now gives `statics.json`'s
+  citation (Ember Nigeria 2024 + TCN Grid Stability Report 2024), its typical
+  solar profile and its 0.5 TWh/yr anchor, then says the anchor is unverified:
+  about four times Nigeria's total 2024 solar generation of 0.13 TWh (Our World
+  in Data, from Ember and the Energy Institute). The Rajasthan label names its
+  conflicting figure the same way (#1011). `sourceUrl` is
+  `https://www.tcn.org.ng/` again, its value before #267.
+- `docs/validation/nigeria.md`: the Source and Source URL lines match
+  `regions.ts`, checked against the generator's own parse, and the Loader
+  lines name `statics.json.ts`.
+- `tests/data/africa-pattern-d.test.ts`: Nigeria's source must quote the annual
+  figure `statics.json` serves and cite what it cites. The test fails on the
+  old string.
+- `src/data/nigeria.json.ts`: a comment only, marking it an unwired probe
+  whose 0.05 TWh/yr is not the dataset's figure. (Deleted since: see below.)
+
+**Nothing else quotes the old text.** No golden file, gate, methodology page,
+paper or dataset file carries the old string or the 0.05 figure;
+`ci:docs-drift` compares only a doc's Tier line. Four other statics regions
+quote a TWh/yr figure in `regions.ts`, and all four match what is served.
+
+**`nigeria.json.ts`: deleted, with the owner's approval (29 Sep).** #1151
+marked it as an unwired probe. **#1152**, from `claude/nigeria-probe-delete`,
+deleted it, with `tests/data/nigeria.test.ts`, which only exercised its
+fallback, and `scripts/backfill/nigeria/backfill_nigeria.py`, which scraped
+the same page. No script, workflow or CI step ran it, and it left no output
+in the repo. Why:
+- It never served data: no page or registry row read `data/nigeria.json`
+  after #267 added it.
+- Its scrape failed. niggrid served the form, but answered the probe's
+  postback with its "Oops - Site Error" page, which has no
+  `__EVENTVALIDATION`: hence "Niggrid page missing required ASP.NET hidden
+  fields" (one date reproduced from a local checkout, 29 Sep).
+- A working scrape would not have made it usable. It multiplied total grid
+  generation (gas, steam and hydro; the file's own comment called the shape
+  "thermal/hydro baseload rather than solar-diurnal") by 0.15%, so its
+  "solar curtailment" would have run all night. Wiring it would also have
+  cut Nigeria's total tenfold, a headline change.
+- It is how the wrong text reached the page, and while it existed a full run
+  of `build_region_docs.py` would have linked it as Nigeria's loader. The
+  validation doc's Loader lines now read as that generator writes them for
+  a region with no loader of its own.
+
+The prefetch now finds 142 loaders and skips only ercot-native, as
+`tests/referenced-loaders.test.ts` now expects. Git keeps all three files.
+niggrid's Generation Profile page is meant to give hourly generation by
+plant, though no one here has seen that table: the one postback tried on
+29 Sep got the site-error page. A Nigeria generation grid (waste
+unpublished, as the TSO-grid work did for the Dominican Republic) would be a
+new loader built on that page once it answers, not a revival of this one.
+
+**Follow-ups (need the owner).**
+- **The 0.5 TWh/yr anchor looks too high.** It is about four times Nigeria's
+  total solar generation in 2024, 0.13 TWh ([Our World in Data](https://ourworldindata.org/grapher/electricity-prod-source-stacked?country=~NGA),
+  from Ember and the Energy Institute). It
+  came from the 2026-04-30 "Wave-5" commit `7fd8250e`, which gives no
+  derivation, and a search (29 Sep) found no "TCN Grid Stability Report 2024".
+  Re-anchoring changes the dataset's totals, so it needs sign-off; the number
+  is unchanged here. The page's label now says the anchor is unverified;
+  `statics.json`'s `sourceNote`, which the served data carries, does not. (Resolved 29 Sep in **#1154**: the owner
+  approved dropping it with sixteen others; see the statics-anchor entry above.)
+- `STATIC_PROFILE_KIND` in `scripts/lib/tier-resolution.ts` lists Nigeria and
+  ten other solar-shaped statics regions as `mixed`. Both kinds resolve to
+  T3-modelled, so no tier moves, but the table is stale.
+
+## The loader prefetch no longer fails or stalls a build on its own errors (2026-09-29)
+
+**#1155**, from `claude/prefetch-loader-errors`, stacked on #1150, which edits the same
+script and merged first. It fixes the two build bugs that the review of #1150 recorded under the
+ERCOT-native entry's follow-ups, and a third found while fixing them. All three were in
+`scripts/build/prefetch-loaders.ts`, which `prebuild` runs before every Vercel build.
+When nothing goes wrong, the build behaves as before.
+
+**What was wrong.** The script's header says that it never fails the build on its own.
+Running it against scratch projects on Node 24.20 and 26.8 showed four problems:
+- **Errors ended the build.** A missing tsx, a cache directory that could not be created
+  (`ENOTDIR`, `EACCES`), or a cache file whose name a directory holds (`EISDIR`) each
+  ended the prefetch with exit code 1, which fails `prebuild`. `runLoader` listened for
+  no `'error'` event on the tsx process or the output file, and nothing caught a failed
+  `mkdir`, `stat` or `rename`. (Since #1150 empties the cache first, a file in the cache
+  path stops the prefetch at that step instead, with exit code 0, before any loader runs.)
+- **Or an error vanished.** When `mkdir` had just created the cache directory, Node
+  dropped that loader's missing-tsx error instead of throwing it, and the loader never
+  settled. With a single loader the prefetch waited out the 300 s hard cap and then
+  exited 0 without its summary; with more, as in a real build, the other loaders' errors
+  ended it with exit code 1 first.
+- **The hard cap stopped nothing.** It sent SIGKILL to tsx, but tsx runs each loader in a
+  second node process, which survived and held the output pipes open. The prefetch
+  waited until the loader exited on its own, then threw its output away.
+- **`LOADER_DEADLINE_MS=0` meant two things.** `src/lib/resilient.ts` documents 0 as no
+  deadline, and the loaders read it that way. The prefetch rejected 0 and logged
+  "deadline 180s", and a loader still running at 300 s had its output thrown away when
+  it finished, so Framework ran it a second time, alone, with no deadline.
+
+**What changed.**
+- `scripts/lib/prefetch-runner.ts` (new) runs each loader. An error at any step ends that
+  loader as `failed`, with the reason in the build log, and Framework runs it itself.
+  On Linux and macOS each loader runs in a process group of its own. The hard cap
+  sends SIGTERM to the group; if the run has not finished 5 s later, it sends SIGKILL
+  and stops waiting. The
+  terminal's Ctrl-C no longer reaches the groups, so a prefetch that is itself stopped
+  (SIGINT, SIGTERM or SIGHUP) kills them first.
+- The cap frees the prefetch, not the build: `observable build` reruns a loader that the
+  cap stopped, with no cap of its own, so a loader that stalls every time still holds
+  the build until Vercel's 45-minute limit.
+- The prefetch reads `LOADER_DEADLINE_MS` with the loaders' own parser, now in
+  `src/lib/loader-deadline.ts` (moved from `resilient.ts`), and passes the loaders the
+  value that it logs. With 0 it logs "no deadline, no hard cap", because stopping a
+  loader then would only make Framework rerun it with no deadline. The parser now reads
+  a blank value as unset (the loaders read it as no deadline) and cuts values past
+  setTimeout's limit, which made the timer fire after 1 ms, to that limit.
+  `LOADER_HARD_CAP_MS` goes through it too, so 0 turns the cap off.
+- `withFallback` writes its last-good snapshot to a temporary file and renames it, so a
+  loader stopped mid-write cannot leave a truncated snapshot for the next fallback.
+- `tests/prefetch-runner.test.ts` (new, 45 tests) covers each failure with real child
+  processes and injected faults, the hard cap through real tsx, the knobs, and the
+  script run against scratch projects; three of its script tests fail against the old
+  script. `tests/resilient.test.ts` gains two tests that hold `withFallback` to the
+  shared parser.
+
+**Production.** Vercel sets no `LOADER_*` variable: the project's environment variable
+names, listed through the Vercel connector on 29 Sep, include none. (A first attempt
+passed the team as well as the project and was refused, which this entry first reported
+as the connector being unable to list them.) So production keeps the 180 s deadline and
+the 300 s hard cap. The first two builds with this change, data-refresh runs 36630256115
+(this merge) and 36631263995 (#1154's), went live with 197 of 530 region records live,
+as the two builds before them did. The second logged `141 loaders, 8 at a time, deadline
+180s, hard cap 300s`. In both, the Vercel CLI's log stream stopped before the prefetch's
+summary line, so the Actions logs do not show how many loaders it cached.
+
+**Not changed.** No data file, `regions.ts` entry or tier. `withFallback`'s deadline
+handling is unchanged except for blank and out-of-range values.
+
+## ERCOT-native's "HTTP 400" is a disabled probe, not lost data (2026-09-29)
+
+**#1150**, from `claude/ercot-native-400`. Both step 3 trial builds (runs 36501200671 and
+36504999233) logged `[ercot-native] live fetch failed after 1.1s: HTTP 400 Bad
+Request` (1.0s in the second), then fell back to the last-good snapshot. That
+loader, `src/data/ercot-native.json.ts`, is the v0.5 probe of ERCOT's own API.
+It has been disabled since April, and no page has referenced its file since
+**#84** (2026-05-10). The dashboard's ERCOT data never came from it.
+
+- **Production's ERCOT is live.** The dashboard's four ERCOT regions come from
+  `ercot.json`, the EIA-based loader, which uses the EIA key, not the ERCOT
+  credentials. In production's build of `e22a0d3a` (01:06 UTC, 29 Sep) all four
+  are `live`, with `lastSuccessAt` 2026-09-29T01:06:38Z.
+- **Production has no ercot-native file.** Its homepage lists 142 data files,
+  none of them ercot-native, and `regions.ts` has no `ercot-native-*` region.
+  The committed last-good snapshot is a seed copied from the EIA proxy
+  (`lastSuccessAt` 2026-04-25). These regions have never been live anywhere.
+- **Why it ran.** `observable build` runs a loader only when a page references
+  its file. The loader prefetch from **#967** (2026-09-10) ran every file in
+  `src/data/`, so every production build since then ran this probe. Each run
+  made three authenticated ERCOT calls for a file the build then dropped. The
+  prefetch also ran `nigeria.json.ts`, added in #267 and never wired (Nigeria's
+  region comes from `statics.json`); in run 36501200671's full build log it
+  failed 30 niggrid fetches.
+
+**Credentials: nothing to renew.** Both logs show `[ercot-native] token
+acquired` before the failure, so the password login with `ERCOT_USERNAME` and
+`ERCOT_PASSWORD` works. The product lookup, which sends `ERCOT_API_KEY`, passed
+too: its failure would read `product lookup HTTP …`. Vercel lists all three as
+production-only sensitive variables, created on 2026-04-23 and not changed
+since, so the April password was still accepted on 29 Sep. After this fix a
+build reads them only if the prefetch falls back to running every loader, so
+nothing will notice if they expire.
+
+**Owner action (Simon).** This changes the "rotate ERCOT ×3" item under "Still
+outstanding", but rotation stays the fix: deleting a copy does not invalidate
+the password, and its plaintext copy in `.env.local` went missing on an unknown
+date (see the 2026-09-10 entry). Change the password and regenerate the key at
+`apiexplorer.ercot.com`, or close the account if native ERCOT is not coming
+back; in that case also delete `ERCOT_USERNAME`, `ERCOT_PASSWORD` and
+`ERCOT_API_KEY` from the Vercel project's Production environment variables.
+`docs/ops/secret-rotation-runbook.md` says where they live and how to check a
+new password without running the probe.
+
+**The 400.** ERCOT rejects the third request, the report data call:
+`<artifact endpoint>?postDatetimeFrom=…&postDatetimeTo=…&size=5000` with
+`toISOString()` timestamps. Vercel sets no `ERCOT_PRODUCT_ID`, so the product
+was the default, NP6-915-CD, and its live lookup returned that endpoint.
+ERCOT's published spec (`ercot/api-specs`, February 2024) does not list
+NP6-915-CD, has no `postDatetimeFrom` parameter (report endpoints filter on
+`postedDatetimeFrom`), and gives every timestamp filter as
+`yyyy-MM-ddTH24:mm:ss`, without milliseconds or `Z`. Which part ERCOT rejects
+is unconfirmed: the loader writes ERCOT's reply only to a diagnostics file on
+the build machine, and from a local checkout here `api.ercot.com` answers with
+Incapsula's 403, with or without credentials. In April the same call returned
+404. Details are in `docs/data-source-log.md`.
+
+**Fix.** `scripts/build/prefetch-loaders.ts` now runs only the loaders the site
+reads, as `observable build` does: 141 of 143, the same 141 whose files
+production serves. `scripts/lib/referenced-loaders.ts` finds them by searching
+`observablehq.config.ts` and the pages and modules under `src/` for
+`data/<file>`, tested in `tests/referenced-loaders.test.ts`. If the search
+fails, or finds none of the loaders, the prefetch runs them all, as before. It
+empties Framework's data cache first, so a loader it skips, or one that fails,
+never leaves an older output for `observable build` to ship. ercot-native and
+nigeria stop running, and the build log names them as skipped.
+
+**Not changed.** No data file, `regions.ts` entry or tier. The probe stays in
+the repo with its request as it is; no page reads its file, so builds skip it
+unless the prefetch falls back to running every loader. The April decision was to keep it off "until the US-runner probe
+identifies a direct report with timestamped curtailment or enough SCED fields
+to defensibly derive it" (`docs/data-source-log.md`). As written, a working
+probe would stamp `live` an unvalidated HDL − GEN series, split 66/34
+west/east by a fixed placeholder.
+
+**Corrections to older entries**, each marked in place: the step 3 trial
+entry (the ERCOT feed its comparison checks is the EIA-keyed `data/ercot`,
+four regions; the ERCOT credentials feed only ercot-native, which it never
+sees), the "Build time" entry (the prefetch
+also ran loaders no page reads), the 2026-09-06 curtailment-share entry
+(ERCOT-native is not a source that measures curtailment), and the 2026-09-10
+secret-rotation entry (five of the six variables it says remain in Vercel do;
+and the ERCOT regions never depended on the ERCOT credentials).
+`scripts/lib/compare-deployments.ts`'s comment is corrected too.
+
+**Follow-ups.**
+- The ercot-native last-good snapshot labels its EIA-proxy seed `T1-live-TSO`
+  and `official-lead`, and `data/historical/version-history.csv` carries it as
+  two rows in every release since 1.0.0. They are not dashboard regions. The
+  next release should decide whether to keep them; past releases' rows stay.
+- The review of this fix found two older prefetch bugs, left for their own PR:
+  `runLoader` can end the process on a spawn, disk or rename error, failing the
+  build its header says it never fails, and `LOADER_DEADLINE_MS=0` turns off
+  the children's deadline while the prefetch still logs 180 s. (2026-09-29: both
+  fixed in **#1155**, with a third: the hard cap never stopped a stuck loader.
+  See the loader prefetch entry above.) It also found
+  `scripts/build/vercel-ignore.sh`'s `':(exclude)*.md'` skipping page-only
+  pushes, which **#1153** has since fixed.
+- `/region/nigeria` shows `regions.ts`'s source string, which describes the
+  unwired Niggrid loader and a "~0.05 TWh/yr" anchor. The served data is
+  `statics.json`'s, anchored at 0.5 TWh/yr. The tier label (T3-modelled) is
+  right; the source prose is not. (Fixed 29 Sep in **#1151**: see the Nigeria
+  entry above.)
+
+## Step 3b: production deploys through the Vercel CLI (2026-09-29)
+
+**#1149**, from `claude/refresh-deploys-through-cli`: step 3b of the
+refresh-pipeline plan, which Simon approved on 29 Sep once the trial passed
+(the step 3 trial entry below). He approved the `vercel.json` change
+separately and explicitly.
+
+**What changed.**
+- **The refresh deploys.** `.github/workflows/data-refresh.yml` runs `vercel deploy --prod --force --with-cache
+  --logs` (CLI 60.1.3, `VERCEL_TOKEN` from the environment) instead of calling the deploy hook. `--force` makes an
+  unchanged `main` rebuild, where Vercel could otherwise hand back the previous deployment of the same files. The
+  build still runs on Vercel with the production keys. The CLI waits for it and returns its result and log to the run,
+  so the job no longer infers a build from a 201. The push-window wait is gone: a CLI deployment carries no `.git`,
+  so the ignore step cannot skip it.
+- **Only `main`, and only its head.** The job runs only for `main`, so a run started by hand on a branch cannot put
+  it live. It checks out `main`'s head when it starts, so a re-run of an old run cannot put an older `main` back.
+- **Merges deploy through the same workflow.** It now also runs on pushes to `main`, and leaves for the next refresh
+  the kinds of push the ignore step skipped as #1153 left it: ones that change only `data/historical` (the
+  automation's history captures and relay CSVs, and other build inputs there), `data/snapshots`, `docs/` other than
+  `docs/validation`, or root Markdown. Deploying on the automation's commits would loop; a test checks every path
+  `history-append.yml` and the relay pull commit. `docs/validation`, which the region pages embed, and the pages
+  under `src/` deploy. One difference: the ignore step compared a push with the last successful deployment, so a
+  docs-only push after a failed deploy built the failed change as well; GitHub's filter sees only the push, so that
+  change now waits for the next refresh.
+- **Vercel's own git builds for `main` are off.** `vercel.json` sets `git.deploymentEnabled.main: false`.
+  Pull-request previews still build on Vercel, and the ignore step still runs for them until step 4.
+- **The wait.** `check-deploy-freshness.ts wait` accepts only a build made after the deploy started. The hook era's
+  15-minute grace is gone.
+- **The alarm.** Healthchecks `/fail` messages name the deploy step, and the build stamp takes its commit and branch
+  from `--build-env` when Vercel sets no `VERCEL_GIT_*` variables.
+
+**What it means.**
+- `VERCEL_TOKEN` is now the one credential every production deploy depends on, merges included. When it expires or
+  is revoked, the deploy step fails and Healthchecks emails.
+- `history-append.yml` still follows every green refresh, so a merge's deploy is captured too, one row per region
+  per build.
+- **Rollback:** revert #1149. The deploy hook and `VERCEL_DEPLOY_HOOK` stay until step 4.
+
+**First day (29 Sep, 04:09 to 18:08 UTC).** Six refreshes deployed through the CLI. Every job was green and every
+run sent Healthchecks a success ping.
+- **04:09, the merge's own push**
+  ([run 36520368521](https://github.com/honeybeesquad/every-last-joule-dashboard/actions/runs/36520368521)): the
+  deploy took 7 min, and production served the new build on the first poll.
+- **08:04, 13:02 and 17:03, `workflow_dispatch` runs** a few minutes past the hour, each at the first hourly check
+  after production's build passed 3 h 15 min old. That matches the abed refresh clock's timer and rule, and 13:02 UTC
+  is 2 am in New Zealand, so the clock very likely runs. The run records do not name it (all three are Simon's
+  account); the clock's own Healthchecks check logs each dispatch and would confirm it.
+- **09:44 and 18:02, GitHub's scheduler:** two runs for the four 3-hourly slots in that window (06:15, 09:15, 12:15,
+  15:15), each late.
+- **Deploy steps** took 4.5 to 8 min.
+- **No loop:** six history captures (#1156 to #1161) landed on `main`, and none started a refresh.
+- **Live region records,** in run order: 197 of 530, 193, 197, 141 of 512, 177, 197, all above the floor of 100.
+  Three dips, each gone by the next build (the build logs and the history parquet):
+  - **08:04:** four regions `degraded`, AZPS and BPA solar and wind. The EIA API answered BPA's loader with HTTP
+    504 and timed out AZPS's, so both fell back to their last-good snapshots.
+  - **13:02:** ENTSO-E was slow, and the pipeline's fallback decided what production served. Its requests timed out
+    zone by zone, then the loader (`src/data/entsoe.json.ts`) hit `withFallback`'s 180 s deadline and fell back to
+    `data/snapshots/last-good/entsoe.json`. That snapshot holds 54 of the loader's 72 zones, every one last
+    successful on 17 Jun. So those 54 served June data, marked `degraded`, and the 18 zones it lacks (Albania,
+    Austria, Kosovo, Latvia, Lithuania, Malta, Sweden SE1 and SE2, and Bosnia's and Montenegro's solar and wind)
+    left the build altogether; they had been `cached`, not live. Norway NO3's two regions also fell back
+    (`src/data/norway.json.ts`). Live fell by 56.
+  - **17:03:** nine US loaders that read the EIA API gave up after 31 s and fell back to their last-good snapshots,
+    so 20 regions (AZPS, BPA, ERCOT east and west, IPCO, ISO-NE rest, MISO, NYISO rest, PACE, PACW) stayed in the
+    build, marked `degraded`.
+  - **Follow-up:** the last-good snapshots these fallbacks read are months old (ENTSO-E's from 17 Jun, Norway's
+    from 13 May, the US loaders' from 25 Apr to 16 Jun), and no automation commits them; a build writes fresh ones
+    only into its own checkout, which Vercel discards. Refreshing them is a data PR of its own: most are also
+    `ci:magnitude-golden`'s input, so read "Gate hazard confirmed" below first. Separately, the ENTSO-E loader now
+    stops before that deadline and keeps the zones it fetched and the 18 it lacks (**#1173**, the entry above).
+- **Vercel made no git build of `main`.** Its deployment list, read through the Vercel connector, holds one
+  production deployment per refresh, each created within seconds of its deploy step starting, with the commit it
+  deployed. None was created by the merge push or the six history pushes themselves, and the history branch's
+  previews were all cancelled. So `git.deploymentEnabled.main: false` works.
+- **Not checked from here:** the build stamp's `commit` field (this sandbox's proxy blocks everylastjoule.com).
+
+**Next.** Step 4: remove the deploy hook and `VERCEL_DEPLOY_HOOK`, `vercel-ignore.sh` and the `ignoreCommand`, and
+move `deploy-freshness.yml` to daily. The runbook's next owner step (`docs/ops/abed-refresh-clock.md`, step 6) is for
+Simon, in Healthchecks: once the clock has run for a day (from about 08:00 UTC on 30 Sep, going by its first matching
+dispatch), bring the production check's grace down from 9 h to 3 h.
+
+## The ignore step builds site pages and validation records (2026-09-29)
+
+**#1153**, from `claude/vercel-ignore-site-pages`. It supersedes **#1106**
+(24 Sep), which fixed the same bug but was never reviewed and went stale
+when #1134 rewrote the script; it is closed unmerged.
+
+**The bug.** `scripts/build/vercel-ignore.sh` (#967) skips a fresh push when
+every change is on its exclusion list. `':(exclude)*.md'` matched at any
+depth, because `*` in a git pathspec also matches `/`, so a push that changed
+only a page under `src/` was skipped. That happened once: #979
+(`src/methodology.md`, 11 Sep) was "Canceled by Ignored Build Step", and its
+page went live 16 minutes later only because #983's push build carried #981's
+code change. `':(exclude)docs'` also covered `docs/validation/`, which the build reads:
+`src/region/[id].md.js` embeds each record in `/region/<id>`, and
+`src/sitemap.xml.js` reads it for `lastmod`. The code review of #1150 found
+the `*.md` half again.
+
+**The fix.** The exclusion is now `':(exclude,glob)*.md'`, which covers only
+Markdown at the repo root. A separate check builds whenever `docs/validation`
+changed. Markdown elsewhere now builds too (`dataset/`, `scripts/`,
+`.githooks/`, `data/source-verified-floor/`): no build code reads it, so the
+cost is an occasional extra build. Unchanged: deploy hooks and redeploys,
+automation commits (`data/historical/*`) and the shallow-clone fallback.
+`tests/vercel-ignore.test.ts` goes from 10 to 28 tests, of which 9 fail
+against the old script. Comments and the plan only: the script's trade-off
+note now says that `data/historical` holds build inputs too (loader CSVs, and
+`history-trends.json` for `/history`), so a push that changes only those
+still waits for the next scheduled build. Step 4 of the refresh-pipeline plan
+no longer suggests the old pathspec, or a `HEAD^ HEAD` diff, for previews.
+
+**Replay.** Each of the 172 first-parent `main` commits since #967, run as a
+fresh push against its parent: the old script skips 131, the new one 129.
+#979 now builds, and so does #982 (`dataset/README.md`). No push that changed
+only `docs/validation` has landed since #967.
+
+**Follow-up for #1149.** It turns off git builds for `main`, so this step
+will run only for previews until step 4 removes it. Its new `push` trigger
+ignores `docs/**`, so after it merges a push that changes only
+`docs/validation` will wait for the next scheduled refresh. *Resolved in
+#1149 before it merged:* its trigger is an ordered `paths` list that takes
+`docs/validation/**` back, so such a push deploys.
+
+**Not changed.** No data file, `regions.ts` entry, tier, golden file,
+workflow or `vercel.json`.
+
+## Step 3 trial: build production on Vercel through the CLI (2026-09-28)
+
+**#1145**, from `claude/vercel-cli-trial`: the trial half of step 3 of the
+refresh-pipeline plan. **Nothing changes in production**; the new workflow
+runs only by hand and needs repo secret `VERCEL_TOKEN`.
+
+**Why step 3 changed.** The plan had the refresh build the site in GitHub
+Actions (`vercel pull`, `vercel build`, `vercel deploy --prebuilt`). Every
+production API key on Vercel (EIA, ENTSO-E, Netztransparenz, ERCOT) is a
+"sensitive" variable, which Vercel never hands back, so that build would run
+without keys, fall back, and serve mostly cached data. Instead, Actions starts
+the build on Vercel with the CLI (`vercel deploy --prod --logs`): the keys stay
+where they are, the build runs on the same machines as today, and the build
+log and the result come back to the Actions run. The deploy hook and the
+ignore-step guessing can still go.
+
+**What is here.** `.github/workflows/vercel-cli-trial.yml` (manual only)
+builds production on Vercel with `--skip-domain`, so nothing goes live, then
+`scripts/ci/compare-trial-deploy.ts` compares the trial's data with
+production's region by region (the trial read through `vercel curl`, which
+passes Vercel Authentication), within a 15-minute budget; production is read
+last, and again if a refresh went live mid-read. It fails when the
+trial has under 95% of production's live records, under 100 in all, or no
+live region in a keyed feed that production has live: the 22 loaders that
+read an EIA, ENTSO-E, Netztransparenz or ERCOT key, found in the source.
+ERCOT is only two regions, so its loss would barely move the total.
+(Correction, 29 Sep: the ERCOT feed this test checks is `data/ercot`, keyed by
+the EIA key and served as four regions. The ERCOT credentials feed only
+ercot-native, which production never serves, so this test cannot check them;
+see the ERCOT-native entry above.) Logic in
+`scripts/lib/compare-deployments.ts`, tested in
+`tests/compare-deployments.test.ts`.
+
+**First runs (29 Sep).** The first run stopped at once: `VERCEL_TOKEN` did
+not exist yet. The second
+([run 36501200671](https://github.com/honeybeesquad/every-last-joule-dashboard/actions/runs/36501200671))
+built production on Vercel through the CLI: the deployment existed 11 s
+after the CLI started, the build took 6 min 14 s, and it was ready in 7 min. Its head was a relay-pull commit 14 minutes old, which
+the ignore step skips on a push; this build was not skipped, and the log
+shows no ignore-step output. A CLI deployment carries no `.git` (Vercel
+downloaded the 1,875 uploaded files rather than cloning), so if the step runs
+it cannot read the commit time, and it builds. `--skip-domain` kept the trial
+off everylastjoule.com, but Vercel pointed the project's team-scoped
+`*.vercel.app` address at it, which sits behind Vercel Authentication like
+every generated address. The comparison then failed before it read anything:
+`vercel curl` hands every flag it does not know to curl itself, the token
+flag too (CLI 60.1.3). **#1147** takes the token from `VERCEL_TOKEN` in the
+environment, which the CLI reads, and pins the arguments in a test. Reading
+the trial through `vercel curl` uses the project's Protection Bypass for
+Automation secret, and creates one if the project has none.
+
+**Result (29 Sep).** With #1147 merged, the trial passed
+([run 36504999233](https://github.com/honeybeesquad/every-last-joule-dashboard/actions/runs/36504999233)):
+197 live records in the trial and in production (a git build from the same
+hour), each of the 19 keyed feeds live in production live in the trial, and
+no region different. `vercel curl` read every file in 89 s. Step 3b followed
+(**#1149**, the step 3b entry above).
+
+**Not changed.** No data file, `regions.ts` entry or tier, and no existing
+workflow.
+
+## A refresh clock on abed (2026-09-28)
+
+**#1143**, merged 2026-09-28 from `claude/refresh-clock-abed`: step 2 of the refresh-pipeline plan (see the
+entry below). **Nothing runs until Simon installs it on `abed`**
+(`docs/ops/abed-refresh-clock.md`). *29 Sep:* three refreshes dispatched at
+08:04, 13:02 and 17:03 UTC match its timer and rule, so it appears to be
+installed; its own Healthchecks check would confirm it (see the step 3b entry).
+
+**What it is.** `scripts/ops/refresh_if_stale.py`, run hourly by a systemd
+timer on `abed` (`scripts/ops/systemd/elj-refresh-clock.{service,timer}`).
+Each run reads production's build stamp; if it is more than 3 h 15 min old
+and no `data-refresh.yml` run is queued or in progress, it dispatches one on
+`main`, which starts within seconds where GitHub's cron runs 1 to 3 h late
+or not at all. It pings its own Healthchecks.io check, not the production
+one, so the alarm never depends on `abed`: success when it did its job,
+`/fail` when it could not read production, could not dispatch, or found a
+refresh whose state has not changed for 3 h (stuck, which another dispatch
+would only queue behind). The token file must hold the token alone, and
+failure messages are scrubbed of it before the log or the ping sees them. `--dry-run`
+also checks that GitHub accepts the token for reading. Standard library only; 26 unittest cases in
+`scripts/ops/test_refresh_if_stale.py`, run under `npm test` by
+`tests/refresh-if-stale.test.ts` (CI has no pytest).
+
+**Follow-up.** When GitHub's cron is late rather than dropped, its run can
+land soon after a clock dispatch and build again. A scheduled run could skip
+when production was built under 2 h ago; not done here, because it changes
+`data-refresh.yml` and what its Healthchecks ping means.
+
+**Owner setup** (the runbook has the steps): a fine-grained token for this
+repository with Actions read and write, a second Healthchecks check (period
+1 h, grace 2 h), both saved under `~/.config/elj/` on `abed`, then the timer.
+After a day of clock runs, set the production check's grace from 9 h to 3 h.
+
+**Not changed.** No workflow, data file, `regions.ts` entry or tier.
+
+## Refresh alarm through Healthchecks.io, not GitHub's scheduler (2026-09-28)
+
+**#1142**, merged 2026-09-28 from `claude/refresh-alarm-healthchecks`: step 1 of the
+refresh-pipeline plan, `docs/superpowers/plans/2026-09-28-refresh-pipeline.md`,
+which Simon approved on 28 Sep. The plan, written by a Claude Fable planning
+agent and reviewed by the main session, keeps data in the build and stays on
+Vercel Hobby. It has four steps: this alarm, a gap-filling refresh clock on
+`abed`, building in GitHub Actions with a prebuilt deploy to Vercel, then
+removing the deploy hook, the ignore step and the aging wait.
+
+**Why.** Since #1134 every refresh's hook has built, and GitHub's scheduler is
+what leaves production stale. In September it ran 2 to 6 of the 8 daily
+refresh slots, hours late; on 27–28 Sep production went 7 to 8.5 h between
+refreshes three times. It ran the hourly `deploy-freshness.yml` 3 times in its
+first 23 hours, so the alarm stopped whenever the refresh did.
+
+**What changed.**
+- `scripts/ci/ping-healthchecks.sh` pings the check in repo secret
+  `HC_PING_URL`: `/start` when a refresh begins, then success only when a new
+  build went live and passed the freshness check (at least 100 live regions,
+  and the live regions' median `lastSuccessAt` under 26 h). Anything else
+  gets `/fail` with the reason and any report, a cancelled run included:
+  `job.status` cannot tell a cancel by hand from a time limit, so cancelling
+  a refresh by hand also emails. Healthchecks emails at once on a `/fail`,
+  and when no success ping arrives within the check's period plus grace.
+  That second path covers what the script cannot report: a run that never
+  starts, a failed checkout. Without the secret the pings are skipped; the
+  script never fails the job. Tested in `tests/ping-healthchecks.test.ts`,
+  and the workflow lines it depends on in
+  `tests/data-refresh-workflow.test.ts`.
+- `data-refresh.yml` calls it first and last, and reads the new build back
+  with `check-deploy-freshness.ts check` after the wait step. A stale build
+  fails the ping, not the job, so `history-append.yml` still captures what
+  production serves. Every step now has a time limit, so a hang fails its
+  step and the ping says whether it was before the hook, at the hook or in
+  the wait; the job's limit (160 min, well above the steps' 141) is a backstop.
+  The push-window wait is best-effort: if it times out, the refresh goes on
+  to the hook. Neither ping step can stop or fail a refresh.
+- `deploy-freshness.yml`: `cancel-in-progress: false`, the follow-up from the
+  entry below.
+
+**Owner setup.** A Healthchecks.io check with period 3 h and grace 9 h, so 12
+h without a success ping emails, until the `abed` clock runs; then grace 3 h.
+A failed or stale run emails at once either way. Repo secret `HC_PING_URL` is
+the check's ping URL. **Not verified yet:** a real ping and the email path,
+which need the secret. *Since verified:* the first real ping on 28 Sep (run
+36495671759); Healthchecks' test notification ("DOWN | TEST") reached Simon's
+Gmail at about 22:57 UTC on 28 Sep, as the Cowork session that sent it
+reported and Simon relayed; every refresh on 29 Sep pinged success. No real
+`/fail` has happened yet. *29 Sep:* the grace change waits until the clock has
+run for a day (runbook step 6; see the step 3b entry's "Next").
+
+**Not changed.** No data file, `regions.ts` entry or tier.
+
+## Sessions merge their own reviewed PRs (2026-09-28)
+
+**#1140**, merged 2026-09-28. `CLAUDE.md` has a new "Merging PRs" section. A
+session merges its own PR into `main` once the PR is useful and additive, a
+Claude code review of its final head passes, and CI is green. It asks first
+when a PR removes, reverts or overwrites work, or moves a tier, a headline
+figure or the dataset's totals. The rule is Simon's, given after a reviewed,
+green docs PR (#1138) was left for him to merge. **Not changed:** no code,
+data, `regions.ts` entry or tier.
+
+## Scheduled rebuilds were being skipped; production froze 24–27 Sep (2026-09-27)
+
+**#1134**, merged 2026-09-27 from `claude/hopeful-mendel-b9z2lc`. Production
+served the 24 Sep build until the merge; the merge's own push build refreshes
+the data. Checked in production on 28 Sep: see **After the merge** below.
+
+**What production showed** (Simon's weekday checks of the live site):
+byte-identical feeds on 25 and 28 Sep NZ time, 30.68 GW, 209% of the network,
+917.56 EH/s, CBECI `lastUpdated` 2026-09-24T04:42:46.349Z.
+
+**Root cause: `scripts/build/vercel-ignore.sh` (#967, 2026-09-11) skipped the
+scheduled deploy hook.** Its comment said a deploy hook "always builds"; the
+code built only when `VERCEL_GIT_PREVIOUS_SHA` was empty or equal to the head.
+Vercel sets that variable to the last *successful* deployment and gives the
+step no signal that a build came from a hook. Once an automation commit's push
+build was skipped, every hook built that head against the same previous SHA,
+saw an automation-only diff and skipped. `data-refresh.yml` counted Vercel's
+201 as success, and `health-check.yml` reads per-region `sourceStatus`, which a
+build stamps once, so both stayed green.
+
+**Evidence.**
+- Replaying the old script over git history and the Actions run times: the
+  last build is the 04:42 UTC 24 Sep hook, whose head was `0b50224` (#1108,
+  the last code merge). Every push and hook after it skips against previous
+  SHA `0b50224`. The replay also reproduces the 21–22 Sep freeze.
+- `curtailment_history.parquet` is captured from the live site: 19 captures
+  from 24 Sep 06:50 to 27 Sep 16:55 UTC are identical, and all 197 live
+  records carry `lastSuccessAt` between 04:42:43 and 04:44:07 on 24 Sep. Since
+  #967: 17 distinct deployments in 92 captures, against 58 in 70 before.
+  Freezes of 89 h (11–14 Sep) and 86 h (15–18 Sep) went unnoticed because
+  code merges kept restarting the data.
+- Upstreams and keys are not the cause: every keyed source (EIA, ENTSO-E,
+  netztransparenz, ERCOT) was live in the last build, and no build has
+  contacted an upstream since.
+
+**Confirmed on Vercel (read-only, 27 Sep).** The Vercel connector could read
+deployment records but not build logs: its grant had no team scope, so logs
+returned 403. So the evidence is Vercel's own cancel reason, not the script's
+"skipping build" line.
+- 72 production deployments from 23 Sep 00:00 to 27 Sep 21:35 UTC: 23
+  `READY` and 49 `CANCELED`. The last `READY` one is
+  `dpl_J9ayPxrvKsbebbukNAcPP1ze3KBH`, created at 04:42:33 UTC on 24 Sep on
+  `0b50224`, and it still served everylastjoule.com at 21:35 UTC on 27 Sep.
+  All 40 production deployments after it carry Vercel's Ignored Build Step
+  `errorLink` and stopped 3–7 s after they started. A full build usually
+  takes 4–7 min.
+- The connector shows hook builds as `source: git`, the same as pushes. Each
+  of the 21 data-refresh cron runs in that window matches the production
+  deployment that Vercel created 9–25 s later on the same head. Two built
+  (23 Sep 16:52 and 24 Sep 04:42): each head was a code merge that had
+  already built, so the previous SHA equalled the head. The ignore step
+  skipped 18, including all 16 from 24 Sep 11:39 to 27 Sep 21:18. One
+  (23 Sep 04:40) has no ignore-step link: it sat in the queue behind a
+  19-minute build, and Vercel built the newer #1084 push instead.
+- That #1084 push was history-only, yet it built. This fits a previous SHA
+  fixed when the deployment is created: `f15999f`'s build had not finished,
+  so the previous SHA was still `1216d18`. A replay should take the previous
+  SHA at creation time.
+- No redeploy on 27 Sep: all 15 deployments that day are `source: git`, no
+  data-refresh or history-append run was started by hand, and production
+  stayed on the 24 Sep build. The four hook builds (05:13, 11:57, 16:55 and
+  21:18 UTC) each rebuilt a head that already had a cancelled push build.
+  #1130 (07:15) came from history-append's 02:00 UTC cron, which ran
+  5 h 14 min late, so no hook preceded it.
+- The PR branch's preview, `dpl_2pszVStw7BKpGy8QwVZ52Z2vt3jm` on `cf11f0f`, is
+  `READY` (built 20:55–21:02 UTC). **Not verified:** that it emitted
+  `data/build-info.<hash>.json`. Git deployments have no file tree, and the
+  preview is behind Vercel Authentication. The preview does not test the
+  hook path either: a branch's first push builds under either script.
+- The new script's push-skip path works on Vercel. The ignore step cancelled
+  the docs-only push of `21d6ab4`, which added this block, 7 min after the
+  commit and 4 s into the build (`dpl_7qZJxvmSupnwwavoPwR8Wc85n2bU`). Its
+  subject is not an automation one, so only the diff test could skip it, and
+  only against `cf11f0f`: the previous SHA is the branch's own last good
+  build. The hook path stayed untested on Vercel until 28 Sep: see **After
+  the merge**.
+
+**Fix (#1134).**
+- `vercel-ignore.sh`: a head older than 15 min (`PUSH_WINDOW_MIN`) cannot be
+  its own push build, so it builds; only a fresh automation or docs push is
+  skipped. `tests/vercel-ignore.test.ts` (10 cases, 4 of which fail against
+  the old script). Replayed over 18–27 Sep: 40 of 40 hooks build, and 63 of 63
+  automation pushes still skip.
+- `data-refresh.yml`: waits until main's head is past the window before the
+  hook, then waits for a fresh build to go live and **fails** when none does
+  within 30 min (`scripts/ci/check-deploy-freshness.ts wait`). history-append
+  now runs after the new build is live. The job checks main's head again after
+  each wait (at most three), and its 90-min timeout covers the worst case of
+  about 81 min.
+- Build stamp: `src/data/build-info.json.ts` emits
+  `data/build-info.<hash>.json` (`builtAt`, `commit`, `ref`, `env`,
+  `staleAfterHours: 26`), registered as `buildInfo` (dashboard chrome,
+  `embed: false`).
+- Dashboard: the footer reads, for example, "Last refreshed 24 Sep 2026, 04:42
+  UTC (3 days ago)" from the stamp (falling back to CBECI's time), and a
+  notice under the lead, hidden until the stamp is over 26 h old, says the
+  data is stale.
+  `DEPLOY_STALE_AFTER_HOURS` and the formatters are in
+  `src/lib/freshness.ts`.
+- `deploy-freshness.yml` (hourly, logic in `scripts/lib/deploy-freshness.ts`):
+  stale when the build stamp or the live regions' median `lastSuccessAt` is
+  over 26 h old, or fewer than 100 regions are live. The first stale run opens
+  one `auto-stale-deploy` issue and fails; later runs refresh its body; the
+  first fresh run closes it. It ignores feeds with no live regions: about 20
+  modelled feeds carry calibration dates up to 2.7 years old. A run that
+  cannot read the page, or any data file it references, after one retry
+  fails without opening the issue. A live region stamped in the future counts
+  as live but stays out of the median, as in `append_history.py`.
+- `scripts/append_history.py`: fails, writing nothing, when the deployment is
+  over 26 h old; writes nothing when the deployment is the one the last
+  capture recorded. 6 new pytest cases.
+
+**Code review (27 Sep).** A review of the branch raised ten points, and four
+are fixed here. The freshness check no longer drops a data file it cannot
+read, which could have raised a false "fallback corpus" alarm. The refresh
+job re-checks main's head after each wait and has room for its worst case.
+A live region with a future stamp now counts toward the live floor. The other
+six were not changed:
+- The 15-min grace in `wait`: it passes only when a build went live within
+  15 min before the hook, so production is fresh either way.
+- `withFallback` for the build stamp: it makes no request, like 20 other
+  loaders, and a fallback would serve an old `builtAt`.
+- The CBECI fallback in the footer: unreachable while every build ships the
+  stamp, and harmless.
+- Two efficiency points and one design point, listed under Follow-ups.
+
+**Copy.** Hero: "curtailed, spilled, or zero-priced across 444 of the 536
+regions we track". Both numbers were right (published-waste regions against
+the roster); the sentence now says how they relate. The meta description and
+the About deck say "zero-priced" instead of "constrained-off". Pinned in
+`tests/waste-status-count.test.ts`.
+
+**Verified.** `npm run typecheck && npm test && npm run ci:gates` pass
+(1,703 tests, 40 new), `npm run validate` passes, and the 28 append-history
+pytest cases pass (6 new). After the review fixes, `check` was run against a
+local site with one data file missing (it exits 1: "could not read 1 of 3 data
+files") and with every file present (it answers), and the pre-hook loop was
+run with `gh` and `sleep` stubbed (one wait; three waits then a warning;
+none).
+`scripts/ci/check-deploy-freshness.ts` was run against local copies of a
+frozen and a fresh deployment: `check` called the frozen one stale and the
+fresh one fresh, and `wait` failed on the frozen one and passed on the fresh
+one. The stale notice was looked at with the real `style.css` at 1440 and 390 px
+in both modes: hidden, it takes no space. **Not verified here:** a full local
+build (this sandbox cannot reach cdn.jsdelivr.net for Framework's `npm:d3`),
+and the new ignore step's hook path on Vercel (the old script's skips and the
+new one's push skip are confirmed above). Production has since built the site
+in full and run the hook path: see **After the merge**.
+
+**After the merge (28 Sep).**
+- The merge's push build went live at 22:17 UTC on 27 Sep. The first
+  `deploy-freshness` run, at 01:10 UTC, read production as fresh: build stamp
+  22:11 UTC, and 197 of the 530 region records it read were live (the same
+  live count as the 24 Sep build).
+- The first scheduled refresh after the merge ran at 05:17 UTC, eight hours
+  after the one before. Its hook build went live at 05:22 and the *Wait for
+  the new build to go live* step passed. #1136, the history capture that
+  followed, merged at 05:24, and the ignore step skipped its push build in 4 s.
+- That refresh did not test the new rule. `main`'s head was `86e3cb7`, the
+  build production already served, and a head equal to the previous SHA
+  builds under the old script too. The case that froze production is a head
+  that is a skipped automation commit, which is where `main` stood after
+  #1136.
+- So the refresh was dispatched by hand at 08:24 UTC (run 36397148819) with
+  #1136 as the head. Vercel built the hook deployment of `179829f`
+  (`dpl_37cbF2j1QPTJQ15s9W1xAY2KkrDb`) instead of skipping it: it went live
+  at 08:29:44 and the wait step passed at 08:29:55. The old script would have
+  skipped it: against the previous SHA, `86e3cb7`, its diff is history only.
+  The new age rule builds it. This is Vercel's deployment state, not the
+  script's log line: build logs still return 403.
+- history-append then captured the new build as #1137, merged at 08:36, and
+  the ignore step skipped #1137's push build in 4 s. Earlier, at 07:48, the
+  late run of the 02:00 safety-net cron left the parquet unchanged and made no
+  commit: production was still the build #1136 had captured. Before #1134 that
+  run would have appended a re-stamped duplicate.
+- GitHub's scheduler ran almost nothing for this repo overnight: no refresh
+  from 21:17 UTC on 27 Sep to 05:17 UTC on 28 Sep, and one `deploy-freshness`
+  run in its first 6 h. The alarm is a cron job too, so it stops with the
+  refresh; the dashboard's stale notice does not. See the second-clock
+  follow-up.
+
+**Not changed.** No data file, `regions.ts` entry or tier.
+
+**Follow-ups.**
+- The archive holds about 75 re-stamped captures since 11 Sep (same
+  deployment, new `build_timestamp`). Flag or drop them before the next
+  dataset release.
+- `health-check.yml`'s issue #822 has been open since 20 Aug with 144 comments:
+  about 200 structurally `cached` records against a threshold of 10. Split
+  modelled or static records from real fallbacks, or retire it for
+  `deploy-freshness.yml`.
+- `dominican-republic` stamps `lastSuccessAt` a day ahead (OC SENI's schedule
+  runs to 23:00 AST). Both freshness checks ignore future stamps.
+- Taken up by the refresh-pipeline plan (see the entry above): the alarm moved
+  to Healthchecks.io in #1142, which also set `cancel-in-progress: false`, and
+  the `abed` clock is its step 2, with the alarm kept off `abed`. The original
+  note: GitHub ran only 3 to 5 of the 8 daily refresh crons on 24–27 Sep, and
+  almost no scheduled job overnight on 27–28 Sep. Give the refresh and the
+  alarm a second clock that fills gaps rather than doubling runs: a timer on
+  `abed` that dispatches `data-refresh.yml` only when its last successful run
+  is more than about 3.5 h old, and `deploy-freshness.yml` only when its last
+  run is more than about 90 min old (`gh run list --workflow <file> --json
+  createdAt`). A manual dispatch does not wait on GitHub's cron queue. Also
+  set `cancel-in-progress: false` in `deploy-freshness.yml`: with `true`, a
+  dispatch that overlaps a cron run can cancel the run that opens the stale
+  issue, and its failure email with it.
+- From the code review, not blocking: `deploy-freshness.yml` and
+  `data-refresh.yml` run a full `npm ci` only to run `tsx` on two scripts;
+  `check` fetches the build stamp twice; and `same_deployment_as_last_capture`
+  turns the whole parquet into Python dicts on every run.
+- If the commit-age test in `vercel-ignore.sh` misbehaves, the simpler design
+  is to stop skipping automation pushes: about 6 more builds a day (63 over
+  18–27 Sep), and no timing to keep in step.
 
 ## Dark is the default mode (2026-09-24)
 
@@ -1166,9 +2292,9 @@ Live-site copy now says **459 regions, renewables only**. The old OG card and RE
 
 **Verified in production, not assumed.** A direct `fuel-type-data` request with the new key returned HTTP 200 and 716 hourly AZPS wind rows through `2026-09-10T06`. All 16 EIA loaders were then run against it and returned `sourceStatus: live` across all 34 regions. Production was swept before and after (385 regions each time): **zero status regressions**, EIA **34/34 live** with every timestamp advancing `10:31Z → 16:38Z` on the first scheduled rebuild after the key was saved, ENTSO-E unchanged at 53/54, Norway 8/8. The 16:38Z production build log (2454 lines) contains **zero `HTTP 401`**, zero genuine `403` (the single match is a content hash in `china-shandong.cdd5e403.json`), **zero `falling back to cached snapshot`**, and no `EIA_API_KEY not set`. **The old `DH9J…` key is unused but NOT revoked:** EIA has no self-serve revocation, so killing it takes an email to EIA Open Data support. Rotation makes the leaked copy worthless to this project, which is the fix the runbook actually prescribes; the optional history scrub remains undone.
 
-**`.env.local` was absent, not malformed.** The runbook's Step 2 no longer describes reality: the file was already absent when the checkout was inventoried on 2026-09-09, *before* its move off `~/Desktop` (`ls -a | grep '^\.env'` returned nothing — recorded under "Housekeeping notes" in `docs/research/2026-09-09-session-handoff.md`), and `mv` preserves dotfiles, so the move did not remove it; when it went missing is not known. `.vercel/` was likewise absent before the move. It has been rebuilt clean from `.env.example` with the rotated EIA key only. **`ERCOT_API_KEY`/`_USERNAME`/`_PASSWORD`/`_PRODUCT_ID`, `NETZTRANSPARENZ_CLIENT_ID`/`_SECRET` and `DEEPSEEK_API_KEY` are no longer on that machine.** The first six remain in Vercel Production, so **production is unaffected and no deployed region is degraded by this** — the 2026-09-10 build log shows Netztransparenz fetching 573 renewable-curtailment rows for 2026-08 — but local builds of the ERCOT and eight German regions will serve last-good snapshots until those values are restored. Incidentally this satisfies SEC-2 ("get the sensitive creds off an unencrypted disk file") more completely than the runbook intended, by accident rather than design.
+**`.env.local` was absent, not malformed.** The runbook's Step 2 no longer describes reality: the file was already absent when the checkout was inventoried on 2026-09-09, *before* its move off `~/Desktop` (`ls -a | grep '^\.env'` returned nothing — recorded under "Housekeeping notes" in `docs/research/2026-09-09-session-handoff.md`), and `mv` preserves dotfiles, so the move did not remove it; when it went missing is not known. `.vercel/` was likewise absent before the move. It has been rebuilt clean from `.env.example` with the rotated EIA key only. **`ERCOT_API_KEY`/`_USERNAME`/`_PASSWORD`/`_PRODUCT_ID`, `NETZTRANSPARENZ_CLIENT_ID`/`_SECRET` and `DEEPSEEK_API_KEY` are no longer on that machine.** The first six remain in Vercel Production (correction, 2026-09-29: five; Vercel has no `ERCOT_PRODUCT_ID`), so **production is unaffected and no deployed region is degraded by this** — the 2026-09-10 build log shows Netztransparenz fetching 573 renewable-curtailment rows for 2026-08 — but local builds of the ERCOT and eight German regions will serve last-good snapshots until those values are restored (correction, 2026-09-29: only the eight German regions; the ERCOT regions use the EIA key, and the ERCOT credentials feed only the disabled ercot-native probe). Incidentally this satisfies SEC-2 ("get the sensitive creds off an unencrypted disk file") more completely than the runbook intended, by accident rather than design.
 
-**ENTSO-E rotation deferred — a decision, not an omission.** The Transparency Platform's own news feed records a Web API service disruption on 01/09, a migration to new infrastructure on 08/09, that migration **rolled back** the same day, and "progress on restoring Transparency Platform service" still in flight on 09/09. Against that, the runbook rates `ENTSOE_API_TOKEN` **Low**: free, read-only, and — unlike the EIA key — **never committed to git history**. It existed only in the `.env.local` that is now gone, so there is no evidence of exposure at all. The live token is demonstrably healthy: 53 of 54 ENTSO-E zones plus all 8 Norway zones read `live` in both sweeps, and the build log shows the ENTSO-E loader succeeding (94.9 kB). The one exception, `north-macedonia-wind`, fails upstream — `B19 returned zero data`, not an auth error — and was already degraded before this work. Regeneration is irreversible and kills the working token on the spot, and the 2026-06-17 incident was itself ENTSO-E dropping a token server-side, so handing a working credential back to a platform mid-restoration is the wrong trade this week. **Revisit once ENTSO-E declares the migration complete.**
+**ENTSO-E rotation deferred — a decision, not an omission.** The Transparency Platform's own news feed records a Web API service disruption on 01/09, a migration to new infrastructure on 08/09, that migration **rolled back** the same day, and "progress on restoring Transparency Platform service" still in flight on 09/09. Against that, the runbook rates `ENTSOE_API_TOKEN` **Low**: free, read-only, and — unlike the EIA key — **never committed to git history**. It existed only in the `.env.local` that is now gone, so there is no evidence of exposure at all (correction, 2026-09-29: it is also in Vercel Production and Development, where builds read it). The live token is demonstrably healthy: 53 of 54 ENTSO-E zones plus all 8 Norway zones read `live` in both sweeps, and the build log shows the ENTSO-E loader succeeding (94.9 kB). The one exception, `north-macedonia-wind`, fails upstream — `B19 returned zero data`, not an auth error — and was already degraded before this work. Regeneration is irreversible and kills the working token on the spot, and the 2026-06-17 incident was itself ENTSO-E dropping a token server-side, so handing a working credential back to a platform mid-restoration is the wrong trade this week. **Revisit once ENTSO-E declares the migration complete.**
 
 **GitHub Actions held a stale copy of the leaked key.** No workflow *consumes* either secret: none of the six references `EIA_API_KEY` or `ENTSOE_API_TOKEN` in an `env:` block, `data-refresh.yml` only POSTs `VERCEL_DEPLOY_HOOK` (the Vercel build environment supplies the data keys), and `history-append.yml` reads the deployed dashboard over HTTP. But the repository **did** carry an `EIA_API_KEY` *repository secret*, last updated five months earlier — before the 2026-05-12 audit — holding the pre-rotation value and read by nothing. It was updated to the rotated key on 2026-09-10. `ENTSOE_API_TOKEN` is not present as a repository secret; the full list is `AUTOMATION_TOKEN`, `EIA_API_KEY`, `RELAY_DEPLOY_KEY`, `VERCEL_DEPLOY_HOOK`. **Lesson: "no workflow reads it" is not "it isn't there"** — an unused secret is still a stored copy of a credential, and grepping the workflows would have missed this one. Check the secret store itself, not just the code that would use it.
 
@@ -1184,7 +2310,12 @@ Vercel builds were 14–17 min when every upstream answered and **failed at the 
   (wired into `prebuild`) now runs them ~8-wide and writes their stdout into Framework's cache
   (`src/.observablehq/cache/data/`), so `observable build` finds every loader fresh and skips it. Semantics are
   Framework's own: a loader that fails or exceeds the hard cap writes nothing and Framework runs it itself.
-  Knobs: `LOADER_CONCURRENCY`, `SKIP_PREFETCH=1`.
+  Knobs: `LOADER_CONCURRENCY`, `SKIP_PREFETCH=1`. (Correction, 2026-09-29: it also ran the two loaders no page
+  reads, ercot-native and nigeria, which Framework never runs; it now skips them. See the ERCOT-native entry.) (Correction, 2026-09-29:
+  the hard cap SIGKILLed tsx but not the node process that runs the loader, so it never stopped a stuck loader:
+  the prefetch waited until the loader exited, then threw its output away. An error in spawn, `mkdir`, `stat` or
+  `rename` could end the prefetch with exit code 1, failing the build, and with `LOADER_DEADLINE_MS=0` it still
+  logged 180 s. Fixed in **#1155**; see the loader prefetch entry.)
 - **Nothing capped a loader.** `withFallback` now races the live fetch against `deadlineMs` (default
   `LOADER_DEADLINE_MS` = 180 s; 0 disables); on expiry it aborts every in-flight `fetchText`/`fetchJSON`
   request and serves the last-good snapshot as `cached`. The build's fetch defaults are 15 s × 2 attempts
@@ -1282,6 +2413,8 @@ curtailment. Of 459 regions:
   redispatch), Colombia (XM `VertEner`), Brazil-NE (ONS constrained-off), Ireland (EirGrid dispatch-down),
   Chile (CEN reductions), CAISO (OASIS `SLD_REN_CURTAIL`), Uruguay (ADME), ERCOT-native (HDL−GEN), the
   AEMO **state** aggregates, and India-Maharashtra (MSLDC). Measured numerator, no honest denominator.
+  (Correction, 2026-09-29: ERCOT-native is a disabled probe with no region among the 459, and it has never
+  produced data; see the ERCOT-native entry at the top.)
 - **22 region ids have both**, and only those show a share.
 
 **The 22.** The 10 Japanese OCCTO area CSVs (12 ids) publish 太陽光/風力発電実績 (measured generation)
@@ -1342,7 +2475,7 @@ not the tail of a UI change. **No tier moved**, `scripts/ci/golden/tier-counts.j
   pulls ENTSO-E A75 per TSO purely to weight the wind/solar split; ERCOT-native reads `GEN` inside
   `HDL − GEN`; Brazil-NE reads `val_geracaoreferencia` but skips unconstrained rows, so its sum would be a
   constrained-intervals-only denominator. Each could reach `measured-independent` with loader work and an
-  upstream-semantics check.
+  upstream-semantics check. (2026-09-29: not ERCOT-native, which serves no region; see the correction above.)
 - The AEMO **state** aggregates measure curtailment but would need a generation denominator covering the
   whole state, not just the 241 units in `AEMO_UNIT_MAP`. Deliberately left without a share.
 - Refresh the Japanese snapshots and re-baseline `ci:magnitude-golden` for the seasonal drop.
@@ -1905,7 +3038,7 @@ Also cleaned this session: 16 merged remote branches + 4 session branches delete
 - **Region pages — the three things deliberately left out (2026-09-06).** (a) **No link from the dashboard.** Nothing on `/` points at `/regions` or `/region/<id>`; the surfaces are reachable only by URL and via `sitemap.xml`. `src/index.md` was being rewritten in parallel when they shipped, so the hotspot rows were left alone — wiring a hotspot row to `./region/<id>` and adding a "Provenance and validation" link to `src/components/region-tooltip.js` are the two obvious follow-ups. (b) **No `<link rel="canonical">` or per-page `<meta name="description">`.** Front-matter `head` *replaces* the config `head` (Framework's `getHtml`), which would drop the no-FOUC theme boot script, so per-page meta needs `head` in `observablehq.config.ts` to become a `({path}) => string` function. Worth doing before these URLs are cited. (c) **Region ids are now citable URLs.** `/region/<id>` is public and ids do get renamed here — `india-north` and `japan` already have — so a rename now breaks an external link. That needs a redirect policy; `redirects` in `vercel.json` is the cheap version.
 - **🔁 Refactor session in flight (2026-06-17) — full ledger + next steps in `docs/research/2026-06-17-refactor-session-handoff.md`.** Lighter-deps: #230 (react-dom) merged; #233 (@vercel/analytics+react) ready. Page dedup: #234 extracts `finalizeRegionData` (and makes embed's integrity check non-fatal). Globe split Step 1: #235 (`globe-geo.ts` pure helpers); plan in `docs/research/2026-06-17-globe-split-plan.md`.
 - ✅ **`embed/globe.md` region drift — RESOLVED 2026-09-06** (see the 2026-09-06 entry at the top). The embed was indeed broken in production, but not for the reason this bullet predicted: the integrity check has been non-fatal since #234, and the visible break was a missing comma introduced on 2026-08-21. Drift is now closed by exact `regionData` parity with `src/index.md`, enforced by `tests/globe-drift.test.ts`. **Still outstanding from the hand-off doc:** the shared `buildRegionData()` extraction, and replacing the positional `Promise.all` destructuring in both pages with a name-keyed map — the pattern that caused the 3-month silent region-swap described in the 2026-09-06 entry.
-- **⚠️ Rotate leaked/at-risk secrets (audit SEC-1/2/3, confirmed live 2026-06-16).** **SEC-1 done 2026-09-10** — `EIA_API_KEY` rotated and verified live in production across all 34 EIA regions; the leaked key is unused but **not revoked** (EIA has no self-serve revocation — email EIA Open Data support to kill it). **ENTSO-E deferred 2026-09-10** while the Transparency Platform finishes the infrastructure migration it rolled back on 08/09; that token rates Low and was never in git history. **Still outstanding: the ERCOT username/password/key and the DeepSeek key.** None were committed to history, and they are no longer in `.env.local` (which did not survive the 2026-09-10 checkout move), but ERCOT ×3 remain in Vercel Production and should still be rotated at `apiexplorer.ercot.com`. Severity ranking + per-secret rotation steps + history-scrub procedure: `docs/ops/secret-rotation-runbook.md`; placeholder template: `.env.example`. The optional git-history scrub is still undone.
+- **⚠️ Rotate leaked/at-risk secrets (audit SEC-1/2/3, confirmed live 2026-06-16).** **SEC-1 done 2026-09-10** — `EIA_API_KEY` rotated and verified live in production across all 34 EIA regions; the leaked key is unused but **not revoked** (EIA has no self-serve revocation — email EIA Open Data support to kill it). **ENTSO-E deferred 2026-09-10** while the Transparency Platform finishes the infrastructure migration it rolled back on 08/09; that token rates Low and was never in git history. **Still outstanding: the ERCOT username/password/key and the DeepSeek key.** None were committed to history, and they are no longer in `.env.local` (it was already gone when the checkout was inventoried on 2026-09-09, before the move; see the 2026-09-10 entry), but ERCOT ×3 remain in Vercel Production and should still be rotated at `apiexplorer.ercot.com`. (2026-09-29: since #1150 no build needs them. Rotating is still the fix, or closing the account if native ERCOT is not coming back, in which case also delete them from Vercel. See the ERCOT-native entry at the top.) Severity ranking + per-secret rotation steps + history-scrub procedure: `docs/ops/secret-rotation-runbook.md`; placeholder template: `.env.example`. The optional git-history scrub is still undone.
 - **Colombia data-spine — next steps + open decisions:** see the handoff `docs/superpowers/plans/2026-06-08-colombia-data-spine-next-steps.md`. Tracks: (A) hardening — backfill history, weekly prev-month refresh, retire Britta, object-storage sync; (B) siting — coordinate crosswalk, pick curtailment signal, write Spec 3; (C) trivial batch — flare expansion, bad-conversions gate (needs 80%/100% decision), EIA fixture test. **Security: rotate the abed login password** (exposed in the 2026-06-07 transcript; SSH is key-based so it won't lock the agent out).
 - **Recalibrate north-macedonia-solar anchor** — current 0.02 TWh/yr static (IRENA RCS 2025, 833 MW end-2024 basis) is a known underestimate; NMK hit ~1.2 GW by end-2025 with solar already moving power-exchange prices. Revisit if a machine-readable MEPSO/exchange curtailment source appears. (serbia-solar 0.007 TWh/yr is fine — curtailment genuinely negligible at 241–318 MW per USEA 2022.)
 - **1 stash left for review** (`stash@{0}`, formerly `{5}`: `chore/paper-post-council-edits` — a `docs/paper/03-data-records.md` rewrite, −69/+25). The other 5 (snapshot/tally churn from already-shipped branches + a superseded `src/style.css` tweak) were dropped 2026-06-16. Review and apply-or-drop the paper stash when convenient.

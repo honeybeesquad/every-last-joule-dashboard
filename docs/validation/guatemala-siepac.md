@@ -1,6 +1,6 @@
 # Validation — Central America (SIEPAC) (`guatemala-siepac`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** GTM
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** IRENA Central America Interconnect 2024 (SIEPAC corridor; EOR Ente Operador Regional)
+- **Source:** No curtailment series collected; grid present, waste unpublished. Its former 0.1 TWh/yr anchor (IRENA Central America Interconnect 2024) and guatemala's 0.4 together came to 1.8× Guatemala's 2024 solar generation of 0.28 TWh (Our World in Data, from Ember and the Energy Institute), so both were dropped on 2026-09-29.
 - **Source URL:** [https://www.enteoperador.org/](https://www.enteoperador.org/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

@@ -41,3 +41,49 @@ export function coerceLastSuccessAt(value: string, fallback = "1970-01-01T00:00:
   const time = new Date(value).getTime();
   return Number.isFinite(time) ? new Date(time).toISOString() : fallback;
 }
+
+/**
+ * Hours after which the deployment's data counts as stale: a day of missed
+ * scheduled rebuilds plus two hours' slack for GitHub, which runs the
+ * 3-hourly refresh cron late and drops some runs (3 to 5 of 8 ran per day,
+ * 24–27 Sep 2026). One number for the dashboard's stale notice and
+ * scripts/lib/deploy-freshness.ts; scripts/append_history.py copies it by hand.
+ */
+export const DEPLOY_STALE_AFTER_HOURS = 26;
+
+export interface DeployFreshness {
+  /** Hours since the build, or null when the build time is missing or unparseable. */
+  ageHours: number | null;
+  /** Older than the threshold, or of unknown age: unknown freshness is never fresh. */
+  stale: boolean;
+}
+
+/** How old a deployment's data is, from its build stamp. */
+export function deployFreshness(
+  builtAt: string | null | undefined,
+  now: Date,
+  thresholdHours: number = DEPLOY_STALE_AFTER_HOURS,
+): DeployFreshness {
+  const time = builtAt ? new Date(builtAt).getTime() : Number.NaN;
+  if (!Number.isFinite(time)) return { ageHours: null, stale: true };
+  const ageHours = Math.max(0, (now.getTime() - time) / 3_600_000);
+  return { ageHours, stale: ageHours > thresholdHours };
+}
+
+/** "12 min ago", "5 h ago", "3 days ago". Each unit rounds down: 5.9 h reads "5 h ago". */
+export function formatAge(hours: number): string {
+  if (hours < 1) return `${Math.max(1, Math.floor(hours * 60))} min ago`;
+  if (hours < 48) return `${Math.floor(hours)} h ago`;
+  return `${Math.floor(hours / 24)} days ago`;
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** "24 Sep 2026, 04:42 UTC", independent of the viewer's locale and zone. Null if unparseable. */
+export function formatUtcStamp(iso: string): string | null {
+  const date = new Date(iso);
+  if (!Number.isFinite(date.getTime())) return null;
+  const hh = String(date.getUTCHours()).padStart(2, "0");
+  const mm = String(date.getUTCMinutes()).padStart(2, "0");
+  return `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}, ${hh}:${mm} UTC`;
+}

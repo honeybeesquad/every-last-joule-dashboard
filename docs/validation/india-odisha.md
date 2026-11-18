@@ -7,8 +7,8 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Region id:** `india-odisha`
 - **Country:** IND
 - **Tier:** estimated
-- **Kind:** wind
-- **Source:** CEA gen-re.cea.gov.in daily Excel — Odisha wind corridor. T3-modelled fallback calibrated to Ember India 2024 (~0.1 TWh/yr wind curtailment). Loader reads committed CEA CSV when available.
+- **Kind:** solar
+- **Source:** CEA gen-re.cea.gov.in daily Excel × Ember India 2024 1% rate (≈0.006 TWh/yr at ~0.57 TWh/yr solar, trailing 365 days to 2026-10-15). CEA wind is zero in this window; the previous wind-corridor stub would have emitted 0 once the CSV landed. Hourly shape is synthetic. Not a measured TSO series.
 - **Source URL:** [https://gen-re.cea.gov.in/](https://gen-re.cea.gov.in/)
 - **Loader:** [`india-odisha.json.ts`](../../src/data/india-odisha.json.ts)
 - **Structural gap:** no

@@ -71,7 +71,8 @@ describe("loadDataFiles", () => {
 describe("EMBED_DATA_LOADERS", () => {
   it("is the registry minus the rows flagged embed: false", () => {
     const excluded = DATA_LOADERS.filter((e) => e.embed === false);
-    expect(excluded.map((e) => e.key)).toEqual(["zenodoVersion"]);
+    // Dashboard chrome only: the version badge and the build stamp.
+    expect(excluded.map((e) => e.key)).toEqual(["zenodoVersion", "buildInfo"]);
     expect(EMBED_DATA_LOADERS).toHaveLength(DATA_LOADERS.length - excluded.length);
     expect(EMBED_DATA_LOADERS.map((e) => e.key)).toEqual(
       DATA_LOADERS.filter((e) => e.embed !== false).map((e) => e.key),
@@ -81,6 +82,7 @@ describe("EMBED_DATA_LOADERS", () => {
   it("does not fetch the exempt loaders", async () => {
     await loadDataFiles(EMBED_DATA_LOADERS);
     expect(jsonCalls).not.toContain("../data/zenodo-version.json");
+    expect(jsonCalls).not.toContain("../data/build-info.json");
     expect(jsonCalls).toHaveLength(EMBED_DATA_LOADERS.length);
   });
 });

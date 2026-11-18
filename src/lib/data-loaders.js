@@ -39,15 +39,17 @@
  *          asserts that pairing, which is what makes a rotation unrepresentable.
  *   file   The FileAttachment. Lazy: nothing is fetched until `.json()`.
  *   label  Human-readable source name shown in the dashboard loading terminal.
- *   embed  Set `false` to keep an entry off `/embed/globe`. Only `zenodoVersion`
- *          is exempt: it is dashboard chrome (the version badge), not a region,
- *          and it is a live Zenodo fetch the embed must not block on.
+ *   embed  Set `false` to keep an entry off `/embed/globe`. Only dashboard
+ *          chrome is exempt: `zenodoVersion` (the version badge, a live Zenodo
+ *          fetch the embed must not block on) and `buildInfo` (the build stamp
+ *          behind the footer's "Last refreshed" and the stale-data notice).
  *
- * NOT EVERY ENTRY IS ONE REGION. `cbeci`, `anchor` and `zenodoVersion` are
- * non-region payloads, and `statics` bundles many regions into one file. The
- * loading terminal's per-file share is therefore a smoothed approximation of
- * progress, not a literal region tally — but because its denominator is
- * `DATA_LOADERS.length` it still lands on exactly `REGIONS.length`.
+ * NOT EVERY ENTRY IS ONE REGION. `cbeci`, `anchor`, `zenodoVersion` and
+ * `buildInfo` are non-region payloads, and `statics` bundles many regions into
+ * one file. The loading terminal's per-file share is therefore a smoothed
+ * approximation of progress, not a literal region tally — but because its
+ * denominator is `DATA_LOADERS.length` it still lands on exactly
+ * `REGIONS.length`.
  */
 
 import { FileAttachment } from "observablehq:stdlib";
@@ -161,6 +163,12 @@ export const DATA_LOADERS = [
   { key: "indiaPunjab",         file: FileAttachment("../data/india-punjab.json"),         label: "India Punjab" },
   { key: "indiaOdisha",         file: FileAttachment("../data/india-odisha.json"),         label: "India Odisha" },
   { key: "indiaChhattisgarh",   file: FileAttachment("../data/india-chhattisgarh.json"),   label: "India Chhattisgarh" },
+  { key: "indiaKerala",         file: FileAttachment("../data/india-kerala.json"),         label: "India Kerala" },
+  { key: "indiaHaryana",        file: FileAttachment("../data/india-haryana.json"),        label: "India Haryana" },
+  { key: "indiaAssam",          file: FileAttachment("../data/india-assam.json"),          label: "India Assam" },
+  { key: "indiaHimachalPradesh", file: FileAttachment("../data/india-himachal-pradesh.json"), label: "India Himachal Pradesh" },
+  { key: "indiaUttarakhand",    file: FileAttachment("../data/india-uttarakhand.json"),    label: "India Uttarakhand" },
+  { key: "indiaRest",           file: FileAttachment("../data/india-rest.json"),           label: "India rest" },
   { key: "indiaGridIndia",      file: FileAttachment("../data/india-grid-india.json"),     label: "Grid-India CEA" },
   { key: "pakistan",            file: FileAttachment("../data/pakistan.json"),             label: "Pakistan" },
   { key: "iran",                file: FileAttachment("../data/iran.json"),                 label: "Iran" },
@@ -202,6 +210,7 @@ export const DATA_LOADERS = [
   { key: "sichuan",             file: FileAttachment("../data/sichuan.json"),              label: "Sichuan" },
   { key: "guangxi",             file: FileAttachment("../data/guangxi.json"),              label: "Guangxi" },
   { key: "zenodoVersion",       file: FileAttachment("../data/zenodo-version.json"),       label: "Version metadata", embed: false },
+  { key: "buildInfo",           file: FileAttachment("../data/build-info.json"),           label: "Build stamp", embed: false },
 ];
 
 /**

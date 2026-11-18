@@ -44,11 +44,11 @@ One file per region. Overwritten on each scheduled build. Historical values acce
 | `regionId` | `string` | Stable ID matching `src/lib/regions.ts`. Kebab-case. E.g. `caiso-wind`, `ercot-west-wind`, `brazil-ceara-wind`. | No |
 | `profile` | `number[24]` | 30-day trailing **average** curtailment in GW per UTC hour. Index 0 = 00:00–01:00 UTC. | No |
 | `latestProfile` | `number[24] \| null` | Single-day latest snapshot in GW per UTC hour. Null when the loader cannot pin a complete recent UTC day. | No |
-| `totalTWh` | `number` | 30-day trailing total curtailment in TWh (sum of `profile` × 24 × 30). | No |
+| `totalTWh` | `number` | 30-day trailing total curtailment in TWh: `sum(profile GW) × 30 / 1000`. | No |
 | `peakGW` | `number` | 30-day trailing peak hourly GW. | No |
 | `lastUpdated` | `string` | Calibration-anchor date. Format varies by source: `YYYY` (annual anchor), `YYYY-Q#` (quarterly), or ISO-8601 (live). | No |
 | `lastSuccessAt` | `string` | ISO-8601 UTC timestamp when the snapshot was last successfully refreshed. | No |
-| `sourceNote` | `string` | Optional human-readable provenance. E.g. `"ENTSO-E Transparency B19 dispatch-down 2026-01 → 2026-04 · rate 0.04"`. | Yes |
+| `sourceNote` | `string` | Optional human-readable provenance. E.g. `"EIA CISO wind curtailment 2026-03-25 → 2026-04-23"`. | Yes |
 | `sourceStatus` | `"live" \| "cached" \| "degraded" \| null` | Per-fetch freshness. `live` = fresh fetch succeeded; `cached` = recent `withFallback` last-good; `degraded` = stale last-good beyond the configured threshold. Null only for purely static regions. Distinct from `sourceProvenance` below — that records what kind of upstream link exists, not whether the latest fetch succeeded. | Yes |
 | `sourceProvenance` | `"verified" \| "official-lead" \| "modelled-fallback"` | Required per-region declaration of upstream-link kind, orthogonal to `confidenceTier`. `verified` = snapshot value comes from a verified upstream feed or anchor. `official-lead` = authoritative source exists and loader is wired/scaffolded but live path is not producing usable data (geoblocked, auth-gated, parser pending); fallback shape is emitted. `modelled-fallback` = no verified upstream link; snapshot is typical-shape scaled to an anchor or otherwise estimated. The `exclude` state from the methodology doc never appears in snapshots — excluded regions are not in the canonical REGIONS list. The `(confidenceTier, sourceProvenance)` pair is validated at build time by `scripts/ci/check-source-provenance-coherence.ts`. See [`docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier`](../docs/methodology/tier-classification-guide.md#source-provenance-orthogonal-to-tier). | No |
 | `fuelShare` | `Record<string, number>` | Optional fuel-type split of the curtailed energy, fractions 0–1, keys in `{solar, wind, hydro, geothermal}`. | Yes |
@@ -155,7 +155,7 @@ Current size: **2,590,195 rows × 7 columns (≈ 20 MB Snappy-compressed)**. Per
 | `fuel` | `string` | `"wind"`, `"solar"`, `"hydro"`, `"geothermal"` — the technology the curtailed energy came from. |
 | `source` | `string` | Provenance slug. The current backfill carries `"entsoe"` (20 ENTSO-E zones, including the four Norway NO domains) and `"eia"` (9 U.S. balancing-authority series). Mirrors the loader name in `src/data/`. |
 | `rate_applied` | `float32` | Calibration rate used to convert raw generation into curtailment. `0.0` when the source publishes curtailment directly (so no rate-multiplication is needed). |
-| `rate_source` | `string` | Human-readable provenance of the rate (e.g. `"ENTSO-E B19 dispatch-down 2026"`). |
+| `rate_source` | `string` | Human-readable provenance of the rate (e.g. `"ENTSO-E actual generation A75 × published annual rate"`). |
 
 Confidence-tier and uncertainty columns are not on the hourly file — the per-tier envelope is calibrated against annual aggregates, so it lives on the annual rollup below. To attach uncertainty to an hourly slice, join `region_id` against `per_region_annual.parquet`.
 

@@ -1,6 +1,6 @@
 # Validation — Eswatini (`eswatini`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** SWZ
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** IRENA Eswatini 2024 (EEC; SAPP member; biomass+hydro)
+- **Source:** No curtailment series collected; grid present, waste unpublished. Its former 0.05 TWh/yr anchor (IRENA Eswatini 2024) was 1.7× Eswatini's 2024 solar generation of 0.03 TWh (Our World in Data, from Ember and the Energy Institute), so it was dropped on 2026-09-29.
 - **Source URL:** [https://www.eec.co.sz/](https://www.eec.co.sz/)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

@@ -41,6 +41,9 @@ import {
 } from "../lib/region-docs.ts";
 import {
   KIND_LABEL,
+  MARKER_PROVENANCE_GLOSS,
+  MARKER_TIER_GLOSS,
+  MARKER_UNCERTAINTY_GLOSS,
   PROVENANCE_GLOSS,
   PROVENANCE_LABEL,
   QUALITY_LABEL,
@@ -48,6 +51,7 @@ import {
   uncertaintyBandCaveat,
   uncertaintyBandPercent,
 } from "../lib/region-labels.ts";
+import { TSO_GRID_MARKER_IDS } from "../lib/tso-grid-markers.ts";
 
 // Resolve the docs directory from this module's own location rather than the
 // process cwd, so the loader is indifferent to where Framework is invoked.
@@ -83,6 +87,9 @@ const confidenceTier = deriveTier({ regionTier: region.tier });
 const provenance = region.sourceProvenance ?? "modelled-fallback";
 const band = uncertaintyBandPercent(region.tier);
 const bandCaveat = uncertaintyBandCaveat(region.tier);
+// A grid marker serves no waste figure, so the tier's modelling gloss and
+// envelope would describe something that does not exist.
+const isMarker = TSO_GRID_MARKER_IDS.has(region.id);
 
 const lat = `${Math.abs(region.lat).toFixed(2)}° ${region.lat >= 0 ? "N" : "S"}`;
 const lon = `${Math.abs(region.lon).toFixed(2)}° ${region.lon >= 0 ? "E" : "W"}`;
@@ -133,15 +140,15 @@ pager: false
 <dl class="region-provenance-grid">
   <div class="region-provenance-row">
     <dt>Tier</dt>
-    <dd><code>${escapeHtml(region.tier)}</code> · ${escapeHtml(confidenceTier)}<p>${escapeHtml(TIER_GLOSS[region.tier])}</p><p class="region-provenance-note">${escapeHtml(TIER_LABEL[confidenceTier])}</p></dd>
+    <dd><code>${escapeHtml(region.tier)}</code> · ${escapeHtml(confidenceTier)}${isMarker ? `<p>${escapeHtml(MARKER_TIER_GLOSS)}</p>` : `<p>${escapeHtml(TIER_GLOSS[region.tier])}</p><p class="region-provenance-note">${escapeHtml(TIER_LABEL[confidenceTier])}</p>`}</dd>
   </div>
   <div class="region-provenance-row">
     <dt>Uncertainty</dt>
-    <dd><strong>±${escapeHtml(band)}</strong> of peak GW${bandCaveat ? `<p class="region-provenance-note">${escapeHtml(bandCaveat)}</p>` : ""}<p>Published envelope for this tier. See <a href="${GITHUB_BLOB_BASE}/docs/methodology/uncertainty.md">the uncertainty model</a>.</p></dd>
+    <dd>${isMarker ? `<strong>None</strong><p>${escapeHtml(MARKER_UNCERTAINTY_GLOSS)}</p>` : `<strong>±${escapeHtml(band)}</strong> of peak GW${bandCaveat ? `<p class="region-provenance-note">${escapeHtml(bandCaveat)}</p>` : ""}<p>Published envelope for this tier. See <a href="${GITHUB_BLOB_BASE}/docs/methodology/uncertainty.md">the uncertainty model</a>.</p>`}</dd>
   </div>
   <div class="region-provenance-row">
     <dt>Source provenance</dt>
-    <dd><code>${escapeHtml(provenance)}</code> · ${escapeHtml(PROVENANCE_LABEL[provenance])}<p>${escapeHtml(PROVENANCE_GLOSS[provenance])}</p></dd>
+    <dd><code>${escapeHtml(provenance)}</code> · ${escapeHtml(PROVENANCE_LABEL[provenance])}<p>${escapeHtml(isMarker ? MARKER_PROVENANCE_GLOSS : PROVENANCE_GLOSS[provenance])}</p></dd>
   </div>
   <div class="region-provenance-row">
     <dt>Source</dt>

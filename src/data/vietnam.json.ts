@@ -1,34 +1,33 @@
+/**
+ * Vietnam — EVN/NSMO daily dispatch is not machine-readable from this build.
+ * Waste unpublished. The 4 TWh/yr literature shape is not an EVN series.
+ */
+
 import { pathToFileURL } from "url";
-import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { stampRegionSourceProvenance } from "../lib/source-provenance.js";
+import { applyUncertainty } from "../lib/uncertainty.js";
 import type { RegionData } from "../lib/types.js";
+import { unpublishedEmptyRegion } from "../lib/waste-status.js";
 
 const REGION_ID = "vietnam";
-const SOURCE_URL = "https://www.evn.com.vn/";
+const NOTE =
+  "EVN/NSMO PDF daily dispatch is not machine-readable from this build. " +
+  "Waste unpublished until a relay writes a CSV. A 2020 news quote and an Ember stub " +
+  "are not an EVN series. Missing waste is not zero.";
 
-async function run({ probe = true } = {}): Promise<RegionData> {
-  try {
-    if (probe) {
-      await fetchText(SOURCE_URL, { timeoutMs: 15000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } });
-      throw new Error("EVN public site does not expose machine-readable hourly solar curtailment");
-    }
-    throw new Error("live probe skipped in tests");
-  } catch (err) {
-    return buildTypicalSolarRegion(
-      REGION_ID,
-      5,
-      4,
-      `Typical-shape fallback: EVN live feed unavailable (${(err as Error).message}); calibrated to EVN/NLDC 2024 (10-15% curtailment in RE-rich provinces, 220 plants throttled) → ~4 TWh/yr Ninh Thuan/Binh Thuan solar.`,
-      "2024",
-    );
-  }
+function build(): RegionData {
+  return stampRegionSourceProvenance(
+    applyUncertainty(
+      unpublishedEmptyRegion(REGION_ID, NOTE),
+      { regionTier: "estimated", profileKind: "solar" },
+    ),
+  );
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
-
 if (isMain) {
-  withFallback(REGION_ID, () => run())
+  withFallback(REGION_ID, () => Promise.resolve(build()))
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("vietnam loader failed", err);
@@ -36,4 +35,4 @@ if (isMain) {
     });
 }
 
-export const buildVietnamData = () => run({ probe: false });
+export const buildVietnamData = () => Promise.resolve(build());
