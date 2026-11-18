@@ -92,6 +92,7 @@ Last generated: 2026-08-20
 | Ontario Solar | live | solar | 0 | [ontario-solar](./ontario-solar.md) |
 | Ontario Wind | live | wind | 0 | [ontario-wind](./ontario-wind.md) |
 | Quebec | estimated | hydro | 0 | [quebec](./quebec.md) |
+| Quebec Wind | estimated | wind | 0 | [quebec-wind](./quebec-wind.md) |
 | Saskatchewan | estimated | wind | 0 | [saskatchewan](./saskatchewan.md) |
 | Switzerland | live-neighbour-anchored | solar | 7 | [switzerland](./switzerland.md) |
 | Atacama | live | solar | 0 | [atacama](./atacama.md) |

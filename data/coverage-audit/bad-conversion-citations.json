@@ -1,7 +1,7 @@
 {
-  "totalValidationDocs": 558,
+  "totalValidationDocs": 559,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 551,
+  "docsNotCiting": 552,
   "pctCited": 1.25,
   "perDocCitations": [
     {
@@ -2230,6 +2230,11 @@
     },
     {
       "file": "qinghai-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "quebec-wind.md",
       "cited": false,
       "matchedPatterns": []
     },
