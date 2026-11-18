@@ -1,7 +1,7 @@
 {
-  "totalValidationDocs": 556,
+  "totalValidationDocs": 557,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 549,
+  "docsNotCiting": 550,
   "pctCited": 1.26,
   "perDocCitations": [
     {
@@ -753,6 +753,11 @@
     },
     {
       "file": "congo-republic.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "corsica.md",
       "cited": false,
       "matchedPatterns": []
     },

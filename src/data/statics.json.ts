@@ -129,7 +129,7 @@ export const STATIC_REGIONS: Record<string, StaticSpec> = {
   barbados: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Barbados Renewables 2024 (rooftop PV penetration; BLPC investor-owned via Emera; FRCS Caribbean reports occasional inverter trips; provisional 0.05 TWh/yr Pattern-D static at inclusion threshold)", reportDate: "2024" },
   bolivia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Bolivia 2024 (hydro+gas dominated grid; solar+wind ~3% of mix; CNDC publishes Informe Mensual de Operacion as PDF; provisional 0.1 TWh/yr Pattern-D static for solar curtailment subset)", reportDate: "2024" },
   ecuador: { annualTWh: 0.05, kind: "mixed", source: "IRENA Ecuador 2024 (hydro-dominated grid; CENACE Ecuador publishes Informe Anual + monthly Informe de Operacion as PDF; provisional 0.05 TWh/yr Pattern-D static at inclusion threshold; hydro-dominant flat profile)", reportDate: "2024" },
-  "french-guiana": { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 15.0, source: "EDF SEI Bilan Previsionnel Guyane 2024 (small grid; below normal inclusion threshold; included for completeness as the only South-American French overseas territory; ENTSO-E does not cover French overseas, EDF SEI alone; provisional 0.05 TWh/yr Pattern-D static)", reportDate: "2024" },
+  // french-guiana → edf-sei.json.ts (2026-11-18: EDF SEI real-time generation; waste unpublished, 0.05 TWh/yr placeholder dropped)
   // Phase-2.7 Pattern-D — Africa bulk-add (2026-04-27).
   // Source: data/coverage-audit/2026-04-26-africa.csv `introduce-as-T3` subset.
   // 32 audit rows; 6 sub-0.05 TWh rows skipped (Burundi 0.01, Gambia 0.02,

@@ -63,7 +63,14 @@ const LIVE_UNPUBLISHED_GEN = new Set([
   "philippines-wind",
   "dominican-republic",
   "dominican-republic-wind",
+  "corsica",
+  "reunion",
+  "guadeloupe",
+  "martinique",
+  "french-guiana",
 ]);
+
+const EDF_SEI_IDS = new Set(["corsica", "reunion", "guadeloupe", "martinique", "french-guiana"]);
 
 /** Operators with no dashboard region, or honesty overlays. */
 const EXTRA_OPERATORS: TsoGridRosterRow[] = [
@@ -128,7 +135,9 @@ function classify(id: string, tier: string, provenance: string | undefined): Pic
       ? "philippines"
       : id.startsWith("dominican")
         ? "dominican"
-        : id;
+        : EDF_SEI_IDS.has(id)
+          ? "edf-sei"
+          : id;
     return { collectStatus: "live-tso", loaderKey, wasteStatus: "unpublished", notes: "TSO generation collected; waste unpublished." };
   }
   if (tier === "live" || tier === "live-domestic-anchored" || tier === "live-neighbour-anchored") {

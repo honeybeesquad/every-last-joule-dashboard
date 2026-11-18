@@ -510,6 +510,8 @@ const regionData = {
   ...feeds.philippines,
   // OC SENI total generation; supersedes IRENA invented waste in statics.
   ...feeds.dominican,
+  // EDF SEI islands (Corsica, Réunion, Guadeloupe, Martinique, French Guiana): generation only, waste unpublished.
+  ...feeds.edfSei,
   "india-grid-india": feeds.indiaGridIndia,
 };
 

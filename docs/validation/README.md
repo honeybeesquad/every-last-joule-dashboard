@@ -217,7 +217,7 @@ Last generated: 2026-08-20
 | Grenada | estimated | solar | 0 | [grenada](./grenada.md) |
 | Guatemala | estimated | solar | 0 | [guatemala](./guatemala.md) |
 | Central America (SIEPAC) | estimated | solar | 0 | [guatemala-siepac](./guatemala-siepac.md) |
-| French Guiana | estimated | solar | 0 | [french-guiana](./french-guiana.md) |
+| French Guiana | estimated | mixed | 0 | [french-guiana](./french-guiana.md) |
 | Honduras | estimated | solar | 0 | [honduras](./honduras.md) |
 | Croatia Solar | live | solar | 0 | [croatia-solar](./croatia-solar.md) |
 | Croatia Wind | live | wind | 0 | [croatia-wind](./croatia-wind.md) |
