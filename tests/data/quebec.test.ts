@@ -82,6 +82,14 @@ describe("quebec loader (Hydro-Québec open data)", () => {
     expect(at("2026-11-01T07:30:00.000Z")).toBe(15026); // 02:30 EST
   });
 
+  it("does not invent an hour from a plain duplicate row", () => {
+    const details = hours(30, { hydraulique: 15000, eolien: 2000 });
+    details.push({ date: details[29].date, valeurs: { hydraulique: 16000, eolien: 2000 } });
+    const { hydro } = parseProduction({ details });
+    expect(hydro).toHaveLength(30);
+    expect(hydro.at(-1)?.mw).toBe(16000);
+  });
+
   it("throws on a malformed or truncated file so withFallback serves last-good", () => {
     expect(() => parseProduction({} as never)).toThrow(/no details array/);
     expect(() => parseProduction({ details: hours(10, { hydraulique: 15000, eolien: 2000 }) })).toThrow(/need 24/);

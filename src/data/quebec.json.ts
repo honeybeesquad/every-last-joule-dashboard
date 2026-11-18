@@ -150,8 +150,13 @@ export function parseProduction(file: HqProductionFile): QuebecGeneration {
     // On the November fall-back night the local hour 01:30 occurs twice: once
     // in daylight time, then again an hour later in standard time. The second
     // occurrence is the later UTC instant, so it must not overwrite the first.
+    // Only shift when an hour later really is the same wall-clock time; a
+    // plain duplicate row on any other night keeps its timestamp (last wins).
     if (seenLocal.has(row.date)) {
-      utcTimestamp = new Date(Date.parse(utcTimestamp) + 3_600_000).toISOString();
+      const laterMs = Date.parse(utcTimestamp) + 3_600_000;
+      if (laterMs + quebecOffsetMs(laterMs) === Date.parse(`${row.date.trim()}Z`)) {
+        utcTimestamp = new Date(laterMs).toISOString();
+      }
     }
     seenLocal.add(row.date);
     const h = readMw(row.valeurs, "hydraulique", MAX_PLAUSIBLE_HYDRO_MW, utcTimestamp);
