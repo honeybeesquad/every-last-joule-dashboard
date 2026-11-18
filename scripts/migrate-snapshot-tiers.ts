@@ -77,6 +77,7 @@ const LOADER_CLASS: Record<string, LoaderClass> = {
   // Static loaders → buildTypicalXxx → profileKind
   argentina:        { tier: "estimated", profileKind: "wind" },
   bangladesh:       { tier: "estimated", profileKind: "solar" },
+  guatemala:        { tier: "estimated", profileKind: "solar" },
   "british-columbia":{tier: "estimated", profileKind: "hydro-seasonal" },
   cyprus:           { tier: "estimated", profileKind: "solar" },
   egypt:            { tier: "estimated", profileKind: "solar" },

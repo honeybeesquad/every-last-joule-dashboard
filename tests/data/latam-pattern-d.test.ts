@@ -38,10 +38,13 @@ const NEW_LATAM_IDS = [
  * Not served from statics: dominican-republic moved to the OC SENI loader
  * (2026-09-20); guatemala, nicaragua and guatemala-siepac became unpublished
  * tso-grid-markers when their anchors came to at least the country's recorded
- * solar generation (2026-09-29).
+ * solar generation (2026-09-29). guatemala then moved to the AMM generation
+ * loader (2026-11-18), still with waste unpublished.
  */
 const MARKER_IDS = new Set(TSO_GRID_MARKERS.map((m) => m.id));
-const NOT_STATIC = new Set<string>(["dominican-republic", ...MARKER_IDS]);
+/** Dropped anchors now served by an operator generation loader, waste unpublished. */
+const GENERATION_LOADER_IDS = new Set<string>(["guatemala"]);
+const NOT_STATIC = new Set<string>(["dominican-republic", ...MARKER_IDS, ...GENERATION_LOADER_IDS]);
 
 const ALLOWED_REGION_KINDS = new Set([
   "solar",
@@ -149,10 +152,14 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     expect(annualSum).toBeLessThan(1.1);
   });
 
-  it("the three anchors dropped on 2026-09-29 are tso-grid-markers, not statics", () => {
-    expect(NEW_LATAM_IDS.filter((id) => MARKER_IDS.has(id))).toEqual(["guatemala", "nicaragua", "guatemala-siepac"]);
+  it("the three anchors dropped on 2026-09-29 are markers or generation loaders, not statics", () => {
+    expect(
+      NEW_LATAM_IDS.filter((id) => MARKER_IDS.has(id) || GENERATION_LOADER_IDS.has(id)),
+    ).toEqual(["guatemala", "nicaragua", "guatemala-siepac"]);
     const statics = buildAllStatics();
-    for (const id of MARKER_IDS) expect(statics[id], `${id} still in statics`).toBeUndefined();
+    for (const id of [...MARKER_IDS, ...GENERATION_LOADER_IDS]) {
+      expect(statics[id], `${id} still in statics`).toBeUndefined();
+    }
   });
 
   it("all new region ids are kebab-case and unique within REGIONS", () => {

@@ -59,6 +59,7 @@ const RELAY_TSO = new Set([
 
 const LIVE_UNPUBLISHED_GEN = new Set([
   "bangladesh",
+  "guatemala",
   "philippines-solar",
   "philippines-wind",
   "dominican-republic",
@@ -80,7 +81,6 @@ const SPAIN_ISLANDS = new Set([
  * does publish something; the note says what and whether it reached us.
  */
 const PROBE_2026_11_18: Record<string, Partial<Pick<TsoGridRosterRow, "collectStatus" | "notes" | "loaderKey">>> = {
-  guatemala: { collectStatus: "not-collecting", notes: "AMM graficaCombustible publishes hourly MW by fuel (solar = IRRADIACIÓN), from 2025-05-20 (2025-05-16 empty). Reachable from a datacentre IP. Not wired yet. No curtailment series." },
   nicaragua: { collectStatus: "not-collecting", notes: "CNDC consultarGeneracionPorTipo publishes hourly MW by type for the current local day only. Reachable. Not wired yet. No curtailment series." },
   "el-salvador": { collectStatus: "not-collecting", notes: "UT OperacionDiaria dashboard callback publishes hourly MWh by fuel, 2018 onward. Reachable. Not wired yet; the served 0.2 TWh/yr is an IRENA-derived modelled static; UT itself publishes no waste. No curtailment series." },
   bolivia: { collectStatus: "not-collecting", notes: "CNDC wp-json rt/generacion publishes 15-minute MW by fuel from 2025. Reachable. Not wired yet; the served 0.1 TWh/yr is an IRENA-derived modelled static; CNDC itself publishes no waste. No spill field in the hydrology routes." },
