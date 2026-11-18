@@ -448,9 +448,11 @@ const regionData = {
   "iraq-mainland": feeds.iraqMainland,
   kurdistan: feeds.kurdistan,
   bangladesh: feeds.bangladesh,
+  guatemala: feeds.guatemala,
   mongolia: feeds.mongolia,
   "british-columbia": feeds.britishColumbia,
-  quebec: feeds.quebec,
+  quebec: feeds.quebec.hydro,
+  "quebec-wind": feeds.quebec.wind,
   manitoba: feeds.manitoba,
   saskatchewan: feeds.saskatchewan,
   // Colombia: T1b-CSV loader reads committed XM API data (Britta daily relay).
@@ -512,6 +514,8 @@ const regionData = {
   ...feeds.dominican,
   // EDF SEI islands (Corsica, Réunion, Guadeloupe, Martinique, French Guiana): generation only, waste unpublished.
   ...feeds.edfSei,
+  // REE REData daily generation for the Canary and Balearic systems. Waste unpublished.
+  ...feeds.spainIslands,
   "india-grid-india": feeds.indiaGridIndia,
 };
 
