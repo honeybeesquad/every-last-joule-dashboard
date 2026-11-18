@@ -20,6 +20,10 @@ CNDC's `graficos/consultarGeneracionPorTipo` serves only the current Nicaragua-t
 
 `src/data/nicaragua.json.ts` reads the CSV. A day counts when it has local hours 00:00–19:00 (hours 20–23 read as zero); the latest 14 such days make the profile. Until seven exist, it serves an empty unpublished record whose note says how many are captured, with `sourceStatus: "degraded"`, so Nicaragua will show as degraded for about a week. After that, `relayFreshness` marks it degraded if the capture stops for four days. `nicaragua` leaves `TSO_GRID_MARKERS` and the markers' last-good snapshot, and joins `LIVE_UNPUBLISHED_GEN`. The CSV is seeded with the first manual capture (2026-11-18, hours 0–14).
 
+## Shared fixed-offset day window for the AMM, UT and CNDC loaders (2026-11-18)
+
+On `claude/modest-shannon-u9gszu-local-days`. Refactor only: no data, tier, golden or served-value change. `src/lib/local-days.ts` adds `completeLocalDays(now, utcOffsetHours, days)`, the complete local days ending yesterday in a zone with no daylight saving. `guatemala`, `el-salvador` and `bolivia` each had their own copy; their `windowDays` exports now call it. Tests: `tests/local-days.test.ts`.
+
 ## NZ-blocked grid sites: egress findings written up (2026-11-18)
 
 On `docs/nz-blocked-grid-sites-egress`. Docs only: `docs/research/2026-11-18-nz-blocked-grid-sites-egress.md`.
