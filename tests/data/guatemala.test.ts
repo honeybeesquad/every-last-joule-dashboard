@@ -1,9 +1,10 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   ammDateParam,
+  buildGuatemalaData,
   buildGuatemalaRegion,
   normaliseTipo,
   parseAmmDay,
@@ -147,5 +148,25 @@ describe("guatemala: buildGuatemalaRegion", () => {
 
   it("throws with fewer than 7 complete days", () => {
     expect(() => buildGuatemalaRegion([day, day, [], []])).toThrow(/complete AMM days/);
+  });
+});
+
+describe("guatemala: run", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+  const NOW = new Date("2026-11-18T04:00:00Z");
+  const html = () => new Response("<html>Request unsuccessful</html>", { status: 200 });
+  const json = () => new Response(JSON.stringify(FIXTURE), { status: 200 });
+
+  it("skips one non-JSON day and serves the rest", async () => {
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => (String(url).includes("dt=10/11/2026") ? html() : json())));
+    const region = await buildGuatemalaData(NOW);
+    expect(region.sourceNote).toMatch(/13 complete days/);
+  });
+
+  it("fails the run when several days return a non-JSON body", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => html()));
+    await expect(buildGuatemalaData(NOW)).rejects.toThrow(/non-JSON body/);
   });
 });

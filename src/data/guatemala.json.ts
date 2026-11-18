@@ -51,7 +51,7 @@ const MAX_PLAUSIBLE_SOLAR_MW = 1500;
 /**
  * Night-time readings a little below zero are plant auxiliary load and are
  * clamped to zero. Anything more negative than this is a sign flip or a
- * corrupt value, and fails the day.
+ * corrupt value, and fails the whole run (last-good is served).
  */
 const MAX_AUX_LOAD_MW = 25;
 
@@ -100,24 +100,26 @@ export function parseAmmDay(localDay: string, rows: unknown): CurtailmentPoint[]
   if (rows.length === 0) return [];
   const byHour = new Map<number, number>();
   let solarRows = 0;
+  const seenHours = new Set<number>();
   for (const row of rows as AmmRow[]) {
     if (normaliseTipo(row?.tipo) !== "IRRADIACION") continue;
     solarRows++;
     const hourEnding = Number(row.hora);
-    // null / blank is missing data, not zero (Number(null) would be 0).
-    if (row.potencia === null || row.potencia === undefined || String(row.potencia).trim() === "") continue;
-    const raw = Number(row.potencia);
     if (!Number.isInteger(hourEnding) || hourEnding < 1 || hourEnding > 24) {
       throw new Error(`guatemala ${localDay}: bad hora ${String(row.hora)}`);
     }
+    if (seenHours.has(hourEnding)) {
+      throw new Error(`guatemala ${localDay}: two solar rows for hour ${hourEnding}`);
+    }
+    seenHours.add(hourEnding);
+    // null / blank is missing data, not zero (Number(null) would be 0).
+    if (row.potencia === null || row.potencia === undefined || String(row.potencia).trim() === "") continue;
+    const raw = Number(row.potencia);
     if (!Number.isFinite(raw)) {
       throw new Error(`guatemala ${localDay}: unparseable solar potencia ${JSON.stringify(row.potencia)} at hour ${hourEnding}`);
     }
     if (raw < -MAX_AUX_LOAD_MW) {
       throw new Error(`guatemala ${localDay}: solar ${raw} MW at hour ${hourEnding} is below -${MAX_AUX_LOAD_MW} MW`);
-    }
-    if (byHour.has(hourEnding)) {
-      throw new Error(`guatemala ${localDay}: two solar rows for hour ${hourEnding}`);
     }
     // Small negatives are plant auxiliary load at night: no solar output.
     const mw = Math.max(0, raw);
@@ -157,15 +159,24 @@ export function buildGuatemalaRegion(daily: CurtailmentPoint[][], localDays?: st
   return { ...region, generationTotalTWh: (meanDayMWh * 30) / 1_000_000 };
 }
 
+/**
+ * A single non-JSON body (a truncated response, a one-off HTML challenge
+ * page) is skipped like a missed download. This many in one run means the
+ * format changed, and the run fails rather than thinning the window.
+ */
+const MAX_NON_JSON_DAYS = 3;
+
 async function run(now = new Date()): Promise<RegionData> {
   const days = windowDays(now);
+  let nonJsonDays = 0;
   const daily = await mapWithConcurrency(days, 4, async (day) => {
     let rows: unknown;
     try {
       rows = await fetchJSON<unknown>(`${BASE_URL}?dt=${ammDateParam(day)}`, { timeoutMs: 20000, retries: 1 });
     } catch (err) {
-      // A body that is not JSON is a format change, not a missed download.
-      if ((err as Error).name === "SyntaxError") throw err;
+      if ((err as Error).name === "SyntaxError" && ++nonJsonDays >= MAX_NON_JSON_DAYS) {
+        throw new Error(`guatemala: ${nonJsonDays} days returned a non-JSON body; format changed? (${(err as Error).message})`);
+      }
       // A day that does not download is skipped; MIN_DAYS guards the window.
       console.warn(`guatemala: ${day} skipped (${(err as Error).message})`);
       return [] as CurtailmentPoint[];
@@ -177,7 +188,7 @@ async function run(now = new Date()): Promise<RegionData> {
   return buildGuatemalaRegion(daily, days);
 }
 
-export const buildGuatemalaData = () => run();
+export const buildGuatemalaData = (now?: Date) => run(now);
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
