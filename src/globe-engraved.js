@@ -26,10 +26,18 @@
  *   8. Selected: an ink ring round the head and the leader line to the label
  *      card (the card itself is DOM, placed by placeSelectionLabel).
  *
+ * A needle rises from the ground over `rise` ms when it first appears (data
+ * arrives, its GW crosses MIN_GW_DRAWN, or the page switches into light
+ * mode). Turning over the limb is not an appearance: a needle behind the
+ * globe keeps its birth time, so a globe that turns does not keep starting
+ * rises at its edge. The renderer draws on change, not per frame, so draw()
+ * reports `rising` and the caller asks for the next frame.
+ *
  * Returns hit targets [{ id, x, y, r, bx, by }] (needle heads) for picking.
  */
 import * as d3 from "npm:d3";
 import { D2R, dot, ortho, smooth, camera } from "./lib/globe-camera.js";
+import { easeOutCubic } from "./lib/globe-geo.js";
 import { MIN_GW_DRAWN, needleLength, headRadius, needleStyle, placeSelectionLabel } from "./lib/needles.js";
 
 /** Tuned at R = 345 CSS px, as the reference was. */
@@ -56,6 +64,8 @@ function lonDelta(a, b) {
 export function createEngravedRenderer() {
   // Offscreen line-screen cache (layers 1-2).
   let sea = null; // { canvas, key: { lat0, lon0, sunLat, sunLon, ... } }
+  // When each needle (record + fuel) was first seen, for its rise.
+  const born = new Map();
 
   function seaUsable(want, exact) {
     if (!sea) return false;
@@ -141,7 +151,9 @@ export function createEngravedRenderer() {
   /**
    * o: { ctx, w, h, dpr, cx, cy, R, lat0, lon0, sun: {lat, lon, v},
    *      land, dots: { n, xyz }, needles, rings, inkRGB, paper, warn,
-   *      selectedId, fast, exact }
+   *      selectedId, fast, exact, now, rise }
+   *   now: a performance.now() timestamp; rise: ms a new needle takes to
+   *   grow to full length (0 draws it at full length at once)
    * needles: [{ id, v, color, bucket, stale, gw, offset }] (offset: px,
    *   perpendicular to the needle, for records that share a location)
    * rings:   [{ v, gen }] grids that publish no waste
@@ -222,15 +234,24 @@ export function createEngravedRenderer() {
     // 7. needles, smallest first so the big ones sit on top
     const hits = [];
     const sorted = o.needles.filter((n) => n.gw >= MIN_GW_DRAWN).sort((a, b) => a.gw - b.gw);
+    const now = o.now ?? 0;
+    const seen = new Set();
+    let rising = false;
     for (const n of sorted) {
+      const bornKey = `${n.id}:${n.fuel ?? n.color}`;
+      seen.add(bornKey);
+      if (!born.has(bornKey)) born.set(bornKey, now);
       const [x, y, z] = ortho(cam, n.v);
       if (z <= 0.05) continue;
+      const age = o.rise > 0 ? (now - born.get(bornKey)) / o.rise : 1;
+      const grow = age >= 1 ? 1 : easeOutCubic(Math.max(0, age));
+      if (grow < 1) rising = true;
       let dx = x, dy = y;
       const len = Math.hypot(dx, dy);
       if (len < 0.02) { dx = 0; dy = -1; } else { dx /= len; dy /= len; }
       const off = (n.offset ?? 0) * sk;
       const bx = cx + x * R - dy * off, by = cy + y * R + dx * off;
-      const H = needleLength(n.gw, k, len);
+      const H = needleLength(n.gw, k, len) * grow;
       const tx = bx + dx * H, ty = by + dy * H;
       const style = needleStyle(n.bucket, n.stale);
       ctx.lineCap = "round";
@@ -242,7 +263,7 @@ export function createEngravedRenderer() {
       ctx.setLineDash(style.dashed ? [2 * sk, 2 * sk] : []);
       ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(tx, ty); ctx.stroke();
       ctx.setLineDash([]);
-      const hr = headRadius(n.gw, sk);
+      const hr = headRadius(n.gw, sk) * (0.35 + 0.65 * grow);
       ctx.fillStyle = paper;
       ctx.beginPath(); ctx.arc(tx, ty, hr + 1.2 * sk, 0, Math.PI * 2); ctx.fill();
       if (style.hollowHead) {
@@ -269,6 +290,9 @@ export function createEngravedRenderer() {
       hits.push({ id: n.id, x: tx, y: ty, r: Math.max(hr + 4, 10), bx, by });
     }
     ctx.lineCap = "butt";
+    // A needle that leaves the data (or drops under MIN_GW_DRAWN) rises again
+    // when it comes back.
+    for (const key of born.keys()) if (!seen.has(key)) born.delete(key);
 
     // 8. selected: ring round the head, and the leader to the label card
     // A mixed record draws one needle per fuel under one id; ring the
@@ -288,12 +312,12 @@ export function createEngravedRenderer() {
         ctx.stroke();
       }
     }
-    return { hits, label };
+    return { hits, label, rising };
   }
 
   return {
     draw,
-    /** Drop the line-screen cache (tokens or size changed). */
-    reset() { sea = null; },
+    /** Drop the line-screen cache (tokens or size changed); needles rise again. */
+    reset() { sea = null; born.clear(); },
   };
 }
