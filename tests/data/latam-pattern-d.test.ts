@@ -44,7 +44,7 @@ const NEW_LATAM_IDS = [
  */
 const MARKER_IDS = new Set(TSO_GRID_MARKERS.map((m) => m.id));
 /** Dropped anchors now served by an operator generation loader, waste unpublished. */
-const GENERATION_LOADER_IDS = new Set<string>(["guatemala", "el-salvador", "bolivia"]);
+const GENERATION_LOADER_IDS = new Set<string>(["guatemala", "el-salvador", "bolivia", "nicaragua"]);
 /** Not a 2026-09-29 drop: french-guiana's placeholder went with its move to the EDF SEI loader. */
 const NOT_STATIC = new Set<string>(["dominican-republic", "french-guiana", ...MARKER_IDS, ...GENERATION_LOADER_IDS]);
 

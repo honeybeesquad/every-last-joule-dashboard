@@ -33,9 +33,9 @@ const UNTESTABLE = [
 /**
  * The seventeen anchors dropped on 2026-09-29; now unpublished grid markers,
  * except those since wired to an operator generation loader (waste still
- * unpublished): guatemala (AMM, 2026-11-18).
+ * unpublished): guatemala (AMM, 2026-11-18) and nicaragua (CNDC nightly capture, 2026-11-18).
  */
-const NOW_GENERATION_LOADERS = new Set(["guatemala"]);
+const NOW_GENERATION_LOADERS = new Set(["guatemala", "nicaragua"]);
 const DROPPED = [
   "benin", "botswana", "colombia-wind", "cote-divoire", "eswatini", "ghana", "guatemala",
   "guatemala-siepac", "laos", "libya", "myanmar", "nicaragua", "niger", "nigeria",
