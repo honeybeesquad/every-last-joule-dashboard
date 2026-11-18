@@ -856,18 +856,18 @@ body {
 
   /* The dashboard and the doc pages each bring their own gutter
      (.app-shell padding; .methodology-doc's 18px phone padding). Stacked on
-     the 4vw above and Framework's 2rem #observablehq-center margin, the
-     dashboard had 253px of a 375px phone and the doc pages' text 245px
-     (198px and 194px at 320). Drop the two generic gutters on both. */
+     the 4vw above and Framework's 2rem #observablehq-center margin they
+     left the doc pages' text 245px of a 375px phone (194px at 320), as
+     #1082 found on the dashboard. Drop the two generic gutters on both. */
   body:has(.app-shell, .methodology-doc) {
     padding-inline: 0;
   }
   #observablehq-center:has(.app-shell, .methodology-doc) {
     margin-inline: 0;
   }
-  /* Framework's "Next page" pager sits outside .app-shell; give it the
-     shell's phone gutter back so it does not touch the screen edge. The doc
-     pages' pager is handled with .methodology-doc's own padding below. */
+  /* Framework's "Next page" pager sits outside .app-shell; give it a
+     14px gutter (#1082) so it does not touch the screen edge. The doc
+     pages' pager gets .methodology-doc's 18px below. */
   #observablehq-center:has(.app-shell) > #observablehq-footer {
     margin-inline: 14px;
   }
