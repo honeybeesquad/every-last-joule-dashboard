@@ -48,6 +48,13 @@ const MIN_DAYS = 7;
  */
 const MAX_PLAUSIBLE_SOLAR_MW = 1500;
 
+/**
+ * Night-time readings a little below zero are plant auxiliary load and are
+ * clamped to zero. Anything more negative than this is a sign flip or a
+ * corrupt value, and fails the day.
+ */
+const MAX_AUX_LOAD_MW = 25;
+
 export interface AmmRow {
   hora: string | number;
   potencia: number | string | null;
@@ -92,8 +99,10 @@ export function parseAmmDay(localDay: string, rows: unknown): CurtailmentPoint[]
   if (!Array.isArray(rows)) throw new Error(`guatemala ${localDay}: payload is not an array`);
   if (rows.length === 0) return [];
   const byHour = new Map<number, number>();
+  let solarRows = 0;
   for (const row of rows as AmmRow[]) {
     if (normaliseTipo(row?.tipo) !== "IRRADIACION") continue;
+    solarRows++;
     const hourEnding = Number(row.hora);
     // null / blank is missing data, not zero (Number(null) would be 0).
     if (row.potencia === null || row.potencia === undefined || String(row.potencia).trim() === "") continue;
@@ -101,7 +110,15 @@ export function parseAmmDay(localDay: string, rows: unknown): CurtailmentPoint[]
     if (!Number.isInteger(hourEnding) || hourEnding < 1 || hourEnding > 24) {
       throw new Error(`guatemala ${localDay}: bad hora ${String(row.hora)}`);
     }
-    if (!Number.isFinite(raw)) continue;
+    if (!Number.isFinite(raw)) {
+      throw new Error(`guatemala ${localDay}: unparseable solar potencia ${JSON.stringify(row.potencia)} at hour ${hourEnding}`);
+    }
+    if (raw < -MAX_AUX_LOAD_MW) {
+      throw new Error(`guatemala ${localDay}: solar ${raw} MW at hour ${hourEnding} is below -${MAX_AUX_LOAD_MW} MW`);
+    }
+    if (byHour.has(hourEnding)) {
+      throw new Error(`guatemala ${localDay}: two solar rows for hour ${hourEnding}`);
+    }
     // Small negatives are plant auxiliary load at night: no solar output.
     const mw = Math.max(0, raw);
     if (mw > MAX_PLAUSIBLE_SOLAR_MW) {
@@ -109,6 +126,8 @@ export function parseAmmDay(localDay: string, rows: unknown): CurtailmentPoint[]
     }
     byHour.set(hourEnding, mw);
   }
+  // A non-empty day with no solar row at all means the label changed.
+  if (solarRows === 0) throw new Error(`guatemala ${localDay}: no IRRADIACIÓN rows in a non-empty day`);
   if (byHour.size < 24) return [];
   const [y, m, d] = localDay.split("-").map(Number);
   const points: CurtailmentPoint[] = [];
@@ -145,6 +164,8 @@ async function run(now = new Date()): Promise<RegionData> {
     try {
       rows = await fetchJSON<unknown>(`${BASE_URL}?dt=${ammDateParam(day)}`, { timeoutMs: 20000, retries: 1 });
     } catch (err) {
+      // A body that is not JSON is a format change, not a missed download.
+      if ((err as Error).name === "SyntaxError") throw err;
       // A day that does not download is skipped; MIN_DAYS guards the window.
       console.warn(`guatemala: ${day} skipped (${(err as Error).message})`);
       return [] as CurtailmentPoint[];
@@ -160,7 +181,7 @@ export const buildGuatemalaData = () => run();
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  withFallback(REGION_ID, () => run())
+  withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => { console.error("guatemala loader failed", err); process.exit(1); });
 }

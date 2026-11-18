@@ -19,6 +19,7 @@ describe("guatemala: helpers", () => {
   it("matches IRRADIACIÓN with or without the accent", () => {
     expect(normaliseTipo("IRRADIACIÓN")).toBe("IRRADIACION");
     expect(normaliseTipo("IRRADIACIÓN")).toBe("IRRADIACION");
+    expect(normaliseTipo("irradiacion ")).toBe("IRRADIACION");
     expect(normaliseTipo(null)).toBe("");
   });
 
@@ -87,6 +88,33 @@ describe("guatemala: parseAmmDay", () => {
 
   it("throws on a non-array payload", () => {
     expect(() => parseAmmDay("2026-11-16", { error: "x" })).toThrow(/not an array/);
+  });
+
+  const patchSolar = (hora: string, patch: Record<string, unknown>) =>
+    (FIXTURE as Array<Record<string, unknown>>).map((r) =>
+      normaliseTipo(r.tipo as string) === "IRRADIACION" && r.hora === hora ? { ...r, ...patch } : r,
+    );
+
+  it("throws on a large negative reading instead of clamping it to zero", () => {
+    expect(() => parseAmmDay("2026-11-16", patchSolar("12", { potencia: -300 }))).toThrow(/below -25 MW/);
+  });
+
+  it("throws on an unparseable solar value instead of thinning the window", () => {
+    expect(() => parseAmmDay("2026-11-16", patchSolar("12", { potencia: "433,45" }))).toThrow(/unparseable/);
+  });
+
+  it("throws on two solar rows for the same hour", () => {
+    const solarNoon = (FIXTURE as Array<Record<string, unknown>>).find(
+      (r) => normaliseTipo(r.tipo as string) === "IRRADIACION" && r.hora === "12",
+    );
+    expect(() => parseAmmDay("2026-11-16", [...(FIXTURE as unknown[]), solarNoon])).toThrow(/two solar rows/);
+  });
+
+  it("throws when a non-empty day has no solar rows (label changed)", () => {
+    const relabelled = (FIXTURE as Array<Record<string, unknown>>).map((r) =>
+      normaliseTipo(r.tipo as string) === "IRRADIACION" ? { ...r, tipo: "SOLAR" } : r,
+    );
+    expect(() => parseAmmDay("2026-11-16", relabelled)).toThrow(/no IRRADIACIÓN rows/);
   });
 });
 

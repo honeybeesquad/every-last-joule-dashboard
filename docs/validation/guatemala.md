@@ -37,7 +37,7 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-Generation only; waste is unpublished. AMM solar output roughly quadrupled between mid-2025 (peak ~107 MW on 2025-06-15) and late 2026 (peak ~467 MW on 2026-10-15), so a 30-day window run-rate (~1.2 TWh/yr in November 2026) is well above the 2024 OWID figure of 0.28 TWh. AMM's endpoint returned no data before about 2025-05-20. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+Generation only; waste is unpublished. AMM solar output roughly quadrupled between mid-2025 (peak ~107 MW on 2025-06-15) and late 2026 (peak ~467 MW on 2026-10-15), so the loader's run-rate (the mean complete day of a 14-day window × 30, ~1.2 TWh/yr in November 2026) is well above the 2024 OWID figure of 0.28 TWh. AMM's endpoint returned no data before about 2025-05-20. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
