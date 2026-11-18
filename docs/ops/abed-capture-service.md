@@ -176,7 +176,9 @@ version recovered in one run.
 backup at `cron-wrapper.sh.bak-20260819`). Do not re-enable it: both hosts pushing would
 race on the same CSV. That step also used to `exit 1` on failure, which is why the
 Colombia tunnel dying silently blocked the India, Vietnam and Taiwan fetchers as well and
-stopped the entire daily push for three weeks. Britta still runs those three.
+stopped the entire daily push for three weeks. Britta ran those three until
+2026-08-22; checked 2026-11-18, it has no cron or launchd ELJ job at all, so they
+are not running anywhere.
 
 ## PREPA generation poll (2026-09-20)
 
@@ -196,8 +198,57 @@ SYD. Waste unpublished. Not T1a.
 - **Push path:** same `~/elj-relay/data-relay-repo` + `~/.ssh/elj-relay-deploy`
   as Colombia.
 
+**Installed 2026-11-18** (it had never been scheduled: the cron line above sat
+commented out for two months, so the dashboard held only the two 2026-09-20
+manual snapshots). PREPA answers abed directly from NZ, so the VPN is not used
+today. Cron: `7 * * * *`.
+
+## Argentina CAMMESA and Mexico CENACE (2026-11-18)
+
+Both moved onto abed with the same push path as Colombia and PREPA; the
+dashboard's `colombia-relay-pull.yml` copies them in.
+
+- **CAMMESA** (`argentina-cammesa-fetch.py` + `argentina-cammesa-push.sh`): the
+  5-minute renewables endpoint times out from NZ and answers through NordVPN
+  Argentina (a real Buenos Aires exit, Latitude.sh). Fetches the last 3 days
+  each run (`DAYS=3`) and appends new timestamps. Cron `40 5 * * *` NZ. The
+  first run backfilled 30 days with `DAYS=30`; a day CAMMESA refuses
+  (2026-10-19 did) is not retried once it falls outside the 3-day window.
+- **CENACE** (`mexico-cenace-fetch.py` + `mexico-cenace-push.sh`): the
+  Generacion Liquidada page answers abed directly. It serves only the latest
+  published month, so the series has a gap from June to September 2026; the
+  first run added October. Cron `50 5 * * *` NZ. Britta never ran it: Britta has
+  had no cron or launchd ELJ job since August 2026.
+- **One VPN at a time:** the CAMMESA and PREPA fetches run under
+  `flock /tmp/elj-nordvpn.lock`.
+- **Seeding:** each relay CSV was seeded once from the dashboard's committed
+  `data/historical/` copy before the first run, and the pushers refuse to run if
+  the file is missing. The pull copies a relay file only when it keeps every
+  committed row (`scripts/relay/accept_append_only.py`).
+
+## Git plumbing for every abed pusher (2026-11-18)
+
+All abed pushers (Colombia, PREPA, CAMMESA, CENACE, the heartbeat) source
+`scripts/relay/relay-git.sh`, deployed as `~/elj-relay/relay-git.sh`.
+`relay_sync` aborts a leftover rebase, returns the clone to `main` (saving a
+detached HEAD on a `rescue/*` branch) and pulls; `relay_commit_push` commits
+with an explicit identity, pushes `HEAD:main`, rebases once on reject, and also
+pushes commits stranded by an earlier failed run.
+
+Why: from 2026-11-04 to 2026-11-18 no abed push landed. The Bangalore droplet
+had become a second writer, so pushes needed a rebase; the clone had no git
+identity, so every rebase stopped at "unable to auto-detect email" and left the
+clone mid-rebase on a detached HEAD. Fourteen Colombia rows and every heartbeat
+sat in local commits. The clone now also has `user.name`/`user.email` set.
+
+**Healthcheck month-start grace:** the stale threshold is 48 h plus 24 h per
+day of the month on days 1–4. `--month current` writes nothing on the 1st and
+XM settles about two days late, so the plain 48 h check reported "lake is
+stale" on the 2nd and 3rd of September, October and November.
+
 ```bash
-# on abed, after copying the two scripts:
-# 7 * * * * /home/simon/elj-relay/puerto-rico-prepa-push.sh
+# deploy (from a dashboard checkout):
+scp scripts/relay/{relay-git.sh,colombia-vertimientos-fetch.sh,puerto-rico-prepa-fetch.py,puerto-rico-prepa-push.sh,argentina-cammesa-fetch.py,argentina-cammesa-push.sh,mexico-cenace-fetch.py,mexico-cenace-push.sh} abed:elj-relay/
+scp scripts/relay/elj-capture-healthcheck.sh abed:elj-capture/
 ```
 
