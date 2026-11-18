@@ -12,6 +12,10 @@ On `claude/sharp-lovelace-395b93`. No tier move, golden unchanged. **The dataset
 - Changed: `scripts/refresh-china.ts` (the rate and its provenance comment), `data/china-anchors.json` (two rows), `data/snapshots/last-good/inner-mongolia.json` (rebuilt from the loader), the `regions.ts` source strings and the two validation docs. The research note is updated.
 - **Open:** the other provinces' rates in `refresh-china.ts` carry the same cpnn citation and "full-year / M1-11" hedge and have not been re-checked. Some may also be Jan–Nov.
 
+## Shared fixed-offset day window for the AMM, UT and CNDC loaders (2026-11-18)
+
+On `claude/modest-shannon-u9gszu-local-days`. Refactor only: no data, tier, golden or served-value change. `src/lib/local-days.ts` adds `completeLocalDays(now, utcOffsetHours, days)`, the complete local days ending yesterday in a zone with no daylight saving. `guatemala`, `el-salvador` and `bolivia` each had their own copy; their `windowDays` exports now call it. Tests: `tests/local-days.test.ts`.
+
 ## NZ-blocked grid sites: egress findings written up (2026-11-18)
 
 On `docs/nz-blocked-grid-sites-egress`. Docs only: `docs/research/2026-11-18-nz-blocked-grid-sites-egress.md`.
