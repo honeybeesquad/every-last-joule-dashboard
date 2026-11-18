@@ -68,6 +68,25 @@ const LIVE_UNPUBLISHED_GEN = new Set([
   ...EDF_SEI_IDS,
 ]);
 
+/**
+ * Per-region corrections from the 2026-11-18 probe
+ * (`docs/research/2026-11-18-no-public-series-probe.md`). These regions were
+ * classified "no public series" or as a plain statics stub, but the operator
+ * does publish something; the note says what and whether it reached us.
+ */
+const PROBE_2026_11_18: Record<string, Partial<Pick<TsoGridRosterRow, "collectStatus" | "notes" | "loaderKey">>> = {
+  guatemala: { collectStatus: "not-collecting", notes: "AMM graficaCombustible publishes hourly MW by fuel (solar = IRRADIACIÓN), from 2025-05-20 (2025-05-16 empty). Reachable from a datacentre IP. Not wired yet. No curtailment series." },
+  nicaragua: { collectStatus: "not-collecting", notes: "CNDC consultarGeneracionPorTipo publishes hourly MW by type for the current local day only. Reachable. Not wired yet. No curtailment series." },
+  "el-salvador": { collectStatus: "not-collecting", notes: "UT OperacionDiaria dashboard callback publishes hourly MWh by fuel, 2018 onward. Reachable. Not wired yet; the served 0.2 TWh/yr is an IRENA-derived modelled static; UT itself publishes no waste. No curtailment series." },
+  bolivia: { collectStatus: "not-collecting", notes: "CNDC wp-json rt/generacion publishes 15-minute MW by fuel from 2025. Reachable. Not wired yet; the served 0.1 TWh/yr is an IRENA-derived modelled static; CNDC itself publishes no waste. No spill field in the hydrology routes." },
+  yukon: { collectStatus: "not-collecting", notes: "Yukon Energy page embeds 24 h hourly MWh by hydro/wind/solar/thermal; an hourly per-unit workbook (hydro and thermal, 2020-02 to 2026-01) is linked. Reachable. Not wired yet. No spill column." },
+  saskatchewan: { collectStatus: "not-collecting", loaderKey: "saskatchewan", notes: "SaskPower dashboard JSON is one by-fuel MW snapshot per day, no history. The loader's probe always falls through to a typical wind shape anchored at an uncited ~0.15 TWh/yr." },
+  "nova-scotia": { collectStatus: "no-public-series", notes: "NS Power CurrentMix.json and CurrentLoad.json are 404. The OASIS report gives a 2-minute total-wind MW snapshot only, no history." },
+  "new-brunswick": { collectStatus: "no-public-series", notes: "NB Power real-time page publishes load, demand and interchange only. No generation by fuel." },
+  "prince-edward-island": { collectStatus: "not-collecting", notes: "Government of PEI wind-energy API (wdf.princeedwardisland.ca) answers 403 to a datacentre IP. Retry from a home IP before calling it dark." },
+  "costa-rica": { collectStatus: "not-collecting", notes: "ICE/CENCE EnergiaHorariaFuentePlanta answers 403 to a datacentre IP. The served 0.3 TWh/yr is an IRENA-derived modelled static; ICE publishes no waste series we have seen. Retry from a home IP." },
+};
+
 /** Operators with no dashboard region, or honesty overlays. */
 const EXTRA_OPERATORS: TsoGridRosterRow[] = [
   { operator: "REE ESIOS", iso3: "ESP", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "spain-esios", wasteStatus: "unpublished", regionIds: "spain-wind;spain-solar", notes: "Parser shipped. Returns {} without ESIOS_API_TOKEN. Does not overwrite ENTSO T1a Spain. Indicator 704 is mixed-fuel — no invented split." },
@@ -102,6 +121,7 @@ const EXTRA_OPERATORS: TsoGridRosterRow[] = [
   { operator: "GRTE/Sonelgaz", iso3: "DZA", fuels: "solar", collectStatus: "no-public-series", loaderKey: "", wasteStatus: "unpublished", regionIds: "", notes: "Structural dark." },
   { operator: "SO UPS Siberia/Far East/Kaliningrad", iso3: "RUS", fuels: "hydro,wind", collectStatus: "no-public-series", loaderKey: "", wasteStatus: "unpublished", regionIds: "", notes: "Post-2022 opacity. Murmansk stays T2; European UES modelled." },
   { operator: "Ukrenergo", iso3: "UKR", fuels: "wind,solar", collectStatus: "conflict-blocked", loaderKey: "", wasteStatus: "unpublished", regionIds: "ukraine;ukraine-wind", notes: "ENTSO absent post-war. Ember is not Ukrenergo." },
+  { operator: "SEV", iso3: "FRO", fuels: "wind,hydro", collectStatus: "not-collecting", loaderKey: "", wasteStatus: "unpublished", regionIds: "", notes: "No dashboard region. sev.fo realtimemap and elproduction APIs answer 403 to a datacentre IP. Retry from a home IP." },
   { operator: "DPRK", iso3: "PRK", fuels: "hydro", collectStatus: "no-public-series", loaderKey: "", wasteStatus: "unpublished", regionIds: "north-korea", notes: "Dark. Roster row so every grid is honest about darkness." },
 ];
 
@@ -151,7 +171,11 @@ function classify(id: string, tier: string, provenance: string | undefined): Pic
 
 export function buildTsoGridRoster(): TsoGridRosterRow[] {
   const fromRegions: TsoGridRosterRow[] = REGIONS.map((r) => {
-    const c = classify(r.id, r.tier, r.sourceProvenance);
+    const base = classify(r.id, r.tier, r.sourceProvenance);
+    // A probe note describes an unwired grid. Once a region is collected
+    // (live-tso / relay-tso), the classification wins and the note is stale.
+    const collected = base.collectStatus === "live-tso" || base.collectStatus === "relay-tso";
+    const c = collected ? base : { ...base, ...PROBE_2026_11_18[r.id] };
     return {
       operator: r.name,
       iso3: r.country,
