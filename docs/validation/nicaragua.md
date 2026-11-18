@@ -1,6 +1,6 @@
 # Validation — Nicaragua (`nicaragua`)
 
-Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-11-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** NIC
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** No curtailment series collected; grid present, waste unpublished. Its former 0.1 TWh/yr anchor (IRENA Nicaragua VRE statistics 2024) was 3.3× Nicaragua's 2024 solar generation of 0.03 TWh (Our World in Data, from Ember and the Energy Institute), so it was dropped on 2026-09-29.
-- **Source URL:** [https://www.enatrel.gob.ni/](https://www.enatrel.gob.ni/)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Source:** CNDC hourly solar generation by type (cndc.org.ni consultarGeneracionPorTipo), captured nightly because CNDC serves the current day only. Waste unpublished: CNDC publishes no curtailment series. The former 0.1 TWh/yr anchor (IRENA Nicaragua VRE statistics 2024) was 3.3× Nicaragua's 2024 solar generation of 0.03 TWh (Our World in Data, from Ember and the Energy Institute), so it was dropped on 2026-09-29.
+- **Source URL:** [https://www.cndc.org.ni/graficos/consultarGeneracionPorTipo](https://www.cndc.org.ni/graficos/consultarGeneracionPorTipo)
+- **Loader:** [`nicaragua.json.ts`](../../src/data/nicaragua.json.ts) (capture: `scripts/capture/nicaragua-cndc.ts`, `.github/workflows/nicaragua-capture.yml`)
 - **Structural gap:** no
 
 ## Calibration
@@ -37,7 +37,9 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+Generation only; waste is unpublished. CNDC serves the current Nicaragua-time day only, with no date parameter, so history exists only from the nightly capture, which began on 2026-11-18. A day counts when it has local hours 00:00–19:00; until seven such days exist the loader serves an empty unpublished record that says so. The 30-day figure is the window's diurnal profile × 30. If the capture workflow stops, the series goes stale and the loader marks it `degraded` after four days.
+
+See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 

@@ -31,6 +31,18 @@ On `claude/sharp-lovelace-395b93`. No tier move, golden unchanged. **The dataset
 - Changed: `scripts/refresh-china.ts` (the rate and its provenance comment), `data/china-anchors.json` (two rows), `data/snapshots/last-good/inner-mongolia.json` (rebuilt from the loader), the `regions.ts` source strings and the two validation docs. The research note is updated.
 - **Open:** the other provinces' rates in `refresh-china.ts` carry the same cpnn citation and "full-year / M1-11" hedge and have not been re-checked. Some may also be Jan–Nov.
 
+## Nicaragua: CNDC hourly solar captured nightly, waste unpublished (2026-11-18)
+
+On `claude/modest-shannon-u9gszu-nicaragua`. No tier move (stays `estimated` / T3), golden unchanged, no waste served before or after (Nicaragua was an unpublished marker).
+
+CNDC's `graficos/consultarGeneracionPorTipo` serves only the current Nicaragua-time day and takes no date parameter, so a live loader would see a full day on two of eight builds. Instead, `.github/workflows/nicaragua-capture.yml` runs `scripts/capture/nicaragua-cndc.ts` at 02:40, 03:40 and 05:40 UTC (20:40, 21:40 and 23:40 local; three runs because GitHub delays scheduled runs and a day cannot be fetched after local midnight), merges the day's SOLAR hours into `data/historical/nicaragua-cndc-solar-hourly.csv` (a later capture of the same hour replaces an earlier one), and lands it through an `automation/nicaragua-capture` auto-merge PR, as `history-append.yml` does. The CSV on that branch is merged in first, so a night still waiting on an unmerged PR is not dropped by the next night's force-push. CSV-only pushes do not deploy; the next 3-hourly refresh picks them up.
+
+`src/data/nicaragua.json.ts` reads the CSV. A day counts when it has local hours 00:00–19:00 (hours 20–23 read as zero); the latest 14 such days make the profile. Until seven exist, it serves an empty unpublished record whose note says how many are captured, with `sourceStatus: "degraded"`, so Nicaragua will show as degraded for about a week. After that, `relayFreshness` marks it degraded if the capture stops for four days. `nicaragua` leaves `TSO_GRID_MARKERS` and the markers' last-good snapshot, and joins `LIVE_UNPUBLISHED_GEN`. The CSV is seeded with the first manual capture (2026-11-18, hours 0–14).
+
+## Shared fixed-offset day window for the AMM, UT and CNDC loaders (2026-11-18)
+
+On `claude/modest-shannon-u9gszu-local-days`. Refactor only: no data, tier, golden or served-value change. `src/lib/local-days.ts` adds `completeLocalDays(now, utcOffsetHours, days)`, the complete local days ending yesterday in a zone with no daylight saving. `guatemala`, `el-salvador` and `bolivia` each had their own copy; their `windowDays` exports now call it. Tests: `tests/local-days.test.ts`.
+
 ## NZ-blocked grid sites: egress findings written up (2026-11-18)
 
 On `docs/nz-blocked-grid-sites-egress`. Docs only: `docs/research/2026-11-18-nz-blocked-grid-sites-egress.md`.

@@ -28,6 +28,7 @@
 import { pathToFileURL } from "node:url";
 
 import { mapWithConcurrency } from "../lib/concurrency.js";
+import { completeLocalDays } from "../lib/local-days.js";
 import { fetchJSON } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
@@ -71,9 +72,7 @@ interface CndcSeries {
 
 /** The `days` complete local days that end yesterday (Bolivia time), oldest first. */
 export function windowDays(now: Date, days = WINDOW_DAYS): string[] {
-  const local = new Date(now.getTime() + BO_OFFSET_HOURS * 3_600_000);
-  const today = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate());
-  return Array.from({ length: days }, (_, i) => new Date(today - (days - i) * 86_400_000).toISOString().slice(0, 10));
+  return completeLocalDays(now, BO_OFFSET_HOURS, days);
 }
 
 /**

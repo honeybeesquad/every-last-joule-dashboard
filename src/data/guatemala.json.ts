@@ -19,6 +19,7 @@
 import { pathToFileURL } from "node:url";
 
 import { mapWithConcurrency } from "../lib/concurrency.js";
+import { completeLocalDays } from "../lib/local-days.js";
 import { fetchJSON } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
@@ -81,13 +82,7 @@ export function ammDateParam(localDay: string): string {
  * oldest first, as YYYY-MM-DD.
  */
 export function windowDays(now: Date, days = WINDOW_DAYS): string[] {
-  const localNow = new Date(now.getTime() + GT_OFFSET_HOURS * 3_600_000);
-  const todayUtcMidnight = Date.UTC(localNow.getUTCFullYear(), localNow.getUTCMonth(), localNow.getUTCDate());
-  const out: string[] = [];
-  for (let i = days; i >= 1; i--) {
-    out.push(new Date(todayUtcMidnight - i * 86_400_000).toISOString().slice(0, 10));
-  }
-  return out;
+  return completeLocalDays(now, GT_OFFSET_HOURS, days);
 }
 
 /**

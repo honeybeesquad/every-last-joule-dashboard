@@ -181,6 +181,7 @@ export const DATA_LOADERS = [
   { key: "yukon",               file: FileAttachment("../data/yukon.json"),                label: "Yukon" },
   { key: "elSalvador",          file: FileAttachment("../data/el-salvador.json"),          label: "El Salvador" },
   { key: "bolivia",             file: FileAttachment("../data/bolivia.json"),              label: "Bolivia" },
+  { key: "nicaragua",           file: FileAttachment("../data/nicaragua.json"),            label: "Nicaragua" },
   { key: "mongolia",            file: FileAttachment("../data/mongolia.json"),             label: "Mongolia" },
   { key: "britishColumbia",     file: FileAttachment("../data/british-columbia.json"),     label: "British Columbia" },
   { key: "quebec",              file: FileAttachment("../data/quebec.json"),               label: "Québec" },
