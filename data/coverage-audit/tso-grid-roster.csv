@@ -413,7 +413,7 @@ Russia (Murmansk),RUS,wind,not-collecting,statics,legacy-unspecified,russia-murm
 TVA Wind,USA,wind,live-tso,eia-vre-bas,unpublished,tva-wind,EIA-930 generation; BA publishes no curtailment rate.
 TVA Solar,USA,solar,live-tso,eia-vre-bas,unpublished,tva-solar,EIA-930 generation; BA publishes no curtailment rate.
 Guatemala,GTM,solar,live-tso,guatemala,unpublished,guatemala,TSO generation collected; waste unpublished.
-El Salvador,SLV,solar,not-collecting,statics,unpublished,el-salvador,"UT OperacionDiaria dashboard callback publishes hourly MWh by fuel, 2018 onward. Reachable. Not wired yet; the served 0.2 TWh/yr is an IRENA-derived modelled static; UT itself publishes no waste. No curtailment series."
+El Salvador,SLV,solar,live-tso,el-salvador,unpublished,el-salvador,TSO generation collected; waste unpublished.
 Nicaragua,NIC,solar,not-collecting,tso-grid-markers,unpublished,nicaragua,CNDC consultarGeneracionPorTipo publishes hourly MW by type for the current local day only. Reachable. Not wired yet. No curtailment series.
 Costa Rica,CRI,hydro,not-collecting,statics,unpublished,costa-rica,ICE/CENCE EnergiaHorariaFuentePlanta answers 403 to a datacentre IP. The served 0.3 TWh/yr is an IRENA-derived modelled static; ICE publishes no waste series we have seen. Retry from a home IP.
 Panama,PAN,solar,not-collecting,statics,unpublished,panama,Country/T3 stub — Ember/IRENA is not TSO collection.

@@ -1,6 +1,6 @@
 # Validation — El Salvador (`el-salvador`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-11-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** SLV
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** IRENA Renewable Energy Statistics 2024 (El Salvador VRE share)
-- **Source URL:** [https://www.ut.com.sv/](https://www.ut.com.sv/)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Source:** UT hourly solar generation by technology (estadistico.ut.com.sv Operación Diaria). Waste unpublished: UT publishes no curtailment series. The former 0.2 TWh/yr static (IRENA-derived, El Salvador VRE share) was modelled, not a UT figure, and was dropped on 2026-11-18.
+- **Source URL:** [https://estadistico.ut.com.sv/OperacionDiaria.aspx](https://estadistico.ut.com.sv/OperacionDiaria.aspx)
+- **Loader:** [`el-salvador.json.ts`](../../src/data/el-salvador.json.ts)
 - **Structural gap:** no
 
 ## Calibration
@@ -37,7 +37,9 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+Generation only; waste is unpublished. The 30-day figure is the 14-day window's diurnal profile × 30. UT's pivot omits hours with no records, which for solar are night hours; a missing hour outside 06:00–16:59 is read as zero, and a day missing any hour inside it, or carrying a null value there, is skipped. UT's series goes back to at least 2018, so a backfill is possible. The 0.2 TWh/yr static this replaces was IRENA-derived, not a UT figure; against UT's November 2026 run-rate (~0.8 TWh/yr, 14 days scaled to a year, not an annual total) it would mean about a quarter of output curtailed.
+
+See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
