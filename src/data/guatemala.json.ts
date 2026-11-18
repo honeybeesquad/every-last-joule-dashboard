@@ -30,8 +30,12 @@ const BASE_URL = "https://wl12.amm.org.gt/GraficaPW/graficaCombustible";
 /** Guatemala is a flat UTC−6 with no daylight saving. */
 const GT_OFFSET_HOURS = -6;
 
-/** Days requested: the 30 complete local days before today. */
-const WINDOW_DAYS = 30;
+/**
+ * Days requested: the 14 complete local days before today. Past days do not
+ * change, so a longer window only adds requests and deadline risk; the
+ * 30-day figure is the window's mean day × 30.
+ */
+const WINDOW_DAYS = 14;
 
 /** Fewer complete days than this and the window is not worth trusting. */
 const MIN_DAYS = 7;
@@ -91,11 +95,15 @@ export function parseAmmDay(localDay: string, rows: unknown): CurtailmentPoint[]
   for (const row of rows as AmmRow[]) {
     if (normaliseTipo(row?.tipo) !== "IRRADIACION") continue;
     const hourEnding = Number(row.hora);
-    const mw = Number(row.potencia);
+    // null / blank is missing data, not zero (Number(null) would be 0).
+    if (row.potencia === null || row.potencia === undefined || String(row.potencia).trim() === "") continue;
+    const raw = Number(row.potencia);
     if (!Number.isInteger(hourEnding) || hourEnding < 1 || hourEnding > 24) {
       throw new Error(`guatemala ${localDay}: bad hora ${String(row.hora)}`);
     }
-    if (!Number.isFinite(mw) || mw < 0) continue;
+    if (!Number.isFinite(raw)) continue;
+    // Small negatives are plant auxiliary load at night: no solar output.
+    const mw = Math.max(0, raw);
     if (mw > MAX_PLAUSIBLE_SOLAR_MW) {
       throw new Error(`guatemala ${localDay}: solar ${mw} MW exceeds ${MAX_PLAUSIBLE_SOLAR_MW} MW ceiling`);
     }
@@ -123,7 +131,11 @@ export function buildGuatemalaRegion(daily: CurtailmentPoint[][], localDays?: st
     `AMM hourly solar generation (IRRADIACIÓN), ${complete.length} complete days ` +
     (completeDays.length ? `${completeDays[0]} → ${completeDays.at(-1)} (Guatemala time). ` : "") +
     "Waste unpublished: AMM publishes generation, not curtailment.";
-  return unpublishedGenerationRegion(REGION_ID, "solar", points, note);
+  const region = unpublishedGenerationRegion(REGION_ID, "solar", points, note);
+  // The helper sums points when they span ≥25 days, which would count any
+  // skipped day as zero. Use the mean complete day × 30 instead.
+  const meanDayMWh = points.reduce((sum, p) => sum + p.mw * (p.intervalHours ?? 1), 0) / complete.length;
+  return { ...region, generationTotalTWh: (meanDayMWh * 30) / 1_000_000 };
 }
 
 async function run(now = new Date()): Promise<RegionData> {
