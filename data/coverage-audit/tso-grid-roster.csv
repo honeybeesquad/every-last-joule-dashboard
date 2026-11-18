@@ -411,10 +411,10 @@ Austria Solar,AUT,solar,live-tso,entsoe,unpublished,austria-solar,ENTSO-E A75 ge
 Russia (Murmansk),RUS,wind,not-collecting,statics,legacy-unspecified,russia-murmansk-wind,T2 annual waste anchor. Not hourly TSO collection.
 TVA Wind,USA,wind,live-tso,eia-vre-bas,unpublished,tva-wind,EIA-930 generation; BA publishes no curtailment rate.
 TVA Solar,USA,solar,live-tso,eia-vre-bas,unpublished,tva-solar,EIA-930 generation; BA publishes no curtailment rate.
-Guatemala,GTM,solar,not-collecting,tso-grid-markers,unpublished,guatemala,"AMM graficaCombustible publishes hourly MW by fuel (solar = IRRADIACIÓN), rolling ~18 months. Reachable from a datacentre IP. Not wired yet. No curtailment series."
-El Salvador,SLV,solar,not-collecting,statics,unpublished,el-salvador,"UT OperacionDiaria dashboard callback publishes hourly MWh by fuel, 2018 onward. Reachable. Not wired yet; the served 0.2 TWh/yr is an IRENA-derived static, not a UT figure. No curtailment series."
+Guatemala,GTM,solar,not-collecting,tso-grid-markers,unpublished,guatemala,"AMM graficaCombustible publishes hourly MW by fuel (solar = IRRADIACIÓN), from 2025-05-20 (2025-05-16 empty). Reachable from a datacentre IP. Not wired yet. No curtailment series."
+El Salvador,SLV,solar,not-collecting,statics,unpublished,el-salvador,"UT OperacionDiaria dashboard callback publishes hourly MWh by fuel, 2018 onward. Reachable. Not wired yet; the served 0.2 TWh/yr is an IRENA-derived modelled static; UT itself publishes no waste. No curtailment series."
 Nicaragua,NIC,solar,not-collecting,tso-grid-markers,unpublished,nicaragua,CNDC consultarGeneracionPorTipo publishes hourly MW by type for the current local day only. Reachable. Not wired yet. No curtailment series.
-Costa Rica,CRI,hydro,not-collecting,statics,unpublished,costa-rica,ICE/CENCE EnergiaHorariaFuentePlanta answers 403 to a datacentre IP. The served 0.3 TWh/yr is an IRENA-derived static. Retry from a home IP.
+Costa Rica,CRI,hydro,not-collecting,statics,unpublished,costa-rica,ICE/CENCE EnergiaHorariaFuentePlanta answers 403 to a datacentre IP. The served 0.3 TWh/yr is an IRENA-derived modelled static; ICE publishes no waste series we have seen. Retry from a home IP.
 Panama,PAN,solar,not-collecting,statics,unpublished,panama,Country/T3 stub — Ember/IRENA is not TSO collection.
 Central America (SIEPAC),GTM,solar,no-public-series,tso-grid-markers,unpublished,guatemala-siepac,Grid present; no public ops series wired.
 Cuba,CUB,mixed,not-collecting,statics,unpublished,cuba,Country/T3 stub — Ember/IRENA is not TSO collection.
@@ -422,7 +422,7 @@ Dominican Republic,DOM,mixed,live-tso,dominican,unpublished,dominican-republic,T
 Dominican Republic Wind,DOM,wind,live-tso,dominican,unpublished,dominican-republic-wind,TSO generation collected; waste unpublished.
 Jamaica,JAM,solar,not-collecting,statics,unpublished,jamaica,Country/T3 stub — Ember/IRENA is not TSO collection.
 Barbados,BRB,solar,not-collecting,statics,unpublished,barbados,Country/T3 stub — Ember/IRENA is not TSO collection.
-Bolivia,BOL,solar,not-collecting,statics,unpublished,bolivia,"CNDC wp-json rt/generacion publishes 15-minute MW by fuel from 2025. Reachable. Not wired yet; the served 0.1 TWh/yr is an IRENA-derived static, not a CNDC figure. No spill field in the hydrology routes."
+Bolivia,BOL,solar,not-collecting,statics,unpublished,bolivia,CNDC wp-json rt/generacion publishes 15-minute MW by fuel from 2025. Reachable. Not wired yet; the served 0.1 TWh/yr is an IRENA-derived modelled static; CNDC itself publishes no waste. No spill field in the hydrology routes.
 Ecuador,ECU,hydro,not-collecting,statics,unpublished,ecuador,Country/T3 stub — Ember/IRENA is not TSO collection.
 French Guiana,GUF,solar,not-collecting,statics,unpublished,french-guiana,Country/T3 stub — Ember/IRENA is not TSO collection.
 Algeria,DZA,solar,not-collecting,statics,unpublished,algeria,Country/T3 stub — Ember/IRENA is not TSO collection.
