@@ -81,3 +81,7 @@ Run it from a session or network that can reach nmgxny.com, cpnn.com.cn and nea.
 3. nmgxny.com/industry/1793.html and nmgxny.com/industry/1935.html.
 
 Leads (search snippets, unverified): sohu.com/a/856582603_121117467, sohu.com/a/856284131_703050, m.sohu.com/a/856910668_752796, npo07460r.npoall.com/news/itemid-98511.html, cweea.com.cn/xwdt/html/39784.html, sasac.gov.cn/n16582853/n16582893/c32471230/content.html, nmg.chinanews.com.cn/news/20250108/48404.html, finance.sina.com.cn/roll/2026-02-06/doc-inhkwhai5040967.shtml.
+
+## Update 2026-11-19: 2025 rates
+
+The owner chose the full-year **2025** table for every China province, including Inner Mongolia. Mengxi 2025 is 91.8% wind and 90.5% solar; Mengdong is 92.8% and 92.8%. The served rate is therefore 8.2% / 9.5%, which supersedes the 2024 6.3% above. See `docs/methodology/china-provinces.md`, "Current method".

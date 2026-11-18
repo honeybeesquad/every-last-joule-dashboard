@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** Ember China subnational generation (trailing 12mo) × NEA 2024 curtailment rate 2.4% (utilisation 97.6%); refreshed anchor, T3-modelled shape
+- **Source:** Ember China subnational generation (trailing 12mo) × NEA monitoring-centre full-year 2025 curtailment rate 3.4% (utilisation 96.6%, 2025 province table, reprinted at http://www.cnygnyw.com/listshow.php?cid=13&id=8073); refreshed anchor, T3-modelled shape
 - **Source URL:** [https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html](https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

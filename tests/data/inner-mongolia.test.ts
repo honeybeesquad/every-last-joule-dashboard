@@ -10,13 +10,12 @@ describe("inner-mongolia loader", () => {
     expect(data.solar.profile).toHaveLength(24);
     expect(data.wind.latestProfile).toBeNull();
     expect(data.solar.latestProfile).toBeNull();
-    // Full-year 2024 Mengxi rate 6.3% (2026-11-19): 209.731 TWh × 0.063 = 13.213 TWh/yr × 30/365.
-    expect(data.wind.totalTWh).toBeCloseTo(1.086, 4);
+    // Full-year 2025 Mengxi rate 8.2% wind / 9.5% solar: 209.731 × 0.082 = 17.198, 79.119 × 0.095 = 7.516 TWh/yr, × 30/365.
+    expect(data.wind.totalTWh).toBeCloseTo((17.198 * 30) / 365, 4);
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.wind.sourceProvenance).toBe("modelled-fallback");
     expect(data.wind.sourceStatus).toBe("cached");
-    // 79.119 TWh × 0.063 = 4.984 TWh/yr × 30/365.
-    expect(data.solar.totalTWh).toBeCloseTo(0.409644, 4);
+    expect(data.solar.totalTWh).toBeCloseTo((7.516 * 30) / 365, 4);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.solar.sourceProvenance).toBe("modelled-fallback");
     expect(data.solar.sourceStatus).toBe("cached");

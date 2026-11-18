@@ -1,8 +1,85 @@
 # China provincial static-region methodology
 
-Retrieval date for all web sources: 2026-04-24.
+## Current method (2026-11-19)
 
-## Executive summary
+This section describes what the dashboard serves now. The sections after it are the April–May 2026 calibration record. They are kept for history, but their figures and their `1/U − 1` formula are no longer what is served.
+
+**Anchor.** 37 wind and solar regions in 16 provinces read their annual anchor from `data/china-anchors.json`, which `scripts/refresh-china.ts` writes. Each anchor is calculated as:
+
+```text
+annual curtailed TWh = Ember trailing-12-month generation (TWh) × (1 − U)
+```
+
+U is the province's **full-year 2025** utilisation rate for that fuel. The dashboard spreads the annual figure over a typical wind or solar day, so these regions stay T3-modelled (`modelled-fallback`, `cached`). They are never measured hourly dispatch-down.
+
+**Generation.** Ember's China subnational monthly generation, 12 months to 2026-06 (`release_chn_subnational_generation_monthly.csv`, pulled 2026-08-20).
+
+**Rates.** The table is "2025年各省级区域新能源并网消纳情况", released 2026-02-06 by the 电力行业规划研究与监测预警中心 (formerly the 全国新能源消纳监测预警中心). The values were read on 2026-11-19 from the centre's own table image (watermark "公众号 · 电力行业规划研究与监测预警中心"). The image is reprinted at solarpwr.cn/m.php?fid=52&id=81474, and a byte-identical copy is at cnygnyw.com/listshow.php?cid=13&id=8073. The header "12月 | 2025年" confirms the year column is full-year.
+
+Release text cross-checks:
+- Tibet wind is 68.6%, Xinjiang wind 91%, and Mengxi and Jilin wind both 91.8%.
+- Gansu, Qinghai, Xinjiang and Tibet solar are all below 90%.
+
+Conventions:
+- A published 100.0% uses a 0.05% floor, so the profile is not zero-area.
+- \* marks a cell the watermark crosses. It was read at 3x zoom and is legible, and should be re-checked against a cleaner copy.
+- 冀北 is not listed in the table, so Hebei uses the 河北 row.
+- Inner Mongolia uses the 蒙西 (Mengxi) row against whole-province generation, which includes Mengdong. That makes it an upper bound for the Mengxi grid. There is no published by-fuel Mengxi/Mengdong generation split to do better; see `docs/research/2026-11-18-inner-mongolia-mengxi-mengdong-split.md`.
+
+**Why 2025 and not 2024.** The generation window (July 2025 – June 2026) overlaps 2025 and not 2024. The centre's 2025 table is also the latest full year it has published. The owner chose 2025 on 2026-11-19.
+
+**History.** Until 2026-11-19 the rates were 2024 figures transcribed from cpnn.com.cn t20250219_1773747. Several were transcribed wrongly, for example Hebei wind 94.0% against the table's 92.6% and Shandong solar 96.3% against 98.5%. Inner Mongolia's came from the January–November release. Against the full-year 2024 table (m.solarzoom.com/article-190789-1.html), all 44 rows in the anchor file would have totalled 81.66 TWh/yr, against 81.86 as transcribed. Correcting the transcription alone would barely have moved the total. The 2025 rates raise the 37 served regions from 81.64 to 117.90 TWh/yr (+36.27), because 2025 curtailment rose sharply.
+
+| Region | Fuel | Generation, TWh/yr | 2025 utilisation | Rate | Anchor before, TWh/yr | Anchor now, TWh/yr |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| `inner-mongolia-wind` | wind | 209.731 | 91.8% | 8.2% | 13.213 | 17.198 |
+| `xinjiang-solar` | solar | 76.150 | 86.3% | 13.7% | 5.940 | 10.433 |
+| `xinjiang-wind` | wind | 96.082 | 91.0% | 9.0% | 6.341 | 8.647 |
+| `inner-mongolia-solar` | solar | 79.119 | 90.5% | 9.5% | 4.984 | 7.516 |
+| `qinghai-solar` | solar | 44.852 | 83.4% | 16.6% | 4.351 | 7.445 |
+| `china-hebei-wind` | wind | 83.210 | 92.0% | 8.0% | 4.993 | 6.657 |
+| `china-hebei-solar` | solar | 101.446 | 94.3% | 5.7% | 3.551 | 5.782 |
+| `gansu-solar` | solar | 43.954 | 89.6% | 10.4% | 3.692 | 4.571 |
+| `china-shaanxi-solar` | solar | 46.426 | 91.0% | 9.0% | 2.275 | 4.178 |
+| `yunnan-solar` | solar | 58.449 | 93.1% | 6.9% | 1.929 | 4.033 |
+| `gansu-wind` | wind | 57.184 | 93.7% | 6.3% | 3.488 | 3.603 |
+| `china-shandong-solar` | solar | 108.771 | 96.9% | 3.1% | 4.025 | 3.372 |
+| `china-liaoning-wind` | wind | 46.025 | 93.0% | 7.0% | 2.301 | 3.222 |
+| `china-shanxi-wind` | wind | 55.767 | 94.4% | 5.6% | 0.558 | 3.123 |
+| `ningxia-solar` | solar | 50.731 | 93.9% | 6.1% | 2.334 | 3.095 |
+| `china-jilin-wind` | wind | 32.674 | 91.8% | 8.2% | 2.124 | 2.679 |
+| `china-heilongjiang-wind` | wind | 40.668 | 93.8% | 6.2% | 2.033 | 2.521 |
+| `china-henan-wind` | wind | 50.194 | 95.3% | 4.7% | 1.857 | 2.359 |
+| `china-shandong-wind` | wind | 54.462 | 95.7% | 4.3% | 1.961 | 2.342 |
+| `qinghai-wind` | wind | 19.561 | 92.8% | 7.2% | 1.408 | 1.408 |
+| `china-shaanxi-wind` | wind | 29.050 | 95.3% | 4.7% | 1.656 | 1.365 |
+| `ningxia-wind` | wind | 30.406 | 95.6% | 4.4% | 0.760 | 1.338 |
+| `china-hubei-solar` | solar | 44.341 | 97.0% | 3.0% | 1.109 | 1.330 |
+| `china-hunan-wind` | wind | 20.065 | 93.4% | 6.6% | 0.602 | 1.324 |
+| `china-shanxi-solar` | solar | 55.931 | 97.8% | 2.2% | 0.559 | 1.230 |
+| `yunnan-wind` | wind | 35.947 | 97.2% | 2.8% | 0.324 | 1.007 |
+| `china-jiangsu-wind` | wind | 56.031 | 98.3% | 1.7% | 0.168 | 0.953 |
+| `china-henan-solar` | solar | 53.831 | 98.4% | 1.6% | 1.023 | 0.861 |
+| `china-anhui-solar` | solar | 56.422 | 98.5% | 1.5% | 0.056 | 0.846 |
+| `china-liaoning-solar` | solar | 17.391 | 96.5% | 3.5% | 0.504 | 0.609 |
+| `china-jiangsu-solar` | solar | 96.567 | 99.4% | 0.6% | 0.097 | 0.579 |
+| `china-hunan-solar` | solar | 28.598 | 98.0% | 2.0% | 0.172 | 0.572 |
+| `china-heilongjiang-solar` | solar | 10.262 | 95.1% | 4.9% | 0.349 | 0.503 |
+| `china-jilin-solar` | solar | 9.801 | 96.6% | 3.4% | 0.235 | 0.333 |
+| `china-hubei-wind` | wind | 16.948 | 98.1%\* | 1.9% | 0.322 | 0.322 |
+| `china-jiangxi` | solar | 29.024 | 98.9% | 1.1% | 0.319 | 0.319 |
+| `china-anhui-wind` | wind | 22.692 | 99.0%\* | 1.0% | 0.023 | 0.227 |
+| **Total (37 served regions)** | | | | | **81.64** | **117.90** |
+
+`china-jiangxi` is served from the `china-jiangxi-solar` anchor.
+
+`data/china-anchors.json` also holds anchors for Guangdong, Zhejiang, Fujian and Jiangxi wind that no loader reads. Those loaders still use their own hardcoded annual constants (for example, Guangdong's is ~3.2 TWh/yr). Sichuan, Tibet, Guangxi, Beijing, Tianjin, Hainan, Shanghai, Guizhou, Chongqing and the hydro rows also use hardcoded constants, not this method. Reconciling them is open work.
+
+---
+
+*Historical record from here on: the April–May 2026 calibration (retrieval date 2026-04-24). Its figures, region list and formula are superseded by the section above.*
+
+## Executive summary (historical)
 
 The dashboard models 27 Chinese provincial grids as static regions: 8 calibrated provinces from phase 1 (Sichuan, Xinjiang, Inner Mongolia, Gansu, Qinghai, Ningxia, Yunnan, Tibet/Xizang) plus 19 additional provinces added in the W2 batch on 2026-05-02. All remain annual-to-hourly synthetic profiles rather than measured hourly dispatch-down feeds.
 

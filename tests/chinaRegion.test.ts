@@ -16,6 +16,9 @@ describe("buildChinaRegionFromAnchor", () => {
     const r = buildChinaRegionFromAnchor("xinjiang-wind", "wind", 15, 5.0, "fallback note", store);
     expect(r.confidenceTier).toBe("T3-modelled");
     expect(annual(r)).toBeCloseTo(5.0, 1);
+    // The hardcoded constant is labelled as a fallback, not passed off as a current figure.
+    expect(r.sourceNote).toMatch(/^Hardcoded fallback \(no xinjiang-wind row in data\/china-anchors\.json\); not re-derived/);
+    expect(r.sourceNote).toContain("fallback note");
   });
 
   it("uses the refreshed anchor but stays T3-modelled with honest provenance (no live promotion)", () => {

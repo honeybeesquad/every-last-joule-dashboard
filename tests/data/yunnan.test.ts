@@ -13,7 +13,7 @@ describe("yunnan loader", () => {
     // Refreshed anchor (data/china-anchors.json) replaces the hardcoded fallback.
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.solar.confidenceTier).toBe("T3-modelled");
-    expect(data.wind.totalTWh).toBeCloseTo((0.324 * 30) / 365, 5);
-    expect(data.solar.totalTWh).toBeCloseTo((1.929 * 30) / 365, 5);
+    expect(data.wind.totalTWh).toBeCloseTo((1.007 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((4.033 * 30) / 365, 5);
   });
 });
