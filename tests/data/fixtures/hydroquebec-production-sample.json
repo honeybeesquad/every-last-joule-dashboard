@@ -1,0 +1,379 @@
+{
+  "dateStart" : "2026-11-17T00:00:00",
+  "dateEnd" : "2026-11-19T00:00:00",
+  "recentHour" : "2026-11-18T02:30:00",
+  "indexDonneePlusRecent" : 26,
+  "nbDateAvecData" : 27,
+  "details" : [ {
+    "date" : "2026-11-17T00:30:00",
+    "valeurs" : {
+      "total" : 19198.0,
+      "hydraulique" : 16717.0,
+      "eolien" : 2180.0,
+      "autres" : 301.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T01:30:00",
+    "valeurs" : {
+      "total" : 19147.0,
+      "hydraulique" : 16693.0,
+      "eolien" : 2155.0,
+      "autres" : 299.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T02:30:00",
+    "valeurs" : {
+      "total" : 19152.0,
+      "hydraulique" : 16648.0,
+      "eolien" : 2205.0,
+      "autres" : 299.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T03:30:00",
+    "valeurs" : {
+      "total" : 19224.0,
+      "hydraulique" : 16702.0,
+      "eolien" : 2221.0,
+      "autres" : 301.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T04:30:00",
+    "valeurs" : {
+      "total" : 19782.0,
+      "hydraulique" : 17298.0,
+      "eolien" : 2186.0,
+      "autres" : 298.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T05:30:00",
+    "valeurs" : {
+      "total" : 21670.0,
+      "hydraulique" : 19031.0,
+      "eolien" : 2340.0,
+      "autres" : 299.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T06:30:00",
+    "valeurs" : {
+      "total" : 24507.0,
+      "hydraulique" : 21830.0,
+      "eolien" : 2377.0,
+      "autres" : 300.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T07:30:00",
+    "valeurs" : {
+      "total" : 25280.0,
+      "hydraulique" : 22670.0,
+      "eolien" : 2310.0,
+      "autres" : 300.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T08:30:00",
+    "valeurs" : {
+      "total" : 23342.0,
+      "hydraulique" : 20781.0,
+      "eolien" : 2260.0,
+      "autres" : 301.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T09:30:00",
+    "valeurs" : {
+      "total" : 21355.0,
+      "hydraulique" : 19065.0,
+      "eolien" : 1992.0,
+      "autres" : 297.0,
+      "solaire" : 1.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T10:30:00",
+    "valeurs" : {
+      "total" : 20688.0,
+      "hydraulique" : 18495.0,
+      "eolien" : 1887.0,
+      "autres" : 296.0,
+      "solaire" : 3.0,
+      "thermique" : 7.0
+    }
+  }, {
+    "date" : "2026-11-17T11:30:00",
+    "valeurs" : {
+      "total" : 20138.0,
+      "hydraulique" : 17978.0,
+      "eolien" : 1859.0,
+      "autres" : 295.0,
+      "solaire" : 6.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T12:30:00",
+    "valeurs" : {
+      "total" : 19297.0,
+      "hydraulique" : 17005.0,
+      "eolien" : 1991.0,
+      "autres" : 294.0,
+      "solaire" : 7.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T13:30:00",
+    "valeurs" : {
+      "total" : 18852.0,
+      "hydraulique" : 16250.0,
+      "eolien" : 2302.0,
+      "autres" : 294.0,
+      "solaire" : 6.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T14:30:00",
+    "valeurs" : {
+      "total" : 18735.0,
+      "hydraulique" : 15944.0,
+      "eolien" : 2495.0,
+      "autres" : 293.0,
+      "solaire" : 3.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T15:30:00",
+    "valeurs" : {
+      "total" : 20683.0,
+      "hydraulique" : 17872.0,
+      "eolien" : 2516.0,
+      "autres" : 294.0,
+      "solaire" : 1.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T16:30:00",
+    "valeurs" : {
+      "total" : 22038.0,
+      "hydraulique" : 19154.0,
+      "eolien" : 2589.0,
+      "autres" : 295.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T17:30:00",
+    "valeurs" : {
+      "total" : 22951.0,
+      "hydraulique" : 19914.0,
+      "eolien" : 2736.0,
+      "autres" : 301.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T18:30:00",
+    "valeurs" : {
+      "total" : 22297.0,
+      "hydraulique" : 19201.0,
+      "eolien" : 2798.0,
+      "autres" : 298.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T19:30:00",
+    "valeurs" : {
+      "total" : 21714.0,
+      "hydraulique" : 18534.0,
+      "eolien" : 2881.0,
+      "autres" : 299.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T20:30:00",
+    "valeurs" : {
+      "total" : 21291.0,
+      "hydraulique" : 18019.0,
+      "eolien" : 2971.0,
+      "autres" : 301.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T21:30:00",
+    "valeurs" : {
+      "total" : 20494.0,
+      "hydraulique" : 17117.0,
+      "eolien" : 3077.0,
+      "autres" : 300.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T22:30:00",
+    "valeurs" : {
+      "total" : 17847.0,
+      "hydraulique" : 14554.0,
+      "eolien" : 2992.0,
+      "autres" : 301.0,
+      "solaire" : 0.0,
+      "thermique" : 0.0
+    }
+  }, {
+    "date" : "2026-11-17T23:30:00",
+    "valeurs" : {
+      "total" : 16705.0,
+      "hydraulique" : 13417.0,
+      "eolien" : 2987.0,
+      "autres" : 301.0,
+      "solaire" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T00:30:00",
+    "valeurs" : {
+      "total" : 16682.0,
+      "hydraulique" : 13418.0,
+      "eolien" : 2965.0,
+      "autres" : 299.0,
+      "solaire" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T01:30:00",
+    "valeurs" : {
+      "total" : 16160.0,
+      "hydraulique" : 13004.0,
+      "eolien" : 2858.0,
+      "autres" : 298.0,
+      "solaire" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T02:30:00",
+    "valeurs" : {
+      "total" : 15834.0,
+      "hydraulique" : 12809.0,
+      "eolien" : 2730.0,
+      "autres" : 295.0,
+      "solaire" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T03:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T04:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T05:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T06:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T07:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T08:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T09:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T10:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T11:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T12:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T13:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T14:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T15:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T16:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T17:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T18:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T19:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T20:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T21:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T22:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  }, {
+    "date" : "2026-11-18T23:30:00",
+    "valeurs" : {
+      "total" : 0.0
+    }
+  } ]
+}
