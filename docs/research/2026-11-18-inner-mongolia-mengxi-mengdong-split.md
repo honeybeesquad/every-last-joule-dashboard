@@ -4,7 +4,7 @@ Date: 2026-11-18. Status: **research only, no data change.** `inner-mongolia-win
 
 ## Question
 
-The 全国新能源消纳监测预警中心 (renamed 电力行业规划研究与监测预警中心 by early 2026) publishes wind and solar utilisation separately for 蒙西 (Mengxi, the west) and 蒙东 (Mengdong, the east). We split the province only if generation by fuel for each half also comes from a published source: Ember subnational, NEA, or the Inner Mongolia statistics bureau. Apportioning provincial generation by capacity share is guesswork, so we did not do it.
+The 全国新能源消纳监测预警中心 (the 2026 releases surfaced under the name 电力行业规划研究与监测预警中心; the rename is from search snippets and is unverified) publishes wind and solar utilisation separately for 蒙西 (Mengxi, the west) and 蒙东 (Mengdong, the east). We split the province only if generation by fuel for each half also comes from a published source: Ember subnational, NEA, or the Inner Mongolia statistics bureau. Apportioning provincial generation by capacity share is guesswork, so we did not do it.
 
 ## Verification caveat
 
