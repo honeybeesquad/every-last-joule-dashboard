@@ -24,6 +24,8 @@
  * bioenergy, geothermal, interconnector and storage columns are not read.
  */
 
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { pathToFileURL } from "url";
 import { fetchJSON } from "../lib/fetch.js";
 import { timeOfDayAverageGW } from "../lib/profile.js";
@@ -265,13 +267,66 @@ async function fetchTerritory(t: SeiTerritory): Promise<RegionData> {
 }
 
 /**
- * All five or none: a territory that fails throws, and `withFallback` serves
- * the last-good snapshot for the whole loader. Emitting four fresh regions
- * and dropping the fifth would remove it from the page.
+ * Each island stands alone: the five portals are independent, so one that
+ * fails costs that island its freshness and nothing else (the ENTSO-E loader
+ * does the same per zone, `collectEntsoeZones`).
+ *
+ * - An island that answered gets its fresh record.
+ * - An island that failed keeps its last-good record, stamped "cached", or
+ *   "degraded" once that record is older than the 24-hour staleness
+ *   threshold. Its data and lastSuccessAt are left as they were, so nothing
+ *   old is passed off as new.
+ * - An island that failed with no last-good record fails the loader: dropping
+ *   it would remove it from the page. withFallback then serves the snapshot.
+ * - If every island failed, the loader throws and withFallback serves the
+ *   snapshot whole, as before.
  */
+export async function collectSeiRegions(
+  fetchOne: (t: SeiTerritory) => Promise<RegionData>,
+  previous: Record<string, RegionData>,
+  now: Date = new Date(),
+): Promise<Record<string, RegionData>> {
+  const settled = await Promise.allSettled(SEI_TERRITORIES.map(fetchOne));
+  if (settled.every((r) => r.status === "rejected")) {
+    throw new Error(
+      `EDF SEI: every island failed (${(settled[0] as PromiseRejectedResult).reason})`,
+    );
+  }
+  const out: Record<string, RegionData> = {};
+  SEI_TERRITORIES.forEach((t, i) => {
+    const r = settled[i];
+    if (r.status === "fulfilled") {
+      out[t.regionId] = r.value;
+      return;
+    }
+    const prev = previous[t.regionId];
+    if (!prev) {
+      throw new Error(`EDF SEI ${t.label} failed and has no last-good record: ${r.reason}`);
+    }
+    console.error(`[edf-sei] ${t.label} failed, keeping its last-good record: ${r.reason}`);
+    const lastSuccessAt = prev.lastSuccessAt ?? prev.lastUpdated ?? "";
+    const ageHours = lastSuccessAt
+      ? (now.getTime() - Date.parse(lastSuccessAt)) / 3_600_000
+      : Infinity;
+    out[t.regionId] = {
+      ...prev,
+      sourceStatus: ageHours > DEFAULT_STALENESS_THRESHOLD_HOURS ? "degraded" : "cached",
+    };
+  });
+  return out;
+}
+
+function readLastGood(): Record<string, RegionData> {
+  try {
+    const path = join(process.cwd(), "data", "snapshots", "last-good", "edf-sei.json");
+    return JSON.parse(readFileSync(path, "utf-8")) as Record<string, RegionData>;
+  } catch {
+    return {};
+  }
+}
+
 async function run(): Promise<Record<string, RegionData>> {
-  const regions = await Promise.all(SEI_TERRITORIES.map(fetchTerritory));
-  return Object.fromEntries(regions.map((r) => [r.regionId, r]));
+  return collectSeiRegions(fetchTerritory, readLastGood());
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
