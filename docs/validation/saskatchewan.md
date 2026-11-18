@@ -26,7 +26,7 @@ Last updated: 2026-11-18 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** none found. `scripts/validation/external-anchors.json` lists "SaskPower 2024 wind curtailment ~0.2 TWh" (method `inferred`, provenance `saskpower-2024-annual` with no URL, added by an AI pass on 2026-04-26); it is unverified and no longer served.
+- **TSO annual curtailment (latest published):** Unverified: no SaskPower curtailment figure traced. An AI pass on 2026-04-26 recorded ~0.2 TWh (2024, method inferred) with no source URL; not served since 2026-11-18.
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —

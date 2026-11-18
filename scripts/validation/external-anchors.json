@@ -2108,7 +2108,7 @@
     }
   },
   "saskatchewan": {
-    "tso_annual_latest": "SaskPower 2024 wind curtailment ~0.2 TWh",
+    "tso_annual_latest": "Unverified: no SaskPower curtailment figure traced. An AI pass on 2026-04-26 recorded ~0.2 TWh (2024, method inferred) with no source URL; not served since 2026-11-18.",
     "tso_annual_anchors": {
       "2024": {
         "value": 0.2,
