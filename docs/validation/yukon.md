@@ -1,6 +1,6 @@
 # Validation — Yukon (`yukon`)
 
-Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Technical Validation §4.2
+Last updated: 2026-11-18 · Sprint: TSO-grid completeness · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Tech
 - **Country:** CAN
 - **Tier:** estimated
 - **Kind:** hydro
-- **Source:** Yukon Energy isolated diesel/hydro. VRE waste unpublished.
-- **Source URL:** [https://yukonenergy.ca/](https://yukonenergy.ca/)
-- **Loader:** _(see region source / TSO-grid completeness loaders)_
+- **Source:** Yukon Energy hourly hydro + wind + solar generation, past 24 hours (yukonenergy.ca Electricity Generation page). Thermal excluded. Waste unpublished: Yukon Energy publishes no spill or curtailment series.
+- **Source URL:** [https://yukonenergy.ca/energy-in-yukon/electricity-101/electricity-generation](https://yukonenergy.ca/energy-in-yukon/electricity-101/electricity-generation)
+- **Loader:** [`yukon.json.ts`](../../src/data/yukon.json.ts)
 - **Structural gap:** no
 - **Waste status:** unpublished unless the operator publishes a curtailment/spill series. Missing ≠ zero. Live generation does not make waste T1a.
 

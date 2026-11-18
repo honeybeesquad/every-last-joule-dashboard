@@ -60,6 +60,7 @@ const RELAY_TSO = new Set([
 const LIVE_UNPUBLISHED_GEN = new Set([
   "bangladesh",
   "guatemala",
+  "yukon",
   "philippines-solar",
   "philippines-wind",
   "dominican-republic",
@@ -76,7 +77,6 @@ const PROBE_2026_11_18: Record<string, Partial<Pick<TsoGridRosterRow, "collectSt
   nicaragua: { collectStatus: "not-collecting", notes: "CNDC consultarGeneracionPorTipo publishes hourly MW by type for the current local day only. Reachable. Not wired yet. No curtailment series." },
   "el-salvador": { collectStatus: "not-collecting", notes: "UT OperacionDiaria dashboard callback publishes hourly MWh by fuel, 2018 onward. Reachable. Not wired yet; the served 0.2 TWh/yr is an IRENA-derived modelled static; UT itself publishes no waste. No curtailment series." },
   bolivia: { collectStatus: "not-collecting", notes: "CNDC wp-json rt/generacion publishes 15-minute MW by fuel from 2025. Reachable. Not wired yet; the served 0.1 TWh/yr is an IRENA-derived modelled static; CNDC itself publishes no waste. No spill field in the hydrology routes." },
-  yukon: { collectStatus: "not-collecting", notes: "Yukon Energy page embeds 24 h hourly MWh by hydro/wind/solar/thermal; an hourly per-unit workbook (hydro and thermal, 2020-02 to 2026-01) is linked. Reachable. Not wired yet. No spill column." },
   saskatchewan: { collectStatus: "not-collecting", loaderKey: "saskatchewan", notes: "SaskPower dashboard JSON is one by-fuel MW snapshot per day, no history. The loader's probe always falls through to a typical wind shape anchored at an uncited ~0.15 TWh/yr." },
   "nova-scotia": { collectStatus: "no-public-series", notes: "NS Power CurrentMix.json and CurrentLoad.json are 404. The OASIS report gives a 2-minute total-wind MW snapshot only, no history." },
   "new-brunswick": { collectStatus: "no-public-series", notes: "NB Power real-time page publishes load, demand and interchange only. No generation by fuel." },
