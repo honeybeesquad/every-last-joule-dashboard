@@ -1,7 +1,7 @@
 {
-  "totalValidationDocs": 559,
+  "totalValidationDocs": 562,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 552,
+  "docsNotCiting": 555,
   "pctCited": 1.25,
   "perDocCitations": [
     {
@@ -1619,6 +1619,11 @@
       "matchedPatterns": []
     },
     {
+      "file": "kuwait.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "kyrgyzstan.md",
       "cited": false,
       "matchedPatterns": []
@@ -2229,12 +2234,22 @@
       "matchedPatterns": []
     },
     {
+      "file": "qatar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "qinghai-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
       "file": "qinghai-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "quebec-wind.md",
       "cited": false,
       "matchedPatterns": []
     },

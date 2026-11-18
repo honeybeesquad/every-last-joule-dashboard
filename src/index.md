@@ -450,7 +450,8 @@ const regionData = {
   bangladesh: feeds.bangladesh,
   mongolia: feeds.mongolia,
   "british-columbia": feeds.britishColumbia,
-  quebec: feeds.quebec,
+  quebec: feeds.quebec.hydro,
+  "quebec-wind": feeds.quebec.wind,
   manitoba: feeds.manitoba,
   saskatchewan: feeds.saskatchewan,
   // Colombia: T1b-CSV loader reads committed XM API data (Britta daily relay).
