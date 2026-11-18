@@ -425,10 +425,27 @@ export async function mountGlobe(canvas, initial) {
   let lastLightDrawAt = 0;
   let settleTimer = null;
   // Needles rise from the ground as they appear. The frames are requested
-  // only while one is still rising, so there is still no idle loop.
+  // only while one is still rising, so there is still no idle loop. A rise
+  // frame is skipped when something else (a drag, a scrub) already drew since
+  // it was asked for, and it keeps that draw's `fast` mode, so the line-screen
+  // cache is not rebuilt twice a frame. The phone's still picture (one draw
+  // per hour change) and reduced motion draw needles full length at once.
   const NEEDLE_RISE_MS = 650;
   const reducedMotionQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
   let riseFrame = null;
+  let lightDraws = 0;
+  let lastLightFast = false;
+  let stillRising = false;
+  function scheduleRise() {
+    if (riseFrame != null) return;
+    const mark = lightDraws;
+    riseFrame = requestAnimationFrame(() => {
+      riseFrame = null;
+      if (!isLight()) return;
+      if (lightDraws !== mark) { if (stillRising) scheduleRise(); return; }
+      render({ fast: lastLightFast, rise: true });
+    });
+  }
   const regionVec = new Map();
   function vecFor(region) {
     let v = regionVec.get(region.id);
@@ -504,16 +521,22 @@ export async function mountGlobe(canvas, initial) {
   // Light: the engraved globe. While the camera moves it reuses the cached
   // line screen within 0.25 deg and, when dragging, draws in `fast` mode; one
   // exact frame follows once the motion stops.
-  function renderLight({ fast = false } = {}) {
+  // A `rise` frame only animates needles: it does not count as camera motion,
+  // so it neither re-arms the settle timer nor makes the next draw inexact.
+  function renderLight({ fast = false, rise = false } = {}) {
     const width = canvas.width / dpr;
     const height = canvas.height / dpr;
     if (!width || !height) return;
     lastDrawnHour = state.utcHour;
+    lightDraws++;
+    lastLightFast = fast;
     const now = performance.now();
     const moving = fast || now - lastLightDrawAt < 60;
-    lastLightDrawAt = now;
-    clearTimeout(settleTimer);
-    if (moving) settleTimer = setTimeout(() => render(), 160);
+    if (!rise) {
+      lastLightDrawAt = now;
+      clearTimeout(settleTimer);
+      if (moving) settleTimer = setTimeout(() => render(), 160);
+    }
 
     const hour = ((state.utcHour % 24) + 24) % 24;
     const sun = subsolar(new Date(), hour);
@@ -530,13 +553,12 @@ export async function mountGlobe(canvas, initial) {
       lat0: state.lat0, lon0: state.lon0, sun, land, dots: lightDots, needles: marks, rings,
       inkRGB: tokens.inkRGB, paper: tokens.paper, warn: tokens.qualityWarning,
       selectedId: shownSelection(), fast, exact: !moving, leader: !state.exploring,
-      now, rise: reducedMotionQuery?.matches ? 0 : NEEDLE_RISE_MS,
+      now, rise: reducedMotionQuery?.matches || phoneStill() ? 0 : NEEDLE_RISE_MS,
     });
     ctx.restore();
     markHits = out.hits;
-    if (out.rising && riseFrame == null) {
-      riseFrame = requestAnimationFrame(() => { riseFrame = null; if (isLight()) render(); });
-    }
+    stillRising = out.rising;
+    if (stillRising) scheduleRise();
     placeSelection(out.label, hour);
   }
 

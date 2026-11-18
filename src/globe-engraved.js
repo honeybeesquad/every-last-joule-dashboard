@@ -26,10 +26,12 @@
  *   8. Selected: an ink ring round the head and the leader line to the label
  *      card (the card itself is DOM, placed by placeSelectionLabel).
  *
- * A needle rises from the ground when it first appears (data arrives, it
- * turns over the limb, its GW crosses MIN_GW_DRAWN, or the page switches
- * into light mode) over `rise` ms. The renderer draws on change, not per
- * frame, so draw() reports `rising` and the caller asks for the next frame.
+ * A needle rises from the ground over `rise` ms when it first appears (data
+ * arrives, its GW crosses MIN_GW_DRAWN, or the page switches into light
+ * mode). Turning over the limb is not an appearance: a needle behind the
+ * globe keeps its birth time, so a globe that turns does not keep starting
+ * rises at its edge. The renderer draws on change, not per frame, so draw()
+ * reports `rising` and the caller asks for the next frame.
  *
  * Returns hit targets [{ id, x, y, r, bx, by }] (needle heads) for picking.
  */
@@ -62,7 +64,7 @@ function lonDelta(a, b) {
 export function createEngravedRenderer() {
   // Offscreen line-screen cache (layers 1-2).
   let sea = null; // { canvas, key: { lat0, lon0, sunLat, sunLon, ... } }
-  // When each needle (record + fuel) was first drawn, for its rise.
+  // When each needle (record + fuel) was first seen, for its rise.
   const born = new Map();
 
   function seaUsable(want, exact) {
@@ -236,11 +238,11 @@ export function createEngravedRenderer() {
     const seen = new Set();
     let rising = false;
     for (const n of sorted) {
-      const [x, y, z] = ortho(cam, n.v);
-      if (z <= 0.05) continue;
       const bornKey = `${n.id}:${n.fuel ?? n.color}`;
       seen.add(bornKey);
       if (!born.has(bornKey)) born.set(bornKey, now);
+      const [x, y, z] = ortho(cam, n.v);
+      if (z <= 0.05) continue;
       const age = o.rise > 0 ? (now - born.get(bornKey)) / o.rise : 1;
       const grow = age >= 1 ? 1 : easeOutCubic(Math.max(0, age));
       if (grow < 1) rising = true;
@@ -288,7 +290,8 @@ export function createEngravedRenderer() {
       hits.push({ id: n.id, x: tx, y: ty, r: Math.max(hr + 4, 10), bx, by });
     }
     ctx.lineCap = "butt";
-    // A needle that leaves the picture rises again when it comes back.
+    // A needle that leaves the data (or drops under MIN_GW_DRAWN) rises again
+    // when it comes back.
     for (const key of born.keys()) if (!seen.has(key)) born.delete(key);
 
     // 8. selected: ring round the head, and the leader to the label card
