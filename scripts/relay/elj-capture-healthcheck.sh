@@ -12,6 +12,19 @@
 LAKE="$HOME/elj-capture/lake"
 LOG="$HOME/elj-capture/healthcheck.log"
 STALE_HOURS=48
+# Month-start grace. The capture runs `--month current`, so on the 1st there is
+# no settled day of the new month to write, and XM settles about two days late:
+# the newest parquet stays the previous month's last file until about the 4th.
+# Without this the check reported "lake is stale" on the 2nd and 3rd of every
+# month (Sep, Oct and Nov 2026), and those ok=false heartbeats read as a stall.
+# On days 1-4 the lake counts as fresh if it was written on or after the
+# previous month's last day, i.e. the last run of that month succeeded. An
+# outage that started earlier (say the 29th) still alerts on the 1st.
+MONTH_START_OK=false
+if [ "$(date +%-d)" -le 4 ]; then
+  PREV_LAST_DAY_EPOCH=$(date -d "$(date +%Y-%m-01) -1 day" +%s)
+  MONTH_START_OK=true
+fi
 ISSUES=()
 
 # 1. Has the lake stopped growing? Newest parquet across all metrics.
@@ -23,7 +36,8 @@ if [ -z "$NEWEST" ]; then
 else
   NEWEST_EPOCH=${NEWEST%.*}
   AGE_H=$(( ( $(date +%s) - NEWEST_EPOCH ) / 3600 ))
-  if [ "$AGE_H" -gt "$STALE_HOURS" ]; then
+  if [ "$AGE_H" -gt "$STALE_HOURS" ] && \
+     ! { [ "$MONTH_START_OK" = true ] && [ "$NEWEST_EPOCH" -ge "$PREV_LAST_DAY_EPOCH" ]; }; then
     ISSUES+=("lake is stale: newest parquet is ${AGE_H}h old (threshold ${STALE_HOURS}h)")
   fi
 fi
@@ -51,16 +65,21 @@ fi
 # colombia-relay-pull.yml copies this file in, and relay-freshness.yml opens
 # an issue when it goes stale or unhealthy.
 HEARTBEAT_REPO="$HOME/elj-relay/data-relay-repo"
-if [ -d "$HEARTBEAT_REPO/.git" ] && [ -f "$HOME/.ssh/elj-relay-deploy" ]; then
+RELAY_GIT_LIB="$HOME/elj-relay/relay-git.sh"
+[ -f "$(dirname "$0")/relay-git.sh" ] && RELAY_GIT_LIB="$(dirname "$0")/relay-git.sh"
+if [ -d "$HEARTBEAT_REPO/.git" ] && [ -f "$HOME/.ssh/elj-relay-deploy" ] && [ -f "$RELAY_GIT_LIB" ]; then
   OK=$([ ${#ISSUES[@]} -eq 0 ] && echo true || echo false)
   ISSUES_JSON=$(printf '%s\n' "${ISSUES[@]:-}" | python3 -c 'import json,sys; print(json.dumps([l for l in sys.stdin.read().splitlines() if l]))')
   (
-    export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/elj-relay-deploy -o StrictHostKeyChecking=accept-new"
-    cd "$HEARTBEAT_REPO" || exit 0
-    # Pull BEFORE writing: a rebase onto a dirty tree aborts ("Please commit or
+    RELAY_REPO="$HEARTBEAT_REPO"
+    DEPLOY_KEY="$HOME/.ssh/elj-relay-deploy"
+    log() { echo "$(date): $*" >> "$LOG"; }
+    # shellcheck source=relay-git.sh
+    . "$RELAY_GIT_LIB"
+    # Sync BEFORE writing: a rebase onto a dirty tree aborts ("Please commit or
     # stash them"), which silently left this checkout diverging from origin.
-    git pull --rebase -q origin main 2>>"$LOG" || true
-    cat > abed-heartbeat.json <<JSON
+    relay_sync || exit 0
+    cat > "$HEARTBEAT_REPO/abed-heartbeat.json" <<JSON
 {
   "host": "abed",
   "at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
@@ -69,19 +88,14 @@ if [ -d "$HEARTBEAT_REPO/.git" ] && [ -f "$HOME/.ssh/elj-relay-deploy" ]; then
   "issues": $ISSUES_JSON
 }
 JSON
-    git add abed-heartbeat.json
-    git -c user.name="abed-elj-relay" -c user.email="simon@collins.nu" \
-        commit -q -m "ops: abed heartbeat $(date -u +%FT%TZ) ok=$OK" 2>>"$LOG" || exit 0
-    if git push -q origin HEAD 2>>"$LOG"; then
+    if relay_commit_push "ops: abed heartbeat $(date -u +%FT%TZ) ok=$OK" abed-heartbeat.json; then
       echo "$(date): heartbeat pushed (ok=$OK)" >> "$LOG"
-    elif git pull --rebase -q origin main 2>>"$LOG" && git push -q origin HEAD 2>>"$LOG"; then
-      echo "$(date): heartbeat pushed (ok=$OK) after rebase" >> "$LOG"
     else
       echo "$(date): heartbeat push FAILED" >> "$LOG"
     fi
   )
 else
-  echo "$(date): heartbeat skipped (no relay repo checkout or deploy key)" >> "$LOG"
+  echo "$(date): heartbeat skipped (no relay repo checkout, deploy key or relay-git.sh)" >> "$LOG"
 fi
 
 if [ ${#ISSUES[@]} -gt 0 ]; then

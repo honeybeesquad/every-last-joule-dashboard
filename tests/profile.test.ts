@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { timeOfDayAverageGW, totalTWh30d, peakGW } from "../src/lib/profile";
+import { timeOfDayAverageGW, totalTWh30d, peakGW, trailingDays } from "../src/lib/profile";
 import type { CurtailmentPoint } from "../src/lib/types";
 
 function pointsAt(hour: number, mw: number, days = 30): CurtailmentPoint[] {
@@ -101,5 +101,40 @@ describe("peakGW", () => {
 
   it("empty input yields 0", () => {
     expect(peakGW([])).toBe(0);
+  });
+});
+
+describe("trailingDays", () => {
+  const at = (iso: string, mw = 1): CurtailmentPoint => ({ utcTimestamp: iso, mw });
+
+  it("keeps points within the window ending at the latest timestamp", () => {
+    const pts = [
+      at("2026-06-15T00:00:00Z"), // months earlier: dropped
+      at("2026-10-18T00:00:00Z"), // exactly 30 days before the latest: dropped (exclusive start)
+      at("2026-10-18T00:05:00Z"),
+      at("2026-11-17T00:00:00Z"),
+    ];
+    expect(trailingDays(pts, 30).map((p) => p.utcTimestamp)).toEqual([
+      "2026-10-18T00:05:00Z",
+      "2026-11-17T00:00:00Z",
+    ]);
+  });
+
+  it("does not depend on input order", () => {
+    const pts = [at("2026-11-17T00:00:00Z"), at("2026-06-15T00:00:00Z"), at("2026-11-01T00:00:00Z")];
+    expect(trailingDays(pts).map((p) => p.utcTimestamp)).toEqual(["2026-11-17T00:00:00Z", "2026-11-01T00:00:00Z"]);
+  });
+
+  it("stops an appended file from inflating the 30-day total", () => {
+    const hourly = (startIso: string, hours: number) =>
+      Array.from({ length: hours }, (_, i) => at(new Date(Date.parse(startIso) + i * 3_600_000).toISOString(), 1000));
+    const year = hourly("2025-11-17T00:00:00Z", 365 * 24);
+    expect(totalTWh30d(year)).toBeCloseTo(8.76, 2);
+    expect(totalTWh30d(trailingDays(year))).toBeCloseTo(0.72, 2);
+  });
+
+  it("returns nothing for empty or unparseable input", () => {
+    expect(trailingDays([])).toEqual([]);
+    expect(trailingDays([at("not a date")])).toEqual([]);
   });
 });
