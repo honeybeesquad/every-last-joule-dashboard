@@ -30,7 +30,12 @@ const UNTESTABLE = [
   "haiti", "sao-tome", "st-vincent", "turkmenistan",
 ];
 
-/** The seventeen anchors dropped on 2026-09-29; now unpublished grid markers. */
+/**
+ * The seventeen anchors dropped on 2026-09-29; now unpublished grid markers,
+ * except those since wired to an operator generation loader (waste still
+ * unpublished): guatemala (AMM, 2026-11-18).
+ */
+const NOW_GENERATION_LOADERS = new Set(["guatemala"]);
 const DROPPED = [
   "benin", "botswana", "colombia-wind", "cote-divoire", "eswatini", "ghana", "guatemala",
   "guatemala-siepac", "laos", "libya", "myanmar", "nicaragua", "niger", "nigeria",
@@ -59,6 +64,11 @@ describe("statics anchors against national generation", () => {
     const regions = new Map(REGIONS.map((r) => [r.id, r]));
     for (const id of DROPPED) {
       expect(STATIC_REGIONS[id], `${id} still has a statics anchor`).toBeUndefined();
+      if (NOW_GENERATION_LOADERS.has(id)) {
+        expect(markers.has(id), `${id} is both a marker and a loader`).toBe(false);
+        expect(regions.get(id)?.source ?? "", `${id} label`).toMatch(/unpublished/i);
+        continue;
+      }
       expect(markers.get(id)?.note, `${id} marker note`).toBe(regions.get(id)?.source);
     }
   });

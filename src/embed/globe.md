@@ -403,6 +403,7 @@ const regionData = {
   "iraq-mainland": feeds.iraqMainland,
   kurdistan: feeds.kurdistan,
   bangladesh: feeds.bangladesh,
+  guatemala: feeds.guatemala,
   mongolia: feeds.mongolia,
   "british-columbia": feeds.britishColumbia,
   quebec: feeds.quebec,

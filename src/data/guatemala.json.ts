@@ -1,0 +1,154 @@
+/**
+ * Guatemala solar — AMM (Administrador del Mercado Mayorista) hourly
+ * generation by fuel.
+ *
+ * MEASURED     hourly solar generation from AMM's public chart endpoint
+ *              `graficaCombustible?dt=DD/MM/YYYY`. Each day is an array of
+ *              `{ hora, potencia, tipo }` rows: `hora` is hour-ending 1–24 in
+ *              Guatemala time (UTC−6, no daylight saving), `potencia` is MW,
+ *              and solar is the `IRRADIACIÓN` fuel type.
+ * UNPUBLISHED  waste. AMM publishes generation, not curtailment, and
+ *              Guatemala has no published curtailment series. Missing ≠ zero.
+ *
+ * Probe notes: docs/research/2026-11-18-no-public-series-probe.md. The
+ * endpoint answered for 2025-05-20 and later; 2025-05-16 came back `[]`.
+ *
+ * Stays `tier: "estimated"` / T3 / official-lead. Not T1a.
+ */
+
+import { pathToFileURL } from "node:url";
+
+import { mapWithConcurrency } from "../lib/concurrency.js";
+import { fetchJSON } from "../lib/fetch.js";
+import { withFallback } from "../lib/resilient.js";
+import type { CurtailmentPoint, RegionData } from "../lib/types.js";
+import { unpublishedGenerationRegion } from "../lib/waste-status.js";
+
+const REGION_ID = "guatemala";
+const BASE_URL = "https://wl12.amm.org.gt/GraficaPW/graficaCombustible";
+
+/** Guatemala is a flat UTC−6 with no daylight saving. */
+const GT_OFFSET_HOURS = -6;
+
+/** Days requested: the 30 complete local days before today. */
+const WINDOW_DAYS = 30;
+
+/** Fewer complete days than this and the window is not worth trusting. */
+const MIN_DAYS = 7;
+
+/**
+ * Plausibility ceiling for one hourly solar reading, MW. Guatemala's solar
+ * peaked near 430 MW on 2026-11-16, and 2024 solar generation was 0.28 TWh
+ * (Our World in Data). A reading in the thousands means the parser has picked
+ * up a demand or total row, not solar.
+ */
+const MAX_PLAUSIBLE_SOLAR_MW = 1500;
+
+export interface AmmRow {
+  hora: string | number;
+  potencia: number | string | null;
+  tipo: string | null;
+}
+
+/** Upper-case, accent-free fuel label, so `IRRADIACIÓN` matches however it is encoded. */
+export function normaliseTipo(tipo: string | null | undefined): string {
+  return (tipo ?? "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .trim()
+    .toUpperCase();
+}
+
+/** `dt` query value (DD/MM/YYYY) for a local calendar day given as YYYY-MM-DD. */
+export function ammDateParam(localDay: string): string {
+  const [y, m, d] = localDay.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+/**
+ * The `WINDOW_DAYS` local calendar days that end yesterday (Guatemala time),
+ * oldest first, as YYYY-MM-DD.
+ */
+export function windowDays(now: Date, days = WINDOW_DAYS): string[] {
+  const localNow = new Date(now.getTime() + GT_OFFSET_HOURS * 3_600_000);
+  const todayUtcMidnight = Date.UTC(localNow.getUTCFullYear(), localNow.getUTCMonth(), localNow.getUTCDate());
+  const out: string[] = [];
+  for (let i = days; i >= 1; i--) {
+    out.push(new Date(todayUtcMidnight - i * 86_400_000).toISOString().slice(0, 10));
+  }
+  return out;
+}
+
+/**
+ * Solar points for one local day. Returns [] for an empty day (AMM answers
+ * `[]` outside its window) and throws on a malformed or implausible one.
+ * A day must carry all 24 solar hours to count.
+ */
+export function parseAmmDay(localDay: string, rows: unknown): CurtailmentPoint[] {
+  if (!Array.isArray(rows)) throw new Error(`guatemala ${localDay}: payload is not an array`);
+  if (rows.length === 0) return [];
+  const byHour = new Map<number, number>();
+  for (const row of rows as AmmRow[]) {
+    if (normaliseTipo(row?.tipo) !== "IRRADIACION") continue;
+    const hourEnding = Number(row.hora);
+    const mw = Number(row.potencia);
+    if (!Number.isInteger(hourEnding) || hourEnding < 1 || hourEnding > 24) {
+      throw new Error(`guatemala ${localDay}: bad hora ${String(row.hora)}`);
+    }
+    if (!Number.isFinite(mw) || mw < 0) continue;
+    if (mw > MAX_PLAUSIBLE_SOLAR_MW) {
+      throw new Error(`guatemala ${localDay}: solar ${mw} MW exceeds ${MAX_PLAUSIBLE_SOLAR_MW} MW ceiling`);
+    }
+    byHour.set(hourEnding, mw);
+  }
+  if (byHour.size < 24) return [];
+  const [y, m, d] = localDay.split("-").map(Number);
+  const points: CurtailmentPoint[] = [];
+  for (let h = 1; h <= 24; h++) {
+    // Hour-ending h covers local [h-1, h); UTC = local − offset.
+    const startMs = Date.UTC(y, m - 1, d, h - 1 - GT_OFFSET_HOURS);
+    points.push({ utcTimestamp: new Date(startMs).toISOString(), mw: byHour.get(h)!, intervalHours: 1 });
+  }
+  return points;
+}
+
+export function buildGuatemalaRegion(daily: CurtailmentPoint[][], localDays?: string[]): RegionData {
+  const completeDays = (localDays ?? []).filter((_, i) => daily[i]?.length === 24);
+  const complete = daily.filter((d) => d.length === 24);
+  if (complete.length < MIN_DAYS) {
+    throw new Error(`guatemala: only ${complete.length} complete AMM days (need ${MIN_DAYS})`);
+  }
+  const points = complete.flat().sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+  const note =
+    `AMM hourly solar generation (IRRADIACIÓN), ${complete.length} complete days ` +
+    (completeDays.length ? `${completeDays[0]} → ${completeDays.at(-1)} (Guatemala time). ` : "") +
+    "Waste unpublished: AMM publishes generation, not curtailment.";
+  return unpublishedGenerationRegion(REGION_ID, "solar", points, note);
+}
+
+async function run(now = new Date()): Promise<RegionData> {
+  const days = windowDays(now);
+  const daily = await mapWithConcurrency(days, 4, async (day) => {
+    let rows: unknown;
+    try {
+      rows = await fetchJSON<unknown>(`${BASE_URL}?dt=${ammDateParam(day)}`, { timeoutMs: 20000, retries: 1 });
+    } catch (err) {
+      // A day that does not download is skipped; MIN_DAYS guards the window.
+      console.warn(`guatemala: ${day} skipped (${(err as Error).message})`);
+      return [] as CurtailmentPoint[];
+    }
+    // A day that downloads but does not parse fails the run, so a format
+    // change falls back to last-good instead of quietly thinning the window.
+    return parseAmmDay(day, rows);
+  });
+  return buildGuatemalaRegion(daily, days);
+}
+
+export const buildGuatemalaData = () => run();
+
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMain) {
+  withFallback(REGION_ID, () => run())
+    .then((data) => process.stdout.write(JSON.stringify(data)))
+    .catch((err) => { console.error("guatemala loader failed", err); process.exit(1); });
+}

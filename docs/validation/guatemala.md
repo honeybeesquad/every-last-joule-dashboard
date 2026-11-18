@@ -1,6 +1,6 @@
 # Validation — Guatemala (`guatemala`)
 
-Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-11-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** GTM
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** No curtailment series collected; grid present, waste unpublished. Its former 0.4 TWh/yr anchor (IRENA Renewable Energy Statistics 2024) and guatemala-siepac's 0.1 together came to 1.8× Guatemala's 2024 solar generation of 0.28 TWh (Our World in Data, from Ember and the Energy Institute), so both were dropped on 2026-09-29.
-- **Source URL:** [https://www.amm.org.gt/](https://www.amm.org.gt/)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Source:** AMM hourly solar generation by fuel (IRRADIACIÓN; wl12.amm.org.gt graficaCombustible). Waste unpublished: AMM publishes no curtailment series. The former 0.4 TWh/yr IRENA anchor was dropped on 2026-09-29 (with guatemala-siepac's 0.1 it came to 1.8× Guatemala's 2024 solar generation of 0.28 TWh, Our World in Data).
+- **Source URL:** [https://wl12.amm.org.gt/GraficaPW/graficaCombustible](https://wl12.amm.org.gt/GraficaPW/graficaCombustible)
+- **Loader:** [`guatemala.json.ts`](../../src/data/guatemala.json.ts)
 - **Structural gap:** no
 
 ## Calibration
@@ -37,7 +37,7 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-No region-specific limitations recorded. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
+Generation only; waste is unpublished. AMM solar output roughly quadrupled between mid-2025 (peak ~107 MW on 2025-06-15) and late 2026 (peak ~467 MW on 2026-10-15), so a 30-day window run-rate (~1.2 TWh/yr in November 2026) is well above the 2024 OWID figure of 0.28 TWh. AMM's endpoint returned no data before about 2025-05-20. See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
 ## Links
 
