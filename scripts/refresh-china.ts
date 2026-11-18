@@ -65,6 +65,12 @@ const OUT_PATH = join(process.cwd(), "data", "china-anchors.json");
 //   Heilongjiang wind 95.0% -> 5.0%  solar 96.6% -> 3.4%
 //   Jiangsu   wind 99.7% -> 0.3%   solar 99.9% -> 0.1%
 //   Anhui     wind 99.9% -> 0.1%   solar 99.9% -> 0.1%
+// Appended to the anchor's served source note where the transcribed rate covers only
+// part of the province that Ember's generation row covers.
+const RATE_SCOPE_NOTE: Record<string, string> = {
+  "Inner Mongolia": "; the rate is 蒙西 (Mengxi)-only and the generation is whole-province, including Mengdong",
+};
+
 const PROVINCE_FUEL_CURTAILMENT_RATE: Record<string, Partial<Record<Fuel, number>>> = {
   Xinjiang: { wind: 0.066, solar: 0.078 }, // util 93.4% / 92.2%
   Qinghai: { wind: 0.072, solar: 0.097 }, // util 92.8% / 90.3%
@@ -134,7 +140,7 @@ export function buildAnchors(csvText: string): AnchorRow[] {
       curtailmentRate: rate,
       annualTWh: Math.round(annualGen * rate * 1000) / 1000,
       latestMonth: window[0].date,
-      source: `Ember China subnational generation ${window[0].date} (trailing 12mo) × NEA 2024 curtailment rate ${(rate * 100).toFixed(1)}% (transcribed from published utilisation)`,
+      source: `Ember China subnational generation ${window[0].date} (trailing 12mo) × NEA 2024 curtailment rate ${(rate * 100).toFixed(1)}% (transcribed from published utilisation)${RATE_SCOPE_NOTE[province] ?? ""}`,
     });
   }
   return out;

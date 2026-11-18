@@ -51,11 +51,20 @@ The monthly and year-to-date releases also name 蒙西 and 蒙东 separately, so
 
 ## Separate finding for the owner: the current anchor rate
 
-`regions.ts` says the whole-province 2024 rates are wind 95.4% and solar 94.7%, citing cpnn.com.cn t20250219_1773747. A combined wind rate cannot be 95.4% if the two halves are 93.7% and 94.0%: any weighted average of the two must lie between them. If the regional figures hold up, the current wind anchor understates curtailment.
+*Corrected 2026-11-18: the first version of this note called 95.4% / 94.7% a whole-province rate. It isn't one.*
 
-Separately, `src/data/inner-mongolia.json.ts` still describes its anchor as "~8.0 TWh/yr wind + ~4.6 TWh/yr solar". `regions.ts` describes it as Ember × NEA rate. The two descriptions should be reconciled.
+`scripts/refresh-china.ts` transcribes 95.4% wind and 94.7% solar as the **蒙西 (Mengxi)** 2024 utilisation, citing cpnn.com.cn t20250219_1773747. Its comment hedges the period as "2024 full-year / 2024M1-11". The script multiplies those rates by Ember's whole-province generation, which includes Mengdong, and its own comment calls the result an upper bound for the Mengxi grid. As of this date, the `regions.ts` `source` strings name the rate as Mengxi-only.
 
-Changing either anchor moves the dataset's totals and needs the owner's sign-off (CLAUDE.md, data PR rule 3). We changed nothing here.
+The open question is a conflict between two Mengxi figures:
+
+| | Mengxi wind | Mengxi solar |
+|---|---|---|
+| Rate used now (cpnn, transcribed) | 95.4% | 94.7% |
+| Search snippets of the 6 Feb 2025 release (unverified) | 93.7% | 93.7% |
+
+One possible explanation is Jan–Nov against the full year, but that is unverified. If the full-year figure is 93.7%, the wind curtailment rate would go from 4.6% to 6.3% and solar from 5.3% to 6.3%. That would raise the served anchor, so it needs a first-hand read of the source and the owner's sign-off (CLAUDE.md, data PR rule 3). Nothing has changed here.
+
+The loader's hardcoded ~8.0 / ~4.6 TWh/yr figures are the fallback for a missing `data/china-anchors.json` row, not the served anchor. As of this date they are labelled as such, with no NEA attribution.
 
 ## To pick this up
 
