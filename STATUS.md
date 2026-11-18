@@ -11,6 +11,25 @@ On `claude/modest-shannon-u9gszu-guatemala`. No tier move (stays `estimated` / T
 
 Live run (2026-11-18): 14 days 2026-11-04 → 2026-11-17, 0.096 TWh per 30 days, solar peak ~0.42 GW. That run-rate (~1.2 TWh/yr) is about 4× OWID's 0.28 TWh for 2024. AMM's own series explains it: sampled solar peaks rise from ~107 MW (2025-06-15) to ~467 MW (2026-10-15). It is not a parse error. AMM returns nothing before about 2025-05-20.
 
+## Light globe: needles rise from the ground (2026-11-19)
+
+**#1111**, from `feat/light-needle-rise` (opened 2026-09-24, brought up to date with `main` on 2026-11-19). On the
+light (engraved) globe each needle now grows from its base over 650 ms (ease-out) when it first appears: on data
+load, when its GW crosses `MIN_GW_DRAWN`, or on switching into light mode. Turning over the limb does not count as
+appearing, so a turning globe does not keep starting rises at its edge. `src/globe-engraved.js` records when each
+needle (record + fuel) was first seen and reports `rising`; `src/globe.js` asks for one animation frame at a time
+only while a needle is still rising, so light mode still draws on change with no idle loop (#1054). A rise frame is
+skipped when a drag or scrub has already drawn, keeps that draw's `fast` mode, reuses the cached line screen (never
+`exact`), and does not count as camera motion.
+`prefers-reduced-motion` and the phone's still picture draw full length at once, and `destroy()` cancels a pending
+frame. Dark mode and the paper figure are unchanged.
+
+**Verified:** gates pass. In a local build in headless Chrome at 1440×900, after switching into light mode, the
+canvas holds short stubs at 68 ms and full-length needles by 910 ms, the rise frames stop at about 650 ms, an idle
+light globe runs no rise frames, and there are no page errors. A rise rebuilds the line screen about as often as
+`main` does over the same 900 ms (13 against 11 rebuilds); each rise frame still redraws the whole light globe. **Not changed:** no data, loader, `regions.ts` entry
+or tier.
+
 ## Spain island systems on REE REData daily generation (2026-11-18)
 
 [honeybeesquad/every-last-joule-dashboard#1619](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/1619), from `claude/intelligent-fermat-hirulq`. Population change: T3 334→337, total 545→548 (merged onto `main` after qatar/kuwait and `quebec-wind`; this PR adds three). T1a 160, T1b 26, T1c 1 and T2 24 are unchanged. Not T1a. No served waste changes: all three regions emit a zero waste profile.
