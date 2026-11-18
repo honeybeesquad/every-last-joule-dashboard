@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  BOT_WALL_RETRIES,
   ISLAND_SYSTEMS,
   MIN_WINDOW_DAYS,
   REDATA_SOLAR_PV_ID,
@@ -7,6 +8,7 @@ import {
   REDATA_WIND_ID,
   buildSpainIslandsFromRedata,
   dailyMWh,
+  fetchRedata,
   lastSettledDay,
   redataUrl,
   selectWindow,
@@ -99,7 +101,24 @@ describe("spain-islands REData daily generation", () => {
     );
     const w = selectWindow(b, REDATA_WIND_ID, "test", NOW);
     expect(w.days.at(-1)).toBe("2026-11-14");
-    expect(w.days.length).toBe(30);
+    // The window stays the 30 calendar days to the cutoff: no older day fills in.
+    expect(w.days[0]).toBe("2026-10-18");
+    expect(w.days.length).toBe(28);
+    expect(w.totalTWh30d).toBeCloseTo(0.06, 10);
+  });
+
+  it("does not reach back past the 30 calendar days for a series with a gap", () => {
+    const b = body({ wind: 2000, solar: 1000 });
+    const wind = b.included!.find((s) => s.id === REDATA_WIND_ID)!;
+    const gap = (day: string) => day >= "2026-10-25" && day <= "2026-10-27";
+    wind.attributes!.values = wind.attributes!.values!.filter((v) => !gap(v.datetime!.slice(0, 10)));
+    const w = selectWindow(b, REDATA_WIND_ID, "test", NOW);
+    expect(w.days[0]).toBe("2026-10-18");
+    expect(w.days.length).toBe(27);
+    // Six missing days leave 24, under the minimum.
+    const wide = (day: string) => day >= "2026-10-25" && day <= "2026-10-30";
+    wind.attributes!.values = wind.attributes!.values!.filter((v) => !wide(v.datetime!.slice(0, 10)));
+    expect(() => selectWindow(b, REDATA_WIND_ID, "test", NOW)).toThrow(/24 settled days/);
   });
 
   it("scales a short window to 30 days and says so", () => {
@@ -167,9 +186,56 @@ describe("spain-islands REData daily generation", () => {
     expect(balearic[0]).toBe(0);
   });
 
-  it("reads degraded when the newest settled day is over a week old", () => {
-    const stale = buildSpainIslandsFromRedata(bodies(), new Date("2026-11-27T10:30:00Z"));
+  it("reads degraded when REE falls two days behind, and throws past the minimum window", () => {
+    // Bodies end 2026-11-18. One day behind is still cached.
+    const slow = buildSpainIslandsFromRedata(bodies(), new Date("2026-11-21T10:30:00Z"));
+    expect(slow["canary-islands-wind"].lastUpdated).toBe("2026-11-18T00:00:00.000Z");
+    expect(slow["canary-islands-wind"].sourceStatus).toBe("cached");
+    const stale = buildSpainIslandsFromRedata(bodies(), new Date("2026-11-23T10:30:00Z"));
     expect(stale["canary-islands-wind"].lastUpdated).toBe("2026-11-18T00:00:00.000Z");
     expect(stale["canary-islands-wind"].sourceStatus).toBe("degraded");
+    expect(stale["canary-islands-wind"].sourceNote).toContain("over 27 settled days");
+    expect(() => buildSpainIslandsFromRedata(bodies(), new Date("2026-11-27T10:30:00Z"))).toThrow(
+      /settled days/,
+    );
+  });
+
+  describe("fetchRedata", () => {
+    const ok = body({ wind: 2000, solar: 1000 });
+    const blocked = () => Promise.reject(new Error("HTTP 403 Forbidden for https://apidatos.ree.es/x"));
+
+    it("retries a bot-wall 403 and returns the body that follows", async () => {
+      let calls = 0;
+      const got = await fetchRedata("u", "test", (_url, opts) => {
+        calls += 1;
+        expect(opts.retries).toBe(0);
+        return calls < 3 ? blocked() : Promise.resolve(ok);
+      }, 0);
+      expect(got).toBe(ok);
+      expect(calls).toBe(3);
+    });
+
+    it("gives up after the bot-wall retries, so the snapshot is served", async () => {
+      let calls = 0;
+      await expect(fetchRedata("u", "test", () => { calls += 1; return blocked(); }, 0)).rejects.toThrow(/HTTP 403/);
+      expect(calls).toBe(BOT_WALL_RETRIES + 1);
+    });
+
+    it("does not retry a timeout or another status", async () => {
+      let calls = 0;
+      const fail = (msg: string) => () => { calls += 1; return Promise.reject(new Error(msg)); };
+      await expect(fetchRedata("u", "test", fail("This operation was aborted"), 0)).rejects.toThrow(/aborted/);
+      await expect(fetchRedata("u", "test", fail("HTTP 500 for u"), 0)).rejects.toThrow(/HTTP 500/);
+      expect(calls).toBe(2);
+    });
+
+    it("throws on a 200 that carries REData's errors array, without retrying", async () => {
+      let calls = 0;
+      const unavailable = { errors: [{ detail: "The requested data is currently unavailable." }] };
+      await expect(
+        fetchRedata("u", "Canary Islands", () => { calls += 1; return Promise.resolve(unavailable); }, 0),
+      ).rejects.toThrow(/Canary Islands: The requested data is currently unavailable/);
+      expect(calls).toBe(1);
+    });
   });
 });

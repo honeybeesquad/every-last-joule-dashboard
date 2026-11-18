@@ -34,17 +34,21 @@ Last updated: 2026-11-18 · Sprint: Spain island systems (REE REData) · Paper s
 
 ## Discrepancy analysis
 
+<!-- BEGIN MANUAL -->
 The loader requests `time_trunc=day&geo_trunc=electric_system&geo_limit=canarias&geo_ids=8742` and reads the solar PV (series id 1458) row. The first run, on 2026-11-18, summed 28.2 GWh over the 30 settled days 2026-10-18 to 2026-11-16.
 
 Only the 30-day generation total is REE's. REData serves this widget at day, month and year resolution; `time_trunc=hour` returned HTTP 400 on 2026-11-18, for the peninsula as well as the islands. The 24-hour `generationProfile` is therefore a typical solar curve centred on local solar noon (13:00 UTC), scaled so it integrates to the 30-day total. It is not a measured shape. Do not read the zero `profile` as a measured waste finding.
 
 Asked for a range ending on the fetch date, REData returns a full-day figure for the day still in progress, which cannot be a measured total. The loader leaves out the fetch date and the day before it, and counts a day only if the system's "Total generation" row carries it. Whether REE later revises settled days was not tested.
+<!-- END MANUAL -->
 
 ## Known limitations
 
+<!-- BEGIN MANUAL -->
 - Measured curtailment for this system, if REE publishes it, would sit in ESIOS behind `ESIOS_API_TOKEN` (see [`spain-esios.json.ts`](../../src/data/spain-esios.json.ts)). The ESIOS indicator list answered 403 without a token on 2026-11-18, so no island curtailment indicator has been looked for.
-- `apidatos.ree.es` sits behind an Incapsula bot wall. From a datacentre address on 2026-11-18 it answered 403 to about a third of requests. A blocked build serves the last-good snapshot, which reads `degraded` once it is over 24 hours old.
+- `apidatos.ree.es` sits behind an Incapsula bot wall. From a datacentre address on 2026-11-18 it answered 403 to about a third of requests. A 403 is retried three times; a build still blocked serves the last-good snapshot, which reads `degraded` once it is over 24 hours old.
 - The REData documentation page was blocked by the same wall, so the geo ids and series ids were confirmed from successful responses, not from the documentation.
+<!-- END MANUAL -->
 
 ## Links
 

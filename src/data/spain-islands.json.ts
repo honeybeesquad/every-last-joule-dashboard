@@ -17,11 +17,15 @@
  *   - Only settled days count. Asked for a range that ends today, REData
  *     returns a full-day figure for the day still in progress (seen at 10:30
  *     UTC on 2026-11-18), which cannot be a measured total. The window
- *     therefore ends two days before the fetch date, and a day must also
- *     appear in the system's "Total generation" row.
+ *     therefore ends two days before the fetch date (by UTC date, which is
+ *     never later than REE's Madrid date), and a day must also appear in the
+ *     system's "Total generation" row. The window is the 30 calendar days up
+ *     to that cutoff; days REE has not published are not replaced by older
+ *     ones.
  *   - apidatos.ree.es sits behind an Incapsula bot wall that answered 403 to
  *     about a third of requests from a datacentre address on 2026-11-18. A
- *     blocked run falls back to the last-good snapshot through withFallback.
+ *     403 is retried three times; any other failure, and a 403 that persists,
+ *     falls back to the last-good snapshot through withFallback.
  *
  * Regions: canary-islands-wind, canary-islands-solar, balearic-islands-solar.
  * The Balearics report no wind row in REData at day resolution (about
@@ -37,10 +41,11 @@
 
 import { pathToFileURL } from "url";
 import { fetchJSON } from "../lib/fetch.js";
+import { relayFreshness } from "../lib/freshness.js";
 import { withFallback } from "../lib/resilient.js";
 import { solarProfile } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
-import type { RegionData, SourceStatus } from "../lib/types.js";
+import type { RegionData } from "../lib/types.js";
 
 export const REDATA_BASE = "https://apidatos.ree.es/en/datos/generacion/estructura-generacion";
 /** REData series ids, the same in every language and electric system. */
@@ -58,8 +63,14 @@ export const MIN_WINDOW_DAYS = 25;
 export const SETTLE_LAG_DAYS = 2;
 /** Days requested: the window plus the settle lag and some slack. */
 const FETCH_DAYS = 40;
-/** Newest settled day older than this reads `degraded`. */
-export const STALE_AFTER_DAYS = 7;
+/**
+ * Newest settled day older than this reads `degraded`. A healthy run's newest
+ * day is two to three days old, so this trips when REE falls two days behind.
+ */
+export const STALE_AFTER_DAYS = 4;
+/** Extra attempts after a bot-wall 403, and the wait before each (× attempt number). */
+export const BOT_WALL_RETRIES = 3;
+const BOT_WALL_WAIT_MS = 2000;
 
 interface IslandFuel {
   regionId: string;
@@ -137,8 +148,9 @@ export function lastSettledDay(now: Date): string {
 }
 
 /**
- * The latest `WINDOW_DAYS` settled days of one technology: days no later than
- * `lastSettledDay(now)` that the system's Total generation row also carries.
+ * One technology's settled days in the `WINDOW_DAYS` calendar days ending on
+ * `lastSettledDay(now)`: days in that span that both its own row and the
+ * system's Total generation row carry. Fewer than `MIN_WINDOW_DAYS` throws.
  */
 export function selectWindow(
   body: RedataResponse,
@@ -151,23 +163,21 @@ export function selectWindow(
     throw new Error(`REData ${label}: no Total generation series (id ${REDATA_TOTAL_ID})`);
   }
   const cutoff = lastSettledDay(now);
+  const windowStart = ymd(
+    new Date(now.getTime() - (SETTLE_LAG_DAYS + WINDOW_DAYS - 1) * 86_400_000),
+  );
   const fuel = dailyMWh(body, seriesId);
   const days = Array.from(fuel.keys())
-    .filter((day) => day <= cutoff && total.has(day))
-    .sort()
-    .slice(-WINDOW_DAYS);
+    .filter((day) => day >= windowStart && day <= cutoff && total.has(day))
+    .sort();
   if (days.length < MIN_WINDOW_DAYS) {
     throw new Error(
-      `REData ${label}: series ${seriesId} has ${days.length} settled days, need ${MIN_WINDOW_DAYS}`,
+      `REData ${label}: series ${seriesId} has ${days.length} settled days ` +
+        `between ${windowStart} and ${cutoff}, need ${MIN_WINDOW_DAYS}`,
     );
   }
   const sumMWh = days.reduce((sum, day) => sum + (fuel.get(day) ?? 0), 0);
   return { days, sumMWh, totalTWh30d: ((sumMWh / days.length) * WINDOW_DAYS) / 1_000_000 };
-}
-
-function freshness(latestDay: string, now: Date): Extract<SourceStatus, "cached" | "degraded"> {
-  const ageMs = now.getTime() - Date.parse(`${latestDay}T00:00:00Z`);
-  return ageMs > STALE_AFTER_DAYS * 86_400_000 ? "degraded" : "cached";
 }
 
 export function buildIslandRegion(
@@ -208,7 +218,11 @@ export function buildIslandRegion(
     lastUpdated: `${last}T00:00:00.000Z`,
     lastSuccessAt: nowIso,
     sourceNote,
-    sourceStatus: freshness(last, now),
+    // A T3 record is never stamped live: fresh rows read "cached".
+    sourceStatus:
+      relayFreshness(`${last}T00:00:00.000Z`, now, STALE_AFTER_DAYS) === "degraded"
+        ? "degraded"
+        : "cached",
     sourceProvenance: "official-lead",
     wasteStatus: "unpublished",
     generationProfile,
@@ -250,21 +264,45 @@ export function redataUrl(system: IslandSystem, now = new Date()): string {
   return `${REDATA_BASE}?${params.toString()}`;
 }
 
+type RedataFetcher = (
+  url: string,
+  opts: { headers: Record<string, string>; retries: number },
+) => Promise<RedataResponse>;
+
+/**
+ * One REData request. Only the bot wall's 403 is retried: it comes back at
+ * once, so `BOT_WALL_RETRIES` more attempts cost seconds. A timeout or any
+ * other failure is not retried here, so a dead upstream costs one request
+ * timeout before withFallback serves the snapshot. A 200 that carries an
+ * `errors` array (REData's "data unavailable") throws.
+ */
+export async function fetchRedata(
+  url: string,
+  label: string,
+  fetcher: RedataFetcher = (u, o) => fetchJSON<RedataResponse>(u, o),
+  waitMs = BOT_WALL_WAIT_MS,
+): Promise<RedataResponse> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const body = await fetcher(url, { headers: { accept: "application/json" }, retries: 0 });
+      if (body?.errors?.length) {
+        throw new Error(`REData ${label}: ${body.errors[0]?.detail ?? "error response"}`);
+      }
+      return body;
+    } catch (err) {
+      const blocked = err instanceof Error && err.message.startsWith("HTTP 403");
+      if (!blocked || attempt >= BOT_WALL_RETRIES) throw err;
+      await new Promise((resolve) => setTimeout(resolve, waitMs * (attempt + 1)));
+    }
+  }
+}
+
 async function run(): Promise<Record<string, RegionData>> {
   const now = new Date();
   const bodies: Record<string, RedataResponse> = {};
   // One system after the other: two requests at once draw the bot wall sooner.
   for (const system of ISLAND_SYSTEMS) {
-    const body = await fetchJSON<RedataResponse>(redataUrl(system, now), {
-      headers: { accept: "application/json" },
-      // The bot wall's 403 comes back at once, so a retry costs a second or two.
-      retries: 3,
-      backoffBaseMs: 2000,
-    });
-    if (body.errors?.length) {
-      throw new Error(`REData ${system.label}: ${body.errors[0]?.detail ?? "error response"}`);
-    }
-    bodies[system.geoLimit] = body;
+    bodies[system.geoLimit] = await fetchRedata(redataUrl(system, now), system.label);
   }
   return buildSpainIslandsFromRedata(bodies, now);
 }

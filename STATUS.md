@@ -5,7 +5,7 @@
 
 ## Spain island systems on REE REData daily generation (2026-11-18)
 
-On `claude/intelligent-fermat-hirulq`. Population change: T3 331→334, total 542→545. T1a 160, T1b 26, T1c 1 and T2 24 are unchanged. Not T1a. No served waste changes: all three regions emit a zero waste profile.
+[honeybeesquad/every-last-joule-dashboard#1619](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/1619), from `claude/intelligent-fermat-hirulq`. Population change: T3 331→334, total 542→545. T1a 160, T1b 26, T1c 1 and T2 24 are unchanged. Not T1a. No served waste changes: all three regions emit a zero waste profile.
 
 New regions, from one loader (`src/data/spain-islands.json.ts`, registry key `spainIslands`):
 
@@ -17,7 +17,7 @@ What the data is:
 - **Generation only, `wasteStatus: "unpublished"`.** REData carries no curtailment series for these systems. No rate is borrowed from mainland Spain or anywhere else.
 - **Daily totals, not hourly.** The request for this work assumed `time_trunc=hour`. That returns HTTP 400 on `generacion/estructura-generacion`, for the peninsula as well as the islands (probed 2026-11-18); the widget serves day, month and year. Simon chose to build on the daily series. The 30-day generation total is REE's. The 24-hour `generationProfile` is not measured: solar is the repo's typical solar curve centred on local solar noon, wind is flat at the daily mean. Both integrate to the 30-day total.
 - **First run (2026-11-18), 30 settled days 2026-10-18 to 2026-11-16:** Canary wind 60.4 GWh, Canary solar PV 28.2 GWh, Balearic solar PV 39.1 GWh.
-- **Settled days only.** Asked for a range ending on the fetch date, REData returns a full-day figure for the day still in progress. The loader leaves out the fetch date and the day before it. Whether REE revises older days was not tested.
+- **Settled days only.** Asked for a range ending on the fetch date, REData returns a full-day figure for the day still in progress. The loader leaves out the fetch date and the day before it, takes the 30 calendar days up to that cutoff (a missing day is not replaced by an older one), and needs 25 of them. Whether REE revises older days was not tested.
 
 Left out, with the evidence:
 
@@ -28,7 +28,7 @@ Left out, with the evidence:
 Open items:
 
 - **Measured curtailment may sit in ESIOS.** If REE publishes curtailment for the island systems it would be behind `ESIOS_API_TOKEN`, the token already being waited on for `spain-esios.json.ts`. `api.esios.ree.es/indicators` answered 403 without a token on 2026-11-18, so the indicator list has not been searched for island curtailment indicators. Do that when the token arrives.
-- **Bot wall.** `apidatos.ree.es` is behind Incapsula. From a cloud container on 2026-11-18 it answered 403 to about a third of requests. The loader retries three times and otherwise serves the committed snapshot (`data/snapshots/last-good/spain-islands.json`), which reads `degraded` once it is over 24 hours old. How often the GitHub runner that builds production gets through is not yet known: watch the three regions' `sourceStatus` after the first refreshes.
+- **Bot wall.** `apidatos.ree.es` is behind Incapsula. From a cloud container on 2026-11-18 it answered 403 to about a third of requests. The loader retries a 403 three times (no other failure is retried) and otherwise serves the committed snapshot (`data/snapshots/last-good/spain-islands.json`), which reads `degraded` once it is over 24 hours old. How often the GitHub runner that builds production gets through is not yet known: watch the three regions' `sourceStatus` after the first refreshes.
 - **An hourly source is unverified.** REE's demand-tracking pages for the islands may serve sub-hourly generation by technology. Not probed.
 - The REData documentation page was blocked by the same wall. The geo ids and series ids (wind 10291, solar PV 1458, total 10296) come from successful responses.
 
