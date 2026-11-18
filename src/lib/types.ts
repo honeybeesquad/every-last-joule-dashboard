@@ -135,6 +135,11 @@ export interface RegionData {
    * which publishes wind and solar constrained-off in parallel) compute this
    * ratio from observed volumes so Bahia or Piauí can appear correctly in
    * BOTH the wind and solar hotspot columns proportional to real curtailment.
+   *
+   * On a region with `wasteStatus: "unpublished"` (zero waste) it is the split
+   * of observed renewable GENERATION, used only to colour and bucket the
+   * region; it implies no curtailment mix. `src/data/edf-sei.json.ts` emits it
+   * this way for the five EDF SEI islands.
    */
   fuelShare?: Partial<Record<"solar" | "wind" | "hydro", number>>;
   /**
