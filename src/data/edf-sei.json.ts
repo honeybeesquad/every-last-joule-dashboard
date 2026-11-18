@@ -310,8 +310,9 @@ export async function collectSeiRegions(
       : Infinity;
     out[t.regionId] = {
       ...prev,
-      // NaN (a missing or unreadable timestamp) fails the comparison and reads
-      // as degraded: an age we cannot establish is never called fresh.
+      // A missing timestamp gives Infinity and an unreadable one NaN; both fail
+      // this comparison and read as degraded, so an age we cannot establish
+      // is never called fresh.
       sourceStatus: ageHours <= DEFAULT_STALENESS_THRESHOLD_HOURS ? "cached" : "degraded",
     };
   });
