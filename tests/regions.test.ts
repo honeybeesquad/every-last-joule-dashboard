@@ -124,9 +124,10 @@ describe("regions", () => {
     // (−5) with unpublished EIA/ENTSO fuels + missing-grid markers (+82). 459 + 77 = 536.
     // 2026-10-19: India nationwide CEA residual (Kerala, Haryana, Assam, HP,
     // Uttarakhand, rest). 536 + 6 = 542. T3 modelled, not T1a.
+    // 2026-11-18: qatar (Kahramaa) + kuwait (MEW) unpublished grid markers. 542 + 2 = 544.
     // 2026-11-18: corsica added on the EDF SEI real-time generation loader
-    // (waste unpublished). 542 + 1 = 543. T3, not T1a.
-    expect(REGIONS.length).toBe(543);
+    // (waste unpublished). 544 + 1 = 545. T3, not T1a.
+    expect(REGIONS.length).toBe(545);
   });
 
   it("has 174 live regions across the three live sub-tiers (T1a/T1b/T1c)", () => {
@@ -337,8 +338,9 @@ describe("regions", () => {
     // 2026-10-19: India nationwide CEA residual (+6 estimated). 327 + 6 = 333.
     // 2026-10-19: india-gujarat T3 → T2 on NLDC REMC daily MU. 333 - 1 = 332.
     // 2026-10-19: india-rajasthan T3 → T2 on RRVPNL PDFs. 332 - 1 = 331.
-    // 2026-11-18: corsica added (EDF SEI generation, waste unpublished). 331 -> 332.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(332);
+    // 2026-11-18: qatar + kuwait unpublished grid markers (+2 estimated). 331 + 2 = 333.
+    // 2026-11-18: corsica added (EDF SEI generation, waste unpublished). 333 + 1 = 334.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(334);
   });
 
   it("has 24 anchored regions (8 flat-profile + 16 EIA-930 US BAs)", () => {

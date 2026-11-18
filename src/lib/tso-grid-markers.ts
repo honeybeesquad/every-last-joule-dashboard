@@ -39,6 +39,8 @@ export const TSO_GRID_MARKERS: ReadonlyArray<{
   { id: "new-caledonia", note: "Enercal: no hourly series wired. Grid present, waste unpublished.", profileKind: "solar" },
   { id: "french-polynesia", note: "EDT: no hourly series wired. Grid present, waste unpublished.", profileKind: "solar" },
   { id: "wallis-and-futuna", note: "EEWF: no hourly series wired. Grid present, waste unpublished.", profileKind: "solar" },
+  { id: "qatar", note: "Kahramaa: no public hourly series. Grid present, waste unpublished.", profileKind: "solar" },
+  { id: "kuwait", note: "Kuwait MEW: no public hourly series. Grid present, waste unpublished.", profileKind: "solar" },
   // 2026-09-29: statics anchors at or above the country's recorded generation of
   // their fuel (scripts/lib/statics-anchor-check.ts). Waste figures dropped.
   { id: "venezuela", note: "No curtailment series collected; grid present, waste unpublished. Its former 0.5 TWh/yr anchor (IRENA RE Statistics 2024) was 25× Venezuela's 2024 wind generation of 0.02 TWh (Our World in Data, from Ember and the Energy Institute), so it was dropped on 2026-09-29.", profileKind: "wind" },

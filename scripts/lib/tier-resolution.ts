@@ -441,6 +441,8 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "new-caledonia": "solar",
   "french-polynesia": "solar",
   "wallis-and-futuna": "solar",
+  qatar: "solar",
+  kuwait: "solar",
   "india-grid-india": "solar",
 };
 
