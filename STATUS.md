@@ -11,13 +11,15 @@ load, when its GW crosses `MIN_GW_DRAWN`, or on switching into light mode. Turni
 appearing, so a turning globe does not keep starting rises at its edge. `src/globe-engraved.js` records when each
 needle (record + fuel) was first seen and reports `rising`; `src/globe.js` asks for one animation frame at a time
 only while a needle is still rising, so light mode still draws on change with no idle loop (#1054). A rise frame is
-skipped when a drag or scrub has already drawn, keeps that draw's `fast` mode, and does not count as camera motion.
+skipped when a drag or scrub has already drawn, keeps that draw's `fast` mode, reuses the cached line screen (never
+`exact`), and does not count as camera motion.
 `prefers-reduced-motion` and the phone's still picture draw full length at once, and `destroy()` cancels a pending
 frame. Dark mode and the paper figure are unchanged.
 
 **Verified:** gates pass. In a local build in headless Chrome at 1440×900, after switching into light mode, the
 canvas holds short stubs at 68 ms and full-length needles by 910 ms, the rise frames stop at about 650 ms, an idle
-light globe runs no rise frames, and there are no page errors. **Not changed:** no data, loader, `regions.ts` entry
+light globe runs no rise frames, and there are no page errors. A rise rebuilds the line screen about as often as
+`main` does over the same 900 ms (13 against 11 rebuilds); each rise frame still redraws the whole light globe. **Not changed:** no data, loader, `regions.ts` entry
 or tier.
 
 ## Quebec on Hydro-Québec open data, plus `quebec-wind` (2026-11-18)

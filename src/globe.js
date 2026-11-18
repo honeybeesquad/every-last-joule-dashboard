@@ -427,8 +427,9 @@ export async function mountGlobe(canvas, initial) {
   // Needles rise from the ground as they appear. The frames are requested
   // only while one is still rising, so there is still no idle loop. A rise
   // frame is skipped when something else (a drag, a scrub) already drew since
-  // it was asked for, and it keeps that draw's `fast` mode, so the line-screen
-  // cache is not rebuilt twice a frame. The phone's still picture (one draw
+  // it was asked for. It keeps that draw's `fast` mode and is never `exact`,
+  // so it reuses the cached line screen instead of rebuilding it each frame
+  // (the exact key holds the live sun declination, which moves every frame). The phone's still picture (one draw
   // per hour change) and reduced motion draw needles full length at once.
   const NEEDLE_RISE_MS = 650;
   const reducedMotionQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
@@ -522,7 +523,8 @@ export async function mountGlobe(canvas, initial) {
   // line screen within 0.25 deg and, when dragging, draws in `fast` mode; one
   // exact frame follows once the motion stops.
   // A `rise` frame only animates needles: it does not count as camera motion,
-  // so it neither re-arms the settle timer nor makes the next draw inexact.
+  // so it neither re-arms the settle timer nor makes the next draw inexact,
+  // and it never asks for an exact line screen.
   function renderLight({ fast = false, rise = false } = {}) {
     const width = canvas.width / dpr;
     const height = canvas.height / dpr;
@@ -552,7 +554,7 @@ export async function mountGlobe(canvas, initial) {
       ctx, w: width, h: height, dpr, cx: width / 2, cy: height / 2, R: lightRadius(),
       lat0: state.lat0, lon0: state.lon0, sun, land, dots: lightDots, needles: marks, rings,
       inkRGB: tokens.inkRGB, paper: tokens.paper, warn: tokens.qualityWarning,
-      selectedId: shownSelection(), fast, exact: !moving, leader: !state.exploring,
+      selectedId: shownSelection(), fast, exact: !moving && !rise, leader: !state.exploring,
       now, rise: reducedMotionQuery?.matches || phoneStill() ? 0 : NEEDLE_RISE_MS,
     });
     ctx.restore();
