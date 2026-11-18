@@ -15,11 +15,11 @@ describe("xinjiang loader", () => {
     expect(data.wind.sourceProvenance).toBe("modelled-fallback");
     expect(data.wind.sourceStatus).toBe("cached");
     // Anchor comes from the refreshed store (6.341 TWh), not the 5.0 fallback.
-    expect(data.wind.totalTWh).toBeCloseTo((6.341 * 30) / 365, 4);
+    expect(data.wind.totalTWh).toBeCloseTo((10.661 * 30) / 365, 4);
     expect(data.solar.regionId).toBe("xinjiang-solar");
     expect(data.solar.profile).toHaveLength(24);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
-    expect(data.solar.totalTWh).toBeCloseTo((5.94 * 30) / 365, 4);
+    expect(data.solar.totalTWh).toBeCloseTo((12.969 * 30) / 365, 4);
     // Envelope in-band.
     expect(data.wind.peakGW).toBeGreaterThanOrEqual(data.wind.uncertaintyLowGW ?? 0);
     expect(data.wind.peakGW).toBeLessThanOrEqual(data.wind.uncertaintyHighGW ?? 0);

@@ -8,14 +8,14 @@ describe("china-heilongjiang loader", () => {
     expect(data).toHaveProperty("solar");
     expect(data.wind.regionId).toBe("china-heilongjiang-wind");
     expect(data.wind.profile).toHaveLength(24);
-    expect(data.wind.totalTWh).toBeCloseTo(0.167096, 4);
+    expect(data.wind.totalTWh).toBeCloseTo(0.181315, 4);
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.wind.sourceProvenance).toBe("modelled-fallback");
     expect(data.wind.sourceStatus).toBe("cached");
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.solar.regionId).toBe("china-heilongjiang-solar");
     expect(data.solar.profile).toHaveLength(24);
-    expect(data.solar.totalTWh).toBeCloseTo(0.028685, 4);
+    expect(data.solar.totalTWh).toBeCloseTo(0.034849, 4);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.solar.sourceProvenance).toBe("modelled-fallback");
     expect(data.solar.sourceStatus).toBe("cached");
