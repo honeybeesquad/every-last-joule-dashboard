@@ -3,7 +3,7 @@ import { dirname, join } from "path";
 import { readFileSync } from "fs";
 import { relayFreshness, RELAY_STALENESS_THRESHOLD_DAYS } from "../lib/freshness.js";
 import { withFallback } from "../lib/resilient.js";
-import { timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
+import { timeOfDayAverageGW, totalTWh30d, trailingDays } from "../lib/profile.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
 import type { RegionData, CurtailmentPoint } from "../lib/types.js";
 
@@ -87,6 +87,9 @@ function buildUnpublishedGeneration(
   points: CurtailmentPoint[],
   note: string,
 ): RegionData {
+  // The abed relay appends to this file month after month; keep the trailing
+  // 30 days so generationTotalTWh stays a 30-day figure as the file grows.
+  points = trailingDays(points, 30);
   if (points.length < 24) {
     throw new Error(`mexico ${id}: fewer than 24 generation points`);
   }

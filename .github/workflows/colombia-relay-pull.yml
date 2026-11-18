@@ -15,6 +15,10 @@ name: Relay pull (Colombia + India + Peru + PREPA)
 #           CSV unchanged most days, so the diff guard below makes this a no-op.
 # PREPA:    operationdata.prepa.pr.gov dataSource.js snapshots; abed appends
 #           hourly (NordVPN on 403) into puerto-rico-genera.csv.
+# Argentina: CAMMESA 5-minute renewables; abed appends daily through NordVPN
+#           Argentina into argentina-cammesa.csv.
+# Mexico:   CENACE Generacion Liquidada by technology; abed appends daily into
+#           mexico-generacion.csv.
 # Also triggerable manually.
 #
 # `main` is a protected branch with a required `verify` status check, so this
@@ -86,11 +90,17 @@ jobs:
                data/historical/peru-coes-per-plant.csv
           fi
 
-          # PREPA/Genera generation snapshots (copy only if present)
-          if [ -f /tmp/relay/puerto-rico-genera.csv ]; then
-            cp /tmp/relay/puerto-rico-genera.csv \
-               data/historical/puerto-rico-genera.csv
-          fi
+          # abed append-only relays: PREPA hourly snapshots, Argentina CAMMESA
+          # 5-minute generation, Mexico CENACE hourly generation. A relay copy
+          # is taken only when it keeps every committed row
+          # (scripts/relay/accept_append_only.py), so a re-seeded or truncated
+          # relay file cannot rewind the series; a refusal is logged, not fatal.
+          for f in puerto-rico-genera argentina-cammesa mexico-generacion; do
+            if [ -f "/tmp/relay/$f.csv" ]; then
+              python3 scripts/relay/accept_append_only.py \
+                "/tmp/relay/$f.csv" "data/historical/$f.csv"
+            fi
+          done
 
           # Gujarat T2 — Grid-India NLDC REMC daily MU (Bangalore droplet)
           if [ -f /tmp/relay/india-gujarat-nldc-curtailed-daily.csv ]; then
@@ -119,6 +129,8 @@ jobs:
                   data/historical/india-nldc-remc-vre-daily.csv \
                   data/historical/peru-coes-per-plant.csv \
                   data/historical/puerto-rico-genera.csv \
+                  data/historical/argentina-cammesa.csv \
+                  data/historical/mexico-generacion.csv \
                   data/historical/abed-heartbeat.json \
                   2>/dev/null || true
 

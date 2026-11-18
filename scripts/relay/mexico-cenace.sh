@@ -13,7 +13,8 @@
 #   ./scripts/relay/mexico-cenace.sh              # fetch latest month
 #   ./scripts/relay/mexico-cenace.sh --dry-run    # preview without writing
 #
-# Designed for cron execution on Britta (Mac mini).
+# Local/manual use. The scheduled run is scripts/relay/mexico-cenace-push.sh on
+# abed (Britta, the original cron host, has had no scheduler since Aug 2026).
 # Exits 0 on success (even if zero new rows).
 #
 

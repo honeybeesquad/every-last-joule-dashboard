@@ -12,7 +12,8 @@ Usage:
     python3 scripts/relay/argentina-cammesa-fetch.py [--days 90] [--dry-run]
 
 Requires: NordVPN CLI installed and logged in with an Argentine exit available.
-Intended to run on `abed.local`.
+Intended to run on `abed.local` via scripts/relay/argentina-cammesa-push.sh, which
+passes --csv-out into the relay repo clone (see docs/ops/abed-capture-service.md).
 """
 from __future__ import annotations
 
@@ -35,41 +36,28 @@ CANONICAL_CSV = os.path.join(REPO_ROOT, "data", "historical", "argentina-cammesa
 CAMMESA_URL = "https://cdsrenovables.cammesa.com/exhisto/RenovablesService/GetChartTotalTRDataSource/"
 
 # ─── NordVPN helpers ──────────────────────────────────────────────────────
+#
+# On abed the relay user is in the `nordvpn` group, so the CLI needs no sudo.
+# A sudo password (SUDO_PASSWORD) is used only as a fallback when a plain call
+# fails, so a missing password no longer stops the script at import time.
 
-def get_sudo_password() -> str:
-    """Get sudo password from env var, or from the old .env path."""
+
+def _nordvpn(*args: str, timeout: int = 90) -> subprocess.CompletedProcess:
+    result = subprocess.run(["nordvpn", *args], capture_output=True, timeout=timeout, check=False)
     pw = os.environ.get("SUDO_PASSWORD")
-    if pw:
-        return pw
-    # Fallback: check the repo .env or ~/.hermes/.env
-    for path in [os.path.join(os.path.dirname(__file__), "..", "..", ".env"),
-                 os.path.expanduser("~/.hermes/.env")]:
-        if os.path.exists(path):
-            with open(path) as f:
-                for line in f:
-                    if line.startswith("SUDO_PASSWORD="):
-                        return line.strip().split("=", 1)[1].strip("'\"")
-    raise RuntimeError("SUDO_PASSWORD not set. Set SUDO_PASSWORD env var or add to .env")
-
-
-SUDO_PASSWORD = get_sudo_password()
-
-
-def sudo_cmd(*args: str) -> list[str]:
-    return ["sudo", "-S"] + list(args)
+    if result.returncode != 0 and pw:
+        result = subprocess.run(
+            ["sudo", "-S", "nordvpn", *args],
+            input=pw.encode() + b"\n", capture_output=True, timeout=timeout, check=False,
+        )
+    return result
 
 
 def nordvpn_connect_argentina() -> None:
     """Connect to an Argentine NordVPN server."""
     print("[relay] Connecting to Argentina via NordVPN...")
-    result = subprocess.run(
-        sudo_cmd("nordvpn", "disconnect"),
-        input=SUDO_PASSWORD.encode() + b"\n", capture_output=True, timeout=30,
-    )
-    result = subprocess.run(
-        sudo_cmd("nordvpn", "connect", "Argentina"),
-        input=SUDO_PASSWORD.encode() + b"\n", capture_output=True, timeout=60,
-    )
+    _nordvpn("disconnect", timeout=30)
+    result = _nordvpn("connect", "Argentina")
     if result.returncode != 0:
         raise RuntimeError(f"nordvpn connect Argentina failed: {result.stderr.decode('utf-8', errors='replace')[-200:]}")
     print("[relay] Connected to Argentina.")
@@ -77,10 +65,7 @@ def nordvpn_connect_argentina() -> None:
 
 def nordvpn_disconnect() -> None:
     """Disconnect NordVPN."""
-    subprocess.run(
-        sudo_cmd("nordvpn", "disconnect"),
-        input=SUDO_PASSWORD.encode() + b"\n", capture_output=True, timeout=30,
-    )
+    _nordvpn("disconnect", timeout=30)
     print("[relay] Disconnected.")
 
 
@@ -198,41 +183,54 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Argentina CAMMESA relay")
     parser.add_argument("--days", type=int, default=30, help="Days of data to fetch")
     parser.add_argument("--dry-run", action="store_true", help="Print what would be done without writing")
+    parser.add_argument("--csv-out", default=CANONICAL_CSV,
+                        help="CSV to append to (abed: the relay repo clone's argentina-cammesa.csv)")
+    parser.add_argument("--vpn", choices=("always", "on-fail", "never"), default="always",
+                        help="always: connect first; on-fail: connect only if the public fetch returns nothing")
     args = parser.parse_args()
+    csv_out = args.csv_out
 
     end_date = datetime.date.today()
     start_date = end_date - datetime.timedelta(days=args.days)
 
     print(f"[relay] Argentina CAMMESA relay — fetching {args.days} days ending {end_date}")
 
-    # Connect to Argentina
-    nordvpn_connect_argentina()
+    connected = False
+    if args.vpn == "always":
+        nordvpn_connect_argentina()
+        connected = True
 
     try:
-        # Fetch data
         print(f"[relay] Fetching CAMMESA data from {start_date} to {end_date}...")
         points = fetch_cammesa_range(start_date, end_date)
+        if not points and args.vpn == "on-fail":
+            print("[relay] Public fetch returned nothing - retrying through NordVPN Argentina")
+            nordvpn_connect_argentina()
+            connected = True
+            points = fetch_cammesa_range(start_date, end_date)
         print(f"[relay] Got {len(points)} raw data points")
 
         if not points:
+            # A day with no answer is a failure, not an empty day: CAMMESA publishes
+            # every 5 minutes. Exit non-zero so the pusher logs it and pushes nothing.
             print("[relay] No data returned — nothing to save")
-            return
+            sys.exit(2)
 
         # Convert to CSV rows
         rows = points_to_csv_rows(points)
         print(f"[relay] {len(rows)} unique timestamps after dedup")
 
         if args.dry_run:
-            print(f"[relay] DRY RUN — would write {len(rows)} rows to {CANONICAL_CSV}")
+            print(f"[relay] DRY RUN — would write {len(rows)} rows to {csv_out}")
             print(f"[relay] First row: {rows[0]}")
             print(f"[relay] Last row: {rows[-1]}")
             return
 
         # Load existing data and append
-        os.makedirs(os.path.dirname(CANONICAL_CSV), exist_ok=True)
-        existing = load_existing_csv(CANONICAL_CSV)
-        n = append_to_csv(CANONICAL_CSV, rows, existing)
-        print(f"[relay] Appended {n} new rows to {CANONICAL_CSV} ({len(existing)} already present)")
+        os.makedirs(os.path.dirname(os.path.abspath(csv_out)), exist_ok=True)
+        existing = load_existing_csv(csv_out)
+        n = append_to_csv(csv_out, rows, existing)
+        print(f"[relay] Appended {n} new rows to {csv_out} ({len(existing)} already present)")
 
         if n > 0:
             # Show date range
@@ -240,7 +238,8 @@ def main() -> None:
             if dates:
                 print(f"[relay] Date range of new data: {dates[0]} to {dates[-1]} ({len(dates)} days)")
     finally:
-        nordvpn_disconnect()
+        if connected:
+            nordvpn_disconnect()
 
 
 if __name__ == "__main__":

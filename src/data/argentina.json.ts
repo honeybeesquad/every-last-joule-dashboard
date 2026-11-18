@@ -4,7 +4,7 @@ import { pathToFileURL } from "url";
 import { fetchJSON } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
 import { relayFreshness, RELAY_STALENESS_THRESHOLD_DAYS } from "../lib/freshness.js";
-import { timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
+import { timeOfDayAverageGW, totalTWh30d, trailingDays } from "../lib/profile.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { unpublishedEmptyRegion } from "../lib/waste-status.js";
@@ -164,7 +164,10 @@ export function argentinaGenerationTWh(points: CurtailmentPoint[]): number {
   return (profile.reduce((sum, gw) => sum + gw, 0) * 30) / 1000;
 }
 
-function regionFromGeneration(points: CurtailmentPoint[], sourceNote: string): RegionData {
+function regionFromGeneration(allPoints: CurtailmentPoint[], sourceNote: string): RegionData {
+  // The abed relay appends to argentina-cammesa.csv daily; window to the trailing
+  // 30 days so the span check and generationTotalTWh describe 30 days, not the file.
+  const points = trailingDays(allPoints, 30);
   const lastTs = latestTimestamp(points);
   const spanDays = windowSpanDays(points);
   const short = spanDays < SHORT_WINDOW_DAYS;

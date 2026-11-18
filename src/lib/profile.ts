@@ -57,6 +57,23 @@ export function latestCompleteUtcDayProfileGW(points: CurtailmentPoint[]): numbe
 }
 
 /**
+ * The points within `days` of the latest timestamp (exclusive start, inclusive
+ * end). totalTWh30d sums whatever it is given, so a loader that reads an
+ * append-only relay file must window it first, or the "30-day" total grows with
+ * the file. Points with unparseable timestamps are dropped.
+ */
+export function trailingDays(points: CurtailmentPoint[], days = 30): CurtailmentPoint[] {
+  let latestMs = -Infinity;
+  for (const p of points) {
+    const t = Date.parse(p.utcTimestamp);
+    if (t > latestMs) latestMs = t;
+  }
+  if (!Number.isFinite(latestMs)) return [];
+  const startMs = latestMs - days * 86_400_000;
+  return points.filter((p) => Date.parse(p.utcTimestamp) > startMs);
+}
+
+/**
  * Total TWh observed across the supplied points. Each point contributes MW
  * times its represented duration in hours; hourly loaders can omit the
  * interval and retain the historical 1h default.
