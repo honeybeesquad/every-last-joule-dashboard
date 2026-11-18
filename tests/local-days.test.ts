@@ -23,4 +23,9 @@ describe("completeLocalDays", () => {
     expect(() => completeLocalDays(new Date(), -6, 0)).toThrow(/positive integer/);
     expect(() => completeLocalDays(new Date(), -6, 1.5)).toThrow(/positive integer/);
   });
+
+  it("rejects a non-finite or out-of-range offset", () => {
+    expect(() => completeLocalDays(new Date(), Number.NaN, 1)).toThrow(/±14/);
+    expect(() => completeLocalDays(new Date(), -20, 1)).toThrow(/±14/);
+  });
 });

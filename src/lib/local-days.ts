@@ -16,6 +16,9 @@ const DAY_MS = 86_400_000;
  */
 export function completeLocalDays(now: Date, utcOffsetHours: number, days: number): string[] {
   if (!Number.isInteger(days) || days < 1) throw new Error(`completeLocalDays: days must be a positive integer, got ${days}`);
+  if (!Number.isFinite(utcOffsetHours) || Math.abs(utcOffsetHours) > 14) {
+    throw new Error(`completeLocalDays: utcOffsetHours must be within ±14, got ${utcOffsetHours}`);
+  }
   const local = new Date(now.getTime() + utcOffsetHours * 3_600_000);
   const today = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate());
   return Array.from({ length: days }, (_, i) => new Date(today - (days - i) * DAY_MS).toISOString().slice(0, 10));
