@@ -449,6 +449,7 @@ const regionData = {
   kurdistan: feeds.kurdistan,
   bangladesh: feeds.bangladesh,
   guatemala: feeds.guatemala,
+  yukon: feeds.yukon,
   mongolia: feeds.mongolia,
   "british-columbia": feeds.britishColumbia,
   quebec: feeds.quebec.hydro,

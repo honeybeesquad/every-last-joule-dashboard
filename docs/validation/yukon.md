@@ -1,6 +1,6 @@
 # Validation — Yukon (`yukon`)
 
-Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Technical Validation §4.2
+Last updated: 2026-11-18 · Sprint: TSO-grid completeness · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Tech
 - **Country:** CAN
 - **Tier:** estimated
 - **Kind:** hydro
-- **Source:** Yukon Energy isolated diesel/hydro. VRE waste unpublished.
-- **Source URL:** [https://yukonenergy.ca/](https://yukonenergy.ca/)
-- **Loader:** _(see region source / TSO-grid completeness loaders)_
+- **Source:** Yukon Energy hourly hydro + wind + solar generation, past 24 hours (yukonenergy.ca Electricity Generation page). Thermal excluded. Waste unpublished: Yukon Energy publishes no spill or curtailment series.
+- **Source URL:** [https://yukonenergy.ca/energy-in-yukon/electricity-101/electricity-generation](https://yukonenergy.ca/energy-in-yukon/electricity-101/electricity-generation)
+- **Loader:** [`yukon.json.ts`](../../src/data/yukon.json.ts)
 - **Structural gap:** no
 - **Waste status:** unpublished unless the operator publishes a curtailment/spill series. Missing ≠ zero. Live generation does not make waste T1a.
 
@@ -37,6 +37,8 @@ Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Tech
 Grid-completeness row. Waste is unpublished unless a later loader adds a published series. Do not read a zero `profile` as a measured finding.
 
 ## Known limitations
+
+Generation only; waste is unpublished. The page carries 24 hours, so the 30-day figure is that day's profile × 30 and swings with season. The page does not say whether a stamp marks the start or end of its hour; the loader reads it as the end. Yukon Energy also links an hourly per-unit workbook (hydro and thermal, 2020-02 to 2026-01) that a backfill could use.
 
 See `docs/methodology/historical-backfill.md` and STATUS.md TSO-grid completeness.
 

@@ -526,7 +526,7 @@ New Brunswick,CAN,mixed,no-public-series,tso-grid-markers,unpublished,new-brunsw
 Nova Scotia,CAN,wind,no-public-series,tso-grid-markers,unpublished,nova-scotia,"NS Power CurrentMix.json and CurrentLoad.json are 404. The OASIS report gives a 2-minute total-wind MW snapshot only, no history."
 Prince Edward Island,CAN,wind,not-collecting,tso-grid-markers,unpublished,prince-edward-island,Government of PEI wind-energy API (wdf.princeedwardisland.ca) answers 403 to a datacentre IP. Retry from a home IP before calling it dark.
 Newfoundland and Labrador,CAN,hydro,no-public-series,tso-grid-markers,unpublished,newfoundland-labrador,Grid present; no public ops series wired.
-Yukon,CAN,hydro,not-collecting,tso-grid-markers,unpublished,yukon,"Yukon Energy page embeds 24 h hourly MWh by hydro/wind/solar/thermal; an hourly per-unit workbook (hydro and thermal, 2020-02 to 2026-01) is linked. Reachable. Not wired yet. No spill column."
+Yukon,CAN,hydro,live-tso,yukon,unpublished,yukon,TSO generation collected; waste unpublished.
 Northwest Territories,CAN,hydro,no-public-series,tso-grid-markers,unpublished,northwest-territories,Grid present; no public ops series wired.
 Nunavut,CAN,mixed,no-public-series,tso-grid-markers,unpublished,nunavut,Grid present; no public ops series wired.
 Greenland,GRL,hydro,no-public-series,tso-grid-markers,unpublished,greenland,Grid present; no public ops series wired.

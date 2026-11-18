@@ -27,7 +27,6 @@ export const TSO_GRID_MARKERS: ReadonlyArray<{
   { id: "nova-scotia", note: "NS Power: no hourly TSO series wired. Grid present, ops unpublished.", profileKind: "wind" },
   { id: "prince-edward-island", note: "Maritime Electric: no hourly TSO series wired. Grid present, ops unpublished.", profileKind: "wind" },
   { id: "newfoundland-labrador", note: "NL Hydro: no hourly TSO series wired. Grid present, ops unpublished.", profileKind: "hydro-seasonal" },
-  { id: "yukon", note: "Yukon Energy: isolated diesel/hydro. Grid present, VRE waste unpublished.", profileKind: "hydro-seasonal" },
   { id: "northwest-territories", note: "NTPC: isolated diesel/hydro. Grid present, VRE waste unpublished.", profileKind: "hydro-seasonal" },
   { id: "nunavut", note: "Qulliq Energy: isolated diesel. Grid present, VRE waste unpublished.", profileKind: "mixed" },
   { id: "greenland", note: "Nukissiorfiit: isolated hydro/diesel. Grid present, ops unpublished.", profileKind: "hydro-seasonal" },
