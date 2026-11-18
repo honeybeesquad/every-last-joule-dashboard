@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 556,
+  "totalValidationDocs": 558,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 549,
-  "pctCited": 1.26,
+  "docsNotCiting": 551,
+  "pctCited": 1.25,
   "perDocCitations": [
     {
       "file": "aeci-solar.md",
@@ -1604,6 +1604,11 @@
       "matchedPatterns": []
     },
     {
+      "file": "kuwait.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "kyrgyzstan.md",
       "cited": false,
       "matchedPatterns": []
@@ -2210,6 +2215,11 @@
     },
     {
       "file": "puerto-rico-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "qatar.md",
       "cited": false,
       "matchedPatterns": []
     },
