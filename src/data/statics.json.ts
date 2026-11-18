@@ -119,7 +119,7 @@ export const STATIC_REGIONS: Record<string, StaticSpec> = {
   //   CST (UTC−6, Central America)  → 18.0
   //   BRT/SRT/GFT (UTC−3) → 15.0
   // guatemala → tso-grid-markers.json.ts (2026-09-29: anchor at or above national solar generation; waste unpublished)
-  "el-salvador": { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 18.0, source: "IRENA Renewable Energy Statistics 2024 (El Salvador VRE share; provisional 0.2 TWh/yr; UT publishes daily operation reports as PDF only; Pattern-D static)", reportDate: "2024" },
+  // el-salvador → src/data/el-salvador.json.ts (2026-11-18: UT hourly generation; the 0.2 TWh/yr IRENA-derived static dropped, waste unpublished)
   // nicaragua → tso-grid-markers.json.ts (2026-09-29: anchor at or above national solar generation; waste unpublished)
   "costa-rica": { annualTWh: 0.3, kind: "mixed", source: "IRENA Costa Rica 2024 (98% renewable; hydro spill documented but not anchored to hourly feed; CENCE inside ICE publishes server-rendered IBM WebSphere portal; provisional 0.3 TWh/yr Pattern-D static, hydro-dominant flat profile)", reportDate: "2024" },
   panama: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 17.0, source: "Secretaria Nacional de Energia 2024 (solar+wind ~10% of mix; ETESA/CND publish Informe de Operacion daily as PDF; provisional 0.2 TWh/yr Pattern-D static)", reportDate: "2024" },

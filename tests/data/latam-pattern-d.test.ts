@@ -44,7 +44,7 @@ const NEW_LATAM_IDS = [
  */
 const MARKER_IDS = new Set(TSO_GRID_MARKERS.map((m) => m.id));
 /** Dropped anchors now served by an operator generation loader, waste unpublished. */
-const GENERATION_LOADER_IDS = new Set<string>(["guatemala"]);
+const GENERATION_LOADER_IDS = new Set<string>(["guatemala", "el-salvador"]);
 /** Not a 2026-09-29 drop: french-guiana's placeholder went with its move to the EDF SEI loader. */
 const NOT_STATIC = new Set<string>(["dominican-republic", "french-guiana", ...MARKER_IDS, ...GENERATION_LOADER_IDS]);
 
@@ -139,8 +139,10 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     }
   });
 
-  it("aggregate annual anchor across the remaining static LatAm rows is ~1.0 TWh", () => {
-    // 0.2+0.3+0.2+0.1+0.1+0.003+0.05+0.1+0.05 ≈ 1.003 TWh.
+  it("aggregate annual anchor across the remaining static LatAm rows is ~0.8 TWh", () => {
+    // 0.3+0.2+0.1+0.1+0.003+0.05+0.1+0.05 ≈ 0.803 TWh.
+    // 2026-11-18: el-salvador 0.2 IRENA-derived static dropped with its move to
+    // the UT generation loader, waste unpublished (was ≈ 1.003 TWh).
     // 2026-11-18: french-guiana 0.05 placeholder dropped with its move to the
     // EDF SEI loader, waste unpublished (was ≈ 1.053 TWh).
     // 2026-09-29: guatemala 0.4, nicaragua 0.1 and guatemala-siepac 0.1 dropped
@@ -152,14 +154,14 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
       if (NOT_STATIC.has(id)) continue;
       annualSum += statics[id].totalTWh * (365 / 30);
     }
-    expect(annualSum).toBeGreaterThan(0.95);
-    expect(annualSum).toBeLessThan(1.05);
+    expect(annualSum).toBeGreaterThan(0.75);
+    expect(annualSum).toBeLessThan(0.85);
   });
 
   it("the three anchors dropped on 2026-09-29 are markers or generation loaders, not statics", () => {
-    expect(
-      NEW_LATAM_IDS.filter((id) => MARKER_IDS.has(id) || GENERATION_LOADER_IDS.has(id)),
-    ).toEqual(["guatemala", "nicaragua", "guatemala-siepac"]);
+    for (const id of ["guatemala", "nicaragua", "guatemala-siepac"]) {
+      expect(MARKER_IDS.has(id) || GENERATION_LOADER_IDS.has(id), `${id} is neither marker nor loader`).toBe(true);
+    }
     const statics = buildAllStatics();
     for (const id of [...MARKER_IDS, ...GENERATION_LOADER_IDS]) {
       expect(statics[id], `${id} still in statics`).toBeUndefined();

@@ -179,6 +179,7 @@ export const DATA_LOADERS = [
   { key: "bangladesh",          file: FileAttachment("../data/bangladesh.json"),           label: "Bangladesh" },
   { key: "guatemala",           file: FileAttachment("../data/guatemala.json"),            label: "Guatemala" },
   { key: "yukon",               file: FileAttachment("../data/yukon.json"),                label: "Yukon" },
+  { key: "elSalvador",          file: FileAttachment("../data/el-salvador.json"),          label: "El Salvador" },
   { key: "mongolia",            file: FileAttachment("../data/mongolia.json"),             label: "Mongolia" },
   { key: "britishColumbia",     file: FileAttachment("../data/british-columbia.json"),     label: "British Columbia" },
   { key: "quebec",              file: FileAttachment("../data/quebec.json"),               label: "Québec" },
