@@ -310,7 +310,9 @@ export async function collectSeiRegions(
       : Infinity;
     out[t.regionId] = {
       ...prev,
-      sourceStatus: ageHours > DEFAULT_STALENESS_THRESHOLD_HOURS ? "degraded" : "cached",
+      // NaN (a missing or unreadable timestamp) fails the comparison and reads
+      // as degraded: an age we cannot establish is never called fresh.
+      sourceStatus: ageHours <= DEFAULT_STALENESS_THRESHOLD_HOURS ? "cached" : "degraded",
     };
   });
   return out;

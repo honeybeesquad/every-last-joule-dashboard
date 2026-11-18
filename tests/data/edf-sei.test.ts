@@ -148,7 +148,8 @@ describe("EDF SEI island grids", () => {
       ...fresh(SEI_TERRITORIES.find((t) => t.regionId === id)!),
       generationTotalTWh: 0.123,
       lastSuccessAt,
-      sourceStatus: "cached" as const,
+      // Not what the collector should emit, so a test sees it re-stamped.
+      sourceStatus: "live" as const,
     });
 
     it("keeps a failed island's last-good record and leaves the others fresh", async () => {
@@ -162,7 +163,8 @@ describe("EDF SEI island grids", () => {
       expect(out.martinique.generationTotalTWh).toBe(0.123);
       expect(out.martinique.lastSuccessAt).toBe("2026-11-18T06:00:00Z");
       expect(out.martinique.sourceStatus).toBe("cached");
-      expect(out.corsica.generationTotalTWh).not.toBe(0.123);
+      const corsica = SEI_TERRITORIES.find((t) => t.regionId === "corsica")!;
+      expect(out.corsica).toEqual(fresh(corsica));
     });
 
     it("marks a kept record degraded once it is over 24 hours old", async () => {
@@ -174,6 +176,21 @@ describe("EDF SEI island grids", () => {
       );
       expect(out.reunion.sourceStatus).toBe("degraded");
       expect(out.reunion.lastSuccessAt).toBe("2026-11-16T12:00:00Z");
+    });
+
+    it("marks a kept record with a missing or unreadable timestamp degraded", async () => {
+      const bad = { ...prevRecord("guadeloupe", "not-a-date") };
+      const missing = { ...prevRecord("martinique", ""), lastUpdated: "" };
+      const out = await collectSeiRegions(
+        async (t) =>
+          t.regionId === "guadeloupe" || t.regionId === "martinique"
+            ? Promise.reject(new Error("HTTP 503"))
+            : fresh(t),
+        { guadeloupe: bad, martinique: missing },
+        now,
+      );
+      expect(out.guadeloupe.sourceStatus).toBe("degraded");
+      expect(out.martinique.sourceStatus).toBe("degraded");
     });
 
     it("fails the loader when a failed island has no last-good record", async () => {
