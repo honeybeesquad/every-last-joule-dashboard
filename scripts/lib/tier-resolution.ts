@@ -181,6 +181,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "philippines-wind": "wind",
   paraguay: "hydro-seasonal",
   quebec: "hydro-seasonal",
+  "quebec-wind": "wind",
   "russia-mainland": "hydro-seasonal",
   saskatchewan: "wind",
   "saudi-solar": "solar",
@@ -417,6 +418,10 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "alaska-railbelt": "mixed",
   "puerto-rico-wind": "wind",
   "puerto-rico-solar": "solar",
+  // REE REData daily generation; waste unpublished (spain-islands.json.ts).
+  "canary-islands-wind": "wind",
+  "canary-islands-solar": "solar",
+  "balearic-islands-solar": "solar",
   guam: "solar",
   "us-virgin-islands": "solar",
   "american-samoa": "solar",
