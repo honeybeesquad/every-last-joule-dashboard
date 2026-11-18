@@ -37,7 +37,7 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-Generation only; waste is unpublished. The 30-day figure is the 14-day window's diurnal profile × 30. UT's pivot omits hours with no records, which for solar are night hours; a missing hour outside 08:00–16:59 is read as zero, and a day missing any hour inside it is skipped. UT's series goes back to at least 2018, so a backfill is possible. The 0.2 TWh/yr static this replaces was IRENA-derived, not a UT figure; against UT's ~0.8 TWh/yr of solar in November 2026 it implied about a quarter of output curtailed.
+Generation only; waste is unpublished. The 30-day figure is the 14-day window's diurnal profile × 30. UT's pivot omits hours with no records, which for solar are night hours; a missing hour outside 06:00–16:59 is read as zero, and a day missing any hour inside it, or carrying a null value there, is skipped. UT's series goes back to at least 2018, so a backfill is possible. The 0.2 TWh/yr static this replaces was IRENA-derived, not a UT figure; against UT's November 2026 run-rate (~0.8 TWh/yr, 14 days scaled to a year, not an annual total) it would mean about a quarter of output curtailed.
 
 See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 

@@ -14,8 +14,9 @@
  *              UT number, and is dropped with the owner's sign-off (2026-11-18).
  *
  * The pivot omits cells with no records, which for solar are night hours.
- * A missing solar hour is read as zero only outside 08:00–16:59; a day
- * missing any of those hours is incomplete and skipped.
+ * A missing solar hour is read as zero only at night (18:00–05:59, when El
+ * Salvador has no sun in any season); a day missing any hour 06:00–17:59
+ * is incomplete and skipped. A null value is missing, not zero.
  *
  * Probe notes: docs/research/2026-11-18-no-public-series-probe.md.
  * Stays `tier: "estimated"` / T3 / official-lead. Not T1a.
@@ -41,9 +42,20 @@ const WINDOW_DAYS = 14;
 /** Fewer complete days than this and the window is not worth trusting. */
 const MIN_DAYS = 7;
 
-/** Local hours that must carry a solar cell for a day to count. */
-const DAYLIGHT_FIRST_HOUR = 8;
+/**
+ * Local hours that must carry a solar cell for a day to count. Sunrise is
+ * about 05:40–06:20 and sunset about 17:30–18:20 through the year, so a gap
+ * inside 06:00–16:59 is lost data, never night. Hour 17 can legitimately have
+ * no records in December, so it defaults to zero like the night hours.
+ */
+const DAYLIGHT_FIRST_HOUR = 6;
 const DAYLIGHT_LAST_HOUR = 16;
+
+/** Callback answers that are not a pivot (error or session pages) tolerated per run. */
+const MAX_NON_CALLBACK_BODIES = 2;
+
+/** A 200 response that is not a dashboard callback: an error or session page. */
+export class NotCallbackError extends Error {}
 
 /**
  * Plausibility ceiling for one hour of solar, MWh. El Salvador's solar
@@ -90,7 +102,7 @@ export function callbackBody(fields: HiddenFields, localDay: string): string {
  */
 export function parseCallback(localDay: string, body: string): CurtailmentPoint[] {
   const m = /'result':'([\s\S]*)'\}\)\s*$/.exec(body);
-  if (!m) throw new Error(`el-salvador ${localDay}: callback has no result (${body.slice(0, 80)})`);
+  if (!m) throw new NotCallbackError(`el-salvador ${localDay}: callback has no result (${body.slice(0, 80)})`);
   let doc: any;
   try {
     doc = JSON.parse(m[1].replace(/\\'/g, "'"));
@@ -120,7 +132,10 @@ export function parseCallback(localDay: string, body: string): CurtailmentPoint[
     const [t, d, h] = JSON.parse(key) as number[];
     if (t !== solarIdx || d !== 0) continue;
     const hour = Number(hours[h]);
-    const mwh = Number(cell?.["0"]);
+    const raw = cell?.["0"];
+    // null / blank is missing data, not zero (Number(null) would be 0).
+    if (raw === null || raw === undefined || String(raw).trim() === "") continue;
+    const mwh = Number(raw);
     if (!Number.isInteger(hour) || hour < 0 || hour > 23) throw new Error(`el-salvador ${localDay}: bad hour ${hours[h]}`);
     if (!Number.isFinite(mwh) || mwh < -1) throw new Error(`el-salvador ${localDay}: bad solar value ${String(cell?.["0"])}`);
     if (mwh > MAX_PLAUSIBLE_SOLAR_MWH) {
@@ -137,7 +152,7 @@ export function parseCallback(localDay: string, body: string): CurtailmentPoint[
   for (let h = 0; h < 24; h++) {
     points.push({
       utcTimestamp: new Date(Date.UTC(y, mo - 1, dd, h - SV_OFFSET_HOURS)).toISOString(),
-      mw: byHour.get(h) ?? 0, // absent outside daylight: no solar records that hour
+      mw: byHour.get(h) ?? 0, // absent outside 06:00–16:59: no sun, no records
       intervalHours: 1,
     });
   }
@@ -167,6 +182,7 @@ export function buildElSalvadorRegion(daily: CurtailmentPoint[][], localDays: st
 async function run(now = new Date()): Promise<RegionData> {
   const days = windowDays(now);
   const fields = extractHiddenFields(await fetchText(PAGE_URL, { timeoutMs: 30000, retries: 1 }));
+  let nonCallback = 0;
   const daily = await mapWithConcurrency(days, 3, async (day) => {
     let body: string;
     try {
@@ -184,7 +200,17 @@ async function run(now = new Date()): Promise<RegionData> {
     }
     // A day that downloads but does not parse fails the run, so a format
     // change falls back to last-good instead of quietly thinning the window.
-    return parseCallback(day, body);
+    // One error or session page is skipped like a failed download; more than
+    // MAX_NON_CALLBACK_BODIES in a run means the endpoint changed, so fail.
+    try {
+      return parseCallback(day, body);
+    } catch (err) {
+      if (err instanceof NotCallbackError && ++nonCallback <= MAX_NON_CALLBACK_BODIES) {
+        console.warn(`el-salvador: ${day} skipped (${err.message})`);
+        return [] as CurtailmentPoint[];
+      }
+      throw err;
+    }
   });
   return buildElSalvadorRegion(daily, days);
 }

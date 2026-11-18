@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildElSalvadorRegion,
   callbackBody,
+  NotCallbackError,
   extractHiddenFields,
   parseCallback,
   windowDays,
@@ -81,6 +82,16 @@ describe("el-salvador: parseCallback", () => {
     expect(parseCallback("2026-11-16", withSolarCell(12, null))).toEqual([]);
   });
 
+  it("treats a missing early-morning hour (06:00) as lost data, not night", () => {
+    expect(parseCallback("2026-11-16", withSolarCell(6, null))).toEqual([]);
+  });
+
+  it("treats a null value as missing, not zero", () => {
+    const nulled = BODY.replace(/"\[5,0,12\]":\{"0":[0-9.]+\}/, '"[5,0,12]":{"0":null}');
+    expect(nulled).not.toBe(BODY);
+    expect(parseCallback("2026-11-16", nulled)).toEqual([]);
+  });
+
   it("throws on an implausible solar value", () => {
     expect(() => parseCallback("2026-11-16", withSolarCell(12, 9000))).toThrow(/ceiling/);
   });
@@ -92,6 +103,10 @@ describe("el-salvador: parseCallback", () => {
 
   it("throws when the pivot is for another day", () => {
     expect(() => parseCallback("2026-11-15", BODY)).toThrow(/pivot is for/);
+  });
+
+  it("marks a non-callback body with NotCallbackError so the run can skip one", () => {
+    expect(() => parseCallback("2026-11-16", "<html>Session expired</html>")).toThrow(NotCallbackError);
   });
 
   it("throws on a callback error or non-pivot answer", () => {
