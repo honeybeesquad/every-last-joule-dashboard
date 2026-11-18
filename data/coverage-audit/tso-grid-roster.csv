@@ -394,9 +394,10 @@ Parana Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-pr-solar,Existing liv
 Rio Grande do Sul Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-rs-wind,Existing live waste or Path-B generation×rate.
 Rio Grande do Sul Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-rs-solar,Existing live waste or Path-B generation×rate.
 British Columbia,CAN,hydro,not-collecting,statics,unpublished,british-columbia,Country/T3 stub — Ember/IRENA is not TSO collection.
-Quebec,CAN,hydro,not-collecting,statics,unpublished,quebec,Country/T3 stub — Ember/IRENA is not TSO collection.
+Quebec,CAN,hydro,live-tso,quebec,unpublished,quebec,TSO generation collected; waste unpublished.
+Quebec Wind,CAN,wind,live-tso,quebec,unpublished,quebec-wind,TSO generation collected; waste unpublished.
 Manitoba,CAN,mixed,not-collecting,statics,unpublished,manitoba,Country/T3 stub — Ember/IRENA is not TSO collection.
-Saskatchewan,CAN,wind,not-collecting,statics,unpublished,saskatchewan,Country/T3 stub — Ember/IRENA is not TSO collection.
+Saskatchewan,CAN,wind,not-collecting,saskatchewan,unpublished,saskatchewan,"SaskPower dashboard JSON is one by-fuel MW snapshot per day, no history. The loader's probe always falls through to a typical wind shape anchored at an uncited ~0.15 TWh/yr."
 Hawaii (Oahu),USA,solar,not-collecting,,unpublished,hawaii-oahu,Authoritative operator exists; live path not producing usable waste.
 Hawaii (Maui),USA,solar,not-collecting,,unpublished,hawaii-maui,Authoritative operator exists; live path not producing usable waste.
 Hawaii (Big Island),USA,mixed,not-collecting,,unpublished,hawaii-island,Authoritative operator exists; live path not producing usable waste.
@@ -411,10 +412,10 @@ Austria Solar,AUT,solar,live-tso,entsoe,unpublished,austria-solar,ENTSO-E A75 ge
 Russia (Murmansk),RUS,wind,not-collecting,statics,legacy-unspecified,russia-murmansk-wind,T2 annual waste anchor. Not hourly TSO collection.
 TVA Wind,USA,wind,live-tso,eia-vre-bas,unpublished,tva-wind,EIA-930 generation; BA publishes no curtailment rate.
 TVA Solar,USA,solar,live-tso,eia-vre-bas,unpublished,tva-solar,EIA-930 generation; BA publishes no curtailment rate.
-Guatemala,GTM,solar,no-public-series,tso-grid-markers,unpublished,guatemala,Grid present; no public ops series wired.
-El Salvador,SLV,solar,not-collecting,statics,unpublished,el-salvador,Country/T3 stub — Ember/IRENA is not TSO collection.
-Nicaragua,NIC,solar,no-public-series,tso-grid-markers,unpublished,nicaragua,Grid present; no public ops series wired.
-Costa Rica,CRI,hydro,not-collecting,statics,unpublished,costa-rica,Country/T3 stub — Ember/IRENA is not TSO collection.
+Guatemala,GTM,solar,live-tso,guatemala,unpublished,guatemala,TSO generation collected; waste unpublished.
+El Salvador,SLV,solar,not-collecting,statics,unpublished,el-salvador,"UT OperacionDiaria dashboard callback publishes hourly MWh by fuel, 2018 onward. Reachable. Not wired yet; the served 0.2 TWh/yr is an IRENA-derived modelled static; UT itself publishes no waste. No curtailment series."
+Nicaragua,NIC,solar,not-collecting,tso-grid-markers,unpublished,nicaragua,CNDC consultarGeneracionPorTipo publishes hourly MW by type for the current local day only. Reachable. Not wired yet. No curtailment series.
+Costa Rica,CRI,hydro,not-collecting,statics,unpublished,costa-rica,ICE/CENCE EnergiaHorariaFuentePlanta answers 403 to a datacentre IP. The served 0.3 TWh/yr is an IRENA-derived modelled static; ICE publishes no waste series we have seen. Retry from a home IP.
 Panama,PAN,solar,not-collecting,statics,unpublished,panama,Country/T3 stub — Ember/IRENA is not TSO collection.
 Central America (SIEPAC),GTM,solar,no-public-series,tso-grid-markers,unpublished,guatemala-siepac,Grid present; no public ops series wired.
 Cuba,CUB,mixed,not-collecting,statics,unpublished,cuba,Country/T3 stub — Ember/IRENA is not TSO collection.
@@ -422,7 +423,7 @@ Dominican Republic,DOM,mixed,live-tso,dominican,unpublished,dominican-republic,T
 Dominican Republic Wind,DOM,wind,live-tso,dominican,unpublished,dominican-republic-wind,TSO generation collected; waste unpublished.
 Jamaica,JAM,solar,not-collecting,statics,unpublished,jamaica,Country/T3 stub — Ember/IRENA is not TSO collection.
 Barbados,BRB,solar,not-collecting,statics,unpublished,barbados,Country/T3 stub — Ember/IRENA is not TSO collection.
-Bolivia,BOL,solar,not-collecting,statics,unpublished,bolivia,Country/T3 stub — Ember/IRENA is not TSO collection.
+Bolivia,BOL,solar,not-collecting,statics,unpublished,bolivia,CNDC wp-json rt/generacion publishes 15-minute MW by fuel from 2025. Reachable. Not wired yet; the served 0.1 TWh/yr is an IRENA-derived modelled static; CNDC itself publishes no waste. No spill field in the hydrology routes.
 Ecuador,ECU,hydro,not-collecting,statics,unpublished,ecuador,Country/T3 stub — Ember/IRENA is not TSO collection.
 French Guiana,GUF,solar,not-collecting,statics,unpublished,french-guiana,Country/T3 stub — Ember/IRENA is not TSO collection.
 Algeria,DZA,solar,not-collecting,statics,unpublished,algeria,Country/T3 stub — Ember/IRENA is not TSO collection.
@@ -521,11 +522,11 @@ Guam,GUM,solar,no-public-series,tso-grid-markers,unpublished,guam,Grid present; 
 US Virgin Islands,VIR,solar,no-public-series,tso-grid-markers,unpublished,us-virgin-islands,Grid present; no public ops series wired.
 American Samoa,ASM,solar,no-public-series,tso-grid-markers,unpublished,american-samoa,Grid present; no public ops series wired.
 Northern Mariana Islands,MNP,solar,no-public-series,tso-grid-markers,unpublished,northern-mariana-islands,Grid present; no public ops series wired.
-New Brunswick,CAN,mixed,no-public-series,tso-grid-markers,unpublished,new-brunswick,Grid present; no public ops series wired.
-Nova Scotia,CAN,wind,no-public-series,tso-grid-markers,unpublished,nova-scotia,Grid present; no public ops series wired.
-Prince Edward Island,CAN,wind,no-public-series,tso-grid-markers,unpublished,prince-edward-island,Grid present; no public ops series wired.
+New Brunswick,CAN,mixed,no-public-series,tso-grid-markers,unpublished,new-brunswick,"NB Power real-time page publishes load, demand and interchange only. No generation by fuel."
+Nova Scotia,CAN,wind,no-public-series,tso-grid-markers,unpublished,nova-scotia,"NS Power CurrentMix.json and CurrentLoad.json are 404. The OASIS report gives a 2-minute total-wind MW snapshot only, no history."
+Prince Edward Island,CAN,wind,not-collecting,tso-grid-markers,unpublished,prince-edward-island,Government of PEI wind-energy API (wdf.princeedwardisland.ca) answers 403 to a datacentre IP. Retry from a home IP before calling it dark.
 Newfoundland and Labrador,CAN,hydro,no-public-series,tso-grid-markers,unpublished,newfoundland-labrador,Grid present; no public ops series wired.
-Yukon,CAN,hydro,no-public-series,tso-grid-markers,unpublished,yukon,Grid present; no public ops series wired.
+Yukon,CAN,hydro,not-collecting,tso-grid-markers,unpublished,yukon,"Yukon Energy page embeds 24 h hourly MWh by hydro/wind/solar/thermal; an hourly per-unit workbook (hydro and thermal, 2020-02 to 2026-01) is linked. Reachable. Not wired yet. No spill column."
 Northwest Territories,CAN,hydro,no-public-series,tso-grid-markers,unpublished,northwest-territories,Grid present; no public ops series wired.
 Nunavut,CAN,mixed,no-public-series,tso-grid-markers,unpublished,nunavut,Grid present; no public ops series wired.
 Greenland,GRL,hydro,no-public-series,tso-grid-markers,unpublished,greenland,Grid present; no public ops series wired.
@@ -540,10 +541,13 @@ Guadeloupe,GLP,solar,no-public-series,tso-grid-markers,unpublished,guadeloupe,Gr
 New Caledonia,NCL,solar,no-public-series,tso-grid-markers,unpublished,new-caledonia,Grid present; no public ops series wired.
 French Polynesia,PYF,solar,no-public-series,tso-grid-markers,unpublished,french-polynesia,Grid present; no public ops series wired.
 Wallis and Futuna,WLF,solar,no-public-series,tso-grid-markers,unpublished,wallis-and-futuna,Grid present; no public ops series wired.
+Canary Islands Wind,ESP,wind,live-tso,spainIslands,unpublished,canary-islands-wind,"REE REData daily generation by technology, token-free. Daily totals only — no hourly series, so the 24-hour shape is not measured. Waste unpublished and no mainland rate applied. Measured island curtailment may sit in ESIOS behind ESIOS_API_TOKEN; the indicator list answers 403 without one, so that is unchecked."
+Canary Islands Solar,ESP,solar,live-tso,spainIslands,unpublished,canary-islands-solar,"REE REData daily generation by technology, token-free. Daily totals only — no hourly series, so the 24-hour shape is not measured. Waste unpublished and no mainland rate applied. Measured island curtailment may sit in ESIOS behind ESIOS_API_TOKEN; the indicator list answers 403 without one, so that is unchecked."
+Balearic Islands Solar,ESP,solar,live-tso,spainIslands,unpublished,balearic-islands-solar,"REE REData daily generation by technology, token-free. Daily totals only — no hourly series, so the 24-hour shape is not measured. Waste unpublished and no mainland rate applied. Measured island curtailment may sit in ESIOS behind ESIOS_API_TOKEN; the indicator list answers 403 without one, so that is unchecked."
 Qatar (Kahramaa),QAT,solar,no-public-series,tso-grid-markers,unpublished,qatar,Grid present; no public ops series wired.
 Kuwait (MEW),KWT,solar,no-public-series,tso-grid-markers,unpublished,kuwait,Grid present; no public ops series wired.
 Grid-India,IND,solar,relay-tso,india-grid-india,unpublished,india-grid-india,Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones.
-REE ESIOS,ESP,"wind,solar",not-collecting,spain-esios,unpublished,spain-wind;spain-solar,Parser shipped. Returns {} without ESIOS_API_TOKEN. Does not overwrite ENTSO T1a Spain. Indicator 704 is mixed-fuel — no invented split.
+REE ESIOS,ESP,"wind,solar",not-collecting,spain-esios,unpublished,spain-wind;spain-solar,Parser shipped. Returns {} without ESIOS_API_TOKEN. Does not overwrite ENTSO T1a Spain. Indicator 704 is mixed-fuel — no invented split. The token may also unlock measured curtailment for the Canary and Balearic systems (unchecked: the indicator list needs it).
 KPX,KOR,"wind,solar",not-collecting,southKorea,unpublished,south-korea-wind;south-korea-solar,PvAmountByLocHr parser behind DATA_GO_KR_SERVICE_KEY. Ember×rate until the key is issued. Wind stays Ember until a KPX wind series exists.
 OC SENI,DOM,mixed,live-tso,dominican,unpublished,dominican-republic;dominican-republic-wind,"GetGeneracionReprogramadaJSon GENERACION MW is total system, not VRE waste. Generation collected."
 Noga / IEC,ISR,solar,not-collecting,israel,unpublished,israel,noga-iso.co.il 403 from this IP. PUA literature waste kept until a Noga series exists.
@@ -575,4 +579,5 @@ STEG,TUN,"solar,wind",no-public-series,,unpublished,tunisia,Structural dark.
 GRTE/Sonelgaz,DZA,solar,no-public-series,,unpublished,,Structural dark.
 SO UPS Siberia/Far East/Kaliningrad,RUS,"hydro,wind",no-public-series,,unpublished,,Post-2022 opacity. Murmansk stays T2; European UES modelled.
 Ukrenergo,UKR,"wind,solar",conflict-blocked,,unpublished,ukraine;ukraine-wind,ENTSO absent post-war. Ember is not Ukrenergo.
+SEV,FRO,"wind,hydro",not-collecting,,unpublished,,No dashboard region. sev.fo realtimemap and elproduction APIs answer 403 to a datacentre IP. Retry from a home IP.
 DPRK,PRK,hydro,no-public-series,,unpublished,north-korea,Dark. Roster row so every grid is honest about darkness.
