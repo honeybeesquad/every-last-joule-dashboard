@@ -19,7 +19,7 @@ Can Hydro-Québec's hydrometric open data ("Débits et apports naturels aux inst
 | Series | Count | Step | Window in the file |
 |---|---|---|---|
 | `Débit déversé - <structure>` (spilled flow) | 98 | hourly mean, m³/s | ~10 days |
-| `Débit turbiné - <station>` (turbined flow) | ~55 | hourly mean, m³/s | ~10 days |
+| `Débit turbiné - <station>` (turbined flow) | 59 | hourly mean, m³/s | ~10 days |
 | `Débit total` | 92 | hourly mean, m³/s | ~10 days |
 | `Apport filtré` (natural inflow) | 67 | daily mean, m³/s | ~10 days |
 
@@ -43,7 +43,7 @@ The dataset is listed as updated daily. There is no back-catalogue in the file, 
 - **Not Hydro-Québec spill at all:** Churchill Falls (Labrador) is not in the dataset.
 - **Many spill series are control works, not power stations:** for example Gouin, Cabonga, Matawin, Manouane-A/B/C, Pointe-des-Cascades, Saint-Timothée, Coteau-1/3 and the Rupert dam. Water spilled at a reservoir or regulating dam usually reaches a downstream station and can still be turbined there. It is not lost energy at the point of spill.
 
-**What the spill looked like in this window (illustration only, not used anywhere).** 55 of 98 series had a non-zero mean. The largest were Rivière-des-Prairies (688 m³/s), the Rupert transfer tunnel (293), Pointe-du-Buisson (288), Pointe-des-Cascades (251), Bryson (203), Saint-Timothée (200) and Coteau-3 (198). Robert-Bourassa and Beauharnois spilled nothing; their turbined flow averaged 2,350 and 6,440 m³/s. Rivière-des-Prairies spilled 688 m³/s while its turbined flow was **zero for the whole window**: the plant was not generating, so this spill reflects an outage, not surplus energy being thrown away. Most of the other large spills are St Lawrence regulating works or mandated instream flows (Rupert). That is the central difficulty: **spill is not the same thing as curtailment.**
+**What the spill looked like in this window (illustration only, not used anywhere).** 56 of 98 spill series had at least one non-zero hour (55 had a mean above 0.5 m³/s). The largest were Rivière-des-Prairies (688 m³/s), Pointe-du-Buisson (288), Pointe-des-Cascades (251), Bryson (203), Saint-Timothée (200), Coteau-3 (198) and the Rupert dam (157). The file also files the Rupert transfer tunnel (293 m³/s) under `Débit déversé`, but that tunnel is the Rupert diversion: it carries water to Eastmain-1-A, Sarcelle and the La Grande plants, where it is turbined. It is not lost energy, and counting it as spill would be exactly the cascade error described below. Robert-Bourassa and Beauharnois spilled nothing; their turbined flow averaged 2,350 and 6,440 m³/s. Rivière-des-Prairies spilled 688 m³/s while its turbined flow was **zero for the whole window**: the plant was not generating, so this spill reflects an outage, not surplus energy being thrown away. Most of the other large spills are St Lawrence regulating works or mandated instream flows (the Rupert dam). That is the central difficulty: **spill is not the same thing as curtailment.**
 
 ## 2. Turning m³/s into MWh
 
@@ -61,13 +61,13 @@ To do this honestly, per station, you need five inputs:
 | **Hourly net head** | better accuracy | Upstream and downstream water levels. The companion hydrometeorological dataset (`donnees-hydrometeorologiques`, `Donnees_VUE_STATIONS_ET_TARAGES.json`) publishes water levels at Hydro-Québec gauging stations, but they are not tied to station forebays and tailraces one-to-one. Mapping them would be manual work, and losses in intakes and penstocks would still be unknown. | Partial. Assuming gross head will overstate, probably by a few percent at high-head plants and more at low-head run-of-river plants, where the tailwater rises in floods. |
 | **Efficiency η** | every station | Not published per station. Industry range for large Francis/Kaplan units is ~0.88–0.94. A calibrated alternative: installed MW ÷ (ρ g H × design flow), but Hydro-Québec does not publish design flow (*débit d'équipement*) in the station list. Station engineering pages or Régie de l'énergie filings might, plant by plant. | Assumed constant (e.g. 0.90 ± 0.03). |
 | **Turbine capacity headroom** | deciding whether spill was avoidable | Turbined flow is in the same file. Design maximum flow is not published, so it would have to be inferred, for example from the station's maximum observed turbined flow, or from installed MW ÷ (ρ g H η). | Inferred. |
-| **Spill → station mapping and cascade logic** | not double-counting, not counting water used downstream | Site names and coordinates in the file, plus Hydro-Québec's basin descriptions. Each spill structure has to be assigned to the head it bypasses. For a control dam with no station, the lost head is zero, or only the head of stations the water also bypasses downstream. | Manual, and the result depends on judgement calls. |
+| **Spill → station mapping and cascade logic** | not double-counting, not counting water used downstream | Site names and coordinates in the file, plus Hydro-Québec's basin descriptions. Each spill structure has to be assigned to the head it bypasses. For a control dam with no station, the lost head is zero, or only the head of stations the water also bypasses downstream. Diversion works (such as the Rupert transfer tunnel) are reported under `Débit déversé` but send water to generation, so they must be excluded. | Manual, and the result depends on judgement calls. |
 
 A defensible energy figure would also need a **classification of each spill hour**. "Lost energy that could have been generated" is not the same as "curtailment":
 
 - **Capacity-limited spill:** turbines at maximum, so the extra inflow cannot be generated. This is real lost energy, but it is not curtailment in the grid sense. No buyer could have taken it, because the plant had no spare capacity.
 - **Discretionary spill:** turbines below maximum while spilling. This is the closest analogue to curtailment, but it can still be ice management, safety or maintenance.
-- **Regulatory or environmental spill:** mandated instream flows (Rupert), navigation and lake-level regulation (St Lawrence and Lac Saint-Louis works), fish passage. Generating from this water is not allowed.
+- **Regulatory or environmental spill:** mandated instream flows (the Rupert dam below the diversion), navigation and lake-level regulation (St Lawrence and Lac Saint-Louis works), fish passage. Generating from this water is not allowed.
 - **Outage spill:** units unavailable (Rivière-des-Prairies in this window).
 
 Only the second class is plausibly "curtailment" in this dataset's sense. Telling them apart needs the turbined-flow series, an inferred maximum flow and outside knowledge of each site's rules. None of that comes from one published number.

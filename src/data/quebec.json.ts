@@ -142,10 +142,18 @@ export function parseProduction(file: HqProductionFile): QuebecGeneration {
   }
   const hydro = new Map<string, number>();
   const wind = new Map<string, number>();
+  const seenLocal = new Set<string>();
   for (const row of file.details) {
     if (!row?.date || !row.valeurs) continue;
-    const utcTimestamp = quebecLocalToUtcIso(row.date);
+    let utcTimestamp = quebecLocalToUtcIso(row.date);
     if (!utcTimestamp) continue;
+    // On the November fall-back night the local hour 01:30 occurs twice: once
+    // in daylight time, then again an hour later in standard time. The second
+    // occurrence is the later UTC instant, so it must not overwrite the first.
+    if (seenLocal.has(row.date)) {
+      utcTimestamp = new Date(Date.parse(utcTimestamp) + 3_600_000).toISOString();
+    }
+    seenLocal.add(row.date);
     const h = readMw(row.valeurs, "hydraulique", MAX_PLAUSIBLE_HYDRO_MW, utcTimestamp);
     const w = readMw(row.valeurs, "eolien", MAX_PLAUSIBLE_WIND_MW, utcTimestamp);
     if (h !== null) hydro.set(utcTimestamp, h);
@@ -171,7 +179,7 @@ export function parseProduction(file: HqProductionFile): QuebecGeneration {
 
 // ─── Region assembly ────────────────────────────────────────────────────────
 
-function window(points: CurtailmentPoint[]): string {
+function describeWindow(points: CurtailmentPoint[]): string {
   return `${points.length} hourly readings ${points[0].utcTimestamp} to ${points[points.length - 1].utcTimestamp}`;
 }
 
@@ -182,12 +190,12 @@ function window(points: CurtailmentPoint[]): string {
 export function buildQuebecRegions(gen: QuebecGeneration): QuebecData {
   const hydroNote =
     `Hydro-Québec open data, sources of electricity produced in Quebec (production.json, hydraulique MW), ` +
-    `${window(gen.hydro)}. Generation measured. Waste unpublished — Hydro-Québec publishes no hourly ` +
+    `${describeWindow(gen.hydro)}. Generation measured. Waste unpublished — Hydro-Québec publishes no hourly ` +
     `spill-energy series; spilled flows (m³/s) in its hydrometric dataset are not energy. Replaces the ` +
     `former ~0.3 TWh/yr modelled surplus anchor, which had no published source. Missing ≠ zero. Not T1a.`;
   const windNote =
     `Hydro-Québec open data, sources of electricity produced in Quebec (production.json, eolien MW — ` +
-    `independent producers under contract), ${window(gen.wind)}. Generation measured. Waste unpublished — ` +
+    `independent producers under contract), ${describeWindow(gen.wind)}. Generation measured. Waste unpublished — ` +
     `no wind-curtailment series is published. Missing ≠ zero. Not T1a.`;
   return {
     hydro: unpublishedGenerationRegion("quebec", "hydro-seasonal", gen.hydro, hydroNote),

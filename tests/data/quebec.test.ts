@@ -47,7 +47,7 @@ describe("quebec loader (Hydro-Québec open data)", () => {
     }
     // 17 Nov 00:30 EST → 05:30 UTC; last published hour 18 Nov 02:30 EST → 07:30 UTC.
     expect(data.hydro.lastUpdated).toBe("2026-11-18T07:30:00.000Z");
-    // Hydro runs ~13–19 GW in this window; wind ~2–3 GW.
+    // Hydro runs 12.8–22.7 GW in this window; wind 1.9–3.1 GW.
     const maxHydro = Math.max(...data.hydro.generationProfile!);
     const maxWind = Math.max(...data.wind.generationProfile!);
     expect(maxHydro).toBeGreaterThan(10);
@@ -63,6 +63,23 @@ describe("quebec loader (Hydro-Québec open data)", () => {
     // 27 published hours span parts of two days, so every UTC hour is covered
     // and none of the 21 `{ total: 0 }` placeholders pulled the mean to zero.
     expect(gen.hydro.generationProfile!.every((gw) => gw > 10)).toBe(true);
+  });
+
+  it("keeps both 01:30 readings on the November fall-back night", () => {
+    const details = Array.from({ length: 30 }, (_, i) => ({
+      date: `2026-10-31T${String(i % 24).padStart(2, "0")}:30:00`.replace(
+        "2026-10-31",
+        i < 24 ? "2026-10-31" : "2026-11-01",
+      ),
+      valeurs: { hydraulique: 15000 + i, eolien: 2000 },
+    }));
+    // Hydro-Québec lists the repeated local hour twice: 01:30 EDT, then 01:30 EST.
+    details.splice(26, 0, { date: "2026-11-01T01:30:00", valeurs: { hydraulique: 99, eolien: 2000 } });
+    const { hydro } = parseProduction({ details });
+    const at = (iso: string) => hydro.find((p) => p.utcTimestamp === iso)?.mw;
+    expect(at("2026-11-01T05:30:00.000Z")).toBe(15025); // 01:30 EDT
+    expect(at("2026-11-01T06:30:00.000Z")).toBe(99); // 01:30 EST
+    expect(at("2026-11-01T07:30:00.000Z")).toBe(15026); // 02:30 EST
   });
 
   it("throws on a malformed or truncated file so withFallback serves last-good", () => {

@@ -42,6 +42,7 @@ _Until 2026-11-18 this region was a typical seasonal hydro shape scaled to a ~0.
 
 - Waste is not measured. Hydro-Québec spills water (débits déversés) but publishes flows, not energy.
 - `autres` (independent biomass, biogas and small hydro, ~0.3 GW) is not counted as hydro, so small independent hydro is under-counted.
+- Readings are stamped at half past the hour ("transmises à la demie de l'heure"). The dataset does not say whether a value is the hour ending at that stamp or a reading at it; the loader buckets it into the UTC hour the stamp falls in, so the diurnal profile may be up to an hour early.
 - About two days of data per build, so `generationTotalTWh` is the window's diurnal mean scaled to 30 days, not a 30-day measurement.
 
 ## Links

@@ -36,11 +36,12 @@ Last updated: 2026-11-18 · Sprint: Hydro-Québec open data · Paper section: Te
 
 ## Discrepancy analysis
 
-_New region (2026-11-18). Wind was 2.2–3.1 GW in the 2026-11-17/18 window against 13–19 GW of hydro, so it is material and gets its own record rather than being folded into the hydro region. No wind-curtailment series exists to compare against._
+_New region (2026-11-18). Wind was 1.9–3.1 GW in the 2026-11-17/18 window against 12.8–22.7 GW of hydro, so it is material and gets its own record rather than being folded into the hydro region. No wind-curtailment series exists to compare against._
 
 ## Known limitations
 
 - Waste is not measured; Hydro-Québec publishes no wind-curtailment series.
+- Readings are stamped at half past the hour ("transmises à la demie de l'heure"). The dataset does not say whether a value is the hour ending at that stamp or a reading at it; the loader buckets it into the UTC hour the stamp falls in, so the diurnal profile may be up to an hour early.
 - About two days of data per build, so `generationTotalTWh` is the window's diurnal mean scaled to 30 days, not a 30-day measurement.
 
 ## Links

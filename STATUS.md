@@ -10,7 +10,7 @@ Golden T3 331→332, total 542→543. Not T1a.
 
 - `quebec.json.ts` reads Hydro-Québec's `production.json` (Données Québec `sources-production-electricite-quebec`, HackQC):
   hourly MW by source, a rolling yesterday-plus-today file in Quebec local time. Hydro (`hydraulique`) goes to `quebec`
-  and wind (`eolien`, 2.2–3.1 GW on 17–18 Nov) to the new `quebec-wind`. Both are `wasteStatus: "unpublished"`, with
+  and wind (`eolien`, 1.9–3.1 GW on 17–18 Nov) to the new `quebec-wind`. Both are `wasteStatus: "unpublished"`, with
   generation in `generationProfile` and a zero `profile`. Placeholder hours (`{ total: 0 }`) are skipped, not read as zero.
 - **Totals move:** the "Hydro-Quebec fallback" (a typical seasonal shape scaled to an unsourced ~0.3 TWh/yr surplus
   anchor) is gone. Served Quebec waste falls from 0.033 TWh/30 d in the last snapshot to zero-unpublished. The
