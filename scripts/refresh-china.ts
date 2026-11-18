@@ -59,9 +59,9 @@ const OUT_PATH = join(process.cwd(), "data", "china-anchors.json");
 //
 // HONESTY: no rate is invented. A province gets an anchor only if it is in
 // WIRED_PROVINCES (the provinces whose loaders already consume the store) AND
-// has the three bulletin windows. 蒙西 (Mengxi) is the curtailing grid the
-// inner-mongolia regions represent; Ember's generation row is all of Inner
-// Mongolia (incl. 蒙东), so that anchor is an upper bound, as before.
+// has the three bulletin windows. Inner Mongolia is reported as two grids,
+// 蒙西 (Mengxi) and 蒙东 (Mengdong), while Ember has one provincial row; see
+// SUBGRID_SPLITS for how the province's generation is divided between them.
 // ---------------------------------------------------------------------------
 
 const BULLETIN_PATH = join(process.cwd(), "data", "china-curtailment-bulletins.csv");
@@ -82,7 +82,7 @@ export const WIRED_PROVINCES: Record<string, string> = {
   Zhejiang: "浙江",
   Jiangxi: "江西",
   Gansu: "甘肃",
-  "Inner Mongolia": "蒙西",
+  "Inner Mongolia": "蒙西+蒙东", // split per SUBGRID_SPLITS
   Ningxia: "宁夏",
   Hebei: "河北",
   Shaanxi: "陕西",
@@ -95,6 +95,29 @@ export const WIRED_PROVINCES: Record<string, string> = {
   Heilongjiang: "黑龙江",
   Jiangsu: "江苏",
   Anhui: "安徽",
+};
+
+/**
+ * Provinces the bulletins report as more than one grid. Each part's monthly
+ * generation is Ember's provincial row × a fixed share; each part gets its own
+ * trailing-12-month rate, and the province rate is the generation-weighted
+ * combination (sum of curtailed energy over sum of potential output).
+ *
+ * Inner Mongolia: Mengxi's 2025 Q1 grid-delivered wind 24.15 TWh and PV 8.937
+ * TWh (内蒙古电力集团 data as reported by 北极星电力网, "2025年蒙西新能源收益下降原因分析",
+ * 2025-05-23) ÷ Ember's Inner Mongolia Q1 2025 generation (wind 57.42, PV 13.90 TWh)
+ * gives Mengxi shares of 0.421 (wind) and 0.643 (PV); Mengdong is the remainder.
+ * Check: these shares reproduce Mengxi's reported 2024 wind+PV grid-delivered
+ * 97.7 TWh (97.8 modelled) and give 66.9 TWh for H1 2025 against a reported 73.1
+ * TWh (OFweek, 2025-09), so Mengxi may be ~8% under-weighted in 2025. One quarter's
+ * split, grid-delivered rather than gross: an approximation, stated as such in the
+ * anchor source.
+ */
+export const SUBGRID_SPLITS: Record<string, Array<{ zh: string; share: { wind: number; solar: number } }>> = {
+  "Inner Mongolia": [
+    { zh: "蒙西", share: { wind: 0.421, solar: 0.643 } },
+    { zh: "蒙东", share: { wind: 0.579, solar: 0.357 } },
+  ],
 };
 
 /**
@@ -160,6 +183,9 @@ export interface TtmRate {
   monthsCovered: number;
   /** YYYY-MM periods of the bulletin tables used. */
   tables: string[];
+  /** Generation and curtailed energy (TWh) over the window, for combining sub-grids. */
+  generationTWh: number;
+  curtailedTWh: number;
 }
 
 function addMonths(ym: string, n: number): string {
@@ -213,7 +239,11 @@ export function ttmRate(
   if (typeof gLatest !== "number") return gLatest;
 
   if (lm === "12") {
-    return { ok: true, rate: 1 - uLatest / 100, windowStart: `${ly}-01`, windowEnd: latest, monthsCovered: 12, tables: [latest] };
+    const C12 = curtailed(uLatest, gLatest);
+    return {
+      ok: true, rate: C12 / (gLatest + C12), windowStart: `${ly}-01`, windowEnd: latest, monthsCovered: 12, tables: [latest],
+      generationTWh: gLatest, curtailedTWh: C12,
+    };
   }
   const prevYear = String(Number(ly) - 1);
   const fullYear = `${prevYear}-12`;
@@ -237,6 +267,8 @@ export function ttmRate(
     windowEnd: latest,
     monthsCovered: 12,
     tables: [priorSame, fullYear, latest],
+    generationTWh: G,
+    curtailedTWh: C,
   };
 }
 
@@ -261,6 +293,7 @@ export function buildAnchors(
   const bulletins = parseBulletinCsv(bulletinText);
   const latest = latestYtdPeriod(bulletins);
   const failures: string[] = [];
+  const failedRegions = new Set<string>();
   // group by province+fuel, sort desc, take trailing 12 months
   const byKey = new Map<string, ReturnType<typeof parseEmberMonthlyCsv>>();
   for (const r of rows) {
@@ -274,14 +307,24 @@ export function buildAnchors(
     if (fuel === "hydro") continue;
     const provinceZh = wired[province];
     if (!provinceZh) continue; // loader does not consume the store -> no anchor
-    const monthly = new Map(list.map((r) => [r.date, r.generationTWh]));
-    const ttm = ttmRate(bulletins, provinceZh, fuel, monthly, latest);
-    if (!ttm.ok) {
-      failures.push(ttm.reason); // never invent, never fall back to another window
+    const parts = SUBGRID_SPLITS[province] ?? [{ zh: provinceZh, share: { wind: 1, solar: 1 } }];
+    const results = parts.map((part) => {
+      const monthly = new Map(list.map((r) => [r.date, r.generationTWh * part.share[fuel]]));
+      return { part, ttm: ttmRate(bulletins, part.zh, fuel, monthly, latest) };
+    });
+    const bad = results.flatMap((r) => (r.ttm.ok ? [] : [r.ttm.reason]));
+    if (bad.length > 0) {
+      failures.push(...bad); // never invent, never fall back to another window
+      failedRegions.add(`${province}|${fuel}`);
       continue;
     }
-    const floored = ttm.rate < RATE_FLOOR;
-    const rate = Math.round(Math.max(ttm.rate, RATE_FLOOR) * 10000) / 10000;
+    const oks = results.map((r) => ({ part: r.part, ttm: r.ttm as TtmRate }));
+    const ttm = oks[0].ttm; // all parts share the window
+    const G = oks.reduce((t, r) => t + r.ttm.generationTWh, 0);
+    const C = oks.reduce((t, r) => t + r.ttm.curtailedTWh, 0);
+    const combinedRate = C / (G + C);
+    const floored = combinedRate < RATE_FLOOR;
+    const rate = Math.round(Math.max(combinedRate, RATE_FLOOR) * 10000) / 10000;
     list.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
     const window = list.slice(0, 12);
     const annualGen = window.reduce((s, r) => s + r.generationTWh, 0);
@@ -289,6 +332,12 @@ export function buildAnchors(
     const rateText = floored
       ? `${(RATE_FLOOR * 100).toFixed(2)}% floor (published utilisation ~100%)`
       : `${(rate * 100).toFixed(1)}%`;
+    const partText =
+      oks.length > 1
+        ? `; generation-weighted from ${oks
+            .map((r) => `${r.part.zh} ${(r.ttm.rate * 100).toFixed(1)}% on ${Math.round(r.part.share[fuel] * 1000) / 10}% of generation`)
+            .join(" and ")}, split from one quarter of reported grid data (approximate)`
+        : "";
     out.push({
       regionId,
       fuel,
@@ -298,7 +347,7 @@ export function buildAnchors(
       latestMonth: window[0].date,
       rateWindow: `${ttm.windowStart}..${ttm.windowEnd}`,
       rateMonthsCovered: ttm.monthsCovered,
-      source: `Ember China subnational generation ${window[0].date} (trailing 12mo) × monitoring-centre curtailment rate ${rateText} (${provinceZh} ${fuel}, trailing 12 months ${ttm.windowStart}..${ttm.windowEnd} from published utilisation; system-caused limits only, 国能发电力〔2024〕44号)`,
+      source: `Ember China subnational generation ${window[0].date} (trailing 12mo) × monitoring-centre curtailment rate ${rateText} (${provinceZh} ${fuel}, trailing 12 months ${ttm.windowStart}..${ttm.windowEnd} from published utilisation${partText}; system-caused limits only, 国能发电力〔2024〕44号)`,
     });
   }
   // Every wired province must get both anchors; otherwise its loader would
@@ -306,7 +355,7 @@ export function buildAnchors(
   for (const [province, zh] of Object.entries(wired)) {
     for (const fuel of ["wind", "solar"] as const) {
       const id = regionIdFor(province, fuel);
-      if (!out.some((a) => a.regionId === id) && !failures.some((f) => f.startsWith(`${zh} ${fuel}:`))) {
+      if (!out.some((a) => a.regionId === id) && !failedRegions.has(`${province}|${fuel}`)) {
         failures.push(`${zh} ${fuel}: no Ember generation rows for ${province}`);
       }
     }
@@ -315,6 +364,75 @@ export function buildAnchors(
     throw new Error(`refresh-china: ${failures.length} wired anchor(s) could not be computed for the ${latest} window:\n  ${failures.join("\n  ")}`);
   }
   return out;
+}
+
+// ---------------------------------------------------------------------------
+// Keeping src/lib/regions.ts (and the generated validation pages) in step with
+// the store. The rate and window quoted in each China region's `source:` string
+// are derived from data/china-anchors.json here, never typed by hand; main()
+// rewrites them after every refresh and tests/refresh-china.test.ts fails if
+// they drift.
+// ---------------------------------------------------------------------------
+
+export const REGIONS_PATH = join(process.cwd(), "src", "lib", "regions.ts");
+export const VALIDATION_DOCS_DIR = join(process.cwd(), "docs", "validation");
+
+/** Region ids whose anchor lives under a different store key. */
+export const REGION_ANCHOR_ALIAS: Record<string, string> = { "china-jiangxi": "china-jiangxi-solar" };
+
+interface StoreAnchor {
+  regionId: string;
+  curtailmentRate: number;
+  rateWindow: string;
+}
+
+/** The canonical source-string fragment for one anchored region. */
+export function rateFragment(a: StoreAnchor): string {
+  const pct = a.curtailmentRate <= RATE_FLOOR ? `${(RATE_FLOOR * 100).toFixed(2)}% floor` : `${(a.curtailmentRate * 100).toFixed(1)}%`;
+  const split = a.regionId.startsWith("inner-mongolia-") ? ", 蒙西/蒙东 generation-weighted" : "";
+  return `monitoring-centre curtailment rate ${pct} (trailing 12 months ${a.rateWindow}${split}, system-caused limits only)`;
+}
+
+const RATE_RE = /monitoring-centre curtailment rate [^()]*\(trailing 12 months [^)]*\)/;
+const WINDOW_RE = /monitoring-centre trailing-12-month curtailment rate \(\d{4}-\d{2}\.\.\d{4}-\d{2}, system-caused limits only\)/;
+
+/**
+ * Rewrite the rate/window fragments of every China region in regions.ts from the
+ * store. Per-fuel and single-fuel regions get rate + window; mixed regions
+ * (no single rate) get the window only. Returns the new text and the ids touched.
+ */
+export function syncRegionsText(text: string, anchors: StoreAnchor[]): { text: string; touched: string[] } {
+  const byId = new Map(anchors.map((a) => [a.regionId, a]));
+  const anyWindow = anchors[0]?.rateWindow;
+  const touched: string[] = [];
+  const lines = text.split("\n").map((line) => {
+    const m = line.match(/\{ id: "([a-z-]+)"/);
+    if (!m) return line;
+    const id = m[1];
+    const a = byId.get(REGION_ANCHOR_ALIAS[id] ?? id);
+    if (a && RATE_RE.test(line)) {
+      touched.push(id);
+      return line.replace(RATE_RE, rateFragment(a));
+    }
+    if (anyWindow && WINDOW_RE.test(line) && byId.has(`${id}-wind`) && byId.has(`${id}-solar`)) {
+      touched.push(id);
+      return line.replace(WINDOW_RE, `monitoring-centre trailing-12-month curtailment rate (${anyWindow}, system-caused limits only)`);
+    }
+    return line;
+  });
+  return { text: lines.join("\n"), touched };
+}
+
+/** The `source:` string of a region in regions.ts text, or null. */
+export function regionSourceFromText(text: string, id: string): string | null {
+  const line = text.split("\n").find((l) => l.includes(`{ id: "${id}"`));
+  const m = line?.match(/source: "((?:[^"\\]|\\.)*)"/);
+  return m ? m[1] : null;
+}
+
+/** Rewrite the "- **Source:**" line of a validation page to `source`. */
+export function syncValidationDoc(doc: string, source: string): string {
+  return doc.replace(/^- \*\*Source:\*\* .*$/m, `- **Source:** ${source}`);
 }
 
 async function fetchCsv(url: string): Promise<string> {
@@ -360,6 +478,20 @@ async function main() {
 
   writeFileSync(outPath, JSON.stringify(payload, null, 2) + "\n");
   console.log(`Wrote ${anchors.length} region anchors to ${outPath}`);
+
+  // Keep regions.ts and the generated validation pages in step with the store.
+  const regionsText = readFileSync(REGIONS_PATH, "utf-8");
+  const { text, touched } = syncRegionsText(regionsText, anchors);
+  if (text !== regionsText) writeFileSync(REGIONS_PATH, text);
+  for (const id of touched) {
+    const docPath = join(VALIDATION_DOCS_DIR, `${id}.md`);
+    const source = regionSourceFromText(text, id);
+    if (!source || !existsSync(docPath)) continue;
+    const doc = readFileSync(docPath, "utf-8");
+    const synced = syncValidationDoc(doc, source);
+    if (synced !== doc) writeFileSync(docPath, synced);
+  }
+  console.log(`Synced ${touched.length} China source strings in src/lib/regions.ts and docs/validation`);
 }
 
 

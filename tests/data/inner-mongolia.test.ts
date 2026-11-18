@@ -10,11 +10,11 @@ describe("inner-mongolia loader", () => {
     expect(data.solar.profile).toHaveLength(24);
     expect(data.wind.latestProfile).toBeNull();
     expect(data.solar.latestProfile).toBeNull();
-    expect(data.wind.totalTWh).toBeCloseTo(1.681726, 4);
+    expect(data.wind.totalTWh).toBeCloseTo(1.380493, 4);
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.wind.sourceProvenance).toBe("modelled-fallback");
     expect(data.wind.sourceStatus).toBe("cached");
-    expect(data.solar.totalTWh).toBeCloseTo(0.577890, 4);
+    expect(data.solar.totalTWh).toBeCloseTo(0.562521, 4);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.solar.sourceProvenance).toBe("modelled-fallback");
     expect(data.solar.sourceStatus).toBe("cached");

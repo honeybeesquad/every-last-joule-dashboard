@@ -2,7 +2,19 @@ import { describe, it, expect, afterAll } from "vitest";
 import { mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { buildAnchors, ttmRate, parseBulletinCsv, latestYtdPeriod, RATE_FLOOR, WIRED_PROVINCES } from "../scripts/refresh-china.js";
+import {
+  buildAnchors,
+  ttmRate,
+  parseBulletinCsv,
+  latestYtdPeriod,
+  RATE_FLOOR,
+  WIRED_PROVINCES,
+  SUBGRID_SPLITS,
+  syncRegionsText,
+  regionSourceFromText,
+  REGIONS_PATH,
+  VALIDATION_DOCS_DIR,
+} from "../scripts/refresh-china.js";
 import { chinaAnchor } from "../src/lib/chinaParse.js";
 
 // Ember fixture: 2025-01..2026-03 monthly generation for Xinjiang wind/solar
@@ -141,11 +153,72 @@ describe("refresh-china buildAnchors", () => {
   });
 });
 
+describe("refresh-china sub-grid split (Inner Mongolia)", () => {
+  // Inner Mongolia generation 1.0 TWh/month wind; 蒙西 and 蒙东 at different utilisation.
+  function imEmber(): string {
+    const lines = ["Area,ISO 3 code,Province,Province code,Date,Electricity source,Is aggregated source,Generation (TWh)"];
+    for (let t = 2025 * 12; t <= 2026 * 12 + 2; t++) {
+      const ym = `${Math.floor(t / 12)}-${String((t % 12) + 1).padStart(2, "0")}-01`;
+      lines.push(`China,CHN,Inner Mongolia,NM,${ym},Wind,False,1.0`);
+      lines.push(`China,CHN,Inner Mongolia,NM,${ym},Solar,False,1.0`);
+    }
+    return lines.join("\n");
+  }
+  const rows = (zh: string, u: [string, string, string]) =>
+    [
+      `${zh},x,2025-03,ytd,2025-01..2025-03,${u[0]},${u[0]},2025-05-07,u,i,`,
+      `${zh},x,2025-12,ytd,2025-01..2025-12,${u[1]},${u[1]},2026-02-06,u,i,`,
+      `${zh},x,2026-03,ytd,2026-01..2026-03,${u[2]},${u[2]},2026-05-08,u,i,`,
+    ];
+  const csv = [HEADER, ...rows("蒙西", ["90.0", "90.0", "90.0"]), ...rows("蒙东", ["95.0", "95.0", "95.0"])].join("\n");
+
+  it("weights each grid's curtailment by its share of generation", () => {
+    const im = { "Inner Mongolia": WIRED_PROVINCES["Inner Mongolia"] };
+    const wind = buildAnchors(imEmber(), csv, im).find((a) => a.regionId === "inner-mongolia-wind")!;
+    const s = SUBGRID_SPLITS["Inner Mongolia"];
+    const C = 12 * s[0].share.wind * (10 / 90) + 12 * s[1].share.wind * (5 / 95);
+    expect(wind.curtailmentRate).toBe(Math.round((C / (12 + C)) * 10000) / 10000);
+    expect(wind.source).toContain("蒙西 10.0% on 42.1% of generation");
+    expect(wind.source).toContain("蒙东 5.0% on 57.9% of generation");
+  });
+
+  it("fails if either grid's table is missing", () => {
+    const im = { "Inner Mongolia": WIRED_PROVINCES["Inner Mongolia"] };
+    const noMd = [HEADER, ...rows("蒙西", ["90.0", "90.0", "90.0"])].join("\n");
+    expect(() => buildAnchors(imEmber(), noMd, im)).toThrow(/蒙东 wind: no year-to-date utilisation/);
+  });
+
+  it("has shares that sum to 1 per fuel", () => {
+    for (const parts of Object.values(SUBGRID_SPLITS)) {
+      for (const fuel of ["wind", "solar"] as const) expect(parts.reduce((t, p) => t + p.share[fuel], 0)).toBeCloseTo(1, 10);
+    }
+  });
+});
+
+describe("committed sources stay in step with the store", () => {
+  const store = JSON.parse(readFileSync(join(process.cwd(), "data", "china-anchors.json"), "utf-8")).anchors;
+  const regions = readFileSync(REGIONS_PATH, "utf-8");
+
+  it("regions.ts China rate/window fragments match data/china-anchors.json", () => {
+    const { text, touched } = syncRegionsText(regions, store);
+    expect(touched.length).toBe(40);
+    expect(text, "run `npm run refresh-china` to resync regions.ts").toBe(regions);
+  });
+
+  it("each synced region's validation page quotes the same source string", () => {
+    for (const id of syncRegionsText(regions, store).touched) {
+      const doc = readFileSync(join(VALIDATION_DOCS_DIR, `${id}.md`), "utf-8");
+      expect(doc, id).toContain(`- **Source:** ${regionSourceFromText(regions, id)}`);
+    }
+  });
+});
+
 describe("committed bulletin CSV", () => {
   const rows = parseBulletinCsv(readFileSync(join(process.cwd(), "data", "china-curtailment-bulletins.csv"), "utf-8"));
 
   it("has the three tables every wired province needs for the 2025-04..2026-03 window", () => {
-    for (const zh of Object.values(WIRED_PROVINCES)) {
+    const labels = Object.entries(WIRED_PROVINCES).flatMap(([p, zh]) => (SUBGRID_SPLITS[p] ? SUBGRID_SPLITS[p].map((s) => s.zh) : [zh]));
+    for (const zh of labels) {
       for (const period of ["2025-03", "2025-12", "2026-03"]) {
         const r = rows.find((x) => x.provinceZh === zh && x.period === period && x.basis === "ytd");
         expect(r, `${zh} ${period}`).toBeDefined();
@@ -153,6 +226,30 @@ describe("committed bulletin CSV", () => {
         expect(r!.solar, `${zh} ${period} solar`).not.toBeNull();
       }
     }
+  });
+
+  it("each YTD value lies between the previous YTD and the new month (transcription check)", () => {
+    // YTD_n is a weighted average of YTD_(n-1) and month n, so it must lie between
+    // them, allowing 0.15 points for the bulletin's one-decimal rounding.
+    const get = (zh: string, period: string, basis: string) => rows.find((r) => r.provinceZh === zh && r.period === period && r.basis === basis);
+    const violations: string[] = [];
+    let checked = 0;
+    for (const cur of rows.filter((r) => r.basis === "monthly")) {
+      const [y, m] = cur.period.split("-").map(Number);
+      if (m === 1) continue;
+      const prevPeriod = `${y}-${String(m - 1).padStart(2, "0")}`;
+      const prev = get(cur.provinceZh, prevPeriod, "ytd");
+      const ytd = get(cur.provinceZh, cur.period, "ytd");
+      if (!prev || !ytd) continue; // e.g. Feb 2025 not retrieved
+      for (const fuel of ["wind", "solar"] as const) {
+        const [a, b, c] = [prev[fuel], cur[fuel], ytd[fuel]];
+        if (a === null || b === null || c === null) continue;
+        checked++;
+        if (c < Math.min(a, b) - 0.15 || c > Math.max(a, b) + 0.15) violations.push(`${cur.provinceZh} ${cur.period} ${fuel}: prev ${a}, month ${b}, ytd ${c}`);
+      }
+    }
+    expect(checked).toBeGreaterThan(500);
+    expect(violations).toEqual([]);
   });
 
   it("keeps every utilisation within 0–100%", () => {
