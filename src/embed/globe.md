@@ -462,6 +462,8 @@ const regionData = {
   ...feeds.statics,
   ...feeds.philippines,
   ...feeds.dominican,
+  // EDF SEI islands (Corsica, Réunion, Guadeloupe, Martinique, French Guiana): generation only, waste unpublished.
+  ...feeds.edfSei,
   ...feeds.spainIslands,
   "india-grid-india": feeds.indiaGridIndia,
 };

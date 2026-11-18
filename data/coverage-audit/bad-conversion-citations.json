@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 562,
+  "totalValidationDocs": 563,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 555,
-  "pctCited": 1.25,
+  "docsNotCiting": 556,
+  "pctCited": 1.24,
   "perDocCitations": [
     {
       "file": "aeci-solar.md",
@@ -768,6 +768,11 @@
     },
     {
       "file": "congo-republic.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "corsica.md",
       "cited": false,
       "matchedPatterns": []
     },

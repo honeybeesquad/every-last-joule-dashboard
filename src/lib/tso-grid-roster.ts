@@ -57,6 +57,8 @@ const RELAY_TSO = new Set([
   "puerto-rico-solar",
 ]);
 
+const EDF_SEI_IDS = new Set(["corsica", "reunion", "guadeloupe", "martinique", "french-guiana"]);
+
 const LIVE_UNPUBLISHED_GEN = new Set([
   "bangladesh",
   "guatemala",
@@ -66,6 +68,7 @@ const LIVE_UNPUBLISHED_GEN = new Set([
   "dominican-republic-wind",
   "quebec",
   "quebec-wind",
+  ...EDF_SEI_IDS,
 ]);
 
 /** REE REData daily generation for Spain's island systems (spain-islands.json.ts). */
@@ -162,7 +165,9 @@ function classify(id: string, tier: string, provenance: string | undefined): Pic
         ? "dominican"
         : id.startsWith("quebec")
           ? "quebec"
-          : id;
+          : EDF_SEI_IDS.has(id)
+            ? "edf-sei"
+            : id;
     return { collectStatus: "live-tso", loaderKey, wasteStatus: "unpublished", notes: "TSO generation collected; waste unpublished." };
   }
   if (tier === "live" || tier === "live-domestic-anchored" || tier === "live-neighbour-anchored") {
