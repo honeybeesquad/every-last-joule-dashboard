@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000" role="img" aria-label="Every Last Joule">
 <title>Every Last Joule</title>
-<defs><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffd05a" stop-opacity="0.28"/><stop offset="55%" stop-color="#e6a020" stop-opacity="0.09"/><stop offset="100%" stop-color="#ffd05a" stop-opacity="0"/></radialGradient></defs><circle cx="500" cy="500" r="500" fill="#0a0703"/><circle cx="500" cy="500" r="500" fill="url(#glow)"/>
+<defs><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffd05a" stop-opacity="0.28"/><stop offset="55%" stop-color="#e6a020" stop-opacity="0.09"/><stop offset="100%" stop-color="#ffd05a" stop-opacity="0"/></radialGradient></defs><circle cx="500" cy="500" r="500" fill="#060a11"/><circle cx="500" cy="500" r="500" fill="url(#glow)"/>
 <g transform="rotate(0 500 500) translate(500 300)"><rect x="-8" y="-166.48" width="16" height="166.48" rx="8" fill="#67e8f9" opacity="0.95"></rect></g>
 <g transform="rotate(8.18 500 500) translate(500 300)"><rect x="-8" y="-236.97" width="16" height="236.97" rx="8" fill="#67e8f9" opacity="0.95"></rect></g>
 <g transform="rotate(16.36 500 500) translate(500 300)"><rect x="-8" y="-226.2" width="16" height="226.2" rx="8" fill="#67e8f9" opacity="0.95"></rect></g>

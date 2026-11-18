@@ -1,67 +1,64 @@
 import { pathToFileURL, fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
-import { readStateCsvTotal, readStateSldcCurtailment, computeCurtailedEnergy, CURTAILMENT_RATES } from "../lib/india-gen-re.js";
+import { readRrvpnlCurtailmentEvents } from "../lib/india-gen-re.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "india-rajasthan";
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const CSV_PATH = join(__dirname, "../../data/historical/india-rajasthan-gen-daily.csv");
-const CSV_SLDC_PATH = join(__dirname, "../../data/historical/india-rajasthan-sldc-curtailed-daily.csv");
-const CURTAILMENT = CURTAILMENT_RATES[REGION_ID];
+const CSV_RRVPNL_PATH = join(
+  __dirname,
+  "../../data/historical/india-rajasthan-rrvpnl-curtailed-events.csv",
+);
 
 async function run(): Promise<RegionData> {
-  const sldc = readStateSldcCurtailment(CSV_SLDC_PATH, 90);
-  if (sldc !== null) {
-    const rawWindowTWh = sldc.solarCurtailedTWh + sldc.windCurtailedTWh;
-    const annualizedTWh = rawWindowTWh * 365 / sldc.windowDays;
-    const base = buildTypicalSolarRegion(
-      REGION_ID,
-      6.5,
-      annualizedTWh,
-      `RSLDC (Rajasthan State Load Despatch Centre) direct curtailment — ${sldc.nRows}-day CSV, ` +
-      `trailing-90-day solar ${sldc.solarCurtailedTWh.toFixed(2)} TWh + wind ${sldc.windCurtailedTWh.toFixed(2)} TWh curtailed; ` +
-      `annualised to ${annualizedTWh.toFixed(2)} TWh/yr (× 365 / ${sldc.nRows} rows). ` +
-      `Latest date: ${sldc.latestDate}. Hourly shape is synthetic.`,
-      new Date().getFullYear().toString(),
+  // Published-window rate, not a TWh/yr. RRVPNL PDFs are event reports for
+  // Jan–May 2026, not a complete daily NIL series, so the denominator is the
+  // 151-day report-set calendar span. Do not multiply by 365/151 in the note.
+  const events = readRrvpnlCurtailmentEvents(CSV_RRVPNL_PATH);
+  if (events === null) {
+    throw new Error(
+      "india-rajasthan: RRVPNL event CSV missing — refusing to emit a T3-modelled " +
+        "CEA×Ember profile under the region's canonical anchored (T2) tier. " +
+        "Restore data/historical/india-rajasthan-rrvpnl-curtailed-events.csv.",
     );
-    return { ...base, confidenceTier: "T1a-live-tso" as const, sourceProvenance: "verified" };
   }
 
-  const csv = readStateCsvTotal(CSV_PATH, 365);
-
-  if (csv !== null) {
-    const curtailedTWh = computeCurtailedEnergy(csv.solarTWh, CURTAILMENT.rate);
-    const base = buildTypicalSolarRegion(
-      REGION_ID,
-      6.5,
-      curtailedTWh,
-      `CEA gen-re.cea.gov.in daily Excel, State-Wise sheet (${csv.nRows}-day CSV; trailing-365-day solar ${csv.solarTWh.toFixed(2)} TWh). ` +
-      `Annual curtailed energy = CEA generation × Ember India 2024 rate ${(CURTAILMENT.rate * 100).toFixed(0)}% / (1 − rate) = ${curtailedTWh.toFixed(2)} TWh. ` +
-      `Hourly shape is synthetic. Only the generation denominator is from a primary official source. ` +
-      `RRVPNL re-curtailment PDFs for Jan–May 2026 sum to 0.052 TWh (research extraction, issue #964) — >50× below this modelled anchor; that floor is not annualised and is not what the dashboard plots.`,
-      new Date().getFullYear().toString(),
-    );
-    return { ...base, sourceProvenance: "official-lead" };
-  }
-
-  // No CSV yet — T3 modelled fallback
-  const base = buildTypicalSolarRegion(
-    REGION_ID,
-    6.5,
-    3.5,
-    `No CEA CSV present; T3-modelled fallback calibrated to Ember India 2025 (~3.5 TWh/yr solar curtailment, Rajasthan transmission bottlenecks).`,
-    "2025",
-  );
-  return applyUncertainty(base, { regionTier: "estimated", profileKind: "solar" });
+  const recordTWh = events.solarCurtailedTWh + events.windCurtailedTWh;
+  const twh30 = recordTWh * 30 / events.windowDays;
+  // Flat 24/7: events have clock times but they are not a typical-day series.
+  // A solar archetype here would make this T3 by the T2-vs-T3 shape test.
+  const flatGW = (recordTWh * 1000) / (events.windowDays * 24);
+  const base: RegionData = {
+    regionId: REGION_ID,
+    profile: Array(24).fill(flatGW),
+    latestProfile: null,
+    totalTWh: twh30,
+    peakGW: flatGW,
+    lastUpdated: events.latestDate,
+    lastSuccessAt: new Date(events.latestDate).toISOString(),
+    sourceNote:
+      `RRVPNL (Rajasthan SLDC) re-curtailment PDFs — MEASURED Relief-MW × duration ` +
+      `event energy. ${recordTWh.toFixed(3)} TWh in the Jan–May 2026 published reports ` +
+      `(${events.nRows} rows, ${events.nManual} medium-confidence manual-from-scan). ` +
+      `Dashboard 30-day figure spreads that floor across the ${events.windowDays}-day ` +
+      `report window; not annualised to a TWh/yr. Monthly PDFs, not a live feed, hence ` +
+      `T2 not T1. Latest event date: ${events.latestDate}. Flat 24/7 profile: events ` +
+      `are not an hourly series. Supersedes CEA×Ember ~4.6 TWh/yr, which overstated ` +
+      `this floor by ~50× (issue #964).`,
+    fuelShare: recordTWh > 0
+      ? { solar: events.solarCurtailedTWh / recordTWh, wind: events.windCurtailedTWh / recordTWh }
+      : { solar: 1, wind: 0 },
+    sourceProvenance: "verified",
+  };
+  return applyUncertainty(base, { regionTier: "anchored", profileKind: "flat" });
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isMain) {
-  withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
+  withFallback(REGION_ID, () => run(), { regionTier: "anchored" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => {
       console.error("india-rajasthan loader failed", err);

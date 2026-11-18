@@ -23,9 +23,12 @@ import {
   searchHaystack,
 } from "../src/lib/region-filter";
 import {
+  MARKER_TIER_GLOSS,
+  TIER_GLOSS,
   uncertaintyBandCaveat,
   uncertaintyBandPercent,
 } from "../src/lib/region-labels";
+import { TSO_GRID_MARKER_IDS } from "../src/lib/tso-grid-markers";
 
 const ROOT = join(__dirname, "..");
 const DOCS = join(ROOT, VALIDATION_DOC_DIR);
@@ -159,6 +162,22 @@ describe("escapeHtml", () => {
   });
 });
 
+describe("grid marker pages", () => {
+  it("say there is no waste figure instead of describing a modelled anchor and envelope", () => {
+    // ghana became a marker on 2026-09-29; kauai has been one since 2026-09-20.
+    for (const id of ["ghana", "kauai"]) {
+      expect(TSO_GRID_MARKER_IDS.has(id)).toBe(true);
+      const html = renderRegionPage(id);
+      expect(html).toContain(escapeHtml(MARKER_TIER_GLOSS));
+      expect(html).not.toContain(escapeHtml(TIER_GLOSS.estimated));
+      expect(html).not.toContain("of peak GW");
+    }
+    const modelled = renderRegionPage("algeria");
+    expect(modelled).toContain(escapeHtml(TIER_GLOSS.estimated));
+    expect(modelled).toContain("of peak GW");
+  });
+});
+
 describe("uncertainty band labels", () => {
   it("renders the published envelope for each tier", () => {
     expect(uncertaintyBandPercent("live")).toBe("15%");
@@ -285,7 +304,7 @@ describe("the sitemap", () => {
   );
 
   it("lists every region page plus the hand-maintained pages", () => {
-    expect(xml.match(/<url>/g)?.length).toBe(REGIONS.length + 6);
+    expect(xml.match(/<url>/g)?.length).toBe(REGIONS.length + 7);
     expect(xml).toContain("<loc>https://everylastjoule.com/regions</loc>");
     expect(xml).toContain(
       `<loc>https://everylastjoule.com/region/${REGIONS[0].id}</loc>`,

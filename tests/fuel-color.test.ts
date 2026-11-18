@@ -5,8 +5,8 @@ import { getFuelColor, getRegionFuelColor } from "../src/lib/fuel";
 import type { Region, RegionData } from "../src/lib/types";
 
 beforeEach(() => {
-  document.documentElement.setAttribute("data-theme", "sunfire");
-  // Inject the Sunfire fuel tokens onto the documentElement so
+  document.documentElement.setAttribute("data-theme", "embed");
+  // Inject the paper figure's fuel tokens onto the documentElement so
   // getComputedStyle returns deterministic values without loading the
   // full stylesheet.
   document.documentElement.style.setProperty("--fuel-solar", "#ffd05a");
@@ -16,15 +16,15 @@ beforeEach(() => {
 });
 
 describe("getFuelColor", () => {
-  it("returns the --fuel-solar token under sunfire", () => {
+  it("returns the --fuel-solar token", () => {
     expect(getFuelColor("solar")).toBe("#ffd05a");
   });
 
-  it("returns the --fuel-wind token under sunfire", () => {
+  it("returns the --fuel-wind token", () => {
     expect(getFuelColor("wind")).toBe("#67e8f9");
   });
 
-  it("returns the --fuel-hydro token under sunfire", () => {
+  it("returns the --fuel-hydro token", () => {
     expect(getFuelColor("hydro")).toBe("#b8cdff");
   });
 
@@ -33,10 +33,10 @@ describe("getFuelColor", () => {
     expect(getFuelColor("solar")).toBe("#abcdef");
   });
 
-  it("returns Sunfire defaults when the token is missing on the documentElement", () => {
+  it("returns the fallback palette when the token is missing on the documentElement", () => {
     document.documentElement.style.removeProperty("--fuel-solar");
     // Stylesheet not loaded in this test harness, so getComputedStyle
-    // returns "" → getFuelColor falls back to the Sunfire default.
+    // returns "" → getFuelColor falls back to its default.
     expect(getFuelColor("solar")).toBe("#ffd05a");
   });
 });

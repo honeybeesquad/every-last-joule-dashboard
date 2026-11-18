@@ -72,6 +72,10 @@ export interface TerritoryResult {
   fuel: Int8Array;
   /** Per dot: 1 when it sits in the inner half of the territory claiming it. */
   inner: Uint8Array;
+  /** Per dot: 1 - d/r for the nearest territory reaching it (1 at a region's
+   *  centre, 0 at the edge, 0 when unlit). The horizon globe fades its lit
+   *  dots with it. */
+  strength: Float32Array;
 }
 
 /**
@@ -81,6 +85,9 @@ export interface TerritoryResult {
  * 70% wind and 30% solar therefore lights ~70% of its dots cyan and ~30% gold,
  * scattered; two single-fuel regions with overlapping reach blend the same
  * way. `lons`/`lats`/`hash` are parallel arrays over the land dots.
+ *
+ * `radiusDeg` sets each territory's reach from its GW. The default is the G1
+ * globe's; the dark horizon passes its own, smaller one (redesign plan 6.3).
  */
 export function assignTerritory(
   lons: Float32Array,
@@ -88,13 +95,14 @@ export function assignTerritory(
   hash: Float32Array,
   sources: TerritorySource[],
   cellIndex: DotCellIndex,
+  radiusDeg: (gw: number) => number = territoryRadiusDeg,
 ): TerritoryResult {
   const n = lons.length;
   const w = new Float32Array(n * 3);
   const maxSc = new Float32Array(n);
   for (const s of sources) {
     if (!(s.gw > 0)) continue;
-    const r = territoryRadiusDeg(s.radiusGW ?? s.gw);
+    const r = radiusDeg(s.radiusGW ?? s.gw);
     const fi = FUELS.indexOf(s.fuel);
     if (fi < 0) continue;
     for (const i of cellIndex.near(s.lon, s.lat, r)) {
@@ -115,7 +123,7 @@ export function assignTerritory(
     fuel[i] = t < a ? 0 : t < a + b ? 1 : 2;
     inner[i] = maxSc[i] > 0.5 ? 1 : 0;
   }
-  return { fuel, inner };
+  return { fuel, inner, strength: maxSc };
 }
 
 /** Coarse lon/lat bucket index over the land dots so territory assignment

@@ -8,8 +8,8 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** ERLDC fallback
-- **Source URL:** [https://erldc.in/](https://erldc.in/)
+- **Source:** CEA gen-re.cea.gov.in daily Excel residual — Eastern Region solar excluding Odisha (Bihar + West Bengal + Jharkhand + Sikkim) × Ember India 2024 1% rate (≈0.006 TWh/yr at ~0.57 TWh/yr solar). Odisha is its own region and is not counted here. ERLDC still has no public curtailment series. Hourly shape is synthetic. Not a measured TSO series.
+- **Source URL:** [https://gen-re.cea.gov.in/](https://gen-re.cea.gov.in/)
 - **Loader:** [`india-east.json.ts`](../../src/data/india-east.json.ts)
 - **Structural gap:** no
 
@@ -26,14 +26,16 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 
 ## Published anchors
 
-- **TSO annual curtailment (latest published):** POSOCO 2024 East region RES curtailment low
+- **TSO annual curtailment (latest published):** —
+- **CEA residual generation (trailing 365 days):** ~0.57 TWh solar (Bihar-dominated; WB/Jharkhand/Sikkim ~0)
+- **Dashboard modelled curtailment:** ≈0.006 TWh/yr (Ember 1%). The previous 0.2 TWh/yr ERLDC stub double-counted Odisha.
 - **Ember annual:** —
 - **IRENA annual:** —
 - **Other:** —
 
 ## Discrepancy analysis
 
-_No backfill and no TSO anchor. Region relies solely on the live snapshot; nothing to triangulate against._
+The previous 0.2 TWh/yr stub treated Odisha and West Bengal as one ERLDC aggregate. Odisha is now its own region. This row is CEA Eastern residual solar excluding Odisha (almost entirely Bihar) × Ember 1%. ERLDC still publishes no curtailment series.
 
 ## Known limitations
 

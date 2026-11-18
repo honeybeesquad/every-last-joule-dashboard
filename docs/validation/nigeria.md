@@ -1,6 +1,6 @@
 # Validation — Nigeria (`nigeria`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-09-29 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** NGA
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** Niggrid TCN live generation profile (niggrid.org/GenerationProfile2) × 0.15% calibrated solar curtailment rate (TCN/Ember 2024 anchor ~0.05 TWh/yr Nigeria solar curtailment). Shape proxy: total grid generation — Nigeria has negligible utility solar. Fallback: typical solar profile.
-- **Source URL:** [https://niggrid.org/GenerationProfile2](https://niggrid.org/GenerationProfile2)
-- **Loader:** [`nigeria.json.ts`](../../src/data/nigeria.json.ts)
+- **Source:** No curtailment series collected; grid present, waste unpublished. Its former 0.5 TWh/yr anchor (Ember Nigeria 2024 + TCN Grid Stability Report 2024) was 3.8× Nigeria's 2024 solar generation of 0.13 TWh (Our World in Data, from Ember and the Energy Institute), so it was dropped on 2026-09-29.
+- **Source URL:** [https://www.tcn.org.ng/](https://www.tcn.org.ng/)
+- **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no
 
 ## Calibration
@@ -41,7 +41,7 @@ No region-specific limitations recorded. See `docs/methodology/historical-backfi
 
 ## Links
 
-- Loader source: [`nigeria.json.ts`](../../src/data/nigeria.json.ts)
+- Loader source: _(no single-file loader — see multi-region source)_
 - Backfill archive: `data/historical/backfill/*_nigeria_*.parquet` (0 years)
 - Cross-cutting methodology: [`docs/methodology/historical-backfill.md`](../methodology/historical-backfill.md)
 - Data source log: [`docs/data-source-log.md`](../data-source-log.md)

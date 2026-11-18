@@ -4,8 +4,12 @@ name: Relay pull (Colombia + India + Peru + PREPA)
 # (written by Britta cron / abed) and commits them into data/historical/.
 #
 # Colombia: runs ~19:15 UTC daily (45 min after Britta's 18:30 UTC push window).
-# India:    gen-re.cea.gov.in daily Excel; Britta fetches at 06:30 UTC; GA runs
-#           after Colombia pull to pick up both in one build.
+# India:    gen-re.cea.gov.in daily Excel; Britta fetches at 06:30 UTC.
+#           A relay copy is kept only when scripts/relay/accept_india_gen_daily.py
+#           accepts it (daily GWh inside 0..400, and no committed day dropped).
+#           Britta's copies still carry Excel serial 45944 and a shorter tail.
+#           Gujarat T2 NLDC REMC daily MU: Bangalore droplet fetches at 02:00 UTC
+#           (docs/ops/bangalore-nldc-push.sh) into the same relay repo.
 # Peru:     COES per-plant generation (www.coes.org.pe); Britta fetches weekly
 #           (Mondays) — COES publishes monthly with a ~2-3wk lag. Estimated tier.
 #           CSV unchanged most days, so the diff guard below makes this a no-op.
@@ -58,12 +62,16 @@ jobs:
           cp /tmp/relay/colombia-vertimientos-daily.csv \
              data/historical/colombia-vertimientos-daily.csv
 
-          # India (copy only if present in relay repo)
-          for state in rajasthan gujarat tamil-nadu andhra-pradesh maharashtra; do
+          # India CEA gen-daily. Copy only a file that does not rewind the
+          # committed series (Excel serial 45944, or a shorter tail).
+          for state in rajasthan gujarat tamil-nadu andhra-pradesh maharashtra \
+                       karnataka madhya-pradesh telangana uttar-pradesh punjab \
+                       odisha chhattisgarh kerala haryana assam himachal-pradesh \
+                       uttarakhand east rest; do
             src="/tmp/relay/india-${state}-gen-daily.csv"
             dst="data/historical/india-${state}-gen-daily.csv"
             if [ -f "$src" ]; then
-              cp "$src" "$dst"
+              python3 scripts/relay/accept_india_gen_daily.py "$src" "$dst"
             fi
           done
 
@@ -84,6 +92,16 @@ jobs:
                data/historical/puerto-rico-genera.csv
           fi
 
+          # Gujarat T2 — Grid-India NLDC REMC daily MU (Bangalore droplet)
+          if [ -f /tmp/relay/india-gujarat-nldc-curtailed-daily.csv ]; then
+            cp /tmp/relay/india-gujarat-nldc-curtailed-daily.csv \
+               data/historical/india-gujarat-nldc-curtailed-daily.csv
+          fi
+          if [ -f /tmp/relay/india-nldc-remc-vre-daily.csv ]; then
+            cp /tmp/relay/india-nldc-remc-vre-daily.csv \
+               data/historical/india-nldc-remc-vre-daily.csv
+          fi
+
       - name: Open / refresh auto-merge PR
         env:
           GH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
@@ -97,6 +115,8 @@ jobs:
                   data/historical/india-tamil-nadu-gen-daily.csv \
                   data/historical/india-andhra-pradesh-gen-daily.csv \
                   data/historical/india-maharashtra-gen-daily.csv \
+                  data/historical/india-gujarat-nldc-curtailed-daily.csv \
+                  data/historical/india-nldc-remc-vre-daily.csv \
                   data/historical/peru-coes-per-plant.csv \
                   data/historical/puerto-rico-genera.csv \
                   data/historical/abed-heartbeat.json \

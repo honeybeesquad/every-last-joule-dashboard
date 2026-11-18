@@ -1,6 +1,6 @@
 import { REGIONS } from "./regions.js";
 import { EIA_VRE_BA_CONFIGS } from "../data/eia-vre-bas.json.js";
-import { TSO_GRID_MARKERS } from "../data/tso-grid-markers.json.js";
+import { TSO_GRID_MARKERS } from "./tso-grid-markers.js";
 
 export type CollectStatus =
   | "live-tso"
@@ -91,7 +91,8 @@ const EXTRA_OPERATORS: TsoGridRosterRow[] = [
   { operator: "EWEC/TRANSCO", iso3: "ARE", fuels: "solar", collectStatus: "no-public-series", loaderKey: "uae", wasteStatus: "unpublished", regionIds: "uae", notes: "Structural dark. Partnership email." },
   { operator: "DEWA", iso3: "ARE", fuels: "solar", collectStatus: "no-public-series", loaderKey: "", wasteStatus: "unpublished", regionIds: "", notes: "Structural dark." },
   { operator: "OETC", iso3: "OMN", fuels: "solar", collectStatus: "no-public-series", loaderKey: "oman", wasteStatus: "unpublished", regionIds: "oman", notes: "Structural dark." },
-  { operator: "Kahramaa", iso3: "QAT", fuels: "solar", collectStatus: "no-public-series", loaderKey: "", wasteStatus: "unpublished", regionIds: "", notes: "Structural dark." },
+  { operator: "Kahramaa", iso3: "QAT", fuels: "solar", collectStatus: "no-public-series", loaderKey: "tso-grid-markers", wasteStatus: "unpublished", regionIds: "qatar", notes: "Structural dark." },
+  { operator: "MEW Kuwait", iso3: "KWT", fuels: "solar", collectStatus: "no-public-series", loaderKey: "tso-grid-markers", wasteStatus: "unpublished", regionIds: "kuwait", notes: "Structural dark." },
   { operator: "EETC", iso3: "EGY", fuels: "solar,wind", collectStatus: "no-public-series", loaderKey: "egypt", wasteStatus: "unpublished", regionIds: "egypt", notes: "Structural dark." },
   { operator: "ONEE", iso3: "MAR", fuels: "solar,wind", collectStatus: "no-public-series", loaderKey: "morocco", wasteStatus: "unpublished", regionIds: "morocco", notes: "Structural dark." },
   { operator: "STEG", iso3: "TUN", fuels: "solar,wind", collectStatus: "no-public-series", loaderKey: "", wasteStatus: "unpublished", regionIds: "tunisia", notes: "Structural dark." },

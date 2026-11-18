@@ -11,21 +11,23 @@
  * only where the maths is not circular; see `src/lib/generation-share.ts`.
  */
 export function mountUnitsToggle(container, { initial = "absolute", onChange }) {
+  // [unit, label, short label for the dark dock, title]
   const units = [
-    ["absolute", "GW", "Show curtailment as absolute power"],
-    ["share", "% of generation", "Show curtailment as a share of measured generation, 30-day window"],
+    ["absolute", "GW", "GW", "Show curtailment as absolute power"],
+    ["share", "% of generation", "% gen", "Show curtailment as a share of measured generation, 30-day window"],
   ];
   let active = initial;
 
   container.innerHTML = `
-    <div class="mode-toggle" role="group" aria-label="Curtailment units">
-      ${units.map(([unit, label, title]) => `
+    <div class="seg mode-toggle" role="group" aria-label="Curtailment units">
+      ${units.map(([unit, label, short, title]) => `
         <button
-          class="mode-btn${unit === active ? " mode-btn-active" : ""}"
+          type="button"
+          class="seg-btn mode-btn${unit === active ? " mode-btn-active" : ""}"
           data-unit="${unit}"
           title="${title}"
           aria-pressed="${unit === active}"
-        >${label}</button>
+        >${short === label ? label : `<span class="label-long">${label}</span><span class="label-short" aria-hidden="true">${short}</span>`}</button>
       `).join("")}
     </div>
   `;

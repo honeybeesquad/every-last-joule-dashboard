@@ -21,3 +21,6 @@ docs/paper/~$*.docx
 # Tool artifacts + per-machine personal agent config (CLAUDE.md/AGENTS.md are shared; GEMINI.md is personal)
 .playwright-mcp/
 GEMINI.md
+
+# withFallback writes a snapshot aside, then renames it; a loader stopped between the two leaves this.
+data/snapshots/last-good/*.tmp

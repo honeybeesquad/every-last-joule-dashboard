@@ -172,3 +172,9 @@ Dashboard: [everylastjoule.com](https://everylastjoule.com). Methodology: [every
 11. European Parliament and Council. *Regulation (EU) 2023/1114 on Markets in Crypto-Assets (MiCA)*. Official Journal of the European Union, 9 June 2023. https://eur-lex.europa.eu/eli/reg/2023/1114/oj [^11]
 
 </div>
+
+```js
+// The site header's mode switch and menu (src/lib/site-header.ts draws it).
+import { mountSiteChrome } from "./components/site-chrome.js";
+const unmountSiteChrome = mountSiteChrome();
+```

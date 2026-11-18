@@ -8,7 +8,7 @@ Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Tech
 - **Country:** IND
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** CEA gen-re daily state sheets (GJ/RJ/AP/TN/MH) summed as unpublished VRE generation. Waste unpublished until hourly instruction energy exists. Not a substitute for SLDC subgrids.
+- **Source:** CEA gen-re daily state sheets (17 named states + east + rest residuals) summed as unpublished VRE generation. Waste unpublished until hourly instruction energy exists. Not a substitute for SLDC subgrids. abed is not an India PoP.
 - **Source URL:** [https://grid-india.in/](https://grid-india.in/)
 - **Loader:** [`india-grid-india.json.ts`](../../src/data/india-grid-india.json.ts)
 - **Structural gap:** no

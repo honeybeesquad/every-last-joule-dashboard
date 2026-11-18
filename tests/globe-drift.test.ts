@@ -43,6 +43,9 @@ const EMBED_EXEMPT_LOADERS = new Set([
   // Version badge for the dashboard chrome, not a region. It is also a live
   // Zenodo fetch, which the embed must not block on.
   "zenodo-version",
+  // Build stamp for the dashboard's "Last refreshed" line and stale-data
+  // notice. The embed is the paper's figure and shows neither.
+  "build-info",
 ]);
 
 /** Variable names that intentionally differ from their data filename. */

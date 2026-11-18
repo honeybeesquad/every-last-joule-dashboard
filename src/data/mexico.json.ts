@@ -1,6 +1,7 @@
 import { pathToFileURL, fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { readFileSync } from "fs";
+import { relayFreshness, RELAY_STALENESS_THRESHOLD_DAYS } from "../lib/freshness.js";
 import { withFallback } from "../lib/resilient.js";
 import { timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { applyUncertainty } from "../lib/uncertainty.js";
@@ -99,7 +100,7 @@ function buildUnpublishedGeneration(
     lastUpdated: last,
     lastSuccessAt: last,
     sourceNote: note,
-    sourceStatus: "cached",
+    sourceStatus: relayFreshness(last, new Date(), RELAY_STALENESS_THRESHOLD_DAYS),
     sourceProvenance: "official-lead",
     wasteStatus: "unpublished",
     generationProfile: timeOfDayAverageGW(points),
