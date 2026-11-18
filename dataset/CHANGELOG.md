@@ -4,6 +4,9 @@ All notable changes to the Every Last Joule dataset. Format: [Keep a Changelog](
 
 ## [Unreleased]
 
+### Changed — China provincial anchors
+- The 37 China wind and solar regions anchored on Ember generation × utilisation rate now use the monitoring centre's **full-year 2025** province table ("2025年各省级区域新能源并网消纳情况", released 2026-02-06). Until now they used 2024 rates transcribed from a press report, several of them wrongly, and Inner Mongolia's were January–November figures. The anchor total for those regions goes from 81.64 to **117.90 TWh/yr (+36.27)**. The largest increases are Xinjiang solar (13.7%), Qinghai solar (16.6%) and Inner Mongolia wind (8.2%). No tier moves. The per-region table is in `docs/methodology/china-provinces.md`.
+
 ## [1.4.0] — 2026-09-19
 
 First renewables-only deposit. Version DOI [10.5281/zenodo.22837934](https://doi.org/10.5281/zenodo.22837934). v1.3.2 (`10.5281/zenodo.20570864`, 385 regions, includes associated-gas flaring) remains the previous mint and is not rewritten. Concept DOI [10.5281/zenodo.19835411](https://doi.org/10.5281/zenodo.19835411) now resolves here.

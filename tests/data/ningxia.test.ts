@@ -8,11 +8,11 @@ describe("ningxia loader", () => {
     expect(data.solar.regionId).toBe("ningxia-solar");
     expect(data.wind.profile).toHaveLength(24);
     expect(data.solar.profile).toHaveLength(24);
-    expect(data.wind.totalTWh).toBeCloseTo(0.062466, 4);
+    expect(data.wind.totalTWh).toBeCloseTo((1.338 * 30) / 365, 4);
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.wind.sourceProvenance).toBe("modelled-fallback");
     expect(data.wind.sourceStatus).toBe("cached");
-    expect(data.solar.totalTWh).toBeCloseTo(0.191836, 4);
+    expect(data.solar.totalTWh).toBeCloseTo((3.095 * 30) / 365, 4);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.solar.sourceProvenance).toBe("modelled-fallback");
     expect(data.solar.sourceStatus).toBe("cached");

@@ -22,10 +22,10 @@ describe("refresh-china buildAnchors", () => {
     const anchors = buildAnchors(CSV);
     const xjWind = anchors.find((a) => a.regionId === "xinjiang-wind");
     expect(xjWind).toBeDefined();
-    // (0.5 + 0.48) * 0.066 = 0.06468 -> rounded to 3dp = 0.065
-    expect(xjWind!.annualTWh).toBeCloseTo(0.065, 3);
+    // (0.5 + 0.48) * 0.09 (2025 rate) = 0.0882 -> rounded to 3dp = 0.088
+    expect(xjWind!.annualTWh).toBeCloseTo(0.088, 3);
     expect(xjWind!.annualGenerationTWh).toBeCloseTo(0.98, 4);
-    expect(xjWind!.curtailmentRate).toBe(0.066);
+    expect(xjWind!.curtailmentRate).toBe(0.09);
   });
 
   it("skips provinces with no published curtailment rate", () => {

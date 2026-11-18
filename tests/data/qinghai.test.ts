@@ -14,6 +14,6 @@ describe("qinghai loader", () => {
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.wind.totalTWh).toBeCloseTo((1.408 * 30) / 365, 5);
-    expect(data.solar.totalTWh).toBeCloseTo((4.351 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((7.445 * 30) / 365, 5);
   });
 });
