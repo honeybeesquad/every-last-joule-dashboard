@@ -12,6 +12,12 @@
  *              (IRENA-derived) was modelled, not a CNDC figure, and is dropped
  *              with the owner's sign-off (2026-11-18).
  *
+ * CNDC marks an unmeasured quarter-hour with -1, not null: every series on
+ * every day carries -1 at step 94 (23:30), and the current day's unfilled
+ * tail is all -1. A missing value (-1 or null) at night (00:00–04:59,
+ * 20:00–23:59 local, when Bolivia has no sun in any season) is read as zero;
+ * one in 05:00–19:59 makes the day incomplete and it is skipped.
+ *
  * The route answered for 2025-01-01 and later; 2024-01-01 came back `[]`.
  * CNDC's old `gene/dat/gene.php` endpoint is 404 since the 2026 redesign.
  *
@@ -50,8 +56,12 @@ const STEPS_PER_DAY = 96;
  */
 const MAX_PLAUSIBLE_SOLAR_MW = 600;
 
-/** A value below this is a corrupt reading, not metering noise around zero. */
-const MIN_PLAUSIBLE_SOLAR_MW = -5;
+/** CNDC's marker for a quarter-hour with no measurement. */
+const NO_DATA = -1;
+
+/** Quarter-hour steps that can carry sun: 05:00 (step 20) to 19:59 (step 79). */
+const FIRST_DAYLIGHT_STEP = 20;
+const LAST_DAYLIGHT_STEP = 79;
 
 interface CndcSeries {
   codigo?: unknown;
@@ -88,17 +98,19 @@ export function parseCndcDay(localDay: string, payload: unknown): CurtailmentPoi
   const points: CurtailmentPoint[] = [];
   for (let i = 0; i < STEPS_PER_DAY; i++) {
     const raw = values[i];
-    // A null quarter-hour is missing data, not zero; the day is incomplete.
-    if (raw === null || raw === undefined || String(raw).trim() === "") return [];
-    const mw = Number(raw);
-    if (!Number.isFinite(mw) || mw < MIN_PLAUSIBLE_SOLAR_MW) {
+    const blank = raw === null || raw === undefined || String(raw).trim() === "";
+    const mw = blank ? NO_DATA : Number(raw);
+    if (!Number.isFinite(mw) || (mw < 0 && mw !== NO_DATA)) {
       throw new Error(`bolivia ${localDay}: bad SOLAR value ${String(raw)} at step ${i}`);
     }
+    const daylight = i >= FIRST_DAYLIGHT_STEP && i <= LAST_DAYLIGHT_STEP;
+    // Missing in daylight: the day is incomplete. Missing at night: no sun, zero.
+    if (mw === NO_DATA && daylight) return [];
     if (mw > MAX_PLAUSIBLE_SOLAR_MW) {
       throw new Error(`bolivia ${localDay}: SOLAR ${mw} MW exceeds ${MAX_PLAUSIBLE_SOLAR_MW} MW ceiling`);
     }
     const startMs = Date.UTC(y, mo - 1, d, -BO_OFFSET_HOURS, i * 15);
-    points.push({ utcTimestamp: new Date(startMs).toISOString(), mw: Math.max(0, mw), intervalHours: 0.25 });
+    points.push({ utcTimestamp: new Date(startMs).toISOString(), mw: mw === NO_DATA ? 0 : mw, intervalHours: 0.25 });
   }
   return points;
 }

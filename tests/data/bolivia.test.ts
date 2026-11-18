@@ -49,12 +49,28 @@ describe("bolivia: parseCndcDay", () => {
     expect(parseCndcDay("2024-01-01", [])).toEqual([]);
   });
 
-  it("returns [] when a quarter-hour is null", () => {
-    expect(parseCndcDay("2026-11-16", withSolar((v) => (v[48] = null)))).toEqual([]);
+  it("reads CNDC's -1 at step 94 (23:30) as night zero, as the fixture has it", () => {
+    expect((FIXTURE as Series[]).find((s) => s.codigo === "SOLAR")!.valores[94]).toBe(-1);
+    expect(points[94].mw).toBe(0);
   });
 
-  it("clamps small negatives and throws on corrupt ones", () => {
-    expect(parseCndcDay("2026-11-16", withSolar((v) => (v[2] = -0.5)))[2].mw).toBe(0);
+  it("returns [] when a daylight quarter-hour is -1 or null (not yet measured)", () => {
+    expect(parseCndcDay("2026-11-16", withSolar((v) => (v[48] = -1)))).toEqual([]);
+    expect(parseCndcDay("2026-11-16", withSolar((v) => (v[48] = null)))).toEqual([]);
+    expect(parseCndcDay("2026-11-16", withSolar((v) => (v[20] = -1)))).toEqual([]); // 05:00
+  });
+
+  it("treats a missing night quarter-hour, -1 or null, as zero", () => {
+    expect(parseCndcDay("2026-11-16", withSolar((v) => (v[94] = null)))[94].mw).toBe(0);
+    expect(parseCndcDay("2026-11-16", withSolar((v) => (v[3] = -1)))).toHaveLength(96);
+  });
+
+  it("treats a day whose unfilled tail is -1 as incomplete", () => {
+    expect(parseCndcDay("2026-11-16", withSolar((v) => v.fill(-1, 60)))).toEqual([]);
+  });
+
+  it("throws on any other negative value", () => {
+    expect(() => parseCndcDay("2026-11-16", withSolar((v) => (v[48] = -0.5)))).toThrow(/bad SOLAR value/);
     expect(() => parseCndcDay("2026-11-16", withSolar((v) => (v[48] = -80)))).toThrow(/bad SOLAR value/);
   });
 

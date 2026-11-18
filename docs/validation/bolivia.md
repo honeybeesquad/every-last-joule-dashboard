@@ -37,7 +37,7 @@ _Pending: no backfill parquet yet for this region. Once HB.1 / HB.2 land the per
 
 ## Known limitations
 
-Generation only; waste is unpublished. The 30-day figure is the 14-day window's diurnal profile × 30. CNDC's route answers from 2025-01-01 (2024-01-01 came back empty), so a backfill from 2025 is possible; its annual history route gives 0.355 TWh of solar for 2025. Against that annual total, the 0.1 TWh/yr static this replaces would mean over a quarter of solar output curtailed. CNDC's `datos-hidrologicos` and `embalses` routes carry reservoir levels and inflows, with no spill field.
+Generation only; waste is unpublished. The 30-day figure is the 14-day window's diurnal profile × 30. CNDC's route answers from 2025-01-01 (2024-01-01 came back empty), so a backfill from 2025 is possible; its annual history route gives 0.355 TWh of solar for 2025. Against that annual total, the 0.1 TWh/yr static this replaces would mean over a quarter of solar output curtailed. CNDC marks an unmeasured quarter-hour with -1, not null: every series carries -1 at step 94 (23:30) on every day, and the current day's unfilled tail is -1. The loader reads a -1 or null at night (00:00–04:59, 20:00–23:59) as zero and skips any day with one in 05:00–19:59. CNDC's `datos-hidrologicos` and `embalses` routes carry reservoir levels and inflows, with no spill field.
 
 See `docs/methodology/historical-backfill.md` §"Known limitations" for cross-cutting notes.
 
