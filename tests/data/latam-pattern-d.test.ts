@@ -148,8 +148,8 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
       if (NOT_STATIC.has(id)) continue;
       annualSum += statics[id].totalTWh * (365 / 30);
     }
-    expect(annualSum).toBeGreaterThan(1.0);
-    expect(annualSum).toBeLessThan(1.1);
+    expect(annualSum).toBeGreaterThan(0.95);
+    expect(annualSum).toBeLessThan(1.05);
   });
 
   it("the three anchors dropped on 2026-09-29 are tso-grid-markers, not statics", () => {

@@ -57,20 +57,16 @@ const RELAY_TSO = new Set([
   "puerto-rico-solar",
 ]);
 
+const EDF_SEI_IDS = new Set(["corsica", "reunion", "guadeloupe", "martinique", "french-guiana"]);
+
 const LIVE_UNPUBLISHED_GEN = new Set([
   "bangladesh",
   "philippines-solar",
   "philippines-wind",
   "dominican-republic",
   "dominican-republic-wind",
-  "corsica",
-  "reunion",
-  "guadeloupe",
-  "martinique",
-  "french-guiana",
+  ...EDF_SEI_IDS,
 ]);
-
-const EDF_SEI_IDS = new Set(["corsica", "reunion", "guadeloupe", "martinique", "french-guiana"]);
 
 /** Operators with no dashboard region, or honesty overlays. */
 const EXTRA_OPERATORS: TsoGridRosterRow[] = [

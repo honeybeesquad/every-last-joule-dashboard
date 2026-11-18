@@ -19,13 +19,15 @@
  *    regions stay `estimated` (T3). No curtailment rate is applied.
  *
  * Each region carries the sum of the solar, wind and hydro columns its
- * territory has. Thermal, bioenergy, geothermal, interconnector and storage
- * columns are not read.
+ * territory has, and `fuelShare` carries the observed split of that sum, so
+ * a `kind: "mixed"` island is coloured by its real dominant fuel. Thermal,
+ * bioenergy, geothermal, interconnector and storage columns are not read.
  */
 
 import { pathToFileURL } from "url";
 import { fetchJSON } from "../lib/fetch.js";
-import { withFallback } from "../lib/resilient.js";
+import { timeOfDayAverageGW } from "../lib/profile.js";
+import { DEFAULT_STALENESS_THRESHOLD_HOURS, withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 import { unpublishedGenerationRegion } from "../lib/waste-status.js";
 
@@ -89,12 +91,14 @@ export const SEI_TERRITORIES: readonly SeiTerritory[] = [
 const FUEL_ORDER: readonly SeiFuel[] = ["solar", "wind", "hydro"];
 
 /**
- * Rows older than this, measured from the newest row, are dropped. The
- * 24-hour feeds keep the odd orphan row from weeks earlier (seen 2026-11-18:
- * one Réunion row from 2026-10-06, one Martinique row from 2026-10-22); left
- * in, it would be averaged into one hour of the diurnal profile.
+ * The window is the unbroken run of rows ending at the newest one: walking
+ * back, the first gap longer than this ends it. The 24-hour feeds keep the
+ * odd orphan row from days or weeks earlier (seen 2026-11-18: one Réunion
+ * row from 2026-10-06, one Martinique row from 2026-10-22); left in, it
+ * would be averaged into one hour of the diurnal profile. The feeds step at
+ * 5 to 30 minutes, so six hours is a real break, not a missed reading.
  */
-const MAX_WINDOW_DAYS = 15;
+const MAX_GAP_HOURS = 6;
 /** Every UTC hour must be present, or the missing hour would read as 0 GW. */
 const REQUIRED_UTC_HOURS = 24;
 /** More rows than any feed holds (Corsica: ~1,344), in one page. */
@@ -164,11 +168,10 @@ export function parseSeiRows(t: SeiTerritory, rows: SeiRow[]): SeiSeries {
   }
   if (byTs.size === 0) throw new Error(`EDF SEI ${t.label}: no usable rows`);
 
-  const newest = Math.max(...byTs.keys());
-  const cutoff = newest - MAX_WINDOW_DAYS * 86_400_000;
-  const kept = Array.from(byTs.entries())
-    .filter(([ms]) => ms >= cutoff)
-    .sort(([a], [b]) => a - b);
+  const sorted = Array.from(byTs.entries()).sort(([a], [b]) => a - b);
+  let start = sorted.length - 1;
+  while (start > 0 && sorted[start][0] - sorted[start - 1][0] <= MAX_GAP_HOURS * 3_600_000) start--;
+  const kept = sorted.slice(start);
 
   const stepHours = medianStepHours(kept.map(([ms]) => ms));
   const points: CurtailmentPoint[] = kept.map(([ms, values]) => ({
@@ -188,14 +191,10 @@ export function parseSeiRows(t: SeiTerritory, rows: SeiRow[]): SeiSeries {
   // generationProfile gets, so the fuel figures in the note add up to it.
   const meanMwByFuel: Partial<Record<SeiFuel, number>> = {};
   for (const fuel of fuels) {
-    const sums = new Array(24).fill(0);
-    const counts = new Array(24).fill(0);
-    for (const [ms, values] of kept) {
-      const h = new Date(ms).getUTCHours();
-      sums[h] += values[fuel] ?? 0;
-      counts[h] += 1;
-    }
-    meanMwByFuel[fuel] = sums.reduce((acc, s, h) => acc + s / counts[h], 0) / 24;
+    const hourly = timeOfDayAverageGW(
+      kept.map(([ms, values]) => ({ utcTimestamp: new Date(ms).toISOString(), mw: values[fuel] ?? 0 })),
+    );
+    meanMwByFuel[fuel] = (hourly.reduce((sum, gw) => sum + gw, 0) / 24) * 1000;
   }
 
   return {
@@ -232,9 +231,28 @@ export function seiSourceNote(t: SeiTerritory, series: SeiSeries): string {
   );
 }
 
-export function buildSeiRegion(t: SeiTerritory, rows: SeiRow[]): RegionData {
+/**
+ * `fuelShare` here is the split of observed generation, not of waste (waste
+ * is zero). It is what `fuel.ts` reads for a `kind: "mixed"` region; without
+ * it every island would fall into the unsplit-mixed hydro bucket.
+ */
+function observedFuelShare(series: SeiSeries): RegionData["fuelShare"] | undefined {
+  const entries = Object.entries(series.meanMwByFuel) as [SeiFuel, number][];
+  const total = entries.reduce((sum, [, mw]) => sum + mw, 0);
+  if (!(total > 0)) return undefined;
+  return Object.fromEntries(entries.map(([fuel, mw]) => [fuel, mw / total]));
+}
+
+export function buildSeiRegion(t: SeiTerritory, rows: SeiRow[], now: Date = new Date()): RegionData {
   const series = parseSeiRows(t, rows);
-  return unpublishedGenerationRegion(t.regionId, "mixed", series.points, seiSourceNote(t, series));
+  const region = unpublishedGenerationRegion(t.regionId, "mixed", series.points, seiSourceNote(t, series));
+  const fuelShare = observedFuelShare(series);
+  if (fuelShare) region.fuelShare = fuelShare;
+  // A feed that has stopped updating still parses. withFallback keeps a
+  // "degraded" stamp, so say so rather than pass an old window off as current.
+  const ageHours = (now.getTime() - Date.parse(region.lastUpdated)) / 3_600_000;
+  if (ageHours > DEFAULT_STALENESS_THRESHOLD_HOURS) region.sourceStatus = "degraded";
+  return region;
 }
 
 async function fetchTerritory(t: SeiTerritory): Promise<RegionData> {
