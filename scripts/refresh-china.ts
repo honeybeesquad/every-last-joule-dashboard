@@ -123,11 +123,15 @@ function parseUtilisation(raw: string, where: string): number | null {
 
 /** Parse the committed bulletin CSV. Throws on any malformed row rather than letting NaN through. */
 export function parseBulletinCsv(text: string): BulletinRow[] {
+  const seen = new Map<string, number>();
   return parseDelimitedRows(text).map((r, i) => {
     const where = `row ${i + 2} (${r.province_zh} ${r.period} ${r.basis})`;
     if (!r.province_zh) throw new Error(`bulletin CSV ${where}: missing province_zh`);
     if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(r.period ?? "")) throw new Error(`bulletin CSV ${where}: period must be YYYY-MM`);
     if (r.basis !== "monthly" && r.basis !== "ytd") throw new Error(`bulletin CSV ${where}: basis must be "monthly" or "ytd"`);
+    const key = `${r.province_zh}|${r.period}|${r.basis}`;
+    if (seen.has(key)) throw new Error(`bulletin CSV ${where}: duplicates row ${seen.get(key)} (edit the existing row instead of appending a correction)`);
+    seen.set(key, i + 2);
     return {
       provinceZh: r.province_zh,
       period: r.period,
@@ -281,12 +285,7 @@ export function buildAnchors(
     list.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
     const window = list.slice(0, 12);
     const annualGen = window.reduce((s, r) => s + r.generationTWh, 0);
-    let regionId: string;
-    try {
-      regionId = regionIdFor(province, fuel);
-    } catch {
-      continue;
-    }
+    const regionId = regionIdFor(province, fuel); // wired provinces are always mapped; throws loudly otherwise
     const rateText = floored
       ? `${(RATE_FLOOR * 100).toFixed(2)}% floor (published utilisation ~100%)`
       : `${(rate * 100).toFixed(1)}%`;

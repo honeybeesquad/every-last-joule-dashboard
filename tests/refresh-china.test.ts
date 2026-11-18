@@ -92,6 +92,11 @@ describe("refresh-china parseBulletinCsv", () => {
     expect(() => parseBulletinCsv(row("90", "2026-03", "annual"))).toThrow(/basis/);
   });
 
+  it("rejects a duplicate province/period/basis row instead of letting the first win", () => {
+    const dup = [BULLETINS, "新疆,Xinjiang,2026-03,ytd,2026-01..2026-03,87.0,85.0,2026-05-08,u,i,corrected"].join("\n");
+    expect(() => parseBulletinCsv(dup)).toThrow(/duplicates row 4/);
+  });
+
   it("keeps a blank cell as an explicit gap (null)", () => {
     expect(parseBulletinCsv(BULLETINS).find((r) => r.provinceZh === "新疆" && r.period === "2026-03")!.solar).toBeNull();
   });
