@@ -102,7 +102,7 @@ export const buildYukonData = () => run();
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  withFallback(REGION_ID, () => run())
+  withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => { console.error("yukon loader failed", err); process.exit(1); });
 }

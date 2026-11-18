@@ -407,7 +407,8 @@ const regionData = {
   yukon: feeds.yukon,
   mongolia: feeds.mongolia,
   "british-columbia": feeds.britishColumbia,
-  quebec: feeds.quebec,
+  quebec: feeds.quebec.hydro,
+  "quebec-wind": feeds.quebec.wind,
   manitoba: feeds.manitoba,
   saskatchewan: feeds.saskatchewan,
   colombia: feeds.colombia,
@@ -462,6 +463,7 @@ const regionData = {
   ...feeds.statics,
   ...feeds.philippines,
   ...feeds.dominican,
+  ...feeds.spainIslands,
   "india-grid-india": feeds.indiaGridIndia,
 };
 

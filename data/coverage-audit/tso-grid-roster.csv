@@ -394,7 +394,8 @@ Parana Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-pr-solar,Existing liv
 Rio Grande do Sul Wind,BRA,wind,live-tso,,legacy-unspecified,brazil-rs-wind,Existing live waste or Path-B generation×rate.
 Rio Grande do Sul Solar,BRA,solar,live-tso,,legacy-unspecified,brazil-rs-solar,Existing live waste or Path-B generation×rate.
 British Columbia,CAN,hydro,not-collecting,statics,unpublished,british-columbia,Country/T3 stub — Ember/IRENA is not TSO collection.
-Quebec,CAN,hydro,not-collecting,statics,unpublished,quebec,Country/T3 stub — Ember/IRENA is not TSO collection.
+Quebec,CAN,hydro,live-tso,quebec,unpublished,quebec,TSO generation collected; waste unpublished.
+Quebec Wind,CAN,wind,live-tso,quebec,unpublished,quebec-wind,TSO generation collected; waste unpublished.
 Manitoba,CAN,mixed,not-collecting,statics,unpublished,manitoba,Country/T3 stub — Ember/IRENA is not TSO collection.
 Saskatchewan,CAN,wind,not-collecting,saskatchewan,unpublished,saskatchewan,"SaskPower dashboard JSON is one by-fuel MW snapshot per day, no history. The loader's probe always falls through to a typical wind shape anchored at an uncited ~0.15 TWh/yr."
 Hawaii (Oahu),USA,solar,not-collecting,,unpublished,hawaii-oahu,Authoritative operator exists; live path not producing usable waste.
@@ -540,10 +541,13 @@ Guadeloupe,GLP,solar,no-public-series,tso-grid-markers,unpublished,guadeloupe,Gr
 New Caledonia,NCL,solar,no-public-series,tso-grid-markers,unpublished,new-caledonia,Grid present; no public ops series wired.
 French Polynesia,PYF,solar,no-public-series,tso-grid-markers,unpublished,french-polynesia,Grid present; no public ops series wired.
 Wallis and Futuna,WLF,solar,no-public-series,tso-grid-markers,unpublished,wallis-and-futuna,Grid present; no public ops series wired.
+Canary Islands Wind,ESP,wind,live-tso,spainIslands,unpublished,canary-islands-wind,"REE REData daily generation by technology, token-free. Daily totals only — no hourly series, so the 24-hour shape is not measured. Waste unpublished and no mainland rate applied. Measured island curtailment may sit in ESIOS behind ESIOS_API_TOKEN; the indicator list answers 403 without one, so that is unchecked."
+Canary Islands Solar,ESP,solar,live-tso,spainIslands,unpublished,canary-islands-solar,"REE REData daily generation by technology, token-free. Daily totals only — no hourly series, so the 24-hour shape is not measured. Waste unpublished and no mainland rate applied. Measured island curtailment may sit in ESIOS behind ESIOS_API_TOKEN; the indicator list answers 403 without one, so that is unchecked."
+Balearic Islands Solar,ESP,solar,live-tso,spainIslands,unpublished,balearic-islands-solar,"REE REData daily generation by technology, token-free. Daily totals only — no hourly series, so the 24-hour shape is not measured. Waste unpublished and no mainland rate applied. Measured island curtailment may sit in ESIOS behind ESIOS_API_TOKEN; the indicator list answers 403 without one, so that is unchecked."
 Qatar (Kahramaa),QAT,solar,no-public-series,tso-grid-markers,unpublished,qatar,Grid present; no public ops series wired.
 Kuwait (MEW),KWT,solar,no-public-series,tso-grid-markers,unpublished,kuwait,Grid present; no public ops series wired.
 Grid-India,IND,solar,relay-tso,india-grid-india,unpublished,india-grid-india,Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones.
-REE ESIOS,ESP,"wind,solar",not-collecting,spain-esios,unpublished,spain-wind;spain-solar,Parser shipped. Returns {} without ESIOS_API_TOKEN. Does not overwrite ENTSO T1a Spain. Indicator 704 is mixed-fuel — no invented split.
+REE ESIOS,ESP,"wind,solar",not-collecting,spain-esios,unpublished,spain-wind;spain-solar,Parser shipped. Returns {} without ESIOS_API_TOKEN. Does not overwrite ENTSO T1a Spain. Indicator 704 is mixed-fuel — no invented split. The token may also unlock measured curtailment for the Canary and Balearic systems (unchecked: the indicator list needs it).
 KPX,KOR,"wind,solar",not-collecting,southKorea,unpublished,south-korea-wind;south-korea-solar,PvAmountByLocHr parser behind DATA_GO_KR_SERVICE_KEY. Ember×rate until the key is issued. Wind stays Ember until a KPX wind series exists.
 OC SENI,DOM,mixed,live-tso,dominican,unpublished,dominican-republic;dominican-republic-wind,"GetGeneracionReprogramadaJSon GENERACION MW is total system, not VRE waste. Generation collected."
 Noga / IEC,ISR,solar,not-collecting,israel,unpublished,israel,noga-iso.co.il 403 from this IP. PUA literature waste kept until a Noga series exists.

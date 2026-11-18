@@ -65,8 +65,16 @@ const LIVE_UNPUBLISHED_GEN = new Set([
   "philippines-wind",
   "dominican-republic",
   "dominican-republic-wind",
+  "quebec",
+  "quebec-wind",
 ]);
 
+/** REE REData daily generation for Spain's island systems (spain-islands.json.ts). */
+const SPAIN_ISLANDS = new Set([
+  "canary-islands-wind",
+  "canary-islands-solar",
+  "balearic-islands-solar",
+]);
 /**
  * Per-region corrections from the 2026-11-18 probe
  * (`docs/research/2026-11-18-no-public-series-probe.md`). These regions were
@@ -86,7 +94,7 @@ const PROBE_2026_11_18: Record<string, Partial<Pick<TsoGridRosterRow, "collectSt
 
 /** Operators with no dashboard region, or honesty overlays. */
 const EXTRA_OPERATORS: TsoGridRosterRow[] = [
-  { operator: "REE ESIOS", iso3: "ESP", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "spain-esios", wasteStatus: "unpublished", regionIds: "spain-wind;spain-solar", notes: "Parser shipped. Returns {} without ESIOS_API_TOKEN. Does not overwrite ENTSO T1a Spain. Indicator 704 is mixed-fuel — no invented split." },
+  { operator: "REE ESIOS", iso3: "ESP", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "spain-esios", wasteStatus: "unpublished", regionIds: "spain-wind;spain-solar", notes: "Parser shipped. Returns {} without ESIOS_API_TOKEN. Does not overwrite ENTSO T1a Spain. Indicator 704 is mixed-fuel — no invented split. The token may also unlock measured curtailment for the Canary and Balearic systems (unchecked: the indicator list needs it)." },
   { operator: "KPX", iso3: "KOR", fuels: "wind,solar", collectStatus: "not-collecting", loaderKey: "southKorea", wasteStatus: "unpublished", regionIds: "south-korea-wind;south-korea-solar", notes: "PvAmountByLocHr parser behind DATA_GO_KR_SERVICE_KEY. Ember×rate until the key is issued. Wind stays Ember until a KPX wind series exists." },
   { operator: "OC SENI", iso3: "DOM", fuels: "mixed", collectStatus: "live-tso", loaderKey: "dominican", wasteStatus: "unpublished", regionIds: "dominican-republic;dominican-republic-wind", notes: "GetGeneracionReprogramadaJSon GENERACION MW is total system, not VRE waste. Generation collected." },
   { operator: "Noga / IEC", iso3: "ISR", fuels: "solar", collectStatus: "not-collecting", loaderKey: "israel", wasteStatus: "unpublished", regionIds: "israel", notes: "noga-iso.co.il 403 from this IP. PUA literature waste kept until a Noga series exists." },
@@ -144,12 +152,17 @@ function classify(id: string, tier: string, provenance: string | undefined): Pic
             : "argentina";
     return { collectStatus: "relay-tso", loaderKey, wasteStatus: "unpublished", notes: "Relay CSV / geoblocked live path. Waste unpublished unless operator publishes restricciones." };
   }
+  if (SPAIN_ISLANDS.has(id)) {
+    return { collectStatus: "live-tso", loaderKey: "spainIslands", wasteStatus: "unpublished", notes: "REE REData daily generation by technology, token-free. Daily totals only — no hourly series, so the 24-hour shape is not measured. Waste unpublished and no mainland rate applied. Measured island curtailment may sit in ESIOS behind ESIOS_API_TOKEN; the indicator list answers 403 without one, so that is unchecked." };
+  }
   if (LIVE_UNPUBLISHED_GEN.has(id)) {
     const loaderKey = id.startsWith("philippines")
       ? "philippines"
       : id.startsWith("dominican")
         ? "dominican"
-        : id;
+        : id.startsWith("quebec")
+          ? "quebec"
+          : id;
     return { collectStatus: "live-tso", loaderKey, wasteStatus: "unpublished", notes: "TSO generation collected; waste unpublished." };
   }
   if (tier === "live" || tier === "live-domestic-anchored" || tier === "live-neighbour-anchored") {

@@ -30,8 +30,12 @@ const BASE_URL = "https://wl12.amm.org.gt/GraficaPW/graficaCombustible";
 /** Guatemala is a flat UTC−6 with no daylight saving. */
 const GT_OFFSET_HOURS = -6;
 
-/** Days requested: the 30 complete local days before today. */
-const WINDOW_DAYS = 30;
+/**
+ * Days requested: the 14 complete local days before today. Past days do not
+ * change, so a longer window only adds requests and deadline risk; the
+ * 30-day figure is the window's mean day × 30.
+ */
+const WINDOW_DAYS = 14;
 
 /** Fewer complete days than this and the window is not worth trusting. */
 const MIN_DAYS = 7;
@@ -43,6 +47,13 @@ const MIN_DAYS = 7;
  * up a demand or total row, not solar.
  */
 const MAX_PLAUSIBLE_SOLAR_MW = 1500;
+
+/**
+ * Night-time readings a little below zero are plant auxiliary load and are
+ * clamped to zero. Anything more negative than this is a sign flip or a
+ * corrupt value, and fails the whole run (last-good is served).
+ */
+const MAX_AUX_LOAD_MW = 25;
 
 export interface AmmRow {
   hora: string | number;
@@ -88,19 +99,37 @@ export function parseAmmDay(localDay: string, rows: unknown): CurtailmentPoint[]
   if (!Array.isArray(rows)) throw new Error(`guatemala ${localDay}: payload is not an array`);
   if (rows.length === 0) return [];
   const byHour = new Map<number, number>();
+  let solarRows = 0;
+  const seenHours = new Set<number>();
   for (const row of rows as AmmRow[]) {
     if (normaliseTipo(row?.tipo) !== "IRRADIACION") continue;
+    solarRows++;
     const hourEnding = Number(row.hora);
-    const mw = Number(row.potencia);
     if (!Number.isInteger(hourEnding) || hourEnding < 1 || hourEnding > 24) {
       throw new Error(`guatemala ${localDay}: bad hora ${String(row.hora)}`);
     }
-    if (!Number.isFinite(mw) || mw < 0) continue;
+    if (seenHours.has(hourEnding)) {
+      throw new Error(`guatemala ${localDay}: two solar rows for hour ${hourEnding}`);
+    }
+    seenHours.add(hourEnding);
+    // null / blank is missing data, not zero (Number(null) would be 0).
+    if (row.potencia === null || row.potencia === undefined || String(row.potencia).trim() === "") continue;
+    const raw = Number(row.potencia);
+    if (!Number.isFinite(raw)) {
+      throw new Error(`guatemala ${localDay}: unparseable solar potencia ${JSON.stringify(row.potencia)} at hour ${hourEnding}`);
+    }
+    if (raw < -MAX_AUX_LOAD_MW) {
+      throw new Error(`guatemala ${localDay}: solar ${raw} MW at hour ${hourEnding} is below -${MAX_AUX_LOAD_MW} MW`);
+    }
+    // Small negatives are plant auxiliary load at night: no solar output.
+    const mw = Math.max(0, raw);
     if (mw > MAX_PLAUSIBLE_SOLAR_MW) {
       throw new Error(`guatemala ${localDay}: solar ${mw} MW exceeds ${MAX_PLAUSIBLE_SOLAR_MW} MW ceiling`);
     }
     byHour.set(hourEnding, mw);
   }
+  // A non-empty day with no solar row at all means the label changed.
+  if (solarRows === 0) throw new Error(`guatemala ${localDay}: no IRRADIACIÓN rows in a non-empty day`);
   if (byHour.size < 24) return [];
   const [y, m, d] = localDay.split("-").map(Number);
   const points: CurtailmentPoint[] = [];
@@ -123,16 +152,31 @@ export function buildGuatemalaRegion(daily: CurtailmentPoint[][], localDays?: st
     `AMM hourly solar generation (IRRADIACIÓN), ${complete.length} complete days ` +
     (completeDays.length ? `${completeDays[0]} → ${completeDays.at(-1)} (Guatemala time). ` : "") +
     "Waste unpublished: AMM publishes generation, not curtailment.";
-  return unpublishedGenerationRegion(REGION_ID, "solar", points, note);
+  const region = unpublishedGenerationRegion(REGION_ID, "solar", points, note);
+  // The helper sums points when they span ≥25 days, which would count any
+  // skipped day as zero. Use the mean complete day × 30 instead.
+  const meanDayMWh = points.reduce((sum, p) => sum + p.mw * (p.intervalHours ?? 1), 0) / complete.length;
+  return { ...region, generationTotalTWh: (meanDayMWh * 30) / 1_000_000 };
 }
+
+/**
+ * A single non-JSON body (a truncated response, a one-off HTML challenge
+ * page) is skipped like a missed download. This many in one run means the
+ * format changed, and the run fails rather than thinning the window.
+ */
+const MAX_NON_JSON_DAYS = 3;
 
 async function run(now = new Date()): Promise<RegionData> {
   const days = windowDays(now);
+  let nonJsonDays = 0;
   const daily = await mapWithConcurrency(days, 4, async (day) => {
     let rows: unknown;
     try {
       rows = await fetchJSON<unknown>(`${BASE_URL}?dt=${ammDateParam(day)}`, { timeoutMs: 20000, retries: 1 });
     } catch (err) {
+      if ((err as Error).name === "SyntaxError" && ++nonJsonDays >= MAX_NON_JSON_DAYS) {
+        throw new Error(`guatemala: ${nonJsonDays} days returned a non-JSON body; format changed? (${(err as Error).message})`);
+      }
       // A day that does not download is skipped; MIN_DAYS guards the window.
       console.warn(`guatemala: ${day} skipped (${(err as Error).message})`);
       return [] as CurtailmentPoint[];
@@ -144,11 +188,11 @@ async function run(now = new Date()): Promise<RegionData> {
   return buildGuatemalaRegion(daily, days);
 }
 
-export const buildGuatemalaData = () => run();
+export const buildGuatemalaData = (now?: Date) => run(now);
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  withFallback(REGION_ID, () => run())
+  withFallback(REGION_ID, () => run(), { regionTier: "estimated" })
     .then((data) => process.stdout.write(JSON.stringify(data)))
     .catch((err) => { console.error("guatemala loader failed", err); process.exit(1); });
 }

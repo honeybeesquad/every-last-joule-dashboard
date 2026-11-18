@@ -1,9 +1,10 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
   ammDateParam,
+  buildGuatemalaData,
   buildGuatemalaRegion,
   normaliseTipo,
   parseAmmDay,
@@ -19,6 +20,7 @@ describe("guatemala: helpers", () => {
   it("matches IRRADIACIÓN with or without the accent", () => {
     expect(normaliseTipo("IRRADIACIÓN")).toBe("IRRADIACION");
     expect(normaliseTipo("IRRADIACIÓN")).toBe("IRRADIACION");
+    expect(normaliseTipo("irradiacion ")).toBe("IRRADIACION");
     expect(normaliseTipo(null)).toBe("");
   });
 
@@ -26,12 +28,12 @@ describe("guatemala: helpers", () => {
     expect(ammDateParam("2026-11-16")).toBe("16/11/2026");
   });
 
-  it("windows the 30 complete local days before today, oldest first", () => {
+  it("windows the 14 complete local days before today, oldest first", () => {
     // 04:00 UTC on the 18th is 22:00 on the 17th in Guatemala.
     const days = windowDays(new Date("2026-11-18T04:00:00Z"));
-    expect(days).toHaveLength(30);
+    expect(days).toHaveLength(14);
     expect(days.at(-1)).toBe("2026-11-16");
-    expect(days[0]).toBe("2026-10-18");
+    expect(days[0]).toBe("2026-11-03");
   });
 });
 
@@ -69,8 +71,51 @@ describe("guatemala: parseAmmDay", () => {
     expect(() => parseAmmDay("2026-11-16", bad)).toThrow(/ceiling/);
   });
 
+  it("treats a null solar value as missing, not zero", () => {
+    const withNull = (FIXTURE as Array<Record<string, unknown>>).map((r) =>
+      normaliseTipo(r.tipo as string) === "IRRADIACION" && r.hora === "12" ? { ...r, potencia: null } : r,
+    );
+    expect(parseAmmDay("2026-11-16", withNull)).toEqual([]);
+  });
+
+  it("clamps a small negative night reading to zero instead of dropping the day", () => {
+    const withNeg = (FIXTURE as Array<Record<string, unknown>>).map((r) =>
+      normaliseTipo(r.tipo as string) === "IRRADIACION" && r.hora === "2" ? { ...r, potencia: -0.3 } : r,
+    );
+    const pts = parseAmmDay("2026-11-16", withNeg);
+    expect(pts).toHaveLength(24);
+    expect(pts[1].mw).toBe(0);
+  });
+
   it("throws on a non-array payload", () => {
     expect(() => parseAmmDay("2026-11-16", { error: "x" })).toThrow(/not an array/);
+  });
+
+  const patchSolar = (hora: string, patch: Record<string, unknown>) =>
+    (FIXTURE as Array<Record<string, unknown>>).map((r) =>
+      normaliseTipo(r.tipo as string) === "IRRADIACION" && r.hora === hora ? { ...r, ...patch } : r,
+    );
+
+  it("throws on a large negative reading instead of clamping it to zero", () => {
+    expect(() => parseAmmDay("2026-11-16", patchSolar("12", { potencia: -300 }))).toThrow(/below -25 MW/);
+  });
+
+  it("throws on an unparseable solar value instead of thinning the window", () => {
+    expect(() => parseAmmDay("2026-11-16", patchSolar("12", { potencia: "433,45" }))).toThrow(/unparseable/);
+  });
+
+  it("throws on two solar rows for the same hour", () => {
+    const solarNoon = (FIXTURE as Array<Record<string, unknown>>).find(
+      (r) => normaliseTipo(r.tipo as string) === "IRRADIACION" && r.hora === "12",
+    );
+    expect(() => parseAmmDay("2026-11-16", [...(FIXTURE as unknown[]), solarNoon])).toThrow(/two solar rows/);
+  });
+
+  it("throws when a non-empty day has no solar rows (label changed)", () => {
+    const relabelled = (FIXTURE as Array<Record<string, unknown>>).map((r) =>
+      normaliseTipo(r.tipo as string) === "IRRADIACION" ? { ...r, tipo: "SOLAR" } : r,
+    );
+    expect(() => parseAmmDay("2026-11-16", relabelled)).toThrow(/no IRRADIACIÓN rows/);
   });
 });
 
@@ -91,7 +136,37 @@ describe("guatemala: buildGuatemalaRegion", () => {
     expect(r.sourceNote).toContain("2026-11-10 → 2026-11-16");
   });
 
+  it("does not count skipped days as zero when the window spans 25+ days", () => {
+    const shifted = (n: number) =>
+      day.map((p) => ({ ...p, utcTimestamp: new Date(Date.parse(p.utcTimestamp) + n * 86_400_000).toISOString() }));
+    // 30-day span with 10 days missing: 20 complete days.
+    const daily = Array.from({ length: 30 }, (_, i) => (i % 3 === 1 ? [] : shifted(i - 29)));
+    const r = buildGuatemalaRegion(daily);
+    const dayMWh = day.reduce((s, p) => s + p.mw, 0);
+    expect(r.generationTotalTWh).toBeCloseTo((dayMWh * 30) / 1_000_000, 9);
+  });
+
   it("throws with fewer than 7 complete days", () => {
     expect(() => buildGuatemalaRegion([day, day, [], []])).toThrow(/complete AMM days/);
+  });
+});
+
+describe("guatemala: run", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+  const NOW = new Date("2026-11-18T04:00:00Z");
+  const html = () => new Response("<html>Request unsuccessful</html>", { status: 200 });
+  const json = () => new Response(JSON.stringify(FIXTURE), { status: 200 });
+
+  it("skips one non-JSON day and serves the rest", async () => {
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => (String(url).includes("dt=10/11/2026") ? html() : json())));
+    const region = await buildGuatemalaData(NOW);
+    expect(region.sourceNote).toMatch(/13 complete days/);
+  });
+
+  it("fails the run when several days return a non-JSON body", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => html()));
+    await expect(buildGuatemalaData(NOW)).rejects.toThrow(/non-JSON body/);
   });
 });

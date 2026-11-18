@@ -38,6 +38,8 @@ Grid-completeness row. Waste is unpublished unless a later loader adds a publish
 
 ## Known limitations
 
+Generation only; waste is unpublished. The page carries 24 hours, so the 30-day figure is that day's profile × 30 and swings with season. The page does not say whether a stamp marks the start or end of its hour; the loader reads it as the end. Yukon Energy also links an hourly per-unit workbook (hydro and thermal, 2020-02 to 2026-01) that a backfill could use.
+
 See `docs/methodology/historical-backfill.md` and STATUS.md TSO-grid completeness.
 
 ## Links
