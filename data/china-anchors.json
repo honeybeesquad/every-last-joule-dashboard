@@ -168,19 +168,19 @@
       "regionId": "inner-mongolia-solar",
       "fuel": "solar",
       "annualGenerationTWh": 79.119,
-      "curtailmentRate": 0.053,
-      "annualTWh": 4.193,
+      "curtailmentRate": 0.063,
+      "annualTWh": 4.984,
       "latestMonth": "2026-06",
-      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 5.3% (transcribed from published utilisation); the rate is 蒙西 (Mengxi)-only and the generation is whole-province, including Mengdong"
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 6.3% (transcribed from published utilisation); the rate is 蒙西 (Mengxi)-only and the generation is whole-province, including Mengdong"
     },
     {
       "regionId": "inner-mongolia-wind",
       "fuel": "wind",
       "annualGenerationTWh": 209.731,
-      "curtailmentRate": 0.046,
-      "annualTWh": 9.648,
+      "curtailmentRate": 0.063,
+      "annualTWh": 13.213,
       "latestMonth": "2026-06",
-      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 4.6% (transcribed from published utilisation); the rate is 蒙西 (Mengxi)-only and the generation is whole-province, including Mengdong"
+      "source": "Ember China subnational generation 2026-06 (trailing 12mo) × NEA 2024 curtailment rate 6.3% (transcribed from published utilisation); the rate is 蒙西 (Mengxi)-only and the generation is whole-province, including Mengdong"
     },
     {
       "regionId": "china-jiangsu-solar",
