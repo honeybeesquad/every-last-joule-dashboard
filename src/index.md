@@ -510,6 +510,8 @@ const regionData = {
   ...feeds.philippines,
   // OC SENI total generation; supersedes IRENA invented waste in statics.
   ...feeds.dominican,
+  // REE REData daily generation for the Canary and Balearic systems. Waste unpublished.
+  ...feeds.spainIslands,
   "india-grid-india": feeds.indiaGridIndia,
 };
 

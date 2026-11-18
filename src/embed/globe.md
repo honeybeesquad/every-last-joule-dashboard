@@ -460,6 +460,7 @@ const regionData = {
   ...feeds.statics,
   ...feeds.philippines,
   ...feeds.dominican,
+  ...feeds.spainIslands,
   "india-grid-india": feeds.indiaGridIndia,
 };
 
