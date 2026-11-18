@@ -18,6 +18,20 @@ export function parseHexToRGB(hex: string): string | null {
   return `${r},${g},${b}`;
 }
 
+/**
+ * "r,g,b" from a CSS colour string as getComputedStyle returns it: "#rrggbb",
+ * "rgb(r, g, b)" or "rgba(r, g, b, a)" (the alpha is dropped). Canvas code
+ * uses it to draw a token's hue at its own alpha, e.g. the timeline's grid in
+ * the hairline hue. Null for anything else.
+ */
+export function cssRGB(value: string): string | null {
+  if (typeof value !== "string") return null;
+  const hex = parseHexToRGB(value);
+  if (hex) return hex;
+  const m = /^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*[\d.]+\s*)?\)$/i.exec(value.trim());
+  return m ? `${m[1]},${m[2]},${m[3]}` : null;
+}
+
 /** Tokens needed by `globe.js`. Strings as they appear in CSS — caller
  *  decides whether to use directly (rgba), parse (hex), or treat as a
  *  linear-gradient sentinel (some themes ship `--night-overlay` as a
@@ -50,6 +64,24 @@ export interface GlobeTokens {
   dotNeutralRGB: string;
   /** "r,g,b" of the brand colour, used for the halo and rim (--brand-rgb). */
   brandRGB: string;
+  /** Page ink (--ink): the selected-region ring, in both modes. */
+  ink: string;
+  /** "r,g,b" the light (engraved) globe draws its line screen, stipple,
+   *  coastline and limb in (--globe-ink-rgb). */
+  inkRGB: string;
+  /** Paper colour: the light globe's land knock-out and needle halos (--globe-paper). */
+  paper: string;
+  /** "r,g,b" of the dark (horizon) globe's atmosphere (--globe-atmosphere-rgb). */
+  atmosphereRGB: string;
+  /** "r,g,b" of the dark globe's land dots (--globe-land-rgb). */
+  landRGB: string;
+  /** "r,g,b" of the dark globe's star field (--globe-star-rgb). */
+  starRGB: string;
+  /** The page ground (--surface-bg-3): the dark globe's sky. */
+  bg: string;
+  /** Beam cores and tip glows in dark (--fuel-<fuel>-tip). "" where a theme
+   *  defines none (the paper figure's), and the caller tints instead. */
+  fuelTips: { solar: string; wind: string; hydro: string };
 }
 
 /** Read all globe-relevant tokens off the document element in one pass. */
@@ -70,5 +102,20 @@ export function readGlobeTokens(rootEl: HTMLElement): GlobeTokens {
     bodyLo:  get("--globe-body-lo")  || "#0c0804",
     dotNeutralRGB: parseHexToRGB(get("--globe-dot-neutral")) ?? "228,220,204",
     brandRGB: (get("--brand-rgb") || "255, 208, 90").replace(/\s+/g, ""),
+    // The redesign's tokens. Fallbacks are the dark (Nightgrid) values. The
+    // paper figure's palette defines none of the four globe-* ones and
+    // never draws with them.
+    ink:           get("--ink") || "#fff8e0",
+    inkRGB:        (get("--globe-ink-rgb") || "255, 248, 224").replace(/\s+/g, ""),
+    paper:         get("--globe-paper") || "#060a11",
+    atmosphereRGB: (get("--globe-atmosphere-rgb") || "120, 170, 235").replace(/\s+/g, ""),
+    landRGB:       (get("--globe-land-rgb") || "207, 214, 223").replace(/\s+/g, ""),
+    starRGB:       (get("--globe-star-rgb") || "255, 248, 224").replace(/\s+/g, ""),
+    bg:            get("--surface-bg-3") || "#060a11",
+    fuelTips: {
+      solar: get("--fuel-solar-tip"),
+      wind:  get("--fuel-wind-tip"),
+      hydro: get("--fuel-hydro-tip"),
+    },
   };
 }

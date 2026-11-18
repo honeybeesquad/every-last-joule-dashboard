@@ -8,7 +8,7 @@
 
 # About
 
-<p class="methodology-deck">An open database of renewable electricity that never reached a customer — curtailed, spilled, or constrained-off. Sourced from grid operators and regulators. Updated every few hours.</p>
+<p class="methodology-deck">An open database of renewable electricity that never reached a customer — curtailed, spilled, or zero-priced. Sourced from grid operators and regulators. Updated every few hours.</p>
 
 </header>
 
@@ -26,6 +26,7 @@ Bitcoin operator and researcher in New Zealand. Runs Stackr. Writes for the Digi
 - **Substack** — *Simon to provide*
 - **Book pre-order** — *TBD*
 - **Contact / corrections** — [simon@collins.nu](mailto:simon@collins.nu)
+- **Privacy** — [what this site collects](./privacy)
 
 ## The dashboard
 
@@ -36,3 +37,9 @@ Treat the totals as a **lower bound**. Operators do not publish self-curtailment
 Each region's loader, calibration rate, seasonal multiplier, and fallback are in source. Rates are anchored to a 2024 figure from the relevant operator or regulator, cited on the methodology page. If a live upstream fails, a committed last-good snapshot is served and the tooltip badge switches from `live` to `cached`.
 
 </div>
+
+```js
+// The site header's mode switch and menu (src/lib/site-header.ts draws it).
+import { mountSiteChrome } from "./components/site-chrome.js";
+const unmountSiteChrome = mountSiteChrome();
+```

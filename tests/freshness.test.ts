@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { relayFreshness, RELAY_STALENESS_THRESHOLD_DAYS } from "../src/lib/freshness.js";
+import {
+  DEPLOY_STALE_AFTER_HOURS,
+  deployFreshness,
+  formatAge,
+  formatUtcStamp,
+  relayFreshness,
+  RELAY_STALENESS_THRESHOLD_DAYS,
+} from "../src/lib/freshness.js";
 
 // Fixed "now" for deterministic tests: 2026-06-07T12:00:00Z
 const NOW = new Date("2026-06-07T12:00:00Z");
@@ -69,5 +76,61 @@ describe("relayFreshness", () => {
     expect(relayFreshness(threeDaysAgo, NOW, 2)).toBe("degraded");
     // With threshold=5, 3 days ago is fresh
     expect(relayFreshness(threeDaysAgo, NOW, 5)).toBe("live");
+  });
+});
+
+describe("deployFreshness", () => {
+  // The frozen deployment: built 24 Sep 04:42 UTC, still served on 27 Sep.
+  const BUILT = "2026-09-24T04:42:46.349Z";
+
+  it("is 26 hours", () => {
+    expect(DEPLOY_STALE_AFTER_HOURS).toBe(26);
+  });
+
+  it("is fresh a few hours after a build", () => {
+    const f = deployFreshness(BUILT, new Date("2026-09-24T09:42:46.349Z"));
+    expect(f.ageHours).toBeCloseTo(5, 6);
+    expect(f.stale).toBe(false);
+  });
+
+  it("is stale past the threshold, not at it", () => {
+    expect(deployFreshness(BUILT, new Date("2026-09-25T06:42:46.349Z")).stale).toBe(false); // exactly 26 h
+    expect(deployFreshness(BUILT, new Date("2026-09-25T06:43:46.349Z")).stale).toBe(true);
+  });
+
+  it("flags the 24–27 Sep freeze", () => {
+    const f = deployFreshness(BUILT, new Date("2026-09-27T16:55:36Z"));
+    expect(f.stale).toBe(true);
+    expect(Math.round(f.ageHours ?? 0)).toBe(84);
+  });
+
+  it("treats a missing or unparseable build time as stale", () => {
+    expect(deployFreshness(undefined, NOW)).toEqual({ ageHours: null, stale: true });
+    expect(deployFreshness("not a date", NOW)).toEqual({ ageHours: null, stale: true });
+  });
+
+  it("clamps a build stamp slightly ahead of the viewer's clock to zero", () => {
+    expect(deployFreshness("2026-06-07T12:05:00Z", NOW)).toEqual({ ageHours: 0, stale: false });
+  });
+});
+
+describe("formatAge", () => {
+  it("rounds down in minutes, hours, then days", () => {
+    expect(formatAge(0)).toBe("1 min ago");
+    expect(formatAge(0.5)).toBe("30 min ago");
+    expect(formatAge(5.9)).toBe("5 h ago");
+    expect(formatAge(47.9)).toBe("47 h ago");
+    expect(formatAge(84.2)).toBe("3 days ago");
+  });
+});
+
+describe("formatUtcStamp", () => {
+  it("formats in UTC whatever the zone", () => {
+    expect(formatUtcStamp("2026-09-24T04:42:46.349Z")).toBe("24 Sep 2026, 04:42 UTC");
+    expect(formatUtcStamp("2026-09-27T20:05:00+13:00")).toBe("27 Sep 2026, 07:05 UTC");
+  });
+
+  it("returns null for an unparseable time", () => {
+    expect(formatUtcStamp("nope")).toBeNull();
   });
 });

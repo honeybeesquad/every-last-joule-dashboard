@@ -35,6 +35,7 @@ const STATIC_PAGES = [
   { path: "/methodology", priority: "0.8", changefreq: "weekly" },
   { path: "/paper", priority: "0.8", changefreq: "weekly" },
   { path: "/about", priority: "0.7", changefreq: "monthly" },
+  { path: "/privacy", priority: "0.3", changefreq: "yearly" },
 ];
 
 function urlEntry({ path, priority, changefreq, lastmod }) {

@@ -1,7 +1,10 @@
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
+import { markStillHtml } from "./scripts/lib/brand-mark.js";
 import { REGIONS } from "./src/lib/regions.js";
+import { datasetVersionFromCitation, siteHeaderHTML } from "./src/lib/site-header.js";
+import { THEME_BOOT_SCRIPT } from "./src/lib/theme-boot.js";
 
 const fontFiles = readdirSync(join("src", "fonts"))
   .filter((file) => file.endsWith(".ttf") || file.endsWith(".woff2"))
@@ -22,11 +25,12 @@ const OG_IMAGE = `${SITE_URL}/og-image.png`;
 const OG_TITLE = "Every Last Joule";
 // Derived from the roster, never hardcoded: this string said "459 grid
 // regions" for as long as the roster happened to be 459 long. The count is a
-// COVERAGE claim ("grids tracked"), not a waste claim — some of those grids
-// publish no waste at all, which is why the dashboard's own lead copy counts
-// published-waste regions instead (src/lib/waste-status.ts).
+// COVERAGE claim ("regions tracked"), not a waste claim — some of those
+// regions publish no waste at all, which is why the dashboard's lead copy says
+// "across N of the M regions we track": N counts published-waste regions only
+// (src/lib/waste-status.ts), M is this same REGIONS.length.
 const OG_DESCRIPTION =
-  `Curtailed, spilled and constrained-off renewable electricity, from grid operators and regulators across ${REGIONS.length} grids. How much of Bitcoin's hashrate that waste could cover.`;
+  `Curtailed, spilled, or zero-priced renewable electricity, from grid operators and regulators across ${REGIONS.length} tracked regions. How much of Bitcoin's hashrate that waste could cover.`;
 
 const socialMeta = [
   `<meta name="description" content="${OG_DESCRIPTION}">`,
@@ -43,6 +47,18 @@ const socialMeta = [
   `<meta name="twitter:description" content="${OG_DESCRIPTION}">`,
   `<meta name="twitter:image" content="${OG_IMAGE}">`,
 ].join("");
+
+// The doc pages' header (redesign plan, section 0: the other pages "get the
+// new header"): built here so it is in each page's HTML before any script
+// runs. The dashboard draws its own (its mark is a generated block in
+// src/index.md), and the paper figure (/embed/) has none. The DOI pill reads
+// dataset/CITATION.cff; the dashboard's reads the Zenodo loader.
+const DATASET_VERSION = datasetVersionFromCitation(readFileSync(join("dataset", "CITATION.cff"), "utf8"));
+const HEADER_MARK = markStillHtml(30);
+const pageHeader = ({ path }: { path: string }) =>
+  path === "/" || path === "/index" || path.startsWith("/embed/")
+    ? null
+    : siteHeaderHTML({ path, dataset: DATASET_VERSION, markSvg: HEADER_MARK });
 
 export default {
   title: "Every Last Joule",
@@ -81,13 +97,21 @@ export default {
   // disables pinch-zoom — bad for accessibility and mobile readability.
   // We emit our own viewport tag later in the head to override it.
   //
-  // The inline boot script must appear before style.css (which contains the
-  // [data-theme] rules) to prevent a flash of unstyled/wrong-theme content.
-  // Observable Framework hoists front-matter scripts in src/index.md to
-  // after stylesheets, so the head config is the only place we can
-  // guarantee script-before-CSS ordering.
-  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<script>(function(){try{var t=localStorage.getItem("elj-theme");if(t!=="sunfire"&&t!=="deepcurrent")t="sunfire";document.documentElement.setAttribute("data-theme",t);}catch(e){document.documentElement.setAttribute("data-theme","sunfire");}}());</script><link rel="stylesheet" href="./style.css"><script>(function(){var s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);})();</script>`,
+  // The inline boot script picks light or dark (src/lib/theme-boot.ts) and
+  // must appear before style.css (which contains the [data-theme] rules) to
+  // prevent a flash of the wrong mode. Observable Framework hoists
+  // front-matter scripts in src/index.md to after stylesheets, so the head
+  // config is the only place we can guarantee script-before-CSS ordering.
+  head: `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">${socialMeta}<script>${THEME_BOOT_SCRIPT}</script><link rel="stylesheet" href="./style.css"><script>(function(){var s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);})();</script>`,
   theme: "dark",
+  // Left unset, Framework adds a Google Fonts stylesheet for Source Serif 4
+  // (plus a preconnect to fonts.gstatic.com) to every page, so each visit
+  // sent the visitor's IP address to Google. No page renders in that face:
+  // Framework's `body { font: … var(--serif) }` is its only use, and
+  // src/style.css sets body's font-family to the self-hosted faces in
+  // src/fonts. Keep this empty; add faces there, never from a font CDN.
+  globalStylesheets: [],
+  header: pageHeader,
   footer: "",
   toc: false,
   sidebar: false

@@ -46,24 +46,29 @@ describe("finalizeRegionData", () => {
     expect(errorSpy).toHaveBeenCalled();
   });
 
-  it("masks solar regions at night but leaves non-solar profiles untouched", () => {
+  it("masks a peaked solar profile at night and leaves a flat solar profile alone", () => {
+    const peaked = Array.from({ length: 24 }, (_, hour) => (hour >= 8 && hour <= 16 ? 2 : 0.2));
+    const flat = new Array(24).fill(2);
     const regions = [
       mkRegion({ id: "sun", kind: "solar", tier: "estimated", lon: 0 }),
+      mkRegion({ id: "flat", kind: "solar", tier: "anchored", lon: 70 }),
       mkRegion({ id: "wnd", kind: "wind", tier: "estimated", lon: 0 }),
     ];
     const regionData: Record<string, RegionData> = {
-      sun: mkData({ regionId: "sun", profile: new Array(24).fill(2), peakGW: 2 }),
-      wnd: mkData({ regionId: "wnd", profile: new Array(24).fill(2), peakGW: 2 }),
+      sun: mkData({ regionId: "sun", profile: peaked, peakGW: 2 }),
+      flat: mkData({ regionId: "flat", profile: [...flat], peakGW: 2 }),
+      wnd: mkData({ regionId: "wnd", profile: [...flat], peakGW: 2 }),
     };
 
     finalizeRegionData(regionData, regions);
 
-    // Solar: some night hours zeroed; profile no longer all-2.
     expect(regionData.sun.profile.some((v) => v === 0)).toBe(true);
-    expect(regionData.sun.profile).not.toEqual(new Array(24).fill(2));
+    expect(regionData.sun.profile).not.toEqual(peaked);
     expect(regionData.sun.peakGW).toBe(Math.max(...regionData.sun.profile));
-    // Wind: untouched by solar masking.
-    expect(regionData.wnd.profile).toEqual(new Array(24).fill(2));
+    // Uniform profile: the loader has energy and no hours. Do not invent a solar day.
+    expect(regionData.flat.profile).toEqual(flat);
+    expect(regionData.flat.peakGW).toBe(2);
+    expect(regionData.wnd.profile).toEqual(flat);
   });
 
   it("back-fills a missing confidenceTier from regionTier", () => {

@@ -1,35 +1,17 @@
 /* =========================================================================
-   STACKED — COLORS & TYPE
-   Your Bitcoin — Stacked.
+   EVERY LAST JOULE — tokens, type and layout
    ========================================================================= */
 
-/* ---------- Fonts ---------- */
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-Thin.ttf") format("truetype");         font-weight: 100; font-style: normal; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-ThinItalic.ttf") format("truetype");   font-weight: 100; font-style: italic; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-XLight.ttf") format("truetype");       font-weight: 200; font-style: normal; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-XLightItalic.ttf") format("truetype"); font-weight: 200; font-style: italic; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-Light.ttf") format("truetype");        font-weight: 300; font-style: normal; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-LightItalic.ttf") format("truetype");  font-weight: 300; font-style: italic; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-Book.ttf") format("truetype");         font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-BookItalic.ttf") format("truetype");   font-weight: 400; font-style: italic; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-Medium.ttf") format("truetype");       font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-MediumItalic.ttf") format("truetype"); font-weight: 500; font-style: italic; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-Bold.ttf") format("truetype");         font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-BoldItalic.ttf") format("truetype");   font-weight: 700; font-style: italic; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-Black.ttf") format("truetype");        font-weight: 800; font-style: normal; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-BlackItalic.ttf") format("truetype");  font-weight: 800; font-style: italic; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-Ultra.ttf") format("truetype");        font-weight: 900; font-style: normal; font-display: swap; }
-@font-face { font-family: "Gotham"; src: url("/fonts/Gotham-UltraItalic.ttf") format("truetype");  font-weight: 900; font-style: italic; font-display: swap; }
-
 /* ---------- Theme system fonts (woff2, self-hosted, OFL) ---------- */
-/* Schibsted Grotesk — the brand face from the mark work (the lockup on the
-   Pair board: 700, -0.01em, mixed case, "Joule" in gold). One variable file,
-   latin subset; the axis runs 400–900, which is why --fw-black (800) renders
-   rather than clamping. Every region name in regions.ts is inside latin-1,
-   so no latin-ext file is needed. This is now the site face: both themes
-   point --font-display and --font-body at it. */
+/* Schibsted Grotesk and IBM Plex Mono — the brand system's two faces, in both
+   modes (2026-09-24). Schibsted Grotesk is display and body (one variable
+   file, roman only: nothing on the site sets it in italic); IBM Plex Mono 500
+   is tabular figures and labels. Logged in src/fonts/SOURCES.md. */
 @font-face { font-family: "Schibsted Grotesk"; src: url("/fonts/SchibstedGrotesk-Variable.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono";     src: url("/fonts/IBMPlexMono-Medium.woff2")       format("woff2"); font-weight: 500;     font-style: normal; font-display: swap; }
 
+/* Fraunces and Inter: the paper figure's faces (src/embed/globe.md sets
+   both). Nothing else on the site loads them. */
 @font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-Regular.woff2")     format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-SemiBold.woff2")    format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
 @font-face { font-family: "Fraunces";        src: url("/fonts/Fraunces-ExtraBold.woff2")   format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
@@ -38,24 +20,17 @@
 @font-face { font-family: "Inter";           src: url("/fonts/Inter-Medium.woff2")         format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
 @font-face { font-family: "Inter";           src: url("/fonts/Inter-Bold.woff2")           format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
 
-@font-face { font-family: "IBM Plex Sans";   src: url("/fonts/IBMPlexSans-Regular.woff2")  format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "IBM Plex Sans";   src: url("/fonts/IBMPlexSans-Medium.woff2")   format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "IBM Plex Sans";   src: url("/fonts/IBMPlexSans-Bold.woff2")     format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-
-@font-face { font-family: "IBM Plex Mono";   src: url("/fonts/IBMPlexMono-Medium.woff2")   format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
-
 /* =========================================================================
-   THEME SYSTEM — three data-theme blocks. Sunfire is the default.
-   Tokens shared across themes (spacing, radii, type scale, motion) live in :root.
-   Per-theme tokens (colour, fonts, weight/letter-spacing baselines) live in
-   :root[data-theme="<name>"] blocks below.
+   THEME SYSTEM — two modes, light and dark, as data-theme blocks.
+   Tokens shared across modes (spacing, radii, type scale, motion) live in :root.
+   Per-mode tokens (colour, fonts, weight/letter-spacing baselines) live in
+   :root[data-theme="light"] and :root[data-theme="dark"] below. Every colour a
+   rule paints comes from a token; tests/style-colour-literals.test.ts fails on
+   a colour literal anywhere else in this sheet.
    ========================================================================= */
 
 :root {
   /* ============ TYPE SCALE (theme-invariant) ============ */
-  --fs-display-xl: clamp(56px, 8vw, 112px);
-  --fs-display-lg: clamp(44px, 6vw, 80px);
-  --fs-display:    clamp(36px, 4.5vw, 60px);
   --fs-h1:         44px;
   --fs-h2:         32px;
   --fs-h3:         24px;
@@ -67,7 +42,6 @@
   --fs-micro:      11px;
 
   --lh-tight: 1.02;
-  --lh-display: 1.05;
   --lh-heading: 1.15;
   --lh-body: 1.55;
   --lh-ui: 1.3;
@@ -78,13 +52,11 @@
   --ls-caps: 0.12em;
 
   /* ============ ACCENT (theme-invariant) ============ */
-  /* Bitcoin-orange accent used by .mode-btn-active border/text and the
-     rgba(247,147,26,…) background on the same element. Single source of
-     truth so the active mode toggle renders correctly. */
+  /* Bitcoin orange. Now only the base of --quality-warning below. */
   --amber-500: #f7931a;
   /* Stale-feed (degraded) alarm ring on globe pillars + the legend swatch.
-     Amber reads as "caution" against both dark themes; inherits to both
-     since it lives in the base :root. */
+     Amber reads as "caution" on the dark ground (8.8:1). It is 2.0:1 on
+     paper, under the 3:1 a ring needs, so the light block overrides it. */
   --quality-warning: var(--amber-500);
 
   /* ============ SPACING ============ */
@@ -141,7 +113,223 @@
   --fw-ultra: 900;
 }
 
-:root[data-theme="sunfire"] {
+/* =========================================================================
+   LIGHT (Almanac layout, Daylight palette) and DARK (Horizon layout,
+   Nightgrid palette) — the site's two modes.
+
+   data-theme="light" | "dark" on <html> selects the palette. The boot script
+   in observablehq.config.ts (src/lib/theme-boot.ts) sets it before this sheet
+   loads: a stored choice wins (a value the old theme picker stored maps to
+   dark), and a first visit gets dark, whatever the OS prefers.
+
+   Token NAMES are the ones every rule already reads; tokens the redesign adds
+   are marked NEW. The layouts are the light/dark redesign's (2026-09-23). The
+   colours are the Nightgrid + Daylight pair and the type is the brand system's
+   Schibsted Grotesk and IBM Plex Mono (2026-09-24). The WCAG pairs are pinned
+   by tests/theme-contrast.test.ts, which computes them from these values.
+   ========================================================================= */
+
+:root {
+  /* NEW, theme-invariant */
+  --ls-label: 0.08em;                 /* mono uppercase labels, both modes */
+  --fs-label: 11px;
+  /* --quality-warning (#f7931a via --amber-500) stays in the base :root; light overrides it. */
+}
+
+/* ------------------------------------------------------------------ LIGHT · Almanac layout, Daylight palette */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* brand: a deep gold that carries small text on paper (5.2:1). Full gold
+     (#ffd05a) is 1.3:1 on paper, so it never appears as text or a rule here. */
+  --brand:               #8a5a00;
+  --brand-strong:        #6e4700;
+  --brand-subtle:        rgba(138, 90, 0, 0.10);
+  --brand-rgb:           138, 90, 0;
+  --brand-on:            #fffbf0;
+  --brand-text:          var(--brand);  /* NEW: accent that has to carry small text (links, eyebrows) */
+
+  /* surfaces: warm paper; hierarchy still comes from rules, not fills */
+  --surface-bg-1:        #ece2c8;       /* wells: slider track, skeletons */
+  --surface-bg-2:        #fffbf0;       /* a lighter sheet: Framework's alt background */
+  --surface-bg-3:        #f6f0e0;       /* page (html, body) */
+  --surface-raised:      #fffdf8;       /* cards and tooltips: paper + 1px ink border */
+  --surface-panel:       rgba(246, 240, 224, 0.92);   /* NEW: sticky bars over content */
+  --hairline:            rgba(11, 18, 29, 0.16);
+  --hairline-strong:     #0b121d;
+
+  /* foreground: navy ink, the dark mode's ground. Muted copy is 7.6:1. */
+  --ink:                 #0b121d;
+  --ink-muted:           #484c50;
+  --ink-soft:            rgba(11, 18, 29, 0.62);      /* disabled and tertiary only; 5.1:1 */
+
+  --data-renewable:      #08778d;
+  --data-renewable-tip:  #08778d;
+
+  /* fuels: gold, cyan, violet - the same hue families as dark, darkened for
+     paper. Violet hydro keeps wind and hydro apart under deuteranopia. */
+  --fuel-solar:          #b07800;
+  --fuel-wind:           #08778d;
+  --fuel-hydro:          #7a4fd0;
+  --fuel-solar-tip:      #b07800;       /* NEW (tips = base in light) */
+  --fuel-wind-tip:       #08778d;       /* NEW */
+  --fuel-hydro-tip:      #7a4fd0;       /* NEW */
+
+  /* engraved globe. Existing globe tokens are mapped so stragglers still read. */
+  --globe-ink-rgb:       11, 18, 29;    /* NEW: line screen, stipple, coastline, limb */
+  --globe-paper:         #f6f0e0;       /* NEW: land knock-out and needle halos */
+  --globe-ocean:         #f6f0e0;
+  --globe-ocean-lit:     #f6f0e0;
+  --globe-terminator:    rgba(11, 18, 29, 0.30);
+  --globe-keyline:       #f6f0e0;       /* the keyline IS the paper halo in light */
+  --globe-dot-day:       #0b121d;
+  --globe-dot-night:     #0b121d;
+  --globe-border:        rgba(11, 18, 29, 0.85);
+  --globe-body-hi:       #f6f0e0;
+  --globe-body-mid:      #f6f0e0;
+  --globe-body-lo:       #f6f0e0;
+  --globe-dot-neutral:   #0b121d;
+  --globe-atmosphere-rgb: 11, 18, 29;   /* NEW, unused in light; defined so readers never get "" */
+  --globe-land-rgb:      11, 18, 29;    /* NEW, unused in light */
+  --globe-star-rgb:      11, 18, 29;    /* unused in light; the horizon's star field */
+  --bar-track:           rgba(11, 18, 29, 0.12);      /* rail bars' unfilled track */
+
+  /* state. The base :root --quality-warning (#f7931a) is 2.0:1 on paper, below the
+     3:1 a stale ring needs, so light overrides it. Dark keeps the base value (8.8:1). */
+  --quality-warning:     #c2410c;       /* 4.5:1 on paper */
+  --success:             #0d6b63;
+  --warning:             #9a4a07;
+  --danger:              #b42318;
+  --info:                var(--data-renewable);
+
+  /* mark (NEW): read by the loader mark and the inline header mark (brand-mark.ts).
+     The brand system's mark in a paper variant: the same gold and cyan, deep
+     enough that the disc (3.3:1) and the curtailed arc (3.6:1) hold on paper. */
+  --mark-disc:           #b07800;
+  --mark-lead:           #0b8aa3;       /* first 26% of pillars (the curtailed share) */
+  --mark-lead-opacity:   1;
+  --mark-rest:           #e6a020;
+  --mark-rest-opacity:   1;
+  --mark-tick:           #0b121d;       /* the tick each pillar fires as it drops */
+  --mark-glow:           transparent;   /* no halo behind the disc on paper */
+
+  /* type */
+  --font-display:        "Schibsted Grotesk", Inter, -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-body:           "Schibsted Grotesk", Inter, -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-sans:           var(--font-body);
+  --display-weight-strong: 800;         /* hero % and stat figures */
+  --display-weight-base:   700;         /* h2 "Largest now", wordmark, selected label */
+  --display-tracking:    -0.03em;       /* NEW: hero only; -0.01em for 25-30px figures */
+  --display-leading:     0.92;          /* NEW */
+  --fs-hero:             clamp(112px, 10.84vw, 156px);   /* NEW: 156px at 1440 */
+
+  /* Observable Framework's own chrome (bare links, the pager, form controls)
+     reads these; its theme is "dark", so without this they stay dark-on-paper. */
+  --theme-foreground:       var(--ink);
+  --theme-foreground-focus: var(--brand-text);
+  --theme-background-b:     var(--surface-bg-2);
+  --theme-background:       var(--surface-bg-3);
+}
+
+/* ------------------------------------------------------------------ DARK · Horizon layout, Nightgrid palette */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --brand:               #ffd05a;
+  --brand-strong:        #e6a020;
+  --brand-subtle:        rgba(255, 208, 90, 0.16);   /* active segmented-control chip */
+  --brand-rgb:           255, 208, 90;
+  --brand-on:            #060a11;
+  --brand-text:          var(--brand);  /* NEW: gold is 13.6:1 on the dark ground */
+
+  --surface-bg-1:        #15202f;
+  --surface-bg-2:        #0b121d;
+  --surface-bg-3:        #060a11;       /* page; the globe backdrop paints over it */
+  --surface-raised:      #101a28;
+  --surface-panel:       rgba(6, 10, 17, 0.74);       /* NEW: glass dock; pair with backdrop-filter: blur(18px) */
+  --hairline:            rgba(255, 248, 224, 0.14);
+  --hairline-strong:     rgba(255, 248, 224, 0.30);
+
+  --ink:                 #fff8e0;
+  --ink-muted:           #c8c4b2;       /* 11.3:1 on --surface-bg-3 */
+  --ink-soft:            rgba(255, 248, 224, 0.60);   /* 6.9:1 */
+
+  --data-renewable:      #67e8f9;
+  --data-renewable-tip:  #cffafe;
+
+  /* fuels: gold, cyan, violet. Violet, not periwinkle, keeps hydro apart from
+     wind under deuteranopia. */
+  --fuel-solar:          #ffd05a;
+  --fuel-wind:           #67e8f9;
+  --fuel-hydro:          #9d8cff;
+  --fuel-solar-tip:      #ffecb3;       /* NEW */
+  --fuel-wind-tip:       #cffafe;       /* NEW */
+  --fuel-hydro-tip:      #ddd6ff;       /* NEW */
+
+  /* horizon globe */
+  --globe-ink-rgb:       255, 248, 224; /* NEW */
+  --globe-paper:         #060a11;       /* NEW */
+  --globe-atmosphere-rgb: 120, 170, 235; /* NEW */
+  --globe-land-rgb:      207, 214, 223; /* NEW: cool, so day-side land never reads as solar */
+  --globe-star-rgb:      255, 248, 224; /* the horizon's star field */
+  --bar-track:           rgba(255, 248, 224, 0.12);   /* the dock's bar tracks (dark mock) */
+  --globe-ocean:         #0a1220;
+  --globe-ocean-lit:     #1b2b42;
+  --globe-terminator:    rgba(255, 248, 224, 0.30);
+  --globe-keyline:       #060a11;
+  --globe-dot-day:       #cfd6df;
+  --globe-dot-night:     #6f84a8;
+  --globe-border:        rgba(255, 248, 224, 0.16);
+  --globe-body-hi:       #04070c;       /* body gradient, centre to limb */
+  --globe-body-mid:      #0a1220;
+  --globe-body-lo:       #1b2b42;
+  --globe-dot-neutral:   #cfd6df;
+
+  --success:             #5eead4;
+  --warning:             #ffb84d;
+  --danger:              #f87171;
+  --info:                var(--data-renewable);
+
+  /* mark: the brand system's, unchanged — gold disc, gold pillars at 55%, the
+     cyan curtailed share at 95%. The published SVGs use these (brand-mark.ts). */
+  --mark-disc:           #ffd05a;       /* NEW */
+  --mark-lead:           #67e8f9;       /* NEW */
+  --mark-lead-opacity:   0.95;          /* NEW */
+  --mark-rest:           #e6a020;       /* NEW */
+  --mark-rest-opacity:   0.55;          /* NEW */
+  --mark-tick:           #fff8e0;       /* NEW */
+  --mark-glow:           rgba(255, 208, 90, 0.28);   /* NEW: halo behind the disc */
+
+  --font-display:        "Schibsted Grotesk", Inter, -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-body:           "Schibsted Grotesk", Inter, -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-sans:           var(--font-body);
+  --display-weight-strong: 800;
+  --display-weight-base:   700;
+  --display-tracking:    -0.03em;       /* NEW: hero only; -0.02em for 28-30px figures */
+  --display-leading:     0.92;          /* NEW */
+  --fs-hero:             clamp(120px, 12.78vw, 184px);   /* NEW: 184px at 1440 */
+
+  --theme-foreground:       var(--ink);
+  --theme-foreground-focus: var(--brand-text);
+  --theme-background-b:     var(--surface-bg-2);
+  --theme-background:       var(--surface-bg-3);
+}
+
+/* Phone hero sizes (the mocks are 390 wide). */
+@media (max-width: 640px) {
+  :root[data-theme="light"] { --fs-hero: clamp(92px, 30.2vw, 118px); }
+  :root[data-theme="dark"]  { --fs-hero: clamp(92px, 29.7vw, 116px); }
+}
+
+/* ------------------------------------------------------------------ EMBED · the paper figure only
+   src/embed/globe.md (the globe the DARI paper iframes) pins data-theme="embed".
+   Its look is part of a published artefact, so these are the palette it was
+   published in (the site's old "Sunfire" theme), unchanged. The boot script pins
+   it on /embed/ paths too, so the figure never paints a mode first. No page of
+   the site sets it. */
+:root[data-theme="embed"] {
   /* brand identity */
   --brand:               #ffd05a;
   --brand-strong:        #e6a020;
@@ -195,96 +383,23 @@
   --danger:              #f87171;
   --info:                var(--data-renewable);
 
-  /* type */
-  --font-display:        "Schibsted Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --font-body:           "Schibsted Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* type: the figure's own rules set Inter and Fraunces; these only back them */
+  --font-display:        "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-body:           "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono:           ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --font-sans:           var(--font-body);   /* alias: legacy rules read --font-sans */
   --display-weight-strong: 800;
   --display-weight-base:   600;
 }
 
-:root[data-theme="deepcurrent"] {
-  --brand:               #64d8ff;
-  --brand-strong:        #38b0d8;
-  --brand-subtle:        rgba(100, 216, 255, 0.10);
-  --brand-rgb:           100, 216, 255;
-  --brand-on:            #061018;
+/* No-JS / pre-boot fallback. The boot script sets data-theme before first
+   paint, so this only shows if it never runs. Without data-theme no token
+   block applies, which is why these two literals are the one place this
+   sheet paints a colour that is not a token (allowlisted in
+   tests/style-colour-literals.test.ts). Dark, the site's default mode. */
+:root:not([data-theme]) { color-scheme: dark; }
+:root:not([data-theme]), html:not([data-theme]) body { background: #060a11; color: #fff8e0; }
 
-  --surface-bg-1:        #0a1828;
-  --surface-bg-2:        #060f1a;
-  --surface-bg-3:        #030810;
-  --surface-raised:      #0d1e30;
-  --hairline:            rgba(180, 220, 255, 0.08);
-  --hairline-strong:     rgba(180, 220, 255, 0.16);
-
-  --ink:                 #e0f0ff;
-  --ink-muted:           rgba(224, 240, 255, 0.65);
-  --ink-soft:            rgba(224, 240, 255, 0.40);
-
-  --data-renewable:      #64d8ff;
-  --data-renewable-tip:  #b0ecff;
-
-  --fuel-solar:          #ffb845;
-  --fuel-wind:           #64d8ff;
-  --fuel-hydro:          #b4a0f0;
-
-  --globe-ocean:         #0a1018;
-  --globe-ocean-lit:     #17283a;
-  --globe-terminator:    rgba(224, 240, 255, 0.30);
-  --globe-keyline:       #060a10;
-  --globe-dot-day:       #eaf6ff;
-  --globe-dot-night:     #7fb4d8;
-  --globe-border:        rgba(224, 240, 255, 0.16);
-  --globe-body-hi:       #17405e;
-  --globe-body-mid:      #0b1b2e;
-  --globe-body-lo:       #040a14;
-  --globe-dot-neutral:   #c8d6e4;
-
-  --success:             #5eead4;
-  --warning:             #ffb84d;
-  --danger:              #f87171;
-  --info:                var(--data-renewable);
-
-  --font-display:        "Schibsted Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --font-body:           "Schibsted Grotesk", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  --font-mono:           "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --font-sans:           var(--font-body);
-  --display-weight-strong: 700;
-  --display-weight-base:   500;
-}
-
-/* Fallback: if no boot script runs (SSR-rendered intermediate, e.g. Observable's
-   initial document before our inline <head> script), default to Sunfire so the
-   page is never unstyled. */
-:root:not([data-theme]) {
-  color-scheme: dark;
-}
-:root:not([data-theme]),
-html:not([data-theme]) body {
-  /* paint at least the page chrome with hardcoded Sunfire values */
-  background: #0a0703;
-  color: #fff8e0;
-}
-
-/* Backwards-compatibility aliases for legacy palette tokens still referenced
-   by non-chrome rules (data panels, globe, chart elements). Aliases route to
-   the active theme's brand/ink so they compile correctly in both themes. */
-:root {
-  --slate-800: var(--surface-bg-1);
-  --white:     var(--ink);
-  --btc-orange: #d83923;
-  /* `--surface` / `--border` were used in light-on-light contexts that no
-     longer exist; map them to dark equivalents so any straggler rule
-     doesn't render white-on-white. */
-  --surface:           var(--surface-raised);
-  --surface-raised-bg: var(--surface-raised);
-  --surface-sunken:    var(--surface-bg-2);
-  --border:            var(--hairline);
-  --border-strong:     var(--hairline-strong);
-  --fg-on-dark:        var(--ink);
-  --fg-on-dark-muted:  var(--ink-muted);
-}
 
 /* ============ SEMANTIC ELEMENT STYLES ============ */
 html, body {
@@ -299,7 +414,6 @@ html, body {
   text-rendering: optimizeLegibility;
 }
 
-.display-xl, .display-lg, .display,
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   color: var(--ink);
@@ -310,10 +424,6 @@ h1, h2, h3, h4 {
   margin: 0;
 }
 
-.display-xl { font-size: var(--fs-display-xl); font-weight: var(--fw-black); line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
-.display-lg { font-size: var(--fs-display-lg); font-weight: var(--fw-black); line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
-.display    { font-size: var(--fs-display);    font-weight: var(--fw-bold);  line-height: var(--lh-display); letter-spacing: var(--ls-tight); }
-
 h1 { font-size: var(--fs-h1); font-weight: var(--fw-bold); }
 h2 { font-size: var(--fs-h2); font-weight: var(--fw-bold); }
 h3 { font-size: var(--fs-h3); font-weight: var(--fw-medium); }
@@ -321,9 +431,6 @@ h4 { font-size: var(--fs-h4); font-weight: var(--fw-medium); }
 
 p { margin: 0; text-wrap: pretty; }
 p.lead  { font-size: var(--fs-body-lg); color: var(--ink-muted); line-height: 1.5; }
-/* On the dark app shell the slate-500 token is nearly invisible — use a
-   lighter tint that reads clearly against the dark background. */
-.app-shell p.lead { color: rgba(255,255,255,0.72); }
 p.small { font-size: var(--fs-body-sm); }
 
 .eyebrow {
@@ -331,13 +438,13 @@ p.small { font-size: var(--fs-body-sm); }
   font-weight: var(--fw-bold);
   letter-spacing: var(--ls-caps);
   text-transform: uppercase;
-  color: var(--brand);
+  color: var(--brand-text);
 }
 
 .caption { font-size: var(--fs-caption); color: var(--ink-muted); }
 .micro   { font-size: var(--fs-micro);   color: var(--ink-soft);  letter-spacing: 0.04em; }
 
-code, .mono {
+code {
   font-family: var(--font-mono);
   font-size: 0.92em;
   font-feature-settings: "tnum", "zero";
@@ -345,10 +452,6 @@ code, .mono {
 
 /* Tabular figures for money/BTC amounts */
 .num-tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
-
-/* Utility: ink on dark backgrounds */
-.on-dark        { color: var(--fg-on-dark); }
-.on-dark.muted  { color: var(--fg-on-dark-muted); }
 
 /* =========================================================
    PAGE LOADER — visible immediately from raw HTML, before
@@ -396,228 +499,229 @@ code, .mono {
 
 /* brand-mark:begin — generated, do not edit */
 .loader-mark{position:relative;width:1em;height:1em;flex-shrink:0;line-height:0}
-.loader-mark u{position:absolute;left:50%;top:50%;width:0.3em;height:0.3em;margin:-0.15em 0 0 -0.15em;border-radius:50%;background:#ffd05a}
+.loader-mark::before{content:"";position:absolute;left:50%;top:50%;width:0.3em;height:0.3em;margin:-0.15em 0 0 -0.15em;border-radius:50%;box-shadow:0 0 0.3em 0.08em var(--mark-glow)}
+.loader-mark u{position:absolute;left:50%;top:50%;width:0.3em;height:0.3em;margin:-0.15em 0 0 -0.15em;border-radius:50%;background:var(--mark-disc)}
 .loader-mark i{position:absolute;left:50%;top:50%;width:0.016em;margin-left:-0.008em}
 .loader-mark b{display:block;width:100%;height:100%;border-radius:0.008em;transform-origin:50% 100%;transform:scaleY(0);animation-duration:6.6s;animation-timing-function:linear;animation-iteration-count:infinite}
-.loader-mark i::after{content:"";position:absolute;left:0;top:-0.022em;width:100%;height:0.018em;border-radius:0.008em;opacity:0;animation-duration:6.6s;animation-timing-function:cubic-bezier(.25,.6,.5,1);animation-iteration-count:infinite}
+.loader-mark i::after{content:"";position:absolute;left:0;top:-0.022em;width:100%;height:0.018em;border-radius:0.008em;background:var(--mark-tick);opacity:0;animation-duration:6.6s;animation-timing-function:cubic-bezier(.25,.6,.5,1);animation-iteration-count:infinite}
 .loader-mark .p0{height:0.1665em;transform-origin:50% 0;transform:rotate(0deg) translateY(-0.3665em)}
-.loader-mark .p0 b{background:#67e8f9;opacity:0.95;animation-name:elj-p0}
-.loader-mark .p0::after{background:#cffafe;animation-name:elj-t0}
+.loader-mark .p0 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p0}
+.loader-mark .p0::after{animation-name:elj-t0}
 @keyframes elj-p0{0%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}7.576%,53.03%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}59.848%,100%{transform:scaleY(0)}}
 @keyframes elj-t0{0%,53.03%{transform:translateY(0);opacity:0}54.667%{opacity:0.95}66.667%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p1{height:0.237em;transform-origin:50% 0;transform:rotate(8.18deg) translateY(-0.437em)}
-.loader-mark .p1 b{background:#67e8f9;opacity:0.95;animation-name:elj-p1}
-.loader-mark .p1::after{background:#cffafe;animation-name:elj-t1}
+.loader-mark .p1 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p1}
+.loader-mark .p1::after{animation-name:elj-t1}
 @keyframes elj-p1{0%,0.895%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}8.471%,53.719%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}60.537%,100%{transform:scaleY(0)}}
 @keyframes elj-t1{0%,53.719%{transform:translateY(0);opacity:0}55.355%{opacity:0.95}67.355%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p2{height:0.2262em;transform-origin:50% 0;transform:rotate(16.36deg) translateY(-0.4262em)}
-.loader-mark .p2 b{background:#67e8f9;opacity:0.95;animation-name:elj-p2}
-.loader-mark .p2::after{background:#cffafe;animation-name:elj-t2}
+.loader-mark .p2 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p2}
+.loader-mark .p2::after{animation-name:elj-t2}
 @keyframes elj-p2{0%,1.791%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}9.366%,54.408%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}61.226%,100%{transform:scaleY(0)}}
 @keyframes elj-t2{0%,54.408%{transform:translateY(0);opacity:0}56.044%{opacity:0.95}68.044%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p3{height:0.2101em;transform-origin:50% 0;transform:rotate(24.55deg) translateY(-0.4101em)}
-.loader-mark .p3 b{background:#67e8f9;opacity:0.95;animation-name:elj-p3}
-.loader-mark .p3::after{background:#cffafe;animation-name:elj-t3}
+.loader-mark .p3 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p3}
+.loader-mark .p3::after{animation-name:elj-t3}
 @keyframes elj-p3{0%,2.686%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}10.262%,55.096%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}61.915%,100%{transform:scaleY(0)}}
 @keyframes elj-t3{0%,55.096%{transform:translateY(0);opacity:0}56.733%{opacity:0.95}68.733%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p4{height:0.2314em;transform-origin:50% 0;transform:rotate(32.73deg) translateY(-0.4314em)}
-.loader-mark .p4 b{background:#67e8f9;opacity:0.95;animation-name:elj-p4}
-.loader-mark .p4::after{background:#cffafe;animation-name:elj-t4}
+.loader-mark .p4 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p4}
+.loader-mark .p4::after{animation-name:elj-t4}
 @keyframes elj-p4{0%,3.581%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}11.157%,55.785%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}62.603%,100%{transform:scaleY(0)}}
 @keyframes elj-t4{0%,55.785%{transform:translateY(0);opacity:0}57.421%{opacity:0.95}69.421%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p5{height:0.1979em;transform-origin:50% 0;transform:rotate(40.91deg) translateY(-0.3979em)}
-.loader-mark .p5 b{background:#67e8f9;opacity:0.95;animation-name:elj-p5}
-.loader-mark .p5::after{background:#cffafe;animation-name:elj-t5}
+.loader-mark .p5 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p5}
+.loader-mark .p5::after{animation-name:elj-t5}
 @keyframes elj-p5{0%,4.477%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}12.052%,56.474%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}63.292%,100%{transform:scaleY(0)}}
 @keyframes elj-t5{0%,56.474%{transform:translateY(0);opacity:0}58.11%{opacity:0.95}70.11%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p6{height:0.1811em;transform-origin:50% 0;transform:rotate(49.09deg) translateY(-0.3811em)}
-.loader-mark .p6 b{background:#67e8f9;opacity:0.95;animation-name:elj-p6}
-.loader-mark .p6::after{background:#cffafe;animation-name:elj-t6}
+.loader-mark .p6 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p6}
+.loader-mark .p6::after{animation-name:elj-t6}
 @keyframes elj-p6{0%,5.372%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}12.948%,57.163%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}63.981%,100%{transform:scaleY(0)}}
 @keyframes elj-t6{0%,57.163%{transform:translateY(0);opacity:0}58.799%{opacity:0.95}70.799%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p7{height:0.1066em;transform-origin:50% 0;transform:rotate(57.27deg) translateY(-0.3066em)}
-.loader-mark .p7 b{background:#67e8f9;opacity:0.95;animation-name:elj-p7}
-.loader-mark .p7::after{background:#cffafe;animation-name:elj-t7}
+.loader-mark .p7 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p7}
+.loader-mark .p7::after{animation-name:elj-t7}
 @keyframes elj-p7{0%,6.267%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}13.843%,57.851%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}64.669%,100%{transform:scaleY(0)}}
 @keyframes elj-t7{0%,57.851%{transform:translateY(0);opacity:0}59.488%{opacity:0.95}71.488%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p8{height:0.2292em;transform-origin:50% 0;transform:rotate(65.45deg) translateY(-0.4292em)}
-.loader-mark .p8 b{background:#67e8f9;opacity:0.95;animation-name:elj-p8}
-.loader-mark .p8::after{background:#cffafe;animation-name:elj-t8}
+.loader-mark .p8 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p8}
+.loader-mark .p8::after{animation-name:elj-t8}
 @keyframes elj-p8{0%,7.163%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}14.738%,58.54%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}65.358%,100%{transform:scaleY(0)}}
 @keyframes elj-t8{0%,58.54%{transform:translateY(0);opacity:0}60.176%{opacity:0.95}72.176%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p9{height:0.0923em;transform-origin:50% 0;transform:rotate(73.64deg) translateY(-0.2923em)}
-.loader-mark .p9 b{background:#67e8f9;opacity:0.95;animation-name:elj-p9}
-.loader-mark .p9::after{background:#cffafe;animation-name:elj-t9}
+.loader-mark .p9 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p9}
+.loader-mark .p9::after{animation-name:elj-t9}
 @keyframes elj-p9{0%,8.058%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}15.634%,59.229%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}66.047%,100%{transform:scaleY(0)}}
 @keyframes elj-t9{0%,59.229%{transform:translateY(0);opacity:0}60.865%{opacity:0.95}72.865%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p10{height:0.2115em;transform-origin:50% 0;transform:rotate(81.82deg) translateY(-0.4115em)}
-.loader-mark .p10 b{background:#67e8f9;opacity:0.95;animation-name:elj-p10}
-.loader-mark .p10::after{background:#cffafe;animation-name:elj-t10}
+.loader-mark .p10 b{background:var(--mark-lead);opacity:var(--mark-lead-opacity);animation-name:elj-p10}
+.loader-mark .p10::after{animation-name:elj-t10}
 @keyframes elj-p10{0%,8.953%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}16.529%,59.917%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}66.736%,100%{transform:scaleY(0)}}
 @keyframes elj-t10{0%,59.917%{transform:translateY(0);opacity:0}61.554%{opacity:0.95}73.554%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p11{height:0.1011em;transform-origin:50% 0;transform:rotate(90deg) translateY(-0.3011em)}
-.loader-mark .p11 b{background:#e6a020;opacity:0.55;animation-name:elj-p11}
-.loader-mark .p11::after{background:#ffe9a8;animation-name:elj-t11}
+.loader-mark .p11 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p11}
+.loader-mark .p11::after{animation-name:elj-t11}
 @keyframes elj-p11{0%,9.848%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}17.424%,60.606%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}67.424%,100%{transform:scaleY(0)}}
 @keyframes elj-t11{0%,60.606%{transform:translateY(0);opacity:0}62.242%{opacity:0.95}74.242%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p12{height:0.0833em;transform-origin:50% 0;transform:rotate(98.18deg) translateY(-0.2833em)}
-.loader-mark .p12 b{background:#e6a020;opacity:0.55;animation-name:elj-p12}
-.loader-mark .p12::after{background:#ffe9a8;animation-name:elj-t12}
+.loader-mark .p12 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p12}
+.loader-mark .p12::after{animation-name:elj-t12}
 @keyframes elj-p12{0%,10.744%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}18.32%,61.295%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}68.113%,100%{transform:scaleY(0)}}
 @keyframes elj-t12{0%,61.295%{transform:translateY(0);opacity:0}62.931%{opacity:0.95}74.931%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p13{height:0.2308em;transform-origin:50% 0;transform:rotate(106.36deg) translateY(-0.4308em)}
-.loader-mark .p13 b{background:#e6a020;opacity:0.55;animation-name:elj-p13}
-.loader-mark .p13::after{background:#ffe9a8;animation-name:elj-t13}
+.loader-mark .p13 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p13}
+.loader-mark .p13::after{animation-name:elj-t13}
 @keyframes elj-p13{0%,11.639%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}19.215%,61.983%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}68.802%,100%{transform:scaleY(0)}}
 @keyframes elj-t13{0%,61.983%{transform:translateY(0);opacity:0}63.62%{opacity:0.95}75.62%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p14{height:0.1054em;transform-origin:50% 0;transform:rotate(114.55deg) translateY(-0.3054em)}
-.loader-mark .p14 b{background:#e6a020;opacity:0.55;animation-name:elj-p14}
-.loader-mark .p14::after{background:#ffe9a8;animation-name:elj-t14}
+.loader-mark .p14 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p14}
+.loader-mark .p14::after{animation-name:elj-t14}
 @keyframes elj-p14{0%,12.534%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}20.11%,62.672%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}69.49%,100%{transform:scaleY(0)}}
 @keyframes elj-t14{0%,62.672%{transform:translateY(0);opacity:0}64.309%{opacity:0.95}76.309%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p15{height:0.1943em;transform-origin:50% 0;transform:rotate(122.73deg) translateY(-0.3943em)}
-.loader-mark .p15 b{background:#e6a020;opacity:0.55;animation-name:elj-p15}
-.loader-mark .p15::after{background:#ffe9a8;animation-name:elj-t15}
+.loader-mark .p15 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p15}
+.loader-mark .p15::after{animation-name:elj-t15}
 @keyframes elj-p15{0%,13.43%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}21.006%,63.361%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}70.179%,100%{transform:scaleY(0)}}
 @keyframes elj-t15{0%,63.361%{transform:translateY(0);opacity:0}64.997%{opacity:0.95}76.997%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p16{height:0.0899em;transform-origin:50% 0;transform:rotate(130.91deg) translateY(-0.2899em)}
-.loader-mark .p16 b{background:#e6a020;opacity:0.55;animation-name:elj-p16}
-.loader-mark .p16::after{background:#ffe9a8;animation-name:elj-t16}
+.loader-mark .p16 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p16}
+.loader-mark .p16::after{animation-name:elj-t16}
 @keyframes elj-p16{0%,14.325%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}21.901%,64.05%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}70.868%,100%{transform:scaleY(0)}}
 @keyframes elj-t16{0%,64.05%{transform:translateY(0);opacity:0}65.686%{opacity:0.95}77.686%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p17{height:0.1381em;transform-origin:50% 0;transform:rotate(139.09deg) translateY(-0.3381em)}
-.loader-mark .p17 b{background:#e6a020;opacity:0.55;animation-name:elj-p17}
-.loader-mark .p17::after{background:#ffe9a8;animation-name:elj-t17}
+.loader-mark .p17 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p17}
+.loader-mark .p17::after{animation-name:elj-t17}
 @keyframes elj-p17{0%,15.22%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}22.796%,64.738%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}71.556%,100%{transform:scaleY(0)}}
 @keyframes elj-t17{0%,64.738%{transform:translateY(0);opacity:0}66.375%{opacity:0.95}78.375%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p18{height:0.2149em;transform-origin:50% 0;transform:rotate(147.27deg) translateY(-0.4149em)}
-.loader-mark .p18 b{background:#e6a020;opacity:0.55;animation-name:elj-p18}
-.loader-mark .p18::after{background:#ffe9a8;animation-name:elj-t18}
+.loader-mark .p18 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p18}
+.loader-mark .p18::after{animation-name:elj-t18}
 @keyframes elj-p18{0%,16.116%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}23.691%,65.427%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}72.245%,100%{transform:scaleY(0)}}
 @keyframes elj-t18{0%,65.427%{transform:translateY(0);opacity:0}67.063%{opacity:0.95}79.063%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p19{height:0.1103em;transform-origin:50% 0;transform:rotate(155.45deg) translateY(-0.3103em)}
-.loader-mark .p19 b{background:#e6a020;opacity:0.55;animation-name:elj-p19}
-.loader-mark .p19::after{background:#ffe9a8;animation-name:elj-t19}
+.loader-mark .p19 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p19}
+.loader-mark .p19::after{animation-name:elj-t19}
 @keyframes elj-p19{0%,17.011%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}24.587%,66.116%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}72.934%,100%{transform:scaleY(0)}}
 @keyframes elj-t19{0%,66.116%{transform:translateY(0);opacity:0}67.752%{opacity:0.95}79.752%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p20{height:0.1615em;transform-origin:50% 0;transform:rotate(163.64deg) translateY(-0.3615em)}
-.loader-mark .p20 b{background:#e6a020;opacity:0.55;animation-name:elj-p20}
-.loader-mark .p20::after{background:#ffe9a8;animation-name:elj-t20}
+.loader-mark .p20 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p20}
+.loader-mark .p20::after{animation-name:elj-t20}
 @keyframes elj-p20{0%,17.906%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}25.482%,66.804%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}73.623%,100%{transform:scaleY(0)}}
 @keyframes elj-t20{0%,66.804%{transform:translateY(0);opacity:0}68.441%{opacity:0.95}80.441%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p21{height:0.17em;transform-origin:50% 0;transform:rotate(171.82deg) translateY(-0.37em)}
-.loader-mark .p21 b{background:#e6a020;opacity:0.55;animation-name:elj-p21}
-.loader-mark .p21::after{background:#ffe9a8;animation-name:elj-t21}
+.loader-mark .p21 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p21}
+.loader-mark .p21::after{animation-name:elj-t21}
 @keyframes elj-p21{0%,18.802%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}26.377%,67.493%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}74.311%,100%{transform:scaleY(0)}}
 @keyframes elj-t21{0%,67.493%{transform:translateY(0);opacity:0}69.129%{opacity:0.95}81.129%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p22{height:0.1543em;transform-origin:50% 0;transform:rotate(180deg) translateY(-0.3543em)}
-.loader-mark .p22 b{background:#e6a020;opacity:0.55;animation-name:elj-p22}
-.loader-mark .p22::after{background:#ffe9a8;animation-name:elj-t22}
+.loader-mark .p22 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p22}
+.loader-mark .p22::after{animation-name:elj-t22}
 @keyframes elj-p22{0%,19.697%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}27.273%,68.182%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}75%,100%{transform:scaleY(0)}}
 @keyframes elj-t22{0%,68.182%{transform:translateY(0);opacity:0}69.818%{opacity:0.95}81.818%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p23{height:0.0811em;transform-origin:50% 0;transform:rotate(188.18deg) translateY(-0.2811em)}
-.loader-mark .p23 b{background:#e6a020;opacity:0.55;animation-name:elj-p23}
-.loader-mark .p23::after{background:#ffe9a8;animation-name:elj-t23}
+.loader-mark .p23 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p23}
+.loader-mark .p23::after{animation-name:elj-t23}
 @keyframes elj-p23{0%,20.592%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}28.168%,68.871%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}75.689%,100%{transform:scaleY(0)}}
 @keyframes elj-t23{0%,68.871%{transform:translateY(0);opacity:0}70.507%{opacity:0.95}82.507%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p24{height:0.0816em;transform-origin:50% 0;transform:rotate(196.36deg) translateY(-0.2816em)}
-.loader-mark .p24 b{background:#e6a020;opacity:0.55;animation-name:elj-p24}
-.loader-mark .p24::after{background:#ffe9a8;animation-name:elj-t24}
+.loader-mark .p24 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p24}
+.loader-mark .p24::after{animation-name:elj-t24}
 @keyframes elj-p24{0%,21.488%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}29.063%,69.559%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}76.377%,100%{transform:scaleY(0)}}
 @keyframes elj-t24{0%,69.559%{transform:translateY(0);opacity:0}71.196%{opacity:0.95}83.196%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p25{height:0.1209em;transform-origin:50% 0;transform:rotate(204.55deg) translateY(-0.3209em)}
-.loader-mark .p25 b{background:#e6a020;opacity:0.55;animation-name:elj-p25}
-.loader-mark .p25::after{background:#ffe9a8;animation-name:elj-t25}
+.loader-mark .p25 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p25}
+.loader-mark .p25::after{animation-name:elj-t25}
 @keyframes elj-p25{0%,22.383%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}29.959%,70.248%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}77.066%,100%{transform:scaleY(0)}}
 @keyframes elj-t25{0%,70.248%{transform:translateY(0);opacity:0}71.884%{opacity:0.95}83.884%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p26{height:0.1784em;transform-origin:50% 0;transform:rotate(212.73deg) translateY(-0.3784em)}
-.loader-mark .p26 b{background:#e6a020;opacity:0.55;animation-name:elj-p26}
-.loader-mark .p26::after{background:#ffe9a8;animation-name:elj-t26}
+.loader-mark .p26 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p26}
+.loader-mark .p26::after{animation-name:elj-t26}
 @keyframes elj-p26{0%,23.278%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}30.854%,70.937%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}77.755%,100%{transform:scaleY(0)}}
 @keyframes elj-t26{0%,70.937%{transform:translateY(0);opacity:0}72.573%{opacity:0.95}84.573%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p27{height:0.0787em;transform-origin:50% 0;transform:rotate(220.91deg) translateY(-0.2787em)}
-.loader-mark .p27 b{background:#e6a020;opacity:0.55;animation-name:elj-p27}
-.loader-mark .p27::after{background:#ffe9a8;animation-name:elj-t27}
+.loader-mark .p27 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p27}
+.loader-mark .p27::after{animation-name:elj-t27}
 @keyframes elj-p27{0%,24.174%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}31.749%,71.625%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}78.444%,100%{transform:scaleY(0)}}
 @keyframes elj-t27{0%,71.625%{transform:translateY(0);opacity:0}73.262%{opacity:0.95}85.262%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p28{height:0.1325em;transform-origin:50% 0;transform:rotate(229.09deg) translateY(-0.3325em)}
-.loader-mark .p28 b{background:#e6a020;opacity:0.55;animation-name:elj-p28}
-.loader-mark .p28::after{background:#ffe9a8;animation-name:elj-t28}
+.loader-mark .p28 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p28}
+.loader-mark .p28::after{animation-name:elj-t28}
 @keyframes elj-p28{0%,25.069%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}32.645%,72.314%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}79.132%,100%{transform:scaleY(0)}}
 @keyframes elj-t28{0%,72.314%{transform:translateY(0);opacity:0}73.95%{opacity:0.95}85.95%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p29{height:0.1971em;transform-origin:50% 0;transform:rotate(237.27deg) translateY(-0.3971em)}
-.loader-mark .p29 b{background:#e6a020;opacity:0.55;animation-name:elj-p29}
-.loader-mark .p29::after{background:#ffe9a8;animation-name:elj-t29}
+.loader-mark .p29 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p29}
+.loader-mark .p29::after{animation-name:elj-t29}
 @keyframes elj-p29{0%,25.964%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}33.54%,73.003%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}79.821%,100%{transform:scaleY(0)}}
 @keyframes elj-t29{0%,73.003%{transform:translateY(0);opacity:0}74.639%{opacity:0.95}86.639%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p30{height:0.0784em;transform-origin:50% 0;transform:rotate(245.45deg) translateY(-0.2784em)}
-.loader-mark .p30 b{background:#e6a020;opacity:0.55;animation-name:elj-p30}
-.loader-mark .p30::after{background:#ffe9a8;animation-name:elj-t30}
+.loader-mark .p30 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p30}
+.loader-mark .p30::after{animation-name:elj-t30}
 @keyframes elj-p30{0%,26.86%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}34.435%,73.691%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}80.51%,100%{transform:scaleY(0)}}
 @keyframes elj-t30{0%,73.691%{transform:translateY(0);opacity:0}75.328%{opacity:0.95}87.328%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p31{height:0.2381em;transform-origin:50% 0;transform:rotate(253.64deg) translateY(-0.4381em)}
-.loader-mark .p31 b{background:#e6a020;opacity:0.55;animation-name:elj-p31}
-.loader-mark .p31::after{background:#ffe9a8;animation-name:elj-t31}
+.loader-mark .p31 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p31}
+.loader-mark .p31::after{animation-name:elj-t31}
 @keyframes elj-p31{0%,27.755%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}35.331%,74.38%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}81.198%,100%{transform:scaleY(0)}}
 @keyframes elj-t31{0%,74.38%{transform:translateY(0);opacity:0}76.017%{opacity:0.95}88.017%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p32{height:0.0806em;transform-origin:50% 0;transform:rotate(261.82deg) translateY(-0.2806em)}
-.loader-mark .p32 b{background:#e6a020;opacity:0.55;animation-name:elj-p32}
-.loader-mark .p32::after{background:#ffe9a8;animation-name:elj-t32}
+.loader-mark .p32 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p32}
+.loader-mark .p32::after{animation-name:elj-t32}
 @keyframes elj-p32{0%,28.65%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}36.226%,75.069%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}81.887%,100%{transform:scaleY(0)}}
 @keyframes elj-t32{0%,75.069%{transform:translateY(0);opacity:0}76.705%{opacity:0.95}88.705%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p33{height:0.1235em;transform-origin:50% 0;transform:rotate(270deg) translateY(-0.3235em)}
-.loader-mark .p33 b{background:#e6a020;opacity:0.55;animation-name:elj-p33}
-.loader-mark .p33::after{background:#ffe9a8;animation-name:elj-t33}
+.loader-mark .p33 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p33}
+.loader-mark .p33::after{animation-name:elj-t33}
 @keyframes elj-p33{0%,29.545%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}37.121%,75.758%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}82.576%,100%{transform:scaleY(0)}}
 @keyframes elj-t33{0%,75.758%{transform:translateY(0);opacity:0}77.394%{opacity:0.95}89.394%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p34{height:0.2207em;transform-origin:50% 0;transform:rotate(278.18deg) translateY(-0.4207em)}
-.loader-mark .p34 b{background:#e6a020;opacity:0.55;animation-name:elj-p34}
-.loader-mark .p34::after{background:#ffe9a8;animation-name:elj-t34}
+.loader-mark .p34 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p34}
+.loader-mark .p34::after{animation-name:elj-t34}
 @keyframes elj-p34{0%,30.441%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}38.017%,76.446%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}83.264%,100%{transform:scaleY(0)}}
 @keyframes elj-t34{0%,76.446%{transform:translateY(0);opacity:0}78.083%{opacity:0.95}90.083%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p35{height:0.0938em;transform-origin:50% 0;transform:rotate(286.36deg) translateY(-0.2938em)}
-.loader-mark .p35 b{background:#e6a020;opacity:0.55;animation-name:elj-p35}
-.loader-mark .p35::after{background:#ffe9a8;animation-name:elj-t35}
+.loader-mark .p35 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p35}
+.loader-mark .p35::after{animation-name:elj-t35}
 @keyframes elj-p35{0%,31.336%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}38.912%,77.135%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}83.953%,100%{transform:scaleY(0)}}
 @keyframes elj-t35{0%,77.135%{transform:translateY(0);opacity:0}78.771%{opacity:0.95}90.771%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p36{height:0.1667em;transform-origin:50% 0;transform:rotate(294.55deg) translateY(-0.3667em)}
-.loader-mark .p36 b{background:#e6a020;opacity:0.55;animation-name:elj-p36}
-.loader-mark .p36::after{background:#ffe9a8;animation-name:elj-t36}
+.loader-mark .p36 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p36}
+.loader-mark .p36::after{animation-name:elj-t36}
 @keyframes elj-p36{0%,32.231%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}39.807%,77.824%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}84.642%,100%{transform:scaleY(0)}}
 @keyframes elj-t36{0%,77.824%{transform:translateY(0);opacity:0}79.46%{opacity:0.95}91.46%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p37{height:0.1209em;transform-origin:50% 0;transform:rotate(302.73deg) translateY(-0.3209em)}
-.loader-mark .p37 b{background:#e6a020;opacity:0.55;animation-name:elj-p37}
-.loader-mark .p37::after{background:#ffe9a8;animation-name:elj-t37}
+.loader-mark .p37 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p37}
+.loader-mark .p37::after{animation-name:elj-t37}
 @keyframes elj-p37{0%,33.127%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}40.702%,78.512%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}85.331%,100%{transform:scaleY(0)}}
 @keyframes elj-t37{0%,78.512%{transform:translateY(0);opacity:0}80.149%{opacity:0.95}92.149%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p38{height:0.1653em;transform-origin:50% 0;transform:rotate(310.91deg) translateY(-0.3653em)}
-.loader-mark .p38 b{background:#e6a020;opacity:0.55;animation-name:elj-p38}
-.loader-mark .p38::after{background:#ffe9a8;animation-name:elj-t38}
+.loader-mark .p38 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p38}
+.loader-mark .p38::after{animation-name:elj-t38}
 @keyframes elj-p38{0%,34.022%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}41.598%,79.201%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}86.019%,100%{transform:scaleY(0)}}
 @keyframes elj-t38{0%,79.201%{transform:translateY(0);opacity:0}80.837%{opacity:0.95}92.837%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p39{height:0.1516em;transform-origin:50% 0;transform:rotate(319.09deg) translateY(-0.3516em)}
-.loader-mark .p39 b{background:#e6a020;opacity:0.55;animation-name:elj-p39}
-.loader-mark .p39::after{background:#ffe9a8;animation-name:elj-t39}
+.loader-mark .p39 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p39}
+.loader-mark .p39::after{animation-name:elj-t39}
 @keyframes elj-p39{0%,34.917%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}42.493%,79.89%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}86.708%,100%{transform:scaleY(0)}}
 @keyframes elj-t39{0%,79.89%{transform:translateY(0);opacity:0}81.526%{opacity:0.95}93.526%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p40{height:0.1945em;transform-origin:50% 0;transform:rotate(327.27deg) translateY(-0.3945em)}
-.loader-mark .p40 b{background:#e6a020;opacity:0.55;animation-name:elj-p40}
-.loader-mark .p40::after{background:#ffe9a8;animation-name:elj-t40}
+.loader-mark .p40 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p40}
+.loader-mark .p40::after{animation-name:elj-t40}
 @keyframes elj-p40{0%,35.813%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}43.388%,80.579%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}87.397%,100%{transform:scaleY(0)}}
 @keyframes elj-t40{0%,80.579%{transform:translateY(0);opacity:0}82.215%{opacity:0.95}94.215%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p41{height:0.1794em;transform-origin:50% 0;transform:rotate(335.45deg) translateY(-0.3794em)}
-.loader-mark .p41 b{background:#e6a020;opacity:0.55;animation-name:elj-p41}
-.loader-mark .p41::after{background:#ffe9a8;animation-name:elj-t41}
+.loader-mark .p41 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p41}
+.loader-mark .p41::after{animation-name:elj-t41}
 @keyframes elj-p41{0%,36.708%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}44.284%,81.267%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}88.085%,100%{transform:scaleY(0)}}
 @keyframes elj-t41{0%,81.267%{transform:translateY(0);opacity:0}82.904%{opacity:0.95}94.904%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p42{height:0.148em;transform-origin:50% 0;transform:rotate(343.64deg) translateY(-0.348em)}
-.loader-mark .p42 b{background:#e6a020;opacity:0.55;animation-name:elj-p42}
-.loader-mark .p42::after{background:#ffe9a8;animation-name:elj-t42}
+.loader-mark .p42 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p42}
+.loader-mark .p42::after{animation-name:elj-t42}
 @keyframes elj-p42{0%,37.603%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}45.179%,81.956%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}88.774%,100%{transform:scaleY(0)}}
 @keyframes elj-t42{0%,81.956%{transform:translateY(0);opacity:0}83.592%{opacity:0.95}95.592%,100%{transform:translateY(-0.062em);opacity:0}}
 .loader-mark .p43{height:0.109em;transform-origin:50% 0;transform:rotate(351.82deg) translateY(-0.309em)}
-.loader-mark .p43 b{background:#e6a020;opacity:0.55;animation-name:elj-p43}
-.loader-mark .p43::after{background:#ffe9a8;animation-name:elj-t43}
+.loader-mark .p43 b{background:var(--mark-rest);opacity:var(--mark-rest-opacity);animation-name:elj-p43}
+.loader-mark .p43::after{animation-name:elj-t43}
 @keyframes elj-p43{0%,38.499%{transform:scaleY(0);animation-timing-function:cubic-bezier(.16,1,.3,1)}46.074%,82.645%{transform:scaleY(1);animation-timing-function:cubic-bezier(.65,0,.85,.2)}89.463%,100%{transform:scaleY(0)}}
 @keyframes elj-t43{0%,82.645%{transform:translateY(0);opacity:0}84.281%{opacity:0.95}96.281%,100%{transform:translateY(-0.062em);opacity:0}}
 @media (prefers-reduced-motion: reduce){
@@ -625,18 +729,12 @@ code, .mono {
 .loader-mark i::after{animation:none;opacity:0}}
 /* brand-mark:end */
 
+/* The loading screen's wordmark is the same lockup as the one in the header
+   (see .app-wordmark). */
 .loader-wordmark {
-  font-family: "Schibsted Grotesk", var(--font-body, system-ui), sans-serif;
   font-size: clamp(30px, 5vw, 40px);
-  font-weight: 700;
-  letter-spacing: -0.01em;
   line-height: 1;
-  color: #fff8e0;
   margin-top: 14px;
-}
-
-.loader-wordmark span {
-  color: var(--brand);
 }
 
 /* Determinate rail. One file resolved is one step, which is the only
@@ -647,7 +745,7 @@ code, .mono {
   width: min(220px, 60vw);
   height: 2px;
   border-radius: 1px;
-  background: rgba(255, 248, 224, 0.09);
+  background: var(--hairline);
   overflow: hidden;
   margin-top: 4px;
 }
@@ -667,7 +765,7 @@ code, .mono {
 .loader-counter {
   font-size: 10px;
   letter-spacing: 0.08em;
-  color: rgba(255, 248, 224, 0.32);
+  color: var(--ink-soft);
   font-family: var(--font-mono, monospace);
   /* Source names run long ("National Grid ESO — Balancing Mechanism"), so the
      line wraps and stays centred rather than running off a phone screen. */
@@ -678,12 +776,12 @@ code, .mono {
 }
 
 .loader-counter #loader-n {
-  color: rgba(255, 248, 224, 0.72);
+  color: var(--ink-muted);
   font-weight: 600;
 }
 
 .loader-counter #loader-total {
-  color: rgba(255, 248, 224, 0.48);
+  color: var(--ink-soft);
 }
 
 /* The source that just landed, in place of the old five-row terminal.
@@ -691,25 +789,22 @@ code, .mono {
    the line does not sit with a dangling middot. */
 .loader-source {
   text-transform: uppercase;
-  color: rgba(255, 248, 224, 0.42);
+  color: var(--ink-soft);
   transition: opacity 0.2s ease-out;
 }
 
 .loader-source:not(:empty)::before {
   content: "·";
   margin: 0 0.5em;
-  color: rgba(255, 248, 224, 0.22);
+  color: var(--ink-soft);
 }
 
 @media (max-width: 520px) {
   .loader-mark { font-size: 112px; }
 }
 
-/* Dashboard body - always dark.
-   Target html as well as body so mobile overscroll shows dark chrome, not the
-   white fallback that the Stacked base sheet applies to html.
-   Gradient stops are intentionally darker than --slate-800 (#161718) for depth;
-   the start (#0f1517) is brand-shifted for cool chrome feel. */
+/* Page ground, in both modes. Target html as well as body so mobile
+   overscroll shows the mode's page colour, not a fallback. */
 html,
 body {
   background: var(--surface-bg-3);
@@ -741,8 +836,11 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 3px;
+  /* Ink in both modes (15.8:1 on paper, 18.4:1 on the dark ground). The
+     brand colour only just clears a focus indicator's 3:1 on paper, and
+     not on its own brand-subtle fills. */
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
   border-radius: var(--r-sm);
 }
 
@@ -773,10 +871,6 @@ body {
   #observablehq-center:has(.app-shell) > #observablehq-footer {
     margin-inline: 14px;
   }
-
-  .display-xl {
-    line-height: 1;
-  }
 }
 
 main table {
@@ -785,336 +879,1580 @@ main table {
   max-width: 100%;
 }
 
-/* ============ APP SHELL LAYOUT ============ */
+/* =========================================================================
+   DASHBOARD — one DOM, two layouts
+   src/index.md renders one tree; the mode's layout comes from CSS on
+   :root[data-theme] (redesign plan 3). Rendering a second tree and hiding
+   it would duplicate IDs and make the aria-live readouts announce twice.
+
+   Light desktop (≥1100px) is the Almanac board (mocks/light-desktop.html):
+   hero 396 | globe | 34 | rail 234, with the timeline band below and the
+   footer after the fold. Dark desktop is the Horizon stage
+   (mocks/dark-desktop.html): the globe fills the first viewport behind the
+   hero and a glass dock. Until the tablet and phone layouts (PR 4) land,
+   narrower screens stack in both modes.
+   ========================================================================= */
+
+/* The dashboard owns its gutters at every width: lift Framework's 1440px
+   body cap and its page margins, as #1082 did at phone widths. */
+body:has(.app-shell) { max-width: none; }
+#observablehq-center:has(.app-shell) { margin: 0; }
+#observablehq-main:has(.app-shell) { margin: 0; }
+
 .app-shell {
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  min-height: 100vh;
-  max-width: 1600px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "header" "hero" "globe" "rail" "timeline" "footer";
+  max-width: 1680px;
   margin: 0 auto;
-  padding: 24px 32px;
-  gap: 16px;
+  padding: 0 20px;
   color: var(--ink);
-}
-
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  row-gap: 12px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--hairline);
-  position: relative;   /* needed for z-index to apply */
-  z-index: 10;          /* layers above the fixed globe canvas (z-index: 0) */
-}
-
-.app-header-right {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  /* Theme toggle (151px) + gap + the nav's widest link is ~276px, wider than
-     a phone's content box. Without wrap this row set the page's minimum
-     width; with it the nav drops below the toggle. */
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  row-gap: 10px;
-}
-
-.app-title {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  font-family: var(--font-body);
 }
 
 /* The Spectrum mark, static. The loader runs the animated version once;
    a second copy animating forever in the header would compete with the
-   globe for the same main thread that #1054 had to rescue. */
+   globe for the same main thread that #1054 had to rescue. It is inline SVG
+   (generated between the brand-mark-still markers in src/index.md) rather
+   than an <img>, because an <img> cannot read the --mark-* tokens. */
 .app-mark {
   width: 26px;
   height: 26px;
   display: block;
   flex-shrink: 0;
+  overflow: visible;
 }
 
-.app-wordmark {
-  font-weight: 800;
-  font-size: 16px;
-  letter-spacing: 0.04em;
-  color: var(--ink);
-}
-
-/* "Joule" on the wordmark. This was an italic Fraunces accent carried over
-   from the Ledger redesign; it is now upright brand face at 700, which is the
-   lockup as drawn on the design canvas and what the loading screen shows two
-   seconds earlier. It still picks up --brand, so it tints gold on Sunfire and
-   blue on Deepcurrent. Reverting is this rule alone. */
-.app-wordmark-accent {
-  font-weight: 700;
-  color: var(--brand);
+/* The wordmark lockup, shared by the header and the loading screen, is the
+   brand system's in both modes: Schibsted Grotesk 700 at -0.01em, "Every
+   Last" in ink and "Joule" in the brand colour (--brand-text, the brand hue
+   that carries small text in each mode). */
+.app-wordmark,
+.loader-wordmark {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight-base);
   letter-spacing: -0.01em;
-  margin-left: 1px;
-}
-
-.app-tag {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-  padding-left: 14px;
-  border-left: 1px solid var(--hairline-strong);
-  margin-left: 2px;
-}
-
-/* Observable Framework's theme sets `a[href]{color:var(--theme-foreground-focus)}`
- * (specificity 0,1,1). Scoping with `.app-tag` lifts our rule to (0,2,0)
- * so the link inherits the muted tag colour instead of the framework blue. */
-.app-tag .app-tag-version {
-  color: inherit;
-  text-decoration: none;
-  border-bottom: 1px dotted var(--hairline-strong);
-  transition: color 120ms ease, border-color 120ms ease;
-}
-
-.app-tag .app-tag-version:hover,
-.app-tag .app-tag-version:focus-visible {
-  color: var(--brand);
-  border-bottom-color: var(--brand);
-}
-
-.app-methodology {
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  color: var(--ink-muted);
-  text-decoration: none;
-  padding: 8px 14px;
-  border: 1px solid var(--hairline-strong);
-  border-radius: 999px;
-}
-
-.app-methodology:hover {
-  background: var(--brand-subtle);
   color: var(--ink);
-  border-color: var(--brand);
+}
+.app-wordmark-accent,
+.loader-wordmark span {
+  color: var(--brand-text);
 }
 
-/* Primary nav (right-aligned in header) */
-.app-nav {
-  display: inline-flex;
-  gap: 4px;
+/* ---- Header: lockup left, nav + DOI pill + mode switch right ------------ */
+.app-header {
+  grid-area: header;
+  display: flex;
   align-items: center;
-  /* Five items with long labels ("Historical record") overflow a narrow
-     header; without this the row scrolls sideways instead of wrapping. */
+  justify-content: space-between;
+  gap: 12px 24px;
+  flex-wrap: wrap;
+  min-height: 64px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hairline);
+  position: relative;
+  z-index: 10;
+}
+
+.app-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.app-lockup:hover { text-decoration: none; }
+.app-lockup .app-mark { width: 26px; height: 26px; }
+.app-lockup .app-wordmark { font-size: 17px; line-height: 1; }
+/* The dashboard's dark header floats over the sky: no rule (redesign plan
+   3.2, 3.4). The doc pages keep theirs. */
+:root[data-theme="dark"] .app-shell > .app-header { border-bottom-color: transparent; }
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  min-width: 0;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
   flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 6px 22px;
+  font-size: 14px;
 }
 .app-nav a {
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  color: var(--ink-muted);
-  text-decoration: none;
-  padding: 7px 14px;
-  border-radius: 999px;
-  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
-  border: 1px solid transparent;
-}
-.app-nav a:hover,
-.app-nav a[aria-current="page"] {
-  background: var(--brand-subtle);
   color: var(--ink);
-  border-color: var(--brand);
+  text-decoration: none;
 }
+.app-nav a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
-.app-body {
-  display: grid;
-  grid-template-columns: minmax(300px, 1fr) minmax(400px, 2fr) minmax(280px, 1fr);
-  gap: 32px;
-  align-items: center;
-  align-self: start;   /* don't stretch to fill app-shell's 1fr row — prevents
-                          the globe being pushed down to the vertical midpoint */
-  padding: 8px 0;
-  position: relative;
+.app-version {
+  font: 12px/1 var(--font-mono);
+  padding: 7px 10px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  white-space: nowrap;
 }
+:root[data-theme="dark"] .app-version { border-color: var(--hairline); }
+.app-nav .app-version:hover { text-decoration: none; background: color-mix(in srgb, var(--ink) 8%, transparent); }
 
-.panel {
+/* ---- Hero ------------------------------------------------------------------ */
+.hero {
+  grid-area: hero;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  padding: 24px 0 8px;
+  position: relative;
+  z-index: 1;
 }
 
-/* The lockup sits at the head of the sidebar now, not in the full-width
-   header: the headline stack reads as one column under the mark. */
-.app-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 18px;
-  margin-bottom: 22px;
+.hero-eyebrow {
+  font: 400 12px/1.3 var(--font-mono);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.hero-eyebrow-time { display: none; }
+
+.hero-pct {
+  margin: 18px 0 0 -4px;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight-strong);
+  font-size: var(--fs-hero);
+  line-height: var(--display-leading);
+  letter-spacing: var(--display-tracking);
+  color: var(--ink);
+}
+.hero-pct-sign { font-style: normal; }
+
+.hero .lead {
+  margin: 20px 0 0;
+  max-width: none;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+/* Shown only when the build stamp is older than DEPLOY_STALE_AFTER_HOURS
+   (src/lib/freshness.ts); hidden, it takes no space in any layout. The mark
+   is .hotspot-units-note's warning rule, and the words are ink, because
+   --warning falls under 4.5:1 on paper. No `display` here: it would beat
+   the `hidden` attribute. */
+.data-stale-notice {
+  margin: 12px 0 0;
+  max-width: none;
+  padding-left: 10px;
+  border-left: 3px solid var(--warning);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.hero-stats {
+  margin: 24px 0 0;
   border-bottom: 1px solid var(--hairline);
 }
-
-.app-brand .app-wordmark {
-  font-size: 19px;
-}
-
-.panel-left {
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-  padding: 80px 0 80px 24px;
-  /* Opaque at outer edge, fades to transparent toward globe */
-  /* Flat panel, hard edge. This used to fade to transparent toward the
-     globe and mask its own top and bottom away, which is most of what read
-     as "faded" — a list that dissolves instead of ending. */
-  background: var(--surface-bg-3);
-}
-
-/* Globe panel sits in the center column of the 3-column grid.
-   No position: relative here — the canvas-area uses position: absolute
-   and must escape to .app-body as its containing block. */
-.panel-center {
+.hero-stats .stat {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
-  /* Fill the grid row so the .globe-overlay row (margin-top: auto) pins to the
-     bottom of the globe column instead of floating at its vertical centre. */
-  align-self: stretch;
-}
-
-/* Legend (left) + zoom (right) in the globe column, in normal flow. They used
-   to be absolutely positioned against .app-body, whose bottom corners are
-   exactly where the opaque edges of the side panels sit, so the left panel's
-   stats row painted over the legend. pointer-events: none on the row keeps
-   globe drag working through the gap; the children restore it. */
-.globe-overlay {
-  margin-top: auto;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;            /* narrow desktop: zoom drops to its own line */
   justify-content: space-between;
-  align-items: flex-end;
-  gap: 8px 12px;
-  padding: 0 12px 12px;
-  position: relative;
-  z-index: 2;
-  pointer-events: none;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 0 10px;
+  border-top: 1px solid var(--hairline);
 }
-.globe-overlay > * { pointer-events: auto; }
-.globe-overlay > .globe-legend { flex: 0 0 auto; }   /* never squeeze the legend */
-.globe-overlay > .globe-zoom-controls { margin-left: auto; } /* right-aligned even when wrapped */
-
-/* Globe canvas-area sits absolute within .app-body (position: relative) so it
-   spans from the header's bottom border to the timeline's top border, across
-   the full content width, and scrolls naturally with the page.
-   top and height are set directly by syncGlobeRect() in globe.js. */
-.globe-canvas-area {
-  display: grid;
-  align-items: center;
-  justify-items: center;
+.stat-label {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
+}
+/* Per-mode wording: .label-long is the accessible text, which light shows;
+   .label-short is dark's, aria-hidden so an accessible name never changes
+   with the mode (redesign plan 3). Dark keeps the long text for screen
+   readers only. */
+.label-short { display: none; }
+:root[data-theme="dark"] .label-short { display: inline; }
+:root[data-theme="dark"] .label-long {
   position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 0;
-  pointer-events: none;  /* panel content layers above and receives events */
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.stat-value {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight-strong);
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.stat-unit {
+  font: 400 12px/1 var(--font-mono);
+  letter-spacing: 0;
+  color: var(--ink-muted);
 }
 
-.globe-canvas-area > * {
-  grid-area: 1 / 1;
+/* Dark hero (mocks/dark-desktop.html): the eyebrow is the brand colour, led
+   by a glowing dot and the live time; the lead is muted; the three stats sit
+   in one row of hairline-divided cells with short Mono labels. */
+:root[data-theme="dark"] .hero-eyebrow { font-size: 11px; color: var(--brand-text); }
+:root[data-theme="dark"] .hero-eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 10px;
+  vertical-align: 1px;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 10px var(--brand);
 }
-
-.panel-right {
+:root[data-theme="dark"] .hero-eyebrow-time { display: inline; }
+:root[data-theme="dark"] .hero-eyebrow-time::after { content: " · "; }
+:root[data-theme="dark"] .hero .lead { line-height: 1.5; color: var(--ink-muted); }
+:root[data-theme="dark"] .hero-stats {
+  display: flex;
+  flex-wrap: wrap;           /* one row from 360px up; wraps on the narrowest phones */
+  row-gap: 16px;
+  margin: 28px 0 0 -22px;
+  border-bottom: 0;
+}
+:root[data-theme="dark"] .hero-stats .stat {
+  flex-direction: column;
   justify-content: flex-start;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  padding: 0 22px;
+  border-top: 0;
+  border-left: 1px solid transparent;
+}
+:root[data-theme="dark"] .hero-stats .stat + .stat { border-left-color: var(--hairline); }
+:root[data-theme="dark"] .stat-label {
+  font: 400 11px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+:root[data-theme="dark"] .stat-value {
+  font-family: var(--font-body);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+:root[data-theme="dark"] .stat-unit { font-size: 11px; }
+
+.hero-caption {
+  margin: 18px 0 0;
+  max-width: none;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+/* "Fig. 1" is an <em>; Schibsted Grotesk ships no italic, so it is a mono
+   label rather than a synthesised slant. */
+.hero-fig {
+  font: 500 11px/1 var(--font-mono);
+  font-style: normal;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+}
+/* The dark board has no figure caption (redesign plan 5). */
+:root[data-theme="dark"] .hero-caption { display: none; }
+
+/* ---- Globe stage ------------------------------------------------------------ */
+.globe-stage {
+  grid-area: globe;
   position: relative;
-  z-index: 1;
-  padding: 80px 16px 80px 0;
-  /* Mirror of panel-left — transparent toward globe, opaque at outer edge */
-  background: var(--surface-bg-3);
+  min-width: 0;
+  aspect-ratio: 1;
+  max-height: 80svh;
+  width: 100%;
+  justify-self: center;
 }
 
 #globe-canvas {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  height: 100%;   /* fills the fixed canvas-area top→bottom */
-  pointer-events: all;  /* canvas itself is interactive even though parent is not */
+  height: 100%;
   cursor: grab;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
 }
-
-#globe-canvas.is-dragging {
-  cursor: grabbing;
-}
-
-#globe-canvas[hidden] {
-  visibility: hidden;
-}
+#globe-canvas.is-dragging { cursor: grabbing; }
+#globe-canvas[hidden] { visibility: hidden; }
 
 .globe-placeholder {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   display: grid;
   place-items: center;
-  background:
-    none;
 }
-
 .globe-placeholder-label {
-  font-size: 11px;
+  font: 11px/1 var(--font-mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.58);
+  color: var(--ink-soft);
 }
 
-/* Zoom control row — right-hand end of .globe-overlay. */
+/* The selected region's label card: tracks its needle head, flips side at
+   the canvas edge (placed by src/globe-engraved.js placeSelectionLabel). */
+.globe-selection {
+  position: absolute;
+  z-index: 3;
+  width: 196px;
+  box-sizing: border-box;
+  padding: 10px 12px 11px;
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline-strong);
+  color: var(--ink);
+  pointer-events: auto;
+}
+.globe-selection[hidden] { display: none; }
+.gs-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font: 400 10.5px/1.3 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* The fuel is named in ink with a swatch beside it: fuel colours are
+   graphics-only on paper (hydro 3.7:1, solar 3.2:1). */
+.gs-fuel { display: inline-flex; align-items: center; gap: 5px; }
+.gs-fuel .dot { width: 7px; height: 7px; }
+/* Ink, like the hover card's name: Framework's a[href] rule would paint it
+   the link colour, which is amber in dark. */
+.globe-selection .gs-name {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight-base);
+  font-size: 25px;
+  line-height: 1.1;
+  color: var(--ink);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.gs-name:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.gs-now { margin-top: 2px; font-size: 13px; }
+/* Dark: glass, as the dock; the name in 500 20px (redesign plan 6.3). */
+:root[data-theme="dark"] .globe-selection {
+  background: var(--surface-panel);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border-color: var(--hairline);
+  border-radius: 12px;
+}
+:root[data-theme="dark"] .gs-name { font-family: var(--font-body); font-weight: 500; font-size: 20px; }
+
+/* Zoom: the wheel and a pinch zoom the globe everywhere; the slider is the
+   keyboard route. The light board draws no zoom control, so it sits quietly
+   in the stage's corner. */
 .globe-zoom-controls {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 8px;
-  pointer-events: auto;
 }
+.globe-zoom-controls[hidden] { display: none; }
+:root[data-theme="dark"] .globe-zoom-controls { display: none; }
 
-.globe-zoom-label {
-  font-size: 10px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.40);
-  user-select: none;
-  flex-shrink: 0;
+/* Dark: the globe zooms with a scroll over it, a pinch or these buttons, a
+   glass column at the stage's right, under the header and clear of the dock.
+   Phones zoom in the explorer, with a pinch. */
+.horizon-view { display: none; }
+@media (min-width: 641px) {
+  :root[data-theme="dark"] .horizon-view:not([hidden]) {
+    position: absolute;
+    top: 96px;
+    right: 24px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    background: var(--surface-panel);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    overflow: hidden;
+  }
 }
-
-/* No width here: Framework's `input[type=range]{width:240px}` (0,1,1)
-   outranks a bare class, so the 110px this rule used to set never applied
-   and desktop has always shown 240px. The narrow-screen width below is
-   scoped to lift it past Framework's rule. */
-.globe-zoom-slider {
+.horizon-view button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
   cursor: pointer;
-  accent-color: rgba(255,255,255,0.65);
-  opacity: 0.65;
+}
+.horizon-view button + button { border-top: 1px solid var(--hairline); }
+.horizon-view button:hover:not(:disabled) { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.horizon-view button:disabled { color: var(--ink-soft); opacity: 0.5; cursor: default; }
+.horizon-view button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+.globe-zoom-label {
+  font: 10px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  user-select: none;
+}
+.globe-zoom-controls .globe-zoom-slider {
+  width: 96px;
+  cursor: pointer;
+  accent-color: var(--ink-muted);
+  opacity: 0.5;
   transition: opacity 0.15s;
 }
-
 .globe-zoom-slider:hover,
-.globe-zoom-slider:focus {
-  opacity: 1;
-  outline: none;
+.globe-zoom-slider:focus { opacity: 1; }
+.globe-zoom-slider:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* ---- Rail: "Largest now" --------------------------------------------------- */
+.rail {
+  grid-area: rail;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 20px 0 8px;
+  position: relative;
+  z-index: 1;
+}
+.rail-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 10px;
+}
+.rail-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight-base);
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+.rail-time { font: 11px/1 var(--font-mono); color: var(--ink); white-space: nowrap; }
+
+.hotspot-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  border-bottom: 1px solid var(--hairline);
+}
+.hotspot-item {
+  display: grid;
+  grid-template-columns: 20px 26px minmax(0, 1fr) auto;
+  column-gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid var(--hairline);
+  font-size: 13.5px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.hs-rank { font: 11px/1 var(--font-mono); color: var(--ink); }
+.hs-needle { display: block; line-height: 0; }
+.fuel-solar { color: var(--fuel-solar); }
+.fuel-wind { color: var(--fuel-wind); }
+.fuel-hydro { color: var(--fuel-hydro); }
+.hotspot-item > :not(.hs-needle) { color: var(--ink); }
+.needle-glyph { display: block; overflow: visible; }
+.needle-glyph-stale { stroke: var(--quality-warning); }
+.hotspot-name {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* "est." and "stale" are <em>s set as mono labels (no synthesised italic). */
+.hs-tag {
+  font: 400 11px/1 var(--font-mono);
+  font-style: normal;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hs-bar { display: none; }
+/* Dark rows are the dock's (mocks/dark-desktop.html): name, a glowing bar
+   and the value. The beams carry no needle, so neither does the list; the
+   est. and stale tags stay, as the list's words for what the beams show by
+   shape (WCAG 1.4.1). */
+:root[data-theme="dark"] .hotspot-list { border-bottom: 0; }
+:root[data-theme="dark"] .hotspot-item {
+  grid-template-columns: minmax(0, 1fr) 110px 52px;
+  column-gap: 12px;
+  min-height: 25px;
+  padding: 0;
+  border-top: 0;
+  font-size: 14px;
+}
+:root[data-theme="dark"] :is(.hs-rank, .hs-needle) { display: none; }
+:root[data-theme="dark"] .hs-tag {
+  font: 400 10px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+:root[data-theme="dark"] .hs-bar {
+  display: block;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--bar-track);
+}
+:root[data-theme="dark"] .hs-bar > span {
+  display: block;
+  height: 100%;
+  min-width: 4px;
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+}
+:root[data-theme="dark"] .hotspot-item > .hs-bar { color: inherit; }
+:root[data-theme="dark"] .hotspot-item.fuel-solar > .hs-bar { color: var(--fuel-solar); }
+:root[data-theme="dark"] .hotspot-item.fuel-wind > .hs-bar { color: var(--fuel-wind); }
+:root[data-theme="dark"] .hotspot-item.fuel-hydro > .hs-bar { color: var(--fuel-hydro); }
+:root[data-theme="dark"] .hotspot-gw { font-size: 12px; }
+.hotspot-gw {
+  font: 13px/1 var(--font-mono);
+  text-align: right;
+  white-space: nowrap;
+}
+/* The unit rides in the rail header's context on desktop; screen readers
+   still hear it. */
+.hs-unit {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.hotspot-item-unavailable { cursor: help; }
+.hotspot-item-unavailable .hotspot-name,
+.hotspot-item-unavailable .hotspot-gw { color: var(--ink-soft); }
+.hotspot-item-unavailable .hotspot-gw { font-style: italic; }
+.hotspot-unavailable-head {
+  padding: 10px 0 6px;
+  border-top: 1px dashed var(--hairline);
+  font: 10px/1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.hotspot-list:empty::after {
+  content: "—";
+  display: block;
+  padding: 8px 0;
+  color: var(--ink-soft);
 }
 
-.globe-zoom-slider:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.6);
-  outline-offset: 2px;
+/* Explains what the share view measures. Hidden in the absolute view. */
+.hotspot-units-note {
+  margin: 0 0 10px;
+  max-width: none;
+  padding-left: 8px;
+  border-left: 2px solid var(--warning);
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--ink-soft);
 }
 
-/* 240px + the "Zoom" label is ~286px, wider than a phone's content box, so
-   the zoom row set the page's minimum width. */
-@media (max-width: 900px) {
-  .globe-zoom-controls .globe-zoom-slider {
-    width: 140px;
+.rail-note {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin: 12px 0 0;
+  max-width: none;
+  font-size: 13px;
+  color: var(--ink);
+}
+.rail-all { color: var(--ink); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
+:root[data-theme="dark"] .rail-all { color: var(--brand-text); text-decoration: none; }
+/* Dark names the whole directory in the head instead ("All N", the count
+   /regions lists); light keeps "N more curtailing · All regions" below. */
+.rail-all-head { display: none; }
+:root[data-theme="dark"] .rail-all-head {
+  display: inline;
+  font: 400 11px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+:root[data-theme="dark"] .rail-all-head:hover { text-decoration: underline; text-underline-offset: 3px; }
+:root[data-theme="dark"] .rail-time { display: none; }
+:root[data-theme="dark"] .rail-title {
+  font: 400 11px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The legend (#globe-legend): each mode keys its own marks. Light lists the
+   needle glyphs and the fuels. Dark says "brighter beam = higher confidence"
+   (measured 1, anchored 0.8, estimated 0.62) and keys the two shape cues,
+   the estimated beam's dashed core and the stale feed's dashed ring; its
+   fuels are keyed in the dock's timeline header. */
+.globe-legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+  margin-top: 26px;
+  font-size: 12.5px;
+  color: var(--ink);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.legend-needle { display: block; line-height: 0; color: var(--fuel-solar); }
+.legend-beam { display: none; line-height: 0; color: var(--fuel-solar); }
+.beam-glyph { display: block; overflow: visible; }
+.beam-glyph-stale { stroke: var(--quality-warning); }
+.legend-fuel .dot { width: 9px; height: 9px; }
+.legend-caption { display: none; }
+:root[data-theme="dark"] .globe-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: 0;
+  font: 400 10px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+:root[data-theme="dark"] .legend-caption { display: block; order: -1; }
+:root[data-theme="dark"] :is(.legend-needle, .legend-fuel, .legend-measured, .legend-anchored) { display: none; }
+:root[data-theme="dark"] .legend-beam { display: block; }
+:root[data-theme="dark"] .legend-item { gap: 5px; }
+
+/* ---- Timeline band ----------------------------------------------------------- */
+.app-timeline {
+  grid-area: timeline;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "label" "fuels" "plot" "controls";
+  gap: 12px;
+  padding: 12px 0 16px;
+  border-top: 1px solid var(--hairline-strong);
+  position: relative;
+  z-index: 1;
+}
+.timeline-label {
+  grid-area: label;
+  font: 11px/1.3 var(--font-mono);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.timeline-fuels {
+  grid-area: fuels;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 16px;
+}
+.timeline-fuel {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px;
+  min-height: 26px;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink);
+}
+.timeline-fuel-name { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+.timeline-fuel .dot { width: 8px; height: 8px; }
+.timeline-fuel-gw { font: 13px/1.2 var(--font-mono); white-space: nowrap; }
+
+.timeline-plot {
+  grid-area: plot;
+  position: relative;
+  min-width: 0;
+  padding-top: 18px;
+}
+.timeline-hours {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 14px;
+  font: 11px/1 var(--font-mono);
+  color: var(--ink);
+}
+.timeline-hours span { position: absolute; transform: translateX(-50%); }
+.timeline-hours span:nth-child(1) { left: 0; transform: none; }
+.timeline-hours span:nth-child(2) { left: 25%; }
+.timeline-hours span:nth-child(3) { left: 50%; }
+.timeline-hours span:nth-child(4) { left: 75%; }
+.timeline-hours span:nth-child(5) { left: 100%; transform: translateX(-100%); }
+#timeline-canvas {
+  display: block;
+  width: 100%;
+  height: 104px;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+/* Dark: the ribbon, its hour labels below it, and the fuel key as a row of
+   glowing dots (mocks/dark-desktop.html). The canvas carries 8px of
+   headroom for the playhead above the 80px chart. */
+:root[data-theme="dark"] .app-timeline { border-top: 0; }
+:root[data-theme="dark"] .timeline-label { letter-spacing: 0.08em; }
+:root[data-theme="dark"] .timeline-fuels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+:root[data-theme="dark"] .timeline-fuel { min-height: 0; border-bottom: 0; }
+:root[data-theme="dark"] .timeline-fuel-name {
+  gap: 7px;
+  font: 400 11px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+:root[data-theme="dark"] .timeline-fuel .dot--solar { box-shadow: 0 0 8px var(--fuel-solar); }
+:root[data-theme="dark"] .timeline-fuel .dot--wind { box-shadow: 0 0 8px var(--fuel-wind); }
+:root[data-theme="dark"] .timeline-fuel .dot--hydro { box-shadow: 0 0 8px var(--fuel-hydro); }
+:root[data-theme="dark"] .timeline-fuel-gw { display: none; }
+:root[data-theme="dark"] .timeline-plot { padding: 0 0 20px; }
+:root[data-theme="dark"] .timeline-hours {
+  top: auto;
+  bottom: 0;
+  font-size: 10px;
+  color: var(--ink-muted);
+}
+:root[data-theme="dark"] .timeline-hours span:is(:nth-child(1), :nth-child(5)) { transform: translateX(-50%); }
+:root[data-theme="dark"] #timeline-canvas { height: 88px; margin-top: -8px; }
+
+.timeline-controls {
+  grid-area: controls;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+.timeline-controls > * { max-width: 100%; }
+
+/* ---- Controls: play, segmented groups, Now ---------------------------------- */
+.ctl-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ctl-play {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--surface-bg-3);
+  cursor: pointer;
+}
+.ctl-play svg { display: block; }
+:root[data-theme="dark"] .ctl-play {
+  width: 44px;
+  height: 44px;
+  background: var(--brand);
+  color: var(--brand-on);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--brand) 40%, transparent);
+}
+
+.seg {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  min-height: 34px;
+  padding: 3px;
+  box-sizing: border-box;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 17px;
+}
+:root[data-theme="dark"] .seg { border-color: var(--hairline); padding: 4px; }
+.seg-btn,
+.ctl-now {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: 500 13px/1 var(--font-body);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.seg-btn:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.seg-btn[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--surface-bg-3);
+}
+:root[data-theme="dark"] .seg-btn[aria-pressed="true"] {
+  background: var(--brand-subtle);
+  color: var(--brand-text);
+}
+/* Dark controls speak Mono 10.5 uppercase (redesign plan 3.2). */
+:root[data-theme="dark"] :is(.seg-btn, .ctl-now) {
+  height: 26px;
+  padding: 0 11px;
+  font: 400 10.5px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ctl-now {
+  height: 34px;
+  border: 1px solid var(--hairline-strong);
+}
+:root[data-theme="dark"] .ctl-now { height: 34px; border-color: var(--hairline); }
+.ctl-now[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--surface-bg-3);
+}
+:root[data-theme="dark"] .ctl-now[aria-pressed="true"] {
+  background: var(--brand-subtle);
+  color: var(--brand-text);
+}
+
+/* ---- Footer ---------------------------------------------------------------------- */
+.app-footer {
+  grid-area: footer;
+  padding: 16px 0 24px;
+  border-top: 1px solid var(--hairline);
+  position: relative;
+  z-index: 1;
+}
+.app-footer .caption {
+  max-width: 1100px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.app-footer .caption strong { color: var(--ink-muted); font-weight: 500; letter-spacing: 0.03em; }
+.app-footer .caption a { color: var(--brand-text); text-decoration: none; }
+.app-footer .caption a:hover { text-decoration: underline; }
+.footer-refresh { display: inline-block; margin-left: 6px; }
+
+/* ---- Light desktop: the Almanac grid --------------------------------------------- */
+@media (min-width: 1100px) {
+  .app-shell {
+    grid-template-columns: 396px minmax(0, 1fr) 34px 234px;
+    /* The middle row fills the first viewport (76 + row + 152 = 100svh), but
+       never less than the hero and rail need: on a short window the band
+       moves below the fold rather than the hero running into it. */
+    grid-template-rows: 76px minmax(max-content, calc(100svh - 228px)) 152px auto;
+    grid-template-areas:
+      "header header header header"
+      "hero globe . rail"
+      "timeline timeline timeline timeline"
+      "footer footer footer footer";
+    padding: 0 56px;
   }
+  .app-header { min-height: 0; padding: 0; flex-wrap: nowrap; }
+  .app-lockup { gap: 12px; }
+  .app-lockup .app-mark { width: 30px; height: 30px; }
+  .app-lockup .app-wordmark { font-size: 18px; }
+  .app-header-right { flex-wrap: nowrap; gap: 28px; }
+  .app-nav { flex-wrap: nowrap; gap: 28px; }
+
+  .hero { padding: 32px 0 0; }
+  .hero-pct { margin: 22px 0 0 -6px; }
+  .hero .lead { margin-top: 22px; font-size: 18px; }
+  .hero-stats { margin-top: 28px; }
+
+  /* The globe fills its cell; the renderer sizes the sphere to 0.43 of the
+     cell's shorter side and centres it. */
+  .globe-stage { aspect-ratio: auto; max-height: none; height: 100%; }
+
+  .rail { padding-top: 28px; }
+
+  .app-timeline {
+    grid-template-columns: 180px minmax(0, 1fr) 272px;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "label plot controls"
+      "fuels plot controls";
+    column-gap: 20px;
+    row-gap: 12px;
+    padding: 12px 0 0;
+    align-content: start;
+  }
+  .timeline-fuels { grid-template-columns: minmax(0, 1fr); gap: 8px; align-self: start; }
+  .timeline-plot { padding-top: 18px; }
+  .timeline-controls { padding-top: 18px; }
+  .timeline-controls .ctl-row { flex-wrap: nowrap; }
+  .timeline-controls .seg { flex-wrap: nowrap; }
+  /* Play, four speeds (0.5× to 8×) and Now fit the 272px column at 10px padding. */
+  :root[data-theme="light"] .ctl-speed .seg-btn { padding: 0 10px; }
+}
+
+/* ---- Dark: the Horizon stage (tablet and desktop) ------------------------------ */
+/* From 641px the first viewport is a stage (100svh, at least 720px): the
+   globe canvas fills it behind the header and the hero, and the dock's two
+   glass cells sit at its foot (redesign plan 3.2, section 2). The footer
+   follows the stage. Desktop sets the cells side by side; tablet stacks
+   them. */
+@media (min-width: 641px) {
+  :root[data-theme="dark"] .app-shell { max-width: none; padding: 0; }
+
+  /* The stage: the globe's cell spans the stage's rows, and its height sets
+     theirs (a 1fr row takes the slack). */
+  :root[data-theme="dark"] .globe-stage {
+    width: auto;
+    height: auto;
+    min-height: max(100svh, 720px);
+    aspect-ratio: auto;
+    max-height: none;
+    justify-self: stretch;
+  }
+  /* A vertical swipe on the stage scrolls the page; a horizontal drag turns
+     the globe. */
+  :root[data-theme="dark"] #globe-canvas { touch-action: pan-y; }
+
+  :root[data-theme="dark"] .hero {
+    width: min(600px, 100%);
+    justify-self: start;
+    padding: 0;
+  }
+  /* The scrim that keeps the hero legible over bright beams: a 980 x 760
+     box at (-200, -120) on the page, fading from the ground colour. */
+  :root[data-theme="dark"] .hero::before {
+    content: "";
+    position: absolute;
+    left: -248px;
+    top: -248px;
+    width: 980px;
+    height: 760px;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--surface-bg-3) 82%, transparent), transparent);
+  }
+  :root[data-theme="dark"] .hero-pct { margin: 20px 0 0 -8px; }
+  :root[data-theme="dark"] .hero .lead { max-width: 470px; margin-top: 24px; font-size: 18px; }
+  :root[data-theme="dark"] .data-stale-notice { max-width: 470px; }
+  :root[data-theme="dark"] .hero-stats { margin-top: 32px; }
+
+  :root[data-theme="dark"] :is(.app-timeline, .rail) {
+    min-width: 0;
+    padding: 18px 24px;
+    background: var(--surface-panel);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border: 1px solid var(--hairline);
+    border-radius: 20px;
+  }
+  /* The ribbon takes whatever width the dock leaves beside the controls,
+     so a wider or narrower screen stretches or squashes the chart, not the
+     gap between them. */
+  :root[data-theme="dark"] .app-timeline {
+    grid-template-columns: minmax(0, 1fr) 32px auto;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "label label fuels"
+      "plot . controls";
+    column-gap: 0;
+    row-gap: 18px;
+    align-content: start;
+    overflow: hidden;
+  }
+  :root[data-theme="dark"] .timeline-fuels { justify-self: end; align-self: center; }
+  /* The plot keeps its own height (ribbon + hour labels 6px under it)
+     rather than stretching down the dock with the controls column. */
+  :root[data-theme="dark"] .timeline-plot { padding-top: 0; align-self: start; }
+  :root[data-theme="dark"] .timeline-controls {
+    align-self: start;
+    align-items: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 0;
+  }
+  :root[data-theme="dark"] .timeline-controls .ctl-row { flex-wrap: nowrap; }
+
+  :root[data-theme="dark"] .rail {
+    gap: 10px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  :root[data-theme="dark"] .rail-head { padding-bottom: 0; }
+  :root[data-theme="dark"] .rail-note { display: none; }
+  /* The dock lists five; the other five rows stay in the DOM for the modes
+     and widths that show ten. */
+  :root[data-theme="dark"] .hotspot-item:nth-child(n + 6) { display: none; }
+}
+
+/* Desktop: the dock's cells side by side, 196px tall, joined along the
+   rail's hairline; the hero at (48, 128). */
+@media (min-width: 1100px) {
+  :root[data-theme="dark"] .app-shell {
+    grid-template-columns: 24px minmax(0, 1fr) 420px 24px;
+    grid-template-rows: 76px auto minmax(24px, 1fr) 196px 24px auto;
+    grid-template-areas:
+      ". header header ."
+      ". hero hero ."
+      ". . . ."
+      ". timeline rail ."
+      ". . . ."
+      "footer footer footer footer";
+  }
+  :root[data-theme="dark"] .app-shell > .app-header { padding: 0 24px; }
+  :root[data-theme="dark"] .globe-stage { grid-area: 1 / 1 / 6 / -1; }
+  /* The label card keeps clear of the dock (196 + 24 + 12). */
+  :root[data-theme="dark"] #globe-canvas { --globe-label-clear: 232px; --globe-top-clear: 76px; }
+  :root[data-theme="dark"] .hero { margin: 52px 0 0 24px; }
+  :root[data-theme="dark"] .app-timeline { border-right: 0; border-radius: 20px 0 0 20px; }
+  :root[data-theme="dark"] .rail { border-radius: 0 20px 20px 0; }
+  :root[data-theme="dark"] .app-footer { padding: 16px 48px 24px; }
+}
+
+/* Tablet: the dock splits into two stacked cards (section 2). */
+@media (min-width: 641px) and (max-width: 1099px) {
+  :root[data-theme="dark"] .app-shell {
+    grid-template-columns: 24px minmax(0, 1fr) 24px;
+    grid-template-rows: auto auto minmax(24px, 1fr) auto 12px auto 24px auto;
+    grid-template-areas:
+      ". header ."
+      ". hero ."
+      ". . ."
+      ". timeline ."
+      ". . ."
+      ". rail ."
+      ". . ."
+      "footer footer footer";
+  }
+  :root[data-theme="dark"] .globe-stage { grid-area: 1 / 1 / 8 / -1; }
+  /* The label card keeps clear of both cards. */
+  :root[data-theme="dark"] #globe-canvas { --globe-label-clear: 480px; --globe-top-clear: 76px; }
+  :root[data-theme="dark"] .hero { margin: 40px 0 0; }
+  :root[data-theme="dark"] .app-footer { padding: 16px 24px 24px; }
+}
+
+/* Light tablet: hero and globe side by side, the rail and the timeline full
+   width below (section 2). */
+@media (min-width: 641px) and (max-width: 1099px) {
+  :root[data-theme="light"] .app-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "header header"
+      "hero globe"
+      "rail rail"
+      "timeline timeline"
+      "footer footer";
+    column-gap: 32px;
+    padding: 0 24px;
+  }
+  :root[data-theme="light"] .globe-stage { align-self: center; }
+  :root[data-theme="light"] .rail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 232px;
+    grid-template-areas: "head head" "note legend" "list legend" "more legend";
+    column-gap: 40px;
+    align-content: start;
+    padding-top: 28px;
+  }
+  :root[data-theme="light"] .rail-head { grid-area: head; }
+  :root[data-theme="light"] .hotspot-units-note { grid-area: note; }
+  :root[data-theme="light"] .hotspot-list { grid-area: list; }
+  :root[data-theme="light"] .rail-note { grid-area: more; }
+  :root[data-theme="light"] .globe-legend { grid-area: legend; align-self: start; margin-top: 0; }
+  :root[data-theme="light"] .timeline-controls { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+}
+
+/* ---- The header's menu (below 960px) ------------------------------------------------ */
+/* Below 960px the nav and the DOI pill do not fit beside the lockup, so they
+   move into a menu under the header; src/components/site-chrome.js opens it.
+   The nav keeps its place in the DOM and its landmark. */
+.app-menu-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.app-menu-btn:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.app-menu-btn svg { display: block; }
+.app-nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+@media (max-width: 960px) {
+  .app-header { flex-wrap: nowrap; }
+  .app-header-right { flex-wrap: nowrap; gap: 4px; }
+  .app-menu-btn { display: inline-flex; }
+  .app-nav { display: none; }
+  .app-header.is-menu-open .app-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    position: absolute;
+    top: calc(100% + 1px);
+    right: 0;
+    z-index: 40;
+    min-width: 232px;
+    padding: 6px 0;
+    background: var(--surface-raised);
+    border: 1px solid var(--hairline-strong);
+  }
+  :root[data-theme="dark"] .app-header.is-menu-open .app-nav {
+    background: var(--surface-panel);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border-color: var(--hairline);
+    border-radius: 12px;
+  }
+  .app-header.is-menu-open .app-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 18px;
+    font-size: 16px;
+  }
+  .app-header.is-menu-open .app-nav .app-version {
+    align-self: flex-start;
+    min-height: 0;
+    margin: 8px 18px 8px;
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+}
+
+/* ---- The doc pages' header ------------------------------------------------------------ */
+/* observablehq.config.ts puts src/lib/site-header.ts's header in Framework's
+   header slot, which is a fixed bar with a look of its own. Ours sits in the
+   page's flow, like the dashboard's, and reads the same .app-header rules. */
+#observablehq-header {
+  position: relative;
+  inset: auto;           /* Framework's left/right place its fixed bar; they would shift ours */
+  z-index: 30;
+  display: block;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+}
+:root:has(#observablehq-header) { scroll-padding-top: 2.5rem; }
+/* The header meets the top of the page, as the dashboard's does. */
+#observablehq-center:has(> #observablehq-header) { margin-top: 0; }
+#observablehq-header ~ #observablehq-main { margin-top: 0; }
+.site-header {
+  min-height: 64px;
+  padding: 0;
+  border-bottom: 1px solid var(--hairline);
+}
+@media (min-width: 1100px) {
+  .site-header { min-height: 76px; padding: 0 24px; }
+}
+@media (max-width: 640px) {
+  /* Edge to edge whatever gutters the page keeps, then the phone header's
+     own 16/20px, as the dashboard's. */
+  #observablehq-header { margin-inline: calc(50% - 50vw); }
+  .site-header { height: 64px; margin: 0 16px 0 20px; }
+}
+
+/* ---- Phones (≤640px), both modes ------------------------------------------------------ */
+.explore-btn,
+.explorer-close,
+.explorer-bar,
+.sheet-handle { display: none; }
+/* Outside the phone sheet the dock is only a wrapper: its sections are the
+   page grid's own items. */
+.dock { display: contents; }
+
+@media (max-width: 640px) {
+  .app-shell { padding: 0 16px 0 20px; }
+  .app-shell > .app-header { height: 64px; min-height: 64px; padding: 0; gap: 8px; }
+  .app-lockup .app-wordmark { white-space: nowrap; }
+  .hero-pct { font-size: var(--fs-hero); }
+  .hero .lead { font-size: 16px; }
+  .globe-zoom-controls { display: none; }
+  /* The network hashrate is left out on phones, as both phone boards do. */
+  .hero-stats .stat:nth-child(2) { display: none; }
+
+  /* The phone globe is a picture, so a vertical swipe scrolls the page;
+     "Explore the globe" opens it full screen (section 6.4). */
+  #globe-canvas { pointer-events: none; touch-action: auto; cursor: default; }
+  .explore-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 2;
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font: 500 14px/1 var(--font-body);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .timeline-fuels { grid-template-columns: minmax(0, 1fr); }
+  /* The controls wrap: play, speeds and Now; then the time window and the
+     units, each full width. */
+  .timeline-controls { align-items: stretch; }
+  .timeline-controls > :is(#mode-toggle, #units-toggle) .seg { display: flex; width: 100%; }
+  .timeline-controls > :is(#mode-toggle, #units-toggle) .seg-btn { flex: 1 1 0; }
+}
+
+/* ---- Light phone (redesign plan 3.3) ----------------------------------------------- */
+@media (max-width: 640px) {
+  /* The hero's parts join the page's column so the stats can follow the
+     globe, as the board draws them. */
+  :root[data-theme="light"] .app-shell { display: flex; flex-direction: column; }
+  :root[data-theme="light"] .hero { display: contents; }
+  :root[data-theme="light"] :is(.hero-eyebrow, .hero-pct, .hero .lead, .data-stale-notice) { order: 1; }
+  :root[data-theme="light"] .globe-stage { order: 2; }
+  :root[data-theme="light"] .hero-stats { order: 3; }
+  :root[data-theme="light"] .rail { order: 4; }
+  :root[data-theme="light"] .app-timeline { order: 5; }
+  :root[data-theme="light"] .app-footer { order: 6; }
+  /* The figure caption has no room on the board; the legend below keys the
+     needles. */
+  :root[data-theme="light"] .hero-caption { display: none; }
+
+  :root[data-theme="light"] .hero-eyebrow { display: flex; flex-wrap: wrap; margin-top: 22px; font-size: 11px; }
+  :root[data-theme="light"] .hero-eyebrow-time { display: inline; order: 1; }
+  :root[data-theme="light"] .hero-eyebrow-time::before { content: "\00a0·\00a0"; }
+  :root[data-theme="light"] .hero-pct { margin: 16px 0 0 -4px; }
+  :root[data-theme="light"] .hero .lead { margin-top: 16px; }
+
+  /* The globe bleeds past both edges: a (width + 30) square at (-15, -12)
+     in a figure 372/390 of the width tall. */
+  :root[data-theme="light"] .globe-stage {
+    width: auto;
+    height: calc(100vw * 372 / 390);
+    aspect-ratio: auto;
+    max-height: none;
+    margin: 34px -16px 0 -20px;
+    overflow: hidden;
+  }
+  :root[data-theme="light"] #globe-canvas {
+    inset: auto;
+    left: -15px;
+    top: -12px;
+    width: calc(100vw + 30px);
+    height: calc(100vw + 30px);
+  }
+  :root[data-theme="light"] .explore-btn {
+    right: 20px;
+    bottom: 6px;
+    border: 0;
+    background: var(--ink);
+    color: var(--surface-bg-3);
+  }
+
+  :root[data-theme="light"] .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 14px 0 0;
+    border-top: 1px solid var(--hairline-strong);
+    border-bottom: 1px solid var(--hairline);
+  }
+  :root[data-theme="light"] .hero-stats .stat {
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 4px;
+    min-width: 0;
+    padding: 10px 0;
+    border-top: 0;
+  }
+  :root[data-theme="light"] .hero-stats .stat:nth-child(3) { padding-left: 14px; border-left: 1px solid var(--hairline); }
+  :root[data-theme="light"] .stat-label { font-size: 12.5px; }
+
+  :root[data-theme="light"] .rail { padding-top: 18px; }
+  :root[data-theme="light"] .rail-title { font-size: 23px; }
+  :root[data-theme="light"] .hotspot-item {
+    grid-template-columns: 22px 26px minmax(0, 1fr) auto;
+    padding: 10px 0;
+    font-size: 15px;
+  }
+  :root[data-theme="light"] .hotspot-gw { font-size: 14px; }
+  /* The rows carry their unit on phones, as the board does. */
+  :root[data-theme="light"] .hs-unit { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
+}
+
+/* ---- Dark phone (redesign plan 3.4) ------------------------------------------------ */
+/* One screen: the header and the hero over the sky, the horizon in a band
+   under them, and the dock as a sheet fixed to the bottom (132px collapsed,
+   70% of the viewport open; src/components/sheet.js). The two stats ride at
+   the sheet's top. */
+@media (max-width: 640px) {
+  :root[data-theme="dark"] .app-shell {
+    --sheet-h: 132px;
+    display: block;
+    position: relative;
+  }
+  :root[data-theme="dark"] .app-shell:has(.dock.is-open) { --sheet-h: 70svh; }
+  :root[data-theme="dark"] .app-shell > .app-header { position: relative; z-index: 10; }
+
+  /* The hero fills the first screen, so the footer follows it. It opens no
+     stacking context: its stats sit in the sheet, above the glass. */
+  :root[data-theme="dark"] .hero {
+    z-index: auto;
+    min-height: calc(100svh - 64px);
+    padding: 16px 0 0;
+  }
+  :root[data-theme="dark"] :is(.hero-eyebrow, .hero-pct, .hero .lead, .data-stale-notice) { position: relative; z-index: 1; }
+  :root[data-theme="dark"] .hero-eyebrow { font-size: 10px; }
+  :root[data-theme="dark"] .hero-eyebrow::before { width: 6px; height: 6px; margin-right: 8px; box-shadow: none; }
+  :root[data-theme="dark"] .hero-pct { margin: 14px 0 0 -5px; }
+  :root[data-theme="dark"] .hero .lead { margin-top: 16px; font-size: 15px; }
+
+  /* The band: from 314px on an 844px screen to the bottom (390 x 530). */
+  /* justify-self: stretch - box alignment applies to absolute boxes too, and
+     the base rule's `center` would shrink the band to its (empty) content. */
+  :root[data-theme="dark"] .globe-stage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: max(250px, calc(100svh - 530px));
+    height: min(530px, calc(100svh - 250px));
+    width: auto;
+    aspect-ratio: auto;
+    max-height: none;
+    margin: 0;
+    justify-self: stretch;
+    align-self: stretch;
+  }
+  :root[data-theme="dark"] .explore-btn {
+    left: 50%;
+    bottom: 190px;
+    transform: translateX(-50%);
+    padding: 0 18px;
+    border: 1px solid var(--hairline);
+    background: color-mix(in srgb, var(--surface-panel) 95%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: var(--ink);
+  }
+
+  :root[data-theme="dark"] .dock {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    z-index: 30;
+    height: var(--sheet-h);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 0 16px 14px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--surface-bg-3) 82%, transparent);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--hairline);
+    border-radius: 20px;
+    transition: height 220ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1));
+  }
+  :root[data-theme="dark"] .dock.is-open { overflow-y: auto; overscroll-behavior: contain; }
+  :root[data-theme="dark"] .dock:focus-visible { outline-offset: -2px; }
+  /* Room for the stats, which are the hero's and ride here. */
+  :root[data-theme="dark"] .dock::before { content: ""; order: 1; flex: none; height: 58px; }
+  :root[data-theme="dark"] .sheet-handle {
+    display: flex;
+    order: 0;
+    flex: none;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 24px;
+    padding: 10px 0 0;
+    border: 0;
+    background: transparent;
+    cursor: grab;
+    touch-action: none;
+  }
+  :root[data-theme="dark"] .sheet-handle-bar {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--ink-muted) 45%, transparent);
+  }
+  :root[data-theme="dark"] .sheet-handle-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  :root[data-theme="dark"] .hero-stats {
+    position: fixed;
+    left: 25px;
+    right: 25px;
+    bottom: calc(8px + var(--sheet-h) - 1px - 24px - 46px);
+    z-index: 31;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: 46px;
+    margin: 0;
+    transition: bottom 220ms var(--ease-out, cubic-bezier(0.2, 0.8, 0.2, 1));
+  }
+  :root[data-theme="dark"] .hero-stats .stat { gap: 6px; padding: 0; }
+  :root[data-theme="dark"] .hero-stats .stat:nth-child(3) { padding-left: 16px; border-left-color: var(--hairline); }
+  :root[data-theme="dark"] .stat-label { font-size: 10px; }
+  :root[data-theme="dark"] .stat-value { font-size: 28px; }
+
+  /* Collapsed: the region that leads, under a hairline. */
+  :root[data-theme="dark"] .rail { order: 3; padding: 0; min-width: 0; }
+  :root[data-theme="dark"] .app-timeline { order: 2; padding: 16px 0 0; gap: 12px; }
+  :root[data-theme="dark"] .dock:not(.is-open) .app-timeline { display: none; }
+  :root[data-theme="dark"] .dock:not(.is-open) .rail > :not(.hotspot-list) { display: none; }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-list {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--hairline);
+  }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-list > :not(:first-child) { display: none; }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-item:first-child {
+    grid-template-columns: 8px minmax(0, 1fr) auto;
+    column-gap: 8px;
+  }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-item:first-child::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+  }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-item:first-child .hotspot-name::after { content: " leads"; }
+  :root[data-theme="dark"] .dock:not(.is-open) .hotspot-item:first-child .hs-bar { display: none; }
+  :root[data-theme="dark"] .hs-unit { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
+
+  /* Open: the ribbon and the controls, then the top ten and the legend. */
+  :root[data-theme="dark"] .dock.is-open .rail { gap: 10px; padding-top: 20px; }
+  :root[data-theme="dark"] .dock.is-open .rail-note { display: none; }
+  :root[data-theme="dark"] .dock.is-open .hotspot-item { grid-template-columns: minmax(0, 1fr) 72px 60px; }
+  :root[data-theme="dark"] .timeline-fuels { justify-content: flex-start; }
+
+  /* The page scrolls above the collapsed sheet. */
+  :root[data-theme="dark"] .app-footer { padding-bottom: calc(132px + 32px); }
+}
+
+/* ---- The explorer (phones, both modes; redesign plan 6.4) ------------------------ */
+/* The globe's own stage, fixed over the page (src/components/explorer.js).
+   `:root` lifts these over the phone layouts' mode-scoped rules. */
+html.is-exploring,
+html.is-exploring body { overflow: hidden; }
+:root .globe-stage.is-exploring {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  justify-self: stretch;
+  align-self: stretch;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: auto;
+  margin: 0;
+  overflow: hidden;
+  background: var(--surface-bg-3);
+}
+:root .globe-stage.is-exploring #globe-canvas {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+}
+.globe-stage.is-exploring .explore-btn { display: none; }
+.globe-stage.is-exploring .explorer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  right: 12px;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface-raised);
+  color: var(--ink);
+  cursor: pointer;
+}
+.globe-stage.is-exploring .explorer-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 3;
+  padding: 6px 16px 6px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface-raised);
+}
+:root[data-theme="dark"] .globe-stage.is-exploring :is(.explorer-close, .explorer-bar) {
+  border-color: var(--hairline);
+  background: var(--surface-panel);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+.explorer-bar .ctl-play { width: 44px; height: 44px; }
+.explorer-scrub { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.explorer-time { font: 11px/1.2 var(--font-mono); letter-spacing: 0.06em; color: var(--ink); }
+.explorer-range { width: 100%; margin: 0; accent-color: var(--ink); }
+:root[data-theme="dark"] .explorer-range { accent-color: var(--brand); }
+/* The selection is a card above the bar, not a label by its mark. */
+.globe-stage.is-exploring .globe-selection {
+  left: 12px !important;
+  right: 12px;
+  top: auto !important;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  width: auto;
 }
 
 /* =========================================================================
@@ -1126,11 +2464,10 @@ main table {
   z-index: 100;
   width: 260px;
   padding: 12px 14px 10px;
-  background: rgba(16, 22, 26, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface-raised);
   border-radius: 12px;
   border: 1px solid var(--hairline-strong);
-  color: rgba(255, 255, 255, 0.88);
+  color: var(--ink);
   font-size: 12px;
   line-height: 1.4;
   pointer-events: auto;
@@ -1150,7 +2487,7 @@ main table {
   right: 8px;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--ink-soft);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
@@ -1159,8 +2496,8 @@ main table {
   transition: background 120ms, color 120ms;
 }
 .region-tooltip-close:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.9);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink);
 }
 
 .region-tooltip-header {
@@ -1178,7 +2515,7 @@ main table {
 .region-tooltip-name {
   font-size: 14px;
   font-weight: 600;
-  color: var(--white);
+  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1187,7 +2524,7 @@ main table {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--ink-soft);
   margin-top: 1px;
 }
 
@@ -1204,10 +2541,10 @@ main table {
   font-size: 12px;
 }
 .region-tooltip-stat > span:first-child {
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--ink-soft);
 }
 .region-tooltip-stat > span:last-child {
-  color: var(--white);
+  color: var(--ink);
   font-weight: 500;
 }
 
@@ -1219,30 +2556,17 @@ main table {
   border-radius: 4px;
 }
 
-.region-tooltip-source {
-  font-size: 11px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-.region-tooltip-source a {
-  color: var(--brand);
-  text-decoration: none;
-}
-.region-tooltip-source a:hover {
-  text-decoration: underline;
-}
-
 .region-tooltip-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
   padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--hairline);
   font-size: 11px;
 }
 .region-tooltip-footer a {
-  color: var(--brand);
+  color: var(--brand-text);
   text-decoration: none;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1252,23 +2576,23 @@ main table {
 .region-tooltip-footer a:hover { text-decoration: underline; }
 
 .region-tooltip-freshness-live {
-  color: #3fc1be;
+  color: var(--success);
   font-size: 10.5px;
   white-space: nowrap;
 }
 .region-tooltip-freshness-cached {
-  color: #f5c542;
+  color: var(--warning);
   font-size: 10.5px;
   white-space: nowrap;
 }
 .region-tooltip-freshness-degraded {
-  color: #ff7a59;
+  color: var(--quality-warning);
   font-size: 10.5px;
   white-space: nowrap;
 }
 .region-tooltip-freshness-modeled,
 .region-tooltip-freshness-anchored {
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--ink-soft);
   font-size: 10.5px;
   white-space: nowrap;
 }
@@ -1277,7 +2601,7 @@ main table {
   margin-top: 4px;
   font-size: 10px;
   line-height: 1.35;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--ink-soft);
 }
 
 .region-tooltip-fuel-swatch {
@@ -1289,246 +2613,30 @@ main table {
   margin-right: 2px;
 }
 
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+/* The detail card in light: paper, a 1px ink rule and no shadow, the name
+   in the display face (redesign plan 6.1). */
+:root[data-theme="light"] .region-tooltip {
+  border: 1px solid var(--hairline-strong);
+  border-radius: 0;
+}
+:root[data-theme="light"] .region-tooltip-name {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight-base);
+  font-size: 20px;
+  line-height: 1.15;
 }
 
-.stat-value {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--white);
+/* Dark: glass, like the dock (redesign plan 6.1). */
+:root[data-theme="dark"] .region-tooltip {
+  background: var(--surface-panel);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
 }
 
-.stat-unit {
-  font-size: 13px;
-  color: rgba(255,255,255,0.55);
-  font-weight: 400;
-}
-
-.stat-secondary {
-  font-size: 13px;
-  color: rgba(255,255,255,0.45);
-  font-weight: 400;
-}
-
-/* One ranked rail, all fuels together, replacing the three fuel columns.
-   The fuel is carried by the dot on each row and named in the legend under
-   the list, so the column headings are no longer doing work. */
-.rail-list {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-.rail-note {
-  margin: 12px 0 0;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 1.5;
-  color: var(--ink-soft);
-}
-
-.rail-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 18px;
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--hairline);
-}
-
-.rail-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--ink-muted);
-  white-space: nowrap;
-}
-
-.hotspot-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  max-height: 240px;
-  overflow-y: auto;
-  min-height: 36px;
-  /* Thin scrollbar — Firefox */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.18) transparent;
-}
-
-/* Thin scrollbar — WebKit (Chrome, Safari, Edge) */
-.hotspot-list::-webkit-scrollbar {
-  width: 4px;
-}
-.hotspot-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-.hotspot-list::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.18);
-  border-radius: 2px;
-}
-.hotspot-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.32);
-}
-
-.hotspot-list:empty::after {
-  content: "—";
-  color: rgba(255,255,255,0.25);
-  font-size: 12px;
-  padding: 4px 0;
-}
-
-/* On desktop, scale each hotspot list to the viewport height so taller monitors
-   show more items without wasted white space, but cap it so short screens still
-   scroll rather than overflow. The list itself has overflow-y: auto, so anything
-   beyond this cap becomes scrollable. */
-@media (min-width: 1100px) {
-  .hotspot-list {
-    max-height: min(calc(100vh - 420px), 720px);
-    min-height: 180px;
-  }
-}
-
-/* On mobile (stacked single-column), keep each list to ~6 items so you can
-   actually see all three fuel buckets without one swallowing the viewport.
-   Still scrollable via base rule's overflow-y: auto, but with a tighter cap
-   so the touch-gesture ambiguity of nested scrolls is less severe. */
-@media (max-width: 700px) {
-  .hotspot-list {
-    max-height: 260px;
-  }
-}
-
-.hotspot-item {
-  display: grid;
-  grid-template-columns: 8px minmax(0, 1fr);
-  grid-template-rows: auto auto;
-  column-gap: 6px;
-  row-gap: 1px;
-  align-items: start;
-  font-size: 11.5px;
-  color: rgba(255,255,255,0.82);
-  padding: 5px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-
-.hotspot-gap-row {
-  list-style: none;
-  padding: 8px 0 4px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.12);
-  margin-top: 6px;
-}
-
-.hotspot-gap-label {
-  display: block;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.4;
-}
-
-.hotspot-gap-gw {
-  font-size: 12px;
-  opacity: 0.5;
-}
-
-.hotspot-item .dot {
-  width: 8px;
-  height: 8px;
-  margin-top: 4px;
-  grid-row: 1 / span 2;
-}
-
-.hotspot-name {
-  grid-column: 2;
-  grid-row: 1;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  line-height: 1.2;
-  color: var(--white);
-  font-weight: 500;
-}
-
-.hotspot-gw {
-  grid-column: 2;
-  grid-row: 2;
-  color: rgba(255,255,255,0.62);
-  font-size: 10.5px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-}
-
-.hotspot-country { display: none; }
-
-/* ── Share view ────────────────────────────────────────────────────────────
-   Regions with no honest share are listed, never omitted: an absent row would
-   read as "this region curtails nothing", which is a different fact. They are
-   dimmed and separated by a rule so the ranked list above stays legible, and
-   each row's title attribute carries the reason from generation-share.ts.
-   Colours are the same rgba-on-dark values the rest of this panel uses, so both
-   themes (Sunfire, Deep Current) inherit correctly. */
-.hotspot-unavailable-head {
-  list-style: none;
-  margin-top: 10px;
-  padding: 8px 0 4px;
-  border-top: 1px dashed rgba(255,255,255,0.14);
-  font-size: 9.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.38);
-  font-variant-numeric: tabular-nums;
-}
-
-.hotspot-item-unavailable {
-  opacity: 0.55;
-  cursor: help;
-}
-
-.hotspot-gw-unavailable {
-  font-style: italic;
-  color: rgba(255,255,255,0.5);
-}
-
-/* Explains what the share view is measuring and what it deliberately leaves
-   alone. Hidden entirely in the absolute view via the `hidden` attribute. */
-.hotspot-units-note {
-  margin: 4px 0 6px;
-  font-size: 10px;
-  line-height: 1.45;
-  color: rgba(255,255,255,0.5);
-  border-left: 2px solid var(--amber-500);
-  padding-left: 8px;
-}
-
-/* Mode toggle (time window) + units toggle (GW vs share) sit side by side.
-   They are orthogonal and compose, so they stay two groups rather than one. */
-.toggle-cluster {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-
-.hotspot-country {
-  color: rgba(255,255,255,0.45);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.hotspot-gw {
-  color: var(--white);
-  font-weight: 500;
-}
-
+/* Fuel dots: coloured from the fuel tokens at paint time, so they always
+   match the canvas marks whichever mode is active. */
 .dot {
   width: 10px;
   height: 10px;
@@ -1537,18 +2645,10 @@ main table {
   flex-shrink: 0;
 }
 
-.dot-brand {
-  background: var(--brand);
-}
-
-.dot-orange {
-  background: var(--btc-orange);
-}
-
 /* Fuel-themed dots — resolved at paint time from CSS custom properties so
    they always match the canvas bars regardless of which theme is active.
    Avoids the bake-at-eval bug that occurred when inline style="background:
-   getFuelColor()" was called before non-Sunfire theme CSS had resolved. */
+   getFuelColor()" was called before the mode's CSS had resolved. */
 .dot--solar {
   background: var(--fuel-solar);
 }
@@ -1559,138 +2659,8 @@ main table {
   background: var(--fuel-hydro);
 }
 
-.legend {
-  display: flex;
-  gap: 14px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  font-size: 11px;
-  color: rgba(255,255,255,0.6);
-}
-
-.legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.app-footer {
-  padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  position: relative;
-  z-index: 10;
-  background: var(--surface-bg-3);
-}
-
-.app-footer .caption {
-  color: rgba(255,255,255,0.55);
-  font-size: 11.5px;
-  line-height: 1.6;
-  max-width: 1100px;
-}
-
-.app-footer .caption strong {
-  color: rgba(255,255,255,0.75);
-  font-weight: 500;
-  letter-spacing: 0.03em;
-}
-
-.app-footer .caption a {
-  color: var(--brand);
-  text-decoration: none;
-}
-.app-footer .caption a:hover { text-decoration: underline; }
-
-.footer-refresh {
-  display: inline-block;
-  margin-left: 6px;
-  opacity: 0.7;
-}
-
-@media (max-width: 900px) {
-  .app-body {
-    grid-template-columns: 1fr;
-  }
-
-  .panel-center {
-    min-height: 400px;
-    order: -1;
-  }
-
-  .panel-left,
-  .panel-right {
-    z-index: auto;
-    background: none;
-    padding: 0 0 0 16px;
-  }
-
-  .globe-canvas-area {
-    /* Reset absolute positioning back to normal flow on mobile/tablet */
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    height: auto;
-    z-index: auto;
-    pointer-events: auto;
-    width: 100%;
-    grid-template-columns: 1fr;
-  }
-
-  #globe-canvas {
-    pointer-events: auto;
-    height: 500px;
-    width: 100%;
-  }
-
-  /* Tighter padding on tablets and phones — desktop wastes less
-     horizontal space than these screens can afford to lose. */
-  .app-shell {
-    padding: 18px 18px;
-    gap: 12px;
-  }
-
-  /* Responsive lead copy — 17px desktop body text dominates small
-     viewports and pushes the globe below the fold. */
-  .app-shell p.lead {
-    font-size: 14.5px;
-    line-height: 1.5;
-  }
-}
-
-@media (max-width: 540px) {
-  .app-shell {
-    padding: 14px 14px;
-  }
-
-  .app-tag {
-    display: none;
-  }
-
-  .stats-row {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .app-shell p.lead {
-    font-size: 14px;
-  }
-}
-
-/* Touch-target minimums — iOS guideline is 44×44, Material is 48×48.
-   On non-hover pointers (touch), bump the play button and speed/mode
-   chips so they're reliably tappable. */
+/* Touch targets on the detail card's close button (iOS 44, Material 48). */
 @media (hover: none) {
-  .ctl-play {
-    width: 44px;
-    height: 44px;
-    font-size: 18px;
-  }
-  .ctl-speed-chip,
-  .mode-btn {
-    min-height: 34px;
-    padding: 7px 12px;
-    font-size: 12px;
-  }
   .region-tooltip-close {
     font-size: 24px;
     padding: 6px 10px;
@@ -1710,165 +2680,6 @@ main > h1:first-child {
   display: none;
 }
 
-/* ============ TIMELINE + CONTROLS ============ */
-.app-timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px 0 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  margin-top: 8px;
-  position: relative;  /* needed for z-index to apply */
-  z-index: 10;         /* layers above the fixed globe canvas (z-index: 0) */
-  background: var(--surface-bg-3);  /* opaque so globe doesn't bleed through */
-}
-.timeline-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-.timeline-header .caption {
-  font-size: 11px;
-  color: rgba(255,255,255,0.45);
-  letter-spacing: 0.04em;
-}
-#timeline-canvas {
-  width: 100%;
-  height: 88px;
-  display: block;
-  cursor: ew-resize;
-}
-.timeline-controls {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-#timeline-controls {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  /* Play + six speed chips + the UTC clock is ~347px on a phone.
-     Unwrapped, this row set the phone page's minimum width (409px at a
-     375px viewport); wrapped, the clock drops to its own line. */
-  flex-wrap: wrap;
-  row-gap: 8px;
-}
-.ctl-play {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--brand);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--slate-800);
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 16px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  line-height: 1;
-  flex-shrink: 0;   /* a squeezed row was pressing the circle into a 23px oval */
-  transition: background 140ms ease, transform 140ms ease;
-}
-.ctl-play:hover { transform: scale(1.04); }
-.ctl-play[aria-pressed="true"] {
-  background: rgba(255,255,255,0.08);
-  color: var(--white);
-}
-.ctl-play-icon {
-  display: inline-block;
-  line-height: 1;
-  /* ⏵ triangle's visual centre-of-mass sits ~1px left of its geometric
-     centre; this nudge makes play/pause feel truly centred in the circle. */
-  transform: translate(0.5px, 0);
-}
-.ctl-play[aria-pressed="true"] .ctl-play-icon {
-  /* Pause glyph is symmetric — undo the play-triangle nudge when paused. */
-  transform: none;
-}
-.ctl-speed {
-  display: inline-flex;
-  gap: 4px;
-  flex-wrap: wrap;   /* last resort below ~300px; normally one row */
-}
-.ctl-speed-chip {
-  padding: 5px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.6);
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: inherit;
-}
-.ctl-speed-chip.is-active {
-  background: rgba(var(--brand-rgb),0.2);
-  border-color: var(--brand);
-  color: var(--brand);
-}
-.mode-toggle {
-  display: inline-flex;
-  gap: 4px;
-}
-.mode-btn {
-  padding: 5px 10px;
-  min-height: 28px;
-  font-size: 11px;
-  font-weight: 600;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.6);
-  cursor: pointer;
-  font-family: inherit;
-}
-.mode-btn:first-child {
-  border-radius: 6px 2px 2px 6px;
-}
-.mode-btn:last-child {
-  border-radius: 2px 6px 6px 2px;
-}
-.mode-btn-active {
-  background: rgba(247,147,26,0.18);
-  border-color: var(--amber-500);
-  color: var(--amber-500);
-}
-
-/* Headline row — flex container for pct readout */
-.stat-headline-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-left: -24px;
-}
-
-/* The -24px cancels .panel-left's desktop 24px padding. At <=900px that
-   padding is 16px, and -24px pushed the percentage 8px past the gutter. */
-@media (max-width: 900px) {
-  .stat-headline-row { margin-left: -16px; }
-}
-
-.ctl-utc {
-  font-size: 12px;
-  color: rgba(255,255,255,0.55);
-  letter-spacing: 0.04em;
-}
-
-/* Mobile */
-@media (max-width: 640px) {
-  #timeline-canvas { height: 72px; }
-  .ctl-play { width: 32px; height: 32px; }
-}
-
-/* 320px phones: play + gap + six chips was 294px against 292px of room, so
-   the play button wrapped onto a row of its own. */
-@media (max-width: 400px) {
-  #timeline-controls { column-gap: 8px; }
-}
-
 /* =========================================================================
    METHODOLOGY PAGE — academic typography pass
    ========================================================================= */
@@ -1884,19 +2695,21 @@ main > h1:first-child {
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(var(--brand-rgb),0.85);
+  color: var(--brand-text);
   text-decoration: none;
   transition: color 0.15s;
 }
 .page-back-nav a:hover {
-  color: rgba(var(--brand-rgb),1);
+  color: var(--brand-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .methodology-doc {
   max-width: 780px;
   margin: 0 auto;
   padding: 24px 32px 96px;
-  color: rgba(255,255,255,0.85);
+  color: var(--ink);
   font-size: 15px;
   line-height: 1.68;
 }
@@ -1904,7 +2717,7 @@ main > h1:first-child {
 .methodology-doc .methodology-header {
   padding-bottom: 28px;
   margin-bottom: 44px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid var(--hairline);
 }
 
 .methodology-doc .methodology-eyebrow {
@@ -1912,7 +2725,7 @@ main > h1:first-child {
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--brand, #ffd05a);
+  color: var(--brand-text);
   margin-bottom: 14px;
 }
 
@@ -1922,7 +2735,7 @@ main > h1:first-child {
   letter-spacing: -0.02em;
   line-height: 1.12;
   margin: 0 0 18px;
-  color: var(--white);
+  color: var(--ink);
   border-bottom: none;
   padding-bottom: 0;
 }
@@ -1930,31 +2743,11 @@ main > h1:first-child {
 .methodology-doc .methodology-deck {
   font-size: 18px;
   line-height: 1.55;
-  color: rgba(255,255,255,0.75);
+  color: var(--ink-muted);
   max-width: 680px;
   margin: 0 0 20px;
 }
 
-.methodology-doc .methodology-toc {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  margin-top: 14px;
-}
-.methodology-doc .methodology-toc a {
-  font-size: 12px;
-  color: rgba(255,255,255,0.58);
-  text-decoration: none;
-  padding: 5px 11px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.08);
-  transition: background 140ms, color 140ms, border-color 140ms;
-}
-.methodology-doc .methodology-toc a:hover {
-  background: rgba(var(--brand-rgb),0.08);
-  color: var(--white);
-  border-color: rgba(var(--brand-rgb),0.35);
-}
 
 .methodology-doc h2 {
   font-size: 22px;
@@ -1962,36 +2755,43 @@ main > h1:first-child {
   letter-spacing: -0.005em;
   margin: 56px 0 16px;
   padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  color: var(--white);
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink);
 }
 
 .methodology-doc h3 {
   font-size: 16px;
   font-weight: 600;
   margin: 32px 0 8px;
-  color: rgba(255,255,255,0.9);
+  color: var(--ink);
 }
 
 .methodology-doc p {
   margin: 0 0 16px;
-  color: rgba(255,255,255,0.82);
+  color: var(--ink-muted);
 }
 
 .methodology-doc strong {
-  color: var(--white);
+  color: var(--ink);
   font-weight: 600;
 }
 
 .methodology-doc a {
-  color: var(--brand, #ffd05a);
+  color: var(--brand-text);
   text-decoration: none;
-  border-bottom: 1px solid rgba(63,193,190,0.35);
+  border-bottom: 1px solid var(--hairline-strong);
   transition: border-color 140ms, color 140ms;
 }
 .methodology-doc a:hover {
-  color: var(--white);
-  border-bottom-color: var(--brand, #ffd05a);
+  color: var(--ink);
+  border-bottom-color: var(--brand);
+}
+/* Framework wraps each heading's text in a self-link
+   (.observablehq-header-anchor). That is navigation, not a reference, so it
+   takes no link rule: with one, every heading on the doc pages was
+   underlined. */
+.methodology-doc a.observablehq-header-anchor {
+  border-bottom: 0;
 }
 
 .methodology-doc ul,
@@ -2001,10 +2801,10 @@ main > h1:first-child {
 }
 .methodology-doc li {
   margin-bottom: 8px;
-  color: rgba(255,255,255,0.82);
+  color: var(--ink-muted);
 }
 .methodology-doc li::marker {
-  color: rgba(255,255,255,0.4);
+  color: var(--ink-soft);
 }
 
 .methodology-doc code {
@@ -2012,13 +2812,13 @@ main > h1:first-child {
   font-size: 13px;
   padding: 2px 6px;
   border-radius: 4px;
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.9);
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
 }
 
 .methodology-doc pre {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  border: 1px solid var(--hairline);
   border-radius: 6px;
   padding: 14px 16px;
   overflow-x: auto;
@@ -2058,7 +2858,7 @@ main > h1:first-child {
 .methodology-doc td {
   text-align: left;
   padding: 9px 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid var(--hairline);
   vertical-align: top;
 }
 .methodology-doc th {
@@ -2066,14 +2866,14 @@ main > h1:first-child {
   text-transform: uppercase;
   font-size: 10.5px;
   letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.55);
-  border-bottom: 1px solid rgba(255,255,255,0.18);
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--hairline-strong);
 }
 .methodology-doc td {
-  color: rgba(255,255,255,0.78);
+  color: var(--ink-muted);
 }
 .methodology-doc tr:hover td {
-  background: rgba(255,255,255,0.02);
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
 }
 
 /* Callout boxes */
@@ -2092,13 +2892,13 @@ main > h1:first-child {
   line-height: 1.65;
 }
 .methodology-doc .methodology-callout-abstract p {
-  color: rgba(255,255,255,0.88);
+  color: var(--ink);
 }
 
 /* Horizontal rules */
 .methodology-doc hr {
   border: none;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid var(--hairline);
   margin: 40px 0;
 }
 
@@ -2111,11 +2911,11 @@ main > h1:first-child {
 }
 .methodology-doc h2[id="references"] + ul li {
   padding: 7px 0;
-  border-bottom: 1px dotted rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.72);
+  border-bottom: 1px dotted var(--hairline);
+  color: var(--ink-muted);
 }
 .methodology-doc h2[id="references"] + ul li strong {
-  color: rgba(255,255,255,0.92);
+  color: var(--ink);
   font-weight: 500;
 }
 
@@ -2123,7 +2923,7 @@ main > h1:first-child {
 .methodology-doc p em:only-child {
   display: inline-block;
   font-size: 13px;
-  color: rgba(255,255,255,0.52);
+  color: var(--ink-soft);
   font-style: italic;
   line-height: 1.5;
 }
@@ -2145,62 +2945,82 @@ main > h1:first-child {
   .methodology-doc h2 { font-size: 20px; margin-top: 40px; }
 }
 
-/* ============ THEME TOGGLE ============ */
+/* ============ THEME TOGGLE ============
+   Two looks, one component (src/components/theme-toggle.js). Desktop: a
+   34px pill holding a sun and a moon, the active one filled with ink and its
+   icon drawn in the page colour. Phones (the `compact` option): one 44px
+   round button showing the mode it switches TO. Icons stroke in currentColor.
+   Focus uses the global :focus-visible ring. */
 .theme-toggle {
   display: inline-flex;
+  align-items: center;
   gap: 2px;
+  height: 34px;
   padding: 3px;
-  border: 1px solid var(--hairline);
+  box-sizing: border-box;
+  border: 1px solid var(--hairline-strong);
   border-radius: 999px;
-  background: var(--surface-raised);
 }
+:root[data-theme="dark"] .theme-toggle { border-color: var(--hairline); }
 .theme-toggle button {
-  font: 500 11px / 1 var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 6px 12px;
-  border-radius: 999px;
+  width: 40px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: 0;
+  border-radius: 999px;
   background: transparent;
-  color: var(--ink-muted);
+  color: var(--ink);
   cursor: pointer;
   transition: background 140ms ease, color 140ms ease;
 }
-.theme-toggle button:hover { color: var(--ink); }
+.theme-toggle button:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
 .theme-toggle button[aria-checked="true"] {
-  background: var(--brand-subtle);
-  color: var(--brand);
+  background: var(--ink);
+  color: var(--surface-bg-3);
 }
-.theme-toggle button:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
+.theme-toggle svg { display: block; flex-shrink: 0; }
 
-@media (max-width: 640px) {
-  .theme-toggle button { padding: 5px 9px; }
-}
-
-/* ============ GLOBE QUALITY LEGEND ============ */
-.globe-legend {
-  font-size: 12px;
-  color: var(--ink);
-  background: color-mix(in srgb, var(--surface-bg-2) 82%, transparent);
-  border: 1px solid var(--globe-border);
-  border-radius: 8px;
-  padding: 6px 10px;
-  max-width: 220px;
+.theme-toggle--compact {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  justify-content: center;
   border: 1px solid var(--hairline);
-}
-.globe-legend-summary {
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
   cursor: pointer;
-  list-style: none;
-  font-weight: 600;
-  color: var(--ink-muted);
 }
-.globe-legend-summary::-webkit-details-marker { display: none; }
-.globe-legend-body { margin-top: 6px; display: grid; gap: 4px; }
-.globe-legend-row { display: flex; align-items: center; gap: 7px; }
-.globe-legend-caption { margin-top: 4px; color: var(--ink-soft); font-size: 11px; }
+.theme-toggle--compact:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+
+/* Switching mode cross-fades where the browser has view transitions. The
+   toggle skips the transition under prefers-reduced-motion. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 200ms;
+}
+
+/* Links in light are ink with an underline: the brand colour is 3.2:1 on
+   paper, too low for small text. Dark keeps amber (11.5:1) without one. */
+:root[data-theme="light"] :is(.page-back-nav a, .app-footer .caption a, .region-tooltip-footer a) {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* State labels in the region card are small text. In light, --success and
+   --warning fall under 4.5:1 on paper, so the labels go ink; the words
+   ("live", "cached", "degraded") carry the state either way. */
+:root[data-theme="light"] :is(.region-tooltip-freshness-live, .region-tooltip-freshness-cached, .region-tooltip-freshness-degraded) {
+  color: var(--ink);
+}
+
+/* ============ QUALITY DOTS ============
+   The G1 globe's base-dot vocabulary, which the region pages (/regions,
+   /region/<id>) use. The dashboard's legend keys its own marks. */
 .ql-dot {
   display: inline-block; width: 12px; height: 12px; border-radius: 50%;
   flex: 0 0 auto; box-sizing: border-box;
@@ -2210,11 +3030,6 @@ main > h1:first-child {
 .ql-estimated { background: transparent; border: 1.5px solid var(--ink); }
 .ql-degraded { background: transparent; border: 1.5px dashed var(--quality-warning); }
 
-@media (max-width: 900px) {
-  .globe-legend { font-size: 11px; max-width: 60vw; }
-  .globe-overlay { padding: 8px 8px 0; align-items: flex-start; }
-}
-
 /* =========================================================================
    REGION PAGES — the /regions directory and the /region/<id> records
    =========================================================================
@@ -2222,9 +3037,8 @@ main > h1:first-child {
    table styling, and both theme token sets already apply. Nothing here
    introduces a colour value: every rule reads --ink / --ink-muted /
    --ink-soft / --hairline / --brand-rgb / --surface-*, which
-   :root[data-theme="sunfire"] and :root[data-theme="deepcurrent"] both
-   define. Quality dots reuse the .ql-dot vocabulary from the globe legend
-   above, so a reader sees the same mark in both places. */
+   :root[data-theme="light"] and :root[data-theme="dark"] both
+   define. Quality dots use the .ql-dot vocabulary above. */
 
 .page-back-sep { color: var(--ink-soft); margin: 0 6px; }
 
@@ -2551,7 +3365,7 @@ main > h1:first-child {
    Every chart on that page is inline SVG emitted by the page loader, so all of
    its colour lives here rather than in the markup. That is what makes the
    figures theme-aware for free: the loader runs under node, where
-   getFuelColor() can only return the Sunfire fallback hex, so baking colours
+   getFuelColor() can only return its fallback hex, so baking colours
    server-side would freeze one theme's palette into the page. The SVG carries
    classes and var(--fuel-*) references; these rules resolve them per theme.
    --------------------------------------------------------------------------- */

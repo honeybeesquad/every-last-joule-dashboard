@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { REGIONS } from "../../src/lib/regions";
 import { buildAllStatics } from "../../src/data/statics.json";
+import { TSO_GRID_MARKERS } from "../../src/data/tso-grid-markers.json";
 
 /**
  * Phase-2.7 Pattern-D — Latin-America bulk-add coverage test.
@@ -32,6 +33,15 @@ const NEW_LATAM_IDS = [
   "ecuador",
   "french-guiana",
 ] as const;
+
+/**
+ * Not served from statics: dominican-republic moved to the OC SENI loader
+ * (2026-09-20); guatemala, nicaragua and guatemala-siepac became unpublished
+ * tso-grid-markers when their anchors came to at least the country's recorded
+ * solar generation (2026-09-29).
+ */
+const MARKER_IDS = new Set(TSO_GRID_MARKERS.map((m) => m.id));
+const NOT_STATIC = new Set<string>(["dominican-republic", ...MARKER_IDS]);
 
 const ALLOWED_REGION_KINDS = new Set([
   "solar",
@@ -91,7 +101,7 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
   it("each new region has a matching STATIC_REGIONS entry with positive annualTWh and valid kind", () => {
     const statics = buildAllStatics();
     for (const id of NEW_LATAM_IDS) {
-      if (id === "dominican-republic") continue; // OC SENI unpublished generation loader
+      if (NOT_STATIC.has(id)) continue;
       const built = statics[id];
       expect(built, `missing STATIC_REGIONS entry ${id}`).toBeDefined();
       expect(built.peakGW).toBeGreaterThan(0);
@@ -110,6 +120,7 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     // discretised peak hour will be within ±1 of that hour.
     const statics = buildAllStatics();
     const solarIds = NEW_LATAM_IDS.filter((id) => {
+      if (NOT_STATIC.has(id)) return false;
       const region = REGIONS.find((r) => r.id === id)!;
       return region.kind === "solar";
     });
@@ -123,17 +134,25 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     }
   });
 
-  it("aggregate annual anchor across the remaining static LatAm rows is ~1.65 TWh", () => {
-    // 0.4+0.2+0.1+0.3+0.2+0.1+0.1+0.003+0.05+0.1+0.05+0.05 ≈ 1.653 TWh.
+  it("aggregate annual anchor across the remaining static LatAm rows is ~1.05 TWh", () => {
+    // 0.2+0.3+0.2+0.1+0.1+0.003+0.05+0.1+0.05+0.05 ≈ 1.053 TWh.
+    // 2026-09-29: guatemala 0.4, nicaragua 0.1 and guatemala-siepac 0.1 dropped
+    // as at or above national solar generation (was ≈ 1.653 TWh).
     // dominican-republic 0.5 TWh invented waste moved to OC unpublished generation (2026-09-20).
     const statics = buildAllStatics();
     let annualSum = 0;
     for (const id of NEW_LATAM_IDS) {
-      if (id === "dominican-republic") continue;
+      if (NOT_STATIC.has(id)) continue;
       annualSum += statics[id].totalTWh * (365 / 30);
     }
-    expect(annualSum).toBeGreaterThan(1.55);
-    expect(annualSum).toBeLessThan(1.75);
+    expect(annualSum).toBeGreaterThan(1.0);
+    expect(annualSum).toBeLessThan(1.1);
+  });
+
+  it("the three anchors dropped on 2026-09-29 are tso-grid-markers, not statics", () => {
+    expect(NEW_LATAM_IDS.filter((id) => MARKER_IDS.has(id))).toEqual(["guatemala", "nicaragua", "guatemala-siepac"]);
+    const statics = buildAllStatics();
+    for (const id of MARKER_IDS) expect(statics[id], `${id} still in statics`).toBeUndefined();
   });
 
   it("all new region ids are kebab-case and unique within REGIONS", () => {
@@ -162,7 +181,7 @@ describe("Phase-2.7 Pattern-D Latin-America bulk-add", () => {
     // the resultant peakGW shape is sensible (positive, finite).
     const statics = buildAllStatics();
     for (const id of NEW_LATAM_IDS) {
-      if (id === "dominican-republic") continue;
+      if (NOT_STATIC.has(id)) continue;
       expect(Number.isFinite(statics[id].peakGW)).toBe(true);
       expect(statics[id].peakGW).toBeGreaterThan(0);
     }

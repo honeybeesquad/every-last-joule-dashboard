@@ -164,7 +164,7 @@ pager: false
 
 # Every region in the dataset
 
-<p class="methodology-deck">All ${rows.length} regions in ${countries.length} countries, with tier, uncertainty band, and validation record. The dashboard lists the top 50 per fuel this hour; this page lists the rest, including zeros.</p>
+<p class="methodology-deck">All ${rows.length} regions in ${countries.length} countries, with tier, uncertainty band, and validation record. The dashboard lists the ten largest this hour; this page lists every region, including zeros.</p>
 
 </header>
 
@@ -205,6 +205,10 @@ ${rows.map(row).join("\n")}
 
 \`\`\`js
 import { mountRegionDirectory } from "./components/region-directory.js";
+import { mountSiteChrome } from "./components/site-chrome.js";
+
+// The site header's mode switch and menu (src/lib/site-header.ts draws it).
+const unmountSiteChrome = mountSiteChrome();
 
 mountRegionDirectory({
   form: document.querySelector("#region-filter"),

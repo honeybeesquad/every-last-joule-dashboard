@@ -1,0 +1,233 @@
+/**
+ * Pure geometry for the dark-mode globe, "Horizon" (src/globe-horizon.js
+ * draws it). A large orthographic globe whose centre sits below the
+ * viewport, so only a band near its top limb shows; each curtailing region
+ * is a beam of light standing up from that horizon. Kept free of canvas and
+ * the DOM so it is unit-tested: tests/horizon.test.ts.
+ *
+ * Constants are the redesign handoff's renderer_constants.horizon_globe
+ * (redesign plan 6.3).
+ */
+import type { QualityBucket } from "./region-quality.js";
+import { qualityOpacity } from "./region-quality.js";
+
+/** Beams under this many GW are not drawn. */
+export const MIN_GW_BEAM = 0.03;
+
+/** Land dot pitch, degrees. */
+export const HORIZON_DOT_PITCH = 0.42;
+
+export interface HorizonGeometry {
+  /** Globe radius, CSS px. */
+  R: number;
+  /** y of the limb's highest point. */
+  top: number;
+  /** x of the globe centre. */
+  cx: number;
+  /** y of the globe centre (top + R): below the viewport. */
+  cy: number;
+}
+
+/**
+ * Desktop geometry for a W x H stage: R = 0.94 x max(W, 900), the limb's top
+ * point at half the height, the centre at 57% of the width.
+ */
+export function horizonGeometry(W: number, H: number): HorizonGeometry {
+  const R = 0.94 * Math.max(W, 900);
+  const top = 0.5 * H;
+  return { R, top, cx: 0.57 * W, cy: top + R };
+}
+
+/**
+ * Phone geometry (redesign plan 3.4): the horizon drawn into a band under the
+ * hero, 390 x 530 on a 390 x 844 screen, with R = 650, the limb's top 235px
+ * into the band and the centre mid-width. Scales with the band's size.
+ */
+export function horizonPhoneGeometry(W: number, H: number): HorizonGeometry {
+  const R = 650 * (W / 390);
+  const top = 235 * (H / 530);
+  return { R, top, cx: W / 2, cy: top + R };
+}
+
+/**
+ * The visitor's view of the horizon: a magnification of the stage picture,
+ * screen = base x zoom + (tx, ty), and the camera latitude a vertical drag
+ * tilts. Home is HORIZON_HOME_ZOOM, no offset, FOLLOW_SUN.dark.lat0.
+ */
+export interface HorizonView {
+  zoom: number;
+  tx: number;
+  ty: number;
+}
+
+export const HORIZON_ZOOM_MAX = 8;
+
+/**
+ * The zoom the dashboard opens at: two steps of the zoom-out button from the
+ * horizon, so the globe has lifted most of the way off the stage's floor
+ * and whole countries read, with the horizon's curve still framing it.
+ */
+export const HORIZON_HOME_ZOOM = 4 / 9;
+
+/** Camera latitudes a vertical drag can tilt to. The horizon's crest is at
+ *  lat0 + 90 on the camera's meridian, so this range brings every latitude
+ *  from the Southern Ocean to the Arctic to the horizon or just below it. */
+export const HORIZON_LAT_RANGE: readonly [number, number] = [-85, 25];
+
+/** Camera latitude of the whole-globe view: north up and tilted toward the viewer, as the light globe. */
+export const HORIZON_FULL_LAT0 = 20;
+
+/**
+ * The whole globe, which zooming out reaches: a sphere that fits the stage
+ * between `clearTop` (the header) and `clearBottom` (the dock). On a wide
+ * stage it sits right of the hero; narrower, it is centred.
+ */
+export function horizonFullGeometry(W: number, H: number, clearTop = 0, clearBottom = 0): HorizonGeometry {
+  const avail = Math.max(120, H - clearTop - clearBottom);
+  const wide = W >= 1100;
+  const R = 0.47 * Math.min(avail, wide ? 0.58 * W : 0.92 * W);
+  const cx = wide ? Math.min(0.66 * W, W - R - 32) : W / 2;
+  const cy = clearTop + avail / 2;
+  return { R, top: cy - R, cx, cy };
+}
+
+/** The zoom at which the view is the whole globe: its radius over the horizon's. */
+export function minZoom(base: HorizonGeometry, full: HorizonGeometry): number {
+  return Math.min(1, full.R / base.R);
+}
+
+/** How far a zoom below 1 has gone toward the whole globe: 0 at the horizon, 1 at the whole globe. */
+export function zoomOutBlend(zoom: number, zMin: number): number {
+  if (zoom >= 1 || zMin >= 1) return 0;
+  return Math.max(0, Math.min(1, (1 - zoom) / (1 - zMin)));
+}
+
+/**
+ * The geometry a view draws at. Above 1 it is the base geometry magnified
+ * about the stage's origin, then offset. Below 1 the globe shrinks
+ * (R = base.R x zoom) while its centre rises from below the stage to the
+ * whole globe's, so zooming out lifts the planet off the horizon.
+ */
+export function viewGeometry(base: HorizonGeometry, view: HorizonView, full?: HorizonGeometry): HorizonGeometry {
+  if (view.zoom < 1 && full) {
+    const s = zoomOutBlend(view.zoom, minZoom(base, full));
+    const R = base.R * view.zoom;
+    const cx = base.cx + (full.cx - base.cx) * s;
+    const cy = base.cy + (full.cy - base.cy) * s;
+    return { R, top: cy - R, cx, cy };
+  }
+  const R = base.R * view.zoom;
+  const top = base.top * view.zoom + view.ty;
+  return { R, top, cx: base.cx * view.zoom + view.tx, cy: top + R };
+}
+
+/**
+ * Keep a view inside a W x H stage: zoom in [zMin, HORIZON_ZOOM_MAX], and a
+ * magnified picture still covering the stage. At or below zoom 1 there is
+ * no offset, so a view at 1 is always home.
+ */
+export function clampView(view: HorizonView, W: number, H: number, zMin = 1): HorizonView {
+  const zoom = Math.max(zMin, Math.min(HORIZON_ZOOM_MAX, view.zoom));
+  if (zoom <= 1) return { zoom, tx: 0, ty: 0 };
+  const clamp = (t: number, size: number) => Math.max(size - size * zoom, Math.min(0, t));
+  return { zoom, tx: clamp(view.tx, W), ty: clamp(view.ty, H) };
+}
+
+/** Zoom by `factor` about the stage point (mx, my), which stays where it is above zoom 1 (within the clamp). */
+export function zoomViewAt(
+  view: HorizonView, factor: number, mx: number, my: number, W: number, H: number, zMin = 1,
+): HorizonView {
+  const zoom = Math.max(zMin, Math.min(HORIZON_ZOOM_MAX, view.zoom * factor));
+  // Crossing up through 1, magnify from the unmagnified stage.
+  const from = view.zoom < 1 ? { zoom: 1, tx: 0, ty: 0 } : view;
+  const k = zoom / from.zoom;
+  return clampView({ zoom, tx: mx - (mx - from.tx) * k, ty: my - (my - from.ty) * k }, W, H, zMin);
+}
+
+/**
+ * Whether a plain wheel over the globe should zoom it (true) or pass through
+ * and scroll the page (false): it passes through once the zoom is at its
+ * limit in the wheel's direction, so scrolling down past the whole globe
+ * carries on down the page. deltaY > 0 (scrolling down) zooms out.
+ */
+export function wheelZooms(zoom: number, zMin: number, deltaY: number): boolean {
+  if (deltaY > 0) return zoom > zMin + 1e-6;
+  if (deltaY < 0) return zoom < HORIZON_ZOOM_MAX - 1e-6;
+  return false;
+}
+
+/**
+ * Country borders: none at home (the stage keeps its designed look). They
+ * fade in zooming in (full from 2.5) and zooming out (full at the whole
+ * globe, a little fainter, as the lines are denser there).
+ */
+export function borderAlpha(zoom: number, zMin = 1): number {
+  const a = zoom >= 1 ? 0.3 * Math.min(1, (zoom - 1) / 1.5) : 0.22 * zoomOutBlend(zoom, zMin);
+  return Math.round(a * 100) / 100;
+}
+
+/** The phone band's camera and scales (redesign plan 3.4). */
+export const HORIZON_PHONE = { lat0: -38, beam: 0.12, widthScale: 0.75, dotScale: 0.8 } as const;
+
+/** Beam height in units of R: 0.004 + K x sqrt(GW), K = 0.1 on desktop. */
+export function beamHeight(gw: number, K = 0.1): number {
+  return 0.004 + K * Math.sqrt(Math.max(0, gw));
+}
+
+/** Beam width in CSS px: 1.1 + 1.2 x sqrt(GW). */
+export function beamWidth(gw: number, scale = 1): number {
+  return (1.1 + 1.2 * Math.sqrt(Math.max(0, gw))) * scale;
+}
+
+/**
+ * Where a beam starts, as a multiple of its ground point's projected
+ * position. A beam whose base faces the viewer (z > 0) shows whole, from
+ * k0 = 1. One whose base is just beyond the horizon shows only the part that
+ * has risen past the limb: the point at k x (x, y) is on screen once its
+ * screen radius k x |xy| reaches 1, so k0 = 1 / |xy|. `visible` is false when
+ * even the tip, at k = 1 + h, is still behind the planet.
+ */
+export function beamSpan(x: number, y: number, z: number, h: number): { k0: number; visible: boolean } {
+  const k0 = z > 0 ? 1 : 1 / Math.max(Math.hypot(x, y), 1e-6);
+  return { k0, visible: k0 < 1 + h };
+}
+
+/**
+ * The lit territory's reach at this camera, degrees: 0.5 + 1.6 x sqrt(GW).
+ * The light globe's G1 ancestor used 1.5 + 3.4 x sqrt(GW); seen edge-on at
+ * the horizon that floods whole provinces, so the dark mock used this.
+ */
+export function horizonTerritoryRadiusDeg(gw: number): number {
+  return 0.5 + 1.6 * Math.sqrt(Math.max(0, gw));
+}
+
+/**
+ * Beam opacity: the quality bucket's (region-quality.ts: measured 1,
+ * anchored 0.8, estimated 0.62), except the selected beam, which draws at
+ * full brightness whatever its bucket (redesign plan 6.3).
+ */
+export function beamOpacity(bucket: QualityBucket, selected: boolean): number {
+  return selected ? 1 : qualityOpacity(bucket);
+}
+
+/** Estimated beams get a dashed core, so the tier reads by shape as well as brightness. */
+export const ESTIMATED_CORE_DASH: readonly [number, number] = [4, 3];
+
+/**
+ * Alpha of an untinted land dot: brighter on the day side and away from the
+ * limb, quantised to 0.05 so a frame fills a handful of buckets.
+ * `day` and `limb` are the 0..1 smoothsteps the renderer computes.
+ */
+export function landDotAlpha(day: number, limb: number): number {
+  return Math.round((0.1 + 0.34 * day) * (0.35 + 0.65 * limb) * 20) / 20;
+}
+
+/**
+ * Alpha of a land dot lit by a curtailing region: stronger near the region
+ * (`strength` 1 at its centre, 0 at the territory's edge) and away from the
+ * limb, quantised to 0.1.
+ */
+export function tintDotAlpha(strength: number, limb: number): number {
+  const tintA = 0.25 + 0.6 * Math.max(0, Math.min(1, strength));
+  return Math.round(tintA * (0.4 + 0.6 * limb) * 10) / 10;
+}

@@ -2,7 +2,7 @@ import * as d3 from "npm:d3";
 import * as topojson from "npm:topojson-client";
 import { regionGWAtHour, generationGWAtHour } from "./lib/calc.js";
 import { showsWastePillar, wasteStatusOf } from "./lib/waste-status.js";
-import { getRegionFuelColor, getFuelColor, fuelShareAtHour } from "./lib/fuel.js";
+import { getRegionFuelColor, getFuelColor, fuelShareAtHour, dominantFuel, FUEL_LABEL } from "./lib/fuel.js";
 import { readGlobeTokens } from "./lib/theme-tokens.js";
 import { buildPillarUnits } from "./lib/pillar-layout.js";
 import { qualityBucket, qualityOpacity, dotStyleFor } from "./lib/region-quality.js";
@@ -10,20 +10,35 @@ import { wrapLongitude, easeOutCubic } from "./lib/globe-geo.js";
 import {
   FUELS, BAND_ALPHA, dayBand, dotHash, assignTerritory, DotCellIndex, barsForUnit, tintHex,
 } from "./lib/globe-surface.js";
+import { vec, subsolar, FOLLOW_SUN, wrapLon, D2R } from "./lib/globe-camera.js";
+import {
+  HORIZON_DOT_PITCH, HORIZON_FULL_LAT0, HORIZON_HOME_ZOOM, HORIZON_PHONE, HORIZON_LAT_RANGE, borderAlpha, clampView,
+  horizonFullGeometry, horizonGeometry, horizonPhoneGeometry, horizonTerritoryRadiusDeg, minZoom,
+  viewGeometry, wheelZooms, zoomOutBlend, zoomViewAt,
+} from "./lib/horizon.js";
+import { createEngravedRenderer } from "./globe-engraved.js";
+import { createHorizonRenderer } from "./globe-horizon.js";
 
 // Locally-vendored world atlas: previously fetched from unpkg.com, which
 // added a third-party DNS + TLS handshake (~200–400ms on cellular) to
 // every cold page load. Served from our own origin now via FileAttachment.
-let countriesPromise;
+let atlasPromise;
 const landDotsByStep = new Map();
 
-async function loadCountries(topologyUrl) {
-  if (!countriesPromise) {
-    countriesPromise = fetch(topologyUrl)
+async function loadAtlas(topologyUrl) {
+  if (!atlasPromise) {
+    atlasPromise = fetch(topologyUrl)
       .then((response) => response.json())
-      .then((topology) => topojson.feature(topology, topology.objects.countries));
+      .then((topology) => ({
+        countries: topojson.feature(topology, topology.objects.countries),
+        // Merged land for the engraved globe's knock-out and coastline: the
+        // countries layer would also draw every border.
+        land: topojson.feature(topology, topology.objects.land),
+        // Every border and coast once, for the horizon when zoomed in.
+        borders: topojson.mesh(topology, topology.objects.countries),
+      }));
   }
-  return countriesPromise;
+  return atlasPromise;
 }
 
 // The land matrix is the globe's only surface texture (the G1 "Lantern"
@@ -49,6 +64,8 @@ function precomputeLandDots(countries, step) {
   const eq = d3.geoEquirectangular().scale(W / (2 * Math.PI)).translate([W / 2, H / 2]);
   mctx.beginPath();
   d3.geoPath(eq, mctx)({ type: "GeometryCollection", geometries: countries.features.map((f) => f.geometry) });
+  // Offscreen mask: only the alpha channel is read back, so the colour is
+  // irrelevant and the same in both modes.
   mctx.fillStyle = "#fff";
   mctx.fill();
   const px = mctx.getImageData(0, 0, W, H).data;
@@ -93,7 +110,7 @@ function unitVec(lon, lat) {
 
 export async function mountGlobe(canvas, initial) {
   const ctx = canvas.getContext("2d");
-  const countries = await loadCountries(initial.topologyUrl);
+  const { countries, land, borders } = await loadAtlas(initial.topologyUrl);
   const mountSize = Math.min(canvas.clientWidth || 0, canvas.clientHeight || 0) || 720;
   const dots = precomputeLandDots(countries, gridStepFor(mountSize));
   // Cap DPR lower on narrow viewports — a 1.5x render on a 360px-wide
@@ -113,7 +130,26 @@ export async function mountGlobe(canvas, initial) {
     dragging: false,
     zoomScale: 1.0,
     selectedRegionId: null,
+    // Light and dark cameras follow the sun, so the globe turns as the clock
+    // plays (redesign plan 6.1). A drag holds it while the pointer is down;
+    // on release it follows again from where it was left, `lonShift` degrees
+    // from the sun. "Now" (update({ follow: true })) and resetView clear the
+    // shift. Longitude carries across a mode switch; latitude is per mode.
+    lat0: FOLLOW_SUN.light.lat0,
+    lon0: null,
+    follow: true,
+    lonShift: 0,
+    // Phones show a static globe; "Explore the globe" opens it full screen
+    // and interactive (src/components/explorer.js, redesign plan 6.4).
+    exploring: false,
+    // Dark's own view: a zoom about the pointer, and the camera latitude a
+    // vertical drag tilts. The phone band ignores both; the explorer uses them.
+    darkLat0: FOLLOW_SUN.dark.lat0,
+    darkView: { zoom: HORIZON_HOME_ZOOM, tx: 0, ty: 0 },
   };
+  // The sun-following longitude the last frame drew at, before the shift:
+  // a drag's release measures its shift from it.
+  let followBase = 0;
 
   const ZOOM_MIN = 0.5;
   const ZOOM_MAX = 4.0;
@@ -149,7 +185,9 @@ export async function mountGlobe(canvas, initial) {
   function refreshFuelPaint() {
     for (const f of FUELS) {
       fuelColor[f] = getFuelColor(f);
-      fuelTip[f] = tintHex(fuelColor[f], 0.55);
+      // The light and dark modes define their beam-tip colours as tokens;
+      // the paper figure's palette defines none and keeps its tint.
+      fuelTip[f] = tokens.fuelTips?.[f] || tintHex(fuelColor[f], 0.55);
       glowSprite[f] = makeGlow(fuelColor[f]);
     }
   }
@@ -158,6 +196,16 @@ export async function mountGlobe(canvas, initial) {
   function refreshTokens() {
     tokens = readGlobeTokens(document.documentElement);
     refreshFuelPaint();
+    engraved.reset();
+    horizon.reset();
+    readLabelClearance();
+    // Light and dark share the camera longitude (state.lon0), so it carries
+    // across the switch with the hour, selection and follow-the-sun
+    // (redesign plan 3.5); latitude is per mode. Only the paper figure
+    // (data-theme="embed") runs G1's idle loop, and a page never switches
+    // into it.
+    if (usesG1()) startLoop();
+    else stopLoop();
     // Force a redraw so the next paint uses the new colours immediately.
     render();
   }
@@ -236,45 +284,19 @@ export async function mountGlobe(canvas, initial) {
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
+    readLabelClearance();
     render();
   }
 
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(canvas);
 
-  // Position the canvas-area absolute within .app-body so it spans precisely
-  // from the header's bottom border to the timeline's top border, and across
-  // the full content width. Uses direct style props (not CSS vars) because
-  // position:absolute offsets are in the containing block's coordinate space.
-  function syncGlobeRect() {
-    if (window.innerWidth <= 900) return; // mobile: CSS flow handles it
-    const header     = document.querySelector(".app-header");
-    const timeline   = document.querySelector(".app-timeline");
-    const appBody    = document.querySelector(".app-body");
-    const canvasArea = canvas.closest(".globe-canvas-area");
-    if (!header || !timeline || !appBody || !canvasArea) return;
-    const bodyRect     = appBody.getBoundingClientRect();
-    const headerBottom = header.getBoundingClientRect().bottom;
-    const timelineTop  = timeline.getBoundingClientRect().top;
-    const top    = Math.round(headerBottom - bodyRect.top);
-    const height = Math.max(200, Math.round(timelineTop - headerBottom));
-    canvasArea.style.top    = top    + "px";
-    canvasArea.style.height = height + "px";
-  }
-  syncGlobeRect();
-  window.addEventListener("resize", syncGlobeRect);
 
   // --- Lit territory cache ---
   // Which land dots glow in which fuel depends on every region's GW at the
   // current hour, not on rotation, so it is recomputed only when the hour
   // (to a quarter), the mode or the data changes - not every frame.
-  let territory = null;
-  let territoryKey = "";
-  function territoryFor(hour) {
-    const key = `${Math.round(hour * 4) / 4}|${state.mode}`;
-    if (territory && key === territoryKey && territory.regions === state.regions && territory.regionData === state.regionData) {
-      return territory.result;
-    }
+  function territorySources(hour) {
     const sources = [];
     for (const r of state.regions) {
       const data = state.regionData[r.id];
@@ -286,11 +308,27 @@ export async function mountGlobe(canvas, initial) {
         if (share > 0) sources.push({ lon: r.lon, lat: r.lat, gw: gw * share, fuel: f, radiusGW: gw });
       }
     }
-    const result = assignTerritory(dots.lons, dots.lats, dots.hash, sources, dots.cells);
-    territory = { result, regions: state.regions, regionData: state.regionData };
-    territoryKey = key;
-    return result;
+    return sources;
   }
+
+  /** A territory cache per dot field: recomputed only when the hour (to a
+   *  quarter), the time window or the data changes. */
+  function territoryCache(radiusDeg) {
+    let cached = null;
+    return (field, hour) => {
+      const key = `${Math.round(hour * 4) / 4}|${state.mode}`;
+      if (cached && cached.key === key && cached.field === field &&
+          cached.regions === state.regions && cached.regionData === state.regionData) {
+        return cached.result;
+      }
+      const result = assignTerritory(field.lons, field.lats, field.hash, territorySources(hour), field.cells, radiusDeg);
+      cached = { key, field, result, regions: state.regions, regionData: state.regionData };
+      return result;
+    };
+  }
+  const g1Territory = territoryCache(undefined);
+  const darkTerritory = territoryCache(horizonTerritoryRadiusDeg);
+  const territoryFor = (hour) => g1Territory(dots, hour);
 
   function drawBaseDot(x, y, coreR, color, dotStyle) {
     if (dotStyle === "hollow") {
@@ -333,7 +371,430 @@ export async function mountGlobe(canvas, initial) {
     }
   }
 
-  function render() {
+  // ---------------------------------------------------------------------------
+  // Which renderer: light mode draws the engraved "Almanac" globe
+  // (src/globe-engraved.js), dark the "Horizon" (src/globe-horizon.js). The
+  // paper figure (src/embed/globe.md, data-theme="embed") keeps the G1 renderer
+  // below: its look is part of a published artefact.
+  // ---------------------------------------------------------------------------
+  const themeOf = () => document.documentElement.getAttribute("data-theme");
+  const isLight = () => themeOf() === "light";
+  const isDark = () => themeOf() === "dark";
+  const usesG1 = () => !isLight() && !isDark();
+
+  // Off-screen pause (the dashboard asks for it; the paper figure does not):
+  // no drawing while the canvas is scrolled away, one draw on the way back.
+  let visible = true;
+  let dirty = false;
+  let io = null;
+  if (initial.pauseOffscreen && typeof IntersectionObserver === "function") {
+    io = new IntersectionObserver((entries) => {
+      visible = entries[entries.length - 1].isIntersecting;
+      if (visible && dirty) { dirty = false; render(); }
+    });
+    io.observe(canvas);
+  }
+
+  function render(opts) {
+    if (!visible) { dirty = true; return; }
+    if (isLight()) {
+      renderLight(opts);
+    } else if (isDark()) {
+      renderDark();
+    } else {
+      // The label card belongs to the redesign's globes; G1 marks a
+      // selection with its own ring.
+      if (selectionEl) selectionEl.hidden = true;
+      renderG1();
+    }
+    describe();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Light and dark draw on change (clock ticks, drags, resizes, theme,
+  // selection), never on an idle animation loop: the site had to rescue its
+  // main thread once already (#1054).
+  // ---------------------------------------------------------------------------
+  const engraved = createEngravedRenderer();
+  const horizon = createHorizonRenderer();
+  const phoneQuery = window.matchMedia?.("(max-width: 640px)");
+  let lastDrawnHour = null;
+  let lightDots = null;
+  let darkDots = null;
+  let markHits = [];
+  let lastLightDrawAt = 0;
+  let settleTimer = null;
+  const regionVec = new Map();
+  function vecFor(region) {
+    let v = regionVec.get(region.id);
+    if (!v) { v = vec(region.lat, region.lon); regionVec.set(region.id, v); }
+    return v;
+  }
+  const lightRadius = () =>
+    Math.min(canvas.width / dpr, canvas.height / dpr) * 0.43 * state.zoomScale;
+
+  // On a phone, outside the explorer, the globe is a static picture: no
+  // selection drawn on it, and (update() below) one draw per hour change.
+  const phoneStill = () => Boolean(phoneQuery?.matches) && !state.exploring;
+  const shownSelection = () => (phoneStill() ? null : state.selectedRegionId);
+
+  // Where the label card must stay clear of at the bottom of the canvas: in
+  // dark the glass dock sits over the canvas there. CSS sets it on the canvas
+  // as --globe-label-clear; re-read on resize and theme change.
+  // --globe-top-clear is the header's height over the canvas, which the
+  // zoomed-out whole globe keeps clear of.
+  let labelClear = 0;
+  let topClear = 0;
+  function readLabelClearance() {
+    const cs = getComputedStyle(canvas);
+    labelClear = parseFloat(cs.getPropertyValue("--globe-label-clear")) || 0;
+    topClear = parseFloat(cs.getPropertyValue("--globe-top-clear")) || 0;
+  }
+
+  /**
+   * What both renderers draw at an hour: one mark (needle or beam) per fuel
+   * per region record, never stacked - the same barsForUnit split as the G1
+   * pillars, so a mixed region's solar share drops out at local night.
+   * Records that share a location sit a few pixels apart. Grids that publish
+   * no waste get a dashed ring instead.
+   */
+  function marksAt(hour) {
+    const marks = [];
+    const rings = [];
+    for (const unit of buildPillarUnitsForState()) {
+      const group = unit.regions;
+      const data = group.map((r) => state.regionData[r.id]);
+      const gw = data.map((d) => (d ? Math.max(0, regionGWAtHour(d, hour, state.mode)) : 0));
+      const totalWaste = gw.reduce((sum, g) => sum + g, 0);
+      const showWaste = data.some((d) => showsWastePillar(d)) && totalWaste > 0.01;
+      if (!showWaste) {
+        const gen = data.reduce((sum, d) => sum + (d ? Math.max(0, generationGWAtHour(d, hour)) : 0), 0);
+        const unpublished = data.some((d) => wasteStatusOf(d) === "unpublished");
+        if (unpublished || gen > 0.01) rings.push({ v: vecFor(group[0]), gen });
+        continue;
+      }
+      const bars = barsForUnit(group.map((r, i) => {
+        const share = {};
+        for (const f of FUELS) share[f] = showsWastePillar(data[i]) ? fuelShareAtHour(r, f, hour, data[i]) : 0;
+        return { gw: gw[i], share };
+      }));
+      bars.forEach((bar, bi) => {
+        const member = group[bar.member];
+        const mData = data[bar.member];
+        marks.push({
+          id: member.id,
+          v: vecFor(member),
+          fuel: bar.fuel,
+          color: fuelColor[bar.fuel],
+          bucket: qualityBucket(member, mData),
+          stale: mData?.sourceStatus === "degraded",
+          gw: bar.gw,
+          offset: (bi - (bars.length - 1) / 2) * 4.5,
+        });
+      });
+    }
+    return { marks, rings };
+  }
+
+  // Light: the engraved globe. While the camera moves it reuses the cached
+  // line screen within 0.25 deg and, when dragging, draws in `fast` mode; one
+  // exact frame follows once the motion stops.
+  function renderLight({ fast = false } = {}) {
+    const width = canvas.width / dpr;
+    const height = canvas.height / dpr;
+    if (!width || !height) return;
+    lastDrawnHour = state.utcHour;
+    const now = performance.now();
+    const moving = fast || now - lastLightDrawAt < 60;
+    lastLightDrawAt = now;
+    clearTimeout(settleTimer);
+    if (moving) settleTimer = setTimeout(() => render(), 160);
+
+    const hour = ((state.utcHour % 24) + 24) % 24;
+    const sun = subsolar(new Date(), hour);
+    followBase = sun.lon + FOLLOW_SUN.light.lonOffset;
+    if (state.follow || state.lon0 == null) state.lon0 = wrapLon(followBase + state.lonShift);
+    if (!lightDots) lightDots = precomputeLandDots(countries, 0.8);
+    const { marks, rings } = marksAt(hour);
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, width, height);
+    const out = engraved.draw({
+      ctx, w: width, h: height, dpr, cx: width / 2, cy: height / 2, R: lightRadius(),
+      lat0: state.lat0, lon0: state.lon0, sun, land, dots: lightDots, needles: marks, rings,
+      inkRGB: tokens.inkRGB, paper: tokens.paper, warn: tokens.qualityWarning,
+      selectedId: shownSelection(), fast, exact: !moving, leader: !state.exploring,
+    });
+    ctx.restore();
+    markHits = out.hits;
+    placeSelection(out.label, hour);
+  }
+
+  // Dark: the horizon (redesign plan 6.3). The camera follows the sun until
+  // the visitor drags or zooms. A sideways drag turns longitude, a vertical
+  // one tilts the globe (state.darkLat0) so any latitude can come to the
+  // horizon, and a zoom magnifies the stage about the pointer
+  // (state.darkView), with country borders fading in. The backdrop and sprites are cached in the
+  // renderer and the lit territory per quarter hour, so a frame is the dots
+  // and the beams. On a phone, outside the explorer, it is the band under the
+  // hero (redesign plan 3.4); the explorer uses the desktop geometry.
+  function renderDark() {
+    const width = canvas.width / dpr;
+    const height = canvas.height / dpr;
+    if (!width || !height) return;
+    lastDrawnHour = state.utcHour;
+    const hour = ((state.utcHour % 24) + 24) % 24;
+    const sun = subsolar(new Date(), hour);
+    followBase = sun.lon + FOLLOW_SUN.dark.lonOffset;
+    if (state.follow || state.lon0 == null) state.lon0 = wrapLon(followBase + state.lonShift);
+    if (!darkDots) darkDots = precomputeLandDots(countries, HORIZON_DOT_PITCH);
+    const { marks, rings } = marksAt(hour);
+    const band = phoneStill();
+    const frame = band ? null : darkFrame(width, height);
+    const base = band ? horizonPhoneGeometry(width, height) : frame.base;
+    const view = band ? { zoom: 1, tx: 0, ty: 0 } : (state.darkView = clampView(state.darkView, width, height, frame.zMin));
+    const geo = viewGeometry(base, view, frame?.full);
+    // Zoomed in, beams grow more slowly than the land (so they do not swamp
+    // it) and dots grow a little. Zoomed out, beams and dots shrink more
+    // slowly than the globe, so both still read on the whole sphere. Either
+    // way the borders fade in.
+    const z = view.zoom;
+    const look = band ? HORIZON_PHONE : {
+      lat0: darkLat0At(z),
+      beam: z > 1 ? 0.1 / Math.sqrt(z) : 0.1 * Math.pow(z, -0.3),
+      widthScale: 1,
+      dotScale: z > 1 ? Math.min(1.8, Math.pow(z, 0.35)) : Math.max(0.65, Math.pow(z, 0.3)),
+    };
+    const bAlpha = band ? 0 : borderAlpha(z, frame.zMin);
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    const out = horizon.draw({
+      ctx, w: width, h: height, dpr, R: geo.R, top: geo.top, cx: geo.cx, skyTop: base.top,
+      borders: bAlpha > 0 ? borderLines() : null, borderAlpha: bAlpha,
+      lat0: look.lat0, lon0: state.lon0, sun,
+      dots: darkDots, territory: darkTerritory(darkDots, hour),
+      beams: marks, rings, t: tokens, fuel: fuelColor, tip: fuelTip,
+      beam: look.beam, widthScale: look.widthScale, dotScale: look.dotScale,
+      selectedId: shownSelection(), labelBottom: height - labelClear, leader: !state.exploring,
+    });
+    ctx.restore();
+    markHits = out.hits;
+    placeSelection(out.label, hour);
+  }
+
+  /** Border and coast polylines as unit vectors, built on first zoom. */
+  let borderCache = null;
+  function borderLines() {
+    if (!borderCache) {
+      borderCache = borders.coordinates.map((line) => {
+        const out = new Float32Array(line.length * 3);
+        line.forEach(([lon, lat], i) => out.set(vec(lat, lon), i * 3));
+        return out;
+      });
+    }
+    return borderCache;
+  }
+
+  /** The horizon, the whole globe and the zoom that reaches it, for a W x H stage. */
+  function darkFrame(w, h) {
+    const base = horizonGeometry(w, h);
+    const full = horizonFullGeometry(w, h, topClear, labelClear);
+    return { base, full, zMin: minZoom(base, full) };
+  }
+
+  /** Camera latitude at a zoom: the visitor's tilt, turning toward the
+   *  whole globe's north-up view as the zoom goes out. */
+  function darkLat0At(zoom) {
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    const s = zoomOutBlend(zoom, darkFrame(w, h).zMin);
+    return Math.max(-85, Math.min(85, state.darkLat0 + s * (HORIZON_FULL_LAT0 - FOLLOW_SUN.dark.lat0)));
+  }
+
+  /** The dark globe's geometry as drawn now (not the phone band). */
+  function darkGeometry() {
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    const frame = darkFrame(w, h);
+    return viewGeometry(frame.base, clampView(state.darkView, w, h, frame.zMin), frame.full);
+  }
+
+  /**
+   * Degrees of camera longitude and latitude per pixel of drag. In light the
+   * globe's centre moves with the pointer. In dark the land under the pointer
+   * does, as nearly as a turn about the pole allows: longitude by the radius
+   * of its latitude circle, a tilt by how squarely it faces the viewer (land
+   * at the horizon barely moves up or down when the globe tilts).
+   */
+  function dragRates(clientX, clientY) {
+    if (!isDark()) {
+      const r = 1 / lightRadius() / D2R;
+      return { lon: r, lat: r };
+    }
+    const g = darkGeometry();
+    const rect = canvas.getBoundingClientRect();
+    const x = (clientX - rect.left - g.cx) / g.R, y = (clientY - rect.top - g.cy) / g.R;
+    const r2 = x * x + y * y;
+    // Off the globe (in the sky) the drag takes the horizon's crest.
+    const lat0 = darkLat0At(state.darkView.zoom);
+    let depth = 0, lat = lat0 + 90;
+    if (r2 < 1) {
+      depth = Math.sqrt(1 - r2);
+      const p = lat0 * D2R;
+      // The pointer's ground point: x e - y n + depth f, z component only.
+      lat = Math.asin(Math.max(-1, Math.min(1, -y * Math.cos(p) + depth * Math.sin(p)))) / D2R;
+    }
+    return {
+      lon: 1 / (g.R * Math.max(0.25, Math.abs(Math.cos(lat * D2R)))) / D2R,
+      lat: 1 / (g.R * Math.max(0.35, depth)) / D2R,
+    };
+  }
+
+  /** Whether a client point is over the dark globe's disc (not the sky around it). */
+  function overDarkGlobe(clientX, clientY) {
+    const g = darkGeometry();
+    const rect = canvas.getBoundingClientRect();
+    return Math.hypot(clientX - rect.left - g.cx, clientY - rect.top - g.cy) < g.R;
+  }
+
+  /** Zoom the dark globe by `factor` about a client point (the stage's middle when omitted). */
+  function zoomDark(factor, clientX, clientY) {
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    if (!w || !h) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = clientX == null ? w * 0.57 : clientX - rect.left;
+    const my = clientY == null ? h * 0.62 : clientY - rect.top;
+    const next = zoomViewAt(state.darkView, factor, mx, my, w, h, darkFrame(w, h).zMin);
+    if (next.zoom === state.darkView.zoom && next.tx === state.darkView.tx && next.ty === state.darkView.ty) return;
+    state.darkView = next;
+    viewChanged();
+    render();
+  }
+
+  function isHomeView() {
+    const v = state.darkView;
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    const home = w && h ? clampView({ zoom: HORIZON_HOME_ZOOM, tx: 0, ty: 0 }, w, h, darkFrame(w, h).zMin).zoom : HORIZON_HOME_ZOOM;
+    return Math.abs(v.zoom - home) < 1e-9 && v.tx === 0 && v.ty === 0 &&
+      state.darkLat0 === FOLLOW_SUN.dark.lat0 && state.follow && state.lonShift === 0;
+  }
+  function viewChanged() {
+    const w = canvas.width / dpr, h = canvas.height / dpr;
+    const zMin = w && h ? darkFrame(w, h).zMin : 1;
+    initial.onViewChange?.({ zoom: state.darkView.zoom, minZoom: zMin, home: isHomeView() });
+  }
+
+  // The selected region's label card: DOM (so its name can link to the
+  // region's page), placed by the renderer beside the needle head.
+  const selectionEl = initial.selectionEl instanceof Element ? initial.selectionEl : null;
+  let selectionFor = null;
+  const QUALITY_LABEL = { measured: "Measured", anchored: "Anchored", estimated: "Estimated" };
+  function fmtGW(gw) { return gw >= 1 ? gw.toFixed(1) : gw.toFixed(2); }
+
+  function placeSelection(label, hour) {
+    if (!selectionEl) return;
+    const id = shownSelection();
+    const region = label && id ? state.regions.find((r) => r.id === id) : null;
+    if (!region) {
+      selectionEl.hidden = true;
+      selectionFor = null;
+      return;
+    }
+    const data = state.regionData[region.id];
+    if (selectionFor !== region.id) {
+      const fuel = dominantFuel(region, data);
+      selectionEl.replaceChildren();
+      const meta = document.createElement("div");
+      meta.className = "gs-meta";
+      const kicker = document.createElement("span");
+      kicker.textContent = "Selected";
+      const fuelEl = document.createElement("span");
+      fuelEl.className = "gs-fuel";
+      const swatch = document.createElement("span");
+      swatch.className = `dot dot--${fuel}`;
+      swatch.setAttribute("aria-hidden", "true");
+      fuelEl.append(swatch, FUEL_LABEL[fuel]);
+      meta.append(kicker, fuelEl);
+      const name = document.createElement("a");
+      name.className = "gs-name";
+      name.href = `./region/${encodeURIComponent(region.id)}`;
+      name.textContent = region.name;
+      const nowEl = document.createElement("div");
+      nowEl.className = "gs-now";
+      selectionEl.append(meta, name, nowEl);
+      selectionFor = region.id;
+    }
+    const gw = data ? Math.max(0, regionGWAtHour(data, hour, state.mode)) : 0;
+    const quality = QUALITY_LABEL[qualityBucket(region, data)];
+    const stale = data?.sourceStatus === "degraded" ? " · stale feed" : "";
+    selectionEl.querySelector(".gs-now").textContent = `${fmtGW(gw)} GW now · ${quality}${stale}`;
+    selectionEl.style.left = `${label.left}px`;
+    selectionEl.style.top = `${label.top}px`;
+    selectionEl.dataset.side = label.side;
+    selectionEl.hidden = false;
+  }
+
+  function hitMark(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const px = clientX - rect.left, py = clientY - rect.top;
+    let best = null, bestD = Infinity;
+    for (const hit of markHits) {
+      const d = Math.hypot(hit.x - px, hit.y - py);
+      if (d < hit.r && d < bestD) { best = hit; bestD = d; }
+    }
+    return best;
+  }
+
+  // Hover (mouse only) hands the region to the page, which opens the detail
+  // card (region-tooltip.js); a tap selects instead.
+  let hoverId = null;
+  function hoverAt(event) {
+    if (typeof initial.onRegionHover !== "function") return;
+    const hit = event && event.pointerType === "mouse" ? hitMark(event.clientX, event.clientY) : null;
+    const id = hit?.id ?? null;
+    canvas.style.cursor = id ? "pointer" : "";
+    if (id === hoverId) return;
+    hoverId = id;
+    const region = id ? state.regions.find((r) => r.id === id) : null;
+    initial.onRegionHover(region ?? null, event ? { clientX: event.clientX, clientY: event.clientY } : null);
+  }
+
+  // The canvas is role="img"; its accessible name restates the hour's total
+  // and the three largest regions, at most once a second while the clock
+  // plays (redesign plan 6.1). Only where the page asks: the paper figure
+  // keeps its own fixed label.
+  let describedAt = -Infinity;
+  let describeTimer = null;
+  function describe() {
+    if (!initial.describe) return;
+    const wait = 1000 - (performance.now() - describedAt);
+    if (wait > 0) {
+      if (!describeTimer) describeTimer = setTimeout(() => { describeTimer = null; describe(); }, wait);
+      return;
+    }
+    describedAt = performance.now();
+    const hour = ((state.utcHour % 24) + 24) % 24;
+    let total = 0;
+    const rows = [];
+    for (const r of state.regions) {
+      const d = state.regionData[r.id];
+      if (!d) continue;
+      const gw = Math.max(0, regionGWAtHour(d, hour, state.mode));
+      total += gw;
+      if (gw > 0) rows.push([r.name, gw]);
+    }
+    rows.sort((a, b) => b[1] - a[1]);
+    const hh = String(Math.floor(hour)).padStart(2, "0");
+    const mm = String(Math.floor((hour % 1) * 60)).padStart(2, "0");
+    const top = rows.slice(0, 3).map(([name, gw]) => `${name} ${fmtGW(gw)} GW`).join(", ");
+    canvas.setAttribute(
+      "aria-label",
+      `Globe of curtailed renewable energy at ${hh}:${mm} UTC: ${total.toFixed(1)} GW in all.` +
+        (top ? ` Largest: ${top}.` : ""),
+    );
+  }
+
+  function renderG1() {
     const renderNow = performance.now();
     const width = canvas.width / dpr;
     const height = canvas.height / dpr;
@@ -387,6 +848,8 @@ export async function mountGlobe(canvas, initial) {
     ctx.arc(cx, cy, R, 0, Math.PI * 2);
     ctx.fill();
 
+    // A shadow darkens whatever it falls on, in either mode, so black is
+    // theme-neutral here: on paper it reads as the sphere's shaded side.
     const shade = ctx.createRadialGradient(cx + R * 0.44, cy + R * 0.4, 0, cx + R * 0.44, cy + R * 0.4, R * 1.4);
     shade.addColorStop(0, "rgba(0,0,0,0.35)");
     shade.addColorStop(1, "rgba(0,0,0,0)");
@@ -597,7 +1060,7 @@ export async function mountGlobe(canvas, initial) {
         const glowR = (4 + Math.sqrt(totalWasteGW) * 5) * birthT;
         ctx.save();
         ctx.globalAlpha = repAlpha * 0.9;
-        ctx.strokeStyle = "#7cb8ff";
+        ctx.strokeStyle = tokens.ink;
         ctx.lineWidth = 2.2;
         ctx.setLineDash([]);
         ctx.beginPath();
@@ -616,6 +1079,7 @@ export async function mountGlobe(canvas, initial) {
   }
 
   let activePointerId = null;
+  let lightDrag = null;
   let lastX = 0;
   let lastY = 0;
   let downX = 0;
@@ -635,8 +1099,16 @@ export async function mountGlobe(canvas, initial) {
   let pinchInitDist = 0;
   let pinchInitZoom = 1;
   let isPinching = false;
+  let pinchLast = 0;
   // Prevent the last-finger lift after a pinch from firing onRegionClick.
   let suppressNextClick = false;
+
+  function newDrag(x, y) {
+    return {
+      x, y, lon0: state.lon0 ?? 0, lat0: isDark() ? state.darkLat0 : state.lat0,
+      rates: dragRates(x, y), moved: false,
+    };
+  }
 
   canvas.addEventListener("pointerdown", (event) => {
     event.preventDefault();
@@ -647,10 +1119,20 @@ export async function mountGlobe(canvas, initial) {
       // Enter pinch mode: stop any active drag first.
       isPinching = true;
       state.dragging = false;
+      lightDrag = null;
       canvas.classList.remove("is-dragging");
       const pts = [...pointerPositions.values()];
       pinchInitDist = Math.hypot(pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]);
       pinchInitZoom = state.zoomScale;
+      pinchLast = pinchInitDist;
+    } else if (!usesG1()) {
+      // Light and dark: a drag only starts once the pointer has travelled, so
+      // a tap stays a tap; the camera is (lat0, lon0) rather than G1's rotation.
+      isPinching = false;
+      activePointerId = event.pointerId;
+      downX = event.clientX;
+      downY = event.clientY;
+      lightDrag = newDrag(event.clientX, event.clientY);
     } else {
       // Single-pointer drag start (existing behaviour).
       isPinching = false;
@@ -666,13 +1148,23 @@ export async function mountGlobe(canvas, initial) {
   });
 
   canvas.addEventListener("pointermove", (event) => {
-    if (!pointerPositions.has(event.pointerId)) return;
+    if (!pointerPositions.has(event.pointerId)) {
+      if (!usesG1()) hoverAt(event);
+      return;
+    }
     pointerPositions.set(event.pointerId, [event.clientX, event.clientY]);
 
     if (isPinching && pointerPositions.size >= 2) {
-      // Update pinch zoom.
+      // Update pinch zoom. The horizon zooms about the fingers' midpoint.
       const pts = [...pointerPositions.values()];
       const dist = Math.hypot(pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]);
+      if (isDark()) {
+        if (pinchLast > 0 && !phoneStill()) {
+          zoomDark(dist / pinchLast, (pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2);
+        }
+        pinchLast = dist;
+        return;
+      }
       if (pinchInitDist > 0) {
         state.zoomScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, pinchInitZoom * (dist / pinchInitDist)));
         initial.onZoomChange?.(state.zoomScale); // keep slider in sync with pinch
@@ -681,6 +1173,30 @@ export async function mountGlobe(canvas, initial) {
       return;
     }
 
+    if (!usesG1()) {
+      const drag = lightDrag;
+      if (!drag || event.pointerId !== activePointerId) return;
+      const tx = event.clientX - drag.x, ty = event.clientY - drag.y;
+      if (!drag.moved) {
+        if (Math.hypot(tx, ty) < CLICK_MAX_TRAVEL_PX) return;
+        drag.moved = true;
+        state.dragging = true;
+        state.follow = false; // held while dragging; the release follows again, shifted
+        canvas.classList.add("is-dragging");
+        hoverAt(null);
+      }
+      state.lon0 = wrapLon(drag.lon0 - tx * drag.rates.lon);
+      if (isLight()) {
+        state.lat0 = Math.max(-60, Math.min(70, drag.lat0 + ty * drag.rates.lat));
+      } else if (!phoneStill()) {
+        // Dark tilts: pulling down brings the land beyond the horizon over it.
+        const [lo, hi] = HORIZON_LAT_RANGE;
+        state.darkLat0 = Math.max(lo, Math.min(hi, drag.lat0 + ty * drag.rates.lat));
+      }
+      if (isDark()) viewChanged();
+      render({ fast: true });
+      return;
+    }
     if (!state.dragging || event.pointerId !== activePointerId) return;
     const dx = event.clientX - lastX;
     const dy = event.clientY - lastY;
@@ -711,8 +1227,12 @@ export async function mountGlobe(canvas, initial) {
           lastY = remPos[1];
           downX = remPos[0];
           downY = remPos[1];
-          state.dragging = true;
-          canvas.classList.add("is-dragging");
+          if (!usesG1()) {
+            lightDrag = newDrag(remPos[0], remPos[1]);
+          } else {
+            state.dragging = true;
+            canvas.classList.add("is-dragging");
+          }
         }
       }
       if (canvas.hasPointerCapture?.(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
@@ -720,6 +1240,33 @@ export async function mountGlobe(canvas, initial) {
     }
 
     if (activePointerId !== event.pointerId && !wasTracked) return;
+
+    if (!usesG1()) {
+      // Light and dark: a pointerup that never became a drag is a tap. It
+      // selects the needle or beam under it (again: deselects), or clears
+      // the selection.
+      const drag = lightDrag;
+      lightDrag = null;
+      activePointerId = null;
+      if (drag?.moved) {
+        // Follow the sun again from where the drag left the globe.
+        state.lonShift = wrapLon(state.lon0 - followBase);
+        state.follow = true;
+        if (isDark()) viewChanged();
+      }
+      state.dragging = false;
+      canvas.classList.remove("is-dragging");
+      if (canvas.hasPointerCapture?.(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+      if (drag && !drag.moved && event.type === "pointerup" && !suppressNextClick) {
+        const hit = hitMark(event.clientX, event.clientY);
+        state.selectedRegionId = hit && hit.id !== state.selectedRegionId ? hit.id : null;
+        initial.onSelect?.(state.selectedRegionId);
+      }
+      suppressNextClick = false;
+      render();
+      return;
+    }
+
     const travelX = event.clientX - downX;
     const travelY = event.clientY - downY;
     const traveled = Math.hypot(travelX, travelY);
@@ -750,11 +1297,35 @@ export async function mountGlobe(canvas, initial) {
     if ((state.dragging || isPinching) && event.buttons === 0) {
       releasePointer(event);
     }
+    if (!usesG1() && !pointerPositions.has(event.pointerId)) hoverAt(null);
   });
 
   // Scroll-wheel zoom (desktop trackpad + mouse wheel).
   // Named reference so destroy() can remove it.
   function onWheel(event) {
+    // Dark: Ctrl/Cmd + wheel (and a trackpad pinch, which browsers send as
+    // Ctrl + wheel) zooms about the pointer anywhere on the canvas. A plain
+    // wheel or two-finger scroll zooms only with the pointer over the globe
+    // itself: the canvas fills the first screen, so over the sky it scrolls
+    // the page, and at the zoom's limit it passes through (scrolling down
+    // past the whole globe carries on down the page).
+    if (isDark()) {
+      if (phoneStill()) return;
+      const px = event.deltaMode === 1 ? event.deltaY * 20 : event.deltaMode === 2 ? event.deltaY * 400 : event.deltaY;
+      if (event.ctrlKey || event.metaKey) {
+        event.preventDefault();
+        zoomDark(Math.pow(0.99, Math.max(-60, Math.min(60, px))), event.clientX, event.clientY);
+        return;
+      }
+      if (!overDarkGlobe(event.clientX, event.clientY)) return;
+      const w = canvas.width / dpr, h = canvas.height / dpr;
+      if (!wheelZooms(state.darkView.zoom, darkFrame(w, h).zMin, px)) return;
+      event.preventDefault();
+      // Gentler than a pinch: a mouse notch (~100px) zooms about 26%, and a
+      // trackpad's stream of small deltas zooms smoothly.
+      zoomDark(Math.pow(0.997, Math.max(-100, Math.min(100, px))), event.clientX, event.clientY);
+      return;
+    }
     event.preventDefault();
     // Normalise delta across deltaMode values (0=pixels, 1=lines, 2=pages).
     // Cap page-mode at 200 pixel-equivalent to avoid a single event zooming
@@ -765,6 +1336,22 @@ export async function mountGlobe(canvas, initial) {
     applyZoom(Math.pow(0.999, pixels));
   }
   canvas.addEventListener("wheel", onWheel, { passive: false });
+
+  // Safari sends a trackpad pinch as gesture events, not Ctrl + wheel.
+  let gestureScale = 1;
+  function onGestureStart(event) {
+    if (!isDark() || phoneStill()) return;
+    event.preventDefault();
+    gestureScale = 1;
+  }
+  function onGestureChange(event) {
+    if (!isDark() || phoneStill()) return;
+    event.preventDefault();
+    zoomDark(event.scale / gestureScale, event.clientX, event.clientY);
+    gestureScale = event.scale;
+  }
+  canvas.addEventListener("gesturestart", onGestureStart);
+  canvas.addEventListener("gesturechange", onGestureChange);
 
   resize();
 
@@ -790,6 +1377,7 @@ export async function mountGlobe(canvas, initial) {
   const tick = (now) => {
     rafId = null;
     if (document.hidden) return; // visibilitychange will resume us
+    if (!usesG1()) return;       // light and dark draw on change, not per frame
     if (now - lastFrameTs >= targetFrameMs) {
       if (!state.dragging && now >= autoResumeAt) {
         // Cap delta to 50ms: prevents GC pauses / scheduling hiccups from
@@ -805,7 +1393,7 @@ export async function mountGlobe(canvas, initial) {
   };
 
   function startLoop() {
-    if (rafId != null || prefersReducedMotion) return;
+    if (rafId != null || prefersReducedMotion || !usesG1()) return;
     lastFrameTs = 0;
     rafId = requestAnimationFrame(tick);
   }
@@ -814,7 +1402,7 @@ export async function mountGlobe(canvas, initial) {
     rafId = null;
   }
 
-  if (prefersReducedMotion) {
+  if (prefersReducedMotion || !usesG1()) {
     render();
   } else {
     startLoop();
@@ -828,20 +1416,61 @@ export async function mountGlobe(canvas, initial) {
 
   return {
     update(next) {
+      // A clock tick, with nothing else changing, redraws light and dark only
+      // when it moves the picture. On a phone, outside the explorer, the globe
+      // draws once per hour change while the clock runs (redesign plan 6.2,
+      // 3.4); in the explorer the light globe plays in its `fast` mode.
+      // Everywhere, "Now" follows the wall clock, which moves the sun 0.004
+      // deg a second: a redraw every frame for that would be all cost, so
+      // ticks under 15 s of clock time wait. Every other change (mode,
+      // follow, data) draws at once, and G1 keeps its own loop.
+      const clockOnly = Object.keys(next).every((k) => k === "utcHour" || (k === "mode" && next.mode === state.mode));
+      const prev = lastDrawnHour;
+      if (next.follow === true) state.lonShift = 0;
       Object.assign(state, next);
+      if ("follow" in next) viewChanged();
+      if (clockOnly && next.utcHour != null && prev != null && !usesG1()) {
+        if (phoneStill() && Math.floor(next.utcHour) === Math.floor(prev)) return;
+        if (Math.abs(next.utcHour - prev) < 1 / 240) return;
+        render({ fast: isLight() && Boolean(phoneQuery?.matches) });
+        return;
+      }
       render();
     },
-    zoomIn()  { applyZoom(1.25); },
-    zoomOut() { applyZoom(1 / 1.25); },
+    /** Enter or leave the phone explorer (src/components/explorer.js). */
+    setExplorer(on) {
+      state.exploring = Boolean(on);
+      if (!state.exploring) {
+        state.dragging = false;
+        lightDrag = null;
+        canvas.classList.remove("is-dragging");
+      }
+      render();
+    },
+    zoomIn()  { if (isDark()) zoomDark(1.5); else applyZoom(1.25); },
+    zoomOut() { if (isDark()) zoomDark(1 / 1.5); else applyZoom(1 / 1.25); },
     resetZoom() { state.zoomScale = 1.0; initial.onZoomChange?.(1.0); render(); },
+    /** Dark: back to the opening view - the home zoom and tilt, following the sun. */
+    resetView() {
+      state.darkView = { zoom: HORIZON_HOME_ZOOM, tx: 0, ty: 0 };
+      state.lonShift = 0;
+      state.darkLat0 = FOLLOW_SUN.dark.lat0;
+      state.follow = true;
+      viewChanged();
+      render();
+    },
     setZoom(s) { applyZoom(s / state.zoomScale); },
     destroy() {
       stopLoop();
+      clearTimeout(settleTimer);
+      clearTimeout(describeTimer);
+      io?.disconnect();
       window.removeEventListener("themechange", refreshTokens);
-      window.removeEventListener("resize", syncGlobeRect);
       document.removeEventListener("visibilitychange", onVisibility);
       resizeObserver.disconnect();
       canvas.removeEventListener("wheel", onWheel);
+      canvas.removeEventListener("gesturestart", onGestureStart);
+      canvas.removeEventListener("gesturechange", onGestureChange);
     }
   };
 }

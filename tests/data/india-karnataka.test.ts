@@ -10,6 +10,9 @@ describe("india-karnataka loader", () => {
     expect(data.totalTWh).toBeGreaterThan(0);
     expect(data.peakGW).toBeGreaterThan(0);
     expect(data.confidenceTier).toBe("T3-modelled");
+    expect(data.sourceProvenance).toBe("official-lead");
+    expect(data.sourceNote).toMatch(/CEA gen-re/);
+    expect(data.sourceNote).not.toMatch(/No CEA CSV|No KSLDC CSV|0\.5 TWh\/yr/);
   });
 
   it("solar profile peaks around UTC 06-07 (Karnataka ~76°E local noon)", async () => {
