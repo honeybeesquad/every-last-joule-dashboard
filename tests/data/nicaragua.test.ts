@@ -10,6 +10,7 @@ import {
   toCsv,
   type CapturedHour,
 } from "../../src/data/nicaragua.json";
+import { captureCsv } from "../../scripts/capture/nicaragua-cndc";
 
 const AT = "2026-11-19T05:40:00.000Z";
 
@@ -122,5 +123,23 @@ describe("nicaragua: buildNicaraguaRegion", () => {
 
   it("marks the series degraded once the capture stops", () => {
     expect(buildNicaraguaRegion(capturedDays(7), new Date("2026-12-10T12:00:00Z")).sourceStatus).toBe("degraded");
+  });
+});
+
+describe("nicaragua: captureCsv", () => {
+  it("merges the response with the committed file and a pending branch copy", () => {
+    const committed = toCsv(parseCndcSolar(payload("2026-11-16", 23), "2026-11-17T05:40:00.000Z"));
+    const pending = toCsv(parseCndcSolar(payload("2026-11-17", 23), "2026-11-18T05:40:00.000Z"));
+    const out = captureCsv(payload("2026-11-18", 23), [committed, pending], AT);
+    expect(out.day).toBe("2026-11-18");
+    expect(out.rows).toBe(72);
+    expect(completeDays(parseCsv(out.csv)).days).toEqual(["2026-11-16", "2026-11-17", "2026-11-18"]);
+  });
+
+  it("keeps existing rows and reports no day when the response has no SOLAR rows yet", () => {
+    const committed = toCsv(parseCndcSolar(payload("2026-11-16", 23), AT));
+    const out = captureCsv({ GeneracionTipo: [] }, [committed, ""], AT);
+    expect(out.day).toBeNull();
+    expect(out.csv).toBe(committed);
   });
 });
