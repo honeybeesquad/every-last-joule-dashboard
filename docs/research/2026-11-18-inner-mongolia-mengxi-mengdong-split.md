@@ -49,28 +49,34 @@ The monthly and year-to-date releases also name 蒙西 and 蒙东 separately, so
 3. Reconcile the ≥6 MW generation figures with the whole-province totals.
 4. Accept moving these two regions off the trailing-12-month Ember method onto a fixed 2024 year.
 
-## Separate finding for the owner: the current anchor rate
+## Resolved 2026-11-19: the anchor rate was Jan–Nov, not full-year
 
-*Corrected 2026-11-18: the first version of this note called 95.4% / 94.7% a whole-province rate. It isn't one.*
+*This section was corrected twice. The first version called 95.4% / 94.7% a whole-province rate; it is a Mengxi rate. The second left open which Mengxi figure was right. A first-hand check, done through Cowork in the owner's browser, settled it.*
 
-`scripts/refresh-china.ts` transcribes 95.4% wind and 94.7% solar as the **蒙西 (Mengxi)** 2024 utilisation, citing cpnn.com.cn t20250219_1773747. Its comment hedges the period as "2024 full-year / 2024M1-11". The script multiplies those rates by Ember's whole-province generation, which includes Mengdong, and its own comment calls the result an upper bound for the Mengxi grid. As of this date, the `regions.ts` `source` strings name the rate as Mengxi-only.
+| 2024 utilisation | Mengxi wind | Mengxi solar | Mengdong wind | Mengdong solar | Source (first-hand) |
+|---|---|---|---|---|---|
+| Full year | 93.7% | 93.7% | 94.0% | 97.3% | Monitoring-centre 2024 province table (centre watermark), reprinted at m.solarzoom.com/article-190789-1.html (2025-02-07). Mengxi solar 93.7% also in cpnn t20250219_1773747, 表4 (image). |
+| Jan–Nov | 95.4% | 94.7% | — | — | Centre's November release, row "蒙西 \| 95.1% \| 95.4% \| 94.5% \| 94.7%" under "11月 \| 1-11月 \| 11月 \| 1-11月" (mnewenergy.in-en.com/html/newenergy-2438258.shtml) |
+| December only | 91.9% | 84.3% | — | — | Same full-year table |
 
-The open question is a conflict between two Mengxi figures:
+Further notes from the check:
+- The cpnn article gives no Mengxi wind figure and never mentions Mengdong.
+- nea.gov.cn carries only the national 2024 figures (wind 95.9%, solar 96.8%). The province table went out on the centre's WeChat account.
+- Quote the table image, not reprint text: the Sohu text gives Tibet solar as 68.3%, where the table and cpnn say 68.6%.
 
-| | Mengxi wind | Mengxi solar |
-|---|---|---|
-| Rate used now (cpnn, transcribed) | 95.4% | 94.7% |
-| Search snippets of the 6 Feb 2025 release (unverified) | 93.7% | 93.7% |
+**Change (PR after #1620, pending owner sign-off to merge):** the Inner Mongolia rate moves to the full-year 6.3% wind and 6.3% solar, from 4.6% and 5.3%. On the committed Ember trailing-12-month generation (209.731 / 79.119 TWh), the anchors become 13.213 TWh/yr wind (from 9.648) and 4.984 TWh/yr solar (from 4.193), +4.356 TWh/yr in total. The Mengxi-only rate is still applied to whole-province generation, as before.
 
-One possible explanation is Jan–Nov against the full year, but that is unverified. If the full-year figure is 93.7%, the wind curtailment rate would go from 4.6% to 6.3% and solar from 5.3% to 6.3%. That would raise the served anchor, so it needs a first-hand read of the source and the owner's sign-off (CLAUDE.md, data PR rule 3). Nothing has changed here.
+**Open:** the other provinces in `scripts/refresh-china.ts` share the same cpnn citation and the same "full-year / M1-11" hedge. Their rates have not been checked against the full-year table.
 
-The loader's hardcoded ~8.0 / ~4.6 TWh/yr figures are the fallback for a missing `data/china-anchors.json` row, not the served anchor. As of this date they are labelled as such, with no NEA attribution.
+On 2025-2026 by-fuel generation, nmgxny.com/industry/1935.html (2025 brief, read first-hand by Cowork) gives wind (2146.43 亿kWh) and solar (624.04 亿kWh) for the whole region only. It splits 蒙西 (6748.64) and 蒙东 (1896.23, plants of 6 MW and above) only for all sources combined. The split verdict above stands.
+
+The loader's hardcoded ~8.0 / ~4.6 TWh/yr figures are the fallback for a missing `data/china-anchors.json` row, not the served anchor.
 
 ## To pick this up
 
 Run it from a session or network that can reach nmgxny.com, cpnn.com.cn and nea.gov.cn. Open, in order:
 
-1. The cpnn source of the 95.4% / 94.7% figures.
+1. (Done 2026-11-19, see above.)
 2. The NEA 6 Feb 2025 and 6 Feb 2026 utilisation releases.
 3. nmgxny.com/industry/1793.html and nmgxny.com/industry/1935.html.
 

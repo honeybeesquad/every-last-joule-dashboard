@@ -52,7 +52,14 @@ const OUT_PATH = join(process.cwd(), "data", "china-anchors.json");
 //   Tibet     wind 83.0% -> 17.0%  solar 68.6% -> 31.4%
 //   Shandong  wind 96.4% -> 3.6%   solar 96.3% -> 3.7%
 //   Gansu     wind 93.9% -> 6.1%   solar 91.6% -> 8.4%
-//   Inner Mongolia (蒙西) wind 95.4% -> 4.6%   solar 94.7% -> 5.3%
+//   Inner Mongolia (蒙西) wind 93.7% -> 6.3%   solar 93.7% -> 6.3%
+//     Full-year 2024, from the monitoring centre's 2024 province table (centre watermark;
+//     reprinted at m.solarzoom.com/article-190789-1.html, 2025-02-07). The solar 93.7%
+//     also appears in cpnn 表4. Corrected 2026-11-19: the previous 95.4% / 94.7% were the
+//     Jan–Nov 2024 figures from the centre's November release (mnewenergy.in-en.com
+//     newenergy-2438258), not full-year. December 2024 alone was 91.9% / 84.3%.
+//     The other provinces' rates above have NOT been re-checked against the full-year
+//     table and may carry the same Jan–Nov mix-up.
 //   Ningxia   wind 97.5% -> 2.5%   solar 95.4% -> 4.6%
 //   Hebei     wind 94.0% -> 6.0%   solar 96.5% -> 3.5%
 //   Shaanxi   wind 94.3% -> 5.7%   solar 95.1% -> 4.9%
@@ -85,7 +92,7 @@ const PROVINCE_FUEL_CURTAILMENT_RATE: Record<string, Partial<Record<Fuel, number
   Zhejiang: { wind: 0.0005, solar: 0.0005 }, // util 100.0% (bulletin) -> 99.95% floor
   Jiangxi: { wind: 0.005, solar: 0.011 }, // util 99.5% / 98.9%
   Gansu: { wind: 0.061, solar: 0.084 }, // util 93.9% / 91.6%
-  "Inner Mongolia": { wind: 0.046, solar: 0.053 }, // 蒙西 util 95.4% / 94.7%
+  "Inner Mongolia": { wind: 0.063, solar: 0.063 }, // 蒙西 full-year 2024 util 93.7% / 93.7%
   Ningxia: { wind: 0.025, solar: 0.046 }, // util 97.5% / 95.4%
   Hebei: { wind: 0.06, solar: 0.035 }, // util 94.0% / 96.5%
   Shaanxi: { wind: 0.057, solar: 0.049 }, // util 94.3% / 95.1%
