@@ -46,6 +46,51 @@
           [166.00, -20.50]
         ]]
       }
+    },
+    {
+      "type": "Feature",
+      "id": "canary-islands-wind",
+      "properties": { "name": "Canary Islands archipelago bounding box" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-18.30, 27.50],
+          [-18.30, 29.50],
+          [-13.30, 29.50],
+          [-13.30, 27.50],
+          [-18.30, 27.50]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "canary-islands-solar",
+      "properties": { "name": "Canary Islands archipelago bounding box" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-18.30, 27.50],
+          [-18.30, 29.50],
+          [-13.30, 29.50],
+          [-13.30, 27.50],
+          [-18.30, 27.50]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "balearic-islands-solar",
+      "properties": { "name": "Balearic Islands archipelago bounding box" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [1.10, 38.60],
+          [1.10, 40.10],
+          [4.40, 40.10],
+          [4.40, 38.60],
+          [1.10, 38.60]
+        ]]
+      }
     }
   ]
 }
