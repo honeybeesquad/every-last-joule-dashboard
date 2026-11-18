@@ -88,7 +88,7 @@ const SPAIN_ISLANDS = new Set([
  */
 const PROBE_2026_11_18: Record<string, Partial<Pick<TsoGridRosterRow, "collectStatus" | "notes" | "loaderKey">>> = {
   nicaragua: { collectStatus: "not-collecting", notes: "CNDC consultarGeneracionPorTipo publishes hourly MW by type for the current local day only. Reachable. Not wired yet. No curtailment series." },
-  saskatchewan: { collectStatus: "not-collecting", loaderKey: "saskatchewan", notes: "SaskPower dashboard JSON is one by-fuel MW snapshot per day, no history. The loader's probe always falls through to a typical wind shape anchored at an uncited ~0.15 TWh/yr." },
+  saskatchewan: { collectStatus: "no-public-series", notes: "SaskPower dashboard JSON is one by-fuel MW snapshot per day, no history; no series. Unpublished grid marker since 2026-11-18: the former ~0.15 TWh/yr shape came from a loader that never read SaskPower." },
   "nova-scotia": { collectStatus: "no-public-series", notes: "NS Power CurrentMix.json and CurrentLoad.json are 404. The OASIS report gives a 2-minute total-wind MW snapshot only, no history." },
   "new-brunswick": { collectStatus: "no-public-series", notes: "NB Power real-time page publishes load, demand and interchange only. No generation by fuel." },
   "prince-edward-island": { collectStatus: "not-collecting", notes: "Government of PEI wind-energy API (wdf.princeedwardisland.ca) answers 403 to a datacentre IP. Retry from a home IP before calling it dark." },

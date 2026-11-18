@@ -23,6 +23,7 @@ export const TSO_GRID_MARKERS: ReadonlyArray<{
   { id: "us-virgin-islands", note: "USVI WAPA: annual reports only. Grid present, ops unpublished.", profileKind: "solar" },
   { id: "american-samoa", note: "ASPA: annual reports only. Grid present, ops unpublished.", profileKind: "solar" },
   { id: "northern-mariana-islands", note: "CNMI CUC: annual reports only. Grid present, ops unpublished.", profileKind: "solar" },
+  { id: "saskatchewan", note: "No curtailment series collected; grid present, waste unpublished. SaskPower publishes one generation-by-fuel snapshot a day, not a series. The former ~0.15 TWh/yr wind-curtailment shape served here had no source: its loader never read SaskPower, and the SaskPower Annual Report 2024 ~0.2 TWh anchor in the validation file has no URL and was inferred, so it was dropped on 2026-11-18.", profileKind: "wind" },
   { id: "new-brunswick", note: "NB Power: no hourly TSO series wired. Grid present, ops unpublished.", profileKind: "mixed" },
   { id: "nova-scotia", note: "NS Power: no hourly TSO series wired. Grid present, ops unpublished.", profileKind: "wind" },
   { id: "prince-edward-island", note: "Maritime Electric: no hourly TSO series wired. Grid present, ops unpublished.", profileKind: "wind" },

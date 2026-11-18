@@ -185,7 +185,6 @@ export const DATA_LOADERS = [
   { key: "britishColumbia",     file: FileAttachment("../data/british-columbia.json"),     label: "British Columbia" },
   { key: "quebec",              file: FileAttachment("../data/quebec.json"),               label: "Québec" },
   { key: "manitoba",            file: FileAttachment("../data/manitoba.json"),             label: "Manitoba" },
-  { key: "saskatchewan",        file: FileAttachment("../data/saskatchewan.json"),         label: "Saskatchewan" },
   { key: "turkey",              file: FileAttachment("../data/turkey.json"),               label: "Turkey" },
   { key: "colombia",            file: FileAttachment("../data/colombia.json"),             label: "Colombia" },
   { key: "eiaVreBas",           file: FileAttachment("../data/eia-vre-bas.json"),           label: "EIA VRE balancing authorities" },
