@@ -59,7 +59,14 @@ describe("india-gujarat NLDC CSV", () => {
   it("covers the published NLDC window including zeros", () => {
     expect(rows.length).toBeGreaterThanOrEqual(600);
     expect(rows[0].date).toBe("2025-01-01");
-    expect(rows[rows.length - 1].date).toBe("2026-10-18");
+    // The Bangalore droplet appends a day at a time (docs/ops/bangalore-nldc-relay.md),
+    // so pin a floor, not the end: an exact end date failed every relay pull from
+    // 2026-10-21 and held Colombia, Gujarat and the abed heartbeat off main.
+    expect(rows[rows.length - 1].date >= "2026-10-18").toBe(true);
+    for (let i = 0; i < rows.length; i++) {
+      expect(rows[i].date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      if (i > 0) expect(rows[i].date > rows[i - 1].date).toBe(true);
+    }
     expect(rows.some((r) => r.wind + r.solar === 0)).toBe(true);
     expect(rows.some((r) => r.wind + r.solar > 0)).toBe(true);
   });
