@@ -423,7 +423,7 @@ Dominican Republic,DOM,mixed,live-tso,dominican,unpublished,dominican-republic,T
 Dominican Republic Wind,DOM,wind,live-tso,dominican,unpublished,dominican-republic-wind,TSO generation collected; waste unpublished.
 Jamaica,JAM,solar,not-collecting,statics,unpublished,jamaica,Country/T3 stub — Ember/IRENA is not TSO collection.
 Barbados,BRB,solar,not-collecting,statics,unpublished,barbados,Country/T3 stub — Ember/IRENA is not TSO collection.
-Bolivia,BOL,solar,not-collecting,statics,unpublished,bolivia,CNDC wp-json rt/generacion publishes 15-minute MW by fuel from 2025. Reachable. Not wired yet; the served 0.1 TWh/yr is an IRENA-derived modelled static; CNDC itself publishes no waste. No spill field in the hydrology routes.
+Bolivia,BOL,solar,live-tso,bolivia,unpublished,bolivia,TSO generation collected; waste unpublished.
 Ecuador,ECU,hydro,not-collecting,statics,unpublished,ecuador,Country/T3 stub — Ember/IRENA is not TSO collection.
 French Guiana,GUF,mixed,live-tso,edf-sei,unpublished,french-guiana,TSO generation collected; waste unpublished.
 Algeria,DZA,solar,not-collecting,statics,unpublished,algeria,Country/T3 stub — Ember/IRENA is not TSO collection.

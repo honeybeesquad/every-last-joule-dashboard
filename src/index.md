@@ -451,6 +451,7 @@ const regionData = {
   guatemala: feeds.guatemala,
   yukon: feeds.yukon,
   "el-salvador": feeds.elSalvador,
+  bolivia: feeds.bolivia,
   mongolia: feeds.mongolia,
   "british-columbia": feeds.britishColumbia,
   quebec: feeds.quebec.hydro,
