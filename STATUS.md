@@ -16,6 +16,11 @@ On `claude/sharp-lovelace-395b93`. No tier move, golden unchanged. **The dataset
   - Four 2025 wind cells (Zhejiang, Jiangxi, Hubei, Anhui) are crossed by the watermark. They were read at 3x zoom; re-check against a cleaner copy.
   - The Guangdong, Zhejiang, Fujian and Jiangxi-wind anchors are written but no loader reads them. Those loaders, and Sichuan, Tibet, Guangxi, Beijing, Tianjin, Hainan, Shanghai, Guizhou and Chongqing, still serve hardcoded constants (Guangdong ~3.2 TWh/yr against an Ember × rate figure of ~0.1).
   - No rate covers January–June 2026 yet. The centre's monthly releases could give a rolling 12-month rate.
+  - Tibet isn't on the anchor store. Its source strings still cite 2024 utilisation (wind 83.0%), but 2025 wind was 68.6%, so its hardcoded ~0.2 / ~0.4 TWh/yr probably understates curtailment.
+  - The history series will show a step of about +3 TWh/30d on the merge date. It's a change of rate year, not a real-world jump. There is no annotation mechanism yet.
+- Review fixes:
+  - `buildChinaRegionFromAnchor` now labels a missing-anchor fallback as "Hardcoded fallback … not re-derived from the current utilisation table", in one place for every China loader.
+  - The region citations link the cnygnyw.com (http) copy of the table, not an unverified https solarpwr URL.
 
 ## Inner Mongolia on the full-year 2024 Mengxi rate (2026-11-19)
 

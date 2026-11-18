@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** Ember China subnational generation (trailing 12mo, whole province) × NEA monitoring-centre full-year 2025 蒙西 (Mengxi) curtailment rate 9.5% (utilisation 90.5%, 2025 province table, reprinted at https://solarpwr.cn/m.php?fid=52&id=81474). The rate is Mengxi-only and the generation includes Mengdong, so this is not a whole-province rate. Refreshed anchor, T3-modelled shape
+- **Source:** Ember China subnational generation (trailing 12mo, whole province) × NEA monitoring-centre full-year 2025 蒙西 (Mengxi) curtailment rate 9.5% (utilisation 90.5%, 2025 province table, reprinted at http://www.cnygnyw.com/listshow.php?cid=13&id=8073). The rate is Mengxi-only and the generation includes Mengdong, so this is not a whole-province rate. Refreshed anchor, T3-modelled shape
 - **Source URL:** [https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html](https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

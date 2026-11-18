@@ -206,9 +206,13 @@ export function buildChinaRegionFromAnchor(
   fallbackNote: string,
   storePath?: string,
 ): RegionData {
-  const fallback = buildTypicalRegionByFuel(regionId, fuel, peakHourUtc, fallbackAnnualTWh, fallbackNote);
   const anchor = chinaAnchor(regionId, storePath);
-  if (!anchor) return fallback;
+  if (!anchor) {
+    // The loaders' hardcoded constants predate the anchor store and were never re-derived
+    // from the current rate table, so say so rather than let their notes read as current.
+    const note = `Hardcoded fallback (no ${regionId} row in data/china-anchors.json); not re-derived from the current utilisation table. ${fallbackNote}`;
+    return buildTypicalRegionByFuel(regionId, fuel, peakHourUtc, fallbackAnnualTWh, note);
+  }
   // Fresher anchor present -> rebuild with the refreshed annualTWh, but keep the
   // region honestly T3-modelled (typical shape, published anchor). The envelope is
   // recomputed by applyUncertainty so peakGW stays within [low, high].
