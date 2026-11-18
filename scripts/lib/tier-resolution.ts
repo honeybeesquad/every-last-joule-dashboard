@@ -181,6 +181,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "philippines-wind": "wind",
   paraguay: "hydro-seasonal",
   quebec: "hydro-seasonal",
+  "quebec-wind": "wind",
   "russia-mainland": "hydro-seasonal",
   saskatchewan: "wind",
   "saudi-solar": "solar",

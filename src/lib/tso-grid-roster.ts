@@ -63,6 +63,8 @@ const LIVE_UNPUBLISHED_GEN = new Set([
   "philippines-wind",
   "dominican-republic",
   "dominican-republic-wind",
+  "quebec",
+  "quebec-wind",
 ]);
 
 /** Operators with no dashboard region, or honesty overlays. */
@@ -128,7 +130,9 @@ function classify(id: string, tier: string, provenance: string | undefined): Pic
       ? "philippines"
       : id.startsWith("dominican")
         ? "dominican"
-        : id;
+        : id.startsWith("quebec")
+          ? "quebec"
+          : id;
     return { collectStatus: "live-tso", loaderKey, wasteStatus: "unpublished", notes: "TSO generation collected; waste unpublished." };
   }
   if (tier === "live" || tier === "live-domestic-anchored" || tier === "live-neighbour-anchored") {
