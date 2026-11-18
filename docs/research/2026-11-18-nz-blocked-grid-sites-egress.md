@@ -3,7 +3,7 @@
 **Date:** 2026-11-18
 **Probe host:** `abed` (New Zealand, Starlink, AS14593), with NordVPN exits tried one at a time.
 **Question:** Which grid-operator sites that fail from New Zealand or from cloud egress become reachable through abed's NordVPN exits, and what does each publish? This covers parts 1 and 2 of the relay brief. No loader is built from it.
-**Short answer:** NordVPN gives genuine exits in Israel and Taiwan but not in India or Vietnam, which are "virtual" locations that leave from Singapore and Hong Kong. Only one site changed from blocked to useful through an exit (Noga, Israel), and its data API sits behind reCAPTCHA. Taipower turned out to be open from New Zealand and blocked from the Taiwan exit. Tamil Nadu's daily statement exists but refuses every non-Indian address we have, so it needs the Bangalore droplet, which this session could not log in to.
+**Short answer:** NordVPN gives genuine exits in Israel and Taiwan but not in India or Vietnam, which are "virtual" locations that leave from Singapore and Hong Kong. Two sites opened through an exit: Gujarat's SLDC from the Singapore exit, and Noga from the Israel exit, though Noga's data API sits behind reCAPTCHA, so neither yields a new curtailment series yet. Taipower turned out to be open from New Zealand and blocked from the Taiwan exit. Tamil Nadu's daily statement exists but refuses every non-Indian address we have, so it needs the Bangalore droplet, which this session could not log in to.
 
 ---
 
@@ -21,6 +21,8 @@ The probe script ran on abed in two rounds (`~/elj-probe/20261118T1000Z/` and `~
 | Israel | Tel Aviv, IL | AS212238 Datacamp | Yes |
 | Vietnam | Tung Chung, HK | AS212238 Datacamp | No. NordVPN labels it "Virtual". |
 | Argentina | Buenos Aires, AR | AS396356 Latitude.sh | Yes |
+| Mexico | Santiago de Querétaro, MX | AS212238 Datacamp | Yes |
+| United States | Los Angeles, US | AS141039 PacketHub | Yes |
 
 ## India: the Bangalore droplet list
 
@@ -41,7 +43,7 @@ The brief asked for these to be retried from the Bangalore droplet (`157.245.110
 
 **Gujarat's SLDC** opens from Singapore but not from New Zealand. Gujarat already plots on Grid-India NLDC REMC data from the droplet (T2), so this matters only if the SLDC turns out to publish something the NLDC tables do not.
 
-**Rajasthan, Andhra Pradesh and ERLDC** fail from both. They need the droplet, as the May audit said.
+**Rajasthan, Andhra Pradesh and ERLDC** fail from both. They need a genuine Indian address, which the May audit (`2026-05-08-india-sldc-egress-audit.md`) also found for Rajasthan and Andhra Pradesh; it did not test ERLDC.
 
 ## Taiwan: Taipower
 
