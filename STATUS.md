@@ -19,6 +19,18 @@ One loader, `src/data/edf-sei.json.ts` (`feeds.edfSei`), reads EDF SEI's real-ti
 
 Not done, and not claimed: no curtailment is wired. EDF SEI publishes "Limitations de production au titre de la sûreté système" per island (monthly maximum hours of PV disconnection or limitation, and from 2019 the share of power-electronics-interfaced renewables accepted; 2016-01 to 2023-12, e.g. <https://opendata-corse.edf.fr/datasets/deconnexions-des-installations-photovoltaiques-corse>). It is hours and percent, not energy, and ends in 2023. The consolidated hourly dataset (`production-d-electricite-par-filiere-et-couts-de-production-au-pas-horaire-<island>`) ended at 2024-12-31 when checked, so it is not used for the trailing window. Saint-Pierre-et-Miquelon, Saint-Martin and Saint-Barthélemy are not added.
 
+## Relay pull unblocked: the Gujarat NLDC test no longer pins an end date (2026-11-18)
+
+On `fix/gujarat-nldc-test-unpin`. `tests/data/india-gujarat.test.ts` required the Gujarat NLDC CSV to end on exactly
+2026-10-18. The Bangalore droplet regenerates the file daily, one day longer each run, so from 2026-10-21 every refresh of the
+`automation/relay-pull` PR ([#1399](https://github.com/honeybeesquad/every-last-joule-dashboard/pull/1399)) failed
+`verify` while `colombia-relay-pull.yml` itself ran green. Nothing from the relay reached `main` for four weeks:
+Colombia vertimientos, the abed heartbeat and the Gujarat NLDC CSVs all sat in that PR. The test now pins a floor
+(last date ≥ 2026-10-18), a ceiling (no later than tomorrow) and ISO dates in strictly increasing order, so a rewind, truncation, future date or duplicate
+day still fails it. Separately, abed's relay clone had stopped pushing on 2026-11-04 (a rebase with no git identity,
+once the droplet became a second writer); that was repaired on abed the same day and is outside this diff.
+**Not changed:** no data, loader, `regions.ts` entry or tier.
+
 ## Qatar and Kuwait unpublished grid markers; Mengxi/Mengdong not split (2026-11-18)
 
 On `claude/sharp-lovelace-395b93`. Population change: T3 331→333, total 542→544. T1/T2 unchanged. No waste figure.
