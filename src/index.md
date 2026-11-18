@@ -457,7 +457,6 @@ const regionData = {
   quebec: feeds.quebec.hydro,
   "quebec-wind": feeds.quebec.wind,
   manitoba: feeds.manitoba,
-  saskatchewan: feeds.saskatchewan,
   // Colombia: T1b-CSV loader reads committed XM API data (Britta daily relay).
   // Supersedes the T3-static entry in buildAllStatics().
   colombia: feeds.colombia,

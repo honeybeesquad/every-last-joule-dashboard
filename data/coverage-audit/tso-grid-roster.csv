@@ -397,7 +397,7 @@ British Columbia,CAN,hydro,not-collecting,statics,unpublished,british-columbia,C
 Quebec,CAN,hydro,live-tso,quebec,unpublished,quebec,TSO generation collected; waste unpublished.
 Quebec Wind,CAN,wind,live-tso,quebec,unpublished,quebec-wind,TSO generation collected; waste unpublished.
 Manitoba,CAN,mixed,not-collecting,statics,unpublished,manitoba,Country/T3 stub — Ember/IRENA is not TSO collection.
-Saskatchewan,CAN,wind,not-collecting,saskatchewan,unpublished,saskatchewan,"SaskPower dashboard JSON is one by-fuel MW snapshot per day, no history. The loader's probe always falls through to a typical wind shape anchored at an uncited ~0.15 TWh/yr."
+Saskatchewan,CAN,wind,no-public-series,tso-grid-markers,unpublished,saskatchewan,"SaskPower dashboard JSON is one by-fuel MW snapshot per day, no history; no series. Unpublished grid marker since 2026-11-18: the former ~0.15 TWh/yr shape came from a loader that never read SaskPower."
 Hawaii (Oahu),USA,solar,not-collecting,,unpublished,hawaii-oahu,Authoritative operator exists; live path not producing usable waste.
 Hawaii (Maui),USA,solar,not-collecting,,unpublished,hawaii-maui,Authoritative operator exists; live path not producing usable waste.
 Hawaii (Big Island),USA,mixed,not-collecting,,unpublished,hawaii-island,Authoritative operator exists; live path not producing usable waste.

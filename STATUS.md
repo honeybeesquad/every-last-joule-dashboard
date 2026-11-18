@@ -12,6 +12,14 @@ On `claude/sharp-lovelace-395b93`. No tier move, golden unchanged. **The dataset
 - Changed: `scripts/refresh-china.ts` (the rate and its provenance comment), `data/china-anchors.json` (two rows), `data/snapshots/last-good/inner-mongolia.json` (rebuilt from the loader), the `regions.ts` source strings and the two validation docs. The research note is updated.
 - **Open:** the other provinces' rates in `refresh-china.ts` carry the same cpnn citation and "full-year / M1-11" hedge and have not been re-checked. Some may also be Jan–Nov.
 
+## Saskatchewan becomes an unpublished grid marker; uncited ~0.15 TWh/yr dropped (2026-11-18)
+
+On `claude/modest-shannon-u9gszu-saskatchewan`. No tier move (stays `estimated` / T3), golden unchanged. **Modelled waste falls ~0.15 TWh/yr** (owner sign-off required before merge).
+
+`src/data/saskatchewan.json.ts` fetched `saskpower.com`, then always threw and served a typical wind shape anchored at ~0.15 TWh/yr: a decorative probe (CLAUDE.md rule 3). The only anchor anywhere, "SaskPower 2024 wind curtailment ~0.2 TWh" in `scripts/validation/external-anchors.json`, has no URL (`needs_url`), was added by an AI pass on 2026-04-26 with method `inferred`, and is not the number the loader served. SaskPower's 2023-24 and 2024-25 annual report URLs now redirect to a 404, so it could not be checked. The loader, its test and its last-good snapshot are deleted; `saskatchewan` is a `TSO_GRID_MARKERS` entry (wind, zero waste, `wasteStatus: "unpublished"`), and the roster row says SaskPower publishes one by-fuel snapshot a day, not a series.
+
+Noticed, not changed (another session's area): the markers' last-good snapshot still holds `guadeloupe`, `martinique` and `reunion` records that the markers no longer emit; a markers fallback would spread them over the EDF SEI feeds.
+
 ## Shared fixed-offset day window for the AMM, UT and CNDC loaders (2026-11-18)
 
 On `claude/modest-shannon-u9gszu-local-days`. Refactor only: no data, tier, golden or served-value change. `src/lib/local-days.ts` adds `completeLocalDays(now, utcOffsetHours, days)`, the complete local days ending yesterday in a zone with no daylight saving. `guatemala`, `el-salvador` and `bolivia` each had their own copy; their `windowDays` exports now call it. Tests: `tests/local-days.test.ts`.

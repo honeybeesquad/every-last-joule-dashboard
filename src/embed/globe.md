@@ -412,7 +412,6 @@ const regionData = {
   quebec: feeds.quebec.hydro,
   "quebec-wind": feeds.quebec.wind,
   manitoba: feeds.manitoba,
-  saskatchewan: feeds.saskatchewan,
   colombia: feeds.colombia,
   ...feeds.eiaVreBas,
   ...feeds.tsoGridMarkers,
