@@ -15,7 +15,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback: ${(err as Error).message}; Zhejiang coastal mixed wind+solar curtailment ~0.8 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
+    const note = `Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): ${(err as Error).message}; Zhejiang coastal mixed wind+solar curtailment ~0.8 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
     return buildChinaMixedRegionFromAnchors(
       REGION_ID,
       { wind: 0.5, solar: 0.5 },

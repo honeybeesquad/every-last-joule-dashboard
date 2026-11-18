@@ -15,7 +15,7 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback: NEA 2024 provincial RE monitoring bulletin / live hourly feed unavailable (${(err as Error).message}); Yunnan wind+solar curtailment anchored at ~0.9 TWh/yr wind + ~0.9 TWh/yr solar.`;
+    const note = `Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): NEA 2024 provincial RE monitoring bulletin / live hourly feed unavailable (${(err as Error).message}); Yunnan wind+solar curtailment anchored at ~0.9 TWh/yr wind + ~0.9 TWh/yr solar.`;
     return {
       wind:  buildChinaRegionFromAnchor(
         "yunnan-wind", "wind", 15, 0.9,

@@ -66,12 +66,16 @@ const OUT_PATH = join(process.cwd(), "data", "china-anchors.json");
 
 const BULLETIN_PATH = join(process.cwd(), "data", "china-curtailment-bulletins.csv");
 
-/** Ember province name -> bulletin province label (province_zh column). */
+/**
+ * Ember province name -> bulletin province label (province_zh column), for exactly
+ * the provinces whose loaders consume data/china-anchors.json. buildAnchors throws
+ * if any of these does not get a wind AND a solar anchor, so a region can never
+ * silently lose its anchor and fall back to its hardcoded estimate.
+ */
 export const WIRED_PROVINCES: Record<string, string> = {
   Xinjiang: "新疆",
   Qinghai: "青海",
   Yunnan: "云南",
-  Tibet: "西藏", // rate published; Ember has no Tibet row, so no anchor is produced
   Shandong: "山东",
   Guangdong: "广东",
   Fujian: "福建",
@@ -109,14 +113,40 @@ export interface BulletinRow {
   solar: number | null;
 }
 
+function parseUtilisation(raw: string, where: string): number | null {
+  if (raw === "") return null; // illegible / not published: explicit gap
+  if (!/^\d{1,3}(\.\d+)?$/.test(raw)) throw new Error(`bulletin CSV ${where}: utilisation "${raw}" is not a plain percentage (use digits only, or leave blank)`);
+  const v = Number(raw);
+  if (!(v > 0 && v <= 100)) throw new Error(`bulletin CSV ${where}: utilisation ${v} is outside (0, 100]`);
+  return v;
+}
+
+/** Parse the committed bulletin CSV. Throws on any malformed row rather than letting NaN through. */
 export function parseBulletinCsv(text: string): BulletinRow[] {
-  return parseDelimitedRows(text).map((r) => ({
-    provinceZh: r.province_zh,
-    period: r.period,
-    basis: r.basis as "monthly" | "ytd",
-    wind: r.wind_utilisation_pct === "" ? null : Number(r.wind_utilisation_pct),
-    solar: r.solar_utilisation_pct === "" ? null : Number(r.solar_utilisation_pct),
-  }));
+  return parseDelimitedRows(text).map((r, i) => {
+    const where = `row ${i + 2} (${r.province_zh} ${r.period} ${r.basis})`;
+    if (!r.province_zh) throw new Error(`bulletin CSV ${where}: missing province_zh`);
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(r.period ?? "")) throw new Error(`bulletin CSV ${where}: period must be YYYY-MM`);
+    if (r.basis !== "monthly" && r.basis !== "ytd") throw new Error(`bulletin CSV ${where}: basis must be "monthly" or "ytd"`);
+    return {
+      provinceZh: r.province_zh,
+      period: r.period,
+      basis: r.basis,
+      wind: parseUtilisation(r.wind_utilisation_pct ?? "", `${where} wind`),
+      solar: parseUtilisation(r.solar_utilisation_pct ?? "", `${where} solar`),
+    };
+  });
+}
+
+/**
+ * The window end for every rate: the latest period that has a year-to-date
+ * table. All provinces and fuels share it, so a gap in one series can never move
+ * that series onto a different window from the rest.
+ */
+export function latestYtdPeriod(bulletins: BulletinRow[]): string {
+  const periods = bulletins.filter((b) => b.basis === "ytd").map((b) => b.period).sort();
+  if (periods.length === 0) throw new Error("bulletin CSV has no year-to-date rows");
+  return periods.at(-1)!;
 }
 
 export interface TtmRate {
@@ -145,44 +175,59 @@ function genOver(monthly: Map<string, number>, from: string, to: string): number
   return sum;
 }
 
+export type TtmResult = ({ ok: true } & TtmRate) | { ok: false; reason: string };
+
 /**
- * Trailing-12-month curtailment rate for one province+fuel from the bulletins,
- * weighted by Ember monthly generation. Returns null when a needed table or
- * generation month is missing.
+ * Trailing-12-month curtailment rate for one province+fuel, ending at `latest`
+ * (the shared window end from latestYtdPeriod), weighted by Ember monthly
+ * generation. Never falls back to another window: if a needed table cell or
+ * generation month is missing it returns { ok: false, reason }.
  */
 export function ttmRate(
   bulletins: BulletinRow[],
   provinceZh: string,
   fuel: "wind" | "solar",
   emberMonthly: Map<string, number>,
-): TtmRate | null {
-  const ytd = bulletins.filter((b) => b.provinceZh === provinceZh && b.basis === "ytd" && b[fuel] !== null);
-  if (ytd.length === 0) return null;
-  const latest = ytd.map((b) => b.period).sort().at(-1)!;
+  latest: string,
+): TtmResult {
   const [ly, lm] = latest.split("-");
-  const util = (period: string) => ytd.find((b) => b.period === period)?.[fuel] ?? null;
+  const util = (period: string): number | null =>
+    bulletins.find((b) => b.provinceZh === provinceZh && b.basis === "ytd" && b.period === period)?.[fuel] ?? null;
   const curtailed = (u: number, g: number) => (g * (100 - u)) / u;
+  const need = (period: string): number | { ok: false; reason: string } => {
+    const u = util(period);
+    return u === null ? { ok: false, reason: `${provinceZh} ${fuel}: no year-to-date utilisation for ${period}` } : u;
+  };
+  const gen = (from: string, to: string): number | { ok: false; reason: string } => {
+    const g = genOver(emberMonthly, from, to);
+    return g === null ? { ok: false, reason: `${provinceZh} ${fuel}: Ember generation missing in ${from}..${to}` } : g;
+  };
 
-  const uLatest = util(latest);
-  const gLatest = genOver(emberMonthly, `${ly}-01`, latest);
-  if (uLatest === null || gLatest === null) return null;
+  const uLatest = need(latest);
+  if (typeof uLatest !== "number") return uLatest;
+  const gLatest = gen(`${ly}-01`, latest);
+  if (typeof gLatest !== "number") return gLatest;
 
   if (lm === "12") {
-    return { rate: 1 - uLatest / 100, windowStart: `${ly}-01`, windowEnd: latest, monthsCovered: 12, tables: [latest] };
+    return { ok: true, rate: 1 - uLatest / 100, windowStart: `${ly}-01`, windowEnd: latest, monthsCovered: 12, tables: [latest] };
   }
   const prevYear = String(Number(ly) - 1);
   const fullYear = `${prevYear}-12`;
   const priorSame = `${prevYear}-${lm}`;
-  const uFull = util(fullYear);
-  const uPrior = util(priorSame);
-  const gFull = genOver(emberMonthly, `${prevYear}-01`, fullYear);
-  const gPrior = genOver(emberMonthly, `${prevYear}-01`, priorSame);
-  if (uFull === null || uPrior === null || gFull === null || gPrior === null) return null;
+  const uFull = need(fullYear);
+  if (typeof uFull !== "number") return uFull;
+  const uPrior = need(priorSame);
+  if (typeof uPrior !== "number") return uPrior;
+  const gFull = gen(`${prevYear}-01`, fullYear);
+  if (typeof gFull !== "number") return gFull;
+  const gPrior = gen(`${prevYear}-01`, priorSame);
+  if (typeof gPrior !== "number") return gPrior;
 
   const G = gFull + gLatest - gPrior;
+  if (G <= 0) return { ok: false, reason: `${provinceZh} ${fuel}: non-positive generation over the window` };
   const C = Math.max(0, curtailed(uFull, gFull) + curtailed(uLatest, gLatest) - curtailed(uPrior, gPrior));
-  if (G <= 0) return null;
   return {
+    ok: true,
     rate: C / (G + C),
     windowStart: addMonths(priorSame, 1),
     windowEnd: latest,
@@ -203,9 +248,15 @@ interface AnchorRow {
   source: string;
 }
 
-export function buildAnchors(csvText: string, bulletinText: string): AnchorRow[] {
+export function buildAnchors(
+  csvText: string,
+  bulletinText: string,
+  wired: Record<string, string> = WIRED_PROVINCES,
+): AnchorRow[] {
   const rows = parseEmberMonthlyCsv(csvText);
   const bulletins = parseBulletinCsv(bulletinText);
+  const latest = latestYtdPeriod(bulletins);
+  const failures: string[] = [];
   // group by province+fuel, sort desc, take trailing 12 months
   const byKey = new Map<string, ReturnType<typeof parseEmberMonthlyCsv>>();
   for (const r of rows) {
@@ -217,11 +268,14 @@ export function buildAnchors(csvText: string, bulletinText: string): AnchorRow[]
   for (const [k, list] of byKey) {
     const [province, fuel] = k.split("|") as [string, Fuel];
     if (fuel === "hydro") continue;
-    const provinceZh = WIRED_PROVINCES[province];
+    const provinceZh = wired[province];
     if (!provinceZh) continue; // loader does not consume the store -> no anchor
     const monthly = new Map(list.map((r) => [r.date, r.generationTWh]));
-    const ttm = ttmRate(bulletins, provinceZh, fuel, monthly);
-    if (!ttm) continue; // no bulletin rate for this window -> skip, never invent
+    const ttm = ttmRate(bulletins, provinceZh, fuel, monthly, latest);
+    if (!ttm.ok) {
+      failures.push(ttm.reason); // never invent, never fall back to another window
+      continue;
+    }
     const floored = ttm.rate < RATE_FLOOR;
     const rate = Math.round(Math.max(ttm.rate, RATE_FLOOR) * 10000) / 10000;
     list.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
@@ -247,6 +301,19 @@ export function buildAnchors(csvText: string, bulletinText: string): AnchorRow[]
       rateMonthsCovered: ttm.monthsCovered,
       source: `Ember China subnational generation ${window[0].date} (trailing 12mo) × monitoring-centre curtailment rate ${rateText} (${provinceZh} ${fuel}, trailing 12 months ${ttm.windowStart}..${ttm.windowEnd} from published utilisation; system-caused limits only, 国能发电力〔2024〕44号)`,
     });
+  }
+  // Every wired province must get both anchors; otherwise its loader would
+  // silently serve the hardcoded fallback. Fail the refresh instead (no write).
+  for (const [province, zh] of Object.entries(wired)) {
+    for (const fuel of ["wind", "solar"] as const) {
+      const id = regionIdFor(province, fuel);
+      if (!out.some((a) => a.regionId === id) && !failures.some((f) => f.startsWith(`${zh} ${fuel}:`))) {
+        failures.push(`${zh} ${fuel}: no Ember generation rows for ${province}`);
+      }
+    }
+  }
+  if (failures.length > 0) {
+    throw new Error(`refresh-china: ${failures.length} wired anchor(s) could not be computed for the ${latest} window:\n  ${failures.join("\n  ")}`);
   }
   return out;
 }

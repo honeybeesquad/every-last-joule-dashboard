@@ -15,7 +15,7 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback: Ember GER 2025 + S&P Rising Curtailment in China 2024 / NEA feed unavailable (${(err as Error).message}); Jiuquan/Wuwei wind+solar curtailment anchored at ~3.0 TWh/yr.`;
+    const note = `Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): Ember GER 2025 + S&P Rising Curtailment in China 2024 / NEA feed unavailable (${(err as Error).message}); Jiuquan/Wuwei wind+solar curtailment anchored at ~3.0 TWh/yr.`;
     return {
       wind:  buildChinaRegionFromAnchor(
         "gansu-wind", "wind", 15, 3.0 * 0.6,

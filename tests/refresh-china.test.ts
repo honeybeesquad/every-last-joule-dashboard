@@ -2,7 +2,7 @@ import { describe, it, expect, afterAll } from "vitest";
 import { mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { buildAnchors, ttmRate, parseBulletinCsv, RATE_FLOOR, WIRED_PROVINCES } from "../scripts/refresh-china.js";
+import { buildAnchors, ttmRate, parseBulletinCsv, latestYtdPeriod, RATE_FLOOR, WIRED_PROVINCES } from "../scripts/refresh-china.js";
 import { chinaAnchor } from "../src/lib/chinaParse.js";
 
 // Ember fixture: 2025-01..2026-03 monthly generation for Xinjiang wind/solar
@@ -33,6 +33,8 @@ const BULLETINS = [
 
 const curtailed = (u: number, g: number) => (g * (100 - u)) / u;
 
+const XJ = { Xinjiang: "新疆" };
+
 describe("refresh-china ttmRate", () => {
   const bulletins = parseBulletinCsv(BULLETINS);
   const monthly = (v: number) => {
@@ -41,36 +43,65 @@ describe("refresh-china ttmRate", () => {
     return m;
   };
 
+  it("uses the latest YTD period across all rows as the shared window end", () => {
+    expect(latestYtdPeriod(bulletins)).toBe("2026-03");
+  });
+
   it("combines full year + latest YTD − prior same-period YTD in curtailed-energy terms", () => {
-    const r = ttmRate(bulletins, "新疆", "wind", monthly(1.0))!;
+    const r = ttmRate(bulletins, "新疆", "wind", monthly(1.0), "2026-03");
+    if (!r.ok) throw new Error(r.reason);
     const C = curtailed(92, 12) + curtailed(88, 3) - curtailed(90, 3);
-    const G = 12 + 3 - 3;
-    expect(r.rate).toBeCloseTo(C / (G + C), 10);
+    expect(r.rate).toBeCloseTo(C / (12 + C), 10);
     expect(r.windowStart).toBe("2025-04");
     expect(r.windowEnd).toBe("2026-03");
     expect(r.monthsCovered).toBe(12);
     expect(r.tables).toEqual(["2025-03", "2025-12", "2026-03"]);
   });
 
-  it("returns null when a window's utilisation is missing (never invents a rate)", () => {
-    // Xinjiang solar has a blank 2026-03 cell, so the latest table with a value
-    // is 2025-12 and the rate is the plain full-year figure.
-    const r = ttmRate(bulletins, "新疆", "solar", monthly(0.5))!;
-    expect(r.windowEnd).toBe("2025-12");
-    expect(r.rate).toBeCloseTo(0.1, 10);
-    expect(ttmRate(bulletins, "西藏", "wind", monthly(1))).toBeNull();
+  it("fails on a blank latest cell instead of moving to another window", () => {
+    // Xinjiang solar is blank in 2026-03; the 2025-12 table must NOT be used instead.
+    const r = ttmRate(bulletins, "新疆", "solar", monthly(0.5), "2026-03");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("2026-03");
+    expect(ttmRate(bulletins, "西藏", "wind", monthly(1), "2026-03").ok).toBe(false);
   });
 
-  it("returns null when Ember generation is missing for a window month", () => {
+  it("fails when Ember generation is missing for a window month", () => {
     const m = monthly(1.0);
     m.delete("2025-07");
-    expect(ttmRate(bulletins, "新疆", "wind", m)).toBeNull();
+    const r = ttmRate(bulletins, "新疆", "wind", m, "2026-03");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("Ember generation missing");
+  });
+});
+
+describe("refresh-china parseBulletinCsv", () => {
+  it("rejects a non-numeric utilisation instead of producing NaN", () => {
+    for (const bad of ["NA", "96.2%", "abc", "96..2"]) {
+      const csv = [HEADER, `新疆,Xinjiang,2026-03,ytd,2026-01..2026-03,${bad},90.0,2026-05-08,u,i,`].join("\n");
+      expect(() => parseBulletinCsv(csv), bad).toThrow(/not a plain percentage/);
+    }
+  });
+
+  it("rejects utilisation outside (0, 100] and malformed period or basis", () => {
+    const row = (w: string, period = "2026-03", basis = "ytd") =>
+      [HEADER, `新疆,Xinjiang,${period},${basis},x,${w},90.0,2026-05-08,u,i,`].join("\n");
+    expect(() => parseBulletinCsv(row("100.1"))).toThrow(/outside/);
+    expect(() => parseBulletinCsv(row("0"))).toThrow(/outside/);
+    expect(() => parseBulletinCsv(row("90", "2026-3"))).toThrow(/YYYY-MM/);
+    expect(() => parseBulletinCsv(row("90", "2026-03", "annual"))).toThrow(/basis/);
+  });
+
+  it("keeps a blank cell as an explicit gap (null)", () => {
+    expect(parseBulletinCsv(BULLETINS).find((r) => r.provinceZh === "新疆" && r.period === "2026-03")!.solar).toBeNull();
   });
 });
 
 describe("refresh-china buildAnchors", () => {
+  const filled = BULLETINS.replace("2026-03,ytd,2026-01..2026-03,88.0,,", "2026-03,ytd,2026-01..2026-03,88.0,85.0,");
+
   it("computes annualTWh = Ember trailing-12mo generation × bulletin TTM rate", () => {
-    const anchors = buildAnchors(emberCsv(), BULLETINS);
+    const anchors = buildAnchors(emberCsv(), filled, XJ);
     const xjWind = anchors.find((a) => a.regionId === "xinjiang-wind")!;
     const C = curtailed(92, 12) + curtailed(88, 3) - curtailed(90, 3);
     const rate = Math.round((C / (12 + C)) * 10000) / 10000;
@@ -83,14 +114,23 @@ describe("refresh-china buildAnchors", () => {
   });
 
   it("skips provinces whose loaders do not consume the store", () => {
-    // Hainan has bulletin rates but is not in WIRED_PROVINCES.
-    const anchors = buildAnchors(emberCsv(), BULLETINS);
+    // Hainan has bulletin rates but is not wired.
+    const anchors = buildAnchors(emberCsv(), filled, XJ);
     expect(anchors.map((a) => a.regionId).sort()).toEqual(["xinjiang-solar", "xinjiang-wind"]);
   });
 
+  it("throws, naming the gap, when a wired province cannot be computed", () => {
+    // BULLETINS has Xinjiang solar blank for 2026-03.
+    expect(() => buildAnchors(emberCsv(), BULLETINS, XJ)).toThrow(/新疆 solar: no year-to-date utilisation for 2026-03/);
+  });
+
+  it("throws when a wired province has no Ember rows at all", () => {
+    expect(() => buildAnchors(emberCsv(), filled, { ...XJ, Gansu: "甘肃" })).toThrow(/甘肃 wind/);
+  });
+
   it("applies the 0.05% floor only below it, and says so in the source", () => {
-    const allClear = BULLETINS.replace(/新疆,Xinjiang,(\d{4}-\d{2}),ytd,([^,]+),[^,]+,[^,]*,/g, "新疆,Xinjiang,$1,ytd,$2,100.0,100.0,");
-    const xjWind = buildAnchors(emberCsv(), allClear).find((a) => a.regionId === "xinjiang-wind")!;
+    const allClear = filled.replace(/新疆,Xinjiang,(\d{4}-\d{2}),ytd,([^,]+),[^,]+,[^,]*,/g, "新疆,Xinjiang,$1,ytd,$2,100.0,100.0,");
+    const xjWind = buildAnchors(emberCsv(), allClear, XJ).find((a) => a.regionId === "xinjiang-wind")!;
     expect(xjWind.curtailmentRate).toBe(RATE_FLOOR);
     expect(xjWind.source).toContain("floor");
   });
