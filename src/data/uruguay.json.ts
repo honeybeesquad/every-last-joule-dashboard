@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
-import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
+import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d, trailingDays } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
@@ -239,15 +239,8 @@ function latestCompleteMonth(controlPanelHtml: string): { year: number; month: n
   return pairs.sort((a, b) => (b.year - a.year) || (b.month - a.month))[0];
 }
 
-function lastThirtyDays(points: CurtailmentPoint[]): CurtailmentPoint[] {
-  const latestMs = Math.max(...points.map((p) => new Date(p.utcTimestamp).getTime()).filter(Number.isFinite));
-  if (!Number.isFinite(latestMs)) return [];
-  const startMs = latestMs - 30 * 24 * 3600 * 1000;
-  return points.filter((p) => new Date(p.utcTimestamp).getTime() > startMs);
-}
-
 export function buildUruguayRegionData(points: CurtailmentPoint[], sourceNote: string): RegionData {
-  const window = lastThirtyDays(points);
+  const window = trailingDays(points, 30);
   if (window.length === 0) throw new Error("ADME restrictions workbook contained no parseable hourly rows");
   const lastUpdated = window.at(-1)?.utcTimestamp ?? new Date().toISOString();
   return {

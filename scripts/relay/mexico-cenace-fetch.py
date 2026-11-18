@@ -299,7 +299,14 @@ def main() -> int:
         default=None,
         help="Also save the raw CENACE CSV to this path",
     )
+    parser.add_argument(
+        "--relay-csv",
+        type=str,
+        default=CSV_PATH,
+        help="Relay CSV to append to (abed: the relay repo clone's mexico-generacion.csv)",
+    )
     args = parser.parse_args()
+    relay_csv = args.relay_csv
 
     print(
         f"# mexico-cenace-fetch.py: downloading from CENACE...",
@@ -365,9 +372,9 @@ def main() -> int:
     )
 
     # Step 4: Append to relay CSV
-    print(f"# Step 4: Appending to {CSV_PATH}...", file=sys.stderr)
+    print(f"# Step 4: Appending to {relay_csv}...", file=sys.stderr)
     if args.dry_run:
-        existing = read_existing_keys(CSV_PATH)
+        existing = read_existing_keys(relay_csv)
         new_count = sum(
             1 for r in rows if f"{r[0]},{r[1]}" not in existing
         )
@@ -378,8 +385,8 @@ def main() -> int:
         )
         return 0
 
-    appended = append_rows(CSV_PATH, rows)
-    total_existing = len(read_existing_keys(CSV_PATH))
+    appended = append_rows(relay_csv, rows)
+    total_existing = len(read_existing_keys(relay_csv))
     print(
         f"# Appended {appended} new rows "
         f"({len(rows) - appended} already present, "
