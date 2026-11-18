@@ -425,7 +425,7 @@ Jamaica,JAM,solar,not-collecting,statics,unpublished,jamaica,Country/T3 stub —
 Barbados,BRB,solar,not-collecting,statics,unpublished,barbados,Country/T3 stub — Ember/IRENA is not TSO collection.
 Bolivia,BOL,solar,not-collecting,statics,unpublished,bolivia,CNDC wp-json rt/generacion publishes 15-minute MW by fuel from 2025. Reachable. Not wired yet; the served 0.1 TWh/yr is an IRENA-derived modelled static; CNDC itself publishes no waste. No spill field in the hydrology routes.
 Ecuador,ECU,hydro,not-collecting,statics,unpublished,ecuador,Country/T3 stub — Ember/IRENA is not TSO collection.
-French Guiana,GUF,solar,not-collecting,statics,unpublished,french-guiana,Country/T3 stub — Ember/IRENA is not TSO collection.
+French Guiana,GUF,mixed,live-tso,edf-sei,unpublished,french-guiana,TSO generation collected; waste unpublished.
 Algeria,DZA,solar,not-collecting,statics,unpublished,algeria,Country/T3 stub — Ember/IRENA is not TSO collection.
 Angola,AGO,solar,not-collecting,statics,unpublished,angola,Country/T3 stub — Ember/IRENA is not TSO collection.
 Benin,BEN,solar,no-public-series,tso-grid-markers,unpublished,benin,Grid present; no public ops series wired.
@@ -535,9 +535,10 @@ Hong Kong Electric,HKG,solar,no-public-series,tso-grid-markers,unpublished,hong-
 Macau,MAC,solar,no-public-series,tso-grid-markers,unpublished,macau,Grid present; no public ops series wired.
 Sarawak Energy,MYS,hydro,no-public-series,tso-grid-markers,unpublished,malaysia-sarawak,Grid present; no public ops series wired.
 SESB Sabah,MYS,solar,no-public-series,tso-grid-markers,unpublished,malaysia-sabah,Grid present; no public ops series wired.
-Réunion,REU,solar,no-public-series,tso-grid-markers,unpublished,reunion,Grid present; no public ops series wired.
-Martinique,MTQ,solar,no-public-series,tso-grid-markers,unpublished,martinique,Grid present; no public ops series wired.
-Guadeloupe,GLP,solar,no-public-series,tso-grid-markers,unpublished,guadeloupe,Grid present; no public ops series wired.
+Réunion,REU,mixed,live-tso,edf-sei,unpublished,reunion,TSO generation collected; waste unpublished.
+Martinique,MTQ,mixed,live-tso,edf-sei,unpublished,martinique,TSO generation collected; waste unpublished.
+Guadeloupe,GLP,mixed,live-tso,edf-sei,unpublished,guadeloupe,TSO generation collected; waste unpublished.
+Corsica,FRA,mixed,live-tso,edf-sei,unpublished,corsica,TSO generation collected; waste unpublished.
 New Caledonia,NCL,solar,no-public-series,tso-grid-markers,unpublished,new-caledonia,Grid present; no public ops series wired.
 French Polynesia,PYF,solar,no-public-series,tso-grid-markers,unpublished,french-polynesia,Grid present; no public ops series wired.
 Wallis and Futuna,WLF,solar,no-public-series,tso-grid-markers,unpublished,wallis-and-futuna,Grid present; no public ops series wired.
