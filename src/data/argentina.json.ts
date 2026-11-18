@@ -215,9 +215,10 @@ async function run({ probe = true } = {}): Promise<RegionData> {
   const csvPoints = readCsvData();
   if (csvPoints && csvPoints.length > 0) {
     const lastTs = latestTimestamp(csvPoints);
+    const windowCount = trailingDays(csvPoints, 30).length;
     return regionFromGeneration(
       csvPoints,
-      `CAMMESA relay CSV (argentina-cammesa.csv, ${csvPoints.length} points). ` +
+      `CAMMESA relay CSV (argentina-cammesa.csv, ${windowCount} points in the trailing 30 days). ` +
         `Generation measured. Waste unpublished — live API geoblocked. Latest: ${lastTs}.`,
     );
   }

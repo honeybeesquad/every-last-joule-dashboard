@@ -241,10 +241,17 @@ identity, so every rebase stopped at "unable to auto-detect email" and left the
 clone mid-rebase on a detached HEAD. Fourteen Colombia rows and every heartbeat
 sat in local commits. The clone now also has `user.name`/`user.email` set.
 
-**Healthcheck month-start grace:** the stale threshold is 48 h plus 24 h per
-day of the month on days 1–4. `--month current` writes nothing on the 1st and
-XM settles about two days late, so the plain 48 h check reported "lake is
-stale" on the 2nd and 3rd of September, October and November.
+**Healthcheck month-start grace:** on days 1–4 the lake counts as fresh if it
+was written on or after the previous month's last day (that month's last run
+succeeded). `--month current` writes nothing on the 1st and XM settles about two
+days late, so the plain 48 h check reported "lake is stale" on the 2nd and 3rd of
+September, October and November. An outage that began before the last day still
+alerts on the 1st.
+
+**Shared clone:** `relay_sync` holds `flock .git/elj-relay.lock` for the rest of
+the pusher's run, so overlapping cron jobs take turns; it saves HEAD on a
+`rescue/*` branch before aborting a stalled rebase, and pulls with `--autostash`
+so a file one pusher left modified cannot block another's rebase.
 
 ```bash
 # deploy (from a dashboard checkout):

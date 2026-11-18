@@ -31,6 +31,10 @@ flock -w 900 "$VPN_LOCK" python3 "$FETCHER" --csv-out "$CSV" --vpn on-403 2>>"$L
 rc=${PIPESTATUS[0]}
 if [ "$rc" -ne 0 ]; then
   log "ERROR: fetcher rc=$rc"
+  # Drop anything a failed run half-wrote, then still push commits an earlier
+  # run made but could not push.
+  relay_git checkout -- puerto-rico-genera.csv 2>/dev/null || true
+  relay_commit_push "data: PREPA (stranded commits)" puerto-rico-genera.csv || true
   exit "$rc"
 fi
 

@@ -11,7 +11,8 @@ On `ops/abed-relay-push-hardening`. No tier move. Golden unchanged.
   pushes `HEAD:main` with an explicit identity and retries stranded commits. From 2026-11-04 to 2026-11-18 no abed
   push landed (a rebase without a git identity, once the Bangalore droplet became a second writer); that was
   repaired on abed on 2026-11-18 and this makes it not recur. The healthcheck no longer reports a stale lake on
-  days 2–3 of each month.
+  days 2–3 of each month (on days 1–4 a lake written on or after the previous month's last day counts as fresh),
+  and the pushers take a lock on the shared clone.
 - **Relays installed on abed (cron):** PREPA hourly (never installed before; the dashboard held two
   2026-09-20 snapshots), CAMMESA daily through NordVPN Argentina, CENACE daily (direct). Britta has no ELJ
   scheduler since 2026-08-22. `colombia-relay-pull.yml` copies `argentina-cammesa.csv` and

@@ -17,9 +17,13 @@ STALE_HOURS=48
 # the newest parquet stays the previous month's last file until about the 4th.
 # Without this the check reported "lake is stale" on the 2nd and 3rd of every
 # month (Sep, Oct and Nov 2026), and those ok=false heartbeats read as a stall.
-DOM=$(date +%-d)
-if [ "$DOM" -le 4 ]; then
-  STALE_HOURS=$(( STALE_HOURS + 24 * DOM ))
+# On days 1-4 the lake counts as fresh if it was written on or after the
+# previous month's last day, i.e. the last run of that month succeeded. An
+# outage that started earlier (say the 29th) still alerts on the 1st.
+MONTH_START_OK=false
+if [ "$(date +%-d)" -le 4 ]; then
+  PREV_LAST_DAY_EPOCH=$(date -d "$(date +%Y-%m-01) -1 day" +%s)
+  MONTH_START_OK=true
 fi
 ISSUES=()
 
@@ -32,7 +36,8 @@ if [ -z "$NEWEST" ]; then
 else
   NEWEST_EPOCH=${NEWEST%.*}
   AGE_H=$(( ( $(date +%s) - NEWEST_EPOCH ) / 3600 ))
-  if [ "$AGE_H" -gt "$STALE_HOURS" ]; then
+  if [ "$AGE_H" -gt "$STALE_HOURS" ] && \
+     ! { [ "$MONTH_START_OK" = true ] && [ "$NEWEST_EPOCH" -ge "$PREV_LAST_DAY_EPOCH" ]; }; then
     ISSUES+=("lake is stale: newest parquet is ${AGE_H}h old (threshold ${STALE_HOURS}h)")
   fi
 fi

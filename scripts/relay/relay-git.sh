@@ -22,10 +22,21 @@ relay_git() {
 }
 
 # Bring the clone onto an up-to-date `main`, recovering from a stuck rebase.
-# Local commits are kept: an aborted rebase returns to the branch tip they are on.
+# Also takes an exclusive lock on the clone for the rest of the calling process:
+# every abed pusher shares this checkout, and two overlapping cron runs must not
+# rebase or commit in it at the same time. The lock is released when the caller exits.
 relay_sync() {
+  exec 9>"$RELAY_REPO/.git/elj-relay.lock"
+  if ! flock -w 900 9; then
+    log "ERROR: relay clone busy for 15 min - giving up"
+    return 1
+  fi
   if [ -d "$RELAY_REPO/.git/rebase-merge" ] || [ -d "$RELAY_REPO/.git/rebase-apply" ]; then
-    log "WARN: leftover rebase in $RELAY_REPO - aborting it"
+    # `rebase --abort` returns to the pre-rebase tip, so commits made on the
+    # detached HEAD during a stalled rebase would be left only in the reflog.
+    # Keep them on a rescue branch first.
+    relay_git branch -f "rescue/$(date -u +%Y%m%dT%H%M%SZ)" HEAD 2>>"$LOG" || true
+    log "WARN: leftover rebase in $RELAY_REPO - saved HEAD on a rescue/ branch, aborting it"
     relay_git rebase --abort 2>>"$LOG" || true
   fi
   if [ "$(relay_git rev-parse --abbrev-ref HEAD 2>/dev/null)" != "main" ]; then
@@ -33,7 +44,8 @@ relay_sync() {
     relay_git branch -f "rescue/$(date -u +%Y%m%dT%H%M%SZ)" HEAD 2>>"$LOG" || true
     relay_git checkout -q main 2>>"$LOG" || return 1
   fi
-  if ! relay_git pull --rebase -q origin main 2>>"$LOG"; then
+  # --autostash: a file another pusher left modified must not block the rebase.
+  if ! relay_git pull --rebase --autostash -q origin main 2>>"$LOG"; then
     relay_git rebase --abort 2>>"$LOG" || true
     log "WARN: pre-write pull failed, continuing on local main"
   fi
@@ -61,7 +73,7 @@ relay_commit_push() {
     return 0
   fi
   log "push rejected - rebasing once and retrying"
-  if relay_git pull --rebase -q origin main 2>>"$LOG" && relay_git push -q origin HEAD:main 2>>"$LOG"; then
+  if relay_git pull --rebase --autostash -q origin main 2>>"$LOG" && relay_git push -q origin HEAD:main 2>>"$LOG"; then
     log "pushed after rebase: $msg"
     return 0
   fi

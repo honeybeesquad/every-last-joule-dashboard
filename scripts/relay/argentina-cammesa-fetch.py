@@ -26,6 +26,7 @@ import subprocess
 import sys
 import ssl
 import urllib.request
+from zoneinfo import ZoneInfo
 
 # ─── Paths ────────────────────────────────────────────────────────────────
 
@@ -190,7 +191,9 @@ def main() -> None:
     args = parser.parse_args()
     csv_out = args.csv_out
 
-    end_date = datetime.date.today()
+    # Argentina's calendar day: abed's NZ clock is up to a day ahead, which would
+    # spend one of the requested days on a day CAMMESA has not started.
+    end_date = datetime.datetime.now(ZoneInfo("America/Argentina/Buenos_Aires")).date()
     start_date = end_date - datetime.timedelta(days=args.days)
 
     print(f"[relay] Argentina CAMMESA relay — fetching {args.days} days ending {end_date}")
