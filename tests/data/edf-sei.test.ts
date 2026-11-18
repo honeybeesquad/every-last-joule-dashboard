@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   SEI_TERRITORIES,
   buildSeiRegion,
+  collectSeiRegions,
   parseSeiRows,
   seiLinesUrl,
   type SeiRow,
@@ -135,5 +136,77 @@ describe("EDF SEI island grids", () => {
     const rows = day("2026-11-17", "-03:00", 5, () => ({ photovoltaique: 4, hydraulique: 30 })).slice(0, 200);
     expect(() => parseSeiRows(guiana, rows)).toThrow(/of 24 UTC hours/);
     expect(() => parseSeiRows(guiana, [])).toThrow(/no usable rows/);
+  });
+
+  describe("per-island fallback", () => {
+    const now = new Date("2026-11-18T12:00:00Z");
+    const fresh = (t: SeiTerritory) =>
+      buildSeiRegion(t, day("2026-11-18", "+00:00", 60, () => ({
+        photovoltaique: 5, eolien: 1, hydraulique: 10, micro_hydro: 1,
+      })), now);
+    const prevRecord = (id: string, lastSuccessAt: string) => ({
+      ...fresh(SEI_TERRITORIES.find((t) => t.regionId === id)!),
+      generationTotalTWh: 0.123,
+      lastSuccessAt,
+      // Not what the collector should emit, so a test sees it re-stamped.
+      sourceStatus: "live" as const,
+    });
+
+    it("keeps a failed island's last-good record and leaves the others fresh", async () => {
+      const previous = { martinique: prevRecord("martinique", "2026-11-18T06:00:00Z") };
+      const out = await collectSeiRegions(
+        async (t) => (t.regionId === "martinique" ? Promise.reject(new Error("HTTP 500")) : fresh(t)),
+        previous,
+        now,
+      );
+      expect(Object.keys(out).sort()).toEqual(SEI_TERRITORIES.map((t) => t.regionId).sort());
+      expect(out.martinique.generationTotalTWh).toBe(0.123);
+      expect(out.martinique.lastSuccessAt).toBe("2026-11-18T06:00:00Z");
+      expect(out.martinique.sourceStatus).toBe("cached");
+      const corsica = SEI_TERRITORIES.find((t) => t.regionId === "corsica")!;
+      expect(out.corsica).toEqual(fresh(corsica));
+    });
+
+    it("marks a kept record degraded once it is over 24 hours old", async () => {
+      const previous = { reunion: prevRecord("reunion", "2026-11-16T12:00:00Z") };
+      const out = await collectSeiRegions(
+        async (t) => (t.regionId === "reunion" ? Promise.reject(new Error("timeout")) : fresh(t)),
+        previous,
+        now,
+      );
+      expect(out.reunion.sourceStatus).toBe("degraded");
+      expect(out.reunion.lastSuccessAt).toBe("2026-11-16T12:00:00Z");
+    });
+
+    it("marks a kept record with a missing or unreadable timestamp degraded", async () => {
+      const bad = { ...prevRecord("guadeloupe", "not-a-date") };
+      const missing = { ...prevRecord("martinique", ""), lastUpdated: "" };
+      const out = await collectSeiRegions(
+        async (t) =>
+          t.regionId === "guadeloupe" || t.regionId === "martinique"
+            ? Promise.reject(new Error("HTTP 503"))
+            : fresh(t),
+        { guadeloupe: bad, martinique: missing },
+        now,
+      );
+      expect(out.guadeloupe.sourceStatus).toBe("degraded");
+      expect(out.martinique.sourceStatus).toBe("degraded");
+    });
+
+    it("fails the loader when a failed island has no last-good record", async () => {
+      await expect(
+        collectSeiRegions(
+          async (t) => (t.regionId === "guadeloupe" ? Promise.reject(new Error("HTTP 410")) : fresh(t)),
+          {},
+          now,
+        ),
+      ).rejects.toThrow(/Guadeloupe failed and has no last-good record/);
+    });
+
+    it("throws when every island fails, so withFallback serves the snapshot whole", async () => {
+      await expect(
+        collectSeiRegions(async () => Promise.reject(new Error("offline")), {}, now),
+      ).rejects.toThrow(/every island failed/);
+    });
   });
 });
