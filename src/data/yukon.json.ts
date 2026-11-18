@@ -39,6 +39,12 @@ const PAGE_URL = "https://yukonenergy.ca/energy-in-yukon/electricity-101/electri
  */
 const MAX_PLAUSIBLE_HOURLY_MWH = 400;
 
+/** A source value below this is a corrupt row, not metering noise. */
+const MIN_PLAUSIBLE_SOURCE_MWH = -1;
+
+/** The newest hour must start within this many hours of now. */
+const MAX_AGE_HOURS = 36;
+
 export type YukonRow = [string, number, number, number, number];
 
 /** Pull the `rows_chart_past_day` array out of the page HTML. */
@@ -74,6 +80,10 @@ export function pastDayRenewablePoints(rows: YukonRow[]): CurtailmentPoint[] {
     .map(([stamp, hydro, wind, solar]) => {
       const endMs = Date.parse(stamp);
       if (!Number.isFinite(endMs)) throw new Error(`yukon: bad timestamp ${stamp}`);
+      for (const v of [hydro, wind, solar]) {
+        if (v < MIN_PLAUSIBLE_SOURCE_MWH) throw new Error(`yukon: negative value ${v} MWh at ${stamp}`);
+      }
+      // Readings in [-1, 0) are metering noise around zero output.
       const mwh = Math.max(0, hydro) + Math.max(0, wind) + Math.max(0, solar);
       if (mwh > MAX_PLAUSIBLE_HOURLY_MWH) {
         throw new Error(`yukon: ${mwh.toFixed(1)} MWh at ${stamp} exceeds ${MAX_PLAUSIBLE_HOURLY_MWH} MWh ceiling`);
@@ -81,11 +91,22 @@ export function pastDayRenewablePoints(rows: YukonRow[]): CurtailmentPoint[] {
       return { utcTimestamp: new Date(endMs - 3_600_000).toISOString(), mw: mwh, intervalHours: 1 };
     })
     .sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
-  return points.slice(-24);
+  const window = points.slice(-24);
+  for (let i = 1; i < window.length; i++) {
+    const step = Date.parse(window[i].utcTimestamp) - Date.parse(window[i - 1].utcTimestamp);
+    if (step !== 3_600_000) {
+      throw new Error(`yukon: hours not consecutive at ${window[i].utcTimestamp} (step ${step / 60_000} min)`);
+    }
+  }
+  return window;
 }
 
-export function buildYukonRegionFromHtml(html: string): RegionData {
+export function buildYukonRegionFromHtml(html: string, now: Date = new Date()): RegionData {
   const points = pastDayRenewablePoints(extractPastDayRows(html));
+  const last = points.at(-1);
+  if (last && now.getTime() - Date.parse(last.utcTimestamp) > MAX_AGE_HOURS * 3_600_000) {
+    throw new Error(`yukon: newest hour ${last.utcTimestamp} is older than ${MAX_AGE_HOURS} h; the page has stopped updating`);
+  }
   const note =
     `Yukon Energy hourly hydro + wind + solar generation, ${points.length} hours ` +
     `${points[0]?.utcTimestamp ?? "?"} → ${points.at(-1)?.utcTimestamp ?? "?"} (UTC, hour start). ` +

@@ -50,6 +50,19 @@ describe("yukon: pastDayRenewablePoints", () => {
     expect(points.at(-1)!.mw).toBeCloseTo(50.8054 + 2.0526, 4);
   });
 
+  it("throws on a corrupt negative value but tolerates noise near zero", () => {
+    expect(() => pastDayRenewablePoints([["2026-11-17T00:00:00-07:00", -50, 0, 0, 0]])).toThrow(/negative/);
+    expect(pastDayRenewablePoints([["2026-11-17T00:00:00-07:00", 50, -0.2, 0, 0]])[0].mw).toBe(50);
+  });
+
+  it("throws when the kept hours have a gap or a duplicate", () => {
+    const rows = extractPastDayRows(HTML);
+    const gapped = [...rows.slice(0, 10), ...rows.slice(11)];
+    expect(() => pastDayRenewablePoints(gapped)).toThrow(/not consecutive/);
+    const duplicated = [...rows.slice(0, 20), rows[19], ...rows.slice(21)];
+    expect(() => pastDayRenewablePoints(duplicated)).toThrow(/not consecutive/);
+  });
+
   it("throws on an implausible hour", () => {
     expect(() => pastDayRenewablePoints([["2026-11-17T00:00:00-07:00", 900, 0, 0, 0]])).toThrow(/ceiling/);
   });
@@ -57,7 +70,7 @@ describe("yukon: pastDayRenewablePoints", () => {
 
 describe("yukon: buildYukonRegionFromHtml", () => {
   it("emits generation with waste unpublished and zero", () => {
-    const r = buildYukonRegionFromHtml(HTML);
+    const r = buildYukonRegionFromHtml(HTML, new Date("2026-11-18T10:00:00Z"));
     expect(r.regionId).toBe("yukon");
     expect(r.wasteStatus).toBe("unpublished");
     expect(r.totalTWh).toBe(0);
@@ -65,5 +78,9 @@ describe("yukon: buildYukonRegionFromHtml", () => {
     // ~55 MW flat × 24 h × 30 d ≈ 0.04 TWh.
     expect(r.generationTotalTWh).toBeGreaterThan(0.03);
     expect(r.generationTotalTWh).toBeLessThan(0.05);
+  });
+
+  it("throws when the page has stopped updating", () => {
+    expect(() => buildYukonRegionFromHtml(HTML, new Date("2026-11-21T10:00:00Z"))).toThrow(/stopped updating/);
   });
 });
