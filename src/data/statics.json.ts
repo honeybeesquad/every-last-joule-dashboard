@@ -64,7 +64,7 @@ export interface StaticSpec {
 //   typical-shape profile centred on local solar noon, scaled to the
 //   published annual total. See docs/known-limitations.md for labelling.
 export const STATIC_REGIONS: Record<string, StaticSpec> = {
-  sichuan: { annualTWh: 30, kind: "hydro-seasonal", seasonalSharesKey: "sichuan", source: "Ember China Electricity Review 2025 (Yangtze basin monsoon hydro spill, peaks Jul-Aug, ~zero Nov-Apr)", reportDate: "2025-Q1" },
+  sichuan: { annualTWh: 30, kind: "hydro-seasonal", seasonalSharesKey: "sichuan", source: "Upper bound, not a central estimate: ~30 TWh/yr Sichuan wet-season hydro spill. NEA 2024 basin effective utilisation (Dadu 93.21%, the lowest southwest basin; Yalong 98.36%; Jinsha middle-lower 99.86%; upper Yangtze main stem 100%) applied at the Dadu rate to all of Sichuan's 2024 hydro output (404.5 TWh, NBS via a secondary aggregator) gives ~29.5 TWh, so 30 is about the ceiling those rates allow. No official provincial spill figure is published. Previously cited as Ember China Electricity Review 2025 (Yangtze basin monsoon hydro spill, peaks Jul-Aug, ~zero Nov-Apr)", reportDate: "2025-Q1" },
   // xinjiang moved to src/data/xinjiang.json.ts (fuel-split: wind + solar, 2026-06-16)
   // china-hebei moved to src/data/china-hebei.json.ts (fuel-split: wind + solar, 2026-06-16)
   // china-heilongjiang moved to src/data/china-heilongjiang.json.ts (fuel-split: wind + solar, 2026-06-16)
