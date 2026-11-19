@@ -8,7 +8,7 @@ Last updated: 2026-11-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** Ember China subnational generation (trailing 12mo) × monitoring-centre curtailment rate 0.9% (trailing 12 months 2025-04..2026-03, system-caused limits only); refreshed anchor, T3-modelled shape
+- **Source:** Ember China subnational generation (trailing 12mo) at monitoring-centre curtailment rate 0.9% (trailing 12 months 2025-04..2026-03, system-caused limits only); curtailed = generation × rate / (1 − rate); refreshed anchor, T3-modelled shape
 - **Source URL:** [https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv)
 - **Loader:** [`china-jiangxi.json.ts`](../../src/data/china-jiangxi.json.ts)
 - **Structural gap:** no

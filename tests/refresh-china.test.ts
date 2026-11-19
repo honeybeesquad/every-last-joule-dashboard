@@ -117,14 +117,16 @@ describe("refresh-china parseBulletinCsv", () => {
 describe("refresh-china buildAnchors", () => {
   const filled = BULLETINS.replace("2026-03,ytd,2026-01..2026-03,88.0,,", "2026-03,ytd,2026-01..2026-03,88.0,85.0,");
 
-  it("computes annualTWh = Ember trailing-12mo generation × bulletin TTM rate", () => {
+  it("computes annualTWh = curtailed energy: Ember trailing-12mo generation × rate / (1 − rate)", () => {
     const anchors = buildAnchors(emberCsv(), filled, XJ);
     const xjWind = anchors.find((a) => a.regionId === "xinjiang-wind")!;
     const C = curtailed(92, 12) + curtailed(88, 3) - curtailed(90, 3);
     const rate = Math.round((C / (12 + C)) * 10000) / 10000;
     expect(xjWind.curtailmentRate).toBe(rate);
     expect(xjWind.annualGenerationTWh).toBeCloseTo(12, 6);
-    expect(xjWind.annualTWh).toBeCloseTo(Math.round(12 * rate * 1000) / 1000, 6);
+    expect(xjWind.annualTWh).toBeCloseTo(Math.round(((12 * rate) / (1 - rate)) * 1000) / 1000, 6);
+    // rate = C / (G + C), so G × rate / (1 − rate) recovers C (to the 4-dp rounding of rate).
+    expect(xjWind.annualTWh).toBeCloseTo(C, 2);
     expect(xjWind.rateWindow).toBe("2025-04..2026-03");
     expect(xjWind.latestMonth).toBe("2026-03");
     expect(xjWind.source).toContain("国能发电力〔2024〕44号");

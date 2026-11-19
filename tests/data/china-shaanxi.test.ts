@@ -8,14 +8,14 @@ describe("china-shaanxi loader", () => {
     expect(data).toHaveProperty("solar");
     expect(data.solar.regionId).toBe("china-shaanxi-solar");
     expect(data.solar.profile).toHaveLength(24);
-    expect(data.solar.totalTWh).toBeCloseTo(0.370356, 4);
+    expect(data.solar.totalTWh).toBeCloseTo(0.405945, 4);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.solar.sourceProvenance).toBe("modelled-fallback");
     expect(data.solar.sourceStatus).toBe("cached");
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.wind.regionId).toBe("china-shaanxi-wind");
     expect(data.wind.profile).toHaveLength(24);
-    expect(data.wind.totalTWh).toBeCloseTo(0.112027, 4);
+    expect(data.wind.totalTWh).toBeCloseTo(0.117288, 4);
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.wind.sourceProvenance).toBe("modelled-fallback");
     expect(data.wind.sourceStatus).toBe("cached");

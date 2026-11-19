@@ -8,11 +8,11 @@ describe("gansu loader", () => {
     expect(data.solar.regionId).toBe("gansu-solar");
     expect(data.wind.profile).toHaveLength(24);
     expect(data.solar.profile).toHaveLength(24);
-    expect(data.wind.totalTWh).toBeCloseTo(0.330247, 4);
+    expect(data.wind.totalTWh).toBeCloseTo(0.354082, 4);
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.wind.sourceProvenance).toBe("modelled-fallback");
     expect(data.wind.sourceStatus).toBe("cached");
-    expect(data.solar.totalTWh).toBeCloseTo(0.430192, 4);
+    expect(data.solar.totalTWh).toBeCloseTo(0.487479, 4);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.solar.sourceProvenance).toBe("modelled-fallback");
     expect(data.solar.sourceStatus).toBe("cached");
