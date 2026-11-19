@@ -21,6 +21,7 @@ function buildMixed(sourceNote: string): RegionData {
     totalTWh: wind.totalTWh + solar.totalTWh,
     peakGW: Math.max(...profile),
     fuelShare: { wind: 0.67, solar: 0.33 },
+    fuelProfiles: { wind: wind.profile, solar: solar.profile },
     sourceNote: `${sourceNote} fuelShare: wind 67% / solar 33% per offshore-wind and southern-PV calibration.`,
   };
 }

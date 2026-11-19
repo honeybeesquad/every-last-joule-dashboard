@@ -8,11 +8,12 @@
 PR from `claude/magical-goodall-nv660q`, approved by Simon. No tier move; **no region's totalTWh changes**; per-fuel attribution moves.
 
 - `RegionData.fuelProfiles` (optional, schema and `dataset/SCHEMA.md` updated) carries per-fuel 24-hour profiles that sum to `profile`. They are emitted by `buildTypicalMixedRegion` (Manitoba, Kerala, Telangana) and `buildChinaMixedRegionFromAnchors` (Tianjin, Fujian, Guangdong, Zhejiang).
-- `fuelShareAtHour` splits each hour from those profiles, with solar masked in darkness and the rest normalised. Every hour is fully attributed, and each fuel's 24-hour total matches its profile within 0.3 points.
+- `fuelShareAtHour` splits each hour from those profiles: each fuel's GW over the hour's total. Solar is masked in local darkness, and the masked part is dropped, not handed to wind. So wind and hydro 24-hour totals match their profiles exactly, and only the dark-hour tail of the synthetic solar shape goes unattributed. Taiwan's loader also emits `fuelProfiles`.
   - **Before:** the solar fraction was dropped at night, e.g. Tianjin's night output was counted at 55%.
-  - **Unchanged:** mixed regions without `fuelProfiles` keep the flat split, including that night gap. These are Morocco, Taiwan, the India loaders other than Kerala and Telangana, and the statics-built mixed rows.
+  - **Unchanged:** mixed regions without `fuelProfiles` keep the flat split, including that night gap. These are Morocco, the India loaders other than Kerala and Telangana, and the statics-built mixed rows.
 - The China mixed regions now serve their anchor ratio as `fuelShare`: Tianjin 29/71 (was 55/45), Guangdong 42/58, Zhejiang 42/58 and Fujian 52/48. Tianjin and Guangdong move to the solar column and colour.
-- Snapshots updated: the four China mixed regions. The Manitoba, Kerala and Telangana snapshots are left as they were; the live build emits their profiles.
+- Snapshots updated: the four China mixed regions. The Manitoba, Kerala, Telangana and Taiwan snapshots are left as they were; the live build emits their profiles. `validate-snapshots.ts` checks `fuelProfiles` (keys, length, values, sum to `profile`).
+- **Open (pre-existing):** a fresh Taiwan loader run fails the envelope check (peak 0.123 GW, high bound 0.077). `buildMixed` spreads the wind region's uncertainty band onto the combined profile. The committed April snapshot predates this.
 
 ## Sichuan hydro static relabelled as an upper bound (2026-11-19)
 

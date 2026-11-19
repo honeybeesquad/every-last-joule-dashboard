@@ -188,6 +188,38 @@ function validate(obj: unknown, ctx: string): string[] {
     }
   }
 
+  // fuelProfiles is optional. When present: keys in {solar, wind, hydro}, 24
+  // finite non-negative values each, and the fuels sum to profile hour by hour.
+  if ("fuelProfiles" in r && r.fuelProfiles !== undefined) {
+    const fp = r.fuelProfiles as Record<string, unknown>;
+    if (typeof fp !== "object" || fp === null || Array.isArray(fp)) {
+      errs.push(`fuelProfiles present but not an object`);
+    } else {
+      const sums = new Array(24).fill(0);
+      for (const [k, arr] of Object.entries(fp)) {
+        if (!["solar", "wind", "hydro"].includes(k)) errs.push(`fuelProfiles unknown key "${k}"`);
+        if (!Array.isArray(arr) || arr.length !== 24) {
+          errs.push(`fuelProfiles.${k} is not an array of length 24`);
+          continue;
+        }
+        arr.forEach((v, h) => {
+          if (typeof v !== "number" || !Number.isFinite(v) || v < 0) errs.push(`fuelProfiles.${k}[${h}] = ${v} not a finite value >= 0`);
+          else sums[h] += v;
+        });
+      }
+      const prof = r.profile as unknown;
+      if (Array.isArray(prof) && prof.length === 24) {
+        for (let h = 0; h < 24; h++) {
+          const p = prof[h] as number;
+          if (Math.abs(sums[h] - p) > 1e-6 * Math.max(1, Math.abs(p))) {
+            errs.push(`fuelProfiles do not sum to profile at hour ${h} (${sums[h]} vs ${p})`);
+            break;
+          }
+        }
+      }
+    }
+  }
+
   if ("confidenceTier" in r && r.confidenceTier !== undefined) {
     if (!TIER_ENUM.has(r.confidenceTier as string)) {
       errs.push(`confidenceTier = ${JSON.stringify(r.confidenceTier)} not in tier enum`);

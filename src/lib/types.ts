@@ -147,8 +147,8 @@ export interface RegionData {
    * Emitted by the mixed-region builders that construct the region from
    * separate fuel profiles (`buildTypicalMixedRegion`,
    * `buildChinaMixedRegionFromAnchors`). When present, `fuelShareAtHour` splits
-   * each hour by these profiles, so each fuel's 24-hour total matches its
-   * profile; otherwise it falls back to the flat annual `fuelShare`.
+   * each hour by these profiles (wind and hydro totals match exactly; solar in
+   * local darkness is dropped); otherwise it uses the flat annual `fuelShare`.
    */
   fuelProfiles?: Partial<Record<"solar" | "wind" | "hydro", number[]>>;
   /**

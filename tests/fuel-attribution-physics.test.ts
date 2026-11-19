@@ -42,22 +42,27 @@ describe("fuel attribution cannot state the impossible", () => {
     );
   });
 
-  it("splits a mixed region hour by hour from its fuel profiles, covering every hour", () => {
-    // With fuelProfiles, every hour is fully attributed (no solar fraction dropped
-    // at night) and each fuel's 24-hour total matches its own profile.
+  it("splits a mixed region hour by hour from its fuel profiles without moving solar to wind", () => {
+    // With fuelProfiles, wind's 24-hour total equals its profile exactly; solar
+    // in local darkness is dropped (never reassigned), and every non-masked hour
+    // is fully attributed.
     const region = { id: "__mixed__", kind: "mixed", lon: 117 } as never;
     const data = buildTypicalMixedRegion("__mixed__", 1, { wind: 0.29, solar: 0.71 }, "test", "2024", 4, 15);
+    const fp = data.fuelProfiles!;
     const totals = { solar: 0, wind: 0, hydro: 0 };
-    let all = 0;
+    let solarProfileLit = 0;
     for (let h = 0; h < 24; h++) {
       const shares = FUEL_ORDER.map((f) => fuelShareAtHour(region, f, h, data));
-      expect(shares.reduce((a, b) => a + b, 0), `hour ${h}`).toBeCloseTo(1, 10);
-      all += data.profile[h];
+      const dark = isDark(h, 117);
+      if (!dark) expect(shares.reduce((a, b) => a + b, 0), `hour ${h}`).toBeCloseTo(1, 10);
       FUEL_ORDER.forEach((f, i) => (totals[f] += data.profile[h] * shares[i]));
+      if (!dark) solarProfileLit += fp.solar![h];
     }
-    expect(totals.wind / all).toBeCloseTo(0.29, 2);
-    expect(totals.solar / all).toBeCloseTo(0.71, 2);
+    const sum = (a?: number[]) => (a ?? []).reduce((x, y) => x + y, 0);
+    expect(totals.wind).toBeCloseTo(sum(fp.wind), 10); // exact: no solar credited to wind
+    expect(totals.solar).toBeCloseTo(solarProfileLit, 10); // solar minus its dark-hour tail
     expect(totals.hydro).toBe(0);
+    expect(sum(fp.wind) / sum(data.profile)).toBeCloseTo(0.29, 10);
   });
 
   it("keeps the flat split for mixed regions without fuel profiles", () => {
