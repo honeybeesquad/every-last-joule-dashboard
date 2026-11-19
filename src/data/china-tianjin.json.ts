@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalMixedRegion } from "../lib/typical-profiles.js";
+import { buildChinaMixedRegionFromAnchors } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "china-tianjin";
@@ -15,12 +15,11 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    return buildTypicalMixedRegion(
+    return buildChinaMixedRegionFromAnchors(
       REGION_ID,
-      0.16,
       { wind: 0.55, solar: 0.45 },
-      `Typical-shape fallback: ${(err as Error).message}; Tianjin mixed wind+solar curtailment ~0.16 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`,
-      "2024",
+      0.16,
+      `Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): ${(err as Error).message}; Tianjin mixed wind+solar curtailment ~0.16 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`,
       4,
       15,
     );

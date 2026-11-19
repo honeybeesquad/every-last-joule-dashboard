@@ -10,7 +10,7 @@ describe("guangxi loader", () => {
     expect(data.solar.profile).toHaveLength(24);
     expect(data.wind.latestProfile).toBeNull();
     expect(data.solar.latestProfile).toBeNull();
-    expect(data.wind.totalTWh).toBeCloseTo((0.2 * 30) / 365, 5);
-    expect(data.solar.totalTWh).toBeCloseTo((0.3 * 30) / 365, 5);
+    expect(data.wind.totalTWh).toBeCloseTo((1.452 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((1.013 * 30) / 365, 5);
   });
 });

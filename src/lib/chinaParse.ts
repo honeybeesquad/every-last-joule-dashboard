@@ -30,6 +30,25 @@ import { applyUncertainty } from "./uncertainty.js";
 
 export type Fuel = "wind" | "solar" | "hydro";
 
+/**
+ * Placeholder curtailment rate for provinces whose published utilisation is
+ * 100.0% over the window. Kept from the 2024 method so the typical-shape profile
+ * is not zero-area; applied only when the computed rate is below it, and every
+ * label built from it says it is a placeholder, not a published rate.
+ */
+export const RATE_FLOOR = 0.0005;
+export const FLOOR_PCT = `${(RATE_FLOOR * 100).toFixed(2)}%`;
+
+/**
+ * Whether a store row's rate is the placeholder floor. Uses the row's
+ * rateFloored flag; rows written before the flag existed (2026-11-19) fall back
+ * to comparing the rate against the floor.
+ */
+export function isAnchorFloored(row: { rateFloored?: boolean; curtailmentRate?: number }): boolean {
+  if (typeof row.rateFloored === "boolean") return row.rateFloored;
+  return typeof row.curtailmentRate === "number" && row.curtailmentRate <= RATE_FLOOR;
+}
+
 export interface ProvinceFuelAnnual {
   province: string;
   fuel: Fuel;
@@ -167,14 +186,16 @@ export function latestAnnualGenerationFromFile(
 export function chinaAnchor(
   regionId: string,
   storePath = join(process.cwd(), "data", "china-anchors.json"),
-): { annualTWh: number; latestMonth: string; source: string } | null {
+): { annualTWh: number; latestMonth: string; source: string; rateFloored: boolean } | null {
   if (!existsSync(storePath)) return null;
   try {
     const store = JSON.parse(readFileSync(storePath, "utf-8")) as {
-      anchors: Array<{ regionId: string; annualTWh: number; latestMonth: string; source: string }>;
+      anchors: Array<{ regionId: string; annualTWh: number; latestMonth: string; source: string; rateFloored?: boolean; curtailmentRate?: number }>;
     };
     const row = store.anchors.find((a) => a.regionId === regionId);
-    return row ? { annualTWh: row.annualTWh, latestMonth: row.latestMonth, source: row.source } : null;
+    return row
+      ? { annualTWh: row.annualTWh, latestMonth: row.latestMonth, source: row.source, rateFloored: isAnchorFloored(row) }
+      : null;
   } catch {
     return null;
   }
@@ -243,6 +264,14 @@ function buildTypicalRegionByFuel(
   return buildTypicalHydroRegion(regionId, annualTWh, note);
 }
 
+/** Caveat for a mixed region whose wind and/or solar rate is the placeholder floor. */
+export function floorCaveat(windFloored: boolean, solarFloored: boolean): string {
+  if (windFloored && solarFloored) return `; both rates are a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not published rates`;
+  if (windFloored) return `; the wind rate is a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not a published rate`;
+  if (solarFloored) return `; the solar rate is a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not a published rate`;
+  return "";
+}
+
 /**
  * Build a China *mixed* (wind+solar combined) RegionData that consumes the
  * refreshed anchor store when present, otherwise falls back to the loader's
@@ -286,7 +315,10 @@ export function buildChinaMixedRegionFromAnchors(
     lastSuccessAt: new Date(`${latestMonth}-01T00:00:00.000Z`).toISOString(),
     sourceProvenance: "modelled-fallback",
     sourceStatus: "cached",
-    sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d`,
+    sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d; the wind/solar split shown is the loader's fixed ${Math.round((fuelShare.wind ?? 0) * 100)}/${Math.round((fuelShare.solar ?? 0) * 100)}, not this anchor ratio${floorCaveat(windAnchor.rateFloored, solarAnchor.rateFloored)}`,
+    // Fixed loader share, deliberately not the anchor ratio: anchor-based splits
+    // wait for hour-by-hour fuel attribution (fuelShareAtHour drops solar at
+    // night; a more solar-heavy split would drop more). See STATUS.md, "Open".
     fuelShare,
   };
   return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });

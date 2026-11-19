@@ -2,7 +2,7 @@ import { describe, it, expect, afterAll } from "vitest";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { buildChinaRegionFromAnchor } from "../src/lib/chinaParse.js";
+import { buildChinaRegionFromAnchor, floorCaveat } from "../src/lib/chinaParse.js";
 
 const dir = mkdtempSync(join(tmpdir(), "china-build-"));
 const store = join(dir, "china-anchors.json");
@@ -41,5 +41,14 @@ describe("buildChinaRegionFromAnchor", () => {
     // Uncertainty envelope is recomputed and in-band (low <= peakGW <= high).
     expect(r.peakGW).toBeGreaterThanOrEqual(r.uncertaintyLowGW ?? 0);
     expect(r.peakGW).toBeLessThanOrEqual(r.uncertaintyHighGW ?? 0);
+  });
+});
+
+describe("floorCaveat", () => {
+  it("labels placeholder-floor rates on mixed regions", () => {
+    expect(floorCaveat(true, true)).toContain("not published rates");
+    expect(floorCaveat(true, false)).toContain("wind rate is a 0.05% placeholder floor");
+    expect(floorCaveat(false, true)).toContain("solar rate is a 0.05% placeholder floor");
+    expect(floorCaveat(false, false)).toBe("");
   });
 });

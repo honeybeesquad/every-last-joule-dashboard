@@ -21,6 +21,9 @@ import { join } from "node:path";
 import {
   parseEmberMonthlyCsv,
   regionIdFor,
+  RATE_FLOOR,
+  FLOOR_PCT,
+  isAnchorFloored,
   type Fuel,
 } from "../src/lib/chinaParse.js";
 import { parseDelimitedRows } from "../src/lib/csv.js";
@@ -103,6 +106,15 @@ export const WIRED_PROVINCES: Record<string, string> = {
   Heilongjiang: "黑龙江",
   Jiangsu: "江苏",
   Anhui: "安徽",
+  // Wired 2026-11-19 (follow-up 2 of #1636); previously static NEA-2024 estimates.
+  Beijing: "北京",
+  Tianjin: "天津",
+  Shanghai: "上海",
+  Hainan: "海南",
+  Chongqing: "重庆",
+  Guizhou: "贵州",
+  Sichuan: "四川",
+  Guangxi: "广西",
 };
 
 /**
@@ -113,13 +125,9 @@ export const RATE_SCOPE_NOTE: Record<string, string> = {
   "Inner Mongolia": "; the rate is 蒙西 (Mengxi)-only and the generation is whole-province, including Mengdong",
 };
 
-/**
- * Floor for provinces whose published utilisation is 100.0% over the window.
- * Kept from the 2024 method (0.05%) so the typical-shape profile is not zero-area;
- * it is applied only when the computed rate is below it, and the source string
- * says so.
- */
-export const RATE_FLOOR = 0.0005;
+// RATE_FLOOR and isAnchorFloored live in src/lib/chinaParse.ts so the loaders'
+// labels and these source strings use one definition; re-exported for callers.
+export { RATE_FLOOR };
 
 export interface BulletinRow {
   provinceZh: string;
@@ -265,6 +273,8 @@ interface AnchorRow {
   latestMonth: string;
   rateWindow: string; // YYYY-MM..YYYY-MM of the bulletin window behind the rate
   rateMonthsCovered: number;
+  /** True when the computed rate was below RATE_FLOOR and the placeholder floor was used. */
+  rateFloored: boolean;
   source: string;
 }
 
@@ -306,8 +316,8 @@ export function buildAnchors(
     const annualGen = window.reduce((s, r) => s + r.generationTWh, 0);
     const regionId = regionIdFor(province, fuel); // wired provinces are always mapped; throws loudly otherwise
     const rateText = floored
-      ? `${(RATE_FLOOR * 100).toFixed(2)}% floor (published utilisation ~100%)`
-      : `${(rate * 100).toFixed(1)}%`;
+      ? `${FLOOR_PCT} placeholder floor (published utilisation ~100%; not a published rate)`
+      : `${formatRatePct(rate)}%`;
     out.push({
       regionId,
       fuel,
@@ -317,6 +327,7 @@ export function buildAnchors(
       latestMonth: window[0].date,
       rateWindow: `${ttm.windowStart}..${ttm.windowEnd}`,
       rateMonthsCovered: ttm.monthsCovered,
+      rateFloored: floored,
       source: `Ember China subnational generation ${window[0].date} (trailing 12mo) at monitoring-centre curtailment rate ${rateText} (${provinceZh} ${fuel}, trailing 12 months ${ttm.windowStart}..${ttm.windowEnd} from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)${RATE_SCOPE_NOTE[province] ?? ""}`,
     });
   }
@@ -348,23 +359,38 @@ export const REGIONS_PATH = join(process.cwd(), "src", "lib", "regions.ts");
 export const VALIDATION_DOCS_DIR = join(process.cwd(), "docs", "validation");
 
 /** Region ids whose anchor lives under a different store key. */
-export const REGION_ANCHOR_ALIAS: Record<string, string> = { "china-jiangxi": "china-jiangxi-solar" };
+export const REGION_ANCHOR_ALIAS: Record<string, string> = {
+  "china-jiangxi": "china-jiangxi-solar",
+  "china-beijing": "china-beijing-solar",
+  "china-shanghai": "china-shanghai-solar",
+  "china-hainan": "china-hainan-solar",
+};
 
 interface StoreAnchor {
   regionId: string;
   curtailmentRate: number;
   rateWindow: string;
+  rateFloored?: boolean;
+}
+
+/** Rates under 1% get two decimals, so 0.05% does not read as 0.1%. */
+export function formatRatePct(rate: number): string {
+  const pct = rate * 100;
+  return Number(pct.toFixed(2)) < 1 ? pct.toFixed(2) : pct.toFixed(1); // round before choosing precision
 }
 
 /** The canonical source-string fragment for one anchored region. */
 export function rateFragment(a: StoreAnchor): string {
-  const pct = a.curtailmentRate <= RATE_FLOOR ? `${(RATE_FLOOR * 100).toFixed(2)}% floor` : `${(a.curtailmentRate * 100).toFixed(1)}%`;
+  // No parentheses here: RATE_RE stops at the first "(".
+  const pct = isAnchorFloored(a)
+    ? `${FLOOR_PCT} placeholder floor, published utilisation ~100%, not a published rate`
+    : `${formatRatePct(a.curtailmentRate)}%`;
   const split = a.regionId.startsWith("inner-mongolia-") ? ", 蒙西 Mengxi-only rate on whole-province generation" : "";
   return `monitoring-centre curtailment rate ${pct} (trailing 12 months ${a.rateWindow}${split}, system-caused limits only)`;
 }
 
 const RATE_RE = /monitoring-centre curtailment rate [^()]*\(trailing 12 months [^)]*\)/;
-const WINDOW_RE = /monitoring-centre trailing-12-month curtailment rate \(\d{4}-\d{2}\.\.\d{4}-\d{2}, system-caused limits only\)/;
+const WINDOW_RE = /monitoring-centre trailing-12-month curtailment rate \(\d{4}-\d{2}\.\.\d{4}-\d{2}, system-caused limits only[^)]*\)/;
 
 /**
  * Rewrite the rate/window fragments of every China region in regions.ts from the
@@ -387,7 +413,17 @@ export function syncRegionsText(text: string, anchors: StoreAnchor[]): { text: s
     }
     if (anyWindow && WINDOW_RE.test(line) && byId.has(`${id}-wind`) && byId.has(`${id}-solar`)) {
       touched.push(id);
-      const fragment = `monitoring-centre trailing-12-month curtailment rate (${anyWindow}, system-caused limits only)`;
+      const w = byId.get(`${id}-wind`)!;
+      const so = byId.get(`${id}-solar`)!;
+      const floorText =
+        isAnchorFloored(w) && isAnchorFloored(so)
+          ? `; both rates a ${FLOOR_PCT} placeholder floor, published utilisation ~100%, not published rates`
+          : isAnchorFloored(w)
+            ? `; wind rate a ${FLOOR_PCT} placeholder floor, not a published rate`
+            : isAnchorFloored(so)
+              ? `; solar rate a ${FLOOR_PCT} placeholder floor, not a published rate`
+              : "";
+      const fragment = `monitoring-centre trailing-12-month curtailment rate (${anyWindow}, system-caused limits only${floorText})`;
       return line.replace(WINDOW_RE, () => fragment);
     }
     return line;
@@ -402,9 +438,18 @@ export function regionSourceFromText(text: string, id: string): string | null {
   return m ? m[1] : null;
 }
 
-/** Rewrite the "- **Source:**" line of a validation page to `source`. */
-export function syncValidationDoc(doc: string, source: string): string {
-  return doc.replace(/^- \*\*Source:\*\* .*$/m, () => `- **Source:** ${source}`);
+/** The `sourceUrl:` of a region in regions.ts text, or null. */
+export function regionSourceUrlFromText(text: string, id: string): string | null {
+  const line = text.split("\n").find((l) => l.includes(`{ id: "${id}"`));
+  const m = line?.match(/sourceUrl: "([^"]*)"/);
+  return m ? m[1] : null;
+}
+
+/** Rewrite the "- **Source:**" (and, if given, "- **Source URL:**") lines of a validation page. */
+export function syncValidationDoc(doc: string, source: string, sourceUrl?: string | null): string {
+  let out = doc.replace(/^- \*\*Source:\*\* .*$/m, () => `- **Source:** ${source}`);
+  if (sourceUrl) out = out.replace(/^- \*\*Source URL:\*\* .*$/m, () => `- **Source URL:** [${sourceUrl}](${sourceUrl})`);
+  return out;
 }
 
 async function fetchCsv(url: string): Promise<string> {
@@ -465,7 +510,7 @@ async function main() {
     const source = regionSourceFromText(text, id);
     if (!source || !existsSync(docPath)) continue;
     const doc = readFileSync(docPath, "utf-8");
-    const synced = syncValidationDoc(doc, source);
+    const synced = syncValidationDoc(doc, source, regionSourceUrlFromText(text, id));
     if (synced !== doc) writeFileSync(docPath, synced);
   }
   console.log(`Synced ${touched.length} China source strings in src/lib/regions.ts and docs/validation`);

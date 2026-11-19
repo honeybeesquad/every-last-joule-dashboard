@@ -7,7 +7,7 @@ describe("china-chongqing loader", () => {
     expect(data.hydro.regionId).toBe("china-chongqing-hydro");
     expect(data.solar.regionId).toBe("china-chongqing-solar");
     expect(data.hydro.totalTWh).toBeCloseTo((0.22 * 0.6 * 30) / 365, 5);
-    expect(data.solar.totalTWh).toBeCloseTo((0.22 * 0.4 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((0.003 * 30) / 365, 5);
     expect(data.hydro.confidenceTier).toBe("T2-annual-calibrated");
   });
 });

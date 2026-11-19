@@ -8,8 +8,8 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** mixed
-- **Source:** NEA 2024 provincial RE monitoring bulletin — mixed wind+solar curtailment ~0.16 TWh/yr
-- **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
+- **Source:** Ember China subnational generation at monitoring-centre trailing-12-month curtailment rate (2025-04..2026-03, system-caused limits only); curtailed = generation × rate / (1 − rate) — Tianjin mixed wind+solar
+- **Source URL:** [https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv)
 - **Loader:** [`china-tianjin.json.ts`](../../src/data/china-tianjin.json.ts)
 - **Structural gap:** no
 

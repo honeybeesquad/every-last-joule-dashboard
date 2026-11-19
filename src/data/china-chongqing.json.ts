@@ -1,7 +1,8 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalSolarRegion, buildTypicalHydroRegion } from "../lib/typical-profiles.js";
+import { buildTypicalHydroRegion } from "../lib/typical-profiles.js";
+import { buildChinaRegionFromAnchor } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "china-chongqing";
@@ -15,14 +16,16 @@ async function run({ probe = true } = {}): Promise<{ hydro: RegionData; solar: R
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
+    // Hydro never consumes the anchor store, so it keeps the plain modelled note.
     const note = `Typical-shape fallback: ${(err as Error).message}; Chongqing mixed hydro+solar curtailment ~0.22 TWh/yr; NEA 2024 provincial RE monitoring bulletin (Yangtze basin).`;
+    const solarNote = note.replace("Typical-shape fallback: ", "Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): ");
     return {
       hydro: {
         ...buildTypicalHydroRegion("china-chongqing-hydro", 0.22 * 0.6, note + " — hydro share (60%)", "2024"),
         sourceStatus: "cached" as const,
         sourceProvenance: "modelled-fallback" as const,
       },
-      solar: buildTypicalSolarRegion("china-chongqing-solar", 5, 0.22 * 0.4, note + " — solar share (40%)", "2024"),
+      solar: buildChinaRegionFromAnchor("china-chongqing-solar", "solar", 5, 0.22 * 0.4, solarNote + " — solar share (40%)"),
     };
   }
 }

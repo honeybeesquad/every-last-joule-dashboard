@@ -27,8 +27,8 @@ function collect(v: unknown, out: RegionData[]): void {
 }
 
 describe("China anchor store coverage", () => {
-  it("finds the 22 anchor-consuming loaders", () => {
-    expect(consumers.length).toBe(22);
+  it("finds the 30 anchor-consuming loaders", () => {
+    expect(consumers.length).toBe(30);
   });
 
   it.each(consumers)("%s takes every wind/solar region from the committed store, not the fallback", async (file) => {
