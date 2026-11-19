@@ -11,6 +11,7 @@ import {
   WIRED_PROVINCES,
   syncRegionsText,
   regionSourceFromText,
+  syncValidationDoc,
   REGIONS_PATH,
   VALIDATION_DOCS_DIR,
 } from "../scripts/refresh-china.js";
@@ -197,6 +198,13 @@ describe("committed sources stay in step with the store", () => {
     const bumped = store.map((a: { curtailmentRate: number }) => ({ ...a, curtailmentRate: a.curtailmentRate + 0.01 }));
     const changed = syncRegionsText(regions, bumped).text;
     expect(syncRegionsText(changed, store).text).toBe(regions);
+  });
+
+  it("copies $ sequences literally rather than expanding them", () => {
+    const line = '  { id: "xinjiang-wind", source: "x × monitoring-centre curtailment rate 1.0% (trailing 12 months 2025-04..2026-03, system-caused limits only); US$&1", sourceUrl: "u" },';
+    const { text } = syncRegionsText(line, store);
+    expect(text).toContain("US$&1");
+    expect(syncValidationDoc("- **Source:** old", "cost $& and $1")).toBe("- **Source:** cost $& and $1");
   });
 
   it("each synced region's validation page quotes the same source string", () => {

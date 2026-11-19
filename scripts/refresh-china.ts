@@ -379,11 +379,13 @@ export function syncRegionsText(text: string, anchors: StoreAnchor[]): { text: s
     const a = byId.get(REGION_ANCHOR_ALIAS[id] ?? id);
     if (a && RATE_RE.test(line)) {
       touched.push(id);
-      return line.replace(RATE_RE, rateFragment(a));
+      const fragment = rateFragment(a);
+      return line.replace(RATE_RE, () => fragment); // function: no $-pattern expansion
     }
     if (anyWindow && WINDOW_RE.test(line) && byId.has(`${id}-wind`) && byId.has(`${id}-solar`)) {
       touched.push(id);
-      return line.replace(WINDOW_RE, `monitoring-centre trailing-12-month curtailment rate (${anyWindow}, system-caused limits only)`);
+      const fragment = `monitoring-centre trailing-12-month curtailment rate (${anyWindow}, system-caused limits only)`;
+      return line.replace(WINDOW_RE, () => fragment);
     }
     return line;
   });
@@ -399,7 +401,7 @@ export function regionSourceFromText(text: string, id: string): string | null {
 
 /** Rewrite the "- **Source:**" line of a validation page to `source`. */
 export function syncValidationDoc(doc: string, source: string): string {
-  return doc.replace(/^- \*\*Source:\*\* .*$/m, `- **Source:** ${source}`);
+  return doc.replace(/^- \*\*Source:\*\* .*$/m, () => `- **Source:** ${source}`);
 }
 
 async function fetchCsv(url: string): Promise<string> {
@@ -446,7 +448,12 @@ async function main() {
   writeFileSync(outPath, JSON.stringify(payload, null, 2) + "\n");
   console.log(`Wrote ${anchors.length} region anchors to ${outPath}`);
 
-  // Keep regions.ts and the generated validation pages in step with the store.
+  // Keep regions.ts and the generated validation pages in step with the store,
+  // but only when the committed store itself was written (not an --out preview).
+  if (outPath !== OUT_PATH) {
+    console.log(`Preview store written to ${outPath}; src/lib/regions.ts and docs/validation left untouched`);
+    return;
+  }
   const regionsText = readFileSync(REGIONS_PATH, "utf-8");
   const { text, touched } = syncRegionsText(regionsText, anchors);
   if (text !== regionsText) writeFileSync(REGIONS_PATH, text);

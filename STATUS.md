@@ -18,6 +18,8 @@ PR from `claude/magical-goodall-nv660q`. It moves headline totals; Simon signed 
 
 ## Inner Mongolia on the full-year 2024 Mengxi rate (2026-11-19)
 
+**Superseded** by the trailing-12-month bulletin rates (entry above): Inner Mongolia is now served at the 蒙西 2025-04..2026-03 rate (wind 9.7%, PV 8.3%; 20.461 / 7.031 TWh/yr), still unsplit. The figures below are historical.
+
 On `claude/sharp-lovelace-395b93`. No tier move, golden unchanged. **The dataset's total moves: +4.356 TWh/yr.**
 
 - `inner-mongolia-wind` and `inner-mongolia-solar` used 95.4% / 94.7% utilisation, which is **Jan–Nov 2024** (the centre's November release). The full-year 2024 Mengxi figure is 93.7% for both, from the monitoring centre's province table (solarzoom reprint, centre watermark). Mengxi solar 93.7% is also in cpnn 表4. Cowork checked both first-hand on 2026-11-19.
