@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** NEA 2024 provincial RE monitoring bulletin — solar curtailment (solar 40% of ~0.22 TWh/yr, Yangtze basin)
+- **Source:** Ember China subnational generation (trailing 12mo) at monitoring-centre curtailment rate 0.05% floor (trailing 12 months 2025-04..2026-03, system-caused limits only); curtailed = generation × rate / (1 − rate); refreshed anchor, T3-modelled shape
 - **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
 - **Loader:** _(no single-file loader — see multi-region source)_
 - **Structural gap:** no

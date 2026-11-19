@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { buildChinaRegionFromAnchor } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "china-shanghai";
@@ -15,13 +15,12 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    return buildTypicalSolarRegion(
-      REGION_ID,
-      4,
-      0.01,
-      `Typical-shape fallback: ${(err as Error).message}; Shanghai solar curtailment ~0.01 TWh/yr; NEA 2024 provincial RE monitoring bulletin (100% PV utilisation; effectively zero, placeholder).`,
-      "2024",
+    // Anchor store keys are per-fuel (china-shanghai-solar); the region id is china-shanghai.
+    const r = buildChinaRegionFromAnchor(
+      "china-shanghai-solar", "solar", 4, 0.01,
+      `Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): ${(err as Error).message}; Shanghai solar curtailment ~0.01 TWh/yr; NEA 2024 provincial RE monitoring bulletin (100% PV utilisation; effectively zero, placeholder).`,
     );
+    return { ...r, regionId: REGION_ID };
   }
 }
 

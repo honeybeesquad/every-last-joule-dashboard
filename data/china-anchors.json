@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T07:31:11.700Z",
+  "generatedAt": "2026-11-19T07:38:35.636Z",
   "source": "https://storage.googleapis.com/emb-prod-bkt-publicdata/public-downloads/generation/outputs/release_chn_subnational_generation_monthly.csv",
   "rateSource": "data/china-curtailment-bulletins.csv",
   "anchors": [
@@ -24,6 +24,50 @@
       "rateWindow": "2025-04..2026-03",
       "rateMonthsCovered": 12,
       "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 1.2% (安徽 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-beijing-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 3.407,
+      "curtailmentRate": 0.0036,
+      "annualTWh": 0.012,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 0.4% (北京 solar, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-beijing-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 0.565,
+      "curtailmentRate": 0.0543,
+      "annualTWh": 0.032,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 5.4% (北京 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-chongqing-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 6.17,
+      "curtailmentRate": 0.0005,
+      "annualTWh": 0.003,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 0.05% floor (published utilisation ~100%) (重庆 solar, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-chongqing-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 5.676,
+      "curtailmentRate": 0.0005,
+      "annualTWh": 0.003,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 0.05% floor (published utilisation ~100%) (重庆 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
     },
     {
       "regionId": "china-fujian-solar",
@@ -90,6 +134,72 @@
       "rateWindow": "2025-04..2026-03",
       "rateMonthsCovered": 12,
       "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 1.3% (广东 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "guangxi-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 26.601,
+      "curtailmentRate": 0.0367,
+      "annualTWh": 1.013,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 3.7% (广西 solar, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "guangxi-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 36.776,
+      "curtailmentRate": 0.038,
+      "annualTWh": 1.452,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 3.8% (广西 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-guizhou-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 28.459,
+      "curtailmentRate": 0.048,
+      "annualTWh": 1.434,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 4.8% (贵州 solar, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-guizhou-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 16.97,
+      "curtailmentRate": 0.0087,
+      "annualTWh": 0.149,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 0.9% (贵州 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-hainan-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 8.684,
+      "curtailmentRate": 0.0481,
+      "annualTWh": 0.439,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 4.8% (海南 solar, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-hainan-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 4.693,
+      "curtailmentRate": 0.0691,
+      "annualTWh": 0.349,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 6.9% (海南 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
     },
     {
       "regionId": "china-hebei-solar",
@@ -400,6 +510,28 @@
       "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 2.7% (山东 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
     },
     {
+      "regionId": "china-shanghai-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 7.067,
+      "curtailmentRate": 0.0005,
+      "annualTWh": 0.004,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 0.05% floor (published utilisation ~100%) (上海 solar, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-shanghai-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 3.139,
+      "curtailmentRate": 0.0005,
+      "annualTWh": 0.002,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 0.05% floor (published utilisation ~100%) (上海 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
       "regionId": "china-shanxi-solar",
       "fuel": "solar",
       "annualGenerationTWh": 60.854,
@@ -420,6 +552,50 @@
       "rateWindow": "2025-04..2026-03",
       "rateMonthsCovered": 12,
       "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 6.5% (山西 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "sichuan-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 23.939,
+      "curtailmentRate": 0.0162,
+      "annualTWh": 0.394,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 1.6% (四川 solar, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "sichuan-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 18.083,
+      "curtailmentRate": 0.0202,
+      "annualTWh": 0.372,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 2.0% (四川 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-tianjin-solar",
+      "fuel": "solar",
+      "annualGenerationTWh": 11.775,
+      "curtailmentRate": 0.0307,
+      "annualTWh": 0.373,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 3.1% (天津 solar, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
+    },
+    {
+      "regionId": "china-tianjin-wind",
+      "fuel": "wind",
+      "annualGenerationTWh": 5.697,
+      "curtailmentRate": 0.0261,
+      "annualTWh": 0.153,
+      "latestMonth": "2026-09",
+      "rateWindow": "2025-04..2026-03",
+      "rateMonthsCovered": 12,
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) at monitoring-centre curtailment rate 2.6% (天津 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)"
     },
     {
       "regionId": "xinjiang-solar",

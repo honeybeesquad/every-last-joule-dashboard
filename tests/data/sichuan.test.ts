@@ -10,7 +10,7 @@ describe("sichuan loader", () => {
     expect(data.solar.profile).toHaveLength(24);
     expect(data.wind.latestProfile).toBeNull();
     expect(data.solar.latestProfile).toBeNull();
-    expect(data.wind.totalTWh).toBeCloseTo((0.1 * 30) / 365, 5);
-    expect(data.solar.totalTWh).toBeCloseTo((0.3 * 30) / 365, 5);
+    expect(data.wind.totalTWh).toBeCloseTo((0.372 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((0.394 * 30) / 365, 5);
   });
 });

@@ -6,7 +6,7 @@ describe("china-guizhou loader", () => {
     const data = await buildChinaGuizhouData();
     expect(data.solar.regionId).toBe("china-guizhou-solar");
     expect(data.hydro.regionId).toBe("china-guizhou-hydro");
-    expect(data.solar.totalTWh).toBeCloseTo((0.25 * 0.5 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((1.434 * 30) / 365, 5);
     expect(data.hydro.totalTWh).toBeCloseTo((0.25 * 0.5 * 30) / 365, 5);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
   });

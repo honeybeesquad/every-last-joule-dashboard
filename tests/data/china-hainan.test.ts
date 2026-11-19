@@ -6,7 +6,7 @@ describe("china-hainan loader", () => {
     const data = await buildChinaHainanData();
     expect(data.regionId).toBe("china-hainan");
     expect(data.profile).toHaveLength(24);
-    expect(data.totalTWh).toBeCloseTo((0.01 * 30) / 365, 8);
+    expect(data.totalTWh).toBeCloseTo((0.439 * 30) / 365, 8);
     expect(data.confidenceTier).toBe("T3-modelled");
     expect(data.latestProfile).toBeNull();
     expect(Math.min(...data.profile)).toBeCloseTo(0, 8);

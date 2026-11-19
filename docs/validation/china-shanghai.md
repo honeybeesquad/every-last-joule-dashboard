@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** solar
-- **Source:** NEA 2024 provincial RE monitoring bulletin — solar curtailment ~0.01 TWh/yr (100% PV utilisation; effectively zero, placeholder)
+- **Source:** Ember China subnational generation (trailing 12mo, solar) at monitoring-centre curtailment rate 0.05% floor (trailing 12 months 2025-04..2026-03, system-caused limits only); curtailed = generation × rate / (1 − rate); solar only (Shanghai wind utilisation 100%); refreshed anchor, T3-modelled shape
 - **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
 - **Loader:** [`china-shanghai.json.ts`](../../src/data/china-shanghai.json.ts)
 - **Structural gap:** no

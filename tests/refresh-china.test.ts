@@ -187,7 +187,7 @@ describe("committed sources stay in step with the store", () => {
 
   it("regions.ts China rate/window fragments match data/china-anchors.json", () => {
     const { text, touched } = syncRegionsText(regions, store);
-    expect(touched.length).toBe(40);
+    expect(touched.length).toBe(50);
     expect(text, "run `npm run refresh-china` to resync regions.ts").toBe(regions);
   });
 

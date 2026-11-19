@@ -1,7 +1,7 @@
 import { pathToFileURL } from "url";
 import { fetchText } from "../lib/fetch.js";
 import { withFallback } from "../lib/resilient.js";
-import { buildTypicalWindRegion, buildTypicalSolarRegion } from "../lib/typical-profiles.js";
+import { buildChinaRegionFromAnchor } from "../lib/chinaParse.js";
 import type { RegionData } from "../lib/types.js";
 
 const REGION_ID = "sichuan";
@@ -15,10 +15,10 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback: NEA 2024 provincial RE monitoring bulletin / live hourly feed unavailable (${(err as Error).message}); Sichuan wind+solar curtailment anchored at ~0.1 TWh/yr wind + ~0.3 TWh/yr solar.`;
+    const note = `Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): NEA 2024 provincial RE monitoring bulletin / live hourly feed unavailable (${(err as Error).message}); Sichuan wind+solar curtailment anchored at ~0.1 TWh/yr wind + ~0.3 TWh/yr solar.`;
     return {
-      wind:  buildTypicalWindRegion("sichuan-wind",  15, 0.1, note + " — wind (limited wind in hydro-dominant grid)", "2024"),
-      solar: buildTypicalSolarRegion("sichuan-solar", 5, 0.3, note + " — solar (growing distributed PV in Chengdu basin)", "2024"),
+      wind:  buildChinaRegionFromAnchor("sichuan-wind", "wind", 15, 0.1, note + " — wind (limited wind in hydro-dominant grid)"),
+      solar: buildChinaRegionFromAnchor("sichuan-solar", "solar", 5, 0.3, note + " — solar (growing distributed PV in Chengdu basin)"),
     };
   }
 }

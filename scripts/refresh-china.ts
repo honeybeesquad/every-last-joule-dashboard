@@ -103,6 +103,15 @@ export const WIRED_PROVINCES: Record<string, string> = {
   Heilongjiang: "黑龙江",
   Jiangsu: "江苏",
   Anhui: "安徽",
+  // Wired 2026-11-19 (follow-up 2 of #1636); previously static NEA-2024 estimates.
+  Beijing: "北京",
+  Tianjin: "天津",
+  Shanghai: "上海",
+  Hainan: "海南",
+  Chongqing: "重庆",
+  Guizhou: "贵州",
+  Sichuan: "四川",
+  Guangxi: "广西",
 };
 
 /**
@@ -348,7 +357,12 @@ export const REGIONS_PATH = join(process.cwd(), "src", "lib", "regions.ts");
 export const VALIDATION_DOCS_DIR = join(process.cwd(), "docs", "validation");
 
 /** Region ids whose anchor lives under a different store key. */
-export const REGION_ANCHOR_ALIAS: Record<string, string> = { "china-jiangxi": "china-jiangxi-solar" };
+export const REGION_ANCHOR_ALIAS: Record<string, string> = {
+  "china-jiangxi": "china-jiangxi-solar",
+  "china-beijing": "china-beijing-solar",
+  "china-shanghai": "china-shanghai-solar",
+  "china-hainan": "china-hainan-solar",
+};
 
 interface StoreAnchor {
   regionId: string;
