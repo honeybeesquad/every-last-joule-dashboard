@@ -189,6 +189,16 @@ describe("data-refresh.yml runs on pushes to main, but not on the automation's o
     expect(text).not.toContain('cp "$src" "$dst"');
   });
 
+  it("copies abed's append-only relay CSVs only through the append-only guard, and stages them", () => {
+    const text = readFileSync(join(WORKFLOWS, "colombia-relay-pull.yml"), "utf8");
+    expect(text).toContain("for f in puerto-rico-genera argentina-cammesa mexico-generacion; do");
+    expect(text).toContain('python3 scripts/relay/accept_append_only.py \\\n                "/tmp/relay/$f.csv" "data/historical/$f.csv"');
+    for (const f of ["puerto-rico-genera", "argentina-cammesa", "mexico-generacion"]) {
+      expect(text).not.toMatch(new RegExp(`cp /tmp/relay/${f}\\.csv`));
+      expect(text).toContain(`data/historical/${f}.csv \\`);
+    }
+  });
+
   it("reads an ordered paths list the way GitHub does", () => {
     const list = ["**", "!docs/**", "docs/validation/**", "!*.md"];
     expect(triggers("docs/validation/x.md", list)).toBe(true);

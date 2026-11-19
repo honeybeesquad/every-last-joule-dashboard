@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T21:14:09.911Z",
+  "generatedAt": "2026-11-19T06:56:52.416Z",
   "source": "https://storage.googleapis.com/emb-prod-bkt-publicdata/public-downloads/generation/outputs/release_chn_subnational_generation_monthly.csv",
   "rateSource": "data/china-curtailment-bulletins.csv",
   "anchors": [
@@ -205,23 +205,23 @@
       "regionId": "inner-mongolia-solar",
       "fuel": "solar",
       "annualGenerationTWh": 85.019,
-      "curtailmentRate": 0.0805,
-      "annualTWh": 6.844,
+      "curtailmentRate": 0.0827,
+      "annualTWh": 7.031,
       "latestMonth": "2026-09",
       "rateWindow": "2025-04..2026-03",
       "rateMonthsCovered": 12,
-      "source": "Ember China subnational generation 2026-09 (trailing 12mo) × monitoring-centre curtailment rate 8.1% (蒙西+蒙东 solar, trailing 12 months 2025-04..2026-03 from published utilisation; generation-weighted from 蒙西 8.3% on 64.3% of generation and 蒙东 7.6% on 35.7% of generation, split from one quarter of reported grid data (approximate); system-caused limits only, 国能发电力〔2024〕44号)"
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) × monitoring-centre curtailment rate 8.3% (蒙西 solar, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); the rate is 蒙西 (Mengxi)-only and the generation is whole-province, including Mengdong"
     },
     {
       "regionId": "inner-mongolia-wind",
       "fuel": "wind",
       "annualGenerationTWh": 211.808,
-      "curtailmentRate": 0.0793,
-      "annualTWh": 16.796,
+      "curtailmentRate": 0.0966,
+      "annualTWh": 20.461,
       "latestMonth": "2026-09",
       "rateWindow": "2025-04..2026-03",
       "rateMonthsCovered": 12,
-      "source": "Ember China subnational generation 2026-09 (trailing 12mo) × monitoring-centre curtailment rate 7.9% (蒙西+蒙东 wind, trailing 12 months 2025-04..2026-03 from published utilisation; generation-weighted from 蒙西 9.7% on 42.1% of generation and 蒙东 6.6% on 57.9% of generation, split from one quarter of reported grid data (approximate); system-caused limits only, 国能发电力〔2024〕44号)"
+      "source": "Ember China subnational generation 2026-09 (trailing 12mo) × monitoring-centre curtailment rate 9.7% (蒙西 wind, trailing 12 months 2025-04..2026-03 from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); the rate is 蒙西 (Mengxi)-only and the generation is whole-province, including Mengdong"
     },
     {
       "regionId": "china-jiangsu-solar",

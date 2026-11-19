@@ -181,6 +181,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "philippines-wind": "wind",
   paraguay: "hydro-seasonal",
   quebec: "hydro-seasonal",
+  "quebec-wind": "wind",
   "russia-mainland": "hydro-seasonal",
   saskatchewan: "wind",
   "saudi-solar": "solar",
@@ -215,7 +216,7 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   barbados: "solar",
   bolivia: "solar",
   ecuador: "mixed",
-  "french-guiana": "solar",
+  "french-guiana": "mixed",
   // Phase-2.7 Pattern-D — Africa bulk-add (2026-04-27).
   // 26 net-new T3-modelled statics. Map value mirrors the StaticSpec.kind
   // collapse done inside `buildStaticRegion` (hydro→mixed for tier
@@ -417,6 +418,10 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   "alaska-railbelt": "mixed",
   "puerto-rico-wind": "wind",
   "puerto-rico-solar": "solar",
+  // REE REData daily generation; waste unpublished (spain-islands.json.ts).
+  "canary-islands-wind": "wind",
+  "canary-islands-solar": "solar",
+  "balearic-islands-solar": "solar",
   guam: "solar",
   "us-virgin-islands": "solar",
   "american-samoa": "solar",
@@ -434,12 +439,15 @@ export const STATIC_PROFILE_KIND: Record<string, ProfileKind> = {
   macau: "solar",
   "malaysia-sarawak": "hydro-seasonal",
   "malaysia-sabah": "solar",
-  reunion: "solar",
-  martinique: "solar",
-  guadeloupe: "solar",
+  reunion: "mixed",
+  martinique: "mixed",
+  guadeloupe: "mixed",
+  corsica: "mixed",
   "new-caledonia": "solar",
   "french-polynesia": "solar",
   "wallis-and-futuna": "solar",
+  qatar: "solar",
+  kuwait: "solar",
   "india-grid-india": "solar",
 };
 

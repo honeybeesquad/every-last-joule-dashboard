@@ -31,6 +31,8 @@ FALLBACK_IPS="190.90.250.249 191.97.49.119 179.1.12.119 179.1.5.120"
 
 mkdir -p "$(dirname "$LOG")"
 log() { echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] $*" >> "$LOG"; }
+# shellcheck source=relay-git.sh
+. "$(dirname "$0")/relay-git.sh"
 
 cleanup() { sudo /usr/bin/wg-quick down elj-co >/dev/null 2>&1 || true; }
 trap cleanup EXIT
@@ -47,10 +49,10 @@ log "resolved servapibi -> $IP"
 
 # Sync the checkout first - another writer may have moved the branch. On
 # 2026-08-19 Britta's legacy relay-push.sh clobbered 21 freshly-pushed rows
-# because both hosts wrote this file; Britta no longer touches it, but pull
+# because both hosts wrote this file; Britta no longer touches it, but sync
 # anyway so LAST is computed against the remote truth, not a stale checkout.
-export GIT_SSH_COMMAND="ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=accept-new"
-git -C "$RELAY_REPO" pull --ff-only -q origin main 2>>"$LOG" || log "WARN: pre-fetch pull failed, continuing on local state"
+# relay_sync also recovers a clone left mid-rebase (see relay-git.sh).
+relay_sync || { log "ERROR: could not put the relay clone back on main"; exit 1; }
 
 [ -f "$CSV" ] || echo "date,gwh,fetched_at_utc,note" > "$CSV"
 
@@ -115,24 +117,12 @@ done
 
 if [ "$APPENDED" -eq 0 ]; then
   log "nothing new to append"
-  echo "OK: no new rows"
-  exit 0
 fi
 
-cd "$RELAY_REPO" || exit 1
-git add colombia-vertimientos-daily.csv
-git -c user.name="abed-elj-relay" -c user.email="simon@collins.nu" \
-    commit -q -m "data: Colombia vertimientos push $(date -u +%F) - $APPENDED row(s), through $END"
-if git push -q origin HEAD 2>>"$LOG"; then
-  log "pushed $APPENDED row(s)"
-  echo "OK: pushed $APPENDED row(s) through $END"
+# Push even with nothing appended: an earlier failed push may have left commits.
+if relay_commit_push "data: Colombia vertimientos push $(date -u +%F) - $APPENDED row(s), through $END" \
+     colombia-vertimientos-daily.csv; then
+  echo "OK: $APPENDED new row(s) through $END"
 else
-  log "push rejected - rebasing once and retrying"
-  if git pull --rebase -q origin main 2>>"$LOG" && git push -q origin HEAD 2>>"$LOG"; then
-    log "pushed $APPENDED row(s) after rebase"
-    echo "OK: pushed $APPENDED row(s) through $END (after rebase)"
-  else
-    log "ERROR: push failed even after rebase"
-    exit 1
-  fi
+  exit 1
 fi

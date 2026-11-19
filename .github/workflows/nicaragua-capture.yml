@@ -1,0 +1,92 @@
+name: Nicaragua CNDC capture
+
+# CNDC Nicaragua's generation-by-type endpoint serves only the current
+# Nicaragua-time day (UTC−6, no daylight saving) and takes no date parameter,
+# so a day is lost unless it is read before local midnight. This captures the
+# day at 23:40 local (05:40 UTC), merges its hourly SOLAR rows into
+# data/historical/nicaragua-cndc-solar-hourly.csv, and lands the change the way
+# history-append.yml does: a bot branch and an auto-merge PR, pushed with
+# AUTOMATION_TOKEN so `verify` runs (GITHUB_TOKEN events do not trigger it).
+#
+# Three runs, because GitHub delays scheduled runs (often 10–60 minutes) and a
+# day cannot be fetched after local midnight: 02:40 UTC (20:40 local, once the
+# 19:00 row exists), 03:40 and 05:40. Any one of them carries every daylight
+# hour, which is all src/data/nicaragua.json.ts needs (00:00–19:00). A later
+# capture of the same hour replaces an earlier one.
+#
+# The bot branch is rebuilt from main on each run, so the CSV on the branch's
+# open PR (if any) is merged in first: a night waiting on an unmerged PR is
+# never dropped by the next night's force-push.
+
+on:
+  schedule:
+    - cron: "40 2 * * *"
+    - cron: "40 3 * * *"
+    - cron: "40 5 * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: nicaragua-capture
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          token: ${{ secrets.AUTOMATION_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Keep any capture still waiting on an unmerged PR
+        run: |
+          set -euo pipefail
+          if git fetch --depth 1 origin automation/nicaragua-capture 2>/dev/null; then
+            git show FETCH_HEAD:data/historical/nicaragua-cndc-solar-hourly.csv > "$RUNNER_TEMP/pending.csv" || true
+          fi
+
+      - name: Capture today's CNDC solar hours
+        run: npx tsx scripts/capture/nicaragua-cndc.ts "$RUNNER_TEMP/pending.csv"
+
+      - name: Open / refresh auto-merge PR
+        env:
+          GH_TOKEN: ${{ secrets.AUTOMATION_TOKEN }}
+        run: |
+          set -euo pipefail
+          BRANCH="automation/nicaragua-capture"
+          FILE="data/historical/nicaragua-cndc-solar-hourly.csv"
+
+          if git diff --quiet -- "$FILE"; then
+            echo "No change to $FILE — nothing to do."
+            exit 0
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git switch -C "$BRANCH"
+          git add "$FILE"
+          git commit -m "chore(data): capture CNDC Nicaragua solar hours"
+          git push --force origin "$BRANCH"
+
+          state="$(gh pr view "$BRANCH" --json state -q .state 2>/dev/null || echo NONE)"
+          if [ "$state" != "OPEN" ]; then
+            gh pr create --base main --head "$BRANCH" \
+              --title "chore(data): capture CNDC Nicaragua solar hours" \
+              --body "Automated nightly capture (\`.github/workflows/nicaragua-capture.yml\`). Auto-merges once \`verify\` passes."
+          fi
+          gh pr merge "$BRANCH" --auto --squash

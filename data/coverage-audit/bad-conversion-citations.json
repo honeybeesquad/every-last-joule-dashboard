@@ -1,8 +1,8 @@
 {
-  "totalValidationDocs": 556,
+  "totalValidationDocs": 563,
   "docsCitingBadConversionCheck": 7,
-  "docsNotCiting": 549,
-  "pctCited": 1.26,
+  "docsNotCiting": 556,
+  "pctCited": 1.24,
   "perDocCitations": [
     {
       "file": "aeci-solar.md",
@@ -223,6 +223,11 @@
     },
     {
       "file": "bahrain.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "balearic-islands-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -517,6 +522,16 @@
       "matchedPatterns": []
     },
     {
+      "file": "canary-islands-solar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "canary-islands-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "central-african-republic.md",
       "cited": false,
       "matchedPatterns": []
@@ -753,6 +768,11 @@
     },
     {
       "file": "congo-republic.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "corsica.md",
       "cited": false,
       "matchedPatterns": []
     },
@@ -1604,6 +1624,11 @@
       "matchedPatterns": []
     },
     {
+      "file": "kuwait.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "kyrgyzstan.md",
       "cited": false,
       "matchedPatterns": []
@@ -2214,12 +2239,22 @@
       "matchedPatterns": []
     },
     {
+      "file": "qatar.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
       "file": "qinghai-solar.md",
       "cited": false,
       "matchedPatterns": []
     },
     {
       "file": "qinghai-wind.md",
+      "cited": false,
+      "matchedPatterns": []
+    },
+    {
+      "file": "quebec-wind.md",
       "cited": false,
       "matchedPatterns": []
     },

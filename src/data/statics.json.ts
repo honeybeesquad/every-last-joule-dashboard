@@ -119,7 +119,7 @@ export const STATIC_REGIONS: Record<string, StaticSpec> = {
   //   CST (UTC−6, Central America)  → 18.0
   //   BRT/SRT/GFT (UTC−3) → 15.0
   // guatemala → tso-grid-markers.json.ts (2026-09-29: anchor at or above national solar generation; waste unpublished)
-  "el-salvador": { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 18.0, source: "IRENA Renewable Energy Statistics 2024 (El Salvador VRE share; provisional 0.2 TWh/yr; UT publishes daily operation reports as PDF only; Pattern-D static)", reportDate: "2024" },
+  // el-salvador → src/data/el-salvador.json.ts (2026-11-18: UT hourly generation; the 0.2 TWh/yr IRENA-derived static dropped, waste unpublished)
   // nicaragua → tso-grid-markers.json.ts (2026-09-29: anchor at or above national solar generation; waste unpublished)
   "costa-rica": { annualTWh: 0.3, kind: "mixed", source: "IRENA Costa Rica 2024 (98% renewable; hydro spill documented but not anchored to hourly feed; CENCE inside ICE publishes server-rendered IBM WebSphere portal; provisional 0.3 TWh/yr Pattern-D static, hydro-dominant flat profile)", reportDate: "2024" },
   panama: { annualTWh: 0.2, kind: "solar", localSolarPeakUTC: 17.0, source: "Secretaria Nacional de Energia 2024 (solar+wind ~10% of mix; ETESA/CND publish Informe de Operacion daily as PDF; provisional 0.2 TWh/yr Pattern-D static)", reportDate: "2024" },
@@ -127,9 +127,9 @@ export const STATIC_REGIONS: Record<string, StaticSpec> = {
   cuba: { annualTWh: 0.1, kind: "mixed", source: "Cuba UNE 2022-24 grid restoration + Ember Cuba Electricity Review 2024 (provisional 0.1 TWh/yr reflects post-Hurricane-Ian grid stress, not normal operation; mixed-fuel flat profile; Pattern-D static — do not over-claim a steady-state anchor)", reportDate: "2024" },
   jamaica: { annualTWh: 0.003, kind: "solar", localSolarPeakUTC: 17.0, source: "IEA / IDB 2024 (Wigton wind + Content solar; JPS vertically integrated; ~1–3 GWh/yr solar curtailment, low confidence; previous 0.2 TWh anchor was implausible at ~40% curtailment rate for small island; Wave-5 revised 2026-04-30)", reportDate: "2025" },
   barbados: { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Barbados Renewables 2024 (rooftop PV penetration; BLPC investor-owned via Emera; FRCS Caribbean reports occasional inverter trips; provisional 0.05 TWh/yr Pattern-D static at inclusion threshold)", reportDate: "2024" },
-  bolivia: { annualTWh: 0.1, kind: "solar", localSolarPeakUTC: 16.0, source: "IRENA Bolivia 2024 (hydro+gas dominated grid; solar+wind ~3% of mix; CNDC publishes Informe Mensual de Operacion as PDF; provisional 0.1 TWh/yr Pattern-D static for solar curtailment subset)", reportDate: "2024" },
+  // bolivia → src/data/bolivia.json.ts (2026-11-18: CNDC 15-minute generation; the 0.1 TWh/yr IRENA-derived static dropped, waste unpublished)
   ecuador: { annualTWh: 0.05, kind: "mixed", source: "IRENA Ecuador 2024 (hydro-dominated grid; CENACE Ecuador publishes Informe Anual + monthly Informe de Operacion as PDF; provisional 0.05 TWh/yr Pattern-D static at inclusion threshold; hydro-dominant flat profile)", reportDate: "2024" },
-  "french-guiana": { annualTWh: 0.05, kind: "solar", localSolarPeakUTC: 15.0, source: "EDF SEI Bilan Previsionnel Guyane 2024 (small grid; below normal inclusion threshold; included for completeness as the only South-American French overseas territory; ENTSO-E does not cover French overseas, EDF SEI alone; provisional 0.05 TWh/yr Pattern-D static)", reportDate: "2024" },
+  // french-guiana → edf-sei.json.ts (2026-11-18: EDF SEI real-time generation; waste unpublished, 0.05 TWh/yr placeholder dropped)
   // Phase-2.7 Pattern-D — Africa bulk-add (2026-04-27).
   // Source: data/coverage-audit/2026-04-26-africa.csv `introduce-as-T3` subset.
   // 32 audit rows; 6 sub-0.05 TWh rows skipped (Burundi 0.01, Gambia 0.02,

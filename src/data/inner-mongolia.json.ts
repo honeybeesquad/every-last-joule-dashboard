@@ -15,7 +15,11 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): NEA 2024 provincial RE monitoring bulletin / live hourly feed unavailable (${(err as Error).message}); Inner Mongolia wind+solar curtailment anchored at ~8.0 TWh/yr wind + ~4.6 TWh/yr solar.`;
+    // buildChinaRegionFromAnchor serves the data/china-anchors.json row (Ember trailing-12mo
+    // generation × the 蒙西 utilisation rate in scripts/refresh-china.ts) whenever one exists.
+    // The 8.0 / 4.6 TWh/yr below are only the fallback for a missing row. They were set in
+    // #246 (2026-06-19) with no derivation recorded, so they are not attributed to NEA.
+    const note = `Typical-shape fallback, used only because data/china-anchors.json has no Inner Mongolia row (live hourly feed unavailable: ${(err as Error).message}). Hardcoded ~8.0 TWh/yr wind + ~4.6 TWh/yr solar, with no recorded derivation; not an NEA figure.`;
     return {
       wind:  buildChinaRegionFromAnchor(
         "inner-mongolia-wind", "wind", 15, 8.0,

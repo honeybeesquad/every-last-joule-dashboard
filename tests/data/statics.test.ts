@@ -63,7 +63,13 @@ describe("static regions", () => {
     // their fuel moved to tso-grid-markers (waste unpublished). 127 − 17 = 110.
     // 2026-10-19: jordan removed — waste unpublished, and the static was
     // overwriting the loader. 110 − 1 = 109.
-    expect(Object.keys(data).length).toBe(109);
+    // 2026-11-18: french-guiana moved to the EDF SEI loader (generation
+    // collected, waste unpublished; 0.05 TWh/yr placeholder dropped). 109 − 1 = 108.
+    // 2026-11-18: el-salvador moved to the UT generation loader (waste
+    // unpublished; 0.2 TWh/yr IRENA-derived static dropped). 108 − 1 = 107.
+    // 2026-11-18: bolivia moved to the CNDC generation loader (waste
+    // unpublished; 0.1 TWh/yr IRENA-derived static dropped). 107 − 1 = 106.
+    expect(Object.keys(data).length).toBe(106);
   });
 
   it("keeps the 65 non-canonical bulk-coverage candidates out of dashboard output", () => {
@@ -108,7 +114,10 @@ describe("static regions", () => {
     // 2026-09-20: dominican-republic + dominican-republic-wind moved to OC loader. 133 − 2 = 131.
     // 2026-09-29: 17 anchors moved to tso-grid-markers (waste unpublished). 131 − 17 = 114.
     // 2026-10-19: jordan removed (waste unpublished). 114 − 1 = 113.
-    expect(Object.keys(researchData).length).toBe(113);
+    // 2026-11-18: french-guiana moved to the EDF SEI loader. 113 − 1 = 112.
+    // 2026-11-18: el-salvador moved to the UT loader. 112 − 1 = 111.
+    // 2026-11-18: bolivia moved to the CNDC loader. 111 − 1 = 110.
+    expect(Object.keys(researchData).length).toBe(110);
     expect(Object.keys(researchData).filter((id) => !canonicalIds.has(id)).length).toBe(4);
   });
 
@@ -125,7 +134,7 @@ describe("static regions", () => {
       "russia-murmansk-wind",
       // Phase-2.7 Pattern-D Latin-America bulk-add (2026-04-27).
       // guatemala → tso-grid-markers (2026-09-29: anchor at or above national generation)
-      "el-salvador",
+      // el-salvador → UT generation loader (2026-11-18, waste unpublished)
       // nicaragua → tso-grid-markers (2026-09-29: anchor at or above national generation)
       "costa-rica",
       "panama",
@@ -133,9 +142,9 @@ describe("static regions", () => {
       "cuba",
       "jamaica",
       "barbados",
-      "bolivia",
+      // bolivia → CNDC generation loader (2026-11-18, waste unpublished)
       "ecuador",
-      "french-guiana",
+      // french-guiana → edf-sei.json.ts (2026-11-18: EDF SEI generation; waste unpublished)
       // Colombia removed: promoted to T1b-CSV loader (src/data/colombia.json.ts).
       // Phase-2.7 Pattern-D Africa bulk-add (2026-04-27).
       "algeria",

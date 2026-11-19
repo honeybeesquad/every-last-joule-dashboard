@@ -1,4 +1,4 @@
-import { timeOfDayAverageGW, totalTWh30d } from "./profile.js";
+import { timeOfDayAverageGW, totalTWh30d, trailingDays } from "./profile.js";
 import type { CurtailmentPoint, RegionData, WasteStatus } from "./types.js";
 import { applyUncertainty, type TierInputs } from "./uncertainty.js";
 
@@ -77,10 +77,13 @@ export type UnpublishedProfileKind = NonNullable<TierInputs["profileKind"]>;
 export function unpublishedGenerationRegion(
   regionId: string,
   kind: UnpublishedProfileKind,
-  points: CurtailmentPoint[],
+  allPoints: CurtailmentPoint[],
   note: string,
   opts: { minPoints?: number } = {},
 ): RegionData {
+  // An append-only relay file (PREPA's hourly snapshots) grows past 30 days;
+  // keep the trailing 30 so generationTotalTWh stays a 30-day figure.
+  const points = trailingDays(allPoints, 30);
   const minPoints = opts.minPoints ?? 24;
   if (points.length < minPoints) {
     throw new Error(`${regionId}: fewer than ${minPoints} generation points`);

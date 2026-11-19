@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8" />
+
+	<title>Electricity Generation | Yukon Energy
+</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
+	
+	<link rel="shortcut icon" type="image/png" href="/assets/layout/favicon.png">
+	
+	
+		<link rel="stylesheet" type="text/css" href="/assets/lib/css/meyer/reset.css">
+		<link rel="stylesheet" type="text/css" href="/assets/lib/icomoon/font/style.css">
+		<link rel="stylesheet" type="text/css" href="/assets/lib/icomoon/svg/style.css">
+		<link rel="stylesheet" type="text/css" href="/assets/lib/css/lightbox.min.css">
+		
+		
+		<link rel="stylesheet" type="text/css" href="/assets/lib/fonts.com/style.css">
+		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Titillium+Web:300,400,600,700">
+		
+		
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/base.layout">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/base.columns">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/base.flex">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/base.icons">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/yec.layout">
+		
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/yec.projects">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/yec.blog">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/yec.askus">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/yec.board">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/yec.reading.bill">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/yec.search">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/yec.customer.connects">
+		<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/yec.water.levels">
+	
+
+	<script type="text/javascript" src="https://yukonenergy.ca/assets/cache/444d1ffd97d69dd1cb8456338ae926f95a0446d7.1767687284.1.362.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="https://yukonenergy.ca/styles/yec.consumption">
+	
+			<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+			<script type="text/javascript">
+				google.charts.load("current", {packages:["corechart"]});
+				google.charts.setOnLoadCallback(drawCharts);
+
+				function parseDates(rows) {
+					rows.forEach(function(row, i){
+						// If the row's first col value matches ISO date format, convert it to a date object.
+						if (row[0].match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})$/)) {
+							rows[i][0] = new Date(row[0]);
+						}
+					});
+					return rows;
+				}
+			var rows_chart_current = parseDates([["Hydro",49.76350000000000051159076974727213382720947265625,"<p>Hydro<br><strong>49.76 MW (99.5%)<\/strong><\/p>"],["Wind",0.2340000000000000135447209004269097931683063507080078125,"<p>Wind<br><strong>0.23 MW (0.5%)<\/strong><\/p>"],["Solar",0,"<p>Solar<br><strong>0.00 MW (0%)<\/strong><\/p>"],["Thermal",0,"<p>Thermal<br><strong>0.00 MW (0%)<\/strong><\/p>"],["cap",25.001249999999998863131622783839702606201171875,"Capacity"]]);
+			var rows_chart_producer_yen = parseDates([["Hydro",49.76350000000000051159076974727213382720947265625,""],["Thermal",0,""]]);
+			var rows_chart_producer_ipp = parseDates([["Wind",0.2340000000000000135447209004269097931683063507080078125,""],["Solar",0,""]]);
+			var rows_chart_past_day = parseDates([["2026-11-17T00:00:00-07:00",53.0003999999999990677679306827485561370849609375,2.010400000000000186872739504906348884105682373046875,0,1.737200000000000077449158197850920259952545166015625],["2026-11-17T01:00:00-07:00",51.81920000000000214868123293854296207427978515625,2.0175999999999998379962562466971576213836669921875,0,0],["2026-11-17T02:00:00-07:00",49.9765000000000014779288903810083866119384765625,1.9978000000000000202504679691628552973270416259765625,0,0],["2026-11-17T03:00:00-07:00",49.6460000000000007958078640513122081756591796875,1.435400000000000009237055564881302416324615478515625,0,0],["2026-11-17T04:00:00-07:00",50.20689999999999741930878371931612491607666015625,1.3590999999999999747757328805164434015750885009765625,0,0],["2026-11-17T05:00:00-07:00",50.67060000000000030695446184836328029632568359375,1.243300000000000071764816311770118772983551025390625,0,0],["2026-11-17T06:00:00-07:00",52.96719999999999828332875040359795093536376953125,1.1233999999999999541699935434735380113124847412109375,0,0],["2026-11-17T07:00:00-07:00",59.21170000000000044337866711430251598358154296875,0.303800000000000014477308241112041287124156951904296875,0,0.6574999999999999733546474089962430298328399658203125],["2026-11-17T08:00:00-07:00",58.111299999999999954525264911353588104248046875,0.048099999999999996924682221788316383026540279388427734375,0,10.9652999999999991587174008600413799285888671875],["2026-11-17T09:00:00-07:00",57.19180000000000063664629124104976654052734375,0.2275999999999999967581487680945429019629955291748046875,0,12.21340000000000003410605131648480892181396484375],["2026-11-17T10:00:00-07:00",56.88709999999999666897565475665032863616943359375,0.323199999999999987299048598288209177553653717041015625,0,12.313900000000000289901436190120875835418701171875],["2026-11-17T11:00:00-07:00",56.3027000000000015234036254696547985076904296875,0.62360000000000004316547119742608629167079925537109375,0.202000000000000012878587085651815868914127349853515625,11.6487999999999995992538970313034951686859130859375],["2026-11-17T12:00:00-07:00",56.41709999999999780584403197281062602996826171875,0.65400000000000002575717417130363173782825469970703125,0.50100000000000000088817841970012523233890533447265625,9.756299999999999528199623455293476581573486328125],["2026-11-17T13:00:00-07:00",57.11630000000000251247911364771425724029541015625,1.5513999999999998902211473250645212829113006591796875,1,7.39900000000000002131628207280300557613372802734375],["2026-11-17T14:00:00-07:00",56.4645000000000010231815394945442676544189453125,1.9494000000000000216715534406830556690692901611328125,1.1510000000000000230926389122032560408115386962890625,5.99589999999999978541609380044974386692047119140625],["2026-11-17T15:00:00-07:00",57.7642000000000024328983272425830364227294921875,1.2847999999999999420907670355518348515033721923828125,0.7439999999999999946709294817992486059665679931640625,3.6135999999999999232613845379091799259185791015625],["2026-11-17T16:00:00-07:00",58.9189999999999969304553815163671970367431640625,1.87650000000000005684341886080801486968994140625,0.306999999999999995115018691649311222136020660400390625,3.37000000000000010658141036401502788066864013671875],["2026-11-17T17:00:00-07:00",59.45009999999999905639924691058695316314697265625,0.69430000000000002824407374646398238837718963623046875,0.10599999999999999700239783351207734085619449615478515625,5.67419999999999991047161529422737658023834228515625],["2026-11-17T18:00:00-07:00",58.29260000000000019326762412674725055694580078125,0.61429999999999995718980017045396380126476287841796875,0,10.9037000000000006139089236967265605926513671875],["2026-11-17T19:00:00-07:00",58.3650999999999982037479639984667301177978515625,3.3422999999999998266275724745355546474456787109375,0,12.1076999999999994628296917653642594814300537109375],["2026-11-17T20:00:00-07:00",58.00059999999999860165189602412283420562744140625,3.02550000000000007815970093361102044582366943359375,0,9.9730000000000007531752999057061970233917236328125],["2026-11-17T21:00:00-07:00",58.4275999999999982037479639984667301177978515625,2.362200000000000077449158197850920259952545166015625,0,8.25019999999999953388396534137427806854248046875],["2026-11-17T22:00:00-07:00",57.3048000000000001818989403545856475830078125,2.9893000000000000682121026329696178436279296875,0,6.563900000000000289901436190120875835418701171875],["2026-11-17T23:00:00-07:00",53.90780000000000171667124959640204906463623046875,2.963299999999999823074858795735053718090057373046875,0,4.63389999999999968594011079403571784496307373046875],["2026-11-18T00:00:00-07:00",50.80539999999999878355083637870848178863525390625,2.0525999999999999801048033987171947956085205078125,0,3.288699999999999956656893118633888661861419677734375]]);
+			var rows_chart_past_week_summary = parseDates([["Hydro",8125.11160000000018044374883174896240234375],["Wind",110.9963000000000050704329623840749263763427734375],["Solar",15.8960000000000007958078640513122081756591796875],["Thermal",862.6852999999999838109943084418773651123046875]]);
+			var rows_chart_past_month_summary = parseDates([["Hydro",37452.7830000000030850060284137725830078125],["Wind",748.633900000000039653968997299671173095703125],["Solar",183.3990000000000009094947017729282379150390625],["Thermal",6063.976399999999557621777057647705078125]]);
+			var rows_chart_past_week = parseDates([["2026-11-12T00:00:00-07:00",1307.634800000000041109160520136356353759765625,22.23100000000000164845914696343243122100830078125,3.197999999999999953814722175593487918376922607421875,144.808300000000002683009370230138301849365234375],["2026-11-13T00:00:00-07:00",1380.512199999999893407220952212810516357421875,3.303999999999999825917029738775454461574554443359375,1.55299999999999993605115378159098327159881591796875,158.56950000000000500222085975110530853271484375],["2026-11-14T00:00:00-07:00",1386.171199999999998908606357872486114501953125,9.176700000000000301270119962282478809356689453125,1.0140000000000000124344978758017532527446746826171875,127.4308999999999940655470709316432476043701171875],["2026-11-15T00:00:00-07:00",1328.4492000000000189174897968769073486328125,10.7507999999999999118927007657475769519805908203125,2.359999999999999875655021241982467472553253173828125,151.530699999999995952748577110469341278076171875],["2026-11-16T00:00:00-07:00",1335.117899999999963256414048373699188232421875,27.460699999999999221245161606930196285247802734375,3.7599999999999997868371792719699442386627197265625,139.27969999999999117790139280259609222412109375],["2026-11-17T00:00:00-07:00",1336.4209000000000742147676646709442138671875,36.020499999999998408384271897375583648681640625,4.01100000000000012079226507921703159809112548828125,137.777500000000003410605131648480892181396484375],["2026-11-18T00:00:00-07:00",50.80539999999999878355083637870848178863525390625,2.0525999999999999801048033987171947956085205078125,0,3.288699999999999956656893118633888661861419677734375]]);
+			var rows_chart_past_month = parseDates([["2026-10-19T00:00:00-07:00",1086.16699999999991632648743689060211181640625,45.35799999999999698729880037717521190643310546875,6.1959999999999997299937604111619293689727783203125,297.4927999999999883584678173065185546875],["2026-10-20T00:00:00-07:00",1083.142200000000002546585164964199066162109375,67.8025999999999982037479639984667301177978515625,7.81400000000000005684341886080801486968994140625,192.3500999999999976353137753903865814208984375],["2026-10-21T00:00:00-07:00",1155.842300000000022919266484677791595458984375,17.27890000000000014779288903810083866119384765625,4.80600000000000004973799150320701301097869873046875,237.275900000000007139533408917486667633056640625],["2026-10-22T00:00:00-07:00",1162.6631999999999607098288834095001220703125,0.047300000000000001765254609153998899273574352264404296875,4.1989999999999998436805981327779591083526611328125,345.5593000000000074578565545380115509033203125],["2026-10-23T00:00:00-07:00",1119.331799999999930150806903839111328125,1.90589999999999992752464095246978104114532470703125,16.126999999999998891553332214243710041046142578125,307.05720000000002301021595485508441925048828125],["2026-10-24T00:00:00-07:00",1166.3692000000000916770659387111663818359375,16.59850000000000136424205265939235687255859375,12.535000000000000142108547152020037174224853515625,306.8546000000000049112713895738124847412109375],["2026-10-25T00:00:00-07:00",1150.181800000000066575012169778347015380859375,8.271699999999999164401742746122181415557861328125,8.092999999999999971578290569595992565155029296875,354.212800000000015643308870494365692138671875],["2026-10-26T00:00:00-07:00",1150.78850000000011277734301984310150146484375,38.41919999999999646433934685774147510528564453125,7.8780000000000001136868377216160297393798828125,301.6218999999999823558027856051921844482421875],["2026-10-27T00:00:00-07:00",1186.181499999999914507498033344745635986328125,69.3601000000000027512214728631079196929931640625,1.8269999999999999573674358543939888477325439453125,213.244599999999991268850862979888916015625],["2026-10-28T00:00:00-07:00",1227.456500000000005456968210637569427490234375,9.100500000000000255795384873636066913604736328125,13.117000000000000881072992342524230480194091796875,185.795299999999997453414835035800933837890625],["2026-10-29T00:00:00-07:00",1317.98630000000002837623469531536102294921875,12.824600000000000221689333557151257991790771484375,13.5090000000000003410605131648480892181396484375,194.79640000000000554791768081486225128173828125],["2026-10-30T00:00:00-07:00",1322.200100000000020372681319713592529296875,56.5855999999999994543031789362430572509765625,3.459000000000000074606987254810519516468048095703125,192.3229000000000041836756281554698944091796875],["2026-10-31T00:00:00-07:00",1245.85950000000002546585164964199066162109375,76.4849999999999994315658113919198513031005859375,12.69800000000000039790393202565610408782958984375,126.9645000000000010231815394945442676544189453125],["2026-11-01T00:00:00-07:00",1192.46559999999999490682967007160186767578125,3.953699999999999992184029906638897955417633056640625,3.14299999999999979394260662957094609737396240234375,235.905900000000002592059900052845478057861328125],["2026-11-02T00:00:00-07:00",1271.053200000000060754246078431606292724609375,8.239599999999999369038050645031034946441650390625,7.2859999999999995878852132591418921947479248046875,173.812199999999990041033015586435794830322265625],["2026-11-03T00:00:00-07:00",1254.3822000000000116415321826934814453125,27.43260000000000076170181273482739925384521484375,5.62600000000000033395508580724708735942840576171875,200.95720000000000027284841053187847137451171875],["2026-11-04T00:00:00-07:00",1254.480999999999994543031789362430572509765625,9.1275999999999992695620676386170089244842529296875,4.9960000000000004405364961712621152400970458984375,172.184899999999998954081092961132526397705078125],["2026-11-05T00:00:00-07:00",1263.133900000000039653968997299671173095703125,12.489000000000000767386154620908200740814208984375,7.87000000000000010658141036401502788066864013671875,161.032900000000012141754268668591976165771484375],["2026-11-06T00:00:00-07:00",1269.3951999999999316059984266757965087890625,16.116099999999999425881469505839049816131591796875,3.047000000000000152766688188421539962291717529296875,117.6965000000000003410605131648480892181396484375],["2026-11-07T00:00:00-07:00",1272.712800000000015643308870494365692138671875,34.16890000000000071622707764618098735809326171875,13.6470000000000002415845301584340631961822509765625,83.8679000000000058889781939797103404998779296875],["2026-11-08T00:00:00-07:00",1310.49890000000004874891601502895355224609375,8.6560000000000005826450433232821524143218994140625,3.160000000000000142108547152020037174224853515625,188.67959999999999354258761741220951080322265625],["2026-11-09T00:00:00-07:00",1279.9648999999999432475306093692779541015625,38.84740000000000037516656448133289813995361328125,0.822999999999999953814722175593487918376922607421875,278.86290000000002464730641804635524749755859375],["2026-11-10T00:00:00-07:00",1280.198399999999992360244505107402801513671875,37.552199999999999135980033315718173980712890625,2.029999999999999804600747665972448885440826416015625,190.5475999999999885403667576611042022705078125],["2026-11-11T00:00:00-07:00",1305.2154000000000451109372079372406005859375,21.016600000000000392219590139575302600860595703125,3.61699999999999999289457264239899814128875732421875,142.1951999999999998181010596454143524169921875],["2026-11-12T00:00:00-07:00",1307.634800000000041109160520136356353759765625,22.23100000000000164845914696343243122100830078125,3.197999999999999953814722175593487918376922607421875,144.808300000000002683009370230138301849365234375],["2026-11-13T00:00:00-07:00",1380.512199999999893407220952212810516357421875,3.303999999999999825917029738775454461574554443359375,1.55299999999999993605115378159098327159881591796875,158.56950000000000500222085975110530853271484375],["2026-11-14T00:00:00-07:00",1386.171199999999998908606357872486114501953125,9.176700000000000301270119962282478809356689453125,1.0140000000000000124344978758017532527446746826171875,127.4308999999999940655470709316432476043701171875],["2026-11-15T00:00:00-07:00",1328.4492000000000189174897968769073486328125,10.7507999999999999118927007657475769519805908203125,2.359999999999999875655021241982467472553253173828125,151.530699999999995952748577110469341278076171875],["2026-11-16T00:00:00-07:00",1335.117899999999963256414048373699188232421875,27.460699999999999221245161606930196285247802734375,3.7599999999999997868371792719699442386627197265625,139.27969999999999117790139280259609222412109375],["2026-11-17T00:00:00-07:00",1336.4209000000000742147676646709442138671875,36.020499999999998408384271897375583648681640625,4.01100000000000012079226507921703159809112548828125,137.777500000000003410605131648480892181396484375],["2026-11-18T00:00:00-07:00",50.80539999999999878355083637870848178863525390625,2.0525999999999999801048033987171947956085205078125,0,3.288699999999999956656893118633888661861419677734375]]);
+			var rows_chart_past_year = parseDates([["2025-11-15T00:00:00-07:00",35.4232999999999975671016727574169635772705078125,0.542499999999999982236431605997495353221893310546875,0.08709999999999999686917107055705855600535869598388671875,11.8617000000000007986500349943526089191436767578125],["2025-12-15T00:00:00-07:00",38.016199999999997771737980656325817108154296875,0.356200000000000016608936448392341844737529754638671875,0,25.236599999999999255351212923415005207061767578125],["2026-01-15T00:00:00-07:00",35.53150000000000119371179607696831226348876953125,0.470499999999999973798736618846305646002292633056640625,0.09769999999999999518163207312682061456143856048583984375,20.77720000000000055706550483591854572296142578125],["2026-02-15T00:00:00-07:00",31.045100000000001472244548494927585124969482421875,0.361599999999999976996178929766756482422351837158203125,0.121499999999999996891375531049561686813831329345703125,20.946799999999999641886461176909506320953369140625],["2026-03-15T00:00:00-07:00",30.20309999999999917008608463220298290252685546875,0.217299999999999993161026168309035710990428924560546875,0.4172000000000000152766688188421539962291717529296875,27.685300000000001574562702444382011890411376953125],["2026-04-15T00:00:00-07:00",28.903600000000000846966941026039421558380126953125,0.4535000000000000142108547152020037174224853515625,0.9756000000000000227373675443232059478759765625,11.48910000000000053432813729159533977508544921875],["2026-05-15T00:00:00-07:00",28.44089999999999918145476840436458587646484375,0.953300000000000036237679523765109479427337646484375,1.084000000000000074606987254810519516468048095703125,6.15240000000000009094947017729282379150390625],["2026-06-15T00:00:00-07:00",27.71770000000000067075234255753457546234130859375,0.313000000000000000444089209850062616169452667236328125,1.048599999999999976552089719916693866252899169921875,2.17229999999999989768184605054557323455810546875],["2026-07-15T00:00:00-07:00",27.832699999999999107558323885314166545867919921875,0.3630999999999999783284465593169443309307098388671875,1.0530999999999999250377413773094303905963897705078125,2.371799999999999908339987086947076022624969482421875],["2026-08-15T00:00:00-07:00",26.954100000000000392219590139575302600860595703125,0.3771999999999999797495320308371447026729583740234375,1.0103999999999999648281345798750407993793487548828125,4.24889999999999989910293152206577360630035400390625],["2026-09-15T00:00:00-07:00",32.0431999999999987949195201508700847625732421875,0.5040999999999999925393012745189480483531951904296875,1.068599999999999994315658113919198513031005859375,1.7237999999999999989341858963598497211933135986328125],["2026-10-15T00:00:00-07:00",35.048900000000003274180926382541656494140625,0.94489999999999996216359932077466510236263275146484375,0.356700000000000017053025658242404460906982421875,7.17400000000000037658764995285309851169586181640625],["2026-11-15T00:00:00-07:00",22.07860000000000155750967678613960742950439453125,0.32760000000000000230926389122032560408115386962890625,0.06940000000000000335287353436797275207936763763427734375,2.80839999999999978541609380044974386692047119140625]]);
+				function drawCharts() {
+					(function(){
+						
+			var data = new google.visualization.DataTable({
+				cols: [{"type":"string","label":"Energy Source"},{"type":"number","label":"Value"},{"type":"string","role":"tooltip","p":{"html":true}}]
+			});
+
+			data.addRows(rows_chart_current);
+			var formatter_electric_load = new google.visualization.NumberFormat(
+				{"fractionDigits":2,"suffix":" MW"}
+			);
+					formatter_electric_load.format(data, 1);
+
+			// Chart Options
+			var options = {"legend":"none","colors":["#66CFE7","#9ACF58","#F4C65A","#F78E47"],"backgroundColor":"transparent","fontName":"Titillium Web","fontSize":11,"chartArea":{"left":"5%","top":"5%","width":"90%","height":"90%"},"pieHole":0.92000000000000003996802888650563545525074005126953125,"pieSliceText":"none","tooltip":{"isHtml":true},"slices":{"4":{"color":"transparent","enableInteractivity":false}}};
+			var chart = new google.visualization.PieChart(document.getElementById("chart_current"));
+			chart.draw(data, options);
+		
+					})();
+					(function(){
+						
+			var data = new google.visualization.DataTable({
+				cols: [{"type":"string","label":"Energy Source"},{"type":"number","label":"Value"},{"type":"string","role":"tooltip","p":{"html":true}}]
+			});
+
+			data.addRows(rows_chart_producer_yen);
+			var formatter_electric_load = new google.visualization.NumberFormat(
+				{"fractionDigits":2,"suffix":" MW"}
+			);
+					formatter_electric_load.format(data, 1);
+
+			// Chart Options
+			var options = {"legend":"none","colors":["#66CFE7","#F78E47","#F4C65A","#F78E47"],"backgroundColor":"transparent","fontName":"Titillium Web","fontSize":11,"chartArea":{"left":"5%","top":"5%","width":"90%","height":"90%"},"pieHole":0.92000000000000003996802888650563545525074005126953125,"pieSliceText":"none"};
+			var chart = new google.visualization.PieChart(document.getElementById("chart_producer_yen"));
+			chart.draw(data, options);
+		
+					})();
+					(function(){
+						
+			var data = new google.visualization.DataTable({
+				cols: [{"type":"string","label":"Energy Source"},{"type":"number","label":"Value"},{"type":"string","role":"tooltip","p":{"html":true}}]
+			});
+
+			data.addRows(rows_chart_producer_ipp);
+			var formatter_electric_load = new google.visualization.NumberFormat(
+				{"fractionDigits":2,"suffix":" MW"}
+			);
+					formatter_electric_load.format(data, 1);
+
+			// Chart Options
+			var options = {"legend":"none","colors":["#9ACF58","#F4C65A","#F4C65A","#F78E47"],"backgroundColor":"transparent","fontName":"Titillium Web","fontSize":11,"chartArea":{"left":"5%","top":"5%","width":"90%","height":"90%"},"pieHole":0.92000000000000003996802888650563545525074005126953125,"pieSliceText":"none"};
+			var chart = new google.visualization.PieChart(document.getElementById("chart_producer_ipp"));
+			chart.draw(data, options);
+		
+					})();
+					(function(){
+						
+			var data = new google.visualization.DataTable({
+				cols: [{"type":"date","label":"Date"},{"type":"number","label":"Hydro"},{"type":"number","label":"Wind"},{"type":"number","label":"Solar"},{"type":"number","label":"Thermal"}]
+			});
+
+			data.addRows(rows_chart_past_day);
+			var formatter_date_time = new google.visualization.DateFormat(
+				{"pattern":"LLL d, h:mm a"}
+			);
+					formatter_date_time.format(data, 0);
+			var formatter_electric_load = new google.visualization.NumberFormat(
+				{"fractionDigits":2,"suffix":" MWh"}
+			);
+					formatter_electric_load.format(data, 1);
+					formatter_electric_load.format(data, 2);
+					formatter_electric_load.format(data, 3);
+					formatter_electric_load.format(data, 4);
+
+			// Chart Options
+			var options = {"legend":"none","colors":["#66CFE7","#9ACF58","#F4C65A","#F78E47"],"backgroundColor":"transparent","fontName":"Titillium Web","fontSize":11,"chartArea":{"left":"60","top":"10","width":"100%","height":"85%"},"isStacked":true,"bar":{"groupWidth":"40%"},"focusTarget":"category","vAxis":{"format":"#,### MWh","baselineColor":"D4D4D4","gridlines":{"color":"D4D4D4"},"minorGridlines":{"color":"D4D4D4"}},"hAxis":{"slantedText":false,"gridlines":{"color":"none"},"minorGridlines":{"count":0},"format":"ha"}};
+			var tickMarks = [];
+			for (var i = 0; i < data.getNumberOfRows(); i++) {
+				tickMarks.push(data.getValue(i, 0));
+			}
+			options.hAxis.ticks = tickMarks;
+			var chart = new google.visualization.ColumnChart(document.getElementById("chart_past_day"));
+			chart.draw(data, options);
+		
+					})();
+					(function(){
+						
+			var data = new google.visualization.DataTable({
+				cols: [{"type":"string","label":"Energy Source"},{"type":"number","label":"Value"}]
+			});
+
+			data.addRows(rows_chart_past_week_summary);
+			var formatter_electric_load = new google.visualization.NumberFormat(
+				{"fractionDigits":2,"suffix":" MWh"}
+			);
+					formatter_electric_load.format(data, 1);
+
+			// Chart Options
+			var options = {"legend":"none","colors":["#66CFE7","#9ACF58","#F4C65A","#F78E47"],"backgroundColor":"transparent","fontName":"Titillium Web","fontSize":11,"chartArea":{"left":"5%","top":"5%","width":"90%","height":"90%"},"pieHole":0.92000000000000003996802888650563545525074005126953125,"pieSliceText":"none"};
+			var chart = new google.visualization.PieChart(document.getElementById("chart_past_week_summary"));
+			chart.draw(data, options);
+		
+					})();
+					(function(){
+						
+			var data = new google.visualization.DataTable({
+				cols: [{"type":"string","label":"Energy Source"},{"type":"number","label":"Value"}]
+			});
+
+			data.addRows(rows_chart_past_month_summary);
+			var formatter_electric_load = new google.visualization.NumberFormat(
+				{"fractionDigits":2,"suffix":" MWh"}
+			);
+					formatter_electric_load.format(data, 1);
+
+			// Chart Options
+			var options = {"legend":"none","colors":["#66CFE7","#9ACF58","#F4C65A","#F78E47"],"backgroundColor":"transparent","fontName":"Titillium Web","fontSize":11,"chartArea":{"left":"5%","top":"5%","width":"90%","height":"90%"},"pieHole":0.92000000000000003996802888650563545525074005126953125,"pieSliceText":"none"};
+			var chart = new google.visualization.PieChart(document.getElementById("chart_past_month_summary"));
+			chart.draw(data, options);
+		
+					})();
+					(function(){
+						
+			var data = new google.visualization.DataTable({
+				cols: [{"type":"date","label":"Date"},{"type":"number","label":"Hydro"},{"type":"number","label":"Wind"},{"type":"number","label":"Solar"},{"type":"number","label":"Thermal"}]
+			});
+
+			data.addRows(rows_chart_past_week);
+			var formatter_electric_load = new google.visualization.NumberFormat(
+				{"fractionDigits":2,"suffix":" MWh"}
+			);
+					formatter_electric_load.format(data, 1);
+					formatter_electric_load.format(data, 2);
+					formatter_electric_load.format(data, 3);
+					formatter_electric_load.format(data, 4);
+
+			// Chart Options
+			var options = {"legend":"none","colors":["#66CFE7","#9ACF58","#F4C65A","#F78E47"],"backgroundColor":"transparent","fontName":"Titillium Web","fontSize":11,"chartArea":{"left":"60","top":"10","width":"100%","height":"75%"},"isStacked":true,"bar":{"groupWidth":"40%"},"focusTarget":"category","vAxis":{"format":"#,### MWh","baselineColor":"D4D4D4","gridlines":{"color":"D4D4D4"},"minorGridlines":{"color":"D4D4D4"}},"hAxis":{"slantedText":true,"gridlines":{"color":"none"},"minorGridlines":{"count":0},"format":"EEEE, d"}};
+			var tickMarks = [];
+			for (var i = 0; i < data.getNumberOfRows(); i++) {
+				tickMarks.push(data.getValue(i, 0));
+			}
+			options.hAxis.ticks = tickMarks;
+			var chart = new google.visualization.ColumnChart(document.getElementById("chart_past_week"));
+			chart.draw(data, options);
+		
+					})();
+					(function(){
+						
+			var data = new google.visualization.DataTable({
+				cols: [{"type":"date","label":"Date"},{"type":"number","label":"Hydro"},{"type":"number","label":"Wind"},{"type":"number","label":"Solar"},{"type":"number","label":"Thermal"}]
+			});
+
+			data.addRows(rows_chart_past_month);
+			var formatter_electric_load = new google.visualization.NumberFormat(
+				{"fractionDigits":2,"suffix":" MWh"}
+			);
+					formatter_electric_load.format(data, 1);
+					formatter_electric_load.format(data, 2);
+					formatter_electric_load.format(data, 3);
+					formatter_electric_load.format(data, 4);
+
+			// Chart Options
+			var options = {"legend":"none","colors":["#66CFE7","#9ACF58","#F4C65A","#F78E47"],"backgroundColor":"transparent","fontName":"Titillium Web","fontSize":11,"chartArea":{"left":"60","top":"10","width":"100%","height":"75%"},"isStacked":true,"bar":{"groupWidth":"40%"},"focusTarget":"category","vAxis":{"format":"#,### MWh","baselineColor":"D4D4D4","gridlines":{"color":"D4D4D4"},"minorGridlines":{"color":"D4D4D4"}},"hAxis":{"slantedText":true,"gridlines":{"color":"none"},"minorGridlines":{"count":0},"format":"MMM, d"}};
+			var tickMarks = [];
+			for (var i = 0; i < data.getNumberOfRows(); i++) {
+				tickMarks.push(data.getValue(i, 0));
+			}
+			options.hAxis.ticks = tickMarks;
+			var chart = new google.visualization.ColumnChart(document.getElementById("chart_past_month"));
+			chart.draw(data, options);
+		
+					})();
+					(function(){
+						
+			var data = new google.visualization.DataTable({
+				cols: [{"type":"date","label":"Date"},{"type":"number","label":"Hydro"},{"type":"number","label":"Wind"},{"type":"number","label":"Solar"},{"type":"number","label":"Thermal"}]
+			});
+
+			data.addRows(rows_chart_past_year);
+			var formatter_electric_load = new google.visualization.NumberFormat(
+				{"fractionDigits":2,"suffix":" GWh"}
+			);
+					formatter_electric_load.format(data, 1);
+					formatter_electric_load.format(data, 2);
+					formatter_electric_load.format(data, 3);
+					formatter_electric_load.format(data, 4);
+
+			// Chart Options
+			var options = {"legend":"none","colors":["#66CFE7","#9ACF58","#F4C65A","#F78E47"],"backgroundColor":"transparent","fontName":"Titillium Web","fontSize":11,"chartArea":{"left":"60","top":"10","width":"100%","height":"75%"},"isStacked":true,"bar":{"groupWidth":"40%"},"focusTarget":"category","vAxis":{"format":"#,### GWh","baselineColor":"D4D4D4","gridlines":{"color":"D4D4D4"},"minorGridlines":{"color":"D4D4D4"}},"hAxis":{"slantedText":true,"gridlines":{"color":"none"},"minorGridlines":{"count":0},"format":"MMM"}};
+			var tickMarks = [];
+			for (var i = 0; i < data.getNumberOfRows(); i++) {
+				tickMarks.push(data.getValue(i, 0));
+			}
+			options.hAxis.ticks = tickMarks;
+			var chart = new google.visualization.ColumnChart(document.getElementById("chart_past_year"));
+			chart.draw(data, options);
+		
+					})();
+				}
+				window.onresize = drawCharts;
+
+				$(document).ready(function(){
+					$(".pane-toggle > ul li a").click(function(e){
+						e.preventDefault();
+						var $a = $(this),
+							$ul = $a.closest("ul"),
+							$groups = $ul.closest(".pane-toggle");
+
+						$("a", $ul).toggleClass("selected");
+						$(".pane-group", $groups).toggle();
+
+						drawCharts();
+					});
+				});
+			</script>
+
+	
+	
+
+	
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-M3YND2L62W"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	  gtag('config', 'G-M3YND2L62W');
+	  
+	  gtag('config', 'AW-630702871');
+	  
+	</script>
+	
+	
+		<!-- Facebook Pixel Code -->
+		<script>
+		  !function(f,b,e,v,n,t,s)
+		  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+		  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+		  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+		  n.queue=[];t=b.createElement(e);t.async=!0;
+		  t.src=v;s=b.getElementsByTagName(e)[0];
+		  s.parentNode.insertBefore(t,s)}(window, document,'script',
+		  'https://connect.facebook.net/en_US/fbevents.js');
+		  fbq('init', '2220832831686855');
+		  fbq('track', 'PageView');
+		</script>
+		<noscript>
+		  <img height="1" width="1" style="display:none" 
+			   src="https://www.facebook.com/tr?id=2220832831686855&ev=PageView&noscript=1"/>
+		</noscript>
+		<!-- End Facebook Pixel Code -->
+	
+
+	<script type="text/javascript">
+		var YEC = YEC || {
+		};
+		YEC.breakpointShow = ('{breakpoint:show}' === 'yes');
+	</script>
+
+	
+	
+</head>
+<body class="consumption">
+
+	<header id="title">
+		<div class="wrap">
+			<div class="col single">
+				<div id="logo"><a href="https://yukonenergy.ca/">Yukon Energy</a></div>
+			
+				
+				<ul id="menu">
+					
+					
+					<li class="header-search">
+						<form id="search" id="search" method="post" action="https://yukonenergy.ca/"  >
+<div class='hiddenFields'>
+<input type="hidden" name="params" value="eyJyZXN1bHRfcGFnZSI6InNlYXJjaCIsInJlcXVpcmVkIjoia2V5d29yZHMifQ" />
+<input type="hidden" name="sig" value="1d5afcb91d64416c9b746de622d1e6dbdefbb0a84e0e186e2afb28e3bbac8c76" />
+<input type="hidden" name="ACT" value="52" />
+<input type="hidden" name="site_id" value="1" />
+<input type="hidden" name="csrf_token" value="3af91f7f054de7994675fd896bedf9e98b039a55" />
+</div>
+
+
+						<label for="keywords">Keywords</label><input type="search" name="keywords" id="keywords" /><button type="submit">Search</button>
+						</form>
+					</li>
+					<li><a href="https://yukonenergy.ca/customer-service/my-account/" title="My Account">My Account</a></li>
+					<li><a href="https://peaksmart.ca" title="Peak Smart" target="_blank">Peak Smart</a></li>
+					<li><a href="https://yukonenergy.ca/information/contact-us/">Contact us</a></li>
+					
+					
+					
+						
+							
+						
+							
+								<li class="lang"><a href="/fr">fr</a></li>
+							
+						
+									
+					
+					
+					<li class="social"><a href="https://www.facebook.com/yukonenergy" class="ico-facebook" target="_blank">Facebook</a></li>
+					<li class="social"><a href="https://twitter.com/yukonenergy" class="ico-twitter" target="_blank">Twitter</a></li>
+					<li class="social"><a href="https://www.youtube.com/user/yukonsenergyfuture" class="ico-youtube" target="_blank">YouTube</a></li>
+				</ul>
+				
+			</div>
+		</div>
+	</header>
+
+
+	
+	<nav id="main">
+		<h2 class="outline">Main Navigation</h2>		
+		<div class="wrap">
+			<div class="col single">
+				<ul class="main">
+
+					<li><a href="https://yukonenergy.ca/about-us/">About Us</a>
+						
+						<div class="sub-slide">							
+							<ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/about-us/business-documents/">
+										Business Documents
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Copy_of_Homepage_1.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/about-us/business-documents/annual-reports/">Annual Reports</a></li><li><a href="https://yukonenergy.ca/about-us/business-documents/strategic-plans/">Strategic Plans</a></li><li><a href="https://yukonenergy.ca/about-us/business-documents/2020-ten-year-renewable-electricity-plan/">2020 Ten Year Renewable Electricity Plan</a></li><li><a href="https://yukonenergy.ca/about-us/business-documents/2016-resource-plan/">2016 Resource Plan</a></li><li><a href="https://yukonenergy.ca/about-us/business-documents/policies/">Policies</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/about-us/careers/">
+										Careers
+										<img src="https://yukonenergy.ca/media/banner_images/_small/working-safely_jimp_edit-stamp2_webB.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/about-us/careers/job-postings/">Job Postings</a></li><li><a href="https://yukonenergy.ca/about-us/careers/welcome-to-yukon/">Welcome to the Yukon</a></li><li><a href="https://yukonenergy.ca/about-us/careers/why-work-for-yukon-energy/">Why Work for Yukon Energy?</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/about-us/purchasing-tenders/">
+										Purchasing and Tenders
+										<img src="https://yukonenergy.ca/media/banner_images/_small/2.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/about-us/purchasing-tenders/contract-registry/">Contract Registry</a></li><li><a href="https://yukonenergy.ca/about-us/purchasing-tenders/tenders-proposals-registry/">Tenders and Proposals Registry</a></li><li><a href="https://yukonenergy.ca/about-us/purchasing-tenders/tender-requirement/">Tender Requirement</a></li><li><a href="https://yukonenergy.ca/about-us/purchasing-tenders/procurement-policy-guidelines/">Procurement Policies and Guidelines</a></li><li><a href="https://yukonenergy.ca/about-us/purchasing-tenders/inquiries/">Inquiries</a></li><li><a href="https://yukonenergy.ca/about-us/purchasing-tenders/purchase-order-terms-and-conditions/">Purchase Order Terms and Conditions</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/about-us/news-events/">
+										News & Events
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Homepage_1.jpg" />
+									</a>
+								</li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/about-us/who-we-are/">
+										Who We Are
+										<img src="https://yukonenergy.ca/media/banner_images/_small/4.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/about-us/who-we-are/mission-vision-values/">Vision, Mission, Values</a></li><li><a href="https://yukonenergy.ca/about-us/who-we-are/board-of-directors/">Board of Directors</a></li><li><a href="https://yukonenergy.ca/about-us/who-we-are/management-team/">Management Team</a></li>
+								
+							</ul>							
+						</div>
+						
+					</li><li><a href="https://yukonenergy.ca/energy-in-yukon/">Energy in Yukon</a>
+						
+						<div class="sub-slide">							
+							<ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/energy-in-yukon/small-scale-renewable-power/">
+										Small-Scale Renewable Power
+										<img src="https://yukonenergy.ca/media/banner_images/_small/solar-panel-918492_1920.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/energy-in-yukon/small-scale-renewable-power/solar/">Solar and the Yukon Grid</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/small-scale-renewable-power/micro-generation/">Micro-Generation</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/small-scale-renewable-power/independent-power-producers/">Independent Power Producers</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/energy-in-yukon/saving-energy/">
+										Saving Energy
+										<img src="https://yukonenergy.ca/media/banner_images/_small/photo4_changebulb_webB.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/energy-in-yukon/saving-energy/peak-smart/">Peak Smart</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/saving-energy/energy-saving-tips/">Energy Saving Tips</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/saving-energy/managing-peak-winter-electricity-demand/">Managing Peak Winter Electricity Demand</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/energy-in-yukon/energy-future/">
+										Energy Future
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Carcross-Northern-Lights.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/energy-in-yukon/energy-future/electricity-planning/">Electricity Planning</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/energy-in-yukon/projects-facilities/">
+										Projects and Facilities
+										<img src="https://yukonenergy.ca/media/banner_images/_small/projects-facilities-banner.gif" />
+									</a>
+								</li>
+								
+									
+									<li><a href="https://yukonenergy.ca/energy-in-yukon/projects-facilities//category/asset/facilities">Facilities</a></li>
+									
+									<li><a href="https://yukonenergy.ca/energy-in-yukon/projects-facilities//category/asset/projects">Projects</a></li>
+									
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/">
+										Electricity 101
+										<img src="https://yukonenergy.ca/media/banner_images/_small/20140627_Yukon_Energy_GBP_002_webB.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/the-lingo/">The Lingo</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/how-electricity-gets-to-you/">How Electricity Gets to You</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/why-serve-mines/">Why Serve Mines?</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/electricity-generation/">Electricity Generation</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/touring-our-facilities/">Touring Our Facilities</a></li>
+								
+							</ul>							
+						</div>
+						
+					</li><li><a href="https://yukonenergy.ca/environment/">Environment</a>
+						
+						<div class="sub-slide">							
+							<ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/environment/current-water-levels/">
+										Current Water Levels
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Sustainability-Water-Levels.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/environment/current-water-levels/aishihik-water-levels/">Aishihik Water Levels</a></li><li><a href="https://yukonenergy.ca/environment/current-water-levels/mayo-lake-water-levels/">Mayo Lake Water Levels</a></li><li><a href="https://yukonenergy.ca/environment/current-water-levels/marsh-lake-water-levels/">Marsh Lake Water Levels</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/environment/climate-change/">
+										Climate Change
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Sustainability-Climate-Change.jpg" />
+									</a>
+								</li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/environment/conservation/">
+										Conservation
+										<img src="https://yukonenergy.ca/media/banner_images/_small/fry1_webB.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/environment/conservation/stewardship-biodiversity/">Stewardship and Biodiversity</a></li><li><a href="https://yukonenergy.ca/environment/conservation/whitehorse-fishladder-and-hatchery/">Whitehorse Fishladder and Hatchery</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/environment/commitment/">
+										Commitment
+										<img src="https://yukonenergy.ca/media/banner_images/_small/aishihik_dam_2000x677.jpg" />
+									</a>
+								</li>
+								
+							</ul>							
+						</div>
+						
+					</li><li><a href="https://yukonenergy.ca/community-support/">Community</a>
+						
+						<div class="sub-slide">							
+							<ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/community-support/our-commitment-to-first-nations/">
+										Our Commitment to First Nations
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Yukon-Energy-commiment-first-nations_bnr.jpg" />
+									</a>
+								</li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/community-support/first-nation-partnerships/">
+										First Nations Partnerships
+										<img src="https://yukonenergy.ca/media/banner_images/_small/asksteph_2019.jpg" />
+									</a>
+								</li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/community-support/community-projects/">
+										Community Projects
+										<img src="https://yukonenergy.ca/media/banner_images/_small/biketowork_group1_may2015_b_web.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/community-support/community-projects/sponsorship/">Sponsorship</a></li><li><a href="https://yukonenergy.ca/community-support/community-projects/whitehorse-food-bank/">Whitehorse Food Bank</a></li><li><a href="https://yukonenergy.ca/community-support/community-projects/keno-hill/">Keno Hill</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/community-support/scholarships/">
+										Scholarships
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Select_YEC_4597h_willy_web.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/community-support/scholarships/who-was-ed-chambers/">Who was Ed Chambers?</a></li>
+								
+							</ul>							
+						</div>
+						
+					</li><li><a href="https://yukonenergy.ca/customer-service/">Customer Service</a>
+						
+						<div class="sub-slide">							
+							<ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/customer-service/my-account/">
+										My Account
+										<img src="https://yukonenergy.ca/media/banner_images/_small/YukonEnergy_My_Account_bnr.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/customer-service/my-account/my-account-client-portal-terms-of-use/">My Account Terms of Use</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/customer-service/accounts-billing/">
+										Accounts and Billing
+										<img src="https://yukonenergy.ca/media/banner_images/_small/incharge_family-time_archbould_oct2016_web.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/customer-service/accounts-billing/customer-billing-concerns/">Customer Billing Concerns</a></li><li><a href="https://yukonenergy.ca/customer-service/accounts-billing/submitting-your-meter-reading/">Submitting Your Meter Reading</a></li><li><a href="https://yukonenergy.ca/customer-service/accounts-billing/reading-your-bill/">Reading Your Bill</a></li><li><a href="https://yukonenergy.ca/customer-service/accounts-billing/paying-your-bill/">Paying Your Bill</a></li><li><a href="https://yukonenergy.ca/customer-service/accounts-billing/customer-personal-information-and-privacy/">Customer Personal Information and Privacy</a></li><li><a href="https://yukonenergy.ca/customer-service/accounts-billing/terms-and-conditions-of-service/">Terms and Conditions of Service</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/customer-service/rates/">
+										Rates
+										<img src="https://yukonenergy.ca/media/banner_images/_small/rate-increase_2000x667.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/customer-service/rates/rate-schedules/">Rate Schedules</a></li><li><a href="https://yukonenergy.ca/customer-service/rates/2021-rate-application/">2021 Rate Application</a></li><li><a href="https://yukonenergy.ca/customer-service/rates/2023-24-general-rate-application/">2023-2024 General Rate Application</a></li><li><a href="https://yukonenergy.ca/customer-service/rates/2025-2027-general-rate-application/">2025-2027 General Rate Application</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/customer-service/power-outages/">
+										Power Outages
+										<img src="https://yukonenergy.ca/media/banner_images/_small/mayo_up_pole_web.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/customer-service/power-outages/report-an-outage/">Report an Outage</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/customer-service/programs/">
+										Programs
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Select_TransLines-Pelly-area_AP35320_webB.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/customer-service/programs/rural-electrification-and-telecommunications-program/">Rural Electrification and Telecommunications Program</a></li><li><a href="https://yukonenergy.ca/customer-service/programs/secondary-sales-program/">Secondary Sales Program</a></li><li><a href="https://yukonenergy.ca/customer-service/programs/interim-electrical-rebate/">Affordability Rate Relief Rebate</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/customer-service/electrical-service-connections/">
+										Electrical Service Connections
+										<img src="https://yukonenergy.ca/media/banner_images/_small/how-to-get-power.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/customer-service/electrical-service-connections/service-upgrades/">Service Upgrades</a></li><li><a href="https://yukonenergy.ca/customer-service/electrical-service-connections/new-electricity-service/">New Electricity Service</a></li><li><a href="https://yukonenergy.ca/customer-service/electrical-service-connections/stop-start-or-transfer-service/">Stop, Start or Transfer Service</a></li><li><a href="https://yukonenergy.ca/customer-service/electrical-service-connections/specialized-services/">Specialized Services</a></li><li><a href="https://yukonenergy.ca/customer-service/electrical-service-connections/power-line-easements/">Power Line Easements</a></li><li><a href="https://yukonenergy.ca/customer-service/electrical-service-connections/brushing/">Brushing</a></li><li><a href="https://yukonenergy.ca/customer-service/electrical-service-connections/meter-exchange-door-program/">Meter Exchange Program</a></li>
+								
+							</ul>							
+						</div>
+						
+					</li><li><a href="https://yukonenergy.ca/health-safety/">Health and Safety</a>
+						
+						<div class="sub-slide">							
+							<ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/health-safety/certificate-of-recognition-cor/">
+										Certificate of Recognition (COR)
+										<img src="https://yukonenergy.ca/media/banner_images/_small/tools_trades_2.jpg" />
+									</a>
+								</li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/health-safety/facility-safety/">
+										Facility Safety
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Filling-Area-Tour-31167_webB.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/health-safety/facility-safety/dam-safety/">Dam Safety</a></li><li><a href="https://yukonenergy.ca/health-safety/facility-safety/lng-safety/">LNG Safety</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/health-safety/electrical-safety/">
+										Electrical Safety
+										<img src="https://yukonenergy.ca/media/banner_images/_small/GBP_24-12-06_YEC_Battery_Proj__DSC7518_web_1500_2000x677.jpg" />
+									</a>
+								</li>
+								
+									<li><a href="https://yukonenergy.ca/health-safety/electrical-safety/operating-near-powerlines/">Operating Near Power Lines</a></li><li><a href="https://yukonenergy.ca/health-safety/electrical-safety/safety-at-work-home/">Safety at Work and Home</a></li><li><a href="https://yukonenergy.ca/health-safety/electrical-safety/electromagnetic-fields/">Electromagnetic Fields</a></li><li><a href="https://yukonenergy.ca/health-safety/electrical-safety/call-before-you-dig/">Call Before You Dig</a></li><li><a href="https://yukonenergy.ca/health-safety/electrical-safety/keeping-our-meter-readers-safe/">Keeping our Meter Readers Safe</a></li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/health-safety/preparing-for-emergencies/">
+										Preparing for Emergencies
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Think_536244669_web.jpg" />
+									</a>
+								</li>
+								
+							</ul><ul class="col sixth right">
+								<li class="head">
+									<a href="https://yukonenergy.ca/health-safety/our-commitment-to-safety/">
+										Our Commitment to Safety
+										<img src="https://yukonenergy.ca/media/banner_images/_small/Carcross-Northern-Lights.jpg" />
+									</a>
+								</li>
+								
+							</ul>							
+						</div>
+						
+					</li>
+
+				</ul>
+			</div>
+		</div>
+	</nav>
+	
+
+	<div id="viewport">
+
+
+	
+
+		
+
+
+		
+			
+		
+		<div class="slide banner "
+			 style="background-image:url(https://yukonenergy.ca/media/banner_images/CurrentConsumption_Banner.jpg);
+					
+					"
+		>
+			
+			<div class="wrap"><img src="https://yukonenergy.ca/assets/layout/pad.gif" class="pad" /></div>
+		</div>
+		
+	
+
+
+
+		
+		<div class="slide wrap clearfix">
+
+			<div class="col third right early-respond">
+				
+	
+
+		<ul class="subnav categories">
+		<li class="parent-selected ico-indicator first"><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/">Electricity 101</a>
+				
+					<ul>
+					<li ><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/the-lingo/">The Lingo</a>
+				
+			</li><li ><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/how-electricity-gets-to-you/">How Electricity Gets to You</a>
+				
+			</li><li ><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/why-serve-mines/">Why Serve Mines?</a>
+				
+			</li><li class="selected ico-indicator"><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/electricity-generation/">Electricity Generation</a>
+				
+			</li><li class="last"><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/touring-our-facilities/">Touring Our Facilities</a>
+				
+			</li>
+					</ul>
+
+				
+				
+			</li><li ><a href="https://yukonenergy.ca/energy-in-yukon/projects-facilities/">Projects and Facilities</a>
+				
+			</li><li ><a href="https://yukonenergy.ca/energy-in-yukon/energy-future/">Energy Future</a>
+				
+			</li><li ><a href="https://yukonenergy.ca/energy-in-yukon/saving-energy/">Saving Energy</a>
+				
+			</li><li class="last"><a href="https://yukonenergy.ca/energy-in-yukon/small-scale-renewable-power/">Small-Scale Renewable Power</a>
+				
+			</li>
+		</ul>
+
+	
+
+			</div>
+
+			<div class="col two-thirds early-respond">
+						<h1>
+		
+			Electricity Generation
+			
+		
+		</h1>
+
+
+				<div class="body"><h4>The Power is in All Our Hands</h4>
+
+<p>Our Yukon grid electricity generation&nbsp;chart indicates the amount of electricity being generated&nbsp;and where that electricity is coming from. We recently updated the generation&nbsp;charts. When reviewing, keep in mind:</p>
+
+<ul>
+	<li>The charts now include independent power producers (IPPs)&nbsp;that are one megawatt or larger in size and connected to the Yukon&#39;s main grid. IPP power generation&nbsp;in off-grid communities is&nbsp;not included.</li>
+	<li>Currently, the IPPs&nbsp;generate wind and solar electricity. There is four&nbsp;megawatts of wind power and five&nbsp;megawatts of solar power connected to the main grid (not including smaller solar IPPs).</li>
+	<li>Solar generation does not include the electricity generated from rooftop solar panels on homes or businesses.</li>
+	<li>Thermal generation includes electricity generated by Yukon Energy&#39;s owned LNG and diesel units plus rental diesel units.</li>
+	<li>Yukon Energy uses rental diesel generators when needed.&nbsp;</li>
+</ul>
+
+<p>There are several things you can do to reduce your electricity consumption. This could include washing your clothes with cold water, turning the lights off in rooms you&rsquo;re not using, and unplugging electronics or appliances that are not in use.</p>
+
+<p>Disclaimer:&nbsp;This material is provided &ldquo;as is&rdquo; for informational purposes only. Yukon Energy Corporation makes no representations or warranties regarding its completeness or accuracy and accepts no liability for decisions or actions taken based on the information.<br />
+<!--
+<h4>This page is temporarily unavailable.</h4>
+
+<p>We know people like checking this page and are working to fix it as soon as we can.</p>
+--></p></div>
+
+
+
+
+
+				<div class="consumption-grid">
+
+					<div class="pane-group current">
+
+						<!-- Current Consumption Chart -->
+						<div class="consumption-pane total">
+						
+							<h2>Current Generation</h2>
+							<p>Updated 50 minutes ago</p>
+							<div class="chart-container donut">
+								<h3>50 <b>Megawatt</b> <b>Total Load</b></h3>
+								<div id="chart_current" class="chart"></div>
+							</div>
+							
+	<ul class="chart-legend">
+	
+		
+		<li class="hydro">
+			<h4>Hydro</h4>
+			<p>50 MW</p>
+		</li>
+		
+	
+		
+		<li class="wind">
+			<h4>Wind</h4>
+			<p>0.23 MW</p>
+		</li>
+		
+	
+		
+	
+		
+	
+	</ul>
+
+						
+						</div>
+
+						<!-- Power Production Charts -->
+						<div class="consumption-pane breakdown">
+							<div class="title-pane">
+								<h2>Power Production Breakdown</h2>
+								<p>Updated 50 minutes ago</p>
+							</div>
+
+							<div class="pane-group">
+								<div class="mini-pane">
+								
+									<div class="chart-title">
+										<h4>Yukon Energy</h4>
+										<p>Production</p>
+									</div>
+									<div class="pane-group">
+										<div class="chart-container donut">
+											<h3>50 <b>Megawatt</b></h3>
+											<div id="chart_producer_yen" class="chart"></div>
+										</div>
+										
+	<ul class="chart-legend">
+	
+		
+		<li class="hydro">
+			<h4>Hydro</h4>
+			<p>50 MW</p>
+		</li>
+		
+	
+		
+	
+	</ul>
+
+									</div>
+								
+								</div>
+
+								<div class="mini-pane">
+								
+									<div class="chart-title">
+										<h4>Independent Power Producers</h4>
+										<p>Production</p>
+									</div>
+									<div class="pane-group">
+										<div class="chart-container donut">
+											<h3>0.23 <b>Megawatt</b></h3>
+											<div id="chart_producer_ipp" class="chart"></div>
+										</div>
+										
+	<ul class="chart-legend">
+	
+		
+		<li class="wind">
+			<h4>Wind</h4>
+			<p>0.23 MW</p>
+		</li>
+		
+	
+		
+	
+	</ul>
+
+									</div>
+								
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<!-- Past 24 Hours Chart -->
+					<div class="consumption-pane">
+					
+						<h2>Past 24 Hours</h2>
+						<p>Updated 50 minutes ago</p>
+						<div class="chart-container">
+							<div id="chart_past_day" class="chart"></div>
+							<div class="daytime-bars">
+								<div class="bar-night" style="width: 28%;"></div><div class="bar-day" style="width: 68%;"></div><div class="bar-night" style="width: 4%;"></div>
+							</div>
+						</div>
+						
+	<ul class="chart-legend">
+	
+		
+		<li class="hydro">
+			<h4>Hydro</h4>
+			<p>1,387 MWh</p>
+		</li>
+		
+	
+		
+		<li class="wind">
+			<h4>Wind</h4>
+			<p>38 MWh</p>
+		</li>
+		
+	
+		
+		<li class="solar">
+			<h4>Solar</h4>
+			<p>4 MWh</p>
+		</li>
+		
+	
+		
+		<li class="thermal">
+			<h4>Thermal</h4>
+			<p>141 MWh</p>
+		</li>
+		
+	
+	</ul>
+
+					
+					</div>
+
+					<div class="pane-toggle">
+						<div class="pane-group weekly-overview">
+
+							<!-- Past Week Overview Chart -->
+							<div class="consumption-pane">
+							
+								<h2>Past Week</h2>
+								<p>November 12&ndash;18, 2026</p>
+								<div class="chart-container donut">
+									<h3>9.1 <b>Gigawatt Hours</b> <b>Total Generation</b></h3>
+									<div id="chart_past_week_summary" class="chart"></div>
+								</div>
+								
+	<ul class="chart-legend">
+	
+		
+		<li class="hydro">
+			<h4>Hydro</h4>
+			<p>8,125 MWh</p>
+		</li>
+		
+	
+		
+		<li class="wind">
+			<h4>Wind</h4>
+			<p>111 MWh</p>
+		</li>
+		
+	
+		
+		<li class="solar">
+			<h4>Solar</h4>
+			<p>16 MWh</p>
+		</li>
+		
+	
+		
+		<li class="thermal">
+			<h4>Thermal</h4>
+			<p>863 MWh</p>
+		</li>
+		
+	
+	</ul>
+
+							
+							</div>
+
+							<!-- Past Month Overview Chart -->
+							<div class="consumption-pane">
+							
+								<h2>Past Month</h2>
+								<p>October 19&ndash;November 18, 2026</p>
+								<div class="chart-container donut">
+									<h3>44 <b>Gigawatt Hours</b> <b>Total Generation</b></h3>
+									<div id="chart_past_month_summary" class="chart"></div>
+								</div>
+								
+	<ul class="chart-legend">
+	
+		
+		<li class="hydro">
+			<h4>Hydro</h4>
+			<p>37,453 MWh</p>
+		</li>
+		
+	
+		
+		<li class="wind">
+			<h4>Wind</h4>
+			<p>749 MWh</p>
+		</li>
+		
+	
+		
+		<li class="solar">
+			<h4>Solar</h4>
+			<p>183 MWh</p>
+		</li>
+		
+	
+		
+		<li class="thermal">
+			<h4>Thermal</h4>
+			<p>6,064 MWh</p>
+		</li>
+		
+	
+	</ul>
+
+							
+							</div>
+
+						</div>
+
+						<div class="pane-group weekly" style="display:none;">
+
+							<!-- Past Week Chart -->
+							<div class="consumption-pane">
+							
+								<h2>Past Week</h2>
+								<p>November 12&ndash;18, 2026</p>
+								<div class="chart-container">
+									<div id="chart_past_week" class="chart"></div>
+								</div>
+								
+	<ul class="chart-legend">
+	
+		
+		<li class="hydro">
+			<h4>Hydro</h4>
+			<p>8,125 MWh</p>
+		</li>
+		
+	
+		
+		<li class="wind">
+			<h4>Wind</h4>
+			<p>111 MWh</p>
+		</li>
+		
+	
+		
+		<li class="solar">
+			<h4>Solar</h4>
+			<p>16 MWh</p>
+		</li>
+		
+	
+		
+		<li class="thermal">
+			<h4>Thermal</h4>
+			<p>863 MWh</p>
+		</li>
+		
+	
+	</ul>
+
+							
+							</div>
+
+
+							<!-- Past Month Chart -->
+							<div class="consumption-pane">
+							
+								<h2>Past Month</h2>
+								<p>October 19&ndash;November 18, 2026</p>
+								<div class="chart-container">
+									<div id="chart_past_month" class="chart"></div>
+								</div>
+								
+	<ul class="chart-legend">
+	
+		
+		<li class="hydro">
+			<h4>Hydro</h4>
+			<p>37,453 MWh</p>
+		</li>
+		
+	
+		
+		<li class="wind">
+			<h4>Wind</h4>
+			<p>749 MWh</p>
+		</li>
+		
+	
+		
+		<li class="solar">
+			<h4>Solar</h4>
+			<p>183 MWh</p>
+		</li>
+		
+	
+		
+		<li class="thermal">
+			<h4>Thermal</h4>
+			<p>6,064 MWh</p>
+		</li>
+		
+	
+	</ul>
+
+							
+							</div>
+
+						</div>
+
+						<ul>
+							<li><a href="#" class="selected">Overview</a></li><li><a href="#">Detailed View</a></li>
+						</ul>
+					</div>
+
+					<!-- Past 12 Months Chart -->
+					<div class="consumption-pane">
+					
+						<h2>Past 12 Months</h2>
+						<p>November 15, 2025&ndash;15, 2026</p>
+						<div class="chart-container">
+							<div id="chart_past_year" class="chart"></div>
+						</div>
+						
+	<ul class="chart-legend">
+	
+		
+		<li class="hydro">
+			<h4>Hydro</h4>
+			<p>399 GWh</p>
+		</li>
+		
+	
+		
+		<li class="wind">
+			<h4>Wind</h4>
+			<p>6.2 GWh</p>
+		</li>
+		
+	
+		
+		<li class="solar">
+			<h4>Solar</h4>
+			<p>7.4 GWh</p>
+		</li>
+		
+	
+		
+		<li class="thermal">
+			<h4>Thermal</h4>
+			<p>145 GWh</p>
+		</li>
+		
+	
+	</ul>
+
+					
+					</div>
+
+				</div>
+
+
+
+					
+	
+	<div class="downloads">
+		<h3>Related Downloads</h3>
+		<ul class="two-columns">
+		
+			<li><i class="ico-right small gradient"></i><a href="https://yukonenergy.ca/media/site_documents/YEC_data_2021_2025_Aug_2026.xlsx" title=" (17 MB)">YEC_data_2021_2025_Aug_2026&nbsp;<i class="ico-download small"></i></a></li>
+		
+		</ul>
+	</div>
+	
+
+			</div>
+
+		</div>
+
+
+	
+
+		
+		<div class="slide footer">
+			<div class="wrap clearfix">
+			<div class="col sixth">
+					<h4  class="first"><a href="https://yukonenergy.ca/about-us/">About Us</a></h4>
+					
+						<ul>
+							<li><a href="https://yukonenergy.ca/about-us/who-we-are/">Who We Are</a></li><li><a href="https://yukonenergy.ca/about-us/news-events/">News & Events</a></li><li><a href="https://yukonenergy.ca/about-us/purchasing-tenders/">Purchasing and Tenders</a></li><li><a href="https://yukonenergy.ca/about-us/careers/">Careers</a></li><li><a href="https://yukonenergy.ca/about-us/business-documents/">Business Documents</a></li>
+						</ul>
+					
+				</div><div class="col sixth">
+					<h4  class="parent-selected"><a href="https://yukonenergy.ca/energy-in-yukon/">Energy in Yukon</a></h4>
+					
+						<ul>
+							<li><a href="https://yukonenergy.ca/energy-in-yukon/electricity-101/">Electricity 101</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/projects-facilities/">Projects and Facilities</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/energy-future/">Energy Future</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/saving-energy/">Saving Energy</a></li><li><a href="https://yukonenergy.ca/energy-in-yukon/small-scale-renewable-power/">Small-Scale Renewable Power</a></li>
+						</ul>
+					
+				</div><div class="col sixth">
+					<h4  ><a href="https://yukonenergy.ca/environment/">Environment</a></h4>
+					
+						<ul>
+							<li><a href="https://yukonenergy.ca/environment/commitment/">Commitment</a></li><li><a href="https://yukonenergy.ca/environment/conservation/">Conservation</a></li><li><a href="https://yukonenergy.ca/environment/climate-change/">Climate Change</a></li><li><a href="https://yukonenergy.ca/environment/current-water-levels/">Current Water Levels</a></li>
+						</ul>
+					
+				</div><div class="col sixth">
+					<h4  ><a href="https://yukonenergy.ca/community-support/">Community</a></h4>
+					
+						<ul>
+							<li><a href="https://yukonenergy.ca/community-support/scholarships/">Scholarships</a></li><li><a href="https://yukonenergy.ca/community-support/community-projects/">Community Projects</a></li><li><a href="https://yukonenergy.ca/community-support/first-nation-partnerships/">First Nations Partnerships</a></li><li><a href="https://yukonenergy.ca/community-support/our-commitment-to-first-nations/">Our Commitment to First Nations</a></li>
+						</ul>
+					
+				</div><div class="col sixth">
+					<h4  ><a href="https://yukonenergy.ca/customer-service/">Customer Service</a></h4>
+					
+						<ul>
+							<li><a href="https://yukonenergy.ca/customer-service/electrical-service-connections/">Electrical Service Connections</a></li><li><a href="https://yukonenergy.ca/customer-service/programs/">Programs</a></li><li><a href="https://yukonenergy.ca/customer-service/power-outages/">Power Outages</a></li><li><a href="https://yukonenergy.ca/customer-service/rates/">Rates</a></li><li><a href="https://yukonenergy.ca/customer-service/accounts-billing/">Accounts and Billing</a></li><li><a href="https://yukonenergy.ca/customer-service/my-account/">My Account</a></li>
+						</ul>
+					
+				</div><div class="col sixth">
+					<h4  class="last"><a href="https://yukonenergy.ca/health-safety/">Health and Safety</a></h4>
+					
+						<ul>
+							<li><a href="https://yukonenergy.ca/health-safety/our-commitment-to-safety/">Our Commitment to Safety</a></li><li><a href="https://yukonenergy.ca/health-safety/preparing-for-emergencies/">Preparing for Emergencies</a></li><li><a href="https://yukonenergy.ca/health-safety/electrical-safety/">Electrical Safety</a></li><li><a href="https://yukonenergy.ca/health-safety/facility-safety/">Facility Safety</a></li><li><a href="https://yukonenergy.ca/health-safety/certificate-of-recognition-cor/">Certificate of Recognition (COR)</a></li>
+						</ul>
+					
+				</div>
+				
+				
+				<div class="col sixth"><h4><a href="https://yukonenergy.ca/information/contact-us/">Contact us</a></h4></div>				
+				
+
+				
+					
+						
+					
+						
+							<div class="col sixth"><h4><a href="/fr">Français</a></h4></div>
+						
+					
+								
+				
+			</div>
+		</div>
+
+	</div>
+
+	
+</body>
+</html>
+
