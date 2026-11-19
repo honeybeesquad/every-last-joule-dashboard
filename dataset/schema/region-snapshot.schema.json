@@ -78,6 +78,12 @@
       "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1},
       "propertyNames": {"enum": ["solar", "wind", "hydro", "geothermal"]}
     },
+    "fuelProfiles": {
+      "type": "object",
+      "description": "Optional per-fuel 24-hour profiles (GW, UTC hours 0-23) that sum to profile. Emitted since 2026-11-19 by mixed regions built from separate fuel profiles; used to split each hour by fuel.",
+      "additionalProperties": {"type": "array", "items": {"type": "number", "minimum": 0}, "minItems": 24, "maxItems": 24},
+      "propertyNames": {"enum": ["solar", "wind", "hydro"]}
+    },
     "uncertaintyLowGW": {
       "type": "number",
       "minimum": 0,

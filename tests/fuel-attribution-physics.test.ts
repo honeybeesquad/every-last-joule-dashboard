@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
+import { buildTypicalMixedRegion } from "../src/lib/typical-profiles";
 import {
   FUEL_ORDER,
   fuelShare,
@@ -39,6 +40,31 @@ describe("fuel attribution cannot state the impossible", () => {
     expect(fuelShareAtHour(night!, "wind", anyDark)).toBe(
       fuelShare(night!, "wind"),
     );
+  });
+
+  it("splits a mixed region hour by hour from its fuel profiles, covering every hour", () => {
+    // With fuelProfiles, every hour is fully attributed (no solar fraction dropped
+    // at night) and each fuel's 24-hour total matches its own profile.
+    const region = { id: "__mixed__", kind: "mixed", lon: 117 } as never;
+    const data = buildTypicalMixedRegion("__mixed__", 1, { wind: 0.29, solar: 0.71 }, "test", "2024", 4, 15);
+    const totals = { solar: 0, wind: 0, hydro: 0 };
+    let all = 0;
+    for (let h = 0; h < 24; h++) {
+      const shares = FUEL_ORDER.map((f) => fuelShareAtHour(region, f, h, data));
+      expect(shares.reduce((a, b) => a + b, 0), `hour ${h}`).toBeCloseTo(1, 10);
+      all += data.profile[h];
+      FUEL_ORDER.forEach((f, i) => (totals[f] += data.profile[h] * shares[i]));
+    }
+    expect(totals.wind / all).toBeCloseTo(0.29, 2);
+    expect(totals.solar / all).toBeCloseTo(0.71, 2);
+    expect(totals.hydro).toBe(0);
+  });
+
+  it("keeps the flat split for mixed regions without fuel profiles", () => {
+    const region = { id: "__mixed__", kind: "mixed", lon: 117 } as never;
+    const data = { fuelShare: { wind: 0.6, solar: 0.4 } } as never;
+    const noon = [...Array(24).keys()].find((h) => localHour(h, 117) > 11 && localHour(h, 117) < 13)!;
+    expect(fuelShareAtHour(region, "wind", noon, data)).toBeCloseTo(0.6, 10);
   });
 
   it("never credits a single-fuel row to a different fuel", () => {

@@ -223,6 +223,10 @@ export function buildTypicalMixedRegion(
   const wind = windProfile(windPeakHourUtc, annualTWh * (fuelShare.wind ?? 0));
   const hydro = hydroProfile(annualTWh * (fuelShare.hydro ?? 0));
   const profile = solar.map((value, hour) => value + wind[hour] + hydro[hour]);
+  const fuelProfiles: NonNullable<RegionData["fuelProfiles"]> = {};
+  if ((fuelShare.solar ?? 0) > 0) fuelProfiles.solar = solar;
+  if ((fuelShare.wind ?? 0) > 0) fuelProfiles.wind = wind;
+  if ((fuelShare.hydro ?? 0) > 0) fuelProfiles.hydro = hydro;
   const base: RegionData = {
     regionId,
     profile,
@@ -233,6 +237,7 @@ export function buildTypicalMixedRegion(
     lastSuccessAt: coerceLastSuccessAt(lastUpdated),
     sourceNote,
     fuelShare,
+    fuelProfiles,
   };
   return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });
 }

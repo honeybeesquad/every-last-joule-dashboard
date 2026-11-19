@@ -264,6 +264,21 @@ function buildTypicalRegionByFuel(
   return buildTypicalHydroRegion(regionId, annualTWh, note);
 }
 
+/**
+ * Wind/solar shares of an anchored mixed region, from its anchors; the loader's
+ * fixed share only when both anchors are zero. When both rates are the
+ * placeholder floor they are equal and cancel, so the ratio is Ember's
+ * generation ratio (floorCaveat says the rates are placeholders).
+ */
+export function anchoredFuelShare(
+  windTWh: number,
+  solarTWh: number,
+  fallback: { wind: number; solar: number },
+): { wind: number; solar: number } {
+  const total = windTWh + solarTWh;
+  return total > 0 ? { wind: windTWh / total, solar: solarTWh / total } : fallback;
+}
+
 /** Caveat for a mixed region whose wind and/or solar rate is the placeholder floor. */
 export function floorCaveat(windFloored: boolean, solarFloored: boolean): string {
   if (windFloored && solarFloored) return `; both rates are a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not published rates`;
@@ -315,11 +330,10 @@ export function buildChinaMixedRegionFromAnchors(
     lastSuccessAt: new Date(`${latestMonth}-01T00:00:00.000Z`).toISOString(),
     sourceProvenance: "modelled-fallback",
     sourceStatus: "cached",
-    sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d; the wind/solar split shown is the loader's fixed ${Math.round((fuelShare.wind ?? 0) * 100)}/${Math.round((fuelShare.solar ?? 0) * 100)}, not this anchor ratio${floorCaveat(windAnchor.rateFloored, solarAnchor.rateFloored)}`,
-    // Fixed loader share, deliberately not the anchor ratio: anchor-based splits
-    // wait for hour-by-hour fuel attribution (fuelShareAtHour drops solar at
-    // night; a more solar-heavy split would drop more). See STATUS.md, "Open".
-    fuelShare,
+    sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d${floorCaveat(windAnchor.rateFloored, solarAnchor.rateFloored)}`,
+    // Anchor-based split; hours are attributed from the per-fuel profiles.
+    fuelShare: anchoredFuelShare(wind.totalTWh, solar.totalTWh, fuelShare),
+    fuelProfiles: { wind: wind.profile, solar: solar.profile },
   };
   return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });
 }

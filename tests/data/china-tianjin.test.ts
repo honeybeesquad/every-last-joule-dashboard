@@ -8,11 +8,10 @@ describe("china-tianjin loader", () => {
     expect(data.profile).toHaveLength(24);
     expect(data.totalTWh).toBeCloseTo(((0.153 + 0.373) * 30) / 365, 8);
     expect(data.confidenceTier).toBe("T3-modelled");
-    // KNOWN GAP, not the intended end state: the fixed loader split is served instead of the
-    // anchor ratio (~29/71) until hour-by-hour attribution lands (STATUS.md, "Open"). When it
-    // does, update this to the anchor ratio rather than "fixing" the code back to 55/45.
-    expect(data.sourceNote).toContain("not this anchor ratio");
-    expect(data.fuelShare?.wind).toBeCloseTo(0.55, 2);
-    expect(data.fuelShare?.solar).toBeCloseTo(0.45, 2);
+    // Anchored split (wind 0.153 / solar 0.373 TWh/yr); hours attributed from fuelProfiles.
+    expect(data.fuelShare?.wind).toBeCloseTo(0.153 / (0.153 + 0.373), 2);
+    expect(data.fuelShare?.solar).toBeCloseTo(0.373 / (0.153 + 0.373), 2);
+    expect(data.fuelProfiles?.wind).toHaveLength(24);
+    expect(data.fuelProfiles?.solar).toHaveLength(24);
   });
 });

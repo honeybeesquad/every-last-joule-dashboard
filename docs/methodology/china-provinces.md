@@ -91,7 +91,7 @@ No `kind` changes were required in `src/lib/regions.ts`: Inner Mongolia remains 
 
 ## W2 provinces (added 2026-05-02)
 
-> **Historical.** The annual TWh and fixed fuel splits in this table are the 2026-05-02 static estimates. They now serve only as loader fallbacks. Since 2026-11-19 every wind and solar row is driven by the bulletin anchors (see "Trailing-12-month bulletin rates"). Mixed regions still serve the fixed wind/solar split listed here, not their anchor ratio, until hour-by-hour fuel attribution lands (see STATUS.md, "Open").
+> **Historical.** The annual TWh and fixed fuel splits in this table are the 2026-05-02 static estimates. They now serve only as loader fallbacks. Since 2026-11-19 every wind and solar row is driven by the bulletin anchors (see "Trailing-12-month bulletin rates"). Since 2026-11-19 mixed regions serve their anchor ratio and are attributed hour by hour from their per-fuel profiles (`fuelProfiles`); the fixed splits listed here are only the fallback.
 
 Nineteen additional provinces anchored to NEA 2024 provincial RE monitoring bulletin utilisation rates. Each uses the same calculation method as the phase-1 provinces: `curtailed TWh = generation TWh × (1/utilisation_rate − 1)` applied per fuel type and summed. All 19 are `T3-modelled` with ±40% envelope.
 
