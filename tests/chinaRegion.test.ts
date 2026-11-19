@@ -48,6 +48,7 @@ describe("floorCaveat", () => {
   it("labels placeholder-floor rates on mixed regions", () => {
     expect(floorCaveat(true, true)).toContain("not published rates");
     expect(floorCaveat(true, false)).toContain("wind rate is a 0.05% placeholder floor");
+    expect(floorCaveat(false, true)).toContain("solar rate is a 0.05% placeholder floor");
     expect(floorCaveat(false, false)).toBe("");
   });
 });

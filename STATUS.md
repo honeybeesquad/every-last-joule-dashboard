@@ -12,10 +12,10 @@ PR from `claude/magical-goodall-nv660q`, follow-up 2 of #1636, approved by Simon
 - On top of #1664: China 13.83 to 14.16 TWh/30d, dataset 29.43 to 29.77 TWh/30d (+1.1%).
 - **Not represented:** wind curtailment in provinces with no wind region (Hainan 0.35, Guizhou 0.15, Beijing 0.03 TWh/yr). The Sichuan 30 TWh hydro static is unchanged.
 - **Also fixed (review):**
-  - **Open, follow-up needing sign-off: mixed splits and night attribution.** Anchored mixed regions (Tianjin, Fujian, Guangdong, Zhejiang) serve the loader's fixed wind/solar split, not their anchor ratio. Tianjin is 55/45 against an anchored 29/71. A split change alone would worsen a pre-existing, dashboard-wide undercount: `fuelShareAtHour` drops a mixed region's solar fraction at night. Both need hour-by-hour attribution from the per-fuel profiles, which is a global change. A night-only rescale was tried in review and reverted, because it double-counted wind.
   - **Floored rates.** These carry a `rateFloored` flag and are labelled "placeholder floor … not a published rate", including mixed regions. Rates under 1% show two decimals.
   - **Validation pages.** The Source URL is synced as well as the Source line.
   - **Hydro notes.** The Hubei, Hunan, Chongqing and Guizhou hydro snapshot notes had picked up a sandbox "fetch failed" error (Hubei and Hunan since #1636). They are restored.
+- **Open (follow-up needing sign-off): mixed splits and night attribution.** Anchored mixed regions (Tianjin, Fujian, Guangdong, Zhejiang) serve the loader's fixed wind/solar split, not their anchor ratio. Tianjin is 55/45 against an anchored 29/71. A split change alone would worsen a pre-existing, dashboard-wide undercount: `fuelShareAtHour` drops a mixed region's solar fraction at night. Both need hour-by-hour attribution from the per-fuel profiles, which is a global change. A night-only rescale was tried in review and reverted, because it double-counted wind.
 
 ## China anchors use curtailed = generation × rate / (1 − rate) (2026-11-19)
 

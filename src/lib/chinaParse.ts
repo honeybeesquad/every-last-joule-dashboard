@@ -315,10 +315,10 @@ export function buildChinaMixedRegionFromAnchors(
     lastSuccessAt: new Date(`${latestMonth}-01T00:00:00.000Z`).toISOString(),
     sourceProvenance: "modelled-fallback",
     sourceStatus: "cached",
-    sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d${floorCaveat(windAnchor.rateFloored, solarAnchor.rateFloored)}`,
-    // Fixed loader share, as on main. Anchor-based splits wait for hour-by-hour
-    // fuel attribution (fuelShareAtHour drops solar at night; a more
-    // solar-heavy split would drop more). See STATUS.md.
+    sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d; the wind/solar split shown is the loader's fixed ${Math.round((fuelShare.wind ?? 0) * 100)}/${Math.round((fuelShare.solar ?? 0) * 100)}, not this anchor ratio${floorCaveat(windAnchor.rateFloored, solarAnchor.rateFloored)}`,
+    // Fixed loader share, deliberately not the anchor ratio: anchor-based splits
+    // wait for hour-by-hour fuel attribution (fuelShareAtHour drops solar at
+    // night; a more solar-heavy split would drop more). See STATUS.md, "Open".
     fuelShare,
   };
   return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });
