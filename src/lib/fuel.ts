@@ -151,8 +151,9 @@ export function solarShareAtHour(
 }
 
 /**
- * Hourly-correct fuel split. Identical to `fuelShare` for wind and hydro,
- * which run at any hour; solar additionally goes to zero in local darkness.
+ * Hourly-correct fuel split. Solar goes to zero in local darkness; in those
+ * hours a mixed region's wind and hydro shares are scaled up to cover the
+ * solar fraction, since the region's night output is all non-solar.
  */
 export function fuelShareAtHour(
   region: Region,
@@ -160,9 +161,15 @@ export function fuelShareAtHour(
   utcHour: number,
   regionData?: RegionData,
 ): number {
-  return fuel === "solar"
-    ? solarShareAtHour(region, utcHour, regionData)
-    : fuelShare(region, fuel, regionData);
+  if (fuel === "solar") return solarShareAtHour(region, utcHour, regionData);
+  const share = fuelShare(region, fuel, regionData);
+  // At night a mixed region's output is all non-solar. With solar masked, the
+  // remaining fuels carry the whole hour, so the hour's shares still sum to the
+  // region's split total instead of silently dropping the solar fraction.
+  const solar = fuelShare(region, "solar", regionData);
+  if (share <= 0 || solar <= 0 || solarShareAtHour(region, utcHour, regionData) > 0) return share;
+  const nonSolar = FUEL_ORDER.filter((f) => f !== "solar").reduce((t, f) => t + fuelShare(region, f, regionData), 0);
+  return nonSolar > 0 ? (share * (nonSolar + solar)) / nonSolar : share;
 }
 
 /** Canonical single-kind mapping. Geothermal collapses into the hydro

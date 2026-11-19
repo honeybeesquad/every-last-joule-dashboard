@@ -318,7 +318,7 @@ export function buildAnchors(
     const regionId = regionIdFor(province, fuel); // wired provinces are always mapped; throws loudly otherwise
     const rateText = floored
       ? `${(RATE_FLOOR * 100).toFixed(2)}% placeholder floor (published utilisation ~100%; not a published rate)`
-      : `${(rate * 100).toFixed(1)}%`;
+      : `${formatRatePct(rate)}%`;
     out.push({
       regionId,
       fuel,
@@ -374,18 +374,25 @@ interface StoreAnchor {
   rateFloored?: boolean;
 }
 
+/** Rates under 1% get two decimals, so 0.05% does not read as 0.1%. */
+export function formatRatePct(rate: number): string {
+  const pct = rate * 100;
+  return pct < 1 ? pct.toFixed(2) : pct.toFixed(1);
+}
+
 /** The canonical source-string fragment for one anchored region. */
 export function rateFragment(a: StoreAnchor): string {
   // No parentheses here: RATE_RE stops at the first "(".
-  const pct = a.rateFloored
+  const floored = a.rateFloored ?? a.curtailmentRate <= RATE_FLOOR; // older stores have no flag
+  const pct = floored
     ? `${(RATE_FLOOR * 100).toFixed(2)}% placeholder floor, published utilisation ~100%, not a published rate`
-    : `${(a.curtailmentRate * 100).toFixed(1)}%`;
+    : `${formatRatePct(a.curtailmentRate)}%`;
   const split = a.regionId.startsWith("inner-mongolia-") ? ", 蒙西 Mengxi-only rate on whole-province generation" : "";
   return `monitoring-centre curtailment rate ${pct} (trailing 12 months ${a.rateWindow}${split}, system-caused limits only)`;
 }
 
 const RATE_RE = /monitoring-centre curtailment rate [^()]*\(trailing 12 months [^)]*\)/;
-const WINDOW_RE = /monitoring-centre trailing-12-month curtailment rate \(\d{4}-\d{2}\.\.\d{4}-\d{2}, system-caused limits only\)/;
+const WINDOW_RE = /monitoring-centre trailing-12-month curtailment rate \(\d{4}-\d{2}\.\.\d{4}-\d{2}, system-caused limits only[^)]*\)/;
 
 /**
  * Rewrite the rate/window fragments of every China region in regions.ts from the
@@ -408,7 +415,18 @@ export function syncRegionsText(text: string, anchors: StoreAnchor[]): { text: s
     }
     if (anyWindow && WINDOW_RE.test(line) && byId.has(`${id}-wind`) && byId.has(`${id}-solar`)) {
       touched.push(id);
-      const fragment = `monitoring-centre trailing-12-month curtailment rate (${anyWindow}, system-caused limits only)`;
+      const w = byId.get(`${id}-wind`)!;
+      const so = byId.get(`${id}-solar`)!;
+      const isFloored = (a: StoreAnchor) => a.rateFloored ?? a.curtailmentRate <= RATE_FLOOR;
+      const floorText =
+        isFloored(w) && isFloored(so)
+          ? "; both rates a 0.05% placeholder floor, published utilisation ~100%, not published rates"
+          : isFloored(w)
+            ? "; wind rate a 0.05% placeholder floor, not a published rate"
+            : isFloored(so)
+              ? "; solar rate a 0.05% placeholder floor, not a published rate"
+              : "";
+      const fragment = `monitoring-centre trailing-12-month curtailment rate (${anyWindow}, system-caused limits only${floorText})`;
       return line.replace(WINDOW_RE, () => fragment);
     }
     return line;

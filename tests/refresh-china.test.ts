@@ -1,5 +1,5 @@
 import { describe, it, expect, afterAll } from "vitest";
-import { mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
@@ -13,6 +13,7 @@ import {
   regionSourceFromText,
   syncValidationDoc,
   rateFragment,
+  regionSourceUrlFromText,
   REGIONS_PATH,
   VALIDATION_DOCS_DIR,
 } from "../scripts/refresh-china.js";
@@ -155,8 +156,10 @@ describe("refresh-china buildAnchors", () => {
     const frag = rateFragment({ regionId: "xinjiang-wind", curtailmentRate: RATE_FLOOR, rateWindow: "2025-04..2026-03", rateFloored: true });
     expect(frag).toContain("placeholder floor");
     expect(frag).not.toMatch(/floor[^(]*\(.*\(/); // one "(" only, so the sync regex still matches
-    // A rounded rate equal to the floor but not floored is shown as a rate, not a floor.
-    expect(rateFragment({ regionId: "x", curtailmentRate: RATE_FLOOR, rateWindow: "w", rateFloored: false })).toContain("rate 0.1%");
+    // A rate equal to the floor but not floored is shown as that rate (two decimals under 1%).
+    expect(rateFragment({ regionId: "x", curtailmentRate: RATE_FLOOR, rateWindow: "w", rateFloored: false })).toContain("rate 0.05%");
+    // An older store row with no flag falls back to comparing against the floor.
+    expect(rateFragment({ regionId: "x", curtailmentRate: RATE_FLOOR, rateWindow: "w" })).toContain("placeholder floor");
   });
 
   it("applies the 0.05% floor only below it, and says so in the source", () => {
@@ -218,9 +221,22 @@ describe("committed sources stay in step with the store", () => {
     const doc = "- **Source:** old\n- **Source URL:** [https://old](https://old)\n";
     expect(syncValidationDoc(doc, "new", "https://csv")).toBe("- **Source:** new\n- **Source URL:** [https://csv](https://csv)\n");
     for (const id of syncRegionsText(regions, store).touched) {
-      const page = readFileSync(join(VALIDATION_DOCS_DIR, `${id}.md`), "utf-8");
-      expect(page, id).toContain("data/china-curtailment-bulletins.csv");
+      const path = join(VALIDATION_DOCS_DIR, `${id}.md`);
+      if (!existsSync(path)) continue; // main() skips regions with no page too
+      const page = readFileSync(path, "utf-8");
+      expect(syncValidationDoc(page, regionSourceFromText(regions, id)!, regionSourceUrlFromText(regions, id)), id).toBe(page);
     }
+  });
+
+  it("labels a mixed region whose rates are placeholder floors", () => {
+    const line = '  { id: "zz-mixed", source: "x at monitoring-centre trailing-12-month curtailment rate (2025-04..2026-03, system-caused limits only) — y", sourceUrl: "u" },';
+    const anchors = [
+      { regionId: "zz-mixed-wind", curtailmentRate: RATE_FLOOR, rateWindow: "2025-04..2026-03", rateFloored: true },
+      { regionId: "zz-mixed-solar", curtailmentRate: RATE_FLOOR, rateWindow: "2025-04..2026-03", rateFloored: true },
+    ];
+    const { text } = syncRegionsText(line, anchors);
+    expect(text).toContain("both rates a 0.05% placeholder floor");
+    expect(syncRegionsText(text, anchors).text).toBe(text); // still idempotent
   });
 
   it("copies $ sequences literally rather than expanding them", () => {

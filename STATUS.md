@@ -12,8 +12,10 @@ PR from `claude/magical-goodall-nv660q`, follow-up 2 of #1636, approved by Simon
 - On top of #1664: China 13.83 to 14.16 TWh/30d, dataset 29.43 to 29.77 TWh/30d (+1.1%).
 - **Not represented:** wind curtailment in provinces with no wind region (Hainan 0.35, Guizhou 0.15, Beijing 0.03 TWh/yr). The Sichuan 30 TWh hydro static is unchanged.
 - **Also fixed (review):**
-  - **Mixed-region splits.** Mixed regions served the fallback's fixed wind/solar split even when anchored. They now split by their anchors: Tianjin 29/71 (was 55/45); Fujian, Guangdong and Zhejiang also change. No totals move.
-  - **Floored rates.** These carry a `rateFloored` flag and are labelled "placeholder floor … not a published rate".
+  - **Mixed-region splits.** Anchored mixed regions served the fallback's fixed wind/solar split. They now split by their anchors: Tianjin 29/71 (was 55/45), Guangdong 42/58 and Zhejiang 42/58. Tianjin and Guangdong now sort as solar, which changes their hotspot column and pillar colour. Fujian keeps its fixed 55/45, because both its rates are the placeholder floor.
+  - **Totals and attribution.** Dataset totalTWh is unchanged, but per-fuel attribution moves.
+  - **Night attribution.** `fuelShareAtHour` now gives a mixed region's night hours fully to its non-solar fuels. Before, the solar fraction was dropped at night. This applies to every mixed region on the dashboard. No region's totalTWh changes, but per-fuel timeline totals at night rise.
+  - **Floored rates.** These carry a `rateFloored` flag and are labelled "placeholder floor … not a published rate", including mixed regions. Rates under 1% show two decimals.
   - **Validation pages.** The Source URL is synced as well as the Source line.
   - **Hydro notes.** The Hubei, Hunan, Chongqing and Guizhou hydro snapshot notes had picked up a sandbox "fetch failed" error (Hubei and Hunan since #1636). They are restored.
 

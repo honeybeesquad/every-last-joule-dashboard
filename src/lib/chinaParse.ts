@@ -167,14 +167,16 @@ export function latestAnnualGenerationFromFile(
 export function chinaAnchor(
   regionId: string,
   storePath = join(process.cwd(), "data", "china-anchors.json"),
-): { annualTWh: number; latestMonth: string; source: string } | null {
+): { annualTWh: number; latestMonth: string; source: string; rateFloored: boolean } | null {
   if (!existsSync(storePath)) return null;
   try {
     const store = JSON.parse(readFileSync(storePath, "utf-8")) as {
-      anchors: Array<{ regionId: string; annualTWh: number; latestMonth: string; source: string }>;
+      anchors: Array<{ regionId: string; annualTWh: number; latestMonth: string; source: string; rateFloored?: boolean }>;
     };
     const row = store.anchors.find((a) => a.regionId === regionId);
-    return row ? { annualTWh: row.annualTWh, latestMonth: row.latestMonth, source: row.source } : null;
+    return row
+      ? { annualTWh: row.annualTWh, latestMonth: row.latestMonth, source: row.source, rateFloored: row.rateFloored === true }
+      : null;
   } catch {
     return null;
   }
@@ -244,6 +246,21 @@ function buildTypicalRegionByFuel(
 }
 
 /**
+ * Wind/solar shares of an anchored mixed region. Falls back to the loader's
+ * fixed share when both anchors are zero, or when both rates are the placeholder
+ * floor (a split built from two invented 0.05% rates would not be data).
+ */
+export function anchoredFuelShare(
+  windTWh: number,
+  solarTWh: number,
+  fallback: { wind: number; solar: number },
+  bothFloored = false,
+): { wind: number; solar: number } {
+  const total = windTWh + solarTWh;
+  return total > 0 && !bothFloored ? { wind: windTWh / total, solar: solarTWh / total } : fallback;
+}
+
+/**
  * Build a China *mixed* (wind+solar combined) RegionData that consumes the
  * refreshed anchor store when present, otherwise falls back to the loader's
  * hardcoded typical-shape mixed anchor. Mirrors buildChinaRegionFromAnchor but
@@ -255,14 +272,12 @@ function buildTypicalRegionByFuel(
  * promotion. When either per-fuel anchor is missing, the loader's hardcoded
  * (estimated) mixed anchor is used unchanged.
  */
-/** Wind/solar shares of an anchored mixed region; the fallback share if both are zero. */
-export function anchoredFuelShare(
-  windTWh: number,
-  solarTWh: number,
-  fallback: { wind: number; solar: number },
-): { wind: number; solar: number } {
-  const total = windTWh + solarTWh;
-  return total > 0 ? { wind: windTWh / total, solar: solarTWh / total } : fallback;
+/** Caveat for a mixed region whose wind and/or solar rate is the placeholder floor. */
+export function floorCaveat(windFloored: boolean, solarFloored: boolean): string {
+  if (windFloored && solarFloored) return "; both rates are a 0.05% placeholder floor (published utilisation ~100%), not published rates; wind/solar split is the fixed fallback share";
+  if (windFloored) return "; the wind rate is a 0.05% placeholder floor (published utilisation ~100%), not a published rate";
+  if (solarFloored) return "; the solar rate is a 0.05% placeholder floor (published utilisation ~100%), not a published rate";
+  return "";
 }
 
 export function buildChinaMixedRegionFromAnchors(
@@ -296,9 +311,9 @@ export function buildChinaMixedRegionFromAnchors(
     lastSuccessAt: new Date(`${latestMonth}-01T00:00:00.000Z`).toISOString(),
     sourceProvenance: "modelled-fallback",
     sourceStatus: "cached",
-    sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d`,
+    sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d${floorCaveat(windAnchor.rateFloored, solarAnchor.rateFloored)}`,
     // The served split follows the anchors, not the fallback's fixed share.
-    fuelShare: anchoredFuelShare(wind.totalTWh, solar.totalTWh, fuelShare),
+    fuelShare: anchoredFuelShare(wind.totalTWh, solar.totalTWh, fuelShare, windAnchor.rateFloored && solarAnchor.rateFloored),
   };
   return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });
 }

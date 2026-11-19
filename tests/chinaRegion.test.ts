@@ -2,7 +2,7 @@ import { describe, it, expect, afterAll } from "vitest";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { buildChinaRegionFromAnchor, anchoredFuelShare } from "../src/lib/chinaParse.js";
+import { buildChinaRegionFromAnchor, anchoredFuelShare, floorCaveat } from "../src/lib/chinaParse.js";
 
 const dir = mkdtempSync(join(tmpdir(), "china-build-"));
 const store = join(dir, "china-anchors.json");
@@ -49,6 +49,12 @@ describe("anchoredFuelShare", () => {
     const share = anchoredFuelShare(0.153, 0.373, { wind: 0.55, solar: 0.45 });
     expect(share.wind).toBeCloseTo(0.2909, 4);
     expect(share.solar).toBeCloseTo(0.7091, 4);
+  });
+
+  it("keeps the fallback share when both rates are the placeholder floor", () => {
+    expect(anchoredFuelShare(0.013, 0.012, { wind: 0.55, solar: 0.45 }, true)).toEqual({ wind: 0.55, solar: 0.45 });
+    expect(floorCaveat(true, true)).toContain("not published rates");
+    expect(floorCaveat(false, false)).toBe("");
   });
 
   it("keeps the fallback share when both anchors are zero", () => {

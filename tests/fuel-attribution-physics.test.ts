@@ -41,6 +41,19 @@ describe("fuel attribution cannot state the impossible", () => {
     );
   });
 
+  it("gives a mixed region's night hours fully to its non-solar fuels", () => {
+    // Solar is masked at night; the region's night output is all wind/hydro, so the
+    // non-solar shares scale up and the hour still sums to the split total.
+    const mixed = { id: "__mixed__", kind: "mixed", lon: 117 } as never;
+    const data = { fuelShare: { wind: 0.29, solar: 0.71 } } as never;
+    const dark = [...Array(24).keys()].find((h) => isDark(h, 117))!;
+    const light = [...Array(24).keys()].find((h) => !isDark(h, 117) && localHour(h, 117) > 9 && localHour(h, 117) < 15)!;
+    expect(fuelShareAtHour(mixed, "solar", dark, data)).toBe(0);
+    expect(fuelShareAtHour(mixed, "wind", dark, data)).toBeCloseTo(1, 10);
+    expect(fuelShareAtHour(mixed, "wind", light, data)).toBeCloseTo(0.29, 10);
+    expect(fuelShareAtHour(mixed, "solar", light, data)).toBeCloseTo(0.71, 10);
+  });
+
   it("never credits a single-fuel row to a different fuel", () => {
     // Split zones (Norway NO1-NO4, Belgium) carry the parent zone's combined
     // share on every child row. Applying it re-splits an already-split row
