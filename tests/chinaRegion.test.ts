@@ -2,7 +2,7 @@ import { describe, it, expect, afterAll } from "vitest";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { buildChinaRegionFromAnchor, anchoredFuelShare, floorCaveat } from "../src/lib/chinaParse.js";
+import { buildChinaRegionFromAnchor, floorCaveat } from "../src/lib/chinaParse.js";
 
 const dir = mkdtempSync(join(tmpdir(), "china-build-"));
 const store = join(dir, "china-anchors.json");
@@ -44,23 +44,10 @@ describe("buildChinaRegionFromAnchor", () => {
   });
 });
 
-describe("anchoredFuelShare", () => {
-  it("splits an anchored mixed region by its anchors, not the fallback share", () => {
-    const share = anchoredFuelShare(0.153, 0.373, { wind: 0.55, solar: 0.45 });
-    expect(share.wind).toBeCloseTo(0.2909, 4);
-    expect(share.solar).toBeCloseTo(0.7091, 4);
-  });
-
-  it("keeps the anchored split when both rates are the placeholder floor, and says why", () => {
-    // Equal floor rates cancel, so the split is Ember's generation ratio, not invented.
-    const share = anchoredFuelShare(0.013, 0.012, { wind: 0.55, solar: 0.45 });
-    expect(share.wind).toBeCloseTo(0.52, 2);
-    expect(floorCaveat(true, true)).toContain("split follows Ember generation");
-    expect(floorCaveat(true, false)).toContain("affects the split");
+describe("floorCaveat", () => {
+  it("labels placeholder-floor rates on mixed regions", () => {
+    expect(floorCaveat(true, true)).toContain("not published rates");
+    expect(floorCaveat(true, false)).toContain("wind rate is a 0.05% placeholder floor");
     expect(floorCaveat(false, false)).toBe("");
-  });
-
-  it("keeps the fallback share when both anchors are zero", () => {
-    expect(anchoredFuelShare(0, 0, { wind: 0.55, solar: 0.45 })).toEqual({ wind: 0.55, solar: 0.45 });
   });
 });

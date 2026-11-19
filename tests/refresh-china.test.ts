@@ -236,7 +236,6 @@ describe("committed sources stay in step with the store", () => {
     ];
     const { text } = syncRegionsText(line, anchors);
     expect(text).toContain(`both rates a ${(RATE_FLOOR * 100).toFixed(2)}% placeholder floor`);
-    expect(text).toContain("split follows Ember generation");
     expect(syncRegionsText(text, anchors).text).toBe(text); // still idempotent
   });
 

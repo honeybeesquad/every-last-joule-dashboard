@@ -417,11 +417,11 @@ export function syncRegionsText(text: string, anchors: StoreAnchor[]): { text: s
       const so = byId.get(`${id}-solar`)!;
       const floorText =
         isAnchorFloored(w) && isAnchorFloored(so)
-          ? `; both rates a ${FLOOR_PCT} placeholder floor, published utilisation ~100%, not published rates; split follows Ember generation`
+          ? `; both rates a ${FLOOR_PCT} placeholder floor, published utilisation ~100%, not published rates`
           : isAnchorFloored(w)
-            ? `; wind rate a ${FLOOR_PCT} placeholder floor, not a published rate, which affects the split`
+            ? `; wind rate a ${FLOOR_PCT} placeholder floor, not a published rate`
             : isAnchorFloored(so)
-              ? `; solar rate a ${FLOOR_PCT} placeholder floor, not a published rate, which affects the split`
+              ? `; solar rate a ${FLOOR_PCT} placeholder floor, not a published rate`
               : "";
       const fragment = `monitoring-centre trailing-12-month curtailment rate (${anyWindow}, system-caused limits only${floorText})`;
       return line.replace(WINDOW_RE, () => fragment);

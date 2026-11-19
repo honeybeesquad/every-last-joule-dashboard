@@ -264,19 +264,12 @@ function buildTypicalRegionByFuel(
   return buildTypicalHydroRegion(regionId, annualTWh, note);
 }
 
-/**
- * Wind/solar shares of an anchored mixed region, from its anchors. Falls back
- * to the loader's fixed share only when both anchors are zero. When both rates
- * are the placeholder floor they are equal and cancel, so the split is Ember's
- * generation ratio (real data); floorCaveat says so.
- */
-export function anchoredFuelShare(
-  windTWh: number,
-  solarTWh: number,
-  fallback: { wind: number; solar: number },
-): { wind: number; solar: number } {
-  const total = windTWh + solarTWh;
-  return total > 0 ? { wind: windTWh / total, solar: solarTWh / total } : fallback;
+/** Caveat for a mixed region whose wind and/or solar rate is the placeholder floor. */
+export function floorCaveat(windFloored: boolean, solarFloored: boolean): string {
+  if (windFloored && solarFloored) return `; both rates are a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not published rates`;
+  if (windFloored) return `; the wind rate is a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not a published rate`;
+  if (solarFloored) return `; the solar rate is a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not a published rate`;
+  return "";
 }
 
 /**
@@ -291,15 +284,6 @@ export function anchoredFuelShare(
  * promotion. When either per-fuel anchor is missing, the loader's hardcoded
  * (estimated) mixed anchor is used unchanged.
  */
-/** Caveat for a mixed region whose wind and/or solar rate is the placeholder floor. */
-export function floorCaveat(windFloored: boolean, solarFloored: boolean): string {
-  if (windFloored && solarFloored)
-    return `; both rates are a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not published rates; the wind/solar split follows Ember generation`;
-  if (windFloored) return `; the wind rate is a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not a published rate, which affects the split`;
-  if (solarFloored) return `; the solar rate is a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not a published rate, which affects the split`;
-  return "";
-}
-
 export function buildChinaMixedRegionFromAnchors(
   regionId: string,
   fuelShare: { wind: number; solar: number },
@@ -332,8 +316,10 @@ export function buildChinaMixedRegionFromAnchors(
     sourceProvenance: "modelled-fallback",
     sourceStatus: "cached",
     sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d${floorCaveat(windAnchor.rateFloored, solarAnchor.rateFloored)}`,
-    // The served split follows the anchors, not the fallback's fixed share.
-    fuelShare: anchoredFuelShare(wind.totalTWh, solar.totalTWh, fuelShare),
+    // Fixed loader share, as on main. Anchor-based splits wait for hour-by-hour
+    // fuel attribution (fuelShareAtHour drops solar at night; a more
+    // solar-heavy split would drop more). See STATUS.md.
+    fuelShare,
   };
   return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });
 }
