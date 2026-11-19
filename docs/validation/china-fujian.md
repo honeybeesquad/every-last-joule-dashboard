@@ -1,6 +1,6 @@
 # Validation — Fujian (`china-fujian`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-11-18 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,8 +8,8 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** mixed
-- **Source:** Ember China subnational generation (trailing 12mo) × NEA 2024 curtailment rate — Fujian coastal mixed wind+solar
-- **Source URL:** [https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html](https://www.cpnn.com.cn/news/xny/202502/t20250219_1773747.html)
+- **Source:** Ember China subnational generation (trailing 12mo) × monitoring-centre trailing-12-month curtailment rate (2025-04..2026-03, system-caused limits only) — Fujian coastal mixed wind+solar
+- **Source URL:** [https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv)
 - **Loader:** [`china-fujian.json.ts`](../../src/data/china-fujian.json.ts)
 - **Structural gap:** no
 

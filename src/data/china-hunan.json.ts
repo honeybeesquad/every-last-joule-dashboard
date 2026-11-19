@@ -16,7 +16,10 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback: ${(err as Error).message}; Hunan mixed wind+solar+hydro curtailment ~1.9 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
+    // Hydro never consumes the anchor store, so it keeps the plain modelled note.
+    const baseNote = `${(err as Error).message}; Hunan mixed wind+solar+hydro curtailment ~1.9 TWh/yr; NEA 2024 provincial RE monitoring bulletin.`;
+    const hydroNote = `Typical-shape fallback: ${baseNote}`;
+    const note = `Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): ${baseNote}`;
     return {
       wind:  buildChinaRegionFromAnchor(
         "china-hunan-wind", "wind", 15, 1.9 * 0.5,
@@ -27,7 +30,7 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
         note + " — solar share (30%)",
       ),
       hydro: {
-        ...buildTypicalHydroRegion("china-hunan-hydro", 1.9 * 0.2, note + " — hydro share (20%)", "2024"),
+        ...buildTypicalHydroRegion("china-hunan-hydro", 1.9 * 0.2, hydroNote + " — hydro share (20%)", "2024"),
         sourceStatus: "cached" as const,
         sourceProvenance: "modelled-fallback" as const,
       },

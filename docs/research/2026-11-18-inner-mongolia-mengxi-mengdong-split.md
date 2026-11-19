@@ -64,6 +64,8 @@ Further notes from the check:
 - nea.gov.cn carries only the national 2024 figures (wind 95.9%, solar 96.8%). The province table went out on the centre's WeChat account.
 - Quote the table image, not reprint text: the Sohu text gives Tibet solar as 68.3%, where the table and cpnn say 68.6%.
 
+**Superseded (2026-11-19):** the trailing-12-month bulletin rates (`data/china-curtailment-bulletins.csv`, PR from `claude/magical-goodall-nv660q`) replace this 2024 rate. Inner Mongolia is served at the 蒙西 2025-04..2026-03 rate (wind 9.7%, PV 8.3%) on whole-province generation, still unsplit. The paragraph below is the historical #1646 change.
+
 **Change (PR after #1620, pending owner sign-off to merge):** the Inner Mongolia rate moves to the full-year 6.3% wind and 6.3% solar, from 4.6% and 5.3%. On the committed Ember trailing-12-month generation (209.731 / 79.119 TWh), the anchors become 13.213 TWh/yr wind (from 9.648) and 4.984 TWh/yr solar (from 4.193), +4.356 TWh/yr in total. The Mengxi-only rate is still applied to whole-province generation, as before.
 
 **Open:** the other provinces in `scripts/refresh-china.ts` share the same cpnn citation and the same "full-year / M1-11" hedge. Their rates have not been checked against the full-year table.

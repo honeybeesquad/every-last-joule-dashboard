@@ -132,6 +132,21 @@ Province-to-grid mismatch remains. Inner Mongolia is reported by NEA as Monxi an
 
 China's operational grids are interconnection families — SGCC North / Central / East / Northeast, CSG, and Mengxi — not 31 live provincial TSOs. Until NEA or SGCC publish machine-readable dispatch, provincial Ember×NEA rows stay **modelled generation** with waste from NEA **rates** (`anchor-implied`, never `measured`). Do not advertise live TSO collection. One region per interconnection would be more honest than fake live provincials; that remap is not this change.
 
+## Trailing-12-month bulletin rates (draft, 2026-11-18)
+
+The 44 Ember-anchored rows in `data/china-anchors.json` take their curtailment rate from the national monitoring centre's monthly provincial bulletins (各省级区域新能源并网消纳情况; 全国新能源消纳监测预警中心, published as 电力行业规划研究与监测预警中心 since late 2025), not from the 2024 annual figures.
+
+- **Data.** `data/china-curtailment-bulletins.csv` holds every bulletin found for 2025-01 to 2026-03: province, month, wind and solar utilisation, monthly or year-to-date basis, repost URL and table-image URL. February 2025 was not retrieved. The 2026 bulletins publish year to date only. No bulletin after Jan–Mar 2026 (released 2026-05-08) was found.
+- **Definition.** Since 国能发电力〔2024〕44号, utilisation counts only system-caused limits: U = (gen + special-cause limited) / (gen + special-cause limited + system-cause limited). The rates are therefore a floor on total curtailment.
+- **Method.** For each province and fuel, the 12 months 2025-04..2026-03 = full-year 2025 + Jan–Mar 2026 − Jan–Mar 2025. Each window is converted to curtailed energy with Ember monthly generation, C = G × (1 − U) / U; the rate is C / (G + C). Every wired province has all three tables, so every rate rests on 12 months.
+- **Source strings.** `npm run refresh-china` rewrites the rate and window quoted in the China `source:` strings in `src/lib/regions.ts`, and the matching `docs/validation` pages, from the store. `tests/refresh-china.test.ts` fails if they drift. It also checks every year-to-date value in the CSV against the previous year-to-date value and the new month.
+- **Fail loud.** All rates share one window end, the latest year-to-date table in the CSV. If any wired province or fuel lacks a needed cell or Ember month, `npm run refresh-china` exits non-zero, names the gap and writes nothing. It never falls back to another window or drops a region. Malformed utilisation cells (anything but a plain percentage in (0, 100] or blank) are rejected. `tests/data/china-anchor-coverage.test.ts` fails if any anchor-consuming loader would serve its hardcoded fallback.
+- **Anchor.** Unchanged formula: annual TWh = Ember trailing-12-month generation × rate. This is gen × (1 − U), not the gen × (1/U − 1) given in "Calculation method" above, and understates curtailment by a factor of (1 − rate). That gap predates this change and is left as a follow-up.
+- **Inner Mongolia.** The bulletins report 蒙西 (Mengxi) and 蒙东 (Mengdong) separately; Ember has one provincial row. The 蒙西 trailing-12-month rate (wind 9.7%, PV 8.3%) is applied to whole-province generation, and the source note says the rate is Mengxi-only.
+  - **Why not split.** No published by-fuel generation split exists for a trailing year. It is also unsettled whether the centre's 蒙西 covers the Inner Mongolia Power Group dispatch area or all of geographic western Inner Mongolia (`docs/research/2026-11-18-inner-mongolia-mengxi-mengdong-split.md`).
+  - **Range.** Splitting would give wind 16.8 TWh/yr on IMPG-area shares (Mengxi Q1 2025 grid-delivered data) or 18.6 on geographic shares (2024 plants of 6 MW and above), against 20.5 unsplit. PV would be 6.8 to 6.9 against 7.0.
+- **Tiers.** No tier moved. The regions stay `estimated` (T3-modelled) with `sourceProvenance: "modelled-fallback"`.
+
 ## Sources
 
 - 国家能源局, `国家能源局关于印发2024年度全国可再生能源电力发展监测评价结果的通知` / "National Energy Administration notice issuing the 2024 national renewable electricity development monitoring and evaluation results", 2025-10-28. https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html

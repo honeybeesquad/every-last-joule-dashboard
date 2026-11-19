@@ -15,7 +15,7 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback: Ember GER 2025 / NEA quarterly statistics unavailable as hourly feed (${(err as Error).message}); Ningxia wind+solar curtailment anchored at ~1.0 TWh/yr.`;
+    const note = `Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): Ember GER 2025 / NEA quarterly statistics unavailable as hourly feed (${(err as Error).message}); Ningxia wind+solar curtailment anchored at ~1.0 TWh/yr.`;
     return {
       wind:  buildChinaRegionFromAnchor(
         "ningxia-wind", "wind", 15, 1.0 * 0.5,

@@ -15,7 +15,7 @@ async function run({ probe = true } = {}): Promise<RegionData> {
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    const note = `Typical-shape fallback: ${(err as Error).message}; Jiangxi solar curtailment ~0.4 TWh/yr; NEA 2024 provincial RE monitoring bulletin (99.0% PV utilisation, 25+ GW distributed solar).`;
+    const note = `Typical-shape fallback, used only when data/china-anchors.json has no anchor for this region (the store anchor uses the monitoring-centre bulletin trailing-12-month rate; see src/lib/regions.ts): ${(err as Error).message}; Jiangxi solar curtailment ~0.4 TWh/yr; NEA 2024 provincial RE monitoring bulletin (99.0% PV utilisation, 25+ GW distributed solar).`;
     // Anchor store keys are per-fuel (china-jiangxi-solar); the region id is china-jiangxi.
     const r = buildChinaRegionFromAnchor("china-jiangxi-solar", "solar", 4, 0.4, note);
     return { ...r, regionId: REGION_ID };

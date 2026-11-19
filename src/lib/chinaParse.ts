@@ -273,7 +273,7 @@ export function buildChinaMixedRegionFromAnchors(
   const solar = buildChinaRegionFromAnchor(`${regionId}-solar`, "solar", solarPeakHourUtc, fallbackAnnualTWh * (fuelShare.solar ?? 0), fallbackNote, storePath);
   const profile = wind.profile.map((v, h) => v + solar.profile[h]);
   const latestMonth = windAnchor.latestMonth >= solarAnchor.latestMonth ? windAnchor.latestMonth : solarAnchor.latestMonth;
-  const source = `Ember China subnational generation (trailing 12mo) × NEA 2024 curtailment rate — combined wind+solar anchor`;
+  const source = `Ember China subnational generation (trailing 12mo) × monitoring-centre trailing-12-month curtailment rate — combined wind+solar anchor`;
   const base: RegionData = {
     regionId,
     profile,
