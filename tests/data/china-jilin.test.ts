@@ -8,7 +8,7 @@ describe("china-jilin loader", () => {
     expect(data).toHaveProperty("solar");
     expect(data.wind.regionId).toBe("china-jilin-wind");
     expect(data.wind.profile).toHaveLength(24);
-    expect(data.wind.totalTWh).toBeCloseTo(0.243781, 4);
+    expect(data.wind.totalTWh).toBeCloseTo(0.243863, 4);
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.wind.sourceProvenance).toBe("modelled-fallback");
     expect(data.wind.sourceStatus).toBe("cached");

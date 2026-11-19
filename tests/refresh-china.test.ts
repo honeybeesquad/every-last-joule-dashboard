@@ -124,9 +124,8 @@ describe("refresh-china buildAnchors", () => {
     const rate = Math.round((C / (12 + C)) * 10000) / 10000;
     expect(xjWind.curtailmentRate).toBe(rate);
     expect(xjWind.annualGenerationTWh).toBeCloseTo(12, 6);
-    expect(xjWind.annualTWh).toBeCloseTo(Math.round(((12 * rate) / (1 - rate)) * 1000) / 1000, 6);
-    // rate = C / (G + C), so G × rate / (1 − rate) recovers C (to the 4-dp rounding of rate).
-    expect(xjWind.annualTWh).toBeCloseTo(C, 2);
+    // rate = C / (G + C), so G × rate / (1 − rate) recovers C; the unrounded rate is used.
+    expect(xjWind.annualTWh).toBeCloseTo(Math.round(C * 1000) / 1000, 6);
     expect(xjWind.rateWindow).toBe("2025-04..2026-03");
     expect(xjWind.latestMonth).toBe("2026-03");
     expect(xjWind.source).toContain("国能发电力〔2024〕44号");

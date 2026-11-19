@@ -7,7 +7,7 @@ describe("china-hunan loader", () => {
     expect(data.wind.regionId).toBe("china-hunan-wind");
     expect(data.solar.regionId).toBe("china-hunan-solar");
     expect(data.hydro.regionId).toBe("china-hunan-hydro");
-    expect(data.wind.totalTWh).toBeCloseTo(0.157151, 4);
+    expect(data.wind.totalTWh).toBeCloseTo(0.157233, 4);
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.wind.sourceProvenance).toBe("modelled-fallback");
     expect(data.wind.sourceStatus).toBe("cached");

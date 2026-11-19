@@ -8,7 +8,8 @@
 // HONESTY NOTE: this CSV carries *generation*, not *curtailment*. It lets us
 // refresh the China regions' annual energy anchor from a live-monthly source
 // (replacing the hardcoded annual NEA anchor). The curtailment RATE
-// (弃风率/弃光率) is still taken from the published NEA figure — it is NOT in
+// (弃风率/弃光率) comes from the monitoring centre's published provincial
+// bulletins (data/china-curtailment-bulletins.csv, via scripts/refresh-china.ts) — it is NOT in
 // this file. CRITICAL: refreshing the anchor does NOT promote the region. The
 // region stays T3-modelled (typical shape scaled to a published anchor) with
 // sourceProvenance "modelled-fallback" and sourceStatus "cached" — it is NOT
@@ -185,7 +186,8 @@ export function chinaAnchor(
  *
  * IMPORTANT — honesty contract (see docs/methodology/tier-classification-guide.md §5):
  * the anchor (data/china-anchors.json, produced by scripts/refresh-china.ts from
- * Ember's monthly generation × a published NEA curtailment rate) is a *published
+ * Ember's monthly generation and the monitoring centre's trailing-12-month curtailment
+ * rate, curtailed = generation × rate / (1 − rate)) is a *published
  * annual* figure. The region still emits a modelled typical-shape profile, so it
  * stays T3-modelled with sourceProvenance "modelled-fallback" — it is NOT
  * promoted to live-domestic-anchored, and sourceStatus is "cached" (the anchor

@@ -8,7 +8,7 @@
 PR from `claude/magical-goodall-nv660q`, follow-up 1 of #1636, signed off by Simon. No tier move.
 
 - `scripts/refresh-china.ts` computed each China anchor as generation × rate. The rate is curtailed / (generation + curtailed), so that understated curtailment by a factor of (1 − rate). It now uses generation × rate / (1 − rate), the gen × (1/U − 1) that `docs/methodology/china-provinces.md` already gave.
-- The 44 anchors go from 137.225 to 151.178 TWh/yr (+13.95 TWh/yr). The 42 anchor-driven regions go from 11.347 to 12.494 TWh/30d. Against the 2026-11-19 07:21Z deployed build (which includes #1636), China goes from 12.68 to 13.83 TWh/30d and the dataset from 28.29 to 29.43 TWh/30d (+4.1%).
+- The 44 anchors go from 137.225 to 151.166 TWh/yr (+13.94 TWh/yr). The 42 anchor-driven regions go from 11.347 to 12.493 TWh/30d. Against the 2026-11-19 07:21Z deployed build (which includes #1636), China goes from 12.68 to 13.83 TWh/30d and the dataset from 28.29 to 29.43 TWh/30d (+4.1%).
 - The China source strings now say "at monitoring-centre curtailment rate …; curtailed = generation × rate / (1 − rate)".
 
 ## China trailing-12-month curtailment rates from the monthly bulletins (2026-11-18)

@@ -11,7 +11,7 @@ describe("china-hubei loader", () => {
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.wind.sourceProvenance).toBe("modelled-fallback");
     expect(data.wind.sourceStatus).toBe("cached");
-    expect(data.solar.totalTWh).toBeCloseTo(0.110137, 4);
+    expect(data.solar.totalTWh).toBeCloseTo(0.109973, 4);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.solar.sourceProvenance).toBe("modelled-fallback");
     expect(data.solar.sourceStatus).toBe("cached");

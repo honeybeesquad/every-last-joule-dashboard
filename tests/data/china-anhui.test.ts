@@ -8,7 +8,7 @@ describe("china-anhui loader", () => {
     expect(data).toHaveProperty("solar");
     expect(data.solar.regionId).toBe("china-anhui-solar");
     expect(data.solar.profile).toHaveLength(24);
-    expect(data.solar.totalTWh).toBeCloseTo(0.103890, 4);
+    expect(data.solar.totalTWh).toBeCloseTo(0.103808, 4);
     expect(data.solar.confidenceTier).toBe("T3-modelled");
     expect(data.solar.sourceProvenance).toBe("modelled-fallback");
     expect(data.solar.sourceStatus).toBe("cached");

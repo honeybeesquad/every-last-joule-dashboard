@@ -299,7 +299,8 @@ export function buildAnchors(
       continue;
     }
     const floored = ttm.rate < RATE_FLOOR;
-    const rate = Math.round(Math.max(ttm.rate, RATE_FLOOR) * 10000) / 10000;
+    const effectiveRate = Math.max(ttm.rate, RATE_FLOOR); // unrounded: used for the anchor
+    const rate = Math.round(effectiveRate * 10000) / 10000; // rounded: stored and displayed
     list.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
     const window = list.slice(0, 12);
     const annualGen = window.reduce((s, r) => s + r.generationTWh, 0);
@@ -312,7 +313,7 @@ export function buildAnchors(
       fuel,
       annualGenerationTWh: Math.round(annualGen * 1000) / 1000,
       curtailmentRate: rate,
-      annualTWh: Math.round(((annualGen * rate) / (1 - rate)) * 1000) / 1000,
+      annualTWh: Math.round(((annualGen * effectiveRate) / (1 - effectiveRate)) * 1000) / 1000,
       latestMonth: window[0].date,
       rateWindow: `${ttm.windowStart}..${ttm.windowEnd}`,
       rateMonthsCovered: ttm.monthsCovered,
