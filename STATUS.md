@@ -11,6 +11,11 @@ PR from `claude/magical-goodall-nv660q`, follow-up 2 of #1636, approved by Simon
 - The 10 affected regions are `china-beijing`, `china-tianjin`, `china-shanghai`, `china-hainan`, `china-chongqing-solar`, `china-guizhou-solar`, `sichuan-wind`, `sichuan-solar`, `guangxi-wind` and `guangxi-solar`. Together they go from 1.573 to 5.649 TWh/yr (+4.08 TWh/yr, +0.335 TWh/30d). Beijing falls (0.28 to 0.012 TWh/yr; near-100% solar utilisation). Guizhou solar, Guangxi and Hainan rise most.
 - On top of #1664: China 13.83 to 14.16 TWh/30d, dataset 29.43 to 29.77 TWh/30d (+1.1%).
 - **Not represented:** wind curtailment in provinces with no wind region (Hainan 0.35, Guizhou 0.15, Beijing 0.03 TWh/yr). The Sichuan 30 TWh hydro static is unchanged.
+- **Also fixed (review):**
+  - **Mixed-region splits.** Mixed regions served the fallback's fixed wind/solar split even when anchored. They now split by their anchors: Tianjin 29/71 (was 55/45); Fujian, Guangdong and Zhejiang also change. No totals move.
+  - **Floored rates.** These carry a `rateFloored` flag and are labelled "placeholder floor … not a published rate".
+  - **Validation pages.** The Source URL is synced as well as the Source line.
+  - **Hydro notes.** The Hubei, Hunan, Chongqing and Guizhou hydro snapshot notes had picked up a sandbox "fetch failed" error (Hubei and Hunan since #1636). They are restored.
 
 ## China anchors use curtailed = generation × rate / (1 − rate) (2026-11-19)
 

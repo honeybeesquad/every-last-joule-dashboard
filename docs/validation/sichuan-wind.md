@@ -9,7 +9,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Tier:** estimated
 - **Kind:** wind
 - **Source:** Ember China subnational generation (trailing 12mo) at monitoring-centre curtailment rate 2.0% (trailing 12 months 2025-04..2026-03, system-caused limits only); curtailed = generation × rate / (1 − rate); refreshed anchor, T3-modelled shape
-- **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
+- **Source URL:** [https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv)
 - **Loader:** [`sichuan.json.ts`](../../src/data/sichuan.json.ts)
 - **Structural gap:** no
 

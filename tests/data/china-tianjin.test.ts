@@ -8,7 +8,8 @@ describe("china-tianjin loader", () => {
     expect(data.profile).toHaveLength(24);
     expect(data.totalTWh).toBeCloseTo(((0.153 + 0.373) * 30) / 365, 8);
     expect(data.confidenceTier).toBe("T3-modelled");
-    expect(data.fuelShare?.wind).toBeCloseTo(0.55, 2);
-    expect(data.fuelShare?.solar).toBeCloseTo(0.45, 2);
+    // The served split follows the anchors (wind 0.153 / solar 0.373 TWh/yr), not the 55/45 fallback.
+    expect(data.fuelShare?.wind).toBeCloseTo(0.153 / (0.153 + 0.373), 2);
+    expect(data.fuelShare?.solar).toBeCloseTo(0.373 / (0.153 + 0.373), 2);
   });
 });

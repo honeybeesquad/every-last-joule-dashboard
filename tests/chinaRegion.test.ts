@@ -2,7 +2,7 @@ import { describe, it, expect, afterAll } from "vitest";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { buildChinaRegionFromAnchor } from "../src/lib/chinaParse.js";
+import { buildChinaRegionFromAnchor, anchoredFuelShare } from "../src/lib/chinaParse.js";
 
 const dir = mkdtempSync(join(tmpdir(), "china-build-"));
 const store = join(dir, "china-anchors.json");
@@ -41,5 +41,17 @@ describe("buildChinaRegionFromAnchor", () => {
     // Uncertainty envelope is recomputed and in-band (low <= peakGW <= high).
     expect(r.peakGW).toBeGreaterThanOrEqual(r.uncertaintyLowGW ?? 0);
     expect(r.peakGW).toBeLessThanOrEqual(r.uncertaintyHighGW ?? 0);
+  });
+});
+
+describe("anchoredFuelShare", () => {
+  it("splits an anchored mixed region by its anchors, not the fallback share", () => {
+    const share = anchoredFuelShare(0.153, 0.373, { wind: 0.55, solar: 0.45 });
+    expect(share.wind).toBeCloseTo(0.2909, 4);
+    expect(share.solar).toBeCloseTo(0.7091, 4);
+  });
+
+  it("keeps the fallback share when both anchors are zero", () => {
+    expect(anchoredFuelShare(0, 0, { wind: 0.55, solar: 0.45 })).toEqual({ wind: 0.55, solar: 0.45 });
   });
 });

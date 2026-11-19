@@ -274,6 +274,8 @@ interface AnchorRow {
   latestMonth: string;
   rateWindow: string; // YYYY-MM..YYYY-MM of the bulletin window behind the rate
   rateMonthsCovered: number;
+  /** True when the computed rate was below RATE_FLOOR and the placeholder floor was used. */
+  rateFloored: boolean;
   source: string;
 }
 
@@ -315,7 +317,7 @@ export function buildAnchors(
     const annualGen = window.reduce((s, r) => s + r.generationTWh, 0);
     const regionId = regionIdFor(province, fuel); // wired provinces are always mapped; throws loudly otherwise
     const rateText = floored
-      ? `${(RATE_FLOOR * 100).toFixed(2)}% floor (published utilisation ~100%)`
+      ? `${(RATE_FLOOR * 100).toFixed(2)}% placeholder floor (published utilisation ~100%; not a published rate)`
       : `${(rate * 100).toFixed(1)}%`;
     out.push({
       regionId,
@@ -326,6 +328,7 @@ export function buildAnchors(
       latestMonth: window[0].date,
       rateWindow: `${ttm.windowStart}..${ttm.windowEnd}`,
       rateMonthsCovered: ttm.monthsCovered,
+      rateFloored: floored,
       source: `Ember China subnational generation ${window[0].date} (trailing 12mo) at monitoring-centre curtailment rate ${rateText} (${provinceZh} ${fuel}, trailing 12 months ${ttm.windowStart}..${ttm.windowEnd} from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)${RATE_SCOPE_NOTE[province] ?? ""}`,
     });
   }
@@ -368,11 +371,15 @@ interface StoreAnchor {
   regionId: string;
   curtailmentRate: number;
   rateWindow: string;
+  rateFloored?: boolean;
 }
 
 /** The canonical source-string fragment for one anchored region. */
 export function rateFragment(a: StoreAnchor): string {
-  const pct = a.curtailmentRate <= RATE_FLOOR ? `${(RATE_FLOOR * 100).toFixed(2)}% floor` : `${(a.curtailmentRate * 100).toFixed(1)}%`;
+  // No parentheses here: RATE_RE stops at the first "(".
+  const pct = a.rateFloored
+    ? `${(RATE_FLOOR * 100).toFixed(2)}% placeholder floor, published utilisation ~100%, not a published rate`
+    : `${(a.curtailmentRate * 100).toFixed(1)}%`;
   const split = a.regionId.startsWith("inner-mongolia-") ? ", 蒙西 Mengxi-only rate on whole-province generation" : "";
   return `monitoring-centre curtailment rate ${pct} (trailing 12 months ${a.rateWindow}${split}, system-caused limits only)`;
 }
@@ -416,9 +423,18 @@ export function regionSourceFromText(text: string, id: string): string | null {
   return m ? m[1] : null;
 }
 
-/** Rewrite the "- **Source:**" line of a validation page to `source`. */
-export function syncValidationDoc(doc: string, source: string): string {
-  return doc.replace(/^- \*\*Source:\*\* .*$/m, () => `- **Source:** ${source}`);
+/** The `sourceUrl:` of a region in regions.ts text, or null. */
+export function regionSourceUrlFromText(text: string, id: string): string | null {
+  const line = text.split("\n").find((l) => l.includes(`{ id: "${id}"`));
+  const m = line?.match(/sourceUrl: "([^"]*)"/);
+  return m ? m[1] : null;
+}
+
+/** Rewrite the "- **Source:**" (and, if given, "- **Source URL:**") lines of a validation page. */
+export function syncValidationDoc(doc: string, source: string, sourceUrl?: string | null): string {
+  let out = doc.replace(/^- \*\*Source:\*\* .*$/m, () => `- **Source:** ${source}`);
+  if (sourceUrl) out = out.replace(/^- \*\*Source URL:\*\* .*$/m, () => `- **Source URL:** [${sourceUrl}](${sourceUrl})`);
+  return out;
 }
 
 async function fetchCsv(url: string): Promise<string> {
@@ -479,7 +495,7 @@ async function main() {
     const source = regionSourceFromText(text, id);
     if (!source || !existsSync(docPath)) continue;
     const doc = readFileSync(docPath, "utf-8");
-    const synced = syncValidationDoc(doc, source);
+    const synced = syncValidationDoc(doc, source, regionSourceUrlFromText(text, id));
     if (synced !== doc) writeFileSync(docPath, synced);
   }
   console.log(`Synced ${touched.length} China source strings in src/lib/regions.ts and docs/validation`);

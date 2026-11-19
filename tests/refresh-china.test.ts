@@ -12,6 +12,7 @@ import {
   syncRegionsText,
   regionSourceFromText,
   syncValidationDoc,
+  rateFragment,
   REGIONS_PATH,
   VALIDATION_DOCS_DIR,
 } from "../scripts/refresh-china.js";
@@ -146,6 +147,18 @@ describe("refresh-china buildAnchors", () => {
     expect(() => buildAnchors(emberCsv(), filled, { ...XJ, Gansu: "甘肃" })).toThrow(/甘肃 wind/);
   });
 
+  it("flags floored rows and labels them as a placeholder, not a published rate", () => {
+    const allClear = filled.replace(/新疆,Xinjiang,(\d{4}-\d{2}),ytd,([^,]+),[^,]+,[^,]*,/g, "新疆,Xinjiang,$1,ytd,$2,100.0,100.0,");
+    const xjWind = buildAnchors(emberCsv(), allClear, XJ).find((a) => a.regionId === "xinjiang-wind")!;
+    expect(xjWind.rateFloored).toBe(true);
+    expect(xjWind.source).toContain("not a published rate");
+    const frag = rateFragment({ regionId: "xinjiang-wind", curtailmentRate: RATE_FLOOR, rateWindow: "2025-04..2026-03", rateFloored: true });
+    expect(frag).toContain("placeholder floor");
+    expect(frag).not.toMatch(/floor[^(]*\(.*\(/); // one "(" only, so the sync regex still matches
+    // A rounded rate equal to the floor but not floored is shown as a rate, not a floor.
+    expect(rateFragment({ regionId: "x", curtailmentRate: RATE_FLOOR, rateWindow: "w", rateFloored: false })).toContain("rate 0.1%");
+  });
+
   it("applies the 0.05% floor only below it, and says so in the source", () => {
     const allClear = filled.replace(/新疆,Xinjiang,(\d{4}-\d{2}),ytd,([^,]+),[^,]+,[^,]*,/g, "新疆,Xinjiang,$1,ytd,$2,100.0,100.0,");
     const xjWind = buildAnchors(emberCsv(), allClear, XJ).find((a) => a.regionId === "xinjiang-wind")!;
@@ -199,6 +212,15 @@ describe("committed sources stay in step with the store", () => {
     const bumped = store.map((a: { curtailmentRate: number }) => ({ ...a, curtailmentRate: a.curtailmentRate + 0.01 }));
     const changed = syncRegionsText(regions, bumped).text;
     expect(syncRegionsText(changed, store).text).toBe(regions);
+  });
+
+  it("syncs the validation page's Source URL as well as its Source line", () => {
+    const doc = "- **Source:** old\n- **Source URL:** [https://old](https://old)\n";
+    expect(syncValidationDoc(doc, "new", "https://csv")).toBe("- **Source:** new\n- **Source URL:** [https://csv](https://csv)\n");
+    for (const id of syncRegionsText(regions, store).touched) {
+      const page = readFileSync(join(VALIDATION_DOCS_DIR, `${id}.md`), "utf-8");
+      expect(page, id).toContain("data/china-curtailment-bulletins.csv");
+    }
   });
 
   it("copies $ sequences literally rather than expanding them", () => {

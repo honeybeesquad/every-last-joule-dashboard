@@ -255,6 +255,16 @@ function buildTypicalRegionByFuel(
  * promotion. When either per-fuel anchor is missing, the loader's hardcoded
  * (estimated) mixed anchor is used unchanged.
  */
+/** Wind/solar shares of an anchored mixed region; the fallback share if both are zero. */
+export function anchoredFuelShare(
+  windTWh: number,
+  solarTWh: number,
+  fallback: { wind: number; solar: number },
+): { wind: number; solar: number } {
+  const total = windTWh + solarTWh;
+  return total > 0 ? { wind: windTWh / total, solar: solarTWh / total } : fallback;
+}
+
 export function buildChinaMixedRegionFromAnchors(
   regionId: string,
   fuelShare: { wind: number; solar: number },
@@ -287,7 +297,8 @@ export function buildChinaMixedRegionFromAnchors(
     sourceProvenance: "modelled-fallback",
     sourceStatus: "cached",
     sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d`,
-    fuelShare,
+    // The served split follows the anchors, not the fallback's fixed share.
+    fuelShare: anchoredFuelShare(wind.totalTWh, solar.totalTWh, fuelShare),
   };
   return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });
 }
