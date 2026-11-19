@@ -51,9 +51,12 @@ describe("anchoredFuelShare", () => {
     expect(share.solar).toBeCloseTo(0.7091, 4);
   });
 
-  it("keeps the fallback share when both rates are the placeholder floor", () => {
-    expect(anchoredFuelShare(0.013, 0.012, { wind: 0.55, solar: 0.45 }, true)).toEqual({ wind: 0.55, solar: 0.45 });
-    expect(floorCaveat(true, true)).toContain("not published rates");
+  it("keeps the anchored split when both rates are the placeholder floor, and says why", () => {
+    // Equal floor rates cancel, so the split is Ember's generation ratio, not invented.
+    const share = anchoredFuelShare(0.013, 0.012, { wind: 0.55, solar: 0.45 });
+    expect(share.wind).toBeCloseTo(0.52, 2);
+    expect(floorCaveat(true, true)).toContain("split follows Ember generation");
+    expect(floorCaveat(true, false)).toContain("affects the split");
     expect(floorCaveat(false, false)).toBe("");
   });
 

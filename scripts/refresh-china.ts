@@ -21,6 +21,9 @@ import { join } from "node:path";
 import {
   parseEmberMonthlyCsv,
   regionIdFor,
+  RATE_FLOOR,
+  FLOOR_PCT,
+  isAnchorFloored,
   type Fuel,
 } from "../src/lib/chinaParse.js";
 import { parseDelimitedRows } from "../src/lib/csv.js";
@@ -122,13 +125,9 @@ export const RATE_SCOPE_NOTE: Record<string, string> = {
   "Inner Mongolia": "; the rate is 蒙西 (Mengxi)-only and the generation is whole-province, including Mengdong",
 };
 
-/**
- * Floor for provinces whose published utilisation is 100.0% over the window.
- * Kept from the 2024 method (0.05%) so the typical-shape profile is not zero-area;
- * it is applied only when the computed rate is below it, and the source string
- * says so.
- */
-export const RATE_FLOOR = 0.0005;
+// RATE_FLOOR and isAnchorFloored live in src/lib/chinaParse.ts so the loaders'
+// labels and these source strings use one definition; re-exported for callers.
+export { RATE_FLOOR };
 
 export interface BulletinRow {
   provinceZh: string;
@@ -317,7 +316,7 @@ export function buildAnchors(
     const annualGen = window.reduce((s, r) => s + r.generationTWh, 0);
     const regionId = regionIdFor(province, fuel); // wired provinces are always mapped; throws loudly otherwise
     const rateText = floored
-      ? `${(RATE_FLOOR * 100).toFixed(2)}% placeholder floor (published utilisation ~100%; not a published rate)`
+      ? `${FLOOR_PCT} placeholder floor (published utilisation ~100%; not a published rate)`
       : `${formatRatePct(rate)}%`;
     out.push({
       regionId,
@@ -377,15 +376,14 @@ interface StoreAnchor {
 /** Rates under 1% get two decimals, so 0.05% does not read as 0.1%. */
 export function formatRatePct(rate: number): string {
   const pct = rate * 100;
-  return pct < 1 ? pct.toFixed(2) : pct.toFixed(1);
+  return Number(pct.toFixed(2)) < 1 ? pct.toFixed(2) : pct.toFixed(1); // round before choosing precision
 }
 
 /** The canonical source-string fragment for one anchored region. */
 export function rateFragment(a: StoreAnchor): string {
   // No parentheses here: RATE_RE stops at the first "(".
-  const floored = a.rateFloored ?? a.curtailmentRate <= RATE_FLOOR; // older stores have no flag
-  const pct = floored
-    ? `${(RATE_FLOOR * 100).toFixed(2)}% placeholder floor, published utilisation ~100%, not a published rate`
+  const pct = isAnchorFloored(a)
+    ? `${FLOOR_PCT} placeholder floor, published utilisation ~100%, not a published rate`
     : `${formatRatePct(a.curtailmentRate)}%`;
   const split = a.regionId.startsWith("inner-mongolia-") ? ", 蒙西 Mengxi-only rate on whole-province generation" : "";
   return `monitoring-centre curtailment rate ${pct} (trailing 12 months ${a.rateWindow}${split}, system-caused limits only)`;
@@ -417,14 +415,13 @@ export function syncRegionsText(text: string, anchors: StoreAnchor[]): { text: s
       touched.push(id);
       const w = byId.get(`${id}-wind`)!;
       const so = byId.get(`${id}-solar`)!;
-      const isFloored = (a: StoreAnchor) => a.rateFloored ?? a.curtailmentRate <= RATE_FLOOR;
       const floorText =
-        isFloored(w) && isFloored(so)
-          ? "; both rates a 0.05% placeholder floor, published utilisation ~100%, not published rates"
-          : isFloored(w)
-            ? "; wind rate a 0.05% placeholder floor, not a published rate"
-            : isFloored(so)
-              ? "; solar rate a 0.05% placeholder floor, not a published rate"
+        isAnchorFloored(w) && isAnchorFloored(so)
+          ? `; both rates a ${FLOOR_PCT} placeholder floor, published utilisation ~100%, not published rates; split follows Ember generation`
+          : isAnchorFloored(w)
+            ? `; wind rate a ${FLOOR_PCT} placeholder floor, not a published rate, which affects the split`
+            : isAnchorFloored(so)
+              ? `; solar rate a ${FLOOR_PCT} placeholder floor, not a published rate, which affects the split`
               : "";
       const fragment = `monitoring-centre trailing-12-month curtailment rate (${anyWindow}, system-caused limits only${floorText})`;
       return line.replace(WINDOW_RE, () => fragment);

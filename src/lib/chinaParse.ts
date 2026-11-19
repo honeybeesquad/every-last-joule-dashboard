@@ -30,6 +30,25 @@ import { applyUncertainty } from "./uncertainty.js";
 
 export type Fuel = "wind" | "solar" | "hydro";
 
+/**
+ * Placeholder curtailment rate for provinces whose published utilisation is
+ * 100.0% over the window. Kept from the 2024 method so the typical-shape profile
+ * is not zero-area; applied only when the computed rate is below it, and every
+ * label built from it says it is a placeholder, not a published rate.
+ */
+export const RATE_FLOOR = 0.0005;
+export const FLOOR_PCT = `${(RATE_FLOOR * 100).toFixed(2)}%`;
+
+/**
+ * Whether a store row's rate is the placeholder floor. Uses the row's
+ * rateFloored flag; rows written before the flag existed (2026-11-19) fall back
+ * to comparing the rate against the floor.
+ */
+export function isAnchorFloored(row: { rateFloored?: boolean; curtailmentRate?: number }): boolean {
+  if (typeof row.rateFloored === "boolean") return row.rateFloored;
+  return typeof row.curtailmentRate === "number" && row.curtailmentRate <= RATE_FLOOR;
+}
+
 export interface ProvinceFuelAnnual {
   province: string;
   fuel: Fuel;
@@ -171,11 +190,11 @@ export function chinaAnchor(
   if (!existsSync(storePath)) return null;
   try {
     const store = JSON.parse(readFileSync(storePath, "utf-8")) as {
-      anchors: Array<{ regionId: string; annualTWh: number; latestMonth: string; source: string; rateFloored?: boolean }>;
+      anchors: Array<{ regionId: string; annualTWh: number; latestMonth: string; source: string; rateFloored?: boolean; curtailmentRate?: number }>;
     };
     const row = store.anchors.find((a) => a.regionId === regionId);
     return row
-      ? { annualTWh: row.annualTWh, latestMonth: row.latestMonth, source: row.source, rateFloored: row.rateFloored === true }
+      ? { annualTWh: row.annualTWh, latestMonth: row.latestMonth, source: row.source, rateFloored: isAnchorFloored(row) }
       : null;
   } catch {
     return null;
@@ -246,18 +265,18 @@ function buildTypicalRegionByFuel(
 }
 
 /**
- * Wind/solar shares of an anchored mixed region. Falls back to the loader's
- * fixed share when both anchors are zero, or when both rates are the placeholder
- * floor (a split built from two invented 0.05% rates would not be data).
+ * Wind/solar shares of an anchored mixed region, from its anchors. Falls back
+ * to the loader's fixed share only when both anchors are zero. When both rates
+ * are the placeholder floor they are equal and cancel, so the split is Ember's
+ * generation ratio (real data); floorCaveat says so.
  */
 export function anchoredFuelShare(
   windTWh: number,
   solarTWh: number,
   fallback: { wind: number; solar: number },
-  bothFloored = false,
 ): { wind: number; solar: number } {
   const total = windTWh + solarTWh;
-  return total > 0 && !bothFloored ? { wind: windTWh / total, solar: solarTWh / total } : fallback;
+  return total > 0 ? { wind: windTWh / total, solar: solarTWh / total } : fallback;
 }
 
 /**
@@ -274,9 +293,10 @@ export function anchoredFuelShare(
  */
 /** Caveat for a mixed region whose wind and/or solar rate is the placeholder floor. */
 export function floorCaveat(windFloored: boolean, solarFloored: boolean): string {
-  if (windFloored && solarFloored) return "; both rates are a 0.05% placeholder floor (published utilisation ~100%), not published rates; wind/solar split is the fixed fallback share";
-  if (windFloored) return "; the wind rate is a 0.05% placeholder floor (published utilisation ~100%), not a published rate";
-  if (solarFloored) return "; the solar rate is a 0.05% placeholder floor (published utilisation ~100%), not a published rate";
+  if (windFloored && solarFloored)
+    return `; both rates are a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not published rates; the wind/solar split follows Ember generation`;
+  if (windFloored) return `; the wind rate is a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not a published rate, which affects the split`;
+  if (solarFloored) return `; the solar rate is a ${FLOOR_PCT} placeholder floor (published utilisation ~100%), not a published rate, which affects the split`;
   return "";
 }
 
@@ -313,7 +333,7 @@ export function buildChinaMixedRegionFromAnchors(
     sourceStatus: "cached",
     sourceNote: `${source}; combined ${wind.totalTWh.toFixed(4)} (wind) + ${solar.totalTWh.toFixed(4)} (solar) TWh/30d${floorCaveat(windAnchor.rateFloored, solarAnchor.rateFloored)}`,
     // The served split follows the anchors, not the fallback's fixed share.
-    fuelShare: anchoredFuelShare(wind.totalTWh, solar.totalTWh, fuelShare, windAnchor.rateFloored && solarAnchor.rateFloored),
+    fuelShare: anchoredFuelShare(wind.totalTWh, solar.totalTWh, fuelShare),
   };
   return applyUncertainty(base, { regionTier: "estimated", profileKind: "mixed" });
 }

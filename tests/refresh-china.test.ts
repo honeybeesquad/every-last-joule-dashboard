@@ -222,7 +222,7 @@ describe("committed sources stay in step with the store", () => {
     expect(syncValidationDoc(doc, "new", "https://csv")).toBe("- **Source:** new\n- **Source URL:** [https://csv](https://csv)\n");
     for (const id of syncRegionsText(regions, store).touched) {
       const path = join(VALIDATION_DOCS_DIR, `${id}.md`);
-      if (!existsSync(path)) continue; // main() skips regions with no page too
+      expect(existsSync(path), `${id} has no validation page`).toBe(true); // every synced region must have one
       const page = readFileSync(path, "utf-8");
       expect(syncValidationDoc(page, regionSourceFromText(regions, id)!, regionSourceUrlFromText(regions, id)), id).toBe(page);
     }
@@ -235,7 +235,8 @@ describe("committed sources stay in step with the store", () => {
       { regionId: "zz-mixed-solar", curtailmentRate: RATE_FLOOR, rateWindow: "2025-04..2026-03", rateFloored: true },
     ];
     const { text } = syncRegionsText(line, anchors);
-    expect(text).toContain("both rates a 0.05% placeholder floor");
+    expect(text).toContain(`both rates a ${(RATE_FLOOR * 100).toFixed(2)}% placeholder floor`);
+    expect(text).toContain("split follows Ember generation");
     expect(syncRegionsText(text, anchors).text).toBe(text); // still idempotent
   });
 
