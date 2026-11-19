@@ -1,4 +1,5 @@
 import { isSolarNight } from "./solar-mask.js";
+import { interpolateHour } from "./calc.js";
 import type { Region, RegionData } from "./types";
 
 /**
@@ -126,6 +127,24 @@ export function fuelShare(region: Region, fuel: Fuel, regionData?: RegionData): 
 }
 
 /**
+ * Share of each fuel at an hour from the region's per-fuel profiles, or null
+ * when it has none. Shares are each fuel's GW over the hour's total GW. Solar is
+ * masked in local darkness (the synthetic solar shape can reach past dusk); the
+ * masked solar is attributed to no fuel rather than handed to wind or hydro, so
+ * wind and hydro totals match their profiles exactly.
+ */
+function profileSharesAtHour(region: Region, utcHour: number, regionData?: RegionData): Record<Fuel, number> | null {
+  const fp = regionData?.fuelProfiles;
+  if (!fp || region.kind !== "mixed") return null;
+  const v: Record<Fuel, number> = { solar: 0, wind: 0, hydro: 0 };
+  for (const f of FUEL_ORDER) v[f] = interpolateHour(fp[f], utcHour);
+  const total = v.solar + v.wind + v.hydro;
+  if (total <= 0) return null;
+  if (isSolarNight(utcHour, region.lon)) v.solar = 0; // dropped, not reassigned
+  return { solar: v.solar / total, wind: v.wind / total, hydro: v.hydro / total };
+}
+
+/**
  * The solar share of a region at a given UTC hour: its ordinary share while
  * the sun is up where the region is, and zero while it is not.
  *
@@ -145,14 +164,20 @@ export function solarShareAtHour(
   utcHour: number,
   regionData?: RegionData,
 ): number {
+  const fromProfiles = profileSharesAtHour(region, utcHour, regionData);
+  if (fromProfiles) return fromProfiles.solar;
   const share = fuelShare(region, "solar", regionData);
   if (share <= 0) return 0;
   return isSolarNight(utcHour, region.lon) ? 0 : share;
 }
 
 /**
- * Hourly-correct fuel split. Identical to `fuelShare` for wind and hydro,
- * which run at any hour; solar additionally goes to zero in local darkness.
+ * Hourly-correct fuel split. A mixed region that carries `fuelProfiles` is
+ * split hour by hour from those profiles: wind and hydro 24-hour totals match
+ * their profiles exactly; solar loses only the part of its synthetic shape that
+ * falls in local darkness. Otherwise the flat annual `fuelShare` is used for
+ * wind and hydro, and solar goes to zero in local darkness (that path still
+ * drops the solar fraction at night).
  */
 export function fuelShareAtHour(
   region: Region,
@@ -160,9 +185,9 @@ export function fuelShareAtHour(
   utcHour: number,
   regionData?: RegionData,
 ): number {
-  return fuel === "solar"
-    ? solarShareAtHour(region, utcHour, regionData)
-    : fuelShare(region, fuel, regionData);
+  if (fuel === "solar") return solarShareAtHour(region, utcHour, regionData);
+  const fromProfiles = profileSharesAtHour(region, utcHour, regionData);
+  return fromProfiles ? fromProfiles[fuel] : fuelShare(region, fuel, regionData);
 }
 
 /** Canonical single-kind mapping. Geothermal collapses into the hydro

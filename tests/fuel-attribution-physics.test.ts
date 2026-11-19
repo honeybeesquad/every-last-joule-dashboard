@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { REGIONS } from "../src/lib/regions";
+import { buildTypicalMixedRegion } from "../src/lib/typical-profiles";
 import {
   FUEL_ORDER,
   fuelShare,
@@ -39,6 +40,36 @@ describe("fuel attribution cannot state the impossible", () => {
     expect(fuelShareAtHour(night!, "wind", anyDark)).toBe(
       fuelShare(night!, "wind"),
     );
+  });
+
+  it("splits a mixed region hour by hour from its fuel profiles without moving solar to wind", () => {
+    // With fuelProfiles, wind's 24-hour total equals its profile exactly; solar
+    // in local darkness is dropped (never reassigned), and every non-masked hour
+    // is fully attributed.
+    const region = { id: "__mixed__", kind: "mixed", lon: 117 } as never;
+    const data = buildTypicalMixedRegion("__mixed__", 1, { wind: 0.29, solar: 0.71 }, "test", "2024", 4, 15);
+    const fp = data.fuelProfiles!;
+    const totals = { solar: 0, wind: 0, hydro: 0 };
+    let solarProfileLit = 0;
+    for (let h = 0; h < 24; h++) {
+      const shares = FUEL_ORDER.map((f) => fuelShareAtHour(region, f, h, data));
+      const dark = isDark(h, 117);
+      if (!dark) expect(shares.reduce((a, b) => a + b, 0), `hour ${h}`).toBeCloseTo(1, 10);
+      FUEL_ORDER.forEach((f, i) => (totals[f] += data.profile[h] * shares[i]));
+      if (!dark) solarProfileLit += fp.solar![h];
+    }
+    const sum = (a?: number[]) => (a ?? []).reduce((x, y) => x + y, 0);
+    expect(totals.wind).toBeCloseTo(sum(fp.wind), 10); // exact: no solar credited to wind
+    expect(totals.solar).toBeCloseTo(solarProfileLit, 10); // solar minus its dark-hour tail
+    expect(totals.hydro).toBe(0);
+    expect(sum(fp.wind) / sum(data.profile)).toBeCloseTo(0.29, 10);
+  });
+
+  it("keeps the flat split for mixed regions without fuel profiles", () => {
+    const region = { id: "__mixed__", kind: "mixed", lon: 117 } as never;
+    const data = { fuelShare: { wind: 0.6, solar: 0.4 } } as never;
+    const noon = [...Array(24).keys()].find((h) => localHour(h, 117) > 11 && localHour(h, 117) < 13)!;
+    expect(fuelShareAtHour(region, "wind", noon, data)).toBeCloseTo(0.6, 10);
   });
 
   it("never credits a single-fuel row to a different fuel", () => {

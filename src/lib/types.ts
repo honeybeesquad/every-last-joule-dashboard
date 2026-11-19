@@ -143,6 +143,15 @@ export interface RegionData {
    */
   fuelShare?: Partial<Record<"solar" | "wind" | "hydro", number>>;
   /**
+   * Optional per-fuel 24-hour profiles (GW, UTC hours) that sum to `profile`.
+   * Emitted by the mixed-region builders that construct the region from
+   * separate fuel profiles (`buildTypicalMixedRegion`,
+   * `buildChinaMixedRegionFromAnchors`). When present, `fuelShareAtHour` splits
+   * each hour by these profiles (wind and hydro totals match exactly; solar in
+   * local darkness is dropped); otherwise it uses the flat annual `fuelShare`.
+   */
+  fuelProfiles?: Partial<Record<"solar" | "wind" | "hydro", number[]>>;
+  /**
    * Confidence tier for the emitted peakGW value. Derived deterministically
    * from the loader's Region.tier and (for statics) the profile kind.
    * See `src/lib/uncertainty.ts` for derivation and

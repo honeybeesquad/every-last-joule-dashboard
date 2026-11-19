@@ -17,7 +17,7 @@ export function ehsFromGW(gw: number, effJperTH: number = ASIC_JPER_TH): number 
   return gw * (1000 / effJperTH);
 }
 
-function interpolateHour(profile: number[] | null | undefined, utcHour: number): number {
+export function interpolateHour(profile: number[] | null | undefined, utcHour: number): number {
   if (!profile || profile.length === 0) return 0;
   const wrapped = ((utcHour % 24) + 24) % 24;
   const lo = Math.floor(wrapped) % 24;
