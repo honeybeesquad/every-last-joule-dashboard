@@ -8,7 +8,7 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** hydro
-- **Source:** NEA 2024 / Sichuan hydro-spill proxy
+- **Source:** Upper bound, not a central estimate: ~30 TWh/yr Sichuan wet-season hydro spill. NEA 2024 basin effective utilisation (Dadu 93.21%, the lowest southwest basin; Yalong 98.36%; Jinsha middle-lower 99.86%; upper Yangtze main stem 100%) applied at the Dadu rate to all of Sichuan's 2024 hydro output (404.5 TWh, NBS via a secondary aggregator) gives ~29.5 TWh, so 30 is about the ceiling those rates allow. No official provincial spill figure is published. Previously cited as Ember China Electricity Review 2025
 - **Source URL:** [https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html](https://www.nea.gov.cn/20251113/cc1fb0298a2944f8bd5441f67c9be9b3/c.html)
 - **Loader:** [`sichuan.json.ts`](../../src/data/sichuan.json.ts)
 - **Structural gap:** no

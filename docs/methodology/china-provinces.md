@@ -29,7 +29,7 @@ Province-level estimates are derived independently for each province from per-pr
 
 | Province | Kind | Annual TWh before | Annual TWh after | Source chain | Confidence | Uncertainty range |
 | --- | --- | ---: | ---: | --- | --- | --- |
-| Sichuan | hydro | 30.0 | 30.0 | NEA 2024 river-basin hydro utilisation; Huaon/NBS Sichuan 2024 generation; July 2024 public spill reports | LOW | 20-36 TWh, central 30.0 |
+| Sichuan | hydro | 30.0 | 30.0 | NEA 2024 river-basin hydro utilisation; Huaon/NBS Sichuan 2024 generation; July 2024 public spill reports | LOW | Upper bound ~30 TWh (basin-rate ceiling ~29.5; see "Sichuan" below). Was "20-36 TWh, central 30.0" until 2026-11-19 |
 | Xinjiang | solar | 15.0 | 8.2 | NEA 2024 wind/PV utilisation; Huaon/NBS Xinjiang generation by fuel | MEDIUM | 6.8-10.0 TWh, central 8.2 |
 | Inner Mongolia | wind | 4.0 | 12.6 | NEA 2024 Monxi/Mongdong wind/PV utilisation; Huaon/NBS Inner Mongolia generation by fuel | MEDIUM | 10.5-15.0 TWh, central 12.6 |
 | Gansu | mixed | 3.0 | 6.1 | NEA 2024 wind/PV utilisation; Gansu MIIT 2024 generation by fuel | MEDIUM | 5.0-7.5 TWh, central 6.1 |
@@ -56,7 +56,7 @@ For hydro, NEA publishes major river-basin effective water-energy utilisation ra
 
 ## Per-province notes
 
-**Sichuan.** The mechanism is wet-season hydro spill plus occasional local transmission/export limits. NEA's 2024 river-basin table shows the Dadu River as the prominent low-utilisation southwest hydro basin, while Yalong and Jinsha were much closer to full utilisation. A July 2024 public report cited 3.37 TWh of Sichuan dispatch-controlled hydro spill for that month. Because annualising one monsoon month is uncertain, the dashboard retains 30 TWh as a low-confidence central estimate with a 20-36 TWh range.
+**Sichuan (relabelled 2026-11-19: upper bound).** The 30.0 TWh/yr figure is now presented as an upper bound, not a central estimate. NEA 2024 basin effective utilisation (国能发新能〔2025〕92号, table 5) is Dadu 93.21%, Yalong 98.36%, Jinsha middle-lower 99.86% and upper Yangtze main stem 100%. Applying the lowest (Dadu) rate to all of Sichuan's 2024 hydro output (404.5 TWh, NBS via a secondary aggregator) gives about 29.5 TWh, so 30 is about the ceiling those rates allow. A central estimate needs Dadu and Yalong basin generation, which has not been found published; the value is unchanged. The dashboard's uncertainty band for this row is the generic T3 band on hourly peak GW, not a range on the annual total. The original reasoning: The mechanism is wet-season hydro spill plus occasional local transmission/export limits. NEA's 2024 river-basin table shows the Dadu River as the prominent low-utilisation southwest hydro basin, while Yalong and Jinsha were much closer to full utilisation. A July 2024 public report cited 3.37 TWh of Sichuan dispatch-controlled hydro spill for that month. Because annualising one monsoon month is uncertain, the dashboard retains 30 TWh as a low-confidence central estimate with a 20-36 TWh range.
 
 **Xinjiang.** Curtailment is mainly wind and solar export congestion in large desert bases, but the dashboard keeps a solar-shaped profile because the region's visual timing is currently represented by a typical PV day. NEA's 2024 rates imply about 5.0 TWh wind curtailment and 3.2 TWh PV curtailment from Huaon/NBS generation data, for 8.2 TWh central.
 
