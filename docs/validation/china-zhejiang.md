@@ -8,7 +8,7 @@ Last updated: 2026-11-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** mixed
-- **Source:** Ember China subnational generation (trailing 12mo) × monitoring-centre trailing-12-month curtailment rate (2025-04..2026-03, system-caused limits only) — Zhejiang coastal mixed wind+solar
+- **Source:** Ember China subnational generation (trailing 12mo) at monitoring-centre trailing-12-month curtailment rate (2025-04..2026-03, system-caused limits only); curtailed = generation × rate / (1 − rate) — Zhejiang coastal mixed wind+solar
 - **Source URL:** [https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv)
 - **Loader:** [`china-zhejiang.json.ts`](../../src/data/china-zhejiang.json.ts)
 - **Structural gap:** no

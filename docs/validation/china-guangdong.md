@@ -8,7 +8,7 @@ Last updated: 2026-11-18 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHN
 - **Tier:** estimated
 - **Kind:** mixed
-- **Source:** Ember China subnational generation × monitoring-centre trailing-12-month curtailment rate (2025-04..2026-03, system-caused limits only) — Guangdong (CSG interconnection). Not live SGCC/CSG dispatch. Provincial Ember×bulletin rate stays modelled; wasteStatus is bulletin-rate implied, never measured TSO SCADA.
+- **Source:** Ember China subnational generation at monitoring-centre trailing-12-month curtailment rate (2025-04..2026-03, system-caused limits only); curtailed = generation × rate / (1 − rate) — Guangdong (CSG interconnection). Not live SGCC/CSG dispatch. Provincial Ember×bulletin rate stays modelled; wasteStatus is bulletin-rate implied, never measured TSO SCADA.
 - **Source URL:** [https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv](https://github.com/honeybeesquad/every-last-joule-dashboard/blob/main/data/china-curtailment-bulletins.csv)
 - **Loader:** [`china-guangdong.json.ts`](../../src/data/china-guangdong.json.ts)
 - **Structural gap:** no

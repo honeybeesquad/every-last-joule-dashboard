@@ -13,7 +13,7 @@ describe("qinghai loader", () => {
     // Refreshed anchor (data/china-anchors.json) replaces the hardcoded fallback.
     expect(data.wind.confidenceTier).toBe("T3-modelled");
     expect(data.solar.confidenceTier).toBe("T3-modelled");
-    expect(data.wind.totalTWh).toBeCloseTo((1.578 * 30) / 365, 5);
-    expect(data.solar.totalTWh).toBeCloseTo((9.199 * 30) / 365, 5);
+    expect(data.wind.totalTWh).toBeCloseTo((1.698 * 30) / 365, 5);
+    expect(data.solar.totalTWh).toBeCloseTo((11.407 * 30) / 365, 5);
   });
 });

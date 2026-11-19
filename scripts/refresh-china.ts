@@ -52,10 +52,12 @@ const OUT_PATH = join(process.cwd(), "data", "china-anchors.json");
 //   C_w = G_w × (1 − U_w) / U_w
 //   C = C_fullYear + C_latestYtd − C_priorSameYtd   (same for G)
 //   rate = C / (G + C)          (share of potential output curtailed)
-// The anchor stays annualTWh = Ember trailing-12mo generation × rate, the same
-// formula as before; only the rate source changes. Note gen × rate slightly
-// understates C (C = gen × rate / (1 − rate)); that is unchanged from the 2024
-// method and recorded as a follow-up, not silently fixed here.
+// The anchor is the curtailed energy that goes with Ember's trailing-12mo
+// generation at that rate: annualTWh = generation × rate / (1 − rate). Because
+// rate is curtailed / (generation + curtailed), this is exact; the older
+// generation × rate understated curtailment by a factor of (1 − rate)
+// (changed 2026-11-19, signed off by Simon). Special-cause limits sit in the
+// bulletin's numerator and cannot be separated, so the result is still a floor.
 //
 // HONESTY: no rate is invented. A province gets an anchor only if it is in
 // WIRED_PROVINCES (the provinces whose loaders already consume the store) AND
@@ -259,7 +261,7 @@ interface AnchorRow {
   fuel: Fuel;
   annualGenerationTWh: number;
   curtailmentRate: number;
-  annualTWh: number; // generation * rate
+  annualTWh: number; // generation × rate / (1 − rate): curtailed energy
   latestMonth: string;
   rateWindow: string; // YYYY-MM..YYYY-MM of the bulletin window behind the rate
   rateMonthsCovered: number;
@@ -297,7 +299,8 @@ export function buildAnchors(
       continue;
     }
     const floored = ttm.rate < RATE_FLOOR;
-    const rate = Math.round(Math.max(ttm.rate, RATE_FLOOR) * 10000) / 10000;
+    const effectiveRate = Math.max(ttm.rate, RATE_FLOOR); // unrounded: used for the anchor
+    const rate = Math.round(effectiveRate * 10000) / 10000; // rounded: stored and displayed
     list.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
     const window = list.slice(0, 12);
     const annualGen = window.reduce((s, r) => s + r.generationTWh, 0);
@@ -310,11 +313,11 @@ export function buildAnchors(
       fuel,
       annualGenerationTWh: Math.round(annualGen * 1000) / 1000,
       curtailmentRate: rate,
-      annualTWh: Math.round(annualGen * rate * 1000) / 1000,
+      annualTWh: Math.round(((annualGen * effectiveRate) / (1 - effectiveRate)) * 1000) / 1000,
       latestMonth: window[0].date,
       rateWindow: `${ttm.windowStart}..${ttm.windowEnd}`,
       rateMonthsCovered: ttm.monthsCovered,
-      source: `Ember China subnational generation ${window[0].date} (trailing 12mo) × monitoring-centre curtailment rate ${rateText} (${provinceZh} ${fuel}, trailing 12 months ${ttm.windowStart}..${ttm.windowEnd} from published utilisation; system-caused limits only, 国能发电力〔2024〕44号)${RATE_SCOPE_NOTE[province] ?? ""}`,
+      source: `Ember China subnational generation ${window[0].date} (trailing 12mo) at monitoring-centre curtailment rate ${rateText} (${provinceZh} ${fuel}, trailing 12 months ${ttm.windowStart}..${ttm.windowEnd} from published utilisation; system-caused limits only, 国能发电力〔2024〕44号); curtailed = generation × rate / (1 − rate)${RATE_SCOPE_NOTE[province] ?? ""}`,
     });
   }
   // Every wired province must get both anchors; otherwise its loader would

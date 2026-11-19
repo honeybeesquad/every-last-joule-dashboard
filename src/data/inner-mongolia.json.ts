@@ -15,8 +15,9 @@ async function run({ probe = true } = {}): Promise<{ wind: RegionData; solar: Re
     }
     throw new Error("live probe skipped in tests");
   } catch (err) {
-    // buildChinaRegionFromAnchor serves the data/china-anchors.json row (Ember trailing-12mo
-    // generation × the 蒙西 utilisation rate in scripts/refresh-china.ts) whenever one exists.
+    // buildChinaRegionFromAnchor serves the data/china-anchors.json row (curtailed energy from
+    // Ember trailing-12mo whole-province generation at the 蒙西 trailing-12-month rate, see
+    // scripts/refresh-china.ts) whenever one exists.
     // The 8.0 / 4.6 TWh/yr below are only the fallback for a missing row. They were set in
     // #246 (2026-06-19) with no derivation recorded, so they are not attributed to NEA.
     const note = `Typical-shape fallback, used only because data/china-anchors.json has no Inner Mongolia row (live hourly feed unavailable: ${(err as Error).message}). Hardcoded ~8.0 TWh/yr wind + ~4.6 TWh/yr solar, with no recorded derivation; not an NEA figure.`;

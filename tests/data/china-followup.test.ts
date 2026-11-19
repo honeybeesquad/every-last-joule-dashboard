@@ -13,8 +13,8 @@ describe("China loader anchor refresh (post-PR #815 follow-up)", () => {
     expect(d.wind.sourceProvenance).toBe("modelled-fallback");
     expect(d.wind.sourceStatus).toBe("cached");
     // store: qinghai-wind 1.408, qinghai-solar 4.351 (vs hardcoded 1.5 / 2.6)
-    expect(d.wind.totalTWh).toBeCloseTo((1.578 * 30) / 365, 4);
-    expect(d.solar.totalTWh).toBeCloseTo((9.199 * 30) / 365, 4);
+    expect(d.wind.totalTWh).toBeCloseTo((1.698 * 30) / 365, 4);
+    expect(d.solar.totalTWh).toBeCloseTo((11.407 * 30) / 365, 4);
     expect(d.wind.peakGW).toBeGreaterThanOrEqual(d.wind.uncertaintyLowGW ?? 0);
     expect(d.wind.peakGW).toBeLessThanOrEqual(d.wind.uncertaintyHighGW ?? 0);
   });
@@ -24,17 +24,17 @@ describe("China loader anchor refresh (post-PR #815 follow-up)", () => {
     expect(d.wind.confidenceTier).toBe("T3-modelled");
     expect(d.solar.confidenceTier).toBe("T3-modelled");
     // store: yunnan-wind 0.324, yunnan-solar 1.929 (vs hardcoded 0.9 / 0.9)
-    expect(d.wind.totalTWh).toBeCloseTo((1.792 * 30) / 365, 4);
-    expect(d.solar.totalTWh).toBeCloseTo((6.079 * 30) / 365, 4);
+    expect(d.wind.totalTWh).toBeCloseTo((1.889 * 30) / 365, 4);
+    expect(d.solar.totalTWh).toBeCloseTo((6.734 * 30) / 365, 4);
   });
 
   it("shandong wind + solar both consume the refreshed store", async () => {
     const d = await buildChinaShandongData();
     expect(d.solar.confidenceTier).toBe("T3-modelled");
     // store: china-shandong-solar 4.025 (vs hardcoded 4.5)
-    expect(d.solar.totalTWh).toBeCloseTo((3.195 * 30) / 365, 4);
+    expect(d.solar.totalTWh).toBeCloseTo((3.295 * 30) / 365, 4);
     // wind now has a published rate (96.4% util -> 3.6%) -> refreshed anchor 1.961
-    expect(d.wind.totalTWh).toBeCloseTo((1.518 * 30) / 365, 4);
+    expect(d.wind.totalTWh).toBeCloseTo((1.56 * 30) / 365, 4);
     expect(d.wind.confidenceTier).toBe("T3-modelled");
   });
 });
