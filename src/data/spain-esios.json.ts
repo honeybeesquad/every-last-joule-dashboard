@@ -2,7 +2,9 @@
  * REE ESIOS — env-gated. Without ESIOS_API_TOKEN this loader returns {} so
  * ENTSO-E Spain (T1a Path-B) is not overwritten.
  *
- * Token: consultasios@ree.es, header x-api-key.
+ * Token: request at https://www.esios.ree.es/en/token (web form only since
+ * 2026-09-18; the consultasios@ree.es email route is closed). Sent in the
+ * x-api-key header.
  * Indicator 704 (restricciones técnicas bajar) is mixed-fuel MWh. We refuse
  * to split it onto spain-wind/spain-solar without a fuel discriminator — that
  * would double-count or invent a fuel share. Per-fuel ERNI hourly MWh is the
