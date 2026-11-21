@@ -97,11 +97,14 @@ function pacificOffsetHours(at: Date): number {
   return m ? Number(m[1]) : -8;
 }
 
-/** The UTC instant at which local hour `hour` (0 = midnight) of a California day starts. */
-function pacificHourStartUtc({ year, month, day }: CaisoDay, hour: number): string {
-  const guess = new Date(Date.UTC(year, month - 1, day, hour + 8));
-  const offset = pacificOffsetHours(guess);
-  return new Date(Date.UTC(year, month - 1, day, hour - offset)).toISOString();
+/**
+ * The UTC instant of a California day's local midnight. 08:00Z is local 00:00
+ * PST or 01:00 PDT, before either DST switch (02:00 local), so its offset is
+ * midnight's offset.
+ */
+function pacificMidnightUtcMs({ year, month, day }: CaisoDay): number {
+  const offset = pacificOffsetHours(new Date(Date.UTC(year, month - 1, day, 8)));
+  return Date.UTC(year, month - 1, day) - offset * 3_600_000;
 }
 
 function inlineArrays(html: string): Map<string, string[]> {
@@ -129,14 +132,16 @@ export function parseCaisoDailyRenewableReport(
 ): { solar: CurtailmentPoint[]; wind: CurtailmentPoint[] } {
   const arrays = inlineArrays(html);
   const sumFuel = (fuel: "solar" | "wind"): number[] => {
-    let hours = 0;
     const series = CURTAILMENT_CATEGORIES.map((cat) => {
       const name = `curt_hr_tot_${fuel}_${cat}_mwh`;
       const values = arrays.get(name);
       if (!values) throw new Error(`CAISO daily report ${caisoDailyReportUrl(date)} has no ${name}`);
-      hours = Math.max(hours, values.length);
       return values;
     });
+    const hours = series[0].length;
+    if (series.some((v) => v.length !== hours)) {
+      throw new Error(`CAISO daily report ${caisoDailyReportUrl(date)}: ${fuel} series differ in length`);
+    }
     if (hours < 23 || hours > 25) throw new Error(`CAISO daily report ${caisoDailyReportUrl(date)}: ${hours} hourly values`);
     return Array.from({ length: hours }, (_, h) =>
       series.reduce((sum, values) => {
@@ -145,9 +150,11 @@ export function parseCaisoDailyRenewableReport(
       }, 0),
     );
   };
+  // Elapsed hours from local midnight, so a 23- or 25-hour DST day maps one to one.
+  const midnight = pacificMidnightUtcMs(date);
   const toPoints = (mwh: number[]): CurtailmentPoint[] =>
     // An hour's MWh is its average MW.
-    mwh.map((mw, hour) => ({ utcTimestamp: pacificHourStartUtc(date, hour), mw }));
+    mwh.map((mw, hour) => ({ utcTimestamp: new Date(midnight + hour * 3_600_000).toISOString(), mw }));
   return { solar: toPoints(sumFuel("solar")), wind: toPoints(sumFuel("wind")) };
 }
 
@@ -179,17 +186,20 @@ export function buildCaisoMeasuredRegions(
   const sorted = [...days].sort((a, b) => ymd(a.date).localeCompare(ymd(b.date)));
   const note =
     `CAISO Daily Renewable Report hourly curtailment, measured (economic, self-schedule and operator-instruction; local and system), ` +
-    `${days.length} days ${ymd(sorted[0].date)} to ${ymd(sorted.at(-1)!.date)}; observed split ${split}`;
+    `${days.length} days ${ymd(sorted[0].date)} to ${ymd(sorted.at(-1)!.date)}` +
+    (days.length < 30 ? ` (30-day total scaled up from ${days.length} days)` : "") +
+    `; observed split ${split}`;
   const build = (regionId: string, points: CurtailmentPoint[]): RegionData => {
     const last = points.at(-1)?.utcTimestamp ?? new Date().toISOString();
     return {
       regionId,
       profile: timeOfDayAverageGW(points),
       latestProfile: latestCompleteUtcDayProfileGW(points),
-      totalTWh: totalTWh30d(points),
+      // A day CAISO skipped is missing, not zero: scale the days held to 30.
+      totalTWh: totalTWh30d(points) * (30 / days.length),
       peakGW: peakGW(points),
       lastUpdated: last,
-      lastSuccessAt: new Date().toISOString(),
+      lastSuccessAt: last, // the last data hour, as the EIA path stamps it
       sourceNote: note,
     };
   };
@@ -204,9 +214,12 @@ export function buildCaisoMeasuredRegions(
 async function fetchCaisoDailyReports(now = new Date()): Promise<{ wind: RegionData; solar: RegionData }> {
   const today = pacificToday(now);
   const candidates = Array.from({ length: 33 }, (_, i) => daysBefore(today, i + 1));
-  const results = await mapWithConcurrency(candidates, 4, async (date) => {
+  // Eight at a time, no retry, the build's per-request timeout: an unreachable
+  // caiso.com costs about five timeouts, well inside withFallback's deadline,
+  // and the EIA estimate still runs.
+  const results = await mapWithConcurrency(candidates, 8, async (date) => {
     try {
-      const html = await fetchText(caisoDailyReportUrl(date), { timeoutMs: 20_000, retries: 1 });
+      const html = await fetchText(caisoDailyReportUrl(date), { retries: 0 });
       return { date, ...parseCaisoDailyRenewableReport(html, date) };
     } catch (err) {
       console.warn(`CAISO daily report ${caisoDailyReportUrl(date)} skipped: ${(err as Error).message}`);

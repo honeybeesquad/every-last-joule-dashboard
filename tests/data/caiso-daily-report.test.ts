@@ -48,6 +48,31 @@ describe("CAISO Daily Renewable Report", () => {
     for (const hour of [0, 1, 2, 3, 4, 5, 20, 21, 22, 23]) expect(solar[hour].mw, `hour ${hour}`).toBe(0);
   });
 
+  it("maps a 23-hour spring-forward day and a 25-hour fall-back day to distinct, consecutive hours", () => {
+    const series = (n: number) =>
+      ["econ_local", "econ_system", "ss_local", "ss_system", "oi_local", "oi_system"]
+        .flatMap((c) => ["solar", "wind"].map((f) => `curt_hr_tot_${f}_${c}_mwh = [${Array(n).fill(1).join(",")}]`))
+        .join(",\n");
+    const spring = parseCaisoDailyRenewableReport(`var ${series(23)};`, { year: 2026, month: 3, day: 8 });
+    expect(spring.solar[0].utcTimestamp).toBe("2026-03-08T08:00:00.000Z"); // 00:00 PST
+    expect(spring.solar[22].utcTimestamp).toBe("2026-03-09T06:00:00.000Z"); // 23:00 PDT
+    const fall = parseCaisoDailyRenewableReport(`var ${series(25)};`, { year: 2026, month: 11, day: 1 });
+    expect(fall.solar[0].utcTimestamp).toBe("2026-11-01T07:00:00.000Z"); // 00:00 PDT
+    expect(fall.solar[24].utcTimestamp).toBe("2026-11-02T07:00:00.000Z"); // 23:00 PST
+    for (const day of [spring, fall]) {
+      const ts = day.solar.map((p) => Date.parse(p.utcTimestamp));
+      ts.slice(1).forEach((t, i) => expect(t - ts[i]).toBe(3_600_000));
+    }
+  });
+
+  it("fails when one category's series is shorter than the others", () => {
+    const html = fixture("daily-renewable-report-nov-19-2026.html").replace(
+      /curt_hr_tot_solar_oi_system_mwh\s*=\s*\[[^\]]*\]/,
+      "curt_hr_tot_solar_oi_system_mwh = [0,0,0]",
+    );
+    expect(() => parseCaisoDailyRenewableReport(html, NOV_19)).toThrow(/differ in length/);
+  });
+
   it("fails on a page without the curtailment series rather than reading it as zero", () => {
     expect(() => parseCaisoDailyRenewableReport("<html>Page not found</html>", NOV_19)).toThrow(/has no curt_hr_tot_solar/);
   });
@@ -61,10 +86,13 @@ describe("CAISO Daily Renewable Report", () => {
     ]);
     expect(solar.regionId).toBe("caiso-solar");
     expect(wind.regionId).toBe("caiso-wind");
-    expect(solar.totalTWh).toBeCloseTo((7898.7 + 21_725) / 1e6, 4);
+    // Two days held, so the 30-day total is scaled up 15×, and the note says so.
+    expect(solar.totalTWh).toBeCloseTo(((7898.7 + 21_725) / 1e6) * 15, 3);
+    expect(solar.sourceNote).toMatch(/scaled up from 2 days/);
     expect(solar.profile).toHaveLength(24);
     expect(solar.sourceNote).toMatch(/Daily Renewable Report.*measured.*2 days 2026-06-02 to 2026-11-19/);
     expect(solar.sourceNote).not.toMatch(/calibrated|×/);
     expect(solar.lastUpdated).toBe("2026-11-20T07:00:00.000Z"); // last hour start, 23:00 PST
+    expect(solar.lastSuccessAt).toBe(solar.lastUpdated);
   });
 });
