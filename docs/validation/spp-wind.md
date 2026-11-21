@@ -8,8 +8,8 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** USA
 - **Tier:** live
 - **Kind:** wind
-- **Source:** EIA SPP wind
-- **Source URL:** [https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data](https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data)
+- **Source:** SPP VER Curtailments measured curtailment (EIA × rate estimate if unavailable)
+- **Source URL:** [https://portal.spp.org/pages/ver-curtailments](https://portal.spp.org/pages/ver-curtailments)
 - **Loader:** [`spp.json.ts`](../../src/data/spp.json.ts)
 - **Structural gap:** no
 
