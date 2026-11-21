@@ -25,6 +25,7 @@ export function sppVerCurtailmentsUrl(ymd: string): string {
 
 const COLUMNS = [
   "GMTIntervalEnding",
+  "BAA",
   "WindRedispatchCurtailments",
   "WindManualCurtailments",
   "SolarRedispatchCurtailments",
@@ -45,7 +46,10 @@ const FIVE_MIN_MS = 5 * 60_000;
  * fuel. Each row is a 5-minute interval per balancing authority (SPP, and
  * since April 2026 SPP RTO West as SWPW) with curtailed MW in three columns per
  * fuel: Redispatch, Manual and CurtailedForEnergy. Curtailment here is
- * Redispatch + Manual, summed over every BA. CurtailedForEnergy is left out:
+ * Redispatch + Manual for the SPP BA only (a blank BAA, as in older files,
+ * reads as SPP). SWPW rows are left out: they belong to the separate
+ * `swpw-wind` / `swpw-solar` regions, sited elsewhere and labelled waste
+ * unpublished, and wiring them is a change of its own. CurtailedForEnergy is left out:
  * across 35 days of the report (17 Oct to 20 Nov 2026, about 20,000 rows) it is
  * never larger than Redispatch and never non-zero when Redispatch is zero, so
  * it reads as a subset of Redispatch, and adding it would double count. SPP's
@@ -54,8 +58,8 @@ const FIVE_MIN_MS = 5 * 60_000;
  * Rows are bucketed by interval start (GMTIntervalEnding minus 5 minutes) into
  * UTC hours; an hour's MWh is the sum of its intervals' MW / 12, which is its
  * average MW. Rows with blank values (SPP leaves a few per day empty) add
- * nothing. Also returns how many distinct intervals carried values, so a
- * caller can drop a partial day.
+ * nothing. Also returns how many distinct SPP intervals carried values, so a
+ * caller can drop a partial day and scale for the gaps.
  */
 export function parseSppVerCurtailments(csv: string): {
   wind: CurtailmentPoint[];
@@ -81,6 +85,8 @@ export function parseSppVerCurtailments(csv: string): {
     const cells = line.split(",");
     const end = parseGmt(cells[idx.GMTIntervalEnding] ?? "");
     if (!Number.isFinite(end)) continue;
+    const baa = (cells[idx.BAA] ?? "").trim();
+    if (baa !== "" && baa !== "SPP") continue;
     const vals = [
       num(cells[idx.WindRedispatchCurtailments]),
       num(cells[idx.WindManualCurtailments]),
@@ -107,9 +113,19 @@ const MIN_INTERVALS_PER_DAY = 264;
 /** Fewer complete days than this and the loader falls back to the EIA estimate. */
 const MIN_DAYS = 20;
 
+/** Five-minute intervals in 30 days. */
+const INTERVALS_30D = 30 * 288;
+
 export function buildSppMeasuredRegions(
-  days: { ymd: string; wind: CurtailmentPoint[]; solar: CurtailmentPoint[] }[],
+  days: { ymd: string; wind: CurtailmentPoint[]; solar: CurtailmentPoint[]; intervals: number }[],
 ): { wind: RegionData; solar: RegionData } {
+  if (days.length === 0) throw new Error("SPP VER curtailments: no days to build from");
+  const intervalsHeld = days.reduce((s, d) => s + d.intervals, 0);
+  if (intervalsHeld <= 0) throw new Error("SPP VER curtailments: no intervals with values");
+  // A missing interval (a day SPP did not publish, a blank row, the unfilled
+  // end of a partial day) is missing, not zero: scale the intervals held to 30
+  // days. A DST day's 276 or 300 intervals move this by under 0.2%.
+  const scale = INTERVALS_30D / intervalsHeld;
   const byTime = (a: CurtailmentPoint, b: CurtailmentPoint) => a.utcTimestamp.localeCompare(b.utcTimestamp);
   const windPoints = days.flatMap((d) => d.wind).sort(byTime);
   const solarPoints = days.flatMap((d) => d.solar).sort(byTime);
@@ -122,9 +138,11 @@ export function buildSppMeasuredRegions(
   const ymds = days.map((d) => d.ymd).sort();
   const fmt = (ymd: string) => `${ymd.slice(0, 4)}-${ymd.slice(4, 6)}-${ymd.slice(6, 8)}`;
   const note =
-    `SPP VER Curtailments report, measured 5-minute curtailment (redispatch + manual; SPP and SPP RTO West), ` +
+    `SPP VER Curtailments report, measured 5-minute curtailment (redispatch + manual, SPP balancing authority), ` +
     `${days.length} days ${fmt(ymds[0])} to ${fmt(ymds.at(-1)!)}` +
-    (days.length < 30 ? ` (30-day total scaled up from ${days.length} days)` : "") +
+    (intervalsHeld < INTERVALS_30D
+      ? ` (30-day total scaled up from ${(intervalsHeld / 288).toFixed(1)} days of 5-minute intervals)`
+      : "") +
     `; observed split ${split}`;
   const build = (regionId: string, points: CurtailmentPoint[]): RegionData => {
     const last = points.at(-1)?.utcTimestamp ?? new Date().toISOString();
@@ -132,8 +150,7 @@ export function buildSppMeasuredRegions(
       regionId,
       profile: timeOfDayAverageGW(points),
       latestProfile: latestCompleteUtcDayProfileGW(points),
-      // A day SPP did not publish is missing, not zero: scale the days held to 30.
-      totalTWh: totalTWh30d(points) * (30 / days.length),
+      totalTWh: totalTWh30d(points) * scale,
       peakGW: peakGW(points),
       lastUpdated: last,
       lastSuccessAt: last,
@@ -156,9 +173,9 @@ async function fetchSppVerCurtailments(now = new Date()): Promise<{ wind: Region
   const candidates = Array.from({ length: 33 }, (_, i) => ymdUtc(now.getTime() - (i + 1) * 86_400_000));
   // Eight at a time, no retry: portal.spp.org drops traffic from some networks
   // (on 2026-11-21 it timed out from a home connection in New Zealand and from
-  // a cloud dev container, and answered from a Vercel sandbox in iad1), so an
-  // unreachable portal costs about five request timeouts and the EIA estimate
-  // still runs.
+  // a cloud dev container, and answered from a Vercel sandbox in iad1). The
+  // EIA estimate runs alongside (see run), so an unreachable portal costs
+  // about five request timeouts without delaying it.
   const results = await mapWithConcurrency(candidates, 8, async (ymd) => {
     try {
       const parsed = parseSppVerCurtailments(await fetchText(sppVerCurtailmentsUrl(ymd), { retries: 0 }));
@@ -166,7 +183,7 @@ async function fetchSppVerCurtailments(now = new Date()): Promise<{ wind: Region
         console.warn(`SPP VER curtailments ${ymd} skipped: ${parsed.intervals} intervals (partial day)`);
         return null;
       }
-      return { ymd, wind: parsed.wind, solar: parsed.solar };
+      return { ymd, ...parsed };
     } catch (err) {
       console.warn(`SPP VER curtailments ${ymd} skipped: ${(err as Error).message}`);
       return null;
@@ -179,13 +196,44 @@ async function fetchSppVerCurtailments(now = new Date()): Promise<{ wind: Region
   return buildSppMeasuredRegions(days);
 }
 
+/**
+ * Measured curtailment from the VER report, with EIA-930 SWPP generation
+ * attached. EIA-930 respondent SWPP is the SPP balancing authority (SWPW is
+ * its own respondent since April 2026), so the two cover the same BA, and as
+ * curtailment is now measured rather than generation x a rate, the generation
+ * is an independent denominator. The EIA window runs to the latest hour; the
+ * report's runs to the end of yesterday.
+ */
+export function attachEiaGeneration(
+  measured: { wind: RegionData; solar: RegionData },
+  eia: { wind: RegionData; solar: RegionData } | null,
+): { wind: RegionData; solar: RegionData } {
+  const attach = (m: RegionData, e: RegionData | undefined): RegionData =>
+    e && Array.isArray(e.generationProfile) && typeof e.generationTotalTWh === "number"
+      ? {
+          ...m,
+          generationProfile: e.generationProfile,
+          generationTotalTWh: e.generationTotalTWh,
+          generationBasis: "measured-independent",
+        }
+      : m;
+  return { wind: attach(measured.wind, eia?.wind), solar: attach(measured.solar, eia?.solar) };
+}
+
 const run = async (): Promise<{ wind: RegionData; solar: RegionData }> => {
-  try {
-    return await fetchSppVerCurtailments();
-  } catch (err) {
-    console.warn(`SPP measured curtailment unavailable; falling back to the EIA estimate: ${(err as Error).message}`);
+  // Both at once, so an unreachable portal does not hold up the EIA fallback.
+  const [measured, eia] = await Promise.allSettled([fetchSppVerCurtailments(), loader.run()]);
+  if (measured.status === "fulfilled") {
+    if (eia.status === "rejected") {
+      console.warn(`SPP EIA-930 generation unavailable; measured curtailment only: ${(eia.reason as Error).message}`);
+    }
+    return attachEiaGeneration(measured.value, eia.status === "fulfilled" ? eia.value : null);
   }
-  return loader.run();
+  console.warn(
+    `SPP measured curtailment unavailable; falling back to the EIA estimate: ${(measured.reason as Error).message}`,
+  );
+  if (eia.status === "fulfilled") return eia.value;
+  throw eia.reason;
 };
 
 if (loader.isMain(import.meta.url)) {
