@@ -396,7 +396,8 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
       writeSnapshot(junesSnapshot());
       const nlB18 = key("10YNL----------L", "B18");
       behaviours.set(nlB18, "hang");
-      // The hang lasts the first pass only: the retry answers.
+      // The hang lasts the first pass only (a request and the one retry LOADER_FETCH_RETRIES=1
+      // allows, so two attempts); the second pass answers.
       const realFetch = globalThis.fetch;
       let nlAttempts = 0;
       vi.stubGlobal("fetch", (input: string | URL | Request, init?: RequestInit) => {
@@ -412,6 +413,18 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
       expect(result["netherlands-wind"].sourceStatus).toBe("live");
       expect(result["netherlands-wind"].totalTWh).not.toBe(LAST_GOOD_TWH);
       expect(said(warned)).toMatch(/second pass recovered 1 of 1 zones/);
+    });
+
+    it("does not retry when no zone answered: an outage or a bad token is not worth a second burst", async () => {
+      writeSnapshot(junesSnapshot());
+      setBehaviour("http500", () => true);
+
+      await (await runFor(90_000)).done;
+
+      const firstPass = requests.length;
+      expect(firstPass).toBeGreaterThan(0);
+      expect(said(warned)).not.toMatch(/second pass/);
+      expect(said(warned)).not.toMatch(/failed again on retry/);
     });
 
     it("keeps an allowEmpty zone's last-good record when its requests fail, not an empty one", async () => {

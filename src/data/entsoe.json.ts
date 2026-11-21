@@ -603,9 +603,9 @@ export async function collectEntsoeZones(
   const zoneConcurrency = Number(process.env.ENTSOE_ZONE_CONCURRENCY) || 6;
   const failedOnce: number[] = []; // ZONES indexes whose first attempt failed
   let retriedOk = 0;
-  let perZone: RegionData[];
+  let perZone: (RegionData | undefined)[];
   try {
-    perZone = await mapWithConcurrency(ZONES, zoneConcurrency, async (zone): Promise<RegionData> => {
+    perZone = await mapWithConcurrency(ZONES, zoneConcurrency, async (zone, zoneIndex): Promise<RegionData | undefined> => {
       if (zone.technologies.length === 0) {
         // Zones where structural spill is excluded per methodology.
         // Preserve previous cache if available; otherwise emit honest zero.
@@ -630,8 +630,8 @@ export async function collectEntsoeZones(
         return data;
       } catch (err) {
         console.warn(`ENTSO-E zone ${zone.id} failed: ${(err as Error).message}`);
-        failedOnce.push(ZONES.indexOf(zone));
-        return undefined as unknown as RegionData; // settled in the second pass below
+        failedOnce.push(zoneIndex);
+        return undefined; // settled in the second pass below
       }
     });
 
@@ -639,10 +639,15 @@ export async function collectEntsoeZones(
     // the budget lasts. Most failures are single requests timing out in a busy
     // minute (about six zones a build in Nov 2026), and the fallback they cost
     // is the committed last-good record, which can be months old.
+    // Skipped when no zone answered at all (an outage, or a bad token: retrying
+    // would only double the load on ENTSO-E) and when there is no budget to
+    // bound it.
+    const retry = failedOnce.length > 0 && fetched > 0 && stopAfterMs > 0;
     if (failedOnce.length > 0) {
       const retried = await mapWithConcurrency(failedOnce, zoneConcurrency, async (i): Promise<RegionData> => {
         const zone = ZONES[i];
-        if (stopped) return fallback(zone, NOT_REACHED_NOTE);
+        // These zones made a request that failed, so FAILED_NOTE, even when the stop fell first.
+        if (!retry || stopped) return fallback(zone, FAILED_NOTE);
         try {
           const data = await fetchEntsoeZone(zone);
           fetched++;
@@ -654,7 +659,7 @@ export async function collectEntsoeZones(
         }
       });
       failedOnce.forEach((zoneIndex, j) => { perZone[zoneIndex] = retried[j]; });
-      if (retriedOk > 0) console.warn(`ENTSO-E second pass recovered ${retriedOk} of ${failedOnce.length} zones`);
+      if (retry) console.warn(`ENTSO-E second pass recovered ${retriedOk} of ${failedOnce.length} zones`);
     }
   } finally {
     clearTimeout(stopTimer);
@@ -677,7 +682,11 @@ export async function collectEntsoeZones(
   }
 
   const out: Record<string, RegionData> = {};
-  ZONES.forEach((zone, i) => { out[zone.id] = perZone[i]; });
+  ZONES.forEach((zone, i) => {
+    const record = perZone[i];
+    if (!record) throw new Error(`ENTSO-E zone ${zone.id} has no record after both passes`);
+    out[zone.id] = record;
+  });
   return out;
 }
 
