@@ -382,11 +382,36 @@ describe("the ENTSO-E loader when ENTSO-E is slow", () => {
       writeSnapshot(junesSnapshot());
       behaviours.set(key("10YNL----------L", "B18"), "hang");
 
-      const result = await (await runFor(60_000)).done;
+      // Two passes of a 15 s request and one retry each: 60 s, plus backoff.
+      const result = await (await runFor(90_000)).done;
 
       expect(result["netherlands-wind"].sourceStatus).toBe("degraded");
       expect(result["netherlands-wind"].totalTWh).toBe(LAST_GOOD_TWH);
       expect(result["netherlands-solar"].sourceStatus).toBe("live"); // its neighbour is unaffected
+    });
+
+    it("retries a zone that failed in the first pass, and serves it live when the retry answers", async () => {
+      // Nov 2026: about six zones a build lost a request to a timeout and went out on June's
+      // last-good record, though ENTSO-E answered them a minute later.
+      writeSnapshot(junesSnapshot());
+      const nlB18 = key("10YNL----------L", "B18");
+      behaviours.set(nlB18, "hang");
+      // The hang lasts the first pass only: the retry answers.
+      const realFetch = globalThis.fetch;
+      let nlAttempts = 0;
+      vi.stubGlobal("fetch", (input: string | URL | Request, init?: RequestInit) => {
+        const params = new URL(String(input)).searchParams;
+        if (key(params.get("in_Domain") ?? "", params.get("psrType") ?? "") === nlB18 && ++nlAttempts > 2) {
+          behaviours.set(nlB18, "fast");
+        }
+        return realFetch(input, init);
+      });
+
+      const result = await (await runFor(90_000)).done;
+
+      expect(result["netherlands-wind"].sourceStatus).toBe("live");
+      expect(result["netherlands-wind"].totalTWh).not.toBe(LAST_GOOD_TWH);
+      expect(said(warned)).toMatch(/second pass recovered 1 of 1 zones/);
     });
 
     it("keeps an allowEmpty zone's last-good record when its requests fail, not an empty one", async () => {

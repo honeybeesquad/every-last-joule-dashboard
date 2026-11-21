@@ -601,6 +601,8 @@ export async function collectEntsoeZones(
   // (timeout × attempts) per zone — 126 s × 52 zones on 2026-09-10, past
   // Vercel's 45-minute build limit.
   const zoneConcurrency = Number(process.env.ENTSOE_ZONE_CONCURRENCY) || 6;
+  const failedOnce: number[] = []; // ZONES indexes whose first attempt failed
+  let retriedOk = 0;
   let perZone: RegionData[];
   try {
     perZone = await mapWithConcurrency(ZONES, zoneConcurrency, async (zone): Promise<RegionData> => {
@@ -628,9 +630,32 @@ export async function collectEntsoeZones(
         return data;
       } catch (err) {
         console.warn(`ENTSO-E zone ${zone.id} failed: ${(err as Error).message}`);
-        return fallback(zone, FAILED_NOTE);
+        failedOnce.push(ZONES.indexOf(zone));
+        return undefined as unknown as RegionData; // settled in the second pass below
       }
     });
+
+    // Second pass: a zone that failed in the first pass gets one more try while
+    // the budget lasts. Most failures are single requests timing out in a busy
+    // minute (about six zones a build in Nov 2026), and the fallback they cost
+    // is the committed last-good record, which can be months old.
+    if (failedOnce.length > 0) {
+      const retried = await mapWithConcurrency(failedOnce, zoneConcurrency, async (i): Promise<RegionData> => {
+        const zone = ZONES[i];
+        if (stopped) return fallback(zone, NOT_REACHED_NOTE);
+        try {
+          const data = await fetchEntsoeZone(zone);
+          fetched++;
+          retriedOk++;
+          return data;
+        } catch (err) {
+          console.warn(`ENTSO-E zone ${zone.id} failed again on retry: ${(err as Error).message}`);
+          return fallback(zone, FAILED_NOTE);
+        }
+      });
+      failedOnce.forEach((zoneIndex, j) => { perZone[zoneIndex] = retried[j]; });
+      if (retriedOk > 0) console.warn(`ENTSO-E second pass recovered ${retriedOk} of ${failedOnce.length} zones`);
+    }
   } finally {
     clearTimeout(stopTimer);
   }
