@@ -176,9 +176,27 @@ function formatYyyymmdd(d: Date): string {
 }
 
 /**
+ * True when the host does not resolve. On 2026-11-21 the setsuden host's A
+ * record was gone (its own name servers answer NOERROR with no address);
+ * Tohoku had suspended でんき予報 on 2026-10-22 after a PHP vulnerability.
+ * Each of the 30 days then cost three attempts and ~75 s of build time before
+ * the loader fell back anyway, so a DNS failure now ends the run at once.
+ */
+export function isDnsFailure(err: unknown): boolean {
+  for (let e: unknown = err, depth = 0; e && depth < 4; e = (e as { cause?: unknown }).cause, depth++) {
+    const { code, message } = e as { code?: unknown; message?: unknown };
+    // ENOTFOUND only: EAI_AGAIN is a resolver's temporary failure, worth the normal retry.
+    if (code === "ENOTFOUND") return true;
+    if (typeof message === "string" && /^getaddrinfo ENOTFOUND\b/.test(message)) return true;
+  }
+  return false;
+}
+
+/**
  * Fetch a single day's Tohoku CSV as bytes, decode as Shift-JIS, parse out
  * the curtailment columns. Network errors propagate to the caller (logged and
- * skipped). Uses HTTP/1.1-forced TLS connection to bypass WAF fingerprinting.
+ * skipped), after up to `retries` more attempts; a DNS failure is not retried,
+ * and the caller stops there if nothing has been fetched yet. Uses HTTP/1.1-forced TLS connection to bypass WAF fingerprinting.
  */
 async function fetchTohokuDay(
   yyyymmdd: string,
@@ -195,6 +213,7 @@ async function fetchTohokuDay(
       return parseTohokuCsv(decoded);
     } catch (err) {
       lastErr = err;
+      if (isDnsFailure(err)) break; // retrying an unresolvable host only costs time
       if (attempt < retries) {
         await new Promise((r) => setTimeout(r, backoffMs * (attempt + 1)));
       }
@@ -245,6 +264,15 @@ const run = async (): Promise<Record<string, RegionData>> => {
     try {
       parsedDays.push(await fetchTohokuDay(yyyymmdd));
     } catch (err) {
+      if (isDnsFailure(err)) {
+        // Nothing fetched yet: the host is gone, fall back now. Days already
+        // fetched are kept and the loop stops, as a mid-run removal would do.
+        if (parsedDays.every((d) => d.sampleCount === 0)) {
+          throw new Error(`Tohoku Electric host does not resolve (${(err as Error).message}); stopping before the other days`);
+        }
+        console.warn(`tohoku host stopped resolving at ${yyyymmdd}; keeping the ${parsedDays.length} days already fetched`);
+        break;
+      }
       console.warn(`tohoku fetch skipped ${yyyymmdd}: ${(err as Error).message}`);
       parsedDays.push({ points: [], solarCurtMwSum: 0, windCurtMwSum: 0, sampleCount: 0 });
     }

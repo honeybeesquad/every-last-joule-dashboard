@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseTohokuCsv } from "../../src/data/japan-tohoku.json";
+import { isDnsFailure, parseTohokuCsv } from "../../src/data/japan-tohoku.json";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // Fixture is the upstream Shift-JIS bytes verbatim; the parser receives a
@@ -77,5 +77,23 @@ describe("tohoku parser (japan-tohoku loader)", () => {
     const peakHour = new Date(peakPoint.utcTimestamp).getUTCHours();
     expect(peakHour).toBeGreaterThanOrEqual(1);
     expect(peakHour).toBeLessThanOrEqual(6);
+  });
+});
+
+describe("isDnsFailure", () => {
+  it("recognises the getaddrinfo failure from the 2026-11-21 build, however it is wrapped", () => {
+    expect(isDnsFailure(new Error("getaddrinfo ENOTFOUND setsuden.nw.tohoku-epco.co.jp"))).toBe(true);
+    expect(isDnsFailure(Object.assign(new Error(""), { code: "ENOTFOUND" }))).toBe(true);
+    expect(isDnsFailure(Object.assign(new TypeError("fetch failed"), { cause: Object.assign(new Error(""), { code: "ENOTFOUND" }) }))).toBe(true);
+  });
+
+  it("leaves timeouts, resets and HTTP errors to the per-day retry", () => {
+    expect(isDnsFailure(new Error("HTTP 404 for https://example.test/x.csv"))).toBe(false);
+    expect(isDnsFailure(Object.assign(new TypeError("fetch failed"), { cause: new Error("read ECONNRESET") }))).toBe(false);
+    expect(isDnsFailure(new DOMException("This operation was aborted", "AbortError"))).toBe(false);
+    // A resolver's temporary failure gets the normal retry.
+    expect(isDnsFailure(Object.assign(new Error("getaddrinfo EAI_AGAIN x"), { code: "EAI_AGAIN" }))).toBe(false);
+    // Text that only mentions the code somewhere is not a getaddrinfo failure.
+    expect(isDnsFailure(new Error("HTTP 502: upstream said ENOTFOUND"))).toBe(false);
   });
 });
