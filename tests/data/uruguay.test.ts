@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildUruguayRegionData,
   FALLBACK_RENEWABLE_PLANTS,
+  isEmptyAdmeWorkbook,
   isUnpublishedAdmeMonth,
   normalizePlantName,
   parseAdmeConsignaPlantNames,
@@ -62,7 +63,10 @@ describe("uruguay loader", () => {
   });
 
   it("reads the $valores warning as a month ADME has not published", () => {
-    const { prefix } = splitAdmeWorkbookResponse(withPrefix(warnings("Undefined variable $valores", 50), SEPT_XLSX));
+    // As on 2026-10: megabytes of other warnings can come first.
+    const prefix0 = warnings("Undefined array key 3", 40_000) + warnings("Undefined variable $valores", 5);
+    expect(prefix0.length).toBeGreaterThan(5_000_000);
+    const { prefix } = splitAdmeWorkbookResponse(withPrefix(prefix0, SEPT_XLSX));
     expect(isUnpublishedAdmeMonth(prefix)).toBe(true);
   });
 
@@ -76,6 +80,14 @@ describe("uruguay loader", () => {
     expect(normalizePlantName("P. E. Solís de Mataojo")).toBe("solis de mataojo");
     expect(normalizePlantName("PE Valentines")).toBe("valentines");
     expect(normalizePlantName("P.F. Menafra Solar")).toBe("menafra");
+    expect(normalizePlantName("P.E.Valentines")).toBe("valentines");
+  });
+
+  it("tells an unpublished month's all-zero workbook from a published one", () => {
+    // 2026-10 as served on 2026-11-21: all 127 plants zero for all 744 hours.
+    const oct = new Uint8Array(readFileSync(join(__dirname, "../fixtures/adme/ro_2026-10_unpublished.xlsx")));
+    expect(isEmptyAdmeWorkbook(oct)).toBe(true);
+    expect(isEmptyAdmeWorkbook(SEPT_XLSX)).toBe(false);
   });
 
   it("matches every restricted plant in the 2026-09 workbook from the fallback list alone", () => {

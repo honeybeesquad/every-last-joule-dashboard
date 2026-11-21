@@ -114,8 +114,8 @@ export function normalizePlantName(value: string): string {
     // "P.E." / "P. E." / "PE" (parque eólico) and "P.F." (parque fotovoltaico) as
     // whole words only: until 2026-11-21 these also ate the "Pe" of "Peralta"
     // and "Petilcoran", so fallback names never matched those columns.
-    .replace(/\bp\s*\.?\s*e\s*\.?(?=\s|$)/gi, "")
-    .replace(/\bp\s*\.?\s*f\s*\.?(?=\s|$)/gi, "")
+    .replace(/\bp\s*\.\s*[ef]\b\s*\.?/gi, "")
+    .replace(/\bp[ef](?![a-z])/gi, "")
     .replace(/\beolico\b/gi, "")
     .replace(/\bsolar\b/gi, "")
     .replace(/\s+/g, " ")
@@ -218,7 +218,8 @@ export function splitAdmeWorkbookResponse(body: Uint8Array): { xlsx: Uint8Array;
   for (let i = 0; i + 3 < body.length; i++) {
     if (body[i] === ZIP_LOCAL_HEADER[0] && body[i + 1] === ZIP_LOCAL_HEADER[1]
       && body[i + 2] === ZIP_LOCAL_HEADER[2] && body[i + 3] === ZIP_LOCAL_HEADER[3]) {
-      return { xlsx: body.subarray(i), prefix: new TextDecoder("latin1").decode(body.subarray(0, Math.min(i, 64 * 1024))) };
+      // The whole prefix: the `$valores` warning can come after megabytes of others.
+      return { xlsx: body.subarray(i), prefix: new TextDecoder("latin1").decode(body.subarray(0, i)) };
     }
   }
   throw new Error("ADME restrictions response held no xlsx (no zip signature)");
@@ -233,6 +234,22 @@ export function splitAdmeWorkbookResponse(body: Uint8Array): { xlsx: Uint8Array;
  */
 export function isUnpublishedAdmeMonth(prefix: string): boolean {
   return /Undefined variable \$valores/.test(prefix);
+}
+
+/**
+ * True when every plant cell in the workbook is zero or blank: the shape of a
+ * month ADME has not filled in (all 127 columns, all 744 hours, for 2026-10).
+ * A published month has non-zero cells somewhere (1,219 in 2026-09), so this
+ * backs up the `$valores` signal should ADME turn its warnings off.
+ */
+export function isEmptyAdmeWorkbook(zipBytes: Uint8Array): boolean {
+  const sharedStrings = parseSharedStrings(unzipText(zipBytes, "xl/sharedStrings.xml"));
+  const rows = parseWorksheet(unzipText(zipBytes, "xl/worksheets/sheet1.xml"), sharedStrings);
+  for (const [rowNumber, row] of rows) {
+    if (rowNumber === 1) continue;
+    for (const [col, value] of row) if (col > 0 && parseNumber(value) !== 0) return false;
+  }
+  return true;
 }
 
 export function parseAdmeRestrictionsXlsx(zipBytes: Uint8Array, renewablePlants: Set<string>): CurtailmentPoint[] {
@@ -274,7 +291,9 @@ function latestCompleteMonth(controlPanelHtml: string): { year: number; month: n
   );
   if (pairs.length === 0) {
     const now = new Date();
-    return { year: now.getUTCFullYear(), month: now.getUTCMonth() };
+    // The month before this one, 1-based (getUTCMonth is 0-based, so 0 means January → last December).
+    const m = now.getUTCMonth();
+    return m === 0 ? { year: now.getUTCFullYear() - 1, month: 12 } : { year: now.getUTCFullYear(), month: m };
   }
   return pairs.sort((a, b) => (b.year - a.year) || (b.month - a.month))[0];
 }
@@ -297,7 +316,8 @@ export function buildUruguayRegionData(points: CurtailmentPoint[], sourceNote: s
 }
 
 async function fetchBytes(url: string): Promise<Uint8Array> {
-  const res = await fetch(url, { headers: { "user-agent": "Mozilla/5.0" } });
+  // Each response is 6–12 MB and the walk may take up to four: bound each one.
+  const res = await fetch(url, { headers: { "user-agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(40_000) });
   if (!res.ok) throw new Error(`ADME workbook HTTP ${res.status} for ${url}`);
   return new Uint8Array(await res.arrayBuffer());
 }
@@ -319,14 +339,14 @@ async function run(): Promise<RegionData> {
     const mm = String(month.month).padStart(2, "0");
     const url = `${RESTRICTIONS_URL}?anod=${month.year}&mesd=${mm}&anoh=${month.year}&mesh=${mm}`;
     const { xlsx, prefix } = splitAdmeWorkbookResponse(await fetchBytes(url));
-    if (isUnpublishedAdmeMonth(prefix)) {
+    if (isUnpublishedAdmeMonth(prefix) || isEmptyAdmeWorkbook(xlsx)) {
       console.warn(`ADME ${month.year}-${mm} not published yet; trying the month before`);
       continue;
     }
     const points = parseAdmeRestrictionsXlsx(xlsx, plants);
     return buildUruguayRegionData(points, `ADME control-panel hourly Restricciones Operativas workbook (${month.year}-${mm}, the newest month ADME has published); renewable plant columns matched from info_consignas.php and fallback plant registry. Source: ${url}`);
   }
-  throw new Error(`ADME has published no Restricciones Operativas month from ${latest.year}-${latest.month} back four months`);
+  throw new Error(`ADME has published no Restricciones Operativas month from ${latest.year}-${String(latest.month).padStart(2, "0")} back four months`);
 }
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
