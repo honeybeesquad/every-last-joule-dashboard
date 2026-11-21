@@ -1,0 +1,36 @@
+<br /><br /></div>
+</div></div>
+<div id="caja_1264" class="  col-lg-5 col-lg-offset-0 col-md-5 col-md-offset-0 col-sm-12 col-sm-offset-0 col-xs-12 col-xs-offset-0 " style=""><div class="row">
+<div class="col-lg-12" style="background-color: rgba(255,255,255,0.9); border: 2px solid #287CD2; border-radius: 10px; display: inline-block; max-height: 700px; padding: 10px 5px 10px 5px; text-align: center;"><span style="color: #287cd2;"><strong>Energ&iacute;a no Suministrada (Restricciones Operativas) </strong><span style="color: #000000;"><a style="color: #ffffff;" href="#modal-restricciones" data-toggle="modal"><span class="glyphicon glyphicon-question-sign" style="color: #0065b9; font-size: 42;"></span></a></span><strong><br /></strong></span><br /><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN""http://www.w3.org/TR/html4/strict.dtd">            <script>
+                function fclick_ro() {
+                    var f = document.forms["form_ro"];
+                    if (f.elements["mesd"].value == "" || f.elements["mesh"].value == "" || f.elements["anod"].value == "" || f.elements["anoh"].value == "" || parseInt(f.elements["mesd"].value) < 1 || parseInt(f.elements["mesh"].value) > 12
+                    || (parseInt(f.elements["anod"].value) == parseInt(f.elements["anoh"].value) && parseInt(f.elements["mesd"].value) > parseInt(f.elements["mesh"].value)) || (parseInt(f.elements["anod"].value) > parseInt(f.elements["anoh"].value))) {
+                        alert("Debe seleccionar un rango de meses correcto");
+                    }else {
+                        f.submit();
+                    }
+                }</script><div>    
+                <!--<h3><center></center></h3><hr>   -->
+                <form action="https://www.adme.com.uy/panelControl/ro_excel.php" name="form_ro" method="get">
+                <table align="center">            
+                    <tr><td>                    
+                            <br><br>Año desde: <input type="text" name="anod" size="4" placeholder="2026">                
+                        </td><td> 
+                            <br><br>&nbsp &nbsp Mes Desde: <input type="text" name="mesd" size="2" placeholder="10">            
+                        </td><td>   
+                            <br><br>Año hasta: <input type="text" name="anoh" size="4" placeholder="2026">    
+                        </td><td>                    
+                            <br><br>&nbsp &nbsp Mes Hasta: <input type="text" name="mesh" size="2" placeholder="11">                
+                        </td>               
+                    </tr>            
+                    <td colspan = 4>                    
+                    <center><br><INPUT type="button" value="Descargar" name="Descargar" onclick="fclick_ro();"></center>                
+                    </td></tr>
+                                        <tr><td><input type="hidden" name="ultimo_anio" value="2026"></td></tr>
+                    <tr><td><input type="hidden" name="ultimo_mes" value="10"></td></tr>
+                    <tr><td>
+                    </td></tr>           
+                    <!--<tr><td><input type="hidden" name="ver_menu" value=""></td></tr></td></tr>-->        
+                </table>    
+            </form></div> 

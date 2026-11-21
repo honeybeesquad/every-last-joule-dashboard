@@ -1,0 +1,88 @@
+<br />
+<b>Warning</b>:  Undefined variable $valores in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 5 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 7 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 9 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 12 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 19 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 21 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 23 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 26 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 28 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 35 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 42 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 44 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 50 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Trying to access array offset on null in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 51 in <b>/home/uadme/publi
+
+...[12472265 bytes of PHP warnings elided]...
+
+l/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 743 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 743 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 743 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 743 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 743 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 743 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Undefined array key 743 in <b>/home/uadme/public_html/panelControl/ro_excel.php</b> on line <b>80</b><br />
+<br />
+<b>Warning</b>:  Cannot modify header information - headers already sent by (output started at /home/uadme/public_html/panelControl/ro_excel.php:80) in <b>/home/uadme/public_html/vendor/shuchkin/simplexlsxgen/src/SimpleXLSXGen.php</b> on line <b>193</b><br />
+<br />
+<b>Warning</b>:  Cannot modify header information - headers already sent by (output started at /home/uadme/public_html/panelControl/ro_excel.php:80) in <b>/home/uadme/public_html/vendor/shuchkin/simplexlsxgen/src/SimpleXLSXGen.php</b> on line <b>194</b><br />
+<br />
+<b>Warning</b>:  Cannot modify header information - headers already sent by (output started at /home/uadme/public_html/panelControl/ro_excel.php:80) in <b>/home/uadme/public_html/vendor/shuchkin/simplexlsxgen/src/SimpleXLSXGen.php</b> on line <b>195</b><br />
+<br />
+<b>Warning</b>:  Cannot modify header information - headers already sent by (output started at /home/uadme/public_html/panelControl/ro_excel.php:80) in <b>/home/uadme/public_html/vendor/shuchkin/simplexlsxgen/src/SimpleXLSXGen.php</b> on line <b>196</b><br />
+
+[xlsx zip begins here at byte offset 12478409 of 12685459]
