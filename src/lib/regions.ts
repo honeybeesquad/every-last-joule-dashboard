@@ -2,8 +2,8 @@ import type { Region } from "./types";
 
 export const REGIONS: Region[] = [
   // Tier 1 - live sub-hourly (US ISO per-fuel split, Phase 3b)
-  { id: "caiso-wind",      name: "California Wind",  country: "USA", lat: 35, lon: -118.5, tier: "live", kind: "wind",  source: "CAISO OASIS / EIA wind", sourceUrl: "https://oasis.caiso.com/oasisapi", sourceProvenance: "verified" },
-  { id: "caiso-solar",      name: "California Solar", country: "USA", lat: 33.5, lon: -116, tier: "live", kind: "solar", source: "CAISO OASIS / EIA solar", sourceUrl: "https://oasis.caiso.com/oasisapi", sourceProvenance: "verified" },
+  { id: "caiso-wind",      name: "California Wind",  country: "USA", lat: 35, lon: -118.5, tier: "live", kind: "wind",  source: "CAISO Daily Renewable Report measured curtailment (EIA × rate estimate if unavailable)", sourceUrl: "https://www.caiso.com/library/daily-wind-solar-real-time-dispatch-curtailment-reports", sourceProvenance: "verified" },
+  { id: "caiso-solar",      name: "California Solar", country: "USA", lat: 33.5, lon: -116, tier: "live", kind: "solar", source: "CAISO Daily Renewable Report measured curtailment (EIA × rate estimate if unavailable)", sourceUrl: "https://www.caiso.com/library/daily-wind-solar-real-time-dispatch-curtailment-reports", sourceProvenance: "verified" },
   { id: "ercot-west-wind",  name: "ERCOT West Wind",   country: "USA", lat: 33.5, lon: -101.5, tier: "live", kind: "wind",  source: "EIA ERCO wind", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data", sourceProvenance: "verified" },
   { id: "ercot-west-solar", name: "ERCOT West Solar",  country: "USA", lat: 32, lon: -102.5, tier: "live", kind: "solar", source: "EIA ERCO solar", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data", sourceProvenance: "verified" },
   { id: "ercot-east-wind",  name: "ERCOT East Wind",   country: "USA", lat: 28.5, lon:  -97.5, tier: "live", kind: "wind",  source: "EIA ERCO wind", sourceUrl: "https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data", sourceProvenance: "verified" },
