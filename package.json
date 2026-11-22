@@ -49,6 +49,7 @@
     "@observablehq/framework": "^1.13.0",
     "d3": "^7.9.0",
     "fast-xml-parser": "^5.7.1",
+    "pdfjs-dist": "4.10.38",
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {

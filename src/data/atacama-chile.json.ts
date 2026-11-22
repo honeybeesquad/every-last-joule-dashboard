@@ -1,7 +1,3 @@
-import { execFileSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
   fetchBytes,
@@ -10,6 +6,7 @@ import {
   parseCoordinadorSolarXlsx,
 } from "./chile-cen-reductions.js";
 import { hourlyAverage } from "../lib/csv.js";
+import { pdfToText } from "../lib/pdf-text.js";
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
@@ -17,25 +14,6 @@ import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 const DAILY_SUMMARY_LOOKBACK_DAYS = 45;
 const DAILY_SUMMARY_TARGET_DAYS = 30;
 const DAILY_SUMMARY_FETCH_BATCH_SIZE = 6;
-
-function pdfToText(pdfBytes: Uint8Array): string {
-  const dir = mkdtempSync(join(tmpdir(), "chile-pdf-"));
-  const pdfPath = join(dir, "source.pdf");
-  try {
-    writeFileSync(pdfPath, pdfBytes);
-    return execFileSync("pdftotext", ["-layout", pdfPath, "-"], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
-  } finally {
-    rmSync(dir, { recursive: true, force: true });
-  }
-}
-
-function assertPdfToTextAvailable(): void {
-  try {
-    execFileSync("pdftotext", ["-v"], { stdio: "ignore" });
-  } catch {
-    throw new Error("pdftotext is not available for Chile daily PDF extraction");
-  }
-}
 
 export interface DailySolarReductionSummary {
   date: string;
@@ -74,14 +52,14 @@ async function fetchDailySummary(date: Date): Promise<DailySolarReductionSummary
     if (!res.ok) throw new Error(`Chile daily summary HTTP ${res.status} for ${url}`);
     const contentType = res.headers.get("content-type") ?? "";
     if (!contentType.includes("pdf")) continue;
-    return parseDailySolarReductionText(pdfToText(new Uint8Array(await res.arrayBuffer())), dateKey, url);
+    return parseDailySolarReductionText(await pdfToText(new Uint8Array(await res.arrayBuffer())), dateKey, url);
   }
   return null;
 }
 
 async function fetchRecentDailySummaries(now = new Date()): Promise<DailySolarReductionSummary[]> {
-  assertPdfToTextAvailable();
   const summaries: DailySolarReductionSummary[] = [];
+  const errors: string[] = [];
   for (
     let startAge = 1;
     startAge <= DAILY_SUMMARY_LOOKBACK_DAYS && summaries.length < DAILY_SUMMARY_TARGET_DAYS;
@@ -93,13 +71,23 @@ async function fetchRecentDailySummaries(now = new Date()): Promise<DailySolarRe
       const age = Math.round((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - date.getTime()) / 86_400_000);
       return age <= DAILY_SUMMARY_LOOKBACK_DAYS;
     });
-    const batch = await Promise.all(dates.map((date) => fetchDailySummary(date).catch(() => null)));
+    const batch = await Promise.all(
+      dates.map((date) =>
+        fetchDailySummary(date).catch((err: Error) => {
+          errors.push(`${date.toISOString().slice(0, 10)}: ${err.message}`);
+          return null;
+        }),
+      ),
+    );
     summaries.push(...batch.filter((summary): summary is DailySolarReductionSummary => summary !== null));
   }
   summaries.sort((a, b) => a.date.localeCompare(b.date));
   const latest = summaries.slice(-DAILY_SUMMARY_TARGET_DAYS);
   if (latest.length < 7) {
-    throw new Error(`Chile daily summaries yielded only ${latest.length} parseable days`);
+    throw new Error(
+      `Chile daily summaries yielded only ${latest.length} parseable days` +
+        (errors.length ? ` (${errors.length} failed; first: ${errors[0]})` : ""),
+    );
   }
   return latest;
 }
