@@ -3,9 +3,10 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "url";
-import { fetchText } from "../lib/fetch.js";
+import { fetchBytes as fetchBytesWithAbort, fetchText } from "../lib/fetch.js";
+import { softStopMs } from "../lib/loader-deadline.js";
 import { latestCompleteUtcDayProfileGW, peakGW, timeOfDayAverageGW, totalTWh30d, trailingDays } from "../lib/profile.js";
-import { withFallback } from "../lib/resilient.js";
+import { withFallback, type LoaderBudget } from "../lib/resilient.js";
 import type { CurtailmentPoint, RegionData } from "../lib/types.js";
 
 const REGION_ID = "uruguay";
@@ -316,27 +317,42 @@ export function buildUruguayRegionData(points: CurtailmentPoint[], sourceNote: s
 }
 
 /**
- * Time the month walk may spend on ADME workbooks, shared across all its
- * requests. ADME builds each 6–12 MB response on the fly (PHP warnings ahead
- * of the workbook): standalone it answers in 2–3 s, but in the production
- * build of 2026-11-22 07:10 UTC the first request passed the old flat 40 s cap
- * and the region fell back to its May snapshot. 150 s stays inside
- * withFallback's default 180 s live deadline (LOADER_DEADLINE_MS).
+ * Per-request cap on an ADME workbook. ADME builds each 6–12 MB response on
+ * the fly (PHP warnings ahead of the workbook): standalone it answers in
+ * 2–3 s, but in the production build of 2026-11-22 07:10 UTC the first
+ * request passed the old flat 40 s cap and the region fell back to its May
+ * snapshot.
  */
-export const ADME_WALK_BUDGET_MS = 150_000;
+export const ADME_REQUEST_CAP_MS = 90_000;
 
-async function fetchBytes(url: string, deadline: number): Promise<Uint8Array> {
-  const remaining = deadline - Date.now();
-  if (remaining <= 0) throw new Error(`ADME walk budget of ${ADME_WALK_BUDGET_MS / 1000} s spent before ${url}`);
+/**
+ * When the month walk must stop: at the loader's soft stop (a share of
+ * withFallback's live deadline, counted from when withFallback started the
+ * loader, so the control-panel requests count against it), or 150 s from now
+ * when no deadline is set.
+ */
+export function admeWalkDeadline(budget: LoaderBudget, now = Date.now()): number {
+  return budget.deadlineMs > 0 ? budget.startedAt + softStopMs(budget.deadlineMs) : now + 150_000;
+}
+
+/** The timeout for the next workbook request, or null once the walk is out of time. */
+export function admeRequestTimeoutMs(deadline: number, now = Date.now()): number | null {
+  const remaining = deadline - now;
+  return remaining > 0 ? Math.min(remaining, ADME_REQUEST_CAP_MS) : null;
+}
+
+async function fetchWorkbook(url: string, deadline: number): Promise<Uint8Array> {
+  const timeoutMs = admeRequestTimeoutMs(deadline);
+  if (timeoutMs === null) throw new Error(`ADME month walk out of time before ${url}`);
   const started = Date.now();
-  const res = await fetch(url, { headers: { "user-agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(remaining) });
-  if (!res.ok) throw new Error(`ADME workbook HTTP ${res.status} for ${url}`);
-  const bytes = new Uint8Array(await res.arrayBuffer());
+  // The shared fetch helper: withFallback's deadline aborts it, so a request
+  // never outlives the loader.
+  const bytes = await fetchBytesWithAbort(url, { timeoutMs, retries: 0, headers: { "user-agent": "Mozilla/5.0" } });
   console.warn(`ADME workbook ${(bytes.length / 1e6).toFixed(1)} MB in ${((Date.now() - started) / 1000).toFixed(1)} s: ${url}`);
   return bytes;
 }
 
-async function run(): Promise<RegionData> {
+async function run(budget: LoaderBudget = { deadlineMs: 0, startedAt: Date.now() }): Promise<RegionData> {
   const [controlPanelHtml, consignasHtml] = await Promise.all([
     fetchText(CONTROL_PANEL_URL, { timeoutMs: 30000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } }),
     fetchText(INFO_CONSIGNAS_URL, { timeoutMs: 30000, retries: 1, headers: { "user-agent": "Mozilla/5.0" } }),
@@ -348,12 +364,12 @@ async function run(): Promise<RegionData> {
 
   // Walk back from the month the control panel names to the newest one ADME
   // has filled in; three steps covers the two-month lag seen on 2026-11-21.
-  const deadline = Date.now() + ADME_WALK_BUDGET_MS;
+  const deadline = admeWalkDeadline(budget);
   let month = latest;
   for (let step = 0; step < 4; step++, month = previousMonth(month)) {
     const mm = String(month.month).padStart(2, "0");
     const url = `${RESTRICTIONS_URL}?anod=${month.year}&mesd=${mm}&anoh=${month.year}&mesh=${mm}`;
-    const { xlsx, prefix } = splitAdmeWorkbookResponse(await fetchBytes(url, deadline));
+    const { xlsx, prefix } = splitAdmeWorkbookResponse(await fetchWorkbook(url, deadline));
     if (isUnpublishedAdmeMonth(prefix) || isEmptyAdmeWorkbook(xlsx)) {
       console.warn(`ADME ${month.year}-${mm} not published yet; trying the month before`);
       continue;
