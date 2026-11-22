@@ -9,7 +9,7 @@
 
 - Checked in a Vercel sandbox (iad1) on 33 daily reports (18 Oct to 20 Nov 2026): the solar reduction parsed from pdf.js text equals the one parsed from `pdftotext -layout` on all 33.
 - Size: production served 0.158 TWh/30d from the August XLSX. The 30 most recent daily reports (21 Oct to 20 Nov) sum to 0.586 TWh, so Atacama's 30-day total rises about 0.43 TWh/30d and is current to the day before. No tier change; the monthly XLSX stays the fallback.
-- Sign-off: this changes a headline total, so it merges only after Simon approves it on the PR's decision card.
+- Sign-off: this changes a headline total; Simon approved merging it on 2026-11-22.
 - Labels: `regions.ts` source and `docs/validation/atacama.md` now name the daily PDFs and the XLSX fallback.
 
 **Source issue found, not fixed.** CEN's report for 30 Oct 2026 repeats 29 Oct's reduction figures for both wind (6,024.73 MWh) and solar (14,205.99 MWh), though its generation figures differ. The loader takes the published figure as is; a duplicate-day guard is a possible follow-up.
