@@ -1,18 +1,18 @@
 # Validation — SPP West Wind (`swpw-wind`)
 
-Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Technical Validation §4.2
+Last updated: 2026-11-22 · Sprint: TSO-grid completeness, SPP VER measured · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `swpw-wind`
 - **Country:** USA
-- **Tier:** estimated
+- **Tier:** live
 - **Kind:** wind
-- **Source:** EIA-930 SWPW (successor to retired WACM). Waste unpublished.
-- **Source URL:** [https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data](https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data)
-- **Loader:** _(see region source / TSO-grid completeness loaders)_
+- **Source:** SPP VER Curtailments measured curtailment, SWPW (successor to retired WACM); EIA-930 SWPW generation; last measured snapshot served as cached if the report is unavailable
+- **Source URL:** [https://portal.spp.org/pages/ver-curtailments](https://portal.spp.org/pages/ver-curtailments)
+- **Loader:** [`swpw.json.ts`](../../src/data/swpw.json.ts) (parser shared with [`spp.json.ts`](../../src/data/spp.json.ts))
 - **Structural gap:** no
-- **Waste status:** unpublished unless the operator publishes a curtailment/spill series. Missing ≠ zero. Live generation does not make waste T1a.
+- **Waste status:** measured from the SWPW rows of SPP's daily VER Curtailments report (wind/solar Redispatch + Manual, 5-minute intervals; CurtailedForEnergy is a subset of Redispatch and is left out). When the report cannot be read, the loader serves the last measured snapshot, stamped cached; a failed fetch never overwrites it.
 
 ## Calibration
 
@@ -34,7 +34,7 @@ Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Tech
 
 ## Discrepancy analysis
 
-Grid-completeness row. Waste is unpublished unless a later loader adds a published series. Do not read a zero `profile` as a measured finding.
+SPP took over the former WACM balancing authority on 2026-04-01 as SWPW. The VER report's `BAA=SWPW` rows and EIA-930 respondent SWPW are the same balancing authority. The committed snapshot is measured: 30 days 2026-10-22 to 2026-11-20, 0.0017 TWh wind and 0.0210 TWh solar curtailment, pulled through a Vercel sandbox in iad1 because portal.spp.org does not answer from every network. It carries no EIA-930 generation; production builds attach it.
 
 ## Known limitations
 

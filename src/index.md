@@ -220,6 +220,8 @@ const regionData = {
   "pjm-solar":   feeds.pjm.solar,
   "spp-wind":    feeds.spp.wind,
   "spp-solar":   feeds.spp.solar,
+  "swpw-wind":   feeds.swpw.wind,
+  "swpw-solar":  feeds.swpw.solar,
   // NYISO — zones D+E (wind-only carve-out) takes 75% of the wind component;
   // remaining 25% stays in nyiso-rest-wind. NYISO Power Trends 2024.
   "nyiso-zones-d-e":  splitRegion(feeds.nyiso.wind, "nyiso-zones-d-e", 0.75, "Zones D+E share (75% of NYISO wind curtailment per Power Trends 2024)"),

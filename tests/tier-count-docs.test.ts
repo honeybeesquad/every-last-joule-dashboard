@@ -276,13 +276,14 @@ describe("the gated corpus (as committed)", () => {
     // tally while T1a grew to 160, and nothing read it.
     const spec = GATED_DOCS.find((s) => s.path.endsWith("live-data-paths.md"))!;
     const markdown = readFileSync(join(process.cwd(), spec.path), "utf-8");
+    // Reads the current golden T1a so the test survives later tier moves.
     const regressed = markdown.replace(
-      "The 160 <!-- tier-counts:T1a -->",
+      `The ${golden.T1a} <!-- tier-counts:T1a -->`,
       "The 66 <!-- tier-counts:T1a -->",
     );
     expect(regressed).not.toEqual(markdown);
     expect(checkDoc(spec, regressed, golden).join("\n")).toContain(
-      "claims 66 for T1a, expected 160",
+      `claims 66 for T1a, expected ${golden.T1a}`,
     );
   });
 
