@@ -46,10 +46,9 @@ const FIVE_MIN_MS = 5 * 60_000;
  * fuel. Each row is a 5-minute interval per balancing authority (SPP, and
  * since April 2026 SPP RTO West as SWPW) with curtailed MW in three columns per
  * fuel: Redispatch, Manual and CurtailedForEnergy. Curtailment here is
- * Redispatch + Manual for the SPP BA only (a blank BAA, as in older files,
- * reads as SPP). SWPW rows are left out: they belong to the separate
- * `swpw-wind` / `swpw-solar` regions, sited elsewhere and labelled waste
- * unpublished, and wiring them is a change of its own. CurtailedForEnergy is left out:
+ * Redispatch + Manual for one BA: `baa` "SPP" (the default; a blank BAA, as in
+ * older files, reads as SPP) for `spp-*`, or "SWPW" for `swpw-*` (see
+ * swpw.json.ts). CurtailedForEnergy is left out:
  * across 35 days of the report (17 Oct to 20 Nov 2026, about 20,000 rows) it is
  * never larger than Redispatch and never non-zero when Redispatch is zero, so
  * it reads as a subset of Redispatch, and adding it would double count. SPP's
@@ -61,7 +60,9 @@ const FIVE_MIN_MS = 5 * 60_000;
  * nothing. Also returns how many distinct SPP intervals carried values, so a
  * caller can drop a partial day and scale for the gaps.
  */
-export function parseSppVerCurtailments(csv: string): {
+export type SppBaa = "SPP" | "SWPW";
+
+export function parseSppVerCurtailments(csv: string, baa: SppBaa = "SPP"): {
   wind: CurtailmentPoint[];
   solar: CurtailmentPoint[];
   intervals: number;
@@ -85,8 +86,8 @@ export function parseSppVerCurtailments(csv: string): {
     const cells = line.split(",");
     const end = parseGmt(cells[idx.GMTIntervalEnding] ?? "");
     if (!Number.isFinite(end)) continue;
-    const baa = (cells[idx.BAA] ?? "").trim();
-    if (baa !== "" && baa !== "SPP") continue;
+    const rowBaa = (cells[idx.BAA] ?? "").trim() || "SPP";
+    if (rowBaa !== baa) continue;
     const vals = [
       num(cells[idx.WindRedispatchCurtailments]),
       num(cells[idx.WindManualCurtailments]),
@@ -116,9 +117,16 @@ const MIN_DAYS = 20;
 /** Five-minute intervals in 30 days. */
 const INTERVALS_30D = 30 * 288;
 
+const BAA_LABEL: Record<SppBaa, { regionPrefix: string; label: string }> = {
+  SPP: { regionPrefix: "spp", label: "SPP balancing authority" },
+  SWPW: { regionPrefix: "swpw", label: "SPP RTO West (SWPW) balancing authority" },
+};
+
 export function buildSppMeasuredRegions(
   days: { ymd: string; wind: CurtailmentPoint[]; solar: CurtailmentPoint[]; intervals: number }[],
+  baa: SppBaa = "SPP",
 ): { wind: RegionData; solar: RegionData } {
+  const { regionPrefix, label } = BAA_LABEL[baa];
   if (days.length === 0) throw new Error("SPP VER curtailments: no days to build from");
   const intervalsHeld = days.reduce((s, d) => s + d.intervals, 0);
   if (intervalsHeld <= 0) throw new Error("SPP VER curtailments: no intervals with values");
@@ -138,7 +146,7 @@ export function buildSppMeasuredRegions(
   const ymds = days.map((d) => d.ymd).sort();
   const fmt = (ymd: string) => `${ymd.slice(0, 4)}-${ymd.slice(4, 6)}-${ymd.slice(6, 8)}`;
   const note =
-    `SPP VER Curtailments report, measured 5-minute curtailment (redispatch + manual, SPP balancing authority), ` +
+    `SPP VER Curtailments report, measured 5-minute curtailment (redispatch + manual, ${label}), ` +
     `${days.length} days ${fmt(ymds[0])} to ${fmt(ymds.at(-1)!)}` +
     (intervalsHeld < INTERVALS_30D
       ? ` (30-day total scaled up from ${(intervalsHeld / 288).toFixed(1)} days of 5-minute intervals)`
@@ -157,7 +165,7 @@ export function buildSppMeasuredRegions(
       sourceNote: note,
     };
   };
-  return { wind: build("spp-wind", windPoints), solar: build("spp-solar", solarPoints) };
+  return { wind: build(`${regionPrefix}-wind`, windPoints), solar: build(`${regionPrefix}-solar`, solarPoints) };
 }
 
 function ymdUtc(t: number): string {
@@ -169,7 +177,10 @@ function ymdUtc(t: number): string {
  * yesterday (UTC). The file for a Central day fills through that day, so the
  * newest candidate can be partial; the interval count drops it.
  */
-async function fetchSppVerCurtailments(now = new Date()): Promise<{ wind: RegionData; solar: RegionData }> {
+export async function fetchSppVerCurtailments(
+  baa: SppBaa = "SPP",
+  now = new Date(),
+): Promise<{ wind: RegionData; solar: RegionData }> {
   const candidates = Array.from({ length: 33 }, (_, i) => ymdUtc(now.getTime() - (i + 1) * 86_400_000));
   // Eight at a time, no retry: portal.spp.org drops traffic from some networks
   // (on 2026-11-21 it timed out from a home connection in New Zealand and from
@@ -178,9 +189,9 @@ async function fetchSppVerCurtailments(now = new Date()): Promise<{ wind: Region
   // about five request timeouts without delaying it.
   const results = await mapWithConcurrency(candidates, 8, async (ymd) => {
     try {
-      const parsed = parseSppVerCurtailments(await fetchText(sppVerCurtailmentsUrl(ymd), { retries: 0 }));
+      const parsed = parseSppVerCurtailments(await fetchText(sppVerCurtailmentsUrl(ymd), { retries: 0 }), baa);
       if (parsed.intervals < MIN_INTERVALS_PER_DAY) {
-        console.warn(`SPP VER curtailments ${ymd} skipped: ${parsed.intervals} intervals (partial day)`);
+        console.warn(`SPP VER curtailments ${baa} ${ymd} skipped: ${parsed.intervals} intervals (partial day)`);
         return null;
       }
       return { ymd, ...parsed };
@@ -191,15 +202,15 @@ async function fetchSppVerCurtailments(now = new Date()): Promise<{ wind: Region
   });
   const days = results.filter((r): r is NonNullable<typeof r> => r !== null).slice(0, 30);
   if (days.length < MIN_DAYS) {
-    throw new Error(`SPP VER curtailments: only ${days.length} of the last 33 days parsed (need ${MIN_DAYS})`);
+    throw new Error(`SPP VER curtailments ${baa}: only ${days.length} of the last 33 days parsed (need ${MIN_DAYS})`);
   }
-  return buildSppMeasuredRegions(days);
+  return buildSppMeasuredRegions(days, baa);
 }
 
 /**
- * Measured curtailment from the VER report, with EIA-930 SWPP generation
- * attached. EIA-930 respondent SWPP is the SPP balancing authority (SWPW is
- * its own respondent since April 2026), so the two cover the same BA, and as
+ * Measured curtailment from the VER report, with EIA-930 generation for the
+ * same BA attached: respondent SWPP for the SPP BA, SWPW for SPP RTO West
+ * (its own respondent and BAA since April 2026). The two cover the same BA, and as
  * curtailment is now measured rather than generation x a rate, the generation
  * is an independent denominator. The EIA window runs to the latest hour; the
  * report's runs to the end of yesterday.

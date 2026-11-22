@@ -9,7 +9,9 @@ import { unpublishedEmptyRegion } from "../lib/waste-status.js";
 /**
  * Remaining EIA-930 balancing authorities with VRE generation and no
  * published BA curtailment rate. Generation is collected; waste is unpublished.
- * Replaces the typical-shape `florida` and `tva` stubs.
+ * Replaces the typical-shape `florida` and `tva` stubs. SWPW (SPP RTO West)
+ * left this list on 2026-11-22: SPP's VER Curtailments report measures its
+ * curtailment, so it has its own loader, swpw.json.ts.
  */
 export const EIA_VRE_BA_CONFIGS: ReadonlyArray<EiaIsoConfig & { displayName: string }> = [
   { regionId: "tva", respondent: "TVA", displayName: "Tennessee Valley Authority", windRate: 0, solarRate: 0, wasteMode: "unpublished" },
@@ -18,7 +20,6 @@ export const EIA_VRE_BA_CONFIGS: ReadonlyArray<EiaIsoConfig & { displayName: str
   { regionId: "tec", respondent: "TEC", displayName: "Tampa Electric", windRate: 0, solarRate: 0, wasteMode: "unpublished" },
   { regionId: "nevp", respondent: "NEVP", displayName: "NV Energy", windRate: 0, solarRate: 0, wasteMode: "unpublished" },
   { regionId: "walc", respondent: "WALC", displayName: "WAPA Desert Southwest", windRate: 0, solarRate: 0, wasteMode: "unpublished" },
-  { regionId: "swpw", respondent: "SWPW", displayName: "SPP West (former WACM)", windRate: 0, solarRate: 0, wasteMode: "unpublished" },
   { regionId: "duk", respondent: "DUK", displayName: "Duke Energy Carolinas", windRate: 0, solarRate: 0, wasteMode: "unpublished" },
   { regionId: "cple", respondent: "CPLE", displayName: "Duke Energy Progress East", windRate: 0, solarRate: 0, wasteMode: "unpublished" },
   { regionId: "cplw", respondent: "CPLW", displayName: "Duke Energy Progress West", windRate: 0, solarRate: 0, wasteMode: "unpublished" },

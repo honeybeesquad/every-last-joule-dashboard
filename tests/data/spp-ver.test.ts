@@ -71,6 +71,22 @@ describe("SPP VER curtailments", () => {
     expect(solar[0].mw).toBe(0);
   });
 
+  it("reads only the SWPW rows when asked for the SWPW BA", () => {
+    const text =
+      `${HEADER}\n` +
+      "11/19/2026 00:05:00.000000,11/19/2026 06:05:00.000000,120,0,0,0,0,0,SPP\n" +
+      "11/19/2026 00:05:00.000000,11/19/2026 06:05:00.000000,1200,12,600,600,0,0,SWPW\n" +
+      "11/19/2026 00:10:00.000000,11/19/2026 06:10:00.000000,240,0,0,0,0,0,\n";
+    const { wind, solar, intervals } = parseSppVerCurtailments(text, "SWPW");
+    expect(intervals).toBe(1);
+    expect(wind[0].mw).toBeCloseTo(101, 9); // (1200 + 12) / 12; CurtailedForEnergy left out
+    expect(solar[0].mw).toBeCloseTo(50, 9);
+    // The fixture's 24 SWPW intervals (overnight, all zero) count as held, not missing.
+    const fx = parseSppVerCurtailments(csv, "SWPW");
+    expect(fx.intervals).toBe(24);
+    expect(fx.wind.reduce((t, p) => t + p.mw, 0)).toBe(0);
+  });
+
   it("throws when a needed column is missing", () => {
     expect(() => parseSppVerCurtailments("GMTIntervalEnding,BAA\n11/19/2026 06:05:00.000000,SPP\n")).toThrow(
       /missing column/,
@@ -98,6 +114,19 @@ describe("SPP VER curtailments", () => {
     expect(r.wind.lastSuccessAt).toBe("2026-11-20T00:00:00.000Z");
     expect(r.wind.sourceNote).toMatch(/20 days 2026-11-01 to 2026-11-20 \(30-day total scaled up from 20\.0 days of 5-minute intervals\)/);
     expect(r.wind.sourceNote).toMatch(/wind 91% \/ solar 9%/);
+  });
+
+  it("names the SWPW regions and BA when built for SWPW", () => {
+    const days = Array.from({ length: 20 }, (_, i) => {
+      const d = new Date(Date.UTC(2026, 10, 1 + i));
+      const pt = [{ utcTimestamp: d.toISOString(), mw: 10 }];
+      return { ymd: d.toISOString().slice(0, 10).replace(/-/g, ""), intervals: 288, wind: pt, solar: pt };
+    });
+    const r = buildSppMeasuredRegions(days, "SWPW");
+    expect(r.wind.regionId).toBe("swpw-wind");
+    expect(r.solar.regionId).toBe("swpw-solar");
+    expect(r.wind.sourceNote).toMatch(/SPP RTO West \(SWPW\) balancing authority/);
+    expect(r.wind.totalTWh).toBeCloseTo(0.0003, 12);
   });
 
   it("scales by intervals held, so a day with gaps is not read as a full day", () => {

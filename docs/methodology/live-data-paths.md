@@ -68,7 +68,7 @@ The current Path-B loaders (Peru, South Africa) pass all three tests as of 2026-
 
 ## Catalogue — currently-live T1a regions by path
 
-The 160 <!-- tier-counts:T1a --> regions resolving to `T1a-live-tso` (golden tally from `scripts/ci/golden/tier-counts.json`) split as follows:
+The 162 <!-- tier-counts:T1a --> regions resolving to `T1a-live-tso` (golden tally from `scripts/ci/golden/tier-counts.json`) split as follows:
 
 | Path | Count | Examples | Anchor type |
 |---|---|---|---|

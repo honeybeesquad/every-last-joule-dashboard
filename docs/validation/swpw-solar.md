@@ -1,18 +1,18 @@
 # Validation — SPP West Solar (`swpw-solar`)
 
-Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Technical Validation §4.2
+Last updated: 2026-11-22 · Sprint: TSO-grid completeness, SPP VER measured · Paper section: Technical Validation §4.2
 
 ## Source
 
 - **Region id:** `swpw-solar`
 - **Country:** USA
-- **Tier:** estimated
+- **Tier:** live
 - **Kind:** solar
-- **Source:** EIA-930 SWPW. Waste unpublished.
-- **Source URL:** [https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data](https://www.eia.gov/opendata/browser/electricity/rto/fuel-type-data)
-- **Loader:** _(see region source / TSO-grid completeness loaders)_
+- **Source:** SPP VER Curtailments measured curtailment, SWPW; EIA-930 SWPW generation, waste unpublished if the report is unavailable
+- **Source URL:** [https://portal.spp.org/pages/ver-curtailments](https://portal.spp.org/pages/ver-curtailments)
+- **Loader:** [`swpw.json.ts`](../../src/data/swpw.json.ts) (parser shared with [`spp.json.ts`](../../src/data/spp.json.ts))
 - **Structural gap:** no
-- **Waste status:** unpublished unless the operator publishes a curtailment/spill series. Missing ≠ zero. Live generation does not make waste T1a.
+- **Waste status:** measured from the SWPW rows of SPP's daily VER Curtailments report (wind/solar Redispatch + Manual, 5-minute intervals; CurtailedForEnergy is a subset of Redispatch and is left out). When the report cannot be read, the region serves EIA-930 generation only with waste unpublished. Missing ≠ zero.
 
 ## Calibration
 
@@ -34,7 +34,7 @@ Last updated: 2026-09-20 · Sprint: TSO-grid completeness · Paper section: Tech
 
 ## Discrepancy analysis
 
-Grid-completeness row. Waste is unpublished unless a later loader adds a published series. Do not read a zero `profile` as a measured finding.
+SPP took over the former WACM balancing authority on 2026-04-01 as SWPW. The VER report's `BAA=SWPW` rows and EIA-930 respondent SWPW are the same balancing authority. The 30 days to 2026-11-20 measured about 0.002 TWh wind and 0.021 TWh solar curtailment. The committed snapshot predates the move and is generation-only (waste unpublished), so a zero `profile` there is not a measured finding.
 
 ## Known limitations
 

@@ -478,8 +478,8 @@ NV Energy Wind,USA,wind,live-tso,eia-vre-bas,unpublished,nevp-wind,EIA-930 gener
 NV Energy Solar,USA,solar,live-tso,eia-vre-bas,unpublished,nevp-solar,EIA-930 generation; BA publishes no curtailment rate.
 WAPA Desert Southwest Wind,USA,wind,live-tso,eia-vre-bas,unpublished,walc-wind,EIA-930 generation; BA publishes no curtailment rate.
 WAPA Desert Southwest Solar,USA,solar,live-tso,eia-vre-bas,unpublished,walc-solar,EIA-930 generation; BA publishes no curtailment rate.
-SPP West Wind,USA,wind,live-tso,eia-vre-bas,unpublished,swpw-wind,EIA-930 generation; BA publishes no curtailment rate.
-SPP West Solar,USA,solar,live-tso,eia-vre-bas,unpublished,swpw-solar,EIA-930 generation; BA publishes no curtailment rate.
+SPP West Wind,USA,wind,live-tso,,legacy-unspecified,swpw-wind,Existing live waste or Path-B generation×rate.
+SPP West Solar,USA,solar,live-tso,,legacy-unspecified,swpw-solar,Existing live waste or Path-B generation×rate.
 Duke Energy Carolinas Wind,USA,wind,live-tso,eia-vre-bas,unpublished,duk-wind,EIA-930 generation; BA publishes no curtailment rate.
 Duke Energy Carolinas Solar,USA,solar,live-tso,eia-vre-bas,unpublished,duk-solar,EIA-930 generation; BA publishes no curtailment rate.
 Duke Energy Progress East Wind,USA,wind,live-tso,eia-vre-bas,unpublished,cple-wind,EIA-930 generation; BA publishes no curtailment rate.

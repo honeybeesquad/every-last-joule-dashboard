@@ -201,6 +201,8 @@ const regionData = {
   "pjm-solar":   feeds.pjm.solar,
   "spp-wind":    feeds.spp.wind,
   "spp-solar":   feeds.spp.solar,
+  "swpw-wind":   feeds.swpw.wind,
+  "swpw-solar":  feeds.swpw.solar,
   "nyiso-zones-d-e":  splitRegion(feeds.nyiso.wind, "nyiso-zones-d-e", 0.75, "Zones D+E share (75% of NYISO wind curtailment per Power Trends 2024)"),
   "nyiso-rest-wind":  splitRegion(feeds.nyiso.wind, "nyiso-rest-wind", 0.25, "Remainder of NYISO wind"),
   "nyiso-rest-solar": feeds.nyiso.solar,

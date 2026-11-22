@@ -209,10 +209,12 @@ describe("regions", () => {
     const liveTiers = ["live", "live-domestic-anchored", "live-neighbour-anchored"] as const;
     const liveTotal = REGIONS.filter((r) => liveTiers.includes(r.tier as typeof liveTiers[number])).length;
     // 2026-06-23: removed 12 broken Ontario per-plant regions (T1a). T1a: 172→160; total live: 199→187.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(160);
+    // 2026-11-22: swpw-wind/swpw-solar estimated → live on SPP VER Curtailments
+    // measured SWPW curtailment. T1a: 160→162; total live: 187→189.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(162);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(187);
+    expect(liveTotal).toBe(189);
 
     // italy-sicily replaced italy-south (tier moved live→live-domestic-anchored
     // since Sicily is anchored to Terna national 0.31 TWh via modelled share). -1 T1a.
@@ -243,10 +245,12 @@ describe("regions", () => {
     // 2026-06-10: peru-solar T1a→T1b. T1a: 150→149; T1b: 9→10.
     // 2026-06-17: Japan hokkaido + tohoku split solar→solar+wind (hokuriku left solar-only). Net +2 T1a live. T1a: 148→150; total: 175→177.
     // 2026-06-23: removed 12 broken Ontario per-plant regions (T1a). T1a: 172→160; total live: 199→187.
-    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(160);
+    // 2026-11-22: swpw-wind/swpw-solar estimated → live on SPP VER Curtailments
+    // measured SWPW curtailment. T1a: 160→162; total live: 187→189.
+    expect(REGIONS.filter((r) => r.tier === "live").length).toBe(162);
     expect(REGIONS.filter((r) => r.tier === "live-domestic-anchored").length).toBe(26);
     expect(REGIONS.filter((r) => r.tier === "live-neighbour-anchored").length).toBe(1);
-    expect(liveTotal).toBe(187);
+    expect(liveTotal).toBe(189);
   });
 
   it("locks the B4-Option-B sub-tier populations (post-B1 rerun 2026-04-26)", () => {
@@ -347,7 +351,8 @@ describe("regions", () => {
     // 2026-11-18: Canary Islands wind + solar, Balearic Islands solar (REE REData
     // daily generation, waste unpublished). 334 + 3 = 337.
     // 2026-11-18: corsica added (EDF SEI generation, waste unpublished). 337 + 1 = 338.
-    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(338);
+    // 2026-11-22: swpw-wind/swpw-solar estimated → live (SPP VER measured). 338 - 2 = 336.
+    expect(REGIONS.filter(r => r.tier === "estimated").length).toBe(336);
   });
 
   it("has 24 anchored regions (8 flat-profile + 16 EIA-930 US BAs)", () => {

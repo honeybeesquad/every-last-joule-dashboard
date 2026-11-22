@@ -70,6 +70,7 @@ export const DATA_LOADERS = [
   { key: "miso",                file: FileAttachment("../data/miso.json"),                 label: "MISO Midwest" },
   { key: "pjm",                 file: FileAttachment("../data/pjm.json"),                  label: "PJM" },
   { key: "spp",                 file: FileAttachment("../data/spp.json"),                  label: "SPP" },
+  { key: "swpw",                file: FileAttachment("../data/swpw.json"),                 label: "SPP RTO West" },
   { key: "nyiso",               file: FileAttachment("../data/nyiso.json"),                label: "New York ISO" },
   { key: "isoNe",               file: FileAttachment("../data/iso-ne.json"),               label: "ISO New England" },
   { key: "bpa",                 file: FileAttachment("../data/bpa.json"),                  label: "Bonneville Power" },
