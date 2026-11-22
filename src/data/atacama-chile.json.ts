@@ -59,6 +59,7 @@ async function fetchDailySummary(date: Date): Promise<DailySolarReductionSummary
 
 async function fetchRecentDailySummaries(now = new Date()): Promise<DailySolarReductionSummary[]> {
   const summaries: DailySolarReductionSummary[] = [];
+  const errors: string[] = [];
   for (
     let startAge = 1;
     startAge <= DAILY_SUMMARY_LOOKBACK_DAYS && summaries.length < DAILY_SUMMARY_TARGET_DAYS;
@@ -70,13 +71,23 @@ async function fetchRecentDailySummaries(now = new Date()): Promise<DailySolarRe
       const age = Math.round((Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - date.getTime()) / 86_400_000);
       return age <= DAILY_SUMMARY_LOOKBACK_DAYS;
     });
-    const batch = await Promise.all(dates.map((date) => fetchDailySummary(date).catch(() => null)));
+    const batch = await Promise.all(
+      dates.map((date) =>
+        fetchDailySummary(date).catch((err: Error) => {
+          errors.push(`${date.toISOString().slice(0, 10)}: ${err.message}`);
+          return null;
+        }),
+      ),
+    );
     summaries.push(...batch.filter((summary): summary is DailySolarReductionSummary => summary !== null));
   }
   summaries.sort((a, b) => a.date.localeCompare(b.date));
   const latest = summaries.slice(-DAILY_SUMMARY_TARGET_DAYS);
   if (latest.length < 7) {
-    throw new Error(`Chile daily summaries yielded only ${latest.length} parseable days`);
+    throw new Error(
+      `Chile daily summaries yielded only ${latest.length} parseable days` +
+        (errors.length ? ` (${errors.length} failed; first: ${errors[0]})` : ""),
+    );
   }
   return latest;
 }

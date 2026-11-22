@@ -1,5 +1,3 @@
-import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
-
 /**
  * Plain text from a PDF, one line per visual row, in pure JavaScript (Mozilla
  * pdf.js), so a loader does not need poppler's `pdftotext` binary, which
@@ -12,19 +10,36 @@ import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
  * `pdftotext -layout` output (they split on `\s+`). Pages are separated by a
  * form feed, as pdftotext does.
  *
+ * pdf.js is loaded on first use, not at import, so a broken install fails only
+ * the PDF path and leaves a caller's fallback (and withFallback) working. A
+ * document that takes longer than `timeoutMs` is abandoned.
+ *
  * Checked on 2026-11-22 against `pdftotext -layout` on 33 CEN Chile daily
  * operation summaries (18 Oct to 20 Nov 2026): the solar reduction parsed by
  * atacama-chile.json.ts was identical on every one.
  */
-export async function pdfToText(bytes: Uint8Array, rowTolerance = 2): Promise<string> {
+export async function pdfToText(bytes: Uint8Array, rowTolerance = 2, timeoutMs = 30_000): Promise<string> {
+  const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
   // pdf.js may transfer (detach) the buffer it is given, so hand it a copy.
-  const doc = await getDocument({
+  const task = getDocument({
     data: bytes.slice(),
     disableFontFace: true,
     isEvalSupported: false,
     verbosity: 0,
-  }).promise;
+  });
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`PDF text extraction timed out after ${timeoutMs} ms`)), timeoutMs);
+  });
   try {
+    return await Promise.race([extract(), timeout]);
+  } finally {
+    clearTimeout(timer);
+    await task.destroy();
+  }
+
+  async function extract(): Promise<string> {
+    const doc = await task.promise;
     const pages: string[] = [];
     for (let p = 1; p <= doc.numPages; p++) {
       const page = await doc.getPage(p);
@@ -57,7 +72,5 @@ export async function pdfToText(bytes: Uint8Array, rowTolerance = 2): Promise<st
       page.cleanup();
     }
     return pages.join("\n\f");
-  } finally {
-    await doc.destroy();
   }
 }

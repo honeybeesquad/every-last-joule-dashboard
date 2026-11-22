@@ -56,4 +56,8 @@ describe("pdfToText", () => {
     await pdfToText(bytes);
     expect(bytes.byteLength).toBeGreaterThan(0);
   });
+
+  it("rejects bytes that are not a PDF, so the caller's fallback runs", async () => {
+    await expect(pdfToText(new Uint8Array(Buffer.from("<html>Cloudflare</html>")))).rejects.toThrow();
+  });
 });
