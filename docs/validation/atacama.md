@@ -1,6 +1,6 @@
 # Validation — Atacama (`atacama`)
 
-Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
+Last updated: 2026-11-22 · Sprint: S1 + HB integration · Paper section: Technical Validation §4.2
 
 ## Source
 
@@ -8,9 +8,9 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** CHL
 - **Tier:** live
 - **Kind:** solar
-- **Source:** CEN Chile XLSX
+- **Source:** CEN Chile daily operation summary PDFs (solar reduction, MWh/day) on the monthly XLSX hourly shape; monthly XLSX if the daily PDFs fail
 - **Source URL:** [https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/](https://www.coordinador.cl/operacion/documentos/reducciones-de-generacion-renovable/)
-- **Loader:** _(no single-file loader — see multi-region source)_
+- **Loader:** [`atacama-chile.json.ts`](../../src/data/atacama-chile.json.ts) (PDF text via [`pdf-text.ts`](../../src/lib/pdf-text.ts))
 - **Structural gap:** no
 
 ## Calibration
