@@ -315,11 +315,25 @@ export function buildUruguayRegionData(points: CurtailmentPoint[], sourceNote: s
   };
 }
 
-async function fetchBytes(url: string): Promise<Uint8Array> {
-  // Each response is 6–12 MB and the walk may take up to four: bound each one.
-  const res = await fetch(url, { headers: { "user-agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(40_000) });
+/**
+ * Time the month walk may spend on ADME workbooks, shared across all its
+ * requests. ADME builds each 6–12 MB response on the fly (PHP warnings ahead
+ * of the workbook): standalone it answers in 2–3 s, but in the production
+ * build of 2026-11-22 07:10 UTC the first request passed the old flat 40 s cap
+ * and the region fell back to its May snapshot. 150 s stays inside
+ * withFallback's default 180 s live deadline (LOADER_DEADLINE_MS).
+ */
+export const ADME_WALK_BUDGET_MS = 150_000;
+
+async function fetchBytes(url: string, deadline: number): Promise<Uint8Array> {
+  const remaining = deadline - Date.now();
+  if (remaining <= 0) throw new Error(`ADME walk budget of ${ADME_WALK_BUDGET_MS / 1000} s spent before ${url}`);
+  const started = Date.now();
+  const res = await fetch(url, { headers: { "user-agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(remaining) });
   if (!res.ok) throw new Error(`ADME workbook HTTP ${res.status} for ${url}`);
-  return new Uint8Array(await res.arrayBuffer());
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  console.warn(`ADME workbook ${(bytes.length / 1e6).toFixed(1)} MB in ${((Date.now() - started) / 1000).toFixed(1)} s: ${url}`);
+  return bytes;
 }
 
 async function run(): Promise<RegionData> {
@@ -334,11 +348,12 @@ async function run(): Promise<RegionData> {
 
   // Walk back from the month the control panel names to the newest one ADME
   // has filled in; three steps covers the two-month lag seen on 2026-11-21.
+  const deadline = Date.now() + ADME_WALK_BUDGET_MS;
   let month = latest;
   for (let step = 0; step < 4; step++, month = previousMonth(month)) {
     const mm = String(month.month).padStart(2, "0");
     const url = `${RESTRICTIONS_URL}?anod=${month.year}&mesd=${mm}&anoh=${month.year}&mesh=${mm}`;
-    const { xlsx, prefix } = splitAdmeWorkbookResponse(await fetchBytes(url));
+    const { xlsx, prefix } = splitAdmeWorkbookResponse(await fetchBytes(url, deadline));
     if (isUnpublishedAdmeMonth(prefix) || isEmptyAdmeWorkbook(xlsx)) {
       console.warn(`ADME ${month.year}-${mm} not published yet; trying the month before`);
       continue;
