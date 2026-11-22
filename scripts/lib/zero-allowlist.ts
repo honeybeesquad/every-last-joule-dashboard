@@ -114,12 +114,6 @@ export const ZERO_ALLOWLIST: readonly ZeroAllowlistEntry[] = [
     note: "Small Balkan zone; limited renewable installed base; A75 legitimately zero for the window. Re-confirmed 2026-09-05: ENTSO-E feed alive — 52 of 54 zones carry positive signal in the same snapshot.",
   },
   {
-    regionId: "uruguay",
-    addedDate: "2026-05-12",
-    reviewBy: "2027-01-31",
-    note: "ADME: very small grid; renewable curtailment frequently zero. Re-confirmed 2026-09-05 by a live loader run: adme.com.uy returned HTTP 200, the loader parsed the 2026-08 Restricciones Operativas workbook and emitted sourceStatus=live with peakGW 0. Zero is the true reading, not a dead feed.",
-  },
-  {
     regionId: "nyiso-rest-solar",
     addedDate: "2026-05-12",
     reviewBy: "2027-04-01",
