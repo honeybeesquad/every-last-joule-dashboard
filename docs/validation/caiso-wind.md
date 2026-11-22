@@ -8,8 +8,8 @@ Last updated: 2026-08-20 · Sprint: S1 + HB integration · Paper section: Techni
 - **Country:** USA
 - **Tier:** live
 - **Kind:** wind
-- **Source:** CAISO OASIS / EIA wind
-- **Source URL:** [https://oasis.caiso.com/oasisapi](https://oasis.caiso.com/oasisapi)
+- **Source:** CAISO Daily Renewable Report measured curtailment (EIA × rate estimate if unavailable)
+- **Source URL:** [https://www.caiso.com/library/daily-wind-solar-real-time-dispatch-curtailment-reports](https://www.caiso.com/library/daily-wind-solar-real-time-dispatch-curtailment-reports)
 - **Loader:** [`caiso.json.ts`](../../src/data/caiso.json.ts)
 - **Structural gap:** no
 

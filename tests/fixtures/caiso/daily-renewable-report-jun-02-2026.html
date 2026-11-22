@@ -1,0 +1,1886 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Daily Renewable Report - Jun 02, 2026 </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<script type="text/javascript">
+		const proto = location.protocol === 'file:' ? 'http:' : location.protocol;
+		const urls = [
+			'https://www.caiso.com/theme/reports/jquery.min.js',
+			'https://www.caiso.com/theme/reports/highcharts.js',
+			'https://www.caiso.com/theme/reports/highcharts-more.js',
+			'https://www.caiso.com/theme/reports/highcharts-exporting.js',
+			'https://www.caiso.com/theme/reports/highcharts-export-data.js',
+			'https://www.caiso.com/theme/reports/popper.min.js',
+			'https://www.caiso.com/theme/reports/bootstrap.min.js',
+			'https://www.caiso.com/theme/reports/bootstrap.min.css'
+		];
+
+		let finalURLs = urls.map(url => {
+			// Set correct protocol based on browser window
+			let newURL = url.replace(/(?:http)s*:/, proto);
+			let el = '';
+
+			if (newURL.search(/\.js$/) !== -1) {
+				el = document.createElement('script');
+				el.src = newURL;
+				el.defer = true;
+				el.async = false; // Default is true when <script> is inserted into the DOM
+			}
+
+			else if (newURL.search(/\.css$/) !== -1) {
+				el = document.createElement('link')
+				el.rel = 'stylesheet';
+				el.href = newURL;
+			}
+      
+			return el;
+		});
+
+		// Append final links to <head>
+		document.head.append(...finalURLs);
+
+	</script>
+	
+	<!-- Latest compiled and minified CSS -->
+	<style type="text/css">
+		body {font-family: Arial, Helvetica,"sans-serif";color: #5b5b5b;line-height: 1.5;}
+
+		a {color: #4f758b; text-decoration: underline;}
+			a:focus, a:hover {color: #4f758b; text-decoration: none;}
+
+		button {cursor: pointer;}	
+			
+		/* Container override */
+
+		.container {width: 100%;}
+			
+		.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {color: #000;}
+			.h1, h1 {font-size: 1em;color: #4D4D4D; margin-top: 0; margin-bottom: .75rem;}
+				@media (min-width: 850px) {
+					.h1, h1 { font-size: 1.8em; display: inline-block; margin-top: 4px; margin-bottom: 0; vertical-align: middle; padding-left: 24px;}
+				}
+				.h1 span, h1 span {color: #a3a3a3;color: rgba(0,0,0,.5);font-weight: 400;}
+			.h2, h2 {margin-top: 15px;font-size: 1.5em;margin-bottom: .75rem;}
+			.h3, h3 {line-height: 1.4em;font-size: .857em;font-weight: 700;}
+		p {margin: 0px 0px 1rem 0px;line-height: 1.4;}
+
+		.header {padding-top: 10px;min-height: 80px;}
+
+		.main-content {padding-top: 15px;padding-bottom: 15px;}
+
+		.logo {
+			position: relative;
+			display: block;
+			width: 200px;max-width: 200px;height: 48px;
+			background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjI4cHgiIGhlaWdodD0iNjdweCIgdmlld0JveD0iMCAwIDIyOCA2NyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMjI4IDY3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6dXJsKCNTVkdJRF8xXyk7fS5zdDF7ZmlsbDp1cmwoI1NWR0lEXzJfKTt9LnN0MntmaWxsOnVybCgjU1ZHSURfM18pO30uc3Qze29wYWNpdHk6MC40NDtmaWxsOnVybCgjU1ZHSURfNF8pO2VuYWJsZS1iYWNrZ3JvdW5kOm5ldyAgICA7fS5zdDR7ZmlsbDojNEQ0RDREO30uc3Q1e29wYWNpdHk6MC40MztmaWxsOnVybCgjU1ZHSURfNV8pO2VuYWJsZS1iYWNrZ3JvdW5kOm5ldyAgICA7fTwvc3R5bGU+PGxpbmVhckdyYWRpZW50IGlkPSJTVkdJRF8xXyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSI3LjM0NDYiIHkxPSI5MDQuOTEwNSIgeDI9IjM5Ljg3NTMiIHkyPSI4ODUuNzQ4NSIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxIDAgMCAxIDAgLTg1NikiPjxzdG9wICBvZmZzZXQ9IjAiIHN0eWxlPSJzdG9wLWNvbG9yOiM4RDhCMDAiLz48c3RvcCAgb2Zmc2V0PSI5LjYwNDU3NGUtMDIiIHN0eWxlPSJzdG9wLWNvbG9yOiM5MTk0MEUiLz48c3RvcCAgb2Zmc2V0PSIwLjI3NzQiIHN0eWxlPSJzdG9wLWNvbG9yOiM5QkFDMzMiLz48c3RvcCAgb2Zmc2V0PSIwLjUyMzEiIHN0eWxlPSJzdG9wLWNvbG9yOiNBQUQyNkQiLz48c3RvcCAgb2Zmc2V0PSIwLjU0NCIgc3R5bGU9InN0b3AtY29sb3I6I0FDRDY3MyIvPjxzdG9wICBvZmZzZXQ9IjAuNTYzNyIgc3R5bGU9InN0b3AtY29sb3I6I0FBRDI2RCIvPjxzdG9wICBvZmZzZXQ9IjAuODYyNyIgc3R5bGU9InN0b3AtY29sb3I6Izk1OUYxRiIvPjxzdG9wICBvZmZzZXQ9IjEiIHN0eWxlPSJzdG9wLWNvbG9yOiM4RDhCMDAiLz48L2xpbmVhckdyYWRpZW50PjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik00MC45LDM0LjRjMCwwLTAuNCw4LjktNi40LDEzLjhjLTguNyw3LjItMTguNSw2LjEtMjQuOCwxLjRDMi41LDQ0LjIsMiwzNi40LDIsMzYuNHMxLjMsMS4yLDMuOCwxYzMuNy0wLjIsNy41LTIuNyw3LjUtMi43czAuMiwyLjgsMi4zLDQuNGMyLjksMi4yLDcsMS4zLDkuMywwLjFzNS4yLTMuNCw5LjEtNS4xQzM4LjUsMzIuMyw0MC45LDM0LjQsNDAuOSwzNC40eiIvPjxsaW5lYXJHcmFkaWVudCBpZD0iU1ZHSURfMl8iIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iNC4xNTY4IiB5MT0iODkzLjAwMSIgeDI9IjM1LjEwOCIgeTI9Ijg3NC43NjkzIiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEgMCAwIDEgMCAtODU2KSI+PHN0b3AgIG9mZnNldD0iMCIgc3R5bGU9InN0b3AtY29sb3I6IzNCNkU4RiIvPjxzdG9wICBvZmZzZXQ9IjguNTMzMDAxZS0wMiIgc3R5bGU9InN0b3AtY29sb3I6IzU0ODdBMCIvPjxzdG9wICBvZmZzZXQ9IjAuMzMwNSIgc3R5bGU9InN0b3AtY29sb3I6Izk5Q0NEMCIvPjxzdG9wICBvZmZzZXQ9IjAuNDQ1MSIgc3R5bGU9InN0b3AtY29sb3I6I0I0RTdFMyIvPjxzdG9wICBvZmZzZXQ9IjAuNTQ4NiIgc3R5bGU9InN0b3AtY29sb3I6I0EzRDZENyIvPjxzdG9wICBvZmZzZXQ9IjAuNzUzNSIgc3R5bGU9InN0b3AtY29sb3I6Izc3QUFCOSIvPjxzdG9wICBvZmZzZXQ9IjEiIHN0eWxlPSJzdG9wLWNvbG9yOiMzQjZFOEYiLz48L2xpbmVhckdyYWRpZW50PjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xLjgsMzNjMCwwLDAuMy03LjksNS4zLTEyLjZjOS43LTkuMywyMS4yLTYuMSwyNS44LTIuNWM3LjEsNS42LDcuOCwxMy4yLDcuOCwxMy4ycy0xLjMtMS4yLTMuOC0xLjFjLTMuNywwLjItNy42LDIuOC03LjYsMi44cy0wLjEtMS45LTEuMy0zLjRjLTEuMS0xLjQtMi42LTEuOS0yLjYtMS45bDQuNi0wLjdsLTAuMS0wLjdsLTQuNiwwLjRsMy45LTMuNmwtMC40LTAuNWwtNCwzLjJsMC42LTUuM2wtMC43LTAuMWwtMS4xLDUuM0wyMC41LDIxbC0wLjcsMC40bDIuOSw0LjZsLTUuMi0xLjZMMTcuMywyNWw0LjgsMS45YzAsMC0yLjMsMC4xLTQuMywxLjNjLTIuMiwxLjMtNS4yLDMuNi05LDUuMkM0LjIsMzUuMiwxLjgsMzMsMS44LDMzeiIvPjxsaW5lYXJHcmFkaWVudCBpZD0iU1ZHSURfM18iIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMTQuOTE1MyIgeTE9Ijg5My41MzY2IiB4Mj0iMjcuNzM2NCIgeTI9Ijg4Ni4wNzQ1IiBncmFkaWVudFRyYW5zZm9ybT0ibWF0cml4KDEgMCAwIDEgMCAtODU2KSI+PHN0b3AgIG9mZnNldD0iMCIgc3R5bGU9InN0b3AtY29sb3I6I0U4NkQyNCIvPjxzdG9wICBvZmZzZXQ9IjAuMTc0NCIgc3R5bGU9InN0b3AtY29sb3I6I0VEODIzMiIvPjxzdG9wICBvZmZzZXQ9IjAuNTMzOCIgc3R5bGU9InN0b3AtY29sb3I6I0ZCQjk1NSIvPjxzdG9wICBvZmZzZXQ9IjAuNTY1OSIgc3R5bGU9InN0b3AtY29sb3I6I0ZDQkU1OCIvPjxzdG9wICBvZmZzZXQ9IjAuNjQxNCIgc3R5bGU9InN0b3AtY29sb3I6I0Y5Qjk1NiIvPjxzdG9wICBvZmZzZXQ9IjAuNzI2IiBzdHlsZT0ic3RvcC1jb2xvcjojRUVBQzUwIi8+PHN0b3AgIG9mZnNldD0iMC44MTUiIHN0eWxlPSJzdG9wLWNvbG9yOiNERDk1NDUiLz48c3RvcCAgb2Zmc2V0PSIwLjkwNzEiIHN0eWxlPSJzdG9wLWNvbG9yOiNDNjc2MzciLz48c3RvcCAgb2Zmc2V0PSIxIiBzdHlsZT0ic3RvcC1jb2xvcjojQTg0RTI1Ii8+PC9saW5lYXJHcmFkaWVudD48cGF0aCBjbGFzcz0ic3QyIiBkPSJNMTMuMywzNC44YzAsMCw0LjgtMy4yLDcuMi00YzEuOS0wLjcsNC4xLTAuOCw1LjktMC4xYzEuOCwwLjYsMi44LDIuMiwyLjgsMi4ycy0yLjIsMS41LTQuMywyLjZzLTUuNywyLjMtOCwxLjdDMTQuNywzNi42LDEzLjMsMzQuOCwxMy4zLDM0Ljh6Ii8+PGxpbmVhckdyYWRpZW50IGlkPSJTVkdJRF80XyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSI3LjM3OTkiIHkxPSI5MDQuOTMwOCIgeDI9IjM5LjkxMDQiIHkyPSI4ODUuNzY4OSIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxIDAgMCAxIDAgLTg1NikiPjxzdG9wICBvZmZzZXQ9IjAiIHN0eWxlPSJzdG9wLWNvbG9yOiM0MDQwNDEiLz48c3RvcCAgb2Zmc2V0PSI2LjczNjc2MWUtMDIiIHN0eWxlPSJzdG9wLWNvbG9yOiM0RTRFNEYiLz48c3RvcCAgb2Zmc2V0PSIwLjE5NDYiIHN0eWxlPSJzdG9wLWNvbG9yOiM3MzczNzQiLz48c3RvcCAgb2Zmc2V0PSIwLjM2ODMiIHN0eWxlPSJzdG9wLWNvbG9yOiNBRUFFQUYiLz48c3RvcCAgb2Zmc2V0PSIwLjU0NCIgc3R5bGU9InN0b3AtY29sb3I6I0YxRjFGMiIvPjxzdG9wICBvZmZzZXQ9IjAuNzQ3MyIgc3R5bGU9InN0b3AtY29sb3I6IzhGOEQ4RSIvPjxzdG9wICBvZmZzZXQ9IjAuOTIwOSIgc3R5bGU9InN0b3AtY29sb3I6IzQxM0UzRiIvPjxzdG9wICBvZmZzZXQ9IjEiIHN0eWxlPSJzdG9wLWNvbG9yOiMyMzFGMjAiLz48L2xpbmVhckdyYWRpZW50PjxwYXRoIGNsYXNzPSJzdDMiIGQ9Ik0zMy45LDM0LjJjLTMuOSwxLjYtNi44LDMuOC05LjEsNS4xYy0yLjQsMS4zLTYuNSwyLjItOS4zLTAuMWMtMi4xLTEuNi0yLjMtNC40LTIuMy00LjRzLTMuOCwyLjQtNy41LDIuN2MtMi41LDAuMS0zLjgtMS0zLjgtMXMwLjUsNy44LDcuNywxMy4yYzYuMyw0LjcsMTYuMSw1LjgsMjQuOC0xLjRjNi00LjksNi40LTEzLjgsNi40LTEzLjhTMzguNSwzMi4zLDMzLjksMzQuMnogTTMzLjQsNDcuOWMtNy41LDYtMTYuOCw1LjUtMjIuNSwxLjNDNC4zLDQ0LjQsMy4yLDM4LjQsMy4xLDM4YzAsMCwwLjQsMC43LDMsMC41YzMuNC0wLjIsNi41LTIuMSw2LjUtMi4xczAuMiwyLjIsMi45LDMuOWMzLjIsMiw3LjYsMSw5LjctMC4yYzIuMS0xLjEsNS0zLjMsOC40LTQuOWM0LjMtMiw2LjMtMC40LDYuMy0wLjRTMzkuNiw0Mi45LDMzLjQsNDcuOXoiLz48Zz48cGF0aCBjbGFzcz0ic3Q0IiBkPSJNNjkuOSwyNy44Yy0xLjYtMS40LTMuOC0yLjItNS45LTIuMmMtNSwwLTguOCw0LjItOC44LDkuMXMzLjgsOSw4LjcsOWMyLjIsMCw0LjMtMC44LDUuOS0yLjN2My4zYy0xLjcsMS0zLjksMS42LTUuOCwxLjZjLTYuMywwLTExLjYtNS0xMS42LTExLjVjMC02LjYsNS4zLTExLjcsMTEuOC0xMS43YzEuOSwwLDMuOSwwLjUsNS42LDEuNUw2OS45LDI3LjhMNjkuOSwyNy44eiIvPjxwYXRoIGNsYXNzPSJzdDQiIGQ9Ik04NS42LDQ1LjhoLTIuN3YtMi4ybDAsMGMtMS4xLDEuNi0yLjcsMi42LTQuNywyLjZjLTQuMiwwLTYuNi0zLjUtNi42LTcuNWMwLTMuOCwyLjUtNy4yLDYuNS03LjJjMiwwLDMuNywxLjEsNC44LDIuN2wwLDBWMzJoMi43Qzg1LjYsMzIsODUuNiw0NS44LDg1LjYsNDUuOHogTTgzLjEsMzguOWMwLTIuNy0xLjYtNC45LTQuNS00LjljLTIuNywwLTQuNCwyLjQtNC40LDQuOWMwLDIuNiwxLjYsNSw0LjQsNUM4MS41LDQzLjksODMuMSw0MS42LDgzLjEsMzguOXoiLz48cGF0aCBjbGFzcz0ic3Q0IiBkPSJNOTEuNSw0NS44aC0yLjZWMjAuMmgyLjdMOTEuNSw0NS44TDkxLjUsNDUuOHoiLz48cGF0aCBjbGFzcz0ic3Q0IiBkPSJNOTguNywyNS43YzAsMS0wLjgsMS44LTEuOCwxLjhzLTEuOC0wLjgtMS44LTEuOHMwLjgtMS45LDEuOC0xLjlDOTcuOSwyMy45LDk4LjcsMjQuNyw5OC43LDI1Ljd6IE05OC4yLDQ1LjhoLTIuN1YzMmgyLjdWNDUuOHoiLz48cGF0aCBjbGFzcz0ic3Q0IiBkPSJNMTA5LDIyLjljLTAuNS0wLjItMS4yLTAuNi0xLjgtMC42Yy0xLjksMC0xLjksMi40LTEuOSwzLjd2NmgzLjd2Mi41aC0zLjd2MTEuM2gtMi43VjM0LjVoLTEuMlYzMmgxLjJ2LTYuN2MwLTMsMS01LjQsNC40LTUuNGMwLjYsMCwxLjMsMC4xLDEuOSwwLjRMMTA5LDIyLjlMMTA5LDIyLjl6Ii8+PHBhdGggY2xhc3M9InN0NCIgZD0iTTEyMy41LDM4LjljMCw0LjItMy4yLDcuMy03LjQsNy4zYy00LjEsMC03LjQtMy4yLTcuNC03LjNjMC00LjIsMy4yLTcuMyw3LjQtNy4zQzEyMC4yLDMxLjYsMTIzLjUsMzQuOCwxMjMuNSwzOC45eiBNMTExLjQsMzguOWMwLDIuNiwyLjEsNC44LDQuNyw0LjhzNC43LTIuMiw0LjctNC44cy0yLjEtNC44LTQuNy00LjhDMTEzLjUsMzQuMSwxMTEuNCwzNi4zLDExMS40LDM4Ljl6Ii8+PHBhdGggY2xhc3M9InN0NCIgZD0iTTEyOC40LDM0LjJMMTI4LjQsMzQuMmMwLjctMS42LDIuMS0yLjcsMy45LTIuN2MwLjgsMCwxLjUsMC4zLDIuMiwwLjdsLTEuMiwyLjRjLTAuNS0wLjQtMS0wLjYtMS42LTAuNmMtMi45LDAtMy4yLDIuNy0zLjIsNC45djYuOGgtMi43VjMyaDIuN0wxMjguNCwzNC4yTDEyOC40LDM0LjJ6Ii8+PHBhdGggY2xhc3M9InN0NCIgZD0iTTEzOC41LDMzLjlMMTM4LjUsMzMuOWMwLjktMS41LDIuNS0yLjMsNC4yLTIuM2MzLjksMCw0LjksMi42LDQuOSw2djguMmgtMi43di03LjljMC0yLjQtMC4zLTMuOS0zLTMuOWMtMy40LDAtMy40LDMtMy40LDUuNXY2LjNoLTIuNlYzMmgyLjZWMzMuOXoiLz48cGF0aCBjbGFzcz0ic3Q0IiBkPSJNMTU0LjcsMjUuN2MwLDEtMC44LDEuOC0xLjgsMS44cy0xLjgtMC44LTEuOC0xLjhzMC44LTEuOSwxLjgtMS45UzE1NC43LDI0LjcsMTU0LjcsMjUuN3ogTTE1NC4yLDQ1LjhoLTIuN1YzMmgyLjdWNDUuOHoiLz48cGF0aCBjbGFzcz0ic3Q0IiBkPSJNMTcxLjEsNDUuOGgtMi43di0yLjJoLTAuMWMtMS4xLDEuNi0yLjcsMi42LTQuNywyLjZjLTQuMiwwLTYuNi0zLjUtNi42LTcuNWMwLTMuOCwyLjUtNy4yLDYuNS03LjJjMiwwLDMuNywxLjEsNC44LDIuN2gwLjFWMzJoMi43VjQ1Ljh6IE0xNjguNiwzOC45YzAtMi43LTEuNi00LjktNC41LTQuOWMtMi43LDAtNC40LDIuNC00LjQsNC45YzAsMi42LDEuNiw1LDQuNCw1QzE2Nyw0My45LDE2OC42LDQxLjYsMTY4LjYsMzguOXoiLz48cGF0aCBjbGFzcz0ic3Q0IiBkPSJNMTg1LjUsNDUuOGgtMi44VjIzLjZoMi44VjQ1Ljh6Ii8+PHBhdGggY2xhc3M9InN0NCIgZD0iTTE5OS4yLDI3LjhjLTAuOC0xLjQtMS45LTIuMS0zLjYtMi4xYy0xLjgsMC0zLjcsMS4yLTMuNywzLjJjMCwxLjcsMS43LDIuNiwzLjEsMy4ybDEuNiwwLjZjMy4yLDEuMiw1LjUsMyw1LjUsNi43YzAsNC0zLjEsNi45LTcuMSw2LjljLTMuNiwwLTYuNC0yLjctNi45LTYuMmwyLjgtMC42YzAsMi40LDEuOSw0LjIsNC4zLDQuMmMyLjQsMCw0LjEtMiw0LjEtNC4zYzAtMi40LTEuOS0zLjQtMy44LTQuMmwtMS41LTAuNmMtMi41LTEuMS00LjgtMi41LTQuOC01LjZjMC0zLjYsMy4yLTUuNyw2LjUtNS43YzIuNSwwLDQuNSwxLjIsNS43LDMuNEwxOTkuMiwyNy44eiIvPjxwYXRoIGNsYXNzPSJzdDQiIGQ9Ik0yMjYuNiwzNC43YzAsNi42LTUuMiwxMS42LTExLjYsMTEuNmMtNi40LDAtMTEuNi01LTExLjYtMTEuNmMwLTYuNCw1LjMtMTEuNiwxMS42LTExLjZDMjIxLjMsMjMuMSwyMjYuNiwyOC4zLDIyNi42LDM0Ljd6IE0yMjMuOCwzNC43YzAtNC45LTMuNy05LTguOS05cy04LjksNC4xLTguOSw5YzAsNS4xLDQuMSw5LDguOSw5UzIyMy44LDM5LjgsMjIzLjgsMzQuN3oiLz48L2c+PGxpbmVhckdyYWRpZW50IGlkPSJTVkdJRF81XyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSI0LjEzMzQiIHkxPSI4OTMuMDA5MiIgeDI9IjM1LjIxODMiIHkyPSI4NzQuOTE3NCIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCgxIDAgMCAxIDAgLTg1NikiPjxzdG9wICBvZmZzZXQ9IjAiIHN0eWxlPSJzdG9wLWNvbG9yOiMyMzFGMjAiLz48c3RvcCAgb2Zmc2V0PSIwLjUwNTUiIHN0eWxlPSJzdG9wLWNvbG9yOiNBOEE4QTgiLz48c3RvcCAgb2Zmc2V0PSIxIiBzdHlsZT0ic3RvcC1jb2xvcjojMDAwMDAwIi8+PC9saW5lYXJHcmFkaWVudD48cGF0aCBjbGFzcz0ic3Q1IiBkPSJNMjAuOCwyNi4zYy0yLjEsMC4xLTQuNiwxLjgtNS4zLDIuM2MtMi4zLDEuNC0yLjgsMS44LTQuNiwyLjhjLTEuOCwwLjktNS44LDIuNi04LDEuMmMwLjEtMS43LDAuOS04LDUuNS0xMi4yYzQuNC00LDguOS01LjMsMTQuMS01LjJjNi42LDAuMSwxMC41LDMuNywxMi41LDUuN2MyLjIsMi4yLDQuMiw3LDQuNSw4LjVjLTAuNS0wLjUtMy41LTEuMi05LjYsMi4xYy0wLjMtMS42LTEuNS0zLjUtMy4zLTQuMmwwLDBsLTEuMSwwLjJjMCwwLDEuNiwwLjUsMi42LDJjMS4xLDEuNSwxLjMsMy40LDEuMywzLjRzMy45LTIuNSw3LjYtMi44YzIuNS0wLjEsMy44LDEuMSwzLjgsMS4xUzQwLjEsMjMuNiwzMywxOGMtNC42LTMuNi0xNi4yLTYuOC0yNS44LDIuNUMyLjIsMjUuMiwxLjgsMzMsMS44LDMzczIuMywyLjIsNi45LDAuM2MzLjktMS42LDYuOC0zLjksOS01LjJjMi0xLjIsNC4zLTEuMyw0LjMtMS4zTDIwLjgsMjYuM3oiLz48L3N2Zz4=);
+			background-position: left top;
+			background-repeat: no-repeat;
+			background-size: 183px;
+			text-align: left;
+			overflow: hidden;
+			font-size: 0;
+		}
+			@media (min-width: 850px) {
+				.logo { 
+					display: inline-block; vertical-align: middle;
+					background-size: 228px;
+					width: 257px;max-width: 257px;height: 67px;
+				}
+				.logo:after {
+					content: '';
+					position: absolute;
+					right: 0;
+					background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNHB4IiBoZWlnaHQ9IjY3cHgiIHZpZXdCb3g9IjAgMCA0IDY3IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA0IDY3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uc3Qwe2ZpbGw6bm9uZTtzdHJva2U6IzRENEQ0RDtzdHJva2Utd2lkdGg6MztzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjM7fTwvc3R5bGU+PGxpbmUgY2xhc3M9InN0MCIgeDE9IjEuOSIgeTE9IjguMiIgeDI9IjEuOSIgeTI9IjU5LjIiLz48L3N2Zz4=);
+					background-repeat: no-repeat;
+					background-position: left top;
+					display: inline-block;
+					width: 4px;
+					height: 67px;
+				}
+			}
+
+		/* NAVBAR */
+
+		.top-nav {background-color: #fff;}
+
+		.navbar-default {background-color: #f8f8f8;border-color: #e7e7e7;}
+		
+		.navbar {position: relative;margin-bottom: 0;border: none;border-top: 1px solid #c3c3c3;border-bottom: 1px solid #c3c3c3;border-radius: 0;padding-bottom: 10px;padding-top: 10px;margin-top: 15px;}
+			
+			@media (min-width: 850px) {
+				.navbar {margin-top: 0;}
+			}
+			@media (min-width: 576px) and (max-width: 991px) {
+				.navbar-expand-lg>.container {padding-left: 5px;padding-right: 5px;}
+			}
+			@media(min-width: 992px) {
+				.navbar {padding-bottom: 0;padding-top: 0;border-top: 0;}
+			}
+			
+		.top-nav .navbar-nav .nav-link {font-style: normal;font-size: 1em;font-weight: 700;padding: 15px 15px;color: #000;}
+			.top-nav .nav-link:focus, .top-nav .nav-link:hover {background-color: transparent;border-bottom: 3px solid #c1cbd5;padding-bottom: 13px;margin-bottom: -1px;color: #4f758b !important;}
+			.top-nav .navbar-nav .nav-item.active .nav-link {border-bottom: 3px solid #4f758b;padding-bottom: 13px;margin-bottom: -1px;color: #4f758b;}
+				
+			@media (max-width: 991px) {
+				.top-nav .navbar-nav .nav-link {padding: 5px 0 2px;}
+					.top-nav .nav-link:focus, .top-nav .nav-link:hover, .top-nav .navbar-nav .nav-item.active .nav-link {border-bottom: 0;margin-bottom: 0px; padding-bottom: 2px}
+			}
+			
+		.nav .open>a, .nav .open>a:focus, .nav .open>a:hover {background-color: #fff;border-color: #4f758b;}
+		.navbar-brand {font-size: 1em;font-weight: 700;color: #6A7D2F;}
+
+		.navbar-toggler {cursor: pointer;padding-right: 0;}
+			.navbar-toggler .icon-bar {display: block;width: 22px;height: 3px;border-radius: 1px;transition-duration: 0.2s;transition-timing-function: initial;transition-delay: initial;transition-property: all;background-color: #4f758b;}
+				.navbar-toggler .icon-bar + .icon-bar {margin-top: 4px;}
+			.navbar-toggler .top-bar {transform: rotate(45deg);transform-origin: 0% 45%;}
+				.navbar-toggler.collapsed .top-bar {transform: rotate(0deg);}
+			.navbar-toggler .middle-bar {opacity: 0;}
+				.navbar-toggler.collapsed .middle-bar {opacity: 1;}
+
+			.navbar-toggler .bottom-bar {transform: rotate(-45deg);transform-origin: 7% 90%;}
+				.navbar-toggler.collapsed .bottom-bar {transform: rotate(0deg);}
+
+		a.nav-link, a.dropdown-item {cursor: pointer;text-decoration: none;}	
+		
+		.navbar-expand-lg>.container, .navbar-expand-lg>.container-fluid {		
+			padding-right: 0;		
+			padding-left: 0;		
+		}
+		
+		/* Dropdown */
+
+		.dropdown-item {box-sizing: border-box;}
+			.dropdown-item.active, .dropdown-item:active {background-color: rgba(79,117,139, .5);}
+		/* Big Numbers */
+
+		.container.colored {border-radius: 5px;overflow: hidden;padding-left: 30px;padding-right: 30px;}
+			.row.green {padding-bottom: 15px;border-bottom: 1px solid rgba(132,189,0,.5);}
+			.row.yellow {padding-bottom: 15px;border-bottom: 1px solid rgba(255,163,10,.5);}
+			.row.blue {padding-bottom: 15px;border-bottom: 1px solid rgba(79,117,139,.5);}
+			.overview-icon {padding-top: 15px;padding-bottom: 15px;margin-bottom: 15px;}
+				.green .overview-icon {	border-bottom: 1px solid rgba(132,189,0,.5);}
+				.yellow .overview-icon {	border-bottom: 1px solid rgba(255,163,10,.5);}
+				.blue .overview-icon {	border-bottom: 1px solid rgba(79,117,139,.5);}
+			.overview-icon img {max-width: 25%;display: block;}
+				@media (min-width: 576px) {
+					.row.green, .row.yellow, .row.blue {padding-bottom: 0;}
+					.overview-icon {border-bottom: none;}
+						.green .overview-icon, .yellow .overview-icon, .blue .overview-icon {	border-bottom: none;margin-bottom: 0;}
+					.overview-icon img {max-width: 50px;}
+				}
+			
+		.overview {text-align: center;padding: 15px 15px 30px;}
+		.overview .overview-large-number {font-size: 24px;font-weight: 700;color: #000;line-height: 1;margin-bottom: .125em;}
+				.overview .overview-large-number span {font-size: 16px;}
+			.overview .overview-large-label {color: #5f5f5f;font-size: .75em;font-weight: 700;line-height: 1.2;}
+
+		.footer {border-top: 1px solid #c3c3c3;padding-top: 15px;font-size: .875em;}
+			@media (max-width: 991px) {
+				.footer {text-align: center;}
+			}
+			
+		/* THE CHART STYLES */
+		
+		.chart {height:400px;}
+		
+		.lineChart
+		{
+			border: 1px solid #d8d8d8;
+			border-radius: 5px;
+			padding: 30px;margin-bottom: 40px;
+			padding: 15px;
+			background: white;
+		}
+		
+		.lineChart .highcharts-container {max-width: 100%;}
+		
+		.table{
+		  font-size: .875rem;
+		}
+		
+		.table-wrapper-scroll {
+			display: block;
+			max-height: 300px;
+			overflow: auto;
+			-ms-overflow-style: -ms-autohiding-scrollbar;
+		}
+		
+		.comments
+		{
+			border: 1px solid #d8d8d8;
+			border-radius: 5px;
+			padding: 30px;margin-bottom: 40px;
+			padding: 15px;
+		}
+		
+		.w-info:after {content: 'i';display: inline-block;background: rgba(79,117,139,.5);color: white;font-size: 10px;width: 13px;height: 13px;line-height: 13px;text-align: center;font-style: italic;border-radius: 50%;margin-left: 5px;}
+			
+		/* IE Fixes */
+
+		.row .row {width: 100%;}
+		
+		/* PAGES HIDE */
+
+		#Curtailment {display:none;}
+		
+	</style>
+	
+</head>
+<body>
+
+<div class="header">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="logo">California ISO</div>
+				<h1>Daily Renewable Report</h1>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="top-nav">
+	<nav class="navbar navbar-expand-lg">
+	  <div class="container-fluid">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-brand">Tuesday, June 02, 2026</div>
+		  <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="icon-bar top-bar"></span>
+			<span class="icon-bar middle-bar"></span>
+			<span class="icon-bar bottom-bar"></span>
+		  </button>
+		
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+
+		 <div class="collapse navbar-collapse" id="navbar-collapse-1">
+		  <ul class="navbar-nav ">
+			<li id="navMarketPerformance" class="nav-item active"><a class="nav-link" id="tabMarketPerformance" tabindex="0">Market Performance</a></li>
+			<li id="navCurtailment" class="nav-item"><a class="nav-link" id="tabCurtailment" tabindex="0">Curtailment</a></li>
+		  </ul>
+		</div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</nav>
+</div>
+
+<div class="main-content">
+	
+	<!-- Main Page -->
+	<div class="page" id="MarketPerformance">
+		<div class="container-fluid">
+		  
+			<div class="row">
+				<div class="col-12">
+					<h2>Market Performance VER Resources - System Level</h2>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Chart for Total Solar Generation.">
+							Total Solar Generation Awards for CAISO resources
+						</h3>
+						<div id="chart_tot_gen_solar_iso"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Chart for Total Solar Generation for WEIM.">
+							Total Solar Generation Awards for WEIM resources (excluding CAISO)
+						</h3>
+						<div id="chart_tot_gen_solar_weim"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Chart for Total Wind Generation.">
+							Total Wind Generation Awards for CAISO resources
+						</h3>
+						<div id="chart_tot_gen_wind_iso"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Chart for Total Wind Generation for WEIM.">
+							Total Wind Generation Awards for WEIM resources (excluding CAISO)
+						</h3>
+						<div id="chart_tot_gen_wind_weim"></div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	
+	</div>
+	
+	<div class="page" id="Curtailment">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<h2>Curtailment of VER Resources - System Level</h2>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Wind and solar curtailments are grouped into the following categories: 
+                        1. Economic - Local: Market dispatch of generators with economic bids to mitigate local congestion. 
+                        2. Economic - System: Market dispatch of generators with economic bids to mitigate system wide oversupply. 
+                        3. SelfSchCut - Local: Market dispatch of self-schedules to mitigate local congestion. 
+                        4. SelfSchCut - System: Market dispatch of self-schedules to mitigate system-wide oversupply. 
+                        5. Operator Instruction - Local: Operator Instructions to mitigate local congestion. 
+                        6. Operator Instruction - System: Operator Instructions to mitigate system-wide oversupply.">
+							Hourly VER Generation Curtailment Energy in MWh
+						</h3>
+						<div id="chart_curt_hourly"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Wind and solar curtailments are grouped into the following categories: 
+                        1. Economic - Local: Market dispatch of generators with economic bids to mitigate local congestion. 
+                        2. Economic - System: Market dispatch of generators with economic bids to mitigate system wide oversupply. 
+                        3. SelfSchCut - Local: Market dispatch of self-schedules to mitigate local congestion. 
+                        4. SelfSchCut - System: Market dispatch of self-schedules to mitigate system-wide oversupply. 
+                        5. Operator Instruction - Local: Operator Instructions to mitigate local congestion. 
+                        6. Operator Instruction - System: Operator Instructions to mitigate system-wide oversupply.">
+							Maximum VER Curtailment in MW for the hour
+						</h3>
+						<div id="chart_curt_hourly_max"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Wind and solar curtailments are grouped into the following categories: 
+                        1. Economic - Local: Market dispatch of generators with economic bids to mitigate local congestion. 
+                        2. Economic - System: Market dispatch of generators with economic bids to mitigate system wide oversupply. 
+                        3. SelfSchCut - Local: Market dispatch of self-schedules to mitigate local congestion. 
+                        4. SelfSchCut - System: Market dispatch of self-schedules to mitigate system-wide oversupply. 
+                        5. Operator Instruction - Local: Operator Instructions to mitigate local congestion. 
+                        6. Operator Instruction - System: Operator Instructions to mitigate system-wide oversupply.">
+							Five Minute VER Generation Curtailment Energy in MWh
+						</h3>
+						<div id="chart_curt_five_min"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Wind and solar curtailments are grouped into the following categories: 
+                        1. Economic - Local: Market dispatch of generators with economic bids to mitigate local congestion. 
+                        2. Economic - System: Market dispatch of generators with economic bids to mitigate system wide oversupply. 
+                        3. SelfSchCut - Local: Market dispatch of self-schedules to mitigate local congestion. 
+                        4. SelfSchCut - System: Market dispatch of self-schedules to mitigate system-wide oversupply. 
+                        5. Operator Instruction - Local: Operator Instructions to mitigate local congestion. 
+                        6. Operator Instruction - System: Operator Instructions to mitigate system-wide oversupply.">
+							Total VER Curtailment in MWh for last 15 days
+						</h3>
+						<div id="chart_curt_daily_mwh"></div>
+					</div>
+				</div>
+			</div>
+				
+			<div class="row">
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Wind and solar curtailments are grouped into the following categories: 
+                        1. Economic - Local: Market dispatch of generators with economic bids to mitigate local congestion. 
+                        2. Economic - System: Market dispatch of generators with economic bids to mitigate system wide oversupply. 
+                        3. SelfSchCut - Local: Market dispatch of self-schedules to mitigate local congestion. 
+                        4. SelfSchCut - System: Market dispatch of self-schedules to mitigate system-wide oversupply. 
+                        5. Operator Instruction - Local: Operator Instructions to mitigate local congestion. 
+                        6. Operator Instruction - System: Operator Instructions to mitigate system-wide oversupply.">
+							Maximum VER Curtailment in MW for last 15 days
+						</h3>
+						<div id="chart_curt_daily_mw"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Wind and solar curtailments are grouped into the following categories: 
+                        1. Economic - Local: Market dispatch of generators with economic bids to mitigate local congestion. 
+                        2. Economic - System: Market dispatch of generators with economic bids to mitigate system wide oversupply. 
+                        3. SelfSchCut - Local: Market dispatch of self-schedules to mitigate local congestion. 
+                        4. SelfSchCut - System: Market dispatch of self-schedules to mitigate system-wide oversupply. 
+                        5. Operator Instruction - Local: Operator Instructions to mitigate local congestion. 
+                        6. Operator Instruction - System: Operator Instructions to mitigate system-wide oversupply.">
+							Maximum Curtailment of Solar Resources in MW for the hour
+						</h3>
+						<div id="chart_curt_hr_max_solar"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Wind and solar curtailments are grouped into the following categories: 
+                        1. Economic - Local: Market dispatch of generators with economic bids to mitigate local congestion. 
+                        2. Economic - System: Market dispatch of generators with economic bids to mitigate system wide oversupply. 
+                        3. SelfSchCut - Local: Market dispatch of self-schedules to mitigate local congestion. 
+                        4. SelfSchCut - System: Market dispatch of self-schedules to mitigate system-wide oversupply. 
+                        5. Operator Instruction - Local: Operator Instructions to mitigate local congestion. 
+                        6. Operator Instruction - System: Operator Instructions to mitigate system-wide oversupply.">
+							Maximum Curtailment of Wind Resources in MW for the hour
+						</h3>
+						<div id="chart_curt_hr_max_wind"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Wind and solar curtailments are grouped into the following categories: 
+                        1. Economic - Local: Market dispatch of generators with economic bids to mitigate local congestion. 
+                        2. Economic - System: Market dispatch of generators with economic bids to mitigate system wide oversupply. 
+                        3. SelfSchCut - Local: Market dispatch of self-schedules to mitigate local congestion. 
+                        4. SelfSchCut - System: Market dispatch of self-schedules to mitigate system-wide oversupply. 
+                        5. Operator Instruction - Local: Operator Instructions to mitigate local congestion. 
+                        6. Operator Instruction - System: Operator Instructions to mitigate system-wide oversupply.">
+							Total Curtailment of Solar Resources in MWh
+						</h3>
+						<div id="chart_curt_hr_tot_solar"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Wind and solar curtailments are grouped into the following categories: 
+                        1. Economic - Local: Market dispatch of generators with economic bids to mitigate local congestion. 
+                        2. Economic - System: Market dispatch of generators with economic bids to mitigate system wide oversupply. 
+                        3. SelfSchCut - Local: Market dispatch of self-schedules to mitigate local congestion. 
+                        4. SelfSchCut - System: Market dispatch of self-schedules to mitigate system-wide oversupply. 
+                        5. Operator Instruction - Local: Operator Instructions to mitigate local congestion. 
+                        6. Operator Instruction - System: Operator Instructions to mitigate system-wide oversupply.">
+							Total Curtailment of Wind Resources in MWh
+						</h3>
+						<div id="chart_curt_hr_tot_wind"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Hourly cumulative curtailed energy for YTD in MWh">
+							Hourly Profile of YTD Curtailed MWh 
+						</h3>
+						<div id="chart_curt_hourly_ytd"></div>
+					</div>
+				</div>
+			<div class="row">
+			  <div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Monthly cumulative curtailed energy for YTD in MWh">
+							Monthly YTD Curtailed MWh
+						</h3>
+						<div id="chart_curt_monthly_ytd"></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="lineChart">
+                        <h3 class="w-info" title="Monthly curtailed energy / (Actuals + Curtailed MWh) in Percent.">
+							Monthly Curtailed MWh Percentage Compared to Actuals
+						</h3>
+						<div id="chart_curt_monthly_ytd_perc"></div>
+					</div>
+				</div>
+			</div> 
+			
+			
+		</div>
+	
+	</div>
+	
+	
+</div>
+	
+
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12"><p> </p></div>
+		<div class="col-md-12">
+		  <p>
+			  <small>
+			    For any questions related to this report, please reach out to Market Analysis at <a href = "mailto: MarketAnalysis@caiso.com">MarketAnalysis@caiso.com</a>
+			  </small>
+		  </p>
+	  </div>
+	</div>
+</div>
+    	
+<div class="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<p>California ISO Public</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- JSBlock Variables -->
+<script>
+window.addEventListener('load', () => {
+//  Color definitions. These are used in various graphs on the page
+var tot_gen_solar_iso_rtd = ["NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 0, 0, 0.15, 0.48, 1.71, 19.49, 36.04, 63.87, 145.1, 339.4, 571.8, 868.6, 1292, 1776, 2425, 3198, 4009, 4728, 5458, 5940, 6490, 6948, 7378, 7936, 8746, 9206, 9908, 10600, 10910, 11230, 11860, 12120, 12470, 12510, 12680, 12870, 14280, 14640, 14670, 15360, 15540, 15390, 15140, 15070, 15170, 15130, 15340, 15010, 15680, 15850, 16500, 16670, 16590, 16810, 17330, 17300, 17270, 17130, 17270, 17460, 17990, 18000, 17920, 18060, 18210, 18320, 18830, 18920, 18510, 18850, 18780, 18650, 18520, 18440, 18430, 18570, 18360, 18340, 18670, 18610, 18610, 18550, 18360, 18390, 17660, 17650, 17660, 17560, 17360, 17480, 17720, 17590, 17690, 17660, 17610, 17820, 17800, 17840, 18000, 18160, 17960, 18130, 18430, 18530, 18420, 18600, 18440, 18150, 18000, 18250, 18230, 17850, 17540, 17800, 18100, 18270, 18060, 17940, 18010, 18080, 17850, 17760, 18000, 17800, 17590, 17400, 17730, 17570, 17490, 17460, 17360, 17270, 16690, 16430, 16220, 15960, 15820, 16180, 16370, 16370, 16510, 16380, 16270, 16050, 14740, 14780, 14670, 14590, 14330, 14430, 14400, 14260, 14200, 13990, 13710, 13320, 13260, 12890, 12430, 11670, 10840, 10050, 9297, 8475, 7710, 6851, 6074, 5274, 4427, 3771, 3131, 2529, 2052, 1646, 1158, 860.8, 579.2, 358.5, 179.9, 110.9, 77.62, 38.59, 31.52, 9.352, 0.08, 0.08, 0.08, 0, 0, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"],
+	tot_gen_solar_iso_rtpd = ["NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", 0.05, 0.05, 0.05, 13.9, 13.9, 13.9, 79.83, 79.83, 79.83, 618.9, 618.9, 618.9, 1912, 1912, 1912, 3889, 3889, 3889, 5821, 5821, 5821, 8248, 8248, 8248, 10410, 10410, 10410, 11920, 11920, 11920, 12220, 12220, 12220, 12730, 12730, 12730, 14520, 14520, 14520, 14530, 14530, 14530, 14740, 14740, 14740, 15400, 15400, 15400, 16410, 16410, 16410, 16500, 16500, 16500, 16780, 16780, 16780, 17500, 17500, 17500, 18090, 18090, 18090, 18340, 18340, 18340, 18450, 18450, 18450, 18980, 18980, 18980, 18610, 18610, 18610, 18790, 18790, 18790, 18740, 18740, 18740, 19070, 19070, 19070, 18660, 18660, 18660, 18460, 18460, 18460, 18390, 18390, 18390, 18390, 18390, 18390, 18500, 18500, 18500, 18480, 18480, 18480, 18350, 18350, 18350, 18890, 18890, 18890, 18470, 18470, 18470, 18460, 18460, 18460, 18230, 18230, 18230, 18180, 18180, 18180, 17960, 17960, 17960, 17900, 17900, 17900, 17190, 17190, 17190, 17420, 17420, 17420, 16570, 16570, 16570, 16570, 16570, 16570, 16090, 16090, 16090, 16440, 16440, 16440, 14830, 14830, 14830, 14340, 14340, 14340, 14250, 14250, 14250, 14010, 14010, 14010, 13020, 13020, 13020, 11450, 11450, 11450, 9084, 9084, 9084, 6562, 6562, 6562, 4293, 4293, 4293, 2390, 2390, 2390, 1076, 1076, 1076, 326.9, 326.9, 326.9, 48.74, 48.74, 48.74, 0.661, 0.661, 0.661, 0.027, 0.027, 0.027, "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA"],
+	tot_gen_solar_iso_ifm = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 101.8, 101.8, 101.8, 101.8, 101.8, 101.8, 101.8, 101.8, 101.8, 101.8, 101.8, 101.8, 4166, 4166, 4166, 4166, 4166, 4166, 4166, 4166, 4166, 4166, 4166, 4166, 12030, 12030, 12030, 12030, 12030, 12030, 12030, 12030, 12030, 12030, 12030, 12030, 15310, 15310, 15310, 15310, 15310, 15310, 15310, 15310, 15310, 15310, 15310, 15310, 15930, 15930, 15930, 15930, 15930, 15930, 15930, 15930, 15930, 15930, 15930, 15930, 16900, 16900, 16900, 16900, 16900, 16900, 16900, 16900, 16900, 16900, 16900, 16900, 16850, 16850, 16850, 16850, 16850, 16850, 16850, 16850, 16850, 16850, 16850, 16850, 17220, 17220, 17220, 17220, 17220, 17220, 17220, 17220, 17220, 17220, 17220, 17220, 16250, 16250, 16250, 16250, 16250, 16250, 16250, 16250, 16250, 16250, 16250, 16250, 17270, 17270, 17270, 17270, 17270, 17270, 17270, 17270, 17270, 17270, 17270, 17270, 16970, 16970, 16970, 16970, 16970, 16970, 16970, 16970, 16970, 16970, 16970, 16970, 16190, 16190, 16190, 16190, 16190, 16190, 16190, 16190, 16190, 16190, 16190, 16190, 14890, 14890, 14890, 14890, 14890, 14890, 14890, 14890, 14890, 14890, 14890, 14890, 8443, 8443, 8443, 8443, 8443, 8443, 8443, 8443, 8443, 8443, 8443, 8443, 1486, 1486, 1486, 1486, 1486, 1486, 1486, 1486, 1486, 1486, 1486, 1486, 4.14, 4.14, 4.14, 4.14, 4.14, 4.14, 4.14, 4.14, 4.14, 4.14, 4.14, 4.14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	tot_gen_solar_iso_telem = [0.07007, 0.07007, 0.1401, 0.1301, 0.1301, 0.1401, 0.1401, 0.1401, 0.1401, 0.1401, 0.1301, 0.1401, 0.1401, 0.1301, 0.1301, 0.1201, 0.1201, 0.1201, 0.1201, 0.1301, 0.1301, 0.1301, 0.1201, 0.1101, 0.1201, 0.1201, 0.1501, 0.1401, 0.1301, 0.1401, 0.1401, 0.1301, 0.1301, 0.1401, 0.1401, 0.1301, 0.1401, 0.1301, 0.1301, 0.1001, 0.09006, 0.08007, 0.08007, 0.09006, 0.09006, 0.09006, 0.09006, 0.1001, 0.09006, 0.09006, 0.09006, 0.08007, 0.08007, 0.07007, 0.1301, 0.1301, 0.1301, 0.1301, 0.1201, 0.1301, 0.1101, 0.09006, 0.1001, 0.07007, 0.07007, 0.07007, 0.2701, 1.91, 9.3, 29.53, 79.72, 181.2, 372.6, 637.3, 1051, 1496, 1974, 2493, 3088, 3532, 4062, 4717, 5368, 5995, 6629, 7337, 8194, 8946, 9665, 10180, 10570, 11020, 11740, 12420, 12800, 12490, 12600, 13040, 14310, 14630, 14690, 15090, 15510, 15640, 15120, 14990, 15070, 14980, 15200, 15240, 16030, 16120, 16450, 16750, 16800, 16750, 16810, 16990, 17410, 17380, 17540, 17550, 17990, 18060, 18100, 18040, 18170, 18230, 18500, 18840, 18630, 18710, 18720, 18680, 18420, 18330, 18260, 18340, 18190, 18040, 18440, 18420, 18420, 18410, 18250, 18090, 17430, 17350, 17380, 17340, 17110, 17070, 17610, 17770, 17680, 17560, 17540, 17690, 17900, 17830, 17920, 17990, 17940, 17920, 18160, 18390, 18280, 18390, 18280, 18040, 17970, 18000, 18130, 17860, 17400, 17600, 17920, 18060, 18030, 18100, 18010, 17950, 17700, 17620, 17770, 17610, 17360, 16970, 17190, 17150, 17170, 17270, 17260, 17170, 16660, 16310, 16190, 16000, 15960, 16330, 16520, 16510, 16520, 16170, 16040, 15870, 15140, 14840, 14620, 14770, 14700, 14600, 14570, 14440, 14220, 14020, 13820, 13460, 13200, 12760, 12360, 11770, 11080, 10280, 9525, 8796, 7982, 7106, 6252, 5524, 4691, 3928, 3170, 2686, 2084, 1595, 1167, 882, 666.6, 480.1, 346.1, 288.6, 249.9, 220.4, 211.4, 205.2, 192.2, 186.3, 186.3, 186.3, 1.29, 1.29, 1.29, 1.29, 1.3, 1.29, 1.29, 1.3, 1.29, 1.29, 1.29, 1.29, 1.29, 1.3, 1.29, 1.29, 1.29, 1.29, 1.3, 1.29, 1.29, 1.3, 1.29, 1.3, 1.3, 1.29, 1.31, 1.3, 1.3, 1.31, 0.08007, 0.08007, 0.07007, 0.08007, 0.08007, 0.08007, 0.08007, 0.08007],
+	tot_gen_solar_iso_forec = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 149.8, 149.8, 149.8, 149.8, 149.8, 149.8, 149.8, 149.8, 149.8, 149.8, 149.8, 149.8, 5044, 5044, 5044, 5044, 5044, 5044, 5044, 5044, 5044, 5044, 5044, 5044, 14120, 14120, 14120, 14120, 14120, 14120, 14120, 14120, 14120, 14120, 14120, 14120, 17870, 17870, 17870, 17870, 17870, 17870, 17870, 17870, 17870, 17870, 17870, 17870, 19300, 19300, 19300, 19300, 19300, 19300, 19300, 19300, 19300, 19300, 19300, 19300, 20110, 20110, 20110, 20110, 20110, 20110, 20110, 20110, 20110, 20110, 20110, 20110, 20520, 20520, 20520, 20520, 20520, 20520, 20520, 20520, 20520, 20520, 20520, 20520, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20730, 20540, 20540, 20540, 20540, 20540, 20540, 20540, 20540, 20540, 20540, 20540, 20540, 19970, 19970, 19970, 19970, 19970, 19970, 19970, 19970, 19970, 19970, 19970, 19970, 18940, 18940, 18940, 18940, 18940, 18940, 18940, 18940, 18940, 18940, 18940, 18940, 16800, 16800, 16800, 16800, 16800, 16800, 16800, 16800, 16800, 16800, 16800, 16800, 9668, 9668, 9668, 9668, 9668, 9668, 9668, 9668, 9668, 9668, 9668, 9668, 1726, 1726, 1726, 1726, 1726, 1726, 1726, 1726, 1726, 1726, 1726, 1726, 6.19, 6.19, 6.19, 6.19, 6.19, 6.19, 6.19, 6.19, 6.19, 6.19, 6.19, 6.19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	
+	tot_gen_solar_weim_rtd = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.63, 1.27, 1.27, 1.92, 2.86, 3.37, 4.76, 5.159, 8.705, 12.26, 20.14, 28.2, 37.23, 57.8, 118.1, 190.7, 301.3, 407.6, 647.6, 928.8, 1234, 1569, 2114, 2545, 3013, 3558, 4049, 4641, 5246, 5915, 6550, 7004, 7283, 7856, 8392, 8873, 9259, 9541, 9644, 9728, 9934, 10160, 10480, 10640, 10810, 11020, 10990, 11280, 11280, 11310, 11520, 11740, 11920, 12100, 12090, 12160, 11980, 11860, 11860, 12020, 12090, 12280, 12290, 12230, 12180, 12490, 12560, 12600, 12810, 12880, 12920, 12790, 12700, 12760, 12680, 12770, 12780, 12750, 12720, 12820, 12860, 12830, 12870, 13030, 13030, 13100, 13130, 13090, 12860, 12800, 12970, 13060, 13090, 13100, 13230, 13210, 13150, 13130, 13130, 13110, 13130, 13180, 13190, 13180, 13190, 13240, 13120, 13180, 13210, 13170, 12980, 12880, 12840, 12800, 12720, 12560, 12580, 12570, 12680, 12690, 12420, 12490, 12500, 12560, 12480, 12720, 12630, 12440, 12380, 12420, 12420, 12260, 12560, 12290, 12130, 12010, 12090, 12140, 12130, 11920, 11890, 12000, 11610, 11620, 11710, 11510, 11410, 11400, 11180, 11010, 11060, 11000, 10630, 10600, 10380, 10120, 9929, 9861, 9783, 9700, 9479, 9168, 8983, 8753, 8520, 8246, 7858, 7304, 6763, 6278, 5828, 5350, 4947, 4515, 4041, 3566, 3149, 2748, 2401, 1911, 1591, 1322, 1038, 762.1, 551, 396, 288, 197.7, 145.5, 105.2, 84.46, 55.3, 41.15, 25.71, 14.49, 6.13, 4.642, 1.906, 0.785, 0.167, 0.022, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	tot_gen_solar_weim_rtpd = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.633, 0.633, 0.633, 2.013, 2.013, 2.013, 5.128, 5.128, 5.128, 11.3, 11.3, 11.3, 57.74, 57.74, 57.74, 230.2, 230.2, 230.2, 692.7, 692.7, 692.7, 1557, 1557, 1557, 3213, 3213, 3213, 4052, 4052, 4052, 5533, 5533, 5533, 6984, 6984, 6984, 9010, 9010, 9010, 9359, 9359, 9359, 9962, 9962, 9962, 10640, 10640, 10640, 11130, 11130, 11130, 11200, 11200, 11200, 11430, 11430, 11430, 11880, 11880, 11880, 12060, 12060, 12060, 12170, 12170, 12170, 12070, 12070, 12070, 12480, 12480, 12480, 12510, 12510, 12510, 12610, 12610, 12610, 12680, 12680, 12680, 12660, 12660, 12660, 12650, 12650, 12650, 12690, 12690, 12690, 12770, 12770, 12770, 12880, 12880, 12880, 12810, 12810, 12810, 12980, 12980, 12980, 12920, 12920, 12920, 12990, 12990, 12990, 12950, 12950, 12950, 12900, 12900, 12900, 12930, 12930, 12930, 12920, 12920, 12920, 12770, 12770, 12770, 12700, 12700, 12700, 12590, 12590, 12590, 12250, 12250, 12250, 12380, 12380, 12380, 11930, 11930, 11930, 12060, 12060, 12060, 11800, 11800, 11800, 11750, 11750, 11750, 11500, 11500, 11500, 11090, 11090, 11090, 11010, 11010, 11010, 10430, 10430, 10430, 9944, 9944, 9944, 9378, 9378, 9378, 8415, 8415, 8415, 6692, 6692, 6692, 6020, 6020, 6020, 4717, 4717, 4717, 3065, 3065, 3065, 1545, 1545, 1545, 1028, 1028, 1028, 503.5, 503.5, 503.5, 214.3, 214.3, 214.3, 69.55, 69.55, 69.55, 24.49, 24.49, 24.49, 2.48, 2.48, 2.48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	tot_gen_solar_weim_rtbs = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3.14, 3.14, 3.14, 3.14, 3.14, 3.14, 3.14, 3.14, 3.14, 3.14, 3.14, 3.14, 429.3, 429.3, 429.3, 429.3, 429.3, 429.3, 429.3, 429.3, 429.3, 429.3, 429.3, 429.3, 3692, 3692, 3692, 3692, 3692, 3692, 3692, 3692, 3692, 3692, 3692, 3692, 7310, 7310, 7310, 7310, 7310, 7310, 7310, 7310, 7310, 7310, 7310, 7310, 8616, 8616, 8616, 8616, 8616, 8616, 8616, 8616, 8616, 8616, 8616, 8616, 8964, 8964, 8964, 8964, 8964, 8964, 8964, 8964, 8964, 8964, 8964, 8964, 9218, 9218, 9218, 9218, 9218, 9218, 9218, 9218, 9218, 9218, 9218, 9218, 9479, 9479, 9479, 9479, 9479, 9479, 9479, 9479, 9479, 9479, 9479, 9479, 9259, 9259, 9259, 9259, 9259, 9259, 9259, 9259, 9259, 9259, 9259, 9259, 9042, 9042, 9042, 9042, 9042, 9042, 9042, 9042, 9042, 9042, 9042, 9042, 8959, 8959, 8959, 8959, 8959, 8959, 8959, 8959, 8959, 8959, 8959, 8959, 8752, 8752, 8752, 8752, 8752, 8752, 8752, 8752, 8752, 8752, 8752, 8752, 8092, 8092, 8092, 8092, 8092, 8092, 8092, 8092, 8092, 8092, 8092, 8092, 6588, 6588, 6588, 6588, 6588, 6588, 6588, 6588, 6588, 6588, 6588, 6588, 3472, 3472, 3472, 3472, 3472, 3472, 3472, 3472, 3472, 3472, 3472, 3472, 365, 365, 365, 365, 365, 365, 365, 365, 365, 365, 365, 365, 11.59, 11.59, 11.59, 11.59, 11.59, 11.59, 11.59, 11.59, 11.59, 11.59, 11.59, 11.59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	tot_gen_solar_weim_telem = [5.696, 5.703, 5.683, 5.681, 5.707, 5.739, 5.733, 5.707, 5.677, 5.707, 5.284, 5.284, 5.273, 5.729, 5.731, 5.7, 5.7, 5.691, 5.683, 5.72, 5.74, 5.664, 5.726, 5.709, 5.701, 5.698, 5.707, 5.717, 5.709, 5.69, 5.699, 5.675, 5.696, 5.684, 5.679, 5.706, 5.67, 5.721, 5.678, 5.717, 5.675, 5.682, 5.688, 5.72, 5.699, 5.709, 5.711, 5.716, 5.722, 5.702, 5.699, 5.72, 5.685, 5.891, 5.962, 6.049, 6.658, 7.732, 9.722, 12.39, 14.55, 16.72, 26.26, 45.16, 76.81, 132.4, 209.4, 349.3, 502, 746.8, 1002, 1338, 1761, 2181, 2656, 3215, 3789, 4423, 4806, 5245, 5821, 6331, 6967, 7374, 7839, 8315, 8672, 9043, 9149, 9447, 9691, 9892, 10140, 10550, 10640, 10780, 11010, 11120, 11370, 11690, 11810, 11710, 11660, 11720, 11730, 11860, 11920, 12030, 12030, 11860, 12010, 12210, 12310, 12310, 12340, 12280, 12640, 12670, 12660, 12630, 12670, 12670, 12650, 12610, 12630, 12700, 12590, 12640, 12760, 12940, 12960, 12830, 12900, 12870, 12920, 12970, 13170, 12990, 12840, 12780, 12830, 12970, 12970, 13060, 13210, 13110, 13250, 13250, 13100, 12850, 12870, 13000, 13000, 13140, 13160, 13220, 13020, 13100, 13310, 13060, 12970, 12760, 12520, 12540, 12600, 12630, 12470, 12410, 12240, 12320, 12440, 12800, 12820, 12570, 12410, 12770, 12730, 12500, 12470, 12250, 12090, 12040, 12200, 12380, 12390, 12190, 12090, 12020, 11810, 11580, 11720, 11550, 11670, 11670, 11400, 11160, 11040, 10790, 10690, 10680, 10610, 10160, 10170, 9991, 10140, 9937, 10010, 9971, 9816, 9502, 9217, 9055, 8877, 8582, 8478, 8299, 7921, 7454, 6978, 6531, 6042, 5661, 5315, 4844, 4370, 3874, 3424, 3049, 2609, 2281, 1974, 1565, 1216, 929.2, 691.9, 490.5, 340.4, 243.8, 176.1, 146.5, 94.32, 76.18, 52.49, 36.32, 17.94, 13.65, 9.039, 7.175, 6.032, 5.325, 5.181, 5.191, 5.219, 5.147, 6.295, 6.268, 6.273, 6.241, 6.263, 6.244, 6.248, 6.248, 6.242, 6.276, 2.791, 2.769, 2.805, 2.793, 2.804, 2.756, 2.824, 2.806, 2.81, 2.815, 2.802, 2.771, 2.82, 2.802, 2.805, 2.4, 2.848, 2.832, 2.819, 2.41, 2.402, 2.432, 2.861, 2.898],
+	
+	tot_gen_wind_iso_rtd = [4062, 4074, 4107, 4160, 4229, 4234, 4265, 4264, 4219, 4238, 4216, 4230, 4252, 4238, 4326, 4448, 4388, 4361, 4409, 4447, 4392, 4376, 4382, 4312, 4315, 4297, 4246, 4253, 4219, 4173, 4173, 4117, 4136, 4116, 4138, 4180, 4171, 4168, 4118, 4058, 4052, 4001, 4056, 4020, 3988, 3950, 3968, 3986, 3976, 3968, 3972, 3920, 3897, 3876, 3877, 3836, 3866, 3859, 3844, 3852, 3873, 3868, 3876, 3851, 3806, 3782, 3733, 3697, 3707, 3664, 3632, 3593, 3549, 3480, 3470, 3419, 3339, 3295, 3273, 3240, 3202, 3211, 3189, 3155, 3150, 3081, 3040, 2960, 2906, 2861, 2827, 2783, 2706, 2624, 2542, 2427, 2356, 2223, 2126, 2021, 1938, 1872, 1851, 1802, 1706, 1640, 1541, 1489, 1431, 1342, 1249, 1194, 1201, 1177, 1182, 1169, 1144, 1094, 1136, 1102, 1085, 1086, 1130, 1121, 1132, 1173, 1206, 1233, 1216, 1222, 1276, 1341, 1306, 1356, 1354, 1367, 1408, 1407, 1496, 1528, 1498, 1519, 1498, 1547, 1498, 1516, 1436, 1471, 1471, 1467, 1547, 1592, 1586, 1712, 1797, 1891, 1941, 1978, 2015, 1988, 1975, 1992, 1952, 1995, 1937, 1943, 1946, 1984, 2007, 2066, 2058, 2100, 2064, 2033, 2107, 2146, 2238, 2249, 2299, 2396, 2355, 2369, 2452, 2534, 2483, 2497, 2578, 2679, 2729, 2824, 2893, 3008, 3148, 3270, 3361, 3456, 3513, 3511, 3568, 3537, 3558, 3554, 3539, 3553, 3505, 3503, 3503, 3542, 3571, 3589, 3532, 3585, 3525, 3499, 3566, 3558, 3624, 3671, 3594, 3652, 3712, 3774, 3877, 3956, 3972, 4059, 4063, 4076, 4167, 4195, 4252, 4379, 4501, 4573, 4656, 4707, 4709, 4691, 4661, 4696, 4701, 4766, 4846, 4874, 4931, 5009, 5052, 5145, 5151, 5185, 5176, 5192, 5225, 5245, 5227, 5196, 5127, 5094, 5030, 4990, 4947, 4979, 4933, 4909, 4915, 4892, 4923, 4940, 4926, 4913, 4861, 4831, 4808, 4777, 4646, 4585, 4556, 4547, 4619, 4653, 4773, 4814, 4785, 4751, 4780, 4807, 4862, 4871],
+	tot_gen_wind_iso_rtpd = [3968, 3968, 3968, 4042, 4042, 4042, 4034, 4034, 4034, 4099, 4099, 4099, 4166, 4166, 4166, 4172, 4172, 4172, 4126, 4126, 4126, 4182, 4182, 4182, 4227, 4227, 4227, 4209, 4209, 4209, 4225, 4225, 4225, 4261, 4261, 4261, 4150, 4150, 4150, 4136, 4136, 4136, 4126, 4126, 4126, 3987, 3987, 3987, 3861, 3861, 3861, 3823, 3823, 3823, 3735, 3735, 3735, 3806, 3806, 3806, 3721, 3721, 3721, 3586, 3586, 3586, 3595, 3595, 3595, 3574, 3574, 3574, 3567, 3567, 3567, 3465, 3465, 3465, 3368, 3368, 3368, 3208, 3208, 3208, 3049, 3049, 3049, 2917, 2917, 2917, 2862, 2862, 2862, 2730, 2730, 2730, 2532, 2532, 2532, 2434, 2434, 2434, 2214, 2214, 2214, 1960, 1960, 1960, 1691, 1691, 1691, 1610, 1610, 1610, 1425, 1425, 1425, 1235, 1235, 1235, 1224, 1224, 1224, 1178, 1178, 1178, 1179, 1179, 1179, 1256, 1256, 1256, 1258, 1258, 1258, 1294, 1294, 1294, 1373, 1373, 1373, 1479, 1479, 1479, 1522, 1522, 1522, 1606, 1606, 1606, 1633, 1633, 1633, 1701, 1701, 1701, 1625, 1625, 1625, 1670, 1670, 1670, 1874, 1874, 1874, 2072, 2072, 2072, 2074, 2074, 2074, 2093, 2093, 2093, 2070, 2070, 2070, 2428, 2428, 2428, 2354, 2354, 2354, 2298, 2298, 2298, 2517, 2517, 2517, 2645, 2645, 2645, 2893, 2893, 2893, 2886, 2886, 2886, 3176, 3176, 3176, 3604, 3604, 3604, 3676, 3676, 3676, 3688, 3688, 3688, 3653, 3653, 3653, 3673, 3673, 3673, 3873, 3873, 3873, 3955, 3955, 3955, 3914, 3914, 3914, 3977, 3977, 3977, 4032, 4032, 4032, 4235, 4235, 4235, 4314, 4314, 4314, 4446, 4446, 4446, 4544, 4544, 4544, 4746, 4746, 4746, 4755, 4755, 4755, 4844, 4844, 4844, 4951, 4951, 4951, 5021, 5021, 5021, 5108, 5108, 5108, 5120, 5120, 5120, 5135, 5135, 5135, 4972, 4972, 4972, 4982, 4982, 4982, 4889, 4889, 4889, 4843, 4843, 4843, 4828, 4828, 4828, 4632, 4632, 4632, 4554, 4554, 4554],
+	tot_gen_wind_iso_ifm = [3973, 3973, 3973, 3973, 3973, 3973, 3973, 3973, 3973, 3973, 3973, 3973, 3513, 3513, 3513, 3513, 3513, 3513, 3513, 3513, 3513, 3513, 3513, 3513, 3410, 3410, 3410, 3410, 3410, 3410, 3410, 3410, 3410, 3410, 3410, 3410, 3565, 3565, 3565, 3565, 3565, 3565, 3565, 3565, 3565, 3565, 3565, 3565, 3278, 3278, 3278, 3278, 3278, 3278, 3278, 3278, 3278, 3278, 3278, 3278, 2923, 2923, 2923, 2923, 2923, 2923, 2923, 2923, 2923, 2923, 2923, 2923, 2513, 2513, 2513, 2513, 2513, 2513, 2513, 2513, 2513, 2513, 2513, 2513, 1982, 1982, 1982, 1982, 1982, 1982, 1982, 1982, 1982, 1982, 1982, 1982, 1476, 1476, 1476, 1476, 1476, 1476, 1476, 1476, 1476, 1476, 1476, 1476, 1083, 1083, 1083, 1083, 1083, 1083, 1083, 1083, 1083, 1083, 1083, 1083, 853.5, 853.5, 853.5, 853.5, 853.5, 853.5, 853.5, 853.5, 853.5, 853.5, 853.5, 853.5, 907.7, 907.7, 907.7, 907.7, 907.7, 907.7, 907.7, 907.7, 907.7, 907.7, 907.7, 907.7, 1016, 1016, 1016, 1016, 1016, 1016, 1016, 1016, 1016, 1016, 1016, 1016, 1241, 1241, 1241, 1241, 1241, 1241, 1241, 1241, 1241, 1241, 1241, 1241, 1659, 1659, 1659, 1659, 1659, 1659, 1659, 1659, 1659, 1659, 1659, 1659, 2199, 2199, 2199, 2199, 2199, 2199, 2199, 2199, 2199, 2199, 2199, 2199, 2534, 2534, 2534, 2534, 2534, 2534, 2534, 2534, 2534, 2534, 2534, 2534, 3245, 3245, 3245, 3245, 3245, 3245, 3245, 3245, 3245, 3245, 3245, 3245, 3598, 3598, 3598, 3598, 3598, 3598, 3598, 3598, 3598, 3598, 3598, 3598, 3892, 3892, 3892, 3892, 3892, 3892, 3892, 3892, 3892, 3892, 3892, 3892, 4266, 4266, 4266, 4266, 4266, 4266, 4266, 4266, 4266, 4266, 4266, 4266, 4433, 4433, 4433, 4433, 4433, 4433, 4433, 4433, 4433, 4433, 4433, 4433, 4467, 4467, 4467, 4467, 4467, 4467, 4467, 4467, 4467, 4467, 4467, 4467, 4434, 4434, 4434, 4434, 4434, 4434, 4434, 4434, 4434, 4434, 4434, 4434],
+	tot_gen_wind_iso_telem = [4367, 4269, 4119, 4148, 4216, 4222, 4253, 4257, 4263, 4247, 4264, 4241, 4238, 4227, 4313, 4332, 4354, 4406, 4395, 4435, 4451, 4431, 4394, 4300, 4303, 4284, 4234, 4241, 4207, 4161, 4119, 4105, 4085, 4094, 4125, 4168, 4160, 4154, 4105, 4046, 4038, 3987, 4042, 4006, 3977, 3937, 3954, 3971, 3963, 3954, 3958, 3907, 3884, 3863, 3864, 3823, 3850, 3847, 3831, 3839, 3861, 3855, 3863, 3839, 3838, 3811, 3733, 3691, 3665, 3644, 3623, 3580, 3550, 3483, 3441, 3395, 3330, 3294, 3268, 3231, 3188, 3201, 3189, 3143, 3139, 3071, 3026, 2948, 2891, 2849, 2816, 2760, 2691, 2614, 2533, 2418, 2349, 2216, 2118, 2013, 1925, 1865, 1842, 1794, 1698, 1634, 1536, 1485, 1426, 1337, 1243, 1186, 1203, 1178, 1158, 1155, 1119, 1094, 1118, 1096, 1083, 1081, 1127, 1115, 1124, 1165, 1175, 1204, 1209, 1223, 1270, 1334, 1334, 1382, 1345, 1362, 1377, 1403, 1456, 1475, 1496, 1514, 1495, 1545, 1565, 1588, 1446, 1461, 1463, 1467, 1486, 1530, 1584, 1710, 1793, 1884, 1935, 1973, 2011, 1983, 1971, 1984, 1949, 1988, 1933, 1942, 1943, 1980, 2097, 2143, 2056, 2068, 2040, 1966, 2027, 2145, 2233, 2246, 2295, 2390, 2350, 2364, 2446, 2530, 2478, 2492, 2572, 2674, 2723, 2815, 2886, 3001, 3169, 3294, 3352, 3416, 3476, 3502, 3560, 3532, 3549, 3543, 3529, 3555, 3502, 3488, 3491, 3529, 3566, 3574, 3516, 3568, 3516, 3490, 3558, 3548, 3516, 3564, 3594, 3641, 3702, 3763, 3867, 3945, 3962, 4047, 4053, 4065, 4151, 4182, 4239, 4367, 4489, 4561, 4642, 4696, 4700, 4681, 4651, 4684, 4691, 4757, 4839, 4868, 4923, 5000, 5046, 5140, 5146, 5181, 5173, 5189, 5222, 5240, 5222, 5191, 5124, 5092, 5027, 4988, 4946, 4975, 4935, 4909, 4913, 4892, 4919, 4934, 4922, 4911, 4859, 4828, 4808, 4776, 4648, 4580, 4553, 4544, 4616, 4648, 4766, 4806, 4780, 4743, 4774, 4801, 4856, 4866],
+	tot_gen_wind_iso_forec = [4562, 4562, 4562, 4562, 4562, 4562, 4562, 4562, 4562, 4562, 4562, 4562, 4483, 4483, 4483, 4483, 4483, 4483, 4483, 4483, 4483, 4483, 4483, 4483, 4328, 4328, 4328, 4328, 4328, 4328, 4328, 4328, 4328, 4328, 4328, 4328, 4077, 4077, 4077, 4077, 4077, 4077, 4077, 4077, 4077, 4077, 4077, 4077, 3701, 3701, 3701, 3701, 3701, 3701, 3701, 3701, 3701, 3701, 3701, 3701, 3269, 3269, 3269, 3269, 3269, 3269, 3269, 3269, 3269, 3269, 3269, 3269, 2837, 2837, 2837, 2837, 2837, 2837, 2837, 2837, 2837, 2837, 2837, 2837, 2256, 2256, 2256, 2256, 2256, 2256, 2256, 2256, 2256, 2256, 2256, 2256, 1673, 1673, 1673, 1673, 1673, 1673, 1673, 1673, 1673, 1673, 1673, 1673, 1236, 1236, 1236, 1236, 1236, 1236, 1236, 1236, 1236, 1236, 1236, 1236, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1020, 1080, 1080, 1080, 1080, 1080, 1080, 1080, 1080, 1080, 1080, 1080, 1080, 1255, 1255, 1255, 1255, 1255, 1255, 1255, 1255, 1255, 1255, 1255, 1255, 1536, 1536, 1536, 1536, 1536, 1536, 1536, 1536, 1536, 1536, 1536, 1536, 1972, 1972, 1972, 1972, 1972, 1972, 1972, 1972, 1972, 1972, 1972, 1972, 2557, 2557, 2557, 2557, 2557, 2557, 2557, 2557, 2557, 2557, 2557, 2557, 3203, 3203, 3203, 3203, 3203, 3203, 3203, 3203, 3203, 3203, 3203, 3203, 3790, 3790, 3790, 3790, 3790, 3790, 3790, 3790, 3790, 3790, 3790, 3790, 4260, 4260, 4260, 4260, 4260, 4260, 4260, 4260, 4260, 4260, 4260, 4260, 4583, 4583, 4583, 4583, 4583, 4583, 4583, 4583, 4583, 4583, 4583, 4583, 4780, 4780, 4780, 4780, 4780, 4780, 4780, 4780, 4780, 4780, 4780, 4780, 4916, 4916, 4916, 4916, 4916, 4916, 4916, 4916, 4916, 4916, 4916, 4916, 4995, 4995, 4995, 4995, 4995, 4995, 4995, 4995, 4995, 4995, 4995, 4995, 4966, 4966, 4966, 4966, 4966, 4966, 4966, 4966, 4966, 4966, 4966, 4966],
+	
+	tot_gen_wind_weim_rtd = [4232, 4180, 4140, 4052, 3947, 3902, 3898, 3914, 3847, 3789, 3747, 3721, 3669, 3626, 3583, 3527, 3460, 3429, 3393, 3319, 3270, 3217, 3150, 3089, 3004, 2973, 2988, 2959, 2920, 2854, 2767, 2715, 2691, 2674, 2717, 2725, 2700, 2658, 2601, 2554, 2528, 2466, 2427, 2414, 2399, 2339, 2345, 2356, 2305, 2313, 2317, 2251, 2249, 2200, 2203, 2156, 2129, 2101, 2098, 2065, 2015, 1958, 1915, 1869, 1841, 1826, 1810, 1842, 1806, 1770, 1730, 1686, 1593, 1565, 1533, 1527, 1487, 1504, 1484, 1487, 1488, 1461, 1430, 1401, 1352, 1288, 1202, 1128, 1111, 1105, 1128, 1120, 1103, 1120, 1115, 1107, 1092, 1049, 1053, 1039, 1053, 1044, 1034, 1045, 1068, 1075, 1085, 1096, 1125, 1143, 1191, 1255, 1286, 1348, 1395, 1418, 1430, 1443, 1487, 1537, 1543, 1560, 1569, 1594, 1608, 1560, 1575, 1557, 1578, 1560, 1579, 1614, 1638, 1627, 1671, 1692, 1664, 1702, 1754, 1748, 1739, 1751, 1758, 1765, 1841, 1834, 1911, 2023, 2104, 2123, 2217, 2301, 2356, 2413, 2486, 2559, 2668, 2705, 2713, 2719, 2737, 2699, 2681, 2668, 2684, 2614, 2438, 2391, 2313, 2363, 2422, 2317, 2229, 2248, 2272, 2301, 2275, 2274, 2356, 2453, 2501, 2535, 2531, 2603, 2614, 2744, 2802, 2891, 2839, 2755, 2620, 2603, 2604, 2578, 2705, 2824, 2901, 2955, 2979, 2970, 3097, 3297, 3495, 3469, 3425, 3505, 3691, 3706, 3695, 3607, 3591, 3455, 3265, 3054, 2833, 2663, 2520, 2359, 2194, 2100, 1958, 1870, 1860, 1829, 1837, 1890, 1905, 1905, 1895, 1980, 2074, 2191, 2200, 2238, 2283, 2298, 2361, 2422, 2479, 2514, 2606, 2654, 2640, 2665, 2681, 2721, 2720, 2753, 2810, 2865, 2956, 2899, 2893, 2920, 2958, 3022, 3014, 3013, 2971, 2958, 2936, 2991, 2994, 2928, 2865, 2734, 2675, 2622, 2615, 2655, 2676, 2667, 2651, 2657, 2628, 2580, 2542, 2524, 2498, 2502, 2525, 2557, 2559, 2526, 2467, 2454, 2406, 2393],
+	tot_gen_wind_weim_rtpd = [4457, 4457, 4457, 4439, 4439, 4439, 4531, 4531, 4531, 4410, 4410, 4410, 4231, 4231, 4231, 4041, 4041, 4041, 3847, 3847, 3847, 3676, 3676, 3676, 3501, 3501, 3501, 3410, 3410, 3410, 3420, 3420, 3420, 3045, 3045, 3045, 2916, 2916, 2916, 2852, 2852, 2852, 2778, 2778, 2778, 2600, 2600, 2600, 2413, 2413, 2413, 2322, 2322, 2322, 2290, 2290, 2290, 2210, 2210, 2210, 2124, 2124, 2124, 2058, 2058, 2058, 2090, 2090, 2090, 1888, 1888, 1888, 1604, 1604, 1604, 1562, 1562, 1562, 1573, 1573, 1573, 1465, 1465, 1465, 1451, 1451, 1451, 1413, 1413, 1413, 1356, 1356, 1356, 1156, 1156, 1156, 1103, 1103, 1103, 1166, 1166, 1166, 1230, 1230, 1230, 1223, 1223, 1223, 1203, 1203, 1203, 1227, 1227, 1227, 1263, 1263, 1263, 1276, 1276, 1276, 1386, 1386, 1386, 1412, 1412, 1412, 1495, 1495, 1495, 1544, 1544, 1544, 1572, 1572, 1572, 1510, 1510, 1510, 1529, 1529, 1529, 1675, 1675, 1675, 1704, 1704, 1704, 1706, 1706, 1706, 1724, 1724, 1724, 1750, 1750, 1750, 1838, 1838, 1838, 1880, 1880, 1880, 2147, 2147, 2147, 2314, 2314, 2314, 2329, 2329, 2329, 2352, 2352, 2352, 2463, 2463, 2463, 2328, 2328, 2328, 2435, 2435, 2435, 2413, 2413, 2413, 2541, 2541, 2541, 2756, 2756, 2756, 2806, 2806, 2806, 2984, 2984, 2984, 3114, 3114, 3114, 2871, 2871, 2871, 3036, 3036, 3036, 3172, 3172, 3172, 3234, 3234, 3234, 3617, 3617, 3617, 3921, 3921, 3921, 3795, 3795, 3795, 3434, 3434, 3434, 2685, 2685, 2685, 2259, 2259, 2259, 2136, 2136, 2136, 2060, 2060, 2060, 2205, 2205, 2205, 2277, 2277, 2277, 2330, 2330, 2330, 2440, 2440, 2440, 2653, 2653, 2653, 2705, 2705, 2705, 2627, 2627, 2627, 2686, 2686, 2686, 2781, 2781, 2781, 2824, 2824, 2824, 2839, 2839, 2839, 2731, 2731, 2731, 2595, 2595, 2595, 2586, 2586, 2586, 2561, 2561, 2561, 2550, 2550, 2550, 2413, 2413, 2413],
+	tot_gen_wind_weim_rtbs = [2928, 2928, 2928, 2928, 2928, 2928, 2928, 2928, 2928, 2928, 2928, 2928, 2575, 2575, 2575, 2575, 2575, 2575, 2575, 2575, 2575, 2575, 2575, 2575, 2334, 2334, 2334, 2334, 2334, 2334, 2334, 2334, 2334, 2334, 2334, 2334, 1968, 1968, 1968, 1968, 1968, 1968, 1968, 1968, 1968, 1968, 1968, 1968, 1795, 1795, 1795, 1795, 1795, 1795, 1795, 1795, 1795, 1795, 1795, 1795, 1445, 1445, 1445, 1445, 1445, 1445, 1445, 1445, 1445, 1445, 1445, 1445, 1056, 1056, 1056, 1056, 1056, 1056, 1056, 1056, 1056, 1056, 1056, 1056, 808.2, 808.2, 808.2, 808.2, 808.2, 808.2, 808.2, 808.2, 808.2, 808.2, 808.2, 808.2, 729.6, 729.6, 729.6, 729.6, 729.6, 729.6, 729.6, 729.6, 729.6, 729.6, 729.6, 729.6, 778.7, 778.7, 778.7, 778.7, 778.7, 778.7, 778.7, 778.7, 778.7, 778.7, 778.7, 778.7, 671.2, 671.2, 671.2, 671.2, 671.2, 671.2, 671.2, 671.2, 671.2, 671.2, 671.2, 671.2, 905, 905, 905, 905, 905, 905, 905, 905, 905, 905, 905, 905, 1149, 1149, 1149, 1149, 1149, 1149, 1149, 1149, 1149, 1149, 1149, 1149, 1291, 1291, 1291, 1291, 1291, 1291, 1291, 1291, 1291, 1291, 1291, 1291, 1513, 1513, 1513, 1513, 1513, 1513, 1513, 1513, 1513, 1513, 1513, 1513, 1544, 1544, 1544, 1544, 1544, 1544, 1544, 1544, 1544, 1544, 1544, 1544, 1568, 1568, 1568, 1568, 1568, 1568, 1568, 1568, 1568, 1568, 1568, 1568, 1579, 1579, 1579, 1579, 1579, 1579, 1579, 1579, 1579, 1579, 1579, 1579, 1570, 1570, 1570, 1570, 1570, 1570, 1570, 1570, 1570, 1570, 1570, 1570, 1654, 1654, 1654, 1654, 1654, 1654, 1654, 1654, 1654, 1654, 1654, 1654, 1924, 1924, 1924, 1924, 1924, 1924, 1924, 1924, 1924, 1924, 1924, 1924, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1952, 1952, 1952, 1952, 1952, 1952, 1952, 1952, 1952, 1952, 1952, 1952, 1949, 1949, 1949, 1949, 1949, 1949, 1949, 1949, 1949, 1949, 1949, 1949],
+	tot_gen_wind_weim_telem = [4245, 4241, 4114, 4018, 3969, 3906, 3870, 3872, 3839, 3786, 3720, 3708, 3662, 3624, 3579, 3521, 3455, 3419, 3371, 3309, 3262, 3201, 3162, 3095, 3002, 2977, 2977, 2954, 2920, 2854, 2769, 2718, 2701, 2682, 2716, 2718, 2699, 2649, 2592, 2549, 2520, 2464, 2423, 2411, 2387, 2336, 2341, 2350, 2294, 2302, 2308, 2244, 2246, 2207, 2210, 2158, 2120, 2093, 2090, 2065, 2020, 1956, 1904, 1849, 1821, 1817, 1810, 1825, 1788, 1750, 1728, 1687, 1663, 1634, 1538, 1513, 1474, 1502, 1486, 1485, 1483, 1461, 1427, 1403, 1357, 1295, 1206, 1130, 1115, 1104, 1127, 1118, 1099, 1120, 1117, 1103, 1089, 1051, 1058, 1037, 1044, 1038, 1029, 1041, 1063, 1078, 1085, 1095, 1129, 1144, 1192, 1249, 1275, 1334, 1377, 1401, 1421, 1431, 1478, 1522, 1533, 1537, 1546, 1568, 1592, 1541, 1555, 1531, 1553, 1530, 1554, 1583, 1604, 1597, 1642, 1642, 1622, 1664, 1720, 1704, 1694, 1723, 1726, 1736, 1812, 1798, 1882, 1989, 2067, 2092, 2187, 2274, 2328, 2388, 2460, 2527, 2636, 2674, 2685, 2691, 2721, 2673, 2655, 2652, 2667, 2600, 2422, 2370, 2286, 2323, 2377, 2282, 2201, 2215, 2234, 2278, 2257, 2250, 2320, 2421, 2472, 2502, 2495, 2570, 2581, 2707, 2770, 2858, 2804, 2732, 2600, 2580, 2584, 2562, 2685, 2799, 2884, 2943, 2963, 2947, 3076, 3281, 3474, 3447, 3399, 3490, 3673, 3695, 3686, 3596, 3581, 3445, 3256, 3052, 2839, 2655, 2510, 2343, 2175, 2078, 1941, 1860, 1857, 1816, 1828, 1876, 1897, 1913, 1930, 1971, 2080, 2203, 2230, 2217, 2260, 2278, 2343, 2411, 2447, 2486, 2571, 2633, 2623, 2672, 2676, 2681, 2668, 2720, 2758, 2832, 2919, 2887, 2880, 2900, 2938, 3012, 3006, 2999, 2950, 2939, 2915, 2928, 2942, 2923, 2824, 2726, 2672, 2617, 2615, 2646, 2660, 2662, 2650, 2663, 2649, 2580, 2554, 2506, 2485, 2509, 2557, 2556, 2556, 2530, 2474, 2439, 2406, 2403],
+	
+	peak_gen_solar_iso_rtd = [17130, 19900, 19540, 18970, 18200, 17790, 17840, 16410, 14950, 15350, 14620, 12980, 15400, 19360, 18920],
+	
+	peak_gen_wind_iso_rtd = [2615, 3047, 4565, 4947, 4838, 4941, 5666, 4777, 3602, 3535, 5441, 5325, 4284, 4505, 5245],
+	
+	peak_gen_solar_weim_rtd = [13090, 12330, 13020, 12750, 13520, 13380, 12480, 12030, 12510, 11690, 11770, 11130, 12880, 13650, 13240],
+	
+	peak_gen_wind_weim_rtd = [5460, 4541, 5398, 4580, 6629, 6781, 5650, 5428, 7039, 9076, 9549, 7870, 7216, 5208, 4232],
+	
+	curt_hourly_econ_local = [283.4, 348.2, 361.8, 268.3, 210.5, 185.3, 565.8, 2071, 2415, 2048, 1351, 1488, 2266, 1845, 1915, 1861, 2054, 2220, 135.2, 3.645, 0, 4.8e-05, 4.625e-05, 0],
+	curt_hourly_econ_system = [0, 0, 0, 0, 0, 2.732e-05, 2.717, 0.001307, 0.1677, 0.003984, 0.001384, 0.001224, 1.937, 0.7851, 0.1503, 0.0076, 0.007663, 0.01301, 7.552, 4.64, 4.948e-05, 7.85e-05, 3.7e-05, 0],
+	curt_hourly_ss_local = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2323, 0.6099, 0.1119, 0, 0, 4.64, 0, 0, 0, 0, 0, 0],
+	curt_hourly_ss_system = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hourly_oi_local = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hourly_oi_system = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	
+	curt_hourly_max_econ_local = [340.5, 530.4, 443.8, 307.2, 253.5, 244.8, 1213, 3239, 3135, 2604, 1699, 1675, 2477, 2182, 2495, 2224, 2460, 2982, 710.2, 34.25, 0, 0, 0, 0],
+	curt_hourly_max_econ_system = [0, 0, 0, 0, 0, 0, 0, 0, 1.987, 0, 0, 0, 2.381, 0, 0, 0, 0, 0.01107, 0.01485, 0, 0, 0, 0, 0],
+	curt_hourly_max_ss_local = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2938, 0.9407, 0, 0, 0, 11.92, 0, 0, 0, 0, 0, 0],
+	curt_hourly_max_ss_system = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hourly_max_oi_local = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hourly_max_oi_system = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	
+	curt_five_min_econ_local = [21.5, 23.34, 22.41, 23.72, 23.73, 23.77, 23.91, 23.66, 20.75, 22.89, 28.37, 25.37, 30.53, 25.93, 22.71, 17.77, 21.72, 21.65, 34.17, 37.89, 44.2, 30.22, 31.26, 30.14, 25.81, 28.26, 26.52, 22.63, 27.66, 27.7, 33.03, 35.8, 36.98, 31.88, 33.61, 31.89, 23.3, 19.22, 23.74, 23.08, 25.6, 25.5, 24.1, 24.45, 21.71, 20.69, 19.31, 17.6, 17.75, 21.13, 17.95, 19.67, 17.71, 17.61, 17.83, 15.29, 17.64, 14.35, 17.14, 16.46, 14.45, 16.62, 14.98, 17.97, 20.4, 19.99, 17.67, 12.48, 9.728, 13.47, 13.21, 14.3, 18.36, 20.29, 17.71, 21.03, 30.63, 40.7, 47.63, 53.31, 55.56, 70.85, 88.66, 101.1, 93.04, 113.2, 117.8, 128.3, 152.7, 164.3, 162.9, 173.5, 186, 243.9, 265.6, 269.9, 168.1, 171.7, 183.5, 152.2, 157.5, 165.5, 216.8, 228.7, 229, 240.2, 240.7, 261.3, 213.4, 217, 180.7, 177.7, 190, 186, 146.8, 149.8, 121.8, 151.2, 154.5, 159.5, 130.1, 131.4, 141.6, 126, 129.4, 122.6, 84.94, 72.63, 107.2, 97, 100.1, 108.3, 127, 137.2, 135.6, 118.4, 133.3, 139.6, 106.5, 112.5, 106.6, 110.6, 129.1, 131.9, 194.5, 197.5, 193, 189.8, 206.4, 196.3, 168.1, 171.8, 177.5, 191.1, 194.6, 185.5, 181.8, 177.6, 173.7, 157.9, 175.1, 164.2, 142.9, 125.8, 134.9, 122.9, 134.3, 153.4, 165.1, 144.7, 140.6, 171.2, 207.9, 181.8, 152.4, 138.7, 151.2, 156.1, 155, 150.4, 169.4, 173.4, 146.8, 155.9, 172.2, 185.3, 151.6, 153.4, 148.8, 136.7, 132.4, 135.1, 175.3, 185.2, 192.7, 199.4, 205, 170.7, 155.2, 156.2, 146.1, 156.9, 155.2, 155.6, 248.5, 239.5, 239.4, 220.2, 219.3, 194.8, 182, 163.3, 146.3, 136.3, 124.2, 106.5, 59.18, 41.52, 14.54, 6.542, 3.004, 2.533, 1.828, 2.244, 1.012, 1.343, 0.7728, 0.6444, 0.7856, 2.854, 0.001383, 0.001216, 0.001154, 0.00116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.2e-05, 1.2e-05, 1.2e-05, 1.2e-05, 0, 0, 0, 0, 0, 0, 0, 0, 9.25e-06, 9.25e-06, 9.25e-06, 9.25e-06, 9.25e-06, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_five_min_econ_system = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2.732e-05, 0, 0.0001282, 0.0002087, 0.0004642, 0.0003759, 0.0008088, 0.0009997, 0.0004462, 0.0004116, 0.000638, 0.6369, 2.076, 8.022e-05, 6.764e-05, 0.0001431, 8.793e-05, 5.95e-05, 9.779e-05, 0.0001556, 0.0001349, 0.0001246, 0.0001118, 0.0001335, 0.0001379, 5.244e-05, 0.00025, 7.621e-05, 0.0001549, 0.0002798, 0.0002185, 0.000308, 0.0001176, 0.0001661, 9.008e-05, 0.0001711, 0.0002712, 0.1656, 0.0002485, 0.0001401, 0.001037, 0.0006968, 0.0006109, 0.0006883, 0.0001084, 7.927e-05, 5.91e-05, 7.004e-05, 0.0001095, 0.000136, 0.0001244, 0.0001156, 5.227e-05, 0.000162, 0.0001939, 0.000127, 9.28e-05, 0.0001305, 0.0001415, 5.422e-05, 0.000106, 8.398e-05, 0.0001355, 8.683e-05, 0.0001206, 7.831e-05, 6.061e-05, 0.0001175, 5.699e-05, 0.0001695, 8.985e-05, 4.873e-05, 0.0001446, 0.0001153, 0.2178, 0.2175, 0.2069, 0.1948, 0.1984, 0.0008075, 0.2038, 0.2012, 0.2018, 0.09352, 0.09817, 0.1027, 0.0001825, 0.0002931, 0.0001979, 0.0001222, 0.0001541, 0.0003535, 0.1284, 0.126, 0.1876, 0.0002206, 0.1944, 0.1472, 0.1478, 0.0001461, 0.0001504, 0.0008713, 0.0002363, 0.0001643, 0.000134, 0.000116, 0.0001324, 0.0001546, 0.0002221, 0.0002004, 0.0002207, 8.031e-05, 0.0002443, 0.0002017, 0.0001482, 0.0001621, 0.001017, 0.001112, 0.001108, 0.001142, 0.001024, 0.00114, 0.0002722, 0.0002234, 0.000277, 0.0006366, 0.0001911, 0.0002377, 0.0009323, 0.001315, 0.0009354, 0.0004632, 0.0009968, 0.001183, 0.0009228, 0.001212, 0.0008898, 0.00092, 0.0009703, 0.001232, 0.001405, 0.001043, 0.001032, 0.001118, 0.001231, 0.001028, 0.001237, 0.001118, 0.001184, 0.001237, 2.751, 2.749, 1.421, 0.002715, 0.619, 0.001982, 0.002103, 0.001512, 0.01507, 0.0005301, 2.086, 1.05, 1.268, 0.217, 0.001449, 9e-04, 0.000593, 0.0004166, 0.000203, 0.0001446, 4.948e-05, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2.058e-05, 3.942e-05, 9.25e-06, 9.25e-06, 0, 0, 0, 0, 0, 9.25e-06, 9.25e-06, 9.25e-06, 9.25e-06, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_five_min_ss_local = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.02354, 0.06462, 0.06604, 0.01739, 0.02448, 0.03622, 0, 0, 0, 0, 0, 0, 0.07839, 0.1126, 0.1553, 0.1215, 0.07679, 0.06537, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1119, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.9936, 0.626, 0.8191, 0.7912, 0.7319, 0.601, 0.07683, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_five_min_ss_system = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_five_min_oi_local = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_five_min_oi_system = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	
+	curt_daily_econ_local_mwh = [39510, 16920, 16050, 24460, 30160, 33800, 52260, 20400, 51030, 18770, 45310, 27090, 28310, 22430, 23900],
+	curt_daily_econ_system_mwh = [59.91, 50.97, 5.513, 17.93, 2411, 3592, 526.8, 47.14, 46.16, 29.47, 10310, 69010, 35700, 11.09, 17.99],
+	curt_daily_ss_local_mwh = [41.98, 16.26, 31.06, 15.23, 31.77, 46.36, 41.06, 4.023, 33.2, 0.06202, 42.04, 56.47, 37.29, 2.657, 5.594],
+	curt_daily_ss_system_mwh = [0.01675, 0, 0, 0, 0.001667, 0.005833, 0.01458, 0, 0, 0, 0, 0.5963, 1.475, 0.006667, 0],
+	curt_daily_oi_local_mwh = [0, 0, 0, 0, 0, 0, 0, 676, 87.38, 0, 0, 0, 58.91, 0, 0],
+	curt_daily_oi_system_mwh = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9.184, 0, 0],
+	
+	curt_daily_econ_local_mw = [5538, 3277, 3332, 3513, 1923, 5530, 8633, 4400, 7061, 3741, 7300, 515.7, 3335, 3379, 3239],
+	curt_daily_econ_system_mw = [0, 0, 0, 0, 2690, 135.7, 0, 4.152, 15.4, 179.7, 0, 9823, 4186, 0, 0],
+	curt_daily_ss_local_mw = [0, 0, 0, 4.01, 6.816, 0, 0, 0, 2.108, 0, 8.204, 7.3, 0, 0, 0],
+	curt_daily_ss_system_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_daily_oi_local_mw = [0, 0, 0, 0, 0, 0, 0, 62.14, 0, 0, 0, 0, 0, 0, 0],
+	curt_daily_oi_system_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	
+	curt_hr_max_solar_econ_local_mw = [0, 0, 0, 0, 0, 28.49, 1199, 3232, 3122, 2590, 1674, 1640, 2387, 2122, 2368, 2175, 2437, 2947, 701.7, 34.25, 0, 0, 0, 0],
+	curt_hr_max_solar_econ_system_mw = [0, 0, 0, 0, 0, 0, 0, 0, 1.987, 0, 0, 0, 2.381, 0, 0, 0, 0, 0.01107, 0.01485, 0, 0, 0, 0, 0],
+	curt_hr_max_solar_ss_local_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2938, 0.9407, 0, 0, 0, 11.92, 0, 0, 0, 0, 0, 0],
+	curt_hr_max_solar_ss_system_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_max_solar_oi_local_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_max_solar_oi_system_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	
+	curt_hr_max_wind_econ_local_mw = [340.5, 530.4, 443.8, 307.2, 253.5, 244.8, 163, 28.53, 13.89, 23.99, 25.14, 37.47, 101.4, 84.54, 143.4, 55.24, 45.88, 116.5, 13.61, 0, 0, 0, 0, 0],
+	curt_hr_max_wind_econ_system_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_max_wind_ss_local_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_max_wind_ss_system_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_max_wind_oi_local_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_max_wind_oi_system_mw = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	
+	curt_hr_tot_solar_econ_local_mwh = [0, 0, 0, 0, 0, 4.184, 465, 2060, 2409, 2034, 1344, 1467, 2194, 1770, 1838, 1812, 2032, 2140, 128.7, 3.645, 0, 0, 0, 0],
+	curt_hr_tot_solar_econ_system_mwh = [0, 0, 0, 0, 0, 2.732e-05, 2.717, 0.001307, 0.1677, 0.003984, 0.001384, 0.001224, 1.937, 0.7851, 0.1503, 0.0076, 0.007663, 0.01301, 7.552, 4.64, 4.948e-05, 0, 0, 0],
+	curt_hr_tot_solar_ss_local_mwh = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2323, 0.6099, 0.1119, 0, 0, 4.64, 0, 0, 0, 0, 0, 0],
+	curt_hr_tot_solar_ss_system_mwh = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_tot_solar_oi_local_mwh = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_tot_solar_oi_system_mwh = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	
+	curt_hr_tot_wind_econ_local_mwh = [283.4, 348.2, 361.8, 268.3, 210.5, 181.1, 100.7, 11.77, 6.565, 14.98, 7.069, 21.53, 72.27, 74.73, 76.73, 49.27, 21.28, 80.13, 6.447, 3.942e-05, 0, 4.8e-05, 4.625e-05, 0],
+	curt_hr_tot_wind_econ_system_mwh = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0001337, 0, 7.85e-05, 3.7e-05, 0],
+	curt_hr_tot_wind_ss_local_mwh = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_tot_wind_ss_system_mwh = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_tot_wind_oi_local_mwh = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	curt_hr_tot_wind_oi_system_mwh = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	
+	curt_hourly_ytd_econ_local_mwh = JSON.parse(["[1338.6311338543471,977.61456989643602,832.55548704972307,533.7299665978901,483.13898030266103,639.24896046514004,5812.2106830404227,97829.528602302104,247325.42702156841,327785.65605519433,331516.19571463083,328604.40657751262,329086.3672656921,325191.30429412058,340797.74222705181,338828.31893456221,293625.44287345879,153543.45257689801,13669.7766526701,2075.4447013428221,1934.995351286432,2282.8345275790748,1804.8567875578701,1572.4106218686761]"]),
+  curt_hourly_ytd_econ_system_mwh = JSON.parse(["[459.48731673750001,397.05875108000004,104.4961093125,133.72233616333301,122.98846901666701,114.89594076250002,1224.9517275995681,10473.3426324514,25940.883250609902,30464.1122075194,53985.391457349899,82791.621328738998,98594.421878037101,117472.71672424111,135884.70138613041,124145.3581200278,81307.590009174994,31475.554559971599,2775.4918535103752,183.66878307416599,0.25057377499999772,0.16909449999999693,0.1585293399999978,2.9073811708333301]"]),
+  curt_hourly_ytd_ss_local_mwh = JSON.parse(["[0,0,0.37333333333333329,0,0,0,7.5759999999999996,17.429544354598629,40.34991905036285,141.92737643530398,332.06283481079208,476.87271501109603,520.07184898752507,536.6402749706491,458.11788381345207,248.36050987046201,154.64604150219802,60.264439117719057,15.911725079380618,0.15666666666666651,0,0,0,0.039583333333333297]"]),
+  curt_hourly_ytd_ss_system_mwh = JSON.parse(["[0,0,0,3.2475000000000001,0,0,1.0525,4.2055833333333297,25.225749999999998,7.7547499999999996,7.5394166666666687,0.62249999999999994,1.8362499999999999,1.72241666666667,2.0121461825001701,1.5941666666666701,3.8430833333333299,5.0630927725000001,7.6699999999999999,8.333333333328713e-05,0,0,0,0]"]),
+  curt_hourly_ytd_oi_local_mwh = JSON.parse(["[0,0,0,0,0,0,0,135.854690912217,2148.3720647576624,2850.4036829265201,3667.8093778895504,3646.750596474104,3520.1634003904442,5037.758740842879,5927.4124154498322,7117.7379843800563,6838.3844749207074,4805.7977410202029,535.01419448719901,15.14795149189143,95.255761596901579,34.974245024601686,3.1371009125415297,0]"]),
+  curt_hourly_ytd_oi_system_mwh = JSON.parse(["[0,0,0,0,0,0,0,0,0.1058333316666666,13.299179324166658,30.876905714404817,17.502500056666658,167.10453726760201,134.92479726394899,1622.2200430297221,1293.9441646235891,151.06333351999999,20.059632704840162,2.0274999133333296,0,0,0,0,0]"]),
+
+	curt_monthly_ytd_econ_local_mwh = ["14615.7590192581", "194774.032182423", "474223.696924481", "1222751.90932433", "1195401.62602076", "46324.2670952538"],
+  curt_monthly_ytd_econ_system_mwh = ["8745.0473325904", "47402.9357953216", "299885.62791937", "191365.528323741", "250627.722961293", "29.0780879786978"],
+  curt_monthly_ytd_ss_local_mwh = ["14.8956349124433", "104.911108697066", "142.467505107803", "1282.16077072415", "1458.11491538778", "8.25076150762321"],
+  curt_monthly_ytd_ss_system_mwh = ["29.0864166666667", "3.02108333333333", "17.6561761058333", "15.0945833333333", "8.52431284916684", "0.00666666666666666"],
+  curt_monthly_ytd_oi_local_mwh = ["431.565969110527", "428.809982914012", "84.6677052009037", "43950.4852713586", "1484.44549489326", "0"],
+  curt_monthly_ytd_oi_system_mwh = ["2736.28463724328", "0.641345830833332", "61.3800927116667", "640.261716244562", "14.5606347196001", "0"],
+
+	
+	curt_monthly_ytd_perc_mwh = [3.11, 1.71, 1.73, 2.99, 4.38, 0.71, 0.8, 0.68, 5.2, 11.07, 18.44, 16.09, 7.86],
+	
+	<!-- colors -->
+	
+	price_bin_colors_invert = ['#031970', '#0426b0', '#062fd6', '#1642f5', '#3f62f2',
+	'#6f82d1', '#edeb55', '#edbf55', '#eb902f', '#ed7c02', '#de4618', '#b02a02'],
+	
+	price_bin_colors = ['#b02a02', '#de4618', '#ed7c02', '#eb902f', '#edbf55',
+	'#edeb55', '#6f82d1', '#3f62f2', '#1642f5', '#062fd6', '#0426b0', '#031970'],
+
+  stack_colors_four = ['#064789', '#db0d4e', '#679436', '#db590d', '#DCD6F7'],
+  
+  line_colors = ['#064789', '#db0d4e', '#679436', '#FFA500', '#062fd6', '#FFFF00'];
+
+
+<!-- JSBlock Chart Options/Theme -->
+
+Highcharts.setOptions({
+	chart: {
+			type: 'line',
+			margin: [15,40,80,80],
+			style: {
+				fontFamily: 'arial, helvetica, sans-serif'
+			},
+			resetZoomButton: {
+				theme: {
+					zIndex: 999999
+				}
+			},
+			zoomType: 'x'
+		},
+	xAxis: { 				
+		lineColor: '#b2b2b2',
+		gridLineWidth: .5,
+		gridLineColor: 'grey',
+	},
+	yAxis: [{ // left y axis
+		labels: {
+			align: 'right',
+			x: -10,
+			y: 3
+		},
+		gridLineColor: 'grey',
+		showFirstLabel: true,
+		gridLineWidth: .5,
+		minorTickLength: 0,
+		tickLength: 0
+	}],
+
+	legend: {
+		align: 'center',
+		verticalAlign: 'bottom',
+		y: 10,
+		floating: false,
+		borderWidth: 0
+	},
+
+	tooltip: {
+		shared: true,
+		crosshairs: true,
+		borderColor: '#637d97',
+		useHTML: true,
+		backgroundColor: 'rgba(255,255,255,0.9)',
+		delayForDisplay: 10,
+		valueDecimals: 2
+	},
+	colors: ['#925899', '#3e7ad3', '#00c7b1', '#ffa300'],
+	credits: {
+		enabled: false
+	},
+	plotOptions: {
+		series: {
+			cursor: 'pointer',
+			dataLabels: {
+				allowOverlap: true,
+				zIndex: 0,
+				className: 'highlight'
+			},
+			marker: {
+				lineWidth: .5
+				
+			}				
+		}
+	},
+	annotationsOptions: {
+		enabledButtons: false
+	},
+	exporting: {
+        enabled: true,
+    filename: ($('title').text()).toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-'),
+    buttons: {
+        contextButton: {
+            menuItems: ['downloadCSV'],
+        }
+    },
+    },
+});	
+    
+//https://learnui.design/tools/data-color-picker.html#palette
+Highcharts.theme = {
+   //colors: ['#4F758B', '#323E00', '#00c7b1', '#cf4520', '#E2856E', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
+   colors: ['#3700b3', '#79AEA3', '#F7AF9D', '#947EB0', '#DC6BAD', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
+   chart: {
+      style: {
+         fontFamily: 'arial, helvetica, sans-serif'
+      }
+   },
+   title: {
+      style: {
+         color: 'black',
+         fontSize: '16px',
+         fontWeight: 'bold'
+      }
+   },
+   subtitle: {
+      style: {
+         color: 'black'
+      }
+   },
+   tooltip: {
+      borderWidth: 0
+   },
+   legend: {
+      itemStyle: {
+         fontWeight: 'bold',
+         fontSize: '13px'
+      }
+   },
+   xAxis: {
+      labels: {
+         style: {
+            color: '#6e6e70'
+         }
+      }
+   },
+   yAxis: {
+      labels: {
+         style: {
+            color: '#6e6e70'
+         }
+      }
+   },
+   plotOptions: {
+      series: {
+         shadow: false,
+		 marker: {
+			enabled: false
+		}
+      },
+      candlestick: {
+         lineColor: '#404048'
+      },
+      map: {
+         shadow: false
+      }
+   },
+
+   // Highstock specific
+   navigator: {
+      xAxis: {
+         gridLineColor: '#D0D0D8'
+      }
+   },
+   rangeSelector: {
+      buttonTheme: {
+         fill: 'white',
+         stroke: '#C0C0C8',
+         'stroke-width': 1,
+         states: {
+            select: {
+               fill: '#D0D0D8'
+            }
+         }
+      }
+   },
+   scrollbar: {
+      trackBorderColor: '#C0C0C8'
+   },
+
+   // General
+   background2: '#E0E0E8'
+
+};
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+
+var base_options = {
+	chart: {
+      zoomType: 'x'
+    },
+	title: {
+		text: null
+	},
+	plotOptions: {
+		series: {
+			marker: {
+				enabled: false
+			},
+			fillOpacity: .75
+		},
+		area: {
+			stacking: undefined //use undefined (no quotes) for no stacking
+		},
+		column: {
+		  stacking: 'normal',
+		  borderColor: '#000000',
+		  borderWidth: 0.5
+		}
+	},
+    xAxis: {
+      type: 'datetime'
+    }
+};
+
+var base_options_monthly = {
+	chart: {
+      zoomType: 'x'
+    },
+	title: {
+		text: null
+	},
+	plotOptions: {
+		series: {
+			marker: {
+				enabled: false
+			},
+			fillOpacity: .75
+		},
+		area: {
+			stacking: undefined //use undefined (no quotes) for no stacking
+		},
+		column: {
+		  stacking: 'normal',
+		  borderColor: '#000000',
+		  borderWidth: 0.5
+		}
+	},
+    xAxis: {
+      type: 'datetime',
+      min: Date.UTC(2025, 0 , 1),
+      labels: {
+        format: '{value:%b %Y}'
+      }
+    }
+};
+
+var index_rtd = {
+	plotOptions: {
+		series: {
+			pointInterval: 5*60 * 1000
+		}
+	}	
+};
+
+var index_rtpd = {
+	plotOptions: {
+		series: {
+			pointInterval: 15*60 * 1000
+		}
+	}	
+};
+
+var index_ifm = {
+	plotOptions: {
+		series: {
+			pointInterval: 60*60 * 1000
+		}
+	}	
+};
+
+var index_ifm_five_min = {
+    plotOptions: {
+        series: {
+            pointInterval: 5 * 60 * 1000
+        }
+    }
+};
+
+var index_daily = {
+	plotOptions: {
+		series: {
+			pointInterval: 24 * 60*60 * 1000 //one day
+		}
+	}	
+};
+
+var index_monthly = {
+	plotOptions: {
+		series: {
+			pointInterval: 24 * 60 * 60 * 1000 * 30  //one day
+		}
+	}	
+};
+
+
+var date_options = {
+	plotOptions: {
+		series: {
+			pointStart: Date.UTC(2026, 5, 2),
+		}
+	}
+};
+
+
+var chart_date = new Date(Date.UTC(2026, 5, 2));  // Keep the original chart_date intact
+var adjusted_date = new Date(chart_date);  // Copy chart_date to preserve the original
+adjusted_date.setDate(adjusted_date.getDate() - 14);
+var date_daily_options = {
+	plotOptions: {
+    series: {
+      pointStart: adjusted_date.getTime(), // Convert the date to a timestamp (in milliseconds)
+    }
+  }
+};
+
+
+var monthly_date_options = {
+	plotOptions: {
+		series: {
+			pointStart: Date.UTC(2025, 0, 1),
+			pointInterval: 30 * 24 * 60 * 60 * 1000 
+		}
+	}
+};
+
+var index_rolling_12 = {
+	plotOptions: {
+		series: {
+			pointInterval: 30 * 24 * 60 * 60 * 1000
+		}
+	}
+};
+
+var currentDate = new Date();
+var twelveMonthsAgo = new Date(currentDate.setMonth(currentDate.getMonth() - 12));
+var chartStartDate = new Date(twelveMonthsAgo.getFullYear(), twelveMonthsAgo.getMonth() - 1, 1); 
+
+var date_options_rolling_12 = {
+  plotOptions: {
+    series: {
+      pointStart: Date.UTC(chartStartDate.getFullYear(), chartStartDate.getMonth(), 1),
+    }
+  }
+};
+
+var base_options_rolling_12months = {
+  chart: {
+    zoomType: 'x'
+  },
+  title: {
+    text: null
+  },
+  plotOptions: {
+    series: {
+      marker: {
+        enabled: false
+      },
+      fillOpacity: .75
+    },
+    area: {
+      stacking: undefined // no stacking
+    },
+    column: {
+      stacking: 'normal',
+      borderColor: '#000000',
+      borderWidth: 0.5
+    }
+  },
+  xAxis: {
+    type: 'datetime',
+    // Dynamically set the x-axis to always show the last 12 months
+    min: Date.UTC(chartStartDate.getFullYear(), chartStartDate.getMonth(), 1),
+    labels: {
+      format: '{value:%b %Y}' // Show months as "Jan 2025", "Feb 2025", etc.
+    }
+  }
+};
+
+//Market Performance Tab
+
+//Total Gen Solar ISO
+var options_tot_gen_solar_iso = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_tot_gen_solar_iso',
+		type: "line"
+	},
+	yAxis: {
+		title: {
+			text: "MW"
+		}
+    },
+	series: [
+	{
+	  data: tot_gen_solar_iso_rtd,
+	  name: "RTD"
+	},
+	{
+	  data: tot_gen_solar_iso_rtpd,
+	  name: "FMM"
+	},
+	{
+	  data: tot_gen_solar_iso_ifm,
+	  name: "IFM"
+	},
+	{
+	  data: tot_gen_solar_iso_telem,
+	  name: "ACTUALS"
+	},
+	{
+	  data: tot_gen_solar_iso_forec,
+	  name: "DA-FORECAST"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_tot_gen_solar_iso = jQuery.extend(true, {}, base_options, date_options, index_rtd, options_tot_gen_solar_iso);
+
+var hc_tot_gen_solar_iso = new Highcharts.Chart(options_tot_gen_solar_iso);
+
+//Total Gen Solar WEIM
+var options_tot_gen_solar_weim = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_tot_gen_solar_weim',
+		type: "line"
+	},
+	yAxis: {
+		title: {
+			text: "MW"
+		}
+    },
+	series: [
+	{
+	  data: tot_gen_solar_weim_rtd,
+	  name: "RTD"
+	},
+	{
+	  data: tot_gen_solar_weim_rtpd,
+	  name: "FMM"
+	},
+	{
+	  data: tot_gen_solar_weim_rtbs,
+	  name: "Base Schedule"
+	},
+	{
+	  data: tot_gen_solar_weim_telem,
+	  name: "ACTUALS"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_tot_gen_solar_weim = jQuery.extend(true, {}, base_options, date_options, index_rtd, options_tot_gen_solar_weim);
+
+var hc_tot_gen_solar_weim = new Highcharts.Chart(options_tot_gen_solar_weim);
+
+
+//Total Gen Wind
+var options_tot_gen_wind_iso = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_tot_gen_wind_iso',
+		type: "line"
+	},
+	yAxis: {
+		title: {
+			text: "MW"
+		}
+    },
+	series: [
+	{
+	  data: tot_gen_wind_iso_rtd,
+	  name: "RTD"
+	},
+	{
+	  data: tot_gen_wind_iso_rtpd,
+	  name: "FMM"
+	},
+	{
+	  data: tot_gen_wind_iso_ifm,
+	  name: "IFM"
+	},
+	{
+	  data: tot_gen_wind_iso_telem,
+	  name: "ACTUALS"
+	},
+	{
+	  data: tot_gen_wind_iso_forec,
+	  name: "DA-FORECAST"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_tot_gen_wind_iso = jQuery.extend(true, {}, base_options, date_options, index_rtd, options_tot_gen_wind_iso);
+
+var hc_tot_gen_wind_iso = new Highcharts.Chart(options_tot_gen_wind_iso);
+
+//Total Gen Wind WEIM
+var options_tot_gen_wind_weim = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_tot_gen_wind_weim',
+		type: "line"
+	},
+	yAxis: {
+		title: {
+			text: "MW"
+		}
+    },
+	series: [
+	{
+	  data: tot_gen_wind_weim_rtd,
+	  name: "RTD"
+	},
+	{
+	  data: tot_gen_wind_weim_rtpd,
+	  name: "FMM"
+	},
+	{
+	  data: tot_gen_wind_weim_rtbs,
+	  name: "Base Schedule"
+	},
+	{
+	  data: tot_gen_wind_weim_telem,
+	  name: "ACTUALS"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_tot_gen_wind_weim = jQuery.extend(true, {}, base_options, date_options, index_rtd, options_tot_gen_wind_weim);
+
+var hc_tot_gen_wind_weim = new Highcharts.Chart(options_tot_gen_wind_weim);
+
+
+//Curtailment Hourly
+var options_curt_hourly = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_hourly',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "MWh"
+		}
+    },
+	series: [
+	{
+	  data: curt_hourly_econ_local,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_hourly_econ_system,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_hourly_ss_local,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_hourly_ss_system,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_hourly_oi_local,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_hourly_oi_system,
+	  name: "Operator Instruction - System"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_curt_hourly = jQuery.extend(true, {}, base_options, date_options, index_ifm, options_curt_hourly);
+
+var hc_curt_hourly = new Highcharts.Chart(options_curt_hourly);
+
+//Curtailment Hourly Max
+var options_curt_hourly_max = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_hourly_max',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "MW"
+		}
+    },
+	series: [
+	{
+	  data: curt_hourly_max_econ_local,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_hourly_max_econ_system,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_hourly_max_ss_local,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_hourly_max_ss_system,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_hourly_max_oi_local,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_hourly_max_oi_system,
+	  name: "Operator Instruction - System"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_curt_hourly_max = jQuery.extend(true, {}, base_options, date_options, index_ifm, options_curt_hourly_max);
+
+var hc_curt_hourly_max = new Highcharts.Chart(options_curt_hourly_max);
+
+//Curtailment Five Minute
+var options_curt_five_min = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_five_min',
+		type: "column"
+	},
+	xAxis: { 
+	  type: 'datetime', 
+	  dateTimeLabelFormats: { 
+	    minute: '%H:%M', 
+	    hour: '%H:%M' 
+	  } 
+	},
+	tooltip: { 
+	  xDateFormat: '%Y-%m-%d %H:%M'
+	},
+	yAxis: {
+		title: {
+			text: "MWh"
+		}
+    },
+	series: [
+	{
+	  data: curt_five_min_econ_local,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_five_min_econ_system,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_five_min_ss_local,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_five_min_ss_system,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_five_min_oi_local,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_five_min_oi_system,
+	  name: "Operator Instruction - System"
+	}],
+};
+
+options_curt_five_min = jQuery.extend(true, {}, base_options, date_options, index_ifm_five_min, options_curt_five_min);
+
+var hc_curt_five_min = new Highcharts.Chart(options_curt_five_min);
+
+//Curtailment Daily MWh
+var options_curt_daily_mwh = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_daily_mwh',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "MWh"
+		}
+    },
+	series: [
+	{
+	  data: curt_daily_econ_local_mwh,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_daily_econ_system_mwh,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_daily_ss_local_mwh,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_daily_ss_system_mwh,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_daily_oi_local_mwh,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_daily_oi_system_mwh,
+	  name: "Operator Instruction - System"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_curt_daily_mwh = jQuery.extend(true, {}, base_options, date_daily_options, index_daily, options_curt_daily_mwh);
+
+var hc_curt_daily_mwh = new Highcharts.Chart(options_curt_daily_mwh);
+
+//Curtailment Daily MW
+var options_curt_daily_mw = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_daily_mw',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "MW"
+		}
+    },
+	series: [
+	{
+	  data: curt_daily_econ_local_mw,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_daily_econ_system_mw,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_daily_ss_local_mw,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_daily_ss_system_mw,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_daily_oi_local_mw,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_daily_oi_system_mw,
+	  name: "Operator Instruction - System"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_curt_daily_mw = jQuery.extend(true, {}, base_options, date_daily_options, index_daily, options_curt_daily_mw);
+
+var hc_curt_daily_mw = new Highcharts.Chart(options_curt_daily_mw);
+
+//Curtailment Hourly Max Solar MW
+var options_curt_hr_max_solar = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_hr_max_solar',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "MW"
+		}
+    },
+	series: [
+	{
+	  data: curt_hr_max_solar_econ_local_mw,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_hr_max_solar_econ_system_mw,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_hr_max_solar_ss_local_mw,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_hr_max_solar_ss_system_mw,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_hr_max_solar_oi_local_mw,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_hr_max_solar_oi_system_mw,
+	  name: "Operator Instruction - System"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_curt_hr_max_solar = jQuery.extend(true, {}, base_options, date_options, index_ifm, options_curt_hr_max_solar);
+
+var hc_curt_hr_max_solar = new Highcharts.Chart(options_curt_hr_max_solar);
+
+//Curtailment Hourly Max Wind MW
+var options_curt_hr_max_wind = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_hr_max_wind',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "MW"
+		}
+    },
+	series: [
+	{
+	  data: curt_hr_max_wind_econ_local_mw,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_hr_max_wind_econ_system_mw,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_hr_max_wind_ss_local_mw,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_hr_max_wind_ss_system_mw,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_hr_max_wind_oi_local_mw,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_hr_max_wind_oi_system_mw,
+	  name: "Operator Instruction - System"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_curt_hr_max_wind = jQuery.extend(true, {}, base_options, date_options, index_ifm, options_curt_hr_max_wind);
+
+var hc_curt_hr_max_wind = new Highcharts.Chart(options_curt_hr_max_wind);
+
+//Curtailment Hourly Total Solar MWh
+var options_curt_hr_max_solar = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_hr_max_solar',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "MW"
+		}
+    },
+	series: [
+	{
+	  data: curt_hr_max_solar_econ_local_mw,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_hr_max_solar_econ_system_mw,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_hr_max_solar_ss_local_mw,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_hr_max_solar_ss_system_mw,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_hr_max_solar_oi_local_mw,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_hr_max_solar_oi_system_mw,
+	  name: "Operator Instruction - System"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_curt_hr_max_solar = jQuery.extend(true, {}, base_options, date_options, index_ifm, options_curt_hr_max_solar);
+
+var hc_curt_hr_max_solar = new Highcharts.Chart(options_curt_hr_max_solar);
+
+//Curtailment Hourly Total Solar MWh
+var options_curt_hr_tot_solar = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_hr_tot_solar',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "MWh"
+		}
+    },
+	series: [
+	{
+	  data: curt_hr_tot_solar_econ_local_mwh,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_hr_tot_solar_econ_system_mwh,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_hr_tot_solar_ss_local_mwh,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_hr_tot_solar_ss_system_mwh,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_hr_tot_solar_oi_local_mwh,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_hr_tot_solar_oi_system_mwh,
+	  name: "Operator Instruction - System"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_curt_hr_tot_solar = jQuery.extend(true, {}, base_options, date_options, index_ifm, options_curt_hr_tot_solar);
+
+var hc_curt_hr_tot_solar = new Highcharts.Chart(options_curt_hr_tot_solar);
+
+//Curtailment Hourly Total Wind MWh
+var options_curt_hr_tot_wind = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_hr_tot_wind',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "MWh"
+		}
+    },
+	series: [
+	{
+	  data: curt_hr_tot_wind_econ_local_mwh,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_hr_tot_wind_econ_system_mwh,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_hr_tot_wind_ss_local_mwh,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_hr_tot_wind_ss_system_mwh,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_hr_tot_wind_oi_local_mwh,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_hr_tot_wind_oi_system_mwh,
+	  name: "Operator Instruction - System"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_curt_hr_tot_wind = jQuery.extend(true, {}, base_options, date_options, index_ifm, options_curt_hr_tot_wind);
+
+var hc_curt_hr_tot_wind = new Highcharts.Chart(options_curt_hr_tot_wind);
+
+
+//Hourly Profile of YTD Curtailed MWh
+var options_hourly_ytd = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_hourly_ytd',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "MWh"
+		}
+    },
+	series: [
+	{
+	  data: curt_hourly_ytd_econ_local_mwh,
+	  name: "Economic - Local"
+	},
+	{
+	  data: curt_hourly_ytd_econ_system_mwh,
+	  name: "Economic - System"
+	},
+	{
+	  data: curt_hourly_ytd_ss_local_mwh,
+	  name: "Self Schedule Cut - Local"
+	},
+	{
+	  data: curt_hourly_ytd_ss_system_mwh,
+	  name: "Self Schedule Cut - System"
+	},
+	{
+	  data: curt_hourly_ytd_oi_local_mwh,
+	  name: "Operator Instruction - Local"
+	},
+	{
+	  data: curt_hourly_ytd_oi_system_mwh,
+	  name: "Operator Instruction - System"
+	}],
+	tickInterval: 24*60*60 * 1000
+};
+
+options_hourly_ytd = jQuery.extend(true, {}, base_options, date_options, index_ifm, options_hourly_ytd);
+
+var hc_hourly_ytd = new Highcharts.Chart(options_hourly_ytd);
+
+
+//For reposting, can set x-axis
+//var today = new Date(2025, 11, 31);
+var today = new Date();
+var ytdYear = today.getFullYear(); // current year dynamically
+
+// Build x-axis points: 12 months of the current year
+var x_vals = [];
+for (var m = 0; m < 12; m++) {
+  x_vals.push(Date.UTC(ytdYear, m, 1));
+}
+
+// Map your existing R data arrays to these x-axis points
+var curt_monthly_ytd_econ_local_mwh_mapped = x_vals.map((x, i) => ({
+  x: x,
+  y: curt_monthly_ytd_econ_local_mwh[i] != null
+        ? Number(curt_monthly_ytd_econ_local_mwh[i])
+        : null
+}));
+
+var curt_monthly_ytd_econ_system_mwh_mapped = x_vals.map((x, i) => ({
+  x: x,
+  y: curt_monthly_ytd_econ_system_mwh[i] != null
+        ? Number(curt_monthly_ytd_econ_system_mwh[i])
+        : null
+}));
+
+var curt_monthly_ytd_ss_local_mwh_mapped = x_vals.map((x, i) => ({
+  x: x,
+  y: curt_monthly_ytd_ss_local_mwh[i] != null
+        ? Number(curt_monthly_ytd_ss_local_mwh[i])
+        : null
+}));
+
+var curt_monthly_ytd_ss_system_mwh_mapped = x_vals.map((x, i) => ({
+  x: x,
+  y: curt_monthly_ytd_ss_system_mwh[i] != null
+        ? Number(curt_monthly_ytd_ss_system_mwh[i])
+        : null
+}));
+
+var curt_monthly_ytd_oi_local_mwh_mapped = x_vals.map((x, i) => ({
+  x: x,
+  y: curt_monthly_ytd_oi_local_mwh[i] != null
+        ? Number(curt_monthly_ytd_oi_local_mwh[i])
+        : null
+}));
+
+var curt_monthly_ytd_oi_system_mwh_mapped = x_vals.map((x, i) => ({
+  x: x,
+  y: curt_monthly_ytd_oi_system_mwh[i] != null
+        ? Number(curt_monthly_ytd_oi_system_mwh[i])
+        : null
+}));
+
+// Use these mapped arrays in your Highcharts series
+var options_monthly_ytd = {
+  colors: line_colors,
+  chart: {
+    renderTo: 'chart_curt_monthly_ytd',
+    type: "column"
+  },
+  yAxis: {
+    title: { text: "MWh" }
+  },
+  xAxis: {
+    type: 'datetime',
+    tickInterval: 30 * 24 * 60 * 60 * 1000, // monthly data points
+    min: x_vals[0],
+    max: x_vals[11],
+    labels: {
+      rotation: 0,
+      step: 3,
+      align: 'center',
+      style: { fontSize: '12px' }
+    }
+  },
+  series: [
+    { data: curt_monthly_ytd_econ_local_mwh_mapped, name: "Economic - Local" },
+    { data: curt_monthly_ytd_econ_system_mwh_mapped, name: "Economic - System" },
+    { data: curt_monthly_ytd_ss_local_mwh_mapped, name: "Self Schedule Cut - Local" },
+    { data: curt_monthly_ytd_ss_system_mwh_mapped, name: "Self Schedule Cut - System" },
+    { data: curt_monthly_ytd_oi_local_mwh_mapped, name: "Operator Instruction - Local" },
+    { data: curt_monthly_ytd_oi_system_mwh_mapped, name: "Operator Instruction - System" }
+  ],
+  tooltip: {
+  shared: true,
+  formatter: function () {
+    var date = new Date(this.x);
+    date.setUTCMonth(date.getUTCMonth() + 1); // Shift tooltip one month forward
+
+    var month = date.toLocaleString('default', { month: 'short' });
+    var year = date.getFullYear();
+
+    var s = '<b>' + month + ' ' + year + '</b><br/>';
+
+    this.points.forEach(function(point) {
+      s += '<span style="color:' + point.color + '">\u25CF</span> ' + 
+           point.series.name + ': <b>' + point.y + '</b><br/>';
+    });
+
+    return s;
+  }
+}
+};
+
+options_monthly_ytd = jQuery.extend(true, {}, base_options_monthly, monthly_date_options, index_monthly, options_monthly_ytd);
+
+var hc_monthly_ytd = new Highcharts.Chart(options_monthly_ytd);
+
+// Force date for reposting
+//var chartStartDate = new Date(Date.UTC(2024, 11, 1)); // Dec 1, 2024
+//var x_vals = Array.from({ length: 13 }, (_, i) =>
+//  Date.UTC(2024, 11 + i, 1) // Start at Dec 2024
+//);
+var x_vals = Array.from({length: 13}, (_, i) => Date.UTC(twelveMonthsAgo.getFullYear(), twelveMonthsAgo.getMonth() + i, 1));
+//Monthly YTD Curtailed MWh Percentage
+var options_monthly_perc = {
+  colors: line_colors,
+	chart: {
+		renderTo: 'chart_curt_monthly_ytd_perc',
+		type: "column"
+	},
+	yAxis: {
+		title: {
+			text: "Percent (%)"
+		}
+  },
+  xAxis: {
+  type: 'datetime',
+  tickPositions: x_vals,  // Force each month to be labeled
+  labels: {
+    formatter: function () {
+      const date = new Date(this.value);
+      const month = date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' });
+      const year = date.toLocaleString('en-US', { year: 'numeric', timeZone: 'UTC' });
+      return month + ' ' + year;
+    },
+    rotation: -45 // Optional: slant labels to avoid overlap
+  }
+},
+  legend: {enabled: false},
+	series: [
+	{
+	  data: curt_monthly_ytd_perc_mwh.map((val, i) => ({ x: x_vals[i], y: val })),
+	  name: "Curtailed MWh Percentage"
+	}],
+	tickInterval: 30 * 24 * 60 * 60 * 1000,
+	tooltip: {
+  formatter: function () {
+    var date = new Date(this.x);
+    var month = date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' });
+    var year = date.toLocaleString('en-US', { year: 'numeric', timeZone: 'UTC' });
+    return '<b>' + month + ' ' + year + '</b>: ' + this.y;
+  }
+}
+};
+
+options_monthly_perc = jQuery.extend(true, {}, base_options_rolling_12months, date_options_rolling_12, index_rolling_12, options_monthly_perc);
+// Force 13-month window for reposting
+//options_monthly_perc.xAxis.min = Date.UTC(2024, 11, 1);
+//options_monthly_perc.xAxis.max = Date.UTC(2025, 11, 1);
+//options_monthly_perc.plotOptions.series.pointStart = undefined;
+//options_monthly_perc.plotOptions.series.pointInterval = undefined;
+var hc_monthly_perc = new Highcharts.Chart(options_monthly_perc);
+
+// Hide and Show Pages
+$('#tabMarketPerformance').click(function() {
+	$('.page').hide();
+	$('#MarketPerformance').show();
+	$('.nav-item').removeClass('active');
+	$('#navMarketPerformance').addClass('active');
+	if(!($('#tabMarketPerformance').hasClass('loaded'))) {
+		// load items
+		$('#tabMarketPerformance').addClass('loaded');
+	}
+});
+
+$('#tabCurtailment').click(function() {
+	$('.page').hide();
+	$('#Curtailment').show();
+	$('.nav-item').removeClass('active');
+	$('#navCurtailment').addClass('active');
+	if(!($('#tabCurtailment').hasClass('loaded'))) {
+		// load items
+		$('#tabCurtailment').addClass('loaded');
+	}
+});
+$('#tabMarketPerformance').on("keydown", function(e) {
+                // Check if the Enter key was pressed
+                if (e.key === "Enter") {
+                                e.preventDefault();
+                                // Trigger the button click
+                                $(this).click();
+                }
+});
+$('#tabCurtailment').on("keydown", function(e) {
+                // Check if the Enter key was pressed
+                if (e.key === "Enter") {
+                                e.preventDefault();
+                                // Trigger the button click
+                                $(this).click();
+                }
+}); 
+
+});
+
+
+</script>
+
+
+
+</body>
+</html>

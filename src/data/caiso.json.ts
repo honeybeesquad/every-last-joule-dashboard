@@ -1,9 +1,5 @@
-import { execFileSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
-import { fetchJSON } from "../lib/fetch.js";
-import { parseDelimitedRows } from "../lib/csv.js";
+import { fetchJSON, fetchText } from "../lib/fetch.js";
+import { mapWithConcurrency } from "../lib/concurrency.js";
 import { timeOfDayAverageGW, totalTWh30d, peakGW, latestCompleteUtcDayProfileGW } from "../lib/profile.js";
 import { withFallback } from "../lib/resilient.js";
 import { adaptCachedAggregateToPerFuel } from "../lib/eia-iso.js";
@@ -14,7 +10,7 @@ const SOLAR_RATE = 0.0425;
 const WIND_RATE = 0.042;
 
 const API_BASE = "https://api.eia.gov/v2/electricity/rto/fuel-type-data/data/";
-const OASIS_BASE = "https://oasis.caiso.com/oasisapi/SingleZip";
+const DAILY_REPORT_BASE = "https://www.caiso.com/documents/daily-renewable-report";
 
 interface EIAResponse {
   response: {
@@ -80,124 +76,168 @@ export function parseCaisoPerFuel(
   };
 }
 
-function unzipText(zipBytes: Uint8Array): string {
-  const dir = mkdtempSync(join(tmpdir(), "caiso-"));
-  const zipPath = join(dir, "report.zip");
-  try {
-    writeFileSync(zipPath, zipBytes);
-    return execFileSync("unzip", ["-p", zipPath], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
-  } finally {
-    rmSync(dir, { recursive: true, force: true });
-  }
+const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+/** Curtailment categories in the report: economic, self-schedule, operator instruction; local and system. */
+const CURTAILMENT_CATEGORIES = ["econ_local", "econ_system", "ss_local", "ss_system", "oi_local", "oi_system"] as const;
+
+/** A calendar day in California (the report's operating day). */
+export interface CaisoDay { year: number; month: number; day: number }
+
+/** `https://www.caiso.com/documents/daily-renewable-report-nov-19-2026.html` for 2026-11-19. */
+export function caisoDailyReportUrl({ year, month, day }: CaisoDay): string {
+  return `${DAILY_REPORT_BASE}-${MONTHS[month - 1]}-${String(day).padStart(2, "0")}-${year}.html`;
 }
 
-export function parseCaisoOasisCurtailmentCsvPerFuel(
-  csv: string,
-): { wind: RegionData; solar: RegionData } {
-  if (/INVALID_REQUEST/i.test(csv)) throw new Error("CAISO OASIS returned INVALID_REQUEST");
-  const rows = parseDelimitedRows(csv, ",");
+/** UTC offset of America/Los_Angeles, in hours, at a given instant (-8 or -7). */
+function pacificOffsetHours(at: Date): number {
+  const name = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", timeZoneName: "shortOffset" })
+    .formatToParts(at)
+    .find((p) => p.type === "timeZoneName")?.value ?? "GMT-8";
+  const m = name.match(/GMT([+-]\d+)/);
+  return m ? Number(m[1]) : -8;
+}
 
-  const solarTotals = new Map<string, number>();
-  const windTotals = new Map<string, number>();
-  let solarMw = 0;
-  let windMw = 0;
+/**
+ * The UTC instant of a California day's local midnight. 08:00Z is local 00:00
+ * PST or 01:00 PDT, before either DST switch (02:00 local), so its offset is
+ * midnight's offset.
+ */
+function pacificMidnightUtcMs({ year, month, day }: CaisoDay): number {
+  const offset = pacificOffsetHours(new Date(Date.UTC(year, month - 1, day, 8)));
+  return Date.UTC(year, month - 1, day) - offset * 3_600_000;
+}
 
-  for (const row of rows) {
-    const fuel = String(row.RENEWABLE_TYPE || row.FUEL_TYPE || row.FUEL_CATEGORY || "").toUpperCase();
-    if (fuel && !/(SOLAR|WIND)/.test(fuel)) continue;
-    const rawTs = row.INTERVALSTARTTIME_GMT || row.INTERVAL_START_GMT || row.OPR_DT || row.DATA_ITEM;
-    const interval = row.INTERVAL_NUM ? Number(row.INTERVAL_NUM) : 1;
-    const ts = rawTs && /^\d{4}-\d{2}-\d{2}/.test(rawTs)
-      ? new Date(rawTs.replace(" ", "T").replace(/Z?$/, "Z"))
-      : null;
-    if (!ts || Number.isNaN(ts.getTime())) continue;
-    if (row.OPR_DT && !row.INTERVALSTARTTIME_GMT && Number.isFinite(interval)) {
-      ts.setUTCHours(interval - 1, 0, 0, 0);
+function inlineArrays(html: string): Map<string, string[]> {
+  // The report declares every chart series inline, as one comma-separated
+  // `var a = [...],\n b = [...]` statement, so match `name = [ ... ]` anywhere.
+  const out = new Map<string, string[]>();
+  for (const m of html.matchAll(/\b(curt_hr_tot_(?:solar|wind)_[a-z_]+_mwh)\s*=\s*\[([^\]]*)\]/g)) {
+    out.set(m[1], m[2].split(",").map((v) => v.trim().replace(/^["']|["']$/g, "")));
+  }
+  return out;
+}
+
+/**
+ * One operating day's hourly curtailment by fuel, from CAISO's Daily Renewable
+ * Report HTML. CAISO has published 5-minute and hourly curtailment only there
+ * since mid-2025 (its last Production and Curtailments workbook, for
+ * June–December 2025, says so), and OASIS `SLD_REN_CURTAIL` answers
+ * "Invalid Parameters" (probed 2026-11-21). The hourly MWh per fuel is the sum
+ * of the six `curt_hr_tot_<fuel>_<category>_mwh` series; index 0 is the hour
+ * starting at local midnight. "NA" reads as 0. Throws when a series is missing.
+ */
+export function parseCaisoDailyRenewableReport(
+  html: string,
+  date: CaisoDay,
+): { solar: CurtailmentPoint[]; wind: CurtailmentPoint[] } {
+  const arrays = inlineArrays(html);
+  const sumFuel = (fuel: "solar" | "wind"): number[] => {
+    const series = CURTAILMENT_CATEGORIES.map((cat) => {
+      const name = `curt_hr_tot_${fuel}_${cat}_mwh`;
+      const values = arrays.get(name);
+      if (!values) throw new Error(`CAISO daily report ${caisoDailyReportUrl(date)} has no ${name}`);
+      return values;
+    });
+    const hours = series[0].length;
+    if (series.some((v) => v.length !== hours)) {
+      throw new Error(`CAISO daily report ${caisoDailyReportUrl(date)}: ${fuel} series differ in length`);
     }
-
-    const value = Number(
-      row.CURTAILMENT_MW ||
-      row.CURTAILMENT_MWH ||
-      row.CURTAILED_MW ||
-      row.VALUE ||
-      row.MW ||
-      0,
+    if (hours < 23 || hours > 25) throw new Error(`CAISO daily report ${caisoDailyReportUrl(date)}: ${hours} hourly values`);
+    return Array.from({ length: hours }, (_, h) =>
+      series.reduce((sum, values) => {
+        const v = Number(values[h]);
+        return sum + (Number.isFinite(v) && v > 0 ? v : 0);
+      }, 0),
     );
-    if (!Number.isFinite(value) || value <= 0) continue;
-    const utcTimestamp = ts.toISOString();
-
-    if (fuel.includes("SOLAR")) {
-      solarTotals.set(utcTimestamp, (solarTotals.get(utcTimestamp) ?? 0) + value);
-      solarMw += value;
-    } else if (fuel.includes("WIND")) {
-      windTotals.set(utcTimestamp, (windTotals.get(utcTimestamp) ?? 0) + value);
-      windMw += value;
-    }
-  }
-
-  const solarPoints = Array.from(solarTotals.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
-  const windPoints = Array.from(windTotals.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([utcTimestamp, mw]) => ({ utcTimestamp, mw }));
-
-  if (!solarPoints.length && !windPoints.length) throw new Error("CAISO OASIS curtailment CSV had no wind/solar rows");
-
-  const denom = solarMw + windMw;
-  const fuelShare = denom > 0
-    ? { solar: solarMw / denom, wind: windMw / denom }
-    : { solar: 1, wind: 0 };
-
-  const solarLast = solarPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
-  const windLast = windPoints.at(-1)?.utcTimestamp ?? new Date().toISOString();
-
-  return {
-    solar: {
-      regionId: "caiso-solar",
-      profile: timeOfDayAverageGW(solarPoints),
-      latestProfile: latestCompleteUtcDayProfileGW(solarPoints),
-      totalTWh: totalTWh30d(solarPoints),
-      peakGW: peakGW(solarPoints),
-      lastUpdated: solarLast,
-      lastSuccessAt: solarLast,
-      sourceNote: `CAISO OASIS SLD_REN_CURTAIL direct (observed 30d split: solar ${(fuelShare.solar * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
-    },
-    wind: {
-      regionId: "caiso-wind",
-      profile: timeOfDayAverageGW(windPoints),
-      latestProfile: latestCompleteUtcDayProfileGW(windPoints),
-      totalTWh: totalTWh30d(windPoints),
-      peakGW: peakGW(windPoints),
-      lastUpdated: windLast,
-      lastSuccessAt: windLast,
-      sourceNote: `CAISO OASIS SLD_REN_CURTAIL direct (observed 30d split: solar ${(fuelShare.solar * 100).toFixed(0)}% / wind ${(fuelShare.wind * 100).toFixed(0)}%)`,
-    },
   };
+  // Elapsed hours from local midnight, so a 23- or 25-hour DST day maps one to one.
+  const midnight = pacificMidnightUtcMs(date);
+  const toPoints = (mwh: number[]): CurtailmentPoint[] =>
+    // An hour's MWh is its average MW.
+    mwh.map((mw, hour) => ({ utcTimestamp: new Date(midnight + hour * 3_600_000).toISOString(), mw }));
+  return { solar: toPoints(sumFuel("solar")), wind: toPoints(sumFuel("wind")) };
 }
 
-async function fetchCaisoOasisDirect(): Promise<{ wind: RegionData; solar: RegionData }> {
-  const end = new Date();
-  end.setUTCHours(0, 0, 0, 0);
-  const start = new Date(end.getTime() - 30 * 24 * 3600 * 1000);
-  const fmt = (d: Date) => `${d.toISOString().slice(0, 10).replace(/-/g, "")}T00:00-0000`;
-  const params = new URLSearchParams({
-    queryname: "SLD_REN_CURTAIL",
-    version: "1",
-    startdatetime: fmt(start),
-    enddatetime: fmt(end),
-    resultformat: "6",
+function pacificToday(now: Date): CaisoDay {
+  const local = new Date(now.getTime() + pacificOffsetHours(now) * 3_600_000);
+  return { year: local.getUTCFullYear(), month: local.getUTCMonth() + 1, day: local.getUTCDate() };
+}
+
+function daysBefore(d: CaisoDay, n: number): CaisoDay {
+  const t = new Date(Date.UTC(d.year, d.month - 1, d.day - n));
+  return { year: t.getUTCFullYear(), month: t.getUTCMonth() + 1, day: t.getUTCDate() };
+}
+
+/** Fewer report days than this and the loader falls back to the EIA estimate. */
+const MIN_REPORT_DAYS = 20;
+
+export function buildCaisoMeasuredRegions(
+  days: { date: CaisoDay; solar: CurtailmentPoint[]; wind: CurtailmentPoint[] }[],
+): { wind: RegionData; solar: RegionData } {
+  const solarPoints = days.flatMap((d) => d.solar).sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+  const windPoints = days.flatMap((d) => d.wind).sort((a, b) => a.utcTimestamp.localeCompare(b.utcTimestamp));
+  const solarMwh = solarPoints.reduce((s, p) => s + p.mw, 0);
+  const windMwh = windPoints.reduce((s, p) => s + p.mw, 0);
+  const denom = solarMwh + windMwh;
+  const split = denom > 0
+    ? `solar ${((solarMwh / denom) * 100).toFixed(0)}% / wind ${((windMwh / denom) * 100).toFixed(0)}%`
+    : "no curtailment";
+  const ymd = (d: CaisoDay) => `${d.year}-${String(d.month).padStart(2, "0")}-${String(d.day).padStart(2, "0")}`;
+  const sorted = [...days].sort((a, b) => ymd(a.date).localeCompare(ymd(b.date)));
+  const note =
+    `CAISO Daily Renewable Report hourly curtailment, measured (economic, self-schedule and operator-instruction; local and system), ` +
+    `${days.length} days ${ymd(sorted[0].date)} to ${ymd(sorted.at(-1)!.date)}` +
+    (days.length < 30 ? ` (30-day total scaled up from ${days.length} days)` : "") +
+    `; observed split ${split}`;
+  const build = (regionId: string, points: CurtailmentPoint[]): RegionData => {
+    const last = points.at(-1)?.utcTimestamp ?? new Date().toISOString();
+    return {
+      regionId,
+      profile: timeOfDayAverageGW(points),
+      latestProfile: latestCompleteUtcDayProfileGW(points),
+      // A day CAISO skipped is missing, not zero: scale the days held to 30.
+      totalTWh: totalTWh30d(points) * (30 / days.length),
+      peakGW: peakGW(points),
+      lastUpdated: last,
+      lastSuccessAt: last, // the last data hour, as the EIA path stamps it
+      sourceNote: note,
+    };
+  };
+  return { solar: build("caiso-solar", solarPoints), wind: build("caiso-wind", windPoints) };
+}
+
+/**
+ * The 30 most recent operating days with a published report, looking back up
+ * to 33 days from yesterday (the report for a day appears the morning after;
+ * a day CAISO skipped is left out, not zero-filled).
+ */
+async function fetchCaisoDailyReports(now = new Date()): Promise<{ wind: RegionData; solar: RegionData }> {
+  const today = pacificToday(now);
+  const candidates = Array.from({ length: 33 }, (_, i) => daysBefore(today, i + 1));
+  // Eight at a time, no retry, the build's per-request timeout: an unreachable
+  // caiso.com costs about five timeouts, well inside withFallback's deadline,
+  // and the EIA estimate still runs.
+  const results = await mapWithConcurrency(candidates, 8, async (date) => {
+    try {
+      const html = await fetchText(caisoDailyReportUrl(date), { retries: 0 });
+      return { date, ...parseCaisoDailyRenewableReport(html, date) };
+    } catch (err) {
+      console.warn(`CAISO daily report ${caisoDailyReportUrl(date)} skipped: ${(err as Error).message}`);
+      return null;
+    }
   });
-  const res = await fetch(`${OASIS_BASE}?${params.toString()}`);
-  if (!res.ok) throw new Error(`CAISO OASIS HTTP ${res.status}`);
-  return parseCaisoOasisCurtailmentCsvPerFuel(unzipText(new Uint8Array(await res.arrayBuffer())));
+  const days = results.filter((r): r is NonNullable<typeof r> => r !== null).slice(0, 30);
+  if (days.length < MIN_REPORT_DAYS) {
+    throw new Error(`CAISO Daily Renewable Report: only ${days.length} of the last 33 days parsed (need ${MIN_REPORT_DAYS})`);
+  }
+  return buildCaisoMeasuredRegions(days);
 }
 
 const run = async (): Promise<{ wind: RegionData; solar: RegionData }> => {
   try {
-    return await fetchCaisoOasisDirect();
+    return await fetchCaisoDailyReports();
   } catch (err) {
-    console.warn(`CAISO OASIS direct curtailment unavailable; falling back to EIA proxy: ${(err as Error).message}`);
+    console.warn(`CAISO measured curtailment unavailable; falling back to the EIA estimate: ${(err as Error).message}`);
   }
 
   const apiKey = process.env.EIA_API_KEY;
