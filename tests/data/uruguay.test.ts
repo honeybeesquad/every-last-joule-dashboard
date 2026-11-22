@@ -2,6 +2,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  ADME_REQUEST_CAP_MS,
+  admeRequestTimeoutMs,
+  admeWalkDeadline,
   buildUruguayRegionData,
   FALLBACK_RENEWABLE_PLANTS,
   isEmptyAdmeWorkbook,
@@ -96,5 +99,20 @@ describe("uruguay loader", () => {
     // Every positive cell in the workbook sums to 13,176 MWh (the -11000 sentinel cells are dropped).
     expect(data.totalTWh * 1e6).toBeCloseTo(13_176, 0);
     expect(data.lastUpdated.startsWith("2026-10-01")).toBe(true); // hour ending 01-10 00:00 local
+  });
+});
+
+describe("ADME month-walk time budget", () => {
+  it("stops at the loader's soft stop, counted from when withFallback started it", () => {
+    // 180 s deadline, soft stop at 90% = 162 s after start.
+    expect(admeWalkDeadline({ deadlineMs: 180_000, startedAt: 1_000 }, 50_000)).toBe(163_000);
+    // No deadline: 150 s from now.
+    expect(admeWalkDeadline({ deadlineMs: 0, startedAt: 1_000 }, 50_000)).toBe(200_000);
+  });
+
+  it("caps each request, shrinks with the time left, and stops when none is left", () => {
+    expect(admeRequestTimeoutMs(200_000, 0)).toBe(ADME_REQUEST_CAP_MS);
+    expect(admeRequestTimeoutMs(200_000, 170_000)).toBe(30_000);
+    expect(admeRequestTimeoutMs(200_000, 200_000)).toBeNull();
   });
 });

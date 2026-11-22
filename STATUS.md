@@ -14,6 +14,12 @@
 
 **Source issue found, not fixed.** CEN's report for 30 Oct 2026 repeats 29 Oct's reduction figures for both wind (6,024.73 MWh) and solar (14,205.99 MWh), though its generation figures differ. The loader takes the published figure as is; a duplicate-day guard is a possible follow-up.
 
+## Uruguay: ADME workbook timeout in production builds (2026-11-22)
+
+**What happened.** #1689 fixed the ADME parsing, but production kept serving the May snapshot (`degraded`, 0 TWh). The 07:10 UTC production build logged `[uruguay] live fetch failed after 40.7s: The operation was aborted due to timeout`: the first workbook request passed the loader's flat 40 s per-request cap. Run standalone from a Vercel sandbox in iad1 the same day, the same merged loader returned September 2026, 0.0132 TWh/30d, live, with each 6–12 MB response arriving in 2–3 s, so the slowness is ADME's on-the-fly response under build-time conditions, not a parse failure.
+
+**Change.** `uruguay.json.ts` drops the flat 40 s per-request cap. The month walk now runs until the loader's soft stop (90% of withFallback's live deadline, counted from when withFallback started the loader, so the control-panel requests count against it; 150 s when no deadline is set), with each request capped at 90 s. Workbook requests go through the shared `src/lib/fetch.ts` helper, so withFallback's deadline aborts them, and each workbook's size and download time is logged. No data, tier or count change by itself; the uruguay zero-allowlist entry stays until production shows data.
+
 ## SPP West on measured curtailment (2026-11-22)
 
 **What changed.** `swpw-wind` and `swpw-solar` (SPP RTO West, the former WACM balancing authority, taken over by SPP on 2026-04-01) move from `estimated` to `live`. Their curtailment now comes from the `BAA=SWPW` rows of SPP's daily VER Curtailments report, read by the same parser as `spp-*` (wind/solar Redispatch + Manual per 5-minute interval; CurtailedForEnergy is a subset of Redispatch and is left out). EIA-930 respondent SWPW, the same balancing authority, supplies generation as an independent basis. They had been generation-only rows in `eia-vre-bas.json.ts` with waste unpublished.
